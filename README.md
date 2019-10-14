@@ -55,7 +55,7 @@ I can add a food sponsor to the event with a link to their website as a way of t
 
 freeCodeCamp will start "dogfooding" this as soon as possible with several of its local study groups.
 
-Here's an out-dated example of an app with similar functionality: [https://study-group-directory.freecodecamp.org](The freeCodeCamp Study Group Directory)
+Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org)
 
 To ask a question or share an idea, create a GitHub issue on this repository.
 

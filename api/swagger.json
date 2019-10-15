@@ -1,0 +1,471 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the API specification for Chapter",
+    "version": "1.0.0",
+    "title": "Chapter",
+    "termsOfService": "http://chapter.io/tos",
+    "contact": {
+      "email": "author@chapter.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "chapter.io",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "location",
+      "description": "Everything about your Locations",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://chapter.io"
+      }
+    },
+    {
+      "name": "group",
+      "description": "Everything about your Locations",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://chapter.io"
+      }
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/location": {
+      "post": {
+        "tags": [
+          "location"
+        ],
+        "summary": "Add a new location to the map",
+        "description": "",
+        "operationId": "addLocation",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Location coordinates",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "location"
+        ],
+        "summary": "Finds Locations by city, country etc",
+        "description": "Multiple status values can be provided as query params",
+        "operationId": "findLocations",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "description": "City value that needs to be considered for filter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "description": "Country value that needs to be considered for filter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "zip",
+            "in": "query",
+            "description": "Zip Code that need to be considered for filter",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Location"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    },
+    "/location/{locationId}": {
+      "get": {
+        "tags": [
+          "location"
+        ],
+        "summary": "Find location by ID",
+        "description": "Returns a single location",
+        "operationId": "getLocationById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "description": "ID of location to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "location"
+        ],
+        "summary": "Update an existing location",
+        "description": "",
+        "operationId": "updateLocation",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "description": "ID of location to patch",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Location object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "location"
+        ],
+        "summary": "Deletes a location",
+        "description": "",
+        "operationId": "deleteLocation",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "description": "Location id to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      }
+    },
+    "/group": {
+      "post": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Add a new group",
+        "description": "",
+        "operationId": "addGroup",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Location coordinates",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/group/{groupId}": {
+      "get": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Retreive the details of a group",
+        "description": "",
+        "operationId": "findGroupById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "ID of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          },
+          "400": {
+            "description": "Invalid group"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:pets": "modify pets in your account",
+        "read:pets": "read your pets"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Location": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "integer"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "SocialProvider": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "SocialProviderUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "provider_id": {
+          "type": "string"
+        },
+        "provider_user_id": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        }
+      }
+    },
+    "Group": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "details": {
+          "type": "string"
+        },
+        "location_id": {
+          "type": "string"
+        },
+        "creator_id": {
+          "type": "string"
+        }
+      }
+    },
+    "Venue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "location_id": {
+          "type": "string"
+        }
+      }
+    },
+    "Sponsor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Tag"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

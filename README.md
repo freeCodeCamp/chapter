@@ -46,6 +46,8 @@ I can add a venue sponsor to the event with a link to their website as a way of 
 
 I can add a food sponsor to the event with a link to their website as a way of thanking them for food.
 
+I can see how many times a participant has come to the event as well as their attendance rate
+
 ### Roadmap
 
 1. Design the schema

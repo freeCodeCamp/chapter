@@ -12,14 +12,14 @@ You can use your own authentication tools. And all your user data will stay on y
 
 We're planning to use the following tools:
 
-- Node.js / Express for our backend
-- Postgres with Sequalize
-- Elasticsearch
-- A React frontend using JavaScript (not TypeScript) and CSS (not Sass)
+- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend
+- [Postgres](https://www.postgresql.org) with [Sequelize](https://sequelize.org)
+- [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
+- A [React](https://reactjs.org/) frontend using JavaScript (not TypeScript) and CSS (not Sass)
 
 A lot of people know these tools, and they're proven to work well at scale.
 
-We are considering using a tool like Next.js to get up and running faster.
+We are considering using a tool like [Next.js](https://nextjs.org) to get up and running faster.
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 

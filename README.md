@@ -53,6 +53,8 @@ So far we have only two user roles: participants and group organizers
 
 - I can email the entire list of participants.
 
+- I can add required info fields besides attendee name, like id
+
 - I can ban a participant whom I believe is toxic or who has previously broken my organization's code of conduct.
 
 - I can add a venue sponsor to the event with a link to their website as a way of thanking them for hosting.

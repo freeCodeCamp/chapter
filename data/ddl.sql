@@ -53,7 +53,9 @@ create table sponsors (
 create table events (
     id uuid primary key,
     name text not null,
-    date timestamptz not null,
+    description text,
+    starts_at timestamptz not null,
+    ends_at timestamptz not null,
     group_id uuid references groups(id) not null ,
     venue_id uuid references venues(id),
     canceled boolean default false

@@ -1,9 +1,21 @@
 create table users (
     id uuid primary key,
     first_name text not null ,
-    last_name text not null,
+    last_name text,
     email text not null,
-    password text not null
+    password_digest text
+);
+
+create table social_providers (
+    id uuid primary key,
+    name text
+);
+
+create table social_provider_users (
+    id uuid primary key,
+    provider_id uuid references social_providers(id) not null,
+    provider_user_id text not null,
+    user_id uuid references users(id) not null
 );
 
 create table locations (

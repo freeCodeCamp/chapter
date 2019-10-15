@@ -1,9 +1,10 @@
 create table users (
     id uuid primary key,
-    first_name text not null ,
+    first_name text not null,
     last_name text not null,
     email text not null,
-    password text not null
+    password text not null,
+    nickname text null
 );
 
 create table locations (

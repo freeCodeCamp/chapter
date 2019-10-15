@@ -1,9 +1,11 @@
 create table users (
     id uuid primary key,
     first_name text not null ,
-    last_name text not null,
+    last_name text,
     email text not null,
-    password text not null
+    provider text,
+    provider_id text,
+    password_digest text
 );
 
 create table locations (

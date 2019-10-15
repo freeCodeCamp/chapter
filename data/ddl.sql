@@ -62,11 +62,11 @@ create table rsvps (
     user_id uuid references  users(id),
     event_id uuid references events(id),
     date timestamptz not null,
-    in_waitlist boolean not null,
+    on_waitlist boolean not null,
     primary key (user_id, event_id)
 );
 
-alter table rsvps alter column in_waitlist set default FALSE;
+alter table rsvps alter column on_waitlist set default FALSE;
 
 create table user_bans (
     user_id uuid references users(id),

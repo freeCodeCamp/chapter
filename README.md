@@ -51,7 +51,7 @@ I can add a food sponsor to the event with a link to their website as a way of t
 1. Design the schema
 2. Set up the endpoints
 3. Build the web front end
-3 (optional) Build Android / iOS clients that also use these API endpoints
+4. (optional) Build Android / iOS clients that also use these API endpoints
 
 freeCodeCamp will start "dogfooding" this as soon as possible with several of its local study groups.
 

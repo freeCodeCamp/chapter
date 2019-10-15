@@ -38,7 +38,7 @@ create table groups (
 create table venues (
     id uuid primary key,
     name text not null,
-    location_id uuid references locations(id) not null
+    location_id uuid references locations(id) not null,
 );
 
 create type sponsor_type as enum ('FOOD', 'VENUE', 'OTHER');
@@ -57,6 +57,7 @@ create table events (
     group_id uuid references groups(id) not null ,
     venue_id uuid references venues(id),
     canceled boolean default false
+    capacity int not null
 );
 
 create table event_sponsors (

@@ -23,6 +23,10 @@ We are considering using a tool like Next.js to get up and running faster.
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 
+Here is our schema:
+
+![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
+
 ### User Stories so far
 
 Our goal is to keep things simple and not reinvent wheels.

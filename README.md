@@ -45,6 +45,8 @@ So far we have only two user roles: participants and group organizers
 
 - After the event, I will automatically get emails notifying me of subsequent events.
 
+- I can filter all events in my location by tag/interests.
+
 #### As an organizer
 
 - I can create a group.

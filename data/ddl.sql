@@ -56,7 +56,13 @@ create table events (
     date timestamptz not null,
     group_id uuid references groups(id) not null ,
     venue_id uuid references venues(id),
+    tag_id uuid references tags(id),
     canceled boolean default false
+);
+
+create table tags (
+    id uuid primary key,
+    name text not null
 );
 
 create table event_sponsors (

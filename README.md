@@ -2,7 +2,7 @@
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
-This will be a self-hosted Docker image that you can one-click deploy to the cloud, then configure through an admin panel. No coding required.
+This will be a self-hosted Docker container that you can one-click deploy to the cloud, then configure through an admin panel. No coding required.
 
 Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` or `chapter.womenwhocode.org`. 
 

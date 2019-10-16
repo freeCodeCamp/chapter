@@ -15,16 +15,16 @@
   },
   "tags": [
     {
-      "name": "location",
-      "description": "Everything about your Locations",
+      "name": "chapter",
+      "description": "Everything about your Chapters",
       "externalDocs": {
         "description": "Find out more",
         "url": "http://chapter.io"
       }
     },
     {
-      "name": "chapter",
-      "description": "Everything about your Chapters",
+      "name": "location",
+      "description": "Everything about your Locations",
       "externalDocs": {
         "description": "Find out more",
         "url": "http://chapter.io"

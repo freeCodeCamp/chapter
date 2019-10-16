@@ -8,6 +8,17 @@ Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` o
 
 You can use your own authentication tools. And all your user data will stay on your own server.
 
+### Development
+
+### API Specification
+
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
+
+```bash
+npm run speccy
+```
+Navigate to http://localhost:5000 to see API docs
+
 ### Tech stack
 
 We're planning to use the following tools:

@@ -58,8 +58,31 @@
           "required": true
         },
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "Location response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "400": {
+            "description": "Invalid Location object"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -111,8 +134,15 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid status value"
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -151,6 +181,16 @@
           },
           "404": {
             "description": "Location not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -193,11 +233,24 @@
               }
             }
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "400": {
             "description": "Invalid ID supplied"
           },
           "404": {
             "description": "Location not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -222,8 +275,21 @@
           "400": {
             "description": "Invalid ID supplied"
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "404": {
             "description": "Location not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -246,8 +312,28 @@
           "required": true
         },
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "Chapter response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Chapter"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -281,8 +367,24 @@
               }
             }
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "400": {
-            "description": "Invalid chapter"
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Chapter not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -319,8 +421,24 @@
               }
             }
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "400": {
-            "description": "Invalid chapter"
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Chapter not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -364,8 +482,24 @@
               }
             }
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "400": {
             "description": "Invalid event"
+          },
+          "404": {
+            "description": "Event/Chapter not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -407,8 +541,24 @@
               }
             }
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "400": {
             "description": "Invalid event"
+          },
+          "404": {
+            "description": "Event/Chapter not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -455,8 +605,18 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid event"
+          "401": {
+            "description": "Not authorized"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -476,7 +636,7 @@
           "description": "Sponsor details",
           "required": true
         },
-         "parameters": [
+        "parameters": [
           {
             "name": "chapterId",
             "in": "path",
@@ -499,8 +659,34 @@
           }
         ],
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sponsor"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sponsor object"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Event/Chapter not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -555,7 +741,23 @@
             }
           },
           "400": {
-            "description": "Invalid sponsor"
+            "description": "Invalid sponsor object"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Event/Chapter/Sponsor not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -608,7 +810,23 @@
             }
           },
           "400": {
-            "description": "Invalid sponsor"
+            "description": "Invalid sponsor object"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Event/Chapter/Sponsor not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -661,7 +879,23 @@
             }
           },
           "400": {
-            "description": "Invalid sponsor"
+            "description": "Invalid sponsor object"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Event/Chapter/Sponsor not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -676,8 +910,31 @@
           "$ref": "#/components/requestBodies/User"
         },
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid User object"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -711,8 +968,18 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid User"
+          "404": {
+            "description": "User not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -737,8 +1004,34 @@
           "$ref": "#/components/requestBodies/User"
         },
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid User object"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -762,8 +1055,21 @@
           }
         ],
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "User not found"
           }
         }
       }
@@ -915,7 +1221,7 @@
             "type": "string"
           },
           "type": {
-            "type": "string"
+            "$ref": "#/components/schemas/SponsorType"
           }
         }
       },
@@ -931,6 +1237,19 @@
             "format": "int64"
           },
           "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
             "type": "string"
           }
         }

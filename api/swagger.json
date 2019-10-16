@@ -42,7 +42,9 @@
   "paths": {
     "/locations": {
       "post": {
-        "tags": ["location"],
+        "tags": [
+          "location"
+        ],
         "summary": "Add a new location to the map",
         "description": "",
         "operationId": "addLocation",
@@ -87,7 +89,9 @@
         }
       },
       "get": {
-        "tags": ["location"],
+        "tags": [
+          "location"
+        ],
         "summary": "Finds Locations by city, country etc",
         "description": "Multiple status values can be provided as query params",
         "operationId": "findLocations",
@@ -149,7 +153,9 @@
     },
     "/location/{locationId}": {
       "get": {
-        "tags": ["location"],
+        "tags": [
+          "location"
+        ],
         "summary": "Find location by ID",
         "description": "Returns a single location",
         "operationId": "getLocationById",
@@ -195,7 +201,9 @@
         }
       },
       "patch": {
-        "tags": ["location"],
+        "tags": [
+          "location"
+        ],
         "summary": "Update an existing location",
         "description": "",
         "operationId": "updateLocation",
@@ -255,7 +263,9 @@
         }
       },
       "delete": {
-        "tags": ["location"],
+        "tags": [
+          "location"
+        ],
         "summary": "Deletes a location",
         "description": "",
         "operationId": "deleteLocation",
@@ -296,7 +306,9 @@
     },
     "/chapters": {
       "post": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Add a new chapter",
         "description": "",
         "operationId": "addChapter",
@@ -340,7 +352,9 @@
     },
     "/chapter/{chapterId}": {
       "get": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Retreive the details of a chapter",
         "description": "",
         "operationId": "findChapterById",
@@ -391,7 +405,9 @@
     },
     "/chapter/{chapterId}/events": {
       "get": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Retreive the events belonging to a chapter",
         "description": "",
         "operationId": "findEventsInChapter",
@@ -445,7 +461,9 @@
     },
     "/chapter/{chapterId}/event/{eventId}": {
       "get": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Retreive an event by id",
         "description": "",
         "operationId": "findEventById",
@@ -504,7 +522,9 @@
         }
       },
       "delete": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Delete an event by id",
         "description": "",
         "operationId": "deleteEventById",
@@ -565,7 +585,9 @@
     },
     "/chapter/{chapterId}/event/{eventId}/sponsors": {
       "get": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Retreive list of sponsors by event",
         "description": "",
         "operationId": "findSponsorsByEvent",
@@ -621,7 +643,9 @@
         }
       },
       "post": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Add a new food, venue or other sponsor",
         "description": "",
         "operationId": "addSponsorToEvent",
@@ -693,7 +717,9 @@
     },
     "/chapter/{chapterId}/event/{eventId}/sponsor/{sponsorId}": {
       "get": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Retreive list of sponsors by event",
         "description": "",
         "operationId": "findSponsorById",
@@ -762,7 +788,9 @@
         }
       },
       "delete": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Delete a sponsor by id",
         "description": "",
         "operationId": "deleteSponsorById",
@@ -831,7 +859,9 @@
         }
       },
       "patch": {
-        "tags": ["chapter"],
+        "tags": [
+          "chapter"
+        ],
         "summary": "Update a sponsor by id",
         "description": "",
         "operationId": "updateSponsorById",
@@ -902,7 +932,9 @@
     },
     "/users": {
       "post": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Add a new user",
         "description": "",
         "operationId": "addUser",
@@ -941,7 +973,9 @@
     },
     "/user/{userId}": {
       "get": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Retreive the details of a user",
         "description": "",
         "operationId": "findUserById",
@@ -984,7 +1018,9 @@
         }
       },
       "patch": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Edit an existing user",
         "description": "",
         "operationId": "updateUser",
@@ -1038,7 +1074,9 @@
     },
     "/user/{userId}/ban": {
       "patch": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Ban a user",
         "description": "",
         "operationId": "banUserById",
@@ -1227,7 +1265,11 @@
       },
       "SponsorType": {
         "type": "string",
-        "enum": ["FOOD", "VENUE", "OTHER"]
+        "enum": [
+          "FOOD",
+          "VENUE",
+          "OTHER"
+        ]
       },
       "Event": {
         "type": "object",
@@ -1243,7 +1285,10 @@
       },
       "Error": {
         "type": "object",
-        "required": ["code", "message"],
+        "required": [
+          "code",
+          "message"
+        ],
         "properties": {
           "code": {
             "type": "integer",

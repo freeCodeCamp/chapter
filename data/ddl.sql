@@ -79,9 +79,10 @@ create table user_groups (
 );
 
 create table rsvps (
-    user_id uuid references  users(id),
-    event_id uuid references events(id),
-    date timestamptz not null,
+    user_id uuid references users(id) not null,
+    event_id uuid references events(id) not null,
+    accepted_at timestamptz,
+    declined_at timestamptz,
     on_waitlist boolean not null default FALSE,
     primary key (user_id, event_id)
 );

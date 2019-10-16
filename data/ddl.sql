@@ -75,6 +75,7 @@ create table event_sponsors (
 create table user_groups (
     user_id uuid references users(id),
     group_id uuid references groups(id),
+    banned boolean default false,
     primary key (user_id, group_id)
 );
 
@@ -86,8 +87,3 @@ create table rsvps (
     primary key (user_id, event_id)
 );
 
-create table user_bans (
-    user_id uuid references users(id),
-    group_id uuid references groups(id),
-    primary key (user_id, group_id)
-);

@@ -7,4 +7,4 @@ assignees: ''
 
 ---
 
-### Tell us about your discussion topic and describe it in detail: 
+### Tell us about your discussion topic and describe it in detail below: 

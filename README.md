@@ -36,6 +36,20 @@ We will focus on building an open API first. Then developers can use the API to 
 - [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
 - [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
 
+### Terminology
+
+To better communicate and more easily build an API and UI, we've decided on a collection of terminology to describe Chapter in a clear way.
+
+- A "collective" is one singular instance/deployment of Chapter
+  *For example, Women who Code at the domain chapter.womenwhocode.com*
+- A "user" is a person who authed to the chapter
+  *For example, Kognise*
+- A "chapter" is a container for events, with a description and subscribers, and one or more "admins" who can manage it
+  *For example, Women who Code NYC*
+- A "event" is a single meetup that users can RSVP to, has a specific location and time, and has "organizers" 
+  *For example, Women who Code NYC April Meetup*
+
+(All of the above examples are fictional, meaningless, and probably super inaccurate)
 
 ### Schema
 

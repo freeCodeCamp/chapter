@@ -23,7 +23,21 @@ We are considering using a tool like [Next.js](https://nextjs.org) to get up and
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 
-Here is our schema:
+### Quick Links
+
+- [Tech Stack (Closed)](https://github.com/freeCodeCamp/chapter/issues/2)
+- [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
+- [Feature Dev / Stories] ~ See Issues https://github.com/freeCodeCamp/chapter/issues)
+- [API](https://github.com/freeCodeCamp/chapter/issues/17)
+- [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
+- [Mobile Apps](https://github.com/freeCodeCamp/chapter/issues/20)
+- [UX - Design Landing page](https://github.com/freeCodeCamp/chapter/issues/5)
+- [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
+- [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
+- [Introduce Yourself / Volunteer Your Skills] https://github.com/freeCodeCamp/chapter/issues/11)
+
+
+### Schema
 
 ![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
 
@@ -70,6 +84,8 @@ I can see how many times a participant has come to the event as well as their at
 1. Design the schema
 2. Set up the API endpoints
 3. Build the web client and let other developers use the API to build mobile clients and voice interface clients
+
+Quincy Larson is the project lead.
 
 freeCodeCamp will start "dogfooding" this as soon as possible with several of its local study groups.
 

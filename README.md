@@ -27,14 +27,14 @@ We will focus on building an open API first. Then developers can use the API to 
 
 - [Tech Stack (Closed)](https://github.com/freeCodeCamp/chapter/issues/2)
 - [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
-- [Feature Dev / Stories] ~ See Issues https://github.com/freeCodeCamp/chapter/issues)
+- [Feature Dev / Stories](https://github.com/freeCodeCamp/chapter/issues)
 - [API](https://github.com/freeCodeCamp/chapter/issues/17)
 - [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
 - [Mobile Apps](https://github.com/freeCodeCamp/chapter/issues/20)
 - [UX - Design Landing page](https://github.com/freeCodeCamp/chapter/issues/5)
 - [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
 - [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
-- [Introduce Yourself / Volunteer Your Skills] https://github.com/freeCodeCamp/chapter/issues/11)
+- [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
 
 
 ### Schema

@@ -4,7 +4,7 @@
     "description": "This is the API specification for Chapter",
     "version": "1.0.0",
     "title": "Chapter",
-    "termsOfService": "http://chapter.io/tos",
+    "termsOfService": "http://chapter.io/terms",
     "contact": {
       "email": "author@chapter.io"
     },
@@ -13,7 +13,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "chapter.io",
+  "host": "api.chapter.io",
   "basePath": "/v1",
   "tags": [
     {
@@ -26,34 +26,31 @@
     },
     {
       "name": "group",
-      "description": "Everything about your Locations",
+      "description": "Everything about your Groups",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://chapter.io"
+      }
+    },
+    {
+      "name": "user",
+      "description": "Everything about your Users",
       "externalDocs": {
         "description": "Find out more",
         "url": "http://chapter.io"
       }
     }
   ],
-  "schemes": [
-    "https",
-    "http"
-  ],
+  "schemes": ["https", "http"],
   "paths": {
-    "/location": {
+    "/locations": {
       "post": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Add a new location to the map",
         "description": "",
         "operationId": "addLocation",
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
@@ -72,16 +69,11 @@
         }
       },
       "get": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Finds Locations by city, country etc",
         "description": "Multiple status values can be provided as query params",
         "operationId": "findLocations",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "city",
@@ -123,16 +115,11 @@
     },
     "/location/{locationId}": {
       "get": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Find location by ID",
         "description": "Returns a single location",
         "operationId": "getLocationById",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "locationId",
@@ -159,20 +146,12 @@
         }
       },
       "patch": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Update an existing location",
         "description": "",
         "operationId": "updateLocation",
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "locationId",
@@ -208,16 +187,11 @@
         }
       },
       "delete": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Deletes a location",
         "description": "",
         "operationId": "deleteLocation",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "locationId",
@@ -238,22 +212,14 @@
         }
       }
     },
-    "/group": {
+    "/groups": {
       "post": {
-        "tags": [
-          "group"
-        ],
+        "tags": ["group"],
         "summary": "Add a new group",
         "description": "",
         "operationId": "addGroup",
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
@@ -274,16 +240,11 @@
     },
     "/group/{groupId}": {
       "get": {
-        "tags": [
-          "group"
-        ],
+        "tags": ["group"],
         "summary": "Retreive the details of a group",
         "description": "",
         "operationId": "findGroupById",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "groupId",
@@ -306,22 +267,226 @@
           }
         }
       }
-    }
-  },
-  "securityDefinitions": {
-    "petstore_auth": {
-      "type": "oauth2",
-      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
-      "flow": "implicit",
-      "scopes": {
-        "write:pets": "modify pets in your account",
-        "read:pets": "read your pets"
+    },
+    "/group/{groupId}/events": {
+      "get": {
+        "tags": ["group"],
+        "summary": "Retreive the events belonging to a group",
+        "description": "",
+        "operationId": "findEventsInGroup",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "ID of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Event"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid group"
+          }
+        }
       }
     },
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
+    "/group/{groupId}/event/{eventId}": {
+      "get": {
+        "tags": ["group"],
+        "summary": "Retreive an event by id",
+        "description": "",
+        "operationId": "findEventById",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "ID of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID of event to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "400": {
+            "description": "Invalid event"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["group"],
+        "summary": "Delete an event by id",
+        "description": "",
+        "operationId": "deleteEventById",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "ID of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID of event to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "400": {
+            "description": "Invalid event"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Add a new user",
+        "description": "",
+        "operationId": "addUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Retreive the details of a user",
+        "description": "",
+        "operationId": "findUserById",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of User to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid User"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["user"],
+        "summary": "Edit an existing user",
+        "description": "",
+        "operationId": "updateUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of User to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/user/{userId}/ban": {
+      "patch": {
+       "tags": ["user"],
+        "summary": "Ban a user",
+        "description": "",
+        "operationId": "banUserById",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of User to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -458,9 +623,6 @@
         "name": {
           "type": "string"
         }
-      },
-      "xml": {
-        "name": "Tag"
       }
     }
   },

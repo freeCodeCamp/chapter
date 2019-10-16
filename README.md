@@ -8,7 +8,11 @@ Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` o
 
 You can use your own authentication tools. And all your user data will stay on your own server.
 
+<<<<<<< HEAD
 ### Tech stack
+=======
+## Tech Stack
+>>>>>>> dd4cdea... fix(docs): contributing guidelines
 
 We're planning to use the following tools:
 
@@ -25,7 +29,16 @@ We will focus on building an open API first. Then developers can use the API to 
 
 ### Quick Links
 
+<<<<<<< HEAD
 - [Tech Stack (Closed)](https://github.com/freeCodeCamp/chapter/issues/2)
+=======
+You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
+
+ Our focused discussions on specific areas takes place here on GitHub issue threads. We encourage you to take part in the discussions on topics you find interesting:
+
+- [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
+- [Tech Stack](https://github.com/freeCodeCamp/chapter/issues/2)
+>>>>>>> dd4cdea... fix(docs): contributing guidelines
 - [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
 - [Feature Dev / Stories](https://github.com/freeCodeCamp/chapter/issues)
 - [API](https://github.com/freeCodeCamp/chapter/issues/17)
@@ -41,11 +54,13 @@ We will focus on building an open API first. Then developers can use the API to 
 
 ![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
 
+<<<<<<< HEAD
 ### User Stories so far
+=======
+## User stories so far
+>>>>>>> dd4cdea... fix(docs): contributing guidelines
 
-Our goal is to keep things simple and not reinvent wheels.
-
-So far we have only two user roles: participants and group organizers
+Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and group organizers.
 
 #### As a future participant
 
@@ -79,7 +94,7 @@ So far we have only two user roles: participants and group organizers
 
 - I can add a food sponsor to the event with a link to their website as a way of thanking them for food.
 
-I can see how many times a participant has come to the event as well as their attendance rate
+- I can see how many times a participant has come to the event as well as their attendance rate.
 
 ### Roadmap
 
@@ -87,12 +102,42 @@ I can see how many times a participant has come to the event as well as their at
 2. Set up the API endpoints
 3. Build the web client and let other developers use the API to build mobile clients and voice interface clients
 
-Quincy Larson is the project lead.
-
-freeCodeCamp will start "dogfooding" this as soon as possible with several of its local study groups.
+freeCodeCamp.org will start "dogfooding" this as soon as possible with several of its local study groups.
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 
 To ask a question or share an idea, create a GitHub issue on this repository.
 
+<<<<<<< HEAD
 And join [our Discord server where we're chatting while we build this](https://discord.gg/vbRUYWS).
+=======
+## Frequently Asked Questions
+
+### What do we need help with right now?
+
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our Discord server](https://discord.gg/vbRUYWS) to stay in the loop.
+
+### I found a typo. Should I report an issue before I can make a pull request?
+
+For typos and other wording changes, you can directly open pull requests without first creating an issue. Issues are more for discussing larger problems associated with code or structural aspects of the application
+
+### I am new to GitHub and Open Source, where should I start?
+
+Read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
+
+We are excited to help you contribute to any of the topics that you would like to work on. Feel free to ask us questions on the related issue threads, and we will be glad to clarify. Make sure you search for your query before posting a new one. Be polite and patient. Our community of volunteers and moderators are always around to guide you through your queries.
+
+When in doubt, you can reach out to current project lead(s):
+
+| Name            | GitHub | Twitter |
+|:----------------|:-------|:--------|
+| Quincy Larson | [`@QuincyLarson`](https://github.com/QuincyLarson) | [`@ossia`](https://twitter.com/ossia)|
+
+## License
+
+Copyright © 2019 freeCodeCamp.org
+
+The content of this repository is bound by the following license(s):
+
+- The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
+>>>>>>> dd4cdea... fix(docs): contributing guidelines

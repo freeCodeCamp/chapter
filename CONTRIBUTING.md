@@ -2,7 +2,7 @@
 
 Hello. 👋
 
-Welcome to the newest project for FreeCodeCamp. We are glad you are here!
+Welcome to Chapter, the newest project for freeCodeCamp. We are glad you are here.
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
@@ -14,7 +14,7 @@ Implementation details are still being discussed and the project is currently at
 
 ## What do we need help with right now?
 
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics (Docs, UI/UX, API architecture, Tech Stack, etc)
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture.
 
 ## How to submit an issue
 
@@ -31,12 +31,12 @@ We are in the very early stages of development on this new application. We value
   - **Additional context**
       Add any other context or screenshots about the feature request here.
 
-- Be as descriptive as possible.  At this early stage, it is important to have qualitative evidence to support or dissent on an issue.
+- Be as descriptive as possible.
 
 ## Working on a change
 
 - Create a new branch on your fork: `git checkout -b your-branch-name`
-- Use the Github editor or your local environment to make your changes
+- Use the GitHub editor or your local environment to make your changes
 - Push your changes to the branch you created on your fork: `git push origin your-branch-name`
 
 ## How to submit a pull request
@@ -51,7 +51,7 @@ We are in the very early stages of development on this new application. We value
 - Submit the request and wait for approval from a project maintainer.
 - Congratulations!  You submitted a PR.
 
-## I found a typo, should I report an issue before I can make a pull request?
+## I found a typo. Should I report an issue before I can make a pull request?
 
 For typos and other wording changes, you can directly open pull requests without first creating an issue. Issues are more for discussing larger problems associated with code or structural aspects of the application
 

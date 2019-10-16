@@ -23,8 +23,8 @@
       }
     },
     {
-      "name": "group",
-      "description": "Everything about your Groups",
+      "name": "chapter",
+      "description": "Everything about your Chapters",
       "externalDocs": {
         "description": "Find out more",
         "url": "http://chapter.io"
@@ -238,19 +238,19 @@
         }
       }
     },
-    "/groups": {
+    "/chapters": {
       "post": {
         "tags": [
-          "group"
+          "chapter"
         ],
-        "summary": "Add a new group",
+        "summary": "Add a new chapter",
         "description": "",
-        "operationId": "addGroup",
+        "operationId": "addChapter",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Group"
+                "$ref": "#/components/schemas/Chapter"
               }
             }
           },
@@ -264,19 +264,19 @@
         }
       }
     },
-    "/group/{groupId}": {
+    "/chapter/{chapterId}": {
       "get": {
         "tags": [
-          "group"
+          "chapter"
         ],
-        "summary": "Retreive the details of a group",
+        "summary": "Retreive the details of a chapter",
         "description": "",
-        "operationId": "findGroupById",
+        "operationId": "findChapterById",
         "parameters": [
           {
-            "name": "groupId",
+            "name": "chapterId",
             "in": "path",
-            "description": "ID of group to return",
+            "description": "ID of chapter to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -290,30 +290,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Group"
+                  "$ref": "#/components/schemas/Chapter"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid group"
+            "description": "Invalid chapter"
           }
         }
       }
     },
-    "/group/{groupId}/events": {
+    "/chapter/{chapterId}/events": {
       "get": {
         "tags": [
-          "group"
+          "chapter"
         ],
-        "summary": "Retreive the events belonging to a group",
+        "summary": "Retreive the events belonging to a chapter",
         "description": "",
-        "operationId": "findEventsInGroup",
+        "operationId": "findEventsInChapter",
         "parameters": [
           {
-            "name": "groupId",
+            "name": "chapterId",
             "in": "path",
-            "description": "ID of group to return",
+            "description": "ID of chapter to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -336,24 +336,24 @@
             }
           },
           "400": {
-            "description": "Invalid group"
+            "description": "Invalid chapter"
           }
         }
       }
     },
-    "/group/{groupId}/event/{eventId}": {
+    "/chapter/{chapterId}/event/{eventId}": {
       "get": {
         "tags": [
-          "group"
+          "chapter"
         ],
         "summary": "Retreive an event by id",
         "description": "",
         "operationId": "findEventById",
         "parameters": [
           {
-            "name": "groupId",
+            "name": "chapterId",
             "in": "path",
-            "description": "ID of group to return",
+            "description": "ID of chapter to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -389,16 +389,16 @@
       },
       "delete": {
         "tags": [
-          "group"
+          "chapter"
         ],
         "summary": "Delete an event by id",
         "description": "",
         "operationId": "deleteEventById",
         "parameters": [
           {
-            "name": "groupId",
+            "name": "chapterId",
             "in": "path",
-            "description": "ID of group to return",
+            "description": "ID of chapter to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -639,7 +639,7 @@
           }
         }
       },
-      "Group": {
+      "Chapter": {
         "type": "object",
         "properties": {
           "id": {

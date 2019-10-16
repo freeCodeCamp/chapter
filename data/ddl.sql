@@ -47,7 +47,7 @@ create table sponsors (
     id uuid primary key,
     name text not null,
     website text,
-    logo text,
+    logo_path text,
     type sponsor_type not null
 );
 

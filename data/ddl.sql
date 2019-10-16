@@ -59,7 +59,8 @@ create table events (
     group_id uuid references groups(id) not null ,
     venue_id uuid references venues(id),
     tag_id uuid references tags(id),
-    canceled boolean default false
+    canceled boolean default false,
+    capacity int not null
 );
 
 create table tags (

@@ -35,7 +35,7 @@ We will focus on building an open API first. Then developers can use the API to 
 - [Mobile Apps](https://github.com/freeCodeCamp/chapter/issues/20)
 - [UX - Design Landing page](https://github.com/freeCodeCamp/chapter/issues/5)
 - [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
-- [Accessibility[(https://github.com/freeCodeCamp/chapter/issues/65)
+- [Accessibility](https://github.com/freeCodeCamp/chapter/issues/65)
 - [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
 - [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
 

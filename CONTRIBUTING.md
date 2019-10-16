@@ -16,25 +16,10 @@ If you feel ready to contribute to this project then you should follow the below
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of Chapter's repository (a.k.a _repo_) on GitHub.
 
 
-## What do we need help with right now?
-
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture.
-
 ## How to submit an issue
 
 - Search through current issues to verify that you are not creating a duplicate issue.
-- Use the issue template as a guide to tell us more about your issue:
-  - **Is your feature request related to a problem? Please describe.**
-      A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-  - **Describe the solution you'd like**
-      A clear and concise description of what you want to happen.
-
-  - **Describe alternatives you've considered**
-      A clear and concise description of any alternative solutions or features you've considered.
-
-  - **Additional context**
-      Add any other context or screenshots about the feature request here.
-
+- Use the issue template as a guide to tell us more about your issue
 - Be as descriptive as possible.
 
 This is essential as it allows you to work on your own copy of Chapter. It allows you to request changes to be pulled into the Chapter's repository from your fork via a pull request.
@@ -255,11 +240,20 @@ You are now almost ready to make changes to files but before that you should fol
 
 6. If you realise that you need to edit a file or update the commit message after making a commit you can do so after editing the files with:
 
+
+## Frequently Asked Questions
+
+### What do we need help with right now?
+
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture.
+
+### I found a typo. Should I report an issue before I can make a pull request?
+
     ```sh
     git commit --amend
     ```
 
-    This will open up a default text editor like `nano` or `vi` where you can edit the commit message title and add/edit the description.
+### I am new to GitHub and Open Source, where should I start?
 
 7. Next, you can push your changes to your fork.
 

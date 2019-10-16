@@ -1,4 +1,4 @@
-## Welcome to Chapter
+# Welcome to Chapter
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
@@ -9,10 +9,14 @@ Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` o
 You can use your own authentication tools. And all your user data will stay on your own server.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### Tech stack
 =======
 ## Tech Stack
 >>>>>>> dd4cdea... fix(docs): contributing guidelines
+=======
+## Tech stack
+>>>>>>> 9386e44... feat(docs): add issue and PR template
 
 We're planning to use the following tools:
 
@@ -27,8 +31,9 @@ We are considering using a tool like [Next.js](https://nextjs.org) to get up and
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 
-### Quick Links
+## Take Part in Discussions
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 - [Tech Stack (Closed)](https://github.com/freeCodeCamp/chapter/issues/2)
 =======
@@ -39,30 +44,40 @@ You should [join our Discord server](https://discord.gg/vbRUYWS) to get connecte
 - [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
 - [Tech Stack](https://github.com/freeCodeCamp/chapter/issues/2)
 >>>>>>> dd4cdea... fix(docs): contributing guidelines
+=======
+You should join [our Discord server where we're chatting and brainstorming about this project.](https://discord.gg/vbRUYWS) But our focused discussions takes place here on GitHub issue threads. 
+
+We encourage you to take part in the discussions on topics you find interesting:
+
+- [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
+- [Tech Stack](https://github.com/freeCodeCamp/chapter/issues/2)
+>>>>>>> 9386e44... feat(docs): add issue and PR template
 - [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
 - [Feature Dev / Stories](https://github.com/freeCodeCamp/chapter/issues)
 - [API](https://github.com/freeCodeCamp/chapter/issues/17)
 - [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
-- [Mobile Apps](https://github.com/freeCodeCamp/chapter/issues/20)
+- [Mobile App](https://github.com/freeCodeCamp/chapter/issues/20)
 - [UX - Design Landing page](https://github.com/freeCodeCamp/chapter/issues/5)
 - [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
 - [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
-- [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
 
-
-### Schema
+## Schema
 
 ![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ### User Stories so far
 =======
 ## User stories so far
 >>>>>>> dd4cdea... fix(docs): contributing guidelines
+=======
+## User Stories so far
+>>>>>>> 9386e44... feat(docs): add issue and PR template
 
 Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and group organizers.
 
-#### As a future participant
+### As a future participant
 
 - I can use a search box on the landing page to input a city, state, or country name and it will autocomplete. I can click one of those locations.
 
@@ -76,7 +91,7 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 - I can filter all events in my location by tag/interests.
 
-#### As an organizer
+### As an organizer
 
 - I can create a group.
 
@@ -96,7 +111,7 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 - I can see how many times a participant has come to the event as well as their attendance rate.
 
-### Roadmap
+## Roadmap
 
 1. Design the schema
 2. Set up the API endpoints
@@ -106,8 +121,9 @@ freeCodeCamp.org will start "dogfooding" this as soon as possible with several o
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 
-To ask a question or share an idea, create a GitHub issue on this repository.
+## Contributing 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 And join [our Discord server where we're chatting while we build this](https://discord.gg/vbRUYWS).
 =======
@@ -141,3 +157,5 @@ The content of this repository is bound by the following license(s):
 
 - The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 >>>>>>> dd4cdea... fix(docs): contributing guidelines
+=======
+>>>>>>> 9386e44... feat(docs): add issue and PR template

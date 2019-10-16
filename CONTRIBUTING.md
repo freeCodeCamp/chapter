@@ -12,10 +12,25 @@ Happy contributing.
 
 Implementation details are still being discussed and the project is currently at a very early stage.  The stage of the project is changing on a daily basis, thoughts and ideas are being contributed at a very high pace.
 
+## What do we need help with right now?
+
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture.
+
 ## How to submit an issue
 
 - Search through current issues to verify that you are not creating a duplicate issue.
-- Use the issue template as a guide to tell us more about your issue
+- Use the issue template as a guide to tell us more about your issue:
+  - **Is your feature request related to a problem? Please describe.**
+      A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+  - **Describe the solution you'd like**
+      A clear and concise description of what you want to happen.
+
+  - **Describe alternatives you've considered**
+      A clear and concise description of any alternative solutions or features you've considered.
+
+  - **Additional context**
+      Add any other context or screenshots about the feature request here.
+
 - Be as descriptive as possible.
 
 ## Working on a change
@@ -27,21 +42,20 @@ Implementation details are still being discussed and the project is currently at
 ## How to submit a pull request
 
 - After working on changes and pushing to your fork of the repo, create a pull request on your fork.
+- Complete the PR template:
+  - You have read the contribution guidelines
+  - Your pull request uses a descriptive title (not a vague title like `update.md`)
+  - Your pull request targets the master branch of chapter
+  - Closes #XXXXX
 - Verify that no changes need to be made or merge conflicts exist.
 - Submit the request and wait for approval from a project maintainer.
 - Congratulations!  You submitted a PR.
 
-## Frequently Asked Questions
-
-### What do we need help with right now?
-
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture.
-
-### I found a typo. Should I report an issue before I can make a pull request?
+## I found a typo. Should I report an issue before I can make a pull request?
 
 For typos and other wording changes, you can directly open pull requests without first creating an issue. Issues are more for discussing larger problems associated with code or structural aspects of the application
 
-### I am new to GitHub and Open Source, where should I start?
+## I am new to GitHub and Open Source, where should I start?
 
 Read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
 

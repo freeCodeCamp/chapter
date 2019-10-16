@@ -5,12 +5,12 @@ Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your 
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
+You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements. 
+
 ## Here are some ways to help us
 
 ### 1. Take part in discussions and tell us your views
 Implementation details are still being discussed and the project is currently at a very early stage. The stage of the project is changing on a daily basis, thoughts and ideas are being contributed at a very high pace.
-
-You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements. 
 
 Keep in mind that our focused discussions takes place here on GitHub issue threads. We encourage you to take part in the discussions on topics you find interesting:
 
@@ -241,7 +241,7 @@ You are now almost ready to make changes to files but before that you should **a
     ```
 
 #### Step 4: Proposing a Pull Request (PR)
-After you've committed your changes, check here for [how to open a Pull Request](/docs/how-to-open-a-pull-request.md).
+After you've committed and pushed your changes, check here for [how to open a Pull Request](/docs/how-to-open-a-pull-request.md).
 
 ## Frequently Asked Questions
 

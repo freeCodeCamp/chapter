@@ -47,9 +47,7 @@ Follow these steps to fork the `https://github.com/freeCodeCamp/chapter` reposit
 #### Step 2: Preparing the development environment
 Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/). 
 
-Then clone your copy of Chapter. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine.
-
-Run these commands on your local machine to clone the repository:
+Clone your copy of Chapter. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
 
 1. Open a Terminal in a directory where you would like the Chapter project to reside.
 
@@ -94,7 +92,7 @@ You need a reference from your local copy to the `upstream` repository in additi
 
 #### Step 3: Making changes to Chapter codebase :fire:
 
-> Note: Always follow the below steps before you start coding or working on an issue.
+> **Note: Always follow the below steps before you start coding or working on an issue.**
 
 You are now almost ready to make changes to files but before that you should **always** follow these steps:
 
@@ -231,7 +229,7 @@ You are now almost ready to make changes to files but before that you should **a
 
     ```md
     fix: update API routes
-    feat: RSVP
+    feat: RSVP event
     fix(docs): update database schema image
     ```
     Keep your commit messages short. You can always add additional information in the description of the commit message.

@@ -79,7 +79,7 @@ You should [join our Discord server](https://discord.gg/vbRUYWS) to get connecte
 
 ## Contributing 
 
-
+**[Take part in discussions or Contribute to this opensource codebase.](CONTRIBUTING.md)**
 
 ## License
 

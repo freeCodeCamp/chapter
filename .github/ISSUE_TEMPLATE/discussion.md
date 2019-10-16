@@ -7,4 +7,5 @@ assignees: ''
 
 ---
 
-### Tell us about your discussion topic and describe it in detail below: 
+### Discuss your ideas or share your views: 
+Make sure to tell how your idea will benefit this project.

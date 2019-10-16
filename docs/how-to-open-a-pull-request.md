@@ -17,15 +17,13 @@ An example is `feat(client): night mode`.
 
 ## Proposing a Pull Request (PR)
 
-1. Once the edits have been committed, you will be prompted to create a pull request on your fork's GitHub Page.
+1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on `Compare and Pull Request`.
 
-    ![Image - Compare pull request prompt on GitHub](/docs/images/github/compare-pull-request-prompt.png)
+    ![an image showing Compare & pull request prompt on GitHub](images/pull-request-prompt.png)
 
 2. By default, all pull requests should be against the Chapter main repo, `master` branch.
 
-    Make sure that your Base Fork is set to freeCodeCamp/freeCodeCamp when raising a Pull Request.
-
-    ![Image - Comparing forks when making a pull request](/docs/images/github/comparing-forks-for-pull-request.png)
+    ![ an image showing the comparison of forks when making a pull request](images/comparing-forks-for-pull-request.png)
 
 3. Submit the pull request from your branch to Chapter's `master` branch.
 
@@ -39,3 +37,5 @@ An example is `feat(client): night mode`.
       your PR's description, append the keyword `closes` and #xxxx (where xxxx
       is the issue number). Example: `closes #1337`. This tells GitHub to
       automatically close the existing issue, if the PR is accepted and merged.
+
+You have successfully created a PR. Congratulations! :tada:

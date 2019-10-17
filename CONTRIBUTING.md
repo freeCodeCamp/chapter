@@ -19,16 +19,17 @@ Keep in mind that our focused discussions takes place here on GitHub issue threa
 - [Introduce yourself and volunteer your skills](https://github.com/freeCodeCamp/chapter/issues/11)
 - [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
 - [Feature Dev / Stories](https://github.com/freeCodeCamp/chapter/issues)
-- [Tech Stack](https://github.com/freeCodeCamp/chapter/issues/2)
+- [Tech Stack (CLOSED)](https://github.com/freeCodeCamp/chapter/issues/2)
 - [Shared Profile Data & Auth Across Collectives](https://github.com/freeCodeCamp/chapter/issues/40)
 - [Discovery and Searching Across Collective Instances](https://github.com/freeCodeCamp/chapter/issues/33)
 - [Accessibility](https://github.com/freeCodeCamp/chapter/issues/65)
 - [API](https://github.com/freeCodeCamp/chapter/issues/17)
 - [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
+- [Testing](https://github.com/freeCodeCamp/chapter/issues/76)
 - [Mobile App](https://github.com/freeCodeCamp/chapter/issues/20)
 - [UX - Design Landing page](https://github.com/freeCodeCamp/chapter/issues/5)
 - [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
-- [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
+- [Ideas for Version 1 or Version 2 of the App (CLOSED)](https://github.com/freeCodeCamp/chapter/issues/1)
 
 If you can't find what you were looking for in the above topics then feel free to [open a new issue](https://github.com/freeCodeCamp/chapter/issues/new/choose) to share your views or to report bugs. 
 

@@ -53,10 +53,19 @@ create table sponsors (
 create table events (
     id uuid primary key,
     name text not null,
-    date timestamptz not null,
+    description text,
+    starts_at timestamptz not null,
+    ends_at timestamptz not null,
     group_id uuid references groups(id) not null ,
     venue_id uuid references venues(id),
-    canceled boolean default false
+    tag_id uuid references tags(id),
+    canceled boolean default false,
+    capacity int not null
+);
+
+create table tags (
+    id uuid primary key,
+    name text not null
 );
 
 create table event_sponsors (
@@ -73,6 +82,8 @@ create table user_groups (
 create table rsvps (
     user_id uuid references  users(id),
     event_id uuid references events(id),
+    date timestamptz not null,
+    on_waitlist boolean not null default FALSE,
     primary key (user_id, event_id)
 );
 

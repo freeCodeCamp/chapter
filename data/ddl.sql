@@ -23,7 +23,7 @@ create table locations (
     country text not null,
     city text not null,
     state text,
-    zip text
+    postal_code text
 );
 
 create table groups (

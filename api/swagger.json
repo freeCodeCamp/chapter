@@ -16,35 +16,21 @@
   "tags": [
     {
       "name": "chapter",
-      "description": "Everything about your Chapters",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://chapter.io"
-      }
+      "description": "Everything about your Chapters"
     },
     {
       "name": "location",
-      "description": "Everything about your Locations",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://chapter.io"
-      }
+      "description": "Everything about your Locations"
     },
     {
       "name": "user",
-      "description": "Everything about your Users",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://chapter.io"
-      }
+      "description": "Everything about your Users"
     }
   ],
   "paths": {
     "/locations": {
       "post": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Add a new location to the map",
         "description": "",
         "operationId": "addLocation",
@@ -60,7 +46,7 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Location response",
             "content": {
               "application/json": {
@@ -89,9 +75,7 @@
         }
       },
       "get": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Finds Locations by city, country etc",
         "description": "Multiple status values can be provided as query params",
         "operationId": "findLocations",
@@ -115,12 +99,12 @@
             }
           },
           {
-            "name": "zip",
+            "name": "postal_code",
             "in": "query",
             "description": "Zip Code that need to be considered for filter",
             "required": false,
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           }
         ],
@@ -130,9 +114,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Location"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Location"
+                      }
+                    }
                   }
                 }
               }
@@ -153,9 +142,7 @@
     },
     "/locations/{locationId}": {
       "get": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Find location by ID",
         "description": "Returns a single location",
         "operationId": "getLocationById",
@@ -166,8 +153,8 @@
             "description": "ID of location to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -182,9 +169,7 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
+
           "404": {
             "description": "Location not found"
           },
@@ -201,9 +186,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Update an existing location",
         "description": "",
         "operationId": "updateLocation",
@@ -214,8 +197,8 @@
             "description": "ID of location to patch",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -244,9 +227,6 @@
           "401": {
             "description": "Not authorized"
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
           "404": {
             "description": "Location not found"
           },
@@ -263,9 +243,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Deletes a location",
         "description": "",
         "operationId": "deleteLocation",
@@ -276,15 +254,12 @@
             "description": "Location id to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
-          "400": {
-            "description": "Invalid ID supplied"
-          },
           "401": {
             "description": "Not authorized"
           },
@@ -306,9 +281,7 @@
     },
     "/chapters": {
       "post": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Add a new chapter",
         "description": "",
         "operationId": "addChapter",
@@ -320,7 +293,7 @@
               }
             }
           },
-          "description": "Location coordinates",
+          "description": "Chapter details",
           "required": true
         },
         "responses": {
@@ -352,9 +325,7 @@
     },
     "/chapters/{chapterId}": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive the details of a chapter",
         "description": "",
         "operationId": "findChapterById",
@@ -365,8 +336,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -384,9 +355,7 @@
           "401": {
             "description": "Not authorized"
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
+
           "404": {
             "description": "Chapter not found"
           },
@@ -405,9 +374,7 @@
     },
     "/chapters/{chapterId}/events": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive the events belonging to a chapter",
         "description": "",
         "operationId": "findEventsInChapter",
@@ -418,8 +385,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -427,11 +394,14 @@
           "200": {
             "description": "successful operation",
             "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Event"
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Event"
+                    }
                   }
                 }
               }
@@ -440,9 +410,7 @@
           "401": {
             "description": "Not authorized"
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
+
           "404": {
             "description": "Chapter not found"
           },
@@ -461,9 +429,7 @@
     },
     "/chapters/{chapterId}/events/{eventId}": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive an event by id",
         "description": "",
         "operationId": "findEventById",
@@ -474,8 +440,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -484,8 +450,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -522,9 +488,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Delete an event by id",
         "description": "",
         "operationId": "deleteEventById",
@@ -535,8 +499,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -545,8 +509,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -585,9 +549,7 @@
     },
     "/chapters/{chapterId}/events/{eventId}/sponsors": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive list of sponsors by event",
         "description": "",
         "operationId": "findSponsorsByEvent",
@@ -598,8 +560,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -608,8 +570,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -643,9 +605,7 @@
         }
       },
       "post": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Add a new food, venue or other sponsor",
         "description": "",
         "operationId": "addSponsorToEvent",
@@ -667,8 +627,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -677,8 +637,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -717,10 +677,8 @@
     },
     "/chapters/{chapterId}/events/{eventId}/sponsors/{sponsorId}": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
-        "summary": "Retreive list of sponsors by event",
+        "tags": ["chapter"],
+        "summary": "Retreive sponsor by ID",
         "description": "",
         "operationId": "findSponsorById",
         "parameters": [
@@ -730,8 +688,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -740,8 +698,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -750,8 +708,8 @@
             "description": "ID of sponsor to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -788,9 +746,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Delete a sponsor by id",
         "description": "",
         "operationId": "deleteSponsorById",
@@ -801,8 +757,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -811,8 +767,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -821,8 +777,8 @@
             "description": "ID of sponsor to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -859,9 +815,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Update a sponsor by id",
         "description": "",
         "operationId": "updateSponsorById",
@@ -872,8 +826,8 @@
             "description": "ID of chapter to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -882,8 +836,8 @@
             "description": "ID of event to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -892,8 +846,8 @@
             "description": "ID of sponsor to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -932,9 +886,7 @@
     },
     "/users": {
       "post": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Add a new user",
         "description": "",
         "operationId": "addUser",
@@ -973,9 +925,7 @@
     },
     "/users/{userId}": {
       "get": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Retreive the details of a user",
         "description": "",
         "operationId": "findUserById",
@@ -986,8 +936,8 @@
             "description": "ID of User to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1018,9 +968,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Edit an existing user",
         "description": "",
         "operationId": "updateUser",
@@ -1031,8 +979,8 @@
             "description": "ID of User to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1074,9 +1022,7 @@
     },
     "/users/{userId}/ban": {
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Ban a user",
         "description": "",
         "operationId": "banUserById",
@@ -1087,8 +1033,8 @@
             "description": "ID of User to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1112,10 +1058,6 @@
         }
       }
     }
-  },
-  "externalDocs": {
-    "description": "Find out more about Swagger",
-    "url": "http://swagger.io"
   },
   "servers": [
     {
@@ -1144,7 +1086,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "country": {
             "type": "string"
@@ -1155,8 +1098,8 @@
           "state": {
             "type": "string"
           },
-          "zip": {
-            "type": "integer"
+          "postal_code": {
+            "type": "string"
           }
         }
       },
@@ -1164,7 +1107,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "first_name": {
             "type": "string"
@@ -1173,38 +1117,7 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
-      "SocialProvider": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "SocialProviderUser": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "provider_id": {
-            "type": "string"
-          },
-          "provider_user_id": {
-            "type": "string"
-          },
-          "user_id": {
-            "type": "string"
+            "type": "email"
           }
         }
       },
@@ -1212,7 +1125,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string"
@@ -1235,8 +1149,10 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer"
+            "type": "string",
+            "format": "uuid"
           },
+
           "name": {
             "type": "string"
           },
@@ -1249,8 +1165,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string"
@@ -1265,30 +1181,47 @@
       },
       "SponsorType": {
         "type": "string",
-        "enum": [
-          "FOOD",
-          "VENUE",
-          "OTHER"
-        ]
+        "enum": ["FOOD", "VENUE", "OTHER"]
       },
       "Event": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "starts_at": {
+            "type": "date-time"
+          },
+          "ends_at": {
+            "type": "date-time"
+          },
+          "group_id": {
+            "type": "uuid"
+          },
+          "venue_id": {
+            "type": "uuid"
+          },
+          "tag_id": {
+            "type": "uuid"
+          },
+          "canceled": {
+            "type": "boolean"
+          },
+          "capacity": {
+            "type": "integer"
           }
         }
       },
       "Error": {
         "type": "object",
-        "required": [
-          "code",
-          "message"
-        ],
+        "required": ["code", "message"],
         "properties": {
           "code": {
             "type": "integer",

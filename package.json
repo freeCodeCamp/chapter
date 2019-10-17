@@ -16,7 +16,7 @@
     "open-source"
   ],
   "author": "author@chapter.io",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/freeCodeCamp/chapter/issues"
   },

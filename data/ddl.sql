@@ -26,7 +26,7 @@ create table locations (
     postal_code text
 );
 
-create table groups (
+create table chapters (
     id uuid primary key ,
     name text unique not null,
     description text not null,
@@ -56,7 +56,7 @@ create table events (
     description text,
     starts_at timestamptz not null,
     ends_at timestamptz not null,
-    group_id uuid references groups(id) not null ,
+    chapter_id uuid references chapters(id) not null ,
     venue_id uuid references venues(id),
     tag_id uuid references tags(id),
     canceled boolean default false,
@@ -73,10 +73,10 @@ create table event_sponsors (
     sponsor_id uuid references sponsors(id)
 );
 
-create table user_groups (
+create table user_chapters (
     user_id uuid references users(id),
-    group_id uuid references groups(id),
-    primary key (user_id, group_id)
+    chapter_id uuid references chapters(id),
+    primary key (user_id, chapter_id)
 );
 
 create table rsvps (
@@ -89,6 +89,6 @@ create table rsvps (
 
 create table user_bans (
     user_id uuid references users(id),
-    group_id uuid references groups(id),
-    primary key (user_id, group_id)
+    chapter_id uuid references chapters(id),
+    primary key (user_id, chapter_id)
 );

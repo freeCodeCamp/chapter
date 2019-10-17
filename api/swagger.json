@@ -1202,7 +1202,7 @@
           "ends_at": {
             "type": "date-time"
           },
-          "group_id": {
+          "chapter_id": {
             "type": "uuid"
           },
           "venue_id": {

@@ -4,7 +4,7 @@ After several years of being dissatisfied with existing group event tools (Meetu
 
 This will be a self-hosted Docker container that you can one-click deploy to the cloud, then configure through an admin panel. No coding required.
 
-Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` or `chapter.womenwhocode.org`. 
+Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
 
 You can use your own authentication tools. And all your user data will stay on your own server.
 
@@ -29,6 +29,24 @@ A lot of people know these tools, and they're proven to work well at scale.
 We are considering using a tool like [Next.js](https://nextjs.org) to get up and running faster.
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
+
+## Development Setup
+
+Requirements: Docker, internet access
+
+Install dependencies:
+
+```
+npm install
+```
+
+Start the server:
+
+```
+docker-compose up
+```
+
+And that's it! Navigate to `localhost:8000` to view the app.
 
 ## Schema
 
@@ -84,9 +102,9 @@ Quincy Larson is the project lead. freeCodeCamp.org will start "dogfooding" this
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 
-You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements. 
+You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
 
-## Contributing 
+## Contributing
 
 ### [Take part in discussions or Contribute code to this opensource codebase.](CONTRIBUTING.md)
 

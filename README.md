@@ -70,7 +70,9 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 - I can add a food sponsor to the event with a link to their website as a way of thanking them for food.
 
-- I can see how many times a participant has come to the event as well as their attendance rate.
+- I can see how many times a participant has come to the event as well as their attendance rate
+
+- I can check-in attendees on the event registration desk with their email_id or chapter_id
 
 ## Roadmap
 

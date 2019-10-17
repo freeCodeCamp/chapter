@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "This is the API specification for Chapter",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "title": "Chapter",
     "termsOfService": "http://chapter.io/terms",
     "contact": {

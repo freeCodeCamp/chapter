@@ -41,7 +41,7 @@ We will focus on building an open API first. Then developers can use the API to 
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to describe Chapter in a clear way.
 
 - A "collective" is one singular instance/deployment of Chapter
-  *For example, Women who Code at the domain chapter.womenwhocode.com*
+  *For example, Women who Code at the domain `chapter.womenwhocode.com`*
 - A "user" is a person who authed to the chapter
   *For example, Kognise*
 - A "chapter" is a container for events, with a description and subscribers, and one or more "admins" who can manage it

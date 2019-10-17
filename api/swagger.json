@@ -151,7 +151,7 @@
         }
       }
     },
-    "/location/{locationId}": {
+    "/locations/{locationId}": {
       "get": {
         "tags": [
           "location"
@@ -350,7 +350,7 @@
         }
       }
     },
-    "/chapter/{chapterId}": {
+    "/chapters/{chapterId}": {
       "get": {
         "tags": [
           "chapter"
@@ -403,7 +403,7 @@
         }
       }
     },
-    "/chapter/{chapterId}/events": {
+    "/chapters/{chapterId}/events": {
       "get": {
         "tags": [
           "chapter"
@@ -459,7 +459,7 @@
         }
       }
     },
-    "/chapter/{chapterId}/event/{eventId}": {
+    "/chapters/{chapterId}/events/{eventId}": {
       "get": {
         "tags": [
           "chapter"
@@ -583,7 +583,7 @@
         }
       }
     },
-    "/chapter/{chapterId}/event/{eventId}/sponsors": {
+    "/chapters/{chapterId}/events/{eventId}/sponsors": {
       "get": {
         "tags": [
           "chapter"
@@ -715,7 +715,7 @@
         }
       }
     },
-    "/chapter/{chapterId}/event/{eventId}/sponsor/{sponsorId}": {
+    "/chapters/{chapterId}/events/{eventId}/sponsors/{sponsorId}": {
       "get": {
         "tags": [
           "chapter"
@@ -971,7 +971,7 @@
         }
       }
     },
-    "/user/{userId}": {
+    "/users/{userId}": {
       "get": {
         "tags": [
           "user"
@@ -1072,7 +1072,7 @@
         }
       }
     },
-    "/user/{userId}/ban": {
+    "/users/{userId}/ban": {
       "patch": {
         "tags": [
           "user"

@@ -22,6 +22,8 @@ create table locations (
     id uuid primary key,
     country text not null,
     city text not null,
+    street_number text not null,
+    street_name text not null,
     state text,
     zip text
 );

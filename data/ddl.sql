@@ -20,10 +20,10 @@ create table social_provider_users (
 
 create table locations (
     id uuid primary key,
-    country text not null,
+    country char(2) not null,
     city text not null,
-    state text,
-    zip text
+    region text,
+    postal_code text
 );
 
 create table groups (

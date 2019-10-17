@@ -10,7 +10,7 @@ You can use your own authentication tools. And all your user data will stay on y
 
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
 
-- `collective` is one singular instance/deployment of Chapter. For e.g., Women who Code at the domain `chapter.womenwhocode.com`.
+- `organization` is one singular instance/deployment of Chapter. For e.g., Women who Code at the domain `chapter.womenwhocode.com`.
 - `user` is a person who authed to the chapter.
 - `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. For e.g., Women who Code NYC.
 - `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. For e.g., Women who Code NYC April Meet.

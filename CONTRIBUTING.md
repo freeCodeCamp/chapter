@@ -1,5 +1,5 @@
 # Contribution Guidelines
-Hello. 👋
+Hello. :wave:
 
 Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your interest in this project.
 
@@ -14,10 +14,13 @@ Implementation details are still being discussed and the project is currently at
 
 Keep in mind that our focused discussions takes place here on GitHub issue threads. We encourage you to take part in the discussions on topics you find interesting:
 
-- [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
-- [Tech Stack](https://github.com/freeCodeCamp/chapter/issues/2)
+- [Introduce yourself and volunteer your skills](https://github.com/freeCodeCamp/chapter/issues/11)
 - [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
 - [Feature Dev / Stories](https://github.com/freeCodeCamp/chapter/issues)
+- [Tech Stack](https://github.com/freeCodeCamp/chapter/issues/2)
+- [Shared Profile Data & Auth Across Collectives](https://github.com/freeCodeCamp/chapter/issues/40)
+- [Discovery and Searching Across Collective Instances](https://github.com/freeCodeCamp/chapter/issues/33)
+- [Accessibility](https://github.com/freeCodeCamp/chapter/issues/65)
 - [API](https://github.com/freeCodeCamp/chapter/issues/17)
 - [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
 - [Mobile App](https://github.com/freeCodeCamp/chapter/issues/20)
@@ -30,10 +33,10 @@ If you can't find what you were looking for in the above topics then feel free t
 Before opening a new issue please search through current issues to verify that you are not creating a duplicate issue.
 
 ### 2. Contribute to this open source codebase
-If you feel ready to contribute to this project then you should follow the below steps:
+If you feel ready to contribute code to this project then you should follow the below steps:
 
 #### Step 1: Fork the repository on GitHub
-['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of Chapter's repository (a.k.a _repo_) on GitHub.
+['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of Chapter's repository (a.k.a repo) on GitHub.
 
 This is essential as it allows you to work on your own copy of Chapter. It allows you to request changes to be pulled into the Chapter's repository from your fork via a pull request.
 

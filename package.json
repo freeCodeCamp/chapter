@@ -1,0 +1,27 @@
+{
+  "name": "chapter",
+  "version": "1.0.0",
+  "description": "A self-hosted event management tool for nonprofits",
+  "main": "index.js",
+  "scripts": {
+    "speccy": "speccy serve api/swagger.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freeCodeCamp/chapter.git"
+  },
+  "keywords": [
+    "chapter",
+    "meetup",
+    "open-source"
+  ],
+  "author": "author@chapter.io",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/freeCodeCamp/chapter/issues"
+  },
+  "homepage": "https://github.com/freeCodeCamp/chapter#readme",
+  "dependencies": {
+    "speccy": "^0.11.0"
+  }
+}

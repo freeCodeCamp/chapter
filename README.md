@@ -8,6 +8,16 @@ Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` o
 
 You can use your own authentication tools. And all your user data will stay on your own server.
 
+### API Specification
+
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
+
+```bash
+npm run speccy
+```
+Navigate to http://localhost:5000 to see API docs
+
+### Terminology
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
 
 - `organization` is one singular instance/deployment of Chapter. For e.g., Women who Code at the domain `chapter.womenwhocode.com`.

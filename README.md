@@ -23,7 +23,35 @@ We are considering using a tool like [Next.js](https://nextjs.org) to get up and
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 
-## Schema
+### Quick Links
+
+- [Tech Stack (Closed)](https://github.com/freeCodeCamp/chapter/issues/2)
+- [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
+- [Feature Dev / Stories](https://github.com/freeCodeCamp/chapter/issues)
+- [API](https://github.com/freeCodeCamp/chapter/issues/17)
+- [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
+- [Mobile Apps](https://github.com/freeCodeCamp/chapter/issues/20)
+- [UX - Design Landing page](https://github.com/freeCodeCamp/chapter/issues/5)
+- [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
+- [Ideas for Version 1 or Version 2 of the App](https://github.com/freeCodeCamp/chapter/issues/1)
+- [Introduce Yourself / Volunteer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
+
+### Terminology
+
+To better communicate and more easily build an API and UI, we've decided on a collection of terminology to describe Chapter in a clear way.
+
+- A "collective" is one singular instance/deployment of Chapter
+  *For example, Women who Code at the domain `chapter.womenwhocode.com`*
+- A "user" is a person who authed to the chapter
+  *For example, Kognise*
+- A "chapter" is a container for events, with a description and subscribers, and one or more "admins" who can manage it
+  *For example, Women who Code NYC*
+- A "event" is a single meetup that users can RSVP to, has a specific location and time, and has "organizers" 
+  *For example, Women who Code NYC April Meetup*
+
+(All of the above examples are fictional, meaningless, and probably super inaccurate)
+
+### Schema
 
 ![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
 

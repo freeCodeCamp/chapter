@@ -50,6 +50,11 @@ create table sponsors (
     type sponsor_type not null
 );
 
+create table tags (
+    id uuid primary key,
+    name text not null
+);
+
 create table events (
     id uuid primary key,
     name text not null,
@@ -61,11 +66,6 @@ create table events (
     tag_id uuid references tags(id),
     canceled boolean default false,
     capacity int not null
-);
-
-create table tags (
-    id uuid primary key,
-    name text not null
 );
 
 create table event_sponsors (

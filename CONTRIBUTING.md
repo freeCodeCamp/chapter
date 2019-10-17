@@ -1,4 +1,5 @@
 # Contribution Guidelines
+
 Hello. :wave:
 
 Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your interest in this project.
@@ -10,6 +11,7 @@ You should [join our Discord server](https://discord.gg/vbRUYWS) to get connecte
 ## Here are some ways to help us
 
 ### 1. Take part in discussions and tell us your views
+
 Implementation details are still being discussed and the project is currently at a very early stage. The stage of the project is changing on a daily basis, thoughts and ideas are being contributed at a very high pace.
 
 Keep in mind that our focused discussions takes place here on GitHub issue threads. We encourage you to take part in the discussions on topics you find interesting:
@@ -33,9 +35,11 @@ If you can't find what you were looking for in the above topics then feel free t
 Before opening a new issue please search through current issues to verify that you are not creating a duplicate issue.
 
 ### 2. Contribute to this open source codebase
+
 If you feel ready to contribute code to this project then you should follow the below steps:
 
 #### Step 1: Fork the repository on GitHub
+
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of Chapter's repository (a.k.a repo) on GitHub.
 
 This is essential as it allows you to work on your own copy of Chapter. It allows you to request changes to be pulled into the Chapter's repository from your fork via a pull request.
@@ -48,6 +52,7 @@ Follow these steps to fork the `https://github.com/freeCodeCamp/chapter` reposit
 ![an image illustrating the fork button](docs/images/how-to-fork.png)
 
 #### Step 2: Preparing the development environment
+
 Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/). 
 
 Clone your copy of Chapter. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
@@ -85,7 +90,6 @@ You need a reference from your local copy to the `upstream` repository in additi
     ```
 
     The output should look something like below:
-
     ```sh
     origin    https://github.com/YOUR_USER_NAME/chapter.git (fetch)
     origin    https://github.com/YOUR_USER_NAME/chapter.git (push)
@@ -106,7 +110,6 @@ You are now almost ready to make changes to files but before that you should **a
     ```
 
     You should get an output like this:
-
     ```sh
     On branch master
     Your branch is up-to-date with 'origin/master'.
@@ -115,14 +118,13 @@ You are now almost ready to make changes to files but before that you should **a
     ```
 
     If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout `master`:
-
     ```sh
     git checkout master
     ```
 
 2. Sync the latest changes from the chapter upstream `master` branch to your local master branch. This is very important to avoid conflicts later.
 
-    **Note:** If you have any outstanding Pull Request that you made from the `master` branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
+    > **Note:** If you have any outstanding Pull Request that you made from the `master` branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 
     This step **will sync the latest changes** from the main repository of chapter. 
 
@@ -146,14 +148,13 @@ You are now almost ready to make changes to files but before that you should **a
     git diff upstream/master
     ```
 
-    If you don't get any output, you are good to go.
+    If you don't get any output, you are good to go to the next step.
 
 3. Create a fresh new branch
 
-    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the `master`. This will soil your copy of chapter and you may have to start over with a fresh clone or fork.
+    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the `master` branch. This will soil your copy of chapter and you may have to start over with a fresh clone or fork.
 
     Check that you are on `master` as explained previously, and branch off from there by typing:
-
     ```sh
     git checkout -b fix/update-readme
     ```
@@ -161,7 +162,6 @@ You are now almost ready to make changes to files but before that you should **a
     Your branch name should start with `fix/`, `feat/`, `docs/`, etc. Avoid using issue numbers in branches. Keep them short, meaningful and unique.
 
     Some examples of good branch names are:
-
     ```md
     fix/update-nav-links
     fix/sign-in
@@ -170,6 +170,7 @@ You are now almost ready to make changes to files but before that you should **a
     ```
 
 4. Edit files and write code on your favorite editor. Then check and confirm the files you are updating:
+
     ```sh
     git status
     ```
@@ -240,11 +241,17 @@ You are now almost ready to make changes to files but before that you should **a
 6. Next, you can push your changes to your fork.
 
     ```sh
-    git push origin branch/name-here
+    git push origin branch-name-here
+    ```
+
+    For example if the name of your branch is `fix/signin` then your command should be:
+    ```sh
+    git push origin fix/signin
     ```
 
 #### Step 4: Proposing a Pull Request (PR)
-After you've committed and pushed your changes, check here for [how to open a Pull Request](/docs/how-to-open-a-pull-request.md).
+
+After you've committed and pushed changes to your fork, check here for [how to open a Pull Request](/docs/how-to-open-a-pull-request.md).
 
 ## Frequently Asked Questions
 

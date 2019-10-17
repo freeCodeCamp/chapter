@@ -11,9 +11,9 @@ An example is `feat(client): night mode`.
 | Scope | Documentation |
 |---|---|
 | `api` | For Pull Requests making changes to the APIs, routes and its architecture |
-| `db` | For Pull Requests making changes to the database |
+| `db` | For Pull Requests making changes related to database |
 | `client` | For Pull Requests making changes to client platform logic or user interface |
-| `docs` | For Pull Requests making changes to the project's documentation. |
+| `docs` | For Pull Requests making changes to the project's documentation |
 
 ## Proposing a Pull Request (PR)
 

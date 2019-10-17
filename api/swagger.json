@@ -4,7 +4,7 @@
     "description": "This is the API specification for Chapter",
     "version": "0.1.0",
     "title": "Chapter",
-    "termsOfService": "http://chapter.io/terms",
+    "termsOfService": "https://www.freecodecamp.org/news/terms-of-service/",
     "contact": {
       "email": "chapter+dev@freecodecamp.org"
     },

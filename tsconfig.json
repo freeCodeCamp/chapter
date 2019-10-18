@@ -2,20 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "server/*": [
-        "server/*"
-      ],
-      "client/*": [
-        "client/*"
-      ]
+      "server/*": ["server/*"],
+      "client/*": ["client/*"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "es2017"
-    ],
+    "lib": ["dom", "es2017"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -36,12 +29,6 @@
     "esModuleInterop": true,
     "isolatedModules": true
   },
-  "include": [
-    "client",
-    "server",
-    "pages"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["client", "server", "pages", "types"],
+  "exclude": ["node_modules"]
 }

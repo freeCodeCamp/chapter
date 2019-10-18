@@ -2,8 +2,7 @@ import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
 import nextjs from 'server/lib/next';
-// @ts-ignore TODO (tim) type me
-import { responseErrorHandler } from 'express-response-errors/lib/middleware';
+import { responseErrorHandler } from 'express-response-errors';
 import exampleRouter from 'server/routers/exampleRouter';
 
 const app: express.Application = express();

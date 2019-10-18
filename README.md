@@ -98,7 +98,7 @@ You should [join our Discord server](https://discord.gg/vbRUYWS) to get connecte
 
 ## Contributing 
 
-### [Take part in discussions or Contribute code to this opensource codebase.](CONTRIBUTING.md)
+[**Take part in discussions or contribute code to this opensource codebase.**](CONTRIBUTING.md)
 
 ## License
 

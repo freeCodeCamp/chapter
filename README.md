@@ -56,6 +56,8 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 - I can click the "RSVP" button. When I do, I will be prompted to sign in. Then I will receive an email with a ticket and add me to the public list of event attendees.
 
+- I can save RSVP'd events to my calendar of choice. The calendar invites would contain: Event Name, Venue, Date & Time, and the Description of the event (if applicable).
+
 - I will receive a second email the day before the event to remind me.
 
 - After the event, I will automatically get emails notifying me of subsequent events.

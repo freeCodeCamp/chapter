@@ -43,6 +43,7 @@ create table chapters
   id uuid primary key ,
   name text unique not null,
   description text not null,
+  category text not null,
   details jsonb,
   location_id uuid references locations(id) not null,
   creator_id uuid references users(id) not null,

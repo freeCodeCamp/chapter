@@ -46,7 +46,17 @@ We will focus on building an open API first. Then developers can use the API to 
 
 ## User stories so far
 
-Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and chapter organizers.
+Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and chapter organizers, both of which are users.
+
+### As a user
+
+- I can open a registration page where I can sign up with email and password.
+
+- I can log in with my email and password or I can log in with social login via Google.
+
+- I can see my account page where I can reset my password if I've registered with email and password. Otherwise I'll see a link to my Google profile.
+
+- I can log out.
 
 ### As a future participant
 

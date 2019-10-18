@@ -46,13 +46,13 @@ We will focus on building an open API first. Then developers can use the API to 
 
 ## User stories so far
 
-Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and group organizers.
+Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and chapter organizers.
 
 ### As a future participant
 
 - I can use a search box on the landing page to input a city, state, or country name and it will autocomplete. I can click one of those locations.
 
-- When I click one of those locations, I can see the "show view" for that event's group, with details about the upcoming event, along with a button to RSVP.
+- When I click one of those locations, I can see the "show view" for that event's chapter, with details about the upcoming event, along with a button to RSVP.
 
 - I can click the "RSVP" button. When I do, I will be prompted to sign in. Then I will receive an email with a ticket and add me to the public list of event attendees.
 
@@ -64,9 +64,9 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 ### As an organizer
 
-- I can create a group.
+- I can create a chapter.
 
-- I can edit details about the group, including a Slack/Discord/Facebook/WeChat/WhatsApp link participants can join to discuss and coordinate events.
+- I can edit details about the chapter, including a Slack/Discord/Facebook/WeChat/WhatsApp link participants can join to discuss and coordinate events.
 
 - I can create events, and set their location and capacity.
 

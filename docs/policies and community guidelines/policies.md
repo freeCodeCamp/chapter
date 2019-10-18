@@ -6,4 +6,4 @@
 
 ### Report a member
 
-### Report a group
+### Report a chapter

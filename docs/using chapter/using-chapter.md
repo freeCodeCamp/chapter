@@ -4,7 +4,7 @@
 
 ### Create an Account
 
-### Group and event photos
+### Chapter and event photos
 
 ### Member guide
 

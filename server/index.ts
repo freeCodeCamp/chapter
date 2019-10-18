@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import nextjs from 'server/lib/next';
 // @ts-ignore TODO (tim) type me
 import { responseErrorHandler } from 'express-response-errors/lib/middleware';
+import exampleRouter from 'server/routers/exampleRouter';
 
 const app: express.Application = express();
 
@@ -17,6 +18,8 @@ nextjs.nextApp.prepare().then(async () => {
   );
   app.use(express.json());
   app.use(express.static('public'));
+
+  app.use(exampleRouter);
 
   app.use(responseErrorHandler);
 

@@ -1,7 +1,6 @@
 import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
-import bodyParser from 'body-parser';
 import nextjs from 'server/lib/next';
 // @ts-ignore TODO (tim) type me
 import { responseErrorHandler } from 'express-response-errors/lib/middleware';
@@ -16,8 +15,7 @@ nextjs.nextApp.prepare().then(async () => {
       skip: (req: express.Request) => req.url.startsWith('/_next/'),
     }),
   );
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.json());
   app.use(express.static('public'));
 
   app.use(responseErrorHandler);

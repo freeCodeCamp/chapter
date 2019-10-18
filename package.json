@@ -1,12 +1,13 @@
 {
   "name": "chapter",
   "version": "1.0.0",
-  "description": "After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.",
+  "description": "A self-hosted event management tool for nonprofits",
   "main": "server/index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "speccy": "speccy serve api/swagger.json",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
     "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
     "dev": "./node_modules/nodemon/bin/nodemon.js --watch 'server/**/*.ts' --exec 'npm run dev:server'",
@@ -20,7 +21,12 @@
     "type": "git",
     "url": "git+https://github.com/freeCodeCamp/chapter.git"
   },
-  "author": "",
+  "keywords": [
+    "chapter",
+    "meetup",
+    "open-source"
+  ],
+  "author": "author@chapter.io",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/freeCodeCamp/chapter/issues"
@@ -71,6 +77,7 @@
   },
   "engines": {
     "node": "10.x",
-    "npm": ">= 6.0.0"
+    "npm": ">= 6.0.0",
+    "speccy": "^0.11.0"
   }
 }

@@ -17,20 +17,20 @@ npm run speccy
 ```
 Navigate to http://localhost:5000 to see API docs
 
-### Terminology
+## Terminology
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
 
-- `organization` is one singular instance/deployment of Chapter. For e.g., Women who Code at the domain `chapter.womenwhocode.com`.
-- `user` is a person who authed to the chapter.
-- `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. For e.g., Women who Code NYC.
-- `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. For e.g., Women who Code NYC April Meet.
+- `organization` is a singular instance/deployment of Chapter. Example: Women who Code at the domain `chapter.womenwhocode.org`.
+- `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. Example: Women Who Code NYC.
+- `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. Example: Women Who Code NYC - April 2019 Event.
+- `user` is a person who belongs to a chapter.
 
-## Tech stack
+## Tech Stack
 
 We are planning to use the following tools:
 
 - [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend
-- [Postgres](https://www.postgresql.org) with [Sequelize](https://sequelize.org)
+- [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 - [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
 - A [React](https://reactjs.org/) frontend using JavaScript (not TypeScript) and CSS (not Sass)
 

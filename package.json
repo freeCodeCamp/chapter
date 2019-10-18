@@ -11,6 +11,7 @@
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
     "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
     "dev": "./node_modules/nodemon/bin/nodemon.js --watch 'server/**/*.ts' --exec 'npm run dev:server'",
+    "lint": "eslint './**/*.{ts,tsx}'",
     "start": "npm run prod:server",
     "nodemon": "./node_modules/nodemon/bin/nodemon.js",
     "next:build": "next build",
@@ -53,14 +54,19 @@
     "@types/node": "^12.11.1",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-config-react": "^1.1.7",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
     "node-typescript": "^0.1.3",
     "nodemon": "^1.19.4",
     "prettier": "^1.18.2",
-    "speccy": "^0.11.0",
-    "tslint": "^5.20.0",
-    "tslint-config-prettier": "^1.18.0"
+    "speccy": "^0.11.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

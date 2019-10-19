@@ -9,8 +9,8 @@
   "scripts": {
     "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
     "dev": "npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
-    "lint": "eslint './**/*.{ts,tsx}'",
-    "lint:fix": "eslint './**/*.{ts,tsx}' --fix",
+    "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
+    "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "next:build": "next build",
     "nodemon": "npx nodemon",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
@@ -75,7 +75,7 @@
     "speccy": "^0.11.0"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{ts,tsx,js,jsx}": [
       "npm run pretty",
       "git add"
     ]
@@ -92,10 +92,11 @@
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "jsx"
     ],
     "testMatch": [
-      "/**/*.test.(ts|js|tsx)"
+      "/**/*.test.(ts|js|tsx|jsx)"
     ]
   },
   "prettier": {

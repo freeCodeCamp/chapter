@@ -27,12 +27,11 @@ create table social_provider_users
   updated_at timestamp default CURRENT_TIMESTAMP
 );
 
-create table locations
-(
+create table locations (
   id uuid primary key,
-  country text not null,
+  country_code char(2) not null,
   city text not null,
-  state text,
+  region text,
   postal_code text,
   created_at timestamp default CURRENT_TIMESTAMP,
   updated_at timestamp default CURRENT_TIMESTAMP

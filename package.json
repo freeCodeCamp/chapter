@@ -9,7 +9,6 @@
   "scripts": {
     "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
     "dev": "npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
-    "docker:start": "docker-compose up --build --remove-orphans",
     "lint": "eslint './**/*.{ts,tsx}'",
     "lint:fix": "eslint './**/*.{ts,tsx}' --fix",
     "next:build": "next build",
@@ -17,7 +16,7 @@
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
-    "speccy": "speccy serve -p 8001 api/swagger.json",
+    "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
     "test": "NODE_ENV=test npx jest --coverage --verbose",
     "test:watch": "NODE_ENV=test npx jest --watch"

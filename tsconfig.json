@@ -2,13 +2,20 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "server/*": ["server/*"],
-      "client/*": ["client/*"]
+      "server/*": [
+        "server/*"
+      ],
+      "client/*": [
+        "client/*"
+      ]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": ["dom", "es2017"],
+    "lib": [
+      "dom",
+      "es2017"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -27,8 +34,19 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": [
+      "jest",
+      "node"
+    ]
   },
-  "include": ["client", "server", "pages", "types"],
-  "exclude": ["node_modules"]
+  "include": [
+    "client",
+    "server",
+    "pages",
+    "types"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

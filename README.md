@@ -43,7 +43,13 @@ We will focus on building an open API first. Then developers can use the API to 
 
 ## Development Setup
 
-Requirements: Docker, internet access
+Requirements: Node.js, Docker, internet access
+
+### Installing Node.js
+
+Follow instructions for downloading and installing Node.js for your opreating system from the [official Node.js website](https://nodejs.org/en/download/).
+
+Ensure you are installing Node 10 or greater and npm 6 or greater.
 
 ### Installing Docker
 
@@ -68,14 +74,19 @@ Navigate to the newly cloned repo:
 cd chapter
 ```
 
+Install dependencies:
+```
+npm install
+```
+
 Ensure that Docker Desktop is up and running, then run the following command:
 ```
-npm run docker:start
+docker-compose up
 ```
 
-And that's it! Running this command builds the docker images defined in `docker-compose.yml` and the various `Dockerfile`s, including an image with Node.js installed and installs our npm dependencies.
+Wait for the logs to show "server started on port 8000", then navigate to `localhost:8000` to view the app.
 
-Navigate to `localhost:8000` to view the app.
+The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 

@@ -2,8 +2,10 @@ FROM node:10-alpine
 
 WORKDIR /usr/chapter/
 
-COPY . .
+COPY package.json package-lock.json ./ 
 
-RUN npm install
+RUN npm ci
+
+COPY . .
 
 EXPOSE 8000

@@ -5,5 +5,6 @@ services:
     command: 'npm run dev'
     volumes:
       - .:/usr/chapter/
+      - /usr/chapter/node_modules
     ports:
       - '8000:8000'

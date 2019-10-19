@@ -29,10 +29,10 @@ To better communicate and more easily build an API and UI, we've decided on a co
 
 We are planning to use the following tools:
 
-- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend
+- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
 - [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 - [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
-- A [React](https://reactjs.org/) frontend using JavaScript (not TypeScript) and CSS (not Sass)
+- A [React](https://reactjs.org/) frontend using JavaScript/TypeScript and CSS (not Sass)
 
 A lot of people know these tools, and they're proven to work well at scale.
 
@@ -44,13 +44,39 @@ We will focus on building an open API first. Then developers can use the API to 
 
 Requirements: Docker, internet access
 
-Run the following command:
+### Installing Docker
 
+Click [here](https://docs.docker.com/v17.12/install/) for the Docker installation site.  Scroll down to "Supported Platforms" and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for linux).
+
+You can find more resources on Docker here:
+- [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
+- [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
+- [Play with Docker Classroom](https://training.play-with-docker.com/)
+
+### Starting the Development Server
+
+Open up Terminal/Powershell/bash and navigate to the directory where you want the project to live.
+
+Clone this repository:
+```
+git clone https://github.com/freeCodeCamp/chapter
+```
+
+Navigate to the newly cloned repo:
+```
+cd chapter
+```
+
+Ensure that Docker Desktop is up and running, then run the following command:
 ```
 docker-compose up
 ```
 
-And that's it! Navigate to `localhost:8000` to view the app.
+And that's it! Running this command builds the docker images defined in `docker-compose.yml` and the various `Dockerfile`s, including an image with Node.js installed and installs our npm dependencies.
+
+Navigate to `localhost:8000` to view the app.
+
+You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
 ## Schema
 

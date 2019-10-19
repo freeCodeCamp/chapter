@@ -1,6 +1,12 @@
 {
-  "ignore": [".git", "node_modules", ".next"],
-  "watch": ["server"],
+  "ignore": [
+    ".git",
+    "node_modules",
+    ".next"
+  ],
+  "watch": [
+    "server"
+  ],
   "exec": "npm run dev",
-  "ext": "ts"
+  "ext": "js,ts"
 }

@@ -54,7 +54,7 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 - When I click one of those locations, I can see the "show view" for that event's chapter, with details about the upcoming event, along with a button to RSVP.
 
-- I can click the "RSVP" button. When I do, I will be prompted to sign in. Then I will receive an email with a ticket and add me to the public list of event attendees.
+- I can click the "RSVP" button. When I do, I will be prompted to sign in. Then I will receive an email with a ticket and I will be added to the public list of event attendees.
 
 - I will receive a second email the day before the event to remind me.
 
@@ -80,9 +80,9 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 
 - I can add a food sponsor to the event with a link to their website as a way of thanking them for food.
 
-- I can see how many times a participant has come to the event as well as their attendance rate
+- I can see how many times a participant has come to the event as well as their attendance rate.
 
-- I can check-in attendees on the event registration desk with their email_id or chapter_id
+- I can check-in attendees on the event registration desk with their `email_id` or `chapter_id`.
 
 ## Roadmap
 

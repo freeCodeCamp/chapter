@@ -1,10 +1,9 @@
 version: '3'
 services:
   app:
-    image: node:10-alpine
+    build: .
     command: 'npm run dev'
     volumes:
       - .:/usr/chapter/
-    working_dir: /usr/chapter/
     ports:
       - '8000:8000'

@@ -44,13 +44,7 @@ We will focus on building an open API first. Then developers can use the API to 
 
 Requirements: Docker, internet access
 
-Install dependencies:
-
-```
-npm install
-```
-
-Start the server:
+Run the following command:
 
 ```
 docker-compose up

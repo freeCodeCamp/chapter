@@ -1,4 +1,6 @@
 version: '3'
+networks: 
+  chapter:
 services:
   app:
     build: .
@@ -8,3 +10,11 @@ services:
       - /usr/chapter/node_modules
     ports:
       - '8000:8000'
+  speccy:
+    image: node:10-alpine
+    command: 'npm run speccy:watch'
+    volumes:
+      - .:/usr/chapter/
+    working_dir: /usr/chapter/
+    ports:
+      - '8001:8001'

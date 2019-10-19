@@ -15,7 +15,7 @@ We use [Open API 3.0](https://www.openapis.org/about) to define the API structur
 ```bash
 npm run speccy
 ```
-Navigate to http://localhost:5000 to see API docs
+Navigate to http://localhost:8001 to see API docs
 
 ## Terminology
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
@@ -70,7 +70,7 @@ cd chapter
 
 Ensure that Docker Desktop is up and running, then run the following command:
 ```
-docker-compose up
+npm run docker:start
 ```
 
 And that's it! Running this command builds the docker images defined in `docker-compose.yml` and the various `Dockerfile`s, including an image with Node.js installed and installs our npm dependencies.
@@ -78,6 +78,17 @@ And that's it! Running this command builds the docker images defined in `docker-
 Navigate to `localhost:8000` to view the app.
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
+
+## Testing 
+Run tests
+```
+npm run test
+```
+
+Run tests in watch mode
+```
+npm run test:watch
+```
 
 ## Schema
 

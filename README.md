@@ -33,6 +33,7 @@ We are planning to use the following tools:
 - [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 - [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
 - A [React](https://reactjs.org/) frontend using JavaScript/TypeScript and CSS (not Sass)
+- [Next.js](https://nextjs.org/) for server-side rendering
 
 A lot of people know these tools, and they're proven to work well at scale.
 

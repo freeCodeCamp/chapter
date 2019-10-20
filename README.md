@@ -20,7 +20,7 @@ Navigate to http://localhost:5000 to see API docs
 ## Terminology
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
 
-- `organization` is a singular instance/deployment of Chapter. Example: Women who Code at the domain `chapter.womenwhocode.org`.
+- `organization` is a singular instance/deployment of Chapter. Example: Women Who Code at the domain `chapter.womenwhocode.org`.
 - `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. Example: Women Who Code NYC.
 - `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. Example: Women Who Code NYC - April 2019 Event.
 - `user` is a person who belongs to a chapter.
@@ -90,7 +90,7 @@ Our goal is to keep things simple and not reinvent wheels. So far we have only t
 2. Set up the API endpoints.
 3. Build the web client and let other developers use the API to build mobile clients and voice interface clients.
 
-Quincy Larson is the project lead. freeCodeCamp.org will start "dogfooding" this as soon as possible with several of its local study groups.
+Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" this as soon as possible with several of its local study groups.
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 

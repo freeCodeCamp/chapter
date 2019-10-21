@@ -16,3 +16,11 @@ services:
       - .:/usr/chapter
     ports:
       - '8001:8001'
+  esdoc:
+    image: node:10-alpine
+    command: 'npm run esdoc'
+    volumes:
+      - .:/usr/chapter/
+    working_dir: /usr/chapter/
+    ports: 
+      - '8002:8002'

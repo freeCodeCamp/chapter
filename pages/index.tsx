@@ -1,7 +1,7 @@
 import * as React from 'react';
 import SomeComponent from 'client/components/SomeComponent';
 
-export default () => {
+const Index = () => {
   return (
     <div>
       this is a page!
@@ -16,3 +16,5 @@ export default () => {
     </div>
   );
 };
+
+export default Index;

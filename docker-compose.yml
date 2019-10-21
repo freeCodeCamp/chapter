@@ -14,10 +14,10 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=chapter
-    ports:
-      - '54320:5432'
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - '54320:5432'
   speccy:
     image: node:10-alpine
     command: 'npm run speccy:watch'

@@ -60,5 +60,8 @@ typings/
 # next.js build output
 .next
 
+# esdoc build output
+docs/esdoc
+
 # .DS_Store
 .DS_Store

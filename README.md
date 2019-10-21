@@ -29,10 +29,10 @@ To better communicate and more easily build an API and UI, we've decided on a co
 
 We are planning to use the following tools:
 
-- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend
+- The [Node.js](https://nodejs.org) based [Next.js](https://nextjs.org) framework
 - [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 - [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
-- A [React](https://reactjs.org/) frontend using JavaScript (not TypeScript) and CSS (not Sass)
+- A [React](https://reactjs.org/) frontend using TypeScript) and CSS (not Sass)
 
 A lot of people know these tools, and they're proven to work well at scale.
 

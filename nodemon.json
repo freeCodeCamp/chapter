@@ -2,5 +2,5 @@
   "ignore": [".git", "node_modules", ".next"],
   "watch": ["server"],
   "exec": "npm run dev",
-  "ext": "js,ts"
+  "ext": "js,ts,tsx"
 }

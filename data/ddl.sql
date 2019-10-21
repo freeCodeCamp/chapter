@@ -67,6 +67,7 @@ create table sponsors
   id uuid primary key,
   name text not null,
   website text,
+  logo_path text,
   type sponsor_type not null,
   created_at timestamp default CURRENT_TIMESTAMP,
   updated_at timestamp default CURRENT_TIMESTAMP

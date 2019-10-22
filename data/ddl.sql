@@ -73,6 +73,12 @@ create table sponsors
   updated_at timestamp default CURRENT_TIMESTAMP
 );
 
+create table tags
+(
+  id uuid primary key,
+  name text not null
+);
+
 create table events
 (
   id uuid primary key,
@@ -87,12 +93,6 @@ create table events
   capacity int not null,
   created_at timestamp default CURRENT_TIMESTAMP,
   updated_at timestamp default CURRENT_TIMESTAMP
-);
-
-create table tags
-(
-  id uuid primary key,
-  name text not null
 );
 
 create table event_sponsors

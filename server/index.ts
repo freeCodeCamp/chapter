@@ -1,9 +1,9 @@
 import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
-import nextjs from 'server/lib/next';
+import { nextjs } from 'server/lib/next';
 import { responseErrorHandler } from 'express-response-errors';
-import exampleRouter from 'server/routers/exampleRouter';
+import { ExampleRouter } from './routers/exampleRouter';
 
 const app: express.Application = express();
 
@@ -18,7 +18,7 @@ nextjs.nextApp.prepare().then(async () => {
   app.use(express.json());
   app.use(express.static('public'));
 
-  app.use(exampleRouter);
+  app.use(new ExampleRouter().router);
 
   app.use(responseErrorHandler);
 

@@ -28,6 +28,7 @@ To better communicate and more easily build an API and UI, we've decided on a co
 ## Tech Stack
 
 We are planning to use the following tools:
+
 * [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
 * [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 *  [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)

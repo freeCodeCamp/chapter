@@ -103,7 +103,7 @@ npm run test:watch
 
 ## Schema
 
-![a diagram illustrating the proposed schema for chapter](https://github.com/freeCodeCamp/chapter/raw/master/data/schema.png)
+![a diagram illustrating the proposed schema for chapter](data/schema.png)
 
 ## User stories so far
 

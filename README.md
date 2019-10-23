@@ -29,11 +29,14 @@ To better communicate and more easily build an API and UI, we've decided on a co
 
 We are planning to use the following tools:
 
-- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
-- [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
-- [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
-- [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend.
-- [Styled Components](https://www.styled-components.com) for styling.
+* [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
+* [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
+* [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
+* [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+  * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  * [Styled Components](https://www.styled-components.com) for styling.
+  * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+
 
 A lot of people know these tools, and they're proven to work well at scale.
 
@@ -100,8 +103,12 @@ npm run test:watch
 ```
 
 ## Schema
+<details>
+<summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
+<br>
 
-![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
+![a diagram illustrating the proposed schema for Chapter](data/schema.png)
+</details>
 
 ## User stories so far
 

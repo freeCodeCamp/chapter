@@ -102,8 +102,12 @@ npm run test:watch
 ```
 
 ## Schema
+<details>
+<summary>Click here to view a diagram illustrating the proposed schema for Chapter.</summary>
+<br>
 
-![a diagram illustrating the proposed schema for chapter](data/schema.png)
+![a diagram illustrating the proposed schema for Chapter](data/schema.png)
+</details>
 
 ## User stories so far
 

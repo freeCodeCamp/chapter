@@ -18,6 +18,8 @@ jobs:
         run: npm ci
       - name: Build next.js
         run: npm run next:build
+      - name: Run lint
+        run: npm run lint
       - name: Run tests
         run: npm run test
         env:

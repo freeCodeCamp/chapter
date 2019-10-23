@@ -14,4 +14,7 @@ module.exports = {
       diagnostics: false,
     },
   },
+  watchPathIgnorePatterns: ['/node_modules'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  testMatch: ['/**/*.test.(ts|js|tsx|jsx)'],
 };

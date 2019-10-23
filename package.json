@@ -19,7 +19,7 @@
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
     "test": "NODE_ENV=test docker-compose exec app npx jest --coverage --verbose",
-    "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watch"
+    "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watchAll"
   },
   "repository": {
     "type": "git",
@@ -90,20 +90,6 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "jest": {
-    "watchPathIgnorePatterns": [
-      "/node_modules"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx"
-    ],
-    "testMatch": [
-      "/**/*.test.(ts|js|tsx|jsx)"
-    ]
   },
   "prettier": {
     "trailingComma": "all",

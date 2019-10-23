@@ -5,9 +5,12 @@ import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
 
+type InitProps = {
+  withRouter?: express.Router;
+};
+
 class App {
   server: express.Application;
-  router: express.Router;
   request: request.SuperTest<request.Test>;
   _server: Server;
 
@@ -16,12 +19,12 @@ class App {
     this.server = app;
   }
 
-  async initialize() {
+  async initialize({ withRouter }: InitProps = {}) {
     this.server.use(express.json());
     this.server.use(express.static('public'));
 
-    if (this.router) {
-      this.server.use(this.router);
+    if (withRouter) {
+      this.server.use(withRouter);
     }
 
     this.server.use(responseErrorHandler);

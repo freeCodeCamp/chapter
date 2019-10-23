@@ -1,26 +1,13 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
-import { BadRequestError } from 'express-response-errors';
+
+import sampleRoute from 'server/routers/routes/sampleRoute';
+import sampleAsyncRoute from 'server/routers/routes/sampleAsyncRoute';
+import sampleErroredRoute from 'server/routers/routes/sampleErroredRoute';
 
 const router = express.Router();
 
-router.get('/api/sample-route', (req, res) => {
-  const { query } = req;
-  res.json({ message: 'Response from the server', query });
-});
-
-router.get(
-  '/api/sample-async-route',
-  asyncHandler(async (req, res) => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    const { query } = req;
-    res.json({ message: 'Delayed response from the server', query });
-  }),
-);
-
-router.get('/api/sample-errored-route', () => {
-  throw new BadRequestError('This route will always error with code 400');
-});
+router.get('/api/sample-route', sampleRoute);
+router.get('/api/sample-async-route', sampleAsyncRoute);
+router.get('/api/sample-errored-route', sampleErroredRoute);
 
 export default router;

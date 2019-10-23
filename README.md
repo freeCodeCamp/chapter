@@ -32,9 +32,11 @@ We are planning to use the following tools:
 * [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
 * [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 * [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
-*  A [React](https://reactjs.org/) frontend using JavaScript/TypeScript and CSS (not Sass)
-    * Utilizing Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-*  [Next.js](https://nextjs.org/) for server-side rendering
+* A [React](https://reactjs.org) frontend using:
+    * [JavaScript/TypeScript] (https://www.typescriptlang.org/index.html#download-links)
+    * [CSS](https://www.w3.org/Style/CSS/) (not Sass)
+    * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+* [Next.js](https://nextjs.org/) for server-side rendering
 
 A lot of people know these tools, and they're proven to work well at scale.
 

@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
-import { string } from 'prop-types';
-import axios from 'axios';
+import * as React from 'react';
 
-const AddSponsor = ({ eventId, chapterId }) => {
-  const [isSubmitting, setSubmitting] = useState(false);
-  const [values, setValues] = useState({ type: 'FOOD' });
-  const [success, setSuccess] = useState(false);
+interface AddSponsorProps {
+  eventId: string;
+  chapterId: string;
+}
+
+interface SponsorData {
+  name?: string;
+  website?: string;
+  type?: string;
+}
+
+const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
+  const [isSubmitting, setSubmitting] = React.useState<boolean>(false);
+  const [values, setValues] = React.useState<SponsorData>({ type: 'FOOD' });
+  const [success, setSuccess] = React.useState<boolean>(false);
 
   function handleChange(e) {
     const { value, name } = e.target;
@@ -26,12 +35,15 @@ const AddSponsor = ({ eventId, chapterId }) => {
 
     try {
       const data = JSON.stringify(values);
-      await axios.post(`/${chapterId}/events/${eventId}/sponsors`, data);
+      await fetch(`/${chapterId}/events/${eventId}/sponsors`, {
+        method: 'post',
+        body: data,
+      });
+      setSuccess(true);
     } catch (error) {
       // TODO: Error Handling
     } finally {
       setSubmitting(false);
-      setSuccess(true);
     }
   }
 
@@ -65,17 +77,10 @@ const AddSponsor = ({ eventId, chapterId }) => {
         </select>
         <br />
         <br />
-        <input name="eventId" type="hidden" value={eventId} />
-        <input name="chapterId" type="hidden" value={chapterId} />
         <button type="submit">Add Sponsor</button>
       </form>
     </div>
   );
-};
-
-AddSponsor.propTypes = {
-  eventId: string,
-  chapterId: string,
 };
 
 export default AddSponsor;

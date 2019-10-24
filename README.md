@@ -32,15 +32,13 @@ We are planning to use the following tools:
 * [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
 * [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
 * [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
-* A [React](https://reactjs.org) frontend using:
-    * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
-    * [CSS](https://www.w3.org/Style/CSS/) (not Sass)
-    * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-* [Next.js](https://nextjs.org/) for server-side rendering
+* [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+  * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  * [Styled Components](https://www.styled-components.com) for styling.
+  * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+
 
 A lot of people know these tools, and they're proven to work well at scale.
-
-We are considering using a tool like [Next.js](https://nextjs.org) to get up and running faster.
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 

@@ -38,6 +38,7 @@
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "dependencies": {
     "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-styled-components": "^1.10.6",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-response-errors": "^1.0.4",
@@ -47,6 +48,7 @@
     "next": "^9.1.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "styled-components": "^4.4.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.4"
   },

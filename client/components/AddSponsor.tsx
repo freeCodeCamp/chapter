@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import fetch from 'isomorphic-fetch';
 
 interface AddSponsorProps {
   eventId: string;
@@ -22,12 +23,19 @@ const Input = styled.input`
   margin-bottom: 15px;
 `;
 
+const SubmitBtn = styled.button`
+  margin-top: 15px;
+`;
+
 const ResponseDiv = styled.div`
   margin: 15px 0;
 `;
 // TODO: Style div based on response reveived
 
-const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
+const AddSponsor: React.FC<AddSponsorProps> = ({
+  eventId,
+  chapterId,
+}): JSX.Element => {
   const [isSubmitting, setSubmitting] = React.useState(false);
   // we specify type as food as state is only updated on field change. Since field
   // defaults to food and the user doesn't change it, state would be empty
@@ -36,7 +44,7 @@ const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
     website: '',
     type: 'FOOD',
   });
-  const [success, setSuccess] = React.useState(false);
+  const [responseMsg, setResponseMsg] = React.useState<string>();
 
   function handleChange(e) {
     const { value, name } = e.target;
@@ -46,7 +54,7 @@ const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
     });
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     /* Block double submits */
     if (isSubmitting) {
       return false;
@@ -55,25 +63,29 @@ const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
     e.preventDefault();
     setSubmitting(true);
 
-    try {
-      const data = JSON.stringify(values);
-      await fetch(`/${chapterId}/events/${eventId}/sponsors`, {
-        // TODO: create route
-        method: 'post',
-        body: data,
-      });
-      setSuccess(true); // TODO: call only if 200 res is received from api
-    } catch (error) {
-      // TODO: Error Handling
-    } finally {
-      setSubmitting(false);
-    }
+    const data = JSON.stringify(values);
+    fetch(`/${chapterId}/events/${eventId}/sponsors`, {
+      // TODO: create route
+      method: 'post',
+      body: data,
+    }).then(res => {
+      if (res.status != 200) {
+        setResponseMsg('Uh oh, something went wrong.'); // TODO: more descriptive error messages
+        setSubmitting(false);
+      } else {
+        setResponseMsg(
+          `${values.name} has been added as a ${values.type.toLowerCase} sponsor.`,
+        );
+        setSubmitting(false);
+      }
+    });
+
+    setSubmitting(false);
   }
 
   return (
     <>
-      {success && <ResponseDiv>{values.name} has been added!</ResponseDiv> //TODO: dynamic message based on response
-      }
+      {responseMsg && <ResponseDiv>{responseMsg}</ResponseDiv>}
       <Form onSubmit={handleSubmit}>
         <label>Sponsor Name: </label>
         <Input
@@ -95,9 +107,7 @@ const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
           <option value="BEVERAGE">Beverage</option>
           <option value="OTHER">Other</option>
         </select>
-        <br />
-        <br />
-        <button type="submit">Add Sponsor</button>
+        <SubmitBtn type="submit">Add Sponsor</SubmitBtn>
       </Form>
     </>
   );

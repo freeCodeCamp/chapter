@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "dependencies": {
+    "axios": "^0.19.0",
     "babel-plugin-module-resolver": "^3.2.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",

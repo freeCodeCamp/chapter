@@ -92,7 +92,7 @@ const AddSponsor: React.FC<AddSponsorProps> = ({ eventId, chapterId }) => {
         <label>Sponsor Type: </label>
         <select name="type" onChange={handleChange}>
           <option value="FOOD">Food</option>
-          <option value="BEVEREGE">Beverege</option>
+          <option value="BEVERAGE">Beverage</option>
           <option value="OTHER">Other</option>
         </select>
         <br />

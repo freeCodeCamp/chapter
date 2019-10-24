@@ -45,7 +45,7 @@ const AddSponsor = ({ eventId, chapterId }) => {
           type="text"
           placeholder="Glitter and Sparkle Co"
           onChange={handleChange}
-        />{' '}
+        />
         <br />
         <br />
         <label>Sponsor Website: </label>
@@ -54,7 +54,7 @@ const AddSponsor = ({ eventId, chapterId }) => {
           type="text"
           placeholder="www.glitter.co"
           onChange={handleChange}
-        />{' '}
+        />
         <br />
         <br />
         <label>Sponsor Type: </label>
@@ -62,7 +62,7 @@ const AddSponsor = ({ eventId, chapterId }) => {
           <option value="FOOD">Food</option>
           <option value="BEVEREGE">Beverege</option>
           <option value="OTHER">Other</option>
-        </select>{' '}
+        </select>
         <br />
         <br />
         <input name="eventId" type="hidden" value={eventId} />

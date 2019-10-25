@@ -1,3 +1,9 @@
+export enum SponsorType {
+  Food = 'FOOD',
+  Venue = 'VENUE',
+  Other = 'OTHER',
+}
+
 export interface IEventSponsor {
   eventId: number;
   sponsorId: number;
@@ -10,7 +16,7 @@ export interface ISponsor {
   name: string;
   website: string;
   logoPath: string;
-  type: string;
+  type: SponsorType;
   createdAt: Date;
   updatedAt: Date;
 }

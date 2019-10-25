@@ -11,9 +11,24 @@
     "node": true,
     "es6": true
   },
+  "overrides": [
+    {
+      "files": [
+        "**/*.test.js",
+        "**/*.test.jsx",
+        "**/*.test.ts",
+        "**/*.test.tsx"
+      ],
+      "env": {
+        "jest": true
+      },
+      "plugins": ["jest"]
+    }
+  ],
   "rules": {
     "prettier/prettier": ["error", { "singleQuote": true }],
     "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/interface-name-prefix":  [2 , { "prefixWithI": "always" }],
     "react/display-name": 0,
     "@typescript-eslint/no-explicit-any": 0
   },

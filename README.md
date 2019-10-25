@@ -29,15 +29,16 @@ To better communicate and more easily build an API and UI, we've decided on a co
 
 We are planning to use the following tools:
 
-- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
-- [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
-- [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
-- A [React](https://reactjs.org/) frontend using JavaScript/TypeScript and CSS (not Sass)
-- [Next.js](https://nextjs.org/) for server-side rendering
+* [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
+* [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
+* [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
+* [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+  * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  * [Styled Components](https://www.styled-components.com) for styling.
+  * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+
 
 A lot of people know these tools, and they're proven to work well at scale.
-
-We are considering using a tool like [Next.js](https://nextjs.org) to get up and running faster.
 
 We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
 
@@ -47,7 +48,7 @@ Requirements: Node.js, Docker, internet access
 
 ### Installing Node.js
 
-Follow instructions for downloading and installing Node.js for your opreating system from the [official Node.js website](https://nodejs.org/en/download/).
+Follow instructions for downloading and installing Node.js for your operating system from the [official Node.js website](https://nodejs.org/en/download/).
 
 Ensure you are installing Node 10 or greater and npm 6 or greater.
 
@@ -102,8 +103,12 @@ npm run test:watch
 ```
 
 ## Schema
+<details>
+<summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
+<br>
 
-![a diagram illustrating the proposed schema for chapter](https://user-images.githubusercontent.com/2755722/66802465-7d181900-eeea-11e9-9c6a-48012839d5f2.png)
+![a diagram illustrating the proposed schema for Chapter](data/schema.png)
+</details>
 
 ## User stories so far
 

@@ -1,6 +1,16 @@
 version: '3.7'
 services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=chapter
+    ports:
+      - '54320:5432'
   app:
+    depends_on:
+      - db
     image: node:10-alpine
     command: 'npm run dev'
     working_dir: /usr/chapter
@@ -8,16 +18,6 @@ services:
       - .:/usr/chapter
     ports:
       - '8000:8000'
-  db:
-    image: postgres
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=chapter
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-    ports:
-      - '54320:5432'
   speccy:
     image: node:10-alpine
     command: 'npm run speccy:watch'

@@ -62,6 +62,3 @@ typings/
 
 # .DS_Store
 .DS_Store
-
-# PSQL data
-postgres-data/

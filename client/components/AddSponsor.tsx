@@ -2,12 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 import fetch from 'isomorphic-fetch';
 
-interface AddSponsorProps {
+interface IAddSponsorProps {
   eventId: string;
   chapterId: string;
 }
 
-interface SponsorData {
+interface ISponsorData {
   name: string;
   website: string;
   type: 'FOOD' | 'BEVERAGE' | 'OTHER'; // TODO: Add VENUE
@@ -32,14 +32,11 @@ const ResponseDiv = styled.div`
 `;
 // TODO: Style div based on response reveived
 
-const AddSponsor: React.FC<AddSponsorProps> = ({
-  eventId,
-  chapterId,
-}): JSX.Element => {
+const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
   const [isSubmitting, setSubmitting] = React.useState(false);
   // we specify type as food as state is only updated on field change. Since field
   // defaults to food and the user doesn't change it, state would be empty
-  const [values, setValues] = React.useState<SponsorData>({
+  const [values, setValues] = React.useState<ISponsorData>({
     name: '',
     website: '',
     type: 'FOOD',

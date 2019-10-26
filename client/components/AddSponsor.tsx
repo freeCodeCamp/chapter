@@ -1,36 +1,8 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import fetch from 'isomorphic-fetch';
 
-interface IAddSponsorProps {
-  eventId: string;
-  chapterId: string;
-}
-
-interface ISponsorData {
-  name: string;
-  website: string;
-  type: 'FOOD' | 'BEVERAGE' | 'OTHER'; // TODO: Add VENUE
-}
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 25%;
-`;
-
-const Input = styled.input`
-  margin-bottom: 15px;
-`;
-
-const SubmitBtn = styled.button`
-  margin-top: 15px;
-`;
-
-const ResponseDiv = styled.div`
-  margin: 15px 0;
-`;
-// TODO: Style div based on response reveived
+import { Form, Input, ResponseDiv, SubmitBtn } from 'client/styles/AddSponsor';
+import { IAddSponsorProps, ISponsorData } from 'client/interfaces/AddSponsor';
 
 const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
   const [isSubmitting, setSubmitting] = React.useState(false);

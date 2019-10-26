@@ -9,3 +9,5 @@
 ### Chapter Settings
 
 ### Manage Members
+
+### Insuring the decorum of event

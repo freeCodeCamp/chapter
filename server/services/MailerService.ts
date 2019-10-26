@@ -9,12 +9,12 @@ export default class MailerService implements IMailerService {
   emailList: Array<string>;
   subject: string;
   htmlEmail: string;
-  backupText: string = '';
+  backupText: string;
   transporter: Transporter;
-  ourEmail: string = 'ourEmail@placeholder.place';
-  emailUsername: string = 'emailUsernamePlaceholder';
-  emailPassword: string = 'emailPasswordPlaceholder';
-  emailService: string = 'emailServicePlaceholder';
+  ourEmail: string;
+  emailUsername: string;
+  emailPassword: string;
+  emailService: string;
 
   constructor(
     emailList: Array<string>,
@@ -26,6 +26,12 @@ export default class MailerService implements IMailerService {
     this.subject = subject;
     this.htmlEmail = htmlEmail;
     this.backupText = backupText || '';
+
+    // to be replaced with env vars
+    this.ourEmail = 'ourEmail@placeholder.place';
+    this.emailUsername = 'emailUsernamePlaceholder';
+    this.emailPassword = 'emailPasswordPlaceholder';
+    this.emailService = 'emailServicePlaceholder';
 
     this.createTransporter();
   }

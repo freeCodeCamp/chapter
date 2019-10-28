@@ -1,8 +1,16 @@
 import * as React from 'react';
 import fetch from 'isomorphic-fetch';
 
-import { Form, Input, ResponseDiv, SubmitBtn } from 'client/styles/AddSponsor';
-import { IAddSponsorProps, ISponsorData } from 'client/interfaces/AddSponsor';
+import {
+  Form,
+  Input,
+  ResponseDiv,
+  SubmitBtn,
+} from 'client/styles/components/AddSponsor';
+import {
+  IAddSponsorProps,
+  ISponsorData,
+} from 'client/interfaces/components/AddSponsor';
 
 const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
   const [isSubmitting, setSubmitting] = React.useState(false);

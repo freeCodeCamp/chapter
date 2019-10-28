@@ -4,11 +4,16 @@ import morgan from 'morgan';
 import nextjs from 'server/lib/next';
 import { responseErrorHandler } from 'express-response-errors';
 import exampleRouter from 'server/routers/exampleRouter';
+import chapterRouter from 'server/routers/chapter';
+
+import { initSequelize } from 'server/models';
 
 const app: express.Application = express();
 
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;
+
+  initSequelize();
 
   app.use(
     morgan(':method :url :status', {
@@ -19,13 +24,13 @@ nextjs.nextApp.prepare().then(async () => {
   app.use(express.static('public'));
 
   app.use(exampleRouter);
+  app.use(chapterRouter);
 
   app.use(responseErrorHandler);
 
   app.get('*', (req, res) => {
     nextjs.handle(req, res);
   });
-
   app.listen(port, () => {
     console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
   });

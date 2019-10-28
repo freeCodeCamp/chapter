@@ -112,21 +112,21 @@ npm run test:watch
 ## User Stories
 
 ### MVP
-The [MVP user stories are shown in the MVP Project](/projects/1) kanban / cards and as [issues marked with "MVP"](/labels/MVP).
+The [MVP user stories are shown in the MVP Project](projects/1) kanban / cards and as [issues marked with "MVP"](labels/MVP).
 
 ### Post-MVP
-We are maintaining a list of [post-MVP user stories](/issues/84).
+We are maintaining a list of [post-MVP user stories](issues/84).
 
 ### Suggesting a New Story
 
-1. Please check your idea does not already exist as an [MVP issue](/labels/MVP), or in the [post-MVP]list(#84).
+1. Please check your idea does not already exist as an [MVP issue](labels/MVP), or in the [post-MVP list](issues/84).
 1. Create a new "Issue" and post details about the suggested user story.
 
 ## Roadmap
 
-The on-going [project Roadmap conversation](/issues/47) is regularly updated to reflect the overall progress and for higher-level discussions.
+The on-going [project Roadmap conversation](issues/47) is regularly updated to reflect the overall progress and for higher-level discussions.
 
-Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" this as soon as possible with several of its local study groups.
+Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 

@@ -117,11 +117,6 @@ The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeC
 ### Post-MVP
 We are maintaining a list of [post-MVP user stories](https://github.com/freeCodeCamp/chapter/issues/84).
 
-### Suggesting a New Story
-
-1. Please check your idea does not already exist as an [MVP issue](https://github.com/freeCodeCamp/chapter/labels/MVP), or in the [post-MVP list](https://github.com/freeCodeCamp/chapter/issues/84).
-1. Create a new "Issue" and post details about the suggested user story.
-
 ## Roadmap
 
 The on-going [project Roadmap conversation](https://github.com/freeCodeCamp/chapter/issues/47) is regularly updated to reflect the overall progress and for higher-level discussions.

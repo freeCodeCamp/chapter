@@ -14,22 +14,16 @@ You should [join our Discord server](https://discord.gg/vbRUYWS) to get connecte
 
 Implementation details are still being discussed and the project is currently at a very early stage. The stage of the project is changing on a daily basis, thoughts and ideas are being contributed at a very high pace.
 
-Keep in mind that our focused discussions takes place here on GitHub issue threads. We encourage you to take part in the discussions on topics you find interesting:
+Keep in mind that our focused discussions take place within GitHub [Issues](https://github.com/freeCodeCamp/chapter/issues) and [Pull Requests](https://github.com/freeCodeCamp/chapter/pulls).
 
-- [Introduce Yourself and Offer Your Skills](https://github.com/freeCodeCamp/chapter/issues/11)
-- [Next Steps](https://github.com/freeCodeCamp/chapter/issues/47)
-- [Shared Profile Data & Auth Across Collectives](https://github.com/freeCodeCamp/chapter/issues/40)
-- [Discovery and Searching Across Collective Instances](https://github.com/freeCodeCamp/chapter/issues/33)
-- [Accessibility](https://github.com/freeCodeCamp/chapter/issues/65)
-- [API](https://github.com/freeCodeCamp/chapter/issues/17)
-- [Documentation](https://github.com/freeCodeCamp/chapter/issues/12)
-- [Testing](https://github.com/freeCodeCamp/chapter/issues/76)
-- [Mobile App](https://github.com/freeCodeCamp/chapter/issues/20)
-- [Internationalization / Translation](https://github.com/freeCodeCamp/chapter/issues/21)
+Before opening a new issue, please search through current issues to verify that you are not creating a duplicate issue.
 
-If you can't find what you were looking for in the above topics then feel free to [open a new issue](https://github.com/freeCodeCamp/chapter/issues/new/choose) to share your views or to report bugs. 
+If you can't find what you were looking for then [open a new issue](https://github.com/freeCodeCamp/chapter/issues/new/choose) to share your views or to report bugs. 
 
-Before opening a new issue please search through current issues to verify that you are not creating a duplicate issue.
+For new "user stories" please do the following:
+
+1. Check your idea does not already exist as an [MVP issue](https://github.com/freeCodeCamp/chapter/labels/MVP), or in the [post-MVP list](https://github.com/freeCodeCamp/chapter/issues/84).
+1. [Create a new "Issue"](https://github.com/freeCodeCamp/chapter/issues/new/choose) and post details about the suggested user story.
 
 ### 2. Contribute to this open source codebase
 

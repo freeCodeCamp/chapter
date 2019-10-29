@@ -13,7 +13,7 @@ const app: express.Application = express();
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;
 
-  initSequelize();
+  await initSequelize().authenticate();
 
   app.use(
     morgan(':method :url :status', {
@@ -31,6 +31,7 @@ nextjs.nextApp.prepare().then(async () => {
   app.get('*', (req, res) => {
     nextjs.handle(req, res);
   });
+
   app.listen(port, () => {
     console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
   });

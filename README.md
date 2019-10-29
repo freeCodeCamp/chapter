@@ -54,7 +54,7 @@ Ensure you are installing Node 10 or greater and npm 6 or greater.
 
 ### Installing Docker
 
-Click [here](https://docs.docker.com/v17.12/install/) for the Docker installation site.  Scroll down to "Supported Platforms" and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for linux).
+Click [here](https://docs.docker.com/install/#supported-platforms) for the Docker installation site and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for linux).
 
 You can find more resources on Docker here:
 - [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)

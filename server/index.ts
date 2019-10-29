@@ -6,7 +6,7 @@ import { responseErrorHandler } from 'express-response-errors';
 import exampleRouter from 'server/routers/exampleRouter';
 import chapterRouter from 'server/routers/chapter';
 
-import { initSequelize } from 'server/models';
+import { initSequelize } from 'server/db';
 
 const app: express.Application = express();
 

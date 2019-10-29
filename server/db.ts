@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize-typescript';
-import { Chapter } from './chapter';
 
 export const initSequelize = () =>
   new Sequelize({
@@ -9,5 +8,5 @@ export const initSequelize = () =>
     database: process.env.DB_NAME || 'chapter',
     host: 'db',
     port: 5432,
-    models: [Chapter],
+    models: [__dirname + '/models/*.ts'],
   });

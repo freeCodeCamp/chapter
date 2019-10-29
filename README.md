@@ -53,7 +53,7 @@ Ensure you are installing Node 10 or greater and npm 6 or greater.
 
 ### Installing Docker
 
-See the [Docker installation](https://docs.docker.com/install/) "Supported platforms" section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for linux).
+See the [Docker installation "Supported platforms"](https://docs.docker.com/install/#supported-platforms) section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for Linux).
 
 You can find more resources on Docker here:
 - [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
@@ -134,7 +134,7 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 ## Contributing
 
 * You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
-* Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) below forking or submitting any pull requests.
+* Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before forking or submitting any pull requests.
 
 ## License
 

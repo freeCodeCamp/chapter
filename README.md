@@ -31,7 +31,6 @@ We are planning to use the following tools:
 
 * [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
 * [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
-* [Elasticsearch](https://www.elastic.co/what-is/elasticsearch)
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Styled Components](https://www.styled-components.com) for styling.
@@ -54,7 +53,7 @@ Ensure you are installing Node 10 or greater and npm 6 or greater.
 
 ### Installing Docker
 
-Click [here](https://docs.docker.com/install/#supported-platforms) for the Docker installation site and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for linux).
+See the [Docker installation "Supported platforms"](https://docs.docker.com/install/#supported-platforms) section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for Linux).
 
 You can find more resources on Docker here:
 - [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
@@ -110,76 +109,30 @@ npm run test:watch
 ![a diagram illustrating the proposed schema for Chapter](data/schema.png)
 </details>
 
-## User stories so far
+## User Stories
 
-Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and chapter organizers, both of which are users.
+### MVP
+The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
-### As a user
-
-- I can open a registration page where I can sign up with email and password.
-
-- I can log in with my email and password or I can log in with social login via Google.
-
-- I can see my account page where I can reset my password if I've registered with email and password. Otherwise I'll see a link to my Google profile.
-
-- I can log out.
-
-### As a future participant
-
-- I can use a search box on the landing page to input a city, state, or country name and it will autocomplete. I can click one of those locations.
-
-- When I click one of those locations, I can see the "show view" for that event's chapter, with details about the upcoming event, along with a button to RSVP.
-
-- I can click the "RSVP" button. When I do, I will be prompted to sign in. Then I will receive an email with a ticket and I will be added to the public list of event attendees.
-
-- I will receive a second email the day before the event to remind me.
-
-- After the event, I will automatically get emails notifying me of subsequent events.
-
-- I can filter all events in my location by tag/interests.
-
-### As an organizer
-
-- I can create a chapter.
-
-- I can edit details about the chapter, including a Slack/Discord/Facebook/WeChat/WhatsApp link participants can join to discuss and coordinate events.
-
-- I can create events, and set their location and capacity.
-
-- I can cancel events.
-
-- I can email the entire list of participants.
-
-- I can ban a participant whom I believe is toxic or who has previously broken my organization's code of conduct.
-
-- I can add a venue sponsor to the event with a link to their website as a way of thanking them for hosting.
-
-- I can add a food sponsor to the event with a link to their website as a way of thanking them for food.
-
-- I can see how many times a participant has come to the event as well as their attendance rate.
-
-- I can check-in attendees on the event registration desk with their `email_id` or `chapter_id`.
+### Post-MVP
+We are maintaining a list of [post-MVP user stories](https://github.com/freeCodeCamp/chapter/issues/84).
 
 ## Roadmap
 
-1. Design the schema.
-2. Set up the API endpoints.
-3. Build the web client and let other developers use the API to build mobile clients and voice interface clients.
+The on-going [project Roadmap conversation](https://github.com/freeCodeCamp/chapter/issues/47) is regularly updated to reflect the overall progress and for higher-level discussions.
 
-Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" this as soon as possible with several of its local study groups.
+Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 
-You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
 
 ## Contributing
 
-[**Take part in discussions or contribute code to this opensource codebase.**](CONTRIBUTING.md)
+* You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
+* Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before creating issues, forking, or submitting any pull requests.
 
 ## License
 
 Copyright © 2019 freeCodeCamp.org
 
-The content of this repository is bound by the following license(s):
-
-- The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
+The computer software is licensed under the [BSD-3-Clause](LICENSE) license.

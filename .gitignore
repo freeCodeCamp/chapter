@@ -62,3 +62,6 @@ typings/
 
 # .DS_Store
 .DS_Store
+
+# asdf tool tile
+.tool-versions

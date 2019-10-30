@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { SomeComponent } from 'client/components/';
+import Content from 'client/components/Content';
 
-describe('SomeComponent', () => {
+describe('Content', () => {
   it('should render text', () => {
-    const { getByText } = render(<SomeComponent />);
+    const { getByText } = render(<Content />);
     expect(getByText('This is an imported component')).toBeDefined();
   });
 });

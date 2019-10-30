@@ -1,18 +1,37 @@
 import * as React from 'react';
-import SomeComponent from 'client/components/SomeComponent';
+import Header from 'client/components/Header';
+import Sidebar from 'client/components/Sidebar';
+import Content from 'client/components/Content';
+import Footer from 'client/components/Footer';
 import styled from 'styled-components';
 
-const Title = styled.h1`
-  font-size: 50px;
-  color: ${({ theme }) => theme.colors.primary};
+const Site = styled.div`
+  @supports not (display: grid) {
+    max-width: 90vw;
+    margin: 0 auto;
+  }
+  @media screen and (min-width: 600px) {
+    @supports (display: grid) {
+      display: grid;
+      grid-template-columns: 1fr 4fr;
+      grid-template-rows: 60px 1fr 80px;
+
+      grid-template-areas:
+        'sidebar header'
+        'sidebar content'
+        'footer footer';
+    }
+  }
 `;
 
 const Index = () => {
   return (
-    <div>
-      <Title>This is a page with a Styled Title!</Title>
-      <SomeComponent />
-    </div>
+    <Site>
+      <Header />
+      <Sidebar />
+      <Content />
+      <Footer />
+    </Site>
   );
 };
 

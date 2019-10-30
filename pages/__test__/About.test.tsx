@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import About from '../client/components/About';
+import About from '../pages/About';
 
 describe('About', () => {
   it('should render text', () => {

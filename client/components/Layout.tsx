@@ -23,11 +23,19 @@ const Site = styled.div`
   }
 `;
 
-export default ({ children }) => (
-  <Site>
-    <Header />
-    <Sidebar />
-    {children}
-    <Footer />
-  </Site>
-);
+interface IProps {
+  children: React.ReactNode;
+}
+
+const Layout = ({ children }: IProps) => {
+  return (
+    <Site>
+      <Header />
+      <Sidebar />
+      {children}
+      <Footer />
+    </Site>
+  );
+};
+
+export default Layout;

@@ -1,3 +1,3 @@
-import SomeComponent from './Content';
+import Layout from './Layout';
 
-export { SomeComponent };
+export { Layout };

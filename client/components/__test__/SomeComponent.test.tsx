@@ -6,6 +6,8 @@ import { SomeComponent } from 'client/components/';
 describe('SomeComponent', () => {
   it('should render text', () => {
     const { getByText } = render(<SomeComponent />);
-    expect(getByText('This is an imported component')).toBeDefined();
+    expect(
+      getByText('This is an imported component with a Button'),
+    ).toBeDefined();
   });
 });

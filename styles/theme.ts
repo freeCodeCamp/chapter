@@ -1,8 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { red } from '@material-ui/core/colors';
 
-// Create a theme instance.
-const theme = createMuiTheme({
+export const themeObject = {
   palette: {
     primary: {
       main: '#556cd6',
@@ -17,6 +16,8 @@ const theme = createMuiTheme({
       default: '#fff',
     },
   },
-});
+};
+// Create a theme instance.
+const theme = createMuiTheme(themeObject);
 
 export default theme;

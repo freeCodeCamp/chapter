@@ -28,10 +28,10 @@ export default class MailerService implements IMailerService {
     this.backupText = backupText || '';
 
     // to be replaced with env vars
-    this.ourEmail = 'ourEmail@placeholder.place';
-    this.emailUsername = 'emailUsernamePlaceholder';
-    this.emailPassword = 'emailPasswordPlaceholder';
-    this.emailService = 'emailServicePlaceholder';
+    this.ourEmail = process.env.CHAPTER_EMAIL as string;
+    this.emailUsername = process.env.EMAIL_USERNAME as string;
+    this.emailPassword = process.env.EMAIL_PASSWORD as string;
+    this.emailService = process.env.EMAIL_SERVICE as string;
 
     this.createTransporter();
   }

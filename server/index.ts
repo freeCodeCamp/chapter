@@ -1,9 +1,11 @@
+import dotenv from 'dotenv';
 import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
 import nextjs from 'server/lib/next';
 import { responseErrorHandler } from 'express-response-errors';
 import exampleRouter from 'server/routers/exampleRouter';
+dotenv.config();
 
 const app: express.Application = express();
 

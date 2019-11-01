@@ -1,5 +1,5 @@
 import React from 'react';
-import SomeComponent from 'client/components/SomeComponent';
+import { SomeComponent } from 'client/components';
 
 const Index = () => {
   return (

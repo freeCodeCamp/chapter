@@ -45,7 +45,8 @@
     "client",
     "server",
     "pages",
-    "types"
+    "types",
+    "styles"
   ],
   "exclude": [
     "node_modules"

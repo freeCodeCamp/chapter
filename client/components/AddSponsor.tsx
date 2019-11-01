@@ -31,7 +31,7 @@ const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
     });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     /* Block double submits */
     if (isSubmitting) {
       return false;
@@ -41,23 +41,22 @@ const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
     setSubmitting(true);
 
     const data = JSON.stringify(values);
-    fetch(`/${chapterId}/events/${eventId}/sponsors`, {
-      // TODO: create route
-      method: 'post',
-      body: data,
-    }).then(res => {
-      if (res.status != 200) {
-        setResponseMsg('Uh oh, something went wrong.'); // TODO: more descriptive error messages
-        setSubmitting(false);
-      } else {
-        setResponseMsg(
-          `${values.name} has been added as a ${values.type.toLowerCase} sponsor.`,
-        );
-        setSubmitting(false);
-      }
-    });
 
-    setSubmitting(false);
+    try {
+      await fetch(`/${chapterId}/events/${eventId}/sponsors`, {
+        // TODO: create route
+        method: 'post',
+        body: data,
+      });
+      setResponseMsg(
+        `${values.name} has been added as a ${values.type.toLowerCase} sponsor.`,
+      );
+    } catch (e) {
+      setResponseMsg('Uh oh, something went wrong.');
+      // TODO: more descriptive error messages
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (

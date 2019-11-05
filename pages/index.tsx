@@ -1,11 +1,12 @@
 import React from 'react';
-import { SomeComponent } from 'client/components';
+import Layout from 'client/components/Layout';
+import SomeComponent from 'client/components/SomeComponent';
 
 const Index = () => {
   return (
-    <div>
+    <Layout>
       <SomeComponent />
-    </div>
+    </Layout>
   );
 };
 

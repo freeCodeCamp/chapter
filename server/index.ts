@@ -13,7 +13,7 @@ const app: express.Application = express();
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;
 
-  await initSequelize().authenticate();
+  await initSequelize.authenticate();
 
   app.use(
     morgan(':method :url :status', {

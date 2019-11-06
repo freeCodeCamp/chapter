@@ -18,6 +18,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=password
       - DB_NAME=chapter
+      - DB_URL=db
     volumes:
       - .:/usr/chapter
     ports:

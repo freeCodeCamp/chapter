@@ -11,8 +11,10 @@ export default class MyApp extends App {
       <>
         <MaterialUIThemeProvider theme={theme}>
           <StyledComponentsThemeProvider theme={themeObject}>
-            <CssBaseline />
-            <Component {...pageProps} />
+            <>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </>
           </StyledComponentsThemeProvider>
         </MaterialUIThemeProvider>
       </>

@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SomeComponent should render text 1`] = `
+<div
+  class="MuiGrid-root MuiGrid-container"
+>
+  <div
+    class="MuiGrid-root SomeComponent__StyledGrid-sc-1mmdy30-0 bGrJXM MuiGrid-item MuiGrid-grid-xs-12"
+  >
+    This is an imported component with a Button
+  </div>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-outlined"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="MuiButton-label"
+    >
+      CLick Here!
+    </span>
+    <span
+      class="MuiTouchRipple-root"
+    />
+  </button>
+</div>
+`;

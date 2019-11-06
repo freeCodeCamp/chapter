@@ -37,6 +37,8 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "dependencies": {
+    "@material-ui/core": "^4.5.2",
+    "@material-ui/icons": "^4.5.1",
     "babel-plugin-module-resolver": "^3.2.0",
     "babel-plugin-styled-components": "^1.10.6",
     "express": "^4.17.1",

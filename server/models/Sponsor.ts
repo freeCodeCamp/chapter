@@ -4,13 +4,12 @@ import {
   Model,
   Table,
   UpdatedAt,
-  DataType,
   PrimaryKey,
 } from 'sequelize-typescript';
-import { IChapter } from 'types/models';
+import { ISponsor } from 'types/models';
 
 @Table
-export class Chapter extends Model<IChapter> {
+export class Sponsor extends Model<ISponsor> {
   @PrimaryKey
   @Column
   id!: number;
@@ -19,22 +18,19 @@ export class Chapter extends Model<IChapter> {
   name!: string;
 
   @Column
-  description!: string;
+  website!: string;
 
   @Column
-  category!: string;
-
-  @Column(DataType.JSON)
-  details!: any;
+  logoPath!: string;
 
   @Column
-  creatorId!: number;
+  type!: string;
 
   @CreatedAt
   @Column
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdatedAt
   @Column
-  updated_at!: Date;
+  updatedAt!: Date;
 }

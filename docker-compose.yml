@@ -1,9 +1,24 @@
 version: '3.7'
 services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=chapter
+    ports:
+      - '54320:5432'
   app:
+    depends_on:
+      - db
     image: node:10-alpine
     command: 'npm run dev'
     working_dir: /usr/chapter
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=chapter
+      - DB_URL=db
     volumes:
       - .:/usr/chapter
     ports:

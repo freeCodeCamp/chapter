@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   down: (queryInterface, _sequelize) => {
-    return queryInterface.dropTable('Chapters');
+    return queryInterface.dropTable('chapters');
   },
 };

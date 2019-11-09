@@ -7,7 +7,7 @@ import {
   DataType,
 } from 'sequelize-typescript';
 
-@Table
+@Table({ tableName: 'chapters' })
 export class Chapter extends Model<Chapter> {
   @Column
   name!: string;
@@ -19,7 +19,7 @@ export class Chapter extends Model<Chapter> {
   category!: string;
 
   @Column(DataType.JSON)
-  details!: any;
+  details: any;
 
   @CreatedAt
   @Column

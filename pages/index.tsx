@@ -1,12 +1,4 @@
-import React from 'react';
-import { SomeComponent } from 'client/components';
+import Home from 'client/containers/home';
+import { withStore } from 'client/hoc';
 
-const Index = () => {
-  return (
-    <div>
-      <SomeComponent />
-    </div>
-  );
-};
-
-export default Index;
+export default withStore(Home);

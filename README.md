@@ -128,7 +128,7 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 
 ## Contributing
 
-* You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
+* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
 * Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before creating issues, forking, or submitting any pull requests.
 
 ## License

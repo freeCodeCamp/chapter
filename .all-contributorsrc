@@ -137,6 +137,15 @@
       "contributions": [
         "platform"
       ]
+    },
+    {
+      "login": "finisher1017",
+      "name": "Jonathan Seubert",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10952681?v=4",
+      "profile": "http://www.seubsworld.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

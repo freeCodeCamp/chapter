@@ -13,6 +13,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "rodmsmendes",
+      "name": "Rodolfo Mendes",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/362428?v=4",
+      "profile": "https://reinforcementlearning4.fun/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

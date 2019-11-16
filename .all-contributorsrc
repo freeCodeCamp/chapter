@@ -6,6 +6,28 @@
   "commit": false,
   "contributors": [
     {
+      "login": "quincylarson",
+      "name": "Quincy Larson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/985197?v=4",
+      "profile": "https://www.freecodecamp.org",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "timmyichen",
+      "name": "Tim Chen",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5304277?v=4",
+      "profile": "https://teachen.info",
+      "contributions": [
+        "code",
+        "maintenance",
+        "tool"
+      ]
+    },
+    {
       "login": "nik-john",
       "name": "nikjohn",
       "avatar_url": "https://avatars2.githubusercontent.com/u/1117182?v=4",
@@ -14,6 +36,17 @@
         "code",
         "doc",
         "tool"
+      ]
+    },
+    {
+      "login": "matjack1",
+      "name": "Matteo Giaccone",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/65402?v=4",
+      "profile": "https://turnintocoders.it",
+      "contributions": [
+        "platform",
+        "code",
+        "doc"
       ]
     },
     {
@@ -95,28 +128,6 @@
       "profile": "https://github.com/eolculnamo2",
       "contributions": [
         "code"
-      ]
-    },
-    {
-      "login": "matjack1",
-      "name": "Matteo Giaccone",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/65402?v=4",
-      "profile": "https://turnintocoders.it",
-      "contributions": [
-        "platform",
-        "code",
-        "doc"
-      ]
-    },
-    {
-      "login": "timmyichen",
-      "name": "Tim Chen",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/5304277?v=4",
-      "profile": "https://teachen.info",
-      "contributions": [
-        "code",
-        "maintenance",
-        "tool"
       ]
     },
     {
@@ -291,17 +302,6 @@
       "profile": "https://github.com/MirzaChilman",
       "contributions": [
         "doc"
-      ]
-    },
-    {
-      "login": "quincylarson",
-      "name": "Quincy Larson",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/985197?v=4",
-      "profile": "https://www.freecodecamp.org",
-      "contributions": [
-        "code",
-        "doc",
-        "ideas"
       ]
     }
   ],

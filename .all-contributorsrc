@@ -13,6 +13,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "xarielx",
+      "name": "Ariel Barboza",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/36430592?v=4",
+      "profile": "http://www.arielbarboza.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

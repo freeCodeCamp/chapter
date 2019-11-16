@@ -350,6 +350,15 @@
         "design",
         "doc"
       ]
+    },
+    {
+      "login": "odomojuli",
+      "name": "Juli Odomo",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11369398?v=4",
+      "profile": "http://odomojuli.com",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,

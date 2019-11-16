@@ -49,6 +49,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ScottBrenner",
+      "name": "Scott Brenner",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/416477?v=4",
+      "profile": "https://www.scottbrenner.me/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

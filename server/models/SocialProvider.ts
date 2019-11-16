@@ -5,8 +5,11 @@ import {
   Table,
   UpdatedAt,
   PrimaryKey,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { ISocialProvider } from 'types/models';
+import { User } from './User';
+import { SocialProviderUser } from './SocialProviderUser';
 
 @Table
 export class SocialProvider extends Model<ISocialProvider> {
@@ -17,11 +20,14 @@ export class SocialProvider extends Model<ISocialProvider> {
   @Column
   name!: string;
 
+  @BelongsToMany(() => User, () => SocialProviderUser)
+  users: User[];
+
   @CreatedAt
   @Column
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdatedAt
   @Column
-  updatedAt!: Date;
+  updated_at!: Date;
 }

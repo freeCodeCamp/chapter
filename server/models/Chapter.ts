@@ -6,8 +6,16 @@ import {
   UpdatedAt,
   DataType,
   PrimaryKey,
+  HasOne,
+  HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
-import { IChapter } from 'types/models';
+import { IChapter, ILocation, IUser, IUserBan, IEvent } from 'types/models';
+import { Location } from './Location';
+import { User } from './User';
+import { UserBan } from './UserBan';
+import { Event } from './Event';
+import { UserChapter } from './UserChapter';
 
 @Table
 export class Chapter extends Model<IChapter> {
@@ -28,7 +36,19 @@ export class Chapter extends Model<IChapter> {
   details!: any;
 
   @Column
-  creatorId!: number;
+  creator_id!: number;
+
+  @HasMany(() => Event)
+  events!: IEvent[];
+
+  @HasOne(() => Location)
+  location!: ILocation;
+
+  @BelongsToMany(() => User, () => UserChapter)
+  users!: IUser[];
+
+  @HasMany(() => UserBan)
+  user_bans!: IUserBan[];
 
   @CreatedAt
   @Column

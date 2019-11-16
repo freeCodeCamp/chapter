@@ -15,19 +15,19 @@ export class SocialProviderUser extends Model<ISocialProviderUser> {
   id!: number;
 
   @Column
-  providerId!: number;
+  provider_id!: number;
 
   @Column
-  providerUserId!: string;
+  provider_user_id!: string;
 
   @Column
-  userId!: number;
+  user_id!: number;
 
   @CreatedAt
   @Column
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdatedAt
   @Column
-  updatedAt!: Date;
+  updated_at!: Date;
 }

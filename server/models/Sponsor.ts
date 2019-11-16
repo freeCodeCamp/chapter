@@ -5,8 +5,11 @@ import {
   Table,
   UpdatedAt,
   PrimaryKey,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { ISponsor } from 'types/models';
+import { EventSponsor } from './EventSponsor';
+import { Event } from './Event';
 
 @Table
 export class Sponsor extends Model<ISponsor> {
@@ -28,9 +31,12 @@ export class Sponsor extends Model<ISponsor> {
 
   @CreatedAt
   @Column
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdatedAt
   @Column
-  updatedAt!: Date;
+  updated_at!: Date;
+
+  @BelongsToMany(() => Event, () => EventSponsor)
+  events: Event[];
 }

@@ -201,7 +201,8 @@
       "profile": "https://github.com/vkWeb",
       "contributions": [
         "doc",
-        "tool"
+        "tool",
+        "design"
       ]
     },
     {
@@ -318,6 +319,15 @@
       "name": "Sean",
       "avatar_url": "https://avatars1.githubusercontent.com/u/11980217?v=4",
       "profile": "http://www.seanrparker.com",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "madaleneaza-design",
+      "name": "Madalena",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/38219468?v=4",
+      "profile": "https://codepen.io/Madalena-Design",
       "contributions": [
         "design"
       ]

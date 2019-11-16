@@ -13,6 +13,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Zeko369",
+      "name": "Fran Zekan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3064377?v=4",
+      "profile": "https://github.com/Zeko369",
+      "contributions": [
+        "code",
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7,

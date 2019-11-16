@@ -76,6 +76,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "yitzhak-bloy",
+      "name": "yitzhak-bloy",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/41252020?v=4",
+      "profile": "https://github.com/yitzhak-bloy",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

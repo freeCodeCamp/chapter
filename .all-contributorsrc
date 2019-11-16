@@ -247,6 +247,15 @@
         "doc",
         "code"
       ]
+    },
+    {
+      "login": "email2vimalraj",
+      "name": "VimalRaj Selvam",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1214686?v=4",
+      "profile": "http://vimalselvam.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

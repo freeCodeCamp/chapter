@@ -292,6 +292,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "quincylarson",
+      "name": "Quincy Larson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/985197?v=4",
+      "profile": "https://www.freecodecamp.org",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

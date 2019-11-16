@@ -192,6 +192,15 @@
         "doc",
         "tool"
       ]
+    },
+    {
+      "login": "kognise",
+      "name": "Kognise",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/42556441?v=4",
+      "profile": "https://kognise.dev/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

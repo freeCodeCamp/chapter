@@ -85,6 +85,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "eolculnamo2",
+      "name": "Rob Bertram",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/27943776?v=4",
+      "profile": "https://github.com/eolculnamo2",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

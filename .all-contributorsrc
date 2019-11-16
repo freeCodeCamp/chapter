@@ -105,6 +105,17 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "timmyichen",
+      "name": "Tim Chen",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5304277?v=4",
+      "profile": "https://teachen.info",
+      "contributions": [
+        "code",
+        "maintenance",
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7,

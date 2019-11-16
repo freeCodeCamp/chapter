@@ -13,6 +13,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vkWeb",
+      "name": "Vivek Agrawal",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26724128?v=4",
+      "profile": "https://github.com/vkWeb",
+      "contributions": [
+        "doc",
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7,

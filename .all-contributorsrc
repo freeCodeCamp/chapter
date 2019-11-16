@@ -31,6 +31,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Sonicrida",
+      "name": "Jonathan Chhabra",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/434238?v=4",
+      "profile": "http://Sonicrida.com",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,

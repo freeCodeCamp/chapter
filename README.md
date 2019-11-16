@@ -1,5 +1,5 @@
 # Welcome to Chapter
-[![All Contributors](https://img.shields.io/badge/all_contributors-25-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors)
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
@@ -177,6 +177,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://twitter.com/praveenweb"><img src="https://avatars0.githubusercontent.com/u/14110316?v=4" width="100px;" alt="Praveen Durairaju"/><br /><sub><b>Praveen Durairaju</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=praveenweb" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/shangeethsivan"><img src="https://avatars2.githubusercontent.com/u/9254310?v=4" width="100px;" alt="Shangeeth Sivan"/><br /><sub><b>Shangeeth Sivan</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=shangeethsivan" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/conr"><img src="https://avatars1.githubusercontent.com/u/5826063?v=4" width="100px;" alt="Conor Broderick"/><br /><sub><b>Conor Broderick</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=conr" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/PrestonElliott"><img src="https://avatars1.githubusercontent.com/u/46748725?v=4" width="100px;" alt="PrestonElliott"/><br /><sub><b>PrestonElliott</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=PrestonElliott" title="Documentation">📖</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=PrestonElliott" title="Code">💻</a></td>
   </tr>
 </table>
 

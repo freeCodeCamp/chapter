@@ -237,6 +237,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "PrestonElliott",
+      "name": "PrestonElliott",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/46748725?v=4",
+      "profile": "https://github.com/PrestonElliott",
+      "contributions": [
+        "doc",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

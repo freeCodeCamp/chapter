@@ -1,5 +1,5 @@
 # Welcome to Chapter
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors)
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
@@ -171,6 +171,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://www.linkedin.com/in/gonzalograscantou"><img src="https://avatars1.githubusercontent.com/u/23525653?v=4" width="100px;" alt="Gonzalo Gras Cantou"/><br /><sub><b>Gonzalo Gras Cantou</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Guusy" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/vkWeb"><img src="https://avatars3.githubusercontent.com/u/26724128?v=4" width="100px;" alt="Vivek Agrawal"/><br /><sub><b>Vivek Agrawal</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=vkWeb" title="Documentation">📖</a> <a href="#tool-vkWeb" title="Tools">🔧</a></td>
     <td align="center"><a href="https://kognise.dev/"><img src="https://avatars3.githubusercontent.com/u/42556441?v=4" width="100px;" alt="Kognise"/><br /><sub><b>Kognise</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=kognise" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/wendelnascimento"><img src="https://avatars1.githubusercontent.com/u/12970118?v=4" width="100px;" alt="Wendel Nascimento"/><br /><sub><b>Wendel Nascimento</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=wendelnascimento" title="Code">💻</a></td>
   </tr>
 </table>
 

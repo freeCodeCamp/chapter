@@ -219,6 +219,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "shangeethsivan",
+      "name": "Shangeeth Sivan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9254310?v=4",
+      "profile": "https://github.com/shangeethsivan",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

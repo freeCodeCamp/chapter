@@ -164,6 +164,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "chrismgonzalez",
+      "name": "Chris Gonzalez",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/10368310?v=4",
+      "profile": "https://chrismgonzalez.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

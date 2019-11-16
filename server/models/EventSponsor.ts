@@ -4,24 +4,27 @@ import {
   Model,
   Table,
   UpdatedAt,
-  PrimaryKey,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { IEventSponsor } from 'types/models';
+import { Sponsor } from './Sponsor';
+import { Event } from './Event';
 
 @Table
 export class EventSponsor extends Model<IEventSponsor> {
-  @PrimaryKey
+  @ForeignKey(() => Event)
   @Column
-  eventId: number;
+  event_id!: number;
 
+  @ForeignKey(() => Sponsor)
   @Column
-  sponsorId: number;
+  sponsor_id!: number;
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at!: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at!: Date;
 }

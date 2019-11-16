@@ -5,23 +5,30 @@ import {
   Table,
   UpdatedAt,
   PrimaryKey,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
-import { IUserBan } from 'types/models';
+import { IUserBan, IChapter } from 'types/models';
+import { Chapter } from './Chapter';
 
 @Table
 export class UserBan extends Model<IUserBan> {
   @PrimaryKey
   @Column
-  userId!: number;
+  user_id!: number;
 
+  @ForeignKey(() => Chapter)
   @Column
-  chapterId!: number;
+  chapter_id!: number;
+
+  @BelongsTo(() => Chapter)
+  chapter: IChapter;
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at: Date;
 }

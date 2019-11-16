@@ -5,8 +5,15 @@ import {
   Table,
   UpdatedAt,
   PrimaryKey,
+  HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
-import { IUser } from 'types/models';
+import { IUser, IRsvp, IChapter, ISocialProvider } from 'types/models';
+import { Rsvp } from './Rsvp';
+import { Chapter } from './Chapter';
+import { UserChapter } from './UserChapter';
+import { SocialProvider } from './SocialProvider';
+import { SocialProviderUser } from './SocialProviderUser';
 
 @Table
 export class User extends Model<IUser> {
@@ -15,22 +22,31 @@ export class User extends Model<IUser> {
   id!: number;
 
   @Column
-  firstName!: string;
+  first_name!: string;
 
   @Column
-  lastName!: string;
+  last_name!: string;
 
   @Column
   email!: string;
 
   @Column
-  passwordDigest!: string;
+  password_digest!: string;
+
+  @BelongsToMany(() => Chapter, () => UserChapter)
+  chapters!: IChapter[];
+
+  @BelongsToMany(() => SocialProvider, () => SocialProviderUser)
+  social_providers: ISocialProvider[];
+
+  @HasMany(() => Rsvp)
+  rsvps: IRsvp[];
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at: Date;
 }

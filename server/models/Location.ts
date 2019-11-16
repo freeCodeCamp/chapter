@@ -15,7 +15,7 @@ export class Location extends Model<ILocation> {
   id!: number;
 
   @Column
-  countryCode!: string;
+  country_code!: string;
 
   @Column
   city!: string;
@@ -24,13 +24,13 @@ export class Location extends Model<ILocation> {
   region!: string;
 
   @Column
-  postalCode!: string;
+  postal_code!: string;
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at: Date;
 }

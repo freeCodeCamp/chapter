@@ -1,5 +1,13 @@
-import { Column, Model, Table, PrimaryKey } from 'sequelize-typescript';
+import {
+  Column,
+  Model,
+  Table,
+  PrimaryKey,
+  BelongsTo,
+  ForeignKey,
+} from 'sequelize-typescript';
 import { ITag } from 'types/models';
+import { Event } from './Event';
 
 @Table
 export class Tag extends Model<ITag> {
@@ -9,4 +17,13 @@ export class Tag extends Model<ITag> {
 
   @Column
   name!: string;
+
+  // Below is not included in schema.png, but necessary for
+  // one to many relationship with event
+  @ForeignKey(() => Event)
+  @Column
+  event_id: number;
+
+  @BelongsTo(() => Event)
+  event: Event;
 }

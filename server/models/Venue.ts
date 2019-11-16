@@ -5,7 +5,10 @@ import {
   Table,
   UpdatedAt,
   PrimaryKey,
+  HasOne,
 } from 'sequelize-typescript';
+import { Location } from './Location';
+import { ILocation } from 'types/models';
 
 @Table
 export class Venue extends Model<Venue> {
@@ -17,13 +20,16 @@ export class Venue extends Model<Venue> {
   name!: string;
 
   @Column
-  locationId!: number;
+  location_id!: number;
+
+  @HasOne(() => Location)
+  location: ILocation;
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at: Date;
 }

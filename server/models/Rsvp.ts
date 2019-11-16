@@ -4,30 +4,40 @@ import {
   Model,
   Table,
   UpdatedAt,
-  PrimaryKey,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
-import { IRsvp } from 'types/models';
+import { IRsvp, IUser } from 'types/models';
+import { Event } from './Event';
+import { User } from './User';
 
 @Table
 export class Rsvp extends Model<IRsvp> {
-  @PrimaryKey
+  @ForeignKey(() => User)
   @Column
-  userId!: number;
+  user_id!: number;
 
+  @BelongsTo(() => User)
+  user: IUser;
+
+  @ForeignKey(() => Event)
   @Column
-  eventId!: number;
+  event_id: number;
+
+  @BelongsTo(() => Event)
+  event: Event;
 
   @Column
   date: Date;
 
   @Column
-  onWaitList: boolean;
+  on_waitlist: boolean;
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at: Date;
 }

@@ -4,24 +4,27 @@ import {
   Model,
   Table,
   UpdatedAt,
-  PrimaryKey,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { IUserChapter } from 'types/models';
+import { User } from './User';
+import { Chapter } from './Chapter';
 
 @Table
 export class UserChapter extends Model<IUserChapter> {
-  @PrimaryKey
+  @ForeignKey(() => User)
   @Column
-  userId!: number;
+  user_id!: number;
 
+  @ForeignKey(() => Chapter)
   @Column
-  chapterId!: number;
+  chapter_id!: number;
 
   @CreatedAt
   @Column
-  createdAt: Date;
+  created_at: Date;
 
   @UpdatedAt
   @Column
-  updatedAt: Date;
+  updated_at: Date;
 }

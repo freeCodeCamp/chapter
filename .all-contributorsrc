@@ -67,6 +67,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "joelrozen",
+      "name": "Joel Rozen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20792877?v=4",
+      "profile": "http://www.pipelabs.com.au",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

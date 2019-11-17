@@ -6,7 +6,11 @@
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "prettier"
+  ],
   "env": {
     "node": true,
     "es6": true
@@ -22,7 +26,9 @@
       "env": {
         "jest": true
       },
-      "plugins": ["jest"]
+      "plugins": [
+        "jest"
+      ]
     }
   ],
   "rules": {
@@ -32,7 +38,8 @@
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "prettier/prettier": ["error", { "singleQuote": true }],
-    "react/display-name": 0
+    "react/display-name": 0,
+    "react/prop-types": 0
   },
   "settings": {
     "react": {

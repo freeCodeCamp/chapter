@@ -20,7 +20,7 @@ const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
 
   const onSubmit = async data => {
     const { name, website, type }: ISponsorData = data;
-    console.log({ name, website, type });
+    
     try {
       await fetch(`/${chapterId}/events/${eventId}/sponsors`, {
         // TODO: create route

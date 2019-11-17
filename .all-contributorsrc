@@ -360,6 +360,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "vaibhavsingh97",
+      "name": "Vaibhav Singh",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8705386?v=4",
+      "profile": "https://vaibhavsingh97.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

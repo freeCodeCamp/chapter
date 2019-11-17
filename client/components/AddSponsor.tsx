@@ -10,6 +10,7 @@ import {
 import {
   IAddSponsorProps,
   ISponsorData,
+  SponsorType,
 } from 'client/interfaces/components/AddSponsor';
 
 const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
@@ -19,9 +20,9 @@ const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
   const [values, setValues] = React.useState<ISponsorData>({
     name: '',
     website: '',
-    type: 'FOOD',
+    type: SponsorType.FOOD,
   });
-  const [responseMsg, setResponseMsg] = React.useState<string>();
+  const [responseMsg, setResponseMsg] = React.useState('');
 
   function handleChange(e) {
     const { value, name } = e.target;

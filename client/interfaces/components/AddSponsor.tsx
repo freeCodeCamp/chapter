@@ -3,8 +3,13 @@ export interface IAddSponsorProps {
   chapterId: string;
 }
 
+export enum SponsorType {
+  FOOD,
+  BEVERAGE,
+  OTHER,
+}
 export interface ISponsorData {
   name: string;
   website: string;
-  type: 'FOOD' | 'BEVERAGE' | 'OTHER'; // TODO: Add VENUE
+  type: SponsorType;
 }

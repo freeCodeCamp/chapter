@@ -1,5 +1,6 @@
 import * as React from 'react';
 import fetch from 'isomorphic-fetch';
+import useForm from 'react-hook-form';
 
 import {
   Form,
@@ -10,76 +11,55 @@ import {
 import {
   IAddSponsorProps,
   ISponsorData,
-  SponsorType,
 } from 'client/interfaces/components/AddSponsor';
 
 const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
-  const [isSubmitting, setSubmitting] = React.useState(false);
-  // we specify type as food as state is only updated on field change. Since field
-  // defaults to food and the user doesn't change it, state would be empty
-  const [values, setValues] = React.useState<ISponsorData>({
-    name: '',
-    website: '',
-    type: SponsorType.FOOD,
-  });
   const [responseMsg, setResponseMsg] = React.useState('');
 
-  function handleChange(e) {
-    const { value, name } = e.target;
-    setValues({
-      ...values,
-      [name]: value,
-    });
-  }
+  const { register, handleSubmit, errors } = useForm();
 
-  async function handleSubmit(e) {
-    /* Block double submits */
-    if (isSubmitting) {
-      return false;
-    }
-
-    e.preventDefault();
-    setSubmitting(true);
-
-    const data = JSON.stringify(values);
-
+  const onSubmit = async data => {
+    const { name, website, type }: ISponsorData = data;
+    console.log({ name, website, type });
     try {
       await fetch(`/${chapterId}/events/${eventId}/sponsors`, {
         // TODO: create route
         method: 'post',
-        body: data,
+        body: {
+          name,
+          website,
+          type,
+        },
       });
-      setResponseMsg(
-        `${values.name} has been added as a ${values.type.toLowerCase} sponsor.`,
-      );
+      setResponseMsg(`${name} has been added as a ${type} sponsor.`);
     } catch (e) {
       setResponseMsg('Uh oh, something went wrong.');
       // TODO: more descriptive error messages
-    } finally {
-      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
-      {responseMsg && <ResponseDiv>{responseMsg}</ResponseDiv>}
-      <Form onSubmit={handleSubmit}>
+      {(responseMsg || errors) && <ResponseDiv>{responseMsg}</ResponseDiv>}
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <label>Sponsor Name: </label>
         <Input
           name="name"
           type="text"
           placeholder="Glitter and Sparkle Co"
-          onChange={handleChange}
+          ref={register}
+          required
         />
         <label>Sponsor Website: </label>
         <Input
           name="website"
           type="text"
           placeholder="www.glitter.co"
-          onChange={handleChange}
+          ref={register}
+          required
         />
         <label>Sponsor Type: </label>
-        <select name="type" onChange={handleChange}>
+        <select name="type" required ref={register}>
           <option value="FOOD">Food</option>
           <option value="BEVERAGE">Beverage</option>
           <option value="OTHER">Other</option>

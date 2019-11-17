@@ -6,7 +6,7 @@ Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your 
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
-You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements. 
+You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements. 
 
 ## Here are some ways to help us
 
@@ -248,7 +248,7 @@ After you've committed and pushed changes to your fork, check here for [how to o
 
 ### What do we need help with right now?
 
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our Discord server](https://discord.gg/vbRUYWS) to stay in the loop.
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our Discord server](https://discord.gg/PXqYtEh) to stay in the loop.
 
 ### I found a typo. Should I report an issue before I can make a pull request?
 

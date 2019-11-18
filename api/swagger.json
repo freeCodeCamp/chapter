@@ -80,7 +80,7 @@
         "tags": [
           "location"
         ],
-        "summary": "Finds Locations by city, country etc",
+        "summary": "Finds locations by city, country or postal code",
         "description": "Multiple status values can be provided as query params",
         "operationId": "findLocations",
         "parameters": [
@@ -1211,6 +1211,9 @@
           "website": {
             "type": "string"
           },
+          "logo_path": {
+            "type": "string"
+          },
           "type": {
             "$ref": "#/components/schemas/SponsorType"
           }
@@ -1244,13 +1247,10 @@
             "type": "date-time"
           },
           "chapter_id": {
-            "type": "uuid"
+            "type": "string"
           },
           "venue_id": {
-            "type": "uuid"
-          },
-          "tag_id": {
-            "type": "uuid"
+            "type": "string"
           },
           "canceled": {
             "type": "boolean"

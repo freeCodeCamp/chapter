@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
-    "dev": "npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
+    "dev": "cross-env TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
     "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "next:build": "next build",
@@ -76,6 +76,7 @@
     "@types/validator": "^10.11.3",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
+    "cross-env": "^6.0.3",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-config-react": "^1.1.7",

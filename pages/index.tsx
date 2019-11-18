@@ -1,4 +1,3 @@
-import Home from 'client/containers/home';
-import { withStore } from 'client/hoc';
+import Home from 'client/modules/home';
 
-export default withStore(Home);
+export default Home;

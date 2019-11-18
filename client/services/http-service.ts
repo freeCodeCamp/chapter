@@ -5,7 +5,7 @@
 import fetch from 'isomorphic-unfetch';
 
 export class HttpService<V = any> {
-  public static baseUrl = '/api/v1'; // TODO: eed to create some ENV for this
+  public static baseUrl = '/api/v1'; // TODO: need to create some ENV for this
   public static baseHeaders = {
     'Content-Type': 'application/json',
   };

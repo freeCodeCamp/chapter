@@ -8,6 +8,3 @@ interface Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
   __REACT_DEVTOOLS_GLOBAL_HOOK__: any;
 }
-
-// export some usefull utils for type modifications...
-type Subtract<T, K> = T extends K ? T : never;

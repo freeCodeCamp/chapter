@@ -2,7 +2,16 @@
  * This Class is a very minimal wrapper around fetch
  * to make API calls easy.
  */
-import fetch from 'isomorphic-unfetch';
+
+import { RequestInfo, RequestInit, Response } from 'node-fetch';
+
+let fetch: (url: RequestInfo, init?: RequestInit) => Promise<Response>;
+
+if (typeof window === 'undefined') {
+  fetch = require('node-fetch');
+} else {
+  fetch = window.fetch ? window.fetch : require('whatwg-fetch');
+}
 
 export class HttpService<V = any> {
   public static baseUrl = '/api/v1'; // TODO: need to create some ENV for this
@@ -10,9 +19,9 @@ export class HttpService<V = any> {
     'Content-Type': 'application/json',
   };
 
-  public stringifyParams(params: Object) {
+  public stringifyParams(params: Record<string, string>) {
     return Object.keys(params).reduce((acc, key, i) => {
-      return params.hasOwnProperty(key)
+      return Object.prototype.hasOwnProperty.call(params, key)
         ? `${acc}${i !== 0 ? '&' : '?'}${key}=${params[key]}`
         : acc;
     }, '');

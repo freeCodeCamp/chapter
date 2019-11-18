@@ -46,13 +46,12 @@
     "express-async-handler": "^1.1.4",
     "express-response-errors": "^1.0.4",
     "fork-ts-checker-webpack-plugin": "^1.5.1",
-    "isomorphic-fetch": "^2.2.1",
     "immer": "^3.2.0",
-    "isomorphic-unfetch": "^3.0.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
     "next": "^9.1.1",
     "nodemailer": "^6.3.1",
+    "node-fetch": "^2.6.0",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "react": "^16.10.2",
@@ -66,7 +65,8 @@
     "sequelize-typescript": "^1.0.0",
     "styled-components": "^4.4.0",
     "ts-node": "^8.4.1",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@testing-library/react": "^9.3.0",

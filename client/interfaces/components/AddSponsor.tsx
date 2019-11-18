@@ -1,7 +1,4 @@
-export interface IAddSponsorProps {
-  eventId: string;
-  chapterId: string;
-}
+// export interface IAddSponsorProps {}
 
 export enum SponsorType {
   FOOD,

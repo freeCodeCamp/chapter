@@ -6,14 +6,15 @@ import { responseErrorHandler } from 'express-response-errors';
 import exampleRouter from 'server/routers/exampleRouter';
 import chapterRouter from 'server/routers/chapter';
 
-import { initSequelize } from 'server/db';
+import { initDB } from 'server/db';
 
 const app: express.Application = express();
 
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;
 
-  await initSequelize.authenticate();
+  await initDB;
+  // await connection.runMigrations();
 
   app.use(
     morgan(':method :url :status', {

@@ -1,31 +1,32 @@
 import {
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
   Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  DataType,
-} from 'sequelize-typescript';
+  Entity,
+} from 'typeorm';
 
-@Table
-export class Chapter extends Model<Chapter> {
-  @Column
+@Entity({ name: 'chapters' })
+export class Chapter extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ nullable: false })
   name!: string;
 
-  @Column
+  @Column({ nullable: false })
   description!: string;
 
-  @Column
+  @Column({ nullable: false })
   category!: string;
 
-  @Column(DataType.JSON)
+  @Column({ type: 'json' })
   details!: any;
 
-  @CreatedAt
-  @Column
+  @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 
-  @UpdatedAt
-  @Column
+  @UpdateDateColumn({ type: 'timestamp' })
   updated_at!: Date;
 }

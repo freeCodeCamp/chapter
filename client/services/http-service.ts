@@ -3,15 +3,7 @@
  * to make API calls easy.
  */
 
-import { RequestInfo, RequestInit, Response } from 'node-fetch';
-
-let fetch: (url: RequestInfo, init?: RequestInit) => Promise<Response>;
-
-if (typeof window === 'undefined') {
-  fetch = require('node-fetch');
-} else {
-  fetch = window.fetch ? window.fetch : require('whatwg-fetch');
-}
+import fetch from 'cross-fetch';
 
 export class HttpService<V = any> {
   public static baseUrl = '/api/v1'; // TODO: need to create some ENV for this

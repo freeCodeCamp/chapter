@@ -1,5 +1,5 @@
-import { chapterTypes } from '../types';
 import produce from 'immer';
+import { chapterTypes } from '../types';
 
 const initialState: chapterTypes.IChapterStoreState = {
   name: '',

@@ -1,6 +1,6 @@
-import { chapterTypes } from '../types';
-import { HttpService } from 'client/services/http-service';
 import { ActionCreator } from 'redux';
+import { HttpService } from 'client/services/http-service';
+import { chapterTypes } from '../types';
 
 /****************
  * Actions

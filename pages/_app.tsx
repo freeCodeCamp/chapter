@@ -3,10 +3,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import theme, { themeObject } from 'styles/theme';
-import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
+import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import theme, { themeObject } from 'styles/theme';
 import { rootReducer } from 'client/store/reducers';
 
 const composeEnhancers =

@@ -1,14 +1,8 @@
 import React, { useEffect } from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  CircularProgress,
-} from '@material-ui/core';
+import { Card, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useSelector, useDispatch } from 'react-redux';
-import { SomeComponent } from 'client/components';
+import { SomeComponent, ProgressCardContent } from 'client/components';
 import { AppStoreState } from 'client/store/reducers';
 import { chapterActions } from 'client/store/actions';
 
@@ -17,24 +11,6 @@ const useStyles = makeStyles(() => ({
     padding: 15,
   },
 }));
-
-const renderCardContent = (loading, name, description) => {
-  return (
-    <CardContent>
-      {!loading && (
-        <>
-          <Typography gutterBottom variant="h5" component="h2">
-            {name}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {description}
-          </Typography>
-        </>
-      )}
-      {loading && <CircularProgress />}
-    </CardContent>
-  );
-};
 
 const Home: React.FC = () => {
   const classes = useStyles();
@@ -59,7 +35,16 @@ const Home: React.FC = () => {
       <Grid container className={classes.root} spacing={2}>
         <Grid item xs={10}>
           {!error && (
-            <Card>{renderCardContent(loading, name, description)}</Card>
+            <Card>
+              <ProgressCardContent loading={loading}>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {name}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {description}
+                </Typography>
+              </ProgressCardContent>
+            </Card>
           )}
         </Grid>
       </Grid>

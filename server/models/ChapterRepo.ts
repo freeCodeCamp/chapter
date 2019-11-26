@@ -1,6 +1,5 @@
 import {
   PrimaryGeneratedColumn,
-  BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
   Column,
@@ -8,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'chapters' })
-export class Chapter extends BaseEntity {
+export class ChapterRepo {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -36,7 +35,6 @@ export class Chapter extends BaseEntity {
     category: string;
     details: any;
   }) {
-    super();
     if (params) {
       const { name, description, category, details } = params;
 

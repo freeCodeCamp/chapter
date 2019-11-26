@@ -11,4 +11,5 @@ export const initDB = createConnection({
   entities: [__dirname + '/models/*.ts'],
   synchronize: false,
   logging: false,
+  name: 'default',
 });

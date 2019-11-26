@@ -1,11 +1,11 @@
 import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
+
 import nextjs from 'server/lib/next';
 import { responseErrorHandler } from 'express-response-errors';
 import exampleRouter from 'server/routers/exampleRouter';
 import chapterRouter from 'server/routers/chapter';
-
 import { initDB } from 'server/db';
 
 const app: express.Application = express();
@@ -13,8 +13,8 @@ const app: express.Application = express();
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;
 
-  await initDB;
-  // await connection.runMigrations();
+  const connection = await initDB;
+  await connection.runMigrations();
 
   app.use(
     morgan(':method :url :status', {

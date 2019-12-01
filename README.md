@@ -11,15 +11,6 @@ You can use your own authentication tools. And all your user data will stay on y
 
 Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
 
-### API Specification
-
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
-
-```bash
-npm run speccy
-```
-Navigate to http://localhost:8001 to see API docs
-
 ## Terminology
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
 
@@ -111,6 +102,15 @@ Run tests in watch mode
 npm run test:watch
 ```
 
+## API Specification
+
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
+
+```bash
+npm run speccy
+```
+Navigate to http://localhost:8001 to see API docs
+
 ## Schema
 <details>
 <summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
@@ -126,11 +126,7 @@ npm run test:watch
 The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
 ### Post-MVP
-We are maintaining a list of [post-MVP user stories](https://github.com/freeCodeCamp/chapter/issues/84).
-
-## Roadmap
-
-The on-going [project Roadmap conversation](https://github.com/freeCodeCamp/chapter/issues/47) is regularly updated to reflect the overall progress and for higher-level discussions.
+We are maintaining a list of post-MVP user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/labels/Roadmap).
 
 Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 

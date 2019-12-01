@@ -36,6 +36,9 @@ We are planning to use the following tools:
   * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Styled Components](https://www.styled-components.com) for styling.
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+* [chai](https://www.chaijs.com/) for writing unit tests.
+  * [sinon](https://sinonjs.org/)
+  * [sinon-chai](https://github.com/domenic/sinon-chai)
 
 
 A lot of people know these tools, and they're proven to work well at scale.

@@ -80,6 +80,9 @@ Install dependencies:
 npm install
 ```
 
+Setup Environment Variables:
+Copy and paste env.sample into your .env file
+
 Ensure that Docker Desktop is up and running, then run the following command:
 ```
 docker-compose up
@@ -91,7 +94,7 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
-## Testing 
+## Testing
 Run tests
 ```
 npm run test

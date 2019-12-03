@@ -126,7 +126,7 @@ Navigate to http://localhost:8001 to see API docs
 The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
 ### Post-MVP
-We are maintaining a list of post-MVP user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/labels/Roadmap).
+We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
 Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 

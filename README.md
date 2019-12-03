@@ -5,25 +5,19 @@ After several years of being dissatisfied with existing group event tools (Meetu
 
 This will be a self-hosted Docker container that you can one-click deploy to the cloud, then configure through an admin panel. No coding required.
 
-Your nonprofit can sub-domain it to your website like `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
+Your organization can host an instance of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
 
 You can use your own authentication tools. And all your user data will stay on your own server.
 
-### API Specification
-
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
-
-```bash
-npm run speccy
-```
-Navigate to http://localhost:8001 to see API docs
+Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
 
 ## Terminology
 To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
 
-- `organization` is a singular instance/deployment of Chapter. Example: Women Who Code at the domain `chapter.womenwhocode.org`.
-- `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. Example: Women Who Code NYC.
-- `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. Example: Women Who Code NYC - April 2019 Event.
+- `instance` is a web server deployment of this _Chapter_ application, which is managed by an organization.
+- `organization` is a non-profit with multiple chapters. Example: Women Who Code at the sub-domain `chapter.womenwhocode.org`.
+- `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. Example: Women Who Code New York City.
+- `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. Example: Women Who Code New York City - April 2019 Event.
 - `user` is a person who belongs to a chapter.
 
 ## Tech Stack
@@ -31,7 +25,7 @@ To better communicate and more easily build an API and UI, we've decided on a co
 We are planning to use the following tools:
 
 * [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
-* [Postgres](https://www.postgresql.org) with [Sequelize ORM](https://sequelize.org)
+* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Styled Components](https://www.styled-components.com) for styling.
@@ -108,12 +102,22 @@ Run tests in watch mode
 npm run test:watch
 ```
 
+## API Specification
+
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
+
+```bash
+npm run speccy
+```
+Navigate to http://localhost:8001 to see API docs
+
 ## Schema
 <details>
 <summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
 <br>
 
 ![a diagram illustrating the proposed schema for Chapter](data/schema.png)
+> created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
 </details>
 
 ## User Stories
@@ -122,11 +126,7 @@ npm run test:watch
 The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
 ### Post-MVP
-We are maintaining a list of [post-MVP user stories](https://github.com/freeCodeCamp/chapter/issues/84).
-
-## Roadmap
-
-The on-going [project Roadmap conversation](https://github.com/freeCodeCamp/chapter/issues/47) is regularly updated to reflect the overall progress and for higher-level discussions.
+We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
 Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 

@@ -12,13 +12,15 @@ You can use your own authentication tools. And all your user data will stay on y
 Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
 
 ## Terminology
-To better communicate and more easily build an API and UI, we've decided on a collection of terminology to discuss about the Chapter project in a clear way:
+To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the Chapter project:
 
-- `instance` is a web server deployment of this _Chapter_ application, which is managed by an organization.
-- `organization` is a non-profit with multiple chapters. Example: Women Who Code at the sub-domain `chapter.womenwhocode.org`.
-- `chapter` is a container for events, with a description and subscribers, and one or more admins who can manage it. Example: Women Who Code New York City.
-- `event` is a single meetup that users can RSVP to, has a specific location and time, and has organizers. Example: Women Who Code New York City - April 2019 Event.
-- `user` is a person who belongs to a chapter.
+| Term          | Definition      | Example  |
+| ------------- | ------------- | ----- |
+| instance      | a web server deployment of this _Chapter_ application, managed by an organization. | none |
+| organization | a non-profit with multiple chapters | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
+| chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it  | Women Who Code New York City |
+| event | a single meetup that users can RSVP to, has a specific location and time, and has organizers      | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@example.com |
 
 ## Tech Stack
 

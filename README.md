@@ -151,7 +151,8 @@ The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
     <td align="center"><a href="https://www.freecodecamp.org"><img src="https://avatars1.githubusercontent.com/u/985197?v=4" width="100px;" alt="Quincy Larson"/><br /><sub><b>Quincy Larson</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=quincylarson" title="Code">💻</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=quincylarson" title="Documentation">📖</a> <a href="#ideas-quincylarson" title="Ideas, Planning, & Feedback">🤔</a></td>
@@ -204,9 +205,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://odomojuli.com"><img src="https://avatars1.githubusercontent.com/u/11369398?v=4" width="100px;" alt="Juli Odomo"/><br /><sub><b>Juli Odomo</b></sub></a><br /><a href="#design-odomojuli" title="Design">🎨</a></td>
     <td align="center"><a href="https://vaibhavsingh97.com/"><img src="https://avatars3.githubusercontent.com/u/8705386?v=4" width="100px;" alt="Vaibhav Singh"/><br /><sub><b>Vaibhav Singh</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=vaibhavsingh97" title="Code">💻</a></td>
     <td align="center"><a href="http://codepen.io/shub1427/"><img src="https://avatars1.githubusercontent.com/u/11786283?v=4" width="100px;" alt="Subroto"/><br /><sub><b>Subroto</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Shub1427" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/ed42311"><img src="https://avatars3.githubusercontent.com/u/14878694?v=4" width="100px;" alt="Edward Weymouth"/><br /><sub><b>Edward Weymouth</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=ed42311" title="Documentation">📖</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

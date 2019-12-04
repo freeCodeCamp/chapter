@@ -378,11 +378,21 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ed42311",
+      "name": "Edward Weymouth",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/14878694?v=4",
+      "profile": "https://github.com/ed42311",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "chapter",
   "projectOwner": "freeCodeCamp",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }

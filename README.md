@@ -20,7 +20,7 @@ To better communicate and more easily build an API and UI, the current contribut
 | organization | a non-profit with multiple chapters | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
 | chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it  | Women Who Code New York City |
 | event | a single meetup that users can RSVP to, has a specific location and time, and has organizers      | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
-| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@mail.com |
+| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@example.com |
 
 ## Tech Stack
 

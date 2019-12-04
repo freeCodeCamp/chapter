@@ -12,7 +12,7 @@ You can use your own authentication tools. And all your user data will stay on y
 Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
 
 ## Terminology
-To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surround the Chapter project:
+To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the Chapter project:
 
 | Term          | Definition      | Example  |
 | ------------- | ------------- | ----- |

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import fetch from 'isomorphic-fetch';
 import useForm from 'react-hook-form';
 
 import {
@@ -8,29 +7,20 @@ import {
   ResponseDiv,
   SubmitBtn,
 } from 'client/styles/components/AddSponsor';
-import {
-  IAddSponsorProps,
-  ISponsorData,
-} from 'client/interfaces/components/AddSponsor';
 
-const AddSponsor: React.FC<IAddSponsorProps> = ({ eventId, chapterId }) => {
+const AddSponsor: React.FC = () => {
   const [responseMsg, setResponseMsg] = React.useState('');
 
   const { register, handleSubmit, errors } = useForm();
 
+  // TODO: Get data from store
+  // const eventId = useSelector(state => state.selectedChapter.eventId);
+  // const chapterId = useSelector(state => state.selectedChapter.id);
+
   const onSubmit = async data => {
-    const { name, website, type }: ISponsorData = data;
     try {
-      await fetch(`/${chapterId}/events/${eventId}/sponsors`, {
-        // TODO: create route
-        method: 'post',
-        body: {
-          name,
-          website,
-          type,
-        },
-      });
-      setResponseMsg(`${name} has been added as a ${type} sponsor.`);
+      // await dispatch(sponsorActions.submit(eventId, chapterId));
+      setResponseMsg(`${data.name} has been added as a ${data.type} sponsor.`);
     } catch (e) {
       setResponseMsg('Uh oh, something went wrong.');
       // TODO: more descriptive error messages

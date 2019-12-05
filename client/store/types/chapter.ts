@@ -23,12 +23,12 @@ interface IChapterFetchStartAction {
 
 interface IChapterFetchSuccessAction {
   type: typeof FETCH_SUCCESS;
-  data: IChapterModal;
+  payload: IChapterModal;
 }
 
 interface IChapterFetchFailureAction {
   type: typeof FETCH_FAIL;
-  error: string;
+  payload: string;
 }
 
 export type IChapterActionTypes =

@@ -16,13 +16,13 @@ export const fetchSuccess = (
 ): chapterTypes.IChapterActionTypes => {
   return {
     type: chapterTypes.FETCH_SUCCESS,
-    data: chapter,
+    payload: chapter,
   };
 };
 
 export const fetchFail = (error: string): chapterTypes.IChapterActionTypes => {
   return {
-    error,
+    payload: error,
     type: chapterTypes.FETCH_FAIL,
   };
 };

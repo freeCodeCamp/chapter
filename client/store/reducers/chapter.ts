@@ -20,15 +20,15 @@ const reducer = (
         draft.loading = true;
         break;
       case chapterTypes.FETCH_SUCCESS:
-        draft.id = action.data.id;
-        draft.name = action.data.name;
-        draft.description = action.data.description;
-        draft.category = action.data.category;
+        draft.id = action.payload.id;
+        draft.name = action.payload.name;
+        draft.description = action.payload.description;
+        draft.category = action.payload.category;
         draft.error = '';
         draft.loading = false;
         break;
       case chapterTypes.FETCH_FAIL:
-        draft.error = action.error;
+        draft.error = action.payload;
         draft.loading = false;
         break;
       default:

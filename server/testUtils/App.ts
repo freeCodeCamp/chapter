@@ -12,7 +12,7 @@ type InitProps = {
 class App {
   server: express.Application;
   request: request.SuperTest<request.Test>;
-  _server: Server;
+  private _server: Server;
 
   constructor() {
     const app = express();

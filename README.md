@@ -93,6 +93,8 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
+## Additional DB docs can be found in server/docs/README.md
+
 ## Testing
 Run tests
 ```
@@ -214,3 +216,4 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+

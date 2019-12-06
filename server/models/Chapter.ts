@@ -1,31 +1,34 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  DataType,
-} from 'sequelize-typescript';
+import { Column, Entity } from 'typeorm';
+import { BaseModel } from './BaseModel';
 
-@Table
-export class Chapter extends Model<Chapter> {
-  @Column
+@Entity({ name: 'chapters' })
+export class Chapter extends BaseModel {
+  @Column({ nullable: false })
   name!: string;
 
-  @Column
+  @Column({ nullable: false })
   description!: string;
 
-  @Column
+  @Column({ nullable: false })
   category!: string;
 
-  @Column(DataType.JSON)
+  @Column({ type: 'json' })
   details!: any;
 
-  @CreatedAt
-  @Column
-  created_at!: Date;
+  constructor(params: {
+    name: string;
+    description: string;
+    category: string;
+    details: any;
+  }) {
+    super();
+    if (params) {
+      const { name, description, category, details } = params;
 
-  @UpdatedAt
-  @Column
-  updated_at!: Date;
+      this.name = name;
+      this.description = description;
+      this.category = category;
+      this.details = details;
+    }
+  }
 }

@@ -1,8 +1,8 @@
 import express from 'express';
 
-import sampleRoute from 'server/routers/routes/sampleRoute';
-import sampleAsyncRoute from 'server/routers/routes/sampleAsyncRoute';
-import sampleErroredRoute from 'server/routers/routes/sampleErroredRoute';
+import sampleRoute from './routes/sampleRoute';
+import sampleAsyncRoute from './routes/sampleAsyncRoute';
+import sampleErroredRoute from './routes/sampleErroredRoute';
 
 const router = express.Router();
 

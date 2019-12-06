@@ -13,6 +13,7 @@
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "next:build": "next build",
     "nodemon": "npx nodemon",
+    "typeorm": "ts-node -P tsconfig.server.json node_modules/typeorm/cli.js",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
@@ -61,10 +62,9 @@
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^5.21.1",
-    "sequelize-typescript": "^1.0.0",
     "styled-components": "^4.4.0",
     "ts-node": "^8.4.1",
+    "typeorm": "^0.2.20",
     "typescript": "^3.6.4"
   },
   "devDependencies": {
@@ -100,7 +100,6 @@
     "prettier": "^1.18.2",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
-    "sequelize-cli": "^5.5.1",
     "speccy": "^0.11.0"
   },
   "lint-staged": {

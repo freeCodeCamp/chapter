@@ -20,6 +20,8 @@ jobs:
         run: npm run lint
       - name: Build next.js
         run: npm run next:build
+      - name: Start docker service
+        run: docker-compose up -d
       - name: Run tests
         run: npm run test
         env:

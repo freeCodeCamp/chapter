@@ -1,4 +1,5 @@
 # Welcome to Chapter
+[![All Contributors](https://img.shields.io/badge/all_contributors-40-orange.svg?style=flat-square)](#contributors)
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
@@ -8,33 +9,33 @@ Your organization can host an instance of _Chapter_ under a sub-domain of your w
 
 You can use your own authentication tools. And all your user data will stay on your own server.
 
-Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for _Chapter_.
+Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
 
 ## Terminology
-
 To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the Chapter project:
 
-| Term         | Definition                                                                                           | Example                                                        |
-| ------------ | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| instance     | a web server deployment of this _Chapter_ application, managed by an organization.                   | none                                                           |
-| organization | a non-profit with multiple chapters                                                                  | Women Who Code at the sub-domain: `chapter.womenwhocode.org`   |
-| chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it | Women Who Code New York City                                   |
-| event        | a single meetup that users can RSVP to, has a specific location and time, and has organizers         | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
-| user         | a person who has signed up and been authorized as a subscriber to a chapter                          | Sally Gold - SallyG@example.com                                |
+| Term          | Definition      | Example  |
+| ------------- | ------------- | ----- |
+| instance      | a web server deployment of this _Chapter_ application, managed by an organization. | none |
+| organization | a non-profit with multiple chapters | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
+| chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it  | Women Who Code New York City |
+| event | a single meetup that users can RSVP to, has a specific location and time, and has organizers      | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@example.com |
 
 ## Tech Stack
 
 We are planning to use the following tools:
 
-- [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
-- [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
-- [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
-  - [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  - [Styled Components](https://www.styled-components.com) for styling.
-  - Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-- [chai](https://www.chaijs.com/) for writing unit tests.
-  - [sinon](https://sinonjs.org/)
-  - [sinon-chai](https://github.com/domenic/sinon-chai)
+* [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
+* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
+* [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+  * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  * [Styled Components](https://www.styled-components.com) for styling.
+  * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+* [chai](https://www.chaijs.com/) for writing unit tests.
+  * [sinon](https://sinonjs.org/)
+  * [sinon-chai](https://github.com/domenic/sinon-chai)
+
 
 A lot of people know these tools, and they're proven to work well at scale.
 
@@ -52,10 +53,9 @@ Ensure you are installing Node 10 or greater and npm 6 or greater.
 
 ### Installing Docker
 
-Click [here](https://docs.docker.com/v17.12/install/) for the Docker installation site. Scroll down to "Supported Platforms" and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for linux).
+See the [Docker installation "Supported platforms"](https://docs.docker.com/install/#supported-platforms) section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for Linux).
 
 You can find more resources on Docker here:
-
 - [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
 - [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
 - [Play with Docker Classroom](https://training.play-with-docker.com/)
@@ -65,19 +65,16 @@ You can find more resources on Docker here:
 Open up Terminal/Powershell/bash and navigate to the directory where you want the project to live.
 
 Clone this repository:
-
 ```
 git clone https://github.com/freeCodeCamp/chapter
 ```
 
 Navigate to the newly cloned repo:
-
 ```
 cd chapter
 ```
 
 Install dependencies:
-
 ```
 npm install
 ```
@@ -86,7 +83,6 @@ Setup Environment Variables:
 Copy and paste env.sample into your .env file
 
 Ensure that Docker Desktop is up and running, then run the following command:
-
 ```
 docker-compose up
 ```
@@ -97,16 +93,15 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
+## Additional DB docs can be found in server/docs/README.md
+
 ## Testing
-
 Run tests
-
 ```
 npm run test
 ```
 
 Run tests in watch mode
-
 ```
 npm run test:watch
 ```
@@ -118,38 +113,34 @@ We use [Open API 3.0](https://www.openapis.org/about) to define the API structur
 ```bash
 npm run speccy
 ```
-
 Navigate to http://localhost:8001 to see API docs
 
 ## Schema
-
 <details>
 <summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
 <br>
 
 ![a diagram illustrating the proposed schema for Chapter](data/schema.png)
-
 > created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
-
 </details>
 
-## User stories so far
+## User Stories
 
-Our goal is to keep things simple and not reinvent wheels. So far we have only two user roles: participants and chapter organizers, both of which are users.
+### MVP
+The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
 ### Post-MVP
-
 We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
-Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" this as soon as possible with several of its local study groups.
+Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
 
-You should [join our Discord server](https://discord.gg/vbRUYWS) to get connected with people interested in this project and to be aware of our future announcements.
 
 ## Contributing
 
-[**Take part in discussions or contribute code to this opensource codebase.**](CONTRIBUTING.md)
+* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
+* Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before creating issues, forking, or submitting any pull requests.
 
 ## License
 
@@ -222,7 +213,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+

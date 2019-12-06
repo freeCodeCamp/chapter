@@ -1,17 +1,8 @@
-import {
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Column,
-  Entity,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseModel } from './BaseModel';
 
 @Entity({ name: 'chapters' })
-export class Chapter extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Chapter extends BaseModel {
   @Column({ nullable: false })
   name!: string;
 
@@ -23,12 +14,6 @@ export class Chapter extends BaseEntity {
 
   @Column({ type: 'json' })
   details!: any;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at!: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updated_at!: Date;
 
   constructor(params: {
     name: string;

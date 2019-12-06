@@ -14,6 +14,8 @@ To make it since the port from docker postgres service is exposed to the host (5
 
 This would create `ModelName.ts` in `server/models`
 
+To keep everything DRY, add `extends BaseModel` to the class and import it from 'server/models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
+
 You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from `.ts` files, so we run it with `ts-node` and our custom server config (check package.json)
 
 ### Create a migration

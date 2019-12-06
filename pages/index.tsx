@@ -1,12 +1,3 @@
-import React from 'react';
-import { SomeComponent } from 'client/components';
+import Home from 'client/modules/home';
 
-const Index = () => {
-  return (
-    <div>
-      <SomeComponent />
-    </div>
-  );
-};
-
-export default Index;
+export default Home;

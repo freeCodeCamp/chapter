@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
@@ -7,6 +8,8 @@ import exampleRouter from 'server/routes/exampleRoutes/exampleRouter';
 import chapterRouter from 'server/routes/chapter';
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
+
+dotenv.config();
 
 const app: express.Application = express();
 

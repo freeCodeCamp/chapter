@@ -1,3 +1,4 @@
 node_modules/
 .next/
 next.config.js
+client/@types/

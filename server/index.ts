@@ -3,8 +3,8 @@ import express from 'express';
 import morgan from 'morgan';
 import { responseErrorHandler } from 'express-response-errors';
 
-import exampleRouter from 'server/routers/exampleRoutes/exampleRouter';
-import chapterRouter from 'server/routers/chapter';
+import exampleRouter from 'server/routes/exampleRoutes/exampleRouter';
+import chapterRouter from 'server/routes/chapter';
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 

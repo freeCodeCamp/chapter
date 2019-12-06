@@ -23,6 +23,6 @@ jobs:
       - name: Start docker service
         run: docker-compose up -d
       - name: Run tests
-        run: COMPOSE_INTERACTIVE_NO_CLI=1 && npm run test
+        run: npm run test:ci
         env:
           NODE_ENV: development

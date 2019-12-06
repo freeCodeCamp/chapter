@@ -19,6 +19,7 @@
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
     "test": "NODE_ENV=test docker-compose exec app npx jest --coverage --verbose",
+    "test:ci": "NODE_ENV=test docker-compose -T exec app npx jest --coverage --verbose",
     "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watchAll"
   },
   "repository": {

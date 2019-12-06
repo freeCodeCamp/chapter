@@ -1,20 +1,9 @@
-import { getConnection } from 'typeorm';
 import { Request, Response } from 'express';
-
 import { Chapter } from 'server/models/Chapter';
-import { ChapterRepo } from 'server/models/ChapterRepo';
 
 export default {
   async index(_req: Request, res: Response) {
     const chapters = await Chapter.find();
-
-    res.json(chapters);
-  },
-
-  async index_repo(_req: Request, res: Response) {
-    const chapters = await getConnection()
-      .getRepository(ChapterRepo)
-      .find();
 
     res.json(chapters);
   },

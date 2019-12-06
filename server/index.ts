@@ -1,11 +1,11 @@
 import 'module-alias/register';
 import express from 'express';
 import morgan from 'morgan';
-
-import nextjs from 'server/lib/next';
 import { responseErrorHandler } from 'express-response-errors';
-import exampleRouter from 'server/routers/exampleRouter';
+
+import exampleRouter from 'server/routers/exampleRoutes/exampleRouter';
 import chapterRouter from 'server/routers/chapter';
+import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 
 const app: express.Application = express();

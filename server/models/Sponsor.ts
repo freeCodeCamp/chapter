@@ -11,7 +11,7 @@ export class Sponsor extends BaseModel {
   website!: string;
 
   @Column({ nullable: false })
-  logoPath!: string;
+  logo_path!: string;
 
   @Column({ nullable: false })
   type!: string;
@@ -30,7 +30,7 @@ export class Sponsor extends BaseModel {
       const { name, website, logoPath, type } = params;
       this.name = name;
       this.website = website;
-      this.logoPath = logoPath;
+      this.logo_path = logoPath;
       this.type = type;
     }
   }

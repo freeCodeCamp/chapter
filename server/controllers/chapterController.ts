@@ -21,8 +21,22 @@ export default {
   },
 
   async create(req: Request, res: Response) {
-    const { name, description, category, details } = req.body;
-    const chapter = new Chapter({ name, description, category, details });
+    const {
+      name,
+      description,
+      category,
+      details,
+      location,
+      creator,
+    } = req.body;
+    const chapter = new Chapter({
+      name,
+      description,
+      category,
+      details,
+      location,
+      creator,
+    });
 
     try {
       await chapter.save();

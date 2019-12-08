@@ -1,5 +1,5 @@
-import { BaseModel } from './BaseModel';
 import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { SocialProvider } from './SocialProvider';
 import { User } from './User';
 

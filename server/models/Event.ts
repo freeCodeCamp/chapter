@@ -1,5 +1,5 @@
-import { BaseModel } from './BaseModel';
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { EventSponsor } from './EventSponsor';
 import { Venue } from './Venue';
 import { Chapter } from './Chapter';

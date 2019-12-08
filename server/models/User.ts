@@ -1,5 +1,5 @@
-import { BaseModel } from './BaseModel';
 import { Column, Entity, OneToMany } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { SocialProviderUser } from './SocialProviderUser';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';

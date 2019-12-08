@@ -1,33 +1,23 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-  BelongsToMany,
-} from 'sequelize-typescript';
-import { ISocialProvider } from 'types/models';
-import { User } from './User';
+import { Entity, Column, OneToMany } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { SocialProviderUser } from './SocialProviderUser';
 
-@Table
-export class SocialProvider extends Model<ISocialProvider> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'social_providers' })
+export class SocialProvider extends BaseModel {
+  @Column({ nullable: false })
   name!: string;
 
-  @BelongsToMany(() => User, () => SocialProviderUser)
-  users: User[];
+  @OneToMany(
+    _type => SocialProviderUser,
+    socialProviderUser => socialProviderUser.social_provider,
+  )
+  users?: SocialProviderUser[];
 
-  @CreatedAt
-  @Column
-  created_at!: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at!: Date;
+  constructor(params: { name: string }) {
+    super();
+    if (params) {
+      const { name } = params;
+      this.name = name;
+    }
+  }
 }

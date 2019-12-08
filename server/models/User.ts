@@ -1,52 +1,56 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-  HasMany,
-  BelongsToMany,
-} from 'sequelize-typescript';
-import { IUser, IRsvp, IChapter, ISocialProvider } from 'types/models';
-import { Rsvp } from './Rsvp';
-import { Chapter } from './Chapter';
-import { UserChapter } from './UserChapter';
-import { SocialProvider } from './SocialProvider';
+import { BaseModel } from './BaseModel';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { SocialProviderUser } from './SocialProviderUser';
+import { Chapter } from './Chapter';
+import { Rsvp } from './Rsvp';
+import { UserChapter } from './UserChapter';
+import { UserBan } from './UserBan';
 
-@Table
-export class User extends Model<IUser> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'users' })
+export class User extends BaseModel {
+  @Column()
   first_name!: string;
 
-  @Column
+  @Column()
   last_name!: string;
 
-  @Column
+  @Column()
   email!: string;
 
-  @Column
+  @Column()
   password_digest!: string;
 
-  @BelongsToMany(() => Chapter, () => UserChapter)
-  chapters!: IChapter[];
+  @OneToMany(
+    _type => SocialProviderUser,
+    socialProviderUser => socialProviderUser.user,
+  )
+  social_providers?: SocialProviderUser[];
 
-  @BelongsToMany(() => SocialProvider, () => SocialProviderUser)
-  social_providers: ISocialProvider[];
+  @OneToMany(_type => Chapter, chapter => chapter.creator)
+  created_chapters?: Chapter[];
 
-  @HasMany(() => Rsvp)
-  rsvps: IRsvp[];
+  @OneToMany(_type => Rsvp, rsvp => rsvp.user)
+  rsvps?: Rsvp[];
 
-  @CreatedAt
-  @Column
-  created_at: Date;
+  @OneToMany(_type => UserChapter, chapter => chapter.user)
+  chapters?: UserChapter[];
 
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  @OneToMany(_type => UserBan, userBan => userBan.user)
+  banned_chapters?: UserBan[];
+
+  constructor(params: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password_digest: string;
+  }) {
+    super();
+    if (params) {
+      const { first_name, last_name, email, password_digest } = params;
+      this.first_name = first_name;
+      this.last_name = last_name;
+      this.email = email;
+      this.password_digest = password_digest;
+    }
+  }
 }

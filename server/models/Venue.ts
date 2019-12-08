@@ -1,35 +1,26 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-  HasOne,
-} from 'sequelize-typescript';
+import { BaseModel } from './BaseModel';
+import { Column, Entity, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Event } from './Event';
 import { Location } from './Location';
-import { ILocation } from 'types/models';
 
-@Table
-export class Venue extends Model<Venue> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'venues' })
+export class Venue extends BaseModel {
+  @Column()
   name!: string;
 
-  @Column
-  location_id!: number;
+  @OneToMany(_type => Event, event => event.venue)
+  events?: Event[];
 
-  @HasOne(() => Location)
-  location: ILocation;
+  @ManyToOne(_type => Location, location => location.venues)
+  @JoinColumn({ name: 'location_id' })
+  location!: Location;
 
-  @CreatedAt
-  @Column
-  created_at: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  constructor(params: { name: string; location: Location }) {
+    super();
+    if (params) {
+      const { name, location } = params;
+      this.name = name;
+      this.location = location;
+    }
+  }
 }

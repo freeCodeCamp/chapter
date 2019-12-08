@@ -1,36 +1,42 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-} from 'sequelize-typescript';
-import { ILocation } from 'types/models';
+import { Entity, Column, OneToMany } from 'typeorm';
+import { BaseModel } from './BaseModel';
+import { Venue } from './Venue';
+import { Chapter } from './Chapter';
 
-@Table
-export class Location extends Model<ILocation> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'locations' })
+export class Location extends BaseModel {
+  @Column({ nullable: false })
   country_code!: string;
 
-  @Column
+  @Column({ nullable: false })
   city!: string;
 
-  @Column
+  @Column({ nullable: false })
   region!: string;
 
-  @Column
+  @Column({ nullable: false })
   postal_code!: string;
 
-  @CreatedAt
-  @Column
-  created_at: Date;
+  @OneToMany(_type => Venue, venue => venue.location)
+  venues?: Venue[];
 
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  @OneToMany(_type => Chapter, chapter => chapter.location)
+  chapters?: Chapter[];
+
+  constructor(params: {
+    country_code: string;
+    city: string;
+    region: string;
+    postal_code: string;
+  }) {
+    super();
+    if (params) {
+      const { country_code, city, region, postal_code } = params;
+
+      this.country_code = country_code;
+      this.city = city;
+      this.region = region;
+      this.postal_code = postal_code;
+    }
+  }
 }

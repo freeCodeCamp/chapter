@@ -1,78 +1,79 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-  HasMany,
-  HasOne,
-  BelongsToMany,
-  ForeignKey,
-  BelongsTo,
-} from 'sequelize-typescript';
-import { IEvent, ITag, IVenue, IRsvp, IChapter, ISponsor } from 'types/models';
+import { BaseModel } from './BaseModel';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { EventSponsor } from './EventSponsor';
-import { Tag } from './Tag';
 import { Venue } from './Venue';
-import { Rsvp } from './Rsvp';
-import { Sponsor } from './Sponsor';
 import { Chapter } from './Chapter';
+import { Rsvp } from './Rsvp';
+import { Tag } from './Tag';
 
-@Table
-export class Event extends Model<IEvent> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'events' })
+export class Event extends BaseModel {
+  @Column({ nullable: false })
   name!: string;
 
-  @Column
+  @Column({ nullable: false })
   description!: string;
 
-  @Column
+  @Column({ type: 'timestamp' })
   start_at!: Date;
 
-  @Column
+  @Column({ type: 'timestamp' })
   ends_at!: Date;
 
-  @ForeignKey(() => Chapter)
-  @Column
-  chapter_id!: number;
-
-  @BelongsTo(() => Chapter)
-  chapter: IChapter;
-
-  @Column
-  venue_id!: number;
-
-  @BelongsToMany(() => Sponsor, () => EventSponsor)
-  sponsors: ISponsor[];
-
-  @HasMany(() => Tag)
-  tags: ITag[];
-
-  @HasOne(() => Venue)
-  venue: IVenue;
-
-  @HasMany(() => Rsvp)
-  rsvps: IRsvp[];
-
-  @Column
-  tag_id!: number;
-
-  @Column
+  @Column({ default: false })
   canceled!: boolean;
 
-  @Column
+  @Column({ nullable: false })
   capacity!: number;
 
-  @CreatedAt
-  @Column
-  created_at: Date;
+  @OneToMany(_type => EventSponsor, eventSponsor => eventSponsor.sponsor)
+  sponsors?: EventSponsor[];
 
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  @ManyToOne(_type => Venue, venue => venue.events)
+  @JoinColumn({ name: 'venue_id' })
+  venue!: Venue;
+
+  @ManyToOne(_type => Chapter, chapter => chapter.events)
+  @JoinColumn({ name: 'chapter_id' })
+  chapter!: Chapter;
+
+  @OneToMany(_type => Rsvp, rsvp => rsvp.event)
+  rsvps?: Rsvp[];
+
+  @OneToMany(_type => Tag, tag => tag.event)
+  tags?: Tag[];
+
+  constructor(params: {
+    name: string;
+    description: string;
+    start_at: Date;
+    ends_at: Date;
+    canceled: boolean;
+    capacity: number;
+    venue: Venue;
+    chapter: Chapter;
+  }) {
+    super();
+    if (params) {
+      const {
+        name,
+        description,
+        start_at,
+        ends_at,
+        canceled,
+        capacity,
+        venue,
+        chapter,
+      } = params;
+
+      this.name = name;
+      this.description = description;
+      this.start_at = start_at;
+      this.ends_at = ends_at;
+      this.canceled = canceled;
+      this.capacity = capacity;
+      this.venue = venue;
+      this.chapter = chapter;
+    }
+  }
 }

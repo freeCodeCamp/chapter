@@ -1,42 +1,37 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-  BelongsToMany,
-} from 'sequelize-typescript';
-import { ISponsor } from 'types/models';
+import { Entity, Column, OneToMany } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { EventSponsor } from './EventSponsor';
-import { Event } from './Event';
 
-@Table
-export class Sponsor extends Model<ISponsor> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'sponsors' })
+export class Sponsor extends BaseModel {
+  @Column({ nullable: false })
   name!: string;
 
-  @Column
+  @Column({ nullable: false })
   website!: string;
 
-  @Column
+  @Column({ nullable: false })
   logoPath!: string;
 
-  @Column
+  @Column({ nullable: false })
   type!: string;
 
-  @CreatedAt
-  @Column
-  created_at!: Date;
+  @OneToMany(_type => EventSponsor, eventSponsor => eventSponsor.event)
+  events?: EventSponsor[];
 
-  @UpdatedAt
-  @Column
-  updated_at!: Date;
-
-  @BelongsToMany(() => Event, () => EventSponsor)
-  events: Event[];
+  constructor(params: {
+    name: string;
+    website: string;
+    logoPath: string;
+    type: string;
+  }) {
+    super();
+    if (params) {
+      const { name, website, logoPath, type } = params;
+      this.name = name;
+      this.website = website;
+      this.logoPath = logoPath;
+      this.type = type;
+    }
+  }
 }

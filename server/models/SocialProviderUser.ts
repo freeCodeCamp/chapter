@@ -1,33 +1,24 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-} from 'sequelize-typescript';
-import { ISocialProviderUser } from 'types/models';
+import { BaseModel } from './BaseModel';
+import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { SocialProvider } from './SocialProvider';
+import { User } from './User';
 
-@Table
-export class SocialProviderUser extends Model<ISocialProviderUser> {
-  @PrimaryKey
-  @Column
-  id!: number;
+@Entity({ name: 'social_provider_users' })
+export class SocialProviderUser extends BaseModel {
+  @ManyToOne(_type => SocialProvider, socialProvider => socialProvider.users)
+  @JoinColumn({ name: 'provider_id' })
+  social_provider!: SocialProvider;
 
-  @Column
-  provider_id!: number;
+  @ManyToOne(_type => User, user => user.social_providers)
+  @JoinColumn({ name: 'user_id' })
+  user!: User;
 
-  @Column
-  provider_user_id!: string;
-
-  @Column
-  user_id!: number;
-
-  @CreatedAt
-  @Column
-  created_at!: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at!: Date;
+  constructor(params: { socialProvider: SocialProvider; user: User }) {
+    super();
+    if (params) {
+      const { socialProvider, user } = params;
+      this.social_provider = socialProvider;
+      this.user = user;
+    }
+  }
 }

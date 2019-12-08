@@ -1,34 +1,24 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  PrimaryKey,
-  ForeignKey,
-  BelongsTo,
-} from 'sequelize-typescript';
-import { IUserBan, IChapter } from 'types/models';
+import { BaseModel } from './BaseModel';
+import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './User';
 import { Chapter } from './Chapter';
 
-@Table
-export class UserBan extends Model<IUserBan> {
-  @PrimaryKey
-  @Column
-  user_id!: number;
+@Entity({ name: 'user_bans' })
+export class UserBan extends BaseModel {
+  @ManyToOne(_type => User, user => user.banned_chapters)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
-  @ForeignKey(() => Chapter)
-  @Column
-  chapter_id!: number;
+  @ManyToOne(_type => Chapter, chapter => chapter.banned_users)
+  @JoinColumn({ name: 'chapter_id' })
+  chapter: Chapter;
 
-  @BelongsTo(() => Chapter)
-  chapter: IChapter;
-
-  @CreatedAt
-  @Column
-  created_at: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  constructor(params: { user: User; chapter: Chapter }) {
+    super();
+    if (params) {
+      const { user, chapter } = params;
+      this.user = user;
+      this.chapter = chapter;
+    }
+  }
 }

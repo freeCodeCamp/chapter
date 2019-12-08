@@ -1,30 +1,24 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  ForeignKey,
-} from 'sequelize-typescript';
-import { IEventSponsor } from 'types/models';
+import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { Sponsor } from './Sponsor';
 import { Event } from './Event';
 
-@Table
-export class EventSponsor extends Model<IEventSponsor> {
-  @ForeignKey(() => Event)
-  @Column
-  event_id!: number;
+@Entity({ name: 'event_sponsors' })
+export class EventSponsor extends BaseModel {
+  @ManyToOne(_type => Sponsor, sponsor => sponsor.events)
+  @JoinColumn({ name: 'sponsor_id' })
+  sponsor!: Sponsor;
 
-  @ForeignKey(() => Sponsor)
-  @Column
-  sponsor_id!: number;
+  @ManyToOne(_type => Event, event => event.sponsors)
+  @JoinColumn({ name: 'event_id' })
+  event!: Event;
 
-  @CreatedAt
-  @Column
-  created_at!: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at!: Date;
+  constructor(params: { sponsor: Sponsor; event: Event }) {
+    super();
+    if (params) {
+      const { sponsor, event } = params;
+      this.sponsor = sponsor;
+      this.event = event;
+    }
+  }
 }

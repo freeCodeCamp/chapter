@@ -1,30 +1,24 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  ForeignKey,
-} from 'sequelize-typescript';
-import { IUserChapter } from 'types/models';
+import { BaseModel } from './BaseModel';
+import { Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
 import { Chapter } from './Chapter';
 
-@Table
-export class UserChapter extends Model<IUserChapter> {
-  @ForeignKey(() => User)
-  @Column
-  user_id!: number;
+@Entity({ name: 'user_chapters' })
+export class UserChapter extends BaseModel {
+  @ManyToOne(_type => User, user => user.chapters)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
-  @ForeignKey(() => Chapter)
-  @Column
-  chapter_id!: number;
+  @ManyToOne(_type => Chapter, chapter => chapter.users)
+  @JoinColumn({ name: 'chapter_id' })
+  chapter: Chapter;
 
-  @CreatedAt
-  @Column
-  created_at: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  constructor(params: { user: User; chapter: Chapter }) {
+    super();
+    if (params) {
+      const { user, chapter } = params;
+      this.user = user;
+      this.chapter = chapter;
+    }
+  }
 }

@@ -1,43 +1,37 @@
-import {
-  Column,
-  CreatedAt,
-  Model,
-  Table,
-  UpdatedAt,
-  ForeignKey,
-  BelongsTo,
-} from 'sequelize-typescript';
-import { IRsvp, IUser } from 'types/models';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { User } from './User';
 
-@Table
-export class Rsvp extends Model<IRsvp> {
-  @ForeignKey(() => User)
-  @Column
-  user_id!: number;
+@Entity({ name: 'rsvps' })
+export class Rsvp extends BaseModel {
+  @Column({ type: 'timestamp', nullable: false })
+  date!: Date;
 
-  @BelongsTo(() => User)
-  user: IUser;
+  @Column({ nullable: false })
+  on_waitlist!: boolean;
 
-  @ForeignKey(() => Event)
-  @Column
-  event_id: number;
+  @ManyToOne(_type => Event, event => event.rsvps)
+  @JoinColumn({ name: 'event_id' })
+  event!: Event;
 
-  @BelongsTo(() => Event)
-  event: Event;
+  @ManyToOne(_type => User, user => user.rsvps)
+  @JoinColumn({ name: 'user_id' })
+  user!: User;
 
-  @Column
-  date: Date;
-
-  @Column
-  on_waitlist: boolean;
-
-  @CreatedAt
-  @Column
-  created_at: Date;
-
-  @UpdatedAt
-  @Column
-  updated_at: Date;
+  constructor(params: {
+    date: Date;
+    on_waitlist: boolean;
+    event: Event;
+    user: User;
+  }) {
+    super();
+    if (params) {
+      const { date, on_waitlist, event, user } = params;
+      this.date = date;
+      this.on_waitlist = on_waitlist;
+      this.event = event;
+      this.user = user;
+    }
+  }
 }

@@ -1,29 +1,22 @@
-import {
-  Column,
-  Model,
-  Table,
-  PrimaryKey,
-  BelongsTo,
-  ForeignKey,
-} from 'sequelize-typescript';
-import { ITag } from 'types/models';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 
-@Table
-export class Tag extends Model<ITag> {
-  @PrimaryKey
-  @Column
-  id!: number;
-
-  @Column
+@Entity({ name: 'tags' })
+export class Tag extends BaseModel {
+  @Column({ nullable: false })
   name!: string;
 
-  // Below is not included in schema.png, but necessary for
-  // one to many relationship with event
-  @ForeignKey(() => Event)
-  @Column
-  event_id: number;
-
-  @BelongsTo(() => Event)
+  @ManyToOne(_type => Event, event => event.tags)
+  @JoinColumn({ name: 'event_id' })
   event: Event;
+
+  constructor(params: { name: string; event: Event }) {
+    super();
+    if (params) {
+      const { name, event } = params;
+      this.name = name;
+      this.event = event;
+    }
+  }
 }

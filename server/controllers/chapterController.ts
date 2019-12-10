@@ -26,16 +26,17 @@ export default {
       description,
       category,
       details,
-      location,
-      creator,
+      location_id,
+      creator_id,
     } = req.body;
+
     const chapter = new Chapter({
       name,
       description,
       category,
       details,
-      location,
-      creator,
+      location_id,
+      creator_id,
     });
 
     try {

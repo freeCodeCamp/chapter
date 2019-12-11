@@ -1,5 +1,5 @@
 import App from 'server/testUtils/App';
-import exampleRouter from 'server/routers/exampleRouter';
+import exampleRouter from 'server/routes/exampleRoutes/exampleRouter';
 
 describe('router: sampleRouter', () => {
   const app = new App();

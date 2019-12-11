@@ -19,8 +19,9 @@
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
-    "test": "NODE_ENV=test npx jest --coverage --verbose",
-    "test:watch": "NODE_ENV=test npx jest --watch"
+    "test": "NODE_ENV=test docker-compose exec app npx jest --coverage --verbose",
+    "test:ci": "NODE_ENV=test docker-compose exec -T app npx jest --coverage --verbose",
+    "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watchAll"
   },
   "repository": {
     "type": "git",
@@ -69,23 +70,25 @@
   },
   "devDependencies": {
     "@testing-library/react": "^9.3.0",
-    "@types/chai": "^4.2.4",
     "@types/bluebird": "^3.5.28",
+    "@types/chai": "^4.2.4",
     "@types/express": "^4.17.1",
+    "@types/get-port": "^4.2.0",
     "@types/jest": "^24.0.19",
     "@types/morgan": "^1.7.37",
     "@types/next": "^8.0.6",
     "@types/node": "^12.11.1",
     "@types/nodemailer": "^6.2.2",
+    "@types/pg": "^7.11.2",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
     "@types/sinon-chai": "^3.2.3",
+    "@types/styled-components": "^4.1.19",
+    "@types/supertest": "^2.0.8",
+    "@types/validator": "^10.11.3",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
     "chai": "^4.2.0",
-    "@types/pg": "^7.11.2",
-    "@types/styled-components": "^4.1.19",
-    "@types/validator": "^10.11.3",
     "cross-env": "^6.0.3",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
@@ -93,14 +96,18 @@
     "eslint-plugin-jest": "^22.20.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
+    "get-port": "^5.0.0",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "lint-staged": "^9.4.2",
     "nodemon": "^1.19.4",
     "prettier": "^1.18.2",
+    "sequelize-cli": "^5.5.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
-    "speccy": "^0.11.0"
+    "speccy": "^0.11.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.1.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -113,20 +120,6 @@
       "pre-commit": "lint-staged",
       "pre-push": "npm run lint"
     }
-  },
-  "jest": {
-    "watchPathIgnorePatterns": [
-      "/node_modules"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx"
-    ],
-    "testMatch": [
-      "/**/*.test.(ts|js|tsx|jsx)"
-    ]
   },
   "prettier": {
     "trailingComma": "all",

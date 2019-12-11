@@ -79,8 +79,7 @@ Install dependencies:
 npm install
 ```
 
-Setup Environment Variables:
-Copy and paste env.sample into your .env file
+If needed, set up environment variables under 'app -> environment' in the `docker-compose.yml` file.
 
 Ensure that Docker Desktop is up and running, then run the following command:
 ```

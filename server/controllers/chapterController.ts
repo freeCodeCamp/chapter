@@ -30,6 +30,8 @@ export default {
       creator,
     } = req.body;
 
+    // handle creator diffrenetly in the future (from cookie?)
+
     const chapter = new Chapter({
       name,
       description,

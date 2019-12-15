@@ -9,6 +9,7 @@ export const initDB = createConnection({
   host: process.env.DB_URL || 'db',
   port: 5432,
   entities: [__dirname + '/models/*.ts'],
+  migrations: [__dirname + '/migrations/**/*.ts'],
   synchronize: false,
   logging: false,
   name: 'default',

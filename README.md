@@ -88,6 +88,8 @@ docker-compose up
 
 Wait for the logs to show "server started on port 8000", then navigate to `localhost:8000` to view the app.
 
+To sync the database with the schema, run `npm run typeorm:sync-schema`.
+
 The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`

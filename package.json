@@ -14,6 +14,7 @@
     "next:build": "next build",
     "nodemon": "npx nodemon",
     "typeorm": "ts-node -P tsconfig.server.json node_modules/typeorm/cli.js",
+    "typeorm:sync-schema": "npm run typeorm schema:sync",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",

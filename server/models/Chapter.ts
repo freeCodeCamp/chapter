@@ -42,8 +42,8 @@ export class Chapter extends BaseModel {
     description: string;
     category: string;
     details: any;
-    location: Location;
-    creator: User;
+    location?: Location;
+    creator?: User;
   }) {
     super();
     if (params) {
@@ -60,8 +60,8 @@ export class Chapter extends BaseModel {
       this.description = description;
       this.category = category;
       this.details = details;
-      this.location = location;
-      this.creator = creator;
+      location && (this.location = location);
+      creator && (this.creator = creator);
     }
   }
 }

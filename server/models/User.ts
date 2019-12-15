@@ -17,8 +17,8 @@ export class User extends BaseModel {
   @Column()
   email!: string;
 
-  @Column()
-  password_digest!: string;
+  @Column({ nullable: true })
+  password_digest?: string;
 
   @OneToMany(
     _type => SocialProviderUser,
@@ -42,15 +42,13 @@ export class User extends BaseModel {
     first_name: string;
     last_name: string;
     email: string;
-    password_digest: string;
   }) {
     super();
     if (params) {
-      const { first_name, last_name, email, password_digest } = params;
+      const { first_name, last_name, email } = params;
       this.first_name = first_name;
       this.last_name = last_name;
       this.email = email;
-      this.password_digest = password_digest;
     }
   }
 }

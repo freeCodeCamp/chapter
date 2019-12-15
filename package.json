@@ -16,6 +16,7 @@
     "typeorm": "ts-node -P tsconfig.server.json node_modules/typeorm/cli.js",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
+    "seed": "ts-node -P tsconfig.server.json ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
@@ -107,7 +108,8 @@
     "sinon-chai": "^3.3.0",
     "speccy": "^0.11.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^24.1.0"
+    "ts-jest": "^24.1.0",
+    "typeorm-seeding": "^1.2.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

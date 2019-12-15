@@ -6,6 +6,7 @@ import { responseErrorHandler } from 'express-response-errors';
 
 import exampleRouter from 'server/routes/exampleRoutes/exampleRouter';
 import chapterRouter from 'server/routes/chapter';
+import eventsRouter from 'server/routes/events';
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 
@@ -29,6 +30,7 @@ nextjs.nextApp.prepare().then(async () => {
 
   app.use(exampleRouter);
   app.use(chapterRouter);
+  app.use(eventsRouter);
 
   app.use(responseErrorHandler);
 

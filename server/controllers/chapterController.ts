@@ -21,20 +21,51 @@ export default {
   },
 
   async create(req: Request, res: Response) {
-    const { name, description, category, details } = req.body;
-    const chapter = new Chapter({ name, description, category, details });
+    const {
+      name,
+      description,
+      category,
+      details,
+      location,
+      creator,
+    } = req.body;
+
+    const chapter = new Chapter({
+      name,
+      description,
+      category,
+      details,
+      location,
+      creator,
+    });
 
     try {
       await chapter.save();
       res.status(201).json(chapter);
     } catch (e) {
+      if (e.code === '23503' && e.message.includes('foreign key constraint')) {
+        if (e.detail.includes('location')) {
+          return res.status(404).json({ message: 'location not found' });
+        }
+        if (e.detail.includes('user')) {
+          return res.status(404).json({ message: 'creator not found' });
+        }
+      }
+
       res.status(500).json({ error: e });
     }
   },
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { name, description, category, details } = req.body;
+    const {
+      name,
+      description,
+      category,
+      details,
+      location,
+      creator,
+    } = req.body;
 
     const chapter = await Chapter.findOne({ id: parseInt(id) });
 
@@ -43,11 +74,25 @@ export default {
       description && (chapter.description = description);
       category && (chapter.category = category);
       details && (chapter.details = details);
+      location && (chapter.location = location);
+      creator && (chapter.creator = creator);
 
       try {
         await chapter.save();
         res.json(chapter);
       } catch (e) {
+        if (
+          e.code === '23503' &&
+          e.message.includes('foreign key constraint')
+        ) {
+          if (e.detail.includes('location')) {
+            return res.status(404).json({ message: 'location not found' });
+          }
+          if (e.detail.includes('user')) {
+            return res.status(404).json({ message: 'creator not found' });
+          }
+        }
+
         res.status(500).json({ error: e });
       }
     } else {

@@ -8,6 +8,14 @@ We're using Postgres for our database and TypeORM for our ORM (mapping database 
 
 To make it since the port from docker postgres service is exposed to the host (54320) you dont have to run `docker-compose exec...`, and can just run db commands from the host. This also makes it a lot easier to access the db from the ourside if you're running a local db on the system.
 
+### Seed database
+
+`npm run seed`
+
+Development is easier with a database full of example entities. The process of creating example entities in the database is called seeding.
+
+Use `npm run seed` to create these example entities.
+
 ### Create a new model / entity
 
 `npm run typeorm entity:create -- --name=ModelName`

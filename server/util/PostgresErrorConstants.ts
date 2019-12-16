@@ -1,4 +1,4 @@
-export enum PostgresErrorconstants {
+export enum PostgresErrorCodes {
   // Class 00 — Successful Completion
   SUCCESSFUL_COMPLETION = '00000',
 

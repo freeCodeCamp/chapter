@@ -3,20 +3,20 @@ import { Event } from 'server/models/Event';
 
 export default {
   async index(req: Request, res: Response) {
-    const { chapter_id } = req.params;
+    const { chapterId } = req.params;
 
-    const events = await Event.find({ where: { chapter: chapter_id } });
+    const events = await Event.find({ where: { chapter: chapterId } });
 
     res.json(events);
   },
 
   async show(req: Request, res: Response) {
-    const { id, chapter_id } = req.params;
+    const { id, chapterId } = req.params;
 
     const event = await Event.findOne({
       where: {
         id: parseInt(id),
-        chapter: chapter_id,
+        chapter: chapterId,
       },
     });
 
@@ -68,7 +68,7 @@ export default {
   },
 
   async update(req: Request, res: Response) {
-    const { id, chapter_id } = req.params;
+    const { id, chapterId } = req.params;
     const {
       name,
       //   chapter,
@@ -81,7 +81,7 @@ export default {
     } = req.body;
 
     const event = await Event.findOne({
-      where: { id: parseInt(id), chapter: chapter_id },
+      where: { id: parseInt(id), chapter: chapterId },
     });
 
     if (event) {
@@ -117,10 +117,10 @@ export default {
     }
   },
   async remove(req: Request, res: Response) {
-    const { id, chapter_id } = req.params;
+    const { id, chapterId } = req.params;
 
     const event = await Event.findOne({
-      where: { id: parseInt(id), chapter: chapter_id },
+      where: { id: parseInt(id), chapter: chapterId },
     });
 
     if (event) {

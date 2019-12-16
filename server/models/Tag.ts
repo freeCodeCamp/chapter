@@ -9,7 +9,7 @@ export class Tag extends BaseModel {
 
   @ManyToOne(_type => Event, event => event.tags)
   @JoinColumn({ name: 'event_id' })
-  event: Event;
+  event!: Event;
 
   constructor(params: { name: string; event: Event }) {
     super();

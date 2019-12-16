@@ -7,11 +7,11 @@ import { Chapter } from './Chapter';
 export class UserBan extends BaseModel {
   @ManyToOne(_type => User, user => user.banned_chapters)
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user!: User;
 
   @ManyToOne(_type => Chapter, chapter => chapter.banned_users)
   @JoinColumn({ name: 'chapter_id' })
-  chapter: Chapter;
+  chapter!: Chapter;
 
   constructor(params: { user: User; chapter: Chapter }) {
     super();

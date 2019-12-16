@@ -9,7 +9,7 @@ export class Venue extends BaseModel {
   name!: string;
 
   @OneToMany(_type => Event, event => event.venue)
-  events?: Event[];
+  events!: Event[];
 
   @ManyToOne(_type => Location, location => location.venues)
   @JoinColumn({ name: 'location_id' })

@@ -17,9 +17,6 @@ const useStyles = makeStyles(theme => ({
       'grid-template-columns': '1fr 1fr 1fr',
     },
   },
-  navContainer: {
-    display: 'grid',
-  },
   navList: {
     display: 'grid',
     'list-style': 'none',
@@ -28,7 +25,6 @@ const useStyles = makeStyles(theme => ({
     'text-align': 'center',
     'padding-inline-start': 0,
   },
-  navListItem: {},
   pageRoot: {
     [theme.breakpoints.down('xl')]: {
       padding: `0 ${theme.spacing(8)}px`,

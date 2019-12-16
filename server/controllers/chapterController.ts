@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Chapter } from 'server/models/Chapter';
+import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 
 export default {
   async index(_req: Request, res: Response) {
@@ -45,7 +46,7 @@ export default {
       await chapter.save();
       res.status(201).json(chapter);
     } catch (e) {
-      if (e.code === '23503' && e.message.includes('foreign key constraint')) {
+      if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
         if (e.detail.includes('location')) {
           return res.status(404).json({ message: 'location not found' });
         }
@@ -83,10 +84,7 @@ export default {
         await chapter.save();
         res.json(chapter);
       } catch (e) {
-        if (
-          e.code === '23503' &&
-          e.message.includes('foreign key constraint')
-        ) {
+        if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('location')) {
             return res.status(404).json({ message: 'location not found' });
           }

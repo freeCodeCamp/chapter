@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Event } from 'server/models/Event';
+import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 
 export default {
   async index(req: Request, res: Response) {
@@ -54,7 +55,7 @@ export default {
       await event.save();
       res.status(201).json(event);
     } catch (e) {
-      if (e.code === '23503' && e.message.includes('foreign key constraint')) {
+      if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
         if (e.detail.includes('venue')) {
           return res.status(404).json({ message: 'venue not found' });
         }
@@ -98,10 +99,7 @@ export default {
         await event.save();
         res.json(event);
       } catch (e) {
-        if (
-          e.code === '23503' &&
-          e.message.includes('foreign key constraint')
-        ) {
+        if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('venue')) {
             return res.status(404).json({ message: 'venue not found' });
           }

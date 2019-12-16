@@ -18,10 +18,10 @@ export class Location extends BaseModel {
   postal_code!: string;
 
   @OneToMany(_type => Venue, venue => venue.location)
-  venues?: Venue[];
+  venues!: Venue[];
 
   @OneToMany(_type => Chapter, chapter => chapter.location)
-  chapters?: Chapter[];
+  chapters!: Chapter[];
 
   constructor(params: {
     country_code: string;

@@ -27,7 +27,7 @@ export class Event extends BaseModel {
   capacity!: number;
 
   @OneToMany(_type => EventSponsor, eventSponsor => eventSponsor.sponsor)
-  sponsors?: EventSponsor[];
+  sponsors!: EventSponsor[];
 
   @ManyToOne(_type => Venue, venue => venue.events)
   @JoinColumn({ name: 'venue_id' })
@@ -38,10 +38,10 @@ export class Event extends BaseModel {
   chapter!: Chapter;
 
   @OneToMany(_type => Rsvp, rsvp => rsvp.event)
-  rsvps?: Rsvp[];
+  rsvps!: Rsvp[];
 
   @OneToMany(_type => Tag, tag => tag.event)
-  tags?: Tag[];
+  tags!: Tag[];
 
   constructor(params: {
     name: string;

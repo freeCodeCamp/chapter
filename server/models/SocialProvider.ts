@@ -11,7 +11,7 @@ export class SocialProvider extends BaseModel {
     _type => SocialProviderUser,
     socialProviderUser => socialProviderUser.social_provider,
   )
-  users?: SocialProviderUser[];
+  users!: SocialProviderUser[];
 
   constructor(params: { name: string }) {
     super();

@@ -21,7 +21,7 @@ export class Chapter extends BaseModel {
   details!: any;
 
   @OneToMany(_type => Event, event => event.chapter)
-  events?: Event[];
+  events!: Event[];
 
   @ManyToOne(_type => Location, location => location.chapters)
   @JoinColumn({ name: 'location_id' })
@@ -32,10 +32,10 @@ export class Chapter extends BaseModel {
   creator!: User;
 
   @OneToMany(_type => UserChapter, userChapter => userChapter.chapter)
-  users?: UserChapter[];
+  users!: UserChapter[];
 
   @OneToMany(_type => UserBan, userBan => userBan.chapter)
-  banned_users?: UserBan[];
+  banned_users!: UserBan[];
 
   constructor(params: {
     name: string;

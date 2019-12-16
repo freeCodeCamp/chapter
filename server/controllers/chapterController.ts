@@ -16,7 +16,7 @@ export default {
     if (chapter) {
       res.json(chapter);
     } else {
-      res.status(404).json({ error: 'Cant find chapter' });
+      res.status(404).json({ error: "Can't find chapter" });
     }
   },
 
@@ -98,7 +98,7 @@ export default {
         res.status(500).json({ error: e });
       }
     } else {
-      res.status(404).json({ error: 'Cant find chapter' });
+      res.status(404).json({ error: "Can't find chapter" });
     }
   },
   async remove(req: Request, res: Response) {
@@ -114,7 +114,7 @@ export default {
         res.status(500).json({ error: e });
       }
     } else {
-      res.status(404).json({ error: 'Cant find chapter' });
+      res.status(404).json({ error: "Can't find chapter" });
     }
   },
 };

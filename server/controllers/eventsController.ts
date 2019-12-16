@@ -23,7 +23,7 @@ export default {
     if (event) {
       res.json(event);
     } else {
-      res.status(404).json({ error: 'Cant find event' });
+      res.status(404).json({ error: "Can't find event" });
     }
   },
 
@@ -113,7 +113,7 @@ export default {
         res.status(500).json({ error: e });
       }
     } else {
-      res.status(404).json({ error: 'Cant find event' });
+      res.status(404).json({ error: "Can't find event" });
     }
   },
   async remove(req: Request, res: Response) {
@@ -131,7 +131,7 @@ export default {
         res.status(500).json({ error: e });
       }
     } else {
-      res.status(404).json({ error: 'Cant find event' });
+      res.status(404).json({ error: "Can't find event" });
     }
   },
 };

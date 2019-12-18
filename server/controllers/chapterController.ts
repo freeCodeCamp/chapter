@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { Chapter } from 'server/models/Chapter';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 
+// The whole model is a json response, fix that if there's some sensitive data here
+
 export default {
   async index(_req: Request, res: Response) {
     const chapters = await Chapter.find();

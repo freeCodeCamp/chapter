@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { Event } from 'server/models/Event';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 
+// The whole model is a json response, fix that if there's some sensitive data here
+
 export default {
   async index(req: Request, res: Response) {
     const { chapterId } = req.params;

@@ -75,12 +75,12 @@ export default {
     const chapter = await Chapter.findOne({ id: parseInt(id) });
 
     if (chapter) {
-      name && (chapter.name = name);
-      description && (chapter.description = description);
-      category && (chapter.category = category);
-      details && (chapter.details = details);
-      location && (chapter.location = location);
-      creator && (chapter.creator = creator);
+      chapter.name = name ?? chapter.name;
+      chapter.description = description ?? chapter.description;
+      chapter.category = category ?? chapter.category;
+      chapter.details = details ?? chapter.details;
+      chapter.location = location ?? chapter.location;
+      chapter.creator = creator ?? chapter.creator;
 
       try {
         await chapter.save();

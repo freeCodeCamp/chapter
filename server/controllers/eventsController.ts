@@ -74,7 +74,6 @@ export default {
     const { id, chapterId } = req.params;
     const {
       name,
-      //   chapter,
       description,
       capacity,
       venue,
@@ -88,14 +87,13 @@ export default {
     });
 
     if (event) {
-      name && (event.name = name);
-      //   chapter && (event.chapter = chapter);
-      description && (event.description = description);
-      capacity && (event.capacity = capacity);
-      venue && (event.venue = venue);
-      canceled && (event.canceled = canceled);
-      start_at && (event.start_at = start_at);
-      ends_at && (event.ends_at = ends_at);
+      event.name = name ?? event.name;
+      event.description = description ?? event.description;
+      event.capacity = capacity ?? event.capacity;
+      event.venue = venue ?? event.venue;
+      event.canceled = canceled ?? event.canceled;
+      event.start_at = start_at ?? event.start_at;
+      event.ends_at = ends_at ?? event.ends_at;
 
       try {
         await event.save();

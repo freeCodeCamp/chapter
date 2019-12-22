@@ -20,6 +20,7 @@
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
+    "storybook": "start-storybook -s ./server/public -p 9001",
     "test": "NODE_ENV=test docker-compose exec app npx jest --coverage --verbose",
     "test:ci": "NODE_ENV=test docker-compose exec -T app npx jest --coverage --verbose",
     "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watchAll"
@@ -40,7 +41,7 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "dependencies": {
-    "@material-ui/core": "^4.5.2",
+    "@material-ui/core": "^4.8.0",
     "@material-ui/icons": "^4.5.1",
     "babel-plugin-module-resolver": "^3.2.0",
     "babel-plugin-styled-components": "^1.10.6",
@@ -70,6 +71,14 @@
     "typescript": "^3.7.4"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.7.4",
+    "@storybook/addon-a11y": "^5.2.8",
+    "@storybook/addon-actions": "^5.2.8",
+    "@storybook/addon-backgrounds": "^5.2.8",
+    "@storybook/addon-knobs": "^5.2.8",
+    "@storybook/addon-links": "^5.2.8",
+    "@storybook/addon-viewport": "^5.2.8",
+    "@storybook/react": "^5.2.8",
     "@testing-library/react": "^9.3.0",
     "@types/bluebird": "^3.5.28",
     "@types/chai": "^4.2.4",
@@ -90,6 +99,7 @@
     "@types/validator": "^10.11.3",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
+    "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "cross-env": "^6.0.3",
     "eslint": "^6.8.0",

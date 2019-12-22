@@ -50,7 +50,6 @@
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-response-errors": "^1.0.4",
-    "fork-ts-checker-webpack-plugin": "^1.5.1",
     "immer": "^3.2.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
@@ -71,10 +70,10 @@
     "typescript": "^3.7.4"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.7.4",
     "@storybook/addon-a11y": "^5.2.8",
     "@storybook/addon-actions": "^5.2.8",
     "@storybook/addon-backgrounds": "^5.2.8",
+    "@storybook/addon-docs": "^5.2.8",
     "@storybook/addon-knobs": "^5.2.8",
     "@storybook/addon-links": "^5.2.8",
     "@storybook/addon-viewport": "^5.2.8",

@@ -19,4 +19,4 @@ addParameters({
   },
 });
 
-configure(require.context('../client/stories', true, /\.tsx?$/), module);
+configure(require.context('../client/stories', true, /\.(ts|md)x?$/), module);

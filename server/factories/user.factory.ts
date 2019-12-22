@@ -3,11 +3,11 @@ import { define } from 'typeorm-seeding';
 import { User } from '../models/User';
 
 define(User, (faker: typeof Faker) => {
-  const location = new User({
+  const user = new User({
     email: faker.internet.email(),
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
   });
 
-  return location;
+  return user;
 });

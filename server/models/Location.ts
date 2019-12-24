@@ -17,10 +17,16 @@ export class Location extends BaseModel {
   @Column({ nullable: false })
   postal_code!: string;
 
-  @OneToMany(_type => Venue, venue => venue.location)
+  @OneToMany(
+    _type => Venue,
+    venue => venue.location,
+  )
   venues!: Venue[];
 
-  @OneToMany(_type => Chapter, chapter => chapter.location)
+  @OneToMany(
+    _type => Chapter,
+    chapter => chapter.location,
+  )
   chapters!: Chapter[];
 
   constructor(params: {

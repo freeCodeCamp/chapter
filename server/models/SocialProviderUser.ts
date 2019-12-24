@@ -5,11 +5,17 @@ import { User } from './User';
 
 @Entity({ name: 'social_provider_users' })
 export class SocialProviderUser extends BaseModel {
-  @ManyToOne(_type => SocialProvider, socialProvider => socialProvider.users)
+  @ManyToOne(
+    _type => SocialProvider,
+    socialProvider => socialProvider.users,
+  )
   @JoinColumn({ name: 'provider_id' })
   social_provider!: SocialProvider;
 
-  @ManyToOne(_type => User, user => user.social_providers)
+  @ManyToOne(
+    _type => User,
+    user => user.social_providers,
+  )
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

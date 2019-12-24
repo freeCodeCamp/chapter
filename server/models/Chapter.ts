@@ -20,21 +20,36 @@ export class Chapter extends BaseModel {
   @Column({ type: 'json' })
   details!: any;
 
-  @OneToMany(_type => Event, event => event.chapter)
+  @OneToMany(
+    _type => Event,
+    event => event.chapter,
+  )
   events!: Event[];
 
-  @ManyToOne(_type => Location, location => location.chapters)
+  @ManyToOne(
+    _type => Location,
+    location => location.chapters,
+  )
   @JoinColumn({ name: 'location_id' })
   location!: Location;
 
-  @ManyToOne(_type => User, user => user.created_chapters)
+  @ManyToOne(
+    _type => User,
+    user => user.created_chapters,
+  )
   @JoinColumn({ name: 'creator_id' })
   creator!: User;
 
-  @OneToMany(_type => UserChapter, userChapter => userChapter.chapter)
+  @OneToMany(
+    _type => UserChapter,
+    userChapter => userChapter.chapter,
+  )
   users!: UserChapter[];
 
-  @OneToMany(_type => UserBan, userBan => userBan.chapter)
+  @OneToMany(
+    _type => UserBan,
+    userBan => userBan.chapter,
+  )
   banned_users!: UserBan[];
 
   constructor(params: {

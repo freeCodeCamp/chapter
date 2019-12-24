@@ -26,16 +26,28 @@ export class User extends BaseModel {
   )
   social_providers!: SocialProviderUser[];
 
-  @OneToMany(_type => Chapter, chapter => chapter.creator)
+  @OneToMany(
+    _type => Chapter,
+    chapter => chapter.creator,
+  )
   created_chapters!: Chapter[];
 
-  @OneToMany(_type => Rsvp, rsvp => rsvp.user)
+  @OneToMany(
+    _type => Rsvp,
+    rsvp => rsvp.user,
+  )
   rsvps!: Rsvp[];
 
-  @OneToMany(_type => UserChapter, chapter => chapter.user)
+  @OneToMany(
+    _type => UserChapter,
+    chapter => chapter.user,
+  )
   chapters!: UserChapter[];
 
-  @OneToMany(_type => UserBan, userBan => userBan.user)
+  @OneToMany(
+    _type => UserBan,
+    userBan => userBan.user,
+  )
   banned_chapters!: UserBan[];
 
   constructor(params: {

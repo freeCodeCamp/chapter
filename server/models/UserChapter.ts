@@ -5,11 +5,17 @@ import { Chapter } from './Chapter';
 
 @Entity({ name: 'user_chapters' })
 export class UserChapter extends BaseModel {
-  @ManyToOne(_type => User, user => user.chapters)
+  @ManyToOne(
+    _type => User,
+    user => user.chapters,
+  )
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @ManyToOne(_type => Chapter, chapter => chapter.users)
+  @ManyToOne(
+    _type => Chapter,
+    chapter => chapter.users,
+  )
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 

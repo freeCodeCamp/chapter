@@ -26,21 +26,36 @@ export class Event extends BaseModel {
   @Column({ nullable: false })
   capacity!: number;
 
-  @OneToMany(_type => EventSponsor, eventSponsor => eventSponsor.sponsor)
+  @OneToMany(
+    _type => EventSponsor,
+    eventSponsor => eventSponsor.sponsor,
+  )
   sponsors!: EventSponsor[];
 
-  @ManyToOne(_type => Venue, venue => venue.events)
+  @ManyToOne(
+    _type => Venue,
+    venue => venue.events,
+  )
   @JoinColumn({ name: 'venue_id' })
   venue!: Venue;
 
-  @ManyToOne(_type => Chapter, chapter => chapter.events)
+  @ManyToOne(
+    _type => Chapter,
+    chapter => chapter.events,
+  )
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 
-  @OneToMany(_type => Rsvp, rsvp => rsvp.event)
+  @OneToMany(
+    _type => Rsvp,
+    rsvp => rsvp.event,
+  )
   rsvps!: Rsvp[];
 
-  @OneToMany(_type => Tag, tag => tag.event)
+  @OneToMany(
+    _type => Tag,
+    tag => tag.event,
+  )
   tags!: Tag[];
 
   constructor(params: {

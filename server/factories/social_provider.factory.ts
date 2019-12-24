@@ -4,9 +4,9 @@ import { define } from 'typeorm-seeding';
 import { SocialProvider } from '../models/SocialProvider';
 
 define(SocialProvider, (_faker: typeof Faker) => {
-  const user_ban = new SocialProvider({
+  const socialProvider = new SocialProvider({
     name: 'gauth',
   });
 
-  return user_ban;
+  return socialProvider;
 });

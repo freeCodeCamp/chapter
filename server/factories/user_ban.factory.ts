@@ -11,10 +11,10 @@ define(UserBan, (
 ) => {
   const { user, chapter } = params;
 
-  const user_ban = new UserBan({
+  const userBan = new UserBan({
     user,
     chapter,
   });
 
-  return user_ban;
+  return userBan;
 });

@@ -11,10 +11,10 @@ define(EventSponsor, (
 ) => {
   const { event, sponsor } = params;
 
-  const rsvp = new EventSponsor({
+  const eventSponsor = new EventSponsor({
     sponsor,
     event,
   });
 
-  return rsvp;
+  return eventSponsor;
 });

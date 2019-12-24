@@ -11,10 +11,10 @@ define(UserChapter, (
 ) => {
   const { user, chapter } = params;
 
-  const user_chapter = new UserChapter({
+  const userChapter = new UserChapter({
     user,
     chapter,
   });
 
-  return user_chapter;
+  return userChapter;
 });

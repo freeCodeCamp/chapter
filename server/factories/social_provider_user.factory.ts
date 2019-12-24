@@ -11,10 +11,10 @@ define(SocialProviderUser, (
 ) => {
   const { user, socialProvider } = params;
 
-  const user_ban = new SocialProviderUser({
+  const socialProviderUser = new SocialProviderUser({
     user,
     socialProvider,
   });
 
-  return user_ban;
+  return socialProviderUser;
 });

@@ -8,6 +8,7 @@ import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styl
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme, { themeObject } from 'styles/theme';
 import { rootReducer } from 'client/store/reducers';
+import PageLayout from 'client/components/PageLayout';
 
 const composeEnhancers =
   (typeof window !== 'undefined' &&
@@ -28,7 +29,9 @@ export default class MyApp extends App {
           <StyledComponentsThemeProvider theme={themeObject}>
             <>
               <CssBaseline />
-              <Component {...pageProps} />
+              <PageLayout>
+                <Component {...pageProps} />
+              </PageLayout>
             </>
           </StyledComponentsThemeProvider>
         </MaterialUIThemeProvider>

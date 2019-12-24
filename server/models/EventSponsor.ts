@@ -5,11 +5,17 @@ import { Event } from './Event';
 
 @Entity({ name: 'event_sponsors' })
 export class EventSponsor extends BaseModel {
-  @ManyToOne(_type => Sponsor, sponsor => sponsor.events)
+  @ManyToOne(
+    _type => Sponsor,
+    sponsor => sponsor.events,
+  )
   @JoinColumn({ name: 'sponsor_id' })
   sponsor!: Sponsor;
 
-  @ManyToOne(_type => Event, event => event.sponsors)
+  @ManyToOne(
+    _type => Event,
+    event => event.sponsors,
+  )
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 

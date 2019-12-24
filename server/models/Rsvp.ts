@@ -11,11 +11,17 @@ export class Rsvp extends BaseModel {
   @Column({ nullable: false })
   on_waitlist!: boolean;
 
-  @ManyToOne(_type => Event, event => event.rsvps)
+  @ManyToOne(
+    _type => Event,
+    event => event.rsvps,
+  )
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
-  @ManyToOne(_type => User, user => user.rsvps)
+  @ManyToOne(
+    _type => User,
+    user => user.rsvps,
+  )
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

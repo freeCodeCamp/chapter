@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import { Chapter } from 'server/models/Chapter';
+import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
+
+// The whole model is a json response, fix that if there's some sensitive data here
 
 export default {
   async index(_req: Request, res: Response) {
@@ -16,7 +19,7 @@ export default {
     if (chapter) {
       res.json(chapter);
     } else {
-      res.status(404).json({ error: 'Cant find chapter' });
+      res.status(404).json({ error: "Can't find chapter" });
     }
   },
 
@@ -45,12 +48,12 @@ export default {
       await chapter.save();
       res.status(201).json(chapter);
     } catch (e) {
-      if (e.code === '23503' && e.message.includes('foreign key constraint')) {
+      if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
         if (e.detail.includes('location')) {
-          return res.status(404).json({ message: 'location not found' });
+          return res.status(400).json({ message: 'location not found' });
         }
         if (e.detail.includes('user')) {
-          return res.status(404).json({ message: 'creator not found' });
+          return res.status(400).json({ message: 'creator not found' });
         }
       }
 
@@ -72,33 +75,30 @@ export default {
     const chapter = await Chapter.findOne({ id: parseInt(id) });
 
     if (chapter) {
-      name && (chapter.name = name);
-      description && (chapter.description = description);
-      category && (chapter.category = category);
-      details && (chapter.details = details);
-      location && (chapter.location = location);
-      creator && (chapter.creator = creator);
+      chapter.name = name ?? chapter.name;
+      chapter.description = description ?? chapter.description;
+      chapter.category = category ?? chapter.category;
+      chapter.details = details ?? chapter.details;
+      chapter.location = location ?? chapter.location;
+      chapter.creator = creator ?? chapter.creator;
 
       try {
         await chapter.save();
         res.json(chapter);
       } catch (e) {
-        if (
-          e.code === '23503' &&
-          e.message.includes('foreign key constraint')
-        ) {
+        if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('location')) {
-            return res.status(404).json({ message: 'location not found' });
+            return res.status(400).json({ message: 'location not found' });
           }
           if (e.detail.includes('user')) {
-            return res.status(404).json({ message: 'creator not found' });
+            return res.status(400).json({ message: 'creator not found' });
           }
         }
 
         res.status(500).json({ error: e });
       }
     } else {
-      res.status(404).json({ error: 'Cant find chapter' });
+      res.status(404).json({ error: "Can't find chapter" });
     }
   },
   async remove(req: Request, res: Response) {
@@ -114,7 +114,7 @@ export default {
         res.status(500).json({ error: e });
       }
     } else {
-      res.status(404).json({ error: 'Cant find chapter' });
+      res.status(404).json({ error: "Can't find chapter" });
     }
   },
 };

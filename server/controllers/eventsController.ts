@@ -59,10 +59,10 @@ export default {
     } catch (e) {
       if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
         if (e.detail.includes('venue')) {
-          return res.status(404).json({ message: 'venue not found' });
+          return res.status(400).json({ message: 'venue not found' });
         }
         if (e.detail.includes('chapter')) {
-          return res.status(404).json({ message: 'chapter not found' });
+          return res.status(400).json({ message: 'chapter not found' });
         }
       }
 
@@ -101,10 +101,10 @@ export default {
       } catch (e) {
         if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('venue')) {
-            return res.status(404).json({ message: 'venue not found' });
+            return res.status(400).json({ message: 'venue not found' });
           }
           if (e.detail.includes('chapter')) {
-            return res.status(404).json({ message: 'chapter not found' });
+            return res.status(400).json({ message: 'chapter not found' });
           }
         }
 

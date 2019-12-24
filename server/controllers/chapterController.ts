@@ -50,10 +50,10 @@ export default {
     } catch (e) {
       if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
         if (e.detail.includes('location')) {
-          return res.status(404).json({ message: 'location not found' });
+          return res.status(400).json({ message: 'location not found' });
         }
         if (e.detail.includes('user')) {
-          return res.status(404).json({ message: 'creator not found' });
+          return res.status(400).json({ message: 'creator not found' });
         }
       }
 
@@ -88,10 +88,10 @@ export default {
       } catch (e) {
         if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('location')) {
-            return res.status(404).json({ message: 'location not found' });
+            return res.status(400).json({ message: 'location not found' });
           }
           if (e.detail.includes('user')) {
-            return res.status(404).json({ message: 'creator not found' });
+            return res.status(400).json({ message: 'creator not found' });
           }
         }
 

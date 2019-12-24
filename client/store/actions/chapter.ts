@@ -30,9 +30,9 @@ export const fetchFail = (error: string): chapterTypes.IChapterActionTypes => {
 /****************
  * Side-Effects
  ****************/
-export const fetchChapter: ActionCreator<
-  chapterTypes.ThunkResult<Promise<void>>
-> = (id: string) => async dispatch => {
+export const fetchChapter: ActionCreator<chapterTypes.ThunkResult<
+  Promise<void>
+>> = (id: string) => async dispatch => {
   dispatch(fetchStart());
 
   // TODO: for the PR to be simple, haven't added any specific HTTP Service,

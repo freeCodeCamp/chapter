@@ -8,10 +8,16 @@ export class Venue extends BaseModel {
   @Column()
   name!: string;
 
-  @OneToMany(_type => Event, event => event.venue)
+  @OneToMany(
+    _type => Event,
+    event => event.venue,
+  )
   events!: Event[];
 
-  @ManyToOne(_type => Location, location => location.venues)
+  @ManyToOne(
+    _type => Location,
+    location => location.venues,
+  )
   @JoinColumn({ name: 'location_id' })
   location!: Location;
 

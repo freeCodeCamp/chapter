@@ -5,7 +5,7 @@ exports[`SomeComponent should render text 1`] = `
   class="MuiGrid-root MuiGrid-container"
 >
   <div
-    class="MuiGrid-root SomeComponent__StyledGrid-sc-1mmdy30-0 bGrJXM MuiGrid-item MuiGrid-grid-xs-12"
+    class="MuiGrid-root SomeComponent__StyledGrid-sc-1mmdy30-0 gaxruA MuiGrid-item MuiGrid-grid-xs-12"
   >
     This is an imported component with a Button
   </div>

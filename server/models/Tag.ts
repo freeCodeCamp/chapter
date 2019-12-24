@@ -7,7 +7,10 @@ export class Tag extends BaseModel {
   @Column({ nullable: false })
   name!: string;
 
-  @ManyToOne(_type => Event, event => event.tags)
+  @ManyToOne(
+    _type => Event,
+    event => event.tags,
+  )
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 

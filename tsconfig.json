@@ -2,20 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "server/*": [
-        "server/*"
-      ],
-      "client/*": [
-        "client/*"
-      ]
+      "server/*": ["server/*"],
+      "client/*": ["client/*"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "es2017"
-    ],
+    "lib": ["dom", "es2017"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -27,7 +20,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "esnext",
+    "target": "ES2020",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
@@ -36,19 +29,8 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "types": [
-      "jest",
-      "node"
-    ]
+    "types": ["jest", "node"]
   },
-  "include": [
-    "client",
-    "server",
-    "pages",
-    "types",
-    "styles"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["client", "server", "pages", "types", "styles"],
+  "exclude": ["node_modules"]
 }

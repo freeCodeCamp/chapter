@@ -1,20 +1,11 @@
 import React, { useEffect } from 'react';
 import { Card, Typography, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { SomeComponent, ProgressCardContent } from 'client/components';
 import { AppStoreState } from 'client/store/reducers';
 import { chapterActions } from 'client/store/actions';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    padding: 15,
-  },
-}));
-
 const Home: React.FC = () => {
-  const classes = useStyles();
-
   const { error, loading, name, description } = useSelector(
     (state: AppStoreState) => ({
       error: state.chapter.error,
@@ -32,7 +23,7 @@ const Home: React.FC = () => {
   return (
     <>
       <SomeComponent />
-      <Grid container className={classes.root} spacing={2}>
+      <Grid container spacing={2}>
         <Grid item xs={10}>
           {!error && (
             <Card>

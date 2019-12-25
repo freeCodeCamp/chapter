@@ -5,24 +5,21 @@ import eventsController from 'server/controllers/eventsController';
 
 const router = express.Router();
 
-router.get(
-  '/api/chapters/:chapterId/events',
-  asyncHandler(eventsController.index),
-);
+router.get('/chapters/:chapterId/events', asyncHandler(eventsController.index));
 router.post(
-  '/api/chapters/:chapterId/events',
+  '/chapters/:chapterId/events',
   asyncHandler(eventsController.create),
 );
 router.get(
-  '/api/chapters/:chapterId/events/:id',
+  '/chapters/:chapterId/events/:id',
   asyncHandler(eventsController.show),
 );
 router.patch(
-  '/api/chapters/:chapterId/events/:id',
+  '/chapters/:chapterId/events/:id',
   asyncHandler(eventsController.update),
 );
 router.delete(
-  '/api/chapters/:chapterId/events/:id',
+  '/chapters/:chapterId/events/:id',
   asyncHandler(eventsController.remove),
 );
 

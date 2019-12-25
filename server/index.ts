@@ -4,11 +4,9 @@ import express from 'express';
 import morgan from 'morgan';
 import { responseErrorHandler } from 'express-response-errors';
 
-import exampleRouter from 'server/routes/exampleRoutes/exampleRouter';
-import chapterRouter from 'server/routes/chapter';
-import eventsRouter from 'server/routes/events';
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
+import { apiV1 } from './routes';
 
 dotenv.config();
 
@@ -28,9 +26,7 @@ nextjs.nextApp.prepare().then(async () => {
   app.use(express.json());
   app.use(express.static('public'));
 
-  app.use(exampleRouter);
-  app.use(chapterRouter);
-  app.use(eventsRouter);
+  app.use(apiV1);
 
   app.use(responseErrorHandler);
 

@@ -24,18 +24,21 @@ export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <Provider store={store}>
-        <MaterialUIThemeProvider theme={theme}>
-          <StyledComponentsThemeProvider theme={themeObject}>
-            <>
-              <CssBaseline />
-              <PageLayout>
-                <Component {...pageProps} />
-              </PageLayout>
-            </>
-          </StyledComponentsThemeProvider>
-        </MaterialUIThemeProvider>
-      </Provider>
+      <>
+        <title>Chapter</title>
+        <Provider store={store}>
+          <MaterialUIThemeProvider theme={theme}>
+            <StyledComponentsThemeProvider theme={themeObject}>
+              <>
+                <CssBaseline />
+                <PageLayout>
+                  <Component {...pageProps} />
+                </PageLayout>
+              </>
+            </StyledComponentsThemeProvider>
+          </MaterialUIThemeProvider>
+        </Provider>
+      </>
     );
   }
 }

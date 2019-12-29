@@ -1,14 +1,27 @@
 import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
-import Navbar from 'client/ui/Navbar';
+import { withKnobs, optionsKnob as options } from "@storybook/addon-knobs";
 
-<Meta title="Navbar" component={Navbar} />
+import Navbar from 'client/ui/Navbar';
+import { links } from "./header-links";
+
+<Meta title="Navbar" component={Navbar} decorators={[withKnobs]} />
 
 # Navbar or AppBar
 
 The `Navbar` component will be used across the whole app, as a Layout.
+Following `Navbar` displays 4 Menu Links, where each `link` structure should match
+the following:
 
-<Preview>
+```ts
+interface INavLinks {
+  name: string;
+  label: string;
+  href: string;
+}
+```
+
+<Preview className="custom-preview">
   <Story name="basic">
-    <Navbar />
+    <Navbar links={links} />
   </Story>
 </Preview>

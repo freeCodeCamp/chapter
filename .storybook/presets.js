@@ -1,3 +1,10 @@
 const path = require('path');
 
-module.exports = ['@storybook/addon-docs/react/preset'];
+module.exports = [
+  {
+    name: '@storybook/addon-docs/react/preset',
+    options: {
+      configureJSX: true,
+    },
+  },
+];

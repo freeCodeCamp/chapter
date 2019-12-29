@@ -1,0 +1,16 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import { withFixedWidth } from './custom-decorators'
+import { RsvpCard } from 'client/ui/RsvpCard';
+
+<Meta title="RSVP Card" component={RsvpCard} decorators={[withFixedWidth()]} />
+
+# RSVP Card
+
+The `RsvpCard` component will be used to display chapter's events card,
+which a user can interact with to send and RSVP
+
+<Preview>
+  <Story name="basic">
+    <RsvpCard title="HTML Heaven" />
+  </Story>
+</Preview>

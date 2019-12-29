@@ -5,16 +5,25 @@ import { Search } from '@material-ui/icons';
 
 import { styles, resolved } from './styles';
 
-const Navbar: React.FC = () => {
-  // <header className={`${classes.pageRoot} ${classes.headerContainer}`}>
-  //   {props.action && <div className={styles}>props.action</div>}
-  //   {props.brand && <span className={styles}>props.brand</span>}
-  //   <nav>
-  //     <ul className={classes.navList}>
-  //       {mapToElements(props.links)}
-  //     </ul>
-  //   </nav>
-  // </header>
+export interface INavLinks {
+  name: string;
+  label: string;
+  href: string;
+}
+
+export interface INavbarProps {
+  links: INavLinks[];
+}
+
+const mapToMenuLinks = (links: INavLinks[]) => {
+  return links.map(link => (
+    <Link href={link.href} key={link.name}>
+      <Button color="inherit">{link.label}</Button>
+    </Link>
+  ));
+};
+
+const Navbar: React.FC<INavbarProps> = props => {
   return (
     <AppBar position="static" className={resolved.className}>
       <Toolbar className={`${resolved.className} nav-toolbar`}>
@@ -40,15 +49,17 @@ const Navbar: React.FC = () => {
           className={`${resolved.className} nav-menus`}
           spacing={0}
         >
-          <Button color="inherit">Events</Button>
-          <Button color="inherit">Chapters</Button>
-          <Button color="inherit">Login</Button>
+          {mapToMenuLinks(props.links)}
         </Grid>
       </Toolbar>
       <style jsx>{styles}</style>
       {resolved.styles}
     </AppBar>
   );
+};
+
+Navbar.defaultProps = {
+  links: [],
 };
 
 export default Navbar;

@@ -19,8 +19,6 @@ const Events: React.FC = () => {
     dispatch(eventActions.fetchEvents('1'));
   }, []);
 
-  console.log(error, loading, events);
-
   return (
     <>
       <Grid container spacing={2}>

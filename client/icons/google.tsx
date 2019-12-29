@@ -31,3 +31,5 @@ const GoogleIcon: React.FC<IBaseIconProps> = props => {
 GoogleIcon.defaultProps = {
   size: 24,
 };
+
+export default GoogleIcon;

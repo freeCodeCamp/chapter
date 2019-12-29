@@ -16,6 +16,22 @@ export const withFixedWidth = (styles = {}) => (storyFn: Function) => {
   );
 };
 
+export const centered = (storyFn: Function) => {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100vw',
+        height: '100%',
+      }}
+    >
+      {storyFn()}
+    </div>
+  );
+};
+
 /**
  * Mock NextJS `Link` and `Router` componentes and api.
  */

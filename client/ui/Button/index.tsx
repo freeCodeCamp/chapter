@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button as MButton } from '@material-ui/core';
+import { Button as MButton, ButtonProps } from '@material-ui/core';
 
 /**
  * This component resembles Material-UI at the moment, as Designs are quite similar to it,
@@ -8,12 +8,16 @@ import { Button as MButton } from '@material-ui/core';
  *
  * TODO: add more flexibility with props.
  */
-const Button: React.FC = props => {
+const Button: React.FC<ButtonProps> = props => {
   return (
-    <MButton variant="contained" color="primary" disableElevation>
+    <MButton variant={props.variant} color={props.color} disableElevation>
       {props.children}
     </MButton>
   );
+};
+
+Button.defaultProps = {
+  variant: 'contained',
 };
 
 export default Button;

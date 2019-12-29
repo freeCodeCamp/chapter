@@ -1,8 +1,8 @@
 import { ReactText } from 'react';
 
-export * from './google';
+export { default as GoogleIcon } from './google';
 
 export interface IBaseIconProps {
-  size: ReactText;
+  size?: ReactText;
   color?: string;
 }

@@ -2,10 +2,13 @@ import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
 import { withKnobs, text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 
-import { Button } from '@material-ui/core';
+import Button from 'client/ui/Button';
+import GoogleButton from 'client/ui/Button/google';
+import { GoogleIcon } from 'client/icons';
 import { GridContainer } from "./custom-decorators/components";
+import { centered } from './custom-decorators';
 
-<Meta title="Chapter/Button" component={Button} decorators={[withKnobs]} />
+<Meta title="Chapter/Button" component={Button} decorators={[withKnobs, centered]} />
 
 # Buttons
 
@@ -38,5 +41,21 @@ We are using Material UI's default buttons, without any customizability.
       </Button>
       </div>
     </GridContainer>
+  </Story>
+</Preview>
+
+
+## Stories
+
+
+__Login with Google__
+
+This is a Custom button, as we would be supporting [Google's Brand Guidelines](https://developers.google.com/identity/branding-guidelines)
+
+<Preview className="custom-preview">
+    <Story name="with icons">
+      <GoogleButton onClick={action('Login Clicked Clicked')} >
+        Login with Google
+      </GoogleButton>
   </Story>
 </Preview>

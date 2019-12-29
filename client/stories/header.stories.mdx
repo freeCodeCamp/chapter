@@ -1,10 +1,11 @@
 import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
 import { withKnobs, optionsKnob as options } from "@storybook/addon-knobs";
+import { withMockRouter } from "./custom-decorators";
 
 import Navbar from 'client/ui/Navbar';
 import { links } from "./header-links";
 
-<Meta title="Navbar" component={Navbar} decorators={[withKnobs]} />
+<Meta title="Chapter/Navbar" component={Navbar} decorators={[withKnobs, withMockRouter()]} />
 
 # Navbar or AppBar
 

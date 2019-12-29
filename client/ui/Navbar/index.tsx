@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Link from 'next/link';
 import { AppBar, Toolbar, InputBase, Grid, Button } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
@@ -23,7 +23,7 @@ const mapToMenuLinks = (links: INavLinks[]) => {
   ));
 };
 
-const Navbar: React.FC<INavbarProps> = props => {
+export const Navbar: FC<INavbarProps> = props => {
   return (
     <AppBar position="static" className={resolved.className}>
       <Toolbar className={`${resolved.className} nav-toolbar`}>

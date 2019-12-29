@@ -1,0 +1,28 @@
+import { Meta, Preview, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
+
+import { themeObject } from 'styles/theme';
+
+<Meta title="Chapter/Colors" />
+
+# Colors
+
+> Palette details can be seen from Material Design Specs. We are following Material
+> Palette Object, whose type can be seen here - [Material Palette](https://github.com/mui-org/material-ui/blob/master/packages/material-ui/src/styles/createPalette.d.ts)
+
+<Preview style={{ maxWidth: 850, margin: '0 auto' }}>
+  <ColorPalette>
+    <ColorItem title="theme.palette.primary.main" subtitle="Primary Main" colors={[themeObject.palette.primary.main]} />
+    <ColorItem title="theme.palette.secondary.main" subtitle="Secondary Main" colors={[themeObject.palette.secondary.main]} />
+    <ColorItem title="theme.palette.error.main" subtitle="Error" colors={[themeObject.palette.error.main]} />
+    <ColorItem title="theme.palette.background.default" subtitle="Background Default" colors={[themeObject.palette.background.default]} />
+    <ColorItem
+      title="Palette"
+      colors={[
+        themeObject.palette.primary.main,
+        themeObject.palette.secondary.main,
+        themeObject.palette.error.main,
+        themeObject.palette.background.default
+      ]}
+    />
+  </ColorPalette>
+</Preview>

@@ -1,0 +1,27 @@
+import { Meta, Typeset } from '@storybook/addon-docs/blocks';
+
+import { themeObject } from 'styles/theme';
+
+<Meta title="Chapter/Typography" />
+
+# Typography
+
+> Check details on Typography theme object [here](https://github.com/mui-org/material-ui/blob/master/packages/material-ui/src/styles/createTypography.d.ts)
+
+**Font:** Roboto
+
+**Weights:** 400(regular), 700(bold), 800(extrabold), 900(black)
+
+<Typeset
+  fontSizes={[
+    themeObject.typography.h1.fontSize,
+    themeObject.typography.h2.fontSize,
+    themeObject.typography.h3.fontSize,
+    themeObject.typography.h4.fontSize,
+    themeObject.typography.body1.fontSize,
+    themeObject.typography.body2.fontSize,
+    themeObject.typography.caption.fontSize,
+  ]}
+  fontWeight={600}
+  sampleText="Chapters Bootcamp ReactJS v16.9"
+/>

@@ -1,4 +1,5 @@
 import App from 'next/app';
+import Head from 'next/head';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
@@ -25,7 +26,9 @@ export default class MyApp extends App {
     const { Component, pageProps } = this.props;
     return (
       <>
-        <title>Chapter</title>
+        <Head>
+          <title>Chapter</title>
+        </Head>
         <Provider store={store}>
           <MaterialUIThemeProvider theme={theme}>
             <StyledComponentsThemeProvider theme={themeObject}>

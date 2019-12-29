@@ -23,8 +23,8 @@ export const fetchSuccess = (
 
 export const fetchFail = (error: string): eventsTypes.IEventActionTypes => {
   return {
-    payload: error,
     type: eventsTypes.FETCH_FAIL,
+    payload: error,
   };
 };
 

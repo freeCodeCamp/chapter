@@ -16,11 +16,13 @@ To better communicate and more easily build an API and UI, the current contribut
 
 | Term          | Definition      | Example  |
 | ------------- | ------------- | ----- |
-| instance      | a web server deployment of this _Chapter_ application, managed by an organization. | none |
+| instance      | a web server deployment of this _Chapter_ application, managed by an organization. | a Docker container running on a web host |
 | organization | a non-profit with multiple chapters | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
-| chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it  | Women Who Code New York City |
-| event | a single meetup that users can RSVP to, has a specific location and time, and has organizers      | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
-| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@example.com |
+| chapter      | a container for events and users  | Women Who Code - New York City |
+| event | a single meetup that users can RSVP to, has a specific location and time | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| administrator | a role to manage the entire _Chapter_ instance for an _organization_ | Women Who Code Global - Chapter Administrator |
+| organizer | a role to manage a _chapter's_ events, RSVPs, and users | Women Who Code - New York City, Local Organizer |
+| user | the role of a person who can follow and receive notifications from a _chapter_ and RSVP to events  | Sally Gold - SallyG@example.com |
 
 ## Tech Stack
 

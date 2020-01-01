@@ -22,14 +22,14 @@ const Events: React.FC = () => {
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={10}>
-          <ProgressCardContent loading={loading}>
-            <Card>
-              <button style={{ float: 'right' }}>Add new</button>
-              {error ? (
-                <h1>😢Error</h1>
-              ) : (
-                events.map((event: IEventModal) => (
+        <Grid item xs={12}>
+          <button>Add new</button>
+          {error ? (
+            <h1>😢Error</h1>
+          ) : (
+            events.map((event: IEventModal) => (
+              <Card style={{ marginTop: '12px' }}>
+                <ProgressCardContent loading={loading}>
                   <div key={`event-${event.id}`}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {event.name}
@@ -49,10 +49,10 @@ const Events: React.FC = () => {
                       {event.capacity}
                     </Typography>
                   </div>
-                ))
-              )}
-            </Card>
-          </ProgressCardContent>
+                </ProgressCardContent>
+              </Card>
+            ))
+          )}
         </Grid>
       </Grid>
     </>

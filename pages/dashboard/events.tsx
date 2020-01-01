@@ -28,27 +28,25 @@ const Events: React.FC = () => {
             <h1>😢Error</h1>
           ) : (
             events.map((event: IEventModal) => (
-              <Card style={{ marginTop: '12px' }}>
+              <Card style={{ marginTop: '12px' }} key={`event-${event.id}`}>
                 <ProgressCardContent loading={loading}>
-                  <div key={`event-${event.id}`}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {event.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      {event.description}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      {event.capacity}
-                    </Typography>
-                  </div>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {event.name}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {event.description}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {event.capacity}
+                  </Typography>
                 </ProgressCardContent>
               </Card>
             ))

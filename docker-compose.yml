@@ -27,11 +27,11 @@ services:
       - .:/usr/chapter
     ports:
       - '8000:8000'
-  speccy:
-    image: node:10-alpine
-    command: 'npm run speccy:watch'
-    working_dir: /usr/chapter
-    volumes:
-      - .:/usr/chapter
-    ports:
-      - '8001:8001'
+  # speccy:
+  #   image: node:10-alpine
+  #   command: 'npm run speccy:watch'
+  #   working_dir: /usr/chapter
+  #   volumes:
+  #     - .:/usr/chapter
+  #   ports:
+  #     - '8001:8001'

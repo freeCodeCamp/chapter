@@ -1,9 +1,8 @@
 import { ThunkAction } from 'redux-thunk';
 import { AppStoreState } from '../reducers';
 
-export const FETCH_START = 'fcc/chapter/EVENTS_START';
-export const FETCH_SUCCESS = 'fcc/chapter/EVENTS_SUCCESS';
-export const FETCH_FAIL = 'fcc/chapter/EVENTS_FAIL';
+import * as ACTIONS from './actions/events';
+export * from './actions/events';
 
 export interface IEventModal {
   id?: string;
@@ -26,11 +25,11 @@ export interface IEventStoreState {
 }
 
 interface IEventFetchStartAction {
-  type: typeof FETCH_START;
+  type: typeof ACTIONS.FETCH_START;
 }
 
 interface IEventFetchSuccessAction {
-  type: typeof FETCH_SUCCESS;
+  type: typeof ACTIONS.FETCH_SUCCESS;
   payload: {
     events: IEventModal[];
     chapterId: string;
@@ -38,7 +37,7 @@ interface IEventFetchSuccessAction {
 }
 
 interface IEventFetchFailureAction {
-  type: typeof FETCH_FAIL;
+  type: typeof ACTIONS.FETCH_FAIL;
   payload: string;
 }
 

@@ -16,11 +16,13 @@ To better communicate and more easily build an API and UI, the current contribut
 
 | Term          | Definition      | Example  |
 | ------------- | ------------- | ----- |
-| instance      | a web server deployment of this _Chapter_ application, managed by an organization. | none |
-| organization | a non-profit with multiple chapters | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
-| chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it  | Women Who Code New York City |
-| event | a single meetup that users can RSVP to, has a specific location and time, and has organizers      | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
-| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@example.com |
+| _instance_      | a web server deployment of the ["Chapter" application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_. | a Docker container running on a web host |
+| _organization_ | a non-profit with multiple _chapters_ | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
+| _chapter_      | a container for _events_ and _users_  | Women Who Code - New York City |
+| _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| _administrator_ | a role to manage the entire ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ for an _organization_ | Women Who Code - Global Chapter Administrator |
+| _organizer_ | a role to manage a _chapter's_ _events_, RSVPs, communications, and _users_ | Women Who Code - New York City, Local Organizer |
+| _user_ | the role of a person who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Sally Gold - SallyG@example.com |
 
 ## Tech Stack
 

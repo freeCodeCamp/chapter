@@ -35,28 +35,30 @@ const AddSponsor: React.FC = () => {
     <>
       {(responseMsg || errors) && <div>{responseMsg}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <label>Sponsor Name: </label>
         <TextField
+          label="Sponsor Name"
           name="name"
           type="text"
           placeholder="Glitter and Sparkle Co"
           ref={register}
           required
         />
-        <label>Sponsor Website: </label>
         <TextField
+          label="Sponsor Website"
           name="website"
           type="text"
           placeholder="www.glitter.co"
           ref={register}
           required
         />
-        <label>Sponsor Type: </label>
-        <select name="type" required ref={register}>
-          <option value="FOOD">Food</option>
-          <option value="BEVERAGE">Beverage</option>
-          <option value="OTHER">Other</option>
-        </select>
+        <label>
+          Sponsor Type:
+          <select name="type" required ref={register}>
+            <option value="FOOD">Food</option>
+            <option value="BEVERAGE">Beverage</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </label>
         <Button variant="contained" color="primary" type="submit">
           Add Sponsor
         </Button>

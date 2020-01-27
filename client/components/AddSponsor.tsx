@@ -1,15 +1,19 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import useForm from 'react-hook-form';
 
-import {
-  Form,
-  Input,
-  ResponseDiv,
-  SubmitBtn,
-} from 'client/styles/components/AddSponsor';
+import { Button, TextField, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(() => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '25%',
+  },
+}));
 
 const AddSponsor: React.FC = () => {
-  const [responseMsg, setResponseMsg] = React.useState('');
+  const [responseMsg, setResponseMsg] = useState('');
+  const styles = useStyles();
 
   const { register, handleSubmit, errors } = useForm();
 
@@ -29,10 +33,10 @@ const AddSponsor: React.FC = () => {
 
   return (
     <>
-      {(responseMsg || errors) && <ResponseDiv>{responseMsg}</ResponseDiv>}
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      {(responseMsg || errors) && <div>{responseMsg}</div>}
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <label>Sponsor Name: </label>
-        <Input
+        <TextField
           name="name"
           type="text"
           placeholder="Glitter and Sparkle Co"
@@ -40,7 +44,7 @@ const AddSponsor: React.FC = () => {
           required
         />
         <label>Sponsor Website: </label>
-        <Input
+        <TextField
           name="website"
           type="text"
           placeholder="www.glitter.co"
@@ -53,8 +57,10 @@ const AddSponsor: React.FC = () => {
           <option value="BEVERAGE">Beverage</option>
           <option value="OTHER">Other</option>
         </select>
-        <SubmitBtn type="submit">Add Sponsor</SubmitBtn>
-      </Form>
+        <Button variant="contained" color="primary" type="submit">
+          Add Sponsor
+        </Button>
+      </form>
     </>
   );
 };

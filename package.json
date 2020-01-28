@@ -104,7 +104,6 @@
     "lint-staged": "^9.4.2",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1",
-    "sequelize-cli": "^5.5.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
     "speccy": "^0.11.0",

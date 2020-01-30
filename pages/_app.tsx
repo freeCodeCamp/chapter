@@ -3,10 +3,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
 import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import theme, { themeObject } from 'styles/theme';
+import theme from 'styles/theme';
 import { rootReducer } from 'client/store/reducers';
 import PageLayout from 'client/components/PageLayout';
 
@@ -26,14 +25,10 @@ export default class MyApp extends App {
     return (
       <Provider store={store}>
         <MaterialUIThemeProvider theme={theme}>
-          <StyledComponentsThemeProvider theme={themeObject}>
-            <>
-              <CssBaseline />
-              <PageLayout>
-                <Component {...pageProps} />
-              </PageLayout>
-            </>
-          </StyledComponentsThemeProvider>
+          <CssBaseline />
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
         </MaterialUIThemeProvider>
       </Provider>
     );

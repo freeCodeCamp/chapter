@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import { Grid } from '@material-ui/core';
-// import styled from 'styled-components';
 import { withTheme, makeStyles } from '@material-ui/core/styles';
 
 // You can also easily modify material-ui components

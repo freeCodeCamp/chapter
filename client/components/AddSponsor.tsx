@@ -9,6 +9,9 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     maxWidth: '25%',
   },
+  item: {
+    marginTop: '20px',
+  },
 }));
 
 const AddSponsor: React.FC = () => {
@@ -42,6 +45,7 @@ const AddSponsor: React.FC = () => {
           placeholder="Glitter and Sparkle Co"
           ref={register}
           required
+          className={styles.item}
         />
         <TextField
           label="Sponsor Website"
@@ -50,8 +54,9 @@ const AddSponsor: React.FC = () => {
           placeholder="www.glitter.co"
           ref={register}
           required
+          className={styles.item}
         />
-        <label>
+        <label className={styles.item}>
           Sponsor Type:
           <select name="type" required ref={register}>
             <option value="FOOD">Food</option>
@@ -59,7 +64,12 @@ const AddSponsor: React.FC = () => {
             <option value="OTHER">Other</option>
           </select>
         </label>
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          className={styles.item}
+          variant="contained"
+          color="primary"
+          type="submit"
+        >
           Add Sponsor
         </Button>
       </form>

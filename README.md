@@ -34,7 +34,7 @@ We are planning to use the following tools:
 * [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Styled Components](https://www.styled-components.com) for styling.
+  * [Material UI](https://material-ui.com/) for components and it's built in `makeStyles` hook and `styled` HOC for custom styling
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) for writing unit tests.
   * [sinon](https://sinonjs.org/)

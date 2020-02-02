@@ -7,16 +7,16 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
+    "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json -r tsconfig-paths/register ./server/index.ts",
     "dev": "cross-env TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
     "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "next:build": "next build",
     "nodemon": "npx nodemon",
-    "typeorm": "ts-node -P tsconfig.server.json node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -P tsconfig.server.json -r tsconfig-paths/register node_modules/typeorm/cli.js",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
-    "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
-    "seed": "ts-node -P tsconfig.server.json ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
+    "prod:server": "NODE_ENV=production ts-node --files --transpile-only -r tsconfig-paths/register ./server/index.ts",
+    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
@@ -51,7 +51,6 @@
     "express-response-errors": "^1.0.4",
     "fork-ts-checker-webpack-plugin": "^1.5.1",
     "immer": "^3.2.0",
-    "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
     "next": "^9.1.1",
     "nodemailer": "^6.3.1",
@@ -66,6 +65,7 @@
     "reflect-metadata": "^0.1.13",
     "styled-components": "^4.4.0",
     "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0",
     "typeorm": "^0.2.20",
     "typescript": "^3.7.4"
   },
@@ -126,10 +126,6 @@
   "prettier": {
     "trailingComma": "all",
     "singleQuote": true
-  },
-  "_moduleAliases": {
-    "server": "server",
-    "client": "client"
   },
   "engines": {
     "node": "10.x",

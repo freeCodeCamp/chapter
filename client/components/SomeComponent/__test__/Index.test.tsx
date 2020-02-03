@@ -12,7 +12,7 @@ describe('SomeComponent', () => {
   it('should render text', () => {
     const { container } = render(
       <ThemeProvider theme={theme}>
-        <SomeComponent />,
+        <SomeComponent />
       </ThemeProvider>,
     );
     expect(container.firstChild).toMatchSnapshot();

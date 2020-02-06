@@ -13,7 +13,11 @@ router.patch('/chapters/:id', asyncHandler(chapterController.update));
 router.delete('/chapters/:id', asyncHandler(chapterController.remove));
 
 router.post(
-  '/chapters/:id/ban/:user_id',
+  '/chapters/:id/join/:user_id',
+  asyncHandler(userChapterController.create),
+);
+router.post(
+  '/chapters/:chapter_id/ban/:user_id',
   asyncHandler(userChapterController.ban),
 );
 

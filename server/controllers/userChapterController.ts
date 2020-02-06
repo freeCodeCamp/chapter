@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Chapter } from 'server/models/Chapter';
+import { Chapter, User } from 'server/models';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 import { UserChapter } from 'server/models/UserChapter';
 
@@ -25,40 +25,34 @@ export default {
   },
 
   async create(req: Request, res: Response) {
-    const {
-      name,
-      description,
-      category,
-      details,
-      location,
-      creator,
-    } = req.body;
+    const { chapter_id, user_id } = req.body;
 
-    // handle creator diffrenetly in the future (from cookie?)
+    const chapter = await Chapter.findOne({ id: chapter_id });
+    const user = await User.findOne({ id: user_id });
 
-    const chapter = new Chapter({
-      name,
-      description,
-      category,
-      details,
-      location,
-      creator,
-    });
+    if (chapter && user) {
+      const userChapter = new UserChapter({
+        user,
+        chapter,
+      });
 
-    try {
-      await chapter.save();
-      res.status(201).json(chapter);
-    } catch (e) {
-      if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
-        if (e.detail.includes('location')) {
-          return res.status(400).json({ message: 'location not found' });
+      try {
+        await userChapter.save();
+        res.status(201).json(userChapter);
+      } catch (e) {
+        if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
+          if (e.detail.includes('location')) {
+            return res.status(400).json({ message: 'location not found' });
+          }
+          if (e.detail.includes('user')) {
+            return res.status(400).json({ message: 'creator not found' });
+          }
         }
-        if (e.detail.includes('user')) {
-          return res.status(400).json({ message: 'creator not found' });
-        }
+
+        res.status(500).json({ error: e });
       }
-
-      res.status(500).json({ error: e });
+    } else {
+      res.status(404).json({ error: "Can't find user or chapter. Or both." });
     }
   },
   async ban(req: Request, res: Response) {
@@ -70,7 +64,7 @@ export default {
     if (userChapter) {
       try {
         await userChapter.remove();
-        res.json({ id, user_id });
+        res.status(201).json({ id, user_id });
       } catch (e) {
         res.json(500).json({ error: e });
       }

@@ -1,6 +1,5 @@
 import App from 'server/testUtils/App';
 import chapterRouter from 'server/routes/v1/chapter';
-import { User } from 'server/models';
 
 describe('router: sampleRouter', () => {
   const app = new App();
@@ -11,9 +10,14 @@ describe('router: sampleRouter', () => {
 
   describe('/chapter', () => {
     it('Creates a Chapter', async () => {
-      const locations = await app.request.get('/locations');
+      const location = await app.request.post('/locations').send({
+        country_code: 'UK',
+        city: 'Birmingham',
+        region: 'West Midlands',
+        postal_code: 'B377YE',
+      });
 
-      const user = await app.request.post('/user').send({
+      const user = await app.request.post('/users').send({
         first_name: 'Test',
         last_name: 'Agent',
         email: 'example@freecodecamp.com',
@@ -24,8 +28,8 @@ describe('router: sampleRouter', () => {
         description: 'Test',
         category: 'Test',
         details: 'Hello World',
-        location: locations[0].id,
-        creator: user.id,
+        location: location.body.id,
+        creator: user.body.id,
       });
 
       expect(res.error).toBe(undefined);

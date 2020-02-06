@@ -6,7 +6,6 @@ import { User } from 'server/models';
 export default {
   async index(_req: Request, res: Response) {
     const users = await User.find();
-
     res.json(users);
   },
 

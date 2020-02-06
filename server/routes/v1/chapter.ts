@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 
 import chapterController from 'server/controllers/chapterController';
+import userChapterController from 'server/controllers/userChapterController';
 
 const router = express.Router();
 
@@ -10,5 +11,10 @@ router.post('/chapters', asyncHandler(chapterController.create));
 router.get('/chapters/:id', asyncHandler(chapterController.show));
 router.patch('/chapters/:id', asyncHandler(chapterController.update));
 router.delete('/chapters/:id', asyncHandler(chapterController.remove));
+
+router.post(
+  '/chapters/:id/ban/:user_id',
+  asyncHandler(userChapterController.ban),
+);
 
 export default router;

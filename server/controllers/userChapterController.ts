@@ -1,29 +1,10 @@
 import { Request, Response } from 'express';
 import { Chapter, User } from 'server/models';
-import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 import { UserChapter } from 'server/models/UserChapter';
 
 // The whole model is a json response, fix that if there's some sensitive data here
 
 export default {
-  async index(_req: Request, res: Response) {
-    const chapters = await Chapter.find();
-
-    res.json(chapters);
-  },
-
-  async show(req: Request, res: Response) {
-    const { id } = req.params;
-
-    const chapter = await Chapter.findOne({ id: parseInt(id) });
-
-    if (chapter) {
-      res.json(chapter);
-    } else {
-      res.status(404).json({ error: "Can't find chapter" });
-    }
-  },
-
   async create(req: Request, res: Response) {
     const { chapter_id, user_id } = req.body;
 
@@ -40,15 +21,6 @@ export default {
         await userChapter.save();
         res.status(201).json(userChapter);
       } catch (e) {
-        if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
-          if (e.detail.includes('location')) {
-            return res.status(400).json({ message: 'location not found' });
-          }
-          if (e.detail.includes('user')) {
-            return res.status(400).json({ message: 'creator not found' });
-          }
-        }
-
         res.status(500).json({ error: e });
       }
     } else {

@@ -23,25 +23,15 @@ describe('router: sampleRouter', () => {
     });
 
     it('Adds a user to the chapter', async () => {
-      const res = await app.request.get('/api/sample-route?x=1');
+      const res = await app.request.get('/api/v1/chapter/1/join/1');
 
-      expect(res.body).toEqual({
-        message: 'Response from the server',
-        query: {
-          x: '1',
-        },
-      });
+      expect(res.status).toBe(201);
     });
 
     it('Bans a user from a chapter', async () => {
-      const res = await app.request.get('/api/sample-route?x=1');
+      const res = await app.request.get('/api/v1/chapter/1/ban/1');
 
-      expect(res.body).toEqual({
-        message: 'Response from the server',
-        query: {
-          x: '1',
-        },
-      });
+      expect(res.status).toBe(201);
     });
   });
 

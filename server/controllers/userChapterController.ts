@@ -61,64 +61,7 @@ export default {
       res.status(500).json({ error: e });
     }
   },
-
-  async update(req: Request, res: Response) {
-    const { id } = req.params;
-    const {
-      name,
-      description,
-      category,
-      details,
-      location,
-      creator,
-    } = req.body;
-
-    const chapter = await Chapter.findOne({ id: parseInt(id) });
-
-    if (chapter) {
-      chapter.name = name ?? chapter.name;
-      chapter.description = description ?? chapter.description;
-      chapter.category = category ?? chapter.category;
-      chapter.details = details ?? chapter.details;
-      chapter.location = location ?? chapter.location;
-      chapter.creator = creator ?? chapter.creator;
-
-      try {
-        await chapter.save();
-        res.json(chapter);
-      } catch (e) {
-        if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
-          if (e.detail.includes('location')) {
-            return res.status(400).json({ message: 'location not found' });
-          }
-          if (e.detail.includes('user')) {
-            return res.status(400).json({ message: 'creator not found' });
-          }
-        }
-
-        res.status(500).json({ error: e });
-      }
-    } else {
-      res.status(404).json({ error: "Can't find chapter" });
-    }
-  },
-  async remove(req: Request, res: Response) {
-    const { id } = req.params;
-
-    const chapter = await Chapter.findOne({ id: parseInt(id) });
-
-    if (chapter) {
-      try {
-        await chapter.remove();
-        res.json({ id });
-      } catch (e) {
-        res.status(500).json({ error: e });
-      }
-    } else {
-      res.status(404).json({ error: "Can't find chapter" });
-    }
-  },
-  async banUser(req: Request, res: Response) {
+  async ban(req: Request, res: Response) {
     const { id, user_id } = req.params;
     const userChapter = await UserChapter.findOne({
       where: { user_id: parseInt(user_id), chapter_id: parseInt(id) },

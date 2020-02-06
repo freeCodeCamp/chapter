@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Chapter } from 'server/models/Chapter';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
-import { UserChapter } from 'server/models/UserChapter';
 
 // The whole model is a json response, fix that if there's some sensitive data here
 
@@ -116,23 +115,6 @@ export default {
       }
     } else {
       res.status(404).json({ error: "Can't find chapter" });
-    }
-  },
-  async banUser(req: Request, res: Response) {
-    const { id, user_id } = req.params;
-    const userChapter = await UserChapter.findOne({
-      where: { user_id: parseInt(user_id), chapter_id: parseInt(id) },
-    });
-
-    if (userChapter) {
-      try {
-        await userChapter.remove();
-        res.json({ id, user_id });
-      } catch (e) {
-        res.json(500).json({ error: e });
-      }
-    } else {
-      res.status(404).json({ error: "Can't find user record for chapter" });
     }
   },
 };

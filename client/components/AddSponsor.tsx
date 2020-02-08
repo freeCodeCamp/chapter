@@ -12,13 +12,16 @@ const useStyles = makeStyles(() => ({
   item: {
     marginTop: '20px',
   },
+  responseDiv: {
+    margin: '15px 0',
+  },
 }));
 
 const AddSponsor: React.FC = () => {
   const [responseMsg, setResponseMsg] = useState('');
   const styles = useStyles();
 
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit } = useForm();
 
   // TODO: Get data from store
   // const eventId = useSelector(state => state.selectedChapter.eventId);
@@ -36,7 +39,7 @@ const AddSponsor: React.FC = () => {
 
   return (
     <>
-      {(responseMsg || errors) && <div>{responseMsg}</div>}
+      {responseMsg && <div className={styles.responseDiv}>{responseMsg}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <TextField
           label="Sponsor Name"

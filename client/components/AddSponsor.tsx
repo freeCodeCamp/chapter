@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import useForm from 'react-hook-form';
 
-import { Button, TextField, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  TextField,
+  makeStyles,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   form: {
@@ -41,32 +49,41 @@ const AddSponsor: React.FC = () => {
     <>
       {responseMsg && <div className={styles.responseDiv}>{responseMsg}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <TextField
-          label="Sponsor Name"
-          name="name"
-          type="text"
-          placeholder="Glitter and Sparkle Co"
-          ref={register}
-          required
-          className={styles.item}
-        />
-        <TextField
-          label="Sponsor Website"
-          name="website"
-          type="text"
-          placeholder="www.glitter.co"
-          ref={register}
-          required
-          className={styles.item}
-        />
-        <label className={styles.item}>
-          Sponsor Type:
-          <select name="type" required ref={register}>
-            <option value="FOOD">Food</option>
-            <option value="BEVERAGE">Beverage</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </label>
+        <FormControl className={styles.item}>
+          <TextField
+            label="Sponsor Name"
+            name="name"
+            type="text"
+            placeholder="Glitter and Sparkle Co"
+            ref={register}
+            required
+          />
+        </FormControl>
+        <FormControl className={styles.item}>
+          <TextField
+            label="Sponsor Website"
+            name="website"
+            type="text"
+            placeholder="www.glitter.co"
+            ref={register}
+            required
+          />
+        </FormControl>
+        <FormControl className={styles.item}>
+          <InputLabel id="demo-simple-select-label">Sponsor Type</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            // value={age}
+            // onChange={handleChange}
+            ref={register}
+            required
+          >
+            <MenuItem value={'FOOD'}>Food</MenuItem>
+            <MenuItem value={'BEVERAGE'}>Beverage</MenuItem>
+            <MenuItem value={'OTHER'}>Other</MenuItem>
+          </Select>
+        </FormControl>
         <Button
           className={styles.item}
           variant="contained"

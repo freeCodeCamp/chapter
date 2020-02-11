@@ -70,15 +70,8 @@ const AddSponsor: React.FC = () => {
           />
         </FormControl>
         <FormControl className={styles.item}>
-          <InputLabel id="demo-simple-select-label">Sponsor Type</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            // value={age}
-            // onChange={handleChange}
-            ref={register}
-            required
-          >
+          <InputLabel id="sponsor-type-label">Sponsor Type</InputLabel>
+          <Select labelId="sponsor-type-label" ref={register} required>
             <MenuItem value={'FOOD'}>Food</MenuItem>
             <MenuItem value={'BEVERAGE'}>Beverage</MenuItem>
             <MenuItem value={'OTHER'}>Other</MenuItem>

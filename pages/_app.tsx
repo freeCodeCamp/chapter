@@ -1,4 +1,5 @@
 import App from 'next/app';
+import Head from 'next/head';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
@@ -23,14 +24,19 @@ export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <Provider store={store}>
-        <MaterialUIThemeProvider theme={theme}>
-          <CssBaseline />
-          <PageLayout>
-            <Component {...pageProps} />
-          </PageLayout>
-        </MaterialUIThemeProvider>
-      </Provider>
+      <>
+        <Head>
+          <title>Chapter</title>
+        </Head>
+        <Provider store={store}>
+          <MaterialUIThemeProvider theme={theme}>
+            <CssBaseline />
+            <PageLayout>
+              <Component {...pageProps} />
+            </PageLayout>
+          </MaterialUIThemeProvider>
+        </Provider>
+      </>
     );
   }
 }

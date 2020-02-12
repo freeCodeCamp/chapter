@@ -1,21 +1,17 @@
 import * as React from 'react';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 import Document, { Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
 import theme from 'styles/theme';
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const materialUISheet = new ServerStyleSheets();
-    const styledComponentsSheet = new ServerStyleSheet();
     const originalRenderPage = ctx.renderPage;
 
     try {
       ctx.renderPage = () =>
         originalRenderPage({
           enhanceApp: App => props =>
-            styledComponentsSheet.collectStyles(
-              materialUISheet.collect(<App {...props} />),
-            ),
+            materialUISheet.collect(<App {...props} />),
         });
 
       const initialProps = await Document.getInitialProps(ctx);
@@ -25,12 +21,11 @@ export default class MyDocument extends Document {
           <>
             {initialProps.styles}
             {materialUISheet.getStyleElement()}
-            {styledComponentsSheet.getStyleElement()}
           </>
         ),
       };
+      // eslint-disable-next-line no-empty
     } finally {
-      styledComponentsSheet.seal();
     }
   }
   render() {

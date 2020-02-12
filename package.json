@@ -7,16 +7,16 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json ./server/index.ts",
+    "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json -r tsconfig-paths/register ./server/index.ts",
     "dev": "cross-env TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
     "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "next:build": "next build",
     "nodemon": "npx nodemon",
-    "typeorm": "ts-node -P tsconfig.server.json node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -P tsconfig.server.json -r tsconfig-paths/register node_modules/typeorm/cli.js",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
-    "prod:server": "NODE_ENV=production ts-node --files --transpile-only ./server/index.ts",
-    "seed": "ts-node -P tsconfig.server.json ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
+    "prod:server": "NODE_ENV=production ts-node --files --transpile-only -r tsconfig-paths/register ./server/index.ts",
+    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
@@ -43,7 +43,6 @@
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
     "babel-plugin-module-resolver": "^3.2.0",
-    "babel-plugin-styled-components": "^1.10.6",
     "cross-fetch": "^3.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -51,7 +50,6 @@
     "express-response-errors": "^1.0.4",
     "fork-ts-checker-webpack-plugin": "^1.5.1",
     "immer": "^3.2.0",
-    "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
     "next": "^9.1.1",
     "nodemailer": "^6.3.1",
@@ -64,8 +62,8 @@
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.13",
-    "styled-components": "^4.4.0",
     "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0",
     "typeorm": "^0.2.20",
     "typescript": "^3.7.4"
   },
@@ -85,7 +83,6 @@
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
     "@types/sinon-chai": "^3.2.3",
-    "@types/styled-components": "^4.1.19",
     "@types/supertest": "^2.0.8",
     "@types/validator": "^10.11.3",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
@@ -104,7 +101,6 @@
     "lint-staged": "^9.4.2",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1",
-    "sequelize-cli": "^5.5.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
     "speccy": "^0.11.0",
@@ -127,10 +123,6 @@
   "prettier": {
     "trailingComma": "all",
     "singleQuote": true
-  },
-  "_moduleAliases": {
-    "server": "server",
-    "client": "client"
   },
   "engines": {
     "node": "10.x",

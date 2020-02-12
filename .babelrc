@@ -1,27 +1,15 @@
 {
-  "presets": [
-    "next/babel"
-  ],
+  "presets": ["next/babel"],
   "plugins": [
     [
       "module-resolver",
       {
-        "root": [
-          "."
-        ],
+        "root": ["."],
         "alias": {
           "client": "./client",
           "server": "./server",
           "styles": "./styles"
         }
-      }
-    ],
-    [
-      "styled-components",
-      {
-        "ssr": true,
-        "displayName": true,
-        "preprocess": false
       }
     ]
   ]

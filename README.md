@@ -16,11 +16,15 @@ To better communicate and more easily build an API and UI, the current contribut
 
 | Term          | Definition      | Example  |
 | ------------- | ------------- | ----- |
-| instance      | a web server deployment of this _Chapter_ application, managed by an organization. | none |
-| organization | a non-profit with multiple chapters | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
-| chapter      | a container for events, with a description and subscribers, and one or more admins who can manage it  | Women Who Code New York City |
-| event | a single meetup that users can RSVP to, has a specific location and time, and has organizers      | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
-| user | a person who has signed up and been authorized as a subscriber to a chapter  | Sally Gold - SallyG@example.com |
+| _instance_      | a web server deployment of the ["Chapter" application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_. | a Docker container running on a web host |
+| _organization_ | a non-profit with multiple _chapters_ | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
+| _chapter_      | a container for _events_ and _users_  | Women Who Code - New York City |
+| _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
+| _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
+| _administrator_ | the _role_ of a _user_ to manage the entire ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ for an _organization_ | Women Who Code - Global Chapter Administrator |
+| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _users_ | Women Who Code - New York City, Local Organizer |
+| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - New York City, Local Member |
 
 ## Tech Stack
 
@@ -30,7 +34,7 @@ We are planning to use the following tools:
 * [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Styled Components](https://www.styled-components.com) for styling.
+  * [Material UI](https://material-ui.com/) for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) for writing unit tests.
   * [sinon](https://sinonjs.org/)
@@ -166,7 +170,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://thomasroest.com"><img src="https://avatars2.githubusercontent.com/u/4428811?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Roest</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=ThomasRoest" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.scottbrenner.me/"><img src="https://avatars2.githubusercontent.com/u/416477?v=4" width="100px;" alt=""/><br /><sub><b>Scott Brenner</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=ScottBrenner" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.scottbrenner.me/"><img src="https://avatars2.githubusercontent.com/u/416477?v=4" width="100px;" alt=""/><br /><sub><b>Scott Brenner</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=ScottBrenner" title="Documentation">📖</a> <a href="#tool-ScottBrenner" title="Tools">🔧</a></td>
     <td align="center"><a href="https://github.com/allella"><img src="https://avatars0.githubusercontent.com/u/1777776?v=4" width="100px;" alt=""/><br /><sub><b>Jim Ciallella</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=allella" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.pipelabs.com.au"><img src="https://avatars3.githubusercontent.com/u/20792877?v=4" width="100px;" alt=""/><br /><sub><b>Joel Rozen</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=joelrozen" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/yitzhak-bloy"><img src="https://avatars3.githubusercontent.com/u/41252020?v=4" width="100px;" alt=""/><br /><sub><b>yitzhak-bloy</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=yitzhak-bloy" title="Documentation">📖</a></td>
@@ -216,4 +220,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
-

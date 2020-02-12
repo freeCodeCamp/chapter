@@ -1,6 +1,6 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
-import { Event } from '../models/Event';
+import { Event } from 'server/models/Event';
 import { Chapter } from 'server/models/Chapter';
 import { Venue } from 'server/models/Venue';
 

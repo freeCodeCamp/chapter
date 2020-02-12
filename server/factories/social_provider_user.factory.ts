@@ -1,9 +1,9 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
 
-import { SocialProviderUser } from '../models/SocialProviderUser';
-import { SocialProvider } from '../models/SocialProvider';
-import { User } from '../models/User';
+import { SocialProviderUser } from 'server/models/SocialProviderUser';
+import { SocialProvider } from 'server/models/SocialProvider';
+import { User } from 'server/models/User';
 
 define(SocialProviderUser, (
   _faker: typeof Faker,

@@ -1,9 +1,9 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
 
-import { UserBan } from '../models/UserBan';
-import { Chapter } from '../models/Chapter';
-import { User } from '../models/User';
+import { UserBan } from 'server/models/UserBan';
+import { Chapter } from 'server/models/Chapter';
+import { User } from 'server/models/User';
 
 define(UserBan, (
   _faker: typeof Faker,

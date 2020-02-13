@@ -39,8 +39,6 @@ const AddSponsor: React.FC = () => {
     try {
       // await dispatch(sponsorActions.submit(eventId, chapterId));
       setResponseMsg(`${data.name} has been added as a ${data.type} sponsor.`);
-
-      console.log(data);
     } catch (e) {
       setResponseMsg('Uh oh, something went wrong.');
       // TODO: more descriptive error messages

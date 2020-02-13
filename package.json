@@ -1,6 +1,6 @@
 {
   "name": "chapter",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A self-hosted event management tool for nonprofits",
   "main": "server/index.js",
   "directories": {
@@ -125,7 +125,7 @@
     "singleQuote": true
   },
   "engines": {
-    "node": "10.x",
+    "node": "12.x",
     "npm": ">= 6.0.0"
   }
 }

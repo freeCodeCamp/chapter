@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useForm from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 import {
   Button,
@@ -29,7 +29,7 @@ const AddSponsor: React.FC = () => {
   const [responseMsg, setResponseMsg] = useState('');
   const styles = useStyles();
 
-  const { register, handleSubmit } = useForm();
+  const { control, handleSubmit } = useForm();
 
   // TODO: Get data from store
   // const eventId = useSelector(state => state.selectedChapter.eventId);
@@ -50,32 +50,50 @@ const AddSponsor: React.FC = () => {
       {responseMsg && <div className={styles.responseDiv}>{responseMsg}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <FormControl className={styles.item}>
-          <TextField
-            label="Sponsor Name"
+          <Controller
+            control={control}
+            as={
+              <TextField
+                name="name"
+                type="text"
+                label="Sponsor Name"
+                placeholder="Glitter and Sparkle Co"
+              />
+            }
             name="name"
-            type="text"
-            placeholder="Glitter and Sparkle Co"
-            ref={register}
-            required
+            options={{ required: true }}
           />
         </FormControl>
         <FormControl className={styles.item}>
-          <TextField
-            label="Sponsor Website"
+          <Controller
+            control={control}
+            as={
+              <TextField
+                label="Sponsor Website"
+                name="website"
+                type="text"
+                placeholder="www.glitter.co"
+              />
+            }
             name="website"
-            type="text"
-            placeholder="www.glitter.co"
-            ref={register}
-            required
+            options={{ required: true }}
           />
         </FormControl>
         <FormControl className={styles.item}>
           <InputLabel id="sponsor-type-label">Sponsor Type</InputLabel>
-          <Select labelId="sponsor-type-label" ref={register} required>
-            <MenuItem value={'FOOD'}>Food</MenuItem>
-            <MenuItem value={'BEVERAGE'}>Beverage</MenuItem>
-            <MenuItem value={'OTHER'}>Other</MenuItem>
-          </Select>
+          <Controller
+            control={control}
+            as={
+              <Select labelId="sponsor-type-label">
+                <MenuItem value={'FOOD'}>Food</MenuItem>
+                <MenuItem value={'BEVERAGE'}>Beverage</MenuItem>
+                <MenuItem value={'OTHER'}>Other</MenuItem>
+              </Select>
+            }
+            name="type"
+            defaultValue={'OTHER'}
+            options={{ required: true }}
+          />
         </FormControl>
         <Button
           className={styles.item}

@@ -57,7 +57,7 @@
     "pg-hstore": "^2.3.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-hook-form": "^3.28.1",
+    "react-hook-form": "^4.9.3",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",

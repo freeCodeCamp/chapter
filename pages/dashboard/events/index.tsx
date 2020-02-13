@@ -6,6 +6,7 @@ import { AppStoreState } from 'client/store/reducers';
 import { eventActions } from 'client/store/actions';
 import { IEventModal } from 'client/store/types/events';
 import DashboardEvent from 'client/components/DashboardEvent';
+import Link from 'next/link';
 
 const Events: React.FC = () => {
   const { error, loading, events } = useSelector((state: AppStoreState) => ({
@@ -23,7 +24,7 @@ const Events: React.FC = () => {
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <button>Add new</button>
+          <Link href="/dashboard/events/create">Create a event</Link>
           {error ? (
             <h1>😢Error</h1>
           ) : (

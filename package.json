@@ -16,7 +16,7 @@
     "typeorm": "ts-node -P tsconfig.server.json -r tsconfig-paths/register node_modules/typeorm/cli.js",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only -r tsconfig-paths/register ./server/index.ts",
-    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
+    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.js",
     "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",

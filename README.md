@@ -147,7 +147,7 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 
 ## License
 
-Copyright © 2019 freeCodeCamp.org
+Copyright © 2020 freeCodeCamp.org
 
 The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 

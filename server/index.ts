@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+import isDocker from 'is-docker';
 import { responseErrorHandler } from 'express-response-errors';
 
 import nextjs from 'server/lib/next';
@@ -10,6 +11,14 @@ import { apiV1 } from './routes';
 dotenv.config();
 
 const app: express.Application = express();
+
+if (isDocker && process.env.DB_LOCAL) {
+  console.error(
+    '\n\n\nUSING LOCAL DB BUT RUNNING IN DOCKER WILL CAUSE IT TO USE DOCKER-COMPOSE DB INSTAD OF LOCAL',
+  );
+  console.error('npm run typeorm WONT WORK PROPRELY\n\n\n');
+  process.exit(1);
+}
 
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;

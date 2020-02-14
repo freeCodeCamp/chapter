@@ -5,14 +5,14 @@ config();
 
 const dbConfig = {
   host: process.env.DB_URL,
-  port: process.env.DB_PORT || (process.env.DB_LOCAL !== '' ? 5432 : 54320),
+  port: process.env.DB_PORT || (process.env.IS_DOCKER === '' ? 5432 : 54320),
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 };
 
 // TODO: remove debue
-console.log({ port: process.env.DB_PORT, local: process.env.DB_LOCAL });
+console.log({ port: process.env.DB_PORT, local: process.env.IS_DOCKER });
 console.log(dbConfig);
 
 module.exports = {

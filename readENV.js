@@ -8,7 +8,8 @@ const entries = Object.keys(process.env)
     item =>
       item.startsWith('DB') ||
       item.startsWith('EMAIL') ||
-      item.startsWith('CHAPTER'),
+      item.startsWith('CHAPTER') ||
+      item.startsWith('IS'),
   )
   .map(item => [item, process.env[item]]);
 

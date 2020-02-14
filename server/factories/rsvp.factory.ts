@@ -1,9 +1,9 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
 
-import { Rsvp } from '../models/Rsvp';
-import { Event } from '../models/Event';
-import { User } from '../models/User';
+import { Rsvp } from 'server/models/Rsvp';
+import { Event } from 'server/models/Event';
+import { User } from 'server/models/User';
 
 define(Rsvp, (faker: typeof Faker, params: { user: User; event: Event }) => {
   const { user, event } = params;

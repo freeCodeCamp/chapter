@@ -1,9 +1,9 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
 
-import { Sponsor } from '../models/Sponsor';
-import { SponsorTypes } from '../../types/SponsorTypes';
-import { randomEnum } from '../util/Utilities';
+import { Sponsor } from 'server/models/Sponsor';
+import { SponsorTypes } from 'types/SponsorTypes';
+import { randomEnum } from 'server/util/Utilities';
 
 define(Sponsor, (faker: typeof Faker) => {
   const name = faker.company.companyName();

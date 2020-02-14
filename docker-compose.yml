@@ -11,7 +11,7 @@ services:
   app:
     depends_on:
       - db
-    image: node:10-alpine
+    image: node:13-alpine
     command: 'npm run dev'
     working_dir: /usr/chapter
     environment:
@@ -28,7 +28,7 @@ services:
     ports:
       - '8000:8000'
   speccy:
-    image: node:10-alpine
+    image: node:13-alpine
     command: 'npm run speccy:watch'
     working_dir: /usr/chapter
     volumes:

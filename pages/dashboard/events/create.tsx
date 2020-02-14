@@ -44,7 +44,7 @@ const CreateEvent: React.FC = () => {
             control={control}
             as={<TextField label="Capacity" type="number" placeholder="50" />}
             name="capacity"
-            defaultValue="50"
+            defaultValue=""
             options={{ required: true }}
           />
         </FormControl>

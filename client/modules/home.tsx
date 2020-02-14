@@ -40,7 +40,13 @@ const Home: React.FC = () => {
           )}
         </Grid>
       </Grid>
-      <Link href="/add-sponsor">Add sponsor</Link>
+      <Link href="/add-sponsor">
+        <a>Add sponsor</a>
+      </Link>
+      <br />
+      <Link href="/dashboard">
+        <a>Admin dashboard</a>
+      </Link>
     </>
   );
 };

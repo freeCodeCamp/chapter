@@ -11,10 +11,6 @@ const dbConfig = {
   database: process.env.DB_NAME,
 };
 
-// TODO: remove debue
-console.log({ port: process.env.DB_PORT, local: process.env.IS_DOCKER });
-console.log(dbConfig);
-
 module.exports = {
   type: 'postgres',
   ...dbConfig,

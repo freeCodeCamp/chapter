@@ -16,13 +16,6 @@ services:
     working_dir: /usr/chapter
     environment:
       - DB_URL=db
-    #   - DB_USER=postgres
-    #   - DB_PASSWORD=password
-    #   - DB_NAME=chapter
-    #   - CHAPTER_EMAIL=ourEmail@placeholder.place
-    #   - EMAIL_USERNAME=emailUsernamePlaceholder
-    #   - EMAIL_PASSWORD=emailPasswordPlaceholder
-    #   - EMAIL_SERVICE=emailServicePlaceholder
     volumes:
       - .:/usr/chapter
     ports:

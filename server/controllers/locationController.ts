@@ -21,13 +21,14 @@ export default {
   },
 
   async create(req: Request, res: Response) {
-    const { country_code, city, region, postal_code } = req.body;
+    const { country_code, city, region, postal_code, address } = req.body;
 
     const location = new Location({
       country_code,
       city,
       region,
       postal_code,
+      address,
     });
 
     try {
@@ -39,7 +40,7 @@ export default {
   },
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { country_code, city, region, postal_code } = req.body;
+    const { country_code, city, region, postal_code, address } = req.body;
 
     const location = await Location.findOne({ id: parseInt(id) });
 
@@ -48,6 +49,10 @@ export default {
       location.city = city ?? location.city;
       location.region = region ?? location.region;
       location.postal_code = postal_code ?? location.postal_code;
+
+      if (address !== undefined) {
+        location.address = address;
+      }
 
       try {
         await location.save();

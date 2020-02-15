@@ -5,8 +5,8 @@ import { Event } from '../models/Event';
 
 export default class CreateTags implements Seeder {
   public async run(factory: Factory): Promise<any> {
-    const event = await Event.findOne();
+    const events = await Event.find();
 
-    await factory(Tag)({ event }).seedMany(5);
+    await Promise.all(events.map(event => factory(Tag)({ event }).seedMany(5)));
   }
 }

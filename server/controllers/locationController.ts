@@ -1,9 +1,21 @@
 import { Request, Response } from 'express';
+import { Like } from 'typeorm';
+
 import { Location } from 'server/models/Location';
 
 export default {
-  async index(_req: Request, res: Response) {
-    const locations = await Location.find();
+  async index(req: Request, res: Response) {
+    const { country_code, city, region, postal_code, address } = req.query;
+
+    const locations = await Location.find({
+      where: [
+        { country_code: Like(`%${country_code}%`) },
+        { city: Like(`%${city}%`) },
+        { region: Like(`%${region}%`) },
+        { postal_code: Like(`%${postal_code}%`) },
+        { address: Like(`%${address}%`) },
+      ],
+    });
 
     res.json(locations);
   },

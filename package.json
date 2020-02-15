@@ -20,9 +20,8 @@
     "speccy:watch": "nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
     "speccy": "npx speccy serve -p 8001 api/swagger.json",
     "start": "npm run prod:server",
-    "test": "NODE_ENV=test docker-compose exec app npx jest --coverage --verbose",
-    "test:ci": "NODE_ENV=test docker-compose exec -T app npx jest --coverage --verbose",
-    "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watchAll",
+    "test": "npx jest --coverage --verbose",
+    "test:watch": "npx jest --watchAll",
     "postinstall": "node scripts/postInstall.js"
   },
   "repository": {

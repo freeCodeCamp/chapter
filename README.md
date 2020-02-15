@@ -104,6 +104,11 @@ Run tests
 npm run test
 ```
 
+### If you're running in docker compose prefix the command with docker-compose exec
+```
+NODE_ENV=test docker-compose exec app npm run test
+```
+
 Run tests in watch mode
 ```
 npm run test:watch

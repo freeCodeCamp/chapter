@@ -76,7 +76,7 @@
       },
       "get": {
         "tags": ["location"],
-        "summary": "Finds locations by city, country or postal code",
+        "summary": "Finds locations by country code, city, region, postal code or address",
         "description": "Multiple status values can be provided as query params",
         "operationId": "findLocations",
         "parameters": [
@@ -90,9 +90,27 @@
             }
           },
           {
-            "name": "country",
+            "name": "region",
             "in": "query",
-            "description": "Country value that needs to be considered for filter",
+            "description": "Region value that needs to be considered for filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "Address value that needs to be considered for filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country_code",
+            "in": "query",
+            "description": "Country_code value that needs to be considered for filter",
             "required": false,
             "schema": {
               "type": "string"
@@ -1086,16 +1104,19 @@
             "type": "string",
             "format": "uuid"
           },
-          "country": {
+          "country_code": {
             "type": "string"
           },
           "city": {
             "type": "string"
           },
-          "state": {
+          "region": {
             "type": "string"
           },
           "postal_code": {
+            "type": "string"
+          },
+          "address": {
             "type": "string"
           }
         }

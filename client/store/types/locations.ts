@@ -9,6 +9,7 @@ export interface ILocationModal {
   country_code: string;
   city: string;
   region: string;
+  address?: string;
   postal_code: string;
   created_at?: string;
   updated_at?: string;

@@ -21,6 +21,16 @@ export const fetchSuccess = (
   };
 };
 
+export const fetchSingleSuccess = (
+  event: eventsTypes.IEventModal,
+  chapterId: string,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.FETCH_SINGLE_SUCCESS,
+    payload: { event, chapterId },
+  };
+};
+
 export const fetchFail = (error: string): eventsTypes.IEventActionTypes => {
   return {
     type: eventsTypes.FETCH_FAIL,
@@ -43,6 +53,22 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
   try {
     const resData = await http.get(`/chapters/${chapterId}/events`, {}, {});
     dispatch(fetchSuccess(resData, chapterId));
+  } catch (err) {
+    dispatch(fetchFail(err));
+  }
+};
+
+export const cancelEvent: ActionCreator<eventsTypes.ThunkResult<
+  Promise<void>
+>> = (chapterId: string, eventId: string) => async dispatch => {
+  const http = new HttpService<eventsTypes.IEventModal>();
+  try {
+    const resData = await http.delete(
+      `/chapters/${chapterId}/events/${eventId}/cancel`,
+      {},
+      {},
+    );
+    dispatch(fetchSingleSuccess(resData, chapterId));
   } catch (err) {
     dispatch(fetchFail(err));
   }

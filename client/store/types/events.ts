@@ -36,6 +36,14 @@ interface IEventFetchSuccessAction {
   };
 }
 
+interface IEventFetchSingleSuccessAction {
+  type: typeof ACTIONS.FETCH_SINGLE_SUCCESS;
+  payload: {
+    event: IEventModal;
+    chapterId: string;
+  };
+}
+
 interface IEventFetchFailureAction {
   type: typeof ACTIONS.FETCH_FAIL;
   payload: string;
@@ -44,7 +52,8 @@ interface IEventFetchFailureAction {
 export type IEventActionTypes =
   | IEventFetchStartAction
   | IEventFetchSuccessAction
-  | IEventFetchFailureAction;
+  | IEventFetchFailureAction
+  | IEventFetchSingleSuccessAction;
 
 export type ThunkResult<R> = ThunkAction<
   R,

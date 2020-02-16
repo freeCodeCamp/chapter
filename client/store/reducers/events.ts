@@ -21,6 +21,14 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
         draft.error = '';
         draft.loading = false;
         break;
+      case eventsTypes.FETCH_SINGLE_SUCCESS:
+        draft.chapterId = action.payload.chapterId;
+        draft.events = draft.events.map(event =>
+          event.id === action.payload.event.id ? action.payload.event : event,
+        );
+        draft.error = '';
+        draft.loading = false;
+        break;
       case eventsTypes.FETCH_FAIL:
         draft.error = action.payload;
         draft.loading = false;

@@ -3,7 +3,6 @@ import { Event } from 'server/models/Event';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 import { Tag } from 'server/models/Tag';
 import sanitizeTags from 'server/util/sanitizeTags';
-import { MoreThan } from 'typeorm';
 
 // The whole model is a json response, fix that if there's some sensitive data here
 
@@ -12,7 +11,7 @@ export default {
     const { chapterId } = req.params;
 
     const events = await Event.find({
-      where: { chapter: chapterId, id: MoreThan(9) },
+      where: { chapter: chapterId },
       relations: ['tags'],
     });
 
@@ -145,6 +144,26 @@ export default {
       try {
         await event.remove();
         res.json({ id });
+      } catch (e) {
+        res.status(500).json({ error: e });
+      }
+    } else {
+      res.status(404).json({ error: "Can't find event" });
+    }
+  },
+  async cancel(req: Request, res: Response) {
+    const { id, chapterId } = req.params;
+
+    const event = await Event.findOne({
+      where: { id: parseInt(id), chapter: chapterId },
+    });
+
+    if (event) {
+      event.canceled = true;
+
+      try {
+        await event.save();
+        res.json(event);
       } catch (e) {
         res.status(500).json({ error: e });
       }

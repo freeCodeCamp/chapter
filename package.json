@@ -42,6 +42,7 @@
   "dependencies": {
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
+    "@types/swagger-ui-express": "^4.1.1",
     "babel-plugin-module-resolver": "^3.2.0",
     "cross-fetch": "^3.0.4",
     "dotenv": "^8.2.0",

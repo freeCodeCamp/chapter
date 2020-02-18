@@ -42,7 +42,6 @@
   "dependencies": {
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
-    "@types/swagger-ui-express": "^4.1.1",
     "babel-plugin-module-resolver": "^3.2.0",
     "cross-fetch": "^3.0.4",
     "dotenv": "^8.2.0",
@@ -86,6 +85,7 @@
     "@types/react-dom": "^16.9.2",
     "@types/sinon-chai": "^3.2.3",
     "@types/supertest": "^2.0.8",
+    "@types/swagger-ui-express": "^4.1.1",
     "@types/validator": "^10.11.3",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",

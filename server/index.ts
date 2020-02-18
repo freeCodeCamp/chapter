@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
 import { responseErrorHandler } from 'express-response-errors';
+import swaggerUi from 'swagger-ui-express';
 
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 import { apiV1 } from './routes';
-import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from '../api/swagger.json';
 
 dotenv.config();
@@ -39,7 +39,7 @@ nextjs.nextApp.prepare().then(async () => {
     console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
   });
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'development') {
     app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 });

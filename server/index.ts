@@ -39,5 +39,7 @@ nextjs.nextApp.prepare().then(async () => {
     console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
   });
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  if (process.env.NODE_ENV === 'production') {
+    app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  }
 });

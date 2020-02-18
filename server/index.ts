@@ -6,6 +6,8 @@ import { responseErrorHandler } from 'express-response-errors';
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 import { apiV1 } from './routes';
+import swaggerUi from 'swagger-ui-express';
+import * as swaggerDocument from '../api/swagger.json';
 
 dotenv.config();
 
@@ -36,4 +38,6 @@ nextjs.nextApp.prepare().then(async () => {
   app.listen(port, () => {
     console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
   });
+
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 });

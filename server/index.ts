@@ -8,7 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 import { apiV1 } from './routes';
-import * as swaggerDocument from '../api/swagger.json';
+import swaggerDocument from '../api/swagger.json';
 
 dotenv.config();
 
@@ -45,11 +45,11 @@ nextjs.nextApp.prepare().then(async () => {
     nextjs.handle(req, res);
   });
 
-  app.listen(port, () => {
-    console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
-  });
-
   if (process.env.NODE_ENV === 'development') {
     app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
+
+  app.listen(port, () => {
+    console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console
+  });
 });

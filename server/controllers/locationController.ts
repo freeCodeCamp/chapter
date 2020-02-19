@@ -57,24 +57,24 @@ export default {
 
     const location = await Location.findOne({ id: parseInt(id) });
 
-    if (location) {
-      location.country_code = country_code ?? location.country_code;
-      location.city = city ?? location.city;
-      location.region = region ?? location.region;
-      location.postal_code = postal_code ?? location.postal_code;
-
-      if (address !== undefined) {
-        location.address = address;
-      }
-
-      try {
-        await location.save();
-        res.json(location);
-      } catch (e) {
-        throw new InternalServerError(JSON.stringify({ error: e }));
-      }
-    } else {
+    if (!location) {
       throw new NotFoundError("Can't find location");
+    }
+
+    location.country_code = country_code ?? location.country_code;
+    location.city = city ?? location.city;
+    location.region = region ?? location.region;
+    location.postal_code = postal_code ?? location.postal_code;
+
+    if (address !== undefined) {
+      location.address = address;
+    }
+
+    try {
+      await location.save();
+      res.json(location);
+    } catch (e) {
+      throw new InternalServerError(JSON.stringify({ error: e }));
     }
   },
   async remove(req: Request, res: Response) {
@@ -82,15 +82,15 @@ export default {
 
     const location = await Location.findOne({ id: parseInt(id) });
 
-    if (location) {
-      try {
-        await location.remove();
-        res.json({ id });
-      } catch (e) {
-        throw new InternalServerError(JSON.stringify({ error: e }));
-      }
-    } else {
+    if (!location) {
       throw new NotFoundError("Can't find location");
+    }
+
+    try {
+      await location.remove();
+      res.json({ id });
+    } catch (e) {
+      throw new InternalServerError(JSON.stringify({ error: e }));
     }
   },
 };

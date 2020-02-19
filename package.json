@@ -16,13 +16,11 @@
     "typeorm": "ts-node -P tsconfig.server.json -r tsconfig-paths/register node_modules/typeorm/cli.js",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prod:server": "NODE_ENV=production ts-node --files --transpile-only -r tsconfig-paths/register ./server/index.ts",
-    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.json",
-    "speccy:watch": "npx nodemon --watch 'api/swagger.json' --exec 'npm run speccy'",
-    "speccy": "npx speccy serve -p 8001 api/swagger.json",
+    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.js",
     "start": "npm run prod:server",
-    "test": "NODE_ENV=test docker-compose exec app npx jest --coverage --verbose",
-    "test:ci": "NODE_ENV=test docker-compose exec -T app npx jest --coverage --verbose",
-    "test:watch": "NODE_ENV=test docker-compose exec app npx jest --watchAll"
+    "test": "npx jest --coverage --verbose",
+    "test:watch": "npx jest --watchAll",
+    "postinstall": "node scripts/postInstall.js"
   },
   "repository": {
     "type": "git",
@@ -50,6 +48,7 @@
     "express-response-errors": "^1.0.4",
     "fork-ts-checker-webpack-plugin": "^1.5.1",
     "immer": "^3.2.0",
+    "is-docker": "^2.0.0",
     "morgan": "^1.9.1",
     "next": "^9.1.1",
     "nodemailer": "^6.3.1",
@@ -105,7 +104,6 @@
     "prettier": "^1.19.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
-    "speccy": "^0.11.0",
     "supertest": "^4.0.2",
     "ts-jest": "^24.1.0",
     "typeorm-seeding": "^1.2.0"

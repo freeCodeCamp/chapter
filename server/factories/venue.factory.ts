@@ -1,8 +1,8 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
 
-import { Location } from '../models/Location';
-import { Venue } from '../models/Venue';
+import { Location } from 'server/models/Location';
+import { Venue } from 'server/models/Venue';
 
 define(Venue, (faker: typeof Faker, params: { location: Location }) => {
   const name = faker.company.companyName();

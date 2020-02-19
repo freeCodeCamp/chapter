@@ -1,6 +1,6 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
-import { Location } from '../models/Location';
+import { Location } from 'server/models/Location';
 
 define(Location, (faker: typeof Faker) => {
   const location = new Location({

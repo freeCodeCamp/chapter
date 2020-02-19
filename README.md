@@ -106,6 +106,8 @@ DISCLAIMER: This is a more hands on approach.
 
 This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
 
+After you setup the DB instance local or remote, create a database, add the DB name and credentials to .env
+
 MAKE SURE TO SET `IS_DOCKER=` in `.env` to blank
 
 ```

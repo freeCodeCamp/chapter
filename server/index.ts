@@ -37,6 +37,8 @@ nextjs.nextApp.prepare().then(async () => {
   app.use(express.json());
   app.use(express.static('public'));
 
+  app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
   app.use(apiV1);
 
   app.use(responseErrorHandler);
@@ -44,10 +46,6 @@ nextjs.nextApp.prepare().then(async () => {
   app.get('*', (req, res) => {
     nextjs.handle(req, res);
   });
-
-  if (process.env.NODE_ENV === 'development') {
-    app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  }
 
   app.listen(port, () => {
     console.log(`\n\nstarted on port ${port}\n\n`); // tslint:disable-line no-console

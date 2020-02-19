@@ -1,28 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { existsSync, copyFile } = require('fs');
+const { existsSync, copyFileSync } = require('fs');
 const { execSync } = require('child_process');
 
 console.log('--------------------------');
-console.log('');
 console.log('🎉 WELCOME TO CHAPTER 🎉');
-console.log('');
 console.log('--------------------------');
 
-if (!existsSync('.env')) {
-  console.log("You don't have a .env. Copying demo");
-  copyFile('.env.example', '.env', err => {
-    if (err) {
-      console.error('Error coping env file');
-      return;
-    }
-
-    console.log('Done');
-  });
-
-  console.log('');
-}
-
 const CHAPTER_REMOTE = 'freeCodeCamp/chapter.git';
+let IS_ERROR = false;
 
 try {
   const rows = execSync('git remote -v', {
@@ -44,7 +29,25 @@ try {
     console.log('Run "scripts/pullUpstream.sh" to setup remotes.');
   }
 } catch (e) {
+  IS_ERROR = true;
   console.error(e);
 }
 
-console.log('');
+// Copy .env.example to .env
+if (!existsSync('.env')) {
+  console.log("You don't have a .env\nCopying .env.example to .env");
+
+  try {
+    copyFileSync('.env.example', '.env');
+    console.log('Copied!');
+  } catch (e) {
+    IS_ERROR = true;
+    console.error(`${e} occured while copying .env file`);
+  }
+}
+
+if (!IS_ERROR) {
+  console.log(
+    '\nCongratulations, its almost done 🙌🏼. Run `npm run dev` to start the development server.',
+  );
+}

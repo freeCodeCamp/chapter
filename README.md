@@ -134,7 +134,9 @@ npm run test:watch
 
 ## API Specification
 
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation by navigating to http://localhost:8000/api/v1/docs
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. 
+
+You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
 
 ## Schema
 <details>

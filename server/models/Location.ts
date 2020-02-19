@@ -17,6 +17,9 @@ export class Location extends BaseModel {
   @Column({ nullable: false })
   postal_code!: string;
 
+  @Column({ nullable: true })
+  address?: string;
+
   @OneToMany(
     _type => Venue,
     venue => venue.location,
@@ -34,11 +37,13 @@ export class Location extends BaseModel {
     city: string;
     region: string;
     postal_code: string;
+    address?: string;
   }) {
     super();
     if (params) {
-      const { country_code, city, region, postal_code } = params;
+      const { country_code, city, region, postal_code, address } = params;
 
+      this.address = address;
       this.country_code = country_code;
       this.city = city;
       this.region = region;

@@ -19,7 +19,7 @@ if (isDocker && process.env.IS_DOCKER === '') {
   console.error(
     '\n\n\nUSING LOCAL DB BUT RUNNING IN DOCKER WILL CAUSE IT TO USE DOCKER-COMPOSE DB INSTAD OF LOCAL',
   );
-  console.error('npm run typeorm WONT WORK PROPRELY\n\n\n');
+  console.error("npm run typeorm WON'T WORK PROPRELY\n\n\n");
   process.exit(1);
 }
 

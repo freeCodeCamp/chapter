@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Like } from 'typeorm';
+import { InternalServerError, NotFoundError } from 'express-response-errors';
 
 import { Location } from 'server/models/Location';
 
@@ -28,7 +29,7 @@ export default {
     if (location) {
       res.json(location);
     } else {
-      res.status(404).json({ error: "Can't find location" });
+      throw new NotFoundError("Can't find location");
     }
   },
 
@@ -47,7 +48,7 @@ export default {
       await location.save();
       res.status(201).json(location);
     } catch (e) {
-      res.status(500).json({ error: e });
+      throw new InternalServerError(JSON.stringify({ error: e }));
     }
   },
   async update(req: Request, res: Response) {
@@ -70,10 +71,10 @@ export default {
         await location.save();
         res.json(location);
       } catch (e) {
-        res.status(500).json({ error: e });
+        throw new InternalServerError(JSON.stringify({ error: e }));
       }
     } else {
-      res.status(404).json({ error: "Can't find location" });
+      throw new NotFoundError("Can't find location");
     }
   },
   async remove(req: Request, res: Response) {
@@ -86,10 +87,10 @@ export default {
         await location.remove();
         res.json({ id });
       } catch (e) {
-        res.status(500).json({ error: e });
+        throw new InternalServerError(JSON.stringify({ error: e }));
       }
     } else {
-      res.status(404).json({ error: "Can't find location" });
+      throw new NotFoundError("Can't find location");
     }
   },
 };

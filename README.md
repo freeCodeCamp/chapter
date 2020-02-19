@@ -83,7 +83,11 @@ Install dependencies:
 npm install
 ```
 
-If needed, set up environment variables under 'app -> environment' in the `docker-compose.yml` file.
+If you're using local setup (no docker), make sure you add your DB credentials to .env file
+
+Running the server:
+
+#### Docker-compose (RECOMMENDED)
 
 Ensure that Docker Desktop is up and running, then run the following command:
 ```
@@ -95,6 +99,18 @@ Wait for the logs to show "server started on port 8000", then navigate to `local
 The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
+
+#### Natively running node in Windows/MacOS/Linux (no docker)
+
+DISCLAIMER: This is a more hands on approach.
+
+This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
+
+MAKE SURE TO SET `IS_DOCKER=` in `.env` to blank
+
+```
+npm run dev
+```
 
 ## Additional DB docs can be found in server/docs/README.md
 

@@ -118,10 +118,7 @@ npm run test:watch
 
 We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
 
-```bash
-npm run speccy
-```
-Navigate to http://localhost:8001 to see API docs
+Navigate to http://localhost:8000/api/v1/docs to see API docs
 
 ## Schema
 <details>

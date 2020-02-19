@@ -6,16 +6,19 @@ import { Location } from 'server/models/Location';
 
 export default {
   async index(req: Request, res: Response) {
-    const { country_code, city, region, postal_code, address } = req.query;
+    const fields = ['country_code', 'city', 'region', 'postal_code', 'address'];
+
+    const query = Object.keys(req.query)
+      .filter(key => fields.includes(key))
+      .filter(item => req.query[item].length > 0)
+      .map(item => {
+        return { [item]: Like(`%${req.query[item]}%`) };
+      });
+
+    console.log(query);
 
     const locations = await Location.find({
-      where: [
-        { country_code: Like(`%${country_code}%`) },
-        { city: Like(`%${city}%`) },
-        { region: Like(`%${region}%`) },
-        { postal_code: Like(`%${postal_code}%`) },
-        { address: Like(`%${address}%`) },
-      ],
+      where: query,
     });
 
     res.json(locations);

@@ -53,6 +53,30 @@ export const createFail = (
   };
 };
 
+export const deleteStart = (): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.DELETE_START,
+  };
+};
+
+export const deleteSuccess = (resData: {
+  id: string;
+}): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.DELETE_SUCCESS,
+    payload: resData,
+  };
+};
+
+export const deleteFail = (
+  error: string,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.DELETE_FAIL,
+    payload: error,
+  };
+};
+
 /****************
  * Side-Effects
  ****************/
@@ -77,15 +101,31 @@ export const create: ActionCreator<locationsTypes.ThunkResult<
   Promise<void>
 >> = data => async dispatch => {
   dispatch(createStart());
-  console.log('HERE');
 
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
     console.log(data);
     const resData = await http.post(`/locations`, {}, JSON.stringify(data), {});
-    console.log('Done request');
     dispatch(createSuccess(resData));
   } catch (err) {
     dispatch(createFail(err));
+  }
+};
+
+// we can't do delete here
+export const remove: ActionCreator<locationsTypes.ThunkResult<
+  Promise<void>
+>> = id => async dispatch => {
+  dispatch(deleteStart());
+
+  const http = new HttpService<{ id: string }>();
+  try {
+    const resData = await http.delete(`/locations/${id}`, {}, {});
+
+    console.log(resData);
+
+    dispatch(deleteSuccess(resData));
+  } catch (err) {
+    dispatch(deleteFail(err));
   }
 };

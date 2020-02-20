@@ -1,8 +1,10 @@
-import React from 'react';
-import { Card, Typography } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Card, Typography, Button } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 
 import ProgressCardContent from './ProgressCardContent';
 import { ILocationModal } from 'client/store/types/locations';
+import { locationActions } from 'client/store/actions';
 
 interface IDashboardLocationProps {
   location: ILocationModal;
@@ -13,6 +15,13 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   location,
   loading,
 }) => {
+  const [confirm, setConfirm] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  const remove = () => {
+    dispatch(locationActions.remove(location.id));
+  };
+
   return (
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
@@ -25,6 +34,12 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
         <Typography variant="body2" color="textSecondary" component="p">
           {location.address}
         </Typography>
+
+        {confirm ? (
+          <Button onClick={remove}>Are you sure</Button>
+        ) : (
+          <Button onClick={() => setConfirm(true)}>DELETE</Button>
+        )}
       </ProgressCardContent>
     </Card>
   );

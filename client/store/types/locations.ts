@@ -5,7 +5,7 @@ import * as ACTIONS from './actions/locations';
 export * from './actions/locations';
 
 export interface ILocationModal {
-  id?: string;
+  id?: number;
   country_code: string;
   city: string;
   region: string;
@@ -20,7 +20,10 @@ export interface ILocationStoreState {
   create: {
     loading: boolean;
     error: string;
-    done: boolean;
+  };
+  delete: {
+    loading: boolean;
+    error: string;
   };
   loading: boolean;
   error: string; // Should reflect a generic Error Type here
@@ -53,6 +56,22 @@ interface ILocationCreateSuccessAction {
   };
 }
 
+interface ILocationDeleteFailureAction {
+  type: typeof ACTIONS.DELETE_FAIL;
+  payload: string;
+}
+
+interface ILocationDeleteStartAction {
+  type: typeof ACTIONS.DELETE_START;
+}
+
+interface ILocationDeleteSuccessAction {
+  type: typeof ACTIONS.DELETE_SUCCESS;
+  payload: {
+    id: string;
+  };
+}
+
 interface ILocationCreateFailureAction {
   type: typeof ACTIONS.CREATE_FAIL;
   payload: string;
@@ -64,7 +83,10 @@ export type ILocationActionTypes =
   | ILocationFetchFailureAction
   | ILocationCreateStartAction
   | ILocationCreateSuccessAction
-  | ILocationCreateFailureAction;
+  | ILocationCreateFailureAction
+  | ILocationDeleteFailureAction
+  | ILocationDeleteStartAction
+  | ILocationDeleteSuccessAction;
 
 export type ThunkResult<R> = ThunkAction<
   R,

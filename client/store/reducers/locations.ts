@@ -6,7 +6,10 @@ const initialState: locationsTypes.ILocationStoreState = {
   create: {
     loading: false,
     error: '',
-    done: false,
+  },
+  delete: {
+    loading: false,
+    error: '',
   },
   locations: [],
   error: '',
@@ -34,18 +37,30 @@ const reducer = (
       case locationsTypes.CREATE_START:
         draft.create.loading = true;
         draft.create.error = '';
-        draft.create.done = false;
         break;
       case locationsTypes.CREATE_SUCCESS:
         draft.create.loading = false;
         draft.create.error = '';
-        draft.create.done = true;
         draft.locations = [...draft.locations, action.payload.location];
         break;
       case locationsTypes.CREATE_FAIL:
         draft.create.loading = false;
         draft.create.error = action.payload;
-        draft.create.done = true;
+        break;
+      case locationsTypes.DELETE_START:
+        draft.delete.loading = true;
+        draft.delete.error = '';
+        break;
+      case locationsTypes.DELETE_SUCCESS:
+        draft.delete.loading = false;
+        draft.delete.error = '';
+        draft.locations = draft.locations.filter(
+          location => location.id !== parseInt(action.payload.id),
+        );
+        break;
+      case locationsTypes.DELETE_FAIL:
+        draft.delete.loading = false;
+        draft.delete.error = action.payload;
         break;
       default:
         return state;

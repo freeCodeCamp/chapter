@@ -29,6 +29,30 @@ export const fetchFail = (
   };
 };
 
+export const createStart = (): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.CREATE_START,
+  };
+};
+
+export const createSuccess = (
+  location: locationsTypes.ILocationModal,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.CREATE_SUCCESS,
+    payload: { location },
+  };
+};
+
+export const createFail = (
+  error: string,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.CREATE_FAIL,
+    payload: error,
+  };
+};
+
 /****************
  * Side-Effects
  ****************/
@@ -46,5 +70,22 @@ export const fetchLocations: ActionCreator<locationsTypes.ThunkResult<
     dispatch(fetchSuccess(resData));
   } catch (err) {
     dispatch(fetchFail(err));
+  }
+};
+
+export const create: ActionCreator<locationsTypes.ThunkResult<
+  Promise<void>
+>> = data => async dispatch => {
+  dispatch(createStart());
+  console.log('HERE');
+
+  const http = new HttpService<locationsTypes.ILocationModal>();
+  try {
+    console.log(data);
+    const resData = await http.post(`/locations`, {}, JSON.stringify(data), {});
+    console.log('Done request');
+    dispatch(createSuccess(resData));
+  } catch (err) {
+    dispatch(createFail(err));
   }
 };

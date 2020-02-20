@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link';
 
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
@@ -24,7 +25,9 @@ const Locations: React.FC = () => {
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <button>Add new</button>
+          <Link href="/dashboard/locations/new">
+            <a>Add new</a>
+          </Link>
           {error ? (
             <h1>😢Error</h1>
           ) : (

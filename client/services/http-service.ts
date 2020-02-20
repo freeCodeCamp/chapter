@@ -29,4 +29,17 @@ export class HttpService<V = any> {
       method: 'GET',
     }).then<V>(res => res.json());
   }
+
+  public async post(
+    url: string,
+    params: Record<string, string>,
+    data: any,
+    headers: Record<string, string>,
+  ) {
+    return fetch(HttpService.baseUrl + url + this.stringifyParams(params), {
+      headers: { ...HttpService.baseHeaders, ...headers },
+      body: data,
+      method: 'POST',
+    }).then<V>(res => res.json());
+  }
 }

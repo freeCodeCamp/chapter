@@ -9,6 +9,10 @@ export class FixChapterRoleRelation1582144372565 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(
+      `ALTER TABLE "user_chapter_roles" DROP COLUMN "chapter_id"`,
+      undefined,
+    );
+    await queryRunner.query(
       `ALTER TABLE "user_chapter_roles" ADD "chapter_id" integer`,
       undefined,
     );

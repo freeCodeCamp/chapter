@@ -23,6 +23,6 @@ jobs:
       - name: Start docker service
         run: docker-compose up -d
       - name: Run tests
-        run: npm run test:ci
+        run: docker-compose exec -T app npm run test
         env:
-          NODE_ENV: development
+          NODE_ENV: test

@@ -3,9 +3,9 @@ services:
   db:
     image: postgres:11
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=chapter
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - '54320:5432'
   app:
@@ -15,23 +15,8 @@ services:
     command: 'npm run dev'
     working_dir: /usr/chapter
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=password
-      - DB_NAME=chapter
       - DB_URL=db
-      - CHAPTER_EMAIL=ourEmail@placeholder.place
-      - EMAIL_USERNAME=emailUsernamePlaceholder
-      - EMAIL_PASSWORD=emailPasswordPlaceholder
-      - EMAIL_SERVICE=emailServicePlaceholder
     volumes:
       - .:/usr/chapter
     ports:
       - '8000:8000'
-  speccy:
-    image: node:13-alpine
-    command: 'npm run speccy:watch'
-    working_dir: /usr/chapter
-    volumes:
-      - .:/usr/chapter
-    ports:
-      - '8001:8001'

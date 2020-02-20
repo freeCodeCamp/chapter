@@ -5,6 +5,8 @@ import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
 import { UserChapter } from './UserChapter';
 import { UserBan } from './UserBan';
+import { UserChapterRole } from './UserChapterRole';
+import { UserInstanceRole } from './UserInstanceRole';
 
 @Entity({ name: 'users' })
 export class User extends BaseModel {
@@ -49,6 +51,18 @@ export class User extends BaseModel {
     userBan => userBan.user,
   )
   banned_chapters!: UserBan[];
+
+  @OneToMany(
+    _type => UserChapterRole,
+    userChapterRole => userChapterRole.user,
+  )
+  chapter_roles!: UserChapterRole[];
+
+  @OneToMany(
+    _type => UserInstanceRole,
+    userInstanceRole => userInstanceRole.user,
+  )
+  instance_roles!: UserInstanceRole[];
 
   constructor(params: {
     first_name: string;

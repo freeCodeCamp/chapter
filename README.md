@@ -83,7 +83,11 @@ Install dependencies:
 npm install
 ```
 
-If needed, set up environment variables under 'app -> environment' in the `docker-compose.yml` file.
+If you're using local setup (no docker), make sure you add your DB credentials to .env file
+
+Running the server:
+
+#### Docker-compose (RECOMMENDED)
 
 Ensure that Docker Desktop is up and running, then run the following command:
 ```
@@ -96,12 +100,31 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
+#### Natively running node in Windows/MacOS/Linux (no docker)
+
+DISCLAIMER: This is a more hands on approach.
+
+This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
+
+After you setup the DB instance local or remote, create a database, add the DB name and credentials to .env
+
+MAKE SURE TO SET `IS_DOCKER=` in `.env` to blank
+
+```
+npm run dev
+```
+
 ## Additional DB docs can be found in server/docs/README.md
 
 ## Testing
 Run tests
 ```
 npm run test
+```
+
+### If you're running in docker compose prefix the command with docker-compose exec
+```
+NODE_ENV=test docker-compose exec app npm run test
 ```
 
 Run tests in watch mode
@@ -111,12 +134,9 @@ npm run test:watch
 
 ## API Specification
 
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. 
 
-```bash
-npm run speccy
-```
-Navigate to http://localhost:8001 to see API docs
+You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
 
 ## Schema
 <details>

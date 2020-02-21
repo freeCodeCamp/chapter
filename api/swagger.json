@@ -56,11 +56,11 @@
               }
             }
           },
-          "401": {
-            "description": "Not authorized"
-          },
           "400": {
             "description": "Invalid Location object"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "default": {
             "description": "unexpected error",
@@ -410,13 +410,15 @@
           "200": {
             "description": "successful operation",
             "content": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Event"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Event"
+                      }
                     }
                   }
                 }
@@ -481,11 +483,11 @@
               }
             }
           },
-          "401": {
-            "description": "Not authorized"
-          },
           "400": {
             "description": "Invalid event"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "404": {
             "description": "Event/Chapter not found"
@@ -540,11 +542,11 @@
               }
             }
           },
-          "401": {
-            "description": "Not authorized"
-          },
           "400": {
             "description": "Invalid event"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "404": {
             "description": "Event/Chapter not found"
@@ -1135,7 +1137,7 @@
             "type": "string"
           },
           "email": {
-            "type": "email"
+            "type": "string"
           }
         }
       },
@@ -1220,10 +1222,10 @@
             "type": "string"
           },
           "starts_at": {
-            "type": "date-time"
+            "type": "string"
           },
           "ends_at": {
-            "type": "date-time"
+            "type": "string"
           },
           "chapter_id": {
             "type": "string"

@@ -9,10 +9,6 @@ export class FixChapterRoleRelation1582144372565 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(
-      `ALTER TABLE "user_chapter_roles" ADD "chapter_id" integer`,
-      undefined,
-    );
-    await queryRunner.query(
       `ALTER TABLE "user_chapter_roles" ADD CONSTRAINT "FK_b118ecdd67565f94b2a2e23d94d" FOREIGN KEY ("chapter_id") REFERENCES "chapters"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
       undefined,
     );
@@ -21,10 +17,6 @@ export class FixChapterRoleRelation1582144372565 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
       `ALTER TABLE "user_chapter_roles" DROP CONSTRAINT "FK_b118ecdd67565f94b2a2e23d94d"`,
-      undefined,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "user_chapter_roles" DROP COLUMN "chapter_id"`,
       undefined,
     );
     await queryRunner.query(

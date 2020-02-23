@@ -43,6 +43,19 @@ export class HttpService<V = any> {
     }).then<V>(res => res.json());
   }
 
+  public async patch(
+    url: string,
+    params: Record<string, string>,
+    data: any,
+    headers: Record<string, string>,
+  ) {
+    return fetch(HttpService.baseUrl + url + this.stringifyParams(params), {
+      headers: { ...HttpService.baseHeaders, ...headers },
+      body: data,
+      method: 'PATCH',
+    }).then<V>(res => res.json());
+  }
+
   public async delete(
     url: string,
     params: Record<string, string>,

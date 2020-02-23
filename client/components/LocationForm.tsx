@@ -14,6 +14,7 @@ interface ILocationFormProps {
     postal_code?: string;
     address: string;
   };
+  submitText: string;
 }
 
 const useStyles = makeStyles(() => ({
@@ -28,7 +29,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const LocationForm: React.FC<ILocationFormProps> = props => {
-  const { loading, onSubmit, data } = props;
+  const { loading, onSubmit, data, submitText } = props;
 
   const styles = useStyles();
   const { control, handleSubmit } = useForm();
@@ -55,7 +56,7 @@ const LocationForm: React.FC<ILocationFormProps> = props => {
         type="submit"
         disabled={loading}
       >
-        Add Location
+        {submitText}
       </Button>
     </form>
   );

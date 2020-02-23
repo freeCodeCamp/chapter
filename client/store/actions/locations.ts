@@ -77,6 +77,30 @@ export const deleteFail = (
   };
 };
 
+export const fetchOneStart = (): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.FETCH_ONE_START,
+  };
+};
+
+export const fetchOneSuccess = (
+  location: locationsTypes.ILocationModal,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.FETCH_ONE_SUCCESS,
+    payload: { location },
+  };
+};
+
+export const fetchOneFail = (
+  error: string,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.FETCH_ONE_FAIL,
+    payload: error,
+  };
+};
+
 /****************
  * Side-Effects
  ****************/
@@ -127,5 +151,22 @@ export const remove: ActionCreator<locationsTypes.ThunkResult<
     dispatch(deleteSuccess(resData));
   } catch (err) {
     dispatch(deleteFail(err));
+  }
+};
+
+export const fetchOneLocation: ActionCreator<locationsTypes.ThunkResult<
+  Promise<void>
+>> = (id: number) => async dispatch => {
+  dispatch(fetchOneStart());
+
+  // TODO: for the PR to be simple, haven't added any specific HTTP Service,
+  // But we can make HTTPService some kind of builder, to return us back with specific
+  // modal service, like LocationsHttpService.
+  const http = new HttpService<locationsTypes.ILocationModal>();
+  try {
+    const resData = await http.get(`/locations/${id}`, {}, {});
+    dispatch(fetchOneSuccess(resData));
+  } catch (err) {
+    dispatch(fetchOneFail(err));
   }
 };

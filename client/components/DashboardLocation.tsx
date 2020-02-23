@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button } from '@material-ui/core';
+import { Card, Typography, Button, makeStyles } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import Link from 'next/link';
 
 import ProgressCardContent from './ProgressCardContent';
 import { ILocationModal } from 'client/store/types/locations';
@@ -11,12 +12,24 @@ interface IDashboardLocationProps {
   loading: boolean;
 }
 
+const useStyles = makeStyles(() => ({
+  bottom: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  action: {
+    marginLeft: '20px',
+  },
+}));
+
 const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   location,
   loading,
 }) => {
   const [confirm, setConfirm] = useState<boolean>(false);
   const dispatch = useDispatch();
+
+  const styles = useStyles();
 
   const remove = () => {
     dispatch(locationActions.remove(location.id));
@@ -35,11 +48,17 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
           {location.address}
         </Typography>
 
-        {confirm ? (
-          <Button onClick={remove}>Are you sure</Button>
-        ) : (
-          <Button onClick={() => setConfirm(true)}>DELETE</Button>
-        )}
+        <div className={styles.bottom}>
+          {confirm ? (
+            <Button onClick={remove}>Are you sure</Button>
+          ) : (
+            <Button onClick={() => setConfirm(true)}>DELETE</Button>
+          )}
+
+          <Link href={`/dashboard/locations/${location.id}/edit`}>
+            <a className={styles.action}>Edit</a>
+          </Link>
+        </div>
       </ProgressCardContent>
     </Card>
   );

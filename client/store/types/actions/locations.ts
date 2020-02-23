@@ -9,3 +9,7 @@ export const CREATE_FAIL = 'fcc/chapter/LOCATION_CREATE_FAIL';
 export const DELETE_START = 'fcc/chapter/LOCATION_DELETE_START';
 export const DELETE_SUCCESS = 'fcc/chapter/LOCATION_DELETE_SUCCESS';
 export const DELETE_FAIL = 'fcc/chapter/LOCATION_DELETE_FAIL';
+
+export const FETCH_ONE_START = 'fcc/chapter/LOCATION_FETCH_ONE_START';
+export const FETCH_ONE_SUCCESS = 'fcc/chapter/LOCATION_FETCH_ONE_SUCCESS';
+export const FETCH_ONE_FAIL = 'fcc/chapter/LOCATION_FETCH_ONE_FAIL';

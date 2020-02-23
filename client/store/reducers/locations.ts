@@ -62,6 +62,21 @@ const reducer = (
         draft.delete.loading = false;
         draft.delete.error = action.payload;
         break;
+      case locationsTypes.FETCH_ONE_START:
+        draft.loading = true;
+        draft.error = '';
+        break;
+      case locationsTypes.FETCH_ONE_SUCCESS:
+        draft.loading = false;
+        draft.error = '';
+        draft.locations = [...draft.locations, action.payload.location].sort(
+          (l1, l2) => l1.id - l2.id,
+        );
+        break;
+      case locationsTypes.FETCH_ONE_FAIL:
+        draft.loading = false;
+        draft.error = action.payload;
+        break;
       default:
         return state;
     }

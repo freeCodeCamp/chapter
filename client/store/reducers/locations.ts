@@ -11,6 +11,10 @@ const initialState: locationsTypes.ILocationStoreState = {
     loading: false,
     error: '',
   },
+  update: {
+    loading: false,
+    error: '',
+  },
   locations: [],
   error: '',
 };
@@ -76,6 +80,23 @@ const reducer = (
       case locationsTypes.FETCH_ONE_FAIL:
         draft.loading = false;
         draft.error = action.payload;
+        break;
+      case locationsTypes.UPDATE_START:
+        draft.update.loading = true;
+        draft.update.error = '';
+        break;
+      case locationsTypes.UPDATE_SUCCESS:
+        draft.update.loading = false;
+        draft.update.error = '';
+        draft.locations = draft.locations.map(location =>
+          location.id === action.payload.id
+            ? action.payload.location
+            : location,
+        );
+        break;
+      case locationsTypes.UPDATE_FAIL:
+        draft.update.loading = false;
+        draft.update.error = action.payload;
         break;
       default:
         return state;

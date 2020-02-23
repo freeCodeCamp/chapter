@@ -34,7 +34,13 @@ const NewLocation: React.FC = () => {
   }, [id]);
 
   const onSubmit = async data => {
-    await dispatch(locationActions.create(data));
+    await dispatch(
+      locationActions.updateLocation(
+        parseInt(Array.isArray(id) ? id[0] : id),
+        data,
+      ),
+    );
+    router.replace('/dashboard/locations');
   };
 
   return loading ? (
@@ -44,7 +50,12 @@ const NewLocation: React.FC = () => {
   ) : (
     <>
       {error && <div className={styles.responseDiv}>{error}</div>}
-      <LocationForm loading={loading} onSubmit={onSubmit} data={location} />
+      <LocationForm
+        loading={loading}
+        onSubmit={onSubmit}
+        data={location}
+        submitText={'Update location'}
+      />
     </>
   );
 };

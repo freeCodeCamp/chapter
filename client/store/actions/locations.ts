@@ -101,6 +101,31 @@ export const fetchOneFail = (
   };
 };
 
+export const updateStart = (): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.UPDATE_START,
+  };
+};
+
+export const updateSuccess = (
+  id: number,
+  location: locationsTypes.ILocationModal,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.UPDATE_SUCCESS,
+    payload: { id, location },
+  };
+};
+
+export const updateFail = (
+  error: string,
+): locationsTypes.ILocationActionTypes => {
+  return {
+    type: locationsTypes.UPDATE_FAIL,
+    payload: error,
+  };
+};
+
 /****************
  * Side-Effects
  ****************/
@@ -159,14 +184,30 @@ export const fetchOneLocation: ActionCreator<locationsTypes.ThunkResult<
 >> = (id: number) => async dispatch => {
   dispatch(fetchOneStart());
 
-  // TODO: for the PR to be simple, haven't added any specific HTTP Service,
-  // But we can make HTTPService some kind of builder, to return us back with specific
-  // modal service, like LocationsHttpService.
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
     const resData = await http.get(`/locations/${id}`, {}, {});
     dispatch(fetchOneSuccess(resData));
   } catch (err) {
     dispatch(fetchOneFail(err));
+  }
+};
+
+export const updateLocation: ActionCreator<locationsTypes.ThunkResult<
+  Promise<void>
+>> = (id: number, data: Partial<Location>) => async dispatch => {
+  dispatch(updateStart());
+
+  const http = new HttpService<locationsTypes.ILocationModal>();
+  try {
+    const resData = await http.patch(
+      `/locations/${id}`,
+      {},
+      JSON.stringify(data),
+      {},
+    );
+    dispatch(updateSuccess(id, resData));
+  } catch (err) {
+    dispatch(updateFail(err));
   }
 };

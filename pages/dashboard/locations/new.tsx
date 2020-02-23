@@ -31,7 +31,11 @@ const NewLocation: React.FC = () => {
   return (
     <>
       {error && <div className={styles.responseDiv}>{error}</div>}
-      <LocationForm loading={loading} onSubmit={onSubmit} />
+      <LocationForm
+        loading={loading}
+        onSubmit={onSubmit}
+        submitText={'Add location'}
+      />
       {loading && <h1>Loading...</h1>}
     </>
   );

@@ -25,6 +25,10 @@ export interface ILocationStoreState {
     loading: boolean;
     error: string;
   };
+  update: {
+    loading: boolean;
+    error: string;
+  };
   loading: boolean;
   error: string; // Should reflect a generic Error Type here
 }
@@ -93,6 +97,23 @@ interface ILocationFetchOneFailureAction {
   payload: string;
 }
 
+interface ILocationUpdateStartAction {
+  type: typeof ACTIONS.UPDATE_START;
+}
+
+interface ILocationUpdateSuccessAction {
+  type: typeof ACTIONS.UPDATE_SUCCESS;
+  payload: {
+    id: number;
+    location: ILocationModal;
+  };
+}
+
+interface ILocationUpdateFailureAction {
+  type: typeof ACTIONS.UPDATE_FAIL;
+  payload: string;
+}
+
 export type ILocationActionTypes =
   | ILocationFetchStartAction
   | ILocationFetchSuccessAction
@@ -105,7 +126,10 @@ export type ILocationActionTypes =
   | ILocationDeleteSuccessAction
   | ILocationFetchOneStartAction
   | ILocationFetchOneSuccessAction
-  | ILocationFetchOneFailureAction;
+  | ILocationFetchOneFailureAction
+  | ILocationUpdateStartAction
+  | ILocationUpdateSuccessAction
+  | ILocationUpdateFailureAction;
 
 export type ThunkResult<R> = ThunkAction<
   R,

@@ -39,7 +39,7 @@ const Locations: React.FC = () => {
               <DashboardLocation
                 location={location}
                 loading={loading}
-                key={location.id}
+                key={`location-${location.id}`}
               />
             ))
           )}

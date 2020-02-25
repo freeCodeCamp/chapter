@@ -28,7 +28,11 @@ const Events: React.FC = () => {
             <h1>😢Error</h1>
           ) : (
             events.map((event: IEventModal) => (
-              <DashboardEvent event={event} loading={loading} key={event.id} />
+              <DashboardEvent
+                event={event}
+                loading={loading}
+                key={`events-${event.id}`}
+              />
             ))
           )}
         </Grid>

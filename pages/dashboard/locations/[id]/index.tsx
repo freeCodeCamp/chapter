@@ -33,7 +33,9 @@ const ShowLocation: React.FC = () => {
     <h1>Error...</h1>
   ) : (
     <>
-      <Link href="/dashboard/locations">Locations</Link>
+      <Link href="/dashboard/locations">
+        <a>Locations</a>
+      </Link>
       <Card style={{ marginTop: '12px' }} key={`event-${location.id}`}>
         <ProgressCardContent loading={loading}>
           <Typography gutterBottom variant="h5" component="h2">

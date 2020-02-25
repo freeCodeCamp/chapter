@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NewLocation: React.FC = () => {
+const EditLocation: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const styles = useStyles();
@@ -60,4 +60,4 @@ const NewLocation: React.FC = () => {
   );
 };
 
-export default NewLocation;
+export default EditLocation;

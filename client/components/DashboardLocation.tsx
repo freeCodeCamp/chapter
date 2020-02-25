@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button, makeStyles } from '@material-ui/core';
+import {
+  Card,
+  Typography,
+  Button,
+  makeStyles,
+  Link as MULink,
+} from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 
@@ -38,9 +44,11 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   return (
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
-        <Typography gutterBottom variant="h5" component="h2">
-          {location.city}
-        </Typography>
+        <Link href={`/dashboard/locations/${location.id}`}>
+          <MULink gutterBottom variant="h5" component="h2">
+            {location.city}
+          </MULink>
+        </Link>
         <Typography variant="body2" color="textSecondary" component="p">
           {`${location.region}, ${location.country_code}, ${location.postal_code}`}
         </Typography>

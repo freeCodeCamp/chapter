@@ -5,7 +5,7 @@ After several years of being dissatisfied with existing group event tools (Meetu
 
 This will be a self-hosted Docker container deployed to the cloud with a one-click and then configured by the _owner_. No coding required.
 
-Your organization can host an _instance_ of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
+Your _organization_ can host an _instance_ of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
 
 All of an _organization_'s user data will remain under their control.
 
@@ -22,10 +22,10 @@ To better communicate and more easily build an API and UI, the current contribut
 | _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
 | _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
 | _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
-| _owner_ | the _role_ of a _user_ who can configure the ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrator_s for an entire _organization_ | Women Who Code - Global IT |
-| _administrator_ | the _role_ of a _user_ who can setup and manage _chapter_s and _organizer_s for an _organization_ | Women Who Code - National Administrator |
-| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - New York City, Local Organizer |
-| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - New York City, Local Member |
+| _owner_ | the _role_ of a _user_ who can configure the ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
+| _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
+| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
+| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
 
 ## Tech Stack
 

@@ -3,13 +3,13 @@
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
-This will be a self-hosted Docker container that you can one-click deploy to the cloud, then configure through an admin panel. No coding required.
+This will be a self-hosted Docker container deployed to the cloud with a one-click and then configured by the _owner_. No coding required.
 
-Your organization can host an instance of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
+Your _organization_ can host an _instance_ of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
 
-You can use your own authentication tools. And all your user data will stay on your own server.
+All of an _organization_'s user data will remain under their control.
 
-Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
+Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for _Chapter_.
 
 ## Terminology
 To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the Chapter project:
@@ -22,9 +22,10 @@ To better communicate and more easily build an API and UI, the current contribut
 | _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
 | _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
 | _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
-| _administrator_ | the _role_ of a _user_ to manage the entire ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ for an _organization_ | Women Who Code - Global Chapter Administrator |
-| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _users_ | Women Who Code - New York City, Local Organizer |
-| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - New York City, Local Member |
+| _owner_ | the _role_ of a _user_ who can configure the ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
+| _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
+| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
+| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
 
 ## Tech Stack
 
@@ -43,7 +44,7 @@ We are planning to use the following tools:
 
 A lot of people know these tools, and they're proven to work well at scale.
 
-We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
+We will focus on building an open API first. Then, developers can use the API to build their own mobile clients and voice interface clients.
 
 ## Development Setup
 
@@ -162,7 +163,7 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 
 ## Contributing
 
-* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
+* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected and follow announcements.
 * Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before creating issues, forking, or submitting any pull requests.
 
 ## License

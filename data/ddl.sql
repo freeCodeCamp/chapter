@@ -4,7 +4,6 @@ create table users
   first_name text not null ,
   last_name text,
   email text not null,
-  password_digest text,
   created_at timestamp default CURRENT_TIMESTAMP,
   updated_at timestamp default CURRENT_TIMESTAMP
 );

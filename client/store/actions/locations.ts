@@ -153,8 +153,8 @@ export const create: ActionCreator<locationsTypes.ThunkResult<
 
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
-    console.log(data);
     const resData = await http.post(`/locations`, {}, JSON.stringify(data), {});
+
     dispatch(createSuccess(resData));
   } catch (err) {
     dispatch(createFail(err));
@@ -171,8 +171,6 @@ export const remove: ActionCreator<locationsTypes.ThunkResult<
   try {
     const resData = await http.delete(`/locations/${id}`, {}, {});
 
-    console.log(resData);
-
     dispatch(deleteSuccess(resData));
   } catch (err) {
     dispatch(deleteFail(err));
@@ -187,6 +185,7 @@ export const fetchOneLocation: ActionCreator<locationsTypes.ThunkResult<
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
     const resData = await http.get(`/locations/${id}`, {}, {});
+
     dispatch(fetchOneSuccess(resData));
   } catch (err) {
     dispatch(fetchOneFail(err));
@@ -206,6 +205,7 @@ export const updateLocation: ActionCreator<locationsTypes.ThunkResult<
       JSON.stringify(data),
       {},
     );
+
     dispatch(updateSuccess(id, resData));
   } catch (err) {
     dispatch(updateFail(err));

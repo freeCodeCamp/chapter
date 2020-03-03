@@ -15,8 +15,6 @@ export default {
         return { [item]: Like(`%${req.query[item]}%`) };
       });
 
-    console.log(query);
-
     const locations = await Location.find({
       where: query,
     });

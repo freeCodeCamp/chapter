@@ -32,13 +32,18 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   location,
   loading,
 }) => {
-  const [confirm, setConfirm] = useState<boolean>(false);
+  const [allow, setAllow] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const styles = useStyles();
 
   const remove = () => {
-    dispatch(locationActions.remove(location.id));
+    const answer = confirm('Are you sure you want to delete this');
+    if (answer) {
+      dispatch(locationActions.remove(location.id));
+    } else {
+      setAllow(false);
+    }
   };
 
   return (
@@ -57,10 +62,10 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
         </Typography>
 
         <div className={styles.bottom}>
-          {confirm ? (
+          {allow ? (
             <Button onClick={remove}>Are you sure</Button>
           ) : (
-            <Button onClick={() => setConfirm(true)}>DELETE</Button>
+            <Button onClick={() => setAllow(true)}>DELETE</Button>
           )}
 
           <Link href={`/dashboard/locations/${location.id}/edit`}>

@@ -4,16 +4,18 @@ import { Button, TextField, makeStyles, FormControl } from '@material-ui/core';
 
 const fields = ['country_code', 'city', 'region', 'postal_code', 'address'];
 
+interface IData {
+  country_code: string;
+  city: string;
+  region: string;
+  postal_code: string;
+  address: string;
+}
+
 interface ILocationFormProps {
   loading: boolean;
-  onSubmit: (data: any) => Promise<void>;
-  data?: {
-    country_code?: string;
-    city?: string;
-    region?: string;
-    postal_code?: string;
-    address: string;
-  };
+  onSubmit: (data: IData) => Promise<void>;
+  data?: IData;
   submitText: string;
 }
 

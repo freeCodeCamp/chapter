@@ -44,11 +44,11 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   return (
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
-        <MULink gutterBottom variant="h5" component="h2">
-          <Link href={`/dashboard/locations/${location.id}`}>
+        <Link href={`/dashboard/locations/${location.id}`}>
+          <MULink gutterBottom variant="h5" component="h2">
             {location.city}
-          </Link>
-        </MULink>
+          </MULink>
+        </Link>
         <Typography variant="body2" color="textSecondary" component="p">
           {`${location.region}, ${location.country_code}, ${location.postal_code}`}
         </Typography>

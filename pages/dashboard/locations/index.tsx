@@ -22,30 +22,28 @@ const Locations: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Link href="/dashboard">
-            <a>Dashboard</a>
-          </Link>
-          <br />
-          <Link href="/dashboard/locations/new">
-            <a>Add new</a>
-          </Link>
-          {error ? (
-            <h1>😢Error</h1>
-          ) : (
-            locations.map((location: ILocationModal) => (
-              <DashboardLocation
-                location={location}
-                loading={loading}
-                key={`location-${location.id}`}
-              />
-            ))
-          )}
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Link href="/dashboard">
+          <a>Dashboard</a>
+        </Link>
+        <br />
+        <Link href="/dashboard/locations/new">
+          <a>Add new</a>
+        </Link>
+        {error ? (
+          <h1>😢Error</h1>
+        ) : (
+          locations.map((location: ILocationModal) => (
+            <DashboardLocation
+              location={location}
+              loading={loading}
+              key={`location-${location.id}`}
+            />
+          ))
+        )}
       </Grid>
-    </>
+    </Grid>
   );
 };
 

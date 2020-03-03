@@ -43,20 +43,24 @@ const EditLocation: React.FC = () => {
     router.replace('/dashboard/locations');
   };
 
-  return loading ? (
-    <h1>Loading...</h1>
-  ) : !(error || location) ? (
-    <h1>Error...</h1>
-  ) : (
-    <>
-      {error && <div className={styles.responseDiv}>{error}</div>}
-      <LocationForm
-        loading={loading}
-        onSubmit={onSubmit}
-        data={location}
-        submitText={'Update location'}
-      />
-    </>
+  if (loading) return <h1>Loading...</h1>;
+  if (error || !location) {
+    console.error(error);
+    return (
+      <>
+        <h1>Error...</h1>
+        <div className={styles.responseDiv}>{error}</div>
+      </>
+    );
+  }
+
+  return (
+    <LocationForm
+      loading={loading}
+      onSubmit={onSubmit}
+      data={location}
+      submitText={'Update location'}
+    />
   );
 };
 

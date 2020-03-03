@@ -27,11 +27,13 @@ const ShowLocation: React.FC = () => {
     }
   }, [id]);
 
-  return loading ? (
-    <h1>Loading...</h1>
-  ) : !(error || location) ? (
-    <h1>Error...</h1>
-  ) : (
+  if (loading) return <h1>Loading...</h1>;
+  if (error || !location) {
+    console.error(error);
+    return <h1>Error...</h1>;
+  }
+
+  return (
     <>
       <Link href="/dashboard/locations">
         <a>Locations</a>

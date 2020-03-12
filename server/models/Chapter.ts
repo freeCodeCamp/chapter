@@ -3,7 +3,7 @@ import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { Location } from './Location';
 import { User } from './User';
-import { UserChapter } from './UserChapter';
+import { UserChapterRole } from './UserChapterRole';
 import { UserBan } from './UserBan';
 
 @Entity({ name: 'chapters' })
@@ -41,10 +41,10 @@ export class Chapter extends BaseModel {
   creator!: User;
 
   @OneToMany(
-    _type => UserChapter,
-    userChapter => userChapter.chapter,
+    _type => UserChapterRole,
+    UserChapterRole => UserChapterRole.chapter,
   )
-  users!: UserChapter[];
+  users!: UserChapterRole[];
 
   @OneToMany(
     _type => UserBan,

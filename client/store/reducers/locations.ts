@@ -4,7 +4,7 @@ import { locationsTypes } from '../types';
 const initialState: locationsTypes.ILocationStoreState = {
   loading: true,
   create: {
-    loading: false,
+    state: 'idle',
     error: '',
   },
   delete: {
@@ -39,16 +39,16 @@ const reducer = (
         draft.loading = false;
         break;
       case locationsTypes.CREATE_START:
-        draft.create.loading = true;
+        draft.create.state = 'loading';
         draft.create.error = '';
         break;
       case locationsTypes.CREATE_SUCCESS:
-        draft.create.loading = false;
+        draft.create.state = 'idle';
         draft.create.error = '';
         draft.locations = [...draft.locations, action.payload.location];
         break;
       case locationsTypes.CREATE_FAIL:
-        draft.create.loading = false;
+        draft.create.state = 'error';
         draft.create.error = action.payload;
         break;
       case locationsTypes.DELETE_START:
@@ -59,7 +59,7 @@ const reducer = (
         draft.delete.loading = false;
         draft.delete.error = '';
         draft.locations = draft.locations.filter(
-          location => location.id !== parseInt(action.payload.id),
+          location => location.id !== action.payload.id,
         );
         break;
       case locationsTypes.DELETE_FAIL:

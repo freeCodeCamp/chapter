@@ -18,7 +18,7 @@ export interface ILocationModal {
 export interface ILocationStoreState {
   locations: ILocationModal[];
   create: {
-    loading: boolean;
+    state: 'idle' | 'error' | 'loading';
     error: string;
   };
   delete: {
@@ -77,7 +77,7 @@ interface ILocationDeleteStartAction {
 interface ILocationDeleteSuccessAction {
   type: typeof ACTIONS.DELETE_SUCCESS;
   payload: {
-    id: string;
+    id: number;
   };
 }
 

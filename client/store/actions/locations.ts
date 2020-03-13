@@ -60,7 +60,7 @@ export const deleteStart = (): locationsTypes.ILocationActionTypes => {
 };
 
 export const deleteSuccess = (resData: {
-  id: string;
+  id: number;
 }): locationsTypes.ILocationActionTypes => {
   return {
     type: locationsTypes.DELETE_SUCCESS,
@@ -146,19 +146,51 @@ export const fetchLocations: ActionCreator<locationsTypes.ThunkResult<
   }
 };
 
+const myHTTP = {
+  cleanUrl(url: string) {
+    if (url.startsWith('/')) {
+      return url.slice(1);
+    }
+    return url;
+  },
+  async post(
+    url: string,
+    params: Record<string, any>,
+    data: any,
+    headers?: Record<string, any>,
+  ) {
+    const res = await fetch(`/api/v1/${this.cleanUrl(url)}`, {
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json', ...headers },
+      method: 'POST',
+    });
+
+    const resData = await res.json();
+
+    return [res, resData];
+  },
+};
+
 export const create: ActionCreator<locationsTypes.ThunkResult<
-  Promise<void>
+  Promise<boolean>
 >> = data => async dispatch => {
   dispatch(createStart());
 
-  const http = new HttpService<locationsTypes.ILocationModal>();
+  // const http = new HttpService<locationsTypes.ILocationModal>();
   try {
-    const resData = await http.post(`/locations`, {}, JSON.stringify(data), {});
+    // const resData = await http.post(`/locations`, {}, JSON.stringify(data), {});
+    const [res, resData] = await myHTTP.post('/locations', {}, data, {});
+
+    if (res.status !== 201) {
+      throw new Error(JSON.parse(resData.message).error.message);
+    }
 
     dispatch(createSuccess(resData));
+    return true;
   } catch (err) {
-    dispatch(createFail(err));
+    dispatch(createFail(err.message));
   }
+  return false;
 };
 
 // we can't do delete here
@@ -167,7 +199,7 @@ export const remove: ActionCreator<locationsTypes.ThunkResult<
 >> = id => async dispatch => {
   dispatch(deleteStart());
 
-  const http = new HttpService<{ id: string }>();
+  const http = new HttpService<{ id: number }>();
   try {
     const resData = await http.delete(`/locations/${id}`, {}, {});
 

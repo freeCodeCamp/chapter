@@ -54,7 +54,7 @@ Requirements: Node.js, Docker, internet access
 
 Follow instructions for downloading and installing Node.js for your operating system from the [official Node.js website](https://nodejs.org/en/download/).
 
-Ensure you are installing Node 10 or greater and npm 6 or greater.
+Ensure you are installing Node 13 and npm 6 or greater.
 
 ### Installing Docker
 

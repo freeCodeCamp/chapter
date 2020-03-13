@@ -54,7 +54,7 @@ Requirements: Node.js, Docker, internet access
 
 Follow instructions for downloading and installing Node.js for your operating system from the [official Node.js website](https://nodejs.org/en/download/).
 
-Ensure you are installing Node 10 or greater and npm 6 or greater.
+Ensure you are installing Node 13 and npm 6 or greater.
 
 ### Installing Docker
 
@@ -236,6 +236,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/AshNaz87"><img src="https://avatars2.githubusercontent.com/u/20570746?v=4" width="100px;" alt=""/><br /><sub><b>Ashraf Nazar</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=AshNaz87" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://vamsirao.com"><img src="https://avatars1.githubusercontent.com/u/21315701?v=4" width="100px;" alt=""/><br /><sub><b>Vamsi Settypalli</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Narutuffy" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Sushmeet"><img src="https://avatars0.githubusercontent.com/u/15717984?v=4" width="100px;" alt=""/><br /><sub><b>sushmeet sunger</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Sushmeet" title="Documentation">📖</a></td>
   </tr>
 </table>
 

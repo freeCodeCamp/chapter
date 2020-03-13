@@ -202,12 +202,7 @@ export const updateLocation: ActionCreator<locationsTypes.ThunkResult<
 
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
-    const { resData } = await http.patch(
-      `/locations/${id}`,
-      {},
-      JSON.stringify(data),
-      {},
-    );
+    const { resData } = await http.patch(`/locations/${id}`, {}, data, {});
 
     dispatch(updateSuccess(id, resData));
     return true;

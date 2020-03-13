@@ -35,7 +35,10 @@ const EditLocation: React.FC = () => {
 
   const onSubmit = async data => {
     const success = await dispatch(
-      locationActions.updateLocation(parseInt(Array.isArray(id) ? id[0] : id), data),
+      locationActions.updateLocation(
+        parseInt(Array.isArray(id) ? id[0] : id),
+        data,
+      ),
     );
 
     if (success) {

@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import LocationForm from 'client/components/LocationForm';
+import sanitizeFormData from 'client/helpers/sanitizeFormData';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -37,7 +38,7 @@ const EditLocation: React.FC = () => {
     const success = await dispatch(
       locationActions.updateLocation(
         parseInt(Array.isArray(id) ? id[0] : id),
-        data,
+        sanitizeFormData(data),
       ),
     );
 

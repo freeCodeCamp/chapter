@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import LocationForm from 'client/components/LocationForm';
+import sanitizeFormData from 'client/helpers/sanitizeFormData';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -24,7 +25,9 @@ const NewLocation: React.FC = () => {
   const dispatch = useDispatch();
 
   const onSubmit = async data => {
-    const success = await dispatch(locationActions.create(data));
+    const success = await dispatch(
+      locationActions.create(sanitizeFormData(data)),
+    );
     if (success) {
       router.replace('/dashboard/locations');
     }

@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "This is the API specification for Chapter",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "title": "Chapter",
     "termsOfService": "https://www.freecodecamp.org/news/terms-of-service/",
     "contact": {
@@ -30,9 +30,7 @@
   "paths": {
     "/locations": {
       "post": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Add a new location to the map",
         "description": "",
         "operationId": "addLocation",
@@ -58,11 +56,11 @@
               }
             }
           },
-          "401": {
-            "description": "Not authorized"
-          },
           "400": {
             "description": "Invalid Location object"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "default": {
             "description": "unexpected error",
@@ -77,10 +75,8 @@
         }
       },
       "get": {
-        "tags": [
-          "location"
-        ],
-        "summary": "Finds locations by city, country or postal code",
+        "tags": ["location"],
+        "summary": "Finds locations by country code, city, region, postal code or address",
         "description": "Multiple status values can be provided as query params",
         "operationId": "findLocations",
         "parameters": [
@@ -94,9 +90,27 @@
             }
           },
           {
-            "name": "country",
+            "name": "region",
             "in": "query",
-            "description": "Country value that needs to be considered for filter",
+            "description": "Region value that needs to be considered for filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "Address value that needs to be considered for filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country_code",
+            "in": "query",
+            "description": "Country_code value that needs to be considered for filter",
             "required": false,
             "schema": {
               "type": "string"
@@ -146,9 +160,7 @@
     },
     "/locations/{locationId}": {
       "get": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Find location by ID",
         "description": "Returns a single location",
         "operationId": "getLocationById",
@@ -191,9 +203,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Update an existing location",
         "description": "",
         "operationId": "updateLocation",
@@ -250,9 +260,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "location"
-        ],
+        "tags": ["location"],
         "summary": "Deletes a location",
         "description": "",
         "operationId": "deleteLocation",
@@ -290,9 +298,7 @@
     },
     "/chapters": {
       "post": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Add a new chapter",
         "description": "",
         "operationId": "addChapter",
@@ -336,9 +342,7 @@
     },
     "/chapters/{chapterId}": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive the details of a chapter",
         "description": "",
         "operationId": "findChapterById",
@@ -386,9 +390,7 @@
     },
     "/chapters/{chapterId}/events": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive the events belonging to a chapter",
         "description": "",
         "operationId": "findEventsInChapter",
@@ -408,13 +410,15 @@
           "200": {
             "description": "successful operation",
             "content": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Event"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Event"
+                      }
                     }
                   }
                 }
@@ -442,9 +446,7 @@
     },
     "/chapters/{chapterId}/events/{eventId}": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive an event by id",
         "description": "",
         "operationId": "findEventById",
@@ -481,11 +483,11 @@
               }
             }
           },
-          "401": {
-            "description": "Not authorized"
-          },
           "400": {
             "description": "Invalid event"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "404": {
             "description": "Event/Chapter not found"
@@ -503,9 +505,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Delete an event by id",
         "description": "",
         "operationId": "deleteEventById",
@@ -542,11 +542,11 @@
               }
             }
           },
-          "401": {
-            "description": "Not authorized"
-          },
           "400": {
             "description": "Invalid event"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "404": {
             "description": "Event/Chapter not found"
@@ -566,9 +566,7 @@
     },
     "/chapters/{chapterId}/events/{eventId}/sponsors": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive list of sponsors by event",
         "description": "",
         "operationId": "findSponsorsByEvent",
@@ -624,9 +622,7 @@
         }
       },
       "post": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Add a new food, venue or other sponsor",
         "description": "",
         "operationId": "addSponsorToEvent",
@@ -698,9 +694,7 @@
     },
     "/chapters/{chapterId}/events/{eventId}/sponsors/{sponsorId}": {
       "get": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Retreive sponsor by ID",
         "description": "",
         "operationId": "findSponsorById",
@@ -769,9 +763,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Delete a sponsor by id",
         "description": "",
         "operationId": "deleteSponsorById",
@@ -840,9 +832,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "chapter"
-        ],
+        "tags": ["chapter"],
         "summary": "Update a sponsor by id",
         "description": "",
         "operationId": "updateSponsorById",
@@ -913,9 +903,7 @@
     },
     "/users": {
       "post": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Add a new user",
         "description": "",
         "operationId": "addUser",
@@ -954,9 +942,7 @@
     },
     "/users/{userId}": {
       "get": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Retreive the details of a user",
         "description": "",
         "operationId": "findUserById",
@@ -999,9 +985,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Edit an existing user",
         "description": "",
         "operationId": "updateUser",
@@ -1055,9 +1039,7 @@
     },
     "/users/{userId}/ban": {
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "summary": "Ban a user",
         "description": "",
         "operationId": "banUserById",
@@ -1124,16 +1106,19 @@
             "type": "string",
             "format": "uuid"
           },
-          "country": {
+          "country_code": {
             "type": "string"
           },
           "city": {
             "type": "string"
           },
-          "state": {
+          "region": {
             "type": "string"
           },
           "postal_code": {
+            "type": "string"
+          },
+          "address": {
             "type": "string"
           }
         }
@@ -1152,7 +1137,7 @@
             "type": "string"
           },
           "email": {
-            "type": "email"
+            "type": "string"
           }
         }
       },
@@ -1221,11 +1206,7 @@
       },
       "SponsorType": {
         "type": "string",
-        "enum": [
-          "FOOD",
-          "VENUE",
-          "OTHER"
-        ]
+        "enum": ["FOOD", "VENUE", "OTHER"]
       },
       "Event": {
         "type": "object",
@@ -1241,10 +1222,10 @@
             "type": "string"
           },
           "starts_at": {
-            "type": "date-time"
+            "type": "string"
           },
           "ends_at": {
-            "type": "date-time"
+            "type": "string"
           },
           "chapter_id": {
             "type": "string"
@@ -1262,10 +1243,7 @@
       },
       "Error": {
         "type": "object",
-        "required": [
-          "code",
-          "message"
-        ],
+        "required": ["code", "message"],
         "properties": {
           "code": {
             "type": "integer",

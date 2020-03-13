@@ -1,32 +1,24 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import { Grid } from '@material-ui/core';
-import styled from 'styled-components';
-import { withTheme } from '@material-ui/core/styles';
+import { withTheme, makeStyles } from '@material-ui/core/styles';
 
-// Use styled components only if you want to create custom components
-// not readily available with Material UI or if you want to customize
-// Material UI components with more than just the available MUI API
-
-const StyledGrid = styled(Grid)`
-  background: ${({
-    theme: {
-      palette: { background },
-    },
-  }) => background.default};
-  color: ${({
-    theme: {
-      palette: { secondary },
-    },
-  }) => secondary.main};
-`;
+// You can also easily modify material-ui components
+const useStyles = makeStyles(({ palette: { background, secondary } }) => ({
+  grid: {
+    background: background.default,
+    color: secondary.main,
+  },
+}));
 
 const SomeComponent = () => {
+  const styles = useStyles();
+
   return (
     <Grid container>
-      <StyledGrid item xs={12}>
+      <Grid item xs={12} className={styles.grid}>
         This is an imported component with a Button
-      </StyledGrid>
+      </Grid>
       <Button variant="outlined">CLick Here!</Button>
     </Grid>
   );

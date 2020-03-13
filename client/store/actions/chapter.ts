@@ -22,8 +22,8 @@ export const fetchSuccess = (
 
 export const fetchFail = (error: string): chapterTypes.IChapterActionTypes => {
   return {
-    payload: error,
     type: chapterTypes.FETCH_FAIL,
+    payload: error,
   };
 };
 

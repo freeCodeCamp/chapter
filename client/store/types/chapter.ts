@@ -1,9 +1,8 @@
 import { ThunkAction } from 'redux-thunk';
 import { AppStoreState } from '../reducers';
 
-export const FETCH_START = 'fcc/chapter/CHAPTER_START';
-export const FETCH_SUCCESS = 'fcc/chapter/CHAPTER_SUCCESS';
-export const FETCH_FAIL = 'fcc/chapter/CHAPTER_FAIL';
+import * as ACTIONS from './actions/chapter';
+export * from './actions/chapter';
 
 export interface IChapterModal {
   id?: string;
@@ -18,16 +17,16 @@ export interface IChapterStoreState extends IChapterModal {
 }
 
 interface IChapterFetchStartAction {
-  type: typeof FETCH_START;
+  type: typeof ACTIONS.FETCH_START;
 }
 
 interface IChapterFetchSuccessAction {
-  type: typeof FETCH_SUCCESS;
+  type: typeof ACTIONS.FETCH_SUCCESS;
   payload: IChapterModal;
 }
 
 interface IChapterFetchFailureAction {
-  type: typeof FETCH_FAIL;
+  type: typeof ACTIONS.FETCH_FAIL;
   payload: string;
 }
 

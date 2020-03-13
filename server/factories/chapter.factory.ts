@@ -1,9 +1,9 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
 
-import { Chapter } from '../models/Chapter';
-import { User } from '../models/User';
-import { Location } from '../models/Location';
+import { Chapter } from 'server/models/Chapter';
+import { User } from 'server/models/User';
+import { Location } from 'server/models/Location';
 
 define(Chapter, (
   faker: typeof Faker,

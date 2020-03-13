@@ -13,6 +13,6 @@ export const initDB = (async () => {
     password: process.env.DB_PASSWORD || 'password',
     database: process.env.DB_NAME || 'chapter',
     host: process.env.DB_URL || 'db',
-    port: 5432,
+    port: process.env.DB_PORT || 5432,
   } as ConnectionOptions);
 })();

@@ -3,13 +3,13 @@
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
-This will be a self-hosted Docker container that you can one-click deploy to the cloud, then configure through an admin panel. No coding required.
+This will be a self-hosted Docker container deployed to the cloud with a one-click and then configured by the _owner_. No coding required.
 
-Your organization can host an instance of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
+Your _organization_ can host an _instance_ of _Chapter_ under a sub-domain of your website, such as `chapter.sierraclub.org` or `chapter.womenwhocode.org`.
 
-You can use your own authentication tools. And all your user data will stay on your own server.
+All of an _organization_'s user data will remain under their control.
 
-Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for  _Chapter_.
+Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for _Chapter_.
 
 ## Terminology
 To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the Chapter project:
@@ -22,9 +22,10 @@ To better communicate and more easily build an API and UI, the current contribut
 | _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
 | _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
 | _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
-| _administrator_ | the _role_ of a _user_ to manage the entire ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ for an _organization_ | Women Who Code - Global Chapter Administrator |
-| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _users_ | Women Who Code - New York City, Local Organizer |
-| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - New York City, Local Member |
+| _owner_ | the _role_ of a _user_ who can configure the ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
+| _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
+| _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
+| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
 
 ## Tech Stack
 
@@ -34,7 +35,7 @@ We are planning to use the following tools:
 * [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Styled Components](https://www.styled-components.com) for styling.
+  * [Material UI](https://material-ui.com/) for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) for writing unit tests.
   * [sinon](https://sinonjs.org/)
@@ -43,7 +44,7 @@ We are planning to use the following tools:
 
 A lot of people know these tools, and they're proven to work well at scale.
 
-We will focus on building an open API first. Then developers can use the API to build their own mobile clients and voice interface clients.
+We will focus on building an open API first. Then, developers can use the API to build their own mobile clients and voice interface clients.
 
 ## Development Setup
 
@@ -83,7 +84,11 @@ Install dependencies:
 npm install
 ```
 
-If needed, set up environment variables under 'app -> environment' in the `docker-compose.yml` file.
+If you're using local setup (no docker), make sure you add your DB credentials to .env file
+
+Running the server:
+
+#### Docker-compose (RECOMMENDED)
 
 Ensure that Docker Desktop is up and running, then run the following command:
 ```
@@ -96,12 +101,31 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
+#### Natively running node in Windows/MacOS/Linux (no docker)
+
+DISCLAIMER: This is a more hands on approach.
+
+This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
+
+After you setup the DB instance local or remote, create a database, add the DB name and credentials to .env
+
+MAKE SURE TO SET `IS_DOCKER=` in `.env` to blank
+
+```
+npm run dev
+```
+
 ## Additional DB docs can be found in server/docs/README.md
 
 ## Testing
 Run tests
 ```
 npm run test
+```
+
+### If you're running in docker compose prefix the command with docker-compose exec
+```
+NODE_ENV=test docker-compose exec app npm run test
 ```
 
 Run tests in watch mode
@@ -111,12 +135,9 @@ npm run test:watch
 
 ## API Specification
 
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. You can see the full documentation with:
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. 
 
-```bash
-npm run speccy
-```
-Navigate to http://localhost:8001 to see API docs
+You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
 
 ## Schema
 <details>
@@ -142,12 +163,12 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 
 ## Contributing
 
-* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
+* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected and follow announcements.
 * Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before creating issues, forking, or submitting any pull requests.
 
 ## License
 
-Copyright © 2019 freeCodeCamp.org
+Copyright © 2020 freeCodeCamp.org
 
 The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 
@@ -213,6 +234,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ed42311"><img src="https://avatars3.githubusercontent.com/u/14878694?v=4" width="100px;" alt=""/><br /><sub><b>Edward Weymouth</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=ed42311" title="Documentation">📖</a></td>
     <td align="center"><a href="https://thewebdevcoach.com"><img src="https://avatars3.githubusercontent.com/u/8263430?v=4" width="100px;" alt=""/><br /><sub><b>Aryan J</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=AryanJ-NYC" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/AshNaz87"><img src="https://avatars2.githubusercontent.com/u/20570746?v=4" width="100px;" alt=""/><br /><sub><b>Ashraf Nazar</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=AshNaz87" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
@@ -220,4 +244,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
-

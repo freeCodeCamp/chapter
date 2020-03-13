@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Link from 'next/link';
 import { Card, Typography, Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { SomeComponent, ProgressCardContent } from 'client/components';
@@ -39,6 +40,7 @@ const Home: React.FC = () => {
           )}
         </Grid>
       </Grid>
+      <Link href="/add-sponsor">Add sponsor</Link>
     </>
   );
 };

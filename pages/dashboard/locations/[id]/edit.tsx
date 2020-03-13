@@ -34,13 +34,13 @@ const EditLocation: React.FC = () => {
   }, [id]);
 
   const onSubmit = async data => {
-    await dispatch(
-      locationActions.updateLocation(
-        parseInt(Array.isArray(id) ? id[0] : id),
-        data,
-      ),
+    const success = await dispatch(
+      locationActions.updateLocation(parseInt(Array.isArray(id) ? id[0] : id), data),
     );
-    router.replace('/dashboard/locations');
+
+    if (success) {
+      router.replace('/dashboard/locations');
+    }
   };
 
   if (loading) return <h1>Loading...</h1>;

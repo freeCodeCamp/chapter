@@ -134,41 +134,13 @@ export const fetchLocations: ActionCreator<locationsTypes.ThunkResult<
 >> = () => async dispatch => {
   dispatch(fetchStart());
 
-  // TODO: for the PR to be simple, haven't added any specific HTTP Service,
-  // But we can make HTTPService some kind of builder, to return us back with specific
-  // modal service, like LocationsHttpService.
   const http = new HttpService<locationsTypes.ILocationModal[]>();
   try {
-    const resData = await http.get(`/locations`, {}, {});
+    const { resData } = await http.get(`/locations`, {}, {});
     dispatch(fetchSuccess(resData));
   } catch (err) {
     dispatch(fetchFail(err));
   }
-};
-
-const myHTTP = {
-  cleanUrl(url: string) {
-    if (url.startsWith('/')) {
-      return url.slice(1);
-    }
-    return url;
-  },
-  async post(
-    url: string,
-    params: Record<string, any>,
-    data: any,
-    headers?: Record<string, any>,
-  ) {
-    const res = await fetch(`/api/v1/${this.cleanUrl(url)}`, {
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json', ...headers },
-      method: 'POST',
-    });
-
-    const resData = await res.json();
-
-    return [res, resData];
-  },
 };
 
 export const create: ActionCreator<locationsTypes.ThunkResult<
@@ -176,10 +148,9 @@ export const create: ActionCreator<locationsTypes.ThunkResult<
 >> = data => async dispatch => {
   dispatch(createStart());
 
-  // const http = new HttpService<locationsTypes.ILocationModal>();
+  const http = new HttpService<any>();
   try {
-    // const resData = await http.post(`/locations`, {}, JSON.stringify(data), {});
-    const [res, resData] = await myHTTP.post('/locations', {}, data, {});
+    const { res, resData } = await http.post('/locations', {}, data, {});
 
     if (res.status !== 201) {
       throw new Error(JSON.parse(resData.message).error.message);
@@ -201,7 +172,7 @@ export const remove: ActionCreator<locationsTypes.ThunkResult<
 
   const http = new HttpService<{ id: number }>();
   try {
-    const resData = await http.delete(`/locations/${id}`, {}, {});
+    const { resData } = await http.delete(`/locations/${id}`, {}, {});
 
     dispatch(deleteSuccess(resData));
   } catch (err) {
@@ -216,7 +187,7 @@ export const fetchOneLocation: ActionCreator<locationsTypes.ThunkResult<
 
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
-    const resData = await http.get(`/locations/${id}`, {}, {});
+    const { resData } = await http.get(`/locations/${id}`, {}, {});
 
     dispatch(fetchOneSuccess(resData));
   } catch (err) {
@@ -225,13 +196,13 @@ export const fetchOneLocation: ActionCreator<locationsTypes.ThunkResult<
 };
 
 export const updateLocation: ActionCreator<locationsTypes.ThunkResult<
-  Promise<void>
+  Promise<boolean>
 >> = (id: number, data: Partial<Location>) => async dispatch => {
   dispatch(updateStart());
 
   const http = new HttpService<locationsTypes.ILocationModal>();
   try {
-    const resData = await http.patch(
+    const { resData } = await http.patch(
       `/locations/${id}`,
       {},
       JSON.stringify(data),
@@ -239,7 +210,10 @@ export const updateLocation: ActionCreator<locationsTypes.ThunkResult<
     );
 
     dispatch(updateSuccess(id, resData));
+    return true;
   } catch (err) {
     dispatch(updateFail(err));
   }
+
+  return false;
 };

@@ -237,6 +237,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/AshNaz87"><img src="https://avatars2.githubusercontent.com/u/20570746?v=4" width="100px;" alt=""/><br /><sub><b>Ashraf Nazar</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=AshNaz87" title="Documentation">📖</a></td>
     <td align="center"><a href="http://vamsirao.com"><img src="https://avatars1.githubusercontent.com/u/21315701?v=4" width="100px;" alt=""/><br /><sub><b>Vamsi Settypalli</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Narutuffy" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Sushmeet"><img src="https://avatars0.githubusercontent.com/u/15717984?v=4" width="100px;" alt=""/><br /><sub><b>sushmeet sunger</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Sushmeet" title="Documentation">📖</a></td>
   </tr>
 </table>
 

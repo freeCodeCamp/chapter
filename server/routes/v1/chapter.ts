@@ -14,7 +14,7 @@ router.delete('/chapters/:id', asyncHandler(chapterController.remove));
 
 router.post(
   '/chapters/:id/join/:user_id',
-  asyncHandler(userChapterController.create),
+  asyncHandler(userChapterController.join),
 );
 router.post(
   '/chapters/:chapter_id/ban/:user_id',

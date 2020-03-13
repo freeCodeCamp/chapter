@@ -5,7 +5,7 @@ import { UserChapter } from 'server/models/UserChapter';
 // The whole model is a json response, fix that if there's some sensitive data here
 
 export default {
-  async create(req: Request, res: Response) {
+  async join(req: Request, res: Response) {
     const { chapter_id, user_id } = req.body;
 
     const chapter = await Chapter.findOne({ id: chapter_id });

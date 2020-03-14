@@ -1,79 +1,27 @@
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { FormControl, TextField, Button, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '25%',
-  },
-  item: {
-    marginTop: '20px',
-  },
-}));
+import { useDispatch } from 'react-redux';
+import { eventActions } from 'client/store/actions';
+import EventsForm, { IEventFormData } from 'client/components/EventsForm';
 
 const CreateEvent: React.FC = () => {
-  const { control, handleSubmit } = useForm();
-  const styles = useStyles();
+  const dispatch = useDispatch();
 
-  const onSubmit = data => {
-    console.log(data);
+  const onSubmit = (data: IEventFormData) => {
+    // TODO: REMOVE
+    const HARD_CODE = { chapter: 1, venue: 1 };
+    const eventData = { ...data, ...HARD_CODE };
+    console.log(eventData);
+
+    dispatch(eventActions.createEvent(eventData))
+      .then((success: boolean) => {
+        console.log(success);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
-  return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <FormControl className={styles.item}>
-          <Controller
-            control={control}
-            as={
-              <TextField
-                label="Event title"
-                type="text"
-                placeholder="Foo and the bars"
-              />
-            }
-            name="name"
-            defaultValue=""
-            options={{ required: true }}
-          />
-        </FormControl>
-        <FormControl className={styles.item}>
-          <Controller
-            control={control}
-            as={<TextField label="Capacity" type="number" placeholder="50" />}
-            name="capacity"
-            defaultValue=""
-            options={{ required: true }}
-          />
-        </FormControl>
-        <FormControl className={styles.item}>
-          <Controller
-            control={control}
-            as={
-              <TextField
-                label="Tags (separated by a comma)"
-                type="text"
-                placeholder="Foo, bar"
-              />
-            }
-            name="tags"
-            defaultValue=""
-            options={{ required: true }}
-          />
-        </FormControl>
-        <Button
-          className={styles.item}
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          Add Event
-        </Button>
-      </form>
-    </>
-  );
+  return <EventsForm onSubmit={onSubmit} />;
 };
 
 export default CreateEvent;

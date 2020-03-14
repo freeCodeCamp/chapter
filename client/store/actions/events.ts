@@ -58,6 +58,14 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
   }
 };
 
+export const createEvent: ActionCreator<eventsTypes.ThunkResult<
+  Promise<boolean>
+>> = (data: any) => async dispatch => {
+  console.log(data);
+  dispatch(fetchFail(''));
+  return true;
+};
+
 export const cancelEvent: ActionCreator<eventsTypes.ThunkResult<
   Promise<void>
 >> = (chapterId: string, eventId: string) => async dispatch => {

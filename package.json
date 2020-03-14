@@ -40,6 +40,7 @@
   "dependencies": {
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
+    "@types/react-redux": "^7.1.7",
     "babel-plugin-module-resolver": "^3.2.0",
     "cross-fetch": "^3.0.4",
     "dotenv": "^8.2.0",
@@ -118,10 +119,6 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "prettier": {
-    "trailingComma": "all",
-    "singleQuote": true
   },
   "engines": {
     "node": "13.x",

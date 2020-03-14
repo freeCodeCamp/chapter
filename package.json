@@ -119,10 +119,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "prettier": {
-    "trailingComma": "all",
-    "singleQuote": true
-  },
   "engines": {
     "node": "13.x",
     "npm": ">= 6.0.0"

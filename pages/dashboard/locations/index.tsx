@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Link from 'next/link';
 
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import DashboardLocation from 'client/components/DashboardLocation';
 import { ILocationModal } from 'client/store/types/locations';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const Locations: React.FC = () => {
   const { error, loading, locations } = useSelector((state: AppStoreState) => ({
@@ -15,7 +16,7 @@ const Locations: React.FC = () => {
     locations: state.locations.locations,
   }));
 
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
 
   useEffect(() => {
     dispatch(locationActions.fetchLocations());

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
@@ -7,6 +7,7 @@ import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import LocationForm from 'client/components/LocationForm';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -26,7 +27,7 @@ const EditLocation: React.FC = () => {
       location => location.id === parseInt(Array.isArray(id) ? id[0] : id),
     ),
   }));
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
 
   useEffect(() => {
     if (id !== undefined) {

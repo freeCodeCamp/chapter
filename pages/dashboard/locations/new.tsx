@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
@@ -7,6 +7,8 @@ import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import LocationForm from 'client/components/LocationForm';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
+// import { AppDispatch } from 'client/store/types/chapter';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -22,7 +24,8 @@ const NewLocation: React.FC = () => {
     error: state.locations.create.error,
     state: state.locations.create.state,
   }));
-  const dispatch = useDispatch();
+
+  const dispatch = useThunkDispatch();
 
   const onSubmit = async data => {
     const success = await dispatch(

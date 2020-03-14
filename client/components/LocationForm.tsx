@@ -9,7 +9,7 @@ interface IData {
   city: string;
   region: string;
   postal_code: string;
-  address: string;
+  address?: string;
 }
 
 interface ILocationFormProps {

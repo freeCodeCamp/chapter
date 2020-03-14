@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Card, Typography, Grid } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { SomeComponent, ProgressCardContent } from 'client/components';
 import { AppStoreState } from 'client/store/reducers';
 import { chapterActions } from 'client/store/actions';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const Home: React.FC = () => {
   const { error, loading, name, description } = useSelector(
@@ -15,7 +16,7 @@ const Home: React.FC = () => {
       description: state.chapter.description,
     }),
   );
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
 
   useEffect(() => {
     dispatch(chapterActions.fetchChapter('1'));

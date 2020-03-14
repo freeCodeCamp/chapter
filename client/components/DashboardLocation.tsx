@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Card, Typography, Button, makeStyles } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 
 import ProgressCardContent from './ProgressCardContent';
 import { ILocationModal } from 'client/store/types/locations';
 import { locationActions } from 'client/store/actions';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 interface IDashboardLocationProps {
   location: ILocationModal;
@@ -27,7 +27,7 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   loading,
 }) => {
   const [allow, setAllow] = useState<boolean>(false);
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
 
   const styles = useStyles();
 

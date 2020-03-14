@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Card, Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import { ProgressCardContent } from 'client/components';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const ShowLocation: React.FC = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const ShowLocation: React.FC = () => {
       location => location.id === parseInt(Array.isArray(id) ? id[0] : id),
     ),
   }));
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
 
   useEffect(() => {
     if (id !== undefined) {

@@ -19,9 +19,6 @@ export class User extends BaseModel {
   @Column()
   email!: string;
 
-  @Column({ nullable: true })
-  password_digest?: string;
-
   @OneToMany(
     _type => SocialProviderUser,
     socialProviderUser => socialProviderUser.user,

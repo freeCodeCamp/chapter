@@ -36,12 +36,9 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
 >> = (chapterId: string) => async dispatch => {
   dispatch(fetchStart());
 
-  // TODO: for the PR to be simple, haven't added any specific HTTP Service,
-  // But we can make HTTPService some kind of builder, to return us back with specific
-  // modal service, like EventsHttpService.
   const http = new HttpService<eventsTypes.IEventModal[]>();
   try {
-    const resData = await http.get(`/chapters/${chapterId}/events`, {}, {});
+    const { resData } = await http.get(`/chapters/${chapterId}/events`, {}, {});
     dispatch(fetchSuccess(resData, chapterId));
   } catch (err) {
     dispatch(fetchFail(err));

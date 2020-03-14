@@ -15,8 +15,6 @@ export default {
         return { [item]: Like(`%${req.query[item]}%`) };
       });
 
-    console.log(query);
-
     const locations = await Location.find({
       where: query,
     });
@@ -81,9 +79,8 @@ export default {
     }
   },
   async remove(req: Request, res: Response) {
-    const { id } = req.params;
-
-    const location = await Location.findOne({ id: parseInt(id) });
+    const id = parseInt(req.params.id);
+    const location = await Location.findOne({ id });
 
     if (!location) {
       throw new NotFoundError("Can't find location");

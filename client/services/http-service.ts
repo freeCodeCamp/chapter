@@ -100,15 +100,4 @@ export class HttpService<V = any> implements IHttpServiceInterface<V> {
 
     return { res, resData };
   }
-
-  public async delete(
-    url: string,
-    params: Record<string, string>,
-    headers: Record<string, string>,
-  ) {
-    return fetch(HttpService.baseUrl + url + this.stringifyParams(params), {
-      headers: { ...HttpService.baseHeaders, ...headers },
-      method: 'DELETE',
-    }).then<V>(res => res.json());
-  }
 }

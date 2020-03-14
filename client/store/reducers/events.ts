@@ -6,6 +6,10 @@ const initialState: eventsTypes.IEventStoreState = {
   events: [],
   chapterId: '',
   error: '',
+  create: {
+    state: 'idle',
+    error: '',
+  },
 };
 
 const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
@@ -32,6 +36,19 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
       case eventsTypes.FETCH_FAIL:
         draft.error = action.payload;
         draft.loading = false;
+        break;
+      case eventsTypes.CREATE_START:
+        draft.create.state = 'loading';
+        draft.create.error = '';
+        break;
+      case eventsTypes.CREATE_SUCCESS:
+        draft.create.state = 'idle';
+        draft.create.error = '';
+        draft.events = [...draft.events, action.payload.event];
+        break;
+      case eventsTypes.CREATE_FAIL:
+        draft.create.state = 'error';
+        draft.create.error = action.payload;
         break;
       default:
         return state;

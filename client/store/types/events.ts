@@ -22,6 +22,10 @@ export interface IEventStoreState {
   events: IEventModal[];
   loading: boolean;
   error: string; // Should reflect a generic Error Type here
+  create: {
+    state: 'idle' | 'error' | 'loading';
+    error: string;
+  };
 }
 
 interface IEventFetchStartAction {
@@ -49,11 +53,30 @@ interface IEventFetchFailureAction {
   payload: string;
 }
 
+interface IEventCreateStartAction {
+  type: typeof ACTIONS.CREATE_START;
+}
+
+interface IEventCreateSuccessAction {
+  type: typeof ACTIONS.CREATE_SUCCESS;
+  payload: {
+    event: IEventModal;
+  };
+}
+
+interface IEventCreateFailureAction {
+  type: typeof ACTIONS.CREATE_FAIL;
+  payload: string;
+}
+
 export type IEventActionTypes =
   | IEventFetchStartAction
   | IEventFetchSuccessAction
   | IEventFetchFailureAction
-  | IEventFetchSingleSuccessAction;
+  | IEventFetchSingleSuccessAction
+  | IEventCreateSuccessAction
+  | IEventCreateStartAction
+  | IEventCreateFailureAction;
 
 export type ThunkResult<R> = ThunkAction<
   R,

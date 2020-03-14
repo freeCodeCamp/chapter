@@ -42,7 +42,7 @@ const fields: IField[] = [
     defaultValue: new Date().toISOString().slice(0, 16),
   },
   {
-    key: 'end_at',
+    key: 'ends_at',
     type: 'datetime-local',
     label: 'End at',
     defaultValue: new Date(Date.now() + 1000 * 60 * 60)
@@ -71,9 +71,10 @@ export interface IEventFormData {
 
 interface IEventsFormProps {
   onSubmit: (data: IEventFormData) => void;
+  loading: boolean;
 }
 
-const EventsForm: React.FC<IEventsFormProps> = ({ onSubmit }) => {
+const EventsForm: React.FC<IEventsFormProps> = ({ onSubmit, loading }) => {
   const { control, handleSubmit } = useForm();
   const styles = useStyles();
 
@@ -101,6 +102,7 @@ const EventsForm: React.FC<IEventsFormProps> = ({ onSubmit }) => {
         variant="contained"
         color="primary"
         type="submit"
+        disabled={loading}
       >
         Add Event
       </Button>

@@ -38,6 +38,28 @@ export const fetchFail = (error: string): eventsTypes.IEventActionTypes => {
   };
 };
 
+export const createStart = (): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.CREATE_START,
+  };
+};
+
+export const createSuccess = (
+  event: eventsTypes.IEventModal,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.CREATE_SUCCESS,
+    payload: { event },
+  };
+};
+
+export const createFail = (error: string): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.CREATE_FAIL,
+    payload: error,
+  };
+};
+
 /****************
  * Side-Effects
  ****************/
@@ -61,9 +83,31 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
 export const createEvent: ActionCreator<eventsTypes.ThunkResult<
   Promise<boolean>
 >> = (data: any) => async dispatch => {
-  console.log(data);
-  dispatch(fetchFail(''));
-  return true;
+  dispatch(createStart());
+
+  // TODO: Add new HTTP service when #342 is merged
+  try {
+    const res = await fetch(`/api/v1/chapters/1/events`, {
+      body: JSON.stringify(data),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const resData = await res.json();
+
+    if (res.status !== 201) {
+      throw new Error(resData.error.message);
+    }
+
+    dispatch(createSuccess(resData));
+
+    return true;
+  } catch (err) {
+    dispatch(createFail(err.message));
+  }
+  return false;
 };
 
 export const cancelEvent: ActionCreator<eventsTypes.ThunkResult<

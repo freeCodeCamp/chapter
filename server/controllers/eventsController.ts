@@ -61,7 +61,6 @@ export default {
       await event.save();
 
       const sanitizedTags = sanitizeTags(tags);
-
       const outTags = await Promise.all(
         sanitizedTags.map(item => {
           const tag = new Tag({ name: item, event });
@@ -69,17 +68,21 @@ export default {
         }),
       );
 
-      res.status(201).json({
+      return res.status(201).json({
         event,
         tags: outTags.map((tag: Tag) => ({ id: tag.id, name: tag.name })),
       });
     } catch (e) {
       if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
         if (e.detail.includes('venue')) {
-          return res.status(400).json({ message: 'venue not found' });
+          return res
+            .status(400)
+            .json({ error: { message: 'venue not found' } });
         }
         if (e.detail.includes('chapter')) {
-          return res.status(400).json({ message: 'chapter not found' });
+          return res
+            .status(400)
+            .json({ error: { message: 'chapter not found' } });
         }
       }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, makeStyles } from '@material-ui/core';
 import Link from 'next/link';
 
@@ -39,6 +39,14 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
       setAllow(false);
     }
   };
+
+  useEffect(() => {
+    if (allow) {
+      setTimeout(() => {
+        setAllow(false);
+      }, 2000);
+    }
+  }, [allow]);
 
   return (
     <Card style={{ marginTop: '12px' }}>

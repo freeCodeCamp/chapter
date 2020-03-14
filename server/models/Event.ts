@@ -63,7 +63,7 @@ export class Event extends BaseModel {
     description: string;
     start_at: Date;
     ends_at: Date;
-    canceled: boolean;
+    canceled?: boolean;
     capacity: number;
     venue: Venue;
     chapter: Chapter;
@@ -85,7 +85,7 @@ export class Event extends BaseModel {
       this.description = description;
       this.start_at = start_at;
       this.ends_at = ends_at;
-      this.canceled = canceled;
+      this.canceled = canceled || false;
       this.capacity = capacity;
       this.venue = venue;
       this.chapter = chapter;

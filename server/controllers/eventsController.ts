@@ -42,7 +42,6 @@ export default {
       description,
       capacity,
       venue,
-      canceled,
       start_at,
       ends_at,
       tags,
@@ -54,7 +53,6 @@ export default {
       description,
       capacity,
       venue,
-      canceled,
       start_at,
       ends_at,
     });

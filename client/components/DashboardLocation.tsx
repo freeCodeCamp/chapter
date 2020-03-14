@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  Typography,
-  Button,
-  makeStyles,
-  Link as MULink,
-} from '@material-ui/core';
+import { Card, Typography, Button, makeStyles } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 
@@ -49,10 +43,13 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   return (
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
-        <Link href={`/dashboard/locations/${location.id}`}>
-          <MULink gutterBottom variant="h5" component="h2">
-            {location.city}
-          </MULink>
+        <Link
+          href={`/dashboard/locations/[id]`}
+          as={`/dashboard/locations/${location.id}`}
+        >
+          <a>
+            <h1>{location.city}</h1>
+          </a>
         </Link>
         <Typography variant="body2" color="textSecondary" component="p">
           {`${location.region}, ${location.country_code}, ${location.postal_code}`}
@@ -67,8 +64,10 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
           ) : (
             <Button onClick={() => setAllow(true)}>DELETE</Button>
           )}
-
-          <Link href={`/dashboard/locations/${location.id}/edit`}>
+          <Link
+            href={`/dashboard/locations/[id]/edit`}
+            as={`/dashboard/locations/${location.id}/edit`}
+          >
             <a className={styles.action}>Edit</a>
           </Link>
         </div>

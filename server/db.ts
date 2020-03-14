@@ -5,7 +5,7 @@ import {
   ConnectionOptions,
 } from 'typeorm';
 
-export const initDB = (async () => {
+export const initDB = async () => {
   const connectionOptions = await getConnectionOptions();
   return createConnection({
     ...connectionOptions,
@@ -15,4 +15,4 @@ export const initDB = (async () => {
     host: process.env.DB_URL || 'db',
     port: process.env.DB_PORT || 5432,
   } as ConnectionOptions);
-})();
+};

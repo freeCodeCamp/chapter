@@ -8,7 +8,7 @@ export class UserInstanceRole {
   @PrimaryColumn()
   user_id!: number;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'text' })
   role_name!: InstanceRoles;
 
   @ManyToOne(_type => User)

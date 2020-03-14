@@ -144,7 +144,7 @@ export default {
     if (event) {
       try {
         await event.remove();
-        res.json({ id });
+        res.json({ id: parseInt(id) });
       } catch (e) {
         res.status(500).json({ error: e });
       }

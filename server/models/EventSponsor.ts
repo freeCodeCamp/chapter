@@ -11,14 +11,12 @@ export class EventSponsor extends BaseModel {
   )
   @JoinColumn({ name: 'sponsor_id' })
   sponsor!: Sponsor;
-
   @ManyToOne(
     _type => Event,
     event => event.sponsors,
   )
   @JoinColumn({ name: 'event_id' })
   event!: Event;
-
   constructor(params: { sponsor: Sponsor; event: Event }) {
     super();
     if (params) {

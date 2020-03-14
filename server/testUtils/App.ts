@@ -3,7 +3,7 @@ import getPort from 'get-port';
 import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
-import { User } from 'server/models/User';
+import { User } from 'server/models';
 
 type InitProps = {
   withRouter?: express.Router;

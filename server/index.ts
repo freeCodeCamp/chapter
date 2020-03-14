@@ -26,7 +26,7 @@ if (isDocker() && process.env.IS_DOCKER === '') {
 nextjs.nextApp.prepare().then(async () => {
   const port = process.env.PORT || 8000;
 
-  const connection = await initDB;
+  const connection = await initDB();
   await connection.runMigrations();
 
   app.use(

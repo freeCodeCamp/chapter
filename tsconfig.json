@@ -28,7 +28,7 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "types": ["jest", "node"]
   },
   "include": ["client", "server", "pages", "types", "styles"],

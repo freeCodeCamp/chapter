@@ -3,6 +3,7 @@ import getPort from 'get-port';
 import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
+import { User } from 'server/models/User';
 
 type InitProps = {
   withRouter?: express.Router;
@@ -12,6 +13,7 @@ class App {
   server: express.Application;
   request: request.SuperTest<request.Test>;
   private _server: Server;
+  authedUser: User | null = null;
 
   constructor() {
     const app = express();
@@ -26,6 +28,11 @@ class App {
       this.server.use(withRouter);
     }
 
+    this.server.use((req, _, next) => {
+      req.user = this.authedUser;
+      next();
+    });
+
     this.server.use(responseErrorHandler);
 
     const server = this.server.listen(
@@ -38,6 +45,14 @@ class App {
 
   destroy() {
     this._server.close();
+  }
+
+  login(user: User) {
+    this.authedUser = user;
+  }
+
+  logout() {
+    this.authedUser = null;
   }
 }
 

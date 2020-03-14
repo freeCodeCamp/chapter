@@ -8,6 +8,7 @@ define(Location, (faker: typeof Faker) => {
     city: faker.address.city(),
     region: faker.address.state(),
     postal_code: faker.address.zipCode(),
+    address: Math.random() > 0.5 ? faker.address.streetAddress() : undefined,
   });
 
   return location;

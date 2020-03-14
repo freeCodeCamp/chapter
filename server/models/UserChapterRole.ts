@@ -19,7 +19,7 @@ export class UserChapterRole {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @ManyToOne(_type => User)
+  @ManyToOne(_type => Chapter)
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 

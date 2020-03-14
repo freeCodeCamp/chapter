@@ -50,6 +50,14 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
         draft.create.state = 'error';
         draft.create.error = action.payload;
         break;
+      case eventsTypes.REMOVE_SUCCESS:
+        draft.events = draft.events.filter(
+          item => parseInt(item.id || '') !== action.payload.id,
+        );
+        break;
+      case eventsTypes.REMOVE_FAIL:
+        console.error('Remove failed');
+        break;
       default:
         return state;
     }

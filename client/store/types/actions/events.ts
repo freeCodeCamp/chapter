@@ -6,3 +6,6 @@ export const FETCH_FAIL = 'fcc/chapter/EVENTS_FAIL';
 export const CREATE_START = 'fcc/chapter/EVENT_CREATE_START';
 export const CREATE_SUCCESS = 'fcc/chapter/EVENT_CREATE_SUCCESS';
 export const CREATE_FAIL = 'fcc/chapter/EVENT_CREATE_FAIL';
+
+export const REMOVE_SUCCESS = 'fcc/chapter/EVENT_REMOVE_SUCCESS';
+export const REMOVE_FAIL = 'fcc/chapter/EVENT_REMOVE_FAIL';

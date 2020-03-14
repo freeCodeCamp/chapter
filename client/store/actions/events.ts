@@ -60,6 +60,23 @@ export const createFail = (error: string): eventsTypes.IEventActionTypes => {
   };
 };
 
+export const removeSuccess = (
+  id: number,
+  chapterId: number,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.REMOVE_SUCCESS,
+    payload: { id, chapterId },
+  };
+};
+
+export const removeFail = (error: string): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.REMOVE_FAIL,
+    payload: error,
+  };
+};
+
 /****************
  * Side-Effects
  ****************/
@@ -123,5 +140,21 @@ export const cancelEvent: ActionCreator<eventsTypes.ThunkResult<
     dispatch(fetchSingleSuccess(resData, chapterId));
   } catch (err) {
     dispatch(fetchFail(err));
+  }
+};
+
+export const removeEvent: ActionCreator<eventsTypes.ThunkResult<
+  Promise<void>
+>> = (chapterId: string, eventId: string) => async dispatch => {
+  const http = new HttpService<{ id: number }>();
+  try {
+    const resData = await http.delete(
+      `/chapters/${chapterId}/events/${eventId}`,
+      {},
+      {},
+    );
+    dispatch(removeSuccess(resData.id, parseInt(chapterId)));
+  } catch (err) {
+    dispatch(removeFail(err));
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, Typography, Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import Link from 'next/link';
@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ProgressCardContent from './ProgressCardContent';
 import { IEventModal } from 'client/store/types/events';
 import { eventActions } from 'client/store/actions';
+import useConfirm from 'client/hooks/useConfirm';
 
 interface IDashboardEventProps {
   event: IEventModal;
@@ -13,24 +14,14 @@ interface IDashboardEventProps {
 }
 
 const DashboardEvent: React.FC<IDashboardEventProps> = ({ event, loading }) => {
-  const [confirm, setConfirm] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const cancel = () => {
-    if (confirm) {
-      dispatch(eventActions.cancelEvent(1, event.id));
-    } else {
-      setConfirm(true);
-    }
-  };
-
-  useEffect(() => {
-    if (confirm) {
-      setTimeout(() => {
-        setConfirm(false);
-      }, 2000);
-    }
-  }, [confirm]);
+  const [confirmCancel, clickCancel] = useConfirm(() =>
+    dispatch(eventActions.cancelEvent(1, event.id)),
+  );
+  const [confirmRemove, clickRemove] = useConfirm(() =>
+    dispatch(eventActions.removeEvent(1, event.id)),
+  );
 
   return (
     <Card style={{ marginTop: '12px' }}>
@@ -57,10 +48,13 @@ const DashboardEvent: React.FC<IDashboardEventProps> = ({ event, loading }) => {
           {event.capacity}
         </Typography>
         {!event.canceled && (
-          <Button onClick={cancel}>
-            {confirm ? 'Are you sure?' : 'Cancel'}
+          <Button onClick={clickCancel}>
+            {confirmCancel ? 'Are you sure?' : 'Cancel'}
           </Button>
         )}
+        <Button onClick={clickRemove}>
+          {confirmRemove ? 'Are you sure?' : 'delete'}
+        </Button>
       </ProgressCardContent>
     </Card>
   );

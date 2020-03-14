@@ -69,6 +69,19 @@ interface IEventCreateFailureAction {
   payload: string;
 }
 
+interface IEventRemoveSuccessAction {
+  type: typeof ACTIONS.REMOVE_SUCCESS;
+  payload: {
+    id: number;
+    chapterId: number;
+  };
+}
+
+interface IEventRemoveFailuerAction {
+  type: typeof ACTIONS.REMOVE_FAIL;
+  payload: string;
+}
+
 export type IEventActionTypes =
   | IEventFetchStartAction
   | IEventFetchSuccessAction
@@ -76,7 +89,9 @@ export type IEventActionTypes =
   | IEventFetchSingleSuccessAction
   | IEventCreateSuccessAction
   | IEventCreateStartAction
-  | IEventCreateFailureAction;
+  | IEventCreateFailureAction
+  | IEventRemoveSuccessAction
+  | IEventRemoveFailuerAction;
 
 export type ThunkResult<R> = ThunkAction<
   R,

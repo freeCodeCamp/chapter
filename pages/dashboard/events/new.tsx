@@ -1,16 +1,17 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { eventActions } from 'client/store/actions';
 import EventsForm, { IEventFormData } from 'client/components/EventsForm';
 import { AppStoreState } from 'client/store/reducers';
 import { useRouter } from 'next/router';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const CreateEvent: React.FC = () => {
   const { error, state } = useSelector((state: AppStoreState) => ({
     error: state.events.create.error,
     state: state.events.create.state,
   }));
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
   const router = useRouter();
 
   const onSubmit = (data: IEventFormData) => {

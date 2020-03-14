@@ -129,7 +129,7 @@ export const cancelEvent: ActionCreator<eventsTypes.ThunkResult<
 >> = (chapterId: string, eventId: string) => async dispatch => {
   const http = new HttpService<eventsTypes.IEventModal>();
   try {
-    const resData = await http.delete(
+    const { resData } = await http.delete(
       `/chapters/${chapterId}/events/${eventId}/cancel`,
       {},
       {},
@@ -145,7 +145,7 @@ export const removeEvent: ActionCreator<eventsTypes.ThunkResult<
 >> = (chapterId: string, eventId: string) => async dispatch => {
   const http = new HttpService<{ id: number }>();
   try {
-    const resData = await http.delete(
+    const { resData } = await http.delete(
       `/chapters/${chapterId}/events/${eventId}`,
       {},
       {},

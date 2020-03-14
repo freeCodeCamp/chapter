@@ -25,7 +25,7 @@ const Events: React.FC = () => {
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Link href="/dashboard/events/create">Create an event</Link>
+          <Link href="/dashboard/events/new">Create an event</Link>
           {error ? (
             <h1>😢Error</h1>
           ) : (

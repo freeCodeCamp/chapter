@@ -4,8 +4,8 @@ import Link from 'next/link';
 
 import ProgressCardContent from './ProgressCardContent';
 import { ILocationModal } from 'client/store/types/locations';
-import { locationActions } from 'client/store/actions';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
+// import { locationActions } from 'client/store/actions';
+// import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 interface IDashboardLocationProps {
   location: ILocationModal;
@@ -27,14 +27,17 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   loading,
 }) => {
   const [allow, setAllow] = useState<boolean>(false);
-  const dispatch = useThunkDispatch();
+  // const dispatch = useThunkDispatch();
 
   const styles = useStyles();
 
   const remove = () => {
     const answer = confirm('Are you sure you want to delete this');
     if (answer) {
-      dispatch(locationActions.remove(location.id));
+      // dispatch(locationActions.remove(location.id));
+      alert(
+        "You cant delete a location right now, we'll add that feature later",
+      );
     } else {
       setAllow(false);
     }

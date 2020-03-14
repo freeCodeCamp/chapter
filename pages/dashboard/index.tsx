@@ -7,6 +7,10 @@ const Dashboard: React.FC = () => {
       <Link href="/dashboard/events">
         <a>Events</a>
       </Link>
+      <br />
+      <Link href="/dashboard/locations">
+        <a>Locations</a>
+      </Link>
     </div>
   );
 };

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { AppStoreState } from 'client/store/reducers';
 import { eventActions } from 'client/store/actions';
 import { IEventModal } from 'client/store/types/events';
 import DashboardEvent from 'client/components/DashboardEvent';
 import Link from 'next/link';
+import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const Events: React.FC = () => {
   const { error, loading, events } = useSelector((state: AppStoreState) => ({
@@ -14,7 +15,7 @@ const Events: React.FC = () => {
     loading: state.events.loading,
     events: state.events.events,
   }));
-  const dispatch = useDispatch();
+  const dispatch = useThunkDispatch();
 
   useEffect(() => {
     dispatch(eventActions.fetchEvents('1'));
@@ -29,7 +30,11 @@ const Events: React.FC = () => {
             <h1>😢Error</h1>
           ) : (
             events.map((event: IEventModal) => (
-              <DashboardEvent event={event} loading={loading} key={event.id} />
+              <DashboardEvent
+                event={event}
+                loading={loading}
+                key={`events-${event.id}`}
+              />
             ))
           )}
         </Grid>

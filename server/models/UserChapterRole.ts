@@ -12,7 +12,7 @@ export class UserChapterRole {
   @PrimaryColumn()
   chapter_id!: number;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'text' })
   role_name!: ChapterRoles;
 
   @ManyToOne(_type => User)

@@ -35,12 +35,9 @@ export const fetchChapter: ActionCreator<chapterTypes.ThunkResult<
 >> = (id: string) => async dispatch => {
   dispatch(fetchStart());
 
-  // TODO: for the PR to be simple, haven't added any specific HTTP Service,
-  // But we can make HTTPService some kind of builder, to return us back with specific
-  // modal service, like ChapterHttpService.
   const http = new HttpService<chapterTypes.IChapterModal>();
   try {
-    const resData = await http.get(`/chapters/${id}`, {}, {});
+    const { resData } = await http.get(`/chapters/${id}`, {}, {});
     dispatch(fetchSuccess(resData));
   } catch (err) {
     dispatch(fetchFail(err));

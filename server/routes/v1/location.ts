@@ -1,6 +1,5 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-
 import locationController from 'server/controllers/locationController';
 
 const router = express.Router();

@@ -1,7 +1,7 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class Event1575818350511 implements MigrationInterface {
-  name = "Event1575818350511";
+  name = 'Event1575818350511';
 
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
@@ -17,7 +17,7 @@ export class Event1575818350511 implements MigrationInterface {
           "created_at" TIMESTAMP NOT NULL DEFAULT now(),
           "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
           CONSTRAINT "PK_40731c7151fe4be3116e45ddf73" PRIMARY KEY ("id"))`,
-      undefined
+      undefined,
     );
     await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_26e10dc1ae5cdd5a20279e08b4a" FOREIGN KEY ("venue_id") REFERENCES "venues"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`, undefined);
     await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_987a4efcef7b92bd79e1071719d" FOREIGN KEY ("chapter_id") REFERENCES "chapters"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`, undefined);

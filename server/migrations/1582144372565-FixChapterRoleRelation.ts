@@ -1,7 +1,7 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class FixChapterRoleRelation1582144372565 implements MigrationInterface {
-  name = "FixChapterRoleRelation1582144372565";
+  name = 'FixChapterRoleRelation1582144372565';
 
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(`ALTER TABLE "user_chapter_roles" DROP CONSTRAINT "FK_c4b23ce3d811d599cea97d064fc"`, undefined);

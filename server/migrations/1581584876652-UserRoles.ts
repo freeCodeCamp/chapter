@@ -1,7 +1,7 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class UserRoles1581584876652 implements MigrationInterface {
-  name = "UserRoles1581584876652";
+  name = 'UserRoles1581584876652';
 
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(`CREATE TABLE "user_chapter_roles" ("user_id" integer NOT NULL, "chapter_id" integer NOT NULL, "role_name" character varying NOT NULL, CONSTRAINT "PK_d4726976f7c0d644f1a01cebe6d" PRIMARY KEY ("user_id", "chapter_id", "role_name"))`, undefined);

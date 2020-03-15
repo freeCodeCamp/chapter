@@ -1,10 +1,10 @@
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
-import { EventSponsor } from './EventSponsor';
 import { Venue } from './Venue';
 import { Chapter } from './Chapter';
-import { Rsvp } from './Rsvp';
 import { Tag } from './Tag';
+import { EventSponsor } from './EventSponsor';
+import { Rsvp } from './Rsvp';
 
 @Entity({ name: 'events' })
 export class Event extends BaseModel {
@@ -29,6 +29,7 @@ export class Event extends BaseModel {
   @OneToMany(
     _type => EventSponsor,
     eventSponsor => eventSponsor.sponsor,
+    { onDelete: 'CASCADE' },
   )
   sponsors!: EventSponsor[];
 
@@ -49,12 +50,14 @@ export class Event extends BaseModel {
   @OneToMany(
     _type => Rsvp,
     rsvp => rsvp.event,
+    { onDelete: 'CASCADE' },
   )
   rsvps!: Rsvp[];
 
   @OneToMany(
     _type => Tag,
     tag => tag.event,
+    { onDelete: 'CASCADE' },
   )
   tags!: Tag[];
 
@@ -63,7 +66,7 @@ export class Event extends BaseModel {
     description: string;
     start_at: Date;
     ends_at: Date;
-    canceled: boolean;
+    canceled?: boolean;
     capacity: number;
     venue: Venue;
     chapter: Chapter;
@@ -85,7 +88,7 @@ export class Event extends BaseModel {
       this.description = description;
       this.start_at = start_at;
       this.ends_at = ends_at;
-      this.canceled = canceled;
+      this.canceled = canceled || false;
       this.capacity = capacity;
       this.venue = venue;
       this.chapter = chapter;

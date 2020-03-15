@@ -46,7 +46,7 @@ const Home: React.FC = () => {
       </Link>
       <br />
       <Link href="/dashboard">
-        <a>Dashboard</a>
+        <a>Admin dashboard</a>
       </Link>
     </>
   );

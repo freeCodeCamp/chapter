@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 
 import { AppStoreState } from 'client/store/reducers';
 import { eventActions } from 'client/store/actions';
@@ -23,7 +24,13 @@ const Events: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <button>Add new</button>
+        <Link href="/dashboard">
+          <a>Dashboard</a>
+        </Link>
+        <br />
+        <Link href="/dashboard/events/new">
+          <a>Add new</a>
+        </Link>
         {error ? (
           <h1>😢Error</h1>
         ) : (

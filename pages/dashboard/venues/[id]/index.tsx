@@ -2,23 +2,12 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 import { venueActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import { ProgressCardContent } from 'client/components';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
-
-const Skeleton: React.FC = ({ children }) => {
-  return (
-    <>
-      <Link href="/dashboard/venues">
-        <a>Venues</a>
-      </Link>
-      {children}
-    </>
-  );
-};
+import Skeleton from 'client/components/Dashboard/Venues/Skeleton';
 
 const ShowVenue: React.FC = () => {
   const router = useRouter();
@@ -39,17 +28,10 @@ const ShowVenue: React.FC = () => {
     }
   }, [id]);
 
-  if (loading)
+  if (loading || error || !venue) {
     return (
       <Skeleton>
-        <h1>Loading...</h1>
-      </Skeleton>
-    );
-  if (error || !venue) {
-    console.error(error);
-    return (
-      <Skeleton>
-        <h1>Error...</h1>
+        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
       </Skeleton>
     );
   }

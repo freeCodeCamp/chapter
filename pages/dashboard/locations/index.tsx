@@ -5,9 +5,9 @@ import Link from 'next/link';
 
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import DashboardLocation from 'client/components/DashboardLocation';
 import { ILocationModal } from 'client/store/types/locations';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import LocationItem from 'client/components/Dashboard/Locations/LocationItem';
 
 const Locations: React.FC = () => {
   const { error, loading, locations } = useSelector((state: AppStoreState) => ({
@@ -36,7 +36,7 @@ const Locations: React.FC = () => {
           <h1>😢Error</h1>
         ) : (
           locations.map((location: ILocationModal) => (
-            <DashboardLocation
+            <LocationItem
               location={location}
               loading={loading}
               key={`location-${location.id}`}

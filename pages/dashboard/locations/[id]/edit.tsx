@@ -5,9 +5,9 @@ import { useRouter } from 'next/router';
 
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import LocationForm from 'client/components/LocationForm';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { LocationForm, Skeleton } from 'client/components/Dashboard/Locations';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -48,24 +48,24 @@ const EditLocation: React.FC = () => {
     }
   };
 
-  if (loading) return <h1>Loading...</h1>;
-  if (error || !location) {
-    console.error(error);
+  if (loading || error || !location) {
     return (
-      <>
-        <h1>Error...</h1>
-        <div className={styles.responseDiv}>{error}</div>
-      </>
+      <Skeleton>
+        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        {error && <div className={styles.responseDiv}>{error}</div>}
+      </Skeleton>
     );
   }
 
   return (
-    <LocationForm
-      loading={loading}
-      onSubmit={onSubmit}
-      data={location}
-      submitText={'Update location'}
-    />
+    <Skeleton>
+      <LocationForm
+        loading={loading}
+        onSubmit={onSubmit}
+        data={location}
+        submitText={'Update location'}
+      />
+    </Skeleton>
   );
 };
 

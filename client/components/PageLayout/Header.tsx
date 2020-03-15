@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
 
-import { headerLinks } from '../../config';
+import { headerLinks } from 'client/constants/Header';
 
 const useStyles = makeStyles({
   link: {

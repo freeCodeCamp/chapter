@@ -1,17 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 
-const items: { text: string; link: string }[] = [
-  { text: 'Public', link: '/' },
-  { text: 'Events', link: '/dashboard/events' },
-  { text: 'Locations', link: '/dashboard/locations' },
-  { text: 'Venues', link: '/dashboard/venues' },
-];
+import links from 'client/constants/DashboardLinks';
 
 const Dashboard: React.FC = () => {
   return (
     <div>
-      {items.map(item => (
+      {links.map(item => (
         <>
           <Link href={item.link} key={item.text}>
             <a>{item.text}</a>

@@ -1,22 +1,28 @@
 import { Request, Response } from 'express';
 import { InternalServerError, NotFoundError } from 'express-response-errors';
 
-import { Venue } from 'server/models/Venue';
+import { Venue, Location } from 'server/models';
 
 export default {
   async index(_req: Request, res: Response) {
-    const venues = await Venue.find();
+    const venues = await Venue.find({
+      relations: ['location'],
+      order: { created_at: 'DESC' },
+    });
 
-    res.json(venues);
+    res.json(venues.map(venue => ({ ...venue, location: venue.location })));
   },
 
   async show(req: Request, res: Response) {
     const { id } = req.params;
 
-    const venue = await Venue.findOne({ id: parseInt(id) });
+    const venue = await Venue.findOne(
+      { id: parseInt(id) },
+      { relations: ['location'] },
+    );
 
     if (venue) {
-      res.json(venue);
+      res.json({ ...venue, location: venue.location });
     } else {
       throw new NotFoundError("Can't find venue");
     }
@@ -31,13 +37,14 @@ export default {
       await venue.save();
       res.status(201).json(venue);
     } catch (e) {
-      throw new InternalServerError(e.message);
+      throw new InternalServerError(JSON.stringify({ error: e.message }));
     }
   },
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, location } = req.body;
 
+    const newLocation = await Location.findOne({ id: parseInt(location) });
     const venue = await Venue.findOne({ id: parseInt(id) });
 
     if (!venue) {
@@ -45,6 +52,10 @@ export default {
     }
 
     venue.name = name ?? venue.name;
+
+    if (newLocation) {
+      venue.location = newLocation;
+    }
 
     try {
       await venue.save();

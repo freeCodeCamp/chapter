@@ -3,6 +3,7 @@ interface IHeaderLink {
   label: string;
   href: string;
 }
+
 export const headerLinks: IHeaderLink[] = [
   { name: 'events', label: 'Events', href: '/events' },
   { name: 'chapters', label: 'Chapters', href: '/chapters' },

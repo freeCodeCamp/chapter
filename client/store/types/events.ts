@@ -5,7 +5,7 @@ import * as ACTIONS from './actions/events';
 export * from './actions/events';
 
 export interface IEventModal {
-  id?: string;
+  id?: number;
   chapterId?: string;
   name: string;
   description: string;

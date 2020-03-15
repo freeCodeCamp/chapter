@@ -59,7 +59,7 @@ const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
           href={`/dashboard/events/[id]/edit`}
           as={`/dashboard/events/${event.id}/edit`}
         >
-          <a>Edit</a>
+          <a style={{ marginLeft: '10px' }}>Edit</a>
         </Link>
       </ProgressCardContent>
     </Card>

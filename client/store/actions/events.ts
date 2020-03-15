@@ -94,6 +94,24 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
   }
 };
 
+export const fetchEvent: ActionCreator<eventsTypes.ThunkResult<
+  Promise<void>
+>> = (chapterId: string, eventId: string) => async dispatch => {
+  dispatch(fetchStart());
+
+  const http = new HttpService<eventsTypes.IEventModal>();
+  try {
+    const { resData } = await http.get(
+      `/chapters/${chapterId}/events/${eventId}`,
+      {},
+      {},
+    );
+    dispatch(fetchSingleSuccess(resData, chapterId));
+  } catch (err) {
+    dispatch(fetchFail(err));
+  }
+};
+
 export const createEvent: ActionCreator<eventsTypes.ThunkResult<
   Promise<boolean>
 >> = (data: any) => async dispatch => {

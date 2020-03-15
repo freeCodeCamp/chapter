@@ -27,9 +27,13 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
         break;
       case eventsTypes.FETCH_SINGLE_SUCCESS:
         draft.chapterId = action.payload.chapterId;
-        draft.events = draft.events.map(event =>
-          event.id === action.payload.event.id ? action.payload.event : event,
-        );
+        if (draft.events.find(event => event.id === action.payload.event.id)) {
+          draft.events = draft.events.map(event =>
+            event.id === action.payload.event.id ? action.payload.event : event,
+          );
+        } else {
+          draft.events = [...draft.events, action.payload.event];
+        }
         draft.error = '';
         draft.loading = false;
         break;
@@ -52,7 +56,7 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
         break;
       case eventsTypes.REMOVE_SUCCESS:
         draft.events = draft.events.filter(
-          item => parseInt(item.id || '') !== action.payload.id,
+          item => item.id !== action.payload.id,
         );
         break;
       case eventsTypes.REMOVE_FAIL:

@@ -9,6 +9,7 @@ import {
   InputLabel,
   MenuItem,
 } from '@material-ui/core';
+
 import { ILocationModal } from 'client/store/types/locations';
 import getLocationString from 'client/helpers/getLocationString';
 import { IVenueModal } from 'client/store/types/venues';

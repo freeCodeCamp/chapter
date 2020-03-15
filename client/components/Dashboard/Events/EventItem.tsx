@@ -55,6 +55,12 @@ const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
         <Button onClick={clickRemove}>
           {confirmRemove ? 'Are you sure?' : 'delete'}
         </Button>
+        <Link
+          href={`/dashboard/events/[id]/edit`}
+          as={`/dashboard/events/${event.id}/edit`}
+        >
+          <a>Edit</a>
+        </Link>
       </ProgressCardContent>
     </Card>
   );

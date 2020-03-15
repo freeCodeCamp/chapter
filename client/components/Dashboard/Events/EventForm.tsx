@@ -1,6 +1,15 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { FormControl, TextField, Button, makeStyles } from '@material-ui/core';
+import {
+  FormControl,
+  TextField,
+  Button,
+  makeStyles,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
+import { IVenueModal } from 'client/store/types/venues';
 
 interface IField {
   key: string;
@@ -67,14 +76,22 @@ export interface IEventFormData {
   description: string;
   capacity: number;
   tags: string;
+  venue: number;
 }
 
-interface IEventsFormProps {
+interface IEventFormProps {
   onSubmit: (data: IEventFormData) => void;
   loading: boolean;
+  venues: IVenueModal[];
+  venuesLoading: boolean;
 }
 
-const EventsForm: React.FC<IEventsFormProps> = ({ onSubmit, loading }) => {
+const EventForm: React.FC<IEventFormProps> = ({
+  onSubmit,
+  loading,
+  venues,
+  venuesLoading,
+}) => {
   const { control, handleSubmit } = useForm();
   const styles = useStyles();
 
@@ -97,6 +114,28 @@ const EventsForm: React.FC<IEventsFormProps> = ({ onSubmit, loading }) => {
           />
         </FormControl>
       ))}
+      {venuesLoading ? (
+        <h1>Loading venues...</h1>
+      ) : (
+        <FormControl className={styles.item}>
+          <InputLabel id="venue-label">Venue</InputLabel>
+          <Controller
+            control={control}
+            as={
+              <Select labelId="venue-label">
+                {venues.map(venue => (
+                  <MenuItem value={venue.id} key={venue.id}>
+                    {venue.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            }
+            name="venue"
+            options={{ required: true }}
+            defaultValue={0}
+          />
+        </FormControl>
+      )}
       <Button
         className={styles.item}
         variant="contained"
@@ -110,4 +149,4 @@ const EventsForm: React.FC<IEventsFormProps> = ({ onSubmit, loading }) => {
   );
 };
 
-export default EventsForm;
+export default EventForm;

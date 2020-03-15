@@ -1,25 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { eventActions } from 'client/store/actions';
-import EventsForm, { IEventFormData } from 'client/components/EventsForm';
-import { AppStoreState } from 'client/store/reducers';
 import { useRouter } from 'next/router';
+
+import { eventActions, venueActions } from 'client/store/actions';
+import EventForm, {
+  IEventFormData,
+} from 'client/components/Dashboard/Events/EventForm';
+import { AppStoreState } from 'client/store/reducers';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
 const CreateEvent: React.FC = () => {
-  const { error, state } = useSelector((state: AppStoreState) => ({
-    error: state.events.create.error,
-    state: state.events.create.state,
-  }));
+  const { error, state, venues, venuesLoading } = useSelector(
+    (state: AppStoreState) => ({
+      error: state.events.create.error,
+      state: state.events.create.state,
+      venues: state.venues.venues,
+      venuesLoading: state.venues.loading,
+    }),
+  );
   const dispatch = useThunkDispatch();
   const router = useRouter();
 
   const onSubmit = (data: IEventFormData) => {
-    // TODO: REMOVE and add selector for venue
-    // load chapter from url or something like that
-    const HARD_CODE = { chapter: 1, venue: 1 };
+    // TODO: load chapter from url or something like that
+
+    const HARD_CODE = { chapter: 1 };
     const eventData = { ...data, ...HARD_CODE };
-    console.log(eventData);
 
     dispatch(eventActions.createEvent(eventData)).then((success: boolean) => {
       if (success) {
@@ -28,10 +34,19 @@ const CreateEvent: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    dispatch(venueActions.fetchVenues());
+  }, []);
+
   return (
     <>
       {error && <div>{JSON.stringify(error)}</div>}
-      <EventsForm loading={state === 'loading'} onSubmit={onSubmit} />
+      <EventForm
+        loading={state === 'loading'}
+        venuesLoading={venuesLoading}
+        venues={venues}
+        onSubmit={onSubmit}
+      />
     </>
   );
 };

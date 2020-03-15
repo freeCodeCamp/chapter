@@ -1,3 +1,4 @@
 import EventItem from './EventItem';
+import EventForm from './EventForm';
 
-export { EventItem };
+export { EventItem, EventForm };

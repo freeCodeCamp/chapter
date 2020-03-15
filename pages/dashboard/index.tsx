@@ -1,16 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
 
+const items: { text: string; link: string }[] = [
+  { text: 'Public', link: '/' },
+  { text: 'Events', link: '/dashboard/events' },
+  { text: 'Locations', link: '/dashboard/locations' },
+  { text: 'Venues', link: '/dashboard/venues' },
+];
+
 const Dashboard: React.FC = () => {
   return (
     <div>
-      <Link href="/dashboard/events">
-        <a>Events</a>
-      </Link>
-      <br />
-      <Link href="/dashboard/locations">
-        <a>Locations</a>
-      </Link>
+      {items.map(item => (
+        <>
+          <Link href={item.link} key={item.text}>
+            <a>{item.text}</a>
+          </Link>
+          <br />
+        </>
+      ))}
     </div>
   );
 };

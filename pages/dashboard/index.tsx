@@ -1,16 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
 
+import links from 'client/constants/DashboardLinks';
+
 const Dashboard: React.FC = () => {
   return (
     <div>
-      <Link href="/dashboard/events">
-        <a>Events</a>
-      </Link>
-      <br />
-      <Link href="/dashboard/locations">
-        <a>Locations</a>
-      </Link>
+      {links.map(item => (
+        <>
+          <Link href={item.link} key={item.text}>
+            <a>{item.text}</a>
+          </Link>
+          <br />
+        </>
+      ))}
     </div>
   );
 };

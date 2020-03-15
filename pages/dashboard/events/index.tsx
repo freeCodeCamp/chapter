@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 
 import { AppStoreState } from 'client/store/reducers';
 import { eventActions } from 'client/store/actions';
 import { IEventModal } from 'client/store/types/events';
-import DashboardEvent from 'client/components/DashboardEvent';
-import Link from 'next/link';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import EventItem from 'client/components/Dashboard/Events/EventItem';
 
 const Events: React.FC = () => {
   const { error, loading, events } = useSelector((state: AppStoreState) => ({
@@ -22,24 +22,22 @@ const Events: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Link href="/dashboard/events/new">Create an event</Link>
-          {error ? (
-            <h1>😢Error</h1>
-          ) : (
-            events.map((event: IEventModal) => (
-              <DashboardEvent
-                event={event}
-                loading={loading}
-                key={`events-${event.id}`}
-              />
-            ))
-          )}
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Link href="/dashboard/events/new">Create an event</Link>
+        {error ? (
+          <h1>😢Error</h1>
+        ) : (
+          events.map((event: IEventModal) => (
+            <EventItem
+              event={event}
+              loading={loading}
+              key={`events-${event.id}`}
+            />
+          ))
+        )}
       </Grid>
-    </>
+    </Grid>
   );
 };
 

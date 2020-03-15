@@ -3,23 +3,23 @@ import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 
-import { locationActions } from 'client/store/actions';
+import { venueActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import { ILocationModal } from 'client/store/types/locations';
+import VenueItem from 'client/components/Dashboard/Venues/VenueItem';
+import { IVenueModal } from 'client/store/types/venues';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
-import LocationItem from 'client/components/Dashboard/Locations/LocationItem';
 
-const Locations: React.FC = () => {
-  const { error, loading, locations } = useSelector((state: AppStoreState) => ({
-    error: state.locations.error,
-    loading: state.locations.loading,
-    locations: state.locations.locations,
+const Venues: React.FC = () => {
+  const { error, loading, venues } = useSelector((state: AppStoreState) => ({
+    error: state.venues.error,
+    loading: state.venues.loading,
+    venues: state.venues.venues,
   }));
 
   const dispatch = useThunkDispatch();
 
   useEffect(() => {
-    dispatch(locationActions.fetchLocations());
+    dispatch(venueActions.fetchVenues());
   }, []);
 
   return (
@@ -29,17 +29,17 @@ const Locations: React.FC = () => {
           <a>Dashboard</a>
         </Link>
         <br />
-        <Link href="/dashboard/locations/new">
+        <Link href="/dashboard/venues/new">
           <a>Add new</a>
         </Link>
         {error ? (
           <h1>😢Error</h1>
         ) : (
-          locations.map((location: ILocationModal) => (
-            <LocationItem
-              location={location}
+          venues.map((venue: IVenueModal) => (
+            <VenueItem
+              venue={venue}
               loading={loading}
-              key={`location-${location.id}`}
+              key={`venue-${venue.id}`}
             />
           ))
         )}
@@ -48,4 +48,4 @@ const Locations: React.FC = () => {
   );
 };
 
-export default Locations;
+export default Venues;

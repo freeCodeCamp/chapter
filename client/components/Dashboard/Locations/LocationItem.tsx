@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, makeStyles } from '@material-ui/core';
 import Link from 'next/link';
 
-import ProgressCardContent from './ProgressCardContent';
+import ProgressCardContent from 'client/components/ProgressCardContent';
 import { ILocationModal } from 'client/store/types/locations';
 // import { locationActions } from 'client/store/actions';
 // import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
-interface IDashboardLocationProps {
+interface ILocationItemProps {
   location: ILocationModal;
   loading: boolean;
 }
@@ -22,10 +22,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const DashboardLocation: React.FC<IDashboardLocationProps> = ({
-  location,
-  loading,
-}) => {
+const LocationItem: React.FC<ILocationItemProps> = ({ location, loading }) => {
   const [allow, setAllow] = useState<boolean>(false);
   // const dispatch = useThunkDispatch();
 
@@ -87,4 +84,4 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   );
 };
 
-export default DashboardLocation;
+export default LocationItem;

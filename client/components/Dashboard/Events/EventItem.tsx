@@ -3,17 +3,17 @@ import { Card, Typography, Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 
-import ProgressCardContent from './ProgressCardContent';
 import { IEventModal } from 'client/store/types/events';
 import { eventActions } from 'client/store/actions';
 import useConfirm from 'client/hooks/useConfirm';
+import { ProgressCardContent } from 'client/components';
 
-interface IDashboardEventProps {
+interface IEventItemProps {
   event: IEventModal;
   loading: boolean;
 }
 
-const DashboardEvent: React.FC<IDashboardEventProps> = ({ event, loading }) => {
+const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
   const dispatch = useDispatch();
 
   const [confirmCancel, clickCancel] = useConfirm(() =>
@@ -60,4 +60,4 @@ const DashboardEvent: React.FC<IDashboardEventProps> = ({ event, loading }) => {
   );
 };
 
-export default DashboardEvent;
+export default EventItem;

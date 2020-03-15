@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import { locationActions } from 'client/store/actions';
+import { venueActions, locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
+import { VenueForm, Skeleton } from 'client/components/Dashboard/Venues';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
-import { LocationForm, Skeleton } from 'client/components/Dashboard/Locations';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -15,40 +15,45 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EditLocation: React.FC = () => {
+const EditVenue: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const styles = useStyles();
 
-  const { error, loading, location } = useSelector((state: AppStoreState) => ({
-    error: state.locations.error,
-    loading: state.locations.loading,
-    location: state.locations.locations.find(
-      location => location.id === parseInt(Array.isArray(id) ? id[0] : id),
-    ),
-  }));
+  const { error, loading, venue, locations, locationsLoading } = useSelector(
+    (state: AppStoreState) => ({
+      error: state.venues.error,
+      loading: state.venues.loading,
+      venue: state.venues.venues.find(
+        venue => venue.id === parseInt(Array.isArray(id) ? id[0] : id),
+      ),
+      locations: state.locations.locations,
+      locationsLoading: state.locations.loading,
+    }),
+  );
   const dispatch = useThunkDispatch();
 
   useEffect(() => {
     if (id !== undefined) {
-      dispatch(locationActions.fetchOneLocation(id));
+      dispatch(venueActions.fetchOneVenue(id));
+      dispatch(locationActions.fetchLocations());
     }
   }, [id]);
 
   const onSubmit = async data => {
     const success = await dispatch(
-      locationActions.updateLocation(
+      venueActions.updateVenue(
         parseInt(Array.isArray(id) ? id[0] : id),
         sanitizeFormData(data),
       ),
     );
 
     if (success) {
-      router.replace('/dashboard/locations');
+      router.replace('/dashboard/venues');
     }
   };
 
-  if (loading || error || !location) {
+  if (loading || error || !venue) {
     return (
       <Skeleton>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
@@ -59,14 +64,16 @@ const EditLocation: React.FC = () => {
 
   return (
     <Skeleton>
-      <LocationForm
+      <VenueForm
         loading={loading}
         onSubmit={onSubmit}
-        data={location}
-        submitText={'Update location'}
+        locations={locations}
+        locationsLoading={locationsLoading}
+        data={venue}
+        submitText={'Update venue'}
       />
     </Skeleton>
   );
 };
 
-export default EditLocation;
+export default EditVenue;

@@ -17,6 +17,7 @@ export class Venue extends BaseModel {
   @ManyToOne(
     _type => Location,
     location => location.venues,
+    { nullable: false },
   )
   @JoinColumn({ name: 'location_id' })
   location!: Location;

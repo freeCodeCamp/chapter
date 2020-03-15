@@ -197,7 +197,10 @@ export const fetchOneLocation: ActionCreator<locationsTypes.ThunkResult<
 
 export const updateLocation: ActionCreator<locationsTypes.ThunkResult<
   Promise<boolean>
->> = (id: number, data: Partial<Location>) => async dispatch => {
+>> = (
+  id: number,
+  data: Partial<locationsTypes.ILocationModal>,
+) => async dispatch => {
   dispatch(updateStart());
 
   const http = new HttpService<locationsTypes.ILocationModal>();

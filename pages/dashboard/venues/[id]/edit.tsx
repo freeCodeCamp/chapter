@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import { venueActions, locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import VenueForm from 'client/components/VenueForm';
+import { VenueForm, Skeleton } from 'client/components/Dashboard/Venues';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
@@ -53,26 +53,26 @@ const EditVenue: React.FC = () => {
     }
   };
 
-  if (loading) return <h1>Loading...</h1>;
-  if (error || !venue) {
-    console.error(error);
+  if (loading || error || !venue) {
     return (
-      <>
-        <h1>Error...</h1>
-        <div className={styles.responseDiv}>{error}</div>
-      </>
+      <Skeleton>
+        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        {error && <div className={styles.responseDiv}>{error}</div>}
+      </Skeleton>
     );
   }
 
   return (
-    <VenueForm
-      loading={loading}
-      onSubmit={onSubmit}
-      locations={locations}
-      locationsLoading={locationsLoading}
-      data={venue}
-      submitText={'Update venue'}
-    />
+    <Skeleton>
+      <VenueForm
+        loading={loading}
+        onSubmit={onSubmit}
+        locations={locations}
+        locationsLoading={locationsLoading}
+        data={venue}
+        submitText={'Update venue'}
+      />
+    </Skeleton>
   );
 };
 

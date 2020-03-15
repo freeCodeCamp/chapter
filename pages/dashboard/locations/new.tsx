@@ -5,10 +5,9 @@ import { useRouter } from 'next/router';
 
 import { locationActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import LocationForm from 'client/components/LocationForm';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
-// import { AppDispatch } from 'client/store/types/chapter';
+import { LocationForm, Skeleton } from 'client/components/Dashboard/Locations';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -37,14 +36,14 @@ const NewLocation: React.FC = () => {
   };
 
   return (
-    <>
+    <Skeleton>
       {error && <div className={styles.responseDiv}>{error}</div>}
       <LocationForm
         loading={state === 'loading'}
         onSubmit={onSubmit}
         submitText={'Add location'}
       />
-    </>
+    </Skeleton>
   );
 };
 

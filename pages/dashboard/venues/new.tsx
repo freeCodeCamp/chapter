@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 import { locationActions, venueActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import VenueForm from 'client/components/VenueForm';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { VenueForm, Skeleton } from 'client/components/Dashboard/Venues/';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -43,10 +42,7 @@ const NewVenue: React.FC = () => {
   };
 
   return (
-    <>
-      <Link href="/dashboard/venues">
-        <a>Venues</a>
-      </Link>
+    <Skeleton>
       {error && <div className={styles.responseDiv}>{error}</div>}
       <VenueForm
         loading={state === 'loading'}
@@ -55,7 +51,7 @@ const NewVenue: React.FC = () => {
         onSubmit={onSubmit}
         submitText={'Add venue'}
       />
-    </>
+    </Skeleton>
   );
 };
 

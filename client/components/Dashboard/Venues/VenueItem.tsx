@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, makeStyles } from '@material-ui/core';
 import Link from 'next/link';
 
-import ProgressCardContent from './ProgressCardContent';
-import { ILocationModal } from 'client/store/types/locations';
-// import { locationActions } from 'client/store/actions';
+import ProgressCardContent from 'client/components/ProgressCardContent';
+import { IVenueModal } from 'client/store/types/venues';
+import getLocationString from 'client/helpers/getLocationString';
+// import { venueActions } from 'client/store/actions';
 // import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
-interface IDashboardLocationProps {
-  location: ILocationModal;
+interface IVenueItemProps {
+  venue: IVenueModal;
   loading: boolean;
 }
 
@@ -22,10 +23,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const DashboardLocation: React.FC<IDashboardLocationProps> = ({
-  location,
-  loading,
-}) => {
+const VenueItem: React.FC<IVenueItemProps> = ({ venue, loading }) => {
   const [allow, setAllow] = useState<boolean>(false);
   // const dispatch = useThunkDispatch();
 
@@ -34,10 +32,8 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   const remove = () => {
     const answer = confirm('Are you sure you want to delete this');
     if (answer) {
-      // dispatch(locationActions.remove(location.id));
-      alert(
-        "You cant delete a location right now, we'll add that feature later",
-      );
+      // dispatch(venueActions.remove(venue.id));
+      alert("You cant delete a venue right now, we'll add that feature later");
     } else {
       setAllow(false);
     }
@@ -55,19 +51,18 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
         <Link
-          href={`/dashboard/locations/[id]`}
-          as={`/dashboard/locations/${location.id}`}
+          href={`/dashboard/venues/[id]`}
+          as={`/dashboard/venues/${venue.id}`}
         >
           <a>
-            <h1>{location.city}</h1>
+            <h1>{venue.name}</h1>
           </a>
         </Link>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {`${location.region}, ${location.country_code}, ${location.postal_code}`}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {location.address}
-        </Typography>
+        {venue.location && (
+          <Typography variant="body2" color="textSecondary" component="p">
+            {getLocationString(venue.location, true)}
+          </Typography>
+        )}
 
         <div className={styles.bottom}>
           {allow ? (
@@ -76,8 +71,8 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
             <Button onClick={() => setAllow(true)}>DELETE</Button>
           )}
           <Link
-            href={`/dashboard/locations/[id]/edit`}
-            as={`/dashboard/locations/${location.id}/edit`}
+            href={`/dashboard/venues/[id]/edit`}
+            as={`/dashboard/venues/${venue.id}/edit`}
           >
             <a className={styles.action}>Edit</a>
           </Link>
@@ -87,4 +82,4 @@ const DashboardLocation: React.FC<IDashboardLocationProps> = ({
   );
 };
 
-export default DashboardLocation;
+export default VenueItem;

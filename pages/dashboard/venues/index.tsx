@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { venueActions } from 'client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import DashboardVenue from 'client/components/DashboardVenue';
+import VenueItem from 'client/components/Dashboard/Venues/VenueItem';
 import { IVenueModal } from 'client/store/types/venues';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 
@@ -36,7 +36,7 @@ const Venues: React.FC = () => {
           <h1>😢Error</h1>
         ) : (
           venues.map((venue: IVenueModal) => (
-            <DashboardVenue
+            <VenueItem
               venue={venue}
               loading={loading}
               key={`venue-${venue.id}`}

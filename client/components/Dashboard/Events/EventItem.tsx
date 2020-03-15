@@ -1,15 +1,15 @@
 import React from 'react';
 import { Card, Typography } from '@material-ui/core';
 
-import ProgressCardContent from './ProgressCardContent';
 import { IEventModal } from 'client/store/types/events';
+import { ProgressCardContent } from 'client/components';
 
-interface IDashboardEventProps {
+interface IEventItemProps {
   event: IEventModal;
   loading: boolean;
 }
 
-const DashboardEvent: React.FC<IDashboardEventProps> = ({ event, loading }) => {
+const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
   return (
     <Card style={{ marginTop: '12px' }} key={`event-${event.id}`}>
       <ProgressCardContent loading={loading}>
@@ -27,4 +27,4 @@ const DashboardEvent: React.FC<IDashboardEventProps> = ({ event, loading }) => {
   );
 };
 
-export default DashboardEvent;
+export default EventItem;

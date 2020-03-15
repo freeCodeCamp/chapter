@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import { AppStoreState } from 'client/store/reducers';
 import { eventActions } from 'client/store/actions';
 import { IEventModal } from 'client/store/types/events';
-import DashboardEvent from 'client/components/DashboardEvent';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import EventItem from 'client/components/Dashboard/Events/EventItem';
 
 const Events: React.FC = () => {
   const { error, loading, events } = useSelector((state: AppStoreState) => ({
@@ -21,24 +21,22 @@ const Events: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <button>Add new</button>
-          {error ? (
-            <h1>😢Error</h1>
-          ) : (
-            events.map((event: IEventModal) => (
-              <DashboardEvent
-                event={event}
-                loading={loading}
-                key={`events-${event.id}`}
-              />
-            ))
-          )}
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <button>Add new</button>
+        {error ? (
+          <h1>😢Error</h1>
+        ) : (
+          events.map((event: IEventModal) => (
+            <EventItem
+              event={event}
+              loading={loading}
+              key={`events-${event.id}`}
+            />
+          ))
+        )}
       </Grid>
-    </>
+    </Grid>
   );
 };
 

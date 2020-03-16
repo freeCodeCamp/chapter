@@ -10,6 +10,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { IVenueModal } from 'client/store/types/venues';
+import { IEventModal } from 'client/store/types/events';
 
 interface IField {
   key: string;
@@ -84,6 +85,7 @@ interface IEventFormProps {
   loading: boolean;
   venues: IVenueModal[];
   venuesLoading: boolean;
+  data?: IEventModal;
 }
 
 const EventForm: React.FC<IEventFormProps> = ({
@@ -91,6 +93,7 @@ const EventForm: React.FC<IEventFormProps> = ({
   loading,
   venues,
   venuesLoading,
+  data,
 }) => {
   const { control, handleSubmit } = useForm();
   const styles = useStyles();
@@ -109,7 +112,13 @@ const EventForm: React.FC<IEventFormProps> = ({
               />
             }
             name={field.key}
-            defaultValue={field.defaultValue}
+            defaultValue={
+              (data &&
+                (field.key.endsWith('_at')
+                  ? new Date(data[field.key]).toISOString().slice(0, 16)
+                  : data[field.key])) ||
+              field.defaultValue
+            }
             options={{ required: true }}
           />
         </FormControl>

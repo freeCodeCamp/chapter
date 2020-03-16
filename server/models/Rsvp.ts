@@ -25,6 +25,20 @@ export class Rsvp extends BaseModel {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
+  /*
+  This indicates whether he user decided to cancel their RSVP.
+  Defaults to False when the RSVP is created
+ */
+  @Column({ nullable: false })
+  cancelled: boolean;
+
+  /*
+    This indicates whether he use wants to receive notifications about the event they RSVP'd to.
+    Defaults to True when the RSVP is created
+   */
+  @Column({ nullable: false })
+  interested: boolean;
+
   constructor(params: {
     date: Date;
     on_waitlist: boolean;
@@ -38,6 +52,8 @@ export class Rsvp extends BaseModel {
       this.on_waitlist = on_waitlist;
       this.event = event;
       this.user = user;
+      this.cancelled = false;
+      this.interested = true;
     }
   }
 }

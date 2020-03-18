@@ -4,7 +4,7 @@ export class AddInterestedColumnToUserChapter1584377249878 implements MigrationI
   name = 'AddInterestedColumnToUserChapter1584377249878';
 
   public async up(queryRunner: QueryRunner): Promise<any> {
-    await queryRunner.query(`ALTER TABLE "user_chapters" ADD "interested" BOOLEAN NOT NULL`, undefined);
+    await queryRunner.query(`ALTER TABLE "user_chapters" ADD "interested" BOOLEAN NOT NULL DEFAULT TRUE`, undefined);
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {

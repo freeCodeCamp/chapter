@@ -26,13 +26,13 @@ export class UserChapter extends BaseModel {
   @Column({ nullable: false })
   interested: boolean;
 
-  constructor(params: { user: User; chapter: Chapter }) {
+  constructor(params: { user: User; chapter: Chapter; interested?: boolean }) {
     super();
     if (params) {
-      const { user, chapter } = params;
+      const { user, chapter, interested = true } = params;
       this.user = user;
       this.chapter = chapter;
-      this.interested = true;
+      this.interested = interested;
     }
   }
 }

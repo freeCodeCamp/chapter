@@ -44,16 +44,17 @@ export class Rsvp extends BaseModel {
     on_waitlist: boolean;
     event: Event;
     user: User;
+    interested?: boolean;
   }) {
     super();
     if (params) {
-      const { date, on_waitlist, event, user } = params;
+      const { date, on_waitlist, event, user, interested = true } = params;
       this.date = date;
       this.on_waitlist = on_waitlist;
       this.event = event;
       this.user = user;
       this.canceled = false;
-      this.interested = true;
+      this.interested = interested;
     }
   }
 }

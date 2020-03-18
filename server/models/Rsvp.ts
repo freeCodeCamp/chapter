@@ -30,7 +30,7 @@ export class Rsvp extends BaseModel {
   Defaults to False when the RSVP is created
  */
   @Column({ nullable: false })
-  cancelled: boolean;
+  canceled: boolean;
 
   /*
     This indicates whether he use wants to receive notifications about the event they RSVP'd to.
@@ -52,7 +52,7 @@ export class Rsvp extends BaseModel {
       this.on_waitlist = on_waitlist;
       this.event = event;
       this.user = user;
-      this.cancelled = false;
+      this.canceled = false;
       this.interested = true;
     }
   }

@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, ManyToOne, JoinColumn, Column } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { User } from './User';
 import { Chapter } from './Chapter';
@@ -19,12 +19,20 @@ export class UserChapter extends BaseModel {
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 
-  constructor(params: { user: User; chapter: Chapter }) {
+  /*
+    This indicates whether he use wants to receive notifications about this chapter.
+    Defaults to True when the user joins this chapter
+   */
+  @Column({ nullable: false })
+  interested: boolean;
+
+  constructor(params: { user: User; chapter: Chapter; interested?: boolean }) {
     super();
     if (params) {
-      const { user, chapter } = params;
+      const { user, chapter, interested = true } = params;
       this.user = user;
       this.chapter = chapter;
+      this.interested = interested;
     }
   }
 }

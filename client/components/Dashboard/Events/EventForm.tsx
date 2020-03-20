@@ -9,57 +9,8 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-import { IVenueModal } from 'client/store/types/venues';
+import { IEventFormProps, fields, IField } from './EventFormUtils';
 import { IEventModal } from 'client/store/types/events';
-
-interface IField {
-  key: string;
-  label: string;
-  placeholder?: string;
-  type: string;
-  defaultValue?: string;
-}
-
-const fields: IField[] = [
-  {
-    key: 'name',
-    type: 'text',
-    label: 'Event title',
-    placeholder: 'Foo and the Bars',
-  },
-  {
-    key: 'description',
-    type: 'text',
-    label: 'Description',
-    placeholder: '',
-  },
-  {
-    key: 'capacity',
-    type: 'number',
-    label: 'Capacity',
-    placeholder: '50',
-  },
-  {
-    key: 'tags',
-    type: 'text',
-    label: 'Tags (separated by a comma)',
-    placeholder: 'Foo, bar',
-  },
-  {
-    key: 'start_at',
-    type: 'datetime-local',
-    label: 'Start at',
-    defaultValue: new Date().toISOString().slice(0, 16),
-  },
-  {
-    key: 'ends_at',
-    type: 'datetime-local',
-    label: 'End at',
-    defaultValue: new Date(Date.now() + 1000 * 60 * 60)
-      .toISOString()
-      .slice(0, 16),
-  },
-];
 
 const useStyles = makeStyles(() => ({
   form: {
@@ -72,21 +23,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export interface IEventFormData {
-  name: string;
-  description: string;
-  capacity: number;
-  tags: string;
-  venue: number;
-}
+const formatValue = (field: IField, store?: IEventModal): any => {
+  const { key } = field;
 
-interface IEventFormProps {
-  onSubmit: (data: IEventFormData) => void;
-  loading: boolean;
-  venues: IVenueModal[];
-  venuesLoading: boolean;
-  data?: IEventModal;
-}
+  if (!store || !Object.keys(store).includes(key)) {
+    return field.defaultValue;
+  }
+
+  if (key.endsWith('_at')) {
+    return new Date(store[field.key]).toISOString().slice(0, 16);
+  }
+
+  if (key === 'tags') {
+    return 'TAGAS';
+  }
+
+  return store[key];
+};
 
 const EventForm: React.FC<IEventFormProps> = ({
   onSubmit,
@@ -94,6 +47,7 @@ const EventForm: React.FC<IEventFormProps> = ({
   venues,
   venuesLoading,
   data,
+  submitText,
 }) => {
   const { control, handleSubmit } = useForm();
   const styles = useStyles();
@@ -112,13 +66,7 @@ const EventForm: React.FC<IEventFormProps> = ({
               />
             }
             name={field.key}
-            defaultValue={
-              (data &&
-                (field.key.endsWith('_at')
-                  ? new Date(data[field.key]).toISOString().slice(0, 16)
-                  : data[field.key])) ||
-              field.defaultValue
-            }
+            defaultValue={formatValue(field, data)}
             options={{ required: true }}
           />
         </FormControl>
@@ -141,7 +89,11 @@ const EventForm: React.FC<IEventFormProps> = ({
             }
             name="venue"
             options={{ required: true }}
-            defaultValue={0}
+            defaultValue={
+              (data && data.venue) || venues.length > 0
+                ? venues[0].id
+                : undefined
+            }
           />
         </FormControl>
       )}
@@ -152,7 +104,7 @@ const EventForm: React.FC<IEventFormProps> = ({
         type="submit"
         disabled={loading}
       >
-        Add Event
+        {submitText}
       </Button>
     </form>
   );

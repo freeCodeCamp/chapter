@@ -26,10 +26,12 @@ export default {
         id: parseInt(id),
         chapter: chapterId,
       },
+      loadRelationIds: { relations: ['venue'] },
+      relations: ['tags'],
     });
 
     if (event) {
-      res.json(event);
+      res.json({ ...event, venue_id: event.venue.id });
     } else {
       res.status(404).json({ error: "Can't find event" });
     }

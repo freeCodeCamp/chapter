@@ -4,9 +4,18 @@ import { AppStoreState } from '../reducers';
 import * as ACTIONS from './actions/events';
 export * from './actions/events';
 
+export interface ITagModal {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IEventModal {
   id?: number;
   chapterId?: string;
+  venue?: number;
+  tags?: ITagModal[];
   name: string;
   description: string;
   start_at: Date;

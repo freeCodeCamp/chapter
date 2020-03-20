@@ -49,6 +49,7 @@ const CreateEvent: React.FC = () => {
           venuesLoading={venuesLoading}
           venues={venues}
           onSubmit={onSubmit}
+          submitText={'Add event'}
         />
       </Skeleton>
     </Layout>

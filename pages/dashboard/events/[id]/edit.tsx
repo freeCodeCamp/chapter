@@ -79,6 +79,7 @@ const EditEvent: React.FC = () => {
           data={event}
           venues={venues}
           venuesLoading={venuesLoading}
+          submitText={'Update event'}
         />
       </Skeleton>
     </Layout>

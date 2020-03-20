@@ -8,6 +8,7 @@ import { AppStoreState } from 'client/store/reducers';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Events/Skeleton';
 import { EventForm } from 'client/components/Dashboard/Events';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -60,23 +61,27 @@ const EditEvent: React.FC = () => {
 
   if (loading || error || !location) {
     return (
-      <Skeleton>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.responseDiv}>{error}</div>}
-      </Skeleton>
+      <Layout>
+        <Skeleton>
+          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+          {error && <div className={styles.responseDiv}>{error}</div>}
+        </Skeleton>
+      </Layout>
     );
   }
 
   return (
-    <Skeleton>
-      <EventForm
-        loading={loading}
-        onSubmit={onSubmit}
-        data={event}
-        venues={venues}
-        venuesLoading={venuesLoading}
-      />
-    </Skeleton>
+    <Layout>
+      <Skeleton>
+        <EventForm
+          loading={loading}
+          onSubmit={onSubmit}
+          data={event}
+          venues={venues}
+          venuesLoading={venuesLoading}
+        />
+      </Skeleton>
+    </Layout>
   );
 };
 

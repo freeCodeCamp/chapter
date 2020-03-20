@@ -8,6 +8,7 @@ import { AppStoreState } from 'client/store/reducers';
 import { ProgressCardContent } from 'client/components';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Events/Skeleton';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const ShowEvent: React.FC = () => {
   const router = useRouter();
@@ -32,22 +33,26 @@ const ShowEvent: React.FC = () => {
 
   if (loading || error || !event) {
     return (
-      <Skeleton>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-      </Skeleton>
+      <Layout>
+        <Skeleton>
+          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        </Skeleton>
+      </Layout>
     );
   }
 
   return (
-    <Skeleton>
-      <Card style={{ marginTop: '12px' }}>
-        <ProgressCardContent loading={loading}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {event.name}
-          </Typography>
-        </ProgressCardContent>
-      </Card>
-    </Skeleton>
+    <Layout>
+      <Skeleton>
+        <Card style={{ marginTop: '12px' }}>
+          <ProgressCardContent loading={loading}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {event.name}
+            </Typography>
+          </ProgressCardContent>
+        </Card>
+      </Skeleton>
+    </Layout>
   );
 };
 

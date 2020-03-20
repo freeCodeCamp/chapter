@@ -9,6 +9,7 @@ import EventForm, {
 import { AppStoreState } from 'client/store/reducers';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import { Skeleton } from 'client/components/Dashboard/Events';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const CreateEvent: React.FC = () => {
   const { error, state, venues, venuesLoading } = useSelector(
@@ -40,15 +41,17 @@ const CreateEvent: React.FC = () => {
   }, []);
 
   return (
-    <Skeleton>
-      {error && <div>{JSON.stringify(error)}</div>}
-      <EventForm
-        loading={state === 'loading'}
-        venuesLoading={venuesLoading}
-        venues={venues}
-        onSubmit={onSubmit}
-      />
-    </Skeleton>
+    <Layout>
+      <Skeleton>
+        {error && <div>{JSON.stringify(error)}</div>}
+        <EventForm
+          loading={state === 'loading'}
+          venuesLoading={venuesLoading}
+          venues={venues}
+          onSubmit={onSubmit}
+        />
+      </Skeleton>
+    </Layout>
   );
 };
 

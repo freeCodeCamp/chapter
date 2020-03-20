@@ -8,6 +8,7 @@ import { AppStoreState } from 'client/store/reducers';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import { VenueForm, Skeleton } from 'client/components/Dashboard/Venues/';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -42,16 +43,18 @@ const NewVenue: React.FC = () => {
   };
 
   return (
-    <Skeleton>
-      {error && <div className={styles.responseDiv}>{error}</div>}
-      <VenueForm
-        loading={state === 'loading'}
-        locations={locations}
-        locationsLoading={locationsLoading}
-        onSubmit={onSubmit}
-        submitText={'Add venue'}
-      />
-    </Skeleton>
+    <Layout>
+      <Skeleton>
+        {error && <div className={styles.responseDiv}>{error}</div>}
+        <VenueForm
+          loading={state === 'loading'}
+          locations={locations}
+          locationsLoading={locationsLoading}
+          onSubmit={onSubmit}
+          submitText={'Add venue'}
+        />
+      </Skeleton>
+    </Layout>
   );
 };
 

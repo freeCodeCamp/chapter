@@ -89,7 +89,7 @@ const EventForm: React.FC<IEventFormProps> = ({
             options={{ required: true }}
             defaultValue={
               (data && data.venue) || venues.length > 0
-                ? venues[0].id
+                ? venues[0] && venues[0].id
                 : undefined
             }
           />

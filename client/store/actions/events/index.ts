@@ -71,8 +71,10 @@ export const fetchRSVPS: ActionCreator<eventsTypes.ThunkResult<
   }
 };
 
+type CreateResponse = { success: boolean; id?: number };
+
 export const createEvent: ActionCreator<eventsTypes.ThunkResult<
-  Promise<boolean>
+  Promise<CreateResponse>
 >> = (data: any) => async dispatch => {
   dispatch(createStart());
 
@@ -94,11 +96,11 @@ export const createEvent: ActionCreator<eventsTypes.ThunkResult<
 
     dispatch(createSuccess(resData));
 
-    return true;
+    return { success: true, id: resData.event.id };
   } catch (err) {
     dispatch(createFail(err.message));
   }
-  return false;
+  return { success: false };
 };
 
 export const updateEvent: ActionCreator<eventsTypes.ThunkResult<

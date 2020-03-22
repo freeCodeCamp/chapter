@@ -1,5 +1,6 @@
 import produce from 'immer';
 import { eventsTypes } from '../types';
+import { IEventModal } from '../types/events';
 
 const initialState: eventsTypes.IEventStoreState = {
   loading: true,
@@ -90,11 +91,14 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
         draft.create.state = 'loading';
         draft.create.error = '';
         break;
-      case eventsTypes.CREATE_SUCCESS:
+      case eventsTypes.CREATE_SUCCESS: {
         draft.create.state = 'idle';
         draft.create.error = '';
-        draft.events = [...draft.events, action.payload.event];
+        const event: IEventModal = action.payload.response.event;
+        event.tags = action.payload.response.tags;
+        draft.events = [...draft.events, event];
         break;
+      }
       case eventsTypes.CREATE_FAIL:
         draft.create.state = 'error';
         draft.create.error = action.payload;

@@ -71,12 +71,13 @@ export const createStart = (): eventsTypes.IEventActionTypes => {
   };
 };
 
-export const createSuccess = (
-  event: eventsTypes.IEventModal,
-): eventsTypes.IEventActionTypes => {
+export const createSuccess = (response: {
+  event: eventsTypes.IEventModal;
+  tags: eventsTypes.ITagModal[];
+}): eventsTypes.IEventActionTypes => {
   return {
     type: eventsTypes.CREATE_SUCCESS,
-    payload: { event },
+    payload: { response },
   };
 };
 

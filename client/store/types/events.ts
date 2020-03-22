@@ -129,7 +129,10 @@ interface IEventCreateStartAction {
 interface IEventCreateSuccessAction {
   type: typeof ACTIONS.CREATE_SUCCESS;
   payload: {
-    event: IEventModal;
+    response: {
+      event: IEventModal;
+      tags: ITagModal[];
+    };
   };
 }
 

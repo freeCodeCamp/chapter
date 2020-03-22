@@ -1,27 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   FormControl,
   TextField,
   Button,
-  makeStyles,
   InputLabel,
   Select,
   MenuItem,
 } from '@material-ui/core';
 import { IEventFormProps, fields, IField } from './EventFormUtils';
 import { IEventModal } from 'client/store/types/events';
-
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '25%',
-  },
-  item: {
-    marginTop: '20px',
-  },
-}));
+import useFormStyles from '../shared/formStyles';
 
 const formatValue = (field: IField, store?: IEventModal): any => {
   const { key } = field;
@@ -35,7 +24,10 @@ const formatValue = (field: IField, store?: IEventModal): any => {
   }
 
   if (key === 'tags') {
-    return 'TAGAS';
+    const tags = store[key];
+    if (tags) {
+      return tags.map(tag => tag.name).join(', ');
+    }
   }
 
   return store[key];
@@ -49,8 +41,14 @@ const EventForm: React.FC<IEventFormProps> = ({
   data,
   submitText,
 }) => {
-  const { control, handleSubmit } = useForm();
-  const styles = useStyles();
+  const { control, handleSubmit, setValue } = useForm();
+  const styles = useFormStyles();
+
+  useEffect(() => {
+    if (!venuesLoading && data) {
+      setValue('venue', data.venue);
+    }
+  }, [venuesLoading]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>

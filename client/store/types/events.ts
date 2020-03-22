@@ -35,6 +35,12 @@ export interface IEventStoreState {
     state: 'idle' | 'error' | 'loading';
     error: string;
   };
+  update: {
+    [key: number]: {
+      state: 'idle' | 'error' | 'loading';
+      error: string;
+    };
+  };
 }
 
 interface IEventFetchStartAction {
@@ -78,6 +84,29 @@ interface IEventCreateFailureAction {
   payload: string;
 }
 
+interface IEventUpdateStartAction {
+  type: typeof ACTIONS.UPDATE_START;
+  payload: {
+    id: number;
+  };
+}
+
+interface IEventUpdateSuccessAction {
+  type: typeof ACTIONS.UPDATE_SUCCESS;
+  payload: {
+    id: number;
+    event: IEventModal;
+  };
+}
+
+interface IEventUpdateFailureAction {
+  type: typeof ACTIONS.UPDATE_FAIL;
+  payload: {
+    id: number;
+    error: string;
+  };
+}
+
 interface IEventRemoveSuccessAction {
   type: typeof ACTIONS.REMOVE_SUCCESS;
   payload: {
@@ -86,7 +115,7 @@ interface IEventRemoveSuccessAction {
   };
 }
 
-interface IEventRemoveFailuerAction {
+interface IEventRemoveFailureAction {
   type: typeof ACTIONS.REMOVE_FAIL;
   payload: string;
 }
@@ -99,8 +128,11 @@ export type IEventActionTypes =
   | IEventCreateSuccessAction
   | IEventCreateStartAction
   | IEventCreateFailureAction
+  | IEventUpdateStartAction
+  | IEventUpdateSuccessAction
+  | IEventUpdateFailureAction
   | IEventRemoveSuccessAction
-  | IEventRemoveFailuerAction;
+  | IEventRemoveFailureAction;
 
 export type ThunkResult<R> = ThunkAction<
   R,

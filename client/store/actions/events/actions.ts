@@ -55,6 +55,33 @@ export const createFail = (error: string): eventsTypes.IEventActionTypes => {
   };
 };
 
+export const updateStart = (id: number): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.UPDATE_START,
+    payload: { id },
+  };
+};
+
+export const updateSuccess = (
+  id: number,
+  event: eventsTypes.IEventModal,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.UPDATE_SUCCESS,
+    payload: { id, event },
+  };
+};
+
+export const updateFail = (
+  id: number,
+  error: string,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.UPDATE_FAIL,
+    payload: { id, error },
+  };
+};
+
 export const removeSuccess = (
   id: number,
   chapterId: number,

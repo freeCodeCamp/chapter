@@ -11,6 +11,9 @@ import {
   createSuccess,
   removeFail,
   removeSuccess,
+  updateSuccess,
+  updateFail,
+  updateStart,
 } from './actions';
 
 export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
@@ -71,6 +74,32 @@ export const createEvent: ActionCreator<eventsTypes.ThunkResult<
     return true;
   } catch (err) {
     dispatch(createFail(err.message));
+  }
+  return false;
+};
+
+export const updateEvent: ActionCreator<eventsTypes.ThunkResult<
+  Promise<boolean>
+>> = (id: number, data: any) => async dispatch => {
+  dispatch(updateStart(id));
+
+  const http = new HttpService<any>();
+  try {
+    const { res, resData } = await http.patch(
+      `/chapters/1/events/${id}`,
+      {},
+      data,
+      {},
+    );
+
+    if (!res.ok) {
+      throw new Error(JSON.parse(resData.message).error.message);
+    }
+
+    dispatch(updateSuccess(id, resData));
+    return true;
+  } catch (err) {
+    dispatch(updateFail(id, err.message));
   }
   return false;
 };

@@ -10,6 +10,7 @@ const initialState: eventsTypes.IEventStoreState = {
     state: 'idle',
     error: '',
   },
+  update: {},
 };
 
 const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
@@ -53,6 +54,20 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
       case eventsTypes.CREATE_FAIL:
         draft.create.state = 'error';
         draft.create.error = action.payload;
+        break;
+      case eventsTypes.UPDATE_START:
+        draft.update[action.payload.id] = { state: 'loading', error: '' };
+        break;
+      case eventsTypes.UPDATE_SUCCESS:
+        draft.update[action.payload.id].state = 'idle';
+        draft.update[action.payload.id].error = '';
+        draft.events = draft.events.map(event =>
+          event.id === action.payload.id ? action.payload.event : event,
+        );
+        break;
+      case eventsTypes.UPDATE_FAIL:
+        draft.update[action.payload.id].state = 'error';
+        draft.update[action.payload.id].error = action.payload.error;
         break;
       case eventsTypes.REMOVE_SUCCESS:
         draft.events = draft.events.filter(

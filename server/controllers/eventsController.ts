@@ -3,7 +3,6 @@ import { Event } from 'server/models/Event';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 import { Tag } from 'server/models/Tag';
 import sanitizeTags from 'server/util/sanitizeTags';
-import { Venue } from 'server/models';
 
 // The whole model is a json response, fix that if there's some sensitive data here
 
@@ -14,6 +13,7 @@ export default {
     const events = await Event.find({
       where: { chapter: chapterId },
       relations: ['tags'],
+      order: { created_at: 'DESC' },
     });
 
     res.json(events);
@@ -119,23 +119,48 @@ export default {
       event.name = name ?? event.name;
       event.description = description ?? event.description;
       event.capacity = capacity ?? event.capacity;
-      if (venue && event.venue.id !== venue) {
-        const newVenue = await Venue.findOne({ id: venue });
-        if (newVenue) {
-          event.venue = newVenue;
-        }
-      }
+      event.venue = venue ?? event.venue;
       event.canceled = canceled ?? event.canceled;
       event.start_at = start_at ?? event.start_at;
       event.ends_at = ends_at ?? event.ends_at;
 
       if (tags) {
-        console.log(tags);
+        if (tags.remove) {
+          await Promise.all(
+            event.tags
+              .filter(tag => tags.remove.includes(tag.id))
+              .map(tag => tag.remove()),
+          );
+        }
+
+        if (tags.add) {
+          const newTags = Array.from(
+            new Set(
+              tags.add.map(tag => tag.trim()).filter(tag => tag.length > 0),
+            ),
+          );
+
+          try {
+            const output = await Promise.all(
+              newTags.map(item => {
+                const tag = new Tag({ name: item, event });
+                console.log(tag);
+                return tag.save();
+              }),
+            );
+            event.tags = [...event.tags, ...output];
+          } catch (e) {
+            console.error(e);
+          }
+        }
       }
 
       try {
         await event.save();
-        res.json(event);
+        res.json({
+          ...event,
+          tags: event.tags.map(tag => ({ ...tag, event: undefined })),
+        });
       } catch (e) {
         if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('venue')) {
@@ -145,6 +170,8 @@ export default {
             return res.status(400).json({ message: 'chapter not found' });
           }
         }
+
+        console.log(e);
 
         res.status(500).json({ error: e });
       }

@@ -55,7 +55,7 @@ export interface IEventFormData {
   description: string;
   capacity: number;
   tags: string;
-  venue: number;
+  venue?: number;
 }
 
 export interface IEventFormProps {

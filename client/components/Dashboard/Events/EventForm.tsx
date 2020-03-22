@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   FormControl,
@@ -8,7 +8,12 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-import { IEventFormProps, fields, IField } from './EventFormUtils';
+import {
+  IEventFormProps,
+  fields,
+  IField,
+  IEventFormData,
+} from './EventFormUtils';
 import { IEventModal } from 'client/store/types/events';
 import useFormStyles from '../shared/formStyles';
 
@@ -41,17 +46,25 @@ const EventForm: React.FC<IEventFormProps> = ({
   data,
   submitText,
 }) => {
-  const { control, handleSubmit, setValue } = useForm();
+  const { control, handleSubmit } = useForm();
   const styles = useFormStyles();
 
+  const [venueId, setVenueId] = useState<number | undefined>(0);
+
   useEffect(() => {
-    if (!venuesLoading && data) {
-      setValue('venue', data.venue);
-    }
-  }, [venuesLoading]);
+    const newValue = (data && data.venue) || (venues[0] && venues[0].id) || 0;
+
+    setVenueId(newValue);
+  }, [venuesLoading, venues, data]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form
+      onSubmit={handleSubmit(data => {
+        const formData = data as Omit<IEventFormData, 'venue'>;
+        onSubmit({ ...formData, venue: venueId });
+      })}
+      className={styles.form}
+    >
       {fields.map(field => (
         <FormControl className={styles.item} key={field.key}>
           <Controller
@@ -74,25 +87,18 @@ const EventForm: React.FC<IEventFormProps> = ({
       ) : (
         <FormControl className={styles.item}>
           <InputLabel id="venue-label">Venue</InputLabel>
-          <Controller
-            control={control}
-            as={
-              <Select labelId="venue-label">
-                {venues.map(venue => (
-                  <MenuItem value={venue.id} key={venue.id}>
-                    {venue.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            }
-            name="venue"
-            options={{ required: true }}
-            defaultValue={
-              (data && data.venue) || venues.length > 0
-                ? venues[0] && venues[0].id
-                : undefined
-            }
-          />
+          <Select
+            labelId="venue-label"
+            required
+            value={venueId}
+            onChange={e => setVenueId(e.target.value as number)}
+          >
+            {venues.map(venue => (
+              <MenuItem value={venue.id} key={venue.id}>
+                {venue.name}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       )}
       <Button

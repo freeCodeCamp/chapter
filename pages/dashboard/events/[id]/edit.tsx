@@ -62,9 +62,6 @@ const EditEvent: React.FC = () => {
       }
     }
 
-    console.log(add, remove);
-    console.log(id);
-
     const submitData = {
       ...data,
       tags: {
@@ -73,8 +70,6 @@ const EditEvent: React.FC = () => {
       },
     };
 
-    console.log(submitData);
-
     const success = await dispatch(eventActions.updateEvent(id, submitData));
 
     if (success) {
@@ -82,28 +77,24 @@ const EditEvent: React.FC = () => {
     }
   };
 
-  if ((loading && !event) || error || !event) {
-    return (
-      <Layout>
-        <Skeleton>
-          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-          {error && <div className={styles.responseDiv}>{error}</div>}
-        </Skeleton>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
       <Skeleton>
-        <EventForm
-          loading={loading && !event}
-          onSubmit={onSubmit}
-          data={event}
-          venues={venues}
-          venuesLoading={venuesLoading}
-          submitText={'Update event'}
-        />
+        {(loading && !event) || error || !event ? (
+          <>
+            <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+            {error && <div className={styles.responseDiv}>{error}</div>}
+          </>
+        ) : (
+          <EventForm
+            loading={loading && !event}
+            onSubmit={onSubmit}
+            data={event}
+            venues={venues}
+            venuesLoading={venuesLoading}
+            submitText={'Update event'}
+          />
+        )}
       </Skeleton>
     </Layout>
   );

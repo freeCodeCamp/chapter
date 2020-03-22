@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Card, Typography } from '@material-ui/core';
+import { Card, Typography, CardContent } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
 import { eventActions, venueActions } from 'client/store/actions';
@@ -14,7 +14,8 @@ import getLocationString from 'client/helpers/getLocationString';
 
 const ShowEvent: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const rawId = router.query.id;
+  const id = parseInt(Array.isArray(rawId) ? rawId[0] : rawId);
 
   const { error, loading, event } = useSelector((state: AppStoreState) => ({
     error: state.events.error,
@@ -30,13 +31,13 @@ const ShowEvent: React.FC = () => {
   }));
   const dispatch = useThunkDispatch();
 
-  console.log(parseInt(Array.isArray(id) ? id[0] : id));
-
   useEffect(() => {
-    if (id !== undefined) {
+    if (!Number.isNaN(id)) {
       dispatch(eventActions.fetchEvent('1', id)).then(event => {
         if (event) {
           dispatch(venueActions.fetchOneVenue(event.venue));
+          // TODO: Maybe combine this and the fetchEvent into one
+          dispatch(eventActions.fetchRSVPS(1, id));
         }
       });
     }
@@ -60,7 +61,6 @@ const ShowEvent: React.FC = () => {
             <Typography gutterBottom variant="h5" component="h2">
               {event.name}
             </Typography>
-
             {event.canceled && (
               <Typography variant="h5" color="error">
                 Canceled
@@ -72,18 +72,59 @@ const ShowEvent: React.FC = () => {
             <Typography variant="body2" color="textSecondary" component="p">
               {event.capacity}
             </Typography>
-
             <Tags tags={event.tags} />
 
+            <h2>Venue:</h2>
             {venue && (
               <>
-                <h1>{venue.name}</h1>
+                <h1 style={{ padding: 0 }}>{venue.name}</h1>
                 {venue.location && (
                   <h4>{getLocationString(venue.location, true)}</h4>
                 )}
               </>
             )}
           </ProgressCardContent>
+        </Card>
+        <Card style={{ marginTop: '12px' }}>
+          <CardContent>
+            <h2>RSVPs:</h2>
+            {event.rsvps ? (
+              event.rsvps.loading ? (
+                <h3>Loading...</h3>
+              ) : event.rsvps.error ? (
+                <h3>Error...</h3>
+              ) : (
+                <div>
+                  <ul>
+                    {event.rsvps.rsvps
+                      .filter(rsvp => !rsvp.on_waitlist)
+                      .map(rsvp => (
+                        <li key={rsvp.id}>
+                          {rsvp.user
+                            ? `${rsvp.user.first_name} ${rsvp.user.last_name}`
+                            : `#${rsvp.id}`}
+                        </li>
+                      ))}
+                  </ul>
+                  <br />
+                  <h3>On waiting list</h3>
+                  <ul>
+                    {event.rsvps.rsvps
+                      .filter(rsvp => rsvp.on_waitlist)
+                      .map(rsvp => (
+                        <li key={rsvp.id}>
+                          {rsvp.user
+                            ? `${rsvp.user.first_name} ${rsvp.user.last_name}`
+                            : `#${rsvp.id}`}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )
+            ) : (
+              <h3>No rsvps</h3>
+            )}
+          </CardContent>
         </Card>
       </Skeleton>
     </Layout>

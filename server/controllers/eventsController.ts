@@ -37,7 +37,20 @@ export default {
       res.status(404).json({ error: "Can't find event" });
     }
   },
+  async rsvps(req: Request, res: Response) {
+    const { id } = req.params;
 
+    const event = await Event.findOne({
+      where: { id },
+      relations: ['rsvps', 'rsvps.user'],
+    });
+
+    if (event) {
+      res.json(event.rsvps || []);
+    } else {
+      res.status(404).json({ error: "Can't find event" });
+    }
+  },
   async create(req: Request, res: Response) {
     const {
       name,

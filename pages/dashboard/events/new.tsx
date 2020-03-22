@@ -28,9 +28,9 @@ const CreateEvent: React.FC = () => {
     const HARD_CODE = { chapter: 1 };
     const eventData = { ...data, ...HARD_CODE };
 
-    dispatch(eventActions.createEvent(eventData)).then((success: boolean) => {
-      if (success) {
-        router.replace('/dashboard/events');
+    dispatch(eventActions.createEvent(eventData)).then(({ success, id }) => {
+      if (success && id) {
+        router.replace(`/dashboard/events/[id]`, `/dashboard/events/${id}`);
       }
     });
   };

@@ -7,6 +7,7 @@ import { IEventModal } from 'client/store/types/events';
 import { eventActions } from 'client/store/actions';
 import useConfirm from 'client/hooks/useConfirm';
 import { ProgressCardContent } from 'client/components';
+import Tags from './components/Tag';
 
 interface IEventItemProps {
   event: IEventModal;
@@ -47,6 +48,9 @@ const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
         <Typography variant="body2" color="textSecondary" component="p">
           {event.capacity}
         </Typography>
+
+        <Tags tags={event.tags} />
+
         {!event.canceled && (
           <Button onClick={clickCancel}>
             {confirmCancel ? 'Are you sure?' : 'Cancel'}

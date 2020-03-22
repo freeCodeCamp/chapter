@@ -47,7 +47,9 @@ const EditEvent: React.FC = () => {
 
     if (event) {
       if (event.tags !== undefined) {
-        const tags = data.tags.split(',').map(item => item.trim());
+        const tags = Array.from(
+          new Set(data.tags.split(',').map(item => item.trim())),
+        );
 
         add = tags.filter(item => {
           if (event && event.tags) {
@@ -80,7 +82,7 @@ const EditEvent: React.FC = () => {
     }
   };
 
-  if (loading || error || !location) {
+  if ((loading && !event) || error || !event) {
     return (
       <Layout>
         <Skeleton>
@@ -95,7 +97,7 @@ const EditEvent: React.FC = () => {
     <Layout>
       <Skeleton>
         <EventForm
-          loading={loading}
+          loading={loading && !event}
           onSubmit={onSubmit}
           data={event}
           venues={venues}

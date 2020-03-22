@@ -3,6 +3,7 @@ import { Event } from 'server/models/Event';
 import { PostgresErrorCodes } from 'server/util/PostgresErrorConstants';
 import { Tag } from 'server/models/Tag';
 import sanitizeTags from 'server/util/sanitizeTags';
+import { Venue } from 'server/models';
 
 // The whole model is a json response, fix that if there's some sensitive data here
 
@@ -62,7 +63,7 @@ export default {
     try {
       await event.save();
 
-      const sanitizedTags = sanitizeTags(tags);
+      const sanitizedTags = Array.from(new Set(sanitizeTags(tags)));
       const outTags = await Promise.all(
         sanitizedTags.map(item => {
           const tag = new Tag({ name: item, event });
@@ -104,18 +105,33 @@ export default {
       ends_at,
     } = req.body;
 
+    const tags = req.body.tags as
+      | { add: string[]; remove: number[] }
+      | undefined;
+
     const event = await Event.findOne({
       where: { id: parseInt(id), chapter: chapterId },
+      loadRelationIds: { relations: ['venue'] },
+      relations: tags ? ['tags'] : [],
     });
 
     if (event) {
       event.name = name ?? event.name;
       event.description = description ?? event.description;
       event.capacity = capacity ?? event.capacity;
-      event.venue = venue ?? event.venue;
+      if (venue && event.venue.id !== venue) {
+        const newVenue = await Venue.findOne({ id: venue });
+        if (newVenue) {
+          event.venue = newVenue;
+        }
+      }
       event.canceled = canceled ?? event.canceled;
       event.start_at = start_at ?? event.start_at;
       event.ends_at = ends_at ?? event.ends_at;
+
+      if (tags) {
+        console.log(tags);
+      }
 
       try {
         await event.save();

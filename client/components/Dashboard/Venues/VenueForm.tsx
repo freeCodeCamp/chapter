@@ -52,9 +52,6 @@ const VenueForm: React.FC<IVenueFormProps> = props => {
   const styles = useStyles();
   const { control, handleSubmit } = useForm();
 
-  console.log(data && data.location && data.location.id);
-  console.log(locations[0] && locations[0].id);
-
   // useEffect(() => {
   //   if (!locationsLoading && locations && data && data.location) {
   //     console.log(data.location.id);

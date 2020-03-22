@@ -14,6 +14,9 @@ import {
   updateSuccess,
   updateFail,
   updateStart,
+  fetchRSVPSStart,
+  fetchRSVPSFail,
+  fetchRSVPSSuccess,
 } from './actions';
 
 export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
@@ -47,6 +50,24 @@ export const fetchEvent: ActionCreator<eventsTypes.ThunkResult<
     return resData;
   } catch (err) {
     dispatch(fetchFail(err));
+  }
+};
+
+export const fetchRSVPS: ActionCreator<eventsTypes.ThunkResult<
+  Promise<void>
+>> = (chapterId: number, eventId: number) => async dispatch => {
+  dispatch(fetchRSVPSStart(eventId));
+
+  const http = new HttpService<eventsTypes.IRSVPModal[]>();
+  try {
+    const { resData } = await http.get(
+      `/chapters/${chapterId}/events/${eventId}/rsvps`,
+      {},
+      {},
+    );
+    dispatch(fetchRSVPSSuccess(resData, eventId));
+  } catch (err) {
+    dispatch(fetchRSVPSFail(eventId, err));
   }
 };
 

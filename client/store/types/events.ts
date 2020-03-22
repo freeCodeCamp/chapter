@@ -11,11 +11,34 @@ export interface ITagModal {
   updated_at: string;
 }
 
+export interface IUser {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IRSVPModal {
+  id: number;
+  date: string;
+  on_waitlist: boolean;
+  user?: IUser;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IEventModal {
   id?: number;
   chapterId?: string;
   venue?: number;
   tags?: ITagModal[];
+  rsvps: {
+    loading: boolean;
+    error: string;
+    rsvps: IRSVPModal[];
+  };
   name: string;
   description: string;
   start_at: Date;
@@ -47,6 +70,29 @@ interface IEventFetchStartAction {
   type: typeof ACTIONS.FETCH_START;
 }
 
+interface IEventFetchRSVPSStartAction {
+  type: typeof ACTIONS.FETCH_RSVPS_START;
+  payload: {
+    id: number;
+  };
+}
+
+interface IEventFetchSuccessAction {
+  type: typeof ACTIONS.FETCH_SUCCESS;
+  payload: {
+    events: IEventModal[];
+    chapterId: string;
+  };
+}
+
+interface IEventFetchRSVPSSuccessAction {
+  type: typeof ACTIONS.FETCH_RSVPS_SUCCESS;
+  payload: {
+    id: number;
+    rsvps: IRSVPModal[];
+  };
+}
+
 interface IEventFetchSuccessAction {
   type: typeof ACTIONS.FETCH_SUCCESS;
   payload: {
@@ -60,6 +106,14 @@ interface IEventFetchSingleSuccessAction {
   payload: {
     event: IEventModal;
     chapterId: string;
+  };
+}
+
+interface IEventFetchRSVPSFailureAction {
+  type: typeof ACTIONS.FETCH_RSVPS_FAIL;
+  payload: {
+    id: number;
+    error: string;
   };
 }
 
@@ -125,6 +179,9 @@ export type IEventActionTypes =
   | IEventFetchSuccessAction
   | IEventFetchFailureAction
   | IEventFetchSingleSuccessAction
+  | IEventFetchRSVPSStartAction
+  | IEventFetchRSVPSSuccessAction
+  | IEventFetchRSVPSFailureAction
   | IEventCreateSuccessAction
   | IEventCreateStartAction
   | IEventCreateFailureAction

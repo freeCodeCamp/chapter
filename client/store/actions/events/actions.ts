@@ -1,5 +1,14 @@
 import { eventsTypes } from 'client/store/types';
 
+export const fetchRSVPSStart = (
+  eventId: number,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.FETCH_RSVPS_START,
+    payload: { id: eventId },
+  };
+};
+
 export const fetchStart = (): eventsTypes.IEventActionTypes => {
   return {
     type: eventsTypes.FETCH_START,
@@ -13,6 +22,16 @@ export const fetchSuccess = (
   return {
     type: eventsTypes.FETCH_SUCCESS,
     payload: { events, chapterId },
+  };
+};
+
+export const fetchRSVPSSuccess = (
+  rsvps: eventsTypes.IRSVPModal[],
+  id: number,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.FETCH_RSVPS_SUCCESS,
+    payload: { rsvps, id },
   };
 };
 
@@ -30,6 +49,19 @@ export const fetchFail = (error: string): eventsTypes.IEventActionTypes => {
   return {
     type: eventsTypes.FETCH_FAIL,
     payload: error,
+  };
+};
+
+export const fetchRSVPSFail = (
+  id: number,
+  error: string,
+): eventsTypes.IEventActionTypes => {
+  return {
+    type: eventsTypes.FETCH_RSVPS_FAIL,
+    payload: {
+      id,
+      error,
+    },
   };
 };
 

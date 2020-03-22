@@ -42,6 +42,50 @@ const reducer = (state = initialState, action: eventsTypes.IEventActionTypes) =>
         draft.error = action.payload;
         draft.loading = false;
         break;
+      case eventsTypes.FETCH_RSVPS_START: {
+        const index = draft.events.findIndex(
+          event => event.id === action.payload.id,
+        );
+        if (index !== -1) {
+          if (!draft.events[index].rsvps) {
+            draft.events[index].rsvps = { loading: true, error: '', rsvps: [] };
+          } else {
+            draft.events[index].rsvps.loading = true;
+            draft.events[index].rsvps.error = '';
+          }
+        } else {
+          console.log('CANT FIND EVENT START');
+          // draft.events[action.payload.id] = { id: action.payload.id };
+        }
+        break;
+      }
+      case eventsTypes.FETCH_RSVPS_SUCCESS: {
+        const index = draft.events.findIndex(
+          event => event.id === action.payload.id,
+        );
+        if (index !== -1) {
+          draft.events[index].rsvps.loading = false;
+          draft.events[index].rsvps.error = '';
+          draft.events[index].rsvps.rsvps = action.payload.rsvps;
+        } else {
+          console.log('CANT FIND EVENT SUCCESS');
+          // draft.events[action.payload.id] = { id: action.payload.id };
+        }
+        break;
+      }
+      case eventsTypes.FETCH_RSVPS_FAIL: {
+        const index = draft.events.findIndex(
+          event => event.id === action.payload.id,
+        );
+        if (index !== -1) {
+          draft.events[index].rsvps.loading = false;
+          draft.events[index].rsvps.error = action.payload.error;
+        } else {
+          console.log('CANT FIND EVENT FAIL');
+          // draft.events[action.payload.id] = { id: action.payload.id };
+        }
+        break;
+      }
       case eventsTypes.CREATE_START:
         draft.create.state = 'loading';
         draft.create.error = '';

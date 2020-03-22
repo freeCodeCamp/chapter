@@ -35,7 +35,7 @@ const Events: React.FC = () => {
             events.map((event: IEventModal) => (
               <EventItem
                 event={event}
-                loading={loading}
+                loading={loading && !event}
                 key={`events-${event.id}`}
               />
             ))

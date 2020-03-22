@@ -29,7 +29,7 @@ const ShowLocation: React.FC = () => {
     }
   }, [id]);
 
-  if (loading || error || !location) {
+  if ((loading && !location) || error || !location) {
     return (
       <Layout>
         <Skeleton>
@@ -43,7 +43,7 @@ const ShowLocation: React.FC = () => {
     <Layout>
       <Skeleton>
         <Card style={{ marginTop: '12px' }} key={`event-${location.id}`}>
-          <ProgressCardContent loading={loading}>
+          <ProgressCardContent loading={loading && !location}>
             <Typography gutterBottom variant="h5" component="h2">
               {location.address}
             </Typography>

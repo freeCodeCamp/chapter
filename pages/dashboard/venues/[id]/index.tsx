@@ -29,7 +29,7 @@ const ShowVenue: React.FC = () => {
     }
   }, [id]);
 
-  if (loading || error || !venue) {
+  if ((loading && !venue) || error || !venue) {
     return (
       <Layout>
         <Skeleton>
@@ -43,7 +43,7 @@ const ShowVenue: React.FC = () => {
     <Layout>
       <Skeleton>
         <Card style={{ marginTop: '12px' }} key={`event-${venue.id}`}>
-          <ProgressCardContent loading={loading}>
+          <ProgressCardContent loading={loading && !venue}>
             <Typography gutterBottom variant="h5" component="h2">
               {venue.name}
             </Typography>

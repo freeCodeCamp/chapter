@@ -49,7 +49,7 @@ const EditLocation: React.FC = () => {
     }
   };
 
-  if (loading || error || !location) {
+  if ((loading && !location) || error || !location) {
     return (
       <Layout>
         <Skeleton>
@@ -64,7 +64,7 @@ const EditLocation: React.FC = () => {
     <Layout>
       <Skeleton>
         <LocationForm
-          loading={loading}
+          loading={loading && !location}
           onSubmit={onSubmit}
           data={location}
           submitText={'Update location'}

@@ -31,7 +31,7 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
 };
 
 export const fetchEvent: ActionCreator<eventsTypes.ThunkResult<
-  Promise<void>
+  Promise<eventsTypes.IEventModal | void>
 >> = (chapterId: string, eventId: string) => async dispatch => {
   dispatch(fetchStart());
 
@@ -43,6 +43,8 @@ export const fetchEvent: ActionCreator<eventsTypes.ThunkResult<
       {},
     );
     dispatch(fetchSingleSuccess(resData, chapterId));
+
+    return resData;
   } catch (err) {
     dispatch(fetchFail(err));
   }

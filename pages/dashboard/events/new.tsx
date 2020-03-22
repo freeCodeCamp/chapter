@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
 import { eventActions, venueActions } from 'client/store/actions';
-import EventForm, {
-  IEventFormData,
-} from 'client/components/Dashboard/Events/EventForm';
+import EventForm from 'client/components/Dashboard/Events/EventForm';
+import { IEventFormData } from 'client/components/Dashboard/Events/EventFormUtils';
 import { AppStoreState } from 'client/store/reducers';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import { Skeleton } from 'client/components/Dashboard/Events';

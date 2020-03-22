@@ -9,6 +9,7 @@ import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Events/Skeleton';
 import { EventForm } from 'client/components/Dashboard/Events';
 import Layout from 'client/components/Dashboard/shared/Layout';
+import { IEventFormData } from 'client/components/Dashboard/Events/EventFormUtils';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -18,16 +19,15 @@ const useStyles = makeStyles(() => ({
 
 const EditEvent: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const rawId = router.query.id;
+  const id = parseInt(Array.isArray(rawId) ? rawId[0] : rawId);
   const styles = useStyles();
 
   const { error, loading, event, venues, venuesLoading } = useSelector(
     (state: AppStoreState) => ({
       error: state.events.error,
       loading: state.events.loading,
-      event: state.events.events.find(
-        event => event.id === parseInt(Array.isArray(id) ? id[0] : id),
-      ),
+      event: state.events.events.find(event => event.id === id),
       venues: state.venues.venues,
       venuesLoading: state.venues.loading,
     }),
@@ -35,27 +35,48 @@ const EditEvent: React.FC = () => {
   const dispatch = useThunkDispatch();
 
   useEffect(() => {
-    if (id !== undefined) {
-      console.log(id);
+    if (!Number.isNaN(id)) {
       dispatch(eventActions.fetchEvent('1', id));
       dispatch(venueActions.fetchVenues());
     }
   }, [id]);
 
-  const onSubmit = async data => {
-    // const success = await dispatch(
-    //   locationActions.updateLocation(
-    //     parseInt(Array.isArray(id) ? id[0] : id),
-    //     sanitizeFormData(data),
-    //   ),
-    // );
+  const onSubmit = async (data: IEventFormData) => {
+    let add: string[] = [];
+    let remove: number[] = [];
 
-    console.log(data);
+    if (event) {
+      if (event.tags !== undefined) {
+        const tags = data.tags.split(',').map(item => item.trim());
 
-    const success = false;
+        add = tags.filter(item => {
+          if (event && event.tags) {
+            return event.tags.findIndex(tag => tag.name === item) === -1;
+          }
+        });
+        remove = event.tags
+          .filter(tag => !tags.includes(tag.name))
+          .map(tag => tag.id);
+      }
+    }
+
+    console.log(add, remove);
+    console.log(id);
+
+    const submitData = {
+      ...data,
+      tags: {
+        add,
+        remove,
+      },
+    };
+
+    console.log(submitData);
+
+    const success = await dispatch(eventActions.updateEvent(id, submitData));
 
     if (success) {
-      router.replace('/dashboard/locations');
+      router.replace('/dashboard/events');
     }
   };
 

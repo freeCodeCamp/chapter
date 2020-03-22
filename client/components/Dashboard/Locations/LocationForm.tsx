@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Button, TextField, makeStyles, FormControl } from '@material-ui/core';
+import { Button, TextField, FormControl } from '@material-ui/core';
+import useFormStyles from '../shared/formStyles';
 
 const fields = ['country_code', 'city', 'region', 'postal_code', 'address'];
 
@@ -19,21 +20,10 @@ interface ILocationFormProps {
   submitText: string;
 }
 
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '25%',
-  },
-  item: {
-    marginTop: '20px',
-  },
-}));
-
 const LocationForm: React.FC<ILocationFormProps> = props => {
   const { loading, onSubmit, data, submitText } = props;
 
-  const styles = useStyles();
+  const styles = useFormStyles();
   const { control, handleSubmit } = useForm();
 
   return (

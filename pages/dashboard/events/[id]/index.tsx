@@ -11,6 +11,7 @@ import Skeleton from 'client/components/Dashboard/Events/Skeleton';
 import Layout from 'client/components/Dashboard/shared/Layout';
 import Tags from 'client/components/Dashboard/Events/components/Tag';
 import getLocationString from 'client/helpers/getLocationString';
+import Actions from 'client/components/Dashboard/Events/components/Actions';
 
 const ShowEvent: React.FC = () => {
   const router = useRouter();
@@ -73,6 +74,11 @@ const ShowEvent: React.FC = () => {
               {event.capacity}
             </Typography>
             <Tags tags={event.tags} />
+
+            <Actions
+              event={event}
+              onDelete={() => router.replace('/dashboard/events')}
+            />
 
             <h2>Venue:</h2>
             {venue && (

@@ -19,9 +19,8 @@ const Actions: React.FC<IActionsProps> = ({ event, onDelete }) => {
     dispatch(eventActions.cancelEvent(1, event.id)),
   );
   const [confirmRemove, clickRemove] = useConfirm(() => {
-    dispatch(eventActions.removeEvent(1, event.id)).then(() => {
-      onDelete && onDelete();
-    });
+    dispatch(eventActions.removeEvent(1, event.id));
+    onDelete && onDelete();
   });
 
   return (

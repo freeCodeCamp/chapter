@@ -214,7 +214,12 @@ export default {
     const { id, chapterId } = req.params;
 
     const event = await Event.findOne({
-      where: { id: parseInt(id), chapter: chapterId },
+      where: {
+        id: parseInt(id),
+        chapter: chapterId,
+      },
+      loadRelationIds: { relations: ['venue'] },
+      relations: ['tags'],
     });
 
     if (event) {

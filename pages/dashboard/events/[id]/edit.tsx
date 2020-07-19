@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
 
 const EditEvent: React.FC = () => {
   const router = useRouter();
-  const rawId = router.query.id;
+  const rawId = router.query.id || '';
   const id = parseInt(Array.isArray(rawId) ? rawId[0] : rawId);
   const styles = useStyles();
 

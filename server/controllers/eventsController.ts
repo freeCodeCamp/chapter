@@ -13,6 +13,7 @@ export default {
     const events = await Event.find({
       where: { chapter: chapterId },
       relations: ['tags'],
+      order: { created_at: 'DESC' },
     });
 
     res.json(events);
@@ -26,15 +27,30 @@ export default {
         id: parseInt(id),
         chapter: chapterId,
       },
+      loadRelationIds: { relations: ['venue'] },
+      relations: ['tags'],
     });
 
     if (event) {
-      res.json(event);
+      res.json({ ...event, venue_id: event.venue.id });
     } else {
       res.status(404).json({ error: "Can't find event" });
     }
   },
+  async rsvps(req: Request, res: Response) {
+    const { id } = req.params;
 
+    const event = await Event.findOne({
+      where: { id },
+      relations: ['rsvps', 'rsvps.user'],
+    });
+
+    if (event) {
+      res.json(event.rsvps || []);
+    } else {
+      res.status(404).json({ error: "Can't find event" });
+    }
+  },
   async create(req: Request, res: Response) {
     const {
       name,
@@ -60,7 +76,7 @@ export default {
     try {
       await event.save();
 
-      const sanitizedTags = sanitizeTags(tags);
+      const sanitizedTags = Array.from(new Set(sanitizeTags(tags)));
       const outTags = await Promise.all(
         sanitizedTags.map(item => {
           const tag = new Tag({ name: item, event });
@@ -102,8 +118,14 @@ export default {
       ends_at,
     } = req.body;
 
+    const tags = req.body.tags as
+      | { add: string[]; remove: number[] }
+      | undefined;
+
     const event = await Event.findOne({
       where: { id: parseInt(id), chapter: chapterId },
+      loadRelationIds: { relations: ['venue'] },
+      relations: tags ? ['tags'] : [],
     });
 
     if (event) {
@@ -115,9 +137,43 @@ export default {
       event.start_at = start_at ?? event.start_at;
       event.ends_at = ends_at ?? event.ends_at;
 
+      if (tags) {
+        if (tags.remove) {
+          await Promise.all(
+            event.tags
+              .filter(tag => tags.remove.includes(tag.id))
+              .map(tag => tag.remove()),
+          );
+        }
+
+        if (tags.add) {
+          const newTags = Array.from(
+            new Set(
+              tags.add.map(tag => tag.trim()).filter(tag => tag.length > 0),
+            ),
+          );
+
+          try {
+            const output = await Promise.all(
+              newTags.map(item => {
+                const tag = new Tag({ name: item, event });
+                console.log(tag);
+                return tag.save();
+              }),
+            );
+            event.tags = [...event.tags, ...output];
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
       try {
         await event.save();
-        res.json(event);
+        res.json({
+          ...event,
+          tags: event.tags.map(tag => ({ ...tag, event: undefined })),
+        });
       } catch (e) {
         if (e.code === PostgresErrorCodes.FOREIGN_KEY_VIOLATION) {
           if (e.detail.includes('venue')) {
@@ -127,6 +183,8 @@ export default {
             return res.status(400).json({ message: 'chapter not found' });
           }
         }
+
+        console.log(e);
 
         res.status(500).json({ error: e });
       }
@@ -156,7 +214,12 @@ export default {
     const { id, chapterId } = req.params;
 
     const event = await Event.findOne({
-      where: { id: parseInt(id), chapter: chapterId },
+      where: {
+        id: parseInt(id),
+        chapter: chapterId,
+      },
+      loadRelationIds: { relations: ['venue'] },
+      relations: ['tags'],
     });
 
     if (event) {

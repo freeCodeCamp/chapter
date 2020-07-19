@@ -1,4 +1,4 @@
-const sanitizeTags = tags => {
+const sanitizeTags = (tags: string): string[] => {
   if (tags) {
     return tags.split(',').map((item: string) =>
       item

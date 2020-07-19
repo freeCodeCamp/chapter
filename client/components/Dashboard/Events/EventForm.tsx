@@ -1,102 +1,70 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   FormControl,
   TextField,
   Button,
-  makeStyles,
   InputLabel,
   Select,
   MenuItem,
 } from '@material-ui/core';
-import { IVenueModal } from 'client/store/types/venues';
+import {
+  IEventFormProps,
+  fields,
+  IField,
+  IEventFormData,
+} from './EventFormUtils';
+import { IEventModal } from 'client/store/types/events';
+import useFormStyles from '../shared/formStyles';
 
-interface IField {
-  key: string;
-  label: string;
-  placeholder?: string;
-  type: string;
-  defaultValue?: string;
-}
+const formatValue = (field: IField, store?: IEventModal): any => {
+  const { key } = field;
 
-const fields: IField[] = [
-  {
-    key: 'name',
-    type: 'text',
-    label: 'Event title',
-    placeholder: 'Foo and the Bars',
-  },
-  {
-    key: 'description',
-    type: 'text',
-    label: 'Description',
-    placeholder: '',
-  },
-  {
-    key: 'capacity',
-    type: 'number',
-    label: 'Capacity',
-    placeholder: '50',
-  },
-  {
-    key: 'tags',
-    type: 'text',
-    label: 'Tags (separated by a comma)',
-    placeholder: 'Foo, bar',
-  },
-  {
-    key: 'start_at',
-    type: 'datetime-local',
-    label: 'Start at',
-    defaultValue: new Date().toISOString().slice(0, 16),
-  },
-  {
-    key: 'ends_at',
-    type: 'datetime-local',
-    label: 'End at',
-    defaultValue: new Date(Date.now() + 1000 * 60 * 60)
-      .toISOString()
-      .slice(0, 16),
-  },
-];
+  if (!store || !Object.keys(store).includes(key)) {
+    return field.defaultValue;
+  }
 
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '25%',
-  },
-  item: {
-    marginTop: '20px',
-  },
-}));
+  if (key.endsWith('_at')) {
+    return new Date(store[field.key]).toISOString().slice(0, 16);
+  }
 
-export interface IEventFormData {
-  name: string;
-  description: string;
-  capacity: number;
-  tags: string;
-  venue: number;
-}
+  if (key === 'tags') {
+    const tags = store[key];
+    if (tags) {
+      return tags.map(tag => tag.name).join(', ');
+    }
+  }
 
-interface IEventFormProps {
-  onSubmit: (data: IEventFormData) => void;
-  loading: boolean;
-  venues: IVenueModal[];
-  venuesLoading: boolean;
-}
+  return store[key];
+};
 
 const EventForm: React.FC<IEventFormProps> = ({
   onSubmit,
   loading,
   venues,
   venuesLoading,
+  data,
+  submitText,
 }) => {
   const { control, handleSubmit } = useForm();
-  const styles = useStyles();
+  const styles = useFormStyles();
+
+  const [venueId, setVenueId] = useState<number | undefined>(0);
+
+  useEffect(() => {
+    const newValue = (data && data.venue) || (venues[0] && venues[0].id) || 0;
+
+    setVenueId(newValue);
+  }, [venuesLoading, venues, data]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form
+      onSubmit={handleSubmit(data => {
+        const formData = data as Omit<IEventFormData, 'venue'>;
+        onSubmit({ ...formData, venue: venueId });
+      })}
+      className={styles.form}
+    >
       {fields.map(field => (
         <FormControl className={styles.item} key={field.key}>
           <Controller
@@ -109,7 +77,7 @@ const EventForm: React.FC<IEventFormProps> = ({
               />
             }
             name={field.key}
-            defaultValue={field.defaultValue}
+            defaultValue={formatValue(field, data)}
             options={{ required: true }}
           />
         </FormControl>
@@ -119,21 +87,18 @@ const EventForm: React.FC<IEventFormProps> = ({
       ) : (
         <FormControl className={styles.item}>
           <InputLabel id="venue-label">Venue</InputLabel>
-          <Controller
-            control={control}
-            as={
-              <Select labelId="venue-label">
-                {venues.map(venue => (
-                  <MenuItem value={venue.id} key={venue.id}>
-                    {venue.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            }
-            name="venue"
-            options={{ required: true }}
-            defaultValue={0}
-          />
+          <Select
+            labelId="venue-label"
+            required
+            value={venueId}
+            onChange={e => setVenueId(e.target.value as number)}
+          >
+            {venues.map(venue => (
+              <MenuItem value={venue.id} key={venue.id}>
+                {venue.name}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       )}
       <Button
@@ -143,7 +108,7 @@ const EventForm: React.FC<IEventFormProps> = ({
         type="submit"
         disabled={loading}
       >
-        Add Event
+        {submitText}
       </Button>
     </form>
   );

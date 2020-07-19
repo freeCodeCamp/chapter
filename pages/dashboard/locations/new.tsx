@@ -8,6 +8,7 @@ import { AppStoreState } from 'client/store/reducers';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import { LocationForm, Skeleton } from 'client/components/Dashboard/Locations';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {
@@ -36,14 +37,16 @@ const NewLocation: React.FC = () => {
   };
 
   return (
-    <Skeleton>
-      {error && <div className={styles.responseDiv}>{error}</div>}
-      <LocationForm
-        loading={state === 'loading'}
-        onSubmit={onSubmit}
-        submitText={'Add location'}
-      />
-    </Skeleton>
+    <Layout>
+      <Skeleton>
+        {error && <div className={styles.responseDiv}>{error}</div>}
+        <LocationForm
+          loading={state === 'loading'}
+          onSubmit={onSubmit}
+          submitText={'Add location'}
+        />
+      </Skeleton>
+    </Layout>
   );
 };
 

@@ -3,7 +3,6 @@ import { useForm, Controller } from 'react-hook-form';
 import {
   Button,
   TextField,
-  makeStyles,
   FormControl,
   Select,
   InputLabel,
@@ -13,6 +12,7 @@ import {
 import { ILocationModal } from 'client/store/types/locations';
 import getLocationString from 'client/helpers/getLocationString';
 import { IVenueModal } from 'client/store/types/venues';
+import useFormStyles from '../shared/formStyles';
 
 interface IData {
   name: string;
@@ -28,17 +28,6 @@ interface IVenueFormProps {
   submitText: string;
 }
 
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '25%',
-  },
-  item: {
-    marginTop: '20px',
-  },
-}));
-
 const VenueForm: React.FC<IVenueFormProps> = props => {
   const {
     loading,
@@ -49,11 +38,8 @@ const VenueForm: React.FC<IVenueFormProps> = props => {
     submitText,
   } = props;
 
-  const styles = useStyles();
+  const styles = useFormStyles();
   const { control, handleSubmit } = useForm();
-
-  console.log(data && data.location && data.location.id);
-  console.log(locations[0] && locations[0].id);
 
   // useEffect(() => {
   //   if (!locationsLoading && locations && data && data.location) {

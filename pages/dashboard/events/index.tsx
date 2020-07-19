@@ -8,6 +8,7 @@ import { eventActions } from 'client/store/actions';
 import { IEventModal } from 'client/store/types/events';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import EventItem from 'client/components/Dashboard/Events/EventItem';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const Events: React.FC = () => {
   const { error, loading, events } = useSelector((state: AppStoreState) => ({
@@ -22,28 +23,26 @@ const Events: React.FC = () => {
   }, []);
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Link href="/dashboard">
-          <a>Dashboard</a>
-        </Link>
-        <br />
-        <Link href="/dashboard/events/new">
-          <a>Add new</a>
-        </Link>
-        {error ? (
-          <h1>😢Error</h1>
-        ) : (
-          events.map((event: IEventModal) => (
-            <EventItem
-              event={event}
-              loading={loading}
-              key={`events-${event.id}`}
-            />
-          ))
-        )}
+    <Layout>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Link href="/dashboard/events/new">
+            <a>Add new</a>
+          </Link>
+          {error ? (
+            <h1>😢Error</h1>
+          ) : (
+            events.map((event: IEventModal) => (
+              <EventItem
+                event={event}
+                loading={loading && !event}
+                key={`events-${event.id}`}
+              />
+            ))
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </Layout>
   );
 };
 

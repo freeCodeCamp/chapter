@@ -11,6 +11,12 @@ import {
   createSuccess,
   removeFail,
   removeSuccess,
+  updateSuccess,
+  updateFail,
+  updateStart,
+  fetchRSVPSStart,
+  fetchRSVPSFail,
+  fetchRSVPSSuccess,
 } from './actions';
 
 export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
@@ -28,7 +34,7 @@ export const fetchEvents: ActionCreator<eventsTypes.ThunkResult<
 };
 
 export const fetchEvent: ActionCreator<eventsTypes.ThunkResult<
-  Promise<void>
+  Promise<eventsTypes.IEventModal | void>
 >> = (chapterId: string, eventId: string) => async dispatch => {
   dispatch(fetchStart());
 
@@ -40,13 +46,35 @@ export const fetchEvent: ActionCreator<eventsTypes.ThunkResult<
       {},
     );
     dispatch(fetchSingleSuccess(resData, chapterId));
+
+    return resData;
   } catch (err) {
     dispatch(fetchFail(err));
   }
 };
 
+export const fetchRSVPS: ActionCreator<eventsTypes.ThunkResult<
+  Promise<void>
+>> = (chapterId: number, eventId: number) => async dispatch => {
+  dispatch(fetchRSVPSStart(eventId));
+
+  const http = new HttpService<eventsTypes.IRSVPModal[]>();
+  try {
+    const { resData } = await http.get(
+      `/chapters/${chapterId}/events/${eventId}/rsvps`,
+      {},
+      {},
+    );
+    dispatch(fetchRSVPSSuccess(resData, eventId));
+  } catch (err) {
+    dispatch(fetchRSVPSFail(eventId, err));
+  }
+};
+
+type CreateResponse = { success: boolean; id?: number };
+
 export const createEvent: ActionCreator<eventsTypes.ThunkResult<
-  Promise<boolean>
+  Promise<CreateResponse>
 >> = (data: any) => async dispatch => {
   dispatch(createStart());
 
@@ -68,9 +96,35 @@ export const createEvent: ActionCreator<eventsTypes.ThunkResult<
 
     dispatch(createSuccess(resData));
 
-    return true;
+    return { success: true, id: resData.event.id };
   } catch (err) {
     dispatch(createFail(err.message));
+  }
+  return { success: false };
+};
+
+export const updateEvent: ActionCreator<eventsTypes.ThunkResult<
+  Promise<boolean>
+>> = (id: number, data: any) => async dispatch => {
+  dispatch(updateStart(id));
+
+  const http = new HttpService<any>();
+  try {
+    const { res, resData } = await http.patch(
+      `/chapters/1/events/${id}`,
+      {},
+      data,
+      {},
+    );
+
+    if (!res.ok) {
+      throw new Error(JSON.parse(resData.message).error.message);
+    }
+
+    dispatch(updateSuccess(id, resData));
+    return true;
+  } catch (err) {
+    dispatch(updateFail(id, err.message));
   }
   return false;
 };

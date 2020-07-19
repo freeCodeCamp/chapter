@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
 import { eventActions, venueActions } from 'client/store/actions';
-import EventForm, {
-  IEventFormData,
-} from 'client/components/Dashboard/Events/EventForm';
+import EventForm from 'client/components/Dashboard/Events/EventForm';
+import { IEventFormData } from 'client/components/Dashboard/Events/EventFormUtils';
 import { AppStoreState } from 'client/store/reducers';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import { Skeleton } from 'client/components/Dashboard/Events';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const CreateEvent: React.FC = () => {
   const { error, state, venues, venuesLoading } = useSelector(
@@ -28,9 +28,9 @@ const CreateEvent: React.FC = () => {
     const HARD_CODE = { chapter: 1 };
     const eventData = { ...data, ...HARD_CODE };
 
-    dispatch(eventActions.createEvent(eventData)).then((success: boolean) => {
-      if (success) {
-        router.replace('/dashboard/events');
+    dispatch(eventActions.createEvent(eventData)).then(({ success, id }) => {
+      if (success && id) {
+        router.replace(`/dashboard/events/[id]`, `/dashboard/events/${id}`);
       }
     });
   };
@@ -40,15 +40,18 @@ const CreateEvent: React.FC = () => {
   }, []);
 
   return (
-    <Skeleton>
-      {error && <div>{JSON.stringify(error)}</div>}
-      <EventForm
-        loading={state === 'loading'}
-        venuesLoading={venuesLoading}
-        venues={venues}
-        onSubmit={onSubmit}
-      />
-    </Skeleton>
+    <Layout>
+      <Skeleton>
+        {error && <div>{JSON.stringify(error)}</div>}
+        <EventForm
+          loading={state === 'loading'}
+          venuesLoading={venuesLoading}
+          venues={venues}
+          onSubmit={onSubmit}
+          submitText={'Add event'}
+        />
+      </Skeleton>
+    </Layout>
   );
 };
 

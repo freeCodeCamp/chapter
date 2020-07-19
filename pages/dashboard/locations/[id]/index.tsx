@@ -8,6 +8,7 @@ import { AppStoreState } from 'client/store/reducers';
 import { ProgressCardContent } from 'client/components';
 import useThunkDispatch from 'client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Locations/Skeleton';
+import Layout from 'client/components/Dashboard/shared/Layout';
 
 const ShowLocation: React.FC = () => {
   const router = useRouter();
@@ -28,32 +29,36 @@ const ShowLocation: React.FC = () => {
     }
   }, [id]);
 
-  if (loading || error || !location) {
+  if ((loading && !location) || error || !location) {
     return (
-      <Skeleton>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-      </Skeleton>
+      <Layout>
+        <Skeleton>
+          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        </Skeleton>
+      </Layout>
     );
   }
 
   return (
-    <Skeleton>
-      <Card style={{ marginTop: '12px' }} key={`event-${location.id}`}>
-        <ProgressCardContent loading={loading}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {location.address}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {`${location.region}, ${location.country_code}, ${location.postal_code}`}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {location.address}
-          </Typography>
-        </ProgressCardContent>
-      </Card>
+    <Layout>
+      <Skeleton>
+        <Card style={{ marginTop: '12px' }} key={`event-${location.id}`}>
+          <ProgressCardContent loading={loading && !location}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {location.address}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {`${location.region}, ${location.country_code}, ${location.postal_code}`}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {location.address}
+            </Typography>
+          </ProgressCardContent>
+        </Card>
 
-      <h3>Placeholder for venues...</h3>
-    </Skeleton>
+        <h3>Placeholder for venues...</h3>
+      </Skeleton>
+    </Layout>
   );
 };
 

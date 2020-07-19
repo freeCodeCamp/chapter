@@ -1,12 +1,11 @@
 import React from 'react';
-import { Card, Typography, Button } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { Card, Typography } from '@material-ui/core';
 import Link from 'next/link';
 
 import { IEventModal } from 'client/store/types/events';
-import { eventActions } from 'client/store/actions';
-import useConfirm from 'client/hooks/useConfirm';
 import { ProgressCardContent } from 'client/components';
+import Tags from './components/Tag';
+import Actions from './components/Actions';
 
 interface IEventItemProps {
   event: IEventModal;
@@ -14,15 +13,6 @@ interface IEventItemProps {
 }
 
 const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
-  const dispatch = useDispatch();
-
-  const [confirmCancel, clickCancel] = useConfirm(() =>
-    dispatch(eventActions.cancelEvent(1, event.id)),
-  );
-  const [confirmRemove, clickRemove] = useConfirm(() =>
-    dispatch(eventActions.removeEvent(1, event.id)),
-  );
-
   return (
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
@@ -47,20 +37,10 @@ const EventItem: React.FC<IEventItemProps> = ({ event, loading }) => {
         <Typography variant="body2" color="textSecondary" component="p">
           {event.capacity}
         </Typography>
-        {!event.canceled && (
-          <Button onClick={clickCancel}>
-            {confirmCancel ? 'Are you sure?' : 'Cancel'}
-          </Button>
-        )}
-        <Button onClick={clickRemove}>
-          {confirmRemove ? 'Are you sure?' : 'delete'}
-        </Button>
-        <Link
-          href={`/dashboard/events/[id]/edit`}
-          as={`/dashboard/events/${event.id}/edit`}
-        >
-          <a style={{ marginLeft: '10px' }}>Edit</a>
-        </Link>
+
+        <Tags tags={event.tags} />
+
+        <Actions event={event} />
       </ProgressCardContent>
     </Card>
   );

@@ -29,7 +29,7 @@ For new "user stories" please do the following:
 
 If you feel ready to contribute code to this project then you should follow the below steps:
 
-#### Step 1: Fork the repository on GitHub
+<details><summary>Step 1: Fork the repository on GitHub</summary>
 
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of Chapter's repository (a.k.a repo) on GitHub.
 
@@ -40,9 +40,9 @@ Follow these steps to fork the `https://github.com/freeCodeCamp/chapter` reposit
 2. Click the "Fork" Button in the upper right-hand corner of the interface ([Need help?](https://help.github.com/articles/fork-a-repo/)).
 3. After the repository has been forked, you will be taken to your copy of the Chapter repository at `https://github.com/YOUR_USER_NAME/chapter`.
 
-![an image illustrating the fork button](docs/images/how-to-fork.png)
-
-#### Step 2: Preparing the development environment
+![an image illustrating the fork button](docs/assets/how-to-fork.png)
+</details>
+<details><summary>Step 2: Preparing the development environment</summary>
 
 Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/). 
 
@@ -88,7 +88,9 @@ You need a reference from your local copy to the `upstream` repository in additi
     upstream    https://github.com/freeCodeCamp/chapter.git (push)
     ```
 
-#### Step 3: Making changes to Chapter codebase :fire:
+</details>
+
+<details><summary>Step 3: Making changes to Chapter codebase :fire:</summary>
 
 > **Note: Always follow the below steps before you start coding or working on an issue.**
 
@@ -239,10 +241,50 @@ You are now almost ready to make changes to files but before that you should **a
     ```sh
     git push origin fix/signin
     ```
+</details>
 
-#### Step 4: Proposing a Pull Request (PR)
+<details><summary>Step 4: Proposing a Pull Request (PR)</summary>
 
-After you've committed and pushed changes to your fork, check here for [how to open a Pull Request](/docs/how-to-open-a-pull-request.md).
+#### How to prepare a good Pull Request title:
+
+When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
+
+`fix/feat/chore/refactor/docs/perf (scope): PR Title`
+
+An example is `feat(client): night mode`.
+
+| Scope | Documentation |
+|---|---|
+| `api` | For Pull Requests making changes to the APIs, routes and its architecture |
+| `db` | For Pull Requests making changes related to database |
+| `client` | For Pull Requests making changes to client platform logic or user interface |
+| `docs` | For Pull Requests making changes to the project's documentation |
+
+#### Proposing a Pull Request (PR)
+
+1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on `Compare and Pull Request`.
+
+    ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
+
+2. By default, all pull requests should be against the Chapter main repo, `master` branch.
+
+    ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
+
+3. Submit the pull request from your branch to Chapter's `master` branch.
+
+4. In the body of your PR include a more detailed summary of the changes you made and why.
+
+    - You will be presented with a pull request template. This is a checklist that you should have followed before opening the pull request.
+
+    - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
+
+    - If the PR is meant to fix an existing bug/issue then, at the end of
+      your PR's description, append the keyword `closes` and #xxxx (where xxxx
+      is the issue number). Example: `closes #1337`. This tells GitHub to
+      automatically close the existing issue, if the PR is accepted and merged.
+
+You have successfully created a PR. Congratulations! :tada:
+</details>
 
 ## Frequently Asked Questions
 

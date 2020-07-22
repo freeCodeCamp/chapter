@@ -14,6 +14,10 @@ router.get(
   '/chapters/:chapterId/events/:id',
   asyncHandler(eventsController.show),
 );
+router.get(
+  '/chapters/:chapterId/events/:id/rsvps',
+  asyncHandler(eventsController.rsvps),
+);
 router.patch(
   '/chapters/:chapterId/events/:id',
   asyncHandler(eventsController.update),
@@ -21,6 +25,10 @@ router.patch(
 router.delete(
   '/chapters/:chapterId/events/:id',
   asyncHandler(eventsController.remove),
+);
+router.delete(
+  '/chapters/:chapterId/events/:id/cancel',
+  asyncHandler(eventsController.cancel),
 );
 
 export default router;

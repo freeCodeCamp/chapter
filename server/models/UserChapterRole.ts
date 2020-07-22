@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn, Column } from 'typeorm';
 import { User } from './User';
 import { Chapter } from './Chapter';
 
@@ -12,7 +12,7 @@ export class UserChapterRole {
   @PrimaryColumn()
   chapter_id!: number;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'text' })
   role_name!: ChapterRoles;
 
   @ManyToOne(_type => User)
@@ -23,15 +23,24 @@ export class UserChapterRole {
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 
+  /*
+    This indicates whether he use wants to receive notifications about this chapter.
+    Defaults to True when the user joins this chapter
+   */
+  @Column({ nullable: false })
+  interested: boolean;
+
   constructor(params: {
     userId: number;
     roleName: ChapterRoles;
     chapterId: number;
+    interested?: boolean;
   }) {
     if (params) {
       this.user_id = params.userId;
       this.role_name = params.roleName;
       this.chapter_id = params.chapterId;
+      this.interested = params.interested || true;
     }
   }
 }

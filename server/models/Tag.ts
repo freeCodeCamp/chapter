@@ -10,6 +10,7 @@ export class Tag extends BaseModel {
   @ManyToOne(
     _type => Event,
     event => event.tags,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'event_id' })
   event!: Event;

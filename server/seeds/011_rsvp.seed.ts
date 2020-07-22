@@ -6,9 +6,9 @@ import { Rsvp } from '../models/Rsvp';
 
 export default class CreateRsvp implements Seeder {
   public async run(factory: Factory): Promise<any> {
-    const user = await User.findOne();
+    const user = await User.find();
     const event = await Event.findOne();
 
-    await factory(Rsvp)({ user, event }).seedMany(5);
+    await Promise.all(user.map(user => factory(Rsvp)({ user, event }).seed()));
   }
 }

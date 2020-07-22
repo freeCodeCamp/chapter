@@ -1,4 +1,4 @@
-import { ThunkAction } from 'redux-thunk';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AppStoreState } from '../reducers';
 
 import * as ACTIONS from './actions/chapter';
@@ -40,5 +40,11 @@ export type ThunkResult<R> = ThunkAction<
   R,
   AppStoreState,
   null,
+  IChapterActionTypes
+>;
+
+export type AppDispatch = ThunkDispatch<
+  AppStoreState,
+  any,
   IChapterActionTypes
 >;

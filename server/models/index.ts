@@ -10,5 +10,5 @@ export * from './Sponsor';
 export * from './Tag';
 export * from './User';
 export * from './UserBan';
-export * from './UserChapter';
+export * from './UserChapterRole';
 export * from './Venue';

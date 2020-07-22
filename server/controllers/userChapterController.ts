@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Chapter, User } from 'server/models';
-import { UserChapter } from 'server/models/UserChapter';
+import { UserChapterRole } from 'server/models/UserChapterRole';
 
 // The whole model is a json response, fix that if there's some sensitive data here
 
@@ -12,14 +12,15 @@ export default {
     const user = await User.findOne({ id: user_id });
 
     if (chapter && user) {
-      const userChapter = new UserChapter({
-        user,
-        chapter,
+      const userChapterRole = new UserChapterRole({
+        userId: user_id,
+        chapterId: chapter_id,
+        roleName: 'member',
       });
 
       try {
-        await userChapter.save();
-        res.status(201).json(userChapter);
+        await userChapterRole.save();
+        res.status(201).json(userChapterRole);
       } catch (e) {
         res.status(500).json({ error: e });
       }
@@ -29,13 +30,13 @@ export default {
   },
   async ban(req: Request, res: Response) {
     const { id, user_id } = req.params;
-    const userChapter = await UserChapter.findOne({
+    const userChapterRole = await UserChapterRole.findOne({
       where: { user_id: parseInt(user_id), chapter_id: parseInt(id) },
     });
 
-    if (userChapter) {
+    if (userChapterRole) {
       try {
-        await userChapter.remove();
+        await userChapterRole.remove();
         res.status(201).json({ id, user_id });
       } catch (e) {
         res.json(500).json({ error: e });

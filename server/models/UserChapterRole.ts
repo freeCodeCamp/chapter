@@ -1,11 +1,12 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn, Column } from 'typeorm';
 import { User } from './User';
 import { Chapter } from './Chapter';
+import { BaseModel } from './BaseModel';
 
 export type ChapterRoles = 'organizer' | 'member';
 
 @Entity({ name: 'user_chapter_roles' })
-export class UserChapterRole {
+export class UserChapterRole extends BaseModel {
   @PrimaryColumn()
   user_id!: number;
 
@@ -36,6 +37,7 @@ export class UserChapterRole {
     chapterId: number;
     interested?: boolean;
   }) {
+    super();
     if (params) {
       this.user_id = params.userId;
       this.role_name = params.roleName;

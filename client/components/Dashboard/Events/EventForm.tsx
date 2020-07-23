@@ -49,7 +49,7 @@ const EventForm: React.FC<IEventFormProps> = ({
   const { control, handleSubmit } = useForm();
   const styles = useFormStyles();
 
-  const [venueId, setVenueId] = useState<number | undefined>(0);
+  const [venueId, setVenueId] = useState<number | undefined>(1);
 
   useEffect(() => {
     const newValue = (data && data.venue) || (venues[0] && venues[0].id) || 0;
@@ -91,7 +91,9 @@ const EventForm: React.FC<IEventFormProps> = ({
             labelId="venue-label"
             required
             value={venueId}
-            onChange={e => setVenueId(e.target.value as number)}
+            onChange={e => {
+              setVenueId(e.target.value as number);
+            }}
           >
             {venues.map(venue => (
               <MenuItem value={venue.id} key={venue.id}>

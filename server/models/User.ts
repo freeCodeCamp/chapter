@@ -3,7 +3,6 @@ import { BaseModel } from './BaseModel';
 import { SocialProviderUser } from './SocialProviderUser';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
-import { UserChapter } from './UserChapter';
 import { UserBan } from './UserBan';
 import { UserChapterRole } from './UserChapterRole';
 import { UserInstanceRole } from './UserInstanceRole';
@@ -38,10 +37,10 @@ export class User extends BaseModel {
   rsvps!: Rsvp[];
 
   @OneToMany(
-    _type => UserChapter,
+    _type => UserChapterRole,
     chapter => chapter.user,
   )
-  chapters!: UserChapter[];
+  chapters!: UserChapterRole[];
 
   @OneToMany(
     _type => UserBan,

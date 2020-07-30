@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   db:
     image: postgres:11
@@ -7,16 +7,16 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      - '54320:5432'
+      - "54320:5432"
   app:
     depends_on:
       - db
-    image: node:13-alpine
-    command: 'npm run dev'
+    build: .
+    command: "npm run dev"
     working_dir: /usr/chapter
     environment:
       - DB_URL=db
     volumes:
       - .:/usr/chapter
     ports:
-      - '8000:8000'
+      - "8000:8000"

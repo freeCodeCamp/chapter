@@ -1,10 +1,18 @@
 import { company, lorem } from 'faker';
-import { Event, Venue, Chapter } from '../../../server/models';
-import { randomItem, random } from '../lib/random';
+import {
+  Event,
+  Venue,
+  Chapter,
+  Sponsor,
+  EventSponsor,
+  Tag,
+} from '../../../server/models';
+import { randomItem, random, randomItems } from '../lib/random';
 
 const createEvents = async (
   chapters: Chapter[],
   venues: Venue[],
+  sponsors: Sponsor[],
 ): Promise<Event[]> => {
   const events: Event[] = [];
 
@@ -19,6 +27,21 @@ const createEvents = async (
       start_at: new Date(),
       ends_at: new Date(Date.now() + 1000 * 60 * 60 * 5 * Math.random()),
     });
+
+    await event.save();
+
+    await Promise.all(
+      randomItems(sponsors, 2)
+        .map(sponsor => new EventSponsor({ event, sponsor }))
+        .map(es => es.save()),
+    );
+
+    await Promise.all(
+      Array.from(new Array(1 + random(5)), () => {
+        const tag = new Tag({ event, name: lorem.words(1 + random(3)) });
+        return tag.save();
+      }),
+    );
 
     events.push(event);
   }

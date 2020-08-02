@@ -6,6 +6,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import theme from '../styles/theme';
 import { rootReducer } from '../store/reducers';
@@ -21,6 +22,11 @@ const store = createStore(
   composeEnhancers(applyMiddleware(thunk)),
 );
 
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/graphql',
+  cache: new InMemoryCache(),
+});
+
 export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
@@ -35,14 +41,16 @@ export default class MyApp extends App {
           />
           <meta name="theme-color" content={theme.palette.primary.main} />
         </Head>
-        <Provider store={store}>
-          <MaterialUIThemeProvider theme={theme}>
-            <CssBaseline />
-            <PageLayout>
-              <Component {...pageProps} />
-            </PageLayout>
-          </MaterialUIThemeProvider>
-        </Provider>
+        <ApolloProvider client={client}>
+          <Provider store={store}>
+            <MaterialUIThemeProvider theme={theme}>
+              <CssBaseline />
+              <PageLayout>
+                <Component {...pageProps} />
+              </PageLayout>
+            </MaterialUIThemeProvider>
+          </Provider>
+        </ApolloProvider>
       </>
     );
   }

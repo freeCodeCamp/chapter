@@ -1,9 +1,9 @@
 module.exports = {
   schema: [{ 'http://localhost:4000/graphql': {} }],
-  documents: ['./src/**/*.tsx'],
+  documents: ['./src/**/graphql/*.ts'],
   overwrite: true,
   generates: {
-    './generated/index.tsx': {
+    './src/generated/index.tsx': {
       plugins: [
         'typescript',
         'typescript-operations',

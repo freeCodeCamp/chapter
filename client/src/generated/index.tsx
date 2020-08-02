@@ -279,7 +279,9 @@ export type UpdateVenueInputs = {
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChaptersQuery = { __typename?: 'Query' } & {
-  chapters: Array<{ __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name'>>;
+  chapters: Array<
+    { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name' | 'description'>
+  >;
 };
 
 export const ChaptersDocument = gql`
@@ -287,6 +289,7 @@ export const ChaptersDocument = gql`
     chapters {
       id
       name
+      description
     }
   }
 `;

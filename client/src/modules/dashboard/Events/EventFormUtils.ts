@@ -1,5 +1,5 @@
 import { IVenueModal } from 'client/store/types/venues';
-import { IEventModal } from 'client/store/types/events';
+import { IEventModal } from '../../Events/components/node_modules/client/store/types/events';
 
 export interface IField {
   key: string;

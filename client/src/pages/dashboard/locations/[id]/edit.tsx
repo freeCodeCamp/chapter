@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import { locationActions } from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
+import { locationActions } from '../../../../modules/dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
-import useThunkDispatch from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
+import useThunkDispatch from '../../../../modules/dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import { LocationForm, Skeleton } from 'client/components/Dashboard/Locations';
 import Layout from 'client/components/Dashboard/shared/Layout';
 

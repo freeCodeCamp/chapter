@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button, TextField, FormControl } from '@material-ui/core';
-import useFormStyles from '../../shared/components/formStyles';
+import useFormStyles from '../shared/components/formStyles';
 
 const fields = ['country_code', 'city', 'region', 'postal_code', 'address'];
 

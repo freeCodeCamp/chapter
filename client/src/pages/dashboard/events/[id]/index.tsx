@@ -6,10 +6,10 @@ import { useRouter } from 'next/router';
 import {
   eventActions,
   venueActions,
-} from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
+} from '../../../../modules/dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import { ProgressCardContent } from '../../../../modules/dashboard/Dashboard/Events/node_modules/client/components';
-import useThunkDispatch from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
+import useThunkDispatch from '../../../../modules/dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Events/Skeleton';
 import Layout from 'client/components/Dashboard/shared/Layout';
 import Tags from 'client/components/Dashboard/Events/components/Tag';

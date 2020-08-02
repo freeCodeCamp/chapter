@@ -6,9 +6,9 @@ import { makeStyles } from '@material-ui/core';
 import {
   eventActions,
   venueActions,
-} from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
+} from '../../../../modules/dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import useThunkDispatch from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
+import useThunkDispatch from '../../../../modules/dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Events/Skeleton';
 import { EventForm } from 'client/components/Dashboard/Events';
 import Layout from 'client/components/Dashboard/shared/Layout';

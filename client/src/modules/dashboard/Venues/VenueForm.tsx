@@ -12,7 +12,7 @@ import {
 import { ILocationModal } from 'client/store/types/locations';
 import getLocationString from 'client/helpers/getLocationString';
 import { IVenueModal } from 'client/store/types/venues';
-import useFormStyles from '../../shared/components/formStyles';
+import useFormStyles from '../shared/components/formStyles';
 
 interface IData {
   name: string;

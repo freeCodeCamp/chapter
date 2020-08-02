@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { Card, Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import { locationActions } from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
+import { locationActions } from '../../../../modules/dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import { ProgressCardContent } from '../../../../modules/dashboard/Dashboard/Events/node_modules/client/components';
-import useThunkDispatch from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
+import useThunkDispatch from '../../../../modules/dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Locations/Skeleton';
 import Layout from 'client/components/Dashboard/shared/Layout';
 

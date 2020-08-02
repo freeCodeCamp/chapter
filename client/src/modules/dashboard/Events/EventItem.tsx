@@ -2,10 +2,10 @@ import React from 'react';
 import { Card, Typography } from '@material-ui/core';
 import Link from 'next/link';
 
-import { IEventModal } from 'client/store/types/events';
+import { IEventModal } from '../../Events/components/node_modules/client/store/types/events';
 import { ProgressCardContent } from 'client/components';
-import Tags from './components/Tag';
-import Actions from './components/Actions';
+import Tags from '../../Events/components/Tag';
+import Actions from '../../Events/components/Actions';
 
 interface IEventItemProps {
   event: IEventModal;

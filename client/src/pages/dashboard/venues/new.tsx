@@ -6,10 +6,10 @@ import { useRouter } from 'next/router';
 import {
   locationActions,
   venueActions,
-} from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
+} from '../../../modules/dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
-import useThunkDispatch from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
+import useThunkDispatch from '../../../modules/dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import { VenueForm, Skeleton } from 'client/components/Dashboard/Venues/';
 import Layout from 'client/components/Dashboard/shared/Layout';
 

@@ -6,7 +6,7 @@ Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your 
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
-You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements. 
+You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
 
 ## Here are some ways to help us
 
@@ -18,7 +18,7 @@ Keep in mind that our focused discussions take place within GitHub [Issues](http
 
 Before opening a new issue, please search through current issues to verify that you are not creating a duplicate issue.
 
-If you can't find what you were looking for then [open a new issue](https://github.com/freeCodeCamp/chapter/issues/new/choose) to share your views or to report bugs. 
+If you can't find what you were looking for then [open a new issue](https://github.com/freeCodeCamp/chapter/issues/new/choose) to share your views or to report bugs.
 
 For new "user stories" please do the following:
 
@@ -44,7 +44,7 @@ Follow these steps to fork the `https://github.com/freeCodeCamp/chapter` reposit
 </details>
 <details><summary>Step 2: Preparing the development environment</summary>
 
-Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/). 
+Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/).
 
 Clone your copy of Chapter. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
 
@@ -119,7 +119,7 @@ You are now almost ready to make changes to files but before that you should **a
 
     > **Note:** If you have any outstanding Pull Request that you made from the `master` branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 
-    This step **will sync the latest changes** from the main repository of chapter. 
+    This step **will sync the latest changes** from the main repository of chapter.
 
     Update your local copy of the freeCodeCamp upstream repository:
     ```sh

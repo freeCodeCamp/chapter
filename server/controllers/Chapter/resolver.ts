@@ -1,5 +1,5 @@
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
-import { Chapter, Location, User } from '../../models';
+import { Chapter, User } from '../../models';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -16,13 +16,10 @@ export class ChapterResolver {
 
   @Mutation(() => Chapter)
   async createChapter(@Arg('data') data: CreateChapterInputs) {
-    const location = await Location.findOne(data.locationId);
-    if (!location) throw new Error('Cant find location');
-
     // TODO: Use logged in user
     const user = await User.findOne();
 
-    const chapter = new Chapter({ ...data, location, creator: user });
+    const chapter = new Chapter({ ...data, creator: user });
 
     return chapter.save();
   }
@@ -36,15 +33,13 @@ export class ChapterResolver {
 
     if (!chapter) throw new Error('Cant find chapter');
 
-    if (data.locationId) {
-      const location = await Location.findOne(data.locationId);
-      if (!location) throw new Error('Cant find location');
-      chapter.location = location;
-    }
-
     chapter.name = data.name ?? chapter.name;
     chapter.description = data.description ?? chapter.description;
     chapter.category = data.category ?? chapter.category;
+    chapter.details = data.details ?? chapter.details;
+    chapter.city = data.city ?? chapter.city;
+    chapter.region = data.region ?? chapter.region;
+    chapter.country = data.country ?? chapter.country;
 
     return chapter.save();
   }

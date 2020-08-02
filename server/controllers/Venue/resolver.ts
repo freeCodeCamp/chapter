@@ -1,5 +1,5 @@
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
-import { Venue, Location } from '../../models';
+import { Venue } from '../../models';
 import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
 
 @Resolver()
@@ -16,11 +16,7 @@ export class VenueResolver {
 
   @Mutation(() => Venue)
   async createVenue(@Arg('data') data: CreateVenueInputs) {
-    const location = await Location.findOne(data.locationId);
-
-    if (!location) throw new Error('Cant find location');
-
-    const venue = new Venue({ name: data.name, location });
+    const venue = new Venue({ ...data });
     return venue.save();
   }
 
@@ -32,13 +28,14 @@ export class VenueResolver {
     const venue = await Venue.findOne(id);
     if (!venue) throw new Error('Cant find venue');
 
-    if (data.locationId) {
-      const location = await Location.findOne(data.locationId);
-      if (!location) throw new Error('Cant find location');
-      venue.location = location;
-    }
-
     venue.name = data.name ?? venue.name;
+    venue.street_address = data.street_address ?? venue.street_address;
+    venue.city = data.city ?? venue.city;
+    venue.postal_code = data.postal_code ?? venue.postal_code;
+    venue.region = data.region ?? venue.region;
+    venue.country = data.country ?? venue.country;
+    venue.latitude = data.latitude ?? venue.latitude;
+    venue.longitude = data.longitude ?? venue.longitude;
 
     return venue.save();
   }

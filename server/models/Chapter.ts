@@ -2,7 +2,6 @@ import { Column, Entity, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from 'type-graphql';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
-import { Location } from './Location';
 import { User } from './User';
 import { UserChapterRole } from './UserChapterRole';
 import { UserBan } from './UserBan';
@@ -27,20 +26,24 @@ export class Chapter extends BaseModel {
   @Column({ type: 'json' })
   details!: any;
 
+  @Field(() => String)
+  @Column()
+  city: string;
+
+  @Field(() => String)
+  @Column()
+  region: string;
+
+  @Field(() => String)
+  @Column()
+  country: string;
+
   @Field(() => [Event])
   @OneToMany(
     _type => Event,
     event => event.chapter,
   )
   events!: Event[];
-
-  @Field(() => Location)
-  @ManyToOne(
-    _type => Location,
-    location => location.chapters,
-  )
-  @JoinColumn({ name: 'location_id' })
-  location!: Location;
 
   @Field(() => User)
   @ManyToOne(
@@ -69,25 +72,22 @@ export class Chapter extends BaseModel {
     description: string;
     category: string;
     details?: any;
-    location?: Location;
+    city: string;
+    region: string;
+    country: string;
     creator?: User;
   }) {
     super();
     if (params) {
-      const {
-        name,
-        description,
-        category,
-        details,
-        location,
-        creator,
-      } = params;
+      const { creator } = params;
 
-      this.name = name;
-      this.description = description;
-      this.category = category;
-      this.details = details || '';
-      location && (this.location = location);
+      this.name = params.name;
+      this.description = params.description;
+      this.category = params.category;
+      this.details = params.details;
+      this.city = params.city;
+      this.region = params.region;
+      this.country = params.country;
       creator && (this.creator = creator);
     }
   }

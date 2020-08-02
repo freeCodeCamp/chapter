@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
 import createUsers from './factories/user.factory';
-import createLocations from './factories/locations.factory';
 import createChapters from './factories/chapters.factory';
 import createVenues from './factories/venues.factory';
 import createEvents from './factories/events.factory';
@@ -14,11 +13,10 @@ import setupRoles from './setupRoles';
   const connection = await createConnection();
 
   const [user, users] = await createUsers();
-  const locations = await createLocations();
   const sponsors = await createSponsors();
 
-  const chapters = await createChapters(locations, user);
-  const venues = await createVenues(locations);
+  const chapters = await createChapters(user);
+  const venues = await createVenues();
 
   const events = await createEvents(chapters, venues, sponsors);
 

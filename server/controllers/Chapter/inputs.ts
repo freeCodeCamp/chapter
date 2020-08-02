@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from 'type-graphql';
+import { InputType, Field } from 'type-graphql';
 
 @InputType()
 export class CreateChapterInputs {
@@ -11,23 +11,39 @@ export class CreateChapterInputs {
   @Field(() => String)
   category: string;
 
-  // details: any;
-  @Field(() => Int)
-  locationId: number;
+  @Field(() => String, { nullable: true })
+  details?: any;
+
+  @Field(() => String)
+  city: string;
+
+  @Field(() => String)
+  region: string;
+
+  @Field(() => String)
+  country: string;
 }
 
 @InputType()
 export class UpdateChapterInputs {
   @Field(() => String, { nullable: true })
-  name?: string;
+  name: string;
 
   @Field(() => String, { nullable: true })
-  description?: string;
+  description: string;
 
   @Field(() => String, { nullable: true })
-  category?: string;
+  category: string;
 
-  // details: any;
-  @Field(() => Int, { nullable: true })
-  locationId?: number;
+  @Field(() => String, { nullable: true })
+  details?: any;
+
+  @Field(() => String, { nullable: true })
+  city: string;
+
+  @Field(() => String, { nullable: true })
+  region: string;
+
+  @Field(() => String, { nullable: true })
+  country: string;
 }

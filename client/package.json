@@ -1,0 +1,41 @@
+{
+  "name": "chapter-client",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "gen": "graphql-codegen --config codegen.js"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.1.1",
+    "@material-ui/core": "^4.5.2",
+    "@material-ui/icons": "^4.5.1",
+    "@types/react-redux": "^7.1.7",
+    "graphql": "^15.3.0",
+    "immer": "^3.2.0",
+    "next": "^9.5.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hook-form": "^4.9.3",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.17.7",
+    "@graphql-codegen/introspection": "1.17.7",
+    "@graphql-codegen/typescript": "1.17.7",
+    "@graphql-codegen/typescript-operations": "1.17.7",
+    "@graphql-codegen/typescript-react-apollo": "1.17.7",
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.44",
+    "@types/react-dom": "^16.9.8",
+    "typescript": "^3.9.7",
+    "@graphql-codegen/typescript-graphql-files-modules": "1.17.7",
+    "@graphql-codegen/typescript-document-nodes": "1.17.7",
+    "@graphql-codegen/fragment-matcher": "1.17.7"
+  },
+  "license": "MIT"
+}

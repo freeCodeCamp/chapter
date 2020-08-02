@@ -1,14 +1,17 @@
-import { company } from 'faker';
-import { Location, Venue } from '../../../server/models';
-import { randomItem } from '../lib/random';
+import { company, address } from 'faker';
+import { Venue } from '../../../server/models';
 
-const createVenues = async (locations: Location[]): Promise<Venue[]> => {
+const createVenues = async (): Promise<Venue[]> => {
   const venues: Venue[] = [];
 
   for (let i = 0; i < 4; i++) {
     const venue = new Venue({
       name: company.companyName(),
-      location: randomItem(locations),
+      city: address.city(),
+      region: address.state(),
+      postal_code: address.zipCode(),
+      country: address.country(),
+      street_address: Math.random() > 0.5 ? address.streetAddress() : undefined,
     });
 
     venues.push(venue);

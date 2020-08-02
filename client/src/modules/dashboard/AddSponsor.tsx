@@ -34,7 +34,7 @@ const AddSponsor: React.FC = () => {
   // const eventId = useSelector(state => state.selectedChapter.eventId);
   // const chapterId = useSelector(state => state.selectedChapter.id);
 
-  const onSubmit = async data => {
+  const onSubmit = async (data: any) => {
     try {
       // await dispatch(sponsorActions.submit(eventId, chapterId));
       setResponseMsg(`${data.name} has been added as a ${data.type} sponsor.`);

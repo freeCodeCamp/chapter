@@ -1,7 +1,8 @@
-import { name } from 'faker';
+import { name, internet } from 'faker';
 import { User } from '../../../server/models';
+import { random } from '../lib/random';
 
-const createUsers = async (): Promise<User[]> => {
+const createUsers = async (): Promise<[User, User[]]> => {
   // TODO: add seeding admin
   const user = new User({
     email: 'foo@bar.com',
@@ -9,14 +10,24 @@ const createUsers = async (): Promise<User[]> => {
     last_name: name.lastName(),
   });
 
+  const others = Array.from(
+    new Array(random(5)),
+    () =>
+      new User({
+        email: internet.email(),
+        first_name: name.firstName(),
+        last_name: name.lastName(),
+      }),
+  );
+
   try {
-    await user.save();
+    await Promise.all([user, ...others].map(u => u.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding users');
   }
 
-  return [user];
+  return [user, others];
 };
 
 export default createUsers;

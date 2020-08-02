@@ -21,7 +21,7 @@ import createSponsors from './factories/sponsors.factory';
   const events = await createEvents(chapters, venues, sponsors);
 
   // console.log last thing or ts will complain
-  console.log(chapters.length, venues.length);
+  console.log(events.length);
 
   await connection.close();
 })();

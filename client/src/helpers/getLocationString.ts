@@ -1,13 +1,19 @@
-import { ILocationModal } from '../modules/dashboard/Dashboard/Locations/node_modules/client/store/types/locations';
+interface PartialLocation {
+  street_address?: string | null;
+  city: string;
+  postal_code?: string;
+  region: string;
+  country: string;
+}
 
 const getLocationString = (
-  location: ILocationModal,
+  venue: PartialLocation,
   withCity = false,
 ): string => {
-  const base = `${location.region}, ${location.country_code}, ${location.postal_code}`;
+  const base = `${venue.region}, ${venue.country}, ${venue.postal_code}`;
 
   if (withCity) {
-    return `${base}, ${location.city}`;
+    return `${base}, ${venue.city}`;
   }
 
   return base;

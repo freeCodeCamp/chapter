@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, makeStyles } from '@material-ui/core';
 import Link from 'next/link';
 
-import ProgressCardContent from 'client/components/ProgressCardContent';
-import { IVenueModal } from 'client/store/types/venues';
-import getLocationString from 'client/helpers/getLocationString';
-// import { venueActions } from 'client/store/actions';
-// import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { Venue } from '../../../../generated';
+import { ProgressCardContent } from '../../../../components';
+import getLocationString from '../../../../helpers/getLocationString';
 
 interface IVenueItemProps {
-  venue: IVenueModal;
+  venue: Omit<Omit<Omit<Venue, 'events'>, 'created_at'>, 'updated_at'>;
   loading: boolean;
 }
 
@@ -25,8 +23,6 @@ const useStyles = makeStyles(() => ({
 
 const VenueItem: React.FC<IVenueItemProps> = ({ venue, loading }) => {
   const [allow, setAllow] = useState<boolean>(false);
-  // const dispatch = useThunkDispatch();
-
   const styles = useStyles();
 
   const remove = () => {
@@ -58,11 +54,9 @@ const VenueItem: React.FC<IVenueItemProps> = ({ venue, loading }) => {
             <h1>{venue.name}</h1>
           </a>
         </Link>
-        {venue.location && (
-          <Typography variant="body2" color="textSecondary" component="p">
-            {getLocationString(venue.location, true)}
-          </Typography>
-        )}
+        <Typography variant="body2" color="textSecondary" component="p">
+          {getLocationString(venue, true)}
+        </Typography>
 
         <div className={styles.bottom}>
           {allow ? (

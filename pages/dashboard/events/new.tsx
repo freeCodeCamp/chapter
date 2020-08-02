@@ -48,7 +48,7 @@ const CreateEvent: React.FC = () => {
           venuesLoading={venuesLoading}
           venues={venues}
           onSubmit={onSubmit}
-          submitText={'Add event'}
+          submitText={state === 'loading' ? 'Creating event...' : 'Add event'}
         />
       </Skeleton>
     </Layout>

@@ -23,15 +23,24 @@ const EditEvent: React.FC = () => {
   const id = parseInt(Array.isArray(rawId) ? rawId[0] : rawId);
   const styles = useStyles();
 
-  const { error, loading, event, venues, venuesLoading } = useSelector(
-    (state: AppStoreState) => ({
-      error: state.events.error,
-      loading: state.events.loading,
-      event: state.events.events.find(event => event.id === id),
-      venues: state.venues.venues,
-      venuesLoading: state.venues.loading,
-    }),
-  );
+  const {
+    error,
+    loading,
+    event,
+    eventUpdateState,
+    venues,
+    venuesLoading,
+  } = useSelector((state: AppStoreState) => ({
+    error: state.events.error,
+    loading: state.events.loading,
+    event: state.events.events.find(event => event.id === id),
+    eventUpdateState:
+      state.events.update[id] !== undefined
+        ? state.events.update[id].state
+        : 'idle',
+    venues: state.venues.venues,
+    venuesLoading: state.venues.loading,
+  }));
   const dispatch = useThunkDispatch();
 
   useEffect(() => {
@@ -92,7 +101,11 @@ const EditEvent: React.FC = () => {
             data={event}
             venues={venues}
             venuesLoading={venuesLoading}
-            submitText={'Update event'}
+            submitText={
+              eventUpdateState === 'loading'
+                ? 'Updating event...'
+                : 'Update event'
+            }
           />
         )}
       </Skeleton>

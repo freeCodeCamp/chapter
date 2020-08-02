@@ -10,7 +10,7 @@ const sanitizeFormData = (data: Obj): Obj => {
     }
 
     return prev;
-  }, {});
+  }, {} as Obj);
 };
 
 export default sanitizeFormData;

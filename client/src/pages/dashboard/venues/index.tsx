@@ -3,11 +3,11 @@ import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 
-import { venueActions } from 'client/store/actions';
+import { venueActions } from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import VenueItem from 'client/components/Dashboard/Venues/VenueItem';
-import { IVenueModal } from 'client/store/types/venues';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { IVenueModal } from '../../../modules/dashboard/Dashboard/Events/node_modules/client/store/types/venues';
+import useThunkDispatch from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import Layout from 'client/components/Dashboard/shared/Layout';
 
 const Venues: React.FC = () => {

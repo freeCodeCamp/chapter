@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 
 import { AppStoreState } from 'client/store/reducers';
-import { eventActions } from 'client/store/actions';
-import { IEventModal } from 'client/store/types/events';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { eventActions } from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
+import { IEventModal } from '../../../modules/dashboard/Dashboard/Events/node_modules/client/store/types/events';
+import useThunkDispatch from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import EventItem from 'client/components/Dashboard/Events/EventItem';
 import Layout from 'client/components/Dashboard/shared/Layout';
 

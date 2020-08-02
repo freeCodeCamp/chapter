@@ -3,14 +3,17 @@ import { useSelector } from 'react-redux';
 import { Card, Typography, CardContent } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import { eventActions, venueActions } from 'client/store/actions';
+import {
+  eventActions,
+  venueActions,
+} from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import { ProgressCardContent } from 'client/components';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { ProgressCardContent } from '../../../../modules/dashboard/Dashboard/Events/node_modules/client/components';
+import useThunkDispatch from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import Skeleton from 'client/components/Dashboard/Events/Skeleton';
 import Layout from 'client/components/Dashboard/shared/Layout';
 import Tags from 'client/components/Dashboard/Events/components/Tag';
-import getLocationString from 'client/helpers/getLocationString';
+import getLocationString from '../../../../modules/dashboard/Dashboard/Venues/node_modules/client/helpers/getLocationString';
 import Actions from 'client/components/Dashboard/Events/components/Actions';
 
 const ShowEvent: React.FC = () => {

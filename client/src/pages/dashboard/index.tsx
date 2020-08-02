@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from 'client/components/Dashboard/shared/Layout';
+import Layout from '../../modules/dashboard/shared/components/Layout';
 
 const Dashboard: React.FC = () => {
   return (

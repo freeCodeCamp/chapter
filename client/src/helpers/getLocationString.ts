@@ -1,4 +1,4 @@
-import { ILocationModal } from 'client/store/types/locations';
+import { ILocationModal } from '../modules/dashboard/Dashboard/Locations/node_modules/client/store/types/locations';
 
 const getLocationString = (
   location: ILocationModal,

@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-
-import links from 'client/constants/DashboardLinks';
 import { makeStyles } from '@material-ui/core';
+
+import links from '../../../../constants/DashboardLinks';
 
 const useStyles = makeStyles(() => ({
   link: {

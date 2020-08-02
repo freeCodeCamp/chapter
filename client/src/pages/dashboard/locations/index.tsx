@@ -3,10 +3,10 @@ import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 
-import { locationActions } from 'client/store/actions';
+import { locationActions } from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
-import { ILocationModal } from 'client/store/types/locations';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import { ILocationModal } from '../../../modules/dashboard/Dashboard/Locations/node_modules/client/store/types/locations';
+import useThunkDispatch from '../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import LocationItem from 'client/components/Dashboard/Locations/LocationItem';
 import Layout from 'client/components/Dashboard/shared/Layout';
 

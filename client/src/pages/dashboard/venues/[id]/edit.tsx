@@ -3,11 +3,14 @@ import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import { venueActions, locationActions } from 'client/store/actions';
+import {
+  venueActions,
+  locationActions,
+} from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/store/actions';
 import { AppStoreState } from 'client/store/reducers';
 import { VenueForm, Skeleton } from 'client/components/Dashboard/Venues';
 import sanitizeFormData from 'client/helpers/sanitizeFormData';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
+import useThunkDispatch from '../../../../modules/dashboard/Dashboard/Events/components/node_modules/client/hooks/useThunkDispatch';
 import Layout from 'client/components/Dashboard/shared/Layout';
 
 const useStyles = makeStyles(() => ({

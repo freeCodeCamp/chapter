@@ -86,7 +86,7 @@ export class Chapter extends BaseModel {
       this.name = name;
       this.description = description;
       this.category = category;
-      this.details = details;
+      this.details = details || '';
       location && (this.location = location);
       creator && (this.creator = creator);
     }

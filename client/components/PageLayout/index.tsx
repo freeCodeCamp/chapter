@@ -3,7 +3,7 @@ import React from 'react';
 import Header from './Header';
 import usePageLayoutStyles from './pageLayout.styles';
 
-const PageLayout = ({ children }) => {
+const PageLayout: React.FC = ({ children }) => {
   const classes = usePageLayoutStyles();
   return (
     <>

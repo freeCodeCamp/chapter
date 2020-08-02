@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
 
-import { headerLinks } from 'client/constants/Header';
+import { headerLinks } from '../../constants/Header';
 
 const useStyles = makeStyles({
   link: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Header = ({ classes }) => {
+const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
   const styles = useStyles();
 
   return (

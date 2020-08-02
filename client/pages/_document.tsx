@@ -2,16 +2,17 @@ import * as React from 'react';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 import Document, { Head, Main, NextScript } from 'next/document';
 
-import theme from 'styles/theme';
+import theme from '../styles/theme';
+
 export default class MyDocument extends Document {
-  static async getInitialProps(ctx) {
+  static async getInitialProps(ctx: any) {
     const materialUISheet = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
 
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: App => props =>
+          enhanceApp: (App: any) => (props: any) =>
             materialUISheet.collect(<App {...props} />),
         });
 

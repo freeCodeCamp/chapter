@@ -1,15 +1,8 @@
 import * as React from 'react';
-import { AddSponsor } from 'client/components';
+import { AddSponsor } from '../components';
 
 const AddSponsorPage = () => {
-  return (
-    <>
-      <AddSponsor />
-      {
-        // TODO: page designs and styling
-      }
-    </>
-  );
+  return <AddSponsor />;
 };
 
 export default AddSponsorPage;

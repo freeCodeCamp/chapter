@@ -7,9 +7,9 @@ import thunk from 'redux-thunk';
 import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import theme from 'styles/theme';
-import { rootReducer } from 'client/store/reducers';
-import PageLayout from 'client/components/PageLayout';
+import theme from '../styles/theme';
+import { rootReducer } from '../store/reducers';
+import PageLayout from '../components/PageLayout';
 
 const composeEnhancers =
   (typeof window !== 'undefined' &&

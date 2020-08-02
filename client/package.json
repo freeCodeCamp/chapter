@@ -1,0 +1,31 @@
+{
+  "name": "chapter-client",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.5.2",
+    "@material-ui/icons": "^4.5.1",
+    "@types/react-redux": "^7.1.7",
+    "graphql": "^15.3.0",
+    "immer": "^3.2.0",
+    "next": "^9.5.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hook-form": "^4.9.3",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.44",
+    "@types/react-dom": "^16.9.8",
+    "typescript": "^3.9.7"
+  },
+  "license": "MIT"
+}

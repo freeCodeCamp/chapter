@@ -71,7 +71,7 @@ export class Chapter extends BaseModel {
     name: string;
     description: string;
     category: string;
-    // details: any;
+    details?: any;
     city: string;
     region: string;
     country: string;
@@ -84,7 +84,7 @@ export class Chapter extends BaseModel {
       this.name = params.name;
       this.description = params.description;
       this.category = params.category;
-      // this.details = details;
+      this.details = params.details;
       this.city = params.city;
       this.region = params.region;
       this.country = params.country;

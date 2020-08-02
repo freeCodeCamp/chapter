@@ -11,7 +11,7 @@
     "typeorm": "ts-node -P tsconfig.server.json ./node_modules/.bin/typeorm",
     "db:generate": "yarn typeorm migration:generate -n",
     "db:drop": "yarn typeorm schema:drop",
-    "db:seed": "ts-node ./db/generator/index.ts",
+    "db:seed": "ts-node -P tsconfig.server.json ./db/generator/index.ts",
     "db:migrate": "yarn typeorm migration:run",
     "db:reset": "yarn db:drop && yarn db:migrate && yarn db:seed",
     "start": "ts-node -P tsconfig.server.json ./server/app.ts",
@@ -52,6 +52,7 @@
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-response-errors": "^1.0.4",
+    "faker": "^4.1.0",
     "fork-ts-checker-webpack-plugin": "^1.5.1",
     "graphql": "^15.3.0",
     "immer": "^3.2.0",
@@ -116,8 +117,7 @@
     "sinon-chai": "^3.3.0",
     "supertest": "^4.0.2",
     "ts-jest": "^24.1.0",
-    "ts-node-dev": "^1.0.0-pre.56",
-    "typeorm-seeding": "^1.2.0"
+    "ts-node-dev": "^1.0.0-pre.56"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

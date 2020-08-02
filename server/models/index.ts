@@ -4,8 +4,6 @@ export * from './Event';
 export * from './EventSponsor';
 export * from './Location';
 export * from './Rsvp';
-export * from './SocialProvider';
-export * from './SocialProviderUser';
 export * from './Sponsor';
 export * from './Tag';
 export * from './User';

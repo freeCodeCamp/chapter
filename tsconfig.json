@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "server/*": ["server/*"],
-      "client/*": ["client/*"]
-    },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
@@ -31,6 +27,6 @@
     "isolatedModules": true,
     "types": ["jest", "node"]
   },
-  "include": ["client", "server", "pages", "types", "styles"],
+  "include": ["server"],
   "exclude": ["node_modules"]
 }

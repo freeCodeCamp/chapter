@@ -1,4 +1,5 @@
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { ObjectType, Field, Int } from 'type-graphql';
 import { BaseModel } from './BaseModel';
 import { Venue } from './Venue';
 import { Chapter } from './Chapter';
@@ -6,26 +7,34 @@ import { Tag } from './Tag';
 import { EventSponsor } from './EventSponsor';
 import { Rsvp } from './Rsvp';
 
+@ObjectType()
 @Entity({ name: 'events' })
 export class Event extends BaseModel {
+  @Field(() => String)
   @Column({ nullable: false })
   name!: string;
 
+  @Field(() => String)
   @Column({ nullable: false })
   description!: string;
 
+  @Field(() => Date)
   @Column({ type: 'timestamp' })
   start_at!: Date;
 
+  @Field(() => Date)
   @Column({ type: 'timestamp' })
   ends_at!: Date;
 
+  @Field(() => Boolean)
   @Column({ default: false })
   canceled!: boolean;
 
+  @Field(() => Int)
   @Column({ nullable: false })
   capacity!: number;
 
+  @Field(() => [EventSponsor])
   @OneToMany(
     _type => EventSponsor,
     eventSponsor => eventSponsor.sponsor,
@@ -33,6 +42,7 @@ export class Event extends BaseModel {
   )
   sponsors!: EventSponsor[];
 
+  @Field(() => Venue)
   @ManyToOne(
     _type => Venue,
     venue => venue.events,
@@ -40,6 +50,7 @@ export class Event extends BaseModel {
   @JoinColumn({ name: 'venue_id' })
   venue!: Venue;
 
+  @Field(() => Chapter)
   @ManyToOne(
     _type => Chapter,
     chapter => chapter.events,
@@ -47,6 +58,7 @@ export class Event extends BaseModel {
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 
+  @Field(() => [Rsvp])
   @OneToMany(
     _type => Rsvp,
     rsvp => rsvp.event,
@@ -54,6 +66,7 @@ export class Event extends BaseModel {
   )
   rsvps!: Rsvp[];
 
+  @Field(() => [Tag])
   @OneToMany(
     _type => Tag,
     tag => tag.event,

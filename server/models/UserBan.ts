@@ -2,9 +2,12 @@ import { Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { User } from './User';
 import { Chapter } from './Chapter';
+import { ObjectType, Field } from 'type-graphql';
 
+@ObjectType()
 @Entity({ name: 'user_bans' })
 export class UserBan extends BaseModel {
+  @Field(() => User)
   @ManyToOne(
     _type => User,
     user => user.banned_chapters,
@@ -12,6 +15,7 @@ export class UserBan extends BaseModel {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
+  @Field(() => Chapter)
   @ManyToOne(
     _type => Chapter,
     chapter => chapter.banned_users,

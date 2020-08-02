@@ -3,12 +3,10 @@ import express from 'express';
 import morgan from 'morgan';
 import isDocker from 'is-docker';
 import { responseErrorHandler } from 'express-response-errors';
-import swaggerUi from 'swagger-ui-express';
 
 import nextjs from 'server/lib/next';
 import { initDB } from 'server/db';
 import { apiV1 } from './routes';
-import swaggerDocument from '../api/swagger.json';
 
 dotenv.config();
 
@@ -36,8 +34,6 @@ nextjs.nextApp.prepare().then(async () => {
   );
   app.use(express.json());
   app.use(express.static('public'));
-
-  app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   app.use(apiV1);
 

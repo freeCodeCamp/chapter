@@ -1,59 +1,63 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
-import { SocialProviderUser } from './SocialProviderUser';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
 import { UserBan } from './UserBan';
 import { UserChapterRole } from './UserChapterRole';
 import { UserInstanceRole } from './UserInstanceRole';
+import { ObjectType, Field } from 'type-graphql';
 
+@ObjectType()
 @Entity({ name: 'users' })
 export class User extends BaseModel {
+  @Field(() => String)
   @Column()
   first_name!: string;
 
+  @Field(() => String)
   @Column()
   last_name!: string;
 
+  @Field(() => String)
   @Column()
   email!: string;
 
-  @OneToMany(
-    _type => SocialProviderUser,
-    socialProviderUser => socialProviderUser.user,
-  )
-  social_providers!: SocialProviderUser[];
-
+  @Field(() => [Chapter])
   @OneToMany(
     _type => Chapter,
     chapter => chapter.creator,
   )
   created_chapters!: Chapter[];
 
+  @Field(() => [Rsvp])
   @OneToMany(
     _type => Rsvp,
     rsvp => rsvp.user,
   )
   rsvps!: Rsvp[];
 
+  @Field(() => [UserChapterRole])
   @OneToMany(
     _type => UserChapterRole,
     chapter => chapter.user,
   )
   chapters!: UserChapterRole[];
 
+  @Field(() => [UserBan])
   @OneToMany(
     _type => UserBan,
     userBan => userBan.user,
   )
   banned_chapters!: UserBan[];
 
+  @Field(() => [UserChapterRole])
   @OneToMany(
     _type => UserChapterRole,
     userChapterRole => userChapterRole.user,
   )
   chapter_roles!: UserChapterRole[];
 
+  @Field(() => [UserInstanceRole])
   @OneToMany(
     _type => UserInstanceRole,
     userInstanceRole => userInstanceRole.user,

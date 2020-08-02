@@ -2,15 +2,20 @@ import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { User } from './User';
+import { ObjectType, Field } from 'type-graphql';
 
+@ObjectType()
 @Entity({ name: 'rsvps' })
 export class Rsvp extends BaseModel {
+  @Field(() => Date)
   @Column({ type: 'timestamp', nullable: false })
   date!: Date;
 
+  @Field(() => Boolean)
   @Column({ nullable: false })
   on_waitlist!: boolean;
 
+  @Field(() => Event)
   @ManyToOne(
     _type => Event,
     event => event.rsvps,
@@ -18,6 +23,7 @@ export class Rsvp extends BaseModel {
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
+  @Field(() => User)
   @ManyToOne(
     _type => User,
     user => user.rsvps,
@@ -29,6 +35,7 @@ export class Rsvp extends BaseModel {
   This indicates whether he user decided to cancel their RSVP.
   Defaults to False when the RSVP is created
  */
+  @Field(() => Boolean)
   @Column({ nullable: false })
   canceled: boolean;
 
@@ -36,6 +43,7 @@ export class Rsvp extends BaseModel {
     This indicates whether he use wants to receive notifications about the event they RSVP'd to.
     Defaults to True when the RSVP is created
    */
+  @Field(() => Boolean)
   @Column({ nullable: false })
   interested: boolean;
 

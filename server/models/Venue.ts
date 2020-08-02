@@ -1,14 +1,14 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
-import { Field, ObjectType, Float, Int } from 'type-graphql';
+import { Field, ObjectType, Float } from 'type-graphql';
 
 interface IVenueProps {
   name: string;
   events?: Event[];
-  street_address: string;
+  street_address?: string;
   city: string;
-  postal_code: number;
+  postal_code: string;
   region: string;
   country: string;
   latitude?: number;
@@ -29,17 +29,17 @@ export class Venue extends BaseModel {
   )
   events!: Event[];
 
-  @Field(() => String)
-  @Column()
-  street_address: string;
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  street_address?: string;
 
   @Field(() => String)
   @Column()
   city: string;
 
-  @Field(() => Int)
+  @Field(() => String)
   @Column()
-  postal_code: number;
+  postal_code: string;
 
   @Field(() => String)
   @Column()

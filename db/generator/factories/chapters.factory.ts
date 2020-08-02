@@ -1,11 +1,7 @@
-import { company, lorem } from 'faker';
-import { Location, Chapter, User } from '../../../server/models';
-import { randomItem } from '../lib/random';
+import { company, lorem, address } from 'faker';
+import { Chapter, User } from '../../../server/models';
 
-const createChapters = async (
-  locations: Location[],
-  user: User,
-): Promise<Chapter[]> => {
+const createChapters = async (user: User): Promise<Chapter[]> => {
   const chapters: Chapter[] = [];
 
   for (let i = 0; i < 4; i++) {
@@ -20,7 +16,9 @@ const createChapters = async (
       category,
       details: 'random',
       creator: user,
-      location: randomItem(locations),
+      country: address.country(),
+      city: address.city(),
+      region: address.state(),
     });
 
     chapters.push(chapter);

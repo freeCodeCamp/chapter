@@ -1,5 +1,5 @@
 import { address } from 'faker';
-import { Location } from '../../server/models';
+import { Location } from '../../../server/models';
 
 const createLocations = async (): Promise<Location[]> => {
   const locations: Location[] = [];

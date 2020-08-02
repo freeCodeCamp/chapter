@@ -1,5 +1,5 @@
 import { name } from 'faker';
-import { User } from '../../server/models';
+import { User } from '../../../server/models';
 
 const createUsers = async (): Promise<User[]> => {
   // TODO: add seeding admin

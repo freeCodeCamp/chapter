@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
-import createUsers from './user.factory';
-import createLocations from './locations.factory';
+import createUsers from './factories/user.factory';
+import createLocations from './factories/locations.factory';
 
 (async () => {
   const connection = await createConnection();

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NextPage } from 'next';
 
 import Layout from '../../shared/components/Layout';
-import { Skeleton } from '../../Events';
+import Skeleton from '../components/Skeleton';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { useRouter } from 'next/router';
 import { useCreateVenueMutation } from '../../../../generated';

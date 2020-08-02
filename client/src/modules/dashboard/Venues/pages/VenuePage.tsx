@@ -4,7 +4,7 @@ import { makeStyles, Card, Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
 import Layout from '../../shared/components/Layout';
-import { Skeleton } from '../../Events';
+import Skeleton from '../components/Skeleton';
 import { useVenueQuery } from '../../../../generated';
 import { getId } from '../../../../helpers/getId';
 import { ProgressCardContent } from '../../../../components';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-
-import { ITagModal } from 'client/store/types/events';
+import { Tag } from '../../../../generated';
 
 const useStyles = makeStyles({
   tag: {
@@ -15,7 +14,7 @@ const useStyles = makeStyles({
   tagsContainer: { display: 'flex' },
 });
 
-const Tags: React.FC<{ tags?: ITagModal[] }> = ({ tags }) => {
+const Tags: React.FC<{ tags?: Pick<Tag, 'name' | 'id'>[] }> = ({ tags }) => {
   const style = useStyles();
 
   return tags ? (

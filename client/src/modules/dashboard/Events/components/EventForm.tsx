@@ -15,7 +15,7 @@ import {
   IEventFormData,
 } from './EventFormUtils';
 import { IEventModal } from '../../Events/components/node_modules/client/store/types/events';
-import useFormStyles from '../shared/components/formStyles';
+import useFormStyles from '../../shared/components/formStyles';
 
 const formatValue = (field: IField, store?: IEventModal): any => {
   const { key } = field;

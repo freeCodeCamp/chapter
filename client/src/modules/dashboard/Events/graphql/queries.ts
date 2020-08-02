@@ -5,6 +5,13 @@ export const DashboardEvents = gql`
     events {
       id
       name
+      canceled
+      description
+      capacity
+      tags {
+        id
+        name
+      }
     }
   }
 `;

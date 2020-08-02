@@ -135,7 +135,7 @@ npm run test:watch
 
 ## API Specification
 
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application. 
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application.
 
 You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
 
@@ -144,7 +144,7 @@ You can see our full API documentation by navigating to http://localhost:8000/ap
 <summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
 <br>
 
-![a diagram illustrating the proposed schema for Chapter](data/schema.png)
+![a diagram illustrating the proposed schema for Chapter](docs/data/schema.png)
 > created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
 </details>
 

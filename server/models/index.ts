@@ -2,7 +2,6 @@ export * from './BaseModel';
 export * from './Chapter';
 export * from './Event';
 export * from './EventSponsor';
-export * from './Location';
 export * from './Rsvp';
 export * from './Sponsor';
 export * from './Tag';

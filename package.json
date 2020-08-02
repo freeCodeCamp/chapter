@@ -7,20 +7,20 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev:server": "ts-node --files  --transpile-only --project ./tsconfig.server.json -r tsconfig-paths/register ./server/index.ts",
-    "dev": "cross-env TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling npx nodemon --watch 'server/**/*.ts' --exec 'npm run dev:server'",
-    "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
-    "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
-    "next:build": "next build",
-    "nodemon": "npx nodemon",
-    "typeorm": "ts-node -P tsconfig.server.json -r tsconfig-paths/register node_modules/typeorm/cli.js",
-    "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
-    "prod:server": "NODE_ENV=production ts-node --files --transpile-only -r tsconfig-paths/register ./server/index.ts",
-    "seed": "ts-node -P tsconfig.server.json -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed --config ormconfig.js",
-    "start": "npm run prod:server",
+    "dev": "ts-node-dev --no-notify -P tsconfig.server.json ./server/app.ts",
+    "typeorm": "ts-node -P tsconfig.server.json ./node_modules/.bin/typeorm",
+    "db:generate": "yarn typeorm migration:generate -n",
+    "db:drop": "yarn typeorm schema:drop",
+    "db:seed": "ts-node ./db/generator/index.ts",
+    "db:migrate": "yarn typeorm migration:run",
+    "db:reset": "yarn db:drop && yarn db:migrate && yarn db:seed",
+    "start": "ts-node -P tsconfig.server.json ./server/app.ts",
     "test": "npx jest --coverage --verbose",
     "test:watch": "npx jest --watchAll",
-    "postinstall": "node scripts/postInstall.js"
+    "postinstall": "node scripts/postInstall.js",
+    "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
+    "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
+    "pretty": "prettier --write client/**/*.ts* server/**/*.ts"
   },
   "repository": {
     "type": "git",

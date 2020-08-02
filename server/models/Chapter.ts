@@ -68,7 +68,7 @@ export class Chapter extends BaseModel {
     name: string;
     description: string;
     category: string;
-    details: any;
+    details?: any;
     location?: Location;
     creator?: User;
   }) {

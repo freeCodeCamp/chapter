@@ -11,7 +11,7 @@
     "typeorm": "ts-node -P tsconfig.server.json ./node_modules/.bin/typeorm",
     "db:generate": "yarn typeorm migration:generate -n",
     "db:drop": "yarn typeorm schema:drop",
-    "db:seed": "ts-node ./db/generator/index.ts",
+    "db:seed": "ts-node -P tsconfig.server.json ./db/generator/index.ts",
     "db:migrate": "yarn typeorm migration:run",
     "db:reset": "yarn db:drop && yarn db:migrate && yarn db:seed",
     "start": "ts-node -P tsconfig.server.json ./server/app.ts",

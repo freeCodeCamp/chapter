@@ -17,6 +17,42 @@ export const EVENTS = gql`
 `;
 
 export const EVENT = gql`
+  query event($id: Int!) {
+    event(id: $id) {
+      id
+      name
+      description
+      canceled
+      capacity
+      start_at
+      ends_at
+      tags {
+        id
+        name
+      }
+      venue {
+        id
+        name
+        street_address
+        city
+        postal_code
+        region
+        country
+      }
+      rsvps {
+        id
+        on_waitlist
+        user {
+          id
+          first_name
+          last_name
+        }
+      }
+    }
+  }
+`;
+
+export const EVENT_WITH_VENU = gql`
   query eventVenues($id: Int!) {
     event(id: $id) {
       id

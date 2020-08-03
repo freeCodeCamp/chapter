@@ -22,7 +22,13 @@ export class EventResolver {
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
 
-    const event = new Event({ ...data, venue, chapter });
+    const event = new Event({
+      ...data,
+      start_at: new Date(data.start_at),
+      ends_at: new Date(data.ends_at),
+      venue,
+      chapter,
+    });
     return event.save();
   }
 
@@ -34,10 +40,13 @@ export class EventResolver {
     const event = await Event.findOne(id);
     if (!event) throw new Error('Cant find event');
 
+    // TODO: Handle tags
+    event.tags = [];
+
     event.name = data.name ?? event.name;
     event.description = data.description ?? event.description;
-    event.start_at = data.start_at ?? event.start_at;
-    event.ends_at = data.ends_at ?? event.ends_at;
+    event.start_at = new Date(data.start_at) ?? event.start_at;
+    event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;
 
     if (data.venueId) {
@@ -45,6 +54,8 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
+
+    console.log(event.tags);
 
     return event.save();
   }

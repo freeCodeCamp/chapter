@@ -1,8 +1,7 @@
-import { IVenueModal } from 'client/store/types/venues';
-import { IEventModal } from '../../Events/components/node_modules/client/store/types/events';
+import { Event } from '../../../../generated';
 
 export interface IField {
-  key: string;
+  key: keyof IEventFormData;
   label: string;
   placeholder?: string;
   type: string;
@@ -55,14 +54,37 @@ export interface IEventFormData {
   description: string;
   capacity: number;
   tags: string;
-  venue?: number;
+  start_at: string;
+  ends_at: string;
+  venueId: number;
 }
+
+export type IEventData = Event & { venueId?: number };
 
 export interface IEventFormProps {
   onSubmit: (data: IEventFormData) => void;
   loading: boolean;
-  venues: IVenueModal[];
-  venuesLoading: boolean;
-  data?: IEventModal;
+  data?: IEventData;
   submitText: string;
 }
+
+export const formatValue = (field: IField, store?: IEventData): any => {
+  const { key } = field;
+
+  if (!store || !Object.keys(store).includes(key)) {
+    return field.defaultValue;
+  }
+
+  if (key.endsWith('_at')) {
+    return new Date(store[field.key]).toISOString().slice(0, 16);
+  }
+
+  if (key === 'tags') {
+    const tags = store[key];
+    if (tags) {
+      return tags.map(tag => tag.name).join(', ');
+    }
+  }
+
+  return store[key];
+};

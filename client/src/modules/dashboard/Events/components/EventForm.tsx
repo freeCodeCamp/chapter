@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   FormControl,
@@ -11,60 +11,34 @@ import {
 import {
   IEventFormProps,
   fields,
-  IField,
+  formatValue,
   IEventFormData,
 } from './EventFormUtils';
-import { IEventModal } from '../../Events/components/node_modules/client/store/types/events';
 import useFormStyles from '../../shared/components/formStyles';
+import { useVenuesQuery } from '../../../../generated';
 
-const formatValue = (field: IField, store?: IEventModal): any => {
-  const { key } = field;
+const EventForm: React.FC<IEventFormProps> = props => {
+  const { onSubmit, data, loading, submitText } = props;
+  const {
+    loading: loadingVenues,
+    error: errorVenus,
+    data: dataVenues,
+  } = useVenuesQuery();
 
-  if (!store || !Object.keys(store).includes(key)) {
-    return field.defaultValue;
-  }
+  const defaultValues = useMemo(
+    () => ({
+      ...(data || {}),
+      tags: data?.tags.map(t => t.name).join(', '),
+      venue: data?.venue.id,
+    }),
+    [],
+  );
 
-  if (key.endsWith('_at')) {
-    return new Date(store[field.key]).toISOString().slice(0, 16);
-  }
-
-  if (key === 'tags') {
-    const tags = store[key];
-    if (tags) {
-      return tags.map(tag => tag.name).join(', ');
-    }
-  }
-
-  return store[key];
-};
-
-const EventForm: React.FC<IEventFormProps> = ({
-  onSubmit,
-  loading,
-  venues,
-  venuesLoading,
-  data,
-  submitText,
-}) => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit } = useForm<IEventFormData>({ defaultValues });
   const styles = useFormStyles();
 
-  const [venueId, setVenueId] = useState<number | undefined>(0);
-
-  useEffect(() => {
-    const newValue = (data && data.venue) || (venues[0] && venues[0].id) || 0;
-
-    setVenueId(newValue);
-  }, [venuesLoading, venues, data]);
-
   return (
-    <form
-      onSubmit={handleSubmit(data => {
-        const formData = data as Omit<IEventFormData, 'venue'>;
-        onSubmit({ ...formData, venue: venueId });
-      })}
-      className={styles.form}
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       {fields.map(field => (
         <FormControl className={styles.item} key={field.key}>
           <Controller
@@ -82,23 +56,27 @@ const EventForm: React.FC<IEventFormProps> = ({
           />
         </FormControl>
       ))}
-      {venuesLoading ? (
+      {loadingVenues ? (
         <h1>Loading venues...</h1>
+      ) : errorVenus || !dataVenues ? (
+        <h1>Error loading venues</h1>
       ) : (
         <FormControl className={styles.item}>
           <InputLabel id="venue-label">Venue</InputLabel>
-          <Select
-            labelId="venue-label"
-            required
-            value={venueId}
-            onChange={e => setVenueId(e.target.value as number)}
-          >
-            {venues.map(venue => (
-              <MenuItem value={venue.id} key={venue.id}>
-                {venue.name}
-              </MenuItem>
-            ))}
-          </Select>
+          <Controller
+            as={
+              <Select labelId="venue-label">
+                {dataVenues.venues.map(venue => (
+                  <MenuItem value={venue.id} key={venue.id}>
+                    {venue.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            }
+            name="venueId"
+            rules={{ required: 'this is required' }}
+            control={control}
+          />
         </FormControl>
       )}
       <Button

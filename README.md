@@ -31,10 +31,13 @@ To better communicate and more easily build an API and UI, the current contribut
 
 We are planning to use the following tools:
 
-* [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
-* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
+* [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) extendable graphql server
+  * [type-graphql](https://github.com/MichalLytek/type-graphql) Code first graphql schema definition library
+  * [passport.js](http://www.passportjs.org/) for auth
+* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) for nice integration with `type-graphql`
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
-  * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  * [Apollo Client 3](https://www.apollographql.com/docs/react/)
+  * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Material UI](https://material-ui.com/) for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) for writing unit tests.

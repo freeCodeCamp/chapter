@@ -6,12 +6,14 @@ import { CreateEventInputs, UpdateEventInputs } from './inputs';
 export class EventResolver {
   @Query(() => [Event])
   events() {
-    return Event.find({ relations: ['tags'] });
+    return Event.find({ relations: ['tags', 'venue', 'rsvps', 'rsvps.user'] });
   }
 
   @Query(() => Event, { nullable: true })
   event(@Arg('id', () => Int) id: number) {
-    return Event.findOne(id, { relations: ['tags'] });
+    return Event.findOne(id, {
+      relations: ['tags', 'venue', 'rsvps', 'rsvps.user'],
+    });
   }
 
   @Mutation(() => Event)

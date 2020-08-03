@@ -8,7 +8,7 @@ import { getId } from '../../../../helpers/getId';
 import { Card, Typography, CardContent } from '@material-ui/core';
 import { ProgressCardContent } from '../../../../components';
 // import Tags from '../components/Tag';
-import Actions from '../components/Actions';
+// import Actions from '../components/Actions';
 import getLocationString from '../../../../helpers/getLocationString';
 
 export const EventPage: NextPage = () => {

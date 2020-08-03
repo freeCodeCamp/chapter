@@ -44,7 +44,7 @@ const VenueForm: React.FC<IVenueFormProps> = props => {
   const { loading, onSubmit, data, submitText } = props;
 
   const styles = useFormStyles();
-  const { control, handleSubmit, watch } = useForm<VenueFormData>({
+  const { control, handleSubmit } = useForm<VenueFormData>({
     defaultValues: {
       ...data?.venue,
       street_address: data?.venue?.street_address ?? undefined,

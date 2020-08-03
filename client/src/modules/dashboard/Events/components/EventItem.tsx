@@ -11,7 +11,7 @@ interface IEventItemProps {
   event: Pick<
     Event,
     'id' | 'name' | 'description' | 'capacity' | 'canceled'
-  > & { tags: Pick<Tag, 'id' | 'name'>[] };
+  > & { tags?: Pick<Tag, 'id' | 'name'>[] | null };
   loading: boolean;
 }
 
@@ -41,7 +41,7 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
           {event.capacity}
         </Typography>
 
-        <Tags tags={event.tags} />
+        {event.tags && <Tags tags={event.tags} />}
 
         {/* <Actions event={event} /> */}
       </ProgressCardContent>

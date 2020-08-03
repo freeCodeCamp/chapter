@@ -28,7 +28,7 @@ const EventForm: React.FC<IEventFormProps> = props => {
   const defaultValues = useMemo(
     () => ({
       ...(data || {}),
-      tags: data?.tags.map(t => t.name).join(', '),
+      tags: (data?.tags || []).map(t => t.name).join(', '),
       venue: data?.venue.id,
     }),
     [],

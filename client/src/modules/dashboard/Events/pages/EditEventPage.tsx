@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
+
 import { IEventFormData } from '../components/EventFormUtils';
 import Layout from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
 import EventForm from '../components/EventForm';
-import { useCreateEventMutation } from '../../../../generated';
+import { useCreateEventMutation, useEventQuery } from '../../../../generated';
 import { EVENTS } from '../graphql/queries';
+import { getId } from '../../../../helpers/getId';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const id = getId(router.query) || -1;
+
+  const { loading: eventLoading, error, data } = useEventQuery({
+    variables: { id },
+  });
 
   const [createEvent] = useCreateEventMutation({
     refetchQueries: [{ query: EVENTS }],
@@ -51,13 +58,29 @@ export const EditEventPage: NextPage = () => {
     }
   };
 
+  if (eventLoading || error || !data?.event) {
+    return (
+      <Layout>
+        <Skeleton>
+          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+          {error && <div>{error}</div>}
+        </Skeleton>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <Skeleton>
         <EventForm
+          data={{
+            ...data.event,
+            venueId: data.event.venue.id,
+            tags: data.event.tags || [],
+          }}
           loading={loading}
           onSubmit={onSubmit}
-          submitText={'Add event'}
+          submitText={'Update event'}
         />
       </Skeleton>
     </Layout>

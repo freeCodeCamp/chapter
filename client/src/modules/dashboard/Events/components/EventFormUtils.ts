@@ -1,4 +1,4 @@
-import { Event } from '../../../../generated';
+import { Event, Venue } from '../../../../generated';
 
 export interface IField {
   key: keyof IEventFormData;
@@ -59,7 +59,14 @@ export interface IEventFormData {
   venueId: number;
 }
 
-export type IEventData = Event & { venueId?: number };
+export type IEventData = Pick<
+  Event,
+  keyof Omit<IEventFormData, 'venueId' | 'tags'> | 'id'
+> & {
+  venueId?: number;
+  tags: { name: string }[];
+  venue: Omit<Venue, 'created_at' | 'updated_at' | 'events'>;
+};
 
 export interface IEventFormProps {
   onSubmit: (data: IEventFormData) => void;

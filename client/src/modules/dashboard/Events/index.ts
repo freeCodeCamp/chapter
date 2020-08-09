@@ -1,5 +1,4 @@
-import EventItem from './EventItem';
-import EventForm from './EventForm';
-import Skeleton from './Skeleton';
-
-export { EventItem, EventForm, Skeleton };
+export { EventsPage } from './pages/EventsPage';
+export { NewEventPage } from './pages/NewEventPage';
+export { EditEventPage } from './pages/EditEventPage';
+export { EventPage } from './pages/EventPage';

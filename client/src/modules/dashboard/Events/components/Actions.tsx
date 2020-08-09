@@ -1,27 +1,39 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from '@material-ui/core';
 import Link from 'next/link';
 
-import { eventActions } from 'client/store/actions';
-import useConfirm from 'client/hooks/useConfirm';
-import useThunkDispatch from 'client/hooks/useThunkDispatch';
-import { IEventModal } from 'client/store/types/events';
+import {
+  Event,
+  useCancelEventMutation,
+  useDeleteEventMutation,
+} from '../../../../generated';
+import useConfirm from '../../../../hooks/useConfirm';
+import { EVENT, EVENTS } from '../graphql/queries';
 
 interface IActionsProps {
-  event: IEventModal;
-  onDelete?: () => void;
+  event: Pick<Event, 'id' | 'canceled'>;
+  onDelete?: Function;
 }
 
 const Actions: React.FC<IActionsProps> = ({ event, onDelete }) => {
-  const dispatch = useThunkDispatch();
+  const [cancel] = useCancelEventMutation();
+  const [remove] = useDeleteEventMutation();
 
-  const [confirmCancel, clickCancel] = useConfirm(() =>
-    dispatch(eventActions.cancelEvent(1, event.id)),
+  const data = useMemo(
+    () => ({
+      variables: { id: event.id },
+      refetchQueries: [
+        { query: EVENT, variables: { id: event.id } },
+        { query: EVENTS },
+      ],
+    }),
+    [event],
   );
-  const [confirmRemove, clickRemove] = useConfirm(() => {
-    dispatch(eventActions.removeEvent(1, event.id));
-    onDelete && onDelete();
-  });
+
+  const [confirmCancel, clickCancel] = useConfirm(() => cancel(data));
+  const [confirmRemove, clickRemove] = useConfirm(() =>
+    remove(data).then(() => onDelete && onDelete()),
+  );
 
   return (
     <>

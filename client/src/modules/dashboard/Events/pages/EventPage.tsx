@@ -1,15 +1,15 @@
 import React from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { Card, Typography, CardContent } from '@material-ui/core';
+
 import Layout from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
 import { useEventQuery } from '../../../../generated';
-import { useRouter } from 'next/router';
 import { getId } from '../../../../helpers/getId';
-import { Card, Typography, CardContent } from '@material-ui/core';
 import { ProgressCardContent } from '../../../../components';
-// import Tags from '../components/Tag';
-// import Actions from '../components/Actions';
 import getLocationString from '../../../../helpers/getLocationString';
+import Actions from '../components/Actions';
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
@@ -53,10 +53,10 @@ export const EventPage: NextPage = () => {
             </Typography>
             {/* <Tags tags={data.event.tags} /> */}
 
-            {/* <Actions
+            <Actions
               event={data.event}
               onDelete={() => router.replace('/dashboard/events')}
-            /> */}
+            />
 
             <h2>Venue:</h2>
             <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>

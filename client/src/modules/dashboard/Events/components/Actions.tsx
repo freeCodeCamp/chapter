@@ -12,9 +12,10 @@ import { EVENT, EVENTS } from '../graphql/queries';
 
 interface IActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
+  onDelete?: Function;
 }
 
-const Actions: React.FC<IActionsProps> = ({ event }) => {
+const Actions: React.FC<IActionsProps> = ({ event, onDelete }) => {
   const [cancel] = useCancelEventMutation();
   const [remove] = useDeleteEventMutation();
 
@@ -30,7 +31,9 @@ const Actions: React.FC<IActionsProps> = ({ event }) => {
   );
 
   const [confirmCancel, clickCancel] = useConfirm(() => cancel(data));
-  const [confirmRemove, clickRemove] = useConfirm(() => remove(data));
+  const [confirmRemove, clickRemove] = useConfirm(() =>
+    remove(data).then(() => onDelete && onDelete()),
+  );
 
   return (
     <>

@@ -1,47 +1,55 @@
-import React from 'react';
-// import { Button } from '@material-ui/core';
-// import Link from 'next/link';
+import React, { useMemo } from 'react';
+import { Button } from '@material-ui/core';
+import Link from 'next/link';
 
-// import { eventActions } from 'client/store/actions';
-// import useConfirm from 'client/hooks/useConfirm';
-// import useThunkDispatch from 'client/hooks/useThunkDispatch';
-// import { IEventModal } from 'client/store/types/events';
+import {
+  Event,
+  useCancelEventMutation,
+  useDeleteEventMutation,
+} from '../../../../generated';
+import useConfirm from '../../../../hooks/useConfirm';
+import { EVENT, EVENTS } from '../graphql/queries';
 
-// interface IActionsProps {
-//   event: IEventModal;
-//   onDelete?: () => void;
-// }
+interface IActionsProps {
+  event: Pick<Event, 'id' | 'canceled'>;
+}
 
-const Actions: React.FC = () => {
-  return null;
-  // const dispatch = useThunkDispatch();
+const Actions: React.FC<IActionsProps> = ({ event }) => {
+  const [cancel] = useCancelEventMutation();
+  const [remove] = useDeleteEventMutation();
 
-  // const [confirmCancel, clickCancel] = useConfirm(() =>
-  //   dispatch(eventActions.cancelEvent(1, event.id)),
-  // );
-  // const [confirmRemove, clickRemove] = useConfirm(() => {
-  //   dispatch(eventActions.removeEvent(1, event.id));
-  //   onDelete && onDelete();
-  // });
+  const data = useMemo(
+    () => ({
+      variables: { id: event.id },
+      refetchQueries: [
+        { query: EVENT, variables: { id: event.id } },
+        { query: EVENTS },
+      ],
+    }),
+    [event],
+  );
 
-  // return (
-  //   <>
-  //     {!event.canceled && (
-  //       <Button onClick={clickCancel}>
-  //         {confirmCancel ? 'Are you sure?' : 'Cancel'}
-  //       </Button>
-  //     )}
-  //     <Button onClick={clickRemove}>
-  //       {confirmRemove ? 'Are you sure?' : 'delete'}
-  //     </Button>
-  //     <Link
-  //       href={`/dashboard/events/[id]/edit`}
-  //       as={`/dashboard/events/${event.id}/edit`}
-  //     >
-  //       <a style={{ marginLeft: '10px' }}>Edit</a>
-  //     </Link>
-  //   </>
-  // );
+  const [confirmCancel, clickCancel] = useConfirm(() => cancel(data));
+  const [confirmRemove, clickRemove] = useConfirm(() => remove(data));
+
+  return (
+    <>
+      {!event.canceled && (
+        <Button onClick={clickCancel}>
+          {confirmCancel ? 'Are you sure?' : 'Cancel'}
+        </Button>
+      )}
+      <Button onClick={clickRemove}>
+        {confirmRemove ? 'Are you sure?' : 'delete'}
+      </Button>
+      <Link
+        href={`/dashboard/events/[id]/edit`}
+        as={`/dashboard/events/${event.id}/edit`}
+      >
+        <a style={{ marginLeft: '10px' }}>Edit</a>
+      </Link>
+    </>
+  );
 };
 
 export default Actions;

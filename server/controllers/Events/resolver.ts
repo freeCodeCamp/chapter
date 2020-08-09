@@ -57,7 +57,15 @@ export class EventResolver {
       event.venue = venue;
     }
 
-    console.log(event.tags);
+    return event.save();
+  }
+
+  @Mutation(() => Event)
+  async cancelEvent(@Arg('id', () => Int) id: number) {
+    const event = await Event.findOne(id);
+    if (!event) throw new Error('Cant find event');
+
+    event.canceled = true;
 
     return event.save();
   }

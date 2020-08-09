@@ -91,3 +91,18 @@ export const createEvent = gql`
     }
   }
 `;
+
+export const cancelEvent = gql`
+  mutation cancelEvent($id: Int!) {
+    cancelEvent(id: $id) {
+      id
+      canceled
+    }
+  }
+`;
+
+export const deleteEvent = gql`
+  mutation deleteEvent($id: Int!) {
+    deleteEvent(id: $id)
+  }
+`;

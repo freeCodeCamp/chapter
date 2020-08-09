@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Event, Tag } from '../../../../generated';
 import { ProgressCardContent } from '../../../../components';
 import Tags from './Tag';
-// import Actions from './components/Actions';
+import Actions from './Actions';
 
 interface IEventItemProps {
   event: Pick<
@@ -43,7 +43,7 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
 
         {event.tags && <Tags tags={event.tags} />}
 
-        {/* <Actions event={event} /> */}
+        <Actions event={event} />
       </ProgressCardContent>
     </Card>
   );

@@ -304,14 +304,23 @@ We are excited to help you contribute to any of the topics that you would like t
 
 When in doubt, you can reach out to current project lead(s):
 
-| Name            | GitHub | Twitter |
-|:----------------|:-------|:--------|
-| Quincy Larson | [`@QuincyLarson`](https://github.com/QuincyLarson) | [`@ossia`](https://twitter.com/ossia)|
+| Name            | GitHub |
+|:----------------|:-------|
+| Fran Zeko | [@Zeko369](https://github.com/Zeko369) admin UI, routes, models, and data migrations
+| Ayotomide Oladipo | [@tomiiide](https://github.com/tomiiide) public-facing client pages / forms
+| Timmy Chen | [@timmyichen](https://github.com/timmyichen) - API
+| Patrick San Juan | [@pdotsani](https://github.com/pdotsani) - Google Authentication
+| Jonathan Seubert | [@megajon](https://github.com/megajon) - Email
+| Vaibhav Singh | [@vaibhavsingh97](https://github.com/vaibhavsingh97) - Heroku 1-click deployment
+| Jim Ciallella | [@allella](https://github.com/allella) - Documentation
+| Quincy Larson | [`@QuincyLarson`](https://github.com/QuincyLarson) - Project Lead
+
+
 
 You are a champion :).
 
 
-# Server side technical documentation
+# Server-side Technical Documentation
 
 ## Database
 
@@ -321,7 +330,7 @@ We're using Postgres for our database and TypeORM for our ORM (mapping database 
 
 To make it since the port from docker postgres service is exposed to the host (54320) you dont have to run `docker-compose exec...`, and can just run db commands from the host. This also makes it a lot easier to access the db from the ourside if you're running a local db on the system.
 
-### Seed database
+### Seed Database
 
 `npm run seed`
 
@@ -329,7 +338,7 @@ Development is easier with a database full of example entities. The process of c
 
 Use `npm run seed` to create these example entities.
 
-### Create a new model / entity
+### Create a New Model / Entity
 
 `npm run typeorm entity:create -- --name=ModelName`
 
@@ -339,7 +348,7 @@ To keep everything DRY, add `extends BaseModel` to the class and import it from 
 
 You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from `.ts` files, so we run it with `ts-node` and our custom server config (check package.json)
 
-### Create a migration
+### Create a Migration
 
 After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
 

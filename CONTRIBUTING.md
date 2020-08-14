@@ -306,14 +306,14 @@ When in doubt, you can reach out to current project lead(s):
 
 | Name            | GitHub | Role |
 |:----------------|:-------|:-----|
-| Fran Zeko | [@Zeko369](https://github.com/Zeko369) | admin UI, routes, models, and data migrations
-| Ayotomide Oladipo | [@tomiiide](https://github.com/tomiiide) | public-facing client pages / forms
+| Fran Zeko | [@Zeko369](https://github.com/Zeko369) | Admin UI, routes, models, and data migrations
+| Ayotomide Oladipo | [@tomiiide](https://github.com/tomiiide) | Public-facing client pages / forms
 | Timmy Chen | [@timmyichen](https://github.com/timmyichen) | API
 | Patrick San Juan | [@pdotsani](https://github.com/pdotsani) | Google Authentication
 | Jonathan Seubert | [@megajon](https://github.com/megajon) | Email
 | Vaibhav Singh | [@vaibhavsingh97](https://github.com/vaibhavsingh97) | Heroku 1-click deployment
 | Jim Ciallella | [@allella](https://github.com/allella) | Documentation
-| Quincy Larson | [`@QuincyLarson`](https://github.com/QuincyLarson) | Executive Lead
+| Quincy Larson | [@QuincyLarson](https://github.com/QuincyLarson) | Executive Lead
 
 
 

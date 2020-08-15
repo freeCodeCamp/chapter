@@ -336,7 +336,7 @@ To make it since the port from docker postgres service is exposed to the host (5
 
 Development is easier with a database full of example entities. The process of creating example entities in the database is called seeding.
 
-Use `npm run seed` to create these example entities.
+Use `yarn db:seed` to create these example entities. But first (if the you're just starting) you need to migrate the DB (setup tables). For that you can use `yarn db:reset` which will drop the current db (clear), migrate it (add structure) and then seed it (add data)
 
 ### Create a New Model / Entity
 

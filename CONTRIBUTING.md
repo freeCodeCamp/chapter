@@ -354,7 +354,7 @@ After you created a new model or updated an existing one, you need to generate a
 
 `yarn db:generate MIGRATION_NAME`
 
-Since this runs a compare agains the current db schema, you need to have the app running.
+Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
 
 After that, check the generated SQL in `server/migrations/date-MigrationName.ts`
 

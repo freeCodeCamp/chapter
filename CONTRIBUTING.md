@@ -361,7 +361,7 @@ After that, check the generated SQL in `server/migrations/date-MigrationName.ts`
 ### Running migrations and checking if migrations were run
 
 You can manualy run them by doing
-`npm run typeorm migration:run`
+`yarn db:migrate`
 
 and then check if it happened correctly
 

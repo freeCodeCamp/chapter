@@ -361,7 +361,7 @@ After you created a new model or updated an existing one, you need to generate a
 
 Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
 
-After that, check the generated SQL in `server/migrations/date-MigrationName.ts`
+After that, check the generated SQL in `db/migrations/date-MigrationName.ts`
 
 ### Running migrations and checking if migrations were run
 

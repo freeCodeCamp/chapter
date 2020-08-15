@@ -329,7 +329,12 @@ for any problems ping @Zeko369
 We're using Postgres for our database and TypeORM for our ORM (mapping database tables to js objects). Here are a few examples on how to use our TypeORM setup.
 
 To make it since the port from docker postgres service is exposed to the host (54320) you dont have to run `docker-compose exec...`, and can just run db commands from the host. This also makes it a lot easier to access the db from the ourside if you're running a local db on the system.
+Our DB commands closely mirror their rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
+`yarn db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
+`yarn db:migrate` -> `rake db:migrate`
+`yarn db:seed` -> `rake db:seed`
+`yarn db:reset` -> `rake db:reset`
 ### Seed Database
 
 `yarn db:seed`

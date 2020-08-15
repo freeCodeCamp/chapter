@@ -332,7 +332,7 @@ To make it since the port from docker postgres service is exposed to the host (5
 
 ### Seed Database
 
-`npm run seed`
+`yarn db:seed`
 
 Development is easier with a database full of example entities. The process of creating example entities in the database is called seeding.
 

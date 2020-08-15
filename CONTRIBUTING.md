@@ -352,7 +352,7 @@ You could also run `npx typeorm` since here you're not actually loading any ts f
 
 After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
 
-`npm run typeorm migration:generate -- --name=MigrationName`
+`yarn db:generate MIGRATION_NAME`
 
 Since this runs a compare agains the current db schema, you need to have the app running.
 

@@ -324,7 +324,7 @@ You are a champion :).
 
 ## Database
 
-for any problems ping @Zeko369
+for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or discord (Zeko369#6685)
 
 We're using Postgres for our database and TypeORM for our ORM (mapping database tables to js objects). Here are a few examples on how to use our TypeORM setup.
 

@@ -365,7 +365,7 @@ You can manualy run them by doing
 
 and then check if it happened correctly
 
-`npm run typeorm migration:show`
+`yarn typeorm migration:show`
 
 it should ouput something like
 

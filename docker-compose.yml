@@ -11,12 +11,22 @@ services:
   app:
     depends_on:
       - db
-    image: node:13-alpine
-    command: 'npm run dev'
+    build: . 
+    command: yarn dev
     working_dir: /usr/chapter
     environment:
       - DB_URL=db
     volumes:
       - .:/usr/chapter
     ports:
-      - '8000:8000'
+      - '5000:5000'
+  client:
+    depends_on:
+      - app
+    build: ./client
+    ports: 
+      - '3000:3000'
+    command:  yarn dev
+    working_dir: /usr/chapter/client
+    volumes: 
+      - ./client:/usr/chapter/client

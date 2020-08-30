@@ -11,6 +11,7 @@ import passport from 'passport';
 
 config({ path: join(__dirname, '../.env') });
 
+import authController from './auth';
 import { resolvers } from './controllers';
 import { IGQLCtx } from './ts/gql';
 import { initDB } from './db';
@@ -41,6 +42,8 @@ export const main = async (app: Express) => {
       // user: req.user,
     }),
   });
+
+  app.use('/auth', authController);
 
   server.applyMiddleware({ app, cors: false, path: '/graphql' });
 };

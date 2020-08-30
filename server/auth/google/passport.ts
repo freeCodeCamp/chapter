@@ -1,13 +1,14 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { User } from 'server/models';
+import { User } from '../../models';
 
 export default function() {
   passport.use(
     new GoogleStrategy(
       {
+        consumerKey: process.env.GOOGLE_API_KEY,
         clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        consumerSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_REDIRECT_URI,
       },
       async function(_accessToken, _refreshToken, profile, cb) {

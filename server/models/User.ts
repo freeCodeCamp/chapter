@@ -22,6 +22,10 @@ export class User extends BaseModel {
   @Column()
   email!: string;
 
+  @Field(() => String)
+  @Column()
+  google_id: string;
+
   @Field(() => [Chapter])
   @OneToMany(
     _type => Chapter,

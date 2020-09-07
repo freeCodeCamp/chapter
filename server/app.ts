@@ -31,6 +31,7 @@ export const main = async (app: Express) => {
   await initDB();
   app.use(passport.initialize());
   app.use(cors({ credentials: true, origin: true }));
+  app.use('/auth', authController);
 
   const schema = await buildSchema({ resolvers, validate: false });
   const server = new ApolloServer({
@@ -42,8 +43,6 @@ export const main = async (app: Express) => {
       // user: req.user,
     }),
   });
-
-  app.use('/auth', authController);
 
   server.applyMiddleware({ app, cors: false, path: '/graphql' });
 };

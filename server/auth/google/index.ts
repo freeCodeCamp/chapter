@@ -18,6 +18,11 @@ router
       failureRedirect: '/',
       session: false,
     }),
+    (_, res) => {
+      // console.log('GOTHERE! ');
+      // console.log('req.user ', req.user);
+      res.redirect('http://localhost:3000/');
+    },
   );
 
 export default router;

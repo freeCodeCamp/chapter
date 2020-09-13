@@ -101,6 +101,8 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
+Next, [seed the DB](#seeding-the-db).
+
 #### Natively running node in Windows/MacOS/Linux (no docker)
 
 DISCLAIMER: This is a more hands on approach.
@@ -115,7 +117,11 @@ MAKE SURE TO SET `IS_DOCKER=` in `.env` to blank
 npm run dev
 ```
 
-## Additional DB docs can be found in server/docs/README.md
+## Seeding the DB
+
+Initially the DB will be empty.  To seed it with sample data, run `yarn db:reset`.
+
+Additional DB docs can be found in [the contributing readme](CONTRIBUTING.md#database).
 
 ## Testing
 Run tests

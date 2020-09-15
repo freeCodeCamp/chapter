@@ -82,7 +82,7 @@ cd chapter
 Install dependencies:
 ```
 npm install
-cd client
+cd ./client
 npm install `#install client dependencies`
 ```
 

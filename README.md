@@ -81,7 +81,7 @@ cd chapter
 
 Install dependencies:
 ```
-npm install
+npx recursive-install
 ```
 
 If you're using local setup (no docker), make sure you add your DB credentials to .env file

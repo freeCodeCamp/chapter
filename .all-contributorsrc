@@ -424,6 +424,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "paulywill",
+      "name": "Paul Gamble",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/602422?v=4",
+      "profile": "http://paulywill.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

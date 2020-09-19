@@ -1,6 +1,6 @@
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 import { IMailerService } from 'types/services';
-import Utilities from 'server/util/Utilities';
+import Utilities from '../util/Utilities';
 
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
@@ -52,6 +52,8 @@ export default class MailerService implements IMailerService {
 
     this.transporter = nodemailer.createTransport({
       service: this.emailService,
+      host: 'localhost',
+      port: 1025,
       auth: {
         user: this.emailUsername,
         pass: this.emailPassword,

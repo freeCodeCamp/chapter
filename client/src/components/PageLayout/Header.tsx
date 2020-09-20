@@ -21,15 +21,13 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
   useEffect(() => {
     const script = document.createElement('script');
 
-    script.src = 'https://apis.google.com/js/platform.js?onload=init';
+    script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
 
-    document.body.appendChild(script);
+    script.onload = () => {};
 
-    script.onload = () => {
-      console.log('gapi ', gapi);
-    };
+    document.body.appendChild(script);
 
     return () => {
       document.body.removeChild(script);

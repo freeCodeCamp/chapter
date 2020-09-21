@@ -1,4 +1,5 @@
-/* global gapi */
+declare let google: any; // For google api
+
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
@@ -25,7 +26,18 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
     script.async = true;
     script.defer = true;
 
-    script.onload = () => {};
+    script.onload = () => {
+      const handleCredentialResponse = (response: any) => {
+        console.log(response);
+      };
+      const client_id = process.env.REACT_APP_GOOGLE_CLIENT_ID; // DOES NOT WORK. COPY FROM .env in client
+      const callback = handleCredentialResponse;
+      const auto_select = false;
+      google.accounts.id.initialize({ client_id, callback, auto_select });
+      google.accounts.id.prompt((notification: any) => {
+        console.log(notification);
+      });
+    };
 
     document.body.appendChild(script);
 

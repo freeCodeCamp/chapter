@@ -30,23 +30,21 @@ docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
 
 ```
 
+View all images
 ```bash
-docker image build -t tomnoland/servlet-admin ./
+docker images
 
 ```
 
-```bash
-docker container run -it -d --publish 8081:8080 --name my-tomcat-container tomnoland/servlet-admin:latest
-
-```
-
+Remove all images (use this judiciously, it can take a long time to rebuild images)
 ```bash
 docker rmi -f $(docker images -a -q)
 
 ```
 
+Command line access to a container
 ```bash
-docker exec -it my-tomcat-container /bin/sh
+docker exec -it chapter_app_1 /bin/sh
 
 ```
 

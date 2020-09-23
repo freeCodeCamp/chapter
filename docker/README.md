@@ -17,8 +17,14 @@ The top level docker.sh file is a Docker utilities script.
 
 ---
 
-## Docker - Start and Stop
+## Docker commands
 
+View all containers
+```bash
+docker ps -a
+
+```
+Stop and remove all containers
 ```bash
 docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
 

@@ -60,6 +60,8 @@ docker exec -it my-tomcat-container /bin/sh
 
 ```bash
 ls -al
+pwd
+more stuff
 
 ```
 ---

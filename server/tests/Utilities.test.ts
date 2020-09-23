@@ -11,11 +11,11 @@ describe('Utilities Class', () => {
     const failingSet2 = [undefined, 'testString', 70];
     const failingSet3 = [null, 'test123', 2342];
 
-    assert.equal(Utilities.allValuesAreDefined(passingSet1), true);
-    assert.equal(Utilities.allValuesAreDefined(passingSet2), true);
-    assert.equal(Utilities.allValuesAreDefined(passingSet3), true);
-    assert.equal(Utilities.allValuesAreDefined(failingSet1), false);
-    assert.equal(Utilities.allValuesAreDefined(failingSet2), false);
-    assert.equal(Utilities.allValuesAreDefined(failingSet3), false);
+    assert.strictEqual(Utilities.allValuesAreDefined(passingSet1), true);
+    assert.strictEqual(Utilities.allValuesAreDefined(passingSet2), true);
+    assert.strictEqual(Utilities.allValuesAreDefined(passingSet3), true);
+    assert.strictEqual(Utilities.allValuesAreDefined(failingSet1), false);
+    assert.strictEqual(Utilities.allValuesAreDefined(failingSet2), false);
+    assert.strictEqual(Utilities.allValuesAreDefined(failingSet3), false);
   });
 });

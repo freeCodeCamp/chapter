@@ -37,9 +37,9 @@ describe('MailerService Class', () => {
     );
 
     const { auth, service } = mailer.transporter.options as any;
-    assert.equal(service, mailer.emailService);
-    assert.equal(auth.user, mailer.emailUsername);
-    assert.equal(auth.pass, mailer.emailPassword);
+    assert.strictEqual(service, mailer.emailService);
+    assert.strictEqual(auth.user, mailer.emailUsername);
+    assert.strictEqual(auth.pass, mailer.emailPassword);
   });
 
   it('Should correctly instantiate values', () => {
@@ -50,9 +50,9 @@ describe('MailerService Class', () => {
       backupText,
     );
 
-    assert.equal(subject, mailer.subject);
-    assert.equal(htmlEmail, mailer.htmlEmail);
-    assert.equal(backupText, mailer.backupText);
+    assert.strictEqual(subject, mailer.subject);
+    assert.strictEqual(htmlEmail, mailer.htmlEmail);
+    assert.strictEqual(backupText, mailer.backupText);
     expect(emailAddresses).to.have.members(mailer.emailList);
   });
 

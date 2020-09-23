@@ -1,4 +1,4 @@
-# Docker
+# Docker Folder
 
 ---
 
@@ -7,6 +7,13 @@
 [Sandbox](#sandbox)
 
 [Tools](#tools)
+
+---
+
+## Intro
+
+The top level docker.sh file is a Docker utilities script.
+
 
 ---
 

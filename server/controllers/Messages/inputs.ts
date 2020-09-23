@@ -2,7 +2,7 @@ import { InputType, Field } from 'type-graphql';
 
 @InputType()
 export class SendEmailInputs {
-  @Field(() => String)
+  @Field(() => [String])
   to: string[];
 
   @Field(() => String)

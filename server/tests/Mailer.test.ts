@@ -58,7 +58,7 @@ describe('MailerService Class', () => {
 
   it('Should provide a blank string if backup text is undefined', () => {
     const mailer = new MailerService(emailAddresses, subject, htmlEmail);
-    assert.equal(mailer.backupText, '');
+    assert.strictEqual(mailer.backupText, '');
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {

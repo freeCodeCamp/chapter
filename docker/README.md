@@ -4,9 +4,11 @@
 
 ## Table of Contents
 
-[Sandbox](#sandbox)
+[Docker Commands](#docker-commands)
 
 [Tools](#tools)
+
+[Sandbox](#sandbox)
 
 ---
 

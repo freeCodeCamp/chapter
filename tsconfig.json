@@ -27,6 +27,6 @@
     "isolatedModules": true,
     "types": ["jest", "node"]
   },
-  "include": ["server", "db"],
+  "include": ["server", "db", "client"],
   "exclude": ["node_modules"]
 }

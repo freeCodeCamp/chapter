@@ -9,7 +9,7 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'babel-jest',
   },
-  moduleDirectories: ['node_modules', 'server'],
+  moduleDirectories: ['node_modules', 'server', 'client'],
   //moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
   //  prefix: '<rootDir>/',
   //}),

@@ -10,7 +10,7 @@
 
 ---
 
-## Intro
+## Quickstart
 
 The top level docker.sh file is a Docker utilities script. The following command will generate the two top level node images and create the two node_modules folders in the chapter and chapter/client directories. These operations are time consuming (~15 minutes), which is why they're done early and seperately from the other operations. Once done they shouldn't need to be repeated. The dependent images can be rebuilt from these base images relatively quickly. And the node_modules directories should only need to be recreated if the package.json files are changed.
 
@@ -19,7 +19,7 @@ The top level docker.sh file is a Docker utilities script. The following command
 
 ```
 
-The docker.sh script in the docker/projects/working directory builds the db, app, and client and starts them. Use the following command.
+The docker.sh script in the docker/projects/working directory builds the db, app, and client images, creates containers from them, and starts the containers. Use the following command:
 
 ```bash
 ./docker/projects/working/docker.sh run

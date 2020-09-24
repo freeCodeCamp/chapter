@@ -1,7 +1,7 @@
 #!/bin/sh
 #####################################################################################
 ###
-###	Run
+###	Build Docker images and create containers with mapped volumes
 ###
 #####################################################################################
 
@@ -12,21 +12,11 @@ IMAGE_NAMES=(chapter_node chapter_app chapter_node_app chapter_client chapter_no
 CONTAINER_NAMES=(chapter_db_1 chapter_app_1 chapter_client_1)
 
 
-# for t in ${IMAGE_NAMES[@]}; do
-#   echo $t
-# done
-
-
-# sed -i .json 's|ts-node-dev --no-notify -P tsconfig.server.json ./server/app.ts|ls -al|' /Users/tomn/chapter/package.json
-
 export DB_USER=postgres
 export DB_PASSWORD=password
 export DB_NAME=chapter
 export DB_URL=localhost
 export IS_DOCKER=true
-
-
-FILES=./docker/projects/demo/scripts/*
 
 
 CLEAN="clean"
@@ -48,20 +38,14 @@ if [ "$#" -eq 0 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
     echo "  $CLEAN      - Stop and Remove Chapter containers."
     echo "  $RUN        - Build and Run Chapter."
     echo "  $STOP       - Stop Chapter."
-    # for f in $FILES
-    # do
-    #   if [ -f "$f" ] && [ "${f: -3}" == ".sh" ]; then
-    #     echo "  `basename -s .sh ${f}`         - `$f -i`"
-    #   fi
-    # done
     exit
 fi
 
 setDockerFiles() {
   cd ~/chapter
-  cp ./docker/projects/working/docker-compose.yml .
-  cp ./docker/projects/working/Dockerfile_Demo_App ./Dockerfile
-  cp ./docker/projects/working/Dockerfile_Demo_Client ./client/Dockerfile
+  cp ./docker/projects/mapped_volumes/docker-compose_mapped_volumes.yml ./docker-compose.yml
+  cp ./docker/projects/mapped_volumes/Dockerfile_Demo_App ./Dockerfile
+  cp ./docker/projects/mapped_volumes/Dockerfile_Demo_Client ./client/Dockerfile
 }
 
 installDependencies() {
@@ -151,12 +135,3 @@ if [ $1 = $STOP ]; then
 	stop_existing
 	exit
 fi
-
-
-# for f in $FILES
-# do
-#   if [ $1 = `basename -s .sh ${f}` ]; then
-#     $f
-#   	exit
-#   fi
-# done

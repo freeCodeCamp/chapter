@@ -3,11 +3,20 @@ import { ObjectType, Field } from 'type-graphql';
 @ObjectType()
 export class Email {
   @Field(() => String)
-  to: string[];
+  ourEmail: string;
+
+  @Field(() => [String])
+  emailList: string[];
 
   @Field(() => String)
   subject: string;
 
   @Field(() => String)
-  html: string;
+  text: string;
+
+  @Field(() => String)
+  htmlEmail: string;
+
+  @Field(() => String)
+  backupText: string;
 }

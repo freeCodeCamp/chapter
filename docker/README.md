@@ -19,6 +19,14 @@ The top level docker.sh file is a Docker utilities script. The following command
 
 ```
 
+The docker.sh script in the docker/projects/working directory builds the db, app, and client and starts them. Use the following command.
+
+```bash
+./docker/projects/working/docker.sh run
+```
+
+
+
 ---
 
 ## Docker commands

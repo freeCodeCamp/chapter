@@ -10,14 +10,6 @@ IMAGE_NAMES=(chapter_node chapter_app chapter_node_app chapter_client chapter_no
 CONTAINER_NAMES=(chapter_db_1 chapter_app_1 chapter_client_1)
 
 
-# for t in ${IMAGE_NAMES[@]}; do
-#   echo $t
-# done
-
-
-# sed -i .json 's|ts-node-dev --no-notify -P tsconfig.server.json ./server/app.ts|ls -al|' /Users/tomn/chapter/package.json
-
-
 #!/bin/bash
 
 FILES=./docker/scripts/*
@@ -26,7 +18,9 @@ WORKING_DIR=~/chapter
 
 REMOVE_ALL_IMAGES="remove_all_images"
 REMOVE_ALL_CONTAINERS="remove_all_containers"
+INSTALL_DEPENDENCIES="install_dependencies"
 CREATE_NODE_IMAGES="create_node_images"
+CREATE_AND_INSTALL="create_and_install"
 
 if [ "$#" -eq 0 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
     echo "Usage: ./app.sh [OPTIONS] COMMAND [arg...]"
@@ -38,19 +32,9 @@ if [ "$#" -eq 0 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
     echo "Commands:"
     echo "  $REMOVE_ALL_IMAGES                  - Remove all images."
     echo "  $REMOVE_ALL_CONTAINERS              - Remove all containers."
+    echo "  $INSTALL_DEPENDENCIES               - Install dependencies."
     echo "  $CREATE_NODE_IMAGES                 - Create Node images."
-    # echo "  $RUN        - Build and Run Chapter."
-    # echo "  $STOP       - Stop Chapter."
-    # if [ "${f: -3}" == ".sh" ]
-    for f in $FILES
-    do
-      if [ -f "$f" ] && [ "${f: -3}" == ".sh" ]; then
-        echo "  `basename -s .sh ${f}`         - `$f -i`"
-      fi
-      #echo "Processing $f file..."
-      # take action on each file. $f store current file name
-       # echo "  `basename -s .sh ${f}`         - `$f -i`"
-    done
+    echo "  $CREATE_AND_INSTALL                 - Create Node images and install dependencies."
     exit
 fi
 
@@ -65,6 +49,7 @@ removeContainers() {
 }
 
 installDependencies() {
+
   if [ ! -d "$WORKING_DIR/node_modules" ]; then
     echo "Directory node_modules in $WORKING_DIR does not exist."
     echo "Installing dependencies via npm install from the chapter_node_app image."
@@ -78,6 +63,7 @@ installDependencies() {
     echo "This will take around 5 minutes."
     docker run -v ~/chapter/client:/usr/node chapter_node_client npm install
   fi
+
 }
 
 createNodeImages() {
@@ -113,28 +99,32 @@ createNodeImages() {
 }
 
 if [ $1 = $REMOVE_ALL_IMAGES ]; then
-  echo "Removing..."
+  echo "Removing images ..."
 	removeImages
 	exit
 fi
 
 if [ $1 = $REMOVE_ALL_CONTAINERS ]; then
-  echo "Removing..."
+  echo "Removing all containers ..."
 	removeContainers
 	exit
 fi
 
-if [ $1 = $CREATE_NODE_IMAGES ]; then
-  echo "Creating..."
-	createNodeImages
+if [ $1 = $INSTALL_DEPENDENCIES ]; then
+  echo "Installing node_modules folders ..."
   installDependencies
 	exit
 fi
 
-for f in $FILES
-do
-  if [ $1 = `basename -s .sh ${f}` ]; then
-    $f
-  	exit
-  fi
-done
+if [ $1 = $CREATE_NODE_IMAGES ]; then
+  echo "Creating Node base images ..."
+	createNodeImages
+	exit
+fi
+
+if [ $1 = $CREATE_AND_INSTALL ]; then
+  echo "Creating Node base images ..."
+	createNodeImages
+  installDependencies
+	exit
+fi

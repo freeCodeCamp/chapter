@@ -7,7 +7,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>'],
   transform: {
-    '^.+\\.tsx?$': 'babel-jest',
+    '^.+\\.tsx?$': 'ts-jest',
   },
   moduleDirectories: ['node_modules', 'server', 'client'],
   //moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {

@@ -6,16 +6,15 @@ WORKDIR /usr/chapter/client
 
 # Installing dependencies
 COPY package*.json ./
-RUN npm install
+#RUN npm install
 
 # Copying source files
-COPY . .
+#COPY . .
 
 # Building app
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 3000
 
 # Running the app
-CMD [ "npm", "run", "start" ]
-
+# CMD [ "npm", "run", "start" ]

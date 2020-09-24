@@ -1,17 +1,9 @@
 #!/bin/sh
 #####################################################################################
 ###
-###	Run
+###	Docker utilities
 ###
 #####################################################################################
-
-IMAGE_NAMES=(chapter_node chapter_app chapter_node_app chapter_client chapter_node_client)
-
-CONTAINER_NAMES=(chapter_db_1 chapter_app_1 chapter_client_1)
-
-FILES=./docker/scripts/*
-WORKING_DIR=~/chapter
-
 
 REMOVE_ALL_IMAGES="remove_all_images"
 REMOVE_ALL_CONTAINERS="remove_all_containers"

@@ -9,9 +9,6 @@ IMAGE_NAMES=(chapter_node chapter_app chapter_node_app chapter_client chapter_no
 
 CONTAINER_NAMES=(chapter_db_1 chapter_app_1 chapter_client_1)
 
-
-#!/bin/bash
-
 FILES=./docker/scripts/*
 WORKING_DIR=~/chapter
 

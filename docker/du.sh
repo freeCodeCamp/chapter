@@ -12,8 +12,8 @@ CREATE_NODE_IMAGES="create_node_images"
 CREATE_AND_INSTALL="create_and_install"
 
 if [ "$#" -eq 0 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
-    echo "Usage: ./app.sh [OPTIONS] COMMAND [arg...]"
-    echo "       ./app.sh [ -h | --help ]"
+    echo "Usage: ./du.sh [OPTIONS] COMMAND [arg...]"
+    echo "       ./du.sh [ -h | --help ]"
     echo ""
     echo "Options:"
     echo "  -h, --help    Prints usage."

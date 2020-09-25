@@ -8,5 +8,3 @@ WORKDIR /usr/node
 COPY ./package*.json ./
 
 RUN npm install
-
-# RUN ls -al

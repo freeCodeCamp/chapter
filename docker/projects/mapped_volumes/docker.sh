@@ -28,8 +28,8 @@ CHAPTER_CLIENT="$(docker ps --all --quiet --filter=name=chapter_client_1)"
 POSTGRES="$(docker ps --all --quiet --filter=name=chapter_db_1)"
 
 if [ "$#" -eq 0 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
-    echo "Usage: ./app.sh [OPTIONS] COMMAND [arg...]"
-    echo "       ./app.sh [ -h | --help ]"
+    echo "Usage: ./docker.sh [OPTIONS] COMMAND [arg...]"
+    echo "       ./docker.sh [ -h | --help ]"
     echo ""
     echo "Options:"
     echo "  -h, --help    Prints usage."
@@ -77,8 +77,8 @@ run() {
   echo "Cleaning..."
   clean
 
-  # echo "Installing dependencies..."
-  # installDependencies
+  echo "Installing dependencies..."
+  installDependencies
 
   echo "Running docker..."
   docker-compose up --build

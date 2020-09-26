@@ -26,6 +26,10 @@ export class User extends BaseModel {
   @Column()
   google_id: string;
 
+  @Field(() => String)
+  @Column()
+  google_picture: string;
+
   @Field(() => [Chapter])
   @OneToMany(
     _type => Chapter,
@@ -72,13 +76,23 @@ export class User extends BaseModel {
     first_name: string;
     last_name: string;
     email: string;
+    google_id?: string;
+    google_picture?: string;
   }) {
     super();
     if (params) {
-      const { first_name, last_name, email } = params;
+      const {
+        first_name,
+        last_name,
+        email,
+        google_id,
+        google_picture,
+      } = params;
       this.first_name = first_name;
       this.last_name = last_name;
       this.email = email;
+      this.google_id = google_id ? google_id : '';
+      this.google_picture = google_picture ? google_picture : '';
     }
   }
 }

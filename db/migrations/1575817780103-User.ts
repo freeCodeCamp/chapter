@@ -12,6 +12,7 @@ export class User1575817780103 implements MigrationInterface {
           "last_name" character varying DEFAULT NULL,
           "email" character varying NOT NULL,
           "google_id" character varying DEFAULT NULL,
+          "google_picture" character varying DEFAULT NULL,
           "password_digest" character varying,
           "created_at" TIMESTAMP NOT NULL DEFAULT now(),
           "updated_at" TIMESTAMP NOT NULL DEFAULT now(),

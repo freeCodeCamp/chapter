@@ -8,7 +8,7 @@ router
     '/',
     passport.authenticate('google', {
       failureRedirect: '/',
-      scope: 'email',
+      scope: 'email profile',
       session: false,
     }),
   )

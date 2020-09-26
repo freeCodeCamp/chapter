@@ -28,9 +28,10 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
 
     script.onload = () => {
       const handleCredentialResponse = (response: any) => {
-        console.log(response);
+        console.log('handleCredentialResponse ', response);
+        // Write logic to handle credentials and authenticate on backend
       };
-      const client_id = process.env.REACT_APP_GOOGLE_CLIENT_ID; // DOES NOT WORK. COPY FROM .env in client
+      const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       const callback = handleCredentialResponse;
       const auto_select = false;
       google.accounts.id.initialize({ client_id, callback, auto_select });

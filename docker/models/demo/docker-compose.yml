@@ -34,11 +34,8 @@ services:
     volumes:
       - ./init.sh:/usr/chapter/init.sh
     command: ./init.sh
-    working_dir: /usr/chapter
     environment:
       - DB_URL=demo_db_1
-    ports:
-      - "5000:5000"
   client:
     depends_on:
       - app
@@ -47,7 +44,3 @@ services:
     build:
       context: ${ROOT}
       dockerfile: ./docker/models/demo/client/Dockerfile
-    ports:
-      - "3000:3000"
-    command: yarn dev
-    working_dir: /usr/chapter/client

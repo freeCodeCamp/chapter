@@ -1,0 +1,55 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "54320:5432"
+  adminer:
+    image: adminer
+    environment:
+      - ADMINER_DESIGN='mancave'
+    restart: always
+    ports:
+      - 8080:8080
+  nodebase_app:
+    build:
+      context: ${ROOT}
+      dockerfile: ./docker/models/demo/node_app/Dockerfile
+    volumes:
+      - ${ROOT}/package.json:/usr/chapter/package.json
+  nodebase_client:
+    build:
+      context: ${ROOT}
+      dockerfile: ./docker/models/demo/node_client/Dockerfile
+  app:
+    depends_on:
+      - db
+    depends_on:
+      - nodebase_app
+    build:
+      context: ${ROOT}
+      dockerfile: ./docker/models/demo/app/Dockerfile
+    volumes:
+      - ./init.sh:/usr/chapter/init.sh
+    command: ./init.sh
+    working_dir: /usr/chapter
+    environment:
+      - DB_URL=demo_db_1
+    ports:
+      - "5000:5000"
+  client:
+    depends_on:
+      - app
+    depends_on:
+      - nodebase_client
+    build:
+      context: ${ROOT}
+      dockerfile: ./docker/models/demo/client/Dockerfile
+    ports:
+      - "3000:3000"
+    command: yarn dev
+    working_dir: /usr/chapter/client

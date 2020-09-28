@@ -19,8 +19,6 @@ services:
     build:
       context: ${ROOT}
       dockerfile: ./docker/models/demo/node_app/Dockerfile
-    volumes:
-      - ${ROOT}/package.json:/usr/chapter/package.json
   nodebase_client:
     build:
       context: ${ROOT}

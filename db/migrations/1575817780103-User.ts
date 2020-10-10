@@ -8,8 +8,8 @@ export class User1575817780103 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE "users" (
           "id" SERIAL NOT NULL,
-          "first_name" character varying DEFAULT NULL,
-          "last_name" character varying DEFAULT NULL,
+          "first_name" character varying NOT NULL,
+          "last_name" character varying NOT NULL,
           "email" character varying NOT NULL,
           "google_id" character varying DEFAULT NULL,
           "google_picture" character varying DEFAULT NULL,

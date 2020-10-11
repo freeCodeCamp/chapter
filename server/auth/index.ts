@@ -7,7 +7,7 @@ Setup();
 const router = express.Router();
 
 router.use(
-  '/is-auth', // add { credentials: include } into fetch request for this endpoint to work
+  '/is-auth', // add { credentials: 'include' } into fetch request for this endpoint to work
   router.get('/', (req, res) => {
     console.log('is there ', req.isAuthenticated());
     console.log('is there ', req.user);

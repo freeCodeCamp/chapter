@@ -1,5 +1,4 @@
 declare let google: any; // For google 'one tap' api
-declare let gapi: any; // For google api
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
@@ -50,9 +49,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       });
     };
 
-    if (!isAuth) {
-      document.body.appendChild(script);
-    }
+    document.body.appendChild(script);
 
     return () => {
       document.body.removeChild(script);

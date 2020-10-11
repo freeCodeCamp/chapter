@@ -8,26 +8,9 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
 
-## Here are some ways to help us
+## Contribute code
 
-### 1. Take part in discussions and tell us your views
-
-Implementation details are still being discussed and the project is currently at a very early stage. The stage of the project is changing on a daily basis, thoughts and ideas are being contributed at a very high pace.
-
-Keep in mind that our focused discussions take place within GitHub [Issues](https://github.com/freeCodeCamp/chapter/issues) and [Pull Requests](https://github.com/freeCodeCamp/chapter/pulls).
-
-Before opening a new issue, please search through current issues to verify that you are not creating a duplicate issue.
-
-If you can't find what you were looking for then [open a new issue](https://github.com/freeCodeCamp/chapter/issues/new/choose) to share your views or to report bugs.
-
-For new "user stories" please do the following:
-
-1. Check your idea does not already exist as an [MVP issue](https://github.com/freeCodeCamp/chapter/labels/MVP), or in the [post-MVP list](https://github.com/freeCodeCamp/chapter/issues/84).
-1. [Create a new "Issue"](https://github.com/freeCodeCamp/chapter/issues/new/choose) and post details about the suggested user story.
-
-### 2. Contribute to this open source codebase
-
-If you feel ready to contribute code to this project then you should follow the below steps:
+If you are willing to contribute code to this project then you should follow the below steps:
 
 <details><summary>Step 1: Fork the repository on GitHub</summary>
 
@@ -90,7 +73,65 @@ You need a reference from your local copy to the `upstream` repository in additi
 
 </details>
 
-<details><summary>Step 3: Making changes to Chapter codebase :fire:</summary>
+<details><summary>Step 3: Running Chapter locally</summary>
+
+You will need Node.js for your operating system. So download and install Node.js from the [official Node.js website](https://nodejs.org/en/download/).
+
+Ensure you are installing Node.js 13 or greater and npm 6 or greater by using:
+```
+node --version
+v14.13.1
+
+npm --version
+6.14.8
+```
+
+Then install the dependencies using:
+```
+npx recursive-install
+```
+
+There are two approaches to running Chapter locally. First by using Docker and second by setting up client-server, db, api-server all by yourself. Let's see the Docker method first then we'll see a more hands-on method. 
+
+**First method: using Docker**
+
+See the [Docker installation "Supported platforms"](https://docs.docker.com/install/#supported-platforms) section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for Linux).
+
+You can find more resources on Docker here:
+- [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
+- [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
+- [Play with Docker Classroom](https://training.play-with-docker.com/)
+
+
+Ensure that Docker Desktop is up and running, then run the following command:
+```
+docker-compose up
+```
+
+Wait for the logs to show "server started on port 8000", then navigate to `localhost:8000` to view the app.
+
+The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
+
+You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
+
+Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
+
+**Second method: manually managing the client-server, db, api-server**
+
+This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
+
+[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to `.env`. If using remote database change `DB_URL` in `.env` to the URL provided by your remote database provider.
+
+Make sure to set `IS_DOCKER=` in `.env` to blank. Then run the below command to start the api-server and client-server:
+
+```
+npm run both
+```
+
+Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
+</details>
+
+<details><summary>Step 4: Making changes to Chapter codebase and Testing code :fire:</summary>
 
 > **Note: Always follow the below steps before you start coding or working on an issue.**
 
@@ -182,7 +223,25 @@ You are now almost ready to make changes to files but before that you should **a
     ...
     ```
 
-5. Stage the changes and make a commit
+5. Test your code **Always!** 
+
+If you have done manual server setup that is without Docker then run tests using:
+```
+npm run test
+```
+
+If you used Docker then suffix the command with `docker-compose exec`. Something like this:
+
+```
+NODE_ENV=test docker-compose exec app npm run test
+```
+
+You can run tests in watch mode by running:
+```
+npm run test:watch
+```
+
+6. Stage the changes and make a commit
 
     In this step, you should only mark files that you have edited or added yourself. You can perform a reset and resolve files that you did not intend to change if needed.
 
@@ -231,7 +290,7 @@ You are now almost ready to make changes to files but before that you should **a
     ```
     Keep your commit messages short. You can always add additional information in the description of the commit message.
 
-6. Next, you can push your changes to your fork.
+7. Next, you can push your changes to your fork.
 
     ```sh
     git push origin branch-name-here
@@ -243,7 +302,7 @@ You are now almost ready to make changes to files but before that you should **a
     ```
 </details>
 
-<details><summary>Step 4: Proposing a Pull Request (PR)</summary>
+<details><summary>Step 5: Proposing a Pull Request (PR)</summary>
 
 #### How to prepare a good Pull Request title:
 
@@ -315,16 +374,27 @@ When in doubt, you can reach out to current project lead(s):
 | Jim Ciallella | [@allella](https://github.com/allella) | Documentation
 | Quincy Larson | [@QuincyLarson](https://github.com/QuincyLarson) | Executive Lead
 
-
-
 You are a champion :).
 
-
 # Server-side Technical Documentation
+
+## API Specification
+
+We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application.
+
+You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
 
 ## Database
 
 for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or discord (Zeko369#6685)
+
+<details>
+<summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
+<br>
+
+![a diagram illustrating the proposed schema for Chapter](docs/data/schema.png)
+> created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
+</details>
 
 We're using Postgres for our database and TypeORM for our ORM (mapping database tables to js objects). Here are a few examples on how to use our TypeORM setup.
 
@@ -335,6 +405,7 @@ Our DB commands closely mirror their rails counterparts (there isn't anything qu
 `yarn db:migrate` -> `rake db:migrate`
 `yarn db:seed` -> `rake db:seed`
 `yarn db:reset` -> `rake db:reset`
+
 ### Seed Database
 
 `yarn db:seed`

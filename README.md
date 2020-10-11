@@ -31,10 +31,13 @@ To better communicate and more easily build an API and UI, the current contribut
 
 We are planning to use the following tools:
 
-* [Node.js](https://nodejs.org) / [Express](https://expressjs.com) for our backend using JavaScript/TypeScript
-* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/)
+* [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) extendable graphql server
+  * [type-graphql](https://github.com/MichalLytek/type-graphql) Code first graphql schema definition library
+  * [passport.js](http://www.passportjs.org/) for auth
+* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) for nice integration with `type-graphql`
 * [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
-  * [JavaScript/TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  * [Apollo Client 3](https://www.apollographql.com/docs/react/)
+  * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Material UI](https://material-ui.com/) for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) for writing unit tests.
@@ -45,114 +48,6 @@ We are planning to use the following tools:
 A lot of people know these tools, and they're proven to work well at scale.
 
 We will focus on building an open API first. Then, developers can use the API to build their own mobile clients and voice interface clients.
-
-## Development Setup
-
-Requirements: Node.js, Docker, internet access
-
-### Installing Node.js
-
-Follow instructions for downloading and installing Node.js for your operating system from the [official Node.js website](https://nodejs.org/en/download/).
-
-Ensure you are installing Node 13 and npm 6 or greater.
-
-### Installing Docker
-
-See the [Docker installation "Supported platforms"](https://docs.docker.com/install/#supported-platforms) section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for Linux).
-
-You can find more resources on Docker here:
-- [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
-- [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
-- [Play with Docker Classroom](https://training.play-with-docker.com/)
-
-### Starting the Development Server
-
-Open up Terminal/Powershell/bash and navigate to the directory where you want the project to live.
-
-Clone this repository:
-```
-git clone https://github.com/freeCodeCamp/chapter
-```
-
-Navigate to the newly cloned repo:
-```
-cd chapter
-```
-
-Install dependencies:
-```
-npx recursive-install
-```
-
-If you're using local setup (no docker), make sure you add your DB credentials to .env file
-
-Running the server:
-
-#### Docker-compose (RECOMMENDED)
-
-Ensure that Docker Desktop is up and running, then run the following command:
-```
-docker-compose up
-```
-
-Wait for the logs to show "server started on port 8000", then navigate to `localhost:8000` to view the app.
-
-The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
-
-You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-
-Next, [seed the DB](#seeding-the-db).
-
-#### Natively running node in Windows/MacOS/Linux (no docker)
-
-DISCLAIMER: This is a more hands on approach.
-
-This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
-
-After you setup the DB instance local or remote, create a database, add the DB name and credentials to .env
-
-MAKE SURE TO SET `IS_DOCKER=` in `.env` to blank
-
-```
-npm run dev
-```
-
-## Seeding the DB
-
-Initially the DB will be empty.  To seed it with sample data, run `yarn db:reset`.
-
-Additional DB docs can be found in [the contributing readme](CONTRIBUTING.md#database).
-
-## Testing
-Run tests
-```
-npm run test
-```
-
-### If you're running in docker compose prefix the command with docker-compose exec
-```
-NODE_ENV=test docker-compose exec app npm run test
-```
-
-Run tests in watch mode
-```
-npm run test:watch
-```
-
-## API Specification
-
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application.
-
-You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
-
-## Schema
-<details>
-<summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
-<br>
-
-![a diagram illustrating the proposed schema for Chapter](docs/data/schema.png)
-> created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
-</details>
 
 ## User Stories
 
@@ -173,8 +68,10 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 
 ## Contributing
 
+* Please read the [contributing guidelines  and steps needed to setup Chapter locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
+
 * You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected and follow announcements.
-* Please read the [**suggested steps to contribute code to the Chapter project**](CONTRIBUTING.md) before creating issues, forking, or submitting any pull requests.
+
 
 ## License
 

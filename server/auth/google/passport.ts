@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GoogleTokenStrategy } from 'passport-google-verify-token';
 import { User } from '../../models';
 
 export default function() {
@@ -35,6 +36,34 @@ export default function() {
             google_picture: jsonProfile.picture,
           }).save();
           return cb(null, newUser);
+        }
+      },
+    ),
+  );
+
+  passport.use(
+    new GoogleTokenStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+      },
+      async function(parsedToken, googleId, done) {
+        console.log('parsedToken ', parsedToken);
+        console.log('googleId ', googleId);
+        const { given_name, family_name, email, picture } = parsedToken;
+        const user = await User.findOne({ google_id: googleId });
+        // // todo: add an update to get users most recent picture
+        if (user) {
+          return done(null, user);
+        } else {
+          // Tmemporary untill we have way to create / add users to chapters
+          const newUser = await new User({
+            first_name: given_name,
+            last_name: family_name,
+            email: email,
+            google_id: googleId,
+            google_picture: picture,
+          }).save();
+          return done(null, newUser);
         }
       },
     ),

@@ -1,4 +1,5 @@
-declare let google: any; // For google api
+declare let google: any; // For google 'one tap' api
+declare let gapi: any; // For google api
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
@@ -27,14 +28,21 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
     script.defer = true;
 
     script.onload = () => {
-      const handleCredentialResponse = (response: any) => {
+      const handleCredentialResponse = async (response: any) => {
         console.log('handleCredentialResponse ', response);
-        // Write logic to handle credentials and authenticate on backend
+        await fetch(
+          `${process.env.NEXT_PUBLIC_TOKEN_AUTH_URL}?access_token=${response.credential}`,
+          { method: 'post' },
+        );
       };
       const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       const callback = handleCredentialResponse;
       const auto_select = false;
-      google.accounts.id.initialize({ client_id, callback, auto_select });
+      google.accounts.id.initialize({
+        client_id,
+        callback,
+        auto_select,
+      });
       google.accounts.id.prompt((notification: any) => {
         console.log(notification);
       });

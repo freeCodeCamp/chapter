@@ -23,6 +23,10 @@ router
       console.log('req.user ', req.user);
       res.redirect('http://localhost:3000/');
     },
-  );
+  )
+  .post('/token', passport.authenticate('google-verify-token'), (req, res) => {
+    console.log(req.user);
+    res.sendStatus(req.user ? 200 : 401);
+  });
 
 export default router;

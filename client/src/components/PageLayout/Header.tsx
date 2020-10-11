@@ -32,7 +32,9 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         console.log('handleCredentialResponse ', response);
         await fetch(
           `${process.env.NEXT_PUBLIC_TOKEN_AUTH_URL}?access_token=${response.credential}`,
-          { method: 'post' },
+          {
+            method: 'post',
+          },
         );
       };
       const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -48,7 +50,9 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       });
     };
 
-    document.body.appendChild(script);
+    if (!isAuth) {
+      document.body.appendChild(script);
+    }
 
     return () => {
       document.body.removeChild(script);
@@ -78,13 +82,24 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       </Link>
       <Grid component="nav" item xs={12} md={4}>
         <Grid container direction="row" spacing={2} justify="center">
-          {headerLinks.map(headerLink => (
-            <Grid item key={headerLink.name}>
-              <Link href={headerLink.href}>
-                <a className={styles.link}>{headerLink.label}</a>
-              </Link>
-            </Grid>
-          ))}
+          {headerLinks.map(headerLink => {
+            if (headerLink.name === 'google') {
+              return (
+                <Grid item key={headerLink.name}>
+                  <a className={styles.link} href={headerLink.href}>
+                    {headerLink.label}
+                  </a>
+                </Grid>
+              );
+            }
+            return (
+              <Grid item key={headerLink.name}>
+                <Link href={headerLink.href}>
+                  <a className={styles.link}>{headerLink.label}</a>
+                </Link>
+              </Grid>
+            );
+          })}
         </Grid>
       </Grid>
     </Grid>

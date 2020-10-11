@@ -41,7 +41,6 @@ const Home: React.FC = () => {
       <Link href="/dashboard">
         <a>Admin dashboard</a>
       </Link>
-      <a href="http://localhost:5000/auth/google/">Authenticate via google</a>
     </>
   );
 };

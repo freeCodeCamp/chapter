@@ -8,6 +8,7 @@ import { buildSchema } from 'type-graphql';
 import { Request, Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import passport from 'passport';
+import session from 'express-session';
 
 config({ path: join(__dirname, '../.env') });
 
@@ -29,7 +30,9 @@ const PORT = process.env.PORT || 5000;
 
 export const main = async (app: Express) => {
   await initDB();
+  app.use(session({ secret: 'secret' }));
   app.use(passport.initialize());
+  app.use(passport.session());
   app.use(cors({ credentials: true, origin: true }));
   app.use('/auth', authController);
 

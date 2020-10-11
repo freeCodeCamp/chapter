@@ -9,14 +9,14 @@ router
     passport.authenticate('google', {
       failureRedirect: '/',
       scope: 'email profile',
-      session: false,
+      session: true,
     }),
   )
   .get(
     '/callback',
     passport.authenticate('google', {
       failureRedirect: '/',
-      session: false,
+      session: true,
     }),
     (req, res) => {
       console.log('GOTHERE! ');

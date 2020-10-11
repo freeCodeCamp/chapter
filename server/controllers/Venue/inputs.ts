@@ -1,4 +1,4 @@
-import { InputType, Field } from 'type-graphql';
+import { InputType, Field, Float } from 'type-graphql';
 
 @InputType()
 export class CreateVenueInputs {
@@ -20,10 +20,10 @@ export class CreateVenueInputs {
   @Field(() => String)
   country: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Float, { nullable: true })
   latitude?: number;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Float, { nullable: true })
   longitude?: number;
 }
 
@@ -47,9 +47,9 @@ export class UpdateVenueInputs {
   @Field(() => String, { nullable: true })
   country: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Float, { nullable: true })
   latitude?: number;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Float, { nullable: true })
   longitude?: number;
 }

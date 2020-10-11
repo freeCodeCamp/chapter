@@ -66,7 +66,7 @@ export class Event extends BaseModel {
   )
   rsvps!: Rsvp[];
 
-  @Field(() => [Tag])
+  @Field(() => [Tag], { nullable: true })
   @OneToMany(
     _type => Tag,
     tag => tag.event,

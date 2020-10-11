@@ -1,13 +1,14 @@
 import 'reflect-metadata';
-import express from 'express';
 import cors from 'cors';
+import { join } from 'path';
+import express, { Express } from 'express';
 import { config } from 'dotenv';
+import isDocker from 'is-docker';
+import { buildSchema } from 'type-graphql';
 import { Request, Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
-import isDocker from 'is-docker';
 
-config();
+config({ path: join(__dirname, '../.env') });
 
 import { resolvers } from './controllers';
 import { IGQLCtx } from './ts/gql';
@@ -22,12 +23,10 @@ if (isDocker() && process.env.IS_DOCKER === '') {
   process.exit(1);
 }
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
-async function main() {
+export const main = async (app: Express) => {
   await initDB();
-  const app = express();
-
   app.use(cors({ credentials: true, origin: true }));
 
   const schema = await buildSchema({ resolvers, validate: false });
@@ -42,12 +41,15 @@ async function main() {
   });
 
   server.applyMiddleware({ app, cors: false, path: '/graphql' });
+};
 
-  app.listen(PORT, () => {
-    console.log(`Listening on http://localhost:${PORT}/graphql`);
-  });
+if (require.main === module) {
+  (async () => {
+    const app = express();
+    await main(app);
+
+    app.listen(PORT, () =>
+      console.log(`Listening on http://localhost:${PORT}/graphql`),
+    );
+  })();
 }
-
-main().catch(err => {
-  console.log(err);
-});

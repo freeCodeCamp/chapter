@@ -8,11 +8,11 @@ export class CreateEventInputs {
   @Field(() => String)
   description: string;
 
-  @Field(() => Int) // pass UTC number
-  start_at: Date;
+  @Field(() => Date)
+  start_at: number;
 
-  @Field(() => Int) // pass UTC number
-  ends_at: Date;
+  @Field(() => Date)
+  ends_at: number;
 
   @Field(() => Number)
   capacity: number;
@@ -32,11 +32,11 @@ export class UpdateEventInputs {
   @Field(() => String, { nullable: true })
   description: string;
 
-  @Field(() => Int, { nullable: true }) // pass UTC number
-  start_at: Date;
+  @Field(() => Date, { nullable: true })
+  start_at: number;
 
-  @Field(() => Int, { nullable: true }) // pass UTC number
-  ends_at: Date;
+  @Field(() => Date, { nullable: true })
+  ends_at: number;
 
   @Field(() => Number, { nullable: true })
   capacity: number;

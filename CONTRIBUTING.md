@@ -304,8 +304,78 @@ We are excited to help you contribute to any of the topics that you would like t
 
 When in doubt, you can reach out to current project lead(s):
 
-| Name            | GitHub | Twitter |
-|:----------------|:-------|:--------|
-| Quincy Larson | [`@QuincyLarson`](https://github.com/QuincyLarson) | [`@ossia`](https://twitter.com/ossia)|
+| Name            | GitHub | Role |
+|:----------------|:-------|:-----|
+| Fran Zeko | [@Zeko369](https://github.com/Zeko369) | Admin UI, routes, models, and data migrations
+| Ayotomide Oladipo | [@tomiiide](https://github.com/tomiiide) | Public-facing client pages / forms
+| Timmy Chen | [@timmyichen](https://github.com/timmyichen) | API
+| Patrick San Juan | [@pdotsani](https://github.com/pdotsani) | Google Authentication
+| Jonathan Seubert | [@megajon](https://github.com/megajon) | Email
+| Vaibhav Singh | [@vaibhavsingh97](https://github.com/vaibhavsingh97) | Heroku 1-click deployment
+| Jim Ciallella | [@allella](https://github.com/allella) | Documentation
+| Quincy Larson | [@QuincyLarson](https://github.com/QuincyLarson) | Executive Lead
+
+
 
 You are a champion :).
+
+
+# Server-side Technical Documentation
+
+## Database
+
+for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or discord (Zeko369#6685)
+
+We're using Postgres for our database and TypeORM for our ORM (mapping database tables to js objects). Here are a few examples on how to use our TypeORM setup.
+
+To make it since the port from docker `postgres` service is exposed to the host (54320, not to mess with local `postgres` if you're running one) you don't have to run `docker-compose exec...`, and can just run db commands from the host. This also makes it a lot easier to access the db from the outside if you're not running a local db on the system to for example open it in [Postico](https://eggerapps.at/postico/) / [Table Plus](https://tableplus.com/).
+Our DB commands closely mirror their rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
+
+`yarn db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
+`yarn db:migrate` -> `rake db:migrate`
+`yarn db:seed` -> `rake db:seed`
+`yarn db:reset` -> `rake db:reset`
+### Seed Database
+
+`yarn db:seed`
+
+Development is easier with a database full of example entities. The process of creating example entities in the database is called seeding.
+
+Use `yarn db:seed` to create these example entities. But first (if the you're just starting) you need to migrate the DB (setup tables). For that you can use `yarn db:reset` which will drop the current db (clear), migrate it (add structure) and then seed it (add data)
+
+### Create a New Model / Entity
+
+`npm run typeorm entity:create -- --name=ModelName`
+
+This would create `ModelName.ts` in `server/models`
+
+To keep everything DRY, add `extends BaseModel` to the class and import it from 'server/models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
+
+You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from `.ts` files, so we run it with `ts-node` and our custom server config (check package.json)
+
+### Create a Migration
+
+After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
+
+`yarn db:generate MIGRATION_NAME`
+
+Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
+
+After that, check the generated SQL in `db/migrations/date-MigrationName.ts`
+
+### Running migrations and checking if migrations were run
+
+You can manualy run them by doing
+`yarn db:migrate`
+
+and then check if it happened correctly
+
+`yarn typeorm migration:show`
+
+it should ouput something like
+
+```
+ [X] Chapter1574341690449
+ ...
+ [X] MigrationName1575633316367
+```

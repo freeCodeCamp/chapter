@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Typography } from '@material-ui/core';
+import { Card, Grid, makeStyles, Typography } from '@material-ui/core';
 import Link from 'next/link';
 
 import { Event, Tag } from '../../../../generated';
@@ -21,23 +21,47 @@ interface IEventItemProps {
   loading: boolean;
 }
 
+const useStyles = makeStyles({
+  eventDescription: {
+    flexGrow: 1,
+  },
+});
+
 const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
+  const styles = useStyles();
+
   return (
     <Card style={{ marginTop: '12px' }}>
       <ProgressCardContent loading={loading}>
-        <Link
-          href="/dashboard/events/[id]"
-          as={`/dashboard/events/${event.id}`}
-        >
-          <a>
-            <Typography gutterBottom variant="h5" component="h2">
-              {event.name}
+        <Grid container spacing={2} direction="column">
+          <Link
+            href="/dashboard/events/[id]"
+            as={`/dashboard/events/${event.id}`}
+          >
+            <a>
+              <Typography gutterBottom variant="h5" component="h2">
+                {event.name}
+              </Typography>
+            </a>
+          </Link>
+
+          {event.canceled && (
+            <Typography variant="h5" color="error">
+              Canceled
             </Typography>
-          </a>
-        </Link>
-        {event.canceled && (
-          <Typography variant="h5" color="error">
-            Canceled
+          )}
+
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            component="p"
+            className={styles.eventDescription}
+          >
+            {event.description}
+          </Typography>
+
+          <Typography variant="body2" color="textSecondary" component="p">
+            {event.capacity}
           </Typography>
         )}
         <Typography variant="body2" color="textSecondary" component="p">
@@ -57,9 +81,10 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
           {event.capacity}
         </Typography>
 
-        {event.tags && <Tags tags={event.tags} />}
+          <div>{event.tags && <Tags tags={event.tags} />}</div>
 
-        <Actions event={event} />
+          <Actions event={event} />
+        </Grid>
       </ProgressCardContent>
     </Card>
   );

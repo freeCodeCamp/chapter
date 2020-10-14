@@ -4,6 +4,7 @@ import Layout from '../home/shared/components/Layout';
 
 const SearchResults: React.FC = () => {
   // TODO: Replace with `useEventsQuery()`!
+  // TODO: Add `key` prop to `<Card />`!
   const data = {
     searchResults: [],
     searchTerm: 'London',
@@ -11,13 +12,13 @@ const SearchResults: React.FC = () => {
 
   return (
     <Layout>
-      <h1>
+      <Typography variant="h1" component="h1">
         Search results for <q>{data?.searchTerm}</q>
-      </h1>
+      </Typography>
       <Grid container spacing={2}>
         <Grid item xs={10}>
           {data?.searchResults.length === 0 && (
-            <Typography gutterButtom variant="p" component="p">
+            <Typography variant="body1" component="p">
               Nothing found.
             </Typography>
           )}

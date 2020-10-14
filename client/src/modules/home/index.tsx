@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   return (
     <>
       <div className={styles.root}>
-        <Typography variant="h1" component="h1">
+        <Typography variant="h3" component="h1">
           Upcoming Events
         </Typography>
         {error && (

@@ -29,11 +29,13 @@ const Home: React.FC = () => {
   return (
     <>
       <div className={styles.root}>
-        <h1>Upcoming Events</h1>
+        <Typography variant="h1" component="h1">
+          Upcoming Events
+        </Typography>
         {error && (
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {error}
+              {error.name}: {error.message}
             </Grid>
           </Grid>
         )}

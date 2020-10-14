@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Link from 'next/link';
 import { NextPage } from 'next';
@@ -35,7 +35,14 @@ export const EventsPage: NextPage = () => {
           </Link>
 
           {error ? (
-            <h1>Error</h1>
+            <>
+              <Typography variant="h1" component="h1">
+                Error
+              </Typography>
+              <Typography variant="body1" component="p">
+                {error.name}: {error.message}
+              </Typography>
+            </>
           ) : (
             <div className={styles.grid}>
               {data?.events.map(event => (

@@ -12,7 +12,7 @@ const SearchResults: React.FC = () => {
 
   return (
     <Layout>
-      <Typography variant="h1" component="h1">
+      <Typography variant="h4" component="h1">
         Search results for <q>{data?.searchTerm}</q>
       </Typography>
       <Grid container spacing={2}>

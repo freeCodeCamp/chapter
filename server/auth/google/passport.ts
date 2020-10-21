@@ -47,8 +47,6 @@ export default function() {
         clientID: process.env.GOOGLE_CLIENT_ID,
       },
       async function(parsedToken, googleId, done) {
-        console.log('parsedToken ', parsedToken);
-        console.log('googleId ', googleId);
         const { given_name, family_name, email, picture } = parsedToken;
         const user = await User.findOne({ google_id: googleId });
         // // todo: add an update to get users most recent picture

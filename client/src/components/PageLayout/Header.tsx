@@ -1,6 +1,6 @@
 declare let google: any; // For google 'one tap' api
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
 
@@ -18,8 +18,27 @@ const useStyles = makeStyles({
 
 const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
   const styles = useStyles();
+  const [isAuth, setIsAuth] = useState(false);
 
   useEffect(() => {
+    const runGoogleAuth = async (script: HTMLElement) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_CHAPTER_SERVER}/auth/is-authed`,
+        {
+          method: 'get',
+          credentials: 'include',
+        },
+      );
+      const responseBody = await response.json();
+      const { isAuth } = responseBody;
+
+      if (!isAuth) {
+        document.body.appendChild(script);
+      } else {
+        setIsAuth(true);
+      }
+    };
+
     const script = document.createElement('script');
 
     script.src = 'https://accounts.google.com/gsi/client';
@@ -28,13 +47,14 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
 
     script.onload = () => {
       const handleCredentialResponse = async (response: any) => {
-        console.log('handleCredentialResponse ', response);
         await fetch(
-          `${process.env.NEXT_PUBLIC_TOKEN_AUTH_URL}?access_token=${response.credential}`,
+          `${process.env.NEXT_PUBLIC_CHAPTER_SERVER}/auth/google/token?access_token=${response.credential}`,
           {
             method: 'post',
+            credentials: 'include',
           },
         );
+        setIsAuth(true);
       };
       const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       const callback = handleCredentialResponse;
@@ -44,15 +64,18 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         callback,
         auto_select,
       });
-      google.accounts.id.prompt((notification: any) => {
-        console.log(notification);
-      });
+      // might need this later for debugging, rm before merge
+      // google.accounts.id.prompt((notification: any) => {
+      //   console.log(notification);
+      // });
     };
 
-    document.body.appendChild(script);
+    runGoogleAuth(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (!isAuth) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -80,7 +103,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       <Grid component="nav" item xs={12} md={4}>
         <Grid container direction="row" spacing={2} justify="center">
           {headerLinks.map(headerLink => {
-            if (headerLink.name === 'google') {
+            if (headerLink.name === 'google' && !isAuth) {
               return (
                 <Grid item key={headerLink.name}>
                   <a className={styles.link} href={headerLink.href}>
@@ -88,7 +111,26 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
                   </a>
                 </Grid>
               );
+            } else if (headerLink.name === 'google' && isAuth) {
+              return null;
             }
+
+            if (headerLink.name === 'logout' && isAuth) {
+              return (
+                <Grid item key={headerLink.name}>
+                  <a className={styles.link} href={headerLink.href}>
+                    {headerLink.label}
+                  </a>
+                </Grid>
+              );
+            } else if (headerLink.name === 'logout' && !isAuth) {
+              return null;
+            }
+
+            if (headerLink.name === 'login' && isAuth) {
+              return null;
+            }
+
             return (
               <Grid item key={headerLink.name}>
                 <Link href={headerLink.href}>

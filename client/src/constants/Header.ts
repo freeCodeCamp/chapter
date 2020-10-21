@@ -14,4 +14,9 @@ export const headerLinks: IHeaderLink[] = [
     label: 'google',
     href: 'http://localhost:5000/auth/google/',
   },
+  {
+    name: 'logout',
+    label: 'logout',
+    href: 'http://localhost:5000/auth/logout',
+  },
 ];

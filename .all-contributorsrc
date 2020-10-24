@@ -442,6 +442,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Ryuno-Ki",
+      "name": "André Jaenisch",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3097194?v=4",
+      "profile": "https://jaenis.ch/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

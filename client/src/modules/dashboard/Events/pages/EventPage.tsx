@@ -24,7 +24,7 @@ export const EventPage: NextPage = () => {
             {loading
               ? 'Loading...'
               : !error
-              ? 'Cant find event :('
+              ? "Can't find event :("
               : 'Error...'}
           </h1>
         </Skeleton>
@@ -48,6 +48,7 @@ export const EventPage: NextPage = () => {
             <Typography variant="body2" color="textSecondary" component="p">
               {data.event.description}
             </Typography>
+            <a href={data.event.url}>{data.event.url}</a>
             <Typography variant="body2" color="textSecondary" component="p">
               {data.event.capacity}
             </Typography>

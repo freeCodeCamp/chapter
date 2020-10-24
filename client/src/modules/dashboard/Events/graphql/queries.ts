@@ -7,6 +7,7 @@ export const EVENTS = gql`
       name
       canceled
       description
+      url
       capacity
       tags {
         id
@@ -22,6 +23,7 @@ export const EVENT = gql`
       id
       name
       description
+      url
       canceled
       capacity
       start_at
@@ -58,6 +60,7 @@ export const EVENT_WITH_VENU = gql`
       id
       name
       description
+      url
       capacity
       start_at
       ends_at
@@ -83,6 +86,7 @@ export const createEvent = gql`
       name
       canceled
       description
+      url
       capacity
       tags {
         id

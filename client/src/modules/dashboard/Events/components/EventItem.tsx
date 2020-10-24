@@ -37,6 +37,7 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
         <Typography variant="body2" color="textSecondary" component="p">
           {event.description}
         </Typography>
+        <a href={event.url}>{event.url}</a>
         <Typography variant="body2" color="textSecondary" component="p">
           {event.capacity}
         </Typography>

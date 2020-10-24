@@ -460,6 +460,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "pdotsani",
+      "name": "Patrick San Juan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5272252?v=4",
+      "profile": "https://github.com/pdotsani",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

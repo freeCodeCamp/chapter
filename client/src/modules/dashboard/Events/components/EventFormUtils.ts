@@ -58,7 +58,7 @@ export const fields: IField[] = [
 export interface IEventFormData {
   name: string;
   description: string;
-  url?: string;
+  url?: string | null;
   capacity: number;
   tags: string;
   start_at: string;

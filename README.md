@@ -150,6 +150,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://jaenis.ch/"><img src="https://avatars0.githubusercontent.com/u/3097194?v=4" width="100px;" alt=""/><br /><sub><b>André Jaenisch</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Ryuno-Ki" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/tomnoland"><img src="https://avatars0.githubusercontent.com/u/4054383?v=4" width="100px;" alt=""/><br /><sub><b>tomnoland</b></sub></a><br /><a href="#infra-tomnoland" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/pdotsani"><img src="https://avatars2.githubusercontent.com/u/5272252?v=4" width="100px;" alt=""/><br /><sub><b>Patrick San Juan</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=pdotsani" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->

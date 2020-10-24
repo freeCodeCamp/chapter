@@ -148,6 +148,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://paulywill.com"><img src="https://avatars1.githubusercontent.com/u/602422?v=4" width="100px;" alt=""/><br /><sub><b>Paul Gamble</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=paulywill" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/devKate"><img src="https://avatars3.githubusercontent.com/u/8015883?v=4" width="100px;" alt=""/><br /><sub><b>Katie Noland</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/issues?q=author%3AdevKate" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://jaenis.ch/"><img src="https://avatars0.githubusercontent.com/u/3097194?v=4" width="100px;" alt=""/><br /><sub><b>André Jaenisch</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Ryuno-Ki" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/tomnoland"><img src="https://avatars0.githubusercontent.com/u/4054383?v=4" width="100px;" alt=""/><br /><sub><b>tomnoland</b></sub></a><br /><a href="#infra-tomnoland" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 

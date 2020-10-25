@@ -1,6 +1,7 @@
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 import { Event, Venue, Chapter } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
+import { isValidUrl } from '../../util/Utilities';
 
 @Resolver()
 export class EventResolver {
@@ -31,7 +32,13 @@ export class EventResolver {
       venue,
       chapter,
     });
-    if (event.url) this.validateEventUrl(event.url);
+
+    if (event.url && !isValidUrl(event.url))
+      throw new Error('Invalid event URL supplied');
+
+    if (event.video_url && !isValidUrl(event.video_url))
+      throw new Error('Invalid video URL supplied');
+
     return event.save();
   }
 
@@ -49,6 +56,7 @@ export class EventResolver {
     event.name = data.name ?? event.name;
     event.description = data.description ?? event.description;
     event.url = data.url ?? event.url;
+    event.video_url = data.video_url ?? event.video_url;
     event.start_at = new Date(data.start_at) ?? event.start_at;
     event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;
@@ -58,7 +66,11 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
-    if (event.url) this.validateEventUrl(event.url);
+    if (event.url && !isValidUrl(event.url))
+      throw new Error('Invalid event URL supplied');
+
+    if (event.video_url && !isValidUrl(event.video_url))
+      throw new Error('Invalid video URL supplied');
     return event.save();
   }
 
@@ -81,13 +93,5 @@ export class EventResolver {
     await event.remove();
 
     return true;
-  }
-
-  validateEventUrl(url) {
-    try {
-      new URL(url);
-    } catch (e) {
-      throw new Error('Invalid event URL supplied');
-    }
   }
 }

@@ -22,6 +22,7 @@ const createEvents = async (
       chapter: randomItem(chapters),
       description: lorem.words(),
       url: internet.url(),
+      video_url: internet.url(),
       capacity: random(1000),
       venue: randomItem(venues),
       canceled: Math.random() > 0.5,

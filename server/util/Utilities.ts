@@ -12,3 +12,12 @@ export const randomEnum = <T>(anEnum: T): T[keyof T] => {
   const randomEnumValue = anEnum[randomIndex];
   return randomEnumValue;
 };
+
+export function isValidUrl(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

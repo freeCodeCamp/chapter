@@ -1,4 +1,4 @@
-import { company, lorem } from 'faker';
+import { company, lorem, internet } from 'faker';
 import {
   Event,
   Venue,
@@ -21,6 +21,7 @@ const createEvents = async (
       name: company.companyName(),
       chapter: randomItem(chapters),
       description: lorem.words(),
+      url: internet.url(),
       capacity: random(1000),
       venue: randomItem(venues),
       canceled: Math.random() > 0.5,

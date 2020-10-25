@@ -8,6 +8,9 @@ export class CreateEventInputs {
   @Field(() => String)
   description: string;
 
+  @Field(() => String, { nullable: true })
+  url?: string;
+
   @Field(() => Date)
   start_at: number;
 
@@ -31,6 +34,9 @@ export class UpdateEventInputs {
 
   @Field(() => String, { nullable: true })
   description: string;
+
+  @Field(() => String, { nullable: true })
+  url?: string;
 
   @Field(() => Date, { nullable: true })
   start_at: number;

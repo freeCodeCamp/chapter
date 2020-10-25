@@ -31,7 +31,7 @@ export class EventResolver {
       venue,
       chapter,
     });
-    if (event.url != undefined) this.validateEventUrl(event.url);
+    if (event.url) this.validateEventUrl(event.url);
     return event.save();
   }
 
@@ -58,7 +58,7 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
-    if (event.url != undefined) this.validateEventUrl(event.url);
+    if (event.url) this.validateEventUrl(event.url);
     return event.save();
   }
 

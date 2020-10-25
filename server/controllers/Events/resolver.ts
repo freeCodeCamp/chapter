@@ -31,6 +31,7 @@ export class EventResolver {
       venue,
       chapter,
     });
+    if (event.url != undefined) this.validateEventUrl(event.url);
     return event.save();
   }
 
@@ -57,7 +58,7 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
-
+    if (event.url != undefined) this.validateEventUrl(event.url);
     return event.save();
   }
 
@@ -80,5 +81,13 @@ export class EventResolver {
     await event.remove();
 
     return true;
+  }
+
+  validateEventUrl(url) {
+    try {
+      new URL(url);
+    } catch (e) {
+      throw new Error('Invalid event URL supplied');
+    }
   }
 }

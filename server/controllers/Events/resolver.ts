@@ -33,12 +33,6 @@ export class EventResolver {
       chapter,
     });
 
-    if (event.url && !isValidUrl(event.url))
-      throw new Error('Invalid event URL supplied');
-
-    if (event.video_url && !isValidUrl(event.video_url))
-      throw new Error('Invalid video URL supplied');
-
     return event.save();
   }
 
@@ -66,11 +60,7 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
-    if (event.url && !isValidUrl(event.url))
-      throw new Error('Invalid event URL supplied');
 
-    if (event.video_url && !isValidUrl(event.video_url))
-      throw new Error('Invalid video URL supplied');
     return event.save();
   }
 

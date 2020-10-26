@@ -1,7 +1,6 @@
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 import { Event, Venue, Chapter } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
-import { isValidUrl } from '../../util/Utilities';
 
 @Resolver()
 export class EventResolver {

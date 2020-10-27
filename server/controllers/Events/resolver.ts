@@ -50,6 +50,7 @@ export class EventResolver {
     event.description = data.description ?? event.description;
     event.url = data.url ?? event.url;
     event.video_url = data.video_url ?? event.video_url;
+    event.venue_type = data.venue_type ?? event.venue_type;
     event.start_at = new Date(data.start_at) ?? event.start_at;
     event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;

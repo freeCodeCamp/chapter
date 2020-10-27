@@ -52,6 +52,8 @@ export default class MailerService implements IMailerService {
 
     this.transporter = nodemailer.createTransport({
       service: this.emailService,
+      host: 'localhost',
+      port: 1025,
       auth: {
         user: this.emailUsername,
         pass: this.emailPassword,

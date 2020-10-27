@@ -12,9 +12,6 @@ export class Email {
   subject: string;
 
   @Field(() => String)
-  text: string;
-
-  @Field(() => String)
   htmlEmail: string;
 
   @Field(() => String)

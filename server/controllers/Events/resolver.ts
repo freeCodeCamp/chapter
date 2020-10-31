@@ -18,8 +18,11 @@ export class EventResolver {
 
   @Mutation(() => Event)
   async createEvent(@Arg('data') data: CreateEventInputs) {
-    const venue = await Venue.findOne(data.venueId);
-    if (!venue) throw new Error('Venue missing');
+    let venue;
+    if (data.venueId) {
+      venue = await Venue.findOne(data.venueId);
+      if (!venue) throw new Error('Venue missing');
+    }
 
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');

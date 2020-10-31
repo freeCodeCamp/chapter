@@ -27,8 +27,8 @@ export class CreateEventInputs {
   @Field(() => Number)
   capacity: number;
 
-  @Field(() => Int)
-  venueId: number;
+  @Field(() => Int, { nullable: true })
+  venueId?: number;
 
   @Field(() => Int)
   chapterId: number;
@@ -61,5 +61,5 @@ export class UpdateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venueId: number;
+  venueId?: number;
 }

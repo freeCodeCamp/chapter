@@ -65,13 +65,14 @@ export class Event extends BaseModel {
   )
   sponsors!: EventSponsor[];
 
-  @Field(() => Venue)
+  @Field(() => Venue, { nullable: true })
   @ManyToOne(
     _type => Venue,
     venue => venue.events,
+    { nullable: true },
   )
   @JoinColumn({ name: 'venue_id' })
-  venue!: Venue;
+  venue?: Venue;
 
   @Field(() => Chapter)
   @ManyToOne(
@@ -107,7 +108,7 @@ export class Event extends BaseModel {
     ends_at: Date;
     canceled?: boolean;
     capacity: number;
-    venue: Venue;
+    venue?: Venue;
     chapter: Chapter;
   }) {
     super();

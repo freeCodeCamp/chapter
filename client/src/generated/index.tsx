@@ -65,16 +65,24 @@ export type Event = {
   description: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   video_url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   sponsors: Array<EventSponsor>;
-  venue: Venue;
+  venue?: Maybe<Venue>;
   chapter: Chapter;
   rsvps: Array<Rsvp>;
   tags?: Maybe<Array<Tag>>;
 };
+
+/** All possible venue types for an event */
+export enum VenueType {
+  Physical = 'Physical',
+  Online = 'Online',
+  PhysicalAndOnline = 'PhysicalAndOnline',
+}
 
 export type EventSponsor = {
   __typename?: 'EventSponsor';
@@ -284,10 +292,11 @@ export type CreateEventInputs = {
   description: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   video_url?: Maybe<Scalars['String']>;
+  venue_type?: Maybe<VenueType>;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   capacity: Scalars['Float'];
-  venueId: Scalars['Int'];
+  venueId?: Maybe<Scalars['Int']>;
   chapterId: Scalars['Int'];
 };
 
@@ -296,6 +305,7 @@ export type UpdateEventInputs = {
   description?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   video_url?: Maybe<Scalars['String']>;
+  venue_type?: Maybe<VenueType>;
   start_at?: Maybe<Scalars['DateTime']>;
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
@@ -340,15 +350,17 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'ends_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        venue: { __typename?: 'Venue' } & Pick<
-          Venue,
-          | 'id'
-          | 'name'
-          | 'street_address'
-          | 'city'
-          | 'postal_code'
-          | 'region'
-          | 'country'
+        venue?: Maybe<
+          { __typename?: 'Venue' } & Pick<
+            Venue,
+            | 'id'
+            | 'name'
+            | 'street_address'
+            | 'city'
+            | 'postal_code'
+            | 'region'
+            | 'country'
+          >
         >;
         rsvps: Array<
           { __typename?: 'Rsvp' } & Pick<Rsvp, 'id' | 'on_waitlist'> & {
@@ -380,7 +392,7 @@ export type EventVenuesQuery = { __typename?: 'Query' } & {
       | 'ends_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        venue: { __typename?: 'Venue' } & Pick<Venue, 'id'>;
+        venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id'>>;
       }
   >;
   venues: Array<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;

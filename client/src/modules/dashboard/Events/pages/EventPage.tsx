@@ -68,10 +68,15 @@ export const EventPage: NextPage = () => {
               event={data.event}
               onDelete={() => router.replace('/dashboard/events')}
             />
-
-            <h2>Venue:</h2>
-            <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
-            <h4>{getLocationString(data.event.venue, true)}</h4>
+            {data.event.venue ? (
+              <>
+                <h2>Venue:</h2>
+                <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
+                <h4>{getLocationString(data.event.venue, true)}</h4>
+              </>
+            ) : (
+              <h2>Venue: Online</h2>
+            )}
           </ProgressCardContent>
         </Card>
         <Card style={{ marginTop: '12px' }}>

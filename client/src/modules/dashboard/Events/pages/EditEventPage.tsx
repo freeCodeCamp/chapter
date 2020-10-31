@@ -75,7 +75,7 @@ export const EditEventPage: NextPage = () => {
         <EventForm
           data={{
             ...data.event,
-            venueId: data.event.venue.id,
+            venueId: data.event?.venue?.id,
             tags: data.event.tags || [],
           }}
           loading={loading}

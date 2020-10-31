@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
 
-import { headerLinks } from '../../constants/Header';
+import { headerLinks, IHeaderLink } from '../../constants/Header';
 
 const useStyles = makeStyles({
   link: {
@@ -64,20 +64,24 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         callback,
         auto_select,
       });
-      // might need this later for debugging, rm before merge
-      // google.accounts.id.prompt((notification: any) => {
-      //   console.log(notification);
-      // });
+      google.accounts.id.prompt((notification: any) => {
+        // might need this later for debugging, rm before merge
+        console.log(notification);
+      });
     };
 
     runGoogleAuth(script);
+  }, [isAuth]);
 
-    return () => {
-      if (!isAuth) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
+  let links: IHeaderLink[];
+
+  if (isAuth) {
+    links = headerLinks.filter(
+      link => link.name !== 'google' && link.name !== 'login',
+    );
+  } else {
+    links = headerLinks.filter(link => link.name !== 'logout');
+  }
 
   return (
     <Grid
@@ -102,8 +106,8 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       </Link>
       <Grid component="nav" item xs={12} md={4}>
         <Grid container direction="row" spacing={2} justify="center">
-          {headerLinks.map(headerLink => {
-            if (headerLink.name === 'google' && !isAuth) {
+          {links.map(headerLink => {
+            if (headerLink.name === 'google' || headerLink.name === 'logout') {
               return (
                 <Grid item key={headerLink.name}>
                   <a className={styles.link} href={headerLink.href}>
@@ -111,24 +115,6 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
                   </a>
                 </Grid>
               );
-            } else if (headerLink.name === 'google' && isAuth) {
-              return null;
-            }
-
-            if (headerLink.name === 'logout' && isAuth) {
-              return (
-                <Grid item key={headerLink.name}>
-                  <a className={styles.link} href={headerLink.href}>
-                    {headerLink.label}
-                  </a>
-                </Grid>
-              );
-            } else if (headerLink.name === 'logout' && !isAuth) {
-              return null;
-            }
-
-            if (headerLink.name === 'login' && isAuth) {
-              return null;
             }
 
             return (

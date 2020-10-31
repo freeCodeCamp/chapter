@@ -8,7 +8,7 @@ export default function() {
     done(null, user.id);
   });
 
-  passport.deserializeUser(async (userId: any, done) => {
+  passport.deserializeUser(async (userId: number, done) => {
     const user = await User.findOne({ id: userId });
     done(null, user);
   });

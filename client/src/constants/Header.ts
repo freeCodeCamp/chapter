@@ -1,4 +1,6 @@
-interface IHeaderLink {
+const chapterServer = process.env.NEXT_PUBLIC_CHAPTER_SERVER;
+
+export interface IHeaderLink {
   name: string;
   label: string;
   href: string;
@@ -12,11 +14,11 @@ export const headerLinks: IHeaderLink[] = [
   {
     name: 'google',
     label: 'google',
-    href: 'http://localhost:5000/auth/google/',
+    href: `${chapterServer}/auth/google/`,
   },
   {
     name: 'logout',
     label: 'logout',
-    href: 'http://localhost:5000/auth/logout',
+    href: `${chapterServer}/auth/logout`,
   },
 ];

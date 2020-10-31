@@ -10,7 +10,7 @@ import { Rsvp } from './Rsvp';
 export enum VenueType {
   Physical = 'Physical',
   Online = 'Online',
-  PhysicalAndOnline = 'Physical and Online',
+  PhysicalAndOnline = 'PhysicalAndOnline',
 }
 
 registerEnumType(VenueType, {

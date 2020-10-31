@@ -64,10 +64,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         callback,
         auto_select,
       });
-      google.accounts.id.prompt((notification: any) => {
-        // might need this later for debugging, rm before merge
-        console.log(notification);
-      });
+      google.accounts.id.prompt();
     };
 
     runGoogleAuth(script);

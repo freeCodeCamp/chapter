@@ -27,7 +27,7 @@ export default function() {
         if (user) {
           return cb(null, user);
         } else {
-          // Tmemporary untill we have way to create / add users to chapters
+          // Tmemporary until we have way to create / add users to chapters
           const newUser = await new User({
             first_name: jsonProfile.given_name,
             last_name: jsonProfile.family_name,

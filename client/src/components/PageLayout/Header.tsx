@@ -70,15 +70,9 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
     runGoogleAuth(script);
   }, [isAuth]);
 
-  let links: IHeaderLink[];
-
-  if (isAuth) {
-    links = headerLinks.filter(
-      link => link.name !== 'google' && link.name !== 'login',
-    );
-  } else {
-    links = headerLinks.filter(link => link.name !== 'logout');
-  }
+  const links: IHeaderLink[] = isAuth
+    ? headerLinks.filter(link => link.name !== 'login')
+    : headerLinks.filter(link => link.name !== 'logout');
 
   return (
     <Grid
@@ -104,7 +98,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       <Grid component="nav" item xs={12} md={4}>
         <Grid container direction="row" spacing={2} justify="center">
           {links.map(headerLink => {
-            if (headerLink.name === 'google' || headerLink.name === 'logout') {
+            if (headerLink.name === 'login' || headerLink.name === 'logout') {
               return (
                 <Grid item key={headerLink.name}>
                   <a className={styles.link} href={headerLink.href}>

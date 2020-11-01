@@ -9,16 +9,16 @@ export interface IHeaderLink {
 export const headerLinks: IHeaderLink[] = [
   { name: 'events', label: 'Events', href: '/events' },
   { name: 'chapters', label: 'Chapters', href: '/chapters' },
-  { name: 'login', label: 'Login', href: '/login' },
+  // { name: 'login', label: 'Login', href: '/login' },
   { name: 'register', label: 'Register', href: '/register' },
   {
-    name: 'google',
-    label: 'google',
+    name: 'login',
+    label: 'Login',
     href: `${chapterServer}/auth/google/`,
   },
   {
     name: 'logout',
-    label: 'logout',
+    label: 'Logout',
     href: `${chapterServer}/auth/logout`,
   },
 ];

@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 5000;
 
 export const main = async (app: Express) => {
   await initDB();
-  app.use(session({ secret: 'secret' }));
+  app.use(session({ secret: process.env.SESSION_SECRET }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(cors({ credentials: true, origin: true }));

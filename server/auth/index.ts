@@ -1,9 +1,9 @@
 import express from 'express';
-import Setup from './google/passport';
+import setup from './google/passport';
 import googleRouter from './google';
 import authRouter from './auth';
 
-Setup();
+setup();
 
 const router = express.Router();
 

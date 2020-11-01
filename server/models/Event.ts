@@ -18,6 +18,10 @@ export class Event extends BaseModel {
   @Column({ nullable: false })
   description!: string;
 
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  url?: string;
+
   @Field(() => Date)
   @Column({ type: 'timestamp' })
   start_at!: Date;
@@ -77,6 +81,7 @@ export class Event extends BaseModel {
   constructor(params: {
     name: string;
     description: string;
+    url?: string;
     start_at: Date;
     ends_at: Date;
     canceled?: boolean;
@@ -89,6 +94,7 @@ export class Event extends BaseModel {
       const {
         name,
         description,
+        url,
         start_at,
         ends_at,
         canceled,
@@ -99,6 +105,7 @@ export class Event extends BaseModel {
 
       this.name = name;
       this.description = description;
+      this.url = url;
       this.start_at = start_at;
       this.ends_at = ends_at;
       this.canceled = canceled || false;

@@ -10,7 +10,7 @@ import Actions from './Actions';
 interface IEventItemProps {
   event: Pick<
     Event,
-    'id' | 'name' | 'description' | 'capacity' | 'canceled'
+    'id' | 'name' | 'description' | 'url' | 'capacity' | 'canceled'
   > & { tags?: Pick<Tag, 'id' | 'name'>[] | null };
   loading: boolean;
 }
@@ -37,6 +37,7 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
         <Typography variant="body2" color="textSecondary" component="p">
           {event.description}
         </Typography>
+        {event.url && <a href={event.url}>{event.url}</a>}
         <Typography variant="body2" color="textSecondary" component="p">
           {event.capacity}
         </Typography>

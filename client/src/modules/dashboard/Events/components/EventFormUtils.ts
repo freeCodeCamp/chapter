@@ -22,6 +22,12 @@ export const fields: IField[] = [
     placeholder: '',
   },
   {
+    key: 'url',
+    type: 'text',
+    label: 'url',
+    placeholder: '',
+  },
+  {
     key: 'capacity',
     type: 'number',
     label: 'Capacity',
@@ -52,6 +58,7 @@ export const fields: IField[] = [
 export interface IEventFormData {
   name: string;
   description: string;
+  url?: string | null;
   capacity: number;
   tags: string;
   start_at: string;

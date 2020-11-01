@@ -47,6 +47,7 @@ export class EventResolver {
 
     event.name = data.name ?? event.name;
     event.description = data.description ?? event.description;
+    event.url = data.url ?? event.url;
     event.start_at = new Date(data.start_at) ?? event.start_at;
     event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;
@@ -56,7 +57,6 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
-
     return event.save();
   }
 

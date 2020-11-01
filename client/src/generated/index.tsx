@@ -63,6 +63,7 @@ export type Event = {
   updated_at: Scalars['DateTime'];
   name: Scalars['String'];
   description: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   canceled: Scalars['Boolean'];
@@ -280,6 +281,7 @@ export type UpdateVenueInputs = {
 export type CreateEventInputs = {
   name: Scalars['String'];
   description: Scalars['String'];
+  url: Scalars['String'];
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   capacity: Scalars['Float'];
@@ -290,6 +292,7 @@ export type CreateEventInputs = {
 export type UpdateEventInputs = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
   start_at?: Maybe<Scalars['DateTime']>;
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
@@ -302,7 +305,7 @@ export type EventsQuery = { __typename?: 'Query' } & {
   events: Array<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'canceled' | 'description' | 'capacity'
+      'id' | 'name' | 'canceled' | 'description' | 'url' | 'capacity'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
       }
@@ -320,6 +323,7 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'id'
       | 'name'
       | 'description'
+      | 'url'
       | 'canceled'
       | 'capacity'
       | 'start_at'
@@ -356,7 +360,13 @@ export type EventVenuesQuery = { __typename?: 'Query' } & {
   event?: Maybe<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'description' | 'capacity' | 'start_at' | 'ends_at'
+      | 'id'
+      | 'name'
+      | 'description'
+      | 'url'
+      | 'capacity'
+      | 'start_at'
+      | 'ends_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
         venue: { __typename?: 'Venue' } & Pick<Venue, 'id'>;
@@ -372,7 +382,7 @@ export type CreateEventMutationVariables = Exact<{
 export type CreateEventMutation = { __typename?: 'Mutation' } & {
   createEvent: { __typename?: 'Event' } & Pick<
     Event,
-    'id' | 'name' | 'canceled' | 'description' | 'capacity'
+    'id' | 'name' | 'canceled' | 'description' | 'url' | 'capacity'
   > & {
       tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
     };
@@ -489,6 +499,7 @@ export const EventsDocument = gql`
       name
       canceled
       description
+      url
       capacity
       tags {
         id
@@ -547,6 +558,7 @@ export const EventDocument = gql`
       id
       name
       description
+      url
       canceled
       capacity
       start_at
@@ -627,6 +639,7 @@ export const EventVenuesDocument = gql`
       id
       name
       description
+      url
       capacity
       start_at
       ends_at
@@ -698,6 +711,7 @@ export const CreateEventDocument = gql`
       name
       canceled
       description
+      url
       capacity
       tags {
         id

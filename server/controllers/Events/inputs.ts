@@ -11,6 +11,9 @@ export class CreateEventInputs {
   @Field(() => String, { nullable: true })
   url?: string;
 
+  @Field(() => String, { nullable: true })
+  video_url?: string;
+
   @Field(() => Date)
   start_at: number;
 
@@ -37,6 +40,9 @@ export class UpdateEventInputs {
 
   @Field(() => String, { nullable: true })
   url?: string;
+
+  @Field(() => String, { nullable: true })
+  video_url?: string;
 
   @Field(() => Date, { nullable: true })
   start_at: number;

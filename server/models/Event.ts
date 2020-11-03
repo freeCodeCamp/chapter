@@ -22,6 +22,10 @@ export class Event extends BaseModel {
   @Column({ nullable: true })
   url?: string;
 
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  video_url?: string;
+
   @Field(() => Date)
   @Column({ type: 'timestamp' })
   start_at!: Date;
@@ -82,6 +86,7 @@ export class Event extends BaseModel {
     name: string;
     description: string;
     url?: string;
+    video_url?: string;
     start_at: Date;
     ends_at: Date;
     canceled?: boolean;
@@ -95,6 +100,7 @@ export class Event extends BaseModel {
         name,
         description,
         url,
+        video_url,
         start_at,
         ends_at,
         canceled,
@@ -106,6 +112,7 @@ export class Event extends BaseModel {
       this.name = name;
       this.description = description;
       this.url = url;
+      this.video_url = video_url;
       this.start_at = start_at;
       this.ends_at = ends_at;
       this.canceled = canceled || false;

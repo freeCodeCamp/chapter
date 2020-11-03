@@ -24,7 +24,13 @@ export const fields: IField[] = [
   {
     key: 'url',
     type: 'text',
-    label: 'url',
+    label: 'Url',
+    placeholder: '',
+  },
+  {
+    key: 'video_url',
+    type: 'text',
+    label: 'Video Url',
     placeholder: '',
   },
   {
@@ -59,6 +65,7 @@ export interface IEventFormData {
   name: string;
   description: string;
   url?: string | null;
+  video_url?: string | null;
   capacity: number;
   tags: string;
   start_at: string;

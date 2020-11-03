@@ -64,6 +64,7 @@ export type Event = {
   name: Scalars['String'];
   description: Scalars['String'];
   url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   canceled: Scalars['Boolean'];
@@ -281,7 +282,8 @@ export type UpdateVenueInputs = {
 export type CreateEventInputs = {
   name: Scalars['String'];
   description: Scalars['String'];
-  url: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   capacity: Scalars['Float'];
@@ -293,6 +295,7 @@ export type UpdateEventInputs = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
   start_at?: Maybe<Scalars['DateTime']>;
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
@@ -305,7 +308,13 @@ export type EventsQuery = { __typename?: 'Query' } & {
   events: Array<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'canceled' | 'description' | 'url' | 'capacity'
+      | 'id'
+      | 'name'
+      | 'canceled'
+      | 'description'
+      | 'url'
+      | 'video_url'
+      | 'capacity'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
       }
@@ -324,6 +333,7 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'name'
       | 'description'
       | 'url'
+      | 'video_url'
       | 'canceled'
       | 'capacity'
       | 'start_at'
@@ -364,6 +374,7 @@ export type EventVenuesQuery = { __typename?: 'Query' } & {
       | 'name'
       | 'description'
       | 'url'
+      | 'video_url'
       | 'capacity'
       | 'start_at'
       | 'ends_at'
@@ -382,7 +393,13 @@ export type CreateEventMutationVariables = Exact<{
 export type CreateEventMutation = { __typename?: 'Mutation' } & {
   createEvent: { __typename?: 'Event' } & Pick<
     Event,
-    'id' | 'name' | 'canceled' | 'description' | 'url' | 'capacity'
+    | 'id'
+    | 'name'
+    | 'canceled'
+    | 'description'
+    | 'url'
+    | 'video_url'
+    | 'capacity'
   > & {
       tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
     };
@@ -500,6 +517,7 @@ export const EventsDocument = gql`
       canceled
       description
       url
+      video_url
       capacity
       tags {
         id
@@ -559,6 +577,7 @@ export const EventDocument = gql`
       name
       description
       url
+      video_url
       canceled
       capacity
       start_at
@@ -640,6 +659,7 @@ export const EventVenuesDocument = gql`
       name
       description
       url
+      video_url
       capacity
       start_at
       ends_at
@@ -712,6 +732,7 @@ export const CreateEventDocument = gql`
       canceled
       description
       url
+      video_url
       capacity
       tags {
         id

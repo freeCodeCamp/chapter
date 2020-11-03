@@ -48,7 +48,17 @@ export const EventPage: NextPage = () => {
             <Typography variant="body2" color="textSecondary" component="p">
               {data.event.description}
             </Typography>
-            <a href={data.event.url}>{data.event.url}</a>
+            {data.event.url && (
+              <Typography>
+                Event Url: <a href={data.event.url}>{data.event.url}</a>
+              </Typography>
+            )}
+            {data.event.video_url && (
+              <Typography>
+                Video Url:{' '}
+                <a href={data.event.video_url}>{data.event.video_url}</a>
+              </Typography>
+            )}
             <Typography variant="body2" color="textSecondary" component="p">
               {data.event.capacity}
             </Typography>

@@ -63,7 +63,6 @@ export class EventResolver {
       if (!venue) throw new Error('Cant find venue');
       event.venue = venue;
     }
-
     return event.save();
   }
 

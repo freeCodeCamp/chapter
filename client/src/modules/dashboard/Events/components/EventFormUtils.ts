@@ -70,7 +70,7 @@ export interface IEventFormData {
   tags: string;
   start_at: string;
   ends_at: string;
-  venueId: number;
+  venueId?: number | null;
 }
 
 export type IEventData = Pick<
@@ -79,7 +79,7 @@ export type IEventData = Pick<
 > & {
   venueId?: number;
   tags: { name: string }[];
-  venue: Omit<Venue, 'created_at' | 'updated_at' | 'events'>;
+  venue?: Omit<Venue, 'created_at' | 'updated_at' | 'events'>;
 };
 
 export interface IEventFormProps {

@@ -18,8 +18,11 @@ export class EventResolver {
 
   @Mutation(() => Event)
   async createEvent(@Arg('data') data: CreateEventInputs) {
-    const venue = await Venue.findOne(data.venueId);
-    if (!venue) throw new Error('Venue missing');
+    let venue;
+    if (data.venueId) {
+      venue = await Venue.findOne(data.venueId);
+      if (!venue) throw new Error('Venue missing');
+    }
 
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
@@ -50,6 +53,7 @@ export class EventResolver {
     event.description = data.description ?? event.description;
     event.url = data.url ?? event.url;
     event.video_url = data.video_url ?? event.video_url;
+    event.venue_type = data.venue_type ?? event.venue_type;
     event.start_at = new Date(data.start_at) ?? event.start_at;
     event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;

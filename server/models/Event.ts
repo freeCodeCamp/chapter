@@ -1,11 +1,22 @@
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
-import { ObjectType, Field, Int } from 'type-graphql';
+import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseModel } from './BaseModel';
 import { Venue } from './Venue';
 import { Chapter } from './Chapter';
 import { Tag } from './Tag';
 import { EventSponsor } from './EventSponsor';
 import { Rsvp } from './Rsvp';
+
+export enum VenueType {
+  Physical = 'Physical',
+  Online = 'Online',
+  PhysicalAndOnline = 'PhysicalAndOnline',
+}
+
+registerEnumType(VenueType, {
+  name: 'VenueType',
+  description: 'All possible venue types for an event',
+});
 
 @ObjectType()
 @Entity({ name: 'events' })
@@ -25,6 +36,10 @@ export class Event extends BaseModel {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   video_url?: string;
+
+  @Field(() => VenueType)
+  @Column({ type: 'enum', enum: VenueType, default: VenueType.Physical })
+  venue_type!: VenueType;
 
   @Field(() => Date)
   @Column({ type: 'timestamp' })
@@ -50,13 +65,14 @@ export class Event extends BaseModel {
   )
   sponsors!: EventSponsor[];
 
-  @Field(() => Venue)
+  @Field(() => Venue, { nullable: true })
   @ManyToOne(
     _type => Venue,
     venue => venue.events,
+    { nullable: true },
   )
   @JoinColumn({ name: 'venue_id' })
-  venue!: Venue;
+  venue?: Venue;
 
   @Field(() => Chapter)
   @ManyToOne(
@@ -87,11 +103,12 @@ export class Event extends BaseModel {
     description: string;
     url?: string;
     video_url?: string;
+    venue_type: VenueType;
     start_at: Date;
     ends_at: Date;
     canceled?: boolean;
     capacity: number;
-    venue: Venue;
+    venue?: Venue;
     chapter: Chapter;
   }) {
     super();
@@ -101,6 +118,7 @@ export class Event extends BaseModel {
         description,
         url,
         video_url,
+        venue_type,
         start_at,
         ends_at,
         canceled,
@@ -113,6 +131,7 @@ export class Event extends BaseModel {
       this.description = description;
       this.url = url;
       this.video_url = video_url;
+      this.venue_type = venue_type;
       this.start_at = start_at;
       this.ends_at = ends_at;
       this.canceled = canceled || false;

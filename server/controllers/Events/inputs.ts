@@ -1,4 +1,5 @@
 import { InputType, Field, Int } from 'type-graphql';
+import { VenueType } from '../../models';
 
 @InputType()
 export class CreateEventInputs {
@@ -14,6 +15,9 @@ export class CreateEventInputs {
   @Field(() => String, { nullable: true })
   video_url?: string;
 
+  @Field(() => VenueType, { nullable: true })
+  venue_type: VenueType;
+
   @Field(() => Date)
   start_at: number;
 
@@ -23,8 +27,8 @@ export class CreateEventInputs {
   @Field(() => Number)
   capacity: number;
 
-  @Field(() => Int)
-  venueId: number;
+  @Field(() => Int, { nullable: true })
+  venueId?: number;
 
   @Field(() => Int)
   chapterId: number;
@@ -44,6 +48,9 @@ export class UpdateEventInputs {
   @Field(() => String, { nullable: true })
   video_url?: string;
 
+  @Field(() => VenueType, { nullable: true })
+  venue_type: VenueType;
+
   @Field(() => Date, { nullable: true })
   start_at: number;
 
@@ -54,5 +61,5 @@ export class UpdateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venueId: number;
+  venueId?: number;
 }

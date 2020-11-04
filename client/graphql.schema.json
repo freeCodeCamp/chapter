@@ -572,6 +572,22 @@
             "deprecationReason": null
           },
           {
+            "name": "venue_type",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "VenueType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "start_at",
             "description": null,
             "args": [],
@@ -664,13 +680,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Venue",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Venue",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -749,6 +761,35 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "VenueType",
+        "description": "All possible venue types for an event",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "Physical",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "Online",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PhysicalAndOnline",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -2806,6 +2847,16 @@
             "defaultValue": null
           },
           {
+            "name": "venue_type",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "VenueType",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "start_at",
             "description": null,
             "type": {
@@ -2851,13 +2902,9 @@
             "name": "venueId",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -2922,6 +2969,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "venue_type",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "VenueType",
               "ofType": null
             },
             "defaultValue": null

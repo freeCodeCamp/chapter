@@ -100,6 +100,24 @@ export const createEvent = gql`
   }
 `;
 
+export const updateEvent = gql`
+  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
+    updateEvent(id: $id, data: $data) {
+      id
+      name
+      canceled
+      description
+      url
+      video_url
+      capacity
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export const cancelEvent = gql`
   mutation cancelEvent($id: Int!) {
     cancelEvent(id: $id) {

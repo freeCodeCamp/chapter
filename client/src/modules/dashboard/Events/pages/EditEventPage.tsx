@@ -41,7 +41,7 @@ export const EditEventPage: NextPage = () => {
       });
 
       if (event.data) {
-        await router.replace('/dashboard/events');
+        await router.push('/dashboard/events');
       }
     } catch (err) {
       console.error(err);

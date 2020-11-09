@@ -1,0 +1,17 @@
+image: gitpod/workspace-postgres
+tasks:
+  # both .bashrc and nvm settings get wiped when a workspace is restarted, so
+  # they need setting here
+  - before: |
+      echo 'export IS_DOCKER=""' >> ~/.bashrc &&
+      export IS_DOCKER="" &&
+      nvm install lts/fermium && nvm alias default lts/fermium
+    # the rest, environment variables, installation and db setup, get persisted,
+    # so we can save time and use init:
+    init: |
+      cp .env.example .env &&
+      createuser -d postgres &&
+      createdb chapter &&
+      npx recursive-install &&
+      npm run db:reset
+    command: npm run both

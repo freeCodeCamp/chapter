@@ -10,6 +10,7 @@ tasks:
     # so we can save time and use init:
     init: |
       cp .env.example .env &&
+      echo NEXT_PUBLIC_APOLLO_SERVER=$(gp url 5000) >> client/.env.development.local &&
       createuser -d postgres &&
       createdb chapter &&
       npx recursive-install &&

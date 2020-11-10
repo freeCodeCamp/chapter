@@ -1,4 +1,11 @@
 image: gitpod/workspace-postgres
+ports:
+  - port: 3000
+    onOpen: open-preview
+  - port: 5432
+    onOpen: ignore
+  - port: 5000
+    onOpen: ignore
 tasks:
   # both .bashrc and nvm settings get wiped when a workspace is restarted, so
   # they need setting here

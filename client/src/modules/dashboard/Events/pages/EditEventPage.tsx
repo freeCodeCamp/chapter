@@ -6,55 +6,47 @@ import { IEventFormData } from '../components/EventFormUtils';
 import Layout from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
 import EventForm from '../components/EventForm';
-import { useCreateEventMutation, useEventQuery } from '../../../../generated';
+import { useEventQuery, useUpdateEventMutation } from '../../../../generated';
 import { EVENTS } from '../graphql/queries';
 import { getId } from '../../../../helpers/getId';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const id = getId(router.query) || -1;
 
   const { loading: eventLoading, error, data } = useEventQuery({
     variables: { id },
   });
 
-  const [createEvent] = useCreateEventMutation({
+  const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [{ query: EVENTS }],
   });
 
   const onSubmit = async (data: IEventFormData) => {
     // TODO: load chapter from url or something like that
-    setLoading(true);
+    setLoadingUpdate(true);
 
     try {
-      const HARD_CODE = { chapterId: 1 };
-
-      console.log(data.start_at);
-
       const eventData = {
         ...data,
         capacity: parseInt(String(data.capacity)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
-        ...HARD_CODE,
         tags: undefined,
       };
 
-      const event = await createEvent({
-        variables: { data: { ...eventData } },
+      const event = await updateEvent({
+        variables: { id, data: { ...eventData } },
       });
 
       if (event.data) {
-        router.replace(
-          `/dashboard/events/[id]`,
-          `/dashboard/events/${event.data.createEvent.id}`,
-        );
+        await router.push('/dashboard/events');
       }
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      setLoadingUpdate(false);
     }
   };
 
@@ -62,7 +54,7 @@ export const EditEventPage: NextPage = () => {
     return (
       <Layout>
         <Skeleton>
-          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+          <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
           {error && <div>{error}</div>}
         </Skeleton>
       </Layout>
@@ -78,7 +70,7 @@ export const EditEventPage: NextPage = () => {
             venueId: data.event?.venue?.id,
             tags: data.event.tags || [],
           }}
-          loading={loading}
+          loading={loadingUpdate}
           onSubmit={onSubmit}
           submitText={'Update event'}
         />

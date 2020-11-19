@@ -417,6 +417,26 @@ export type CreateEventMutation = { __typename?: 'Mutation' } & {
     };
 };
 
+export type UpdateEventMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: UpdateEventInputs;
+}>;
+
+export type UpdateEventMutation = { __typename?: 'Mutation' } & {
+  updateEvent: { __typename?: 'Event' } & Pick<
+    Event,
+    | 'id'
+    | 'name'
+    | 'canceled'
+    | 'description'
+    | 'url'
+    | 'video_url'
+    | 'capacity'
+  > & {
+      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+    };
+};
+
 export type CancelEventMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -795,6 +815,67 @@ export type CreateEventMutationResult = ApolloReactCommon.MutationResult<
 export type CreateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateEventMutation,
   CreateEventMutationVariables
+>;
+export const UpdateEventDocument = gql`
+  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
+    updateEvent(id: $id, data: $data) {
+      id
+      name
+      canceled
+      description
+      url
+      video_url
+      capacity
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
+export type UpdateEventMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateEventMutation,
+  UpdateEventMutationVariables
+>;
+
+/**
+ * __useUpdateEventMutation__
+ *
+ * To run a mutation, you first call `useUpdateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEventMutation, { data, loading, error }] = useUpdateEventMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateEventMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateEventMutation,
+    UpdateEventMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateEventMutation,
+    UpdateEventMutationVariables
+  >(UpdateEventDocument, baseOptions);
+}
+export type UpdateEventMutationHookResult = ReturnType<
+  typeof useUpdateEventMutation
+>;
+export type UpdateEventMutationResult = ApolloReactCommon.MutationResult<
+  UpdateEventMutation
+>;
+export type UpdateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateEventMutation,
+  UpdateEventMutationVariables
 >;
 export const CancelEventDocument = gql`
   mutation cancelEvent($id: Int!) {

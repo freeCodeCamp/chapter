@@ -1,4 +1,4 @@
-FROM node:13-alpine
+FROM node:14-alpine
 
 # Setting working directory. All the path will be relative to WORKDIR
 WORKDIR /usr/chapter/client

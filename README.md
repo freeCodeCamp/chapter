@@ -153,6 +153,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/pdotsani"><img src="https://avatars2.githubusercontent.com/u/5272252?v=4" width="100px;" alt=""/><br /><sub><b>Patrick San Juan</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=pdotsani" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/dtwilliams10"><img src="https://avatars2.githubusercontent.com/u/20099292?v=4" width="100px;" alt=""/><br /><sub><b>Tyler Williams</b></sub></a><br /><a href="#infra-dtwilliams10" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/ojeytonwilliams"><img src="https://avatars0.githubusercontent.com/u/15801806?v=4" width="100px;" alt=""/><br /><sub><b>Oliver Eyton-Williams</b></sub></a><br /><a href="#infra-ojeytonwilliams" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=ojeytonwilliams" title="Documentation">📖</a></td>
   </tr>
 </table>
 

@@ -116,6 +116,8 @@ You can run any command within the container by prefixing it with `docker-compos
 
 Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
 
+**Note for existing contributors:** If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. And then run `docker-compose up` to start the container's services. 
+
 **Second method: manually managing the client-server, db, api-server**
 
 This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).

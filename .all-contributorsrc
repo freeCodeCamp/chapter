@@ -471,6 +471,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dtwilliams10",
+      "name": "Tyler Williams",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20099292?v=4",
+      "profile": "https://github.com/dtwilliams10",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,

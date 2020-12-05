@@ -1,13 +1,15 @@
+import { Length } from 'class-validator';
 import { InputType, Field } from 'type-graphql';
 
 @InputType()
 export class SendEmailInputs {
   @Field(() => [String])
-  to: string[];
+  to: String;
 
-  @Field(() => String)
+  @Field()
+  @Length(1, 255)
   subject: string;
 
-  @Field(() => String)
+  @Field()
   html: string;
 }

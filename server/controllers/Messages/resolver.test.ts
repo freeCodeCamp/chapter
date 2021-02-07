@@ -1,5 +1,6 @@
+import { expect } from 'chai';
+// const faker = require('faker');
 import { callSchema } from '../../testUtils/callSchema';
-const faker = require('faker');
 
 const emailMutation = `
   mutation Email($data: SendEmailInputs!) {
@@ -15,11 +16,9 @@ const emailMutation = `
 `;
 
 describe('Test sendEmail resolver', () => {
-  it('should return an email object', async () => {
-    const fakeEmailAddress1 = faker.internet.email();
-    const fakeEmailAddress2 = faker.internet.email();
+  it('Should reject the mutation call when subject field has exceeded MaxLength', async () => {
     const emailData = {
-      to: [fakeEmailAddress1, fakeEmailAddress2],
+      to: ['jonathan.seubert@megajon.com', 'finisher1017@gmail.com'],
       subject: 'test subject',
       html: 'test html',
     };
@@ -31,6 +30,42 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    console.log('email: ', email.data);
+    expect(email.errors[0].message).to.equal('Argument Validation Error');
   });
+
+  it('Should reject the mutation call when email recipient list is empty', async () => {
+    const emailData = {
+      to: [],
+      subject: 'test',
+      html: 'test html',
+    };
+
+    const email = await callSchema({
+      source: emailMutation,
+      variableValues: {
+        data: emailData,
+      },
+    });
+
+    expect(email.errors[0].message).to.equal('Argument Validation Error');
+  });
+
+  // it('should return an email object', async () => {
+  //   const fakeEmailAddress1 = faker.internet.email();
+  //   const fakeEmailAddress2 = faker.internet.email();
+  //   const emailData = {
+  //     to: [fakeEmailAddress1, fakeEmailAddress2],
+  //     subject: 'test subject',
+  //     html: 'test html',
+  //   };
+
+  //   const email = await callSchema({
+  //     source: emailMutation,
+  //     variableValues: {
+  //       data: emailData,
+  //     },
+  //   });
+
+  //   console.log('email: ', email.data);
+  // });
 });

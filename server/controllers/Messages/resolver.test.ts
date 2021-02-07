@@ -50,6 +50,27 @@ describe('Test sendEmail resolver', () => {
     expect(email.errors[0].message).to.equal('Argument Validation Error');
   });
 
+  it('Should reject the mutation call when there is an improperly formatted email in the list', async () => {
+    const emailData = {
+      to: [
+        'jonathan.seubert@megajon.com',
+        'finisher1017@gmail.com',
+        'invalid.email',
+      ],
+      subject: 'test',
+      html: 'test html',
+    };
+
+    const email = await callSchema({
+      source: emailMutation,
+      variableValues: {
+        data: emailData,
+      },
+    });
+
+    expect(email.errors[0].message).to.equal('Argument Validation Error');
+  });
+
   // it('should return an email object', async () => {
   //   const fakeEmailAddress1 = faker.internet.email();
   //   const fakeEmailAddress2 = faker.internet.email();

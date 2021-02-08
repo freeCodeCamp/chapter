@@ -14,7 +14,6 @@ export class ValidateEmailListConstraint
       if (regex.test(emailList[i]) === false) return false;
     }
     return true;
-    //   return emailList.length === 0 ? false : true;
   }
 }
 

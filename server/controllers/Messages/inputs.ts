@@ -1,17 +1,20 @@
-// import { MaxLength } from 'class-validator';
 import { MaxLength } from 'class-validator';
-import { IsListEmpty } from './isListEmpty';
-import { ValidateEmailList } from './validateEmailList';
+import { IsListEmpty } from './validators/isListEmpty';
+import { ValidateEmailList } from './validators/validateEmailList';
+import { FindDuplicateEmails } from './validators/findDuplicateEmails';
 import { InputType, Field } from 'type-graphql';
+
+// @TODO create custom validator to verify all emails belong to registered users
+// @TODO create custom validator to verify user sending email is authenticated
 
 @InputType()
 export class SendEmailInputs {
   @Field(() => [String])
   @IsListEmpty({ message: 'email list cannot be empty' })
   @ValidateEmailList({ message: 'list contains invalid email' })
-  // TODO create customm validator to verify that all emails are properly formatted
-  // TODO create custom validator to verify that all emails belong to registered users
-  // TODO create custom validator to check for duplicate emails
+  @FindDuplicateEmails({
+    message: 'list contains one or more duplicate emails',
+  })
   to: [];
 
   @Field()

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-// const faker = require('faker');
+const faker = require('faker');
 import { callSchema } from '../../testUtils/callSchema';
 
 const emailMutation = `
@@ -71,22 +71,43 @@ describe('Test sendEmail resolver', () => {
     expect(email.errors[0].message).to.equal('Argument Validation Error');
   });
 
-  // it('should return an email object', async () => {
-  //   const fakeEmailAddress1 = faker.internet.email();
-  //   const fakeEmailAddress2 = faker.internet.email();
-  //   const emailData = {
-  //     to: [fakeEmailAddress1, fakeEmailAddress2],
-  //     subject: 'test subject',
-  //     html: 'test html',
-  //   };
+  it('Should reject the mutation call when a duplicate email address is found', async () => {
+    const emailData = {
+      to: [
+        'jonathan.seubert@megajon.com',
+        'finisher1017@gmail.com',
+        'jonathan.seubert@megajon.com',
+      ],
+      subject: 'test',
+      html: 'test html',
+    };
 
-  //   const email = await callSchema({
-  //     source: emailMutation,
-  //     variableValues: {
-  //       data: emailData,
-  //     },
-  //   });
+    const email = await callSchema({
+      source: emailMutation,
+      variableValues: {
+        data: emailData,
+      },
+    });
 
-  //   console.log('email: ', email.data);
-  // });
+    expect(email.errors[0].message).to.equal('Argument Validation Error');
+  });
+
+  it('Should call the mutation and return an email object when all inputs pass validation', async () => {
+    const fakeEmailAddress1 = faker.internet.email();
+    const fakeEmailAddress2 = faker.internet.email();
+    const emailData = {
+      to: [fakeEmailAddress1, fakeEmailAddress2],
+      subject: 'test',
+      html: 'test html',
+    };
+
+    const email = await callSchema({
+      source: emailMutation,
+      variableValues: {
+        data: emailData,
+      },
+    });
+
+    expect(email.data).to.deep.equal(emailData);
+  });
 });

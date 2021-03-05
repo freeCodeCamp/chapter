@@ -95,10 +95,20 @@ describe('Test sendEmail resolver', () => {
   it('Should call the mutation and return an email object when all inputs pass validation', async () => {
     const fakeEmailAddress1 = faker.internet.email();
     const fakeEmailAddress2 = faker.internet.email();
+
     const emailData = {
       to: [fakeEmailAddress1, fakeEmailAddress2],
       subject: 'test',
       html: 'test html',
+    };
+
+    const expectedObject = {
+      sendEmail: {
+        emailList: [fakeEmailAddress1, fakeEmailAddress2],
+        htmlEmail: emailData.html,
+        ourEmail: 'ourEmail@placeholder.place',
+        subject: emailData.subject,
+      },
     };
 
     const email = await callSchema({
@@ -108,6 +118,6 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    expect(email.data).to.deep.equal(emailData);
+    expect(email.data).to.deep.equal(expectedObject);
   });
 });

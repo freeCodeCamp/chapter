@@ -6,7 +6,7 @@ Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your 
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
-You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
+You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the Chapter project's development team.
 
 ## Contribute code
 

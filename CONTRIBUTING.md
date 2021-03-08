@@ -351,7 +351,7 @@ You have successfully created a PR. Congratulations! :tada:
 
 ### What do we need help with right now?
 
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our Discord server](https://discord.gg/PXqYtEh) to stay in the loop.
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
 
 ### I found a typo. Should I report an issue before I can make a pull request?
 
@@ -388,7 +388,7 @@ You can see our full API documentation by navigating to http://localhost:8000/ap
 
 ## Database
 
-for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or discord (Zeko369#6685)
+for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter)
 
 <details>
 <summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>

@@ -33,8 +33,8 @@ We are using the following tools:
 
 * [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
   * [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
-  * [passport.js](http://www.passportjs.org/) - for authentication
-* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) for nice integration with `type-graphql`
+  * [Magic Link authentication for Passport JS](https://www.npmjs.com/package/passport-magic-link) - for password-less authentication over email
+* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) - for nice integration with `type-graphql`
 * [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [Apollo Client 3](https://www.apollographql.com/docs/react/)
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
@@ -52,7 +52,7 @@ The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeC
 ### Post-MVP
 We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
-Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
+Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 ## UI / UX / Design References
 - [Prototype](https://www.figma.com/proto/q7DikyL3N0c4CUWxHNa97i/Chapter-Prototype?node-id=1%3A2&scaling=scale-down)
@@ -74,7 +74,7 @@ The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->

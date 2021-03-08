@@ -9,45 +9,40 @@ Your _organization_ can host an _instance_ of _Chapter_ under a sub-domain of yo
 
 All of an _organization_'s user data will remain under their control.
 
-Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for _Chapter_.
+Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for **_Chapter_**.
 
 ## Terminology
-To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the Chapter project:
+To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the **_Chapter_** project:
 
 | Term          | Definition      | Example  |
 | ------------- | ------------- | ----- |
-| _instance_      | a web server deployment of the ["Chapter" application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_. | a Docker container running on a web host |
+| _instance_      | a web server deployment of the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_. | a Docker container running on a web host |
 | _organization_ | a non-profit with multiple _chapters_ | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
 | _chapter_      | a container for _events_ and _users_  | Women Who Code - New York City |
 | _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
 | _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
 | _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
-| _owner_ | the _role_ of a _user_ who can configure the ["Chapter" application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
+| _owner_ | the _role_ of a _user_ who can configure the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
 | _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
 | _organizer_ | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
 | _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
 
 ## Tech Stack
 
-We are planning to use the following tools:
+We are using the following tools:
 
-* [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) extendable graphql server
-  * [type-graphql](https://github.com/MichalLytek/type-graphql) Code first graphql schema definition library
-  * [passport.js](http://www.passportjs.org/) for auth
-* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) for nice integration with `type-graphql`
-* [Next.js](https://nextjs.org/) for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+* [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
+  * [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
+  * [Magic Link authentication for Passport JS](https://www.npmjs.com/package/passport-magic-link) - for password-less authentication over email
+* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) - for nice integration with `type-graphql`
+* [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [Apollo Client 3](https://www.apollographql.com/docs/react/)
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Material UI](https://material-ui.com/) for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
+  * [Material UI](https://material-ui.com/) - for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-* [chai](https://www.chaijs.com/) for writing unit tests.
+* [chai](https://www.chaijs.com/) - for writing unit tests.
   * [sinon](https://sinonjs.org/)
   * [sinon-chai](https://github.com/domenic/sinon-chai)
-
-
-A lot of people know these tools, and they're proven to work well at scale.
-
-We will focus on building an open API first. Then, developers can use the API to build their own mobile clients and voice interface clients.
 
 ## User Stories
 
@@ -57,9 +52,7 @@ The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeC
 ### Post-MVP
 We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
-Quincy Larson is the project lead. [FreeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
-
-Here's an out-dated example of an app with similar functionality: [The freeCodeCamp Study Group Directory](https://study-group-directory.freecodecamp.org).
+Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 ## UI / UX / Design References
 - [Prototype](https://www.figma.com/proto/q7DikyL3N0c4CUWxHNa97i/Chapter-Prototype?node-id=1%3A2&scaling=scale-down)
@@ -68,20 +61,20 @@ Here's an out-dated example of an app with similar functionality: [The freeCodeC
 
 ## Contributing
 
-* Please read the [contributing guidelines  and steps needed to setup Chapter locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
+* Please read the [contributing guidelines  and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
 
-* You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected and follow announcements.
+* [Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected and follow announcements.
 
 
 ## License
 
-Copyright © 2020 freeCodeCamp.org
+Copyright © 2021 freeCodeCamp.org
 
 The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->

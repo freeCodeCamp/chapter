@@ -6,7 +6,7 @@ Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your 
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
-You should [join our Discord server](https://discord.gg/PXqYtEh) to get connected with people interested in this project and to be aware of our future announcements.
+You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the Chapter project's development team.
 
 ## Contribute code
 
@@ -351,7 +351,7 @@ You have successfully created a PR. Congratulations! :tada:
 
 ### What do we need help with right now?
 
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our Discord server](https://discord.gg/PXqYtEh) to stay in the loop.
+We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
 
 ### I found a typo. Should I report an issue before I can make a pull request?
 
@@ -382,13 +382,13 @@ You are a champion :).
 
 ## API Specification
 
-We use [Open API 3.0](https://www.openapis.org/about) to define the API structure of the application.
+We use [GraphQL](https://graphql.org/) to define the API structure of the application.
 
-You can see our full API documentation by navigating to http://localhost:8000/api/v1/docs.
+See the "Docs" and "Schema" tabs on the right side of the [GraphQL Playground](https://chapter-server.herokuapp.com/graphql), or locally at /graphql, for full API documentation.
 
 ## Database
 
-for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or discord (Zeko369#6685)
+for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter)
 
 <details>
 <summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>

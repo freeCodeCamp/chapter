@@ -382,9 +382,9 @@ You are a champion :).
 
 ## API Specification
 
-We use [GraphQL](https://www.openapis.org/about) to define the API structure of the application.
+We use [GraphQL](https://graphql.org/) to define the API structure of the application.
 
-See the "Docs" and "Schema" tabs in the [GraphQL Playground](https://chapter-server.herokuapp.com/graphql), or locally at /graphql for full API documentation.
+See the "Docs" and "Schema" tabs on the right side of the [GraphQL Playground](https://chapter-server.herokuapp.com/graphql), or locally at /graphql, for full API documentation.
 
 ## Database
 

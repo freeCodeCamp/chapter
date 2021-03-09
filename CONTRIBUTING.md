@@ -319,8 +319,8 @@ You can find more resources on Docker here:
 Ensure the Docker tools are installed:
 * For Windows & Mac, check Docker Desktop 
 * For Linux
-** Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
-** Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
+  * Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
+  * Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
 Make sure `IS_DOCKER=TRUE` is set in the `.env` file in your copy's root directory.
 

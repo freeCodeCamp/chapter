@@ -398,7 +398,9 @@ You are a champion :).
 
 We use [GraphQL](https://graphql.org/) to define the API structure of the application.
 
-See the "Docs" and "Schema" tabs on the right side of the [GraphQL Playground](https://chapter-server.herokuapp.com/graphql), or locally at http://localhost:5000/graphql for full API documentation.
+The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the page. You can see them:
+* If you are already [**Running the Application**](#running-the-application) at http://localhost:5000/graphql
+* If you don't have a running ap by visiting [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
 
 ## Database
 

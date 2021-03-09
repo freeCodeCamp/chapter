@@ -75,9 +75,10 @@ You need a reference from your local copy to the `upstream` repository in additi
 </details>
 
 <details><summary>Step 3 - Decide Whether to Run the Application Now, or Later</summary>
+
 It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
-If you want to proceed immeditely with running the client, database, and server, then follow the steps in the **[Running the Application](#running-the-application)** section, below. Then, return here and continue to the next step of this section. 
+If you want to proceed immeditely with running the client, database, and server, then follow the steps in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
 
 </details>
 
@@ -278,7 +279,7 @@ You have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
-Prerequisite: steps 1 and 2 of the [**Contributing Code**](#contributing-code) section above must be done before following this section's steps.
+Prerequisite: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
 <details><summary>Step 1 - Install Node and Run npx</summary>
 
@@ -286,18 +287,21 @@ You will need Node.js installed on your host operating system.
 
 Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download/).
 
-Now check that you have running:
+Now check that you have:
+
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
 
-Run `npx recursive-install` and this will install all of the necessary dependencies.
+Run `npx recursive-install` to install all of the necessary dependencies.
 
 </details>
     
 <details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
+
 There are two approaches to running the **_Chapter_** application. 
 
 Based on your experience or preference, decide between the two options:
+
 * _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local Postgres database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
 * _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running Postgres and configuring localhost services to play nice with the code.
 
@@ -318,21 +322,23 @@ Ensure the Docker tools are installed:
 ** Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
 ** Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Run Docker Compose using `docker-compose up` and wait (this could take many minutes) for the logs show
+Make sure `IS_DOCKER=TRUE` is set in the `.env` file in your copy's root directory.
+
+Run Docker Compose using `docker-compose up` and wait (this could take many minutes) for the logs show:
 > db_1      | ... LOG:  database system is ready to accept connections
-and
+> ...
 > client_1  | ready - started server on http://localhost:3000
-and
+> ...
 > app_1     | Listening on http://localhost:5000/graphql
 
 The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
-Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
+Initially, the database will be empty. Now, to seed it with sample data, run `yarn db:reset`.
 
 **(Note for Existing Contributors)**
-If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. And then run `docker-compose up` to start the container's services. 
+If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
 
 ## Manual Mode
 
@@ -344,12 +350,17 @@ If you don't want to run Postgres locally, then you can use a service like [Elep
 
 [Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to `.env`. If using remote database change `DB_URL` in `.env` to the URL provided by your remote database provider.
 
-Make sure to set `IS_DOCKER=` in `.env` to blank. Then, run `npm run both` to start the api-server and client-server:
+Make sure to set `IS_DOCKER=` to blank in the `.env` file in your project's root directory. 
 
-Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
+Run `npm run both` to start the api-server and client-server:
+
+<details><summary>Step 3 - Prepare the Database for Development</summary>
+Initially, the database may be empty or need to be recreated.
+    
+See the [Initializing the Database](#initializing-the-database) section, below, before continuing to the next step in this section.
 </details>
 
-<details><summary>Step 3 - View the Running Application</summary>
+<details><summary>Step 4 - View the Running Application</summary>
 Once the app has started you should be able to pull up these URLs in your web browser:
 
 * Main client website - `http//:localhost:3000`
@@ -440,13 +451,19 @@ Our DB commands closely mirror their Rails counterparts (there isn't anything qu
 `yarn db:seed` -> `rake db:seed`
 `yarn db:reset` -> `rake db:reset`
 
-#### Seeding the Database
+#### Initializing the Database
 
-`yarn db:seed`
+If you're starting the application for the first time, you need to:
+* (optionally) drop the database - to delete all the structure and data
+* migrate the database - to structure by setup tables based on the schema
+* seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-Development is easier with a database full of example entities. The process of creating example entities in the database is called seeding.
+The `yarn db:reset` command will do all three tasks: drop, migrate, and seed.
 
-Use `yarn db:seed` to create these example entities. But first (if the you're just starting) you need to migrate the DB (setup tables). For that you can use `yarn db:reset` which will drop the current db (clear), migrate it (add structure) and then seed it (add data)
+If you prefer to run any or all of the steps manually, they are:
+* `yarn db:drop`
+* `yarn db:migrate`
+* `yarn db:seed`
 
 #### Creating a New Model / Entity
 

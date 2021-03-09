@@ -335,8 +335,6 @@ The server will automatically restart anytime you save a `.ts` or `.js` file wit
 
 You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 
-Initially, the database will be empty. Now, to seed it with sample data, run `yarn db:reset`.
-
 **(Note for Existing Contributors)**
 If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
 
@@ -353,9 +351,10 @@ If you don't want to run Postgres locally, then you can use a service like [Elep
 Make sure to set `IS_DOCKER=` to blank in the `.env` file in your project's root directory. 
 
 Run `npm run both` to start the api-server and client-server:
+</details>
 
 <details><summary>Step 3 - Prepare the Database for Development</summary>
-Initially, the database may be empty or need to be recreated.
+The database may be empty or need to be recreated to get any structureal changes made by other developers.
     
 See the [Initializing the Database](#initializing-the-database) section, below, before continuing to the next step in this section.
 </details>
@@ -411,7 +410,7 @@ We use [GraphQL](https://graphql.org/) to define the API structure of the applic
 
 The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the page. You can see them:
 * If you are already [**Running the Application**](#running-the-application) at http://localhost:5000/graphql
-* If you don't have a running ap by visiting [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
+* If you don't have a running app at [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
 
 ## Database
 
@@ -453,14 +452,14 @@ Our DB commands closely mirror their Rails counterparts (there isn't anything qu
 
 #### Initializing the Database
 
-If you're starting the application for the first time, you need to:
-* (optionally) drop the database - to delete all the structure and data
+If you're starting the application for the first time, or syncronizing with the latest development changes, then you like need to:
+* drop the database - to delete all the structure and data
 * migrate the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
 The `yarn db:reset` command will do all three tasks: drop, migrate, and seed.
 
-If you prefer to run any or all of the steps manually, they are:
+If you prefer to run some or all of the steps manually, then they are:
 * `yarn db:drop`
 * `yarn db:migrate`
 * `yarn db:seed`

@@ -8,7 +8,7 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with this project's development team.
 
-## Contributing Code
+# Contributing Code
 
 If you are ready to contribute code, then start by follow these steps.
 
@@ -240,8 +240,6 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 <details><summary>Step 5: Proposing a Pull Request (PR)</summary>
 
-#### How to Prepare a Good Pull Request Title
-
 When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
 
 `fix/feat/chore/refactor/docs/perf (scope): PR Title`
@@ -254,8 +252,6 @@ An example is `feat(client): night mode`.
 | `db` | For Pull Requests making changes related to database |
 | `client` | For Pull Requests making changes to client platform logic or user interface |
 | `docs` | For Pull Requests making changes to the project's documentation |
-
-#### Proposing a Pull Request (PR)
 
 1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on `Compare and Pull Request`.
 
@@ -281,7 +277,8 @@ An example is `feat(client): night mode`.
 You have successfully created a PR. Congratulations! :tada:
 </details>
 
-## Starting / Running the Application
+# Starting / Running the Application
+Prerequisite: steps 1 and 2 of the **Contributing Code** section above must be done before following this section's steps.
 
 <details><summary>Step 1 - Install Node and Run npx</summary>
 
@@ -304,7 +301,7 @@ Based on your experience or preference, decide between the two options:
 * _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local Postgres database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
 * _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running Postgres and configuring localhost services to play nice with the code.
 
-### Docker Mode
+## Docker Mode
 
 Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
 * Docker Desktop (Windows and Mac)
@@ -334,14 +331,16 @@ You can run any command within the container by prefixing it with `docker-compos
 
 Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
 
-#### Note for Existing Contributors
+**(Note for Existing Contributors)**
 If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. And then run `docker-compose up` to start the container's services. 
 
-### Manual Mode
+## Manual Mode
 
 With this method you will manually managing the client-server, Postgres database, and API server.
 
-This is a much lighter development footprint than Docker, but you need to run your own local Postgres DB. If you don't want to run Postgres locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
+This is a much lighter development footprint than Docker, but you need to run your own local Postgres DB.
+
+If you don't want to run Postgres locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
 
 [Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to `.env`. If using remote database change `DB_URL` in `.env` to the URL provided by your remote database provider.
 
@@ -358,7 +357,7 @@ Once the app has started you should be able to pull up these URLs in your web br
 
 </details>
 
-## Frequently Asked Questions
+# Frequently Asked Questions
 
 <details><summary>What do we need help with right now?</summary>
 
@@ -403,18 +402,25 @@ See the "Docs" and "Schema" tabs on the right side of the [GraphQL Playground](h
 
 ## Database
 
-For any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter)
+We're using [Postgres](https://www.postgresql.org/) for our database and [TypeORM](https://typeorm.io/) for our ORM (mapping database tables to js objects).
 
-If using **Docker Mode**:
-* The Docker database Postgres container will be exposed to the host computer on localhost port 54320. Thus, avoding potential conflicts on port 543 in the case your host computer already runs Postgres.
-* You don't have to run `docker-compose exec...` commands to "talk" to the Postgres container. Rather, use the Postgres client `psql -h localhost -p 54320 -U postgres` where your .env file defines the Postgres username and password.
-* Database tools like [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/) can access 
+### Username and Password
+* These are defined in your _.env_ configuration file in the project's root directory.
+* The .env is unique to your copy and should not be committed to any repository or branch. 
+* For security, it's ideal to change the username and password. However, if you don't change them, the default username and password will be as they are set in .env
 
-If using **Manual Mode**
-* The Postgres port will be as you configured it, likely localhost port 543
-* Use the Postgres client `psql -h localhost -p 543 -U postgres` where your .env file defines the Postgres username and password 
+### Host and Port
+* In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running Postgres locally for other projects.
+* In **Manual Mode**, the Postgres port will be as you configured it, the default being Host: _localhost_ and Port: _543_
+* If you're using a remote Postgres server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in your _.env_ file.
 
+### Admin Tools 
+* [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use the *** Host and Port** values above, based on your mode.
+* psql Client
+  * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the Postgres container.
+  * In **Manual Mode**, `psql -h localhost -p 543 -U postgres` 
 
+### Schema
 <details>
 <summary>Expand to view a diagram illustrating the database schema.</summary>
 <br>
@@ -423,16 +429,16 @@ If using **Manual Mode**
 > created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
 </details>
 
-We're using Postgres for our database and TypeORM for our ORM (mapping database tables to js objects). Here are a few examples on how to use our TypeORM setup.
+### Using TypeORM and Yarn
 
-Our DB commands closely mirror their rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
+Our DB commands closely mirror their Rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
 `yarn db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
 `yarn db:migrate` -> `rake db:migrate`
 `yarn db:seed` -> `rake db:seed`
 `yarn db:reset` -> `rake db:reset`
 
-### Seed Database
+#### Seeding the Database
 
 `yarn db:seed`
 
@@ -440,7 +446,7 @@ Development is easier with a database full of example entities. The process of c
 
 Use `yarn db:seed` to create these example entities. But first (if the you're just starting) you need to migrate the DB (setup tables). For that you can use `yarn db:reset` which will drop the current db (clear), migrate it (add structure) and then seed it (add data)
 
-### Create a New Model / Entity
+#### Creating a New Model / Entity
 
 `npm run typeorm entity:create -- --name=ModelName`
 
@@ -450,7 +456,7 @@ To keep everything DRY, add `extends BaseModel` to the class and import it from 
 
 You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from `.ts` files, so we run it with `ts-node` and our custom server config (check package.json)
 
-### Create a Migration
+#### Creating a Migration
 
 After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
 
@@ -460,7 +466,7 @@ Since this runs a compare agains the current db schema, you need to have the DB 
 
 After that, check the generated SQL in `db/migrations/date-MigrationName.ts`
 
-### Running migrations and checking if migrations were run
+#### Running Migrations and Checking They Were Run
 
 You can manualy run them by doing
 `yarn db:migrate`
@@ -476,3 +482,8 @@ it should ouput something like
  ...
  [X] MigrationName1575633316367
 ```
+
+### Troubleshooting
+
+For any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter).
+

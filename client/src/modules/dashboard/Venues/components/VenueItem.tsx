@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Button, makeStyles } from '@material-ui/core';
+import { Button, Card, makeStyles, Typography } from '@material-ui/core';
 import Link from 'next/link';
 
 import { Venue } from '../../../../generated';
@@ -15,9 +15,6 @@ const useStyles = makeStyles(() => ({
   bottom: {
     display: 'flex',
     alignItems: 'center',
-  },
-  action: {
-    marginLeft: '20px',
   },
 }));
 
@@ -60,15 +57,21 @@ const VenueItem: React.FC<IVenueItemProps> = ({ venue, loading }) => {
 
         <div className={styles.bottom}>
           {allow ? (
-            <Button onClick={remove}>Are you sure</Button>
+            <Button onClick={remove} variant="outlined">
+              Are you sure
+            </Button>
           ) : (
-            <Button onClick={() => setAllow(true)}>DELETE</Button>
+            <Button onClick={() => setAllow(true)} variant="outlined">
+              DELETE
+            </Button>
           )}
           <Link
             href={`/dashboard/venues/[id]/edit`}
             as={`/dashboard/venues/${venue.id}/edit`}
           >
-            <a className={styles.action}>Edit</a>
+            <Button variant="outlined">
+              <a>Edit</a>
+            </Button>
           </Link>
         </div>
       </ProgressCardContent>

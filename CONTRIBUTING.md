@@ -324,23 +324,26 @@ Ensure the Docker tools are installed:
 
 Make sure `IS_DOCKER=TRUE` is set in the `.env` file in your copy's root directory.
 
-Run Docker Compose using `docker-compose up` and wait (this could take many minutes) for the logs show:
+Run Docker Compose (`docker-compose up` on Linux) and wait for the successful output of as shown in the following example.
+
+This could take minutes for each line to appear.
+
 > db_1      | ... LOG:  database system is ready to accept connections
-> ...
+> 
+> 
 > client_1  | ready - started server on http://localhost:3000
-> ...
+> 
+> 
 > app_1     | Listening on http://localhost:5000/graphql
 
-The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
-
-You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-
-**(Note for Existing Contributors)**
-If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+Once Docker is successfully running:
+* The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
+* You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
+* If you, or someone else via a commit, updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
 
 ## Manual Mode
 
-With this method you will manually managing the client-server, Postgres database, and API server.
+With this method you will manually manage the client-server, Postgres database, and API server.
 
 This is a much lighter development footprint than Docker, but you need to run your own local Postgres DB.
 

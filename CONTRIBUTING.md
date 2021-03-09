@@ -2,44 +2,45 @@
 
 Hello. :wave:
 
-Welcome to Chapter, the newest project by freeCodeCamp. We are glad to see your interest in this project.
+Welcome to **_Chapter_** , the newest project by [freeCodeCamp](https://www.freecodecamp.org).
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
-You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the Chapter project's development team.
+You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with this project's development team.
 
-## Contribute code
+## Contributing Code
 
-If you are willing to contribute code to this project then you should follow the below steps:
+If you are ready to contribute code, then start by follow these steps.
 
-<details><summary>Step 1: Fork the repository on GitHub</summary>
+<details><summary>Step 1 - Fork the repository on GitHub</summary>
 
-['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of Chapter's repository (a.k.a repo) on GitHub.
+['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of **_Chapter's_** repository (a.k.a repo) on GitHub.
 
-This is essential as it allows you to work on your own copy of Chapter. It allows you to request changes to be pulled into the Chapter's repository from your fork via a pull request.
+This is essential as it allows you to work on your own copy of **_Chapter_**. It allows you to request changes to be pulled into the **_Chapter's_** repository from your fork via a pull request.
 
-Follow these steps to fork the `https://github.com/freeCodeCamp/chapter` repository:
-1. Go to the Chapter repository on GitHub: <https://github.com/freeCodeCamp/chapter>.
-2. Click the "Fork" Button in the upper right-hand corner of the interface ([Need help?](https://help.github.com/articles/fork-a-repo/)).
-3. After the repository has been forked, you will be taken to your copy of the Chapter repository at `https://github.com/YOUR_USER_NAME/chapter`.
+Follow these steps to fork the repository:
+1. Go to the [Chapter repository on GitHub](https://github.com/freeCodeCamp/chapter).
+2. Click the "Fork" Button in the upper right-hand corner of the interface [Need help?](https://help.github.com/articles/fork-a-repo/).
+3. After the repository has been forked, you will be taken to your copy of the **_Chapter_** repository at `https://github.com/YOUR_USER_NAME/chapter`.
 
 ![an image illustrating the fork button](docs/assets/how-to-fork.png)
 </details>
-<details><summary>Step 2: Preparing the development environment</summary>
+
+<details><summary>Step 2 - Preparing the development environment</summary>
 
 Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/).
 
-Clone your copy of Chapter. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
+Clone your copy of **_Chapter_**. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
 
-1. Open a Terminal in a directory where you would like the Chapter project to reside.
+1. Open a Terminal in a directory where you would like the **_Chapter_** project to reside.
 
-2. Clone your fork of Chapter, make sure you replace `YOUR_USER_NAME` with your GitHub username:
+2. Clone your fork of **_Chapter_**, make sure you replace `YOUR_USER_NAME` with your GitHub username:
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git
     ```
 
-This will download the entire Chapter repository to your directory.
+This will download the entire **_Chapter_** repository to your directory.
 
 Now that you have downloaded a copy of your fork, you will need to set up an `upstream`. The main repository at `https://github.com/freeCodeCamp/chapter` is often referred to as the `upstream` repository. Your fork at `https://github.com/YOUR_USER_NAME/chapter` is often referred to as the `origin` repository.
 
@@ -73,71 +74,16 @@ You need a reference from your local copy to the `upstream` repository in additi
 
 </details>
 
-<details><summary>Step 3: Running Chapter locally</summary>
+<details><summary>Step 3 - Decide Whether to Run the Application Now, or Later</summary>
+It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
-You will need Node.js for your operating system. So download and install Node.js from the [official Node.js website](https://nodejs.org/en/download/).
+If you want to proceed immeditely with running the client, database, and server, then follow the steps in the **Running the Application** section, below. Then, return here and continue to the next step of this section. 
 
-Ensure you are installing Node.js 13 or greater and npm 6 or greater by using:
-```
-node --version
-v14.13.1
-
-npm --version
-6.14.8
-```
-
-Then install the dependencies using:
-```
-npx recursive-install
-```
-
-There are two approaches to running Chapter locally. First by using Docker and second by setting up client-server, db, api-server all by yourself. Let's see the Docker method first then we'll see a more hands-on method. 
-
-**First method: using Docker**
-
-See the [Docker installation "Supported platforms"](https://docs.docker.com/install/#supported-platforms) section and follow the instructions to download & install Docker Desktop for your operating system (or Docker CE for Linux).
-
-You can find more resources on Docker here:
-- [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
-- [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
-- [Play with Docker Classroom](https://training.play-with-docker.com/)
-
-
-Ensure that Docker Desktop is up and running, then run the following command:
-```
-docker-compose up
-```
-
-Wait for the logs to show "server started on port 8000", then navigate to `localhost:8000` to view the app.
-
-The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
-
-You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-
-Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
-
-**Note for existing contributors:** If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. And then run `docker-compose up` to start the container's services. 
-
-**Second method: manually managing the client-server, db, api-server**
-
-This is a lot lighter setup, but you need to provide your own Postgres DB. If you don't want to run one locally you can get it as a service on [ElephantSQL](https://www.elephantsql.com/).
-
-[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to `.env`. If using remote database change `DB_URL` in `.env` to the URL provided by your remote database provider.
-
-Make sure to set `IS_DOCKER=` in `.env` to blank. Then run the below command to start the api-server and client-server:
-
-```
-npm run both
-```
-
-Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
 </details>
 
-<details><summary>Step 4: Making changes to Chapter codebase and Testing code :fire:</summary>
+<details><summary>Step 4 - Making Changes and Testing the Code :fire:</summary>
 
-> **Note: Always follow the below steps before you start coding or working on an issue.**
-
-You are now almost ready to make changes to files but before that you should **always** follow these steps:
+You are almost ready to make changes to files, but before that you should **always** follow these steps:
 
 1. Validate that you are on the `master` branch
 
@@ -227,21 +173,9 @@ You are now almost ready to make changes to files but before that you should **a
 
 5. Test your code **Always!** 
 
-If you have done manual server setup that is without Docker then run tests using:
-```
-npm run test
-```
-
-If you used Docker then suffix the command with `docker-compose exec`. Something like this:
-
-```
-NODE_ENV=test docker-compose exec app npm run test
-```
-
-You can run tests in watch mode by running:
-```
-npm run test:watch
-```
+- If you started the application using the _Docker Mode_, then tests are run using `NODE_ENV=test docker-compose exec app npm run test` OR if you want to use the "watch" mode run `NODE_ENV=test docker-compose exec app npm run test:watch`
+- If you started the application using the _Manual Mode_ (without Docker), then tests are run using
+`npm run test` OR if you want to use the "watch" mode run `npm run test:watch`
 
 6. Stage the changes and make a commit
 
@@ -306,7 +240,7 @@ npm run test:watch
 
 <details><summary>Step 5: Proposing a Pull Request (PR)</summary>
 
-#### How to prepare a good Pull Request title:
+#### How to Prepare a Good Pull Request Title
 
 When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
 
@@ -327,11 +261,11 @@ An example is `feat(client): night mode`.
 
     ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
 
-2. By default, all pull requests should be against the Chapter main repo, `master` branch.
+2. By default, all pull requests should be against the **_Chapter_** main repo, `master` branch.
 
     ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
-3. Submit the pull request from your branch to Chapter's `master` branch.
+3. Submit the pull request from your branch to **_Chapter's_** `master` branch.
 
 4. In the body of your PR include a more detailed summary of the changes you made and why.
 
@@ -347,17 +281,96 @@ An example is `feat(client): night mode`.
 You have successfully created a PR. Congratulations! :tada:
 </details>
 
+## Starting / Running the Application
+
+<details><summary>Step 1 - Install Node and Run npx</summary>
+
+You will need Node.js installed on your host operating system.
+
+Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download/).
+
+Now check that you have running:
+* Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
+* npm 6 or greater - `npm --version` and the output should be like **6**.14.11
+
+Run `npx recursive-install` and this will install all of the necessary dependencies.
+
+</details>
+    
+<details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
+There are two approaches to running the **_Chapter_** application. 
+
+Based on your experience or preference, decide between the two options:
+* _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local Postgres database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
+* _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running Postgres and configuring localhost services to play nice with the code.
+
+### Docker Mode
+
+Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
+* Docker Desktop (Windows and Mac)
+* Docker Engine (Linux) and Docker Compose
+
+You can find more resources on Docker here:
+* [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
+* [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
+* [Play with Docker Classroom](https://training.play-with-docker.com/)
+
+Ensure the Docker tools are installed:
+* For Windows & Mac, check Docker Desktop 
+* For Linux
+** Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
+** Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
+
+Run Docker Compose using `docker-compose up` and wait (this could take many minutes) for the logs show
+> db_1      | ... LOG:  database system is ready to accept connections
+and
+> client_1  | ready - started server on http://localhost:3000
+and
+> app_1     | Listening on http://localhost:5000/graphql
+
+The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
+
+You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
+
+Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
+
+#### Note for Existing Contributors
+If you (or someone else via a commit) updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. And then run `docker-compose up` to start the container's services. 
+
+### Manual Mode
+
+With this method you will manually managing the client-server, Postgres database, and API server.
+
+This is a much lighter development footprint than Docker, but you need to run your own local Postgres DB. If you don't want to run Postgres locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
+
+[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to `.env`. If using remote database change `DB_URL` in `.env` to the URL provided by your remote database provider.
+
+Make sure to set `IS_DOCKER=` in `.env` to blank. Then, run `npm run both` to start the api-server and client-server:
+
+Initially the DB will be empty. Now, to seed it with sample data, run `yarn db:reset`.
+</details>
+
+<details><summary>Step 3 - View the Running Application</summary>
+Once the app has started you should be able to pull up these URLs in your web browser:
+
+* Main client website - `http//:localhost:3000`
+* GraphQL Playground - `http://localhost:5000/graphql`
+
+</details>
+
 ## Frequently Asked Questions
 
-### What do we need help with right now?
+<details><summary>What do we need help with right now?</summary>
 
 We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
+</details>
 
-### I found a typo. Should I report an issue before I can make a pull request?
+<details><summary>I found a typo. Should I report an issue before I can make a pull request?</summary>
 
 For typos and other wording changes, you can directly open pull requests without first creating an issue. Issues are more for discussing larger problems associated with code or structural aspects of the application.
-
-### I am new to GitHub and Open Source, where should I start?
+</details>
+    
+<details><summary>I am new to GitHub and Open Source, where should I start?</summary>
 
 Read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
 
@@ -378,20 +391,32 @@ When in doubt, you can reach out to current project lead(s):
 
 You are a champion :).
 
+</details>
+
 # Server-side Technical Documentation
 
 ## API Specification
 
 We use [GraphQL](https://graphql.org/) to define the API structure of the application.
 
-See the "Docs" and "Schema" tabs on the right side of the [GraphQL Playground](https://chapter-server.herokuapp.com/graphql), or locally at /graphql, for full API documentation.
+See the "Docs" and "Schema" tabs on the right side of the [GraphQL Playground](https://chapter-server.herokuapp.com/graphql), or locally at http://localhost:5000/graphql for full API documentation.
 
 ## Database
 
-for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter)
+For any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter)
+
+If using **Docker Mode**:
+* The Docker database Postgres container will be exposed to the host computer on localhost port 54320. Thus, avoding potential conflicts on port 543 in the case your host computer already runs Postgres.
+* You don't have to run `docker-compose exec...` commands to "talk" to the Postgres container. Rather, use the Postgres client `psql -h localhost -p 54320 -U postgres` where your .env file defines the Postgres username and password.
+* Database tools like [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/) can access 
+
+If using **Manual Mode**
+* The Postgres port will be as you configured it, likely localhost port 543
+* Use the Postgres client `psql -h localhost -p 543 -U postgres` where your .env file defines the Postgres username and password 
+
 
 <details>
-<summary>Expand to view a diagram illustrating the proposed schema for Chapter.</summary>
+<summary>Expand to view a diagram illustrating the database schema.</summary>
 <br>
 
 ![a diagram illustrating the proposed schema for Chapter](docs/data/schema.png)
@@ -400,7 +425,6 @@ for any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat]
 
 We're using Postgres for our database and TypeORM for our ORM (mapping database tables to js objects). Here are a few examples on how to use our TypeORM setup.
 
-To make it since the port from docker `postgres` service is exposed to the host (54320, not to mess with local `postgres` if you're running one) you don't have to run `docker-compose exec...`, and can just run db commands from the host. This also makes it a lot easier to access the db from the outside if you're not running a local db on the system to for example open it in [Postico](https://eggerapps.at/postico/) / [Table Plus](https://tableplus.com/).
 Our DB commands closely mirror their rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
 `yarn db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand

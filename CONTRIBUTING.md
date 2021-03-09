@@ -77,7 +77,7 @@ You need a reference from your local copy to the `upstream` repository in additi
 <details><summary>Step 3 - Decide Whether to Run the Application Now, or Later</summary>
 It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
-If you want to proceed immeditely with running the client, database, and server, then follow the steps in the **[Running the Application](#starting--running-the-application)** section, below. Then, return here and continue to the next step of this section. 
+If you want to proceed immeditely with running the client, database, and server, then follow the steps in the **[Running the Application](#running-the-application)** section, below. Then, return here and continue to the next step of this section. 
 
 </details>
 
@@ -277,8 +277,8 @@ An example is `feat(client): night mode`.
 You have successfully created a PR. Congratulations! :tada:
 </details>
 
-# Starting / Running the Application
-Prerequisite: steps 1 and 2 of the [**Contributing Code**](#contributing-code**) section above must be done before following this section's steps.
+# Running the Application
+Prerequisite: steps 1 and 2 of the [**Contributing Code**](#contributing-code) section above must be done before following this section's steps.
 
 <details><summary>Step 1 - Install Node and Run npx</summary>
 

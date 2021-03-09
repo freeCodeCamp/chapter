@@ -324,9 +324,7 @@ Ensure the Docker tools are installed:
 
 Make sure `IS_DOCKER=TRUE` is set in the `.env` file in your copy's root directory.
 
-Run Docker Compose (`docker-compose up` on Linux) and wait for the successful output of as shown in the following example.
-
-This could take minutes for each line to appear.
+Run Docker Compose (`docker-compose up` on Linux) from the root project directory and wait for the successful output as shown in the following example. Note: this could take minutes for each line to appear.
 
 > db_1      | ... LOG:  database system is ready to accept connections
 > 
@@ -430,7 +428,7 @@ We're using [Postgres](https://www.postgresql.org/) for our database and [TypeOR
 * If you're using a remote Postgres server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in your _.env_ file.
 
 ### Admin Tools 
-* [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use the *** Host and Port** values above, based on your mode.
+* [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
 * psql Client
   * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the Postgres container.
   * In **Manual Mode**, `psql -h localhost -p 543 -U postgres` 

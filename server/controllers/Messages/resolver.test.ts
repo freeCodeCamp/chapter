@@ -18,7 +18,7 @@ const emailMutation = `
 describe('Test sendEmail resolver', () => {
   it('Should reject the mutation call when subject field has exceeded MaxLength', async () => {
     const emailData = {
-      to: ['jonathan.seubert@megajon.com', 'finisher1017@gmail.com'],
+      to: [faker.internet.email(), faker.internet.email()],
       subject: 'test subject',
       html: 'test html',
     };
@@ -52,11 +52,7 @@ describe('Test sendEmail resolver', () => {
 
   it('Should reject the mutation call when there is an improperly formatted email in the list', async () => {
     const emailData = {
-      to: [
-        'jonathan.seubert@megajon.com',
-        'finisher1017@gmail.com',
-        'invalid.email',
-      ],
+      to: [faker.internet.email(), faker.internet.email(), 'invalid.email'],
       subject: 'test',
       html: 'test html',
     };
@@ -72,12 +68,9 @@ describe('Test sendEmail resolver', () => {
   });
 
   it('Should reject the mutation call when a duplicate email address is found', async () => {
+    const duplicateEmail = faker.internet.email();
     const emailData = {
-      to: [
-        'jonathan.seubert@megajon.com',
-        'finisher1017@gmail.com',
-        'jonathan.seubert@megajon.com',
-      ],
+      to: [duplicateEmail, faker.internet.email(), duplicateEmail],
       subject: 'test',
       html: 'test html',
     };

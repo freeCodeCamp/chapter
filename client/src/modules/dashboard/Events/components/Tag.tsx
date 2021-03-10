@@ -11,7 +11,10 @@ const useStyles = makeStyles({
     color: '#fff',
     fontWeight: 600,
   },
-  tagsContainer: { display: 'flex' },
+  tagsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
 });
 
 const Tags: React.FC<{ tags?: Pick<Tag, 'name' | 'id'>[] }> = ({ tags }) => {

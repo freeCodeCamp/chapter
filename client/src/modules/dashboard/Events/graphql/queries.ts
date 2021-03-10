@@ -7,6 +7,8 @@ export const EVENTS = gql`
       name
       canceled
       description
+      url
+      video_url
       capacity
       tags {
         id
@@ -22,6 +24,8 @@ export const EVENT = gql`
       id
       name
       description
+      url
+      video_url
       canceled
       capacity
       start_at
@@ -58,6 +62,8 @@ export const EVENT_WITH_VENU = gql`
       id
       name
       description
+      url
+      video_url
       capacity
       start_at
       ends_at
@@ -83,6 +89,26 @@ export const createEvent = gql`
       name
       canceled
       description
+      url
+      video_url
+      capacity
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const updateEvent = gql`
+  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
+    updateEvent(id: $id, data: $data) {
+      id
+      name
+      canceled
+      description
+      url
+      video_url
       capacity
       tags {
         id

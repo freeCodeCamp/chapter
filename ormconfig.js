@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { config } = require('dotenv');
+require('dotenv').config();
 
-config();
-
+// Simple way to access docker DB
 const dbConfig = {
   host: process.env.DB_URL,
   port: process.env.DB_PORT || (process.env.IS_DOCKER === '' ? 5432 : 54320),

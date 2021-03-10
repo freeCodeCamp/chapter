@@ -1,13 +1,14 @@
-import { company, lorem } from 'faker';
+import { company, internet, lorem } from 'faker';
 import {
-  Event,
-  Venue,
   Chapter,
-  Sponsor,
+  Event,
   EventSponsor,
+  Sponsor,
   Tag,
+  Venue,
+  VenueType,
 } from '../../../server/models';
-import { randomItem, random, randomItems } from '../lib/random';
+import { random, randomEnum, randomItem, randomItems } from '../lib/random';
 
 const createEvents = async (
   chapters: Chapter[],
@@ -21,6 +22,9 @@ const createEvents = async (
       name: company.companyName(),
       chapter: randomItem(chapters),
       description: lorem.words(),
+      url: internet.url(),
+      video_url: internet.url(),
+      venue_type: randomEnum(VenueType),
       capacity: random(1000),
       venue: randomItem(venues),
       canceled: Math.random() > 0.5,

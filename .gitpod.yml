@@ -1,0 +1,43 @@
+image: gitpod/workspace-postgres
+ports:
+  - port: 3000
+    onOpen: open-preview
+  - port: 5432
+    onOpen: ignore
+  - port: 5000
+    onOpen: ignore
+tasks:
+  # both .bashrc and nvm settings get wiped when a workspace is restarted, so
+  # they need setting here
+  - before: |
+      echo 'export IS_DOCKER=""' >> ~/.bashrc &&
+      export IS_DOCKER="" &&
+      echo NEXT_PUBLIC_APOLLO_SERVER=$(gp url 5000) > client/.env.development.local &&
+      nvm install lts/fermium && nvm alias default lts/fermium
+    # the rest, environment variables, installation and db setup, get persisted,
+    # so we can save time and use init:
+    init: |
+      cp .env.example .env &&
+      createuser -d postgres &&
+      createdb chapter &&
+      npx recursive-install &&
+      npm run db:reset
+    command: npm run both
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+    # add a check to pull requests (defaults to true)
+    addCheck: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
+    addComment: true
+    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
+    addBadge: false
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: false

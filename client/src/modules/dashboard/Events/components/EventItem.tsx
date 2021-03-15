@@ -63,23 +63,23 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
           <Typography variant="body2" color="textSecondary" component="p">
             {event.capacity}
           </Typography>
-        )}
-        <Typography variant="body2" color="textSecondary" component="p">
-          {event.description}
-        </Typography>
-        {event.url && (
-          <Typography>
-            Event Url: <a href={event.url}>{event.url}</a>
+
+          <Typography variant="body2" color="textSecondary" component="p">
+            {event.description}
           </Typography>
-        )}
-        {event.video_url && (
-          <Typography>
-            Video Url: <a href={event.video_url}>{event.video_url}</a>
+          {event.url && (
+            <Typography>
+              Event Url: <a href={event.url}>{event.url}</a>
+            </Typography>
+          )}
+          {event.video_url && (
+            <Typography>
+              Video Url: <a href={event.video_url}>{event.video_url}</a>
+            </Typography>
+          )}
+          <Typography variant="body2" color="textSecondary" component="p">
+            {event.capacity}
           </Typography>
-        )}
-        <Typography variant="body2" color="textSecondary" component="p">
-          {event.capacity}
-        </Typography>
 
           <div>{event.tags && <Tags tags={event.tags} />}</div>
 

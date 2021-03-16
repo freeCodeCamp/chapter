@@ -2,9 +2,9 @@
 
 Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://www.freecodecamp.org).
 
-We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
+We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct), so please take a moment to read the 196 word policy.
 
-You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the project's development team.
+[Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the project's development team.
 
 # Contributing Code
 
@@ -300,8 +300,8 @@ There are two approaches to running the **_Chapter_** application.
 
 Based on your experience or preference, decide between the two options:
 
-* _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local Postgres database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
-* _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running Postgres and configuring localhost services to play nice with the code.
+* _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local PostgreSQL database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
+* _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running PostgreSQL and configuring localhost services to play nice with the code.
 
 ## Docker Mode
 
@@ -320,7 +320,7 @@ Ensure the Docker tools are installed:
   * Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
   * Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure `IS_DOCKER=TRUE` is set in the `.env` file in your copy's root directory.
+Make sure `IS_DOCKER=TRUE` is set in the _.env_ file in your copy's root directory.
 
 Run Docker Compose (`docker-compose up` on Linux) from the root project directory and wait for the successful output as shown in the following example. Note: this could take minutes for each line to appear.
 
@@ -339,15 +339,15 @@ Once Docker is successfully running:
 
 ## Manual Mode
 
-With this method you will manually manage the client-server, Postgres database, and API server.
+With this method you will manually manage the client-server, PostgreSQL database, and API server.
 
-This is a much lighter development footprint than Docker, but you need to run your own local Postgres DB.
+This is a much lighter development footprint than Docker, but you need to run your own local PostgreSQL database.
 
-If you don't want to run Postgres locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
+If you don't want to run PostgreSQL locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
 
-[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to `.env`. If using remote database change `DB_URL` in `.env` to the URL provided by your remote database provider.
+[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to _.env_. If using remote database change `DB_URL` in _.env_ to the URL provided by your remote database provider.
 
-Make sure to set `IS_DOCKER=` to blank in the `.env` file in your project's root directory. 
+Make sure to set `IS_DOCKER=` to blank in the _.env_ file in your project's root directory. 
 
 Run `npm run both` to start the api-server and client-server:
 </details>
@@ -413,7 +413,7 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 
 ## Database
 
-We're using [PostgreSQL](https://www.postgresql.org/) for our database and [TypeORM](https://typeorm.io/) for our ORM (mapping database tables to js objects).
+[PostgreSQL](https://www.postgresql.org/) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
 
 ### Schema
 Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](https://freecodecamp.github.io/chapter/relationships.html) are hosted online on a GitHub pages domain.
@@ -422,19 +422,19 @@ This is [currently manually generated and updated](https://github.com/freeCodeCa
 
 ### Username and Password
 * These are defined in your _.env_ configuration file in the project's root directory.
-* The .env is unique to your copy and should not be committed to any repository or branch. 
-* For security, it's ideal to change the username and password. However, if you don't change them, the default username and password will be as they are set in .env
+* The _.env_ is unique to your copy and should not be committed to any repository or branch. 
+* For security, it's ideal to change the username and password. However, if you don't change them, the default username and password will be as they are set in _.env.example_
 
 ### Host and Port
-* In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running Postgres locally for other projects.
-* In **Manual Mode**, the Postgres port will be as you configured it, the default being Host: _localhost_ and Port: _543_
-* If you're using a remote Postgres server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in your _.env_ file.
+* In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running PostgreSQL locally for other projects.
+* In **Manual Mode**, the PostgreSQL port will be as you configured it, the default being Host: _localhost_ and Port: _5432_
+* If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in your _.env_ file.
 
 ### Admin Tools 
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
 * psql Client
-  * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the Postgres container.
-  * In **Manual Mode**, `psql -h localhost -p 543 -U postgres` 
+  * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
+  * In **Manual Mode**, `psql -h localhost -p 5432 -U postgres` 
 
 ### Using TypeORM and Yarn
 

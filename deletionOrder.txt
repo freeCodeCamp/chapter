@@ -1,0 +1,13 @@
+migrations
+user_chapters
+user_chapter_roles
+user_bans
+rsvps
+event_sponsors
+user_instance_roles
+tags
+events
+chapters
+venues
+sponsors
+users

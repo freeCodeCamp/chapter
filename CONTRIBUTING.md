@@ -1,12 +1,10 @@
 # Contribution Guidelines
 
-Hello. :wave:
-
-Welcome to **_Chapter_** , the newest project by [freeCodeCamp](https://www.freecodecamp.org).
+Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://www.freecodecamp.org).
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct). Please take a moment to read it. It's only 196 words long.
 
-You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with this project's development team.
+You should [join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the project's development team.
 
 # Contributing Code
 
@@ -415,7 +413,12 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 
 ## Database
 
-We're using [Postgres](https://www.postgresql.org/) for our database and [TypeORM](https://typeorm.io/) for our ORM (mapping database tables to js objects).
+We're using [PostgreSQL](https://www.postgresql.org/) for our database and [TypeORM](https://typeorm.io/) for our ORM (mapping database tables to js objects).
+
+### Schema
+Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](https://freecodecamp.github.io/chapter/relationships.html) are hosted online on a GitHub pages domain.
+
+This is [currently manually generated and updated](https://github.com/freeCodeCamp/chapter/issues/54#issuecomment-799653569) on the _gh-pages_ branch by running [SchemaSpy](http://schemaspy.org/).
 
 ### Username and Password
 * These are defined in your _.env_ configuration file in the project's root directory.
@@ -432,15 +435,6 @@ We're using [Postgres](https://www.postgresql.org/) for our database and [TypeOR
 * psql Client
   * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the Postgres container.
   * In **Manual Mode**, `psql -h localhost -p 543 -U postgres` 
-
-### Schema
-<details>
-<summary>Expand to view a diagram illustrating the database schema.</summary>
-<br>
-
-![a diagram illustrating the proposed schema for Chapter](docs/data/schema.png)
-> created with [DBeaver.io](https://dbeaver.com/docs/wiki/ER-Diagrams/)
-</details>
 
 ### Using TypeORM and Yarn
 

@@ -1,3 +1,19 @@
+**Table of Contents**
+
+* [Contribution Guidelines](#contribution-guidelines)
+* [Contributing Code](#contributing-code)
+* [Running the Application](#running-the-application)
+* [Frequently Asked Questions](#frequently-asked-questions)
+* [Server-side Technical Documentation](#server-side-technical-documentation)
+  * [API Specification](#api-specification)
+  * [Database](#database)
+    * [Schema](#schema)
+    * [Username and Password](#username-and-password)
+    * [Host and Port](#host-and-port)
+    * [Admin Tools](#admin-tools)
+    * [Using TypeORM and Yarn](#using-typeorm-and-yarn)
+* [Troubleshooting](#troubleshooting)
+    
 # Contribution Guidelines
 
 Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://www.freecodecamp.org).
@@ -24,7 +40,7 @@ Follow these steps to fork the repository:
 ![an image illustrating the fork button](docs/assets/how-to-fork.png)
 </details>
 
-<details><summary>Step 2 - Preparing the development environment</summary>
+<details><summary>Step 2 - Prepare the Development Environment</summary>
 
 Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/).
 
@@ -76,11 +92,11 @@ You need a reference from your local copy to the `upstream` repository in additi
 
 It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
-If you want to proceed immeditely with running the client, database, and server, then follow the steps in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
+If you want to proceed immeditely with running the client, database, and server, then follow the s in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
 
 </details>
 
-<details><summary>Step 4 - Making Changes and Testing the Code :fire:</summary>
+<details><summary>Step 4 - Make Changes and Test the Code :fire:</summary>
 
 You are almost ready to make changes to files, but before that you should **always** follow these steps:
 
@@ -237,7 +253,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     ```
 </details>
 
-<details><summary>Step 5: Proposing a Pull Request (PR)</summary>
+<details><summary>Step 5: Propose a Pull Request (PR)</summary>
 
 When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
 
@@ -496,7 +512,6 @@ it should ouput something like
  [X] MigrationName1575633316367
 ```
 
-### Troubleshooting
+# Troubleshooting
 
-For any problems ping [@Zeko369 on github](https://github.com/Zeko369) or [chat](https://chat.freecodecamp.org/channel/chapter).
-
+Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).

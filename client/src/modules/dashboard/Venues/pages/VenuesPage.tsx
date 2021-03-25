@@ -46,7 +46,6 @@ export const VenuesPage: NextPage = () => {
             <div className={styles.grid}>
               {data?.venues.map(venue => (
                 <VenueItem
-                  className={styles.gridItem}
                   venue={venue}
                   loading={loading}
                   key={`venue-${venue.id}`}

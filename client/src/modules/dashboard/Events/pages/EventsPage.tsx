@@ -47,7 +47,6 @@ export const EventsPage: NextPage = () => {
             <div className={styles.grid}>
               {data?.events.map(event => (
                 <EventItem
-                  className={styles.gridItem}
                   event={event}
                   loading={loading}
                   key={`events-${event.id}`}

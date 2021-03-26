@@ -308,6 +308,9 @@ Now check that you have:
 
 Run `npx recursive-install` to install all of the necessary dependencies.
 
+Run `npm run postinstall` to copy the file _.env.example_ into the
+file _.env_.  If the .env file exists it will not be overwritten.
+
 </details>
     
 <details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>

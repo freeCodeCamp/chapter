@@ -7,9 +7,11 @@ import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 import { Request, Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
+import passport from 'passport';
 
 config({ path: join(__dirname, '../.env') });
 
+import authController from './auth';
 import { resolvers } from './controllers';
 import { IGQLCtx } from './ts/gql';
 import { initDB } from './db';
@@ -28,6 +30,9 @@ const PORT = process.env.PORT || 5000;
 export const main = async (app: Express) => {
   await initDB();
   app.use(cors({ credentials: true, origin: true }));
+
+  app.use(passport.initialize());
+  app.use('/auth', authController);
 
   const schema = await buildSchema({ resolvers, validate: false });
   const server = new ApolloServer({

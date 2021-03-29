@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "ts-node-dev --no-notify -P tsconfig.server.json ./server/app.ts",
-    "typeorm": "ts-node -P tsconfig.server.json ./node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -P tsconfig.server.json ./node_modules/.bin/typeorm",
     "db:generate": "npm run typeorm migration:generate -- -n",
     "db:drop": "npm run typeorm schema:drop",
     "db:seed": "ts-node -P tsconfig.server.json ./db/generator/index.ts",

@@ -342,11 +342,11 @@ Proceed to the **Prepare the Database for Development** step, below.
 
 ## Manual Mode
 
-This is a much lighter development footprint than _Docker Mode_, but you will need to manually manage the client-server, PostgreSQL database, and API server.
+This is a much lighter development footprint than _Docker Mode_, but you will need to manually manage the client-server, database, and API server.
+
+**Prerequisite**: PostgreSQL must exist and be [configured](#database).
 
 Set _IS_DOCKER=_ to blank in [_.env_](#env-configuration-file). 
-
-A [PostgreSQL](https://www.postgresql.org/download/) database will need to be running and [configured](#database).
 
 Run `npm run both` to start the api-server and client-server:
 
@@ -354,7 +354,7 @@ Proceed to the **Prepare the Database for Development** step, below.
 </details>
 
 <details><summary>Step 3 - Prepare the Database for Development</summary>
-The database may be empty or need to be recreated to get any structureal changes made by other developers.
+The database may be empty or need to be recreated to get schema changes.
     
 See the [Initializing the Database](#initializing-the-database) section, below, before continuing to the next step in this section.
 </details>
@@ -428,7 +428,7 @@ The initial values of the _.env_ will be copied from the _.env.example_ file. Ho
 
 ## Database
 
-[PostgreSQL](https://www.postgresql.org/) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
+[PostgreSQL](https://www.postgresql.org/download) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
 
 ### Schema
 Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](https://freecodecamp.github.io/chapter/relationships.html) are hosted online on a GitHub pages domain.

@@ -42,37 +42,26 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/).
+**Required**: [Git](https://git-scm.com/downloads) will need to be installed. Note: _Git for Windows_ will also install _Git Bash_.
 
-Clone your copy of **_Chapter_**. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
+All ``commands`` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users)
 
-1. Open a Terminal in a directory where you would like the **_Chapter_** project to reside.
+1. Navigate (``cd``) to a directory where you want the **_Chapter_** project to be downloaded by Git.
 
-2. Clone your fork of **_Chapter_**, make sure you replace `YOUR_USER_NAME` with your GitHub username:
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace `YOUR_USER_NAME` with your GitHub username. Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your fork copy will be referred to as the _origin_. 
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git
     ```
 
-This will download the entire **_Chapter_** repository to your directory.
-
-Now that you have downloaded a copy of your fork, you will need to set up an `upstream`. The main repository at `https://github.com/freeCodeCamp/chapter` is often referred to as the `upstream` repository. Your fork at `https://github.com/YOUR_USER_NAME/chapter` is often referred to as the `origin` repository.
-
-You need a reference from your local copy to the `upstream` repository in addition to the `origin` repository. This is so that you can sync changes from the `upstream` repository to your fork which is called `origin`. To do that follow the below commands:
-
-1. Change directory to the new chapter directory:
+3. Configure the [_Chapter_](https://github.com/freeCodeCamp/chapter) repository as the `upstream`. Doing this will allow you to regularly synchronize code changes from the `upstream` **Chapter** to your _origin_ fork.
 
     ```sh
     cd chapter
-    ```
-
-2. Add a remote reference to the main chapter repository:
-
-    ```sh
     git remote add upstream https://github.com/freeCodeCamp/chapter.git
     ```
 
-3. Ensure the configuration looks correct:
+4. Ensure the _origin_ and _upstream_ configuration looks correct:
 
     ```sh
     git remote -v
@@ -92,7 +81,7 @@ You need a reference from your local copy to the `upstream` repository in additi
 
 It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
-If you want to proceed immeditely with running the client, database, and server, then follow the s in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
+If you want to proceed immeditely with running the client, database, and server, then follow the steps in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
 
 </details>
 
@@ -119,7 +108,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     git checkout master
     ```
 
-2. Sync the latest changes from the chapter upstream `master` branch to your local master branch. This is very important to avoid conflicts later.
+2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things syncronzied and avoid "merge conflicts".
 
     > **Note:** If you have any outstanding Pull Request that you made from the `master` branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 
@@ -166,7 +155,9 @@ You are almost ready to make changes to files, but before that you should **alwa
     feat/sponsors
     ```
 
-4. Edit files and write code on your favorite editor. Then check and confirm the files you are updating:
+4. Edit files and write code on your preferred code editor, such as [VS Code](https://code.visualstudio.com/).
+
+Then, check and confirm the files you are updating:
 
     ```sh
     git status
@@ -293,15 +284,12 @@ You have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
-Prerequisite: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
+**Required**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
 <details><summary>Step 1 - Install Node and Run npx</summary>
+**Required**: [Node.js]((https://nodejs.org/en/download/) will need to be installed. _npm_ is also required, but it will be installed with NodeJS. Note: Windows users should close and re-open _Git Bash_ after the installation finishes.
 
-You will need Node.js installed on your host operating system.
-
-Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download/).
-
-Now check that you have:
+Check that you have:
 
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
@@ -321,9 +309,12 @@ Based on your experience or preference, decide between the two options:
 
 ## Docker Mode
 
-Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
-* Docker Desktop (Windows and Mac)
-* Docker Engine (Linux) and Docker Compose
+**Required**: Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
+* Windows: [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows Note: Close and re-open _Git Bash_ after the installation finishes.
+* Mac: [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
+* Linux
+    * [Docker Engine](https://docs.docker.com/engine/install/#server)
+    * [Docker Compose](https://docs.docker.com/compose/install/)
 
 You can find more resources on Docker here:
 * [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
@@ -331,10 +322,10 @@ You can find more resources on Docker here:
 * [Play with Docker Classroom](https://training.play-with-docker.com/)
 
 Ensure the Docker tools are installed:
-* For Windows & Mac, check Docker Desktop 
-* For Linux
-  * Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
-  * Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
+* For Windows & Mac, check that _Docker Desktop_ exists
+* For Linux, check
+  * _Docker Engine_ using `docker --version` and it should output something like _Docker version 19.03.13..._
+  * _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
 Make sure `IS_DOCKER=TRUE` is set in the _.env_ file in your copy's root directory.
 

@@ -43,7 +43,7 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-**Required**: [Git](https://git-scm.com/downloads) will need to be installed. Note: _Git for Windows_ will also install _Git Bash_.
+**Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your system. Note: _Git for Windows_ will also install _Git Bash_.
 
 All ``commands`` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users).
 
@@ -285,13 +285,13 @@ You have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
-**Required**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
+**Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
 <details><summary>Step 1 - Install Node.js and Run npx</summary>
  
-**Required**: [Node.js](https://nodejs.org/en/download/) will need to be installed. _npm_ is also required, but it will be installed with NodeJS. Note: Windows users should close and re-open _Git Bash_ after the installation finishes.
+**Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system. Note: Windows users should close and re-open _Git Bash_ after installing of Node.js.
 
-Check that you have:
+Ensure the Node.js tools are installed:
 
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
@@ -300,7 +300,7 @@ Run `npx recursive-install` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory
-* Creates a private _.env_ configuration file if one does not already exist. Note: this is done "magically" via the _postinstall_ hook.
+* Creates the [_.env_ configuration file](in [_.env_](#env-configuration-file)) if one does not exist. Note: this is done "magically" via the _postinstall_ hook.
 </details>
     
 <details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
@@ -314,7 +314,7 @@ Based on your experience or preference, decide between the two options:
 
 ## Docker Mode
 
-**Required**: Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
+**Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system.
 * Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows) Note: Close and re-open _Git Bash_ after the installation finishes.
 * Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
 * Linux
@@ -322,14 +322,12 @@ Based on your experience or preference, decide between the two options:
     * [Docker Compose](https://docs.docker.com/compose/install/)
 
 Ensure the Docker tools are installed:
-* For Windows & Mac, check that _Docker Desktop_ exists
-* For Linux, check
-  * _Docker Engine_ using `docker --version` and it should output something like _Docker version 19.03.13..._
-  * _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
+* _Docker_ using `docker --version` and it should output something like _Docker version 19.03.13..._
+* _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure `IS_DOCKER=TRUE` is set in the _.env_ file in your root code directory.
+Make sure `IS_DOCKER=TRUE` is set in [_.env_](#env-configuration-file).
 
-Run Docker Compose `docker-compose up` from the root code directory and wait for the successful output as shown in the following example. Note: this could take minutes for each line to appear.
+Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example. Note: This could take minutes for each line to appear.
 
 > db_1      | ... LOG:  database system is ready to accept connections
 > 
@@ -346,15 +344,11 @@ Once Docker is successfully running:
 
 ## Manual Mode
 
-With this method you will manually manage the client-server, PostgreSQL database, and API server.
+This is a much lighter development footprint than _Docker Mode_, but you will need to manually manage the client-server, PostgreSQL database, and API server.
 
-This is a much lighter development footprint than Docker, but you need to run your own local PostgreSQL database.
+Set `IS_DOCKER=` to blank in [_.env_](#env-configuration-file). 
 
-If you don't want to run PostgreSQL locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
-
-[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to _.env_. If using remote database change `DB_URL` in _.env_ to the URL provided by your remote database provider.
-
-Make sure to set `IS_DOCKER=` to blank in the _.env_ file in your root code directory. 
+A [PostgreSQL](https://www.postgresql.org/download/) database will need to be running and [configured](#database).
 
 Run `npm run both` to start the api-server and client-server:
 </details>
@@ -419,11 +413,16 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 * If you don't have a running app at [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
 
 ## .env Configuration File
-An important local _.env_ configuration file is used to store variables and values which are unique to your local development environment. Anything changes to _.env_ will **not** be committed by Git into your _origin_ fork or the _Chapter_ _upstream_ because it will be ignored based on rule in _.gitignore_. This is important because _.env_ will contain "secrets" (usernames, passwords, API keys) and values which are specific to you and your local development environment. 
+
+An important, local _.env_ configuration file exists in the root code directory. It's used to store [environment variables](https://en.wikipedia.org/wiki/Environment_variable) and their associated values.
+
+Any changes to _.env_ **will not and should not** be committed into your _origin_ fork or the _Chapter_ _upstream_. Plus, a _.gitignore_ rule exists to prevent it. Do not remove this rule or otherwise attempt to commit your _.env_ to any Git repository.
+
+Keeping your _.env_ out of the repositories is important because the file will contain "secrets" (usernames, passwords, API keys) and other values which are specific to you and your local development environment. 
 
 The _.env_ file is automatically created via the (**Running the Application**)[#running-the-application] section when you follow **Step 1 - Install Node and Run npx**. 
 
-This pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) which is also popular in other frameworks and programming languages.
+This configuration pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) and is also popular in other frameworks and programming languages.
 
 The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
 
@@ -437,13 +436,13 @@ Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](
 This is [currently manually generated and updated](https://github.com/freeCodeCamp/chapter/issues/54#issuecomment-799653569) on the _gh-pages_ branch by running [SchemaSpy](http://schemaspy.org/).
 
 ### Username and Password
-* These are defined in your _.env_ configuration file in the root code directory.
+* Set your specific values in [_.env_](#env-configuration-file).
 * For security, it's ideal to change the username and password from the default values.
 
 ### Host and Port
 * In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running PostgreSQL locally for other projects.
 * In **Manual Mode**, the PostgreSQL port will be as you configured it, the default being Host: _localhost_ and Port: _5432_
-* If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in your _.env_ file.
+* If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in [_.env_](#env-configuration-file).
 
 ### Admin Tools 
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.

@@ -6,6 +6,7 @@
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [Server-side Technical Documentation](#server-side-technical-documentation)
   * [API Specification](#api-specification)
+  * [.env Configuration File](#env-configuration-file)
   * [Database](#database)
     * [Schema](#schema)
     * [Username and Password](#username-and-password)
@@ -26,7 +27,7 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 If you are ready to contribute code, then start by follow these steps.
 
-<details><summary>Step 1 - Fork the repository on GitHub</summary>
+<details><summary>Step 1 - Fork the Repository on GitHub</summary>
 
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of **_Chapter's_** repository (a.k.a repo) on GitHub.
 
@@ -44,17 +45,17 @@ Follow these steps to fork the repository:
 
 **Required**: [Git](https://git-scm.com/downloads) will need to be installed. Note: _Git for Windows_ will also install _Git Bash_.
 
-All ``commands`` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users)
+All ``commands`` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users).
 
 1. Navigate (``cd``) to a directory where you want the **_Chapter_** project to be downloaded by Git.
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace `YOUR_USER_NAME` with your GitHub username. Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your fork copy will be referred to as the _origin_. 
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace `YOUR_USER_NAME` with your GitHub username. Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_. 
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git
     ```
 
-3. Configure the [_Chapter_](https://github.com/freeCodeCamp/chapter) repository as the `upstream`. Doing this will allow you to regularly synchronize code changes from the `upstream` **Chapter** to your _origin_ fork.
+3. Configure the [_Chapter_](https://github.com/freeCodeCamp/chapter) repository as the `upstream`. Doing this will allow you to regularly synchronize code changes from the `upstream` **Chapter** to your _origin_.
 
     ```sh
     cd chapter
@@ -286,8 +287,9 @@ You have successfully created a PR. Congratulations! :tada:
 # Running the Application
 **Required**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary>Step 1 - Install Node and Run npx</summary>
-**Required**: [Node.js]((https://nodejs.org/en/download/) will need to be installed. _npm_ is also required, but it will be installed with NodeJS. Note: Windows users should close and re-open _Git Bash_ after the installation finishes.
+<details><summary>Step 1 - Install Node.js and Run npx</summary>
+ 
+**Required**: [Node.js](https://nodejs.org/en/download/) will need to be installed. _npm_ is also required, but it will be installed with NodeJS. Note: Windows users should close and re-open _Git Bash_ after the installation finishes.
 
 Check that you have:
 
@@ -296,6 +298,9 @@ Check that you have:
 
 Run `npx recursive-install` to install all of the necessary dependencies.
 
+This step will **automatically** read and process the _package.json_ file. Most notably it:
+* Downloads all Node package dependencies to the _node_modules_ sub-directory
+* Creates a private _.env_ configuration file if one does not already exist. Note: this is done "magically" via the _postinstall_ hook.
 </details>
     
 <details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
@@ -310,16 +315,11 @@ Based on your experience or preference, decide between the two options:
 ## Docker Mode
 
 **Required**: Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
-* Windows: [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows Note: Close and re-open _Git Bash_ after the installation finishes.
-* Mac: [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
+* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows) Note: Close and re-open _Git Bash_ after the installation finishes.
+* Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
 * Linux
     * [Docker Engine](https://docs.docker.com/engine/install/#server)
     * [Docker Compose](https://docs.docker.com/compose/install/)
-
-You can find more resources on Docker here:
-* [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
-* [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
-* [Play with Docker Classroom](https://training.play-with-docker.com/)
 
 Ensure the Docker tools are installed:
 * For Windows & Mac, check that _Docker Desktop_ exists
@@ -327,9 +327,9 @@ Ensure the Docker tools are installed:
   * _Docker Engine_ using `docker --version` and it should output something like _Docker version 19.03.13..._
   * _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure `IS_DOCKER=TRUE` is set in the _.env_ file in your copy's root directory.
+Make sure `IS_DOCKER=TRUE` is set in the _.env_ file in your root code directory.
 
-Run Docker Compose (`docker-compose up` on Linux) from the root project directory and wait for the successful output as shown in the following example. Note: this could take minutes for each line to appear.
+Run Docker Compose `docker-compose up` from the root code directory and wait for the successful output as shown in the following example. Note: this could take minutes for each line to appear.
 
 > db_1      | ... LOG:  database system is ready to accept connections
 > 
@@ -354,7 +354,7 @@ If you don't want to run PostgreSQL locally, then you can use a service like [El
 
 [Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to _.env_. If using remote database change `DB_URL` in _.env_ to the URL provided by your remote database provider.
 
-Make sure to set `IS_DOCKER=` to blank in the _.env_ file in your project's root directory. 
+Make sure to set `IS_DOCKER=` to blank in the _.env_ file in your root code directory. 
 
 Run `npm run both` to start the api-server and client-server:
 </details>
@@ -418,6 +418,15 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 * If you are already [**Running the Application**](#running-the-application) at http://localhost:5000/graphql
 * If you don't have a running app at [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
 
+## .env Configuration File
+An important local _.env_ configuration file is used to store variables and values which are unique to your local development environment. Anything changes to _.env_ will **not** be committed by Git into your _origin_ fork or the _Chapter_ _upstream_ because it will be ignored based on rule in _.gitignore_. This is important because _.env_ will contain "secrets" (usernames, passwords, API keys) and values which are specific to you and your local development environment. 
+
+The _.env_ file is automatically created via the (**Running the Application**)[#running-the-application] section when you follow **Step 1 - Install Node and Run npx**. 
+
+This pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) which is also popular in other frameworks and programming languages.
+
+The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
+
 ## Database
 
 [PostgreSQL](https://www.postgresql.org/) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
@@ -428,9 +437,8 @@ Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](
 This is [currently manually generated and updated](https://github.com/freeCodeCamp/chapter/issues/54#issuecomment-799653569) on the _gh-pages_ branch by running [SchemaSpy](http://schemaspy.org/).
 
 ### Username and Password
-* These are defined in your _.env_ configuration file in the project's root directory.
-* The _.env_ is unique to your copy and should not be committed to any repository or branch. 
-* For security, it's ideal to change the username and password. However, if you don't change them, the default username and password will be as they are set in _.env.example_
+* These are defined in your _.env_ configuration file in the root code directory.
+* For security, it's ideal to change the username and password from the default values.
 
 ### Host and Port
 * In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running PostgreSQL locally for other projects.

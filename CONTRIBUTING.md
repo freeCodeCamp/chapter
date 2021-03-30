@@ -333,10 +333,12 @@ Run _Docker Compose_ `docker-compose up` from the root code directory and wait f
     client_1  | ready - started server on http://localhost:3000
     app_1     | Listening on http://localhost:5000/graphql
 
-Once Docker is successfully running:
+Once Docker is running:
 * The server will automatically restart anytime you save a _.ts_ or _.js_ file within the _server/_ directory.
 * You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 * If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+
+Proceed to the **Prepare the Database for Development** step, below.
 
 ## Manual Mode
 
@@ -347,6 +349,8 @@ Set _IS_DOCKER=_ to blank in [_.env_](#env-configuration-file).
 A [PostgreSQL](https://www.postgresql.org/download/) database will need to be running and [configured](#database).
 
 Run `npm run both` to start the api-server and client-server:
+
+Proceed to the **Prepare the Database for Development** step, below.
 </details>
 
 <details><summary>Step 3 - Prepare the Database for Development</summary>

@@ -416,7 +416,7 @@ Any changes to _.env_ **will not and should not** be committed into your _origin
 
 Keeping your _.env_ out of the repositories is important because the file will contain "secrets" (usernames, passwords, API keys) and other values which are specific to you and your local development environment. 
 
-The _.env_ file is automatically created via the (**Running the Application**)[#running-the-application] section when you follow **Step 1 - Install Node and Run npx**. 
+The _.env_ file is automatically created via the [**Running the Application**](#running-the-application) section when you follow **Step 1 - Install Node and Run npx**. 
 
 This configuration pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) and is also popular in other frameworks and programming languages.
 

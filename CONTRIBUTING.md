@@ -358,8 +358,8 @@ See the [Initializing the Database](#initializing-the-database) section, below, 
 <details><summary>Step 4 - View the Running Application</summary>
 Once the app has started you should be able to pull up these URLs in your web browser:
 
-* Main client website - _http//:localhost:3000_
-* GraphQL Playground - _http://localhost:5000/graphql_
+* Main Client Website - http://localhost:3000
+* GraphQL Playground - http://localhost:5000/graphql
 
 </details>
 

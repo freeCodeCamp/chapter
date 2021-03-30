@@ -43,13 +43,16 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-**Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your system. Note: _Git for Windows_ will also install _Git Bash_.
+**Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your system.
+> Note: _Git for Windows_ will also install _Git Bash_.
 
 All `commands` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users).
 
 1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_. 
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_. 
+
+    > Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git
@@ -69,12 +72,11 @@ All `commands` in this document are to be run within your command line Terminal 
     ```
 
     The output should look something like below:
-    ```sh
-    origin    https://github.com/YOUR_USER_NAME/chapter.git (fetch)
-    origin    https://github.com/YOUR_USER_NAME/chapter.git (push)
-    upstream    https://github.com/freeCodeCamp/chapter.git (fetch)
-    upstream    https://github.com/freeCodeCamp/chapter.git (push)
-    ```
+
+        origin    https://github.com/YOUR_USER_NAME/chapter.git (fetch)
+        origin    https://github.com/YOUR_USER_NAME/chapter.git (push)
+        upstream    https://github.com/freeCodeCamp/chapter.git (fetch)
+        upstream    https://github.com/freeCodeCamp/chapter.git (push)
 
 </details>
 
@@ -97,21 +99,20 @@ You are almost ready to make changes to files, but before that you should **alwa
     ```
 
     You should get an output like this:
-    ```sh
-    On branch master
-    Your branch is up-to-date with 'origin/master'.
-
-    nothing to commit, working directory clean
-    ```
+    
+        On branch master
+        Your branch is up-to-date with 'origin/master'.
+        nothing to commit, working directory clean
 
     If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout _master_:
+
     ```sh
     git checkout master
     ```
 
 2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things syncronzied and avoid "merge conflicts".
 
-    > **Note:** If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
+    > Note: If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 
     This step **will sync the latest changes** from the main repository of chapter.
 
@@ -139,7 +140,7 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 3. Create a fresh new branch
 
-    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the `master` branch. This will soil your copy of chapter and you may have to start over with a fresh clone or fork.
+    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the _master_ branch. This will soil your copy of **_Chapter_** and you may have to start over with a fresh clone or fork.
 
     Check that you are on _master_ as explained previously, and branch off from there by typing:
     ```sh
@@ -149,40 +150,37 @@ You are almost ready to make changes to files, but before that you should **alwa
     Your branch name should start with _fix/_, _feat/_, _docs/_, etc. Avoid using issue numbers in branches. Keep them short, meaningful and unique.
 
     Some examples of good branch names are:
-    ```md
-    fix/update-nav-links
-    fix/sign-in
-    docs/typo-in-readme
-    feat/sponsors
-    ```
+
+    * fix/update-nav-links
+    * fix/sign-in
+    * docs/typo-in-readme
+    * feat/sponsors
 
 4. Edit files and write code on your preferred code editor, such as [VS Code](https://code.visualstudio.com/).
 
-Then, check and confirm the files you are updating:
+    Then, check and confirm the files you are updating:
 
     ```sh
     git status
     ```
 
     This should show a list of _unstaged_ files that you have edited.
-    ```sh
-    On branch feat/documentation
-    Your branch is up to date with 'upstream/feat/documentation'.
 
-    Changes not staged for commit:
-    (use "git add/rm <file>..." to update what will be committed)
-    (use "git checkout -- <file>..." to discard changes in working directory)
+        On branch feat/documentation
+        Your branch is up to date with 'upstream/feat/documentation'.
+
+        Changes not staged for commit:
+        (use "git add/rm <file>..." to update what will be committed)
+        (use "git checkout -- <file>..." to discard changes in working directory)
 
         modified:   CONTRIBUTING.md
         modified:   README.md
-    ...
-    ```
+        ...
 
 5. Test your code **Always!** 
 
-- If you started the application using the _Docker Mode_, then tests are run using `NODE_ENV=test docker-compose exec app npm run test` OR if you want to use the "watch" mode run `NODE_ENV=test docker-compose exec app npm run test:watch`
-- If you started the application using the _Manual Mode_ (without Docker), then tests are run using
-`npm run test` OR if you want to use the "watch" mode run `npm run test:watch`
+    * If you started the application using the _Docker Mode_, then tests are run using `NODE_ENV=test docker-compose exec app npm run test` OR if you want to use the "watch" mode run `NODE_ENV=test docker-compose exec app npm run test:watch`
+    * If you started the application using the _Manual Mode_ (without Docker), then tests are run using `npm run test` OR if you want to use the "watch" mode run `npm run test:watch`
 
 6. Stage the changes and make a commit
 
@@ -205,16 +203,15 @@ Then, check and confirm the files you are updating:
     ```
 
     Output:
-    ```sh
-    On branch feat/documentation
-    Your branch is up to date with 'upstream/feat/documentation'.
 
-    Changes to be committed:
-    (use "git reset HEAD <file>..." to unstage)
+        On branch feat/documentation
+        Your branch is up to date with 'upstream/feat/documentation'.
+
+        Changes to be committed:
+        (use "git reset HEAD <file>..." to unstage)
 
         modified:   CONTRIBUTING.md
         modified:   README.md
-    ```
 
     Now, you can commit your changes with a short message like so:
 
@@ -226,11 +223,10 @@ Then, check and confirm the files you are updating:
 
     Some examples of conventional commit messages are:
 
-    ```md
-    fix: update API routes
-    feat: RSVP event
-    fix(docs): update database schema image
-    ```
+    * fix: update API routes
+    * feat: RSVP event
+    * fix(docs): update database schema image
+
     Keep your commit messages short. You can always add additional information in the description of the commit message.
 
 7. Next, you can push your changes to your fork.
@@ -289,7 +285,8 @@ You have successfully created a PR. Congratulations! :tada:
 
 <details><summary>Step 1 - Install Node.js and Run npx</summary>
  
-**Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system. Note: Windows users should close and re-open _Git Bash_ after installing of Node.js.
+**Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
+> Note: Windows users should close and re-open _Git Bash_ after installing of Node.js.
 
 Ensure the Node.js tools are installed:
 
@@ -300,7 +297,8 @@ Run `npx recursive-install` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory
-* Creates the [_.env_ configuration file](in [_.env_](#env-configuration-file)) if one does not exist. Note: this is done "magically" via the _postinstall_ hook.
+* Creates the [_.env_ configuration file](#env-configuration-file) if one does not exist.
+    > Note: this is done "magically" via the _postinstall_ hook.
 </details>
     
 <details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
@@ -314,8 +312,9 @@ Based on your experience or preference, decide between the two options:
 
 ## Docker Mode
 
-**Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system.
-* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows) - Note: Close and re-open _Git Bash_ after the installation finishes.
+**Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system:
+* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+    > Note: Close and re-open _Git Bash_ after the installation finishes.
 * Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
 * Linux
     * [Docker Engine](https://docs.docker.com/engine/install/#server)
@@ -327,15 +326,12 @@ Ensure the Docker tools are installed:
 
 Make sure _IS_DOCKER=TRUE_ is set in [_.env_](#env-configuration-file).
 
-Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example. Note: This could take minutes for each line to appear.
+Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example.
+> Note: This could take minutes for each line to appear.
 
-> db_1      | ... LOG:  database system is ready to accept connections
-> 
-> 
-> client_1  | ready - started server on http://localhost:3000
-> 
-> 
-> app_1     | Listening on http://localhost:5000/graphql
+    db_1      | ... LOG:  database system is ready to accept connections
+    client_1  | ready - started server on http://localhost:3000
+    app_1     | Listening on http://localhost:5000/graphql
 
 Once Docker is successfully running:
 * The server will automatically restart anytime you save a _.ts_ or _.js_ file within the _server/_ directory.

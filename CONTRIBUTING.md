@@ -45,24 +45,24 @@ Follow these steps to fork the repository:
 
 **Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your system. Note: _Git for Windows_ will also install _Git Bash_.
 
-All ``commands`` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users).
+All `commands` in this document are to be run within your command line Terminal (_Git Bash_ for Windows users).
 
-1. Navigate (``cd``) to a directory where you want the **_Chapter_** project to be downloaded by Git.
+1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace `YOUR_USER_NAME` with your GitHub username. Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_. 
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_. 
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git
     ```
 
-3. Configure the [_Chapter_](https://github.com/freeCodeCamp/chapter) repository as the `upstream`. Doing this will allow you to regularly synchronize code changes from the `upstream` **Chapter** to your _origin_.
+3. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
 
     ```sh
     cd chapter
     git remote add upstream https://github.com/freeCodeCamp/chapter.git
     ```
 
-4. Ensure the _origin_ and _upstream_ configuration looks correct:
+4. Ensure the _origin_ and _upstream_ configuration is correct:
 
     ```sh
     git remote -v
@@ -90,7 +90,7 @@ If you want to proceed immeditely with running the client, database, and server,
 
 You are almost ready to make changes to files, but before that you should **always** follow these steps:
 
-1. Validate that you are on the `master` branch
+1. Validate that you are on the _master_ branch
 
     ```sh
     git status
@@ -104,14 +104,14 @@ You are almost ready to make changes to files, but before that you should **alwa
     nothing to commit, working directory clean
     ```
 
-    If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout `master`:
+    If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout _master_:
     ```sh
     git checkout master
     ```
 
 2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things syncronzied and avoid "merge conflicts".
 
-    > **Note:** If you have any outstanding Pull Request that you made from the `master` branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
+    > **Note:** If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 
     This step **will sync the latest changes** from the main repository of chapter.
 
@@ -141,12 +141,12 @@ You are almost ready to make changes to files, but before that you should **alwa
 
     Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the `master` branch. This will soil your copy of chapter and you may have to start over with a fresh clone or fork.
 
-    Check that you are on `master` as explained previously, and branch off from there by typing:
+    Check that you are on _master_ as explained previously, and branch off from there by typing:
     ```sh
     git checkout -b fix/update-readme
     ```
 
-    Your branch name should start with `fix/`, `feat/`, `docs/`, etc. Avoid using issue numbers in branches. Keep them short, meaningful and unique.
+    Your branch name should start with _fix/_, _feat/_, _docs/_, etc. Avoid using issue numbers in branches. Keep them short, meaningful and unique.
 
     Some examples of good branch names are:
     ```md
@@ -164,7 +164,7 @@ Then, check and confirm the files you are updating:
     git status
     ```
 
-    This should show a list of `unstaged` files that you have edited.
+    This should show a list of _unstaged_ files that you have edited.
     ```sh
     On branch feat/documentation
     Your branch is up to date with 'upstream/feat/documentation'.
@@ -192,7 +192,7 @@ Then, check and confirm the files you are updating:
     git add path/to/my/changed/file.ext
     ```
 
-    Or you can add all the `unstaged` files to the staging area using the below handy command:
+    Or, you can add all the _unstaged_ files to the staging area using the below handy command:
 
     ```sh
     git add .
@@ -239,7 +239,7 @@ Then, check and confirm the files you are updating:
     git push origin branch-name-here
     ```
 
-    For example if the name of your branch is `fix/signin` then your command should be:
+    For example if the name of your branch is _fix/signin_ then your command should be:
     ```sh
     git push origin fix/signin
     ```
@@ -249,26 +249,26 @@ Then, check and confirm the files you are updating:
 
 When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
 
-`fix/feat/chore/refactor/docs/perf (scope): PR Title`
+_fix/feat/chore/refactor/docs/perf (scope): PR Title_
 
-An example is `feat(client): night mode`.
+An example is _feat(client): night mode_.
 
 | Scope | Documentation |
 |---|---|
-| `api` | For Pull Requests making changes to the APIs, routes and its architecture |
-| `db` | For Pull Requests making changes related to database |
-| `client` | For Pull Requests making changes to client platform logic or user interface |
-| `docs` | For Pull Requests making changes to the project's documentation |
+| _api_ | For Pull Requests making changes to the APIs, routes and its architecture |
+| _db_ | For Pull Requests making changes related to database |
+| _client_ | For Pull Requests making changes to client platform logic or user interface |
+| _docs_ | For Pull Requests making changes to the project's documentation |
 
-1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on `Compare and Pull Request`.
+1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
 
     ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, `master` branch.
+2. By default, all pull requests should be against the **_Chapter_** main repo, _master_ branch.
 
     ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
-3. Submit the pull request from your branch to **_Chapter's_** `master` branch.
+3. Submit the pull request from your branch to **_Chapter's_** _master_ branch.
 
 4. In the body of your PR include a more detailed summary of the changes you made and why.
 
@@ -277,8 +277,8 @@ An example is `feat(client): night mode`.
     - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
 
     - If the PR is meant to fix an existing bug/issue then, at the end of
-      your PR's description, append the keyword `closes` and #xxxx (where xxxx
-      is the issue number). Example: `closes #1337`. This tells GitHub to
+      your PR's description, append the keyword _closes_ and #xxxx (where xxxx
+      is the issue number). Example: _closes #1337_. This tells GitHub to
       automatically close the existing issue, if the PR is accepted and merged.
 
 You have successfully created a PR. Congratulations! :tada:
@@ -315,7 +315,7 @@ Based on your experience or preference, decide between the two options:
 ## Docker Mode
 
 **Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system.
-* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows) Note: Close and re-open _Git Bash_ after the installation finishes.
+* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows) - Note: Close and re-open _Git Bash_ after the installation finishes.
 * Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
 * Linux
     * [Docker Engine](https://docs.docker.com/engine/install/#server)
@@ -325,7 +325,7 @@ Ensure the Docker tools are installed:
 * _Docker_ using `docker --version` and it should output something like _Docker version 19.03.13..._
 * _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure `IS_DOCKER=TRUE` is set in [_.env_](#env-configuration-file).
+Make sure _IS_DOCKER=TRUE_ is set in [_.env_](#env-configuration-file).
 
 Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example. Note: This could take minutes for each line to appear.
 
@@ -338,15 +338,15 @@ Run _Docker Compose_ `docker-compose up` from the root code directory and wait f
 > app_1     | Listening on http://localhost:5000/graphql
 
 Once Docker is successfully running:
-* The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
+* The server will automatically restart anytime you save a _.ts_ or _.js_ file within the _server/_ directory.
 * You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-* If you, or someone else via a commit, updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+* If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
 
 ## Manual Mode
 
 This is a much lighter development footprint than _Docker Mode_, but you will need to manually manage the client-server, PostgreSQL database, and API server.
 
-Set `IS_DOCKER=` to blank in [_.env_](#env-configuration-file). 
+Set _IS_DOCKER=_ to blank in [_.env_](#env-configuration-file). 
 
 A [PostgreSQL](https://www.postgresql.org/download/) database will need to be running and [configured](#database).
 
@@ -362,8 +362,8 @@ See the [Initializing the Database](#initializing-the-database) section, below, 
 <details><summary>Step 4 - View the Running Application</summary>
 Once the app has started you should be able to pull up these URLs in your web browser:
 
-* Main client website - `http//:localhost:3000`
-* GraphQL Playground - `http://localhost:5000/graphql`
+* Main client website - _http//:localhost:3000_
+* GraphQL Playground - _http://localhost:5000/graphql_
 
 </details>
 
@@ -477,11 +477,11 @@ If you prefer to run some or all of the steps manually, then they are:
 
 `npm run typeorm entity:create -- --name=ModelName`
 
-This would create `ModelName.ts` in `server/models`
+This would create _ModelName.ts_ in _server/models_
 
 To keep everything DRY, add `extends BaseModel` to the class and import it from 'server/models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
 
-You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from `.ts` files, so we run it with `ts-node` and our custom server config (check package.json)
+You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from _.ts_ files, so we run it with `ts-node` and our custom server config (check package.json)
 
 #### Creating a Migration
 
@@ -491,7 +491,7 @@ After you created a new model or updated an existing one, you need to generate a
 
 Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
 
-After that, check the generated SQL in `db/migrations/date-MigrationName.ts`
+After that, check the generated SQL in _db/migrations/date-MigrationName.ts_
 
 #### Running Migrations and Checking They Were Run
 

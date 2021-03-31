@@ -110,7 +110,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     git checkout master
     ```
 
-2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things syncronzied and avoid "merge conflicts".
+2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things synchronized and avoid "merge conflicts".
 
     > Note: If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 

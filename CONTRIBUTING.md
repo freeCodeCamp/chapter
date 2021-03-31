@@ -45,17 +45,19 @@ Follow these steps to fork the repository:
 
 **Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your development operating system.
 
-**Prerequisite**:  All `commands` in this document are to be run within a supported command line terminal and shell within your operating system.
-* Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in the default "out of the box" configuration.
+**Prerequisite**:  A supported command line terminal and shell must exist on your development operating system.
+* Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
 * Mac: the pre-installed _Terminal_ in MacOS, usuually running a zsh shell, should work in its default "out of the box" configuration.
-* Windows - you'll need a terminal and shell that supports Linux features. Options include:
+* Windows - you'll need a terminal and shell that supports features of Linux. Options include:
     * Installing / enabling [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice) along with a Linux terminal / shell, such as [_Ubuntu for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows)
-    > WSL maintains its own file system so you'll want to use a directory within WSL's /home/username/. The alterative, using a C:\ directory, will be very slow.
-    * _Git Bash_ - this terminal and shell is included with _Git for Windows_ and should work, though is more likely to have permission errors or other inconsistencies.
-    * _PowerShell_ and _cmd_ might work for running the app in _Docker Mode_, but these options are not recommended for active development.
+    * _Git Bash_ - the terminal + shell is included with _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
+    * _PowerShell_ and _cmd_ may work for running the **_Chapter_** app in _Docker Mode_, but these are not recommended for active development.
 > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is a wrapper for these other shells. It can be used in conjunction with the options above, such as _Windows Terminal_ running the _Ubuntu_ shell.
 
+All `commands` in this document need to be run within a terminal / shell.
+
 1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
+    > Note: For Windows using WSL, it maintains its own file system. Use a sub-directory within WSL's /home/username/ filesystem. The alternative, using a directory within C:\, will cause everything to run very slowly.
 
 2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_. 
 

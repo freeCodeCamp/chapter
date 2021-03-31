@@ -12,7 +12,7 @@
     * [Username and Password](#username-and-password)
     * [Host and Port](#host-and-port)
     * [Admin Tools](#admin-tools)
-    * [Using TypeORM and Yarn](#using-typeorm-and-yarn)
+    * [Using TypeORM and NPM](#using-typeorm-and-npm)
 * [Troubleshooting](#troubleshooting)
     
 # Contribution Guidelines
@@ -459,14 +459,14 @@ This is [currently manually generated and updated](https://github.com/freeCodeCa
   * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
   * In **Manual Mode**, `psql -h localhost -p 5432 -U postgres` 
 
-### Using TypeORM and Yarn
+### Using TypeORM and NPM
 
 Our DB commands closely mirror their Rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
-`yarn db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
-`yarn db:migrate` -> `rake db:migrate`
-`yarn db:seed` -> `rake db:seed`
-`yarn db:reset` -> `rake db:reset`
+`npm db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
+`npm db:migrate` -> `rake db:migrate`
+`npm db:seed` -> `rake db:seed`
+`npm db:reset` -> `rake db:reset`
 
 #### Initializing the Database
 
@@ -475,12 +475,12 @@ If you're starting the application for the first time, or syncronizing with the 
 * migrate the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-The `yarn db:reset` command will do all three tasks: drop, migrate, and seed.
+The `npm db:reset` command will do all three tasks: drop, migrate, and seed.
 
 If you prefer to run some or all of the steps manually, then they are:
-* `yarn db:drop`
-* `yarn db:migrate`
-* `yarn db:seed`
+* `npm db:drop`
+* `npm db:migrate`
+* `npm db:seed`
 
 #### Creating a New Model / Entity
 
@@ -496,7 +496,7 @@ You could also run `npx typeorm` since here you're not actually loading any ts f
 
 After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
 
-`yarn db:generate MIGRATION_NAME`
+`npm db:generate MIGRATION_NAME`
 
 Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
 
@@ -505,11 +505,11 @@ After that, check the generated SQL in _db/migrations/date-MigrationName.ts_
 #### Running Migrations and Checking They Were Run
 
 You can manualy run them by doing
-`yarn db:migrate`
+`npm db:migrate`
 
 and then check if it happened correctly
 
-`yarn typeorm migration:show`
+`npm typeorm migration:show`
 
 it should ouput something like
 

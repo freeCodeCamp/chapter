@@ -6,12 +6,13 @@
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [Server-side Technical Documentation](#server-side-technical-documentation)
   * [API Specification](#api-specification)
+  * [.env Configuration File](#env-configuration-file)
   * [Database](#database)
     * [Schema](#schema)
     * [Username and Password](#username-and-password)
     * [Host and Port](#host-and-port)
     * [Admin Tools](#admin-tools)
-    * [Using TypeORM and Yarn](#using-typeorm-and-yarn)
+    * [Using TypeORM and NPM](#using-typeorm-and-npm)
 * [Troubleshooting](#troubleshooting)
     
 # Contribution Guidelines
@@ -26,7 +27,7 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 If you are ready to contribute code, then start by follow these steps.
 
-<details><summary>Step 1 - Fork the repository on GitHub</summary>
+<details><summary>Step 1 - Fork the Repository on GitHub</summary>
 
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of **_Chapter's_** repository (a.k.a repo) on GitHub.
 
@@ -42,49 +43,49 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-Install [Git](https://git-scm.com/) and a code editor of your choice. We recommend using [VS Code](https://code.visualstudio.com/).
+**Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your development operating system.
 
-Clone your copy of **_Chapter_**. ['Cloning'](https://help.github.com/articles/cloning-a-repository/) is where you download a copy of the repository from a `remote` location to your local machine. Run these commands on your local machine to clone the repository:
+**Prerequisite**:  A supported command line terminal and shell must exist on your development operating system.
+* Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
+* Mac: the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
+* Windows - you'll need a terminal and shell that support features of Linux. Options include:
+    * Installing / enabling [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice) along with a Linux terminal / shell, such as [_Ubuntu for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows)
+    * _Git Bash_ - this terminal + shell option is included with _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
+    * _PowerShell_ and _cmd_ may work for running the **_Chapter_** app in _Docker Mode_, but these are not recommended for active development.
+    > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is a wrapper for the options above. It can be used in conjunction with the options above, such as _Windows Terminal_ running the _Ubuntu_ shell, but is not sufficient by itself.
 
-1. Open a Terminal in a directory where you would like the **_Chapter_** project to reside.
+All `commands` in this document need to be run within a terminal / shell.
 
-2. Clone your fork of **_Chapter_**, make sure you replace `YOUR_USER_NAME` with your GitHub username:
+1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
+    > Note: For Windows using WSL, it maintains its own file system. Use a sub-directory within WSL's /home/username/ filesystem. The alternative, using a directory within C:\, will cause everything to run very slowly.
+
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_. 
+
+    > Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git
     ```
 
-This will download the entire **_Chapter_** repository to your directory.
-
-Now that you have downloaded a copy of your fork, you will need to set up an `upstream`. The main repository at `https://github.com/freeCodeCamp/chapter` is often referred to as the `upstream` repository. Your fork at `https://github.com/YOUR_USER_NAME/chapter` is often referred to as the `origin` repository.
-
-You need a reference from your local copy to the `upstream` repository in addition to the `origin` repository. This is so that you can sync changes from the `upstream` repository to your fork which is called `origin`. To do that follow the below commands:
-
-1. Change directory to the new chapter directory:
+3. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
 
     ```sh
     cd chapter
-    ```
-
-2. Add a remote reference to the main chapter repository:
-
-    ```sh
     git remote add upstream https://github.com/freeCodeCamp/chapter.git
     ```
 
-3. Ensure the configuration looks correct:
+4. Ensure the _origin_ and _upstream_ configuration is correct:
 
     ```sh
     git remote -v
     ```
 
     The output should look something like below:
-    ```sh
-    origin    https://github.com/YOUR_USER_NAME/chapter.git (fetch)
-    origin    https://github.com/YOUR_USER_NAME/chapter.git (push)
-    upstream    https://github.com/freeCodeCamp/chapter.git (fetch)
-    upstream    https://github.com/freeCodeCamp/chapter.git (push)
-    ```
+
+        origin    https://github.com/YOUR_USER_NAME/chapter.git (fetch)
+        origin    https://github.com/YOUR_USER_NAME/chapter.git (push)
+        upstream    https://github.com/freeCodeCamp/chapter.git (fetch)
+        upstream    https://github.com/freeCodeCamp/chapter.git (push)
 
 </details>
 
@@ -92,7 +93,7 @@ You need a reference from your local copy to the `upstream` repository in additi
 
 It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
-If you want to proceed immeditely with running the client, database, and server, then follow the s in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
+If you want to proceed immeditely with running the client, database, and server, then follow the steps in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
 
 </details>
 
@@ -100,28 +101,27 @@ If you want to proceed immeditely with running the client, database, and server,
 
 You are almost ready to make changes to files, but before that you should **always** follow these steps:
 
-1. Validate that you are on the `master` branch
+1. Validate that you are on the _master_ branch
 
     ```sh
     git status
     ```
 
     You should get an output like this:
-    ```sh
-    On branch master
-    Your branch is up-to-date with 'origin/master'.
+    
+        On branch master
+        Your branch is up-to-date with 'origin/master'.
+        nothing to commit, working directory clean
 
-    nothing to commit, working directory clean
-    ```
+    If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout _master_:
 
-    If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout `master`:
     ```sh
     git checkout master
     ```
 
-2. Sync the latest changes from the chapter upstream `master` branch to your local master branch. This is very important to avoid conflicts later.
+2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things synchronized and avoid "merge conflicts".
 
-    > **Note:** If you have any outstanding Pull Request that you made from the `master` branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
+    > Note: If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
 
     This step **will sync the latest changes** from the main repository of chapter.
 
@@ -149,48 +149,47 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 3. Create a fresh new branch
 
-    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the `master` branch. This will soil your copy of chapter and you may have to start over with a fresh clone or fork.
+    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the _master_ branch. This will soil your copy of **_Chapter_** and you may have to start over with a fresh clone or fork.
 
-    Check that you are on `master` as explained previously, and branch off from there by typing:
+    Check that you are on _master_ as explained previously, and branch off from there by typing:
     ```sh
     git checkout -b fix/update-readme
     ```
 
-    Your branch name should start with `fix/`, `feat/`, `docs/`, etc. Avoid using issue numbers in branches. Keep them short, meaningful and unique.
+    Your branch name should start with _fix/_, _feat/_, _docs/_, etc. Avoid using issue numbers in branches. Keep them short, meaningful and unique.
 
     Some examples of good branch names are:
-    ```md
-    fix/update-nav-links
-    fix/sign-in
-    docs/typo-in-readme
-    feat/sponsors
-    ```
 
-4. Edit files and write code on your favorite editor. Then check and confirm the files you are updating:
+    * fix/update-nav-links
+    * fix/sign-in
+    * docs/typo-in-readme
+    * feat/sponsors
+
+4. Edit files and write code on your preferred code editor, such as [VS Code](https://code.visualstudio.com/).
+
+    Then, check and confirm the files you are updating:
 
     ```sh
     git status
     ```
 
-    This should show a list of `unstaged` files that you have edited.
-    ```sh
-    On branch feat/documentation
-    Your branch is up to date with 'upstream/feat/documentation'.
+    This should show a list of _unstaged_ files that you have edited.
 
-    Changes not staged for commit:
-    (use "git add/rm <file>..." to update what will be committed)
-    (use "git checkout -- <file>..." to discard changes in working directory)
+        On branch feat/documentation
+        Your branch is up to date with 'upstream/feat/documentation'.
+
+        Changes not staged for commit:
+        (use "git add/rm <file>..." to update what will be committed)
+        (use "git checkout -- <file>..." to discard changes in working directory)
 
         modified:   CONTRIBUTING.md
         modified:   README.md
-    ...
-    ```
+        ...
 
 5. Test your code **Always!** 
 
-- If you started the application using the _Docker Mode_, then tests are run using `NODE_ENV=test docker-compose exec app npm run test` OR if you want to use the "watch" mode run `NODE_ENV=test docker-compose exec app npm run test:watch`
-- If you started the application using the _Manual Mode_ (without Docker), then tests are run using
-`npm run test` OR if you want to use the "watch" mode run `npm run test:watch`
+    * If you started the application using the _Docker Mode_, then tests are run using `NODE_ENV=test docker-compose exec app npm run test` OR if you want to use the "watch" mode run `NODE_ENV=test docker-compose exec app npm run test:watch`
+    * If you started the application using the _Manual Mode_ (without Docker), then tests are run using `npm run test` OR if you want to use the "watch" mode run `npm run test:watch`
 
 6. Stage the changes and make a commit
 
@@ -200,7 +199,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     git add path/to/my/changed/file.ext
     ```
 
-    Or you can add all the `unstaged` files to the staging area using the below handy command:
+    Or, you can add all the _unstaged_ files to the staging area using the below handy command:
 
     ```sh
     git add .
@@ -213,16 +212,15 @@ You are almost ready to make changes to files, but before that you should **alwa
     ```
 
     Output:
-    ```sh
-    On branch feat/documentation
-    Your branch is up to date with 'upstream/feat/documentation'.
 
-    Changes to be committed:
-    (use "git reset HEAD <file>..." to unstage)
+        On branch feat/documentation
+        Your branch is up to date with 'upstream/feat/documentation'.
+
+        Changes to be committed:
+        (use "git reset HEAD <file>..." to unstage)
 
         modified:   CONTRIBUTING.md
         modified:   README.md
-    ```
 
     Now, you can commit your changes with a short message like so:
 
@@ -234,11 +232,10 @@ You are almost ready to make changes to files, but before that you should **alwa
 
     Some examples of conventional commit messages are:
 
-    ```md
-    fix: update API routes
-    feat: RSVP event
-    fix(docs): update database schema image
-    ```
+    * fix: update API routes
+    * feat: RSVP event
+    * fix(docs): update database schema image
+
     Keep your commit messages short. You can always add additional information in the description of the commit message.
 
 7. Next, you can push your changes to your fork.
@@ -247,7 +244,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     git push origin branch-name-here
     ```
 
-    For example if the name of your branch is `fix/signin` then your command should be:
+    For example if the name of your branch is _fix/signin_ then your command should be:
     ```sh
     git push origin fix/signin
     ```
@@ -257,26 +254,26 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
 
-`fix/feat/chore/refactor/docs/perf (scope): PR Title`
+_fix/feat/chore/refactor/docs/perf (scope): PR Title_
 
-An example is `feat(client): night mode`.
+An example is _feat(client): night mode_.
 
 | Scope | Documentation |
 |---|---|
-| `api` | For Pull Requests making changes to the APIs, routes and its architecture |
-| `db` | For Pull Requests making changes related to database |
-| `client` | For Pull Requests making changes to client platform logic or user interface |
-| `docs` | For Pull Requests making changes to the project's documentation |
+| _api_ | For Pull Requests making changes to the APIs, routes and its architecture |
+| _db_ | For Pull Requests making changes related to database |
+| _client_ | For Pull Requests making changes to client platform logic or user interface |
+| _docs_ | For Pull Requests making changes to the project's documentation |
 
-1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on `Compare and Pull Request`.
+1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
 
     ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, `master` branch.
+2. By default, all pull requests should be against the **_Chapter_** main repo, _master_ branch.
 
     ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
-3. Submit the pull request from your branch to **_Chapter's_** `master` branch.
+3. Submit the pull request from your branch to **_Chapter's_** _master_ branch.
 
 4. In the body of your PR include a more detailed summary of the changes you made and why.
 
@@ -285,29 +282,32 @@ An example is `feat(client): night mode`.
     - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
 
     - If the PR is meant to fix an existing bug/issue then, at the end of
-      your PR's description, append the keyword `closes` and #xxxx (where xxxx
-      is the issue number). Example: `closes #1337`. This tells GitHub to
+      your PR's description, append the keyword _closes_ and #xxxx (where xxxx
+      is the issue number). Example: _closes #1337_. This tells GitHub to
       automatically close the existing issue, if the PR is accepted and merged.
 
 You have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
-Prerequisite: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
+**Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary>Step 1 - Install Node and Run npx</summary>
+<details><summary>Step 1 - Install Node.js and Run npx</summary>
+ 
+**Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
+> Note: Close and re-open your terminal after the installation finishes.
 
-You will need Node.js installed on your host operating system.
-
-Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download/).
-
-Now check that you have:
+Ensure the Node.js tools are installed:
 
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
 
 Run `npx recursive-install` to install all of the necessary dependencies.
 
+This step will **automatically** read and process the _package.json_ file. Most notably it:
+* Downloads all Node package dependencies to the _node_modules_ sub-directory
+* Creates the [_.env_ configuration file](#env-configuration-file) if one does not exist.
+    > Note: this is done "magically" via the _postinstall_ hook.
 </details>
     
 <details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
@@ -321,55 +321,49 @@ Based on your experience or preference, decide between the two options:
 
 ## Docker Mode
 
-Follow the [Get Docker](https://docs.docker.com/get-docker/) instructions to download & install the required tools for your host operating system:
-* Docker Desktop (Windows and Mac)
-* Docker Engine (Linux) and Docker Compose
-
-You can find more resources on Docker here:
-* [Docker: What and Why](https://stackoverflow.com/questions/28089344/docker-what-is-it-and-what-is-the-purpose)
-* [Docker Lessons on KataCoda](https://www.katacoda.com/learn?q=docker)
-* [Play with Docker Classroom](https://training.play-with-docker.com/)
+**Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system:
+* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+    > Note: Close and re-open your terminal after the installation finishes.
+* Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
+* Linux
+    * [Docker Engine](https://docs.docker.com/engine/install/#server)
+    * [Docker Compose](https://docs.docker.com/compose/install/)
 
 Ensure the Docker tools are installed:
-* For Windows & Mac, check Docker Desktop 
-* For Linux
-  * Docker Engine using `docker --version` and it should output something like _Docker version 19.03.13..._
-  * Docker Compose using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
+* _Docker_ using `docker --version` and it should output something like _Docker version 19.03.13..._
+* _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure `IS_DOCKER=TRUE` is set in the _.env_ file in your copy's root directory.
+Make sure _IS_DOCKER=TRUE_ is set in [_.env_](#env-configuration-file).
 
-Run Docker Compose (`docker-compose up` on Linux) from the root project directory and wait for the successful output as shown in the following example. Note: this could take minutes for each line to appear.
+Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example.
+> Note: This could take minutes for each line to appear.
 
-> db_1      | ... LOG:  database system is ready to accept connections
-> 
-> 
-> client_1  | ready - started server on http://localhost:3000
-> 
-> 
-> app_1     | Listening on http://localhost:5000/graphql
+    db_1      | ... LOG:  database system is ready to accept connections
+    client_1  | ready - started server on http://localhost:3000
+    app_1     | Listening on http://localhost:5000/graphql
 
-Once Docker is successfully running:
-* The server will automatically restart anytime you save a `.ts` or `.js` file within the `server/` directory.
+Once Docker is running:
+* The server will automatically restart anytime you save a _.ts_ or _.js_ file within the _server/_ directory.
 * You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-* If you, or someone else via a commit, updates `Dockerfile` or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+* If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+
+Proceed to the **Prepare the Database for Development** step, below.
 
 ## Manual Mode
 
-With this method you will manually manage the client-server, PostgreSQL database, and API server.
+This is a much lighter development footprint than _Docker Mode_, but you will need to manually manage the client-server, database, and API server.
 
-This is a much lighter development footprint than Docker, but you need to run your own local PostgreSQL database.
+**Prerequisite**: PostgreSQL must exist and be [configured](#database).
 
-If you don't want to run PostgreSQL locally, then you can use a service like [ElephantSQL](https://www.elephantsql.com/).
-
-[Download and Install PostgreSQL](https://www.postgresql.org/download/). Then create a database, add the DB name and credentials to _.env_. If using remote database change `DB_URL` in _.env_ to the URL provided by your remote database provider.
-
-Make sure to set `IS_DOCKER=` to blank in the _.env_ file in your project's root directory. 
+Set _IS_DOCKER=_ to blank in [_.env_](#env-configuration-file). 
 
 Run `npm run both` to start the api-server and client-server:
+
+Proceed to the **Prepare the Database for Development** step, below.
 </details>
 
 <details><summary>Step 3 - Prepare the Database for Development</summary>
-The database may be empty or need to be recreated to get any structureal changes made by other developers.
+The database may be empty or need to be recreated to get schema changes.
     
 See the [Initializing the Database](#initializing-the-database) section, below, before continuing to the next step in this section.
 </details>
@@ -377,8 +371,8 @@ See the [Initializing the Database](#initializing-the-database) section, below, 
 <details><summary>Step 4 - View the Running Application</summary>
 Once the app has started you should be able to pull up these URLs in your web browser:
 
-* Main client website - `http//:localhost:3000`
-* GraphQL Playground - `http://localhost:5000/graphql`
+* Main Client Website - http://localhost:3000
+* GraphQL Playground - http://localhost:5000/graphql
 
 </details>
 
@@ -427,9 +421,23 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 * If you are already [**Running the Application**](#running-the-application) at http://localhost:5000/graphql
 * If you don't have a running app at [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
 
+## .env Configuration File
+
+An important, local _.env_ configuration file exists in the root code directory. It's used to store [environment variables](https://en.wikipedia.org/wiki/Environment_variable) and their associated values.
+
+Any changes to _.env_ **will not and should not** be committed into your _origin_ fork or the _Chapter_ _upstream_. Plus, a _.gitignore_ rule exists to prevent it. Do not remove this rule or otherwise attempt to commit your _.env_ to any Git repository.
+
+Keeping your _.env_ out of the repositories is important because the file will contain "secrets" (usernames, passwords, API keys) and other values which are specific to you and your local development environment. 
+
+The _.env_ file is automatically created via the [**Running the Application**](#running-the-application) section when you follow **Step 1 - Install Node and Run npx**. 
+
+This configuration pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) and is also popular in other frameworks and programming languages.
+
+The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
+
 ## Database
 
-[PostgreSQL](https://www.postgresql.org/) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
+[PostgreSQL](https://www.postgresql.org/download) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
 
 ### Schema
 Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](https://freecodecamp.github.io/chapter/relationships.html) are hosted online on a GitHub pages domain.
@@ -437,14 +445,13 @@ Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](
 This is [currently manually generated and updated](https://github.com/freeCodeCamp/chapter/issues/54#issuecomment-799653569) on the _gh-pages_ branch by running [SchemaSpy](http://schemaspy.org/).
 
 ### Username and Password
-* These are defined in your _.env_ configuration file in the project's root directory.
-* The _.env_ is unique to your copy and should not be committed to any repository or branch. 
-* For security, it's ideal to change the username and password. However, if you don't change them, the default username and password will be as they are set in _.env.example_
+* Set your specific values in [_.env_](#env-configuration-file).
+* For security, it's ideal to change the username and password from the default values.
 
 ### Host and Port
 * In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running PostgreSQL locally for other projects.
 * In **Manual Mode**, the PostgreSQL port will be as you configured it, the default being Host: _localhost_ and Port: _5432_
-* If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in your _.env_ file.
+* If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in [_.env_](#env-configuration-file).
 
 ### Admin Tools 
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
@@ -452,14 +459,14 @@ This is [currently manually generated and updated](https://github.com/freeCodeCa
   * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
   * In **Manual Mode**, `psql -h localhost -p 5432 -U postgres` 
 
-### Using TypeORM and Yarn
+### Using TypeORM and NPM
 
 Our DB commands closely mirror their Rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
-`yarn db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
-`yarn db:migrate` -> `rake db:migrate`
-`yarn db:seed` -> `rake db:seed`
-`yarn db:reset` -> `rake db:reset`
+`npm db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
+`npm db:migrate` -> `rake db:migrate`
+`npm db:seed` -> `rake db:seed`
+`npm db:reset` -> `rake db:reset`
 
 #### Initializing the Database
 
@@ -468,41 +475,41 @@ If you're starting the application for the first time, or syncronizing with the 
 * migrate the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-The `yarn db:reset` command will do all three tasks: drop, migrate, and seed.
+The `npm db:reset` command will do all three tasks: drop, migrate, and seed.
 
 If you prefer to run some or all of the steps manually, then they are:
-* `yarn db:drop`
-* `yarn db:migrate`
-* `yarn db:seed`
+* `npm db:drop`
+* `npm db:migrate`
+* `npm db:seed`
 
 #### Creating a New Model / Entity
 
 `npm run typeorm entity:create -- --name=ModelName`
 
-This would create `ModelName.ts` in `server/models`
+This would create _ModelName.ts_ in _server/models_
 
 To keep everything DRY, add `extends BaseModel` to the class and import it from 'server/models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
 
-You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from `.ts` files, so we run it with `ts-node` and our custom server config (check package.json)
+You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from _.ts_ files, so we run it with `ts-node` and our custom server config (check package.json)
 
 #### Creating a Migration
 
 After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
 
-`yarn db:generate MIGRATION_NAME`
+`npm db:generate MIGRATION_NAME`
 
 Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
 
-After that, check the generated SQL in `db/migrations/date-MigrationName.ts`
+After that, check the generated SQL in _db/migrations/date-MigrationName.ts_
 
 #### Running Migrations and Checking They Were Run
 
 You can manualy run them by doing
-`yarn db:migrate`
+`npm db:migrate`
 
 and then check if it happened correctly
 
-`yarn typeorm migration:show`
+`npm typeorm migration:show`
 
 it should ouput something like
 

@@ -1,0 +1,54 @@
+.event-card {
+    
+  .title {
+      justify-content: space-between;
+  }
+
+  .icon-group {
+      align-items: center;
+      margin: 1em 0 !important;
+      svg {
+          margin-right: .5em;
+      }
+  }
+
+  .venue {
+      .name {
+          display: block;
+      }
+  }
+
+  .tags {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 6px -3px;
+      > div {
+          margin: 2px 3px;
+      }
+  }
+
+  .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      margin: 0 -10px;
+      > * {
+          margin: 0 10px;
+      }
+  }
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tab-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .5s ease-in-out;
+  &.open {
+    max-height: 1000px;
+  }
+}

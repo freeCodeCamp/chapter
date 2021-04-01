@@ -1,33 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core';
 import { Tag } from '../../../../generated';
 
-const useStyles = makeStyles({
-  tag: {
-    borderRadius: '8px',
-    padding: '4px 12px',
-    backgroundColor: '#22c98c',
-    margin: '8px 2px',
-    color: '#fff',
-    fontWeight: 600,
-  },
-  tagsContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-});
+import Chip from '@material-ui/core/Chip';
 
 const Tags: React.FC<{ tags?: Pick<Tag, 'name' | 'id'>[] }> = ({ tags }) => {
-  const style = useStyles();
-
   return tags ? (
-    <div className={style.tagsContainer}>
+    <>
       {tags.map(tag => (
-        <div className={style.tag} key={`tag-${tag.id}`}>
-          {tag.name}
-        </div>
+        <Chip key={`tag-${tag.id}`} label={tag.name} size="small" />
       ))}
-    </div>
+    </>
   ) : null;
 };
 

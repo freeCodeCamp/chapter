@@ -22,6 +22,18 @@ export const fields: IField[] = [
     placeholder: '',
   },
   {
+    key: 'url',
+    type: 'text',
+    label: 'Url',
+    placeholder: '',
+  },
+  {
+    key: 'video_url',
+    type: 'text',
+    label: 'Video Url',
+    placeholder: '',
+  },
+  {
     key: 'capacity',
     type: 'number',
     label: 'Capacity',
@@ -52,11 +64,13 @@ export const fields: IField[] = [
 export interface IEventFormData {
   name: string;
   description: string;
+  url?: string | null;
+  video_url?: string | null;
   capacity: number;
   tags: string;
   start_at: string;
   ends_at: string;
-  venueId: number;
+  venueId?: number | null;
 }
 
 export type IEventData = Pick<
@@ -65,7 +79,7 @@ export type IEventData = Pick<
 > & {
   venueId?: number;
   tags: { name: string }[];
-  venue: Omit<Venue, 'created_at' | 'updated_at' | 'events'>;
+  venue?: Omit<Venue, 'created_at' | 'updated_at' | 'events'> | null;
 };
 
 export interface IEventFormProps {

@@ -433,6 +433,72 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "katien",
+      "name": "Katie Noland",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8015883?v=4",
+      "profile": "https://github.com/katien",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "Ryuno-Ki",
+      "name": "André Jaenisch",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3097194?v=4",
+      "profile": "https://jaenis.ch/",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    },
+    {
+      "login": "tomnoland",
+      "name": "tomnoland",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4054383?v=4",
+      "profile": "https://github.com/tomnoland",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "pdotsani",
+      "name": "Patrick San Juan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5272252?v=4",
+      "profile": "https://github.com/pdotsani",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dtwilliams10",
+      "name": "Tyler Williams",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20099292?v=4",
+      "profile": "https://github.com/dtwilliams10",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "ojeytonwilliams",
+      "name": "Oliver Eyton-Williams",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/15801806?v=4",
+      "profile": "https://github.com/ojeytonwilliams",
+      "contributions": [
+        "infra",
+        "doc"
+      ]
+    },
+    {
+      "login": "nhcarrigan",
+      "name": "Nicholas Carrigan (he/him)",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63889819?v=4",
+      "profile": "http://www.nhcarrigan.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

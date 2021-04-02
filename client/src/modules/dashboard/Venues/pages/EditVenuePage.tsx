@@ -37,7 +37,7 @@ export const EditVenuePage: NextPage = () => {
       await updateVenue({
         variables: { id, data: { ...data, latitude, longitude } },
       });
-      router.replace('/dashboard/venues');
+      await router.push('/dashboard/venues');
     } catch (err) {
       console.error(err);
     } finally {

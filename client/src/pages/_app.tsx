@@ -8,8 +8,11 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import theme from '../styles/theme';
 import PageLayout from '../components/PageLayout';
 
+const serverUri =
+  process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
+
 const client = new ApolloClient({
-  uri: 'http://localhost:5000/graphql',
+  uri: `${serverUri}/graphql`,
   cache: new InMemoryCache(),
 });
 

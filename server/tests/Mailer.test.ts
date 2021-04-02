@@ -9,7 +9,7 @@ import Utilities from 'server/util/Utilities';
 chai.use(sinonChai);
 
 beforeEach(() => {
-  sinon.spy(console, 'warn');
+  sinon.stub(console, 'warn');
 });
 
 afterEach(() => {

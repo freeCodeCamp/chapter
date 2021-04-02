@@ -29,7 +29,7 @@ const EventForm: React.FC<IEventFormProps> = props => {
     () => ({
       ...(data || {}),
       tags: (data?.tags || []).map(t => t.name).join(', '),
-      venue: data?.venue.id,
+      venue: data?.venue?.id,
     }),
     [],
   );
@@ -71,10 +71,10 @@ const EventForm: React.FC<IEventFormProps> = props => {
                     {venue.name}
                   </MenuItem>
                 ))}
+                <MenuItem>None</MenuItem>
               </Select>
             }
             name="venueId"
-            rules={{ required: 'this is required' }}
             control={control}
           />
         </FormControl>

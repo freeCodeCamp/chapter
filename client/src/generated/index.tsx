@@ -63,16 +63,26 @@ export type Event = {
   updated_at: Scalars['DateTime'];
   name: Scalars['String'];
   description: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   sponsors: Array<EventSponsor>;
-  venue: Venue;
+  venue?: Maybe<Venue>;
   chapter: Chapter;
   rsvps: Array<Rsvp>;
   tags?: Maybe<Array<Tag>>;
 };
+
+/** All possible venue types for an event */
+export enum VenueType {
+  Physical = 'Physical',
+  Online = 'Online',
+  PhysicalAndOnline = 'PhysicalAndOnline',
+}
 
 export type EventSponsor = {
   __typename?: 'EventSponsor';
@@ -280,16 +290,22 @@ export type UpdateVenueInputs = {
 export type CreateEventInputs = {
   name: Scalars['String'];
   description: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
+  venue_type?: Maybe<VenueType>;
   start_at: Scalars['DateTime'];
   ends_at: Scalars['DateTime'];
   capacity: Scalars['Float'];
-  venueId: Scalars['Int'];
+  venueId?: Maybe<Scalars['Int']>;
   chapterId: Scalars['Int'];
 };
 
 export type UpdateEventInputs = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
+  venue_type?: Maybe<VenueType>;
   start_at?: Maybe<Scalars['DateTime']>;
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
@@ -302,7 +318,13 @@ export type EventsQuery = { __typename?: 'Query' } & {
   events: Array<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'canceled' | 'description' | 'capacity'
+      | 'id'
+      | 'name'
+      | 'canceled'
+      | 'description'
+      | 'url'
+      | 'video_url'
+      | 'capacity'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
       }
@@ -320,21 +342,25 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'id'
       | 'name'
       | 'description'
+      | 'url'
+      | 'video_url'
       | 'canceled'
       | 'capacity'
       | 'start_at'
       | 'ends_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        venue: { __typename?: 'Venue' } & Pick<
-          Venue,
-          | 'id'
-          | 'name'
-          | 'street_address'
-          | 'city'
-          | 'postal_code'
-          | 'region'
-          | 'country'
+        venue?: Maybe<
+          { __typename?: 'Venue' } & Pick<
+            Venue,
+            | 'id'
+            | 'name'
+            | 'street_address'
+            | 'city'
+            | 'postal_code'
+            | 'region'
+            | 'country'
+          >
         >;
         rsvps: Array<
           { __typename?: 'Rsvp' } & Pick<Rsvp, 'id' | 'on_waitlist'> & {
@@ -356,10 +382,17 @@ export type EventVenuesQuery = { __typename?: 'Query' } & {
   event?: Maybe<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'description' | 'capacity' | 'start_at' | 'ends_at'
+      | 'id'
+      | 'name'
+      | 'description'
+      | 'url'
+      | 'video_url'
+      | 'capacity'
+      | 'start_at'
+      | 'ends_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        venue: { __typename?: 'Venue' } & Pick<Venue, 'id'>;
+        venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id'>>;
       }
   >;
   venues: Array<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;
@@ -372,7 +405,33 @@ export type CreateEventMutationVariables = Exact<{
 export type CreateEventMutation = { __typename?: 'Mutation' } & {
   createEvent: { __typename?: 'Event' } & Pick<
     Event,
-    'id' | 'name' | 'canceled' | 'description' | 'capacity'
+    | 'id'
+    | 'name'
+    | 'canceled'
+    | 'description'
+    | 'url'
+    | 'video_url'
+    | 'capacity'
+  > & {
+      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+    };
+};
+
+export type UpdateEventMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: UpdateEventInputs;
+}>;
+
+export type UpdateEventMutation = { __typename?: 'Mutation' } & {
+  updateEvent: { __typename?: 'Event' } & Pick<
+    Event,
+    | 'id'
+    | 'name'
+    | 'canceled'
+    | 'description'
+    | 'url'
+    | 'video_url'
+    | 'capacity'
   > & {
       tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
     };
@@ -489,6 +548,8 @@ export const EventsDocument = gql`
       name
       canceled
       description
+      url
+      video_url
       capacity
       tags {
         id
@@ -547,6 +608,8 @@ export const EventDocument = gql`
       id
       name
       description
+      url
+      video_url
       canceled
       capacity
       start_at
@@ -627,6 +690,8 @@ export const EventVenuesDocument = gql`
       id
       name
       description
+      url
+      video_url
       capacity
       start_at
       ends_at
@@ -698,6 +763,8 @@ export const CreateEventDocument = gql`
       name
       canceled
       description
+      url
+      video_url
       capacity
       tags {
         id
@@ -748,6 +815,67 @@ export type CreateEventMutationResult = ApolloReactCommon.MutationResult<
 export type CreateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateEventMutation,
   CreateEventMutationVariables
+>;
+export const UpdateEventDocument = gql`
+  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
+    updateEvent(id: $id, data: $data) {
+      id
+      name
+      canceled
+      description
+      url
+      video_url
+      capacity
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
+export type UpdateEventMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateEventMutation,
+  UpdateEventMutationVariables
+>;
+
+/**
+ * __useUpdateEventMutation__
+ *
+ * To run a mutation, you first call `useUpdateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEventMutation, { data, loading, error }] = useUpdateEventMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateEventMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateEventMutation,
+    UpdateEventMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateEventMutation,
+    UpdateEventMutationVariables
+  >(UpdateEventDocument, baseOptions);
+}
+export type UpdateEventMutationHookResult = ReturnType<
+  typeof useUpdateEventMutation
+>;
+export type UpdateEventMutationResult = ApolloReactCommon.MutationResult<
+  UpdateEventMutation
+>;
+export type UpdateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateEventMutation,
+  UpdateEventMutationVariables
 >;
 export const CancelEventDocument = gql`
   mutation cancelEvent($id: Int!) {

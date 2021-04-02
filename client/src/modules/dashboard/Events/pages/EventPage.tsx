@@ -24,7 +24,7 @@ export const EventPage: NextPage = () => {
             {loading
               ? 'Loading...'
               : !error
-              ? 'Cant find event :('
+              ? "Can't find event :("
               : 'Error...'}
           </h1>
         </Skeleton>
@@ -48,6 +48,17 @@ export const EventPage: NextPage = () => {
             <Typography variant="body2" color="textSecondary" component="p">
               {data.event.description}
             </Typography>
+            {data.event.url && (
+              <Typography>
+                Event Url: <a href={data.event.url}>{data.event.url}</a>
+              </Typography>
+            )}
+            {data.event.video_url && (
+              <Typography>
+                Video Url:{' '}
+                <a href={data.event.video_url}>{data.event.video_url}</a>
+              </Typography>
+            )}
             <Typography variant="body2" color="textSecondary" component="p">
               {data.event.capacity}
             </Typography>
@@ -57,10 +68,15 @@ export const EventPage: NextPage = () => {
               event={data.event}
               onDelete={() => router.replace('/dashboard/events')}
             />
-
-            <h2>Venue:</h2>
-            <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
-            <h4>{getLocationString(data.event.venue, true)}</h4>
+            {data.event.venue ? (
+              <>
+                <h2>Venue:</h2>
+                <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
+                <h4>{getLocationString(data.event.venue, true)}</h4>
+              </>
+            ) : (
+              <h2>Venue: Online</h2>
+            )}
           </ProgressCardContent>
         </Card>
         <Card style={{ marginTop: '12px' }}>

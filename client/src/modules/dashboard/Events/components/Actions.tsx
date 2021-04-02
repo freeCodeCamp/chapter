@@ -49,7 +49,9 @@ const Actions: React.FC<IActionsProps> = ({ event, onDelete }) => {
         href={`/dashboard/events/[id]/edit`}
         as={`/dashboard/events/${event.id}/edit`}
       >
-        <a style={{ marginLeft: '10px' }}>Edit</a>
+        <Button>
+          <a style={{ marginLeft: '10px' }}>Edit</a>
+        </Button>
       </Link>
     </>
   );

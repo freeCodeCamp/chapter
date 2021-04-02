@@ -7,7 +7,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
-    "module": "esnext",
+    "baseUrl": "./src/",
+    "paths": {     
+     "src/*": [
+      "./src/*"
+    ],},
+    "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,

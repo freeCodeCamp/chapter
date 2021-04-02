@@ -2,9 +2,20 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
+    "baseUrl": ".",
+    "paths": {
+      "server/*": [
+        "./server/*"
+      ],
+      "db/*": [
+        "./db/*"
+      ],
+      "types/*": [
+        "./types/*"
+      ],
+    },
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,

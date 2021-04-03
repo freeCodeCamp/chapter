@@ -11,7 +11,7 @@ export class ValidateEmailListConstraint
   validate(emailList: string[]) {
     const regex = /^[\w.%+\-]+@[\w.\-]+\.[A-Za-z]{2,6}$/;
     for (let i = 0; i < emailList.length; i++) {
-      if (regex.test(emailList[i]) === false) return false;
+      if (!regex.test(emailList[i])) return false;
     }
     return true;
   }

@@ -9,7 +9,7 @@ import {
 export class FindDuplicateEmailsConstraint
   implements ValidatorConstraintInterface {
   validate(emailList: string[]) {
-    let checkedEmails = {};
+    const checkedEmails = {};
     for (let i = 0; i <= emailList.length; i++) {
       if (emailList[i] in checkedEmails) {
         return false;

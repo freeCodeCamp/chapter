@@ -30,7 +30,9 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    expect(email.errors[0].message).to.equal('Argument Validation Error');
+    expect(
+      email.errors[0].originalError.validationErrors[0].constraints.maxLength,
+    ).to.equal('subject must be shorter than or equal to 10 characters');
   });
 
   it('Should reject the mutation call when email recipient list is empty', async () => {
@@ -47,7 +49,10 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    expect(email.errors[0].message).to.equal('Argument Validation Error');
+    expect(
+      email.errors[0].originalError.validationErrors[0].constraints
+        .IsListEmptyConstraint,
+    ).to.equal('email list cannot be empty');
   });
 
   it('Should reject the mutation call when there is an improperly formatted email in the list', async () => {
@@ -64,7 +69,10 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    expect(email.errors[0].message).to.equal('Argument Validation Error');
+    expect(
+      email.errors[0].originalError.validationErrors[0].constraints
+        .ValidateEmailListConstraint,
+    ).to.equal('list contains invalid email');
   });
 
   it('Should reject the mutation call when a duplicate email address is found', async () => {
@@ -82,7 +90,10 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    expect(email.errors[0].message).to.equal('Argument Validation Error');
+    expect(
+      email.errors[0].originalError.validationErrors[0].constraints
+        .FindDuplicateEmailsConstraint,
+    ).to.equal('list contains one or more duplicate emails');
   });
 
   it('Should call the mutation and return an email object when all inputs pass validation', async () => {

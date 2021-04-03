@@ -60,7 +60,6 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
           <Typography variant="body2" color="textSecondary" component="p">
             {event.capacity}
           </Typography>
-          )}
           <Typography variant="body2" color="textSecondary" component="p">
             {event.description}
           </Typography>

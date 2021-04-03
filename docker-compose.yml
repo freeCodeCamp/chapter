@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     build: .
-    command: yarn dev
+    command: npm run dev
     working_dir: /usr/chapter
     environment:
       - DB_URL=db
@@ -26,7 +26,7 @@ services:
     build: ./client
     ports:
       - "3000:3000"
-    command: yarn dev
+    command: npm run dev
     working_dir: /usr/chapter/client
     volumes:
       - ./client:/usr/chapter/client

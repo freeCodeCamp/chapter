@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-const faker = require('faker');
+import faker from 'faker';
 import { callSchema } from '../../testUtils/callSchema';
 
 const emailMutation = `

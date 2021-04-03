@@ -7,7 +7,7 @@ import {
 
 @ValidatorConstraint({ async: true })
 export class IsListEmptyConstraint implements ValidatorConstraintInterface {
-  validate(emailList: any) {
+  validate(emailList: string[]) {
     return emailList.length === 0 ? false : true;
   }
 }

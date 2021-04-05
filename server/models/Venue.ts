@@ -3,7 +3,7 @@ import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { Field, ObjectType, Float } from 'type-graphql';
 
-interface IVenueProps {
+interface VenueProps {
   name: string;
   events?: Event[];
   street_address?: string;
@@ -57,7 +57,7 @@ export class Venue extends BaseModel {
   @Column({ type: 'float', nullable: true })
   longitude?: number;
 
-  constructor(params: IVenueProps) {
+  constructor(params: VenueProps) {
     super();
     if (params) {
       this.name = params.name;

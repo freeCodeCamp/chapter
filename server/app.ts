@@ -11,7 +11,7 @@ import { ApolloServer } from 'apollo-server-express';
 config({ path: join(__dirname, '../.env') });
 
 import { resolvers } from './controllers';
-import { IGQLCtx } from './ts/gql';
+import { GQLCtx } from './ts/gql';
 import { initDB } from './db';
 
 // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -32,7 +32,7 @@ export const main = async (app: Express) => {
   const schema = await buildSchema({ resolvers, validate: false });
   const server = new ApolloServer({
     schema,
-    context: ({ req, res }: { req: Request; res: Response }): IGQLCtx => ({
+    context: ({ req, res }: { req: Request; res: Response }): GQLCtx => ({
       req,
       res,
       // TODO: Handle user/sessions here

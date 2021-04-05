@@ -10,12 +10,12 @@ import {
 import useConfirm from '../../../../hooks/useConfirm';
 import { EVENT, EVENTS } from '../graphql/queries';
 
-interface IActionsProps {
+interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
   onDelete?: Function;
 }
 
-const Actions: React.FC<IActionsProps> = ({ event, onDelete }) => {
+const Actions: React.FC<ActionsProps> = ({ event, onDelete }) => {
   const [cancel] = useCancelEventMutation();
   const [remove] = useDeleteEventMutation();
 

@@ -1,14 +1,14 @@
 import { Event, Venue } from '../../../../generated';
 
-export interface IField {
-  key: keyof IEventFormData;
+export interface Field {
+  key: keyof EventFormData;
   label: string;
   placeholder?: string;
   type: string;
   defaultValue?: string;
 }
 
-export const fields: IField[] = [
+export const fields: Field[] = [
   {
     key: 'name',
     type: 'text',
@@ -61,7 +61,7 @@ export const fields: IField[] = [
   },
 ];
 
-export interface IEventFormData {
+export interface EventFormData {
   name: string;
   description: string;
   url?: string | null;
@@ -75,21 +75,21 @@ export interface IEventFormData {
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<IEventFormData, 'venueId' | 'tags'> | 'id'
+  keyof Omit<EventFormData, 'venueId' | 'tags'> | 'id'
 > & {
   venueId?: number;
   tags: { name: string }[];
   venue?: Omit<Venue, 'created_at' | 'updated_at' | 'events'> | null;
 };
 
-export interface IEventFormProps {
-  onSubmit: (data: IEventFormData) => void;
+export interface EventFormProps {
+  onSubmit: (data: EventFormData) => void;
   loading: boolean;
   data?: IEventData;
   submitText: string;
 }
 
-export const formatValue = (field: IField, store?: IEventData): any => {
+export const formatValue = (field: Field, store?: IEventData): any => {
   const { key } = field;
 
   if (!store || !Object.keys(store).includes(key)) {

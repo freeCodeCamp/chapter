@@ -15,7 +15,7 @@ export class SendEmailInputs {
   @FindDuplicateEmails({
     message: 'list contains one or more duplicate emails',
   })
-  to: [];
+  to: string[];
 
   @Field()
   @MaxLength(10)

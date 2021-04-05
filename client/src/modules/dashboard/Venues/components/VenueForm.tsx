@@ -56,7 +56,7 @@ const VenueForm: React.FC<VenueFormProps> = props => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       {fields.map(([name, required, number]) => (
-        <FormControl className={styles.item}>
+        <FormControl className={styles.item} key={name}>
           <Field
             {...{ control, name }}
             type={number ? 'number' : 'text'}

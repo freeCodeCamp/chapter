@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import faker from 'faker';
 import { callSchema } from '../../testUtils/callSchema';
+import longString from './longString';
 
 const emailMutation = `
   mutation Email($data: SendEmailInputs!) {
@@ -19,7 +20,7 @@ describe('Test sendEmail resolver', () => {
   it('Should reject the mutation call when subject field has exceeded MaxLength', async () => {
     const emailData = {
       to: [faker.internet.email(), faker.internet.email()],
-      subject: 'test subject',
+      subject: longString,
       html: 'test html',
     };
 
@@ -32,7 +33,7 @@ describe('Test sendEmail resolver', () => {
 
     expect(
       email.errors[0].originalError.validationErrors[0].constraints.maxLength,
-    ).to.equal('subject must be shorter than or equal to 10 characters');
+    ).to.equal('subject must be shorter than or equal to 998 characters');
   });
 
   it('Should reject the mutation call when email recipient list is empty', async () => {

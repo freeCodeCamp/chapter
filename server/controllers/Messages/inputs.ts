@@ -18,7 +18,7 @@ export class SendEmailInputs {
   to: string[];
 
   @Field()
-  @MaxLength(10)
+  @MaxLength(998)
   subject: string;
 
   @Field()

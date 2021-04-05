@@ -17,7 +17,7 @@ const setupRoles = async (
     const [banned, ...others] = users;
     const ban = new UserBan({ chapter, user: banned });
 
-    for (let user of others) {
+    for (const user of others) {
       const chapterUser = new UserChapterRole({
         chapterId: chapter.id,
         userId: user.id,

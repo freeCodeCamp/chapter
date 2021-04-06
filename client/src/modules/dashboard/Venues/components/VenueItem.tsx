@@ -6,7 +6,7 @@ import { Venue } from '../../../../generated';
 import { ProgressCardContent } from '../../../../components';
 import getLocationString from '../../../../helpers/getLocationString';
 
-interface IVenueItemProps {
+interface VenueItemProps {
   venue: Omit<Omit<Omit<Venue, 'events'>, 'created_at'>, 'updated_at'>;
   loading: boolean;
 }
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const VenueItem: React.FC<IVenueItemProps> = ({ venue, loading }) => {
+const VenueItem: React.FC<VenueItemProps> = ({ venue, loading }) => {
   const [allow, setAllow] = useState<boolean>(false);
   const styles = useStyles();
 

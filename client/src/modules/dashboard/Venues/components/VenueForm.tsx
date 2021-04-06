@@ -17,7 +17,7 @@ export interface VenueFormData {
   longitude?: number;
 }
 
-interface IVenueFormProps {
+interface VenueFormProps {
   loading: boolean;
   onSubmit: (data: VenueFormData) => Promise<void>;
   data?: VenueQuery;
@@ -40,7 +40,7 @@ const fields: Fields[] = [
   ['longitude', false, true],
 ];
 
-const VenueForm: React.FC<IVenueFormProps> = props => {
+const VenueForm: React.FC<VenueFormProps> = props => {
   const { loading, onSubmit, data, submitText } = props;
 
   const styles = useFormStyles();
@@ -56,7 +56,7 @@ const VenueForm: React.FC<IVenueFormProps> = props => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       {fields.map(([name, required, number]) => (
-        <FormControl className={styles.item}>
+        <FormControl className={styles.item} key={name}>
           <Field
             {...{ control, name }}
             type={number ? 'number' : 'text'}

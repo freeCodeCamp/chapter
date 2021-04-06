@@ -7,7 +7,7 @@ import { ProgressCardContent } from '../../../../components';
 import Tags from './Tag';
 import Actions from './Actions';
 
-interface IEventItemProps {
+interface EventItemProps {
   event: Pick<
     Event,
     | 'id'
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   },
 });
 
-const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
+const EventItem: React.FC<EventItemProps> = ({ loading, event }) => {
   const styles = useStyles();
 
   return (

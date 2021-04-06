@@ -1,10 +1,10 @@
-interface IHeaderLink {
+interface HeaderLink {
   name: string;
   label: string;
   href: string;
 }
 
-export const headerLinks: IHeaderLink[] = [
+export const headerLinks: HeaderLink[] = [
   { name: 'events', label: 'Events', href: '/events' },
   { name: 'chapters', label: 'Chapters', href: '/chapters' },
   { name: 'login', label: 'Login', href: '/login' },

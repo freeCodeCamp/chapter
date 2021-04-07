@@ -47,7 +47,7 @@
     "babel-plugin-transform-typescript-metadata": "^0.2.2",
     "class-validator": "^0.12.2",
     "cors": "^2.8.5",
-    "cross-fetch": "^3.0.6",
+    "cross-fetch": "^3.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
@@ -57,7 +57,7 @@
     "graphql": "^15.3.0",
     "is-docker": "^2.0.0",
     "morgan": "^1.9.1",
-    "next": "^9.5.5",
+    "next": "^9.5.1",
     "nodemailer": "^6.3.1",
     "pg": "^8.0.3",
     "pg-hstore": "^2.3.3",
@@ -68,7 +68,7 @@
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
     "type-graphql": "^1.0.0-rc.3",
-    "typeorm": "^0.2.28",
+    "typeorm": "^0.2.20",
     "typescript": "^3.9.7"
   },
   "devDependencies": {

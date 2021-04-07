@@ -31,7 +31,10 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       component="header"
       alignItems="center"
       spacing={2}
-      xs={12}
+      style={{
+        margin: 0,
+        width: '100%',
+      }}
     >
       <Link href="/">
         <Grid

@@ -1,6 +1,5 @@
-import { MaxLength } from 'class-validator';
+import { IsEmail, MaxLength } from 'class-validator';
 import { IsListEmpty } from './validators/isListEmpty';
-import { ValidateEmailList } from './validators/validateEmailList';
 import { FindDuplicateEmails } from './validators/findDuplicateEmails';
 import { InputType, Field } from 'type-graphql';
 
@@ -11,7 +10,7 @@ import { InputType, Field } from 'type-graphql';
 export class SendEmailInputs {
   @Field(() => [String])
   @IsListEmpty({ message: 'email list cannot be empty' })
-  @ValidateEmailList({ message: 'list contains invalid email' })
+  @IsEmail(undefined, { message: 'list contains invalid email', each: true })
   @FindDuplicateEmails({
     message: 'list contains one or more duplicate emails',
   })

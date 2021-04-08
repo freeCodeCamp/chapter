@@ -71,8 +71,7 @@ describe('Test sendEmail resolver', () => {
     });
 
     expect(
-      email.errors[0].originalError.validationErrors[0].constraints
-        .ValidateEmailListConstraint,
+      email.errors[0].originalError.validationErrors[0].constraints.isEmail,
     ).to.equal('list contains invalid email');
   });
 

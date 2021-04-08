@@ -44,13 +44,11 @@ const EventItem: React.FC<EventItemProps> = ({ loading, event }) => {
               </Typography>
             </a>
           </Link>
-
           {event.canceled && (
             <Typography variant="h5" color="error">
               Canceled
             </Typography>
           )}
-
           <Typography
             variant="body2"
             color="textSecondary"
@@ -59,11 +57,9 @@ const EventItem: React.FC<EventItemProps> = ({ loading, event }) => {
           >
             {event.description}
           </Typography>
-
           <Typography variant="body2" color="textSecondary" component="p">
             {event.capacity}
           </Typography>
-
           <Typography variant="body2" color="textSecondary" component="p">
             {event.description}
           </Typography>
@@ -80,9 +76,7 @@ const EventItem: React.FC<EventItemProps> = ({ loading, event }) => {
           <Typography variant="body2" color="textSecondary" component="p">
             {event.capacity}
           </Typography>
-
           <div>{event.tags && <Tags tags={event.tags} />}</div>
-
           <Actions event={event} />
         </Grid>
       </ProgressCardContent>

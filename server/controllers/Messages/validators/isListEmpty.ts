@@ -13,7 +13,7 @@ export class IsListEmptyConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsListEmpty(validationOptions?: ValidationOptions) {
-  return function(object: Object, propertyName: string) {
+  return function(object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

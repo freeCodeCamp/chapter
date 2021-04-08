@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import faker from 'faker';
-import { inspect } from 'util';
 import { callSchema } from '../../testUtils/callSchema';
 import longString from './longString';
 

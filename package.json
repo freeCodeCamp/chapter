@@ -108,7 +108,7 @@
     "jest": "26.6.3",
     "lint-staged": "9.5.0",
     "nodemon": "1.19.4",
-    "prettier": "1.19.1",
+    "prettier": "2.2.1",
     "sinon": "7.5.0",
     "sinon-chai": "3.6.0",
     "supertest": "4.0.2",

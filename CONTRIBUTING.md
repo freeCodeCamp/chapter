@@ -188,9 +188,11 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 5. Test your code **Always!** 
 
+    * Before starting the application confirm that `npm run lint` and then `npm run test` pass.  Fix all errors that do not pass.
     * If you started the application using the _Docker Mode_, then tests are run using `NODE_ENV=test docker-compose exec app npm run test` OR if you want to use the "watch" mode run `NODE_ENV=test docker-compose exec app npm run test:watch`
     * If you started the application using the _Manual Mode_ (without Docker), then tests are run using `npm run test` OR if you want to use the "watch" mode run `npm run test:watch`
-
+    * Project maintainers will not merge pull requests that fail to pass linting or tests.
+ 
 6. Stage the changes and make a commit
 
     In this step, you should only mark files that you have edited or added yourself. You can perform a reset and resolve files that you did not intend to change if needed.

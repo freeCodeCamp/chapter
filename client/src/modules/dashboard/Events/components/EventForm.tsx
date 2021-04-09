@@ -9,15 +9,15 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import {
-  IEventFormProps,
+  EventFormProps,
   fields,
   formatValue,
-  IEventFormData,
+  EventFormData,
 } from './EventFormUtils';
 import useFormStyles from '../../shared/components/formStyles';
 import { useVenuesQuery } from '../../../../generated';
 
-const EventForm: React.FC<IEventFormProps> = props => {
+const EventForm: React.FC<EventFormProps> = props => {
   const { onSubmit, data, loading, submitText } = props;
   const {
     loading: loadingVenues,
@@ -34,7 +34,7 @@ const EventForm: React.FC<IEventFormProps> = props => {
     [],
   );
 
-  const { control, handleSubmit } = useForm<IEventFormData>({ defaultValues });
+  const { control, handleSubmit } = useForm<EventFormData>({ defaultValues });
   const styles = useFormStyles();
 
   return (

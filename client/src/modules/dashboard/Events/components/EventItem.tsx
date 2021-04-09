@@ -7,7 +7,7 @@ import { ProgressCardContent } from '../../../../components';
 import Tags from './Tag';
 import Actions from './Actions';
 
-interface IEventItemProps {
+interface EventItemProps {
   event: Pick<
     Event,
     | 'id'
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   },
 });
 
-const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
+const EventItem: React.FC<EventItemProps> = ({ loading, event }) => {
   const styles = useStyles();
 
   return (
@@ -44,13 +44,11 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
               </Typography>
             </a>
           </Link>
-
           {event.canceled && (
             <Typography variant="h5" color="error">
               Canceled
             </Typography>
           )}
-
           <Typography
             variant="body2"
             color="textSecondary"
@@ -59,11 +57,9 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
           >
             {event.description}
           </Typography>
-
           <Typography variant="body2" color="textSecondary" component="p">
             {event.capacity}
           </Typography>
-
           <Typography variant="body2" color="textSecondary" component="p">
             {event.description}
           </Typography>
@@ -80,9 +76,7 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
           <Typography variant="body2" color="textSecondary" component="p">
             {event.capacity}
           </Typography>
-
           <div>{event.tags && <Tags tags={event.tags} />}</div>
-
           <Actions event={event} />
         </Grid>
       </ProgressCardContent>

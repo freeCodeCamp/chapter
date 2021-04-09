@@ -1,0 +1,12 @@
+{
+  "extends": ["config:base"],
+  "prCreation": "not-pending",
+  "labels": ["renovate"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    }
+  ]
+}

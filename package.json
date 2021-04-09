@@ -98,7 +98,7 @@
     "concurrently": "6.0.1",
     "cross-env": "7.0.3",
     "eslint": "6.8.0",
-    "eslint-config-prettier": "6.15.0",
+    "eslint-config-prettier": "8.1.0",
     "eslint-config-react": "1.1.7",
     "eslint-plugin-jest": "22.21.0",
     "eslint-plugin-prettier": "3.3.1",

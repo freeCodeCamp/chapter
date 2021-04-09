@@ -9,14 +9,14 @@
     "gen": "graphql-codegen --config codegen.js"
   },
   "dependencies": {
-    "@apollo/client": "^3.1.1",
-    "@material-ui/core": "^4.5.2",
-    "@material-ui/icons": "^4.5.1",
-    "graphql": "^15.3.0",
-    "next": "^9.5.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-hook-form": "^4.9.3"
+    "@apollo/client": "3.1.3",
+    "@material-ui/core": "4.11.0",
+    "@material-ui/icons": "4.9.1",
+    "graphql": "15.3.0",
+    "next": "9.5.2",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-hook-form": "4.10.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.3",
@@ -33,8 +33,8 @@
     "@graphql-codegen/fragment-matcher": "1.17.8"
   },
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.8"
+    "node": "14.16.1",
+    "npm": "6.14.12"
   },
   "license": "MIT"
 }

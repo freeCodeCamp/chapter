@@ -110,7 +110,7 @@
     "nodemon": "1.19.4",
     "prettier": "1.19.1",
     "sinon": "7.5.0",
-    "sinon-chai": "3.5.0",
+    "sinon-chai": "3.6.0",
     "supertest": "4.0.2",
     "ts-jest": "24.3.0",
     "ts-node-dev": "1.0.0-pre.63"

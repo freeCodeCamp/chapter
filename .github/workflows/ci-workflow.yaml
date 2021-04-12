@@ -18,6 +18,10 @@ jobs:
         run: npx recursive-install
       - name: Run linter
         run: npm run lint
+      - name: Type check client
+        run: cd client && npx tsc
+      - name: Type check server
+        run: npx tsc
       - name: Build client 
         run: npm run build:client
       - name: Run local tests

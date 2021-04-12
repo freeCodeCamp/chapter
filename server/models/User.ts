@@ -23,44 +23,32 @@ export class User extends BaseModel {
   email!: string;
 
   @Field(() => [Chapter])
-  @OneToMany(
-    _type => Chapter,
-    chapter => chapter.creator,
-  )
+  @OneToMany((_type) => Chapter, (chapter) => chapter.creator)
   created_chapters!: Chapter[];
 
   @Field(() => [Rsvp])
-  @OneToMany(
-    _type => Rsvp,
-    rsvp => rsvp.user,
-  )
+  @OneToMany((_type) => Rsvp, (rsvp) => rsvp.user)
   rsvps!: Rsvp[];
 
   @Field(() => [UserChapterRole])
-  @OneToMany(
-    _type => UserChapterRole,
-    chapter => chapter.user,
-  )
+  @OneToMany((_type) => UserChapterRole, (chapter) => chapter.user)
   chapters!: UserChapterRole[];
 
   @Field(() => [UserBan])
-  @OneToMany(
-    _type => UserBan,
-    userBan => userBan.user,
-  )
+  @OneToMany((_type) => UserBan, (userBan) => userBan.user)
   banned_chapters!: UserBan[];
 
   @Field(() => [UserChapterRole])
   @OneToMany(
-    _type => UserChapterRole,
-    userChapterRole => userChapterRole.user,
+    (_type) => UserChapterRole,
+    (userChapterRole) => userChapterRole.user,
   )
   chapter_roles!: UserChapterRole[];
 
   @Field(() => [UserInstanceRole])
   @OneToMany(
-    _type => UserInstanceRole,
-    userInstanceRole => userInstanceRole.user,
+    (_type) => UserInstanceRole,
+    (userInstanceRole) => userInstanceRole.user,
   )
   instance_roles!: UserInstanceRole[];
 

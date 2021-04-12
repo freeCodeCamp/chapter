@@ -18,7 +18,7 @@ const createVenues = async (): Promise<Venue[]> => {
   }
 
   try {
-    await Promise.all(venues.map(venue => venue.save()));
+    await Promise.all(venues.map((venue) => venue.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding venues');

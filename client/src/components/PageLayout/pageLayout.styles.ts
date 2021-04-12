@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   pageRoot: {
     [theme.breakpoints.down('xl')]: {
       padding: `0 ${theme.spacing(8)}px`,

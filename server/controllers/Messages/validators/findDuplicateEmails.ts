@@ -21,7 +21,7 @@ export class FindDuplicateEmailsConstraint
 }
 
 export function FindDuplicateEmails(validationOptions?: ValidationOptions) {
-  return function(object: Record<string, any>, propertyName: string) {
+  return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

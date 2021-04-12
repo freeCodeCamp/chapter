@@ -44,7 +44,7 @@ export const VenuesPage: NextPage = () => {
             </>
           ) : (
             <div className={styles.grid}>
-              {data?.venues.map(venue => (
+              {data?.venues.map((venue) => (
                 <VenueItem
                   venue={venue}
                   loading={loading}

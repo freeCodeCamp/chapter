@@ -58,44 +58,27 @@ export class Event extends BaseModel {
   capacity!: number;
 
   @Field(() => [EventSponsor])
-  @OneToMany(
-    _type => EventSponsor,
-    eventSponsor => eventSponsor.sponsor,
-    { onDelete: 'CASCADE' },
-  )
+  @OneToMany((_type) => EventSponsor, (eventSponsor) => eventSponsor.sponsor, {
+    onDelete: 'CASCADE',
+  })
   sponsors!: EventSponsor[];
 
   @Field(() => Venue, { nullable: true })
-  @ManyToOne(
-    _type => Venue,
-    venue => venue.events,
-    { nullable: true },
-  )
+  @ManyToOne((_type) => Venue, (venue) => venue.events, { nullable: true })
   @JoinColumn({ name: 'venue_id' })
   venue?: Venue;
 
   @Field(() => Chapter)
-  @ManyToOne(
-    _type => Chapter,
-    chapter => chapter.events,
-  )
+  @ManyToOne((_type) => Chapter, (chapter) => chapter.events)
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 
   @Field(() => [Rsvp])
-  @OneToMany(
-    _type => Rsvp,
-    rsvp => rsvp.event,
-    { onDelete: 'CASCADE' },
-  )
+  @OneToMany((_type) => Rsvp, (rsvp) => rsvp.event, { onDelete: 'CASCADE' })
   rsvps!: Rsvp[];
 
   @Field(() => [Tag], { nullable: true })
-  @OneToMany(
-    _type => Tag,
-    tag => tag.event,
-    { onDelete: 'CASCADE' },
-  )
+  @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
   constructor(params: {

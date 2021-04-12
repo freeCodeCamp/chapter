@@ -24,12 +24,12 @@ export class UserChapterRole extends BaseModel {
   role_name!: ChapterRoles;
 
   @Field(() => User)
-  @ManyToOne(_type => User)
+  @ManyToOne((_type) => User)
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
   @Field(() => Chapter)
-  @ManyToOne(_type => Chapter)
+  @ManyToOne((_type) => Chapter)
   @JoinColumn({ name: 'chapter_id' })
   chapter!: Chapter;
 

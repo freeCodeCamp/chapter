@@ -17,7 +17,7 @@ export class UserInstanceRole {
   role_name!: InstanceRoles;
 
   @Field(() => User)
-  @ManyToOne(_type => User)
+  @ManyToOne((_type) => User)
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

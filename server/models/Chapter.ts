@@ -39,32 +39,23 @@ export class Chapter extends BaseModel {
   country: string;
 
   @Field(() => [Event])
-  @OneToMany(
-    _type => Event,
-    event => event.chapter,
-  )
+  @OneToMany((_type) => Event, (event) => event.chapter)
   events!: Event[];
 
   @Field(() => User)
-  @ManyToOne(
-    _type => User,
-    user => user.created_chapters,
-  )
+  @ManyToOne((_type) => User, (user) => user.created_chapters)
   @JoinColumn({ name: 'creator_id' })
   creator!: User;
 
   @Field(() => [UserChapterRole])
   @OneToMany(
-    _type => UserChapterRole,
-    UserChapterRole => UserChapterRole.chapter,
+    (_type) => UserChapterRole,
+    (UserChapterRole) => UserChapterRole.chapter,
   )
   users!: UserChapterRole[];
 
   @Field(() => [UserBan])
-  @OneToMany(
-    _type => UserBan,
-    userBan => userBan.chapter,
-  )
+  @OneToMany((_type) => UserBan, (userBan) => userBan.chapter)
   banned_users!: UserBan[];
 
   constructor(params: {

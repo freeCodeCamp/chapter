@@ -42,7 +42,7 @@ const Home: React.FC = () => {
         {!error && (
           <ProgressCardContent loading={loading}>
             <div className={styles.grid}>
-              {data?.chapters.map(chapter => (
+              {data?.chapters.map((chapter) => (
                 <>
                   <Card className={styles.gridItem}>
                     <Typography gutterBottom variant="h5" component="h2">

@@ -22,7 +22,7 @@ const Tags: React.FC<{ tags?: Pick<Tag, 'name' | 'id'>[] }> = ({ tags }) => {
 
   return tags ? (
     <div className={style.tagsContainer}>
-      {tags.map(tag => (
+      {tags.map((tag) => (
         <div className={style.tag} key={`tag-${tag.id}`}>
           {tag.name}
         </div>

@@ -3,7 +3,7 @@ const sanitizeTags = (tags: string): string[] => {
     return tags.split(',').map((item: string) =>
       item
         .split(' ')
-        .filter(item => item.length > 0)
+        .filter((item) => item.length > 0)
         .join(''),
     );
   }

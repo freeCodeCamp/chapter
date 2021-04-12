@@ -44,9 +44,9 @@ export const Field: React.FC<BaseProps<any>> = ({
   );
 };
 
-export const TextInput: React.FC<InputFieldProps<any>> = props => (
+export const TextInput: React.FC<InputFieldProps<any>> = (props) => (
   <Field {...props} type="text" />
 );
-export const NumberInput: React.FC<InputFieldProps<any>> = props => (
+export const NumberInput: React.FC<InputFieldProps<any>> = (props) => (
   <Field {...props} type="number" />
 );

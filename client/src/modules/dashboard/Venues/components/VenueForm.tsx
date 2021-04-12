@@ -40,7 +40,7 @@ const fields: Fields[] = [
   ['longitude', false, true],
 ];
 
-const VenueForm: React.FC<VenueFormProps> = props => {
+const VenueForm: React.FC<VenueFormProps> = (props) => {
   const { loading, onSubmit, data, submitText } = props;
 
   const styles = useFormStyles();

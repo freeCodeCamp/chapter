@@ -28,7 +28,7 @@ const createSponsors = async (): Promise<Sponsor[]> => {
   }
 
   try {
-    await Promise.all(sponsors.map(sponsor => sponsor.save()));
+    await Promise.all(sponsors.map((sponsor) => sponsor.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding locations');

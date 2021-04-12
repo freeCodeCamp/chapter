@@ -117,8 +117,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "npm run pretty",
-      "git add"
+      "npm run pretty"
     ]
   },
   "husky": {

@@ -112,7 +112,7 @@
     "sinon": "7.5.0",
     "sinon-chai": "3.6.0",
     "supertest": "4.0.2",
-    "ts-jest": "24.3.0",
+    "ts-jest": "26.5.4",
     "ts-node-dev": "1.1.6"
   },
   "lint-staged": {

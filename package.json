@@ -100,7 +100,7 @@
     "eslint": "7.24.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-config-react": "1.1.7",
-    "eslint-plugin-jest": "22.21.0",
+    "eslint-plugin-jest": "24.3.5",
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.23.2",
     "get-port": "5.1.1",

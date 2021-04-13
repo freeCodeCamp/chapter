@@ -95,7 +95,7 @@
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
     "chai": "4.3.4",
-    "concurrently": "6.0.1",
+    "concurrently": "6.0.2",
     "cross-env": "7.0.3",
     "eslint": "7.24.0",
     "eslint-config-prettier": "8.1.0",

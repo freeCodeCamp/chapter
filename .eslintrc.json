@@ -5,7 +5,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "plugins": ["react", "@typescript-eslint", "prettier", "import"],
   "env": {
     "browser": true,
     "node": true,
@@ -35,12 +35,25 @@
     ],
     "prettier/prettier": ["error", { "singleQuote": true }],
     "react/display-name": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "import/no-unresolved": "error"
   },
   "settings": {
     "react": {
       "pragma": "React",
       "version": "detect"
+    }, 
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true, 
+        "project": [
+          "client/tsconfig.json",
+          "tsconfig.json"
+        ]
+      }
     }
   },
   "parser": "@typescript-eslint/parser"

@@ -25,7 +25,7 @@ const createChapters = async (user: User): Promise<Chapter[]> => {
   }
 
   try {
-    await Promise.all(chapters.map(chapter => chapter.save()));
+    await Promise.all(chapters.map((chapter) => chapter.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding chapters');

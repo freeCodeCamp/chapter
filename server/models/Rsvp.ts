@@ -16,18 +16,12 @@ export class Rsvp extends BaseModel {
   on_waitlist!: boolean;
 
   @Field(() => Event)
-  @ManyToOne(
-    _type => Event,
-    event => event.rsvps,
-  )
+  @ManyToOne((_type) => Event, (event) => event.rsvps)
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
   @Field(() => User)
-  @ManyToOne(
-    _type => User,
-    user => user.rsvps,
-  )
+  @ManyToOne((_type) => User, (user) => user.rsvps)
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

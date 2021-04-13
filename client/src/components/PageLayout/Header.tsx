@@ -63,7 +63,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
       </Grid>
       <Grid component="nav" item xs={12} md={4}>
         <Grid container direction="row" spacing={2} justify="center">
-          {headerLinks.map(headerLink => (
+          {headerLinks.map((headerLink) => (
             <Grid item key={headerLink.name}>
               <Link href={headerLink.href}>
                 <a className={styles.link}>{headerLink.label}</a>

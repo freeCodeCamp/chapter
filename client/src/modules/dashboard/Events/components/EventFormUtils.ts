@@ -103,7 +103,7 @@ export const formatValue = (field: Field, store?: IEventData): any => {
   if (key === 'tags') {
     const tags = store[key];
     if (tags) {
-      return tags.map(tag => tag.name).join(', ');
+      return tags.map((tag) => tag.name).join(', ');
     }
   }
 

@@ -15,12 +15,12 @@ try {
   }).split('\n');
 
   const isFork = rows
-    .filter(item => item.startsWith('origin'))
-    .every(item => !item.includes(CHAPTER_REMOTE));
+    .filter((item) => item.startsWith('origin'))
+    .every((item) => !item.includes(CHAPTER_REMOTE));
 
   const hasUpstreams = rows
-    .filter(item => item.startsWith('upstream'))
-    .some(item => item.includes(CHAPTER_REMOTE));
+    .filter((item) => item.startsWith('upstream'))
+    .some((item) => item.includes(CHAPTER_REMOTE));
 
   if (isFork && !hasUpstreams) {
     console.log(

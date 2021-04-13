@@ -21,7 +21,7 @@ const createUsers = async (): Promise<[User, User[]]> => {
   );
 
   try {
-    await Promise.all([user, ...others].map(u => u.save()));
+    await Promise.all([user, ...others].map((u) => u.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding users');

@@ -18,7 +18,7 @@ const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
   }
 
   try {
-    await Promise.all(rsvps.map(rsvp => rsvp.save()));
+    await Promise.all(rsvps.map((rsvp) => rsvp.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding rsvps');

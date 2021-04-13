@@ -52,7 +52,7 @@
     "express": "4.17.1",
     "express-async-handler": "1.1.4",
     "express-response-errors": "1.0.5",
-    "faker": "5.5.2",
+    "faker": "5.5.3",
     "fork-ts-checker-webpack-plugin": "1.6.0",
     "graphql": "15.3.0",
     "is-docker": "2.1.1",

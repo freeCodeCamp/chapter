@@ -4,7 +4,19 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
-    "module": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "server/*": [
+        "./server/*"
+      ],
+      "db/*": [
+        "./db/*"
+      ],
+      "types/*": [
+        "./types/*"
+      ],
+    },
+    "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,
     "noImplicitAny": false,
@@ -15,7 +27,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2020",
+    "target": "ES2018",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,

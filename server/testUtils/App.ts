@@ -10,7 +10,7 @@ type InitProps = {
 };
 
 type RequestWithUser = Request & {
-  user: User;
+  user: User | null;
 };
 
 class App {

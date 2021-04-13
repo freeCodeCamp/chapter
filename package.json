@@ -54,7 +54,7 @@
     "graphql": "15.5.0",
     "is-docker": "2.2.1",
     "next": "10.1.3",
-    "nodemailer": "6.4.13",
+    "nodemailer": "6.5.0",
     "pg": "8.4.1",
     "pg-hstore": "2.3.3",
     "react": "16.13.1",

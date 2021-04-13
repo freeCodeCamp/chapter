@@ -9,7 +9,7 @@
     "gen": "graphql-codegen --config codegen.js"
   },
   "dependencies": {
-    "@apollo/client": "3.3.14",
+    "@apollo/client": "3.3.15",
     "@material-ui/core": "4.11.0",
     "@material-ui/icons": "4.9.1",
     "graphql": "15.5.0",

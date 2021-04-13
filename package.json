@@ -90,7 +90,7 @@
     "chai": "4.3.4",
     "concurrently": "6.0.2",
     "eslint": "7.24.0",
-    "eslint-config-prettier": "8.1.0",
+    "eslint-config-prettier": "8.2.0",
     "eslint-config-react": "1.1.7",
     "eslint-import-resolver-typescript": "2.4.0",
     "eslint-plugin-import": "2.22.1",

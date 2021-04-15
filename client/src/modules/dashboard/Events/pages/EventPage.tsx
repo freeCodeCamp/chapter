@@ -86,8 +86,8 @@ export const EventPage: NextPage = () => {
               <div>
                 <ul>
                   {data.event.rsvps
-                    .filter(rsvp => !rsvp.on_waitlist)
-                    .map(rsvp => (
+                    .filter((rsvp) => !rsvp.on_waitlist)
+                    .map((rsvp) => (
                       <li key={rsvp.id}>
                         {rsvp.user
                           ? `${rsvp.user.first_name} ${rsvp.user.last_name}`
@@ -99,8 +99,8 @@ export const EventPage: NextPage = () => {
                 <h3>On waiting list</h3>
                 <ul>
                   {data.event.rsvps
-                    .filter(rsvp => rsvp.on_waitlist)
-                    .map(rsvp => (
+                    .filter((rsvp) => rsvp.on_waitlist)
+                    .map((rsvp) => (
                       <li key={rsvp.id}>
                         {rsvp.user
                           ? `${rsvp.user.first_name} ${rsvp.user.last_name}`

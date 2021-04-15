@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   build:
     name: build and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -11,18 +11,26 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm ci
+        run: npx recursive-install
       - name: Run linter
         run: npm run lint
-      - name: Build next.js
-        run: npm run next:build
-      - name: Start docker service
+      - name: Build client 
+        run: npm run build:client
+      - name: Run local tests
+        run: npm t
+      - name: Start Docker service
+        env: 
+          IS_DOCKER: true
         run: docker-compose up -d
-      - name: Run tests
+      - name: Seed the Docker db
+        env:
+          IS_DOCKER: true
+        run: npm run db:reset
+      - name: Run Docker tests
         run: docker-compose exec -T app npm run test
         env:
-          NODE_ENV: test
+          IS_DOCKER: true

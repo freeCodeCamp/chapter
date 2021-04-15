@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
   return (
     <nav>
       <Grid container spacing={2}>
-        {links.map(item => (
+        {links.map((item) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={item.text}>
             <Link href={item.link}>
               <Button variant="outlined">

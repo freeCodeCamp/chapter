@@ -45,7 +45,7 @@ export const EventsPage: NextPage = () => {
             </>
           ) : (
             <div className={styles.grid}>
-              {data?.events.map(event => (
+              {data?.events.map((event) => (
                 <EventItem
                   event={event}
                   loading={loading}

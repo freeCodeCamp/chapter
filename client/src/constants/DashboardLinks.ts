@@ -1,9 +1,9 @@
-interface ILink {
+interface Link {
   text: string;
   link: string;
 }
 
-const links: ILink[] = [
+const links: Link[] = [
   { text: 'Public', link: '/' },
   { text: 'Events', link: '/dashboard/events' },
   { text: 'Venues', link: '/dashboard/venues' },

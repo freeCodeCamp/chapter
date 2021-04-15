@@ -23,10 +23,7 @@ export class Sponsor extends BaseModel {
   type!: string;
 
   @Field(() => [EventSponsor])
-  @OneToMany(
-    _type => EventSponsor,
-    eventSponsor => eventSponsor.event,
-  )
+  @OneToMany((_type) => EventSponsor, (eventSponsor) => eventSponsor.event)
   events!: EventSponsor[];
 
   constructor(params: {

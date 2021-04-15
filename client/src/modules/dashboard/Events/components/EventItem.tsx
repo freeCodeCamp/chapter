@@ -12,8 +12,7 @@ import RoomIcon from '@material-ui/icons/Room';
 import Button from '@material-ui/core/Button';
 
 import TabPanel from './utility/TabPanel';
-
-interface IEventItemProps {
+interface EventItemProps {
   event: Pick<
     Event,
     | 'id'
@@ -31,7 +30,7 @@ const formatDate = (date: Date) => {
   return new Date(date).toLocaleString('en-US');
 };
 
-const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
+const EventItem: React.FC<EventItemProps> = ({ loading, event }) => {
   const [selectedTabPanel, setSelectedTabPanel] = useState(-1);
 
   const handleTabPanelChange = (value: number) => {
@@ -103,7 +102,7 @@ const EventItem: React.FC<IEventItemProps> = ({ loading, event }) => {
                   event.venue.region,
                   event.venue.country,
                 ]
-                  .filter(e => !!e)
+                  .filter((e) => !!e)
                   .map((e, i) => (
                     <span key={i}>{(i === 0 ? '' : ', ') + e}</span>
                   ))}

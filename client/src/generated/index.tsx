@@ -819,9 +819,7 @@ export function useCreateEventMutation(
 export type CreateEventMutationHookResult = ReturnType<
   typeof useCreateEventMutation
 >;
-export type CreateEventMutationResult = ApolloReactCommon.MutationResult<
-  CreateEventMutation
->;
+export type CreateEventMutationResult = ApolloReactCommon.MutationResult<CreateEventMutation>;
 export type CreateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateEventMutation,
   CreateEventMutationVariables
@@ -880,9 +878,7 @@ export function useUpdateEventMutation(
 export type UpdateEventMutationHookResult = ReturnType<
   typeof useUpdateEventMutation
 >;
-export type UpdateEventMutationResult = ApolloReactCommon.MutationResult<
-  UpdateEventMutation
->;
+export type UpdateEventMutationResult = ApolloReactCommon.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateEventMutation,
   UpdateEventMutationVariables
@@ -931,9 +927,7 @@ export function useCancelEventMutation(
 export type CancelEventMutationHookResult = ReturnType<
   typeof useCancelEventMutation
 >;
-export type CancelEventMutationResult = ApolloReactCommon.MutationResult<
-  CancelEventMutation
->;
+export type CancelEventMutationResult = ApolloReactCommon.MutationResult<CancelEventMutation>;
 export type CancelEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CancelEventMutation,
   CancelEventMutationVariables
@@ -979,9 +973,7 @@ export function useDeleteEventMutation(
 export type DeleteEventMutationHookResult = ReturnType<
   typeof useDeleteEventMutation
 >;
-export type DeleteEventMutationResult = ApolloReactCommon.MutationResult<
-  DeleteEventMutation
->;
+export type DeleteEventMutationResult = ApolloReactCommon.MutationResult<DeleteEventMutation>;
 export type DeleteEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
@@ -1156,9 +1148,7 @@ export function useCreateVenueMutation(
 export type CreateVenueMutationHookResult = ReturnType<
   typeof useCreateVenueMutation
 >;
-export type CreateVenueMutationResult = ApolloReactCommon.MutationResult<
-  CreateVenueMutation
->;
+export type CreateVenueMutationResult = ApolloReactCommon.MutationResult<CreateVenueMutation>;
 export type CreateVenueMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateVenueMutation,
   CreateVenueMutationVariables
@@ -1215,9 +1205,7 @@ export function useUpdateVenueMutation(
 export type UpdateVenueMutationHookResult = ReturnType<
   typeof useUpdateVenueMutation
 >;
-export type UpdateVenueMutationResult = ApolloReactCommon.MutationResult<
-  UpdateVenueMutation
->;
+export type UpdateVenueMutationResult = ApolloReactCommon.MutationResult<UpdateVenueMutation>;
 export type UpdateVenueMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables

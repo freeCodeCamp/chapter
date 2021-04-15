@@ -8,18 +8,12 @@ import { ObjectType, Field } from 'type-graphql';
 @Entity({ name: 'event_sponsors' })
 export class EventSponsor extends BaseModel {
   @Field(() => Sponsor)
-  @ManyToOne(
-    _type => Sponsor,
-    sponsor => sponsor.events,
-  )
+  @ManyToOne((_type) => Sponsor, (sponsor) => sponsor.events)
   @JoinColumn({ name: 'sponsor_id' })
   sponsor!: Sponsor;
 
   @Field(() => Event)
-  @ManyToOne(
-    _type => Event,
-    event => event.sponsors,
-  )
+  @ManyToOne((_type) => Event, (event) => event.sponsors)
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 

@@ -9,15 +9,15 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import {
-  IEventFormProps,
+  EventFormProps,
   fields,
   formatValue,
-  IEventFormData,
+  EventFormData,
 } from './EventFormUtils';
 import useFormStyles from '../../shared/components/formStyles';
 import { useVenuesQuery } from '../../../../generated';
 
-const EventForm: React.FC<IEventFormProps> = props => {
+const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText } = props;
   const {
     loading: loadingVenues,
@@ -28,18 +28,18 @@ const EventForm: React.FC<IEventFormProps> = props => {
   const defaultValues = useMemo(
     () => ({
       ...(data || {}),
-      tags: (data?.tags || []).map(t => t.name).join(', '),
+      tags: (data?.tags || []).map((t) => t.name).join(', '),
       venue: data?.venue?.id,
     }),
     [],
   );
 
-  const { control, handleSubmit } = useForm<IEventFormData>({ defaultValues });
+  const { control, handleSubmit } = useForm<EventFormData>({ defaultValues });
   const styles = useFormStyles();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      {fields.map(field => (
+      {fields.map((field) => (
         <FormControl className={styles.item} key={field.key}>
           <Controller
             control={control}
@@ -66,7 +66,7 @@ const EventForm: React.FC<IEventFormProps> = props => {
           <Controller
             as={
               <Select labelId="venue-label">
-                {dataVenues.venues.map(venue => (
+                {dataVenues.venues.map((venue) => (
                   <MenuItem value={venue.id} key={venue.id}>
                     {venue.name}
                   </MenuItem>

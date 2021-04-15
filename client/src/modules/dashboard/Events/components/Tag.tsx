@@ -6,7 +6,7 @@ import Chip from '@material-ui/core/Chip';
 const Tags: React.FC<{ tags?: Pick<Tag, 'name' | 'id'>[] }> = ({ tags }) => {
   return tags ? (
     <>
-      {tags.map(tag => (
+      {tags.map((tag) => (
         <Chip key={`tag-${tag.id}`} label={tag.name} size="small" />
       ))}
     </>

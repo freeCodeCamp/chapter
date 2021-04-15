@@ -1,5 +1,6 @@
 import { Control, Controller } from 'react-hook-form';
 import { TextField } from '@material-ui/core';
+import React from 'react';
 
 interface InputFieldProps<T> {
   name: string;
@@ -43,9 +44,9 @@ export const Field: React.FC<BaseProps<any>> = ({
   );
 };
 
-export const TextInput: React.FC<InputFieldProps<any>> = props => (
+export const TextInput: React.FC<InputFieldProps<any>> = (props) => (
   <Field {...props} type="text" />
 );
-export const NumberInput: React.FC<InputFieldProps<any>> = props => (
+export const NumberInput: React.FC<InputFieldProps<any>> = (props) => (
   <Field {...props} type="number" />
 );

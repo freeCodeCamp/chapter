@@ -36,8 +36,8 @@ const createEvents = async (
 
     await Promise.all(
       randomItems(sponsors, 2)
-        .map(sponsor => new EventSponsor({ event, sponsor }))
-        .map(es => es.save()),
+        .map((sponsor) => new EventSponsor({ event, sponsor }))
+        .map((es) => es.save()),
     );
 
     await Promise.all(
@@ -51,7 +51,7 @@ const createEvents = async (
   }
 
   try {
-    await Promise.all(events.map(event => event.save()));
+    await Promise.all(events.map((event) => event.save()));
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding events');

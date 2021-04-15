@@ -77,7 +77,7 @@
     "@types/get-port": "4.2.0",
     "@types/jest": "26.0.22",
     "@types/next": "8.0.7",
-    "@types/node": "14.14.37",
+    "@types/node": "14.14.39",
     "@types/nodemailer": "6.4.1",
     "@types/pg": "7.14.11",
     "@types/react": "16.14.5",

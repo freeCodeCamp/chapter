@@ -59,7 +59,6 @@
     "pg-hstore": "2.3.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "sass": "1.32.8",
     "reflect-metadata": "0.1.13",
     "ts-node": "8.10.2",
     "tsconfig-paths": "3.9.0",

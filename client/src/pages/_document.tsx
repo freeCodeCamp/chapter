@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ServerStyleSheets } from '@material-ui/core/styles';
-import Document, { Head, Main, NextScript } from 'next/document';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: any) {
@@ -26,7 +26,7 @@ export default class MyDocument extends Document {
 
   render() {
     return (
-      <html lang="en">
+      <Html lang="en">
         <Head>
           <link
             rel="stylesheet"
@@ -37,7 +37,7 @@ export default class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }

@@ -11,7 +11,7 @@ import EventItem from '../components/EventItem';
 const useStyles = makeStyles({
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+    /*gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',*/
     gridAutoRows: '1fr',
     gridGap: '1rem',
   },

@@ -8,6 +8,8 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import theme from '../styles/theme';
 import PageLayout from '../components/PageLayout';
 
+import '../styles/style.scss';
+
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
 

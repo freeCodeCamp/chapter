@@ -548,12 +548,22 @@ export const EventsDocument = gql`
       name
       canceled
       description
+      start_at
+      ends_at
       url
       video_url
       capacity
       tags {
         id
         name
+      }
+      venue {
+        id
+        name
+        street_address
+        city
+        region
+        country
       }
     }
   }

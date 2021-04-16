@@ -2,6 +2,12 @@ import { expect } from 'chai';
 import faker from 'faker';
 import { callSchema } from '../../testUtils/callSchema';
 import longString from './longString';
+import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
+import { GraphQLError } from 'graphql';
+
+interface WithValidationError extends GraphQLError {
+  originalError: ArgumentValidationError;
+}
 
 const emailMutation = `
   mutation Email($data: SendEmailInputs!) {
@@ -31,8 +37,10 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
+    const error = email?.errors?.[0] as WithValidationError;
+
     expect(
-      email.errors[0].originalError.validationErrors[0].constraints.maxLength,
+      error?.originalError?.validationErrors[0]?.constraints?.maxLength,
     ).to.equal('subject must be shorter than or equal to 998 characters');
   });
 
@@ -50,9 +58,11 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
+    const error = email?.errors?.[0] as WithValidationError;
+
     expect(
-      email.errors[0].originalError.validationErrors[0].constraints
-        .IsListEmptyConstraint,
+      error?.originalError?.validationErrors[0]?.constraints
+        ?.IsListEmptyConstraint,
     ).to.equal('email list cannot be empty');
   });
 
@@ -70,8 +80,10 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
+    const error = email?.errors?.[0] as WithValidationError;
+
     expect(
-      email.errors[0].originalError.validationErrors[0].constraints.isEmail,
+      error?.originalError?.validationErrors[0]?.constraints?.isEmail,
     ).to.equal('list contains invalid email');
   });
 
@@ -90,9 +102,11 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
+    const error = email?.errors?.[0] as WithValidationError;
+
     expect(
-      email.errors[0].originalError.validationErrors[0].constraints
-        .FindDuplicateEmailsConstraint,
+      error?.originalError?.validationErrors[0]?.constraints
+        ?.FindDuplicateEmailsConstraint,
     ).to.equal('list contains one or more duplicate emails');
   });
 

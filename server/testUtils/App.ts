@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request } from 'express';
 import getPort from 'get-port';
 import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
@@ -7,6 +7,10 @@ import { User } from 'server/models';
 
 type InitProps = {
   withRouter?: express.Router;
+};
+
+type RequestWithUser = Request & {
+  user: User | null;
 };
 
 class App {
@@ -28,7 +32,7 @@ class App {
       this.server.use(withRouter);
     }
 
-    this.server.use((req, _, next) => {
+    this.server.use((req: RequestWithUser, _, next) => {
       req.user = this.authedUser;
       next();
     });

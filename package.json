@@ -44,7 +44,7 @@
     "@types/cors": "2.8.10",
     "apollo-server-express": "2.23.0",
     "babel-plugin-module-resolver": "3.2.0",
-    "babel-plugin-transform-typescript-metadata": "0.2.2",
+    "babel-plugin-transform-typescript-metadata": "0.3.2",
     "class-validator": "0.12.2",
     "cors": "2.8.5",
     "dotenv": "8.2.0",

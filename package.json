@@ -63,7 +63,7 @@
     "ts-node": "8.10.2",
     "tsconfig-paths": "3.9.0",
     "type-graphql": "1.1.1",
-    "typeorm": "0.2.28",
+    "typeorm": "0.2.32",
     "typescript": "3.9.9"
   },
   "devDependencies": {

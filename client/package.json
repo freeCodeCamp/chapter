@@ -23,7 +23,7 @@
     "@graphql-codegen/introspection": "1.18.1",
     "@graphql-codegen/typescript": "1.21.1",
     "@graphql-codegen/typescript-operations": "1.17.15",
-    "@graphql-codegen/typescript-react-apollo": "1.17.7",
+    "@graphql-codegen/typescript-react-apollo": "2.2.3",
     "@types/node": "12.20.10",
     "@types/react": "17.0.3",
     "@types/react-dom": "17.0.3",

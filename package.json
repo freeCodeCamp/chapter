@@ -60,7 +60,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "reflect-metadata": "0.1.13",
-    "ts-node": "8.10.2",
+    "ts-node": "9.1.1",
     "tsconfig-paths": "3.9.0",
     "type-graphql": "1.1.1",
     "typeorm": "0.2.32",

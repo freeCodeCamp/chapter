@@ -73,7 +73,7 @@
     "@types/bluebird": "3.5.33",
     "@types/chai": "4.2.16",
     "@types/express": "4.17.11",
-    "@types/faker": "5.5.1",
+    "@types/faker": "5.5.2",
     "@types/get-port": "4.2.0",
     "@types/jest": "26.0.22",
     "@types/next": "8.0.7",

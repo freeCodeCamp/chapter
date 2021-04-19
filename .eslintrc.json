@@ -33,6 +33,17 @@
       "error",
       { "argsIgnorePattern": "^_" }
     ],
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          "selector": "interface",
+          "format": ["PascalCase"],
+          "custom": {
+            "regex": "^I[A-Z]",
+            "match": false
+          }
+        }
+      ],
     "prettier/prettier": ["error", { "singleQuote": true }],
     "react/display-name": 0,
     "react/prop-types": 0,

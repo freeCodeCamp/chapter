@@ -10,7 +10,6 @@ const useStyles = makeStyles({
   root: {
     flexGrow: 1,
   },
-
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
@@ -62,14 +61,6 @@ const Home: React.FC = () => {
       </div>
 
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Link href="/add-sponsor">
-            <Button variant="outlined">
-              <a>Add sponsor</a>
-            </Button>
-          </Link>
-        </Grid>
-
         <Grid item xs={12} sm={6}>
           <Link href="/dashboard">
             <Button variant="outlined">

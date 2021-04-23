@@ -8,6 +8,7 @@ export const HOME_PAGE_QUERY = gql`
       description
       start_at
       tags {
+        id
         name
       }
       chapter {

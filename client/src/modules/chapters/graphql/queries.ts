@@ -9,7 +9,23 @@ export const CHAPTER = gql`
       events {
         id
         name
+        description
+        start_at
+        tags {
+          id
+          name
+        }
       }
+    }
+  }
+`;
+
+export const CHAPTERS = gql`
+  query chapters {
+    chapters {
+      id
+      name
+      description
     }
   }
 `;

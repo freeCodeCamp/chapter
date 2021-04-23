@@ -2,6 +2,8 @@ import React from 'react';
 import { NextPage } from 'next';
 import { useParam } from 'hooks/useParam';
 import { useChapterQuery } from 'generated/graphql';
+import { Heading, VStack } from '@chakra-ui/layout';
+import { EventCard } from 'components/EventCard';
 
 export const ChapterPage: NextPage = () => {
   const id = useParam('chapterId');
@@ -24,8 +26,20 @@ export const ChapterPage: NextPage = () => {
   }
 
   return (
-    <div>
-      <h1>{data?.chapter.name}</h1>
-    </div>
+    <VStack>
+      <Heading>{data.chapter.name}</Heading>
+
+      <Heading size="md">Events:</Heading>
+      {data.chapter.events.map((event) => (
+        <EventCard
+          key={event.id}
+          event={{
+            ...event,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            chapter: { id, name: data.chapter?.name! },
+          }}
+        />
+      ))}
+    </VStack>
   );
 };

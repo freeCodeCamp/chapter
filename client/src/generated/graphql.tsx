@@ -349,7 +349,26 @@ export type ChapterQuery = { __typename?: 'Query' } & {
     { __typename?: 'Chapter' } & Pick<
       Chapter,
       'id' | 'name' | 'description'
-    > & { events: Array<{ __typename?: 'Event' } & Pick<Event, 'id' | 'name'>> }
+    > & {
+        events: Array<
+          { __typename?: 'Event' } & Pick<
+            Event,
+            'id' | 'name' | 'description' | 'start_at'
+          > & {
+              tags?: Maybe<
+                Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>
+              >;
+            }
+        >;
+      }
+  >;
+};
+
+export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChaptersQuery = { __typename?: 'Query' } & {
+  chapters: Array<
+    { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name' | 'description'>
   >;
 };
 
@@ -582,7 +601,7 @@ export type HomePageQuery = { __typename?: 'Query' } & {
       Event,
       'id' | 'name' | 'description' | 'start_at'
     > & {
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'name'>>>;
+        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
         chapter: { __typename?: 'Chapter' } & Pick<
           Chapter,
           'id' | 'name' | 'category'
@@ -600,6 +619,12 @@ export const ChapterDocument = gql`
       events {
         id
         name
+        description
+        start_at
+        tags {
+          id
+          name
+        }
       }
     }
   }
@@ -647,6 +672,60 @@ export type ChapterLazyQueryHookResult = ReturnType<typeof useChapterLazyQuery>;
 export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
+>;
+export const ChaptersDocument = gql`
+  query chapters {
+    chapters {
+      id
+      name
+      description
+    }
+  }
+`;
+
+/**
+ * __useChaptersQuery__
+ *
+ * To run a query within a React component, call `useChaptersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChaptersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChaptersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChaptersQuery(
+  baseOptions?: Apollo.QueryHookOptions<ChaptersQuery, ChaptersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChaptersQuery, ChaptersQueryVariables>(
+    ChaptersDocument,
+    options,
+  );
+}
+export function useChaptersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChaptersQuery,
+    ChaptersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChaptersQuery, ChaptersQueryVariables>(
+    ChaptersDocument,
+    options,
+  );
+}
+export type ChaptersQueryHookResult = ReturnType<typeof useChaptersQuery>;
+export type ChaptersLazyQueryHookResult = ReturnType<
+  typeof useChaptersLazyQuery
+>;
+export type ChaptersQueryResult = Apollo.QueryResult<
+  ChaptersQuery,
+  ChaptersQueryVariables
 >;
 export const EventsDocument = gql`
   query events {
@@ -1307,6 +1386,7 @@ export const HomePageDocument = gql`
       description
       start_at
       tags {
+        id
         name
       }
       chapter {

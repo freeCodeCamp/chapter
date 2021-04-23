@@ -1,26 +1,8 @@
 import React from 'react';
-import Link from 'next/link';
-import {
-  Heading,
-  Spinner,
-  VStack,
-  Text,
-  Box,
-  Tag,
-  HStack,
-  Flex,
-} from '@chakra-ui/react';
-import { format } from 'date-fns';
+import { Heading, Spinner, VStack, Text } from '@chakra-ui/react';
 
 import { useHomePageQuery } from 'generated/graphql';
-
-const Card: React.FC = ({ children }) => {
-  return (
-    <Box p="4" w="50%" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      {children}
-    </Box>
-  );
-};
+import { EventCard } from 'components/EventCard';
 
 const Home: React.FC = () => {
   const { loading, error, data } = useHomePageQuery();
@@ -38,31 +20,7 @@ const Home: React.FC = () => {
           <Text>{error?.message}</Text>
         </>
       ) : (
-        data.events.map((event) => (
-          <Card key={event.id}>
-            <Flex justify="space-between">
-              <Heading size="md" as="h2">
-                <Link href={`/events/${event.id}`} passHref>
-                  <a>{event.name}</a>
-                </Link>
-              </Heading>
-              <HStack>
-                {event.tags?.map((t) => (
-                  <Tag key={t.name}>{t.name}</Tag>
-                ))}
-              </HStack>
-            </Flex>
-
-            <Heading size="sm">
-              {format(new Date(event.start_at), 'E, LLL d @ HH:MM')}
-            </Heading>
-            <Link href={`/chapters/${event.chapter.id}`}>
-              {event.chapter.name}
-            </Link>
-
-            <Text>{event.description}</Text>
-          </Card>
-        ))
+        data.events.map((event) => <EventCard key={event.id} event={event} />)
       )}
     </VStack>
   );

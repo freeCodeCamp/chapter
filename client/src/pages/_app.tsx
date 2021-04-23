@@ -9,6 +9,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 import theme from '../styles/theme';
 import PageLayout from '../components/PageLayout';
+import { ConfirmContextProvider } from 'chakra-confirm';
 
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
@@ -36,9 +37,11 @@ export default class MyApp extends App {
           <MaterialUIThemeProvider theme={theme}>
             <CssBaseline />
             <ChakraProvider>
-              <PageLayout>
-                <Component {...pageProps} />
-              </PageLayout>
+              <ConfirmContextProvider>
+                <PageLayout>
+                  <Component {...pageProps} />
+                </PageLayout>
+              </ConfirmContextProvider>
             </ChakraProvider>
           </MaterialUIThemeProvider>
         </ApolloProvider>

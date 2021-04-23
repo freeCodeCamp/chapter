@@ -2,7 +2,7 @@ import React from 'react';
 import { NextPage } from 'next';
 import { useParam } from 'hooks/useParam';
 import { useChapterQuery } from 'generated/graphql';
-import { Heading, VStack } from '@chakra-ui/layout';
+import { Heading, VStack, Text } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
 
 export const ChapterPage: NextPage = () => {
@@ -28,6 +28,7 @@ export const ChapterPage: NextPage = () => {
   return (
     <VStack>
       <Heading>{data.chapter.name}</Heading>
+      <Text>{data.chapter.description}</Text>
 
       <Heading size="md">Events:</Heading>
       {data.chapter.events.map((event) => (

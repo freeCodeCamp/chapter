@@ -386,6 +386,7 @@ export type EventsQuery = { __typename?: 'Query' } & {
       | 'video_url'
       | 'capacity'
     > & {
+        venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
       }
   >;
@@ -737,6 +738,10 @@ export const EventsDocument = gql`
       url
       video_url
       capacity
+      venue {
+        id
+        name
+      }
       tags {
         id
         name

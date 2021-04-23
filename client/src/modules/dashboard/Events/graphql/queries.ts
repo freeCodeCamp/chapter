@@ -10,6 +10,10 @@ export const EVENTS = gql`
       url
       video_url
       capacity
+      venue {
+        id
+        name
+      }
       tags {
         id
         name

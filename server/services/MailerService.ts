@@ -1,11 +1,10 @@
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
-import { IMailerService } from 'types/services';
 import Utilities from '../util/Utilities';
 
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
-export default class MailerService implements IMailerService {
+export default class MailerService {
   emailList: Array<string>;
   subject: string;
   htmlEmail: string;

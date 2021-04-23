@@ -12,7 +12,7 @@ import { EVENT, EVENTS } from '../graphql/queries';
 
 interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
-  onDelete?: Function;
+  onDelete?: () => void;
 }
 
 const Actions: React.FC<ActionsProps> = ({ event, onDelete }) => {

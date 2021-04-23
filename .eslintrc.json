@@ -26,6 +26,7 @@
     }
   ],
   "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": 0,
     "@typescript-eslint/camelcase": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/no-explicit-any": 0,
@@ -33,6 +34,17 @@
       "error",
       { "argsIgnorePattern": "^_" }
     ],
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          "selector": "interface",
+          "format": ["PascalCase"],
+          "custom": {
+            "regex": "^I[A-Z]",
+            "match": false
+          }
+        }
+      ],
     "prettier/prettier": ["error", { "singleQuote": true }],
     "react/display-name": 0,
     "react/prop-types": 0,

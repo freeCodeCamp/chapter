@@ -15,7 +15,7 @@ import {
   EventFormData,
 } from './EventFormUtils';
 import useFormStyles from '../../shared/components/formStyles';
-import { useVenuesQuery } from '../../../../generated';
+import { useVenuesQuery } from '../../../../generated/graphql';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText } = props;

@@ -6,7 +6,10 @@ import { EventFormData } from '../components/EventFormUtils';
 import Layout from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
 import EventForm from '../components/EventForm';
-import { useEventQuery, useUpdateEventMutation } from '../../../../generated';
+import {
+  useEventQuery,
+  useUpdateEventMutation,
+} from '../../../../generated/graphql';
 import { EVENTS } from '../graphql/queries';
 import { getId } from '../../../../helpers/getId';
 

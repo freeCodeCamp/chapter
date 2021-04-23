@@ -3,7 +3,7 @@ import { Grid, makeStyles, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Link from 'next/link';
 import { NextPage } from 'next';
-import { useEventsQuery } from '../../../../generated';
+import { useEventsQuery } from '../../../../generated/graphql';
 import Layout from '../../shared/components/Layout';
 
 import EventItem from '../components/EventItem';

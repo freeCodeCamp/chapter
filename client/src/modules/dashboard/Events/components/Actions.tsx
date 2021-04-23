@@ -6,7 +6,7 @@ import {
   Event,
   useCancelEventMutation,
   useDeleteEventMutation,
-} from '../../../../generated';
+} from '../../../../generated/graphql';
 import useConfirm from '../../../../hooks/useConfirm';
 import { EVENT, EVENTS } from '../graphql/queries';
 

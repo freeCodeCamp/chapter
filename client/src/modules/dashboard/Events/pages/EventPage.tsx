@@ -5,7 +5,7 @@ import { Card, Typography, CardContent } from '@material-ui/core';
 
 import Layout from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
-import { useEventQuery } from '../../../../generated';
+import { useEventQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { ProgressCardContent } from '../../../../components';
 import getLocationString from '../../../../helpers/getLocationString';

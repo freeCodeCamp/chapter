@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import Layout from '../../shared/components/Layout';
 import Skeleton from '../components/Skeleton';
-import { useVenueQuery } from '../../../../generated';
+import { useVenueQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { ProgressCardContent } from '../../../../components';
 import getLocationString from '../../../../helpers/getLocationString';

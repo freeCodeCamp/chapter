@@ -4,7 +4,7 @@ import { Card, Grid, makeStyles, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
 import { ProgressCardContent } from '../../components';
-import { useChaptersQuery } from '../../generated';
+import { useHomePageQuery } from 'generated/graphql';
 
 const useStyles = makeStyles({
   root: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 });
 
 const Home: React.FC = () => {
-  const { loading, error, data } = useChaptersQuery();
+  const { loading, error, data } = useHomePageQuery();
   const styles = useStyles();
 
   return (
@@ -41,18 +41,15 @@ const Home: React.FC = () => {
         {!error && (
           <ProgressCardContent loading={loading}>
             <div className={styles.grid}>
-              {data?.chapters.map((chapter) => (
-                <Card key={chapter.id} className={styles.gridItem}>
+              {data?.events.map((event) => (
+                <Card key={event.id} className={styles.gridItem}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {chapter.name}
+                    <Link href={`/events/${event.id}`} passHref>
+                      <a>{event.name}</a>
+                    </Link>
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    {chapter.description}
-                  </Typography>
+
+                  {event.chapter.name}
                 </Card>
               ))}
             </div>

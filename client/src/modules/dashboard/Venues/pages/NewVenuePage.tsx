@@ -5,7 +5,7 @@ import Layout from '../../shared/components/Layout';
 import Skeleton from '../components/Skeleton';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { useRouter } from 'next/router';
-import { useCreateVenueMutation } from '../../../../generated';
+import { useCreateVenueMutation } from '../../../../generated/graphql';
 import { VENUES } from '../graphql/queries';
 
 export const NewVenuePage: NextPage = () => {

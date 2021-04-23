@@ -6,7 +6,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "gen": "graphql-codegen --config codegen.js"
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "3.3.15",
@@ -19,14 +19,14 @@
     "react-hook-form": "4.10.2"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "1.21.4",
-    "@graphql-codegen/fragment-matcher": "1.17.7",
-    "@graphql-codegen/introspection": "1.18.2",
-    "@graphql-codegen/typescript": "1.22.0",
-    "@graphql-codegen/typescript-document-nodes": "1.17.7",
-    "@graphql-codegen/typescript-graphql-files-modules": "1.17.7",
-    "@graphql-codegen/typescript-operations": "1.17.16",
-    "@graphql-codegen/typescript-react-apollo": "2.2.4",
+    "@graphql-codegen/cli": "^1.21.4",
+    "@graphql-codegen/fragment-matcher": "^2.0.1",
+    "@graphql-codegen/introspection": "^1.18.2",
+    "@graphql-codegen/typescript": "^1.22.0",
+    "@graphql-codegen/typescript-document-nodes": "^1.17.11",
+    "@graphql-codegen/typescript-graphql-files-modules": "^1.18.1",
+    "@graphql-codegen/typescript-operations": "^1.17.16",
+    "@graphql-codegen/typescript-react-apollo": "^2.2.4",
     "@types/node": "12.20.10",
     "@types/react": "17.0.3",
     "@types/react-dom": "17.0.3",

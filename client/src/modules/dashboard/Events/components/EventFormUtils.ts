@@ -1,4 +1,4 @@
-import { Event, Venue } from '../../../../generated';
+import { Event, Venue } from '../../../../generated/graphql';
 
 export interface Field {
   key: keyof EventFormData;

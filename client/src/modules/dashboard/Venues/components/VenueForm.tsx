@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Button, FormControl } from '@material-ui/core';
 
 import useFormStyles from '../../shared/components/formStyles';
-import { Venue, VenueQuery } from '../../../../generated';
+import { Venue, VenueQuery } from '../../../../generated/graphql';
 import { Field } from '../../../../components/Form/Fields';
 
 export interface VenueFormData {

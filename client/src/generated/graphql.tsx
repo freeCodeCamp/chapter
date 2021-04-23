@@ -1,10 +1,14 @@
-import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/client';
-import * as ApolloReactHooks from '@apollo/client';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -14,28 +18,6 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-};
-
-export type Query = {
-  __typename?: 'Query';
-  chapters: Array<Chapter>;
-  chapter?: Maybe<Chapter>;
-  venues: Array<Venue>;
-  venue?: Maybe<Venue>;
-  events: Array<Event>;
-  event?: Maybe<Event>;
-};
-
-export type QueryChapterArgs = {
-  id: Scalars['Int'];
-};
-
-export type QueryVenueArgs = {
-  id: Scalars['Int'];
-};
-
-export type QueryEventArgs = {
-  id: Scalars['Int'];
 };
 
 export type Chapter = {
@@ -54,6 +36,49 @@ export type Chapter = {
   creator: User;
   users: Array<UserChapterRole>;
   banned_users: Array<UserBan>;
+};
+
+export type CreateChapterInputs = {
+  name: Scalars['String'];
+  description: Scalars['String'];
+  category: Scalars['String'];
+  details?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  region: Scalars['String'];
+  country: Scalars['String'];
+};
+
+export type CreateEventInputs = {
+  name: Scalars['String'];
+  description: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  video_url?: Maybe<Scalars['String']>;
+  venue_type?: Maybe<VenueType>;
+  start_at: Scalars['DateTime'];
+  ends_at: Scalars['DateTime'];
+  capacity: Scalars['Float'];
+  venueId?: Maybe<Scalars['Int']>;
+  chapterId: Scalars['Int'];
+};
+
+export type CreateVenueInputs = {
+  name: Scalars['String'];
+  street_address?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  country: Scalars['String'];
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+};
+
+export type Email = {
+  __typename?: 'Email';
+  ourEmail: Scalars['String'];
+  emailList: Array<Scalars['String']>;
+  subject: Scalars['String'];
+  htmlEmail: Scalars['String'];
+  backupText: Scalars['String'];
 };
 
 export type Event = {
@@ -77,114 +102,12 @@ export type Event = {
   tags?: Maybe<Array<Tag>>;
 };
 
-/** All possible venue types for an event */
-export enum VenueType {
-  Physical = 'Physical',
-  Online = 'Online',
-  PhysicalAndOnline = 'PhysicalAndOnline',
-}
-
 export type EventSponsor = {
   __typename?: 'EventSponsor';
   id: Scalars['Int'];
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
   sponsor: Sponsor;
-  event: Event;
-};
-
-export type Sponsor = {
-  __typename?: 'Sponsor';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  name: Scalars['String'];
-  website: Scalars['String'];
-  logo_path: Scalars['String'];
-  type: Scalars['String'];
-  events: Array<EventSponsor>;
-};
-
-export type Venue = {
-  __typename?: 'Venue';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  name: Scalars['String'];
-  events: Array<Event>;
-  street_address?: Maybe<Scalars['String']>;
-  city: Scalars['String'];
-  postal_code: Scalars['String'];
-  region: Scalars['String'];
-  country: Scalars['String'];
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
-};
-
-export type Rsvp = {
-  __typename?: 'Rsvp';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  date: Scalars['DateTime'];
-  on_waitlist: Scalars['Boolean'];
-  event: Event;
-  user: User;
-  canceled: Scalars['Boolean'];
-  interested: Scalars['Boolean'];
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  email: Scalars['String'];
-  created_chapters: Array<Chapter>;
-  rsvps: Array<Rsvp>;
-  chapters: Array<UserChapterRole>;
-  banned_chapters: Array<UserBan>;
-  chapter_roles: Array<UserChapterRole>;
-  instance_roles: Array<UserInstanceRole>;
-};
-
-export type UserChapterRole = {
-  __typename?: 'UserChapterRole';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  user_id: Scalars['Int'];
-  chapter_id: Scalars['Int'];
-  role_name: Scalars['String'];
-  user: User;
-  chapter: Chapter;
-  interested: Scalars['Boolean'];
-};
-
-export type UserBan = {
-  __typename?: 'UserBan';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  user: User;
-  chapter: Chapter;
-};
-
-export type UserInstanceRole = {
-  __typename?: 'UserInstanceRole';
-  user_id: Scalars['Int'];
-  role_name: Scalars['String'];
-  user: User;
-};
-
-export type Tag = {
-  __typename?: 'Tag';
-  id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  name: Scalars['String'];
   event: Event;
 };
 
@@ -200,6 +123,7 @@ export type Mutation = {
   updateEvent: Event;
   cancelEvent: Event;
   deleteEvent: Scalars['Boolean'];
+  sendEmail: Email;
 };
 
 export type MutationCreateChapterArgs = {
@@ -245,14 +169,70 @@ export type MutationDeleteEventArgs = {
   id: Scalars['Int'];
 };
 
-export type CreateChapterInputs = {
+export type MutationSendEmailArgs = {
+  data: SendEmailInputs;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  chapters: Array<Chapter>;
+  chapter?: Maybe<Chapter>;
+  venues: Array<Venue>;
+  venue?: Maybe<Venue>;
+  events: Array<Event>;
+  event?: Maybe<Event>;
+};
+
+export type QueryChapterArgs = {
+  id: Scalars['Int'];
+};
+
+export type QueryVenueArgs = {
+  id: Scalars['Int'];
+};
+
+export type QueryEventArgs = {
+  id: Scalars['Int'];
+};
+
+export type Rsvp = {
+  __typename?: 'Rsvp';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  date: Scalars['DateTime'];
+  on_waitlist: Scalars['Boolean'];
+  event: Event;
+  user: User;
+  canceled: Scalars['Boolean'];
+  interested: Scalars['Boolean'];
+};
+
+export type SendEmailInputs = {
+  to: Array<Scalars['String']>;
+  subject: Scalars['String'];
+  html: Scalars['String'];
+};
+
+export type Sponsor = {
+  __typename?: 'Sponsor';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
   name: Scalars['String'];
-  description: Scalars['String'];
-  category: Scalars['String'];
-  details?: Maybe<Scalars['String']>;
-  city: Scalars['String'];
-  region: Scalars['String'];
-  country: Scalars['String'];
+  website: Scalars['String'];
+  logo_path: Scalars['String'];
+  type: Scalars['String'];
+  events: Array<EventSponsor>;
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  name: Scalars['String'];
+  event: Event;
 };
 
 export type UpdateChapterInputs = {
@@ -263,41 +243,6 @@ export type UpdateChapterInputs = {
   city?: Maybe<Scalars['String']>;
   region?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
-};
-
-export type CreateVenueInputs = {
-  name: Scalars['String'];
-  street_address?: Maybe<Scalars['String']>;
-  city: Scalars['String'];
-  postal_code: Scalars['String'];
-  region: Scalars['String'];
-  country: Scalars['String'];
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
-};
-
-export type UpdateVenueInputs = {
-  name?: Maybe<Scalars['String']>;
-  street_address?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  postal_code?: Maybe<Scalars['String']>;
-  region?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
-};
-
-export type CreateEventInputs = {
-  name: Scalars['String'];
-  description: Scalars['String'];
-  url?: Maybe<Scalars['String']>;
-  video_url?: Maybe<Scalars['String']>;
-  venue_type?: Maybe<VenueType>;
-  start_at: Scalars['DateTime'];
-  ends_at: Scalars['DateTime'];
-  capacity: Scalars['Float'];
-  venueId?: Maybe<Scalars['Int']>;
-  chapterId: Scalars['Int'];
 };
 
 export type UpdateEventInputs = {
@@ -311,6 +256,85 @@ export type UpdateEventInputs = {
   capacity?: Maybe<Scalars['Float']>;
   venueId?: Maybe<Scalars['Int']>;
 };
+
+export type UpdateVenueInputs = {
+  name?: Maybe<Scalars['String']>;
+  street_address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  postal_code?: Maybe<Scalars['String']>;
+  region?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+  email: Scalars['String'];
+  created_chapters: Array<Chapter>;
+  rsvps: Array<Rsvp>;
+  chapters: Array<UserChapterRole>;
+  banned_chapters: Array<UserBan>;
+  chapter_roles: Array<UserChapterRole>;
+  instance_roles: Array<UserInstanceRole>;
+};
+
+export type UserBan = {
+  __typename?: 'UserBan';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  user: User;
+  chapter: Chapter;
+};
+
+export type UserChapterRole = {
+  __typename?: 'UserChapterRole';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+  chapter_id: Scalars['Int'];
+  role_name: Scalars['String'];
+  user: User;
+  chapter: Chapter;
+  interested: Scalars['Boolean'];
+};
+
+export type UserInstanceRole = {
+  __typename?: 'UserInstanceRole';
+  user_id: Scalars['Int'];
+  role_name: Scalars['String'];
+  user: User;
+};
+
+export type Venue = {
+  __typename?: 'Venue';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  name: Scalars['String'];
+  events: Array<Event>;
+  street_address?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  country: Scalars['String'];
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+};
+
+/** All possible venue types for an event */
+export enum VenueType {
+  Physical = 'Physical',
+  Online = 'Online',
+  PhysicalAndOnline = 'PhysicalAndOnline',
+}
 
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -533,11 +557,13 @@ export type UpdateVenueMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
-export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
+export type HomePageQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChaptersQuery = { __typename?: 'Query' } & {
-  chapters: Array<
-    { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name' | 'description'>
+export type HomePageQuery = { __typename?: 'Query' } & {
+  events: Array<
+    { __typename?: 'Event' } & Pick<Event, 'id' | 'name'> & {
+        chapter: { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name'>;
+      }
   >;
 };
 
@@ -575,30 +601,26 @@ export const EventsDocument = gql`
  * });
  */
 export function useEventsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    EventsQuery,
-    EventsQueryVariables
-  >,
+  baseOptions?: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<EventsQuery, EventsQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventsQuery, EventsQueryVariables>(
     EventsDocument,
-    baseOptions,
+    options,
   );
 }
 export function useEventsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    EventsQuery,
-    EventsQueryVariables
-  >,
+  baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<EventsQuery, EventsQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(
     EventsDocument,
-    baseOptions,
+    options,
   );
 }
 export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
 export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
-export type EventsQueryResult = ApolloReactCommon.QueryResult<
+export type EventsQueryResult = Apollo.QueryResult<
   EventsQuery,
   EventsQueryVariables
 >;
@@ -657,30 +679,26 @@ export const EventDocument = gql`
  * });
  */
 export function useEventQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    EventQuery,
-    EventQueryVariables
-  >,
+  baseOptions: Apollo.QueryHookOptions<EventQuery, EventQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<EventQuery, EventQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventQuery, EventQueryVariables>(
     EventDocument,
-    baseOptions,
+    options,
   );
 }
 export function useEventLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    EventQuery,
-    EventQueryVariables
-  >,
+  baseOptions?: Apollo.LazyQueryHookOptions<EventQuery, EventQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<EventQuery, EventQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventQuery, EventQueryVariables>(
     EventDocument,
-    baseOptions,
+    options,
   );
 }
 export type EventQueryHookResult = ReturnType<typeof useEventQuery>;
 export type EventLazyQueryHookResult = ReturnType<typeof useEventLazyQuery>;
-export type EventQueryResult = ApolloReactCommon.QueryResult<
+export type EventQueryResult = Apollo.QueryResult<
   EventQuery,
   EventQueryVariables
 >;
@@ -727,32 +745,34 @@ export const EventVenuesDocument = gql`
  * });
  */
 export function useEventVenuesQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     EventVenuesQuery,
     EventVenuesQueryVariables
   >,
 ) {
-  return ApolloReactHooks.useQuery<EventVenuesQuery, EventVenuesQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventVenuesQuery, EventVenuesQueryVariables>(
     EventVenuesDocument,
-    baseOptions,
+    options,
   );
 }
 export function useEventVenuesLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+  baseOptions?: Apollo.LazyQueryHookOptions<
     EventVenuesQuery,
     EventVenuesQueryVariables
   >,
 ) {
-  return ApolloReactHooks.useLazyQuery<
-    EventVenuesQuery,
-    EventVenuesQueryVariables
-  >(EventVenuesDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventVenuesQuery, EventVenuesQueryVariables>(
+    EventVenuesDocument,
+    options,
+  );
 }
 export type EventVenuesQueryHookResult = ReturnType<typeof useEventVenuesQuery>;
 export type EventVenuesLazyQueryHookResult = ReturnType<
   typeof useEventVenuesLazyQuery
 >;
-export type EventVenuesQueryResult = ApolloReactCommon.QueryResult<
+export type EventVenuesQueryResult = Apollo.QueryResult<
   EventVenuesQuery,
   EventVenuesQueryVariables
 >;
@@ -773,7 +793,7 @@ export const CreateEventDocument = gql`
     }
   }
 `;
-export type CreateEventMutationFn = ApolloReactCommon.MutationFunction<
+export type CreateEventMutationFn = Apollo.MutationFunction<
   CreateEventMutation,
   CreateEventMutationVariables
 >;
@@ -796,21 +816,22 @@ export type CreateEventMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useCreateEventMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     CreateEventMutation,
     CreateEventMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<
-    CreateEventMutation,
-    CreateEventMutationVariables
-  >(CreateEventDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateEventMutation, CreateEventMutationVariables>(
+    CreateEventDocument,
+    options,
+  );
 }
 export type CreateEventMutationHookResult = ReturnType<
   typeof useCreateEventMutation
 >;
-export type CreateEventMutationResult = ApolloReactCommon.MutationResult<CreateEventMutation>;
-export type CreateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
+export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutation,
   CreateEventMutationVariables
 >;
@@ -831,7 +852,7 @@ export const UpdateEventDocument = gql`
     }
   }
 `;
-export type UpdateEventMutationFn = ApolloReactCommon.MutationFunction<
+export type UpdateEventMutationFn = Apollo.MutationFunction<
   UpdateEventMutation,
   UpdateEventMutationVariables
 >;
@@ -855,21 +876,22 @@ export type UpdateEventMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useUpdateEventMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     UpdateEventMutation,
     UpdateEventMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<
-    UpdateEventMutation,
-    UpdateEventMutationVariables
-  >(UpdateEventDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateEventMutation, UpdateEventMutationVariables>(
+    UpdateEventDocument,
+    options,
+  );
 }
 export type UpdateEventMutationHookResult = ReturnType<
   typeof useUpdateEventMutation
 >;
-export type UpdateEventMutationResult = ApolloReactCommon.MutationResult<UpdateEventMutation>;
-export type UpdateEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
+export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<
   UpdateEventMutation,
   UpdateEventMutationVariables
 >;
@@ -881,7 +903,7 @@ export const CancelEventDocument = gql`
     }
   }
 `;
-export type CancelEventMutationFn = ApolloReactCommon.MutationFunction<
+export type CancelEventMutationFn = Apollo.MutationFunction<
   CancelEventMutation,
   CancelEventMutationVariables
 >;
@@ -904,21 +926,22 @@ export type CancelEventMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useCancelEventMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     CancelEventMutation,
     CancelEventMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<
-    CancelEventMutation,
-    CancelEventMutationVariables
-  >(CancelEventDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CancelEventMutation, CancelEventMutationVariables>(
+    CancelEventDocument,
+    options,
+  );
 }
 export type CancelEventMutationHookResult = ReturnType<
   typeof useCancelEventMutation
 >;
-export type CancelEventMutationResult = ApolloReactCommon.MutationResult<CancelEventMutation>;
-export type CancelEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type CancelEventMutationResult = Apollo.MutationResult<CancelEventMutation>;
+export type CancelEventMutationOptions = Apollo.BaseMutationOptions<
   CancelEventMutation,
   CancelEventMutationVariables
 >;
@@ -927,7 +950,7 @@ export const DeleteEventDocument = gql`
     deleteEvent(id: $id)
   }
 `;
-export type DeleteEventMutationFn = ApolloReactCommon.MutationFunction<
+export type DeleteEventMutationFn = Apollo.MutationFunction<
   DeleteEventMutation,
   DeleteEventMutationVariables
 >;
@@ -950,21 +973,22 @@ export type DeleteEventMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useDeleteEventMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     DeleteEventMutation,
     DeleteEventMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<
-    DeleteEventMutation,
-    DeleteEventMutationVariables
-  >(DeleteEventDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteEventMutation, DeleteEventMutationVariables>(
+    DeleteEventDocument,
+    options,
+  );
 }
 export type DeleteEventMutationHookResult = ReturnType<
   typeof useDeleteEventMutation
 >;
-export type DeleteEventMutationResult = ApolloReactCommon.MutationResult<DeleteEventMutation>;
-export type DeleteEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type DeleteEventMutationResult = Apollo.MutationResult<DeleteEventMutation>;
+export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
 >;
@@ -1000,30 +1024,26 @@ export const VenuesDocument = gql`
  * });
  */
 export function useVenuesQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    VenuesQuery,
-    VenuesQueryVariables
-  >,
+  baseOptions?: Apollo.QueryHookOptions<VenuesQuery, VenuesQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<VenuesQuery, VenuesQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<VenuesQuery, VenuesQueryVariables>(
     VenuesDocument,
-    baseOptions,
+    options,
   );
 }
 export function useVenuesLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    VenuesQuery,
-    VenuesQueryVariables
-  >,
+  baseOptions?: Apollo.LazyQueryHookOptions<VenuesQuery, VenuesQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<VenuesQuery, VenuesQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<VenuesQuery, VenuesQueryVariables>(
     VenuesDocument,
-    baseOptions,
+    options,
   );
 }
 export type VenuesQueryHookResult = ReturnType<typeof useVenuesQuery>;
 export type VenuesLazyQueryHookResult = ReturnType<typeof useVenuesLazyQuery>;
-export type VenuesQueryResult = ApolloReactCommon.QueryResult<
+export type VenuesQueryResult = Apollo.QueryResult<
   VenuesQuery,
   VenuesQueryVariables
 >;
@@ -1060,30 +1080,26 @@ export const VenueDocument = gql`
  * });
  */
 export function useVenueQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    VenueQuery,
-    VenueQueryVariables
-  >,
+  baseOptions: Apollo.QueryHookOptions<VenueQuery, VenueQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<VenueQuery, VenueQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<VenueQuery, VenueQueryVariables>(
     VenueDocument,
-    baseOptions,
+    options,
   );
 }
 export function useVenueLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    VenueQuery,
-    VenueQueryVariables
-  >,
+  baseOptions?: Apollo.LazyQueryHookOptions<VenueQuery, VenueQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<VenueQuery, VenueQueryVariables>(
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<VenueQuery, VenueQueryVariables>(
     VenueDocument,
-    baseOptions,
+    options,
   );
 }
 export type VenueQueryHookResult = ReturnType<typeof useVenueQuery>;
 export type VenueLazyQueryHookResult = ReturnType<typeof useVenueLazyQuery>;
-export type VenueQueryResult = ApolloReactCommon.QueryResult<
+export type VenueQueryResult = Apollo.QueryResult<
   VenueQuery,
   VenueQueryVariables
 >;
@@ -1102,7 +1118,7 @@ export const CreateVenueDocument = gql`
     }
   }
 `;
-export type CreateVenueMutationFn = ApolloReactCommon.MutationFunction<
+export type CreateVenueMutationFn = Apollo.MutationFunction<
   CreateVenueMutation,
   CreateVenueMutationVariables
 >;
@@ -1125,21 +1141,22 @@ export type CreateVenueMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useCreateVenueMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     CreateVenueMutation,
     CreateVenueMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<
-    CreateVenueMutation,
-    CreateVenueMutationVariables
-  >(CreateVenueDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateVenueMutation, CreateVenueMutationVariables>(
+    CreateVenueDocument,
+    options,
+  );
 }
 export type CreateVenueMutationHookResult = ReturnType<
   typeof useCreateVenueMutation
 >;
-export type CreateVenueMutationResult = ApolloReactCommon.MutationResult<CreateVenueMutation>;
-export type CreateVenueMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type CreateVenueMutationResult = Apollo.MutationResult<CreateVenueMutation>;
+export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutation,
   CreateVenueMutationVariables
 >;
@@ -1158,7 +1175,7 @@ export const UpdateVenueDocument = gql`
     }
   }
 `;
-export type UpdateVenueMutationFn = ApolloReactCommon.MutationFunction<
+export type UpdateVenueMutationFn = Apollo.MutationFunction<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
 >;
@@ -1182,76 +1199,89 @@ export type UpdateVenueMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useUpdateVenueMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     UpdateVenueMutation,
     UpdateVenueMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<
-    UpdateVenueMutation,
-    UpdateVenueMutationVariables
-  >(UpdateVenueDocument, baseOptions);
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateVenueMutation, UpdateVenueMutationVariables>(
+    UpdateVenueDocument,
+    options,
+  );
 }
 export type UpdateVenueMutationHookResult = ReturnType<
   typeof useUpdateVenueMutation
 >;
-export type UpdateVenueMutationResult = ApolloReactCommon.MutationResult<UpdateVenueMutation>;
-export type UpdateVenueMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type UpdateVenueMutationResult = Apollo.MutationResult<UpdateVenueMutation>;
+export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
 >;
-export const ChaptersDocument = gql`
-  query chapters {
-    chapters {
+export const HomePageDocument = gql`
+  query homePage {
+    events {
       id
       name
-      description
+      chapter {
+        id
+        name
+      }
     }
   }
 `;
 
 /**
- * __useChaptersQuery__
+ * __useHomePageQuery__
  *
- * To run a query within a React component, call `useChaptersQuery` and pass it any options that fit your needs.
- * When your component renders, `useChaptersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHomePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChaptersQuery({
+ * const { data, loading, error } = useHomePageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useChaptersQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    ChaptersQuery,
-    ChaptersQueryVariables
-  >,
+export function useHomePageQuery(
+  baseOptions?: Apollo.QueryHookOptions<HomePageQuery, HomePageQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<ChaptersQuery, ChaptersQueryVariables>(
-    ChaptersDocument,
-    baseOptions,
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<HomePageQuery, HomePageQueryVariables>(
+    HomePageDocument,
+    options,
   );
 }
-export function useChaptersLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    ChaptersQuery,
-    ChaptersQueryVariables
+export function useHomePageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    HomePageQuery,
+    HomePageQueryVariables
   >,
 ) {
-  return ApolloReactHooks.useLazyQuery<ChaptersQuery, ChaptersQueryVariables>(
-    ChaptersDocument,
-    baseOptions,
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<HomePageQuery, HomePageQueryVariables>(
+    HomePageDocument,
+    options,
   );
 }
-export type ChaptersQueryHookResult = ReturnType<typeof useChaptersQuery>;
-export type ChaptersLazyQueryHookResult = ReturnType<
-  typeof useChaptersLazyQuery
+export type HomePageQueryHookResult = ReturnType<typeof useHomePageQuery>;
+export type HomePageLazyQueryHookResult = ReturnType<
+  typeof useHomePageLazyQuery
 >;
-export type ChaptersQueryResult = ApolloReactCommon.QueryResult<
-  ChaptersQuery,
-  ChaptersQueryVariables
+export type HomePageQueryResult = Apollo.QueryResult<
+  HomePageQuery,
+  HomePageQueryVariables
 >;
+
+export interface PossibleTypesResultData {
+  possibleTypes: {
+    [key: string]: string[];
+  };
+}
+const result: PossibleTypesResultData = {
+  possibleTypes: {},
+};
+export default result;

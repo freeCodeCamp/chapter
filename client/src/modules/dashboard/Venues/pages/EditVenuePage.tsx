@@ -5,7 +5,10 @@ import Layout from '../../shared/components/Layout';
 import Skeleton from '../components/Skeleton';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { useRouter } from 'next/router';
-import { useVenueQuery, useUpdateVenueMutation } from '../../../../generated';
+import {
+  useVenueQuery,
+  useUpdateVenueMutation,
+} from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { makeStyles } from '@material-ui/core';
 import { VENUES } from '../graphql/queries';

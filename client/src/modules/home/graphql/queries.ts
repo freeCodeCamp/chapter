@@ -1,11 +1,14 @@
 import { gql } from '@apollo/client';
 
-export const CHAPTERS_QUERY = gql`
-  query chapters {
-    chapters {
+export const HOME_PAGE_QUERY = gql`
+  query homePage {
+    events {
       id
       name
-      description
+      chapter {
+        id
+        name
+      }
     }
   }
 `;

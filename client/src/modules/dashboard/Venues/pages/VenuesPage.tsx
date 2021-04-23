@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import Link from 'next/link';
 import { NextPage } from 'next';
 
-import { useVenuesQuery } from '../../../../generated';
+import { useVenuesQuery } from '../../../../generated/graphql';
 import Layout from '../../shared/components/Layout';
 import VenueItem from '../components/VenueItem';
 

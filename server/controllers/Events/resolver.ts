@@ -5,9 +5,10 @@ import { CreateEventInputs, UpdateEventInputs } from './inputs';
 @Resolver()
 export class EventResolver {
   @Query(() => [Event])
-  events() {
+  events(@Arg('limit', { nullable: true }) limit?: number) {
     return Event.find({
       relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      take: limit,
     });
   }
 

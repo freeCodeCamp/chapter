@@ -191,6 +191,10 @@ export type QueryVenueArgs = {
   id: Scalars['Int'];
 };
 
+export type QueryEventsArgs = {
+  limit?: Maybe<Scalars['Float']>;
+};
+
 export type QueryEventArgs = {
   id: Scalars['Int'];
 };
@@ -1297,7 +1301,7 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const HomePageDocument = gql`
   query homePage {
-    events {
+    events(limit: 5) {
       id
       name
       description

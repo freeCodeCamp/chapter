@@ -5,7 +5,7 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 
 import { useEventsQuery } from 'generated/graphql';
-import Layout from '../../shared/components/Layout';
+import { Layout } from '../../shared/components/Layout';
 
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();

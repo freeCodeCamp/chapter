@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Card, Typography, CardContent } from '@material-ui/core';
 
-import Layout from '../../shared/components/Layout';
+import { Layout } from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
 import { useEventQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';

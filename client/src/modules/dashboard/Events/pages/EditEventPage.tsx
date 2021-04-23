@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 
 import { EventFormData } from '../components/EventFormUtils';
-import Layout from '../../shared/components/Layout';
+import { Layout } from '../../shared/components/Layout';
 import Skeleton from '../../Venues/components/Skeleton';
 import EventForm from '../components/EventForm';
 import {

@@ -5,6 +5,8 @@ import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styl
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
+import { ChakraProvider } from '@chakra-ui/react';
+
 import theme from '../styles/theme';
 import PageLayout from '../components/PageLayout';
 
@@ -33,9 +35,11 @@ export default class MyApp extends App {
         <ApolloProvider client={client}>
           <MaterialUIThemeProvider theme={theme}>
             <CssBaseline />
-            <PageLayout>
-              <Component {...pageProps} />
-            </PageLayout>
+            <ChakraProvider>
+              <PageLayout>
+                <Component {...pageProps} />
+              </PageLayout>
+            </ChakraProvider>
           </MaterialUIThemeProvider>
         </ApolloProvider>
       </>

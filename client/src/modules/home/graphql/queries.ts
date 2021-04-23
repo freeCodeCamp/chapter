@@ -5,9 +5,15 @@ export const HOME_PAGE_QUERY = gql`
     events {
       id
       name
+      description
+      start_at
+      tags {
+        name
+      }
       chapter {
         id
         name
+        category
       }
     }
   }

@@ -1,34 +1,18 @@
 import React from 'react';
-import Link from 'next/link';
-import { Grid, makeStyles } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import { LinkButton } from 'chakra-next-link';
 
 import links from '../../../../constants/DashboardLinks';
-
-const useStyles = makeStyles(() => ({
-  link: {
-    fontSize: '1rem',
-    marginRight: '1rem',
-  },
-}));
+import { HStack } from '@chakra-ui/layout';
 
 const Navbar: React.FC = () => {
-  const styles = useStyles();
-
   return (
-    <nav>
-      <Grid container spacing={2}>
-        {links.map((item) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={item.text}>
-            <Link href={item.link}>
-              <Button variant="outlined">
-                <a className={styles.link}>{item.text}</a>
-              </Button>
-            </Link>
-          </Grid>
-        ))}
-      </Grid>
-    </nav>
+    <HStack as="nav">
+      {links.map((item) => (
+        <LinkButton key={item.link} href={item.link}>
+          {item.text}
+        </LinkButton>
+      ))}
+    </HStack>
   );
 };
 

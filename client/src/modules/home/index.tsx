@@ -1,72 +1,70 @@
 import React from 'react';
 import Link from 'next/link';
-import { Card, Grid, makeStyles, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import {
+  Heading,
+  Spinner,
+  VStack,
+  Text,
+  Box,
+  Tag,
+  HStack,
+  Flex,
+} from '@chakra-ui/react';
+import { format } from 'date-fns';
 
-import { ProgressCardContent } from '../../components';
 import { useHomePageQuery } from 'generated/graphql';
 
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gridAutoRows: '1fr',
-    gridGap: '1rem',
-  },
-  gridItem: {
-    padding: '0.5rem',
-  },
-});
+const Card: React.FC = ({ children }) => {
+  return (
+    <Box p="4" w="50%" borderWidth="1px" borderRadius="lg" overflow="hidden">
+      {children}
+    </Box>
+  );
+};
 
 const Home: React.FC = () => {
   const { loading, error, data } = useHomePageQuery();
-  const styles = useStyles();
 
   return (
-    <>
-      <div className={styles.root}>
-        <Typography variant="h3" component="h1">
-          Upcoming Events
-        </Typography>
-        {error && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {error.name}: {error.message}
-            </Grid>
-          </Grid>
-        )}
-        {!error && (
-          <ProgressCardContent loading={loading}>
-            <div className={styles.grid}>
-              {data?.events.map((event) => (
-                <Card key={event.id} className={styles.gridItem}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    <Link href={`/events/${event.id}`} passHref>
-                      <a>{event.name}</a>
-                    </Link>
-                  </Typography>
+    <VStack align="flex-start">
+      <Heading>Upcoming events</Heading>
+      {loading ? (
+        <Spinner />
+      ) : error || !data ? (
+        <>
+          <Heading size="md" color="red.400">
+            😕 Something went wrong
+          </Heading>
+          <Text>{error?.message}</Text>
+        </>
+      ) : (
+        data.events.map((event) => (
+          <Card key={event.id}>
+            <Flex justify="space-between">
+              <Heading size="md" as="h2">
+                <Link href={`/events/${event.id}`} passHref>
+                  <a>{event.name}</a>
+                </Link>
+              </Heading>
+              <HStack>
+                {event.tags?.map((t) => (
+                  <Tag key={t.name}>{t.name}</Tag>
+                ))}
+              </HStack>
+            </Flex>
 
-                  {event.chapter.name}
-                </Card>
-              ))}
-            </div>
-          </ProgressCardContent>
-        )}
-      </div>
+            <Heading size="sm">
+              {format(new Date(event.start_at), 'E, LLL d @ HH:MM')}
+            </Heading>
+            <Link href={`/chapters/${event.chapter.id}`}>
+              {event.chapter.name}
+            </Link>
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Link href="/dashboard">
-            <Button variant="outlined">
-              <a>Admin dashboard</a>
-            </Button>
-          </Link>
-        </Grid>
-      </Grid>
-    </>
+            <Text>{event.description}</Text>
+          </Card>
+        ))
+      )}
+    </VStack>
   );
 };
 

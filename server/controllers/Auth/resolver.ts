@@ -21,7 +21,7 @@ type TokenResponseType = {
 @Resolver()
 export class AuthResolver {
   @Mutation(() => User)
-  async register(@Arg('data') data: RegisterInput) {
+  async register(@Arg('data') data: RegisterInput): Promise<User> {
     let user = await User.findOne({ where: { email: data.email } });
     if (user) {
       throw new Error('EMAIL_IN_USE');
@@ -34,7 +34,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => LoginType)
-  async login(@Arg('data') data: LoginInput) {
+  async login(@Arg('data') data: LoginInput): Promise<LoginType> {
     const user = await User.findOne({ where: { email: data.email } });
 
     if (!user) {
@@ -56,7 +56,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthenticateType)
-  async authenticate(@Arg('token') token: string) {
+  async authenticate(@Arg('token') token: string): Promise<AuthenticateType> {
     let data: TokenResponseType;
     try {
       data = verify(token, getConfig('JWT_SECRET')) as TokenResponseType;

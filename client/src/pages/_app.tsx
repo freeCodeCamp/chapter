@@ -5,8 +5,11 @@ import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styl
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
+import { ChakraProvider } from '@chakra-ui/react';
+
 import theme from '../styles/theme';
 import PageLayout from '../components/PageLayout';
+import { ConfirmContextProvider } from 'chakra-confirm';
 
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
@@ -33,9 +36,13 @@ export default class MyApp extends App {
         <ApolloProvider client={client}>
           <MaterialUIThemeProvider theme={theme}>
             <CssBaseline />
-            <PageLayout>
-              <Component {...pageProps} />
-            </PageLayout>
+            <ChakraProvider>
+              <ConfirmContextProvider>
+                <PageLayout>
+                  <Component {...pageProps} />
+                </PageLayout>
+              </ConfirmContextProvider>
+            </ChakraProvider>
           </MaterialUIThemeProvider>
         </ApolloProvider>
       </>

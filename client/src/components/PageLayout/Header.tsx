@@ -1,9 +1,9 @@
 import React from 'react';
-import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
 
 import { headerLinks } from '../../constants/Header';
 
+import { Link } from 'chakra-next-link';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Search from '@material-ui/icons/Search';
@@ -36,7 +36,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         width: '100%',
       }}
     >
-      <Link href="/">
+      <Link href="/" justLink>
         <Grid
           item
           component="img"
@@ -65,9 +65,7 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         <Grid container direction="row" spacing={2} justify="center">
           {headerLinks.map((headerLink) => (
             <Grid item key={headerLink.name}>
-              <Link href={headerLink.href}>
-                <a className={styles.link}>{headerLink.label}</a>
-              </Link>
+              <Link href={headerLink.href}>{headerLink.label}</Link>
             </Grid>
           ))}
         </Grid>

@@ -59,9 +59,9 @@ All `commands` in this document need to be run within a terminal / shell.
 1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
     > Note: For Windows using WSL, it maintains its own file system. Use a sub-directory within WSL's /home/username/ filesystem. The alternative, using a directory within C:\, will cause everything to run very slowly.
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_. 
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_ . 
 
-    > Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.
+    > Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.  This example shows using HTTPS, but [remote GitHub repositories can use HTTPS or SSH](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories). 
 
     ```sh
     git clone https://github.com/YOUR_USER_NAME/Chapter.git

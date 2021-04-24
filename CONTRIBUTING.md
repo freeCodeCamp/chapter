@@ -3,7 +3,7 @@
 * [Contribution Guidelines](#contribution-guidelines)
 * [Contributing Code](#contributing-code)
   * [Using GitPod](#using-gitpod)
-  * [Using a Traditional Dev Environment](#using-atraditional-dev-environment)
+  * [Using a Traditional Dev Environment](#using-a-traditional-dev-environment)
 * [Running the Application](#running-the-application)
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [Server-side Technical Documentation](#server-side-technical-documentation)

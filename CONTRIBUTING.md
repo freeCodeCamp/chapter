@@ -47,7 +47,7 @@ Follow these steps to fork the repository:
 * Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
 * Mac: the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
 * Windows - options for running a Linux terminal and shell within Windows include:
-    * (Recommended) [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps) with a Linux distribution, such as [_Ubuntu 20.04 for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows) or [other supported Linux distributions](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice).
+    * [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps) with a Linux distribution, such as [_Ubuntu 20.04 for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows) or [other supported Linux distributions](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice).
         > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is an **optional** terminal interface tool. It can only open a Linux shell if WSL and a Linux distro already exist.
     * _Git Bash_ - this terminal + shell is included with _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
     * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
@@ -56,25 +56,28 @@ Follow these steps to fork the repository:
 
 All `commands` in this document need to be run within a terminal / shell.
 
-1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
-    > Note: For Windows using WSL, it maintains its own file system. Use a sub-directory within WSL's /home/username/ filesystem. The alternative, using a directory within C:\, will cause everything to run very slowly.
+1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
+    * SSH: Authenticates without a password by using SSH key authentication.
+    * HTTPS: Authenticates with a username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, avoid using your GitHub password and use a PAT.
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_ . 
+2. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
+    > Note: Windows using WSL + a Linux distro maintains its own file system. Use a sub-directory within the Linux /home/username/ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
 
-    > Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.  This example shows using HTTPS, but [remote GitHub repositories can use HTTPS or SSH](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories). 
+3. [Clone](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.
 
-    ```sh
-    git clone https://github.com/YOUR_USER_NAME/Chapter.git
-    ```
+    * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) (preferred): `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
+    * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls): `git clone https://github.com/YOUR_USER_NAME/chapter.git`
+ 
+     Your forked repository of code will be referred to as the _origin_ . 
 
-3. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
+4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
 
     ```sh
     cd chapter
     git remote add upstream https://github.com/freeCodeCamp/chapter.git
     ```
 
-4. Ensure the _origin_ and _upstream_ configuration is correct:
+5. Ensure the _origin_ and _upstream_ configuration is correct:
 
     ```sh
     git remote -v

@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { makeStyles, Grid } from '@material-ui/core';
+import usePageLayoutStyles from './pageLayout.styles';
 
 import { headerLinks } from '../../constants/Header';
 
@@ -8,21 +9,47 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Search from '@material-ui/icons/Search';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: 'white',
   },
-  cursorPointer: {
+  logo: {
     cursor: 'pointer',
+    maxWidth: '300px',
+    margin: 'auto',
+    [theme.breakpoints.up('sm')]: {
+      margin: 0,
+    },
   },
   searchBox: {
     backgroundColor: 'white',
   },
-});
+  nav: {
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: 'fit-content',
+    },
+  },
+  navCompatible: {
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '-moz-fit-content',
+    },
+  },
+  links: {
+    flexWrap: 'nowrap',
+    justifyContent: 'center',
+    [theme.breakpoints.up('sm')]: {
+      justifyContent: 'flex-start',
+    },
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'flex-end',
+    },
+  },
+}));
 
-const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
+const Header: React.FC = () => {
   const styles = useStyles();
+  const classes = usePageLayoutStyles();
 
   return (
     <Grid
@@ -40,14 +67,15 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
         <Grid
           item
           component="img"
-          className={styles.cursorPointer}
+          className={styles.logo}
           src="/freecodecamp-logo.svg"
           alt="The freeCodeCamp logo"
           xs={12}
+          sm={6}
           md={4}
         />
       </Link>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <TextField
           fullWidth
           className={styles.searchBox}
@@ -61,8 +89,21 @@ const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
           }}
         />
       </Grid>
-      <Grid component="nav" item xs={12} md={4}>
-        <Grid container direction="row" spacing={2} justify="center">
+      <Grid
+        className={`${styles.nav} ${styles.navCompatible}`}
+        component="nav"
+        item
+        xs={12}
+        sm={6}
+        md={4}
+      >
+        <Grid
+          className={styles.links}
+          container
+          direction="row"
+          spacing={2}
+          justify="center"
+        >
           {headerLinks.map((headerLink) => (
             <Grid item key={headerLink.name}>
               <Link href={headerLink.href}>

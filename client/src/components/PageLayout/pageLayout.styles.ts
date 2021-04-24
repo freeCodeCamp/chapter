@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     'text-align': 'center',
     'padding-bottom': `${theme.spacing(2)}px`,
     'padding-top': `${theme.spacing(2)}px`,
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       'justify-content': 'space-between',
     },
   },

@@ -5,6 +5,11 @@ schema {
     mutation: Mutation
 }
 
+type AuthenticateType {
+    token: String!
+    user: User!
+}
+
 type Chapter {
     banned_users: [UserBan!]!
     category: String!
@@ -63,6 +68,7 @@ type LoginType {
 }
 
 type Mutation {
+    authenticate(token: String!): AuthenticateType!
     cancelEvent(id: Int!): Event!
     createChapter(data: CreateChapterInputs!): Chapter!
     createEvent(data: CreateEventInputs!): Event!

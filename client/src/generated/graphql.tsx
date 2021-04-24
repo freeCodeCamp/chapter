@@ -20,6 +20,12 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AuthenticateType = {
+  __typename?: 'AuthenticateType';
+  token: Scalars['String'];
+  user: User;
+};
+
 export type Chapter = {
   __typename?: 'Chapter';
   id: Scalars['Int'];
@@ -135,6 +141,7 @@ export type Mutation = {
   sendEmail: Email;
   register: User;
   login: LoginType;
+  authenticate: AuthenticateType;
 };
 
 export type MutationCreateChapterArgs = {
@@ -190,6 +197,10 @@ export type MutationRegisterArgs = {
 
 export type MutationLoginArgs = {
   data: LoginInput;
+};
+
+export type MutationAuthenticateArgs = {
+  token: Scalars['String'];
 };
 
 export type Query = {
@@ -382,6 +393,22 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation' } & {
   register: { __typename?: 'User' } & Pick<User, 'id'>;
+};
+
+export type AuthenticateMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+export type AuthenticateMutation = { __typename?: 'Mutation' } & {
+  authenticate: { __typename?: 'AuthenticateType' } & Pick<
+    AuthenticateType,
+    'token'
+  > & {
+      user: { __typename?: 'User' } & Pick<
+        User,
+        'id' | 'first_name' | 'last_name'
+      >;
+    };
 };
 
 export type ChapterQueryVariables = Exact<{
@@ -758,6 +785,60 @@ export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
+>;
+export const AuthenticateDocument = gql`
+  mutation authenticate($token: String!) {
+    authenticate(token: $token) {
+      token
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+`;
+export type AuthenticateMutationFn = Apollo.MutationFunction<
+  AuthenticateMutation,
+  AuthenticateMutationVariables
+>;
+
+/**
+ * __useAuthenticateMutation__
+ *
+ * To run a mutation, you first call `useAuthenticateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAuthenticateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [authenticateMutation, { data, loading, error }] = useAuthenticateMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useAuthenticateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AuthenticateMutation,
+    AuthenticateMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    AuthenticateMutation,
+    AuthenticateMutationVariables
+  >(AuthenticateDocument, options);
+}
+export type AuthenticateMutationHookResult = ReturnType<
+  typeof useAuthenticateMutation
+>;
+export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
+export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<
+  AuthenticateMutation,
+  AuthenticateMutationVariables
 >;
 export const ChapterDocument = gql`
   query chapter($id: Int!) {

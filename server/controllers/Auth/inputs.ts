@@ -1,4 +1,5 @@
 import { InputType, Field, ObjectType } from 'type-graphql';
+import { User } from 'server/models';
 
 @InputType()
 export class RegisterInput {
@@ -22,4 +23,13 @@ export class LoginInput {
 export class LoginType {
   @Field(() => String)
   code: string;
+}
+
+@ObjectType()
+export class AuthenticateType {
+  @Field(() => String)
+  token: string;
+
+  @Field(() => User)
+  user: User;
 }

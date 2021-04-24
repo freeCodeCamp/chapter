@@ -1,8 +1,22 @@
 import { Resolver, Arg, Mutation } from 'type-graphql';
-import {} from 'jsonwebtoken';
+import { verify, sign } from 'jsonwebtoken';
 
 import { User } from '../../models';
-import { LoginInput, LoginType, RegisterInput } from './inputs';
+import {
+  AuthenticateType,
+  LoginInput,
+  LoginType,
+  RegisterInput,
+} from './inputs';
+import { getConfig, isDev } from 'server/config';
+import { authTokenService } from 'server/services/AuthToken';
+
+type TokenResponseType = {
+  email: string;
+  code: string;
+  iat: number;
+  exp: number;
+};
 
 @Resolver()
 export class AuthResolver {
@@ -27,10 +41,43 @@ export class AuthResolver {
       throw new Error('USER_NOT_FOUND');
     }
 
+    const { token, code } = authTokenService.generateToken(user.email);
+    if (isDev()) {
+      console.log(
+        `Code: ${code}\nhttp://localhost:3000/auth/token?token=${token}`,
+      );
+    }
+
     // TODO: Send email
 
     return {
-      code: 'foobar',
+      code,
+    };
+  }
+
+  @Mutation(() => AuthenticateType)
+  async authenticate(@Arg('token') token: string) {
+    let data: TokenResponseType;
+    try {
+      data = verify(token, getConfig('JWT_SECRET')) as TokenResponseType;
+    } catch (e) {
+      // TODO: Handle differnet parsing errors
+      console.error(e);
+      throw new Error('Token wrong / missing / expired');
+    }
+
+    const user = await User.findOne({ where: { email: data.email } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const authToken = sign({ id: user.id }, getConfig('JWT_SECRET'), {
+      expiresIn: '31d',
+    });
+
+    return {
+      token: authToken,
+      user,
     };
   }
 }

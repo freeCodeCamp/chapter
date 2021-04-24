@@ -21,3 +21,16 @@ export const registerMutation = gql`
     }
   }
 `;
+
+export const authenticateMutation = gql`
+  mutation authenticate($token: String!) {
+    authenticate(token: $token) {
+      token
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+`;

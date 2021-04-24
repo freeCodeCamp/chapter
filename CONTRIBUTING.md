@@ -2,6 +2,8 @@
 
 * [Contribution Guidelines](#contribution-guidelines)
 * [Contributing Code](#contributing-code)
+  * [Using GitPod](#using-gitpod)
+  * [Using a Traditional Dev Environment](#using-atraditional-dev-environment)
 * [Running the Application](#running-the-application)
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [Server-side Technical Documentation](#server-side-technical-documentation)
@@ -29,11 +31,11 @@ Consider the following options when you are ready to contribute code.
 * [GitPod.io](https://www.gitpod.io/docs) - a ready-to-code development environment that launches in the cloud.
 * Traditional Dev Environment - the common method of developing on a computer you control.
 
-## GitPod
+## Using GitPod
 
 All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account and "ephemeral" workspace.
 
-## Traditional Dev Environment
+## Using a Traditional Dev Environment
 
 This approach is more common and involves the step below to setup and configuring a development environment within a local, virtual, or remote operating system that you own or control.
 

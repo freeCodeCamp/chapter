@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     [theme.breakpoints.up('sm')]: {
       justifyContent: 'flex-start',
+      fontSize: '1rem',
     },
     [theme.breakpoints.up('md')]: {
       justifyContent: 'flex-end',

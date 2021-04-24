@@ -43,16 +43,16 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-**Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your development operating system.
-
-**Prerequisite**:  A supported command line terminal and shell must exist on your development operating system.
+**Prerequisite**:  A supported command line terminal and shell must exist on your development device and options vary by operating system.
 * Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
 * Mac: the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
-* Windows - you'll need a terminal and shell that support features of Linux. Options include:
-    * Installing / enabling [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice) along with a Linux terminal / shell, such as [_Ubuntu for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows)
-    * _Git Bash_ - this terminal + shell option is included with _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
-    * _PowerShell_ and _cmd_ may work for running the **_Chapter_** app in _Docker Mode_, but these are not recommended for active development.
-    > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is a wrapper for the options above. It can be used in conjunction with the options above, such as _Windows Terminal_ running the _Ubuntu_ shell, but is not sufficient by itself.
+* Windows - options for running a Linux terminal and shell within Windows include:
+    * (Recommended) [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps) with a Linux distribution, such as [_Ubuntu 20.04 for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows) or [other supported Linux distributions](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice).
+        > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is an **optional** terminal interface tool. It can only open a Linux shell if WSL and a Linux distro already exist.
+    * _Git Bash_ - this terminal + shell is included with _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
+    * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
+
+**Prerequisite**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.
 
 All `commands` in this document need to be run within a terminal / shell.
 

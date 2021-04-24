@@ -43,9 +43,9 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-**Prerequisite**:  A supported command line terminal and shell must exist on your development device and options vary by operating system.
-* Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
-* Mac: the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
+**Prerequisite**:  A supported command line terminal and shell must exist on your development device and the options vary by operating system.
+* Linux - the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
+* Mac - the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
 * Windows - options for running a Linux terminal and shell within Windows include:
     * [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps) with a Linux distribution, such as [_Ubuntu 20.04 for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows) or [other supported Linux distributions](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice).
         > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is an **optional** terminal interface tool. It can only open a Linux shell if WSL and a Linux distro already exist.
@@ -57,16 +57,16 @@ Follow these steps to fork the repository:
 All `commands` in this document need to be run within a terminal / shell.
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
-    * SSH: Authenticates without a password by using SSH key authentication.
-    * HTTPS: Authenticates with a username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, avoid using your GitHub password and use a PAT.
+    * SSH - uses SSH key authentication instead of a username and password.
+    * HTTPS - uses a username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, avoid using your GitHub password.
 
 2. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
     > Note: Windows using WSL + a Linux distro maintains its own file system. Use a sub-directory within the Linux /home/username/ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
 
 3. [Clone](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.
 
-    * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) (preferred): `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
-    * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls): `git clone https://github.com/YOUR_USER_NAME/chapter.git`
+    * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) - `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
+    * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls) - `git clone https://github.com/YOUR_USER_NAME/chapter.git`
  
      Your forked repository of code will be referred to as the _origin_ . 
 
@@ -459,8 +459,8 @@ This is [currently manually generated and updated](https://github.com/freeCodeCa
 ### Admin Tools 
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
 * psql Client
-  * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
-  * In **Manual Mode**, `psql -h localhost -p 5432 -U postgres` 
+  * In **Docker Mode** - `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
+  * In **Manual Mode** - `psql -h localhost -p 5432 -U postgres` 
 
 ### Using TypeORM and NPM
 

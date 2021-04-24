@@ -25,7 +25,17 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 # Contributing Code
 
-If you are ready to contribute code, then start by follow these steps.
+Consider the following options when you are ready to contribute code.
+* [GitPod.io](https://www.gitpod.io/docs) - a ready-to-code development environment that launches in the cloud.
+* Traditional Dev Environment - the common method of developing on a computer you control.
+
+## GitPod
+
+All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account and "ephemeral" workspace.
+
+## Traditional Dev Environment
+
+This approach is more common and involves the step below to setup and configuring a development environment within a local, virtual, or remote operating system that you own or control.
 
 <details><summary>Step 1 - Fork the Repository on GitHub</summary>
 

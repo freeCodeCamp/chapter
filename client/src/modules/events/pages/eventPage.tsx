@@ -3,6 +3,9 @@ import { NextPage } from 'next';
 import { useEventQuery } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
+import { Heading, VStack, Text } from '@chakra-ui/react';
+import { Link } from 'chakra-next-link';
+
 export const EventPage: NextPage = () => {
   const id = useParam('eventId');
 
@@ -24,8 +27,17 @@ export const EventPage: NextPage = () => {
   }
 
   return (
-    <div>
-      <h1>{data?.event.name}</h1>
-    </div>
+    <VStack align="flex-start">
+      <Heading>{data.event.name}</Heading>
+      <Heading size="md">
+        Chapter:{' '}
+        <Link href={`/chapters/${data.event.chapter.id}`}>
+          {data.event.chapter.name}
+        </Link>
+      </Heading>
+      <Text>{data.event.description}</Text>
+
+      <Heading>RSVPs:</Heading>
+    </VStack>
   );
 };

@@ -4,7 +4,6 @@ import { NextPage } from 'next';
 
 import { EventFormData } from '../components/EventFormUtils';
 import { Layout } from '../../shared/components/Layout';
-import Skeleton from '../../Venues/components/Skeleton';
 import EventForm from '../components/EventForm';
 import {
   useEventQuery,
@@ -56,28 +55,24 @@ export const EditEventPage: NextPage = () => {
   if (eventLoading || error || !data?.event) {
     return (
       <Layout>
-        <Skeleton>
-          <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
-          {error && <div>{error}</div>}
-        </Skeleton>
+        <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
+        {error && <div>{error}</div>}
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Skeleton>
-        <EventForm
-          data={{
-            ...data.event,
-            venueId: data.event?.venue?.id,
-            tags: data.event.tags || [],
-          }}
-          loading={loadingUpdate}
-          onSubmit={onSubmit}
-          submitText={'Update event'}
-        />
-      </Skeleton>
+      <EventForm
+        data={{
+          ...data.event,
+          venueId: data.event?.venue?.id,
+          tags: data.event.tags || [],
+        }}
+        loading={loadingUpdate}
+        onSubmit={onSubmit}
+        submitText={'Update event'}
+      />
     </Layout>
   );
 };

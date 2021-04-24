@@ -19,7 +19,7 @@ export class User extends BaseModel {
   last_name!: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
   @Field(() => [Chapter])

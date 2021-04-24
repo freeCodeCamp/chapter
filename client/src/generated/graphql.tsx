@@ -111,6 +111,15 @@ export type EventSponsor = {
   event: Event;
 };
 
+export type LoginInput = {
+  email: Scalars['String'];
+};
+
+export type LoginType = {
+  __typename?: 'LoginType';
+  code: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createChapter: Chapter;
@@ -124,6 +133,8 @@ export type Mutation = {
   cancelEvent: Event;
   deleteEvent: Scalars['Boolean'];
   sendEmail: Email;
+  register: User;
+  login: LoginType;
 };
 
 export type MutationCreateChapterArgs = {
@@ -173,6 +184,14 @@ export type MutationSendEmailArgs = {
   data: SendEmailInputs;
 };
 
+export type MutationRegisterArgs = {
+  data: RegisterInput;
+};
+
+export type MutationLoginArgs = {
+  data: LoginInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   chapters: Array<Chapter>;
@@ -192,11 +211,18 @@ export type QueryVenueArgs = {
 };
 
 export type QueryEventsArgs = {
+  showAll?: Maybe<Scalars['Boolean']>;
   limit?: Maybe<Scalars['Float']>;
 };
 
 export type QueryEventArgs = {
   id: Scalars['Int'];
+};
+
+export type RegisterInput = {
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+  email: Scalars['String'];
 };
 
 export type Rsvp = {
@@ -340,6 +366,24 @@ export enum VenueType {
   PhysicalAndOnline = 'PhysicalAndOnline',
 }
 
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+export type LoginMutation = { __typename?: 'Mutation' } & {
+  login: { __typename?: 'LoginType' } & Pick<LoginType, 'code'>;
+};
+
+export type RegisterMutationVariables = Exact<{
+  email: Scalars['String'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+}>;
+
+export type RegisterMutation = { __typename?: 'Mutation' } & {
+  register: { __typename?: 'User' } & Pick<User, 'id'>;
+};
+
 export type ChapterQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -384,6 +428,7 @@ export type EventsQuery = { __typename?: 'Query' } & {
       | 'description'
       | 'url'
       | 'video_url'
+      | 'start_at'
       | 'capacity'
     > & {
         venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;
@@ -410,6 +455,7 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'start_at'
       | 'ends_at'
     > & {
+        chapter: { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name'>;
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
         venue?: Maybe<
           { __typename?: 'Venue' } & Pick<
@@ -611,6 +657,108 @@ export type HomePageQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export const LoginDocument = gql`
+  mutation login($email: String!) {
+    login(data: { email: $email }) {
+      code
+    }
+  }
+`;
+export type LoginMutationFn = Apollo.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useLoginMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    options,
+  );
+}
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>;
+export const RegisterDocument = gql`
+  mutation register(
+    $email: String!
+    $first_name: String!
+    $last_name: String!
+  ) {
+    register(
+      data: { email: $email, first_name: $first_name, last_name: $last_name }
+    ) {
+      id
+    }
+  }
+`;
+export type RegisterMutationFn = Apollo.MutationFunction<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
+
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      first_name: // value for 'first_name'
+ *      last_name: // value for 'last_name'
+ *   },
+ * });
+ */
+export function useRegisterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RegisterMutation,
+    RegisterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(
+    RegisterDocument,
+    options,
+  );
+}
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
 export const ChapterDocument = gql`
   query chapter($id: Int!) {
     chapter(id: $id) {
@@ -730,13 +878,14 @@ export type ChaptersQueryResult = Apollo.QueryResult<
 >;
 export const EventsDocument = gql`
   query events {
-    events {
+    events(showAll: true) {
       id
       name
       canceled
       description
       url
       video_url
+      start_at
       capacity
       venue {
         id
@@ -801,6 +950,10 @@ export const EventDocument = gql`
       capacity
       start_at
       ends_at
+      chapter {
+        id
+        name
+      }
       tags {
         id
         name

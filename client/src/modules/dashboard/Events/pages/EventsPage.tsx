@@ -6,6 +6,7 @@ import { LinkButton } from 'chakra-next-link';
 
 import { useEventsQuery } from 'generated/graphql';
 import { Layout } from '../../shared/components/Layout';
+import { formatDate } from '../../../../helpers/date';
 
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();
@@ -31,9 +32,25 @@ export const EventsPage: NextPage = () => {
           <DataTable
             data={data.events}
             keys={
-              ['name', 'venue', 'capacity', 'video_url', 'actions'] as const
+              [
+                'status',
+                'name',
+                'venue',
+                'capacity',
+                'video_url',
+                'date',
+                'actions',
+              ] as const
             }
             mapper={{
+              status: (event) =>
+                event.canceled ? (
+                  <Text color="red.400">canceled</Text>
+                ) : new Date(event.start_at) < new Date() ? (
+                  'passed'
+                ) : (
+                  'upcoming'
+                ),
               name: (event) => (
                 <VStack align="flex-start">
                   {event.canceled && (
@@ -52,6 +69,7 @@ export const EventsPage: NextPage = () => {
               venue: (event) => event.venue?.name || '',
               capacity: true,
               video_url: true,
+              date: (event) => formatDate(event.start_at),
               actions: (event) => (
                 <LinkButton
                   colorScheme="green"

@@ -6,7 +6,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "gen": "graphql-codegen --config codegen.yml"
+    "gen": "graphql-codegen --config codegen.yml",
+    "gen:dev": "yarn gen --watch"
   },
   "dependencies": {
     "@apollo/client": "3.3.15",

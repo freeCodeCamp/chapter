@@ -1,9 +1,11 @@
 import React from 'react';
-import Link from 'next/link';
 import { Heading, Text, Tag, HStack, Flex } from '@chakra-ui/react';
-import { format } from 'date-fns';
+import { Link } from 'chakra-next-link';
 import { Chapter, Event, Tag as DBTag } from 'generated/graphql';
+
 import { Card } from './Card';
+import { truncate } from '../helpers/truncate';
+import { formatDate } from '../helpers/date';
 
 type EventCardProps = {
   event: Pick<Event, 'id' | 'name' | 'description' | 'start_at'> & {
@@ -14,12 +16,10 @@ type EventCardProps = {
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <Card w="50%">
+    <Card w="full">
       <Flex justify="space-between">
         <Heading size="md" as="h2">
-          <Link href={`/events/${event.id}`} passHref>
-            <a>{event.name}</a>
-          </Link>
+          <Link href={`/events/${event.id}`}>{event.name}</Link>
         </Heading>
         <HStack>
           {event.tags?.map((t) => (
@@ -28,12 +28,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         </HStack>
       </Flex>
 
-      <Heading size="sm">
-        {format(new Date(event.start_at), 'E, LLL d @ HH:MM')}
-      </Heading>
+      <Heading size="sm">{formatDate(event.start_at)}</Heading>
       <Link href={`/chapters/${event.chapter.id}`}>{event.chapter.name}</Link>
 
-      <Text>{event.description}</Text>
+      <Text>{truncate(event.description, 120)}</Text>
     </Card>
   );
 };

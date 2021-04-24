@@ -1,14 +1,24 @@
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 import { Event, Venue, Chapter } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
+import { MoreThan } from 'typeorm';
 
 @Resolver()
 export class EventResolver {
   @Query(() => [Event])
-  events(@Arg('limit', { nullable: true }) limit?: number) {
+  events(
+    @Arg('limit', { nullable: true }) limit?: number,
+    @Arg('showAll', { nullable: true }) showAll?: boolean,
+  ) {
     return Event.find({
       relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
       take: limit,
+      order: {
+        start_at: 'ASC',
+      },
+      where: {
+        ...(!showAll && { start_at: MoreThan(new Date()) }),
+      },
     });
   }
 

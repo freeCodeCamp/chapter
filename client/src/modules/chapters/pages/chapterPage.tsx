@@ -2,7 +2,7 @@ import React from 'react';
 import { NextPage } from 'next';
 import { useParam } from 'hooks/useParam';
 import { useChapterQuery } from 'generated/graphql';
-import { Heading, VStack, Text } from '@chakra-ui/react';
+import { Heading, VStack, Text, Spinner } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
 
 export const ChapterPage: NextPage = () => {
@@ -13,7 +13,7 @@ export const ChapterPage: NextPage = () => {
   });
 
   if (loading) {
-    return <h1>Loading...</h1>;
+    return <Spinner />;
   }
 
   if (error || !data?.chapter) {
@@ -31,16 +31,18 @@ export const ChapterPage: NextPage = () => {
       <Text>{data.chapter.description}</Text>
 
       <Heading size="md">Events:</Heading>
-      {data.chapter.events.map((event) => (
-        <EventCard
-          key={event.id}
-          event={{
-            ...event,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            chapter: { id, name: data.chapter?.name! },
-          }}
-        />
-      ))}
+      <VStack w={['60%', '90%', '60%']} maxW="800px">
+        {data.chapter.events.map((event) => (
+          <EventCard
+            key={event.id}
+            event={{
+              ...event,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              chapter: { id, name: data.chapter?.name! },
+            }}
+          />
+        ))}
+      </VStack>
     </VStack>
   );
 };

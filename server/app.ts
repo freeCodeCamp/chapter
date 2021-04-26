@@ -1,14 +1,10 @@
 import 'reflect-metadata';
 import cors from 'cors';
-import { join } from 'path';
 import express, { Express } from 'express';
-import { config } from 'dotenv';
 import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 import { Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-
-config({ path: join(__dirname, '../.env') });
 
 import { resolvers } from './controllers';
 import { GQLCtx, Request } from './ts/gql';

@@ -1,3 +1,6 @@
+import { join } from 'path';
+import { config } from 'dotenv';
+config({ path: join(__dirname, '../../.env') });
 export interface Environment {
   NODE_ENV: 'production' | 'development' | 'test' | undefined;
   JWT_SECRET: string;

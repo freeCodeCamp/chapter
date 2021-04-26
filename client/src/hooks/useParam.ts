@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import { useRouter } from 'next/router';
 
 export const useParam = (key = 'id') => {

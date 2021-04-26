@@ -37,8 +37,8 @@ export const ChapterPage: NextPage = () => {
             key={event.id}
             event={{
               ...event,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              chapter: { id, name: data.chapter?.name! },
+              // Fix this | undefined
+              chapter: { id, name: data.chapter?.name || '' },
             }}
           />
         ))}

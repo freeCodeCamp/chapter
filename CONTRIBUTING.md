@@ -2,6 +2,8 @@
 
 * [Contribution Guidelines](#contribution-guidelines)
 * [Contributing Code](#contributing-code)
+  * [Using GitPod](#using-gitpod)
+  * [Using a Traditional Dev Environment](#using-a-traditional-dev-environment)
 * [Running the Application](#running-the-application)
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [Server-side Technical Documentation](#server-side-technical-documentation)
@@ -25,7 +27,17 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 # Contributing Code
 
-If you are ready to contribute code, then start by follow these steps.
+Consider the following options when you are ready to contribute code.
+* [GitPod.io](https://www.gitpod.io/docs) - a ready-to-code development environment that launches in the cloud.
+* Traditional Dev Environment - the common method of developing on a computer you control.
+
+## Using GitPod
+
+All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account and "ephemeral" workspace.
+
+## Using a Traditional Dev Environment
+
+This approach is more common and involves the step below to setup and configuring a development environment within a local, virtual, or remote operating system that you own or control.
 
 <details><summary>Step 1 - Fork the Repository on GitHub</summary>
 
@@ -43,38 +55,40 @@ Follow these steps to fork the repository:
 
 <details><summary>Step 2 - Prepare the Development Environment</summary>
 
-**Prerequisite**: [Git](https://git-scm.com/downloads) must exist on your development operating system.
+**Prerequisite**:  All `commands` will be run within a terminal's command line / shell on your development device. Options vary by operating system.
 
-**Prerequisite**:  A supported command line terminal and shell must exist on your development operating system.
-* Linux: the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
-* Mac: the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
-* Windows - you'll need a terminal and shell that support features of Linux. Options include:
-    * Installing / enabling [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice) along with a Linux terminal / shell, such as [_Ubuntu for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows)
-    * _Git Bash_ - this terminal + shell option is included with _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
-    * _PowerShell_ and _cmd_ may work for running the **_Chapter_** app in _Docker Mode_, but these are not recommended for active development.
-    > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is a wrapper for the options above. It can be used in conjunction with the options above, such as _Windows Terminal_ running the _Ubuntu_ shell, but is not sufficient by itself.
+* Linux - the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
+* Mac - the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
+* Windows - options for running a Linux terminal and shell within Windows include:
+    * [Windows Subsystem Linux with Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps) with a Linux distribution, such as [_Ubuntu 20.04 for Windows_](https://ubuntu.com/tutorials/ubuntu-on-windows) or [other supported Linux distributions](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice).
+        > Note: [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/) is an **optional** terminal interface tool. It can only open a Linux shell if WSL and a Linux distro already exist.
+    * _Git Bash_ - this terminal shell emulates Linux and is included in _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
+    * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
 
-All `commands` in this document need to be run within a terminal / shell.
+**Prerequisite**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.
 
-1. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
-    > Note: For Windows using WSL, it maintains its own file system. Use a sub-directory within WSL's /home/username/ filesystem. The alternative, using a directory within C:\, will cause everything to run very slowly.
+1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
+    * SSH - uses SSH key authentication instead of a username and password.
+    * HTTPS - uses a GitHub username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, use a PAT instead of a GitHub password.
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) your GitHub fork of **_Chapter_**. Replace _YOUR_USER_NAME_ with your GitHub username. Your forked repository of code will be referred to as the _origin_. 
+2. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
+    > Note: Windows using WSL + a Linux distro maintains its own file system. Use a sub-directory within the Linux /home/username/ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
 
-    > Note: This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory.
+3. [Clone](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories) your GitHub fork of **_Chapter_** using the SSH or HTTP method you selected above. Replace _YOUR_USER_NAME_ with your GitHub username.
 
-    ```sh
-    git clone https://github.com/YOUR_USER_NAME/Chapter.git
-    ```
+    * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) - `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
+    * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls) - `git clone https://github.com/YOUR_USER_NAME/chapter.git`
+ 
+     This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_ . 
 
-3. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
+4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
 
     ```sh
     cd chapter
     git remote add upstream https://github.com/freeCodeCamp/chapter.git
     ```
 
-4. Ensure the _origin_ and _upstream_ configuration is correct:
+5. Ensure the _origin_ and _upstream_ configuration is correct:
 
     ```sh
     git remote -v
@@ -456,8 +470,8 @@ This is [currently manually generated and updated](https://github.com/freeCodeCa
 ### Admin Tools 
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
 * psql Client
-  * In **Docker Mode**, `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
-  * In **Manual Mode**, `psql -h localhost -p 5432 -U postgres` 
+  * In **Docker Mode** - `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
+  * In **Manual Mode** - `psql -h localhost -p 5432 -U postgres` 
 
 ### Using TypeORM and NPM
 

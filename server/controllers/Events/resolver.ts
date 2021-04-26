@@ -1,7 +1,8 @@
-import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
-import { Event, Venue, Chapter } from '../../models';
+import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { MoreThan } from 'typeorm';
+import { GQLCtx } from 'server/ts/gql';
 
 @Resolver()
 export class EventResolver {
@@ -27,6 +28,41 @@ export class EventResolver {
     return Event.findOne(id, {
       relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
     });
+  }
+
+  @Mutation(() => Rsvp, { nullable: true })
+  async rsvpEvent(
+    @Arg('id', () => Int) id: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<Rsvp | null> {
+    if (!ctx.user) {
+      throw new Error('You need to be logged in');
+    }
+
+    const event = await Event.findOne({ where: { id } });
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    let rsvp = await Rsvp.findOne({
+      where: { event: { id: id }, user: { id: ctx.user.id } },
+    });
+
+    if (rsvp) {
+      await rsvp.remove();
+      return null;
+    }
+
+    rsvp = new Rsvp({
+      event,
+      user: ctx.user,
+      date: new Date(),
+      interested: false, // TODO handle this
+      on_waitlist: false, // TODO handle this
+    });
+
+    await rsvp.save();
+    return rsvp;
   }
 
   @Mutation(() => Event)

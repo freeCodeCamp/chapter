@@ -4,22 +4,40 @@ import { useRouter } from 'next/router';
 import { Spinner } from '@chakra-ui/react';
 
 import { useAuthenticateMutation } from 'generated/graphql';
+import { Heading, VStack } from '@chakra-ui/layout';
+import { useAuthStore } from '../store';
+import { meQuery } from '../graphql/queries';
 
 export const TokenPage: NextPage = () => {
   const router = useRouter();
   const token = (router.query.token || '') as string;
 
-  const [authenticate] = useAuthenticateMutation();
+  const { setData } = useAuthStore();
+
+  const [authenticate] = useAuthenticateMutation({
+    refetchQueries: [{ query: meQuery }],
+  });
 
   useEffect(() => {
     if (token) {
       authenticate({ variables: { token } })
-        .then((res) => {
-          console.log(res);
+        .then(({ data }) => {
+          if (data) {
+            setData({ user: { ...data.authenticate.user } });
+            // TODO: Move to cookies so we can more easily preload stuff on the server
+            window.localStorage.setItem('token', data.authenticate.token);
+
+            return router.push('/');
+          }
         })
         .catch((err) => console.error(err));
     }
   }, [token]);
 
-  return <Spinner />;
+  return (
+    <VStack>
+      <Heading>Logging you in</Heading>
+      <Spinner />
+    </VStack>
+  );
 };

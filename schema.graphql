@@ -89,6 +89,7 @@ type Query {
     chapters: [Chapter!]!
     event(id: Int!): Event
     events(limit: Float, showAll: Boolean): [Event!]!
+    me: User
     venue(id: Int!): Venue
     venues: [Venue!]!
 }

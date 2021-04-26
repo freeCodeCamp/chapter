@@ -1,3 +1,5 @@
+// TODO: Move to mailer service itself
+
 export interface IMailerService {
   emailList: Array<string>;
   subject: string;

@@ -1,4 +1,4 @@
-import { Resolver, Arg, Mutation } from 'type-graphql';
+import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 import { verify, sign } from 'jsonwebtoken';
 
 import { User } from '../../models';
@@ -10,6 +10,7 @@ import {
 } from './inputs';
 import { getConfig, isDev } from 'server/config';
 import { authTokenService } from 'server/services/AuthToken';
+import { GQLCtx } from 'server/ts/gql';
 
 type TokenResponseType = {
   email: string;
@@ -20,6 +21,12 @@ type TokenResponseType = {
 
 @Resolver()
 export class AuthResolver {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() ctx: GQLCtx): Promise<User | null> {
+    console.log('me');
+    return ctx.user || null;
+  }
+
   @Mutation(() => User)
   async register(@Arg('data') data: RegisterInput): Promise<User> {
     let user = await User.findOne({ where: { email: data.email } });

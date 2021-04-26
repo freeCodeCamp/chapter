@@ -1,5 +1,5 @@
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
-import { IMailerService } from 'types/services';
+import { IMailerService } from 'server/types/services';
 import Utilities from '../util/Utilities';
 
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as

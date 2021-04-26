@@ -1,77 +1,86 @@
-import React from 'react';
-import { makeStyles, Grid } from '@material-ui/core';
-
-import { headerLinks } from '../../constants/Header';
-
+import React, { forwardRef } from 'react';
+import {
+  Avatar,
+  Button,
+  Grid,
+  GridItem,
+  GridItemProps,
+  Image,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { HStack } from '@chakra-ui/layout';
 import { Link } from 'chakra-next-link';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Search from '@material-ui/icons/Search';
 
-const useStyles = makeStyles({
-  link: {
-    textDecoration: 'none',
-    color: 'white',
-  },
-  cursorPointer: {
-    cursor: 'pointer',
-  },
-  searchBox: {
-    backgroundColor: 'white',
-  },
+import { Input } from '../Form/Input';
+import { useAuthStore } from '../../modules/auth/store';
+
+const Item = forwardRef<HTMLDivElement, GridItemProps>((props, ref) => {
+  return (
+    <GridItem
+      d="flex"
+      justifyContent="center"
+      align="center"
+      ref={ref}
+      {...props}
+    />
+  );
 });
 
-const Header: React.FC<{ classes: Record<string, any> }> = ({ classes }) => {
-  const styles = useStyles();
+export const Header: React.FC = () => {
+  const router = useRouter();
+  const {
+    data: { user },
+    setData,
+  } = useAuthStore();
+
+  const logout = () => {
+    setData({ user: undefined });
+    localStorage.removeItem('token');
+
+    router.push('/');
+  };
 
   return (
-    <Grid
-      className={`${classes.pageRoot} ${classes.headerContainer}`}
-      container
-      component="header"
-      alignItems="center"
-      spacing={2}
-      style={{
-        margin: 0,
-        width: '100%',
-      }}
-    >
-      <Link href="/" justLink>
-        <Grid
-          item
-          component="img"
-          className={styles.cursorPointer}
-          src="/freecodecamp-logo.svg"
-          alt="The freeCodeCamp logo"
-          xs={12}
-          md={4}
-        />
-      </Link>
-      <Grid item xs={12} md={4}>
-        <TextField
-          fullWidth
-          className={styles.searchBox}
-          placeholder="Enter your city, state or country to search for events"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search style={{ color: '#a0a0a0' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
+    <>
+      {/* TODO: Extract color into theme */}
+      <Grid
+        w="full"
+        bg="#1b1b32"
+        as="header"
+        templateColumns="repeat(3, 1fr)"
+        px="8"
+        py="4"
+      >
+        <Item>
+          <Link href="/">
+            <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />
+          </Link>
+        </Item>
+        <Item>
+          <Input noLabel color="white" placeholder="Search..." />
+        </Item>
+        <Item justifyContent="flex-end">
+          <HStack as="nav">
+            <Link color="white" href="/chapters">
+              Chapters
+            </Link>
+            <Link color="white" href="/events">
+              Events feed
+            </Link>
+
+            {user ? (
+              <>
+                <Button onClick={logout}>Logout</Button>
+                <Avatar name={`${user.first_name} ${user.last_name}`} />
+              </>
+            ) : (
+              <Link color="white" href="/auth/login">
+                Login / Register
+              </Link>
+            )}
+          </HStack>
+        </Item>
       </Grid>
-      <Grid component="nav" item xs={12} md={4}>
-        <Grid container direction="row" spacing={2} justify="center">
-          {headerLinks.map((headerLink) => (
-            <Grid item key={headerLink.name}>
-              <Link href={headerLink.href}>{headerLink.label}</Link>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-    </Grid>
+    </>
   );
 };
-
-export default Header;

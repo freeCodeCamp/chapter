@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useConfirm = (callback: Function): [boolean, () => void] => {
+const useConfirm = (callback: () => void): [boolean, () => void] => {
   const [confirm, setConfirm] = useState<boolean>(false);
 
   const click = () => {

@@ -3,9 +3,8 @@ import { NextPage } from 'next';
 import { makeStyles, Card, Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import Layout from '../../shared/components/Layout';
-import Skeleton from '../components/Skeleton';
-import { useVenueQuery } from '../../../../generated';
+import { Layout } from '../../shared/components/Layout';
+import { useVenueQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { ProgressCardContent } from '../../../../components';
 import getLocationString from '../../../../helpers/getLocationString';
@@ -26,30 +25,26 @@ export const VenuePage: NextPage = () => {
   if (loading || error || !data?.venue) {
     return (
       <Layout>
-        <Skeleton>
-          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-          {error && <div className={styles.responseDiv}>{error}</div>}
-        </Skeleton>
+        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        {error && <div className={styles.responseDiv}>{error}</div>}
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Skeleton>
-        <Card style={{ marginTop: '12px' }}>
-          <ProgressCardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {data.venue.name}
-            </Typography>
+      <Card style={{ marginTop: '12px' }}>
+        <ProgressCardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            {data.venue.name}
+          </Typography>
 
-            <Typography variant="body2" color="textSecondary" component="p">
-              {getLocationString(data.venue, true)}
-            </Typography>
-          </ProgressCardContent>
-        </Card>
-        <h3>Placeholder for events...</h3>
-      </Skeleton>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {getLocationString(data.venue, true)}
+          </Typography>
+        </ProgressCardContent>
+      </Card>
+      <h3>Placeholder for events...</h3>
     </Layout>
   );
 };

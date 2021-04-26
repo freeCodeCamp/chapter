@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   FormControl,
-  TextField,
   Button,
   InputLabel,
   Select,
@@ -15,7 +14,9 @@ import {
   EventFormData,
 } from './EventFormUtils';
 import useFormStyles from '../../shared/components/formStyles';
-import { useVenuesQuery } from '../../../../generated';
+import { useVenuesQuery } from '../../../../generated/graphql';
+import { Input } from '../../../../components/Form/Input';
+import { VStack } from '@chakra-ui/layout';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText } = props;
@@ -34,28 +35,28 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     [],
   );
 
-  const { control, handleSubmit } = useForm<EventFormData>({ defaultValues });
+  const { control, register, handleSubmit } = useForm<EventFormData>({
+    defaultValues,
+  });
   const styles = useFormStyles();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      {fields.map((field) => (
-        <FormControl className={styles.item} key={field.key}>
-          <Controller
-            control={control}
-            as={
-              <TextField
-                label={field.label}
-                type={field.type}
-                placeholder={field.placeholder}
-              />
-            }
+      <VStack>
+        {fields.map((field) => (
+          <Input
+            key={field.key}
             name={field.key}
+            label={field.label}
+            placeholder={field.placeholder}
+            isRequired
+            isTextArea={field.type === 'textarea'}
+            ref={register()}
             defaultValue={formatValue(field, data)}
-            options={{ required: true }}
           />
-        </FormControl>
-      ))}
+        ))}
+      </VStack>
+
       {loadingVenues ? (
         <h1>Loading venues...</h1>
       ) : errorVenus || !dataVenues ? (

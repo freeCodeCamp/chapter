@@ -1,16 +1,13 @@
-import express, { Request } from 'express';
+import express from 'express';
 import getPort from 'get-port';
 import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
 import { User } from 'server/models';
+import { Request } from 'server/ts/gql';
 
 type InitProps = {
   withRouter?: express.Router;
-};
-
-type RequestWithUser = Request & {
-  user: User | null;
 };
 
 class App {
@@ -32,8 +29,8 @@ class App {
       this.server.use(withRouter);
     }
 
-    this.server.use((req: RequestWithUser, _, next) => {
-      req.user = this.authedUser;
+    this.server.use((req: Request, _, next) => {
+      req.user = this.authedUser || undefined;
       next();
     });
 

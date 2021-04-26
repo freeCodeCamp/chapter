@@ -1,84 +1,44 @@
 import React from 'react';
-import Link from 'next/link';
-import { Card, Grid, makeStyles, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import {
+  Heading,
+  Spinner,
+  VStack,
+  Text,
+  Grid,
+  GridItem,
+} from '@chakra-ui/react';
 
-import { ProgressCardContent } from '../../components';
-import { useChaptersQuery } from '../../generated';
-
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gridAutoRows: '1fr',
-    gridGap: '1rem',
-  },
-  gridItem: {
-    padding: '0.5rem',
-  },
-});
+import { useHomePageQuery } from 'generated/graphql';
+import { EventCard } from 'components/EventCard';
 
 const Home: React.FC = () => {
-  const { loading, error, data } = useChaptersQuery();
-  const styles = useStyles();
+  const { loading, error, data } = useHomePageQuery();
 
   return (
-    <>
-      <div className={styles.root}>
-        <Typography variant="h3" component="h1">
-          Upcoming Events
-        </Typography>
-        {error && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {error.name}: {error.message}
-            </Grid>
-          </Grid>
-        )}
-        {!error && (
-          <ProgressCardContent loading={loading}>
-            <div className={styles.grid}>
-              {data?.chapters.map((chapter) => (
-                <Card key={chapter.id} className={styles.gridItem}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {chapter.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    {chapter.description}
-                  </Typography>
-                </Card>
-              ))}
-            </div>
-          </ProgressCardContent>
-        )}
-      </div>
-
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Link href="/add-sponsor">
-            <Button variant="outlined">
-              <a>Add sponsor</a>
-            </Button>
-          </Link>
-        </Grid>
-
-        <Grid item xs={12} sm={6}>
-          <Link href="/dashboard">
-            <Button variant="outlined">
-              <a>Admin dashboard</a>
-            </Button>
-          </Link>
-        </Grid>
-      </Grid>
-    </>
+    <Grid templateColumns="repeat(5, 1fr)" columnGap={10} mt="5">
+      <GridItem colSpan={3}>
+        <VStack align="flex-start">
+          <Heading>Upcoming events</Heading>
+          {loading ? (
+            <Spinner />
+          ) : error || !data ? (
+            <>
+              <Heading size="md" color="red.400">
+                😕 Something went wrong
+              </Heading>
+              <Text>{error?.message}</Text>
+            </>
+          ) : (
+            data.events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))
+          )}
+        </VStack>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <Heading>Something here</Heading>
+      </GridItem>
+    </Grid>
   );
 };
 

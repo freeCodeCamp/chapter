@@ -1,0 +1,18 @@
+overwrite: true
+schema: 'http://localhost:5000/graphql'
+documents: ['src/**/queries.ts', 'src/**/mutations.ts']
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+      # - "typescript-graphql-files-modules"
+      # - "typescript-document-nodes"
+      - 'fragment-matcher'
+  ./graphql.schema.json:
+    plugins:
+      - 'introspection'
+hooks:
+  afterAllFileWrite:
+    - prettier --write

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Card, makeStyles, Typography } from '@material-ui/core';
 import Link from 'next/link';
 
-import { Venue } from '../../../../generated';
+import { Venue } from '../../../../generated/graphql';
 import { ProgressCardContent } from '../../../../components';
 import getLocationString from '../../../../helpers/getLocationString';
 

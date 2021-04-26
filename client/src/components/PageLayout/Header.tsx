@@ -19,7 +19,7 @@ const Item = forwardRef<HTMLDivElement, GridItemProps>((props, ref) => {
     <GridItem
       d="flex"
       justifyContent="center"
-      align="center"
+      alignItems="center"
       ref={ref}
       {...props}
     />
@@ -51,7 +51,7 @@ export const Header: React.FC = () => {
         px="8"
         py="4"
       >
-        <Item>
+        <Item justifyContent="flex-start">
           <Link href="/">
             <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />
           </Link>

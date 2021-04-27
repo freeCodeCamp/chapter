@@ -543,7 +543,7 @@ it should ouput something like
 
 # Running Remotely
 
-When not running locally, the client needs to be passed the server's location.  This can be done by changing your _.env_ file to include `NEXT_PUBLIC_APOLLO_SERVER=<http://address.of.graphql.server>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `http://demo.chapter.org` then the address will be `http://demo.chapter.org:5000`.
+When not running locally, the client needs to be passed the server's location.  This can be done by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<http://address.of.graphql.server>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `http://demo.chapter.org` then the address will be `http://demo.chapter.org:5000`.
 
 # Troubleshooting
 

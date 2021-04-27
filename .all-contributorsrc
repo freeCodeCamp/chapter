@@ -499,6 +499,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "NorthDecoder",
+      "name": "Joe Devlin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9598008?v=4",
+      "profile": "http://vividventures.biz",
+      "contributions": [
+        "bug",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

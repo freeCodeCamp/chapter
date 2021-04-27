@@ -41,7 +41,7 @@ export const LoginPage: NextPage = () => {
           <VStack>
             <Heading>Login</Heading>
 
-            <Input ref={register} name="email" />
+            <Input {...register('email')} />
 
             <Button type="submit" mr="2" colorScheme="blue">
               Login

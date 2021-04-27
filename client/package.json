@@ -28,6 +28,8 @@
     "react-hook-form": "7.3.4"
   },
   "devDependencies": {
+    "@codesee/babel-plugin-instrument": "0.24.0",
+    "@codesee/tracker": "0.24.0",
     "@graphql-codegen/cli": "1.21.4",
     "@graphql-codegen/fragment-matcher": "2.0.1",
     "@graphql-codegen/introspection": "1.18.2",

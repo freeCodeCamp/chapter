@@ -139,7 +139,12 @@
       "profile": "https://github.com/Zeko369",
       "contributions": [
         "code",
-        "tool"
+        "tool",
+        "bug",
+        "infra",
+        "test",
+        "review",
+        "question"
       ]
     },
     {

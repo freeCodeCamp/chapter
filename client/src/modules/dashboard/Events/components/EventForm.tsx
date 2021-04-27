@@ -46,12 +46,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         {fields.map((field) => (
           <Input
             key={field.key}
-            name={field.key}
             label={field.label}
             placeholder={field.placeholder}
             isRequired
             isTextArea={field.type === 'textarea'}
-            ref={register()}
+            {...register(field.key)}
             defaultValue={formatValue(field, data)}
           />
         ))}

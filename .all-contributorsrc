@@ -488,7 +488,11 @@
       "profile": "https://github.com/ojeytonwilliams",
       "contributions": [
         "infra",
-        "doc"
+        "doc",
+        "code",
+        "maintenance",
+        "test",
+        "bug"
       ]
     },
     {

@@ -6,15 +6,9 @@
     "lib": ["dom", "es2017"],
     "baseUrl": ".",
     "paths": {
-      "server/*": [
-        "./server/*"
-      ],
-      "db/*": [
-        "./db/*"
-      ],
-      "types/*": [
-        "./types/*"
-      ],
+      "server/*": ["./server/*"],
+      "db/*": ["./db/*"],
+      "types/*": ["./types/*"]
     },
     "module": "commonjs",
     "moduleResolution": "node",
@@ -36,7 +30,8 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "typeRoots": ["./server/ts/index.d.ts", "./node_modules/@types"]
   },
   "include": ["server", "db"],
   "exclude": ["node_modules"]

@@ -6,7 +6,8 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     }
   ],
   "rangeStrategy": "pin"

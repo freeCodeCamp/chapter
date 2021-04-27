@@ -22,6 +22,7 @@
     "test:watch": "npx jest --watchAll",
     "postinstall": "node scripts/postInstall.js",
     "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
+    "lint-and-test": "npm run lint && npm run test",
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts"
   },

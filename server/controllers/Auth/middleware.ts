@@ -21,8 +21,6 @@ export const userMiddleware = (
   }
 
   const value = verify(raw[1], getConfig('JWT_SECRET')) as { id: number };
-  console.log(value);
-
   if (!value.id) {
     return next('Token malformed');
   }

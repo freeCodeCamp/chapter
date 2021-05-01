@@ -1,3 +1,4 @@
+import { addHours, add } from 'date-fns';
 import { company, internet, lorem } from 'faker';
 import {
   Chapter,
@@ -18,6 +19,19 @@ const createEvents = async (
   const events: Event[] = [];
 
   for (let i = 0; i < 4; i++) {
+    const date = new Date();
+    date.setMilliseconds(0);
+    date.setSeconds(0);
+    date.setMinutes(0);
+
+    const start_at = add(date, {
+      days: random(10),
+      hours: random(5),
+      minutes: random(4) * 15,
+    });
+
+    console.log(start_at);
+
     const event = new Event({
       name: company.companyName(),
       chapter: randomItem(chapters),
@@ -28,8 +42,8 @@ const createEvents = async (
       capacity: random(1000),
       venue: randomItem(venues),
       canceled: Math.random() > 0.5,
-      start_at: new Date(),
-      ends_at: new Date(Date.now() + 1000 * 60 * 60 * 5 * Math.random()),
+      start_at,
+      ends_at: addHours(start_at, random(5)),
     });
 
     await event.save();
@@ -41,8 +55,8 @@ const createEvents = async (
     );
 
     await Promise.all(
-      Array.from(new Array(1 + random(5)), () => {
-        const tag = new Tag({ event, name: lorem.words(1 + random(3)) });
+      Array.from(new Array(1 + random(3)), () => {
+        const tag = new Tag({ event, name: lorem.words(1) });
         return tag.save();
       }),
     );

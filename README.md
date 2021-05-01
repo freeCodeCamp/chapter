@@ -33,12 +33,11 @@ We are using the following tools:
 
 * [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
   * [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
-  * [Magic Link authentication for Passport JS](https://www.npmjs.com/package/passport-magic-link) - for password-less authentication over email
 * [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) - for nice integration with `type-graphql`
 * [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [Apollo Client 3](https://www.apollographql.com/docs/react/)
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Material UI](https://material-ui.com/) - for components and its built-in `makeStyles` hook and `styled` HOC for custom styling
+  * [Chakra-UI](https://chakra-ui.com/) - for styling  + super easy DSL for custom css (we still have some legacy MUI stuff that's being removed [#608](https://github.com/freeCodeCamp/chapter/issues/608))
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) - for writing unit tests.
   * [sinon](https://sinonjs.org/)

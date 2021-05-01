@@ -25,10 +25,6 @@ const PORT = process.env.PORT || 5000;
 export const main = async (app: Express) => {
   await initDB();
   app.use(cors({ credentials: true, origin: true }));
-
-  // app.use(passport.initialize());
-  // app.use('/auth', authController);
-
   app.use(userMiddleware);
 
   const schema = await buildSchema({ resolvers, validate: false });

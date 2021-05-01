@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Heading,
   Spinner,
@@ -6,13 +6,30 @@ import {
   Text,
   Grid,
   GridItem,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
 
-import { useHomePageQuery } from 'generated/graphql';
+import { useHomeQuery } from 'generated/graphql';
 import { EventCard } from 'components/EventCard';
 
 const Home: React.FC = () => {
-  const { loading, error, data } = useHomePageQuery();
+  const [hasMore, setHasMore] = useState(true);
+  const { loading, error, data, fetchMore } = useHomeQuery({
+    variables: { offset: 0, limit: 2 },
+  });
+
+  const toast = useToast();
+  const onLoadMore = async () => {
+    try {
+      const res = await fetchMore({
+        variables: { offset: data?.paginatedEvents.length },
+      });
+      setHasMore(res.data.paginatedEvents.length > 0);
+    } catch (err) {
+      toast({ title: err.message || err.name || err });
+    }
+  };
 
   return (
     <Grid templateColumns="repeat(5, 1fr)" columnGap={10} mt="5">
@@ -29,9 +46,15 @@ const Home: React.FC = () => {
               <Text>{error?.message}</Text>
             </>
           ) : (
-            data.events.map((event) => (
+            data.paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))
+          )}
+
+          {hasMore ? (
+            <Button onClick={onLoadMore}>Click for more</Button>
+          ) : (
+            <Heading size="md">No more</Heading>
           )}
         </VStack>
       </GridItem>

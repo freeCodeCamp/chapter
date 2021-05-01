@@ -1,5 +1,5 @@
-import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
-import { Event, Venue, Chapter } from '../../models';
+import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { Chapter, Event, Venue } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { MoreThan } from 'typeorm';
 
@@ -7,7 +7,7 @@ import { MoreThan } from 'typeorm';
 export class EventResolver {
   @Query(() => [Event])
   events(
-    @Arg('limit', { nullable: true }) limit?: number,
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showAll', { nullable: true }) showAll?: boolean,
   ) {
     return Event.find({
@@ -19,6 +19,21 @@ export class EventResolver {
       where: {
         ...(!showAll && { start_at: MoreThan(new Date()) }),
       },
+    });
+  }
+
+  @Query(() => [Event])
+  async paginatedEvents(
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+    @Arg('offset', () => Int, { nullable: true }) offset?: number,
+  ): Promise<Event[]> {
+    return await Event.find({
+      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      order: {
+        start_at: 'ASC',
+      },
+      take: limit || 10,
+      skip: offset,
     });
   }
 

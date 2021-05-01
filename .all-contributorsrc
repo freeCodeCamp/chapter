@@ -102,7 +102,10 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/1777776?v=4",
       "profile": "https://github.com/allella",
       "contributions": [
-        "doc"
+        "doc",
+        "review",
+        "question",
+        "tool"
       ]
     },
     {
@@ -139,7 +142,12 @@
       "profile": "https://github.com/Zeko369",
       "contributions": [
         "code",
-        "tool"
+        "tool",
+        "bug",
+        "infra",
+        "test",
+        "review",
+        "question"
       ]
     },
     {
@@ -488,7 +496,11 @@
       "profile": "https://github.com/ojeytonwilliams",
       "contributions": [
         "infra",
-        "doc"
+        "doc",
+        "code",
+        "maintenance",
+        "test",
+        "bug"
       ]
     },
     {
@@ -498,6 +510,26 @@
       "profile": "http://www.nhcarrigan.com",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "NorthDecoder",
+      "name": "Joe Devlin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9598008?v=4",
+      "profile": "http://vividventures.biz",
+      "contributions": [
+        "bug",
+        "doc",
+        "test"
+      ]
+    },
+    {
+      "login": "rahul1990gupta",
+      "name": "Rahul Gupta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8749679?v=4",
+      "profile": "https://github.com/rahul1990gupta",
+      "contributions": [
+        "bug"
       ]
     }
   ],

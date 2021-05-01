@@ -78,6 +78,7 @@ type Mutation {
     deleteVenue(id: Int!): Boolean!
     login(data: LoginInput!): LoginType!
     register(data: RegisterInput!): User!
+    rsvpEvent(id: Int!): Rsvp
     sendEmail(data: SendEmailInputs!): Email!
     updateChapter(data: UpdateChapterInputs!, id: Int!): Chapter!
     updateEvent(data: UpdateEventInputs!, id: Int!): Event!
@@ -136,6 +137,7 @@ type User {
     id: Int!
     instance_roles: [UserInstanceRole!]!
     last_name: String!
+    name: String!
     rsvps: [Rsvp!]!
     updated_at: DateTime!
 }

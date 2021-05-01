@@ -5,7 +5,7 @@ import { Rsvp } from './Rsvp';
 import { UserBan } from './UserBan';
 import { UserChapterRole } from './UserChapterRole';
 import { UserInstanceRole } from './UserInstanceRole';
-import { ObjectType, Field } from 'type-graphql';
+import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
 
 @ObjectType()
 @Entity({ name: 'users' })
@@ -17,6 +17,9 @@ export class User extends BaseModel {
   @Field(() => String)
   @Column()
   last_name!: string;
+
+  @Field(() => String)
+  name: string;
 
   @Field(() => String)
   @Column({ unique: true })
@@ -64,5 +67,13 @@ export class User extends BaseModel {
       this.last_name = last_name;
       this.email = email;
     }
+  }
+}
+
+@Resolver(() => User)
+export class UserResolver {
+  @FieldResolver()
+  name(@Root() user: User) {
+    return `${user.first_name} ${user.last_name}`;
   }
 }

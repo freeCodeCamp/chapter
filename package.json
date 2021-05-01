@@ -49,6 +49,7 @@
     "class-validator": "0.13.1",
     "cors": "2.8.5",
     "cross-fetch": "^3.0.4",
+    "date-fns": "^2.21.1",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "express-async-handler": "^1.1.4",

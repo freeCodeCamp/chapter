@@ -15,7 +15,11 @@ interface RegisterFormData {
 }
 
 export const RegisterPage: NextPage = () => {
-  const { register, handleSubmit, errors } = useForm<RegisterFormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>();
   const [registerMutation] = useRegisterMutation();
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -40,9 +44,9 @@ export const RegisterPage: NextPage = () => {
         <VStack>
           <Heading>Register</Heading>
 
-          <Input ref={register} name="first_name" />
-          <Input ref={register} name="last_name" />
-          <Input ref={register} name="email" error={errors.email?.message} />
+          <Input {...register('first_name')} />
+          <Input {...register('last_name')} />
+          <Input {...register('email')} error={errors.email?.message} />
 
           <Button type="submit" mr="2" colorScheme="blue">
             Register

@@ -46,12 +46,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         {fields.map((field) => (
           <Input
             key={field.key}
-            name={field.key}
             label={field.label}
             placeholder={field.placeholder}
             isRequired
             isTextArea={field.type === 'textarea'}
-            ref={register()}
+            {...register(field.key)}
             defaultValue={formatValue(field, data)}
           />
         ))}
@@ -65,8 +64,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         <FormControl className={styles.item}>
           <InputLabel id="venue-label">Venue</InputLabel>
           <Controller
-            as={
-              <Select labelId="venue-label">
+            render={({ field }) => (
+              <Select {...field} labelId="venue-label">
                 {dataVenues.venues.map((venue) => (
                   <MenuItem value={venue.id} key={venue.id}>
                     {venue.name}
@@ -74,7 +73,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 ))}
                 <MenuItem>None</MenuItem>
               </Select>
-            }
+            )}
             name="venueId"
             control={control}
           />

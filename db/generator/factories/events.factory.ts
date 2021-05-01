@@ -1,4 +1,4 @@
-import { addDays, addHours } from 'date-fns';
+import { addHours, add } from 'date-fns';
 import { company, internet, lorem } from 'faker';
 import {
   Chapter,
@@ -19,10 +19,18 @@ const createEvents = async (
   const events: Event[] = [];
 
   for (let i = 0; i < 4; i++) {
-    const start_at = addHours(
-      addDays(new Date(), random(10)),
-      Math.random() * 5,
-    );
+    const date = new Date();
+    date.setMilliseconds(0);
+    date.setSeconds(0);
+    date.setMinutes(0);
+
+    const start_at = add(date, {
+      days: random(10),
+      hours: random(5),
+      minutes: random(4) * 15,
+    });
+
+    console.log(start_at);
 
     const event = new Event({
       name: company.companyName(),
@@ -34,8 +42,8 @@ const createEvents = async (
       capacity: random(1000),
       venue: randomItem(venues),
       canceled: Math.random() > 0.5,
-      ends_at: addHours(start_at, Math.random() * 5),
       start_at,
+      ends_at: addHours(start_at, random(5)),
     });
 
     await event.save();

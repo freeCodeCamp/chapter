@@ -25,7 +25,9 @@ export const getConfig = <T extends keyof Environment>(
 
   if (!val) {
     if (!fallback) {
-      throw new Error(`Cant find ENV variable of key ${key}`);
+      throw new Error(
+        `ENV variable ${key} is missing. This should be defined in your environment or .env file.`,
+      );
     }
 
     return fallback;

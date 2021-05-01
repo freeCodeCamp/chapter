@@ -57,8 +57,7 @@ export const EVENT = gql`
         on_waitlist
         user {
           id
-          first_name
-          last_name
+          name
         }
       }
     }

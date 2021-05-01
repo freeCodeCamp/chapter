@@ -23,7 +23,6 @@ type TokenResponseType = {
 export class AuthResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() ctx: GQLCtx): Promise<User | null> {
-    console.log('me');
     return ctx.user || null;
   }
 

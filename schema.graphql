@@ -85,12 +85,18 @@ type Mutation {
     updateVenue(data: UpdateVenueInputs!, id: Int!): Venue!
 }
 
+type PaginatedEvents {
+    events: [Event!]!
+    eventsCount: Int!
+}
+
 type Query {
     chapter(id: Int!): Chapter
     chapters: [Chapter!]!
     event(id: Int!): Event
-    events(limit: Float, showAll: Boolean): [Event!]!
+    events(limit: Int, showAll: Boolean): [Event!]!
     me: User
+    paginatedEvents(limit: Int, offset: Int): PaginatedEvents!
     venue(id: Int!): Venue
     venues: [Venue!]!
 }

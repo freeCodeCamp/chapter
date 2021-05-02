@@ -215,6 +215,7 @@ export type Query = {
   venues: Array<Venue>;
   venue?: Maybe<Venue>;
   events: Array<Event>;
+  paginatedEvents: Array<Event>;
   event?: Maybe<Event>;
   me?: Maybe<User>;
 };
@@ -229,7 +230,12 @@ export type QueryVenueArgs = {
 
 export type QueryEventsArgs = {
   showAll?: Maybe<Scalars['Boolean']>;
-  limit?: Maybe<Scalars['Float']>;
+  limit?: Maybe<Scalars['Int']>;
+};
+
+export type QueryPaginatedEventsArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
 };
 
 export type QueryEventArgs = {
@@ -687,10 +693,13 @@ export type RsvpToEventMutation = { __typename?: 'Mutation' } & {
   rsvpEvent?: Maybe<{ __typename?: 'Rsvp' } & Pick<Rsvp, 'id'>>;
 };
 
-export type HomePageQueryVariables = Exact<{ [key: string]: never }>;
+export type HomeQueryVariables = Exact<{
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+}>;
 
-export type HomePageQuery = { __typename?: 'Query' } & {
-  events: Array<
+export type HomeQuery = { __typename?: 'Query' } & {
+  paginatedEvents: Array<
     { __typename?: 'Event' } & Pick<
       Event,
       'id' | 'name' | 'description' | 'start_at'
@@ -1725,9 +1734,9 @@ export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutation,
   RsvpToEventMutationVariables
 >;
-export const HomePageDocument = gql`
-  query homePage {
-    events(limit: 5) {
+export const HomeDocument = gql`
+  query home($limit: Int, $offset: Int) {
+    paginatedEvents(limit: $limit, offset: $offset) {
       id
       name
       description
@@ -1746,49 +1755,40 @@ export const HomePageDocument = gql`
 `;
 
 /**
- * __useHomePageQuery__
+ * __useHomeQuery__
  *
- * To run a query within a React component, call `useHomePageQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHomeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHomePageQuery({
+ * const { data, loading, error } = useHomeQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
  *   },
  * });
  */
-export function useHomePageQuery(
-  baseOptions?: Apollo.QueryHookOptions<HomePageQuery, HomePageQueryVariables>,
+export function useHomeQuery(
+  baseOptions?: Apollo.QueryHookOptions<HomeQuery, HomeQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<HomePageQuery, HomePageQueryVariables>(
-    HomePageDocument,
+  return Apollo.useQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
+}
+export function useHomeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<HomeQuery, HomeQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<HomeQuery, HomeQueryVariables>(
+    HomeDocument,
     options,
   );
 }
-export function useHomePageLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    HomePageQuery,
-    HomePageQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<HomePageQuery, HomePageQueryVariables>(
-    HomePageDocument,
-    options,
-  );
-}
-export type HomePageQueryHookResult = ReturnType<typeof useHomePageQuery>;
-export type HomePageLazyQueryHookResult = ReturnType<
-  typeof useHomePageLazyQuery
->;
-export type HomePageQueryResult = Apollo.QueryResult<
-  HomePageQuery,
-  HomePageQueryVariables
->;
+export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
+export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
+export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 
 export interface PossibleTypesResultData {
   possibleTypes: {

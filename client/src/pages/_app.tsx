@@ -17,6 +17,7 @@ import theme from '../styles/theme';
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
 import { setContext } from '@apollo/client/link/context';
+import { offsetLimitPagination } from '@apollo/client/utilities';
 
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
@@ -35,7 +36,15 @@ const authLink = setContext((_, { headers }) => {
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          paginatedEvents: offsetLimitPagination(),
+        },
+      },
+    },
+  }),
 });
 
 const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {

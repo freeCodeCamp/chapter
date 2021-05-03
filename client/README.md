@@ -1,13 +1,49 @@
-This example shows how to integrate the TypeScript type system into Next.js. Since TypeScript is supported out of the box with Next.js, all we have to do is to install TypeScript.
+# Chapter frontend
 
-This example shows how to properly export and import typescript types without getting the
+## Running in dev server
 
-```js
-Attempted import error: 'TypeA' is not exported from './package-1'.
+```bash
+yarn dev
 ```
 
-error as raised in [vercel/next.js#7882](https://github.com/vercel/next.js/issues/7882).
+## TODO: Remote setup
 
-## Useful links
+When we deploy a demo instance we'll be able to do the following and not need to run the backend locally
 
-[Add import type and export type support to TypeScript](https://github.com/babel/babel/pull/11171)
+```bash
+yarn dev:remote
+```
+
+## Graphql setup
+
+Every `src/**/queries.ts` | `src/**/mutations.ts` will be inspected
+by [graphqlcodegen](https://www.graphql-code-generator.com/)
+and a query/mutation hook will be generated
+
+1. Add new query
+    ```ts
+    export const exampleQuery = gql`
+      query foobar {
+        chapters {
+          id
+        }
+      }
+    `
+    ```
+2. Run codegen one time or continuously  
+   one time
+
+   ```bash
+   yarn gen 
+   ```
+
+   or continuously
+
+   ```
+   yarn gen:dev
+   ```
+
+3. Import generated hook
+   ```typescript
+   const {loading, error, data} = useFoobarQuery()
+   ```

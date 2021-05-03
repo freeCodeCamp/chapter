@@ -479,10 +479,10 @@ This is [currently manually generated and updated](https://github.com/freeCodeCa
 
 Our DB commands closely mirror their Rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
-`npm run db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
-`npm run db:migrate` -> `rake db:migrate`
-`npm run db:seed` -> `rake db:seed`
-`npm run db:reset` -> `rake db:reset`
+`npm run db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand  
+`npm run db:migrate` -> `rake db:migrate`  
+`npm run db:seed` -> `rake db:seed`  
+`npm run db:reset` -> `rake db:reset`  
 
 #### Initializing the Database
 
@@ -500,7 +500,7 @@ If you prefer to run some or all of the steps manually, then they are:
 
 #### Creating a New Model / Entity
 
-`npm run typeorm entity:create -- --name=ModelName`
+`npm run typeorm entity:create -- --name=ModelName`  
 
 This would create _ModelName.ts_ in _server/models_
 

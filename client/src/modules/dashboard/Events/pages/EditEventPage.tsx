@@ -17,7 +17,11 @@ export const EditEventPage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const id = getId(router.query) || -1;
 
-  const { loading: eventLoading, error, data } = useEventQuery({
+  const {
+    loading: eventLoading,
+    error,
+    data,
+  } = useEventQuery({
     variables: { id },
   });
 

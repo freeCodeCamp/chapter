@@ -7,7 +7,8 @@ import {
 
 @ValidatorConstraint({ async: true })
 export class FindDuplicateEmailsConstraint
-  implements ValidatorConstraintInterface {
+  implements ValidatorConstraintInterface
+{
   validate(emailList: string[]) {
     const checkedEmails = {};
     for (let i = 0; i <= emailList.length; i++) {

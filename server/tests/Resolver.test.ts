@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import faker from 'faker';
-import { callSchema } from '../../testUtils/callSchema';
-import longString from './longString';
+import { callSchema } from '../testUtils/callSchema';
+import longString from '../controllers/Messages/longString';
 import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
 import { GraphQLError } from 'graphql';
 

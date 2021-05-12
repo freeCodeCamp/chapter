@@ -26,14 +26,20 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     data: dataVenues,
   } = useVenuesQuery();
 
-  const defaultValues = useMemo(
-    () => ({
-      ...(data || {}),
-      tags: (data?.tags || []).map((t) => t.name).join(', '),
-      venue: data?.venue?.id,
-    }),
-    [],
-  );
+  const defaultValues = useMemo(() => {
+    if (!data) return {};
+    return {
+      name: data.name,
+      description: data.description,
+      url: data.url,
+      video_url: data.video_url,
+      capacity: data.capacity,
+      start_at: data.start_at,
+      ends_at: data.ends_at,
+      tags: (data.tags || []).map((t) => t.name).join(', '),
+      venueId: data.venueId,
+    };
+  }, []);
 
   const { control, register, handleSubmit } = useForm<EventFormData>({
     defaultValues,

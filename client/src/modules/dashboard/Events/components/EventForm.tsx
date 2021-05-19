@@ -16,6 +16,7 @@ import {
 import useFormStyles from '../../shared/components/formStyles';
 import { useVenuesQuery } from '../../../../generated/graphql';
 import { Input } from '../../../../components/Form/Input';
+import { TextArea } from '../../../../components/Form/TextArea';
 import { VStack } from '@chakra-ui/layout';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
@@ -49,17 +50,27 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <VStack>
-        {fields.map((field) => (
-          <Input
-            key={field.key}
-            label={field.label}
-            placeholder={field.placeholder}
-            isRequired
-            isTextArea={field.type === 'textarea'}
-            {...register(field.key)}
-            defaultValue={formatValue(field, data)}
-          />
-        ))}
+        {fields.map((field) =>
+          field.type === 'textarea' ? (
+            <TextArea
+              key={field.key}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired
+              {...register(field.key)}
+              defaultValue={formatValue(field, data)}
+            />
+          ) : (
+            <Input
+              key={field.key}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired
+              {...register(field.key)}
+              defaultValue={formatValue(field, data)}
+            />
+          ),
+        )}
       </VStack>
 
       {loadingVenues ? (

@@ -18,7 +18,7 @@
     "@material-ui/icons": "4.11.2",
     "chakra-confirm": "1.0.0",
     "chakra-data-table": "1.0.3",
-    "chakra-next-link": "1.0.9",
+    "chakra-next-link": "1.0.10",
     "date-fns": "2.21.3",
     "framer-motion": "4.1.17",
     "graphql": "15.5.0",

@@ -42,15 +42,21 @@ const fields: Fields[] = [
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
   const { loading, onSubmit, data, submitText } = props;
-
+  const venue = data?.venue;
   const styles = useFormStyles();
+
+  const defaultValues: VenueFormData = {
+    name: venue?.name ?? '',
+    street_address: venue?.street_address ?? undefined,
+    city: venue?.city ?? '',
+    postal_code: venue?.postal_code ?? '',
+    region: venue?.region ?? '',
+    country: venue?.country ?? '',
+    latitude: venue?.latitude ?? undefined,
+    longitude: venue?.longitude ?? undefined,
+  };
   const { control, handleSubmit } = useForm<VenueFormData>({
-    defaultValues: {
-      ...data?.venue,
-      street_address: data?.venue?.street_address ?? undefined,
-      latitude: data?.venue?.latitude ?? undefined,
-      longitude: data?.venue?.longitude ?? undefined,
-    },
+    defaultValues,
   });
 
   return (

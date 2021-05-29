@@ -108,7 +108,7 @@
     "eslint-plugin-react": "7.23.2",
     "get-port": "5.1.1",
     "husky": "6.0.0",
-    "jest": "27.0.2",
+    "jest": "27.0.3",
     "lint-staged": "11.0.0",
     "prettier": "2.3.0",
     "sinon": "11.1.1",

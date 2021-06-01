@@ -82,7 +82,7 @@
     "@testing-library/react": "11.2.7",
     "@types/chai": "4.2.18",
     "@types/express": "4.17.12",
-    "@types/faker": "5.5.5",
+    "@types/faker": "5.5.6",
     "@types/get-port": "4.2.0",
     "@types/jest": "26.0.23",
     "@types/next": "8.0.7",

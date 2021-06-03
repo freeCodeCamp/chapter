@@ -10,7 +10,7 @@ module.exports = {
   moduleDirectories: ['node_modules', 'server'],
   globals: {
     'ts-jest': {
-      diagnostics: false,
+      tsconfig: './tsconfig.test.json',
     },
   },
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {

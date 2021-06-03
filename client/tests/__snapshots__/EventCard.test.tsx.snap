@@ -36,7 +36,7 @@ exports[`EventCard should render 1`] = `
     <h2
       class="chakra-heading css-0"
     >
-      Thu, Jan 1 @ 01:00
+      Thu, Jan 1 @ 00:00
     </h2>
     <a
       class="chakra-link css-0"

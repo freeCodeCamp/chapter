@@ -19,4 +19,5 @@ module.exports = {
   watchPathIgnorePatterns: ['/node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   testMatch: ['/**/*.test.(ts|js|tsx|jsx)'],
+  globalSetup: './global-setup.js',
 };

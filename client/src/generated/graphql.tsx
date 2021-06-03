@@ -711,6 +711,12 @@ export type HomeQuery = { __typename?: 'Query' } & {
         >;
       }
   >;
+  chapters: Array<
+    { __typename?: 'Chapter' } & Pick<
+      Chapter,
+      'id' | 'name' | 'description' | 'category' | 'details'
+    >
+  >;
 };
 
 export const LoginDocument = gql`
@@ -1758,6 +1764,13 @@ export const HomeDocument = gql`
         name
         category
       }
+    }
+    chapters {
+      id
+      name
+      description
+      category
+      details
     }
   }
 `;

@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventCard should render 1`] = `
+<div>
+  <div
+    class="css-1rtp1va"
+  >
+    <div
+      class="css-gg4vpm"
+    >
+      <h2
+        class="chakra-heading css-0"
+      >
+        <a
+          class="chakra-link css-0"
+          href="/events/1"
+        >
+          bar
+        </a>
+      </h2>
+      <div
+        class="chakra-stack css-84zodg"
+      />
+    </div>
+    <h2
+      class="chakra-heading css-0"
+    >
+      Thu, Jan 1 @ 00:00
+    </h2>
+    <a
+      class="chakra-link css-0"
+      href="/chapters/1"
+    >
+      foo
+    </a>
+    <p
+      class="chakra-text css-0"
+    >
+      baz
+    </p>
+  </div>
+</div>
+`;

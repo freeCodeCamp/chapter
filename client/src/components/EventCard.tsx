@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heading, Text, Tag, HStack, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
-import { Chapter, Event, Tag as DBTag } from 'generated/graphql';
+import { Chapter, Event, Tag as DBTag } from '../generated/graphql';
 
 import { Card } from './Card';
 import { truncate } from '../helpers/truncate';

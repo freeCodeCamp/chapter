@@ -1,4 +1,12 @@
-import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseModel } from './BaseModel';
 import { Venue } from './Venue';
@@ -78,7 +86,8 @@ export class Event extends BaseModel {
   rsvps!: Rsvp[];
 
   @Field(() => [Tag], { nullable: true })
-  @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
+  @ManyToMany((_type) => Tag, (tag) => tag.events, { onDelete: 'CASCADE' })
+  @JoinTable()
   tags!: Tag[];
 
   constructor(params: {
@@ -93,6 +102,7 @@ export class Event extends BaseModel {
     capacity: number;
     venue?: Venue;
     chapter: Chapter;
+    tags: Tag[];
   }) {
     super();
     if (params) {
@@ -108,6 +118,7 @@ export class Event extends BaseModel {
         capacity,
         venue,
         chapter,
+        tags,
       } = params;
 
       this.name = name;
@@ -121,6 +132,7 @@ export class Event extends BaseModel {
       this.capacity = capacity;
       this.venue = venue;
       this.chapter = chapter;
+      this.tags = tags;
     }
   }
 }

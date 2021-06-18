@@ -98,7 +98,7 @@
     "@typescript-eslint/parser": "4.27.0",
     "chai": "4.3.4",
     "concurrently": "6.2.0",
-    "eslint": "7.28.0",
+    "eslint": "7.29.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-config-react": "1.1.7",
     "eslint-import-resolver-typescript": "2.4.0",

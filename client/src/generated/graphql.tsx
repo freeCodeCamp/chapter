@@ -65,6 +65,7 @@ export type CreateEventInputs = {
   capacity: Scalars['Float'];
   venueId?: Maybe<Scalars['Int']>;
   chapterId: Scalars['Int'];
+  tagIds: Array<Scalars['ID']>;
 };
 
 export type CreateVenueInputs = {
@@ -105,7 +106,7 @@ export type Event = {
   venue?: Maybe<Venue>;
   chapter: Chapter;
   rsvps: Array<Rsvp>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<Tag>;
 };
 
 export type EventSponsor = {
@@ -285,7 +286,7 @@ export type Tag = {
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
   name: Scalars['String'];
-  event: Event;
+  events: Array<Event>;
 };
 
 export type UpdateChapterInputs = {
@@ -446,11 +447,7 @@ export type ChapterQuery = { __typename?: 'Query' } & {
           { __typename?: 'Event' } & Pick<
             Event,
             'id' | 'name' | 'description' | 'start_at'
-          > & {
-              tags?: Maybe<
-                Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>
-              >;
-            }
+          > & { tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>> }
         >;
       }
   >;
@@ -480,7 +477,7 @@ export type EventsQuery = { __typename?: 'Query' } & {
       | 'capacity'
     > & {
         venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+        tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>;
       }
   >;
 };
@@ -504,7 +501,7 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'ends_at'
     > & {
         chapter: { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name'>;
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+        tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>;
         venue?: Maybe<
           { __typename?: 'Venue' } & Pick<
             Venue,
@@ -543,7 +540,7 @@ export type EventVenuesQuery = { __typename?: 'Query' } & {
       | 'start_at'
       | 'ends_at'
     > & {
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+        tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>;
         venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id'>>;
       }
   >;
@@ -564,9 +561,7 @@ export type CreateEventMutation = { __typename?: 'Mutation' } & {
     | 'url'
     | 'video_url'
     | 'capacity'
-  > & {
-      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-    };
+  > & { tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>> };
 };
 
 export type UpdateEventMutationVariables = Exact<{
@@ -584,9 +579,7 @@ export type UpdateEventMutation = { __typename?: 'Mutation' } & {
     | 'url'
     | 'video_url'
     | 'capacity'
-  > & {
-      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-    };
+  > & { tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>> };
 };
 
 export type CancelEventMutationVariables = Exact<{
@@ -704,7 +697,7 @@ export type HomeQuery = { __typename?: 'Query' } & {
       Event,
       'id' | 'name' | 'description' | 'start_at'
     > & {
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+        tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>;
         chapter: { __typename?: 'Chapter' } & Pick<
           Chapter,
           'id' | 'name' | 'category'

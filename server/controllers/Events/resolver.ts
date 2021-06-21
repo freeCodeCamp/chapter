@@ -1,5 +1,5 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
-import { Event, Venue, Chapter, Rsvp } from '../../models';
+import { Event, Venue, Chapter, Rsvp, Tag } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { MoreThan } from 'typeorm';
 import { GQLCtx } from 'server/ts/gql';
@@ -91,12 +91,15 @@ export class EventResolver {
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
 
+    const tags = await Tag.findByIds(data.tagIds);
+
     const event = new Event({
       ...data,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
+      tags,
     });
 
     return event.save();

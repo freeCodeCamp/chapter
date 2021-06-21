@@ -68,6 +68,11 @@ export type CreateEventInputs = {
   tagIds: Array<Scalars['ID']>;
 };
 
+export type CreateTagInputs = {
+  name: Scalars['String'];
+  eventIds: Array<Scalars['ID']>;
+};
+
 export type CreateVenueInputs = {
   name: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
@@ -144,6 +149,7 @@ export type Mutation = {
   register: User;
   login: LoginType;
   authenticate: AuthenticateType;
+  createTag: Tag;
 };
 
 export type MutationCreateChapterArgs = {
@@ -209,6 +215,10 @@ export type MutationAuthenticateArgs = {
   token: Scalars['String'];
 };
 
+export type MutationCreateTagArgs = {
+  data: CreateTagInputs;
+};
+
 export type Query = {
   __typename?: 'Query';
   chapters: Array<Chapter>;
@@ -219,6 +229,8 @@ export type Query = {
   paginatedEvents: Array<Event>;
   event?: Maybe<Event>;
   me?: Maybe<User>;
+  tags: Array<Tag>;
+  tag?: Maybe<Tag>;
 };
 
 export type QueryChapterArgs = {
@@ -240,6 +252,10 @@ export type QueryPaginatedEventsArgs = {
 };
 
 export type QueryEventArgs = {
+  id: Scalars['Int'];
+};
+
+export type QueryTagArgs = {
   id: Scalars['Int'];
 };
 
@@ -598,6 +614,12 @@ export type DeleteEventMutation = { __typename?: 'Mutation' } & Pick<
   Mutation,
   'deleteEvent'
 >;
+
+export type TagsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type TagsQuery = { __typename?: 'Query' } & {
+  tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>;
+};
 
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1463,6 +1485,48 @@ export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
 >;
+export const TagsDocument = gql`
+  query tags {
+    tags {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useTagsQuery__
+ *
+ * To run a query within a React component, call `useTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTagsQuery(
+  baseOptions?: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+}
+export function useTagsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<TagsQuery, TagsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<TagsQuery, TagsQueryVariables>(
+    TagsDocument,
+    options,
+  );
+}
+export type TagsQueryHookResult = ReturnType<typeof useTagsQuery>;
+export type TagsLazyQueryHookResult = ReturnType<typeof useTagsLazyQuery>;
+export type TagsQueryResult = Apollo.QueryResult<TagsQuery, TagsQueryVariables>;
 export const VenuesDocument = gql`
   query venues {
     venues {

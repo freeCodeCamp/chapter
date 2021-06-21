@@ -85,7 +85,7 @@ export class Event extends BaseModel {
   @OneToMany((_type) => Rsvp, (rsvp) => rsvp.event, { onDelete: 'CASCADE' })
   rsvps!: Rsvp[];
 
-  @Field(() => [Tag], { nullable: true })
+  @Field(() => [Tag])
   @ManyToMany((_type) => Tag, (tag) => tag.events, { onDelete: 'CASCADE' })
   @JoinTable()
   tags!: Tag[];

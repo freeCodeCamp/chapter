@@ -4,6 +4,7 @@ import { EventResolver } from './Events/resolver';
 import { EmailResolver } from './Messages/resolver';
 import { AuthResolver } from 'server/controllers/Auth/resolver';
 import { UserResolver } from 'server/models';
+import { TagResolver } from './Tags/resolver';
 
 const resolvers = [
   ChapterResolver,
@@ -11,6 +12,7 @@ const resolvers = [
   EventResolver,
   EmailResolver,
   AuthResolver,
+  TagResolver,
 
   UserResolver, // Somehow extract this somewhere else
 ] as const;

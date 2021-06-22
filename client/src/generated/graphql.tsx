@@ -325,6 +325,7 @@ export type UpdateEventInputs = {
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
   venueId?: Maybe<Scalars['Int']>;
+  tagIds: Array<Scalars['ID']>;
 };
 
 export type UpdateVenueInputs = {

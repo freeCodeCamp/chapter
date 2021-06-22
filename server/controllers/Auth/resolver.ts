@@ -11,6 +11,7 @@ import {
 import { getConfig, isDev } from 'server/config';
 import { authTokenService } from 'server/services/AuthToken';
 import { GQLCtx } from 'server/ts/gql';
+import { EmailResolver } from '../Messages/resolver';
 
 type TokenResponseType = {
   email: string;
@@ -52,6 +53,11 @@ export class AuthResolver {
       console.log(
         `Code: ${code}\nhttp://localhost:3000/auth/token?token=${token}`,
       );
+      new EmailResolver().sendEmail({
+        to: [data.email],
+        subject: 'Log in to Chapter',
+        html: `http://localhost:3000/auth/token?token=${token}`,
+      });
     }
 
     // TODO: Send email

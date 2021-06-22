@@ -55,8 +55,8 @@ export class AuthResolver {
       );
       new EmailResolver().sendEmail({
         to: [data.email],
-        subject: 'Log in to Chapter',
-        html: `http://localhost:3000/auth/token?token=${token}`,
+        subject: 'Login to Chapter',
+        html: `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
       });
     }
 

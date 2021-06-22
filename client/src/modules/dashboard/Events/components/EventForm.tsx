@@ -14,7 +14,7 @@ import {
   EventFormData,
 } from './EventFormUtils';
 import useFormStyles from '../../shared/components/formStyles';
-import { useVenuesQuery } from '../../../../generated/graphql';
+import { useTagsQuery, useVenuesQuery } from '../../../../generated/graphql';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { VStack } from '@chakra-ui/layout';
@@ -26,6 +26,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     error: errorVenus,
     data: dataVenues,
   } = useVenuesQuery();
+
+  const {
+    loading: loadingTags,
+    error: errorTags,
+    data: dataTags,
+  } = useTagsQuery();
 
   const defaultValues = useMemo(() => {
     if (!data) return {};
@@ -72,6 +78,30 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           ),
         )}
       </VStack>
+
+      {loadingTags ? (
+        <h1>Loading tags...</h1>
+      ) : errorTags || !dataTags ? (
+        <h1>Error loading tags</h1>
+      ) : (
+        <FormControl className={styles.item}>
+          <InputLabel id="tag-label">Tag</InputLabel>
+          <Controller
+            render={({ field }) => (
+              <Select {...field} labelId="tag-label">
+                {dataTags.tags.map((tag) => (
+                  <MenuItem value={tag.id} key={tag.id}>
+                    {tag.name}
+                  </MenuItem>
+                ))}
+                <MenuItem>None</MenuItem>
+              </Select>
+            )}
+            name="tagIds"
+            control={control}
+          />
+        </FormControl>
+      )}
 
       {loadingVenues ? (
         <h1>Loading venues...</h1>

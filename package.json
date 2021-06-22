@@ -45,7 +45,7 @@
   "dependencies": {
     "@types/cors": "2.8.10",
     "@types/jsonwebtoken": "8.5.2",
-    "apollo-server-express": "2.25.1",
+    "apollo-server-express": "2.25.2",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-transform-typescript-metadata": "0.3.2",
     "class-validator": "0.13.1",

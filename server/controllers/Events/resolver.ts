@@ -3,6 +3,8 @@ import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { MoreThan } from 'typeorm';
 import { GQLCtx } from 'server/ts/gql';
+import { EmailResolver } from '../Messages/resolver';
+import { format } from 'date-fns';
 
 @Resolver()
 export class EventResolver {
@@ -77,6 +79,32 @@ export class EventResolver {
     });
 
     await rsvp.save();
+    // TODO: sanitize if necessary
+    const inviteURL = new URL('https://www.google.com/calendar/render');
+    const queryObject = {
+      action: 'TEMPLATE',
+      text: event.name,
+      // TODO: handle timezones - possibly need to change how the events are
+      // displayed
+      dates:
+        format(event.start_at, "yyyyMMdd'T'HHmmSS'Z'") +
+        '/' +
+        format(event.ends_at, "yyyyMMdd'T'HHmmSS'Z'"),
+      details: event.description,
+      sf: 'true',
+      output: 'xml',
+    };
+    const searchParams = new URLSearchParams(queryObject);
+    if (event.venue?.name) searchParams.append('location', event.venue?.name);
+    inviteURL.search = searchParams.toString();
+
+    new EmailResolver().sendEmail({
+      to: [ctx.user.email],
+      subject: `Invitation: ${event.name}`,
+      html: `Hi ${ctx.user.first_name},</br>
+To add this event to your calendar follow <a href=${inviteURL.href}>this link</a>
+      `,
+    });
     return rsvp;
   }
 

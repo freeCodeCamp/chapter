@@ -12,6 +12,7 @@ import {
 
 import { useHomeQuery } from 'generated/graphql';
 import { EventCard } from 'components/EventCard';
+import { ChapterCard } from 'components/ChapterCard';
 
 const Home: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
@@ -32,8 +33,8 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Grid templateColumns="repeat(5, 1fr)" columnGap={10} mt="5">
-      <GridItem colSpan={3}>
+    <Grid templateColumns="repeat(2, 1fr)" columnGap={10} mt="5">
+      <GridItem colSpan={{ base: 2, md: 1 }}>
         <VStack align="flex-start">
           <Heading>Upcoming events</Heading>
           {loading ? (
@@ -58,8 +59,24 @@ const Home: React.FC = () => {
           )}
         </VStack>
       </GridItem>
-      <GridItem colSpan={2}>
-        <Heading>Something here</Heading>
+      <GridItem colSpan={{ base: 2, md: 1 }}>
+        <VStack align="flex-start">
+          <Heading>Chapters</Heading>
+          {loading ? (
+            <Spinner />
+          ) : error || !data ? (
+            <>
+              <Heading size="md" color="red.400">
+                😕 Something went wrong
+              </Heading>
+              <Text>{error?.message}</Text>
+            </>
+          ) : (
+            data.chapters.map((chapter) => (
+              <ChapterCard key={chapter.id} chapter={chapter} />
+            ))
+          )}
+        </VStack>
       </GridItem>
     </Grid>
   );

@@ -17,5 +17,12 @@ export const HOME_PAGE_QUERY = gql`
         category
       }
     }
+    chapters {
+      id
+      name
+      description
+      category
+      details
+    }
   }
 `;

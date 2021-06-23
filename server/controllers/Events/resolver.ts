@@ -84,12 +84,10 @@ export class EventResolver {
     const queryObject = {
       action: 'TEMPLATE',
       text: event.name,
-      // TODO: handle timezones - possibly need to change how the events are
-      // displayed
       dates:
-        format(event.start_at, "yyyyMMdd'T'HHmmSS'Z'") +
+        format(event.start_at, "yyyyMMdd'T'HHmmSS") +
         '/' +
-        format(event.ends_at, "yyyyMMdd'T'HHmmSS'Z'"),
+        format(event.ends_at, "yyyyMMdd'T'HHmmSS"),
       details: event.description,
       sf: 'true',
       output: 'xml',

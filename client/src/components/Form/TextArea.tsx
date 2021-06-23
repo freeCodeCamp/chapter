@@ -1,57 +1,32 @@
 import React, { forwardRef } from 'react';
 import {
-  Input as ChakraInput,
-  InputProps as ChakraInputProps,
+  TextareaProps as ChakraTextareaProps,
   FormControl,
   FormLabel,
   FormErrorMessage,
   FormControlProps,
+  Textarea as ChakraTextarea,
 } from '@chakra-ui/react';
 
 const capitalize = (s: string) =>
   s.slice(0, 1).toUpperCase() + s.slice(1).toLowerCase();
 
-const allowed_types = [
-  'text',
-  'password',
-  'current_password',
-  'confirm_password',
-  'email',
-  'number',
-] as const;
-
-function isSpecifiedType(name: string): name is AllowedTypes {
-  return (allowed_types as any).includes(name);
-}
-
-const resoleType = (name: string) => {
-  if (isSpecifiedType(name)) {
-    if (name === 'confirm_password' || name === 'current_password') {
-      return 'password';
-    }
-
-    return name;
-  }
-
-  return 'text';
-};
+const allowed_types = ['text'] as const;
 
 type AllowedTypes = typeof allowed_types[number];
 
-export interface InputProps extends Omit<ChakraInputProps, 'type'> {
+export interface TextAreaProps extends Omit<ChakraTextareaProps, 'type'> {
   label?: string;
   noLabel?: boolean;
   error?: string;
   name?: string;
   type?: AllowedTypes | string;
   outerProps?: FormControlProps;
-
-  isTextArea?: boolean;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+export const TextArea = forwardRef<any, TextAreaProps>((props, ref) => {
   const {
-    name: baseName = 'Input Field',
+    name: baseName = 'TextArea Field',
     isInvalid,
     isRequired,
     label,
@@ -72,11 +47,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       {!noLabel && (
         <FormLabel htmlFor={baseName}>{label || capitalize(name)}</FormLabel>
       )}
-      <ChakraInput
-        type={resoleType(baseName)}
+      <ChakraTextarea
         id={baseName}
         name={baseName}
-        ref={ref}
+        ref={ref as any}
         placeholder={placeholder || label || capitalize(name)}
         {...rest}
       />

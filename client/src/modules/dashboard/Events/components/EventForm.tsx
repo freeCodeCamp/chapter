@@ -16,6 +16,7 @@ import {
 import useFormStyles from '../../shared/components/formStyles';
 import { useVenuesQuery } from '../../../../generated/graphql';
 import { Input } from '../../../../components/Form/Input';
+import { TextArea } from '../../../../components/Form/TextArea';
 import { VStack } from '@chakra-ui/layout';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
@@ -26,14 +27,20 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     data: dataVenues,
   } = useVenuesQuery();
 
-  const defaultValues = useMemo(
-    () => ({
-      ...(data || {}),
-      tags: (data?.tags || []).map((t) => t.name).join(', '),
-      venue: data?.venue?.id,
-    }),
-    [],
-  );
+  const defaultValues = useMemo(() => {
+    if (!data) return {};
+    return {
+      name: data.name,
+      description: data.description,
+      url: data.url,
+      video_url: data.video_url,
+      capacity: data.capacity,
+      start_at: data.start_at,
+      ends_at: data.ends_at,
+      tags: (data.tags || []).map((t) => t.name).join(', '),
+      venueId: data.venueId,
+    };
+  }, []);
 
   const { control, register, handleSubmit } = useForm<EventFormData>({
     defaultValues,
@@ -43,17 +50,27 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <VStack>
-        {fields.map((field) => (
-          <Input
-            key={field.key}
-            label={field.label}
-            placeholder={field.placeholder}
-            isRequired
-            isTextArea={field.type === 'textarea'}
-            {...register(field.key)}
-            defaultValue={formatValue(field, data)}
-          />
-        ))}
+        {fields.map((field) =>
+          field.type === 'textarea' ? (
+            <TextArea
+              key={field.key}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired
+              {...register(field.key)}
+              defaultValue={formatValue(field, data)}
+            />
+          ) : (
+            <Input
+              key={field.key}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired
+              {...register(field.key)}
+              defaultValue={formatValue(field, data)}
+            />
+          ),
+        )}
       </VStack>
 
       {loadingVenues ? (

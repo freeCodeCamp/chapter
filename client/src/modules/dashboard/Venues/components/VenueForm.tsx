@@ -3,19 +3,13 @@ import { useForm } from 'react-hook-form';
 import { Button, FormControl } from '@material-ui/core';
 
 import useFormStyles from '../../shared/components/formStyles';
-import { Venue, VenueQuery } from '../../../../generated/graphql';
+import type { Venue, VenueQuery } from '../../../../generated/graphql';
 import { Field } from '../../../../components/Form/Fields';
 
-export interface VenueFormData {
-  name: string;
-  street_address?: string;
-  city: string;
-  postal_code: string;
-  region: string;
-  country: string;
-  latitude?: number;
-  longitude?: number;
-}
+export type VenueFormData = Omit<
+  Venue,
+  'id' | 'created_at' | 'updated_at' | 'events'
+>;
 
 interface VenueFormProps {
   loading: boolean;
@@ -25,9 +19,9 @@ interface VenueFormProps {
 }
 
 type Fields =
-  | [keyof Venue, boolean, boolean]
-  | [keyof Venue, boolean]
-  | [keyof Venue];
+  | [keyof VenueFormData, boolean, boolean]
+  | [keyof VenueFormData, boolean]
+  | [keyof VenueFormData];
 
 const fields: Fields[] = [
   ['name', true],

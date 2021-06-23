@@ -32,9 +32,11 @@ type Fields =
 const fields: Fields[] = [
   ['name', true],
   ['description', true],
+  ['details', true],
   ['city', true],
   ['region', true],
   ['country', true],
+  ['category', true],
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
@@ -45,9 +47,11 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const defaultValues: ChapterFormData = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
+    details: chapter?.details ?? '',
     city: chapter?.city ?? '',
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
+    category: chapter?.category ?? '',
   };
   const { control, handleSubmit } = useForm<ChapterFormData>({
     defaultValues,

@@ -10,7 +10,7 @@ import {
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { makeStyles } from '@material-ui/core';
-import { CHAPTERS } from '../graphql/queries';
+import { CHAPTERS } from '../../../chapters/graphql/queries';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {

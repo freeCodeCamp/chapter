@@ -5,7 +5,7 @@ import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 import { useRouter } from 'next/router';
 import { useCreateChapterMutation } from '../../../../generated/graphql';
-import { CHAPTERS } from '../graphql/queries';
+import { CHAPTERS } from '../../../chapters/graphql/queries';
 
 export const NewChapterPage: NextPage = () => {
   const [loading, setLoading] = useState(false);

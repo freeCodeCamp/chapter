@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
-import { format } from 'date-fns';
+import { CalendarEvent, google } from 'calendar-link';
 import { GQLCtx } from 'server/ts/gql';
 import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
@@ -79,28 +79,21 @@ export class EventResolver {
     });
 
     await rsvp.save();
-    // TODO: sanitize if necessary
-    const inviteURL = new URL('https://www.google.com/calendar/render');
-    const queryObject = {
-      action: 'TEMPLATE',
-      text: event.name,
-      dates:
-        format(event.start_at, "yyyyMMdd'T'HHmmSS") +
-        '/' +
-        format(event.ends_at, "yyyyMMdd'T'HHmmSS"),
-      details: event.description,
-      sf: 'true',
-      output: 'xml',
+    const linkDetails: CalendarEvent = {
+      title: event.name,
+      start: event.start_at,
+      end: event.ends_at,
+      description: event.description,
     };
-    const searchParams = new URLSearchParams(queryObject);
-    if (event.venue?.name) searchParams.append('location', event.venue?.name);
-    inviteURL.search = searchParams.toString();
+    if (event.venue?.name) linkDetails.location = event.venue?.name;
 
     new MailerService(
       [ctx.user.email],
       `Invitation: ${event.name}`,
       `Hi ${ctx.user.first_name},</br>
-To add this event to your calendar follow <a href=${inviteURL.href}>this link</a>
+To add this event to your calendar(s) you can use these links:
+
+<a href=${google(linkDetails)}>Google</a>
       `,
     ).sendEmail();
     return rsvp;

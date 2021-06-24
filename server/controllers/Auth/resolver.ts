@@ -53,11 +53,11 @@ export class AuthResolver {
       console.log(
         `Code: ${code}\nhttp://localhost:3000/auth/token?token=${token}`,
       );
-      new EmailResolver().sendEmail({
-        to: [data.email],
-        subject: 'Login to Chapter',
-        html: `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
-      });
+      await new MailerService(
+        [data.email],
+        'Login to Chapter',
+        `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
+      ).sendEmail();
     }
 
     // TODO: Send email

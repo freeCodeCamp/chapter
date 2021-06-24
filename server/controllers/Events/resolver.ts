@@ -3,8 +3,8 @@ import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { MoreThan } from 'typeorm';
 import { GQLCtx } from 'server/ts/gql';
-import { EmailResolver } from '../Messages/resolver';
 import { format } from 'date-fns';
+import MailerService from 'server/services/MailerService';
 
 @Resolver()
 export class EventResolver {
@@ -96,13 +96,13 @@ export class EventResolver {
     if (event.venue?.name) searchParams.append('location', event.venue?.name);
     inviteURL.search = searchParams.toString();
 
-    new EmailResolver().sendEmail({
-      to: [ctx.user.email],
-      subject: `Invitation: ${event.name}`,
-      html: `Hi ${ctx.user.first_name},</br>
+    new MailerService(
+      [ctx.user.email],
+      `Invitation: ${event.name}`,
+      `Hi ${ctx.user.first_name},</br>
 To add this event to your calendar follow <a href=${inviteURL.href}>this link</a>
       `,
-    });
+    ).sendEmail();
     return rsvp;
   }
 

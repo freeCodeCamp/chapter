@@ -14,7 +14,7 @@ const dbConfig = {
 module.exports = {
   type: 'postgres',
   ...dbConfig,
-  synchronize: false,
+  synchronize: process.env.NODE_ENV === 'development',
   logging: false,
   entities: ['src/models/**/*.js'],
   migrations: ['db/migrations/**/*.js'],

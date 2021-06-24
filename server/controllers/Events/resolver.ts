@@ -1,9 +1,9 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+import { MoreThan } from 'typeorm';
+import { format } from 'date-fns';
+import { GQLCtx } from 'server/ts/gql';
 import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
-import { MoreThan } from 'typeorm';
-import { GQLCtx } from 'server/ts/gql';
-import { format } from 'date-fns';
 import MailerService from 'server/services/MailerService';
 
 @Resolver()

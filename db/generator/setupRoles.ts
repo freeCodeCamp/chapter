@@ -30,7 +30,12 @@ const setupRoles = async (
     ucr.push(ban);
   }
 
-  await Promise.all(ucr);
+  try {
+    await Promise.all(ucr.map((user) => user.save()));
+  } catch (e) {
+    console.error(e);
+    throw new Error('Error seeding roles');
+  }
 };
 
 export default setupRoles;

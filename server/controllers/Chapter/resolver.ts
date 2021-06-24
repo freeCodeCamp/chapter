@@ -11,7 +11,9 @@ export class ChapterResolver {
 
   @Query(() => Chapter, { nullable: true })
   chapter(@Arg('id', () => Int) id: number) {
-    return Chapter.findOne(id, { relations: ['events'] });
+    return Chapter.findOne(id, {
+      relations: ['events', 'users', 'users.user'],
+    });
   }
 
   @Mutation(() => Chapter)

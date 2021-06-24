@@ -158,3 +158,9 @@ export const deleteRSVP = gql`
     deleteRsvp(id: $id)
   }
 `;
+
+export const sendEventInvite = gql`
+  mutation sendEventInvite($id: Int!) {
+    sendEventInvite(id: $id)
+  }
+`;

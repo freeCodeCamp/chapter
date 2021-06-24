@@ -140,3 +140,9 @@ export const deleteEvent = gql`
     deleteEvent(id: $id)
   }
 `;
+
+export const sendEventInvite = gql`
+  mutation sendEventInvite($id: Int!) {
+    sendEventInvite(id: $id)
+  }
+`;

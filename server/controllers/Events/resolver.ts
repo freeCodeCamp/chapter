@@ -171,4 +171,23 @@ To add this event to your calendar(s) you can use these links:
 
     return true;
   }
+
+  @Mutation(() => Boolean)
+  async sendEventInvite(@Arg('id', () => Int) id: number) {
+    const event = await Event.findOne(id, {
+      relations: ['chapter', 'chapter.users', 'chapter.users.user'],
+    });
+
+    if (!event) throw new Error("Can't find event");
+
+    // TODO: the default should probably be to bcc everyone.
+    const addresses = event.chapter.users.map(({ user }) => user.email);
+    const subject = `Invitation: new event, ${event.name}, with ${event.chapter.name}.`;
+    // TODO: this needs to include an ical file
+    const body = 'TBD';
+
+    await new MailerService(addresses, subject, body).sendEmail();
+
+    return true;
+  }
 }

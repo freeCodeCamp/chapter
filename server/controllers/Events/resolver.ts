@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
-import { CalendarEvent, google } from 'calendar-link';
+import { CalendarEvent, google, outlook } from 'calendar-link';
 import { GQLCtx } from 'server/ts/gql';
 import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
@@ -92,8 +92,10 @@ export class EventResolver {
       `Invitation: ${event.name}`,
       `Hi ${ctx.user.first_name},</br>
 To add this event to your calendar(s) you can use these links:
-
+</br>
 <a href=${google(linkDetails)}>Google</a>
+</br>
+<a href=${outlook(linkDetails)}>Outlook</a>
       `,
     ).sendEmail();
     return rsvp;

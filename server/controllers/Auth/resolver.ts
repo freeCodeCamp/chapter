@@ -11,7 +11,7 @@ import {
 import { getConfig, isDev } from 'server/config';
 import { authTokenService } from 'server/services/AuthToken';
 import { GQLCtx } from 'server/ts/gql';
-import { EmailResolver } from '../Messages/resolver';
+import MailerService from 'server/services/MailerService';
 
 type TokenResponseType = {
   email: string;

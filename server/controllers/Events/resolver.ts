@@ -102,7 +102,8 @@ To add this event to your calendar(s) you can use these links:
   }
 
   @Mutation(() => Event)
-  async createEvent(@Arg('data') data: CreateEventInputs) {
+  async createEvent(@Arg('data') data: CreateEventInputs, @Ctx() ctx: GQLCtx) {
+    if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venueId) {
       venue = await Venue.findOne(data.venueId);
@@ -112,12 +113,24 @@ To add this event to your calendar(s) you can use these links:
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
 
+    // TODO: add admin and owner once those roles exist.
+    const allowedRoles = ['organizer'];
+    const hasPermission =
+      ctx.user.chapter_roles.findIndex(
+        ({ chapter_id, role_name }) =>
+          chapter_id === data.chapterId && allowedRoles.includes(role_name),
+      ) !== -1;
+
+    if (!hasPermission)
+      throw Error('User does not have permission to create events');
+
     const event = new Event({
       ...data,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
+      organizer: ctx.user,
     });
 
     return event.save();

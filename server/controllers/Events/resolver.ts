@@ -1,10 +1,10 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
+import MailerService from 'server/services/MailerService';
 import { GQLCtx } from 'server/ts/gql';
 import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
-import MailerService from 'server/services/MailerService';
 
 @Resolver()
 export class EventResolver {
@@ -56,7 +56,9 @@ export class EventResolver {
       throw new Error('You need to be logged in');
     }
 
-    const event = await Event.findOne({ where: { id }, relations: ['rsvps'] });
+    const event = await Event.findOne(id, {
+      relations: ['rsvps','organizer'],
+    });
     if (!event) {
       throw new Error('Event not found');
     }
@@ -101,7 +103,7 @@ export class EventResolver {
     };
     if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-    new MailerService(
+    await new MailerService(
       [ctx.user.email],
       `Invitation: ${event.name}`,
       `Hi ${ctx.user.first_name},</br>
@@ -111,6 +113,11 @@ To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${outlook(linkDetails)}>Outlook</a>
       `,
+    ).sendEmail();
+    await new MailerService(
+      [event.organizer.email],
+      `New RSVP for ${event.name}`,
+      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd.`,
     ).sendEmail();
     return rsvp;
   }

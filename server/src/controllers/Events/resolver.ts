@@ -210,7 +210,9 @@ To add this event to your calendar(s) you can use these links:
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
   ) {
-    const event = await Event.findOne(id);
+    const event = await Event.findOne(id, {
+      relations: ['rsvps', 'rsvps.user', 'venue'],
+    });
     if (!event) throw new Error('Cant find event');
 
     // TODO: Handle tags
@@ -229,8 +231,23 @@ To add this event to your calendar(s) you can use these links:
     if (data.venueId) {
       const venue = await Venue.findOne(data.venueId);
       if (!venue) throw new Error('Cant find venue');
+      // TODO: include a link back to the venue page
+      if (event.venue?.id !== venue.id) {
+        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
+        const subject = `Venue changed for event ${event.name}`;
+        const body = `We have had to change the location of ${event.name}.
+The event is now being held at <br>
+${venue.name} <br> 
+${venue.street_address ? venue.street_address + '<br>' : ''}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+`;
+        new MailerService(emailList, subject, body).sendEmail();
+      }
       event.venue = venue;
     }
+
     return event.save();
   }
 

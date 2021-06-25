@@ -43,7 +43,14 @@ export class EventResolver {
   @Query(() => Event, { nullable: true })
   event(@Arg('id', () => Int) id: number) {
     return Event.findOne(id, {
-      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      relations: [
+        'chapter',
+        'tags',
+        'venue',
+        'rsvps',
+        'rsvps.user',
+        'organizer',
+      ],
     });
   }
 

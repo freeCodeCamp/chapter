@@ -113,6 +113,7 @@ export class EventResolver {
     // TODO: Handle tags
     event.tags = [];
 
+    event.invite_only = data.invite_only ?? event.invite_only;
     event.name = data.name ?? event.name;
     event.description = data.description ?? event.description;
     event.url = data.url ?? event.url;

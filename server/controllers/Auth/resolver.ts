@@ -73,7 +73,7 @@ export class AuthResolver {
     try {
       data = verify(token, getConfig('JWT_SECRET')) as TokenResponseType;
     } catch (e) {
-      // TODO: Handle differnet parsing errors
+      // TODO: Handle different parsing errors
       console.error(e);
       throw new Error('Token wrong / missing / expired');
     }

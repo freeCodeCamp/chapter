@@ -870,8 +870,7 @@ export function useAuthenticateMutation(
 export type AuthenticateMutationHookResult = ReturnType<
   typeof useAuthenticateMutation
 >;
-export type AuthenticateMutationResult =
-  Apollo.MutationResult<AuthenticateMutation>;
+export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<
   AuthenticateMutation,
   AuthenticateMutationVariables
@@ -1304,8 +1303,7 @@ export function useCreateEventMutation(
 export type CreateEventMutationHookResult = ReturnType<
   typeof useCreateEventMutation
 >;
-export type CreateEventMutationResult =
-  Apollo.MutationResult<CreateEventMutation>;
+export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
 export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutation,
   CreateEventMutationVariables
@@ -1365,8 +1363,7 @@ export function useUpdateEventMutation(
 export type UpdateEventMutationHookResult = ReturnType<
   typeof useUpdateEventMutation
 >;
-export type UpdateEventMutationResult =
-  Apollo.MutationResult<UpdateEventMutation>;
+export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<
   UpdateEventMutation,
   UpdateEventMutationVariables
@@ -1416,8 +1413,7 @@ export function useCancelEventMutation(
 export type CancelEventMutationHookResult = ReturnType<
   typeof useCancelEventMutation
 >;
-export type CancelEventMutationResult =
-  Apollo.MutationResult<CancelEventMutation>;
+export type CancelEventMutationResult = Apollo.MutationResult<CancelEventMutation>;
 export type CancelEventMutationOptions = Apollo.BaseMutationOptions<
   CancelEventMutation,
   CancelEventMutationVariables
@@ -1464,8 +1460,7 @@ export function useDeleteEventMutation(
 export type DeleteEventMutationHookResult = ReturnType<
   typeof useDeleteEventMutation
 >;
-export type DeleteEventMutationResult =
-  Apollo.MutationResult<DeleteEventMutation>;
+export type DeleteEventMutationResult = Apollo.MutationResult<DeleteEventMutation>;
 export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
@@ -1633,8 +1628,7 @@ export function useCreateVenueMutation(
 export type CreateVenueMutationHookResult = ReturnType<
   typeof useCreateVenueMutation
 >;
-export type CreateVenueMutationResult =
-  Apollo.MutationResult<CreateVenueMutation>;
+export type CreateVenueMutationResult = Apollo.MutationResult<CreateVenueMutation>;
 export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutation,
   CreateVenueMutationVariables
@@ -1692,8 +1686,7 @@ export function useUpdateVenueMutation(
 export type UpdateVenueMutationHookResult = ReturnType<
   typeof useUpdateVenueMutation
 >;
-export type UpdateVenueMutationResult =
-  Apollo.MutationResult<UpdateVenueMutation>;
+export type UpdateVenueMutationResult = Apollo.MutationResult<UpdateVenueMutation>;
 export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
@@ -1742,8 +1735,7 @@ export function useRsvpToEventMutation(
 export type RsvpToEventMutationHookResult = ReturnType<
   typeof useRsvpToEventMutation
 >;
-export type RsvpToEventMutationResult =
-  Apollo.MutationResult<RsvpToEventMutation>;
+export type RsvpToEventMutationResult = Apollo.MutationResult<RsvpToEventMutation>;
 export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutation,
   RsvpToEventMutationVariables

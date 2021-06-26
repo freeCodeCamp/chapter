@@ -6,7 +6,6 @@ import { Card, Typography, CardContent } from '@material-ui/core';
 import { Layout } from '../../shared/components/Layout';
 import { useEventQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
-import { ProgressCardContent } from '../../../../components';
 import getLocationString from '../../../../helpers/getLocationString';
 import Actions from '../components/Actions';
 
@@ -28,48 +27,45 @@ export const EventPage: NextPage = () => {
   return (
     <Layout>
       <Card style={{ marginTop: '12px' }}>
-        <ProgressCardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {data.event.name}
+        <Typography gutterBottom variant="h5" component="h2">
+          {data.event.name}
+        </Typography>
+        {data.event.canceled && (
+          <Typography variant="h5" color="error">
+            Canceled
           </Typography>
-          {data.event.canceled && (
-            <Typography variant="h5" color="error">
-              Canceled
-            </Typography>
-          )}
-          <Typography variant="body2" color="textSecondary" component="p">
-            {data.event.description}
+        )}
+        <Typography variant="body2" color="textSecondary" component="p">
+          {data.event.description}
+        </Typography>
+        {data.event.url && (
+          <Typography>
+            Event Url: <a href={data.event.url}>{data.event.url}</a>
           </Typography>
-          {data.event.url && (
-            <Typography>
-              Event Url: <a href={data.event.url}>{data.event.url}</a>
-            </Typography>
-          )}
-          {data.event.video_url && (
-            <Typography>
-              Video Url:{' '}
-              <a href={data.event.video_url}>{data.event.video_url}</a>
-            </Typography>
-          )}
-          <Typography variant="body2" color="textSecondary" component="p">
-            {data.event.capacity}
+        )}
+        {data.event.video_url && (
+          <Typography>
+            Video Url: <a href={data.event.video_url}>{data.event.video_url}</a>
           </Typography>
-          {/* <Tags tags={data.event.tags} /> */}
+        )}
+        <Typography variant="body2" color="textSecondary" component="p">
+          {data.event.capacity}
+        </Typography>
+        {/* <Tags tags={data.event.tags} /> */}
 
-          <Actions
-            event={data.event}
-            onDelete={() => router.replace('/dashboard/events')}
-          />
-          {data.event.venue ? (
-            <>
-              <h2>Venue:</h2>
-              <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
-              <h4>{getLocationString(data.event.venue, true)}</h4>
-            </>
-          ) : (
-            <h2>Venue: Online</h2>
-          )}
-        </ProgressCardContent>
+        <Actions
+          event={data.event}
+          onDelete={() => router.replace('/dashboard/events')}
+        />
+        {data.event.venue ? (
+          <>
+            <h2>Venue:</h2>
+            <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
+            <h4>{getLocationString(data.event.venue, true)}</h4>
+          </>
+        ) : (
+          <h2>Venue: Online</h2>
+        )}
       </Card>
       <Card style={{ marginTop: '12px' }}>
         <CardContent>

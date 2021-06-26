@@ -8,6 +8,7 @@ export const EVENTS = gql`
       canceled
       description
       url
+      invite_only
       video_url
       start_at
       capacity
@@ -30,6 +31,7 @@ export const EVENT = gql`
       name
       description
       url
+      invite_only
       video_url
       canceled
       capacity

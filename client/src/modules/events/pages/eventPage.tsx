@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
 import { NextPage } from 'next';
-import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
-import { useParam } from 'hooks/useParam';
-
 import {
   Heading,
   VStack,
@@ -10,15 +7,20 @@ import {
   Button,
   useToast,
   List,
+  HStack,
   ListItem,
   Avatar,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { LockIcon } from '@chakra-ui/icons';
+import { useConfirm } from 'chakra-confirm';
+
+import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
+import { useParam } from 'hooks/useParam';
 import { useAuth } from '../../auth/store';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
-import { useConfirm } from 'chakra-confirm';
-import { HStack } from '@chakra-ui/layout';
-import { LockIcon } from '@chakra-ui/icons';
+import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 
 export const EventPage: NextPage = () => {
   const id = useParam('eventId');
@@ -31,6 +33,7 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
+  const modalProps = useDisclosure();
 
   const userRsvped = useMemo(() => {
     const rsvp = data?.event?.rsvps.find((rsvp) => rsvp.user.id === user?.id);
@@ -50,6 +53,10 @@ export const EventPage: NextPage = () => {
       </div>
     );
   }
+
+  const handleLoginUserFirst = () => {
+    modalProps.onOpen();
+  };
 
   const onRsvp = async (add: boolean) => {
     const ok = await confirm(
@@ -83,10 +90,25 @@ export const EventPage: NextPage = () => {
   const rsvps = data.event.rsvps.filter((r) => !r.on_waitlist);
   const waitlist = data.event.rsvps.filter((r) => r.on_waitlist);
 
+  const checkOnRsvp = async (add: boolean) => {
+    if (!user) {
+      return handleLoginUserFirst();
+    }
+
+    await onRsvp(add);
+  };
+
   return (
     <VStack align="flex-start">
+      <LoginRegisterModal
+        onRsvp={onRsvp}
+        userIds={data?.event?.rsvps.map((r) => r.user.id) || []}
+        modalProps={modalProps}
+      />
+
       <Heading>
         {data.event.invite_only && <LockIcon />} {data.event.name}
+        {data.event.name}
       </Heading>
       <Heading size="md">
         Chapter:{' '}
@@ -100,7 +122,7 @@ export const EventPage: NextPage = () => {
       {userRsvped === 'rsvp' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button colorScheme="red" onClick={() => onRsvp(false)}>
+          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
             Cancel
           </Button>
         </HStack>
@@ -111,12 +133,12 @@ export const EventPage: NextPage = () => {
           ) : (
             <Heading>You&lsquo;re on waitlist for this event</Heading>
           )}
-          <Button colorScheme="red" onClick={() => onRsvp(false)}>
+          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
             Cancel
           </Button>
         </HStack>
       ) : (
-        <Button colorScheme="blue" onClick={() => onRsvp(true)}>
+        <Button colorScheme="blue" onClick={() => checkOnRsvp(true)}>
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}

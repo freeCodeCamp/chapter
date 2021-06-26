@@ -97,7 +97,7 @@ export class Event extends BaseModel {
     capacity: number;
     venue?: Venue;
     chapter: Chapter;
-    invite_only: boolean;
+    invite_only?: boolean;
   }) {
     super();
     if (params) {
@@ -127,7 +127,7 @@ export class Event extends BaseModel {
       this.capacity = capacity;
       this.venue = venue;
       this.chapter = chapter;
-      this.invite_only = invite_only;
+      this.invite_only = invite_only || false;
     }
   }
 }

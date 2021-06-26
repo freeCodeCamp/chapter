@@ -31,10 +31,11 @@ export const EventPage: NextPage = () => {
   const toast = useToast();
   const confirm = useConfirm();
 
-  const userRsvped = useMemo(
-    () => data?.event?.rsvps.some((rsvp) => rsvp.user.id === user?.id),
-    [data?.event],
-  );
+  const userRsvped = useMemo(() => {
+    const rsvp = data?.event?.rsvps.find((rsvp) => rsvp.user.id === user?.id);
+    if (!rsvp) return null;
+    return rsvp.on_waitlist ? 'waitlist' : 'rsvp';
+  }, [data?.event]);
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -78,6 +79,9 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  const rsvps = data.event.rsvps.filter((r) => !r.on_waitlist);
+  const waitlist = data.event.rsvps.filter((r) => r.on_waitlist);
+
   return (
     <VStack align="flex-start">
       <Heading>{data.event.name}</Heading>
@@ -90,9 +94,16 @@ export const EventPage: NextPage = () => {
       <Text>{data.event.description}</Text>
 
       <Heading>RSVPs:</Heading>
-      {userRsvped ? (
+      {userRsvped === 'rsvp' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
+          <Button colorScheme="red" onClick={() => onRsvp(false)}>
+            Cancel
+          </Button>
+        </HStack>
+      ) : userRsvped === 'waitlist' ? (
+        <HStack>
+          <Heading>You&lsquo;re on waitlist for this event</Heading>
           <Button colorScheme="red" onClick={() => onRsvp(false)}>
             Cancel
           </Button>
@@ -103,9 +114,22 @@ export const EventPage: NextPage = () => {
         </Button>
       )}
 
+      <Heading size="md">RSVPs:</Heading>
       <List>
-        {data.event.rsvps.map((rsvp) => (
-          <ListItem key={rsvp.id}>
+        {rsvps.map((rsvp) => (
+          <ListItem key={rsvp.id} mb="2">
+            <HStack>
+              <Avatar name={rsvp.user.name} />
+              <Heading size="md">{rsvp.user.name}</Heading>
+            </HStack>
+          </ListItem>
+        ))}
+      </List>
+
+      <Heading size="md">Waitlist:</Heading>
+      <List>
+        {waitlist.map((rsvp) => (
+          <ListItem key={rsvp.id} mb="2">
             <HStack>
               <Avatar name={rsvp.user.name} />
               <Heading size="md">{rsvp.user.name}</Heading>

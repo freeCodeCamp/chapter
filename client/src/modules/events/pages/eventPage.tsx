@@ -18,6 +18,7 @@ import { useAuth } from '../../auth/store';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import { useConfirm } from 'chakra-confirm';
 import { HStack } from '@chakra-ui/layout';
+import { LockIcon } from '@chakra-ui/icons';
 
 export const EventPage: NextPage = () => {
   const id = useParam('eventId');
@@ -84,7 +85,9 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <Heading>{data.event.name}</Heading>
+      <Heading>
+        {data.event.invite_only && <LockIcon />} {data.event.name}
+      </Heading>
       <Heading size="md">
         Chapter:{' '}
         <Link href={`/chapters/${data.event.chapter.id}`}>
@@ -103,14 +106,18 @@ export const EventPage: NextPage = () => {
         </HStack>
       ) : userRsvped === 'waitlist' ? (
         <HStack>
-          <Heading>You&lsquo;re on waitlist for this event</Heading>
+          {data.event.invite_only ? (
+            <Heading>Event owner will soon confirm your request</Heading>
+          ) : (
+            <Heading>You&lsquo;re on waitlist for this event</Heading>
+          )}
           <Button colorScheme="red" onClick={() => onRsvp(false)}>
             Cancel
           </Button>
         </HStack>
       ) : (
         <Button colorScheme="blue" onClick={() => onRsvp(true)}>
-          RSVP
+          {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}
 
@@ -126,17 +133,21 @@ export const EventPage: NextPage = () => {
         ))}
       </List>
 
-      <Heading size="md">Waitlist:</Heading>
-      <List>
-        {waitlist.map((rsvp) => (
-          <ListItem key={rsvp.id} mb="2">
-            <HStack>
-              <Avatar name={rsvp.user.name} />
-              <Heading size="md">{rsvp.user.name}</Heading>
-            </HStack>
-          </ListItem>
-        ))}
-      </List>
+      {!data.event.invite_only && (
+        <>
+          <Heading size="md">Waitlist:</Heading>
+          <List>
+            {waitlist.map((rsvp) => (
+              <ListItem key={rsvp.id} mb="2">
+                <HStack>
+                  <Avatar name={rsvp.user.name} />
+                  <Heading size="md">{rsvp.user.name}</Heading>
+                </HStack>
+              </ListItem>
+            ))}
+          </List>
+        </>
+      )}
     </VStack>
   );
 };

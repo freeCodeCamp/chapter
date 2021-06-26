@@ -6,6 +6,8 @@ export const HOME_PAGE_QUERY = gql`
       id
       name
       description
+      invite_only
+      canceled
       start_at
       tags {
         id

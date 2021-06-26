@@ -707,7 +707,7 @@ export type HomeQuery = { __typename?: 'Query' } & {
   paginatedEvents: Array<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'description' | 'start_at'
+      'id' | 'name' | 'description' | 'invite_only' | 'canceled' | 'start_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
         chapter: { __typename?: 'Chapter' } & Pick<
@@ -1753,6 +1753,8 @@ export const HomeDocument = gql`
       id
       name
       description
+      invite_only
+      canceled
       start_at
       tags {
         id

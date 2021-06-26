@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
 import { NextPage } from 'next';
-import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
-import { useParam } from 'hooks/useParam';
-
 import {
   Heading,
   VStack,
@@ -12,12 +9,17 @@ import {
   List,
   ListItem,
   Avatar,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { HStack } from '@chakra-ui/layout';
+import { useConfirm } from 'chakra-confirm';
+
+import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
+import { useParam } from 'hooks/useParam';
 import { useAuth } from '../../auth/store';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
-import { useConfirm } from 'chakra-confirm';
-import { HStack } from '@chakra-ui/layout';
+import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 
 export const EventPage: NextPage = () => {
   const id = useParam('eventId');
@@ -30,6 +32,7 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
+  const modalProps = useDisclosure();
 
   const userRsvped = useMemo(
     () => data?.event?.rsvps.some((rsvp) => rsvp.user.id === user?.id),
@@ -48,6 +51,10 @@ export const EventPage: NextPage = () => {
       </div>
     );
   }
+
+  const handleLoginUserFirst = () => {
+    modalProps.onOpen();
+  };
 
   const onRsvp = async (add: boolean) => {
     const ok = await confirm(
@@ -78,8 +85,22 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  const checkOnRsvp = async (add: boolean) => {
+    if (!user) {
+      return handleLoginUserFirst();
+    }
+
+    await onRsvp(add);
+  };
+
   return (
     <VStack align="flex-start">
+      <LoginRegisterModal
+        onRsvp={onRsvp}
+        userIds={data?.event?.rsvps.map((r) => r.user.id) || []}
+        modalProps={modalProps}
+      />
+
       <Heading>{data.event.name}</Heading>
       <Heading size="md">
         Chapter:{' '}
@@ -93,12 +114,12 @@ export const EventPage: NextPage = () => {
       {userRsvped ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button colorScheme="red" onClick={() => onRsvp(false)}>
+          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
             Cancel
           </Button>
         </HStack>
       ) : (
-        <Button colorScheme="blue" onClick={() => onRsvp(true)}>
+        <Button colorScheme="blue" onClick={() => checkOnRsvp(true)}>
           RSVP
         </Button>
       )}

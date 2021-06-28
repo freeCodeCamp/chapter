@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { EventFormData } from '../components/EventFormUtils';

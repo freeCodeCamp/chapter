@@ -5,8 +5,8 @@
   - [Using GitPod](#using-gitpod)
   - [Using a Traditional Dev Environment](#using-a-traditional-dev-environment)
 - [Running the Application](#running-the-application)
-  - [Docker Mode](#running-the-application)
-  - [Manual Mode](#running-the-application)
+  - [Docker Mode](#docker-mode)
+  - [Manual Mode](#manual-mode)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -19,6 +19,7 @@
     - [Using TypeORM and NPM](#using-typeorm-and-npm)
       - [Initializing the Database](#initializing-the-database)
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
+      - [Changing the schema in development](#changing-the-schema-in-development)
       - [Creating a Migration](#creating-a-migration)
       - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
 - [Running Remotely](#running-remotely)
@@ -514,6 +515,10 @@ This would create _ModelName.ts_ in _server/src/models_
 To keep everything DRY, add `extends BaseModel` to the class and import it from 'models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
 
 `npx typeorm` can also be used, but must be run inside _server_.
+
+#### Changing the schema in development
+
+It is not necessary to migrate the database during development.  By default, the database is kept in sync with the definitions in _server/models_ when the server is started.  You can also manually sync via the `npm run db:sync` command.  Finally, once your feature is finished, you should create and commit a [migration](#creating-a-migration).
 
 #### Creating a Migration
 

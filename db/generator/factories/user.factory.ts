@@ -1,6 +1,5 @@
 import { name, internet } from 'faker';
 import { User } from '../../../server/models';
-import { random } from '../lib/random';
 
 const createUsers = async (): Promise<[User, User[]]> => {
   // TODO: add seeding admin
@@ -11,7 +10,7 @@ const createUsers = async (): Promise<[User, User[]]> => {
   });
 
   const others = Array.from(
-    new Array(random(5)),
+    new Array(10),
     () =>
       new User({
         email: internet.email(),

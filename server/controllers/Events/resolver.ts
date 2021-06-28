@@ -223,7 +223,9 @@ To add this event to your calendar(s) you can use these links:
     if (!event) throw new Error("Can't find event");
 
     // TODO: the default should probably be to bcc everyone.
-    const addresses = event.chapter.users.map(({ user }) => user.email);
+    const addresses = event.chapter.users
+      .filter((role) => role.interested)
+      .map(({ user }) => user.email);
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;

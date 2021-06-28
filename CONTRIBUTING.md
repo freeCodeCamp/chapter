@@ -19,7 +19,7 @@
     - [Using TypeORM and NPM](#using-typeorm-and-npm)
       - [Initializing the Database](#initializing-the-database)
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
-      - [Changing the schema in development](#changing-the-schema-in-development)
+      - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
       - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
 - [Running Remotely](#running-remotely)
@@ -511,9 +511,10 @@ To keep everything DRY, add `extends BaseModel` to the class and import it from 
 
 `npx typeorm` can also be used, but must be run inside _server_.
 
-#### Changing the schema in development
+#### Syncing the Schema
 
-It is not necessary to migrate the database during development.  By default, the database is kept in sync with the definitions in _server/models_ when the server is started.  You can also manually sync via the `npm run db:sync` command.  Finally, once your feature is finished, you should create and commit a [migration](#creating-a-migration).
+* For development environments, [TypeORM will kept the database migrations in sync](https://github.com/typeorm/typeorm/blob/master/README.md) with the definitions in _server/models_ when the server is started. Developers must still create and commit a [migration](#creating-a-migration) for any modifications to the ORM / database schema.
+* For production environments, or if a manually sync becomes necessary, run the `npm run db:sync` command.
 
 #### Creating a Migration
 

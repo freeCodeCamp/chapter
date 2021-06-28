@@ -3,7 +3,7 @@ import { Button, Card, makeStyles, Typography } from '@material-ui/core';
 import Link from 'next/link';
 
 import { Venue } from '../../../../generated/graphql';
-import { ProgressCardContent } from '../../../../components';
+import ProgressCardContent from '../../../../components/ProgressCardContent';
 import getLocationString from '../../../../helpers/getLocationString';
 
 interface VenueItemProps {

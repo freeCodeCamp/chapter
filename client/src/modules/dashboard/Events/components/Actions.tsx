@@ -7,7 +7,6 @@ import {
   Event,
   useCancelEventMutation,
   useDeleteEventMutation,
-  useSendEventInviteMutation,
 } from 'generated/graphql';
 import { EVENT, EVENTS } from '../graphql/queries';
 
@@ -20,7 +19,6 @@ interface ActionsProps {
 const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
   const [cancel] = useCancelEventMutation();
   const [remove] = useDeleteEventMutation();
-  const [publish] = useSendEventInviteMutation();
 
   const data = useMemo(
     () => ({
@@ -55,19 +53,6 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
     }
   };
 
-  const confirmPublish = useConfirm({
-    title: 'Are you ready to publicize this?',
-    body: 'This will email all your users',
-    buttonColor: 'green',
-  });
-
-  const clickPublish = async () => {
-    const ok = await confirmPublish();
-    if (ok) {
-      await publish(data);
-    }
-  };
-
   return (
     <HStack spacing="1">
       <Button size="sm" colorScheme="red" onClick={clickDelete}>
@@ -85,9 +70,6 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
           Cancel
         </Button>
       )}
-      <Button size="sm" colorScheme="blue" onClick={clickPublish}>
-        Email users
-      </Button>
     </HStack>
   );
 };

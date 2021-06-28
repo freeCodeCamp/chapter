@@ -1,19 +1,83 @@
-import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
-import { Event, Venue, Chapter } from '../../models';
+import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
+import { MoreThan } from 'typeorm';
+import { GQLCtx } from 'server/ts/gql';
 
 @Resolver()
 export class EventResolver {
   @Query(() => [Event])
-  events() {
-    return Event.find({ relations: ['tags', 'venue', 'rsvps', 'rsvps.user'] });
+  events(
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+    @Arg('showAll', { nullable: true }) showAll?: boolean,
+  ) {
+    return Event.find({
+      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      take: limit,
+      order: {
+        start_at: 'ASC',
+      },
+      where: {
+        ...(!showAll && { start_at: MoreThan(new Date()) }),
+      },
+    });
+  }
+
+  @Query(() => [Event])
+  async paginatedEvents(
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+    @Arg('offset', () => Int, { nullable: true }) offset?: number,
+  ): Promise<Event[]> {
+    return await Event.find({
+      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      order: {
+        start_at: 'ASC',
+      },
+      take: limit || 10,
+      skip: offset,
+    });
   }
 
   @Query(() => Event, { nullable: true })
   event(@Arg('id', () => Int) id: number) {
     return Event.findOne(id, {
-      relations: ['tags', 'venue', 'rsvps', 'rsvps.user'],
+      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
     });
+  }
+
+  @Mutation(() => Rsvp, { nullable: true })
+  async rsvpEvent(
+    @Arg('id', () => Int) id: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<Rsvp | null> {
+    if (!ctx.user) {
+      throw new Error('You need to be logged in');
+    }
+
+    const event = await Event.findOne({ where: { id } });
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    let rsvp = await Rsvp.findOne({
+      where: { event: { id: id }, user: { id: ctx.user.id } },
+    });
+
+    if (rsvp) {
+      await rsvp.remove();
+      return null;
+    }
+
+    rsvp = new Rsvp({
+      event,
+      user: ctx.user,
+      date: new Date(),
+      interested: false, // TODO handle this
+      on_waitlist: false, // TODO handle this
+    });
+
+    await rsvp.save();
+    return rsvp;
   }
 
   @Mutation(() => Event)

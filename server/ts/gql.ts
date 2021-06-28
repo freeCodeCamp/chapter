@@ -1,8 +1,12 @@
-import { Request, Response } from 'express';
-// import { User } from '../models/User';
+import { Request as ExpressRequest, Response } from 'express';
+import { User } from '../models/User';
 
 export interface GQLCtx {
-  // user?: User;
+  user?: User;
   res: Response;
-  req: Request;
+  req: ExpressRequest;
+}
+
+export interface Request extends ExpressRequest {
+  user?: User;
 }

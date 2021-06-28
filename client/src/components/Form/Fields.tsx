@@ -28,17 +28,18 @@ export const Field: React.FC<BaseProps<any>> = ({
   return (
     <Controller
       control={control}
-      as={
+      render={({ field }) => (
         <TextField
+          {...field}
           name={name}
           type={type}
           label={label}
           placeholder={placeholder}
           required={required}
         />
-      }
+      )}
       name={name}
-      options={{ required }}
+      rules={{ required }}
       defaultValue={defaultValue}
     />
   );

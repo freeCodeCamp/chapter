@@ -1,60 +1,56 @@
 import React from 'react';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Link from 'next/link';
 import { NextPage } from 'next';
 
-import { useVenuesQuery } from '../../../../generated';
-import Layout from '../../shared/components/Layout';
-import VenueItem from '../components/VenueItem';
-
-const useStyles = makeStyles({
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gridAutoRows: '1fr',
-    gridGap: '1rem',
-  },
-  gridItem: {
-    padding: '0.5rem',
-  },
-});
+import { useVenuesQuery } from '../../../../generated/graphql';
+import { Layout } from '../../shared/components/Layout';
+import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
+import { DataTable } from 'chakra-data-table';
+import { LinkButton } from 'chakra-next-link';
+import getLocationString from 'helpers/getLocationString';
 
 export const VenuesPage: NextPage = () => {
   const { loading, error, data } = useVenuesQuery();
-  const styles = useStyles();
 
   return (
     <Layout>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Link href="/dashboard/venues/new">
-            <Button variant="outlined">
-              <a>Add new</a>
-            </Button>
-          </Link>
-          {error ? (
-            <>
-              <Typography variant="h1" component="h1">
-                Error
-              </Typography>
-              <Typography variant="body1" component="p">
-                {error.name}: {error.message}
-              </Typography>
-            </>
-          ) : (
-            <div className={styles.grid}>
-              {data?.venues.map((venue) => (
-                <VenueItem
-                  venue={venue}
-                  loading={loading}
-                  key={`venue-${venue.id}`}
-                />
-              ))}
-            </div>
-          )}
-        </Grid>
-      </Grid>
+      <VStack>
+        <Flex w="full" justify="space-between">
+          <Heading>Venues</Heading>
+          <LinkButton href="/dashboard/venues/new">Add new</LinkButton>
+        </Flex>
+        {loading ? (
+          <Heading>Loading...</Heading>
+        ) : error || !data?.venues ? (
+          <>
+            <Heading>Error</Heading>
+            <Text>
+              {error?.name}: {error?.message}
+            </Text>
+          </>
+        ) : (
+          <DataTable
+            data={data.venues}
+            keys={['name', 'location', 'actions'] as const}
+            mapper={{
+              name: (venue) => (
+                <LinkButton href={`/dashboard/venues/${venue.id}`}>
+                  {venue.name}
+                </LinkButton>
+              ),
+              location: (venue) => getLocationString(venue),
+              actions: (venue) => (
+                <LinkButton
+                  colorScheme="green"
+                  size="xs"
+                  href={`/dashboard/venues/${venue.id}/edit`}
+                >
+                  Edit
+                </LinkButton>
+              ),
+            }}
+          />
+        )}
+      </VStack>
     </Layout>
   );
 };

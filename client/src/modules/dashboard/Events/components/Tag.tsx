@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { Tag } from '../../../../generated';
+import { Tag } from '../../../../generated/graphql';
 
 const useStyles = makeStyles({
   tag: {

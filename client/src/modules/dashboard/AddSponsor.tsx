@@ -51,47 +51,49 @@ const AddSponsor: React.FC = () => {
         <FormControl className={styles.item}>
           <Controller
             control={control}
-            as={
+            render={({ field }) => (
               <TextField
+                {...field}
                 name="name"
                 type="text"
                 label="Sponsor Name"
                 placeholder="Glitter and Sparkle Co"
               />
-            }
+            )}
             name="name"
-            options={{ required: true }}
+            rules={{ required: true }}
           />
         </FormControl>
         <FormControl className={styles.item}>
           <Controller
             control={control}
-            as={
+            render={({ field }) => (
               <TextField
+                {...field}
                 label="Sponsor Website"
                 name="website"
                 type="text"
                 placeholder="www.glitter.co"
               />
-            }
+            )}
             name="website"
-            options={{ required: true }}
+            rules={{ required: true }}
           />
         </FormControl>
         <FormControl className={styles.item}>
           <InputLabel id="sponsor-type-label">Sponsor Type</InputLabel>
           <Controller
             control={control}
-            as={
-              <Select labelId="sponsor-type-label">
+            render={({ field }) => (
+              <Select {...field} labelId="sponsor-type-label">
                 <MenuItem value={'FOOD'}>Food</MenuItem>
                 <MenuItem value={'BEVERAGE'}>Beverage</MenuItem>
                 <MenuItem value={'OTHER'}>Other</MenuItem>
               </Select>
-            }
+            )}
             name="type"
             defaultValue={'OTHER'}
-            options={{ required: true }}
+            rules={{ required: true }}
           />
         </FormControl>
         <Button

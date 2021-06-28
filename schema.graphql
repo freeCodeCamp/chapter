@@ -1,0 +1,284 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type AuthenticateType {
+    token: String!
+    user: User!
+}
+
+type Chapter {
+    banned_users: [UserBan!]!
+    category: String!
+    city: String!
+    country: String!
+    created_at: DateTime!
+    creator: User!
+    description: String!
+    details: String!
+    events: [Event!]!
+    id: Int!
+    name: String!
+    region: String!
+    updated_at: DateTime!
+    users: [UserChapterRole!]!
+}
+
+type Email {
+    backupText: String!
+    emailList: [String!]!
+    htmlEmail: String!
+    ourEmail: String!
+    subject: String!
+}
+
+type Event {
+    canceled: Boolean!
+    capacity: Int!
+    chapter: Chapter!
+    created_at: DateTime!
+    description: String!
+    ends_at: DateTime!
+    id: Int!
+    name: String!
+    rsvps: [Rsvp!]!
+    sponsors: [EventSponsor!]!
+    start_at: DateTime!
+    tags: [Tag!]
+    updated_at: DateTime!
+    url: String
+    venue: Venue
+    venue_type: VenueType!
+    video_url: String
+}
+
+type EventSponsor {
+    created_at: DateTime!
+    event: Event!
+    id: Int!
+    sponsor: Sponsor!
+    updated_at: DateTime!
+}
+
+type LoginType {
+    code: String!
+}
+
+type Mutation {
+    authenticate(token: String!): AuthenticateType!
+    cancelEvent(id: Int!): Event!
+    createChapter(data: CreateChapterInputs!): Chapter!
+    createEvent(data: CreateEventInputs!): Event!
+    createVenue(data: CreateVenueInputs!): Venue!
+    deleteChapter(id: Int!): Boolean!
+    deleteEvent(id: Int!): Boolean!
+    deleteVenue(id: Int!): Boolean!
+    login(data: LoginInput!): LoginType!
+    register(data: RegisterInput!): User!
+    rsvpEvent(id: Int!): Rsvp
+    sendEmail(data: SendEmailInputs!): Email!
+    updateChapter(data: UpdateChapterInputs!, id: Int!): Chapter!
+    updateEvent(data: UpdateEventInputs!, id: Int!): Event!
+    updateVenue(data: UpdateVenueInputs!, id: Int!): Venue!
+}
+
+type PaginatedEvents {
+    events: [Event!]!
+    eventsCount: Int!
+}
+
+type Query {
+    chapter(id: Int!): Chapter
+    chapters: [Chapter!]!
+    event(id: Int!): Event
+    events(limit: Int, showAll: Boolean): [Event!]!
+    me: User
+    paginatedEvents(limit: Int, offset: Int): PaginatedEvents!
+    venue(id: Int!): Venue
+    venues: [Venue!]!
+}
+
+type Rsvp {
+    canceled: Boolean!
+    created_at: DateTime!
+    date: DateTime!
+    event: Event!
+    id: Int!
+    interested: Boolean!
+    on_waitlist: Boolean!
+    updated_at: DateTime!
+    user: User!
+}
+
+type Sponsor {
+    created_at: DateTime!
+    events: [EventSponsor!]!
+    id: Int!
+    logo_path: String!
+    name: String!
+    type: String!
+    updated_at: DateTime!
+    website: String!
+}
+
+type Tag {
+    created_at: DateTime!
+    event: Event!
+    id: Int!
+    name: String!
+    updated_at: DateTime!
+}
+
+type User {
+    banned_chapters: [UserBan!]!
+    chapter_roles: [UserChapterRole!]!
+    chapters: [UserChapterRole!]!
+    created_at: DateTime!
+    created_chapters: [Chapter!]!
+    email: String!
+    first_name: String!
+    id: Int!
+    instance_roles: [UserInstanceRole!]!
+    last_name: String!
+    name: String!
+    rsvps: [Rsvp!]!
+    updated_at: DateTime!
+}
+
+type UserBan {
+    chapter: Chapter!
+    created_at: DateTime!
+    id: Int!
+    updated_at: DateTime!
+    user: User!
+}
+
+type UserChapterRole {
+    chapter: Chapter!
+    chapter_id: Int!
+    created_at: DateTime!
+    id: Int!
+    interested: Boolean!
+    role_name: String!
+    updated_at: DateTime!
+    user: User!
+    user_id: Int!
+}
+
+type UserInstanceRole {
+    role_name: String!
+    user: User!
+    user_id: Int!
+}
+
+type Venue {
+    city: String!
+    country: String!
+    created_at: DateTime!
+    events: [Event!]!
+    id: Int!
+    latitude: Float
+    longitude: Float
+    name: String!
+    postal_code: String!
+    region: String!
+    street_address: String
+    updated_at: DateTime!
+}
+
+"All possible venue types for an event"
+enum VenueType {
+    Online
+    Physical
+    PhysicalAndOnline
+}
+
+input CreateChapterInputs {
+    category: String!
+    city: String!
+    country: String!
+    description: String!
+    details: String
+    name: String!
+    region: String!
+}
+
+input CreateEventInputs {
+    capacity: Float!
+    chapterId: Int!
+    description: String!
+    ends_at: DateTime!
+    name: String!
+    start_at: DateTime!
+    url: String
+    venueId: Int
+    venue_type: VenueType
+    video_url: String
+}
+
+input CreateVenueInputs {
+    city: String!
+    country: String!
+    latitude: Float
+    longitude: Float
+    name: String!
+    postal_code: String!
+    region: String!
+    street_address: String
+}
+
+input LoginInput {
+    email: String!
+}
+
+input RegisterInput {
+    email: String!
+    first_name: String!
+    last_name: String!
+}
+
+input SendEmailInputs {
+    html: String!
+    subject: String!
+    to: [String!]!
+}
+
+input UpdateChapterInputs {
+    category: String
+    city: String
+    country: String
+    description: String
+    details: String
+    name: String
+    region: String
+}
+
+input UpdateEventInputs {
+    capacity: Float
+    description: String
+    ends_at: DateTime
+    name: String
+    start_at: DateTime
+    url: String
+    venueId: Int
+    venue_type: VenueType
+    video_url: String
+}
+
+input UpdateVenueInputs {
+    city: String
+    country: String
+    latitude: Float
+    longitude: Float
+    name: String
+    postal_code: String
+    region: String
+    street_address: String
+}
+
+
+"The javascript `Date` as string. Type represents date and time as the ISO Date string."
+scalar DateTime

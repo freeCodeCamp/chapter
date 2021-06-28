@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 
-import Layout from '../../shared/components/Layout';
-import Skeleton from '../components/Skeleton';
+import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { useRouter } from 'next/router';
-import { useVenueQuery, useUpdateVenueMutation } from '../../../../generated';
+import {
+  useVenueQuery,
+  useUpdateVenueMutation,
+} from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { makeStyles } from '@material-ui/core';
 import { VENUES } from '../graphql/queries';
@@ -48,24 +50,20 @@ export const EditVenuePage: NextPage = () => {
   if (loading || error || !data?.venue) {
     return (
       <Layout>
-        <Skeleton>
-          <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-          {error && <div className={styles.responseDiv}>{error}</div>}
-        </Skeleton>
+        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        {error && <div className={styles.responseDiv}>{error}</div>}
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Skeleton>
-        <VenueForm
-          data={data}
-          loading={loadingUpdate}
-          onSubmit={onSubmit}
-          submitText={'Update venue'}
-        />
-      </Skeleton>
+      <VenueForm
+        data={data}
+        loading={loadingUpdate}
+        onSubmit={onSubmit}
+        submitText={'Update venue'}
+      />
     </Layout>
   );
 };

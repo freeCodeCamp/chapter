@@ -1,21 +1,22 @@
 import React, { useMemo } from 'react';
-import { Button } from '@material-ui/core';
-import Link from 'next/link';
+import { Button, HStack } from '@chakra-ui/react';
+import { useConfirm, useConfirmDelete } from 'chakra-confirm';
+import { LinkButton } from 'chakra-next-link';
 
 import {
   Event,
   useCancelEventMutation,
   useDeleteEventMutation,
-} from '../../../../generated';
-import useConfirm from '../../../../hooks/useConfirm';
+} from 'generated/graphql';
 import { EVENT, EVENTS } from '../graphql/queries';
 
 interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
-  onDelete?: () => void;
+  onDelete?: () => any;
+  hideCancel?: boolean;
 }
 
-const Actions: React.FC<ActionsProps> = ({ event, onDelete }) => {
+const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
   const [cancel] = useCancelEventMutation();
   const [remove] = useDeleteEventMutation();
 
@@ -30,30 +31,46 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete }) => {
     [event],
   );
 
-  const [confirmCancel, clickCancel] = useConfirm(() => cancel(data));
-  const [confirmRemove, clickRemove] = useConfirm(() =>
-    remove(data).then(() => onDelete && onDelete()),
-  );
+  const confirmCancel = useConfirm({
+    title: 'Are you sure you want to cancel this',
+    body: 'Canceling this will send emails to everyone who RSVPd',
+    buttonColor: 'orange',
+  });
+  const confirmDelete = useConfirmDelete();
+
+  const clickCancel = async () => {
+    const ok = await confirmCancel();
+    if (ok) {
+      await cancel(data);
+    }
+  };
+
+  const clickDelete = async () => {
+    const ok = await confirmDelete();
+    if (ok) {
+      await remove(data);
+      await onDelete?.();
+    }
+  };
 
   return (
-    <>
-      {!event.canceled && (
-        <Button onClick={clickCancel}>
-          {confirmCancel ? 'Are you sure?' : 'Cancel'}
+    <HStack spacing="1">
+      <Button size="sm" colorScheme="red" onClick={clickDelete}>
+        Delete
+      </Button>
+      <LinkButton
+        size="sm"
+        colorScheme="green"
+        href={`/dashboard/events/${event.id}/edit`}
+      >
+        Edit
+      </LinkButton>
+      {!hideCancel && !event.canceled && (
+        <Button size="sm" colorScheme="orange" onClick={clickCancel}>
+          Cancel
         </Button>
       )}
-      <Button onClick={clickRemove}>
-        {confirmRemove ? 'Are you sure?' : 'delete'}
-      </Button>
-      <Link
-        href={`/dashboard/events/[id]/edit`}
-        as={`/dashboard/events/${event.id}/edit`}
-      >
-        <Button>
-          <a style={{ marginLeft: '10px' }}>Edit</a>
-        </Button>
-      </Link>
-    </>
+    </HStack>
   );
 };
 

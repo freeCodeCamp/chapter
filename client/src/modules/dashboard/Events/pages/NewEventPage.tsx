@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { EventFormData } from '../components/EventFormUtils';
-import Layout from '../../shared/components/Layout';
-import Skeleton from '../../Venues/components/Skeleton';
+import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { useCreateEventMutation } from '../../../../generated';
+import { useCreateEventMutation } from '../../../../generated/graphql';
 import { EVENTS } from '../graphql/queries';
 
 export const NewEventPage: NextPage = () => {
@@ -53,13 +52,11 @@ export const NewEventPage: NextPage = () => {
 
   return (
     <Layout>
-      <Skeleton>
-        <EventForm
-          loading={loading}
-          onSubmit={onSubmit}
-          submitText={'Add event'}
-        />
-      </Skeleton>
+      <EventForm
+        loading={loading}
+        onSubmit={onSubmit}
+        submitText={'Add event'}
+      />
     </Layout>
   );
 };

@@ -1,4 +1,4 @@
-import { Event, Venue } from '../../../../generated';
+import { Event, Venue } from '../../../../generated/graphql';
 
 export interface Field {
   key: keyof EventFormData;
@@ -17,7 +17,7 @@ export const fields: Field[] = [
   },
   {
     key: 'description',
-    type: 'text',
+    type: 'textarea',
     label: 'Description',
     placeholder: '',
   },

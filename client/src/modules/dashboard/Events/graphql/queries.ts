@@ -2,14 +2,19 @@ import { gql } from '@apollo/client';
 
 export const EVENTS = gql`
   query events {
-    events {
+    events(showAll: true) {
       id
       name
       canceled
       description
       url
       video_url
+      start_at
       capacity
+      venue {
+        id
+        name
+      }
       tags {
         id
         name
@@ -30,6 +35,10 @@ export const EVENT = gql`
       capacity
       start_at
       ends_at
+      chapter {
+        id
+        name
+      }
       tags {
         id
         name
@@ -48,8 +57,7 @@ export const EVENT = gql`
         on_waitlist
         user {
           id
-          first_name
-          last_name
+          name
         }
       }
     }

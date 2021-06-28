@@ -3,10 +3,12 @@ import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 
 import { EventFormData } from '../components/EventFormUtils';
-import Layout from '../../shared/components/Layout';
-import Skeleton from '../../Venues/components/Skeleton';
+import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { useEventQuery, useUpdateEventMutation } from '../../../../generated';
+import {
+  useEventQuery,
+  useUpdateEventMutation,
+} from '../../../../generated/graphql';
 import { EVENTS } from '../graphql/queries';
 import { getId } from '../../../../helpers/getId';
 
@@ -15,7 +17,11 @@ export const EditEventPage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const id = getId(router.query) || -1;
 
-  const { loading: eventLoading, error, data } = useEventQuery({
+  const {
+    loading: eventLoading,
+    error,
+    data,
+  } = useEventQuery({
     variables: { id },
   });
 
@@ -53,28 +59,24 @@ export const EditEventPage: NextPage = () => {
   if (eventLoading || error || !data?.event) {
     return (
       <Layout>
-        <Skeleton>
-          <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
-          {error && <div>{error}</div>}
-        </Skeleton>
+        <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
+        {error && <div>{error}</div>}
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Skeleton>
-        <EventForm
-          data={{
-            ...data.event,
-            venueId: data.event?.venue?.id,
-            tags: data.event.tags || [],
-          }}
-          loading={loadingUpdate}
-          onSubmit={onSubmit}
-          submitText={'Update event'}
-        />
-      </Skeleton>
+      <EventForm
+        data={{
+          ...data.event,
+          venueId: data.event?.venue?.id,
+          tags: data.event.tags || [],
+        }}
+        loading={loadingUpdate}
+        onSubmit={onSubmit}
+        submitText={'Update event'}
+      />
     </Layout>
   );
 };

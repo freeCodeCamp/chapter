@@ -1,84 +1,84 @@
-import React from 'react';
-import Link from 'next/link';
-import { Card, Grid, makeStyles, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import React, { useState } from 'react';
+import {
+  Heading,
+  Spinner,
+  VStack,
+  Text,
+  Grid,
+  GridItem,
+  Button,
+  useToast,
+} from '@chakra-ui/react';
 
-import { ProgressCardContent } from '../../components';
-import { useChaptersQuery } from '../../generated';
-
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gridAutoRows: '1fr',
-    gridGap: '1rem',
-  },
-  gridItem: {
-    padding: '0.5rem',
-  },
-});
+import { useHomeQuery } from 'generated/graphql';
+import { EventCard } from 'components/EventCard';
+import { ChapterCard } from 'components/ChapterCard';
 
 const Home: React.FC = () => {
-  const { loading, error, data } = useChaptersQuery();
-  const styles = useStyles();
+  const [hasMore, setHasMore] = useState(true);
+  const { loading, error, data, fetchMore } = useHomeQuery({
+    variables: { offset: 0, limit: 2 },
+  });
+
+  const toast = useToast();
+  const onLoadMore = async () => {
+    try {
+      const res = await fetchMore({
+        variables: { offset: data?.paginatedEvents.length },
+      });
+      setHasMore(res.data.paginatedEvents.length > 0);
+    } catch (err) {
+      toast({ title: err.message || err.name || err });
+    }
+  };
 
   return (
-    <>
-      <div className={styles.root}>
-        <Typography variant="h3" component="h1">
-          Upcoming Events
-        </Typography>
-        {error && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {error.name}: {error.message}
-            </Grid>
-          </Grid>
-        )}
-        {!error && (
-          <ProgressCardContent loading={loading}>
-            <div className={styles.grid}>
-              {data?.chapters.map((chapter) => (
-                <Card key={chapter.id} className={styles.gridItem}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {chapter.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    {chapter.description}
-                  </Typography>
-                </Card>
-              ))}
-            </div>
-          </ProgressCardContent>
-        )}
-      </div>
+    <Grid templateColumns="repeat(2, 1fr)" columnGap={10} mt="5">
+      <GridItem colSpan={{ base: 2, md: 1 }}>
+        <VStack align="flex-start">
+          <Heading>Upcoming events</Heading>
+          {loading ? (
+            <Spinner />
+          ) : error || !data ? (
+            <>
+              <Heading size="md" color="red.400">
+                😕 Something went wrong
+              </Heading>
+              <Text>{error?.message}</Text>
+            </>
+          ) : (
+            data.paginatedEvents.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))
+          )}
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Link href="/add-sponsor">
-            <Button variant="outlined">
-              <a>Add sponsor</a>
-            </Button>
-          </Link>
-        </Grid>
-
-        <Grid item xs={12} sm={6}>
-          <Link href="/dashboard">
-            <Button variant="outlined">
-              <a>Admin dashboard</a>
-            </Button>
-          </Link>
-        </Grid>
-      </Grid>
-    </>
+          {hasMore ? (
+            <Button onClick={onLoadMore}>Click for more</Button>
+          ) : (
+            <Heading size="md">No more</Heading>
+          )}
+        </VStack>
+      </GridItem>
+      <GridItem colSpan={{ base: 2, md: 1 }}>
+        <VStack align="flex-start">
+          <Heading>Chapters</Heading>
+          {loading ? (
+            <Spinner />
+          ) : error || !data ? (
+            <>
+              <Heading size="md" color="red.400">
+                😕 Something went wrong
+              </Heading>
+              <Text>{error?.message}</Text>
+            </>
+          ) : (
+            data.chapters.map((chapter) => (
+              <ChapterCard key={chapter.id} chapter={chapter} />
+            ))
+          )}
+        </VStack>
+      </GridItem>
+    </Grid>
   );
 };
 

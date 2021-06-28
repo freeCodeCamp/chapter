@@ -28,5 +28,9 @@ services:
       - "3000:3000"
     command: npm run dev
     working_dir: /usr/chapter/client
+    # on remote environments, NEXT_PUBLIC_APOLLO_SERVER in .env needs to include the
+    # remote address. e.g. https://example.com:5000
+    environment: 
+      NEXT_PUBLIC_APOLLO_SERVER:
     volumes:
       - ./client:/usr/chapter/client

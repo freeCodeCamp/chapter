@@ -45,14 +45,14 @@ export class UserChapterRole extends BaseModel {
     userId: number;
     roleName: ChapterRoles;
     chapterId: number;
-    interested?: boolean;
+    interested: boolean;
   }) {
     super();
     if (params) {
       this.user_id = params.userId;
       this.role_name = params.roleName;
       this.chapter_id = params.chapterId;
-      this.interested = params.interested || true;
+      this.interested = params.interested;
     }
   }
 }

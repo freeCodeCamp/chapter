@@ -17,6 +17,10 @@ const createEvents = async (
   sponsors: Sponsor[],
 ): Promise<Event[]> => {
   const events: Event[] = [];
+  const tags: Tag[] = Array.from(new Array(4)).map(
+    () => new Tag({ events: [], name: lorem.words(1) }),
+  );
+  await Promise.all(tags.map(async (tag) => await tag.save()));
 
   for (let i = 0; i < 4; i++) {
     const date = new Date();
@@ -44,6 +48,7 @@ const createEvents = async (
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
+      tags: randomItems(tags, 1 + random(3), true),
     });
 
     await event.save();
@@ -52,13 +57,6 @@ const createEvents = async (
       randomItems(sponsors, 2)
         .map((sponsor) => new EventSponsor({ event, sponsor }))
         .map((es) => es.save()),
-    );
-
-    await Promise.all(
-      Array.from(new Array(1 + random(3)), () => {
-        const tag = new Tag({ event, name: lorem.words(1) });
-        return tag.save();
-      }),
     );
 
     events.push(event);

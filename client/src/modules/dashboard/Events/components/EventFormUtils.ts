@@ -40,12 +40,6 @@ export const fields: Field[] = [
     placeholder: '50',
   },
   {
-    key: 'tags',
-    type: 'text',
-    label: 'Tags (separated by a comma)',
-    placeholder: 'Foo, bar',
-  },
-  {
     key: 'start_at',
     type: 'datetime-local',
     label: 'Start at',
@@ -67,7 +61,7 @@ export interface EventFormData {
   url?: string | null;
   video_url?: string | null;
   capacity: number;
-  tags: string;
+  tagIds: number[];
   start_at: string;
   ends_at: string;
   venueId?: number | null;
@@ -75,7 +69,7 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venueId' | 'tags'> | 'id'
+  keyof Omit<EventFormData, 'venueId' | 'tagIds'> | 'id'
 > & {
   venueId?: number;
   tags: { name: string }[];

@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from 'type-graphql';
+import { InputType, Field, Int, ID } from 'type-graphql';
 import { VenueType } from '../../models';
 
 @InputType()
@@ -32,6 +32,9 @@ export class CreateEventInputs {
 
   @Field(() => Int)
   chapterId: number;
+
+  @Field(() => [ID])
+  tagIds!: string[];
 }
 
 @InputType()

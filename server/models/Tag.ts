@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { ObjectType, Field } from 'type-graphql';
@@ -10,17 +10,18 @@ export class Tag extends BaseModel {
   @Column({ nullable: false })
   name!: string;
 
-  @Field(() => Event)
-  @ManyToOne((_type) => Event, (event) => event.tags, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'event_id' })
-  event!: Event;
+  @Field(() => [Event])
+  @ManyToMany((_type) => Event, (events) => events.tags, {
+    onDelete: 'CASCADE',
+  })
+  events!: Event[];
 
-  constructor(params: { name: string; event: Event }) {
+  constructor(params: { name: string; events: Event[] }) {
     super();
     if (params) {
-      const { name, event } = params;
+      const { name, events } = params;
       this.name = name;
-      this.event = event;
+      this.events = events;
     }
   }
 }

@@ -16,6 +16,7 @@ services:
     working_dir: /usr/chapter
     environment:
       - DB_URL=db
+      - EMAIL_HOST=mailhog
     volumes:
       - .:/usr/chapter
     ports:
@@ -34,3 +35,10 @@ services:
       NEXT_PUBLIC_APOLLO_SERVER:
     volumes:
       - ./client:/usr/chapter/client
+  mailhog:
+    depends_on:
+      - app
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

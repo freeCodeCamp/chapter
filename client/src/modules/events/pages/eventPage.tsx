@@ -89,7 +89,6 @@ export const EventPage: NextPage = () => {
 
   const rsvps = data.event.rsvps.filter((r) => !r.on_waitlist);
   const waitlist = data.event.rsvps.filter((r) => r.on_waitlist);
-
   const checkOnRsvp = async (add: boolean) => {
     if (!user) {
       return handleLoginUserFirst();

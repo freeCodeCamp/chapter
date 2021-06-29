@@ -514,7 +514,8 @@ To keep everything DRY, add `extends BaseModel` to the class and import it from 
 #### Syncing the Schema
 
 * For development environments, [TypeORM will kept the database migrations in sync](https://github.com/typeorm/typeorm/blob/master/README.md) with the definitions in _server/models_ when the server is started. Developers must still create and commit a [migration](#creating-a-migration) for any modifications to the ORM / database schema.
-* For production environments, or if a manually sync becomes necessary, run the `npm run db:sync` command.
+* If a manual sync becomes necessary, run the `npm run db:sync` command.
+* For production environments, run the `npm run db:migrate` command.
 
 #### Creating a Migration
 

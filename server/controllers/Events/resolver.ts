@@ -86,11 +86,39 @@ export class EventResolver {
       user: ctx.user,
       date: new Date(),
       interested: false, // TODO handle this
-      on_waitlist: waitlist,
+      on_waitlist: event.invite_only ? true : waitlist,
+      confirmed_at: event.invite_only ? null : new Date(),
     });
 
     await rsvp.save();
     return rsvp;
+  }
+
+  @Mutation(() => Rsvp)
+  async confirmRsvp(@Arg('id', () => Int) id: number): Promise<Rsvp> {
+    const rsvp = await Rsvp.findOne({ where: { id }, relations: ['event'] });
+    if (!rsvp) {
+      throw new Error('RSVP not found');
+    }
+
+    rsvp.confirmed_at = new Date();
+    rsvp.on_waitlist = false;
+
+    await rsvp.save();
+
+    return rsvp;
+  }
+
+  @Mutation(() => Boolean)
+  async deleteRsvp(@Arg('id', () => Int) id: number): Promise<boolean> {
+    const rsvp = await Rsvp.findOne({ where: { id } });
+    if (!rsvp) {
+      throw new Error('RSVP not found');
+    }
+
+    await rsvp.remove();
+
+    return true;
   }
 
   @Mutation(() => Event)

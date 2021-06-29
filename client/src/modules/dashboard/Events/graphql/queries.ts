@@ -142,3 +142,19 @@ export const deleteEvent = gql`
     deleteEvent(id: $id)
   }
 `;
+
+export const confirmRSVP = gql`
+  mutation confirmRsvp($id: Int!) {
+    confirmRsvp(id: $id) {
+      id
+      confirmed_at
+      on_waitlist
+    }
+  }
+`;
+
+export const deleteRSVP = gql`
+  mutation deleteRsvp($id: Int!) {
+    deleteRsvp(id: $id)
+  }
+`;

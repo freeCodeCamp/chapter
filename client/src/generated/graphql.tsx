@@ -137,6 +137,8 @@ export type Mutation = {
   updateVenue: Venue;
   deleteVenue: Scalars['Boolean'];
   rsvpEvent?: Maybe<Rsvp>;
+  confirmRsvp: Rsvp;
+  deleteRsvp: Scalars['Boolean'];
   createEvent: Event;
   updateEvent: Event;
   cancelEvent: Event;
@@ -174,6 +176,14 @@ export type MutationDeleteVenueArgs = {
 };
 
 export type MutationRsvpEventArgs = {
+  id: Scalars['Int'];
+};
+
+export type MutationConfirmRsvpArgs = {
+  id: Scalars['Int'];
+};
+
+export type MutationDeleteRsvpArgs = {
   id: Scalars['Int'];
 };
 
@@ -257,6 +267,7 @@ export type Rsvp = {
   updated_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
   on_waitlist: Scalars['Boolean'];
+  confirmed_at: Scalars['DateTime'];
   event: Event;
   user: User;
   canceled: Scalars['Boolean'];
@@ -609,6 +620,26 @@ export type DeleteEventMutationVariables = Exact<{
 export type DeleteEventMutation = { __typename?: 'Mutation' } & Pick<
   Mutation,
   'deleteEvent'
+>;
+
+export type ConfirmRsvpMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type ConfirmRsvpMutation = { __typename?: 'Mutation' } & {
+  confirmRsvp: { __typename?: 'Rsvp' } & Pick<
+    Rsvp,
+    'id' | 'confirmed_at' | 'on_waitlist'
+  >;
+};
+
+export type DeleteRsvpMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type DeleteRsvpMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'deleteRsvp'
 >;
 
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
@@ -1471,6 +1502,104 @@ export type DeleteEventMutationResult = Apollo.MutationResult<DeleteEventMutatio
 export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
+>;
+export const ConfirmRsvpDocument = gql`
+  mutation confirmRsvp($id: Int!) {
+    confirmRsvp(id: $id) {
+      id
+      confirmed_at
+      on_waitlist
+    }
+  }
+`;
+export type ConfirmRsvpMutationFn = Apollo.MutationFunction<
+  ConfirmRsvpMutation,
+  ConfirmRsvpMutationVariables
+>;
+
+/**
+ * __useConfirmRsvpMutation__
+ *
+ * To run a mutation, you first call `useConfirmRsvpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmRsvpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmRsvpMutation, { data, loading, error }] = useConfirmRsvpMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useConfirmRsvpMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ConfirmRsvpMutation,
+    ConfirmRsvpMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ConfirmRsvpMutation, ConfirmRsvpMutationVariables>(
+    ConfirmRsvpDocument,
+    options,
+  );
+}
+export type ConfirmRsvpMutationHookResult = ReturnType<
+  typeof useConfirmRsvpMutation
+>;
+export type ConfirmRsvpMutationResult = Apollo.MutationResult<ConfirmRsvpMutation>;
+export type ConfirmRsvpMutationOptions = Apollo.BaseMutationOptions<
+  ConfirmRsvpMutation,
+  ConfirmRsvpMutationVariables
+>;
+export const DeleteRsvpDocument = gql`
+  mutation deleteRsvp($id: Int!) {
+    deleteRsvp(id: $id)
+  }
+`;
+export type DeleteRsvpMutationFn = Apollo.MutationFunction<
+  DeleteRsvpMutation,
+  DeleteRsvpMutationVariables
+>;
+
+/**
+ * __useDeleteRsvpMutation__
+ *
+ * To run a mutation, you first call `useDeleteRsvpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRsvpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRsvpMutation, { data, loading, error }] = useDeleteRsvpMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRsvpMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteRsvpMutation,
+    DeleteRsvpMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteRsvpMutation, DeleteRsvpMutationVariables>(
+    DeleteRsvpDocument,
+    options,
+  );
+}
+export type DeleteRsvpMutationHookResult = ReturnType<
+  typeof useDeleteRsvpMutation
+>;
+export type DeleteRsvpMutationResult = Apollo.MutationResult<DeleteRsvpMutation>;
+export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRsvpMutation,
+  DeleteRsvpMutationVariables
 >;
 export const VenuesDocument = gql`
   query venues {

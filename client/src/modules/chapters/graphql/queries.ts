@@ -6,6 +6,11 @@ export const CHAPTER = gql`
       id
       name
       description
+      details
+      category
+      city
+      region
+      country
       events {
         id
         name

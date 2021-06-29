@@ -4,6 +4,7 @@ import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 
 const links = [
+  { text: 'Chapters', link: '/dashboard/chapters' },
   { text: 'Events', link: '/dashboard/events' },
   { text: 'Venues', link: '/dashboard/venues' },
 ];

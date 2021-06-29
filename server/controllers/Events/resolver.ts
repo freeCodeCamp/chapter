@@ -49,7 +49,7 @@ export class EventResolver {
         'venue',
         'rsvps',
         'rsvps.user',
-        'organizer',
+        'organizers',
       ],
     });
   }
@@ -64,7 +64,7 @@ export class EventResolver {
     }
 
     const event = await Event.findOne(id, {
-      relations: ['rsvps','organizer'],
+      relations: ['rsvps', 'organizers'],
     });
     if (!event) {
       throw new Error('Event not found');
@@ -121,8 +121,9 @@ To add this event to your calendar(s) you can use these links:
 <a href=${outlook(linkDetails)}>Outlook</a>
       `,
     ).sendEmail();
+    const organizersEmails = event.organizers.map((user) => user.email);
     await new MailerService(
-      [event.organizer.email],
+      organizersEmails,
       `New RSVP for ${event.name}`,
       `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd.`,
     ).sendEmail();
@@ -168,12 +169,14 @@ To add this event to your calendar(s) you can use these links:
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
 
-    // TODO: add admin and owner once those roles exist.
-    const allowedRoles = ['organizer'];
+    // TODO: add admin and owner once you've figured out how to handle instance
+    // roles
+    const allowedRoles = ['organizer'] as const;
     const hasPermission =
       ctx.user.chapter_roles.findIndex(
         ({ chapter_id, role_name }) =>
-          chapter_id === data.chapterId && allowedRoles.includes(role_name),
+          chapter_id === data.chapterId &&
+          allowedRoles.findIndex((x) => x === role_name) > -1,
       ) !== -1;
 
     if (!hasPermission)
@@ -185,7 +188,7 @@ To add this event to your calendar(s) you can use these links:
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
-      organizer: ctx.user,
+      organizers: [ctx.user],
     });
 
     return event.save();

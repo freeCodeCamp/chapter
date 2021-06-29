@@ -106,6 +106,7 @@ export type Event = {
   chapter: Chapter;
   rsvps: Array<Rsvp>;
   tags?: Maybe<Array<Tag>>;
+  organizers: Array<User>;
 };
 
 export type EventSponsor = {
@@ -341,6 +342,7 @@ export type User = {
   banned_chapters: Array<UserBan>;
   chapter_roles: Array<UserChapterRole>;
   instance_roles: Array<UserInstanceRole>;
+  events_organized: Array<Event>;
 };
 
 export type UserBan = {

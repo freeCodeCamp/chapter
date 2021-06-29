@@ -1,4 +1,12 @@
-import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseModel } from './BaseModel';
 import { Venue } from './Venue';
@@ -82,12 +90,14 @@ export class Event extends BaseModel {
   @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
-  // TODO: how do we limit this to users with the right roles? Is it possible
-  // to constrain the db?
-  @Field(() => User)
-  @ManyToOne((_type) => User, (user) => user.events_organized)
-  @JoinColumn({ name: 'organizer_id' })
-  organizer!: User;
+  @Field(() => [User])
+  @ManyToMany((_type) => User, (user) => user.events_organized)
+  @JoinTable({
+    name: 'events_users',
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'event_id' },
+  })
+  organizers!: User[];
 
   constructor(params: {
     name: string;
@@ -101,7 +111,7 @@ export class Event extends BaseModel {
     capacity: number;
     venue?: Venue;
     chapter: Chapter;
-    organizer: User;
+    organizers: User[];
   }) {
     super();
     if (params) {
@@ -117,7 +127,7 @@ export class Event extends BaseModel {
         capacity,
         venue,
         chapter,
-        organizer,
+        organizers,
       } = params;
 
       this.name = name;
@@ -131,7 +141,7 @@ export class Event extends BaseModel {
       this.capacity = capacity;
       this.venue = venue;
       this.chapter = chapter;
-      this.organizer = organizer;
+      this.organizers = organizers;
     }
   }
 }

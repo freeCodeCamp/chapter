@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
@@ -57,8 +57,8 @@ export class User extends BaseModel {
   instance_roles!: UserInstanceRole[];
 
   @Field(() => [Event])
-  @OneToMany((_type) => Event, (event) => event.organizer)
-  events_organized: Event[];
+  @ManyToMany((_type) => Event, (event) => event.organizers)
+  events_organized!: Event[];
 
   constructor(params: {
     first_name: string;

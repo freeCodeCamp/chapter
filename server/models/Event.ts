@@ -99,6 +99,10 @@ export class Event extends BaseModel {
   })
   organizers!: User[];
 
+  @Field(() => String)
+  @Column({ nullable: false })
+  image!: string;
+
   constructor(params: {
     name: string;
     description: string;
@@ -112,6 +116,7 @@ export class Event extends BaseModel {
     venue?: Venue;
     chapter: Chapter;
     organizers: User[];
+    image: string;
   }) {
     super();
     if (params) {
@@ -128,6 +133,7 @@ export class Event extends BaseModel {
         venue,
         chapter,
         organizers,
+        image,
       } = params;
 
       this.name = name;
@@ -142,6 +148,7 @@ export class Event extends BaseModel {
       this.venue = venue;
       this.chapter = chapter;
       this.organizers = organizers;
+      this.image = image;
     }
   }
 }

@@ -443,7 +443,15 @@ export type ChapterQuery = { __typename?: 'Query' } & {
   chapter?: Maybe<
     { __typename?: 'Chapter' } & Pick<
       Chapter,
-      'id' | 'name' | 'description' | 'image'
+      | 'id'
+      | 'name'
+      | 'description'
+      | 'image'
+      | 'details'
+      | 'category'
+      | 'city'
+      | 'region'
+      | 'country'
     > & {
         events: Array<
           { __typename?: 'Event' } & Pick<
@@ -949,6 +957,11 @@ export const ChapterDocument = gql`
       name
       description
       image
+      details
+      category
+      city
+      region
+      country
       events {
         id
         name

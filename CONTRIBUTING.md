@@ -1,21 +1,28 @@
 **Table of Contents**
 
-* [Contribution Guidelines](#contribution-guidelines)
-* [Contributing Code](#contributing-code)
-  * [Using GitPod](#using-gitpod)
-  * [Using a Traditional Dev Environment](#using-a-traditional-dev-environment)
-* [Running the Application](#running-the-application)
-* [Frequently Asked Questions](#frequently-asked-questions)
-* [Server-side Technical Documentation](#server-side-technical-documentation)
-  * [API Specification](#api-specification)
-  * [.env Configuration File](#env-configuration-file)
-  * [Database](#database)
-    * [Schema](#schema)
-    * [Username and Password](#username-and-password)
-    * [Host and Port](#host-and-port)
-    * [Admin Tools](#admin-tools)
-    * [Using TypeORM and NPM](#using-typeorm-and-npm)
-* [Troubleshooting](#troubleshooting)
+- [Contribution Guidelines](#contribution-guidelines)
+- [Contributing Code](#contributing-code)
+  - [Using GitPod](#using-gitpod)
+  - [Using a Traditional Dev Environment](#using-a-traditional-dev-environment)
+- [Running the Application](#running-the-application)
+  - [Docker Mode](#docker-mode)
+  - [Manual Mode](#manual-mode)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [Server-side Technical Documentation](#server-side-technical-documentation)
+  - [API Specification](#api-specification)
+  - [.env Configuration File](#env-configuration-file)
+  - [Database](#database)
+    - [Schema](#schema)
+    - [Username and Password](#username-and-password)
+    - [Host and Port](#host-and-port)
+    - [Admin Tools](#admin-tools)
+    - [Using TypeORM and NPM](#using-typeorm-and-npm)
+      - [Initializing the Database](#initializing-the-database)
+      - [Creating a New Model / Entity](#creating-a-new-model--entity)
+      - [Creating a Migration](#creating-a-migration)
+      - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
+- [Running Remotely](#running-remotely)
+- [Troubleshooting](#troubleshooting)
     
 # Contribution Guidelines
 
@@ -335,6 +342,7 @@ Based on your experience or preference, decide between the two options:
 * _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local PostgreSQL database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
 * _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running PostgreSQL and configuring localhost services to play nice with the code.
 
+See [Running Remotely](#running-remotely) if you are using a remote server.
 ## Docker Mode
 
 **Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system:
@@ -534,6 +542,10 @@ it should ouput something like
  ...
  [X] MigrationName1575633316367
 ```
+
+# Running Remotely
+
+When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 # Troubleshooting
 

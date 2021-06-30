@@ -467,6 +467,29 @@ export type ChaptersQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type CreateChapterMutationVariables = Exact<{
+  data: CreateChapterInputs;
+}>;
+
+export type CreateChapterMutation = { __typename?: 'Mutation' } & {
+  createChapter: { __typename?: 'Chapter' } & Pick<
+    Chapter,
+    'id' | 'name' | 'description' | 'city' | 'region' | 'country'
+  >;
+};
+
+export type UpdateChapterMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: UpdateChapterInputs;
+}>;
+
+export type UpdateChapterMutation = { __typename?: 'Mutation' } & {
+  updateChapter: { __typename?: 'Chapter' } & Pick<
+    Chapter,
+    'id' | 'name' | 'description' | 'city' | 'region' | 'country'
+  >;
+};
+
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EventsQuery = { __typename?: 'Query' } & {
@@ -1036,6 +1059,117 @@ export type ChaptersLazyQueryHookResult = ReturnType<
 export type ChaptersQueryResult = Apollo.QueryResult<
   ChaptersQuery,
   ChaptersQueryVariables
+>;
+export const CreateChapterDocument = gql`
+  mutation createChapter($data: CreateChapterInputs!) {
+    createChapter(data: $data) {
+      id
+      name
+      description
+      city
+      region
+      country
+    }
+  }
+`;
+export type CreateChapterMutationFn = Apollo.MutationFunction<
+  CreateChapterMutation,
+  CreateChapterMutationVariables
+>;
+
+/**
+ * __useCreateChapterMutation__
+ *
+ * To run a mutation, you first call `useCreateChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChapterMutation, { data, loading, error }] = useCreateChapterMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateChapterMutation,
+    CreateChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateChapterMutation,
+    CreateChapterMutationVariables
+  >(CreateChapterDocument, options);
+}
+export type CreateChapterMutationHookResult = ReturnType<
+  typeof useCreateChapterMutation
+>;
+export type CreateChapterMutationResult =
+  Apollo.MutationResult<CreateChapterMutation>;
+export type CreateChapterMutationOptions = Apollo.BaseMutationOptions<
+  CreateChapterMutation,
+  CreateChapterMutationVariables
+>;
+export const UpdateChapterDocument = gql`
+  mutation updateChapter($id: Int!, $data: UpdateChapterInputs!) {
+    updateChapter(id: $id, data: $data) {
+      id
+      name
+      description
+      city
+      region
+      country
+    }
+  }
+`;
+export type UpdateChapterMutationFn = Apollo.MutationFunction<
+  UpdateChapterMutation,
+  UpdateChapterMutationVariables
+>;
+
+/**
+ * __useUpdateChapterMutation__
+ *
+ * To run a mutation, you first call `useUpdateChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChapterMutation, { data, loading, error }] = useUpdateChapterMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateChapterMutation,
+    UpdateChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateChapterMutation,
+    UpdateChapterMutationVariables
+  >(UpdateChapterDocument, options);
+}
+export type UpdateChapterMutationHookResult = ReturnType<
+  typeof useUpdateChapterMutation
+>;
+export type UpdateChapterMutationResult =
+  Apollo.MutationResult<UpdateChapterMutation>;
+export type UpdateChapterMutationOptions = Apollo.BaseMutationOptions<
+  UpdateChapterMutation,
+  UpdateChapterMutationVariables
 >;
 export const EventsDocument = gql`
   query events {

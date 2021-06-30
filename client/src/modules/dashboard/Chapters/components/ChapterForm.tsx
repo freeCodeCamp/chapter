@@ -3,53 +3,57 @@ import { useForm } from 'react-hook-form';
 import { Button, FormControl } from '@material-ui/core';
 
 import useFormStyles from '../../shared/components/formStyles';
-import type { Venue, VenueQuery } from '../../../../generated/graphql';
+import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
 import { Field } from '../../../../components/Form/Fields';
 
-export type VenueFormData = Omit<
-  Venue,
-  'id' | 'created_at' | 'updated_at' | 'events'
+export type ChapterFormData = Omit<
+  Chapter,
+  | 'id'
+  | 'created_at'
+  | 'updated_at'
+  | 'events'
+  | 'creator'
+  | 'users'
+  | 'banned_users'
 >;
 
-interface VenueFormProps {
+interface ChapterFormProps {
   loading: boolean;
-  onSubmit: (data: VenueFormData) => Promise<void>;
-  data?: VenueQuery;
+  onSubmit: (data: ChapterFormData) => Promise<void>;
+  data?: ChapterQuery;
   submitText: string;
 }
 
 type Fields =
-  | [keyof VenueFormData, boolean, boolean]
-  | [keyof VenueFormData, boolean]
-  | [keyof VenueFormData];
+  | [keyof ChapterFormData, boolean, boolean]
+  | [keyof ChapterFormData, boolean]
+  | [keyof ChapterFormData];
 
 const fields: Fields[] = [
   ['name', true],
-  ['street_address'],
+  ['description', true],
+  ['details', true],
   ['city', true],
-  ['postal_code', true],
   ['region', true],
   ['country', true],
-  ['latitude', false, true],
-  ['longitude', false, true],
+  ['category', true],
 ];
 
-const VenueForm: React.FC<VenueFormProps> = (props) => {
+const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { loading, onSubmit, data, submitText } = props;
-  const venue = data?.venue;
+  const chapter = data?.chapter;
   const styles = useFormStyles();
 
-  const defaultValues: VenueFormData = {
-    name: venue?.name ?? '',
-    street_address: venue?.street_address ?? undefined,
-    city: venue?.city ?? '',
-    postal_code: venue?.postal_code ?? '',
-    region: venue?.region ?? '',
-    country: venue?.country ?? '',
-    latitude: venue?.latitude ?? undefined,
-    longitude: venue?.longitude ?? undefined,
+  const defaultValues: ChapterFormData = {
+    name: chapter?.name ?? '',
+    description: chapter?.description ?? '',
+    details: chapter?.details ?? '',
+    city: chapter?.city ?? '',
+    region: chapter?.region ?? '',
+    country: chapter?.country ?? '',
+    category: chapter?.category ?? '',
   };
-  const { control, handleSubmit } = useForm<VenueFormData>({
+  const { control, handleSubmit } = useForm<ChapterFormData>({
     defaultValues,
   });
 
@@ -77,4 +81,4 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   );
 };
 
-export default VenueForm;
+export default ChapterForm;

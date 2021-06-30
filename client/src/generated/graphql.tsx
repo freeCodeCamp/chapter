@@ -1158,6 +1158,7 @@ export const ChapterDocument = gql`
       city
       region
       country
+      image
       events {
         id
         name

@@ -6,6 +6,7 @@ export const CHAPTER = gql`
       id
       name
       description
+      image
       events {
         id
         name

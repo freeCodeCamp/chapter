@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --no-notify ./server/app.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
-    "db:generate": "npm run ty./src/modules/chapters/pages/chapterPage.tsx:12:18peorm migration:generate -- -n",
+    "db:generate": "npm run typeorm migration:generate -- -n",
     "db:drop": "npm run typeorm schema:drop",
     "db:seed": "ts-node -r tsconfig-paths/register ./db/generator/index.ts",
     "db:migrate": "npm run typeorm migration:run",

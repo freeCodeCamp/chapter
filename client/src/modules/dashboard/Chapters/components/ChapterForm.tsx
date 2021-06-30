@@ -35,6 +35,7 @@ const fields: Fields[] = [
   ['region', true],
   ['country', true],
   ['category', true],
+  ['image', true],
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
@@ -49,6 +50,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
+    image: chapter?.image ?? '',
   };
   const { control, handleSubmit } = useForm<ChapterFormData>({
     defaultValues,

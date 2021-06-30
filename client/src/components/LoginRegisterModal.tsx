@@ -12,15 +12,22 @@ import {
 
 import { Modal } from './Modal';
 import { Input } from './Form/Input';
-import { MeQuery, useLoginMutation } from 'generated/graphql';
+import {
+  MeQuery,
+  useLoginMutation,
+  useRegisterMutation,
+} from 'generated/graphql';
 import { meQuery } from 'modules/auth/graphql/queries';
 import { useForm } from 'react-hook-form';
 
-type FormType = {
+interface LoginData {
   email: string;
-  first_name?: string;
-  last_name?: string;
-};
+}
+
+interface RegisterData extends LoginData {
+  first_name: string;
+  last_name: string;
+}
 
 export const LoginRegisterModal: React.FC<{
   modalProps: UseDisclosureReturn;
@@ -29,16 +36,27 @@ export const LoginRegisterModal: React.FC<{
 }> = ({ modalProps, onRsvp, userIds }) => {
   const client = useApolloClient();
   const [login] = useLoginMutation();
+  const [registerMutation] = useRegisterMutation();
 
   const [code, setCode] = useState<string>();
   const [error, setError] = useState<string>();
 
   const [isRegister, { toggle }] = useBoolean(false);
 
-  const { handleSubmit, register } = useForm<FormType>();
+  const { handleSubmit, register } = useForm<RegisterData>();
 
-  const onSubmit = async (data: FormType) => {
+  const onSubmit = async (data: LoginData | RegisterData) => {
     if (isRegister) {
+      if ('last_name' in data) {
+        try {
+          await registerMutation({ variables: { ...data } });
+          // TODO: display success to user
+          console.log('registration successful');
+        } catch (err) {
+          console.log('error during registration');
+          // TODO: error handling
+        }
+      }
       return;
     }
 

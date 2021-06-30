@@ -1472,6 +1472,7 @@ export const EventDocument = gql`
       capacity
       start_at
       ends_at
+      image
       chapter {
         id
         name

@@ -70,6 +70,9 @@ export const Header: React.FC = () => {
 
             {user ? (
               <>
+                <Link color="white" href="/dashboard">
+                  Dashboard
+                </Link>
                 <Button onClick={logout}>Logout</Button>
                 <Avatar name={`${user.first_name} ${user.last_name}`} />
               </>

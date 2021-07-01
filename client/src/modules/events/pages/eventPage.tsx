@@ -8,12 +8,13 @@ import {
   Button,
   useToast,
   List,
+  HStack,
   ListItem,
   Avatar,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
-import { HStack } from '@chakra-ui/layout';
+import { LockIcon } from '@chakra-ui/icons';
 import { useConfirm } from 'chakra-confirm';
 
 import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
@@ -35,10 +36,11 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
   const modalProps = useDisclosure();
 
-  const userRsvped = useMemo(
-    () => data?.event?.rsvps.some((rsvp) => rsvp.user.id === user?.id),
-    [data?.event],
-  );
+  const userRsvped = useMemo(() => {
+    const rsvp = data?.event?.rsvps.find((rsvp) => rsvp.user.id === user?.id);
+    if (!rsvp) return null;
+    return rsvp.on_waitlist ? 'waitlist' : 'rsvp';
+  }, [data?.event]);
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -86,6 +88,8 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  const rsvps = data.event.rsvps.filter((r) => !r.on_waitlist);
+  const waitlist = data.event.rsvps.filter((r) => r.on_waitlist);
   const checkOnRsvp = async (add: boolean) => {
     if (!user) {
       return handleLoginUserFirst();
@@ -110,7 +114,10 @@ export const EventPage: NextPage = () => {
         objectFit="cover"
       />
 
-      <Heading>{data.event.name}</Heading>
+      <Heading>
+        {data.event.invite_only && <LockIcon />} {data.event.name}
+        {data.event.name}
+      </Heading>
       <Heading size="md">
         Chapter:{' '}
         <Link href={`/chapters/${data.event.chapter.id}`}>
@@ -120,22 +127,34 @@ export const EventPage: NextPage = () => {
       <Text>{data.event.description}</Text>
 
       <Heading>RSVPs:</Heading>
-      {userRsvped ? (
+      {userRsvped === 'rsvp' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
           <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
             Cancel
           </Button>
         </HStack>
+      ) : userRsvped === 'waitlist' ? (
+        <HStack>
+          {data.event.invite_only ? (
+            <Heading>Event owner will soon confirm your request</Heading>
+          ) : (
+            <Heading>You&lsquo;re on waitlist for this event</Heading>
+          )}
+          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
+            Cancel
+          </Button>
+        </HStack>
       ) : (
         <Button colorScheme="blue" onClick={() => checkOnRsvp(true)}>
-          RSVP
+          {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}
 
+      <Heading size="md">RSVPs:</Heading>
       <List>
-        {data.event.rsvps.map((rsvp) => (
-          <ListItem key={rsvp.id}>
+        {rsvps.map((rsvp) => (
+          <ListItem key={rsvp.id} mb="2">
             <HStack>
               <Avatar name={rsvp.user.name} />
               <Heading size="md">{rsvp.user.name}</Heading>
@@ -143,6 +162,22 @@ export const EventPage: NextPage = () => {
           </ListItem>
         ))}
       </List>
+
+      {!data.event.invite_only && (
+        <>
+          <Heading size="md">Waitlist:</Heading>
+          <List>
+            {waitlist.map((rsvp) => (
+              <ListItem key={rsvp.id} mb="2">
+                <HStack>
+                  <Avatar name={rsvp.user.name} />
+                  <Heading size="md">{rsvp.user.name}</Heading>
+                </HStack>
+              </ListItem>
+            ))}
+          </List>
+        </>
+      )}
     </VStack>
   );
 };

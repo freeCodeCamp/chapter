@@ -66,6 +66,10 @@ export class Event extends BaseModel {
   @Column({ nullable: false })
   capacity!: number;
 
+  @Field(() => Boolean)
+  @Column({ default: false })
+  invite_only!: boolean;
+
   @Field(() => [EventSponsor])
   @OneToMany((_type) => EventSponsor, (eventSponsor) => eventSponsor.sponsor, {
     onDelete: 'CASCADE',
@@ -117,6 +121,7 @@ export class Event extends BaseModel {
     chapter: Chapter;
     organizers: User[];
     image: string;
+    invite_only?: boolean;
   }) {
     super();
     if (params) {
@@ -134,6 +139,7 @@ export class Event extends BaseModel {
         chapter,
         organizers,
         image,
+        invite_only,
       } = params;
 
       this.name = name;
@@ -149,6 +155,7 @@ export class Event extends BaseModel {
       this.chapter = chapter;
       this.organizers = organizers;
       this.image = image;
+      this.invite_only = invite_only || false;
     }
   }
 }

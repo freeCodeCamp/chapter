@@ -33,8 +33,8 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Grid templateColumns="repeat(2, 1fr)" columnGap={10} mt="5">
-      <GridItem colSpan={{ base: 2, md: 1 }}>
+    <Grid templateColumns="repeat(3, 1fr)" columnGap={10} mt="5">
+      <GridItem colSpan={{ base: 3, md: 2 }}>
         <VStack align="flex-start">
           <Heading>Upcoming events</Heading>
           {loading ? (
@@ -59,7 +59,7 @@ const Home: React.FC = () => {
           )}
         </VStack>
       </GridItem>
-      <GridItem colSpan={{ base: 2, md: 1 }}>
+      <GridItem colSpan={{ base: 3, md: 1 }}>
         <VStack align="flex-start">
           <Heading>Chapters</Heading>
           {loading ? (

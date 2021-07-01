@@ -35,6 +35,7 @@ export const EventsPage: NextPage = () => {
               [
                 'status',
                 'name',
+                'invite only',
                 'venue',
                 'capacity',
                 'video_url',
@@ -66,6 +67,7 @@ export const EventsPage: NextPage = () => {
                   </LinkButton>
                 </VStack>
               ),
+              'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
               venue: (event) => event.venue?.name || '',
               capacity: true,
               video_url: true,
@@ -73,7 +75,7 @@ export const EventsPage: NextPage = () => {
               actions: (event) => (
                 <LinkButton
                   colorScheme="green"
-                  size="xs"
+                  size="sm"
                   href={`/dashboard/events/${event.id}/edit`}
                 >
                   Edit

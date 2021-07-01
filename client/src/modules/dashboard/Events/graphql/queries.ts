@@ -8,6 +8,7 @@ export const EVENTS = gql`
       canceled
       description
       url
+      invite_only
       video_url
       start_at
       capacity
@@ -30,6 +31,7 @@ export const EVENT = gql`
       name
       description
       url
+      invite_only
       video_url
       canceled
       capacity
@@ -138,5 +140,21 @@ export const cancelEvent = gql`
 export const deleteEvent = gql`
   mutation deleteEvent($id: Int!) {
     deleteEvent(id: $id)
+  }
+`;
+
+export const confirmRSVP = gql`
+  mutation confirmRsvp($id: Int!) {
+    confirmRsvp(id: $id) {
+      id
+      confirmed_at
+      on_waitlist
+    }
+  }
+`;
+
+export const deleteRSVP = gql`
+  mutation deleteRsvp($id: Int!) {
+    deleteRsvp(id: $id)
   }
 `;

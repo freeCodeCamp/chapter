@@ -14,7 +14,7 @@ export const Layout: React.FC = ({ children }) => {
 
   return (
     <>
-      <HStack as="nav" mt="2">
+      <HStack as="nav" my="2">
         {links.map((item) => (
           <LinkButton
             key={item.link}

@@ -12,6 +12,7 @@ const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
         user,
         date: date.future(),
         on_waitlist: Math.random() > 0.5,
+        confirmed_at: new Date(),
       });
       rsvps.push(rsvp);
     }

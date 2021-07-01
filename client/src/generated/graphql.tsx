@@ -65,6 +65,7 @@ export type CreateEventInputs = {
   capacity: Scalars['Float'];
   venueId?: Maybe<Scalars['Int']>;
   chapterId: Scalars['Int'];
+  invite_only?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateVenueInputs = {
@@ -101,6 +102,7 @@ export type Event = {
   ends_at: Scalars['DateTime'];
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
+  invite_only: Scalars['Boolean'];
   sponsors: Array<EventSponsor>;
   venue?: Maybe<Venue>;
   chapter: Chapter;
@@ -135,6 +137,8 @@ export type Mutation = {
   updateVenue: Venue;
   deleteVenue: Scalars['Boolean'];
   rsvpEvent?: Maybe<Rsvp>;
+  confirmRsvp: Rsvp;
+  deleteRsvp: Scalars['Boolean'];
   createEvent: Event;
   updateEvent: Event;
   cancelEvent: Event;
@@ -172,6 +176,14 @@ export type MutationDeleteVenueArgs = {
 };
 
 export type MutationRsvpEventArgs = {
+  id: Scalars['Int'];
+};
+
+export type MutationConfirmRsvpArgs = {
+  id: Scalars['Int'];
+};
+
+export type MutationDeleteRsvpArgs = {
   id: Scalars['Int'];
 };
 
@@ -255,6 +267,7 @@ export type Rsvp = {
   updated_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
   on_waitlist: Scalars['Boolean'];
+  confirmed_at: Scalars['DateTime'];
   event: Event;
   user: User;
   canceled: Scalars['Boolean'];
@@ -308,6 +321,7 @@ export type UpdateEventInputs = {
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
   venueId?: Maybe<Scalars['Int']>;
+  invite_only?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateVenueInputs = {
@@ -505,6 +519,7 @@ export type EventsQuery = { __typename?: 'Query' } & {
       | 'canceled'
       | 'description'
       | 'url'
+      | 'invite_only'
       | 'video_url'
       | 'start_at'
       | 'capacity'
@@ -527,6 +542,7 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'name'
       | 'description'
       | 'url'
+      | 'invite_only'
       | 'video_url'
       | 'canceled'
       | 'capacity'
@@ -636,6 +652,26 @@ export type DeleteEventMutation = { __typename?: 'Mutation' } & Pick<
   'deleteEvent'
 >;
 
+export type ConfirmRsvpMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type ConfirmRsvpMutation = { __typename?: 'Mutation' } & {
+  confirmRsvp: { __typename?: 'Rsvp' } & Pick<
+    Rsvp,
+    'id' | 'confirmed_at' | 'on_waitlist'
+  >;
+};
+
+export type DeleteRsvpMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type DeleteRsvpMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'deleteRsvp'
+>;
+
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type VenuesQuery = { __typename?: 'Query' } & {
@@ -732,7 +768,7 @@ export type HomeQuery = { __typename?: 'Query' } & {
   paginatedEvents: Array<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'description' | 'start_at'
+      'id' | 'name' | 'description' | 'invite_only' | 'canceled' | 'start_at'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
         chapter: { __typename?: 'Chapter' } & Pick<
@@ -900,8 +936,7 @@ export function useAuthenticateMutation(
 export type AuthenticateMutationHookResult = ReturnType<
   typeof useAuthenticateMutation
 >;
-export type AuthenticateMutationResult =
-  Apollo.MutationResult<AuthenticateMutation>;
+export type AuthenticateMutationResult = Apollo.MutationResult<AuthenticateMutation>;
 export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<
   AuthenticateMutation,
   AuthenticateMutationVariables
@@ -1187,6 +1222,7 @@ export const EventsDocument = gql`
       canceled
       description
       url
+      invite_only
       video_url
       start_at
       capacity
@@ -1248,6 +1284,7 @@ export const EventDocument = gql`
       name
       description
       url
+      invite_only
       video_url
       canceled
       capacity
@@ -1450,8 +1487,7 @@ export function useCreateEventMutation(
 export type CreateEventMutationHookResult = ReturnType<
   typeof useCreateEventMutation
 >;
-export type CreateEventMutationResult =
-  Apollo.MutationResult<CreateEventMutation>;
+export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
 export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutation,
   CreateEventMutationVariables
@@ -1511,8 +1547,7 @@ export function useUpdateEventMutation(
 export type UpdateEventMutationHookResult = ReturnType<
   typeof useUpdateEventMutation
 >;
-export type UpdateEventMutationResult =
-  Apollo.MutationResult<UpdateEventMutation>;
+export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<
   UpdateEventMutation,
   UpdateEventMutationVariables
@@ -1562,8 +1597,7 @@ export function useCancelEventMutation(
 export type CancelEventMutationHookResult = ReturnType<
   typeof useCancelEventMutation
 >;
-export type CancelEventMutationResult =
-  Apollo.MutationResult<CancelEventMutation>;
+export type CancelEventMutationResult = Apollo.MutationResult<CancelEventMutation>;
 export type CancelEventMutationOptions = Apollo.BaseMutationOptions<
   CancelEventMutation,
   CancelEventMutationVariables
@@ -1610,11 +1644,108 @@ export function useDeleteEventMutation(
 export type DeleteEventMutationHookResult = ReturnType<
   typeof useDeleteEventMutation
 >;
-export type DeleteEventMutationResult =
-  Apollo.MutationResult<DeleteEventMutation>;
+export type DeleteEventMutationResult = Apollo.MutationResult<DeleteEventMutation>;
 export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
+>;
+export const ConfirmRsvpDocument = gql`
+  mutation confirmRsvp($id: Int!) {
+    confirmRsvp(id: $id) {
+      id
+      confirmed_at
+      on_waitlist
+    }
+  }
+`;
+export type ConfirmRsvpMutationFn = Apollo.MutationFunction<
+  ConfirmRsvpMutation,
+  ConfirmRsvpMutationVariables
+>;
+
+/**
+ * __useConfirmRsvpMutation__
+ *
+ * To run a mutation, you first call `useConfirmRsvpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmRsvpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmRsvpMutation, { data, loading, error }] = useConfirmRsvpMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useConfirmRsvpMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ConfirmRsvpMutation,
+    ConfirmRsvpMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ConfirmRsvpMutation, ConfirmRsvpMutationVariables>(
+    ConfirmRsvpDocument,
+    options,
+  );
+}
+export type ConfirmRsvpMutationHookResult = ReturnType<
+  typeof useConfirmRsvpMutation
+>;
+export type ConfirmRsvpMutationResult = Apollo.MutationResult<ConfirmRsvpMutation>;
+export type ConfirmRsvpMutationOptions = Apollo.BaseMutationOptions<
+  ConfirmRsvpMutation,
+  ConfirmRsvpMutationVariables
+>;
+export const DeleteRsvpDocument = gql`
+  mutation deleteRsvp($id: Int!) {
+    deleteRsvp(id: $id)
+  }
+`;
+export type DeleteRsvpMutationFn = Apollo.MutationFunction<
+  DeleteRsvpMutation,
+  DeleteRsvpMutationVariables
+>;
+
+/**
+ * __useDeleteRsvpMutation__
+ *
+ * To run a mutation, you first call `useDeleteRsvpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRsvpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRsvpMutation, { data, loading, error }] = useDeleteRsvpMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRsvpMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteRsvpMutation,
+    DeleteRsvpMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteRsvpMutation, DeleteRsvpMutationVariables>(
+    DeleteRsvpDocument,
+    options,
+  );
+}
+export type DeleteRsvpMutationHookResult = ReturnType<
+  typeof useDeleteRsvpMutation
+>;
+export type DeleteRsvpMutationResult = Apollo.MutationResult<DeleteRsvpMutation>;
+export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRsvpMutation,
+  DeleteRsvpMutationVariables
 >;
 export const VenuesDocument = gql`
   query venues {
@@ -1779,8 +1910,7 @@ export function useCreateVenueMutation(
 export type CreateVenueMutationHookResult = ReturnType<
   typeof useCreateVenueMutation
 >;
-export type CreateVenueMutationResult =
-  Apollo.MutationResult<CreateVenueMutation>;
+export type CreateVenueMutationResult = Apollo.MutationResult<CreateVenueMutation>;
 export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutation,
   CreateVenueMutationVariables
@@ -1838,8 +1968,7 @@ export function useUpdateVenueMutation(
 export type UpdateVenueMutationHookResult = ReturnType<
   typeof useUpdateVenueMutation
 >;
-export type UpdateVenueMutationResult =
-  Apollo.MutationResult<UpdateVenueMutation>;
+export type UpdateVenueMutationResult = Apollo.MutationResult<UpdateVenueMutation>;
 export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
@@ -1888,8 +2017,7 @@ export function useRsvpToEventMutation(
 export type RsvpToEventMutationHookResult = ReturnType<
   typeof useRsvpToEventMutation
 >;
-export type RsvpToEventMutationResult =
-  Apollo.MutationResult<RsvpToEventMutation>;
+export type RsvpToEventMutationResult = Apollo.MutationResult<RsvpToEventMutation>;
 export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutation,
   RsvpToEventMutationVariables
@@ -1900,6 +2028,8 @@ export const HomeDocument = gql`
       id
       name
       description
+      invite_only
+      canceled
       start_at
       tags {
         id

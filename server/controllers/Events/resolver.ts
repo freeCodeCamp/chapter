@@ -56,7 +56,7 @@ export class EventResolver {
       throw new Error('You need to be logged in');
     }
 
-    const event = await Event.findOne({ where: { id } });
+    const event = await Event.findOne({ where: { id }, relations: ['rsvps'] });
     if (!event) {
       throw new Error('Event not found');
     }
@@ -67,15 +67,29 @@ export class EventResolver {
 
     if (rsvp) {
       await rsvp.remove();
+
+      if (!rsvp.on_waitlist) {
+        const waitingList = event.rsvps.filter((r) => r.on_waitlist);
+
+        if (waitingList.length > 0) {
+          waitingList[0].on_waitlist = false;
+          await waitingList[0].save();
+        }
+      }
+
       return null;
     }
+
+    const going = event.rsvps.filter((r) => !r.on_waitlist);
+    const waitlist = going.length >= event.capacity;
 
     rsvp = new Rsvp({
       event,
       user: ctx.user,
       date: new Date(),
       interested: false, // TODO handle this
-      on_waitlist: false, // TODO handle this
+      on_waitlist: event.invite_only ? true : waitlist,
+      confirmed_at: event.invite_only ? null : new Date(),
     });
 
     await rsvp.save();
@@ -99,6 +113,33 @@ To add this event to your calendar(s) you can use these links:
       `,
     ).sendEmail();
     return rsvp;
+  }
+
+  @Mutation(() => Rsvp)
+  async confirmRsvp(@Arg('id', () => Int) id: number): Promise<Rsvp> {
+    const rsvp = await Rsvp.findOne({ where: { id }, relations: ['event'] });
+    if (!rsvp) {
+      throw new Error('RSVP not found');
+    }
+
+    rsvp.confirmed_at = new Date();
+    rsvp.on_waitlist = false;
+
+    await rsvp.save();
+
+    return rsvp;
+  }
+
+  @Mutation(() => Boolean)
+  async deleteRsvp(@Arg('id', () => Int) id: number): Promise<boolean> {
+    const rsvp = await Rsvp.findOne({ where: { id } });
+    if (!rsvp) {
+      throw new Error('RSVP not found');
+    }
+
+    await rsvp.remove();
+
+    return true;
   }
 
   @Mutation(() => Event)
@@ -134,6 +175,7 @@ To add this event to your calendar(s) you can use these links:
     // TODO: Handle tags
     event.tags = [];
 
+    event.invite_only = data.invite_only ?? event.invite_only;
     event.name = data.name ?? event.name;
     event.description = data.description ?? event.description;
     event.url = data.url ?? event.url;

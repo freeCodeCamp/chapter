@@ -32,6 +32,9 @@ export class CreateEventInputs {
 
   @Field(() => Int)
   chapterId: number;
+
+  @Field(() => Boolean, { nullable: true })
+  invite_only: boolean;
 }
 
 @InputType()
@@ -62,4 +65,7 @@ export class UpdateEventInputs {
 
   @Field(() => Int, { nullable: true })
   venueId?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  invite_only: boolean;
 }

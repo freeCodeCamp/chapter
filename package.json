@@ -75,7 +75,7 @@
     "tsconfig-paths": "3.9.0",
     "type-graphql": "1.1.1",
     "typeorm": "0.2.32",
-    "typescript": "4.3.4"
+    "typescript": "4.3.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "7.14.5",

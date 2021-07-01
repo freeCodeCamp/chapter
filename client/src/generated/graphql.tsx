@@ -554,6 +554,9 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
+    details: string;
+    category: string;
+    imageUrl: string;
   }>;
 };
 
@@ -951,6 +954,7 @@ export type HomeQuery = {
     description: string;
     category: string;
     details: string;
+    imageUrl: string;
   }>;
 };
 
@@ -1292,6 +1296,9 @@ export const ChaptersDocument = gql`
       id
       name
       description
+      details
+      category
+      imageUrl
     }
   }
 `;
@@ -2459,6 +2466,7 @@ export const HomeDocument = gql`
       description
       category
       details
+      imageUrl
     }
   }
 `;

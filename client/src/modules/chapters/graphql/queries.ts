@@ -48,6 +48,9 @@ export const CHAPTERS = gql`
       id
       name
       description
+      details
+      category
+      imageUrl
     }
   }
 `;

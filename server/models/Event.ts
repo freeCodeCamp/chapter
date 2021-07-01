@@ -81,6 +81,10 @@ export class Event extends BaseModel {
   @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
+  @Field(() => String)
+  @Column({ nullable: false })
+  image!: string;
+
   constructor(params: {
     name: string;
     description: string;
@@ -93,6 +97,7 @@ export class Event extends BaseModel {
     capacity: number;
     venue?: Venue;
     chapter: Chapter;
+    image: string;
   }) {
     super();
     if (params) {
@@ -108,6 +113,7 @@ export class Event extends BaseModel {
         capacity,
         venue,
         chapter,
+        image,
       } = params;
 
       this.name = name;
@@ -121,6 +127,7 @@ export class Event extends BaseModel {
       this.capacity = capacity;
       this.venue = venue;
       this.chapter = chapter;
+      this.image = image;
     }
   }
 }

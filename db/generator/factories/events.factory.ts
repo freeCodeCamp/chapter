@@ -1,5 +1,5 @@
 import { addHours, add } from 'date-fns';
-import { company, internet, lorem } from 'faker';
+import { company, internet, lorem, image } from 'faker';
 import {
   Chapter,
   Event,
@@ -44,6 +44,7 @@ const createEvents = async (
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
+      image: image.imageUrl(640, 480, 'nature', true),
     });
 
     await event.save();

@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import {
   Heading,
   VStack,
+  Image,
   Text,
   Button,
   useToast,
@@ -99,6 +100,14 @@ export const EventPage: NextPage = () => {
         onRsvp={onRsvp}
         userIds={data?.event?.rsvps.map((r) => r.user.id) || []}
         modalProps={modalProps}
+      />
+      <Image
+        boxSize="100%"
+        maxH="300px"
+        src={data.event.image}
+        alt="The freeCodeCamp logo"
+        borderRadius="md"
+        objectFit="cover"
       />
 
       <Heading>{data.event.name}</Heading>

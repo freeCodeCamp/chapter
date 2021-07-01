@@ -65,6 +65,7 @@ export type CreateEventInputs = {
   capacity: Scalars['Float'];
   venueId?: Maybe<Scalars['Int']>;
   chapterId: Scalars['Int'];
+  image: Scalars['String'];
 };
 
 export type CreateVenueInputs = {
@@ -106,6 +107,7 @@ export type Event = {
   chapter: Chapter;
   rsvps: Array<Rsvp>;
   tags?: Maybe<Array<Tag>>;
+  image: Scalars['String'];
 };
 
 export type EventSponsor = {
@@ -308,6 +310,7 @@ export type UpdateEventInputs = {
   ends_at?: Maybe<Scalars['DateTime']>;
   capacity?: Maybe<Scalars['Float']>;
   venueId?: Maybe<Scalars['Int']>;
+  image?: Maybe<Scalars['String']>;
 };
 
 export type UpdateVenueInputs = {
@@ -532,6 +535,7 @@ export type EventQuery = { __typename?: 'Query' } & {
       | 'capacity'
       | 'start_at'
       | 'ends_at'
+      | 'image'
     > & {
         chapter: { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name'>;
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
@@ -1253,6 +1257,7 @@ export const EventDocument = gql`
       capacity
       start_at
       ends_at
+      image
       chapter {
         id
         name

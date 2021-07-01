@@ -1,8 +1,8 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { useChaptersQuery } from 'generated/graphql';
-import { Heading, VStack } from '@chakra-ui/layout';
-import { Link } from 'chakra-next-link';
+import { Heading, VStack, Stack } from '@chakra-ui/layout';
+import { ChapterCard } from 'components/ChapterCard';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
@@ -22,13 +22,14 @@ export const ChaptersPage: NextPage = () => {
 
   return (
     <VStack>
-      <Heading>Chapters: </Heading>
-
-      {data.chapters.map((chapter) => (
-        <Heading size="md" key={chapter.id}>
-          <Link href={`/chapters/${chapter.id}`}>{chapter.name}</Link>
-        </Heading>
-      ))}
+      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+        <Heading>Chapters: </Heading>
+        {data.chapters.map((chapter) => (
+          <Heading size="md" key={chapter.id}>
+            <ChapterCard key={chapter.id} chapter={chapter} />
+          </Heading>
+        ))}
+      </Stack>
     </VStack>
   );
 };

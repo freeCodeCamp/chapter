@@ -25,6 +25,7 @@ export const HOME_PAGE_QUERY = gql`
       description
       category
       details
+      image
     }
   }
 `;

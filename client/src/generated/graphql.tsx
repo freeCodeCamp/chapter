@@ -500,7 +500,10 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChaptersQuery = { __typename?: 'Query' } & {
   chapters: Array<
-    { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name' | 'description'>
+    { __typename?: 'Chapter' } & Pick<
+      Chapter,
+      'id' | 'name' | 'description' | 'details' | 'category' | 'image'
+    >
   >;
 };
 
@@ -809,7 +812,7 @@ export type HomeQuery = { __typename?: 'Query' } & {
   chapters: Array<
     { __typename?: 'Chapter' } & Pick<
       Chapter,
-      'id' | 'name' | 'description' | 'category' | 'details'
+      'id' | 'name' | 'description' | 'category' | 'details' | 'image'
     >
   >;
 };
@@ -1088,6 +1091,9 @@ export const ChaptersDocument = gql`
       id
       name
       description
+      details
+      category
+      image
     }
   }
 `;
@@ -2138,6 +2144,7 @@ export const HomeDocument = gql`
       description
       category
       details
+      image
     }
   }
 `;

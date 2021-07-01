@@ -17,6 +17,8 @@ export const CHAPTER = gql`
         name
         description
         start_at
+        invite_only
+        canceled
         tags {
           id
           name

@@ -6,7 +6,7 @@ WORKDIR /usr/chapter/client
 
 # Installing dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm i -g npm@7 && npm i
 
 # Copying source files
 COPY . .

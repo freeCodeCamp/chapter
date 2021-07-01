@@ -7,7 +7,7 @@ WORKDIR /usr/chapter/
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install
+RUN npm i -g npm@7 && npm i
 
 # Bundle app source
 COPY . .

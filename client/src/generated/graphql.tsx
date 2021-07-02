@@ -466,7 +466,12 @@ export type ChapterQuery = { __typename?: 'Query' } & {
         events: Array<
           { __typename?: 'Event' } & Pick<
             Event,
-            'id' | 'name' | 'description' | 'start_at'
+            | 'id'
+            | 'name'
+            | 'description'
+            | 'start_at'
+            | 'invite_only'
+            | 'canceled'
           > & {
               tags?: Maybe<
                 Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>
@@ -1002,6 +1007,8 @@ export const ChapterDocument = gql`
           id
           name
         }
+        invite_only
+        canceled
       }
     }
   }

@@ -3,13 +3,11 @@ FROM node:14-alpine
 # Setting working directory. All the path will be relative to WORKDIR
 WORKDIR /usr/chapter/client
 
-
-# Installing dependencies
-COPY package*.json ./
-RUN npm install
-
 # Copying source files
 COPY . .
+
+# Installing dependencies
+RUN npm i -g npm@7 && npm i
 
 # Building app
 RUN npm run build

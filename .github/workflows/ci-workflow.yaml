@@ -14,6 +14,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      # since our lockfiles are v2, we should use npm 7
+      - name: Update npm
+        run: npm i -g npm@7
       - name: Install dependencies
         run: npx recursive-install
       - name: Run linter

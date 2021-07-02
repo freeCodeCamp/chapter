@@ -19,6 +19,7 @@
     - [Using TypeORM and NPM](#using-typeorm-and-npm)
       - [Initializing the Database](#initializing-the-database)
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
+      - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
       - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
 - [Running Remotely](#running-remotely)
@@ -499,12 +500,7 @@ If you're starting the application for the first time, or syncronizing with the 
 * migrate the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-The `npm run db:reset` command will do all three tasks: drop, migrate, and seed.
-
-If you prefer to run some or all of the steps manually, then they are:
-* `npm run db:drop`
-* `npm run db:migrate`
-* `npm run db:seed`
+The `npm run db:reset` command will do all three tasks by running `npm run db:drop`, `npm run db:migrate` and `npm run db:seed` sequentially.
 
 #### Creating a New Model / Entity
 
@@ -515,6 +511,12 @@ This would create _ModelName.ts_ in _server/models_
 To keep everything DRY, add `extends BaseModel` to the class and import it from 'server/models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
 
 You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from _.ts_ files, so we run it with `ts-node` and our custom server config (check package.json)
+
+#### Syncing the Schema
+
+* For development environments, [TypeORM will kept the database migrations in sync](https://github.com/typeorm/typeorm/blob/master/README.md) with the definitions in _server/models_ when the server is started. Developers must still create and commit a [migration](#creating-a-migration) for any modifications to the ORM / database schema.
+* If a manual sync becomes necessary, run the `npm run db:sync` command.
+* For production environments, run the `npm run db:migrate` command.
 
 #### Creating a Migration
 

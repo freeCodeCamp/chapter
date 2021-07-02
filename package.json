@@ -7,12 +7,13 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register --no-notify ./server/app.ts",
+    "dev": "cross-env NODE_ENV='development' ts-node-dev -r tsconfig-paths/register --no-notify ./server/app.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
     "db:generate": "npm run typeorm migration:generate -- -n",
     "db:drop": "npm run typeorm schema:drop",
     "db:seed": "ts-node -r tsconfig-paths/register ./db/generator/index.ts",
     "db:migrate": "npm run typeorm migration:run",
+    "db:sync": "npm run typeorm schema:sync", 
     "db:reset": "npm run db:drop && npm run db:migrate && npm run db:seed",
     "both": "concurrently \"npm run dev\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
     "build:client": "cd client && npm run build",
@@ -99,6 +100,7 @@
     "@typescript-eslint/parser": "4.28.1",
     "chai": "4.3.4",
     "concurrently": "6.2.0",
+    "cross-env": "^7.0.3",
     "eslint": "7.29.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-config-react": "1.1.7",

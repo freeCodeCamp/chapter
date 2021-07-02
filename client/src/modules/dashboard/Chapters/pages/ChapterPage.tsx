@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { Layout } from '../../shared/components/Layout';
 import { useChapterQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
-import { ProgressCardContent } from '../../../../components';
+import ProgressCardContent from '../../../../components/ProgressCardContent';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {

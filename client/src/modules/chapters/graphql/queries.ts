@@ -20,6 +20,8 @@ export const CHAPTER = gql`
           id
           name
         }
+        invite_only
+        canceled
       }
     }
   }

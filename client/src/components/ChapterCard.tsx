@@ -20,9 +20,8 @@ type ChapterCardProps = {
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
-  console.log(chapter);
   return (
-    <Center py={3} data-cy="chapter-card">
+    <Center m={2} data-cy="chapter-card">
       <Link data-cy="chapter-link" href={`/chapters/${chapter.id}`} _hover={{}}>
         <Box
           w={'full'}

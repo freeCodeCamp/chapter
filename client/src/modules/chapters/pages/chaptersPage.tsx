@@ -23,7 +23,7 @@ export const ChaptersPage: NextPage = () => {
 
   return (
     <VStack>
-      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={3} mt={10} mb={5}>
         <Heading>Chapters: </Heading>
         {data.chapters.map((chapter) => (
           <Heading size="md" key={chapter.id}>

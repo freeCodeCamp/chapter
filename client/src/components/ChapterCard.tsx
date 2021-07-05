@@ -30,7 +30,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           overflow={'hidden'}
         >
           <Image
-            h={'120px'}
+            h={'168px'}
             w={'full'}
             src={chapter.imageUrl}
             objectFit={'cover'}

@@ -1,17 +1,20 @@
 import React from 'react';
-import { Heading, Text, Tag, HStack, Flex } from '@chakra-ui/react';
-import { LockIcon } from '@chakra-ui/icons';
+import { Heading, Tag, Flex, Box, Image } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 
 import { Chapter, Event, Tag as DBTag } from 'generated/graphql';
-import { Card } from './Card';
-import { truncate } from '../helpers/truncate';
 import { formatDate } from '../helpers/date';
 
 type EventCardProps = {
   event: Pick<
     Event,
-    'id' | 'name' | 'description' | 'start_at' | 'invite_only' | 'canceled'
+    | 'id'
+    | 'name'
+    | 'description'
+    | 'start_at'
+    | 'image'
+    | 'invite_only'
+    | 'canceled'
   > & {
     chapter: Pick<Chapter, 'id' | 'name'>;
     tags?: Pick<DBTag, 'name'>[] | null;
@@ -19,29 +22,46 @@ type EventCardProps = {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  console.log(event);
   return (
-    <Card w="full">
-      <Flex justify="space-between">
-        <Heading size="md" as="h2">
-          {event.invite_only && <LockIcon />}{' '}
-          <Link href={`/events/${event.id}`}>{event.name}</Link>
-          {event.canceled && (
-            <Text as="span" color="red.500" ml="2">
-              Canceled
-            </Text>
-          )}
-        </Heading>
-        <HStack>
+    <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
+      <Image h={'auto'} w={'200px'} src={event.image} objectFit={'cover'} />
+
+      <Box p="3" py={3}>
+        <Box
+          mb="2"
+          fontWeight="semibold"
+          as="h4"
+          lineHeight="tight"
+          isTruncated
+        >
+          {formatDate(event.start_at)}
+        </Box>
+        <Box>
+          <Link href={`/events/${event.id}`}>
+            <Heading size="sm"> {event.name}</Heading>
+          </Link>
+        </Box>
+        <Box>
+          <Link href={`/chapters/${event.chapter.id}`}>
+            {event.chapter.name}
+          </Link>
+        </Box>
+        <Box d="flex" alignItems="baseline" pt={3}>
           {event.tags?.map((t) => (
-            <Tag key={t.name}>{t.name}</Tag>
+            <Tag
+              borderRadius="full"
+              pl="2"
+              px="2"
+              colorScheme="teal"
+              key={t.name}
+              mr="2"
+            >
+              {t.name}
+            </Tag>
           ))}
-        </HStack>
-      </Flex>
-
-      <Heading size="sm">{formatDate(event.start_at)}</Heading>
-      <Link href={`/chapters/${event.chapter.id}`}>{event.chapter.name}</Link>
-
-      <Text>{truncate(event.description, 120)}</Text>
-    </Card>
+        </Box>
+      </Box>
+    </Flex>
   );
 };

@@ -9,6 +9,7 @@ export const HOME_PAGE_QUERY = gql`
       invite_only
       canceled
       start_at
+      image
       tags {
         id
         name

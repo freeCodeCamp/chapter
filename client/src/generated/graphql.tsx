@@ -486,6 +486,7 @@ export type ChapterQuery = { __typename?: 'Query' } & {
             | 'start_at'
             | 'invite_only'
             | 'canceled'
+            | 'image'
           > & {
               tags?: Maybe<
                 Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>
@@ -791,6 +792,29 @@ export type RsvpToEventMutation = { __typename?: 'Mutation' } & {
   rsvpEvent?: Maybe<{ __typename?: 'Rsvp' } & Pick<Rsvp, 'id'>>;
 };
 
+export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MinEventsQuery = { __typename?: 'Query' } & {
+  events: Array<
+    { __typename?: 'Event' } & Pick<
+      Event,
+      | 'id'
+      | 'name'
+      | 'description'
+      | 'start_at'
+      | 'invite_only'
+      | 'canceled'
+      | 'image'
+    > & {
+        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
+        chapter: { __typename?: 'Chapter' } & Pick<
+          Chapter,
+          'id' | 'name' | 'category'
+        >;
+      }
+  >;
+};
+
 export type HomeQueryVariables = Exact<{
   limit?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -800,7 +824,13 @@ export type HomeQuery = { __typename?: 'Query' } & {
   paginatedEvents: Array<
     { __typename?: 'Event' } & Pick<
       Event,
-      'id' | 'name' | 'description' | 'invite_only' | 'canceled' | 'start_at'
+      | 'id'
+      | 'name'
+      | 'description'
+      | 'invite_only'
+      | 'canceled'
+      | 'start_at'
+      | 'image'
     > & {
         tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
         chapter: { __typename?: 'Chapter' } & Pick<
@@ -1033,6 +1063,7 @@ export const ChapterDocument = gql`
         start_at
         invite_only
         canceled
+        image
         tags {
           id
           name
@@ -2119,6 +2150,77 @@ export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutation,
   RsvpToEventMutationVariables
 >;
+export const MinEventsDocument = gql`
+  query minEvents {
+    events {
+      id
+      id
+      name
+      description
+      start_at
+      invite_only
+      canceled
+      image
+      tags {
+        id
+        name
+      }
+      chapter {
+        id
+        name
+        category
+      }
+    }
+  }
+`;
+
+/**
+ * __useMinEventsQuery__
+ *
+ * To run a query within a React component, call `useMinEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMinEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMinEventsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMinEventsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    MinEventsQuery,
+    MinEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<MinEventsQuery, MinEventsQueryVariables>(
+    MinEventsDocument,
+    options,
+  );
+}
+export function useMinEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    MinEventsQuery,
+    MinEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<MinEventsQuery, MinEventsQueryVariables>(
+    MinEventsDocument,
+    options,
+  );
+}
+export type MinEventsQueryHookResult = ReturnType<typeof useMinEventsQuery>;
+export type MinEventsLazyQueryHookResult = ReturnType<
+  typeof useMinEventsLazyQuery
+>;
+export type MinEventsQueryResult = Apollo.QueryResult<
+  MinEventsQuery,
+  MinEventsQueryVariables
+>;
 export const HomeDocument = gql`
   query home($limit: Int, $offset: Int) {
     paginatedEvents(limit: $limit, offset: $offset) {
@@ -2128,6 +2230,7 @@ export const HomeDocument = gql`
       invite_only
       canceled
       start_at
+      image
       tags {
         id
         name

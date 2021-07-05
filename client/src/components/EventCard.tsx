@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heading, Tag, Flex, Box, Image } from '@chakra-ui/react';
+import { Heading, Tag, Flex, Box, Image, Spacer } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { LockIcon } from '@chakra-ui/icons';
 
 import { Chapter, Event, Tag as DBTag } from 'generated/graphql';
 import { formatDate } from '../helpers/date';
@@ -22,13 +23,22 @@ type EventCardProps = {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  console.log(event);
+  const metaTag = event.canceled ? (
+    <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
+      Cancelled
+    </Tag>
+  ) : event.invite_only ? (
+    <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
+      <LockIcon />
+    </Tag>
+  ) : (
+    ''
+  );
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
       <Image h={'auto'} w={'200px'} src={event.image} objectFit={'cover'} />
-
-      <Box p="3" py={3}>
-        <Box
+      <Box p="3" py={3} width="full">
+        <Flex
           mb="2"
           fontWeight="semibold"
           as="h4"
@@ -36,10 +46,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           isTruncated
         >
           {formatDate(event.start_at)}
-        </Box>
+          <Spacer />
+          {metaTag}
+        </Flex>
         <Box>
           <Link href={`/events/${event.id}`}>
-            <Heading size="sm"> {event.name}</Heading>
+            <Heading size="sm">{event.name}</Heading>
           </Link>
         </Box>
         <Box>
@@ -65,3 +77,17 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     </Flex>
   );
 };
+
+{
+  /* <Heading size="md" as="h2">
+  {event.invite_only && <LockIcon />}{' '}
+  <Link href={`/events/${event.id}`}>{event.name}</Link>
+  {event.canceled && (
+    <Text as="span" color="red.500" ml="2">
+      Canceled
+    </Text>
+  )}
+</Heading>;
+
+('Invite only'); */
+}

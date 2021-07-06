@@ -108,7 +108,7 @@
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.24.0",
     "get-port": "5.1.1",
-    "husky": "7.0.0",
+    "husky": "7.0.1",
     "jest": "27.0.6",
     "lint-staged": "11.0.0",
     "prettier": "2.3.2",

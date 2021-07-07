@@ -91,7 +91,7 @@
     "@types/nodemailer": "6.4.3",
     "@types/pg": "8.6.1",
     "@types/react": "17.0.14",
-    "@types/react-dom": "17.0.8",
+    "@types/react-dom": "17.0.9",
     "@types/sinon-chai": "3.2.5",
     "@types/supertest": "2.0.11",
     "@types/validator": "13.6.3",

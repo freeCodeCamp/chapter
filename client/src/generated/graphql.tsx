@@ -143,6 +143,7 @@ export type Mutation = {
   updateEvent: Event;
   cancelEvent: Event;
   deleteEvent: Scalars['Boolean'];
+  sendEventInvite: Scalars['Boolean'];
   sendEmail: Email;
   register: User;
   login: LoginType;
@@ -201,6 +202,10 @@ export type MutationCancelEventArgs = {
 };
 
 export type MutationDeleteEventArgs = {
+  id: Scalars['Int'];
+};
+
+export type MutationSendEventInviteArgs = {
   id: Scalars['Int'];
 };
 
@@ -675,6 +680,15 @@ export type DeleteRsvpMutationVariables = Exact<{
 export type DeleteRsvpMutation = { __typename?: 'Mutation' } & Pick<
   Mutation,
   'deleteRsvp'
+>;
+
+export type SendEventInviteMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type SendEventInviteMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'sendEventInvite'
 >;
 
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
@@ -1760,6 +1774,54 @@ export type DeleteRsvpMutationResult =
 export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
   DeleteRsvpMutation,
   DeleteRsvpMutationVariables
+>;
+export const SendEventInviteDocument = gql`
+  mutation sendEventInvite($id: Int!) {
+    sendEventInvite(id: $id)
+  }
+`;
+export type SendEventInviteMutationFn = Apollo.MutationFunction<
+  SendEventInviteMutation,
+  SendEventInviteMutationVariables
+>;
+
+/**
+ * __useSendEventInviteMutation__
+ *
+ * To run a mutation, you first call `useSendEventInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendEventInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendEventInviteMutation, { data, loading, error }] = useSendEventInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSendEventInviteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SendEventInviteMutation,
+    SendEventInviteMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SendEventInviteMutation,
+    SendEventInviteMutationVariables
+  >(SendEventInviteDocument, options);
+}
+export type SendEventInviteMutationHookResult = ReturnType<
+  typeof useSendEventInviteMutation
+>;
+export type SendEventInviteMutationResult =
+  Apollo.MutationResult<SendEventInviteMutation>;
+export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
+  SendEventInviteMutation,
+  SendEventInviteMutationVariables
 >;
 export const VenuesDocument = gql`
   query venues {

@@ -213,4 +213,41 @@ To add this event to your calendar(s) you can use these links:
 
     return true;
   }
+
+  @Mutation(() => Boolean)
+  async sendEventInvite(@Arg('id', () => Int) id: number) {
+    const event = await Event.findOne(id, {
+      relations: ['venue', 'chapter', 'chapter.users', 'chapter.users.user'],
+    });
+
+    if (!event) throw new Error("Can't find event");
+
+    // TODO: the default should probably be to bcc everyone.
+    const addresses = event.chapter.users
+      .filter((role) => role.interested)
+      .map(({ user }) => user.email);
+    const subject = `Invitation to ${event.name}.`;
+
+    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
+    // TODO: this needs to include an ical file
+    // TODO: it needs a link to unsubscribe from just this event.  See
+    // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
+    const body =
+      `When: ${event.start_at} to ${event.ends_at}<br>` +
+      (event.venue ? `Where: ${event.venue?.name}<br>` : '') +
+      `Event Details: <a href="${eventURL}">${eventURL}</a><br>
+<br>
+- Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
+- More about ${event.chapter.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+<br>
+----------------------------<br>
+You received this email because you follow this chapter.<br>
+<br>
+See the options above to change your notifications.`;
+
+    await new MailerService(addresses, subject, body).sendEmail();
+
+    return true;
+  }
 }

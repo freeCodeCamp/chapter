@@ -4,7 +4,10 @@ import { NextPage } from 'next';
 import { EventFormData } from '../components/EventFormUtils';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { useCreateEventMutation } from '../../../../generated/graphql';
+import {
+  useCreateEventMutation,
+  useSendEventInviteMutation,
+} from '../../../../generated/graphql';
 import { EVENTS } from '../graphql/queries';
 
 export const NewEventPage: NextPage = () => {
@@ -14,6 +17,8 @@ export const NewEventPage: NextPage = () => {
   const [createEvent] = useCreateEventMutation({
     refetchQueries: [{ query: EVENTS }],
   });
+
+  const [publish] = useSendEventInviteMutation();
 
   const onSubmit = async (data: EventFormData) => {
     // TODO: load chapter from url or something like that
@@ -38,6 +43,7 @@ export const NewEventPage: NextPage = () => {
       });
 
       if (event.data) {
+        publish({ variables: { id: event.data.createEvent.id } });
         router.replace(
           `/dashboard/events/[id]`,
           `/dashboard/events/${event.data.createEvent.id}`,

@@ -74,7 +74,7 @@
     "ts-node": "10.1.0",
     "tsconfig-paths": "3.10.1",
     "type-graphql": "1.1.1",
-    "typeorm": "0.2.32",
+    "typeorm": "0.2.34",
     "typescript": "4.3.5"
   },
   "devDependencies": {

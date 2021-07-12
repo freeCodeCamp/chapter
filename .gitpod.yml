@@ -6,6 +6,7 @@ ports:
     onOpen: ignore
   - port: 5000
     onOpen: ignore
+    visibility: public
 tasks:
   # both .bashrc and nvm settings get wiped when a workspace is restarted, so
   # they need setting here

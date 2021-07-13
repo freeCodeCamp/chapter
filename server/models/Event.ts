@@ -6,6 +6,7 @@ import { Chapter } from './Chapter';
 import { Tag } from './Tag';
 import { EventSponsor } from './EventSponsor';
 import { Rsvp } from './Rsvp';
+import { User } from './User';
 
 export enum VenueType {
   Physical = 'Physical',
@@ -85,6 +86,13 @@ export class Event extends BaseModel {
   @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
+  // TODO: how do we limit this to users with the right roles? Is it possible
+  // to constrain the db?
+  @Field(() => User)
+  @ManyToOne((_type) => User, (user) => user.events_organized)
+  @JoinColumn({ name: 'organizer_id' })
+  organizer!: User;
+
   constructor(params: {
     name: string;
     description: string;
@@ -98,6 +106,7 @@ export class Event extends BaseModel {
     venue?: Venue;
     chapter: Chapter;
     invite_only?: boolean;
+    organizer: User;
   }) {
     super();
     if (params) {
@@ -114,6 +123,7 @@ export class Event extends BaseModel {
         venue,
         chapter,
         invite_only,
+        organizer,
       } = params;
 
       this.name = name;
@@ -128,6 +138,7 @@ export class Event extends BaseModel {
       this.venue = venue;
       this.chapter = chapter;
       this.invite_only = invite_only || false;
+      this.organizer = organizer;
     }
   }
 }

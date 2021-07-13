@@ -1,10 +1,10 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
+import MailerService from 'server/services/MailerService';
 import { GQLCtx } from 'server/ts/gql';
 import { Event, Venue, Chapter, Rsvp } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
-import MailerService from 'server/services/MailerService';
 
 @Resolver()
 export class EventResolver {
@@ -43,7 +43,14 @@ export class EventResolver {
   @Query(() => Event, { nullable: true })
   event(@Arg('id', () => Int) id: number) {
     return Event.findOne(id, {
-      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      relations: [
+        'chapter',
+        'tags',
+        'venue',
+        'rsvps',
+        'rsvps.user',
+        'organizer',
+      ],
     });
   }
 
@@ -56,7 +63,9 @@ export class EventResolver {
       throw new Error('You need to be logged in');
     }
 
-    const event = await Event.findOne({ where: { id }, relations: ['rsvps'] });
+    const event = await Event.findOne(id, {
+      relations: ['rsvps', 'organizer'],
+    });
     if (!event) {
       throw new Error('Event not found');
     }
@@ -101,7 +110,7 @@ export class EventResolver {
     };
     if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-    new MailerService(
+    await new MailerService(
       [ctx.user.email],
       `Invitation: ${event.name}`,
       `Hi ${ctx.user.first_name},</br>
@@ -112,6 +121,13 @@ To add this event to your calendar(s) you can use these links:
 <a href=${outlook(linkDetails)}>Outlook</a>
       `,
     ).sendEmail();
+
+    await new MailerService(
+      [event.organizer.email],
+      `New RSVP for ${event.name}`,
+      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd.`,
+    ).sendEmail();
+
     return rsvp;
   }
 
@@ -143,7 +159,8 @@ To add this event to your calendar(s) you can use these links:
   }
 
   @Mutation(() => Event)
-  async createEvent(@Arg('data') data: CreateEventInputs) {
+  async createEvent(@Arg('data') data: CreateEventInputs, @Ctx() ctx: GQLCtx) {
+    if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venueId) {
       venue = await Venue.findOne(data.venueId);
@@ -153,12 +170,24 @@ To add this event to your calendar(s) you can use these links:
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
 
+    // TODO: add admin and owner once those roles exist.
+    const allowedRoles = ['organizer'];
+    const hasPermission =
+      ctx.user.chapter_roles.findIndex(
+        ({ chapter_id, role_name }) =>
+          chapter_id === data.chapterId && allowedRoles.includes(role_name),
+      ) !== -1;
+
+    if (!hasPermission)
+      throw Error('User does not have permission to create events');
+
     const event = new Event({
       ...data,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
+      organizer: ctx.user,
     });
 
     return event.save();
@@ -169,7 +198,9 @@ To add this event to your calendar(s) you can use these links:
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
   ) {
-    const event = await Event.findOne(id);
+    const event = await Event.findOne(id, {
+      relations: ['rsvps', 'rsvps.user', 'venue'],
+    });
     if (!event) throw new Error('Cant find event');
 
     // TODO: Handle tags
@@ -188,8 +219,23 @@ To add this event to your calendar(s) you can use these links:
     if (data.venueId) {
       const venue = await Venue.findOne(data.venueId);
       if (!venue) throw new Error('Cant find venue');
+      // TODO: include a link back to the venue page
+      if (event.venue?.id !== venue.id) {
+        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
+        const subject = `Venue changed for event ${event.name}`;
+        const body = `We have had to change the location of ${event.name}.
+The event is now being held at <br>
+${venue.name} <br> 
+${venue.street_address ? venue.street_address + '<br>' : ''}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+`;
+        new MailerService(emailList, subject, body).sendEmail();
+      }
       event.venue = venue;
     }
+
     return event.save();
   }
 

@@ -3,6 +3,7 @@ import { BaseModel } from './BaseModel';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
 import { UserBan } from './UserBan';
+import { Event } from './Event';
 import { UserChapterRole } from './UserChapterRole';
 import { UserInstanceRole } from './UserInstanceRole';
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
@@ -54,6 +55,10 @@ export class User extends BaseModel {
     (userInstanceRole) => userInstanceRole.user,
   )
   instance_roles!: UserInstanceRole[];
+
+  @Field(() => [Event])
+  @OneToMany((_type) => Event, (event) => event.organizer)
+  events_organized: Event[];
 
   constructor(params: {
     first_name: string;

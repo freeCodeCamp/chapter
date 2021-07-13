@@ -42,6 +42,7 @@ export type Chapter = {
   creator: User;
   users: Array<UserChapterRole>;
   banned_users: Array<UserBan>;
+  image: Scalars['String'];
 };
 
 export type CreateChapterInputs = {
@@ -52,6 +53,7 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   region: Scalars['String'];
   country: Scalars['String'];
+  image: Scalars['String'];
 };
 
 export type CreateEventInputs = {
@@ -314,6 +316,7 @@ export type UpdateChapterInputs = {
   city?: Maybe<Scalars['String']>;
   region?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
 };
 
 export type UpdateEventInputs = {
@@ -462,6 +465,7 @@ export type ChapterQuery = { __typename?: 'Query' } & {
       | 'id'
       | 'name'
       | 'description'
+      | 'image'
       | 'details'
       | 'category'
       | 'city'
@@ -1007,6 +1011,7 @@ export const ChapterDocument = gql`
       id
       name
       description
+      image
       details
       category
       city

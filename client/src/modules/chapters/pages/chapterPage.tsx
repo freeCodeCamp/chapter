@@ -2,7 +2,7 @@ import React from 'react';
 import { NextPage } from 'next';
 import { useParam } from 'hooks/useParam';
 import { useChapterQuery } from 'generated/graphql';
-import { Heading, VStack, Text, Spinner } from '@chakra-ui/react';
+import { Heading, VStack, Stack, Text, Spinner, Image } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
 
 export const ChapterPage: NextPage = () => {
@@ -27,11 +27,32 @@ export const ChapterPage: NextPage = () => {
 
   return (
     <VStack>
-      <Heading>{data.chapter.name}</Heading>
-      <Text>{data.chapter.description}</Text>
-
-      <Heading size="md">Events:</Heading>
-      <VStack w={['60%', '90%', '60%']} maxW="800px">
+      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+        <Image
+          boxSize="100%"
+          maxH="300px"
+          src={data.chapter.image}
+          alt="The freeCodeCamp logo"
+          borderRadius="md"
+          objectFit="cover"
+        />
+        <Heading
+          lineHeight={1.1}
+          fontWeight={600}
+          color={'gray.700'}
+          fontSize={{ base: 'xl', sm: '4xl', lg: '3xl' }}
+        >
+          <Text as={'span'} position={'relative'}>
+            {data.chapter.name}
+          </Text>
+          <br />
+        </Heading>
+        <Text fontSize={'lg'} color={'gray.500'}>
+          {data.chapter.description}
+        </Text>
+        <Heading size="md" color={'gray.700'}>
+          Events:
+        </Heading>
         {data.chapter.events.map((event) => (
           <EventCard
             key={event.id}
@@ -42,7 +63,7 @@ export const ChapterPage: NextPage = () => {
             }}
           />
         ))}
-      </VStack>
+      </Stack>
     </VStack>
   );
 };

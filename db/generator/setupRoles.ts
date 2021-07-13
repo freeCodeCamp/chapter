@@ -42,7 +42,7 @@ const setupRoles = async (
     await Promise.all(ucr.map((user) => user.save()));
   } catch (e) {
     console.error(e);
-    throw new Error('Error seeding roles');
+    throw new Error('Error seeding user-chapter-roles');
   }
 };
 

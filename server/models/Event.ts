@@ -1,12 +1,4 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-} from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseModel } from './BaseModel';
 import { Venue } from './Venue';
@@ -14,7 +6,7 @@ import { Chapter } from './Chapter';
 import { Tag } from './Tag';
 import { EventSponsor } from './EventSponsor';
 import { Rsvp } from './Rsvp';
-import { User } from './User';
+import { UserEventRole } from './UserEventRole';
 
 export enum VenueType {
   Physical = 'Physical',
@@ -94,14 +86,9 @@ export class Event extends BaseModel {
   @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
-  @Field(() => [User])
-  @ManyToMany((_type) => User, (user) => user.events_organized)
-  @JoinTable({
-    name: 'events_users',
-    joinColumn: { name: 'user_id' },
-    inverseJoinColumn: { name: 'event_id' },
-  })
-  organizers!: User[];
+  @Field(() => [UserEventRole])
+  @OneToMany((_type) => UserEventRole, (UserEventRole) => UserEventRole.event)
+  user_roles!: UserEventRole[];
 
   constructor(params: {
     name: string;
@@ -116,7 +103,7 @@ export class Event extends BaseModel {
     venue?: Venue;
     chapter: Chapter;
     invite_only?: boolean;
-    organizers: User[];
+    user_roles: UserEventRole[];
   }) {
     super();
     if (params) {
@@ -133,7 +120,7 @@ export class Event extends BaseModel {
         venue,
         chapter,
         invite_only,
-        organizers,
+        user_roles,
       } = params;
 
       this.name = name;
@@ -148,7 +135,7 @@ export class Event extends BaseModel {
       this.venue = venue;
       this.chapter = chapter;
       this.invite_only = invite_only || false;
-      this.organizers = organizers;
+      this.user_roles = user_roles;
     }
   }
 }

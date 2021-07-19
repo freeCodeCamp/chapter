@@ -1,12 +1,12 @@
-import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
 import { UserBan } from './UserBan';
-import { Event } from './Event';
 import { UserChapterRole } from './UserChapterRole';
 import { UserInstanceRole } from './UserInstanceRole';
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
+import { UserEventRole } from './UserEventRole';
 
 @ObjectType()
 @Entity({ name: 'users' })
@@ -56,9 +56,9 @@ export class User extends BaseModel {
   )
   instance_roles!: UserInstanceRole[];
 
-  @Field(() => [Event])
-  @ManyToMany((_type) => Event, (event) => event.organizers)
-  events_organized!: Event[];
+  @Field(() => [UserEventRole])
+  @OneToMany((_type) => UserEventRole, (UserEventRole) => UserEventRole.user)
+  event_roles!: UserEventRole[];
 
   constructor(params: {
     first_name: string;

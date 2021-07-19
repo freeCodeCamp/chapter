@@ -6,14 +6,12 @@ import {
   EventSponsor,
   Sponsor,
   Tag,
-  User,
   Venue,
   VenueType,
 } from '../../../server/models';
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
 
 const createEvents = async (
-  user: User,
   chapters: Chapter[],
   venues: Venue[],
   sponsors: Sponsor[],
@@ -46,7 +44,7 @@ const createEvents = async (
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
-      organizers: [user],
+      user_roles: [],
     });
 
     await event.save();

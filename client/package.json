@@ -20,7 +20,7 @@
     "chakra-confirm": "1.0.4",
     "chakra-data-table": "1.1.2",
     "chakra-next-link": "1.0.10",
-    "date-fns": "2.22.1",
+    "date-fns": "2.23.0",
     "framer-motion": "4.1.17",
     "graphql": "15.5.1",
     "next": "10.2.3",

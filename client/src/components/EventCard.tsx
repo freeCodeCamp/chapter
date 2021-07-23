@@ -20,7 +20,7 @@ type EventCardProps = {
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <Card w="full">
+    <Card w="full" data-cy="event card">
       <Flex justify="space-between">
         <Heading size="md" as="h2">
           {event.invite_only && <LockIcon />}{' '}

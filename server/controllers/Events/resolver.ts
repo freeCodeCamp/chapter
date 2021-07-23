@@ -3,7 +3,7 @@ import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import MailerService from 'server/services/MailerService';
 import { GQLCtx } from 'server/ts/gql';
-import { Event, Venue, Chapter, Rsvp } from '../../models';
+import { Event, Venue, Chapter, Rsvp, UserEventRole } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 @Resolver()
@@ -49,7 +49,7 @@ export class EventResolver {
         'venue',
         'rsvps',
         'rsvps.user',
-        'organizers',
+        'user_roles',
       ],
     });
   }
@@ -62,9 +62,8 @@ export class EventResolver {
     if (!ctx.user) {
       throw new Error('You need to be logged in');
     }
-
     const event = await Event.findOne(id, {
-      relations: ['rsvps', 'organizers'],
+      relations: ['rsvps', 'user_roles', 'user_roles.user'],
     });
     if (!event) {
       throw new Error('Event not found');
@@ -121,7 +120,11 @@ To add this event to your calendar(s) you can use these links:
 <a href=${outlook(linkDetails)}>Outlook</a>
       `,
     ).sendEmail();
-    const organizersEmails = event.organizers.map((user) => user.email);
+    // TODO: rather than getting all the roles and filtering them, we should
+    // create a query to get only the relevant roles
+    const organizersEmails = event.user_roles
+      .filter((role) => role.role_name == 'organizer')
+      .map((role) => role.user.email);
     await new MailerService(
       organizersEmails,
       `New RSVP for ${event.name}`,
@@ -188,8 +191,16 @@ To add this event to your calendar(s) you can use these links:
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
-      organizers: [ctx.user],
+      user_roles: [],
     });
+
+    event.user_roles = [
+      new UserEventRole({
+        userId: ctx.user.id,
+        eventId: event.id,
+        roleName: 'organizer',
+      }),
+    ];
 
     return event.save();
   }

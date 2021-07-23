@@ -3,7 +3,8 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:cypress/recommended"
   ],
   "plugins": ["react", "@typescript-eslint", "prettier", "import"],
   "env": {

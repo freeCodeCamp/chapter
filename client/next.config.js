@@ -1,5 +1,6 @@
 module.exports = {
-  future: {
-    webpack5: true,
+  eslint: {
+    // TODO: the client and server need their own eslint configs
+    ignoreDuringBuilds: true,
   },
 };

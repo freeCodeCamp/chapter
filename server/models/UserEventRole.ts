@@ -29,7 +29,7 @@ export class UserEventRole extends BaseModel {
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
-  @Field()
+  @Field(() => String)
   @PrimaryColumn({ type: 'text' })
   role_name!: EventRoles;
 

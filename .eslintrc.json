@@ -2,11 +2,10 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
     "plugin:cypress/recommended"
   ],
-  "plugins": ["react", "@typescript-eslint", "prettier", "import"],
+  "plugins": ["react", "prettier", "import"],
   "env": {
     "browser": true,
     "node": true,
@@ -24,28 +23,38 @@
         "jest": true
       },
       "plugins": ["jest"]
+    },
+    {
+      "files": ["**/*.ts?(x)"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "plugins": ["@typescript-eslint"],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": 0,
+        "@typescript-eslint/camelcase": 0,
+        "@typescript-eslint/explicit-function-return-type": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { "argsIgnorePattern": "^_" }
+        ],
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "interface",
+            "format": ["PascalCase"],
+            "custom": {
+              "regex": "^I[A-Z]",
+              "match": false
+            }
+          }
+        ]
+      }
     }
   ],
   "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": 0,
-    "@typescript-eslint/camelcase": 0,
-    "@typescript-eslint/explicit-function-return-type": 0,
-    "@typescript-eslint/no-explicit-any": 0,
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_" }
-    ],
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          "selector": "interface",
-          "format": ["PascalCase"],
-          "custom": {
-            "regex": "^I[A-Z]",
-            "match": false
-          }
-        }
-      ],
     "prettier/prettier": ["error", { "singleQuote": true }],
     "react/display-name": 0,
     "react/prop-types": 0,
@@ -55,17 +64,14 @@
     "react": {
       "pragma": "React",
       "version": "detect"
-    }, 
+    },
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
     },
     "import/resolver": {
       "typescript": {
-        "alwaysTryTypes": true, 
-        "project": [
-          "client/tsconfig.json",
-          "tsconfig.json"
-        ]
+        "alwaysTryTypes": true,
+        "project": ["client/tsconfig.json", "tsconfig.json"]
       }
     }
   },

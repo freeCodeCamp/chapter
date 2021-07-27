@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventCard should render 1`] = `
+<div>
+  <div
+    class="css-1rtp1va"
+    data-cy="event card"
+  >
+    <div
+      class="css-gg4vpm"
+    >
+      <h2
+        class="chakra-heading css-0"
+      >
+        <svg
+          class="chakra-icon css-onkibi"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19.5,9.5h-.75V6.75a6.75,6.75,0,0,0-13.5,0V9.5H4.5a2,2,0,0,0-2,2V22a2,2,0,0,0,2,2h15a2,2,0,0,0,2-2V11.5A2,2,0,0,0,19.5,9.5Zm-9.5,6a2,2,0,1,1,3,1.723V19.5a1,1,0,0,1-2,0V17.223A1.994,1.994,0,0,1,10,15.5ZM7.75,6.75a4.25,4.25,0,0,1,8.5,0V9a.5.5,0,0,1-.5.5H8.25a.5.5,0,0,1-.5-.5Z"
+            fill="currentColor"
+          />
+        </svg>
+         
+        <a
+          class="chakra-link css-0"
+          href="/events/1"
+        >
+          bar
+        </a>
+      </h2>
+      <div
+        class="chakra-stack css-84zodg"
+      />
+    </div>
+    <h2
+      class="chakra-heading css-0"
+    >
+      Thu, Jan 1 @ 00:00
+    </h2>
+    <a
+      class="chakra-link css-0"
+      href="/chapters/1"
+    >
+      foo
+    </a>
+    <p
+      class="chakra-text css-0"
+    >
+      baz
+    </p>
+  </div>
+</div>
+`;

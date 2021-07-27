@@ -4,6 +4,7 @@ exports[`EventCard should render 1`] = `
 <div>
   <div
     class="css-1rtp1va"
+    data-cy="event card"
   >
     <div
       class="css-gg4vpm"

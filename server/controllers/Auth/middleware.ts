@@ -25,7 +25,7 @@ export const userMiddleware = (
     return next('Token malformed');
   }
 
-  User.findOne({ where: { id: value.id } })
+  User.findOne(value.id, { relations: ['chapter_roles'] })
     .then((user) => {
       if (!user) {
         return next('User not found');

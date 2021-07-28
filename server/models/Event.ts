@@ -6,6 +6,7 @@ import { Chapter } from './Chapter';
 import { Tag } from './Tag';
 import { EventSponsor } from './EventSponsor';
 import { Rsvp } from './Rsvp';
+import { UserEventRole } from './UserEventRole';
 
 export enum VenueType {
   Physical = 'Physical',
@@ -85,6 +86,10 @@ export class Event extends BaseModel {
   @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
+  @Field(() => [UserEventRole])
+  @OneToMany((_type) => UserEventRole, (UserEventRole) => UserEventRole.event)
+  user_roles!: UserEventRole[];
+
   constructor(params: {
     name: string;
     description: string;
@@ -98,6 +103,7 @@ export class Event extends BaseModel {
     venue?: Venue;
     chapter: Chapter;
     invite_only?: boolean;
+    user_roles: UserEventRole[];
   }) {
     super();
     if (params) {
@@ -114,6 +120,7 @@ export class Event extends BaseModel {
         venue,
         chapter,
         invite_only,
+        user_roles,
       } = params;
 
       this.name = name;
@@ -128,6 +135,7 @@ export class Event extends BaseModel {
       this.venue = venue;
       this.chapter = chapter;
       this.invite_only = invite_only || false;
+      this.user_roles = user_roles;
     }
   }
 }

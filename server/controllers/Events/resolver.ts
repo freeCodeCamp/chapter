@@ -1,10 +1,10 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
-import { GQLCtx } from 'server/ts/gql';
-import { Event, Venue, Chapter, Rsvp } from '../../models';
-import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import MailerService from 'server/services/MailerService';
+import { GQLCtx } from 'server/ts/gql';
+import { Event, Venue, Chapter, Rsvp, UserEventRole } from '../../models';
+import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 @Resolver()
 export class EventResolver {
@@ -43,7 +43,14 @@ export class EventResolver {
   @Query(() => Event, { nullable: true })
   event(@Arg('id', () => Int) id: number) {
     return Event.findOne(id, {
-      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
+      relations: [
+        'chapter',
+        'tags',
+        'venue',
+        'rsvps',
+        'rsvps.user',
+        'user_roles',
+      ],
     });
   }
 
@@ -55,8 +62,9 @@ export class EventResolver {
     if (!ctx.user) {
       throw new Error('You need to be logged in');
     }
-
-    const event = await Event.findOne({ where: { id }, relations: ['rsvps'] });
+    const event = await Event.findOne(id, {
+      relations: ['rsvps', 'user_roles', 'user_roles.user'],
+    });
     if (!event) {
       throw new Error('Event not found');
     }
@@ -101,7 +109,7 @@ export class EventResolver {
     };
     if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-    new MailerService(
+    await new MailerService(
       [ctx.user.email],
       `Invitation: ${event.name}`,
       `Hi ${ctx.user.first_name},</br>
@@ -111,6 +119,16 @@ To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${outlook(linkDetails)}>Outlook</a>
       `,
+    ).sendEmail();
+    // TODO: rather than getting all the roles and filtering them, we should
+    // create a query to get only the relevant roles
+    const organizersEmails = event.user_roles
+      .filter((role) => role.role_name == 'organizer')
+      .map((role) => role.user.email);
+    await new MailerService(
+      organizersEmails,
+      `New RSVP for ${event.name}`,
+      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd.`,
     ).sendEmail();
     return rsvp;
   }
@@ -143,7 +161,8 @@ To add this event to your calendar(s) you can use these links:
   }
 
   @Mutation(() => Event)
-  async createEvent(@Arg('data') data: CreateEventInputs) {
+  async createEvent(@Arg('data') data: CreateEventInputs, @Ctx() ctx: GQLCtx) {
+    if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venueId) {
       venue = await Venue.findOne(data.venueId);
@@ -153,13 +172,35 @@ To add this event to your calendar(s) you can use these links:
     const chapter = await Chapter.findOne(data.chapterId);
     if (!chapter) throw new Error('Chapter missing');
 
+    // TODO: add admin and owner once you've figured out how to handle instance
+    // roles
+    const allowedRoles = ['organizer'] as const;
+    const hasPermission =
+      ctx.user.chapter_roles.findIndex(
+        ({ chapter_id, role_name }) =>
+          chapter_id === data.chapterId &&
+          allowedRoles.findIndex((x) => x === role_name) > -1,
+      ) !== -1;
+
+    if (!hasPermission)
+      throw Error('User does not have permission to create events');
+
     const event = new Event({
       ...data,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
+      user_roles: [],
     });
+
+    event.user_roles = [
+      new UserEventRole({
+        userId: ctx.user.id,
+        eventId: event.id,
+        roleName: 'organizer',
+      }),
+    ];
 
     return event.save();
   }

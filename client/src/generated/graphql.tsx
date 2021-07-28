@@ -108,6 +108,7 @@ export type Event = {
   chapter: Chapter;
   rsvps: Array<Rsvp>;
   tags?: Maybe<Array<Tag>>;
+  user_roles: Array<UserEventRole>;
 };
 
 export type EventSponsor = {
@@ -355,6 +356,7 @@ export type User = {
   banned_chapters: Array<UserBan>;
   chapter_roles: Array<UserChapterRole>;
   instance_roles: Array<UserInstanceRole>;
+  event_roles: Array<UserEventRole>;
 };
 
 export type UserBan = {
@@ -377,6 +379,18 @@ export type UserChapterRole = {
   user: User;
   chapter: Chapter;
   interested: Scalars['Boolean'];
+};
+
+export type UserEventRole = {
+  __typename?: 'UserEventRole';
+  id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+  event_id: Scalars['Int'];
+  user: User;
+  event: Event;
+  role_name: Scalars['String'];
 };
 
 export type UserInstanceRole = {

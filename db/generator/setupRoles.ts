@@ -1,12 +1,21 @@
-import { User, Chapter, UserChapterRole, UserBan } from '../../server/models';
+import {
+  User,
+  Chapter,
+  UserChapterRole,
+  UserBan,
+  Event,
+  UserEventRole,
+} from '../../server/models';
 import { makeBooleanIterator } from './lib/util';
 
 const setupRoles = async (
   admin: User,
   users: User[],
   chapters: Chapter[],
+  events: Event[],
 ): Promise<void> => {
   const ucr: (UserChapterRole | UserBan)[] = [];
+  const uer: UserEventRole[] = [];
 
   const chapterIterator = makeBooleanIterator();
   for (const chapter of chapters) {
@@ -38,11 +47,34 @@ const setupRoles = async (
     ucr.push(ban);
   }
 
+  const eventIterator = makeBooleanIterator();
+  for (const event of events) {
+    // makes sure half of each event's users are organisers, but
+    // alternates which half.
+    const organizerIterator = makeBooleanIterator(eventIterator.next().value);
+    for (const user of users) {
+      if (organizerIterator.next().value) {
+        const userEventRole = new UserEventRole({
+          eventId: event.id,
+          userId: user.id,
+          roleName: 'organizer',
+        });
+        uer.push(userEventRole);
+      }
+    }
+  }
+
   try {
     await Promise.all(ucr.map((user) => user.save()));
   } catch (e) {
     console.error(e);
-    throw new Error('Error seeding roles');
+    throw new Error('Error seeding user-chapter-roles');
+  }
+  try {
+    await Promise.all(uer.map((user) => user.save()));
+  } catch (e) {
+    console.error(e);
+    throw new Error('Error seeding user-event-roles');
   }
 };
 

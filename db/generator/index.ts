@@ -21,7 +21,7 @@ import setupRoles from './setupRoles';
   const events = await createEvents(chapters, venues, sponsors);
 
   await createRsvps(events, users);
-  await setupRoles(user, users, chapters);
+  await setupRoles(user, users, chapters, events);
 
   await connection.close();
 })();

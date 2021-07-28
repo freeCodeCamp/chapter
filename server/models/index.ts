@@ -8,4 +8,5 @@ export * from './Tag';
 export * from './User';
 export * from './UserBan';
 export * from './UserChapterRole';
+export * from './UserEventRole';
 export * from './Venue';

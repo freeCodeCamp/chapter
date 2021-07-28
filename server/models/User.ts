@@ -6,6 +6,7 @@ import { UserBan } from './UserBan';
 import { UserChapterRole } from './UserChapterRole';
 import { UserInstanceRole } from './UserInstanceRole';
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
+import { UserEventRole } from './UserEventRole';
 
 @ObjectType()
 @Entity({ name: 'users' })
@@ -54,6 +55,10 @@ export class User extends BaseModel {
     (userInstanceRole) => userInstanceRole.user,
   )
   instance_roles!: UserInstanceRole[];
+
+  @Field(() => [UserEventRole])
+  @OneToMany((_type) => UserEventRole, (UserEventRole) => UserEventRole.user)
+  event_roles!: UserEventRole[];
 
   constructor(params: {
     first_name: string;

@@ -44,6 +44,7 @@ const createEvents = async (
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
+      user_roles: [],
     });
 
     await event.save();

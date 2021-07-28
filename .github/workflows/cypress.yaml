@@ -50,7 +50,7 @@ jobs:
           echo IS_DOCKER= >> .env
 
       - name: Install Dependencies
-        run: npx recursive-install
+        run: npm i
 
       - name: Seed Database
         run: npm run db:reset

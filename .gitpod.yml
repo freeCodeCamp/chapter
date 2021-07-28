@@ -21,7 +21,7 @@ tasks:
       cp .env.example .env &&
       createuser -d postgres &&
       createdb chapter &&
-      npx recursive-install &&
+      npm i &&
       npm run db:reset
     command: npm run both
 github:

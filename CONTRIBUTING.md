@@ -325,7 +325,7 @@ Ensure the Node.js tools are installed:
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
 
-Run `npx recursive-install` to install all of the necessary dependencies.
+Run `npx i` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory

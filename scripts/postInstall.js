@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { existsSync, copyFileSync } = require('fs');
-const { execSync } = require('child_process');
+const { execSync, spawn } = require('child_process');
 const isDocker = require('is-docker');
 
 console.log('--------------------------');
@@ -11,7 +11,21 @@ const CHAPTER_REMOTE = 'freeCodeCamp/chapter.git';
 let IS_ERROR = false;
 
 if (!isDocker()) {
-  setup();
+  const child = spawn('npm', ['i'], { cwd: 'client' });
+  child.on('error', (err) => {
+    console.error(err);
+  });
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', function (data) {
+    console.log(data);
+  });
+  child.on('close', function (code) {
+    if (code === 0) {
+      setup();
+    } else {
+      console.log('Installing client returned error code', code);
+    }
+  });
 }
 
 function setup() {
@@ -54,7 +68,7 @@ function setup() {
 
   if (!IS_ERROR) {
     console.log(
-      '\nCongratulations, its almost done 🙌🏼. Run `npm run dev` to start the development server.',
+      '\nCongratulations, its almost done 🙌🏼. Run `npm run both` to start the development server.',
     );
   }
 }

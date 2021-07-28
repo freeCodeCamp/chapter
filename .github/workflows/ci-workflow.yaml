@@ -18,7 +18,7 @@ jobs:
       - name: Update npm
         run: npm i -g npm@7
       - name: Install dependencies
-        run: npx recursive-install
+        run: npm i
       - name: Run linter
         run: npm run lint
       - name: Type check client

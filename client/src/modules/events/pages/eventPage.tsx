@@ -105,7 +105,7 @@ export const EventPage: NextPage = () => {
         modalProps={modalProps}
       />
 
-      <Heading>
+      <Heading as="h1">
         {data.event.invite_only && <LockIcon />} {data.event.name}
         {data.event.name}
       </Heading>
@@ -137,12 +137,18 @@ export const EventPage: NextPage = () => {
           </Button>
         </HStack>
       ) : (
-        <Button colorScheme="blue" onClick={() => checkOnRsvp(true)}>
+        <Button
+          data-cy="rsvp button"
+          colorScheme="blue"
+          onClick={() => checkOnRsvp(true)}
+        >
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}
 
-      <Heading size="md">RSVPs:</Heading>
+      <Heading data-cy="rsvps heading" size="md">
+        RSVPs:
+      </Heading>
       <List>
         {rsvps.map((rsvp) => (
           <ListItem key={rsvp.id} mb="2">
@@ -156,7 +162,9 @@ export const EventPage: NextPage = () => {
 
       {!data.event.invite_only && (
         <>
-          <Heading size="md">Waitlist:</Heading>
+          <Heading data-cy="waitlist heading" size="md">
+            Waitlist:
+          </Heading>
           <List>
             {waitlist.map((rsvp) => (
               <ListItem key={rsvp.id} mb="2">

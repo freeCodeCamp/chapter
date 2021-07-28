@@ -1,17 +1,19 @@
 import { Event, User, Rsvp } from '../../../server/models';
-import { randomItems } from '../lib/random';
+import { random, randomItems } from '../lib/random';
 import { date } from 'faker';
 
 const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
   const rsvps: Rsvp[] = [];
 
   for (const event of events) {
-    for (const user of randomItems(users, users.length / 2)) {
+    const eventUsers = randomItems(users, users.length / 2);
+    const numberWaiting = 1 + random(eventUsers.length - 1);
+    for (let i = 0; i < eventUsers.length; i++) {
       const rsvp = new Rsvp({
         event,
-        user,
+        user: eventUsers[i],
         date: date.future(),
-        on_waitlist: Math.random() > 0.5,
+        on_waitlist: i < numberWaiting,
         confirmed_at: new Date(),
       });
       rsvps.push(rsvp);

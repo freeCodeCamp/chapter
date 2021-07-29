@@ -106,7 +106,7 @@ export const EventPage: NextPage = () => {
       />
 
       <Heading as="h1">
-        {data.event.invite_only && <LockIcon />} {data.event.name}
+        {data.event.invite_only && <LockIcon />}
         {data.event.name}
       </Heading>
       <Heading size="md">

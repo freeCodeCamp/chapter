@@ -27,7 +27,7 @@ export const ChapterPage: NextPage = () => {
 
   return (
     <VStack>
-      <Heading>{data.chapter.name}</Heading>
+      <Heading as="h1">{data.chapter.name}</Heading>
       <Text>{data.chapter.description}</Text>
 
       <Heading size="md">Events:</Heading>

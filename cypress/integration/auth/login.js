@@ -8,13 +8,15 @@ describe('login', () => {
     });
     cy.register('An', 'User', 'an@user.com');
     cy.wait('@register');
+    cy.mhDeleteAll();
   });
+
   it('should be possible to log in via magic link', () => {
     cy.visit('/auth/login');
 
     cy.get('input[name="email"]').type('an@user.com');
-    cy.mhDeleteAll();
     cy.get('[data-cy="login button"]').click();
+
     cy.contains('We sent you a magic link to your email');
 
     cy.mhGetAllMails().mhFirst().as('login-mail');
@@ -30,7 +32,7 @@ describe('login', () => {
         // when emails encode long strings they split them into multiple lines,
         // so the extra =\r\n need to be removed
         const token = href.match(/token=3D([\s\S]*)/)[1].replace(/=\s\s/g, '');
-        cy.visit(`http://localhost:3000/auth/token?token=${token}`);
+        cy.visit(`/auth/token?token=${token}`);
         cy.contains('Logging you in');
         cy.location('pathname').should('eq', '/');
         cy.get('[data-cy="logout button"]').click();

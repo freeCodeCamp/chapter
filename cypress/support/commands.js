@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import 'cypress-mailhog';
+
 Cypress.Commands.add('register', (firstName, lastName, email) => {
   cy.visit('/auth/register');
 

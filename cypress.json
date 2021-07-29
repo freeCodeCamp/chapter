@@ -1,4 +1,5 @@
 {
   "projectId": "re65q6",
-  "baseUrl": "http://localhost:3000"
+  "baseUrl": "http://localhost:3000",
+  "mailHogUrl": "http://localhost:8025"
 }

@@ -4,7 +4,7 @@ exports[`EventCard should render 1`] = `
 <div>
   <div
     class="css-1rtp1va"
-    data-cy="event card"
+    data-cy="event-card"
   >
     <div
       class="css-gg4vpm"
@@ -25,6 +25,7 @@ exports[`EventCard should render 1`] = `
          
         <a
           class="chakra-link css-0"
+          data-cy="event-link"
           href="/events/1"
         >
           bar
@@ -41,6 +42,7 @@ exports[`EventCard should render 1`] = `
     </h2>
     <a
       class="chakra-link css-0"
+      data-cy="chapter-link"
       href="/chapters/1"
     >
       foo

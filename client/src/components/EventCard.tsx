@@ -19,11 +19,13 @@ type EventCardProps = {
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <Card w="full" data-cy="event card">
+    <Card w="full" data-cy="event-card">
       <Flex justify="space-between">
         <Heading size="md" as="h2">
           {event.invite_only && <LockIcon />}{' '}
-          <Link href={`/events/${event.id}`}>{event.name}</Link>
+          <Link data-cy="event-link" href={`/events/${event.id}`}>
+            {event.name}
+          </Link>
           {event.canceled && (
             <Text as="span" color="red.500" ml="2">
               Canceled
@@ -38,7 +40,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       </Flex>
 
       <Heading size="sm">{formatDate(event.start_at)}</Heading>
-      <Link href={`/chapters/${event.chapter.id}`}>{event.chapter.name}</Link>
+      <Link data-cy="chapter-link" href={`/chapters/${event.chapter.id}`}>
+        {event.chapter.name}
+      </Link>
 
       <Text>{truncate(event.description, 120)}</Text>
     </Card>

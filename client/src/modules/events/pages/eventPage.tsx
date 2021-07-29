@@ -106,7 +106,7 @@ export const EventPage: NextPage = () => {
       />
 
       <Heading as="h1">
-        {data.event.invite_only && <LockIcon />} {data.event.name}
+        {data.event.invite_only && <LockIcon />}
         {data.event.name}
       </Heading>
       <Heading size="md">
@@ -138,7 +138,7 @@ export const EventPage: NextPage = () => {
         </HStack>
       ) : (
         <Button
-          data-cy="rsvp button"
+          data-cy="rsvp-button"
           colorScheme="blue"
           onClick={() => checkOnRsvp(true)}
         >
@@ -146,7 +146,7 @@ export const EventPage: NextPage = () => {
         </Button>
       )}
 
-      <Heading data-cy="rsvps heading" size="md">
+      <Heading data-cy="rsvps-heading" size="md">
         RSVPs:
       </Heading>
       <List>
@@ -162,7 +162,7 @@ export const EventPage: NextPage = () => {
 
       {!data.event.invite_only && (
         <>
-          <Heading data-cy="waitlist heading" size="md">
+          <Heading data-cy="waitlist-heading" size="md">
             Waitlist:
           </Heading>
           <List>

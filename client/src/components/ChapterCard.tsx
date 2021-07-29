@@ -15,10 +15,12 @@ type ChapterCardProps = {
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
-    <Card w="full">
+    <Card w="full" data-cy="chapter-card">
       <VStack align="flex-start">
         <Heading size="md" as="h2">
-          <Link href={`/chapters/${chapter.id}`}>{chapter.name}</Link>
+          <Link data-cy="chapter-link" href={`/chapters/${chapter.id}`}>
+            {chapter.name}
+          </Link>
         </Heading>
         <Text>{truncate(chapter.description, 120)}</Text>
         <Tag>{chapter.category}</Tag>

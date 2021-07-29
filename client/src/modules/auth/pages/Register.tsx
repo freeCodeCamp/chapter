@@ -49,7 +49,7 @@ export const RegisterPage: NextPage = () => {
           <Input {...register('email')} error={errors.email?.message} />
 
           <Button
-            data-cy="submit button"
+            data-cy="submit-button"
             type="submit"
             mr="2"
             colorScheme="blue"

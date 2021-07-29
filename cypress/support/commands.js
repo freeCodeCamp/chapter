@@ -32,5 +32,5 @@ Cypress.Commands.add('register', (firstName, lastName, email) => {
   cy.get('input[name="first_name"]').type(firstName);
   cy.get('input[name="last_name"]').type(lastName);
   cy.get('input[name="email"]').type(email);
-  cy.get('[data-cy="submit button"]').click();
+  cy.get('[data-cy="submit-button"]').click();
 });

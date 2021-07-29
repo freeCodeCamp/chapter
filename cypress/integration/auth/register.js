@@ -20,7 +20,7 @@ describe('registration', () => {
         cy.wrap(response.statusCode).should('eq', 200);
       });
 
-    cy.get('[data-cy="submit button"]').click();
+    cy.get('[data-cy="submit-button"]').click();
 
     cy.wait('@register')
       .its('response')

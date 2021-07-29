@@ -15,7 +15,7 @@ describe('login', () => {
     cy.visit('/auth/login');
 
     cy.get('input[name="email"]').type('an@user.com');
-    cy.get('[data-cy="login button"]').click();
+    cy.get('[data-cy="login-button"]').click();
 
     cy.contains('We sent you a magic link to your email');
 
@@ -35,8 +35,8 @@ describe('login', () => {
         cy.visit(`/auth/token?token=${token}`);
         cy.contains('Logging you in');
         cy.location('pathname').should('eq', '/');
-        cy.get('[data-cy="logout button"]').click();
-        cy.get('[data-cy="logout button"]').should('not.exist');
+        cy.get('[data-cy="logout-button"]').click();
+        cy.get('[data-cy="logout-button"]').should('not.exist');
       });
   });
 });

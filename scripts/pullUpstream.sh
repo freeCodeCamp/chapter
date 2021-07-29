@@ -9,8 +9,8 @@ fi
 
 git fetch upstream
 
-git checkout master
-git reset --hard upstream/master
+git checkout main
+git reset --hard upstream/main
 
 echo ""
 echo "Git remotes have been setup successfully"

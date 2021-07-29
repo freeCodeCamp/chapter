@@ -130,19 +130,19 @@ You are almost ready to make changes to files, but before that you should **alwa
 
     You should get an output like this:
     
-        On branch master
-        Your branch is up-to-date with 'origin/master'.
+        On branch main
+        Your branch is up-to-date with 'origin/main'.
         nothing to commit, working directory clean
 
-    If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout _master_:
+    If you are not on main or your working directory is not clean, resolve any outstanding files/commits and checkout _master_:
 
     ```sh
-    git checkout master
+    git checkout main
     ```
 
 2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things synchronized and avoid "merge conflicts".
 
-    > Note: If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
+    > Note: If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from main.
 
     This step **will sync the latest changes** from the main repository of chapter.
 
@@ -151,19 +151,19 @@ You are almost ready to make changes to files, but before that you should **alwa
     git fetch upstream
     ```
 
-    Hard reset your master branch with the chapter master:
+    Hard reset your main branch with the chapter main:
     ```sh
-    git reset --hard upstream/master
+    git reset --hard upstream/main
     ```
 
-    Push your master branch to your origin to have a clean history on your fork on GitHub:
+    Push your main branch to your origin to have a clean history on your fork on GitHub:
     ```sh
-    git push origin master --force
+    git push origin main --force
     ```
 
-    You can validate if your current master matches the upstream/master or not by performing a diff:
+    You can validate if your current main matches the upstream/main or not by performing a diff:
     ```sh
-    git diff upstream/master
+    git diff upstream/main
     ```
 
     If you don't get any output, you are good to go to the next step.

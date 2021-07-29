@@ -43,7 +43,12 @@ export const LoginPage: NextPage = () => {
 
             <Input {...register('email')} />
 
-            <Button type="submit" mr="2" colorScheme="blue">
+            <Button
+              data-cy="login button"
+              type="submit"
+              mr="2"
+              colorScheme="blue"
+            >
               Login
             </Button>
 

@@ -11,12 +11,7 @@ describe('registration', () => {
       }
     });
 
-    cy.visit('/auth/register');
-
-    cy.get('input[name="first_name"]').type('An');
-    cy.get('input[name="last_name"]').type('User');
-    cy.get('input[name="email"]').type('an@user.com');
-    cy.get('[data-cy="submit button"]').click();
+    cy.register('An', 'User', 'an@user.com');
 
     cy.wait('@register')
       .its('response')

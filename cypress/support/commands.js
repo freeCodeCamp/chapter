@@ -23,3 +23,14 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+import 'cypress-mailhog';
+
+Cypress.Commands.add('register', (firstName, lastName, email) => {
+  cy.visit('/auth/register');
+
+  cy.get('input[name="first_name"]').type(firstName);
+  cy.get('input[name="last_name"]').type(lastName);
+  cy.get('input[name="email"]').type(email);
+  cy.get('[data-cy="submit button"]').click();
+});

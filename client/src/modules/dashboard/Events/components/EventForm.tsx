@@ -49,7 +49,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const inviteOnly = watch('invite_only');
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form
+      aria-label="Create an event"
+      onSubmit={handleSubmit(onSubmit)}
+      className={styles.form}
+    >
       <VStack align="flex-start">
         {fields.map((field) =>
           field.type === 'textarea' ? (

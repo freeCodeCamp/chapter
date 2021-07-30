@@ -78,6 +78,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         )}
 
         <Checkbox
+          data-cy="invite-only-checkbox"
           isChecked={inviteOnly}
           onChange={(e) => setValue('invite_only', e.target.checked)}
         >

@@ -11,8 +11,8 @@ tasks:
   # both .bashrc and nvm settings get wiped when a workspace is restarted, so
   # they need setting here
   - before: |
-      echo 'export IS_DOCKER=""' >> ~/.bashrc &&
-      export IS_DOCKER="" &&
+      echo 'export IS_DOCKER=false' >> ~/.bashrc &&
+      export IS_DOCKER=false &&
       echo NEXT_PUBLIC_APOLLO_SERVER=$(gp url 5000) > client/.env.development.local &&
       nvm install lts/fermium && nvm alias default lts/fermium
     # the rest, environment variables, installation and db setup, get persisted,

@@ -9,7 +9,7 @@ export interface Environment {
   // DB_PASSWORD=foobar123
   // DB_NAME=chapter
   // DB_URL=localhost
-  // IS_DOCKER=
+  // IS_DOCKER=false
 
   // CHAPTER_EMAIL=ourEmail@placeholder.place
   // EMAIL_USERNAME=project.1

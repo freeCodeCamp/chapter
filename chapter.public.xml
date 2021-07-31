@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="chapter" schema="public" type="PostgreSQL - 11.11 (Debian 11.11-1.pgdg90+1)">
+<database name="chapter" schema="public" type="PostgreSQL - 13.3 (Ubuntu 13.3-1.pgdg20.04+1)">
    <sequences>
       <sequence increment="1" name="chapters_id_seq" startValue="1"/>
       <sequence increment="1" name="event_sponsors_id_seq" startValue="1"/>
@@ -10,7 +10,7 @@
       <sequence increment="1" name="tags_id_seq" startValue="1"/>
       <sequence increment="1" name="user_bans_id_seq" startValue="1"/>
       <sequence increment="1" name="user_chapter_roles_id_seq" startValue="1"/>
-      <sequence increment="1" name="user_chapters_id_seq" startValue="1"/>
+      <sequence increment="1" name="user_event_roles_id_seq" startValue="1"/>
       <sequence increment="1" name="users_id_seq" startValue="1"/>
       <sequence increment="1" name="venues_id_seq" startValue="1"/>
    </sequences>
@@ -20,7 +20,6 @@
             <child column="chapter_id" foreignKey="FK_987a4efcef7b92bd79e1071719d" implied="false" onDeleteCascade="false" schema="public" table="events"/>
             <child column="chapter_id" foreignKey="FK_bc062ec92b68995ff3ad5d00cdd" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
             <child column="chapter_id" foreignKey="FK_c4b23ce3d811d599cea97d064fc" implied="false" onDeleteCascade="false" schema="public" table="user_chapter_roles"/>
-            <child column="chapter_id" foreignKey="FK_a88e0c594dfd6492084b9b3f13b" implied="false" onDeleteCascade="false" schema="public" table="user_chapters"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
@@ -59,6 +58,7 @@
             <child column="event_id" foreignKey="FK_8fab88035a7a74536060237b404" implied="false" onDeleteCascade="false" schema="public" table="event_sponsors"/>
             <child column="event_id" foreignKey="FK_04d52fc9fe91004aa1860603ea3" implied="false" onDeleteCascade="false" schema="public" table="rsvps"/>
             <child column="event_id" foreignKey="FK_fd793b86b010970181e155eb750" implied="false" onDeleteCascade="true" schema="public" table="tags"/>
+            <child column="event_id" foreignKey="FK_f098ebd3c390d8e0f1e6ce882c6" implied="false" onDeleteCascade="false" schema="public" table="user_event_roles"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
@@ -77,12 +77,13 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="url" nullable="true" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="video_url" nullable="true" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'Physical'::events_venue_type_enum" digits="0" id="13" name="venue_type" nullable="false" remarks="" size="2147483647" type="events_venue_type_enum" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="14" name="invite_only" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="PK_40731c7151fe4be3116e45ddf73" unique="true">
             <column ascending="true" name="id"/>
          </index>
       </table>
-      <table name="migrations" numRows="24" remarks="" schema="public" type="TABLE">
+      <table name="migrations" numRows="26" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('migrations_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="timestamp" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
@@ -91,7 +92,7 @@
             <column ascending="true" name="id"/>
          </index>
       </table>
-      <table name="rsvps" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="rsvps" numRows="20" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('rsvps_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="1" name="date" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="on_waitlist" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
@@ -105,6 +106,7 @@
          <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="updated_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="interested" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="canceled" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="confirmed_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="PK_5d5dda5a5f9fc2f6ba17eefbf86" unique="true">
             <column ascending="true" name="id"/>
@@ -138,7 +140,7 @@
             <column ascending="true" name="id"/>
          </index>
       </table>
-      <table name="user_bans" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="user_bans" numRows="4" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('user_bans_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_a142c9954b2fd911b3e7ea8c307" implied="false" onDeleteCascade="false" schema="public" table="users"/>
@@ -153,7 +155,7 @@
             <column ascending="true" name="id"/>
          </index>
       </table>
-      <table name="user_chapter_roles" numRows="0" remarks="" schema="public" type="TABLE">
+      <table name="user_chapter_roles" numRows="40" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_dff88cec5f2df9a6e9d9a7af03e" implied="false" onDeleteCascade="false" schema="public" table="users"/>
          </column>
@@ -176,20 +178,26 @@
             <column ascending="true" name="role_name"/>
          </index>
       </table>
-      <table name="user_chapters" numRows="0" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('user_chapters_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="FK_48f715cb79511ccbf947b70d42c" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+      <table name="user_event_roles" numRows="20" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('user_event_roles_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="1" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="2" name="updated_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="FK_bb21cc4b5de8cf9e8476d75b7a7" implied="false" onDeleteCascade="false" schema="public" table="users"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="chapter_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="FK_a88e0c594dfd6492084b9b3f13b" implied="false" onDeleteCascade="false" schema="public" table="chapters"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="event_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="FK_f098ebd3c390d8e0f1e6ce882c6" implied="false" onDeleteCascade="false" schema="public" table="events"/>
          </column>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="5" name="interested" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="role_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
-         <index name="PK_451c90e328a46e8d75f01029c7d" unique="true">
+         <primaryKey column="user_id" sequenceNumberInPK="2"/>
+         <primaryKey column="event_id" sequenceNumberInPK="3"/>
+         <primaryKey column="role_name" sequenceNumberInPK="4"/>
+         <index name="PK_dbacaad72c217a739f93cabb7a9" unique="true">
             <column ascending="true" name="id"/>
+            <column ascending="true" name="user_id"/>
+            <column ascending="true" name="event_id"/>
+            <column ascending="true" name="role_name"/>
          </index>
       </table>
       <table name="user_instance_roles" numRows="0" remarks="" schema="public" type="TABLE">
@@ -204,13 +212,13 @@
             <column ascending="true" name="role_name"/>
          </index>
       </table>
-      <table name="users" numRows="1" remarks="" schema="public" type="TABLE">
+      <table name="users" numRows="11" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('users_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
             <child column="creator_id" foreignKey="FK_60315cd6f39d467818aa7c60505" implied="false" onDeleteCascade="false" schema="public" table="chapters"/>
             <child column="user_id" foreignKey="FK_5ef6c963e9f7d98f6e0f79053a3" implied="false" onDeleteCascade="false" schema="public" table="rsvps"/>
             <child column="user_id" foreignKey="FK_a142c9954b2fd911b3e7ea8c307" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
             <child column="user_id" foreignKey="FK_dff88cec5f2df9a6e9d9a7af03e" implied="false" onDeleteCascade="false" schema="public" table="user_chapter_roles"/>
-            <child column="user_id" foreignKey="FK_48f715cb79511ccbf947b70d42c" implied="false" onDeleteCascade="false" schema="public" table="user_chapters"/>
+            <child column="user_id" foreignKey="FK_bb21cc4b5de8cf9e8476d75b7a7" implied="false" onDeleteCascade="false" schema="public" table="user_event_roles"/>
             <child column="user_id" foreignKey="FK_f6aa9d1d5bffdd18382d18729d0" implied="false" onDeleteCascade="false" schema="public" table="user_instance_roles"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="first_name" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
@@ -221,6 +229,9 @@
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="PK_a3ffb1c0c8416b9fc6f907b7433" unique="true">
             <column ascending="true" name="id"/>
+         </index>
+         <index name="UQ_97672ac88f789774dd47f7c8be3" unique="true">
+            <column ascending="true" name="email"/>
          </index>
       </table>
       <table name="venues" numRows="4" remarks="" schema="public" type="TABLE">

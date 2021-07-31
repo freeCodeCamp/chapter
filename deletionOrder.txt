@@ -1,5 +1,5 @@
 migrations
-user_chapters
+user_event_roles
 user_chapter_roles
 user_bans
 rsvps

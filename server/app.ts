@@ -12,7 +12,7 @@ import { initDB } from './db';
 import { userMiddleware } from 'server/controllers/Auth/middleware';
 
 // Make sure to kill the app if using non docker-compose setup and docker-compose
-if (isDocker() && process.env.IS_DOCKER === '') {
+if (isDocker() && process.env.IS_DOCKER !== 'true') {
   console.error(
     '\n\n\nUSING LOCAL DB BUT RUNNING IN DOCKER WILL CAUSE IT TO USE DOCKER-COMPOSE DB INSTEAD OF LOCAL',
   );

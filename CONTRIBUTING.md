@@ -357,7 +357,7 @@ Ensure the Docker tools are installed:
 * _Docker_ using `docker --version` and it should output something like _Docker version 19.03.13..._
 * _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure _IS_DOCKER=TRUE_ is set in [_.env_](#env-configuration-file).
+Make sure _IS_DOCKER=true_ is set in [_.env_](#env-configuration-file).
 
 Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example.
 > Note: This could take minutes for each line to appear.
@@ -379,7 +379,7 @@ This is a much lighter development footprint than _Docker Mode_, but you will ne
 
 **Prerequisite**: PostgreSQL must exist and be [configured](#database).
 
-Set _IS_DOCKER=_ to blank in [_.env_](#env-configuration-file). 
+Set _IS_DOCKER=false_ in [_.env_](#env-configuration-file). 
 
 Run `npm run both` to start the api-server and client-server:
 

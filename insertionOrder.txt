@@ -9,5 +9,5 @@ event_sponsors
 rsvps
 user_bans
 user_chapter_roles
-user_chapters
+user_event_roles
 migrations

@@ -4,7 +4,7 @@ describe('events dashboard', () => {
   });
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
-    cy.get('a[aria-current="page"]').should('not.exist');
+    cy.get('a[aria-current="page"]').should('have.text', 'Dashboard');
     cy.get('a[href="/dashboard/events"]').click();
     cy.get('a[aria-current="page"]').should('have.text', 'Events');
   });

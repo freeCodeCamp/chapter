@@ -34,3 +34,11 @@ Cypress.Commands.add('register', (firstName, lastName, email) => {
   cy.get('input[name="email"]').type(email);
   cy.get('[data-cy="submit-button"]').click();
 });
+
+Cypress.Commands.add('interceptGQL', (operationName) => {
+  cy.intercept('http://localhost:5000/graphql', (req) => {
+    if (req.body?.operationName?.includes(operationName)) {
+      req.alias = `GQL${operationName}`;
+    }
+  });
+});

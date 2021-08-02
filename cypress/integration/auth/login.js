@@ -1,13 +1,9 @@
 describe('login', () => {
   beforeEach(() => {
     cy.exec('npm run db:reset');
-    cy.intercept('http://localhost:5000/graphql', (req) => {
-      if (req.body?.operationName?.includes('register')) {
-        req.alias = 'register';
-      }
-    });
+    cy.interceptGQL('register');
     cy.register('An', 'User', 'an@user.com');
-    cy.wait('@register');
+    cy.wait('@GQLregister');
     cy.mhDeleteAll();
   });
 

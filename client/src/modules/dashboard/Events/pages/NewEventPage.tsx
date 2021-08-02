@@ -32,6 +32,7 @@ export const NewEventPage: NextPage = () => {
       const eventData = {
         ...data,
         capacity: parseInt(String(data.capacity)),
+        venueId: parseInt(String(data.venueId)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
         ...HARD_CODE,

@@ -49,7 +49,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const inviteOnly = watch('invite_only');
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form
+      aria-label="Create an event"
+      onSubmit={handleSubmit(onSubmit)}
+      className={styles.form}
+    >
       <VStack align="flex-start">
         {fields.map((field) =>
           field.type === 'textarea' ? (
@@ -74,6 +78,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         )}
 
         <Checkbox
+          data-cy="invite-only-checkbox"
           isChecked={inviteOnly}
           onChange={(e) => setValue('invite_only', e.target.checked)}
         >

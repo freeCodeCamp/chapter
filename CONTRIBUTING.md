@@ -122,7 +122,7 @@ If you want to proceed immeditely with running the client, database, and server,
 
 You are almost ready to make changes to files, but before that you should **always** follow these steps:
 
-1. Validate that you are on the _master_ branch
+1. Validate that you are on the _main_ branch
 
     ```sh
     git status
@@ -130,19 +130,19 @@ You are almost ready to make changes to files, but before that you should **alwa
 
     You should get an output like this:
     
-        On branch master
-        Your branch is up-to-date with 'origin/master'.
+        On branch main
+        Your branch is up-to-date with 'origin/main'.
         nothing to commit, working directory clean
 
-    If you are not on master or your working directory is not clean, resolve any outstanding files/commits and checkout _master_:
+    If you are not on main or your working directory is not clean, resolve any outstanding files/commits and checkout _main_:
 
     ```sh
-    git checkout master
+    git checkout main
     ```
 
-2. Sync the latest changes from the upstream **Chapter** _master_ branch to your local fork's _master_ branch. This is very important to keep things synchronized and avoid "merge conflicts".
+2. Sync the latest changes from the upstream **Chapter** _main_ branch to your local fork's _main_ branch. This is very important to keep things synchronized and avoid "merge conflicts".
 
-    > Note: If you have any outstanding Pull Request that you made from the _master_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from master.
+    > Note: If you have any outstanding Pull Request that you made from the _main_ branch of your fork, you will lose them at the end of this step. You should ensure your pull request is merged by a moderator before performing this step. To avoid this scenario, you should *always* work on a branch separate from main.
 
     This step **will sync the latest changes** from the main repository of chapter.
 
@@ -151,28 +151,28 @@ You are almost ready to make changes to files, but before that you should **alwa
     git fetch upstream
     ```
 
-    Hard reset your master branch with the chapter master:
+    Hard reset your main branch with the chapter main:
     ```sh
-    git reset --hard upstream/master
+    git reset --hard upstream/main
     ```
 
-    Push your master branch to your origin to have a clean history on your fork on GitHub:
+    Push your main branch to your origin to have a clean history on your fork on GitHub:
     ```sh
-    git push origin master --force
+    git push origin main --force
     ```
 
-    You can validate if your current master matches the upstream/master or not by performing a diff:
+    You can validate if your current main matches the upstream/main or not by performing a diff:
     ```sh
-    git diff upstream/master
+    git diff upstream/main
     ```
 
     If you don't get any output, you are good to go to the next step.
 
 3. Create a fresh new branch
 
-    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the _master_ branch. This will soil your copy of **_Chapter_** and you may have to start over with a fresh clone or fork.
+    Working on a separate branch for each issue helps you keep your local work copy clean. You should never work on the _main_ branch. This will soil your copy of **_Chapter_** and you may have to start over with a fresh clone or fork.
 
-    Check that you are on _master_ as explained previously, and branch off from there by typing:
+    Check that you are on _main_ as explained previously, and branch off from there by typing:
     ```sh
     git checkout -b fix/update-readme
     ```
@@ -292,11 +292,11 @@ An example is _feat(client): night mode_.
 
     ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, _master_ branch.
+2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
 
     ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
-3. Submit the pull request from your branch to **_Chapter's_** _master_ branch.
+3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
 
 4. In the body of your PR include a more detailed summary of the changes you made and why.
 

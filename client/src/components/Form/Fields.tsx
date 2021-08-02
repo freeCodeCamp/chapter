@@ -31,6 +31,7 @@ export const Field: React.FC<BaseProps<any>> = ({
       render={({ field }) => (
         <TextField
           {...field}
+          id={name}
           name={name}
           type={type}
           label={label}

@@ -50,7 +50,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   return (
     <form
-      aria-label="Create an event"
+      aria-label={submitText}
       onSubmit={handleSubmit(onSubmit)}
       className={styles.form}
     >

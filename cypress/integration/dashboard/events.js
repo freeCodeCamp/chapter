@@ -55,7 +55,7 @@ describe('events dashboard', () => {
       .invoke('text')
       .as('venueTitle');
 
-    cy.findByRole('form', { name: 'Create an event' }).submit();
+    cy.findByRole('form', { name: 'Add event' }).submit();
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(fix)).each(([key, value]) => {

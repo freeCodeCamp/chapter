@@ -27,7 +27,7 @@
 import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
-Cypress.Commands.add('register', (firstName, lastName, email) => {
+Cypress.Commands.add('registerViaUI', (firstName, lastName, email) => {
   cy.visit('/auth/register');
 
   cy.get('input[name="first_name"]').type(firstName);
@@ -50,6 +50,25 @@ Cypress.Commands.add('login', () => {
         response.body.data.authenticate.token,
       );
     });
+});
+
+Cypress.Commands.add('register', (firstName, lastName, email) => {
+  const user = {
+    operationName: 'register',
+    variables: {
+      first_name: firstName ?? 'Test',
+      last_name: lastName ?? 'User',
+      email: email ?? 'test@user.org',
+    },
+    query:
+      'mutation register($email: String!, $first_name: String!, $last_name: String!) {\n  register(data: {email: $email, first_name: $first_name, last_name: $last_name}) {\n    id\n    __typename\n  }\n}\n',
+  };
+
+  cy.request('POST', 'http://localhost:5000/graphql', user).then((response) => {
+    expect(response.body.data.register).to.have.property('id');
+    expect(response.body.data.register).to.have.property('__typename', 'User');
+    expect(response.status).to.eq(200);
+  });
 });
 
 Cypress.Commands.add('interceptGQL', (operationName) => {

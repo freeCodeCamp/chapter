@@ -7,7 +7,7 @@ describe('registration', () => {
   it('should be possible to register, but only once', () => {
     cy.interceptGQL('register');
 
-    cy.register('An', 'User', 'an@user.com');
+    cy.registerViaUI('An', 'User', 'an@user.com');
 
     cy.wait('@GQLregister')
       .its('response')

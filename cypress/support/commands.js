@@ -36,20 +36,34 @@ Cypress.Commands.add('registerViaUI', (firstName, lastName, email) => {
   cy.get('[data-cy="submit-button"]').click();
 });
 
-Cypress.Commands.add('login', () => {
-  cy.interceptGQL('authenticate');
-  cy.visit(`http://localhost:3000/auth/token?token=${Cypress.env('JWT')}`);
-  cy.wait('@GQLauthenticate')
-    .its('response')
-    .then((response) => {
-      cy.wrap(response.body.data.authenticate).should('have.property', 'token');
-      cy.wrap(response.statusCode).should('eq', 200);
+Cypress.Commands.add('login', (token) => {
+  const authData = {
+    operationName: 'authenticate',
+    variables: {
+      token: token ?? Cypress.env('JWT'),
+    },
+    query: `mutation authenticate($token: String!) {
+        authenticate(token: $token) {
+          token
+          user {
+            id
+            first_name
+            last_name
+          }
+        }
+      }`,
+  };
+  cy.request('POST', 'http://localhost:5000/graphql', authData).then(
+    (response) => {
+      expect(response.body.data.authenticate).to.have.property('token');
       // TODO: change this to set a cookie when Token.tsx is updated.
       window.localStorage.setItem(
         'token',
         response.body.data.authenticate.token,
       );
-    });
+      expect(response.status).to.eq(200);
+    },
+  );
 });
 
 Cypress.Commands.add('register', (firstName, lastName, email) => {

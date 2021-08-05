@@ -1,9 +1,7 @@
 describe('login', () => {
   beforeEach(() => {
     cy.exec('npm run db:reset');
-    cy.interceptGQL('register');
     cy.register('An', 'User', 'an@user.com');
-    cy.wait('@GQLregister');
     cy.mhDeleteAll();
   });
 

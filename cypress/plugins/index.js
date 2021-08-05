@@ -30,5 +30,12 @@ module.exports = (on, config) => {
   config.env.JWT = jwt.sign({ email: 'foo@bar.com' }, process.env.JWT_SECRET, {
     expiresIn: '120min',
   });
+  config.env.JWT_TEST_USER = jwt.sign(
+    { email: 'test@user.org' },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '120min',
+    },
+  );
   return config;
 };

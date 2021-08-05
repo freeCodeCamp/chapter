@@ -5,15 +5,11 @@ describe('registration', () => {
     cy.exec('npm run db:reset');
   });
   it('should be possible to register, but only once', () => {
-    cy.intercept('http://localhost:5000/graphql', (req) => {
-      if (req.body?.operationName?.includes('register')) {
-        req.alias = 'register';
-      }
-    });
+    cy.interceptGQL('register');
 
-    cy.register('An', 'User', 'an@user.com');
+    cy.registerViaUI('An', 'User', 'an@user.com');
 
-    cy.wait('@register')
+    cy.wait('@GQLregister')
       .its('response')
       .then((response) => {
         cy.wrap(response.body.data).should('have.property', 'register');
@@ -22,7 +18,7 @@ describe('registration', () => {
 
     cy.get('[data-cy="submit-button"]').click();
 
-    cy.wait('@register')
+    cy.wait('@GQLregister')
       .its('response')
       .then((response) => {
         cy.wrap(response.body.data).should('eq', null);

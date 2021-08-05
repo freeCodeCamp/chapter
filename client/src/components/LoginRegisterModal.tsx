@@ -3,7 +3,6 @@ import { useApolloClient } from '@apollo/client';
 import {
   Button,
   Text,
-  Link,
   useBoolean,
   UseDisclosureReturn,
   VStack,
@@ -114,9 +113,9 @@ export const LoginRegisterModal: React.FC<{
             <Text fontSize="md">
               {isRegister ? 'Already a user?' : "Don't have an account?"}
 
-              <Link ml="1" fontSize="md" onClick={toggle}>
+              <Button ml="1" fontSize="md" onClick={toggle}>
                 {isRegister ? 'Login' : 'Register'}
-              </Link>
+              </Button>
             </Text>
           </>
         )}

@@ -1,4 +1,4 @@
 module.exports = {
-  ...require('../../.prettierrc'),
+  ...require('../../../.prettierrc'),
   printWidth: 10000,
 };

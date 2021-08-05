@@ -1,5 +1,5 @@
 import { company, internet, system } from 'faker';
-import { Sponsor } from '../../../server/models';
+import { Sponsor } from '../../../models';
 import { randomEnum } from '../lib/random';
 
 enum SponsorTypes {

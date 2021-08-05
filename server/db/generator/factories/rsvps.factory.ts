@@ -1,4 +1,4 @@
-import { Event, User, Rsvp } from '../../../server/models';
+import { Event, User, Rsvp } from '../../../models';
 import { random, randomItems } from '../lib/random';
 import { date } from 'faker';
 

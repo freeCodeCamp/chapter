@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 
 // Simple way to access docker DB
 const dbConfig = {
@@ -16,12 +16,12 @@ module.exports = {
   ...dbConfig,
   synchronize: false,
   logging: false,
-  entities: ['server/models/**/*.ts'],
-  migrations: ['server/db/migrations/**/*.ts'],
+  entities: ['models/**/*.ts'],
+  migrations: ['db/migrations/**/*.ts'],
   subscribers: ['src/subscriber/**/*.ts'],
   cli: {
-    entitiesDir: 'server/models',
-    migrationsDir: 'server/db/migrations',
+    entitiesDir: 'models',
+    migrationsDir: 'db/migrations',
     subscribersDir: 'server/subscriber',
   },
 };

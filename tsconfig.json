@@ -7,7 +7,6 @@
     "baseUrl": ".",
     "paths": {
       "server/*": ["./server/*"],
-      "db/*": ["./db/*"],
       "types/*": ["./types/*"]
     },
     "module": "commonjs",
@@ -33,6 +32,6 @@
     "types": ["jest", "node"],
     "typeRoots": ["./server/ts/index.d.ts", "./node_modules/@types"]
   },
-  "include": ["server", "db"],
+  "include": ["server"],
   "exclude": ["node_modules"]
 }

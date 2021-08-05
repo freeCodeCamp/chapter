@@ -5,7 +5,7 @@ import {
   UserBan,
   Event,
   UserEventRole,
-} from '../../server/models';
+} from '../../models';
 import { makeBooleanIterator } from './lib/util';
 
 const setupRoles = async (

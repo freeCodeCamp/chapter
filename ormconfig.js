@@ -17,11 +17,11 @@ module.exports = {
   synchronize: false,
   logging: false,
   entities: ['server/models/**/*.ts'],
-  migrations: ['db/migrations/**/*.ts'],
+  migrations: ['server/db/migrations/**/*.ts'],
   subscribers: ['src/subscriber/**/*.ts'],
   cli: {
     entitiesDir: 'server/models',
-    migrationsDir: 'db/migrations',
+    migrationsDir: 'server/db/migrations',
     subscribersDir: 'server/subscriber',
   },
 };

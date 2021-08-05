@@ -3,7 +3,6 @@ import { useApolloClient } from '@apollo/client';
 import {
   Button,
   Text,
-  Link,
   useBoolean,
   UseDisclosureReturn,
   VStack,

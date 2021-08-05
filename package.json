@@ -7,14 +7,13 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register --no-notify ./server/app.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
-    "db:generate": "npm run typeorm migration:generate -- -n",
-    "db:drop": "npm run typeorm schema:drop",
-    "db:seed": "ts-node -r tsconfig-paths/register ./server/db/generator/index.ts",
-    "db:migrate": "npm run typeorm migration:run",
-    "db:reset": "npm run db:drop && npm run db:migrate && npm run db:seed",
-    "both": "concurrently \"npm run dev\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
+    "dev:server": "cd server && npm run dev",
+    "db:generate": "cd server && npm run db:generate",
+    "db:drop": "cd server && npm run db:drop",
+    "db:seed": "cd server && npm run db:seed",
+    "db:migrate": "cd server && npm run db:migrate",
+    "db:reset": "cd server && npm run db:reset",
+    "both": "concurrently \"npm run dev:server\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
     "build:client": "cd client && npm run build",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:server": "ts-node -r tsconfig-paths/register ./server/production.ts",
@@ -76,7 +75,6 @@
     "ts-node": "10.1.0",
     "tsconfig-paths": "3.10.1",
     "type-graphql": "1.1.1",
-    "typeorm": "0.2.35",
     "typescript": "4.3.5"
   },
   "devDependencies": {

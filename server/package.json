@@ -1,0 +1,33 @@
+{
+  "name": "chapter-server",
+  "version": "0.0.1",
+  "description": "A self-hosted event management tool for nonprofits",
+  "main": "index.js",
+  "scripts": {
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
+    "dev": "ts-node-dev -r tsconfig-paths/register --no-notify ./app.ts",
+    "db:generate": "npm run typeorm migration:generate -- -n",
+    "db:drop": "npm run typeorm schema:drop",
+    "db:seed": "ts-node -r tsconfig-paths/register ./db/generator/index.ts",
+    "db:migrate": "npm run typeorm migration:run",
+    "db:reset": "npm run db:drop && npm run db:migrate && npm run db:seed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freeCodeCamp/chapter.git"
+  },
+  "keywords": [
+    "chapter",
+    "meetup",
+    "open-source"
+  ],
+  "author": "author@chapter.io",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/freeCodeCamp/chapter/issues"
+  },
+  "homepage": "https://github.com/freeCodeCamp/chapter#readme",
+  "dependencies": {
+    "typeorm": "^0.2.36"
+  }
+}

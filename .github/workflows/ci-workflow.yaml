@@ -24,7 +24,7 @@ jobs:
       - name: Type check client
         run: cd client && npx tsc
       - name: Type check server
-        run: npx tsc
+        run: cd server && npx tsc
       - name: Build client 
         run: npm run build:client
       - name: Run local tests

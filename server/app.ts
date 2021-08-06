@@ -6,10 +6,10 @@ import { buildSchema } from 'type-graphql';
 import { Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 
-import { resolvers } from './controllers';
+import { resolvers } from 'src/controllers';
 import { GQLCtx, Request } from './ts/gql';
 import { initDB } from './db';
-import { userMiddleware } from 'controllers/Auth/middleware';
+import { userMiddleware } from 'src/controllers/Auth/middleware';
 
 // Make sure to kill the app if using non docker-compose setup and docker-compose
 if (isDocker() && process.env.IS_DOCKER !== 'true') {

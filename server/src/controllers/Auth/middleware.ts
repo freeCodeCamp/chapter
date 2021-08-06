@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { getConfig } from 'src/config';
 import { User } from 'models';
-import { Request } from '../../ts/gql';
+import { Request } from 'ts/gql';
 
 export const userMiddleware = (
   req: Request,

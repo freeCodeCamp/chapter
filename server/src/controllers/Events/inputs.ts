@@ -1,5 +1,5 @@
 import { InputType, Field, Int } from 'type-graphql';
-import { VenueType } from '../../models';
+import { VenueType } from 'models';
 
 @InputType()
 export class CreateEventInputs {

@@ -1,5 +1,5 @@
 import { buildSchema } from 'type-graphql';
-import { resolvers } from '../controllers';
+import { resolvers } from 'src/controllers';
 
 export const createSchema = () =>
   buildSchema({

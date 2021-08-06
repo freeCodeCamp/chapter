@@ -1,6 +1,6 @@
 FROM node:14-alpine
 
-WORKDIR /usr/chapter/
+WORKDIR /usr/chapter/server
 
 # Bundle app source
 COPY . .

@@ -11,9 +11,9 @@ services:
   app:
     depends_on:
       - db
-    build: .
+    build: ./server
     command: npm run dev
-    working_dir: /usr/chapter
+    working_dir: /usr/chapter/server
     environment:
       - DB_URL=db
       - EMAIL_HOST=mailhog

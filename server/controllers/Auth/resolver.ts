@@ -8,7 +8,7 @@ import {
   LoginType,
   RegisterInput,
 } from './inputs';
-import { getConfig, isDev } from 'config';
+import { getConfig, isDev } from 'src/config';
 import { authTokenService } from 'services/AuthToken';
 import { GQLCtx } from 'ts/gql';
 import MailerService from 'services/MailerService';

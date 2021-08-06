@@ -37,7 +37,3 @@ jobs:
         env:
           IS_DOCKER: true
         run: npm run db:reset
-      - name: Run Docker tests
-        run: docker-compose exec -T app npm run test
-        env:
-          IS_DOCKER: true

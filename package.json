@@ -16,7 +16,7 @@
     "both": "concurrently \"npm run dev:server\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
     "build:client": "cd client && npm run build",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
-    "start:server": "ts-node -r tsconfig-paths/register ./server/production.ts",
+    "start:server": "cd server && npm start",
     "start:client": "cd client && npm start",
     "production": "npm run build:client && npm start",
     "cypress:open": "cypress open",
@@ -92,8 +92,7 @@
     "sinon": "11.1.2",
     "sinon-chai": "3.7.0",
     "supertest": "6.1.4",
-    "ts-jest": "27.0.4",
-    "ts-node-dev": "1.1.8"
+    "ts-jest": "27.0.4"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

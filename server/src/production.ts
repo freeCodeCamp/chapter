@@ -2,7 +2,7 @@ import express from 'express';
 import next from 'next';
 import { join } from 'path';
 
-import { main } from './app';
+import { main } from 'src/app';
 
 const PORT = parseInt(process.env.PORT || '', 10) || 5000;
 const app = next({ dev: false, dir: join(__dirname, '../client') });

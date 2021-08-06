@@ -7,7 +7,7 @@ import { Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 
 import { resolvers } from 'src/controllers';
-import { GQLCtx, Request } from './ts/gql';
+import { GQLCtx, Request } from 'ts/gql';
 import { initDB } from './db';
 import { userMiddleware } from 'src/controllers/Auth/middleware';
 

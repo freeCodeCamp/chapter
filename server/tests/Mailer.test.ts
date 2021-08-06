@@ -4,7 +4,7 @@ import chai from 'chai';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import Utilities from 'util/Utilities';
+import Utilities from 'src/util/Utilities';
 
 chai.use(sinonChai);
 

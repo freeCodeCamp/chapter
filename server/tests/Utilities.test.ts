@@ -1,4 +1,4 @@
-import Utilities from '../util/Utilities';
+import Utilities from 'src/util/Utilities';
 import assert from 'assert';
 
 describe('Utilities Class', () => {

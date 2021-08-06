@@ -11,7 +11,12 @@ const CHAPTER_REMOTE = 'freeCodeCamp/chapter.git';
 let IS_ERROR = false;
 
 if (!isDocker()) {
-  const child = spawn('npm', ['i'], { cwd: 'client' });
+  install('client', () => install('server', setup));
+}
+
+function install(package, cb) {
+  console.log(`Installing ${package}...`);
+  const child = spawn('npm', ['i'], { cwd: package });
   child.on('error', (err) => {
     console.error(err);
   });
@@ -21,9 +26,9 @@ if (!isDocker()) {
   });
   child.on('close', function (code) {
     if (code === 0) {
-      setup();
+      cb();
     } else {
-      console.log('Installing client returned error code', code);
+      console.log(`Installing ${package} returned error code`, code);
     }
   });
 }

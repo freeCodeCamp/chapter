@@ -1,7 +1,7 @@
 import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 import { verify, sign } from 'jsonwebtoken';
 
-import { User } from 'models';
+import { User } from 'src/models';
 import {
   AuthenticateType,
   LoginInput,

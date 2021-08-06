@@ -3,7 +3,7 @@ import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import MailerService from 'src/services/MailerService';
 import { GQLCtx } from 'ts/gql';
-import { Event, Venue, Chapter, Rsvp, UserEventRole } from 'models';
+import { Event, Venue, Chapter, Rsvp, UserEventRole } from 'src/models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 @Resolver()

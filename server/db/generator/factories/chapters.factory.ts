@@ -1,5 +1,5 @@
 import { company, lorem, address } from 'faker';
-import { Chapter, User } from '../../../models';
+import { Chapter, User } from 'src/models';
 
 const createChapters = async (user: User): Promise<Chapter[]> => {
   const chapters: Chapter[] = [];

@@ -3,7 +3,7 @@ import getPort from 'get-port';
 import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
-import { User } from 'models';
+import { User } from 'src/models';
 import { Request } from 'ts/gql';
 
 type InitProps = {

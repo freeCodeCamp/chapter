@@ -1,5 +1,5 @@
 import { company, address } from 'faker';
-import { Venue } from '../../../models';
+import { Venue } from 'src/models';
 
 const createVenues = async (): Promise<Venue[]> => {
   const venues: Venue[] = [];

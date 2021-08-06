@@ -3,7 +3,7 @@ import { VenueResolver } from './Venue/resolver';
 import { EventResolver } from './Events/resolver';
 import { EmailResolver } from './Messages/resolver';
 import { AuthResolver } from 'src/controllers/Auth/resolver';
-import { UserResolver } from 'models';
+import { UserResolver } from 'src/models';
 
 const resolvers = [
   ChapterResolver,

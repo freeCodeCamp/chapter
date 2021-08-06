@@ -1,5 +1,5 @@
 import { Request as ExpressRequest, Response } from 'express';
-import { User } from '../models/User';
+import { User } from 'src/models/User';
 
 export interface GQLCtx {
   user?: User;

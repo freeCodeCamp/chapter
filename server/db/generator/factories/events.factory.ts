@@ -8,7 +8,7 @@ import {
   Tag,
   Venue,
   VenueType,
-} from '../../../models';
+} from 'src/models';
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
 
 const createEvents = async (

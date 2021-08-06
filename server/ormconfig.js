@@ -22,6 +22,6 @@ module.exports = {
   cli: {
     entitiesDir: 'models',
     migrationsDir: 'db/migrations',
-    subscribersDir: 'server/subscriber',
+    subscribersDir: 'subscriber',
   },
 };

@@ -3,8 +3,8 @@ import getPort from 'get-port';
 import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
-import { User } from 'server/models';
-import { Request } from 'server/ts/gql';
+import { User } from 'models';
+import { Request } from 'ts/gql';
 
 type InitProps = {
   withRouter?: express.Router;

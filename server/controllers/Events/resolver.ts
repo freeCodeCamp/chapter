@@ -1,8 +1,8 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
-import MailerService from 'server/services/MailerService';
-import { GQLCtx } from 'server/ts/gql';
+import MailerService from 'services/MailerService';
+import { GQLCtx } from 'ts/gql';
 import { Event, Venue, Chapter, Rsvp, UserEventRole } from '../../models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 

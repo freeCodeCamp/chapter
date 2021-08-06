@@ -9,7 +9,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { resolvers } from './controllers';
 import { GQLCtx, Request } from './ts/gql';
 import { initDB } from './db';
-import { userMiddleware } from 'server/controllers/Auth/middleware';
+import { userMiddleware } from 'controllers/Auth/middleware';
 
 // Make sure to kill the app if using non docker-compose setup and docker-compose
 if (isDocker() && process.env.IS_DOCKER !== 'true') {

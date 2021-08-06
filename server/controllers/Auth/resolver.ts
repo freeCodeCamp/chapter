@@ -8,10 +8,10 @@ import {
   LoginType,
   RegisterInput,
 } from './inputs';
-import { getConfig, isDev } from 'server/config';
-import { authTokenService } from 'server/services/AuthToken';
-import { GQLCtx } from 'server/ts/gql';
-import MailerService from 'server/services/MailerService';
+import { getConfig, isDev } from 'config';
+import { authTokenService } from 'services/AuthToken';
+import { GQLCtx } from 'ts/gql';
+import MailerService from 'services/MailerService';
 
 type TokenResponseType = {
   email: string;

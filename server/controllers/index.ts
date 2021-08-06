@@ -2,8 +2,8 @@ import { ChapterResolver } from './Chapter/resolver';
 import { VenueResolver } from './Venue/resolver';
 import { EventResolver } from './Events/resolver';
 import { EmailResolver } from './Messages/resolver';
-import { AuthResolver } from 'server/controllers/Auth/resolver';
-import { UserResolver } from 'server/models';
+import { AuthResolver } from 'controllers/Auth/resolver';
+import { UserResolver } from 'models';
 
 const resolvers = [
   ChapterResolver,

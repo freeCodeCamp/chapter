@@ -71,7 +71,7 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": ["client/tsconfig.json", "tsconfig.json"]
+        "project": ["client/tsconfig.json", "server/tsconfig.json"]
       }
     }
   },

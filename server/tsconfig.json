@@ -4,11 +4,7 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
-    "baseUrl": ".",
-    "paths": {
-      "server/*": ["./server/*"],
-      "types/*": ["./types/*"]
-    },
+    "baseUrl": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,
@@ -30,8 +26,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "types": ["jest", "node"],
-    "typeRoots": ["./server/ts/index.d.ts", "./node_modules/@types"]
+    "typeRoots": ["./ts/index.d.ts", "./node_modules/@types"]
   },
-  "include": ["server"],
   "exclude": ["node_modules"]
 }

@@ -1,4 +1,4 @@
-import MailerService from '../services/MailerService';
+import MailerService from 'src/services/MailerService';
 import assert from 'assert';
 import chai from 'chai';
 import { expect } from 'chai';

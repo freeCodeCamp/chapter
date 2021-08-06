@@ -9,9 +9,9 @@ import {
   RegisterInput,
 } from './inputs';
 import { getConfig, isDev } from 'src/config';
-import { authTokenService } from 'services/AuthToken';
+import { authTokenService } from 'src/services/AuthToken';
 import { GQLCtx } from 'ts/gql';
-import MailerService from 'services/MailerService';
+import MailerService from 'src/services/MailerService';
 
 type TokenResponseType = {
   email: string;

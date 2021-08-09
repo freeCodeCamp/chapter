@@ -1,0 +1,55 @@
+name: Cypress
+on:
+  push:
+    branches-ignore:
+      - 'renovate/**'
+  pull_request:
+
+jobs:
+  cypress-run:
+    name: Test Docker
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        browsers: [chrome, firefox]
+        node-version: [14.x]
+    steps:
+      - name: Set Action Environment Variables
+        run: |
+          echo "CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}" >> $GITHUB_ENV
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Checkout Source Files
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Update npm
+        run: npm i -g npm@latest
+
+      - name: Set Chapter Environment Variables
+        run: |
+          cp .env.example .env
+
+      - name: Install Dependencies
+        run: npm i
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
+          build: docker-compose build
+          start: docker-compose up -d
+          wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
+          config: baseUrl=http://localhost:3000
+          browser: ${{ matrix.browsers }}
+
+      - name: Check running containers
+        run: docker ps -a
+      - name: Check logs
+        run: |
+          docker logs chapter_app_1
+          docker logs chapter_client_1

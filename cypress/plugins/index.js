@@ -16,6 +16,7 @@
  * @type {Cypress.PluginConfig}
  */
 
+const { execSync } = require('child_process');
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
@@ -37,5 +38,12 @@ module.exports = (on, config) => {
       expiresIn: '120min',
     },
   );
+
+  // This makes sure the db is populated before running any tests. Without this,
+  // it's difficult (when running docker-compose up) to guarantee that both the
+  // docker container is running and that the db has been seeded.
+  on('before:run', () => {
+    execSync('npm run db:reset');
+  });
   return config;
 };

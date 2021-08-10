@@ -9,6 +9,7 @@ services:
     ports:
       - "54320:5432"
   app:
+    env_file: .env
     depends_on:
       - db
     build: ./server
@@ -18,7 +19,7 @@ services:
       - DB_URL=db
       - EMAIL_HOST=mailhog
     volumes:
-      - .:/usr/chapter
+      - ./server:/usr/chapter/server
     ports:
       - "5000:5000"
   client:

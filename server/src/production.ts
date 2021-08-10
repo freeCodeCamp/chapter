@@ -5,7 +5,7 @@ import { join } from 'path';
 import { main } from 'src/app';
 
 const PORT = parseInt(process.env.PORT || '', 10) || 5000;
-const app = next({ dev: false, dir: join(__dirname, '../client') });
+const app = next({ dev: false, dir: join(__dirname, '../../client') });
 const handle = app.getRequestHandler();
 
 (async () => {

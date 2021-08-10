@@ -4,8 +4,9 @@
   "description": "A self-hosted event management tool for nonprofits",
   "main": "index.js",
   "scripts": {
+    "prepare": "rimraf tsconfig.tsbuildinfo && ttsc",
     "start": "node ./src/production.js",
-    "dev": "concurrently \"ttsc --incremental --watch\" \"node-dev --notify=false src/app.js\"",
+    "dev": "concurrently \"ttsc --watch\" \"node-dev --notify=false src/app.js\"",
     "db:generate": "typeorm migration:generate -- -n",
     "db:drop": "typeorm schema:drop",
     "db:seed": "node ./db/generator/index.js",
@@ -60,6 +61,7 @@
     "@types/jest": "^26.0.24",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "node-dev": "^7.0.0",
+    "rimraf": "^3.0.2",
     "ttypescript": "^1.5.12",
     "typescript": "^4.3.5"
   }

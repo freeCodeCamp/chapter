@@ -16,12 +16,12 @@ module.exports = {
   ...dbConfig,
   synchronize: false,
   logging: false,
-  entities: ['models/**/*.ts'],
-  migrations: ['db/migrations/**/*.ts'],
-  subscribers: ['src/subscriber/**/*.ts'],
+  entities: ['src/models/**/*.js'],
+  migrations: ['db/migrations/**/*.js'],
+  subscribers: ['src/subscriber/**/*.js'],
   cli: {
-    entitiesDir: 'models',
+    entitiesDir: 'src/models',
     migrationsDir: 'db/migrations',
-    subscribersDir: 'subscriber',
+    subscribersDir: 'src/subscriber',
   },
 };

@@ -88,11 +88,13 @@
     "jest": "27.0.6",
     "jsonwebtoken": "^8.5.1",
     "lint-staged": "11.1.2",
+    "node-dev": "^7.0.0",
     "prettier": "2.3.2",
     "sinon": "11.1.2",
     "sinon-chai": "3.7.0",
     "supertest": "6.1.4",
-    "ts-jest": "27.0.4"
+    "ts-jest": "27.0.4",
+    "ttypescript": "^1.5.12"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

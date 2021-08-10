@@ -10,7 +10,7 @@ import {
 } from './inputs';
 import { getConfig, isDev } from 'src/config';
 import { authTokenService } from 'src/services/AuthToken';
-import { GQLCtx } from 'ts/gql';
+import { GQLCtx } from 'src/common-types/gql';
 import MailerService from 'src/services/MailerService';
 
 type TokenResponseType = {

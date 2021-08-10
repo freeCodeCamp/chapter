@@ -2,7 +2,7 @@ import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import MailerService from 'src/services/MailerService';
-import { GQLCtx } from 'ts/gql';
+import { GQLCtx } from 'src/common-types/gql';
 import { Event, Venue, Chapter, Rsvp, UserEventRole } from 'src/models';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 

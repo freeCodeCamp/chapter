@@ -4,7 +4,7 @@ import request from 'supertest';
 import { responseErrorHandler } from 'express-response-errors';
 import { Server } from 'http';
 import { User } from 'src/models';
-import { Request } from 'ts/gql';
+import { Request } from 'src/common-types/gql';
 
 type InitProps = {
   withRouter?: express.Router;

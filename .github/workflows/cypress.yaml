@@ -61,7 +61,7 @@ jobs:
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
           build: npm run build:client
-          start: npm run start
+          start: npm start
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           config: baseUrl=http://localhost:3000
           browser: ${{ matrix.browsers }}

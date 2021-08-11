@@ -1,4 +1,4 @@
-name: Cypress
+name: Cypress Docker
 on:
   push:
     branches-ignore:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   cypress-run:
-    name: Test Docker
+    name: Test
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -47,10 +47,3 @@ jobs:
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           config: baseUrl=http://localhost:3000
           browser: ${{ matrix.browsers }}
-
-      - name: Check running containers
-        run: docker ps -a
-      - name: Check logs
-        run: |
-          docker logs chapter_app_1
-          docker logs chapter_client_1

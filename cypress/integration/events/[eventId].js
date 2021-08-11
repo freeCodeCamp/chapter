@@ -36,12 +36,9 @@ describe('event page', () => {
     cy.findByRole('textbox', { name: 'First name' }).type(fix.firstName);
     cy.findByRole('textbox', { name: 'Last name' }).type(fix.lastName);
 
-    // TODO: since this is a separate way to login/register, this needs a full
-    // test.
-    cy.register(fix.firstName, fix.lastName, fix.email);
-    // cy.interceptGQL('register');
-    // cy.findByRole('button', { name: 'Register' }).click();
-    // cy.wait('@GQLregister');
+    cy.interceptGQL('register');
+    cy.findByRole('button', { name: 'Register' }).click();
+    cy.wait('@GQLregister');
 
     // TODO: should this be called 'Switch to login'?
     cy.findByRole('button', { name: 'Login' }).click();

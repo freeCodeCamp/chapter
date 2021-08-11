@@ -59,10 +59,14 @@ describe('events dashboard', () => {
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(fix)).each(([key, value]) => {
-      // TODO: remove this conditional when tags and dates are handled properly.
-      if (!['tags', 'startAt', 'endAt'].includes(key)) {
+      // TODO: simplify this conditional when tags and dates are handled
+      // properly.
+      if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
         cy.contains(value);
       }
+    });
+    cy.get('@venueTitle').then((venueTitle) => {
+      cy.contains(venueTitle);
     });
   });
 });

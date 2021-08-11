@@ -41,8 +41,8 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          build: docker-compose build
-          start: docker-compose up -d
+          build: DOCKER_BUILDKIT=1 docker-compose build
+          start: DOCKER_BUILDKIT=1 docker-compose up -d
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           config: baseUrl=http://localhost:3000
           browser: ${{ matrix.browsers }}

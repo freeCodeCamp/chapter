@@ -32,7 +32,7 @@ jobs:
       - name: Start Docker service
         env: 
           IS_DOCKER: true
-        run: docker-compose up -d
+        run: DOCKER_BUILDKIT=1 docker-compose up -d
       - name: Seed the Docker db
         env:
           IS_DOCKER: true

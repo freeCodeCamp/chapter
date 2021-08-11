@@ -427,8 +427,9 @@ export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
 
-export type LoginMutation = { __typename?: 'Mutation' } & {
-  login: { __typename?: 'LoginType' } & Pick<LoginType, 'code'>;
+export type LoginMutation = {
+  __typename?: 'Mutation';
+  login: { __typename?: 'LoginType'; code: string };
 };
 
 export type RegisterMutationVariables = Exact<{
@@ -437,87 +438,97 @@ export type RegisterMutationVariables = Exact<{
   last_name: Scalars['String'];
 }>;
 
-export type RegisterMutation = { __typename?: 'Mutation' } & {
-  register: { __typename?: 'User' } & Pick<User, 'id'>;
+export type RegisterMutation = {
+  __typename?: 'Mutation';
+  register: { __typename?: 'User'; id: number };
 };
 
 export type AuthenticateMutationVariables = Exact<{
   token: Scalars['String'];
 }>;
 
-export type AuthenticateMutation = { __typename?: 'Mutation' } & {
-  authenticate: { __typename?: 'AuthenticateType' } & Pick<
-    AuthenticateType,
-    'token'
-  > & {
-      user: { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'first_name' | 'last_name'
-      >;
+export type AuthenticateMutation = {
+  __typename?: 'Mutation';
+  authenticate: {
+    __typename?: 'AuthenticateType';
+    token: string;
+    user: {
+      __typename?: 'User';
+      id: number;
+      first_name: string;
+      last_name: string;
     };
+  };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MeQuery = { __typename?: 'Query' } & {
-  me?: Maybe<
-    { __typename?: 'User' } & Pick<User, 'id' | 'first_name' | 'last_name'>
-  >;
+export type MeQuery = {
+  __typename?: 'Query';
+  me?: Maybe<{
+    __typename?: 'User';
+    id: number;
+    first_name: string;
+    last_name: string;
+  }>;
 };
 
 export type ChapterQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type ChapterQuery = { __typename?: 'Query' } & {
-  chapter?: Maybe<
-    { __typename?: 'Chapter' } & Pick<
-      Chapter,
-      | 'id'
-      | 'name'
-      | 'description'
-      | 'details'
-      | 'category'
-      | 'city'
-      | 'region'
-      | 'country'
-    > & {
-        events: Array<
-          { __typename?: 'Event' } & Pick<
-            Event,
-            | 'id'
-            | 'name'
-            | 'description'
-            | 'start_at'
-            | 'invite_only'
-            | 'canceled'
-          > & {
-              tags?: Maybe<
-                Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>
-              >;
-            }
-        >;
-      }
-  >;
+export type ChapterQuery = {
+  __typename?: 'Query';
+  chapter?: Maybe<{
+    __typename?: 'Chapter';
+    id: number;
+    name: string;
+    description: string;
+    details: string;
+    category: string;
+    city: string;
+    region: string;
+    country: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      description: string;
+      start_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+      tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+    }>;
+  }>;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChaptersQuery = { __typename?: 'Query' } & {
-  chapters: Array<
-    { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name' | 'description'>
-  >;
+export type ChaptersQuery = {
+  __typename?: 'Query';
+  chapters: Array<{
+    __typename?: 'Chapter';
+    id: number;
+    name: string;
+    description: string;
+  }>;
 };
 
 export type CreateChapterMutationVariables = Exact<{
   data: CreateChapterInputs;
 }>;
 
-export type CreateChapterMutation = { __typename?: 'Mutation' } & {
-  createChapter: { __typename?: 'Chapter' } & Pick<
-    Chapter,
-    'id' | 'name' | 'description' | 'city' | 'region' | 'country'
-  >;
+export type CreateChapterMutation = {
+  __typename?: 'Mutation';
+  createChapter: {
+    __typename?: 'Chapter';
+    id: number;
+    name: string;
+    description: string;
+    city: string;
+    region: string;
+    country: string;
+  };
 };
 
 export type UpdateChapterMutationVariables = Exact<{
@@ -525,118 +536,117 @@ export type UpdateChapterMutationVariables = Exact<{
   data: UpdateChapterInputs;
 }>;
 
-export type UpdateChapterMutation = { __typename?: 'Mutation' } & {
-  updateChapter: { __typename?: 'Chapter' } & Pick<
-    Chapter,
-    'id' | 'name' | 'description' | 'city' | 'region' | 'country'
-  >;
+export type UpdateChapterMutation = {
+  __typename?: 'Mutation';
+  updateChapter: {
+    __typename?: 'Chapter';
+    id: number;
+    name: string;
+    description: string;
+    city: string;
+    region: string;
+    country: string;
+  };
 };
 
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EventsQuery = { __typename?: 'Query' } & {
-  events: Array<
-    { __typename?: 'Event' } & Pick<
-      Event,
-      | 'id'
-      | 'name'
-      | 'canceled'
-      | 'description'
-      | 'url'
-      | 'invite_only'
-      | 'video_url'
-      | 'start_at'
-      | 'capacity'
-    > & {
-        venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-      }
-  >;
+export type EventsQuery = {
+  __typename?: 'Query';
+  events: Array<{
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    canceled: boolean;
+    description: string;
+    url?: Maybe<string>;
+    invite_only: boolean;
+    video_url?: Maybe<string>;
+    start_at: any;
+    capacity: number;
+    venue?: Maybe<{ __typename?: 'Venue'; id: number; name: string }>;
+    tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+  }>;
 };
 
 export type EventQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type EventQuery = { __typename?: 'Query' } & {
-  event?: Maybe<
-    { __typename?: 'Event' } & Pick<
-      Event,
-      | 'id'
-      | 'name'
-      | 'description'
-      | 'url'
-      | 'invite_only'
-      | 'video_url'
-      | 'canceled'
-      | 'capacity'
-      | 'start_at'
-      | 'ends_at'
-    > & {
-        chapter: { __typename?: 'Chapter' } & Pick<Chapter, 'id' | 'name'>;
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        venue?: Maybe<
-          { __typename?: 'Venue' } & Pick<
-            Venue,
-            | 'id'
-            | 'name'
-            | 'street_address'
-            | 'city'
-            | 'postal_code'
-            | 'region'
-            | 'country'
-          >
-        >;
-        rsvps: Array<
-          { __typename?: 'Rsvp' } & Pick<Rsvp, 'id' | 'on_waitlist'> & {
-              user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
-            }
-        >;
-      }
-  >;
+export type EventQuery = {
+  __typename?: 'Query';
+  event?: Maybe<{
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    description: string;
+    url?: Maybe<string>;
+    invite_only: boolean;
+    video_url?: Maybe<string>;
+    canceled: boolean;
+    capacity: number;
+    start_at: any;
+    ends_at: any;
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
+    tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+    venue?: Maybe<{
+      __typename?: 'Venue';
+      id: number;
+      name: string;
+      street_address?: Maybe<string>;
+      city: string;
+      postal_code: string;
+      region: string;
+      country: string;
+    }>;
+    rsvps: Array<{
+      __typename?: 'Rsvp';
+      id: number;
+      on_waitlist: boolean;
+      user: { __typename?: 'User'; id: number; name: string };
+    }>;
+  }>;
 };
 
 export type EventVenuesQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type EventVenuesQuery = { __typename?: 'Query' } & {
-  event?: Maybe<
-    { __typename?: 'Event' } & Pick<
-      Event,
-      | 'id'
-      | 'name'
-      | 'description'
-      | 'url'
-      | 'video_url'
-      | 'capacity'
-      | 'start_at'
-      | 'ends_at'
-    > & {
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        venue?: Maybe<{ __typename?: 'Venue' } & Pick<Venue, 'id'>>;
-      }
-  >;
-  venues: Array<{ __typename?: 'Venue' } & Pick<Venue, 'id' | 'name'>>;
+export type EventVenuesQuery = {
+  __typename?: 'Query';
+  event?: Maybe<{
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    description: string;
+    url?: Maybe<string>;
+    video_url?: Maybe<string>;
+    capacity: number;
+    start_at: any;
+    ends_at: any;
+    tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+    venue?: Maybe<{ __typename?: 'Venue'; id: number }>;
+  }>;
+  venues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
 };
 
 export type CreateEventMutationVariables = Exact<{
   data: CreateEventInputs;
 }>;
 
-export type CreateEventMutation = { __typename?: 'Mutation' } & {
-  createEvent: { __typename?: 'Event' } & Pick<
-    Event,
-    | 'id'
-    | 'name'
-    | 'canceled'
-    | 'description'
-    | 'url'
-    | 'video_url'
-    | 'capacity'
-  > & {
-      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-    };
+export type CreateEventMutation = {
+  __typename?: 'Mutation';
+  createEvent: {
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    canceled: boolean;
+    description: string;
+    url?: Maybe<string>;
+    video_url?: Maybe<string>;
+    capacity: number;
+    tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+  };
 };
 
 export type UpdateEventMutationVariables = Exact<{
@@ -644,124 +654,127 @@ export type UpdateEventMutationVariables = Exact<{
   data: UpdateEventInputs;
 }>;
 
-export type UpdateEventMutation = { __typename?: 'Mutation' } & {
-  updateEvent: { __typename?: 'Event' } & Pick<
-    Event,
-    | 'id'
-    | 'name'
-    | 'canceled'
-    | 'description'
-    | 'url'
-    | 'video_url'
-    | 'capacity'
-  > & {
-      tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-    };
+export type UpdateEventMutation = {
+  __typename?: 'Mutation';
+  updateEvent: {
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    canceled: boolean;
+    description: string;
+    url?: Maybe<string>;
+    video_url?: Maybe<string>;
+    capacity: number;
+    tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+  };
 };
 
 export type CancelEventMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type CancelEventMutation = { __typename?: 'Mutation' } & {
-  cancelEvent: { __typename?: 'Event' } & Pick<Event, 'id' | 'canceled'>;
+export type CancelEventMutation = {
+  __typename?: 'Mutation';
+  cancelEvent: { __typename?: 'Event'; id: number; canceled: boolean };
 };
 
 export type DeleteEventMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type DeleteEventMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'deleteEvent'
->;
+export type DeleteEventMutation = {
+  __typename?: 'Mutation';
+  deleteEvent: boolean;
+};
 
 export type ConfirmRsvpMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type ConfirmRsvpMutation = { __typename?: 'Mutation' } & {
-  confirmRsvp: { __typename?: 'Rsvp' } & Pick<
-    Rsvp,
-    'id' | 'confirmed_at' | 'on_waitlist'
-  >;
+export type ConfirmRsvpMutation = {
+  __typename?: 'Mutation';
+  confirmRsvp: {
+    __typename?: 'Rsvp';
+    id: number;
+    confirmed_at: any;
+    on_waitlist: boolean;
+  };
 };
 
 export type DeleteRsvpMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type DeleteRsvpMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'deleteRsvp'
->;
+export type DeleteRsvpMutation = {
+  __typename?: 'Mutation';
+  deleteRsvp: boolean;
+};
 
 export type SendEventInviteMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type SendEventInviteMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'sendEventInvite'
->;
+export type SendEventInviteMutation = {
+  __typename?: 'Mutation';
+  sendEventInvite: boolean;
+};
 
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type VenuesQuery = { __typename?: 'Query' } & {
-  venues: Array<
-    { __typename?: 'Venue' } & Pick<
-      Venue,
-      | 'id'
-      | 'name'
-      | 'street_address'
-      | 'city'
-      | 'postal_code'
-      | 'region'
-      | 'country'
-      | 'latitude'
-      | 'longitude'
-    >
-  >;
+export type VenuesQuery = {
+  __typename?: 'Query';
+  venues: Array<{
+    __typename?: 'Venue';
+    id: number;
+    name: string;
+    street_address?: Maybe<string>;
+    city: string;
+    postal_code: string;
+    region: string;
+    country: string;
+    latitude?: Maybe<number>;
+    longitude?: Maybe<number>;
+  }>;
 };
 
 export type VenueQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-export type VenueQuery = { __typename?: 'Query' } & {
-  venue?: Maybe<
-    { __typename?: 'Venue' } & Pick<
-      Venue,
-      | 'id'
-      | 'name'
-      | 'street_address'
-      | 'city'
-      | 'postal_code'
-      | 'region'
-      | 'country'
-      | 'latitude'
-      | 'longitude'
-    >
-  >;
+export type VenueQuery = {
+  __typename?: 'Query';
+  venue?: Maybe<{
+    __typename?: 'Venue';
+    id: number;
+    name: string;
+    street_address?: Maybe<string>;
+    city: string;
+    postal_code: string;
+    region: string;
+    country: string;
+    latitude?: Maybe<number>;
+    longitude?: Maybe<number>;
+  }>;
 };
 
 export type CreateVenueMutationVariables = Exact<{
   data: CreateVenueInputs;
 }>;
 
-export type CreateVenueMutation = { __typename?: 'Mutation' } & {
-  createVenue: { __typename?: 'Venue' } & Pick<
-    Venue,
-    | 'id'
-    | 'name'
-    | 'street_address'
-    | 'city'
-    | 'postal_code'
-    | 'region'
-    | 'country'
-    | 'latitude'
-    | 'longitude'
-  >;
+export type CreateVenueMutation = {
+  __typename?: 'Mutation';
+  createVenue: {
+    __typename?: 'Venue';
+    id: number;
+    name: string;
+    street_address?: Maybe<string>;
+    city: string;
+    postal_code: string;
+    region: string;
+    country: string;
+    latitude?: Maybe<number>;
+    longitude?: Maybe<number>;
+  };
 };
 
 export type UpdateVenueMutationVariables = Exact<{
@@ -769,27 +782,29 @@ export type UpdateVenueMutationVariables = Exact<{
   data: UpdateVenueInputs;
 }>;
 
-export type UpdateVenueMutation = { __typename?: 'Mutation' } & {
-  updateVenue: { __typename?: 'Venue' } & Pick<
-    Venue,
-    | 'id'
-    | 'name'
-    | 'street_address'
-    | 'city'
-    | 'postal_code'
-    | 'region'
-    | 'country'
-    | 'latitude'
-    | 'longitude'
-  >;
+export type UpdateVenueMutation = {
+  __typename?: 'Mutation';
+  updateVenue: {
+    __typename?: 'Venue';
+    id: number;
+    name: string;
+    street_address?: Maybe<string>;
+    city: string;
+    postal_code: string;
+    region: string;
+    country: string;
+    latitude?: Maybe<number>;
+    longitude?: Maybe<number>;
+  };
 };
 
 export type RsvpToEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
 }>;
 
-export type RsvpToEventMutation = { __typename?: 'Mutation' } & {
-  rsvpEvent?: Maybe<{ __typename?: 'Rsvp' } & Pick<Rsvp, 'id'>>;
+export type RsvpToEventMutation = {
+  __typename?: 'Mutation';
+  rsvpEvent?: Maybe<{ __typename?: 'Rsvp'; id: number }>;
 };
 
 export type HomeQueryVariables = Exact<{
@@ -797,25 +812,32 @@ export type HomeQueryVariables = Exact<{
   offset?: Maybe<Scalars['Int']>;
 }>;
 
-export type HomeQuery = { __typename?: 'Query' } & {
-  paginatedEvents: Array<
-    { __typename?: 'Event' } & Pick<
-      Event,
-      'id' | 'name' | 'description' | 'invite_only' | 'canceled' | 'start_at'
-    > & {
-        tags?: Maybe<Array<{ __typename?: 'Tag' } & Pick<Tag, 'id' | 'name'>>>;
-        chapter: { __typename?: 'Chapter' } & Pick<
-          Chapter,
-          'id' | 'name' | 'category'
-        >;
-      }
-  >;
-  chapters: Array<
-    { __typename?: 'Chapter' } & Pick<
-      Chapter,
-      'id' | 'name' | 'description' | 'category' | 'details'
-    >
-  >;
+export type HomeQuery = {
+  __typename?: 'Query';
+  paginatedEvents: Array<{
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    description: string;
+    invite_only: boolean;
+    canceled: boolean;
+    start_at: any;
+    tags?: Maybe<Array<{ __typename?: 'Tag'; id: number; name: string }>>;
+    chapter: {
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+      category: string;
+    };
+  }>;
+  chapters: Array<{
+    __typename?: 'Chapter';
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+    details: string;
+  }>;
 };
 
 export const LoginDocument = gql`

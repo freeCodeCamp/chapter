@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepare": "rimraf tsconfig.tsbuildinfo && ttsc",
-    "start": "node ./src/production.js",
+    "start": "node ./src/app.js",
     "dev": "concurrently \"ttsc --watch\" \"node-dev --notify=false src/app.js\"",
     "db:generate": "typeorm migration:generate -- -n",
     "db:drop": "typeorm schema:drop",

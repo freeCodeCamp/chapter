@@ -13,13 +13,10 @@ services:
     depends_on:
       - db
     build: ./server
-    command: npm run dev
     working_dir: /usr/chapter/server
     environment:
       - DB_URL=db
       - EMAIL_HOST=mailhog
-    volumes:
-      - ./server:/usr/chapter/server
     ports:
       - "5000:5000"
   client:
@@ -28,18 +25,9 @@ services:
     build: ./client
     ports:
       - "3000:3000"
-    command: npm run dev
     working_dir: /usr/chapter/client
     # on remote environments, NEXT_PUBLIC_APOLLO_SERVER in .env needs to include the
     # remote address. e.g. https://example.com:5000
     environment: 
       NEXT_PUBLIC_APOLLO_SERVER:
-    volumes:
-      - ./client:/usr/chapter/client
-  mailhog:
-    depends_on:
-      - app
-    image: mailhog/mailhog
-    ports:
-      - "1025:1025"
-      - "8025:8025"
+

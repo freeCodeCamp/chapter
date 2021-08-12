@@ -367,9 +367,9 @@ Run _Docker Compose_ `docker-compose up` from the root code directory and wait f
     app_1     | Listening on http://localhost:5000/graphql
 
 Once Docker is running:
-* The server will automatically restart anytime you save a _.ts_ or _.js_ file within the _server/_ directory.
+* The server will automatically restart anytime you save a _.ts_ or _.js_ file used by the server.
 * You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-* If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+* If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services.
 
 Proceed to the **Prepare the Database for Development** step, below.
 
@@ -510,11 +510,11 @@ If you prefer to run some or all of the steps manually, then they are:
 
 `npm run typeorm entity:create -- --name=ModelName`
 
-This would create _ModelName.ts_ in _server/models_
+This would create _ModelName.ts_ in _server/src/models_
 
 To keep everything DRY, add `extends BaseModel` to the class and import it from 'models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
 
-You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from _.ts_ files, so we run it with `ts-node` and our custom server config (check package.json)
+`npx typeorm` can also be used, but must be run inside _server_.
 
 #### Creating a Migration
 

@@ -211,8 +211,7 @@ You are almost ready to make changes to files, but before that you should **alwa
 
     Verify all automated code quality checks will pass before submitting a pull request because PRs with failures will not be merged.
 
-    * When using _Docker Mode_, run `NODE_ENV=test docker-compose exec app npm run lint-and-test` OR `NODE_ENV=test docker-compose exec app npm run test:watch` to start "watch" mode.
-    * When using _Manual Mode_, run `npm run lint-and-test` OR `npm run test:watch` to start "watch" mode.
+    To run the checks locally use `npm run lint-and-test` OR `npm run test:watch` to start "watch" mode.
  
 6. Stage the changes and make a commit
 

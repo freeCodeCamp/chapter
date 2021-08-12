@@ -93,3 +93,12 @@ Cypress.Commands.add('interceptGQL', (operationName) => {
     }
   });
 });
+
+Cypress.Commands.add('waitUntilMail', (alias) => {
+  cy.waitUntil(() =>
+    cy
+      .mhGetAllMails()
+      .as(alias)
+      .then((mails) => mails?.length > 0),
+  );
+});

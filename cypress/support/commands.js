@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import 'cypress-wait-until';
 import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 

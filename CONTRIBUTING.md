@@ -314,7 +314,7 @@ You have successfully created a PR. Congratulations! :tada:
 # Running the Application
 **Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary>Step 1 - Install Node.js and Run npx</summary>
+<details><summary>Step 1 - Install Node.js and dependencies</summary>
  
 **Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
 > Note: Close and re-open your terminal after the installation finishes.
@@ -324,7 +324,7 @@ Ensure the Node.js tools are installed:
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
 
-Run `npx i` to install all of the necessary dependencies.
+Run `npm i` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory

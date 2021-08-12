@@ -1,6 +1,7 @@
 describe('events dashboard', () => {
   beforeEach(() => {
     cy.login();
+    cy.mhDeleteAll();
   });
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
@@ -67,6 +68,56 @@ describe('events dashboard', () => {
     });
     cy.get('@venueTitle').then((venueTitle) => {
       cy.contains(venueTitle);
+    });
+  });
+
+  it("emails the users when an event's venue is changed", () => {
+    cy.visit('/dashboard/events');
+    cy.findAllByRole('link', { name: 'Edit' }).first().click();
+
+    cy.findByRole('textbox', { name: 'Event title' })
+      .invoke('val')
+      .as('eventTitle');
+
+    // This is a bit convoluted, but we need to know the current venue in order
+    // to change it.
+    cy.findByRole('combobox', { name: 'Venue' })
+      .as('venueSelect')
+      .get(':checked')
+      .invoke('val')
+      .as('currentVenueId');
+    cy.get('@currentVenueId').then((id) => {
+      // Small venue ids will definitely be present, so we select '1', unless
+      // it's currently selected, in which case we select '2'.
+      id = id == '1' ? '2' : '1';
+      cy.get('@venueSelect')
+        .select(id)
+        .get(':checked')
+        .invoke('text')
+        .as('newVenueTitle');
+    });
+    cy.findByRole('form', { name: 'Update event' }).submit();
+
+    cy.mhGetAllMails().mhFirst().as('venueMail');
+
+    cy.get('@newVenueTitle').then((venueTitle) => {
+      cy.get('@eventTitle').then((eventTitle) => {
+        cy.get('@venueMail')
+          .mhGetSubject()
+          .should('eq', `Venue changed for event ${eventTitle}`);
+        cy.get('@venueMail')
+          .mhGetBody()
+          .should('include', 'We have had to change the location')
+          .and('include', eventTitle)
+          .and('include', venueTitle);
+      });
+
+      // TODO: this is a bit brittle, since we're looking for a specific row
+      // within the datatable. Also, is this table an accessible way to present
+      // the events?
+      cy.findAllByRole('row').then((rows) => {
+        cy.wrap(rows[1]).should('contain.text', venueTitle);
+      });
     });
   });
 });

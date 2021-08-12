@@ -98,7 +98,15 @@ describe('events dashboard', () => {
     });
     cy.findByRole('form', { name: 'Update event' }).submit();
 
-    cy.mhGetAllMails().mhFirst().as('venueMail');
+    // Make sure that an email has been recieved.
+    cy.waitUntil(() =>
+      cy
+        .mhGetAllMails()
+        .as('allMail')
+        .then((mails) => mails?.length > 0),
+    );
+
+    cy.get('@allMail').mhFirst().as('venueMail');
 
     cy.get('@newVenueTitle').then((venueTitle) => {
       cy.get('@eventTitle').then((eventTitle) => {

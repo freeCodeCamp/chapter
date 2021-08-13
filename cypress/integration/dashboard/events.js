@@ -9,8 +9,11 @@ describe('events dashboard', () => {
     cy.get('a[aria-current="page"]').should('have.text', 'Events');
   });
 
-  it('should have links to view, create and edit events', () => {
+  it('should have a table with links to view, create and edit events', () => {
     cy.visit('/dashboard/events');
+    cy.findByRole('table', { name: 'Events' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
     cy.get('a[href="/dashboard/events/1"]').should('be.visible');
     cy.get('a[href="/dashboard/events/new"]').should('be.visible');
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');

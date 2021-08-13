@@ -15,7 +15,7 @@ export const VenuesPage: NextPage = () => {
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
-          <Heading>Venues</Heading>
+          <Heading id="page-heading">Venues</Heading>
           <LinkButton href="/dashboard/venues/new">Add new</LinkButton>
         </Flex>
         {loading ? (
@@ -29,6 +29,7 @@ export const VenuesPage: NextPage = () => {
           </>
         ) : (
           <DataTable
+            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             data={data.venues}
             keys={['name', 'location', 'actions'] as const}
             mapper={{

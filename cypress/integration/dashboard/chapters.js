@@ -6,8 +6,11 @@ describe('chapters dashboard', () => {
     cy.get('a[aria-current="page"]').should('have.text', 'Chapters');
   });
 
-  it('should have links to view, create and edit chapters', () => {
+  it('should have a table with links to view, create and edit chapters', () => {
     cy.visit('/dashboard/chapters');
+    cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
     cy.get('a[href="/dashboard/chapters/1"]').should('be.visible');
     cy.get('a[href="/dashboard/chapters/new"]').should('be.visible');
     cy.get('a[href="/dashboard/chapters/1/edit"]').should('be.visible');

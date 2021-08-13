@@ -22,7 +22,7 @@ export const ChapterUsersPage: NextPage = () => {
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
-          <Heading id="pageTitle">Chapter Users</Heading>
+          <Heading id="page-heading">Chapter Users</Heading>
           <LinkButton href={`/dashboard/chapters/${id}/users/new`}>
             Invite user
           </LinkButton>
@@ -39,7 +39,7 @@ export const ChapterUsersPage: NextPage = () => {
         ) : (
           <DataTable
             data={data.chapter.users}
-            tableProps={{ table: { 'aria-labelledby': 'pageTitle' } }}
+            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             keys={['name', 'email'] as const}
             mapper={{
               name: ({ user }) => user.name,

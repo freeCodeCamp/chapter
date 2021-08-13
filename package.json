@@ -85,7 +85,7 @@
     "@testing-library/cypress": "8.0.0",
     "@types/chai": "4.2.21",
     "@types/express": "4.17.13",
-    "@types/faker": "5.5.7",
+    "@types/faker": "5.5.8",
     "@types/get-port": "4.2.0",
     "@types/jest": "26.0.24",
     "@types/next": "8.0.7",

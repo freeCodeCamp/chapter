@@ -101,7 +101,7 @@
     "@typescript-eslint/parser": "4.29.2",
     "chai": "4.3.4",
     "concurrently": "6.2.1",
-    "cypress": "8.2.0",
+    "cypress": "8.3.0",
     "cypress-mailhog": "1.4.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",

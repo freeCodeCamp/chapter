@@ -120,7 +120,7 @@
     "prettier": "2.3.2",
     "sinon": "11.1.2",
     "sinon-chai": "3.7.0",
-    "supertest": "6.1.5",
+    "supertest": "6.1.6",
     "ts-jest": "27.0.4",
     "ts-node-dev": "1.1.8"
   },

@@ -7,6 +7,8 @@
 - [Running the Application](#running-the-application)
   - [Docker Mode](#running-the-application)
   - [Manual Mode](#running-the-application)
+- [Adding a New Feature](#adding-a-new-feature)
+  - [Where to find the code](#where-to-find-the-code)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -397,6 +399,28 @@ Once the app has started you should be able to pull up these URLs in your web br
 
 </details>
 
+# Adding a New Feature
+
+In order to understand where to start, it may help to familiarise yourself with our tech stack.  The key technologies we use are: PostgreSQL, TypeORM, Apollo, Express, React and Next.js.  For more details:
+
+<details><summary>Tech stack overview</summary>
+
+The database we use is [PostgreSQL](https://www.postgresql.org/), which we interact with via [TypeORM](https://typeorm.io/).  This ORM lets us define our database tables via classes whose properties map to columns in the database.  It makes use of decorators to specify the details of the db.  The [Express](https://expressjs.com/) server itself uses [Apollo GraphQL server](https://www.apollographql.com/docs/apollo-server/) to handle requests from the client. Apollo needs to know the GraphQL schema and we define that by using [TypeGraphQL](https://typegraphql.com/) since it lets us use decorators, much like TypeORM.  This means we can use both sets of decorators in the same Model class, keeping our database and GraphQL schema definitions together.
+
+The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
+</details>
+
+## Where to find the code
+
+The database and GraphQL schema are defined by files in _server/models_
+
+The resolvers for the GraphQL queries are defined in _server/controllers_
+
+The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
+
+To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
+
+Pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
 # Frequently Asked Questions
 
 <details><summary>What do we need help with right now?</summary>

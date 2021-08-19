@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core';
 import { NextPage } from 'next';
-
-import { Layout } from '../../shared/components/Layout';
-import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import {
   useVenueQuery,
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
-import { makeStyles } from '@material-ui/core';
+import { Layout } from '../../shared/components/Layout';
+import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
 
 const useStyles = makeStyles(() => ({

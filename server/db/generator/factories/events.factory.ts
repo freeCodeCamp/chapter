@@ -1,5 +1,6 @@
 import { addHours, add } from 'date-fns';
 import { company, internet, lorem } from 'faker';
+import { random, randomEnum, randomItem, randomItems } from '../lib/random';
 import {
   Chapter,
   Event,
@@ -9,7 +10,6 @@ import {
   Venue,
   VenueType,
 } from 'src/models';
-import { random, randomEnum, randomItem, randomItems } from '../lib/random';
 
 const createEvents = async (
   chapters: Chapter[],

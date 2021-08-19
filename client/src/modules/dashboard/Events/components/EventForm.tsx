@@ -1,5 +1,3 @@
-import React, { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
 import {
   VStack,
   Checkbox,
@@ -8,16 +6,18 @@ import {
   FormControl,
   Select,
 } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { Input } from '../../../../components/Form/Input';
+import { TextArea } from '../../../../components/Form/TextArea';
+import { useVenuesQuery } from '../../../../generated/graphql';
+import useFormStyles from '../../shared/components/formStyles';
 import {
   EventFormProps,
   fields,
   formatValue,
   EventFormData,
 } from './EventFormUtils';
-import useFormStyles from '../../shared/components/formStyles';
-import { useVenuesQuery } from '../../../../generated/graphql';
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText } = props;

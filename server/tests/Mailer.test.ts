@@ -1,20 +1,19 @@
-import MailerService from 'src/services/MailerService';
 import assert from 'assert';
-import chai from 'chai';
-import { expect } from 'chai';
-import sinon from 'sinon';
+import chai, { expect } from 'chai';
+import { stub, restore } from 'sinon';
 import sinonChai from 'sinon-chai';
+import MailerService from 'src/services/MailerService';
 import Utilities from 'src/util/Utilities';
 
 chai.use(sinonChai);
 
 beforeEach(() => {
-  sinon.stub(console, 'warn');
+  stub(console, 'warn');
 });
 
 afterEach(() => {
   // Restore the default sandbox here
-  sinon.restore();
+  restore();
 });
 
 // Setup
@@ -62,7 +61,7 @@ describe('MailerService Class', () => {
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {
-    sinon.stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
+    stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
     new MailerService(emailAddresses, subject, htmlEmail);
     expect(console.warn).to.have.been.calledOnce;
   });

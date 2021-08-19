@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import {
   Button,
@@ -9,16 +8,17 @@ import {
   Spinner,
   Heading,
 } from '@chakra-ui/react';
+import React, { useState } from 'react';
 
-import { Modal } from './Modal';
+import { useForm } from 'react-hook-form';
 import { Input } from './Form/Input';
+import { Modal } from './Modal';
 import {
   MeQuery,
   useLoginMutation,
   useRegisterMutation,
 } from 'generated/graphql';
 import { meQuery } from 'modules/auth/graphql/queries';
-import { useForm } from 'react-hook-form';
 
 interface LoginData {
   email: string;

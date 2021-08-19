@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
+import { useCreateVenueMutation } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
-import { useRouter } from 'next/router';
-import { useCreateVenueMutation } from '../../../../generated/graphql';
 import { VENUES } from '../graphql/queries';
 
 export const NewVenuePage: NextPage = () => {

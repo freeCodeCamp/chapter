@@ -1,3 +1,4 @@
+import { makeBooleanIterator } from './lib/util';
 import {
   User,
   Chapter,
@@ -6,7 +7,6 @@ import {
   Event,
   UserEventRole,
 } from 'src/models';
-import { makeBooleanIterator } from './lib/util';
 
 const setupRoles = async (
   admin: User,

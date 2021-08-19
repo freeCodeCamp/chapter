@@ -1,11 +1,11 @@
-import React from 'react';
-import { Heading, Text, Tag, HStack, Flex } from '@chakra-ui/react';
 import { LockIcon } from '@chakra-ui/icons';
+import { Heading, Text, Tag, HStack, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import React from 'react';
 import { Chapter, Event, Tag as DBTag } from '../generated/graphql';
-import { Card } from './Card';
-import { truncate } from '../helpers/truncate';
 import { formatDate } from '../helpers/date';
+import { truncate } from '../helpers/truncate';
+import { Card } from './Card';
 
 type EventCardProps = {
   event: Pick<

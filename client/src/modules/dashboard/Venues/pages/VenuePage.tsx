@@ -1,13 +1,13 @@
-import React from 'react';
-import { NextPage } from 'next';
 import { makeStyles, Card, Typography } from '@material-ui/core';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import React from 'react';
 
-import { Layout } from '../../shared/components/Layout';
+import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useVenueQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
-import ProgressCardContent from '../../../../components/ProgressCardContent';
 import getLocationString from '../../../../helpers/getLocationString';
+import { Layout } from '../../shared/components/Layout';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {

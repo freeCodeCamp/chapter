@@ -1,11 +1,11 @@
-import React from 'react';
-import { NextPage } from 'next';
-
-import { useVenuesQuery } from '../../../../generated/graphql';
-import { Layout } from '../../shared/components/Layout';
 import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
+import { NextPage } from 'next';
+import React from 'react';
+
+import { useVenuesQuery } from '../../../../generated/graphql';
+import { Layout } from '../../shared/components/Layout';
 import getLocationString from 'helpers/getLocationString';
 
 export const VenuesPage: NextPage = () => {

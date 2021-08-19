@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { EventCard } from '../src/components/EventCard';
 
 describe('EventCard', () => {

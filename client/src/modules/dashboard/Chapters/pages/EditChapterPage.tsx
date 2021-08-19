@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core';
 import { NextPage } from 'next';
-
-import { Layout } from '../../shared/components/Layout';
-import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import {
   useChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
-import { makeStyles } from '@material-ui/core';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { Layout } from '../../shared/components/Layout';
+import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 
 const useStyles = makeStyles(() => ({
   responseDiv: {

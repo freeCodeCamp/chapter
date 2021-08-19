@@ -1,20 +1,20 @@
-import React from 'react';
+import { Button, Box, Heading, Text } from '@chakra-ui/react';
+import { useConfirm, useConfirmDelete } from 'chakra-confirm';
+import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Button, Box, Heading, Text } from '@chakra-ui/react';
-import { DataTable } from 'chakra-data-table';
-import { useConfirm, useConfirmDelete } from 'chakra-confirm';
+import React from 'react';
 
-import { Layout } from '../../shared/components/Layout';
 import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
   useEventQuery,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
-import { EVENT } from '../graphql/queries';
 import getLocationString from '../../../../helpers/getLocationString';
+import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
+import { EVENT } from '../graphql/queries';
 
 const args = (id: number) => ({
   refetchQueries: [{ query: EVENT, variables: { id } }],

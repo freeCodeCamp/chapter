@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
+import { Request } from 'src/common-types/gql';
 import { getConfig } from 'src/config';
 import { User } from 'src/models';
-import { Request } from 'src/common-types/gql';
 
 export const userMiddleware = (
   req: Request,

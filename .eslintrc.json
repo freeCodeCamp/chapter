@@ -3,7 +3,8 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "plugin:import/recommended"
   ],
   "plugins": ["react", "prettier", "import"],
   "env": {
@@ -28,7 +29,8 @@
       "files": ["**/*.ts?(x)"],
       "extends": [
         "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:import/typescript"
       ],
       "plugins": ["@typescript-eslint"],
       "rules": {
@@ -58,7 +60,8 @@
     "prettier/prettier": ["error", { "singleQuote": true }],
     "react/display-name": 0,
     "react/prop-types": 0,
-    "import/no-unresolved": "error"
+    "import/no-unresolved": "error",
+    "import/order": ["error", { "alphabetize": { "order": "asc" } }]
   },
   "settings": {
     "react": {

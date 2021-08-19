@@ -1,9 +1,9 @@
-import React from 'react';
-import { NextPage } from 'next';
 import { Heading, VStack } from '@chakra-ui/layout';
-import { useForm } from 'react-hook-form';
 import { Box, Button, Text } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
+import { NextPage } from 'next';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 
 import { Input } from '../../../components/Form/Input';
 import { useRegisterMutation } from '../../../generated/graphql';

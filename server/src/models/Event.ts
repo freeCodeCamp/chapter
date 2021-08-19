@@ -1,12 +1,12 @@
-import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
-import { Venue } from './Venue';
 import { Chapter } from './Chapter';
-import { Tag } from './Tag';
 import { EventSponsor } from './EventSponsor';
 import { Rsvp } from './Rsvp';
+import { Tag } from './Tag';
 import { UserEventRole } from './UserEventRole';
+import { Venue } from './Venue';
 
 export enum VenueType {
   Physical = 'Physical',

@@ -1,8 +1,8 @@
+import { ObjectType, Field } from 'type-graphql';
 import { Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
-import { User } from './User';
 import { Chapter } from './Chapter';
-import { ObjectType, Field } from 'type-graphql';
+import { User } from './User';
 
 @ObjectType()
 @Entity({ name: 'user_bans' })

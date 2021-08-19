@@ -1,7 +1,7 @@
+import { ObjectType, Field } from 'type-graphql';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { EventSponsor } from './EventSponsor';
-import { ObjectType, Field } from 'type-graphql';
 
 @ObjectType()
 @Entity({ name: 'sponsors' })

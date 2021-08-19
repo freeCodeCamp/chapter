@@ -1,7 +1,7 @@
 import React from 'react';
 
-import usePageLayoutStyles from './pageLayout.styles';
 import { Header } from './Header';
+import usePageLayoutStyles from './pageLayout.styles';
 
 const PageLayout: React.FC = ({ children }) => {
   const classes = usePageLayoutStyles();

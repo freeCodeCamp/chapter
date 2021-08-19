@@ -1,12 +1,12 @@
+import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Chapter } from './Chapter';
 import { Rsvp } from './Rsvp';
 import { UserBan } from './UserBan';
 import { UserChapterRole } from './UserChapterRole';
-import { UserInstanceRole } from './UserInstanceRole';
-import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
 import { UserEventRole } from './UserEventRole';
+import { UserInstanceRole } from './UserInstanceRole';
 
 @ObjectType()
 @Entity({ name: 'users' })

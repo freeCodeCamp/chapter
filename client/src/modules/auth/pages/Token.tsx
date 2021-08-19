@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import { Heading, VStack } from '@chakra-ui/layout';
+import { Spinner } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Spinner } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 
-import { useAuthenticateMutation } from 'generated/graphql';
-import { Heading, VStack } from '@chakra-ui/layout';
-import { useAuthStore } from '../store';
 import { meQuery } from '../graphql/queries';
+import { useAuthStore } from '../store';
+import { useAuthenticateMutation } from 'generated/graphql';
 
 export const TokenPage: NextPage = () => {
   const router = useRouter();

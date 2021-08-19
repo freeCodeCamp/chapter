@@ -1,16 +1,16 @@
-import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 import { verify, sign } from 'jsonwebtoken';
+import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 
-import { User } from 'src/models';
 import {
   AuthenticateType,
   LoginInput,
   LoginType,
   RegisterInput,
 } from './inputs';
-import { getConfig, isDev } from 'src/config';
-import { authTokenService } from 'src/services/AuthToken';
 import { GQLCtx } from 'src/common-types/gql';
+import { getConfig, isDev } from 'src/config';
+import { User } from 'src/models';
+import { authTokenService } from 'src/services/AuthToken';
 import MailerService from 'src/services/MailerService';
 
 type TokenResponseType = {

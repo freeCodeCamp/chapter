@@ -1,4 +1,3 @@
-import React, { forwardRef } from 'react';
 import {
   Input as ChakraInput,
   InputProps as ChakraInputProps,
@@ -7,6 +6,7 @@ import {
   FormErrorMessage,
   FormControlProps,
 } from '@chakra-ui/react';
+import React, { forwardRef } from 'react';
 
 const capitalize = (s: string) =>
   s.slice(0, 1).toUpperCase() + s.slice(1).toLowerCase();

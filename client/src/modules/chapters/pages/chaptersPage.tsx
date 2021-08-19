@@ -1,8 +1,8 @@
-import React from 'react';
-import { NextPage } from 'next';
-import { useChaptersQuery } from 'generated/graphql';
 import { Heading, VStack } from '@chakra-ui/layout';
 import { Link } from 'chakra-next-link';
+import { NextPage } from 'next';
+import React from 'react';
+import { useChaptersQuery } from 'generated/graphql';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();

@@ -1,11 +1,11 @@
-import React from 'react';
-import { NextPage } from 'next';
-
-import { useChaptersQuery } from '../../../../generated/graphql';
-import { Layout } from '../../shared/components/Layout';
 import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
+import { NextPage } from 'next';
+import React from 'react';
+
+import { useChaptersQuery } from '../../../../generated/graphql';
+import { Layout } from '../../shared/components/Layout';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();

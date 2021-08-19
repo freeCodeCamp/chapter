@@ -9,6 +9,7 @@
   - [Manual Mode](#running-the-application)
 - [Adding a New Feature](#adding-a-new-feature)
   - [Where to find the code](#where-to-find-the-code)
+  - [Where to find the issues](#where-to-find-the-issues)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -421,6 +422,11 @@ The client accesses the data via hooks defined in _client/src/generated/generate
 To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
 
 Pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
+
+## Where to find the issues
+
+[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
+
 # Frequently Asked Questions
 
 <details><summary>What do we need help with right now?</summary>

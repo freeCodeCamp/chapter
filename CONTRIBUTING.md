@@ -401,7 +401,7 @@ Once the app has started you should be able to pull up these URLs in your web br
 
 # Adding a New Feature
 
-In order to understand where to start, it may help to familiarise yourself with our tech stack.  The key technologies we use are: PostgreSQL, TypeORM, Apollo, Express, React and Next.js.  For more details:
+In order to understand where to start, it may help to familiarize yourself with our [tech stack](https://github.com/freeCodeCamp/chapter/blob/main/README.md#tech-stack). For more details:
 
 <details><summary>Tech stack overview</summary>
 

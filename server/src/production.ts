@@ -1,8 +1,8 @@
 // TODO: delete this? I think it makes more sense to start the client and server
 // separately
+import { join } from 'path';
 import express from 'express';
 import next from 'next';
-import { join } from 'path';
 
 import { main } from 'src/app';
 

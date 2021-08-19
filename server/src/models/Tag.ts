@@ -1,7 +1,7 @@
+import { ObjectType, Field } from 'type-graphql';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
-import { ObjectType, Field } from 'type-graphql';
 
 @ObjectType()
 @Entity({ name: 'tags' })

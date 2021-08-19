@@ -1,11 +1,11 @@
-import React from 'react';
 import { Card, Grid, makeStyles, Typography } from '@material-ui/core';
 import Link from 'next/link';
+import React from 'react';
 
-import { Event, Tag } from '../../../../generated/graphql';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import Tags from './Tag';
+import { Event, Tag } from '../../../../generated/graphql';
 import Actions from './Actions';
+import Tags from './Tag';
 
 interface EventItemProps {
   event: Pick<

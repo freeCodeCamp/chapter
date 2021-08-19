@@ -1,10 +1,10 @@
+import { Server } from 'http';
 import express from 'express';
+import { responseErrorHandler } from 'express-response-errors';
 import getPort from 'get-port';
 import request from 'supertest';
-import { responseErrorHandler } from 'express-response-errors';
-import { Server } from 'http';
-import { User } from 'src/models';
 import { Request } from 'src/common-types/gql';
+import { User } from 'src/models';
 
 type InitProps = {
   withRouter?: express.Router;

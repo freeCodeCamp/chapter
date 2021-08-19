@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { existsSync, copyFileSync } = require('fs');
 const { execSync, spawn } = require('child_process');
+const { existsSync, copyFileSync } = require('fs');
 const isDocker = require('is-docker');
 
 console.log('--------------------------');

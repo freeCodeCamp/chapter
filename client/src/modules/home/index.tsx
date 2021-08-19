@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Heading,
   Spinner,
@@ -9,10 +8,11 @@ import {
   Button,
   useToast,
 } from '@chakra-ui/react';
+import React, { useState } from 'react';
 
-import { useHomeQuery } from 'generated/graphql';
-import { EventCard } from 'components/EventCard';
 import { ChapterCard } from 'components/ChapterCard';
+import { EventCard } from 'components/EventCard';
+import { useHomeQuery } from 'generated/graphql';
 
 const Home: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);

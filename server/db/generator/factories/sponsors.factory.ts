@@ -1,6 +1,6 @@
 import { company, internet, system } from 'faker';
-import { Sponsor } from 'src/models';
 import { randomEnum } from '../lib/random';
+import { Sponsor } from 'src/models';
 
 enum SponsorTypes {
   'FOOD',

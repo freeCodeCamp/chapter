@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
 import { Button, HStack } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
+import React, { useMemo } from 'react';
 
+import { EVENT, EVENTS } from '../graphql/queries';
 import {
   Event,
   useCancelEventMutation,
   useDeleteEventMutation,
 } from 'generated/graphql';
-import { EVENT, EVENTS } from '../graphql/queries';
 
 interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;

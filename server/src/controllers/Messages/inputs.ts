@@ -1,7 +1,7 @@
 import { IsEmail, MaxLength } from 'class-validator';
-import { IsListEmpty } from './validators/isListEmpty';
-import { FindDuplicateEmails } from './validators/findDuplicateEmails';
 import { InputType, Field } from 'type-graphql';
+import { FindDuplicateEmails } from './validators/findDuplicateEmails';
+import { IsListEmpty } from './validators/isListEmpty';
 
 // @TODO create custom validator to verify all emails belong to registered users
 // @TODO create custom validator to verify user sending email is authenticated

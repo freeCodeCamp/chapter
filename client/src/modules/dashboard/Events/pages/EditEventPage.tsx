@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
-import { EventFormData } from '../components/EventFormUtils';
-import { Layout } from '../../shared/components/Layout';
-import EventForm from '../components/EventForm';
 import {
   useEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
-import { EVENTS } from '../graphql/queries';
 import { getId } from '../../../../helpers/getId';
+import { Layout } from '../../shared/components/Layout';
+import EventForm from '../components/EventForm';
+import { EventFormData } from '../components/EventFormUtils';
+import { EVENTS } from '../graphql/queries';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();

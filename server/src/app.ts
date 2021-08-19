@@ -1,14 +1,13 @@
 import 'reflect-metadata';
+import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
-import express, { Express } from 'express';
+import express, { Express, Response } from 'express';
 import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
-import { Response } from 'express';
-import { ApolloServer } from 'apollo-server-express';
 
-import { resolvers } from 'src/controllers';
-import { GQLCtx, Request } from 'src/common-types/gql';
 import { initDB } from './db';
+import { GQLCtx, Request } from 'src/common-types/gql';
+import { resolvers } from 'src/controllers';
 import { userMiddleware } from 'src/controllers/Auth/middleware';
 
 // Make sure to kill the app if using non docker-compose setup and docker-compose

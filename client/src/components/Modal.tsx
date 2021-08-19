@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Modal as ChakraModal,
   UseDisclosureReturn,
@@ -14,6 +13,7 @@ import {
   HStack,
   Flex,
 } from '@chakra-ui/react';
+import React from 'react';
 
 export interface ConditionalWrapProps {
   val: boolean | undefined | null | number | string;

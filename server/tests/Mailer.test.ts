@@ -1,9 +1,8 @@
-import MailerService from 'src/services/MailerService';
 import assert from 'assert';
-import chai from 'chai';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import MailerService from 'src/services/MailerService';
 import Utilities from 'src/util/Utilities';
 
 chai.use(sinonChai);

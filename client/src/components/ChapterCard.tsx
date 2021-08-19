@@ -1,10 +1,10 @@
-import React from 'react';
 import { Heading, Tag, Text, VStack } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
-import { Chapter } from 'generated/graphql';
+import React from 'react';
 
-import { Card } from './Card';
 import { truncate } from '../helpers/truncate';
+import { Card } from './Card';
+import { Chapter } from 'generated/graphql';
 
 type ChapterCardProps = {
   chapter: Pick<

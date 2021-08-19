@@ -1,8 +1,8 @@
+import { ObjectType, Field } from 'type-graphql';
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { User } from './User';
-import { ObjectType, Field } from 'type-graphql';
 
 @ObjectType()
 @Entity({ name: 'rsvps' })

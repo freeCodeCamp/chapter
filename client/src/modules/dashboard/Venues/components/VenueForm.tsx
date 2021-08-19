@@ -1,10 +1,10 @@
+import { Button, FormControl } from '@material-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, FormControl } from '@material-ui/core';
 
-import useFormStyles from '../../shared/components/formStyles';
-import type { Venue, VenueQuery } from '../../../../generated/graphql';
 import { Field } from '../../../../components/Form/Fields';
+import type { Venue, VenueQuery } from '../../../../generated/graphql';
+import useFormStyles from '../../shared/components/formStyles';
 
 export type VenueFormData = Omit<
   Venue,

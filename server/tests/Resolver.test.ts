@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import faker from 'faker';
+import { GraphQLError } from 'graphql';
+import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
 import { callSchema } from './testUtils/callSchema';
 import longString from 'src/controllers/Messages/longString';
-import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
-import { GraphQLError } from 'graphql';
 
 interface WithValidationError extends GraphQLError {
   originalError: ArgumentValidationError;

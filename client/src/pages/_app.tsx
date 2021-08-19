@@ -1,23 +1,22 @@
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import React from 'react';
-import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-
-import { ChakraProvider } from '@chakra-ui/react';
-import { ConfirmContextProvider } from 'chakra-confirm';
-
-import theme from '../styles/theme';
-import PageLayout from '../components/PageLayout';
-import { AuthContextProvider } from '../modules/auth/store';
 import { setContext } from '@apollo/client/link/context';
 import { offsetLimitPagination } from '@apollo/client/utilities';
+import { ChakraProvider } from '@chakra-ui/react';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles';
+import { ConfirmContextProvider } from 'chakra-confirm';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import React from 'react';
+
+import PageLayout from '../components/PageLayout';
+import { AuthContextProvider } from '../modules/auth/store';
+import theme from '../styles/theme';
 
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';

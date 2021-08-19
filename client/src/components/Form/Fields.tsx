@@ -1,6 +1,6 @@
-import { Control, Controller } from 'react-hook-form';
 import { TextField } from '@material-ui/core';
 import React from 'react';
+import { Control, Controller } from 'react-hook-form';
 
 interface InputFieldProps<T> {
   name: string;

@@ -1,6 +1,6 @@
+import { ObjectType, Field, Int } from 'type-graphql';
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from './User';
-import { ObjectType, Field, Int } from 'type-graphql';
 
 // TODO: Make this enum
 export type InstanceRoles = 'admin' | 'owner';

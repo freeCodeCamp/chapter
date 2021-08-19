@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { NextPage } from 'next';
-import { EventFormData } from '../components/EventFormUtils';
-import { Layout } from '../../shared/components/Layout';
-import EventForm from '../components/EventForm';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import {
   useCreateEventMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
+import { Layout } from '../../shared/components/Layout';
+import EventForm from '../components/EventForm';
+import { EventFormData } from '../components/EventFormUtils';
 import { EVENTS } from '../graphql/queries';
 
 export const NewEventPage: NextPage = () => {

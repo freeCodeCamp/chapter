@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from 'type-graphql';
+import { Column, Entity, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { User } from './User';
-import { UserChapterRole } from './UserChapterRole';
 import { UserBan } from './UserBan';
+import { UserChapterRole } from './UserChapterRole';
 
 @ObjectType()
 @Entity({ name: 'chapters' })

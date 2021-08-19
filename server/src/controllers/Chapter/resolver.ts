@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
-import { Chapter, User } from 'src/models';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
+import { Chapter, User } from 'src/models';
 
 @Resolver()
 export class ChapterResolver {

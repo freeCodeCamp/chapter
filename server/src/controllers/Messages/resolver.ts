@@ -1,7 +1,7 @@
 import { Resolver, Mutation, Arg } from 'type-graphql';
-import MailerService from 'src/services/MailerService';
-import { SendEmailInputs } from './inputs';
 import { Email } from './Email';
+import { SendEmailInputs } from './inputs';
+import MailerService from 'src/services/MailerService';
 
 @Resolver()
 export class EmailResolver {

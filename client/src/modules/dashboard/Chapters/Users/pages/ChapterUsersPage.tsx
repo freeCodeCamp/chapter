@@ -1,13 +1,13 @@
-import React from 'react';
-import { NextPage } from 'next';
-
-import { useChapterUsersQuery } from '../../../../../generated/graphql';
-import { Layout } from '../../../shared/components/Layout';
 import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import { getId } from 'helpers/getId';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import React from 'react';
+
+import { useChapterUsersQuery } from '../../../../../generated/graphql';
+import { Layout } from '../../../shared/components/Layout';
+import { getId } from 'helpers/getId';
 
 export const ChapterUsersPage: NextPage = () => {
   const router = useRouter();

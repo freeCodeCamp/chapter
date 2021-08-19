@@ -1,7 +1,7 @@
+import { Field, ObjectType, Float } from 'type-graphql';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
-import { Field, ObjectType, Float } from 'type-graphql';
 
 interface VenueProps {
   name: string;

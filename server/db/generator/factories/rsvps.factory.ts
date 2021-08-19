@@ -1,6 +1,6 @@
-import { Event, User, Rsvp } from 'src/models';
-import { random, randomItems } from '../lib/random';
 import { date } from 'faker';
+import { random, randomItems } from '../lib/random';
+import { Event, User, Rsvp } from 'src/models';
 
 const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
   const rsvps: Rsvp[] = [];

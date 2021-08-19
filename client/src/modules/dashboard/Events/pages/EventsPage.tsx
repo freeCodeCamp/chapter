@@ -1,12 +1,12 @@
-import React from 'react';
-import { NextPage } from 'next';
 import { Heading, VStack, Text, Flex } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
+import { NextPage } from 'next';
+import React from 'react';
 
-import { useEventsQuery } from 'generated/graphql';
-import { Layout } from '../../shared/components/Layout';
 import { formatDate } from '../../../../helpers/date';
+import { Layout } from '../../shared/components/Layout';
+import { useEventsQuery } from 'generated/graphql';
 
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();

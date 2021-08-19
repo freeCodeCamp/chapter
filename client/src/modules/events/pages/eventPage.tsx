@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-import { NextPage } from 'next';
+import { LockIcon } from '@chakra-ui/icons';
 import {
   Heading,
   VStack,
@@ -12,15 +11,16 @@ import {
   Avatar,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from 'chakra-next-link';
-import { LockIcon } from '@chakra-ui/icons';
 import { useConfirm } from 'chakra-confirm';
+import { Link } from 'chakra-next-link';
+import { NextPage } from 'next';
+import React, { useMemo } from 'react';
 
-import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
-import { useParam } from 'hooks/useParam';
+import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
-import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
+import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
+import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
   const id = useParam('eventId');

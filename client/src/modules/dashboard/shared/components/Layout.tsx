@@ -1,7 +1,7 @@
-import React from 'react';
 import { HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
+import React from 'react';
 
 const links = [
   { text: 'Chapters', link: '/dashboard/chapters' },

@@ -1,8 +1,8 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn, Column } from 'typeorm';
-import { User } from './User';
-import { Chapter } from './Chapter';
-import { BaseModel } from './BaseModel';
 import { ObjectType, Field, Int } from 'type-graphql';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn, Column } from 'typeorm';
+import { BaseModel } from './BaseModel';
+import { Chapter } from './Chapter';
+import { User } from './User';
 
 // registerEnumType(ChapterRoles, { name: 'ChapterRoles' });
 // TODO: Make this enum

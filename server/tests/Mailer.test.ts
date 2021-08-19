@@ -1,6 +1,6 @@
 import assert from 'assert';
 import chai, { expect } from 'chai';
-import sinon from 'sinon';
+import { stub, restore } from 'sinon';
 import sinonChai from 'sinon-chai';
 import MailerService from 'src/services/MailerService';
 import Utilities from 'src/util/Utilities';
@@ -8,12 +8,12 @@ import Utilities from 'src/util/Utilities';
 chai.use(sinonChai);
 
 beforeEach(() => {
-  sinon.stub(console, 'warn');
+  stub(console, 'warn');
 });
 
 afterEach(() => {
   // Restore the default sandbox here
-  sinon.restore();
+  restore();
 });
 
 // Setup

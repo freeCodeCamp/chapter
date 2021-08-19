@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { graphql, GraphQLSchema } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { createSchema } from './createSchema';

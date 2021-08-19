@@ -8,6 +8,10 @@
       "matchCurrentVersion": "!/^0/",
       "automerge": true,
       "automergeType": "branch"
+    },
+    {
+      "groupName": "Jest and ts-jest",
+      "matchPackageNames": ["jest", "ts-jest", "@types/jest"]
     }
   ],
   "rangeStrategy": "pin"

@@ -37,6 +37,8 @@ export const main = async (app: Express) => {
     }),
   });
 
+  await server.start();
+
   server.applyMiddleware({ app, cors: false, path: '/graphql' });
 };
 

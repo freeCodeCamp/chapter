@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import 'cypress-wait-until';
 import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
@@ -91,4 +92,13 @@ Cypress.Commands.add('interceptGQL', (operationName) => {
       req.alias = `GQL${operationName}`;
     }
   });
+});
+
+Cypress.Commands.add('waitUntilMail', (alias) => {
+  cy.waitUntil(() =>
+    cy
+      .mhGetAllMails()
+      .as(alias)
+      .then((mails) => mails?.length > 0),
+  );
 });

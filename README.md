@@ -43,6 +43,7 @@ We are using the following tools:
   * [sinon](https://sinonjs.org/)
   * [sinon-chai](https://github.com/domenic/sinon-chai)
 
+For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
 ## User Stories
 
 ### MVP

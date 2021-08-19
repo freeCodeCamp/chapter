@@ -502,6 +502,21 @@ export type ChapterQuery = {
   }>;
 };
 
+export type ChapterUsersQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type ChapterUsersQuery = {
+  __typename?: 'Query';
+  chapter?: Maybe<{
+    __typename?: 'Chapter';
+    users: Array<{
+      __typename?: 'UserChapterRole';
+      user: { __typename?: 'User'; name: string; email: string };
+    }>;
+  }>;
+};
+
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChaptersQuery = {
@@ -1106,6 +1121,69 @@ export type ChapterLazyQueryHookResult = ReturnType<typeof useChapterLazyQuery>;
 export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
+>;
+export const ChapterUsersDocument = gql`
+  query chapterUsers($id: Int!) {
+    chapter(id: $id) {
+      users {
+        user {
+          name
+          email
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChapterUsersQuery__
+ *
+ * To run a query within a React component, call `useChapterUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterUsersQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChapterUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ChapterUsersQuery,
+    ChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChapterUsersQuery, ChapterUsersQueryVariables>(
+    ChapterUsersDocument,
+    options,
+  );
+}
+export function useChapterUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChapterUsersQuery,
+    ChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChapterUsersQuery, ChapterUsersQueryVariables>(
+    ChapterUsersDocument,
+    options,
+  );
+}
+export type ChapterUsersQueryHookResult = ReturnType<
+  typeof useChapterUsersQuery
+>;
+export type ChapterUsersLazyQueryHookResult = ReturnType<
+  typeof useChapterUsersLazyQuery
+>;
+export type ChapterUsersQueryResult = Apollo.QueryResult<
+  ChapterUsersQuery,
+  ChapterUsersQueryVariables
 >;
 export const ChaptersDocument = gql`
   query chapters {

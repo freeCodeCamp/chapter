@@ -1,0 +1,20 @@
+# Dev specific configuration
+version: "3.7"
+services:
+  app:
+    command: npm run dev
+    volumes:
+      - ./server:/usr/chapter/server
+
+  client:
+    command: npm run dev
+    volumes:
+      - ./client:/usr/chapter/client
+
+  mailhog:
+    depends_on:
+      - app
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

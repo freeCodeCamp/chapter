@@ -24,7 +24,7 @@ jobs:
       - name: Type check client
         run: cd client && npx tsc
       - name: Type check server
-        run: npx tsc
+        run: cd server && npx tsc
       - name: Build client 
         run: npm run build:client
       - name: Run local tests
@@ -32,12 +32,8 @@ jobs:
       - name: Start Docker service
         env: 
           IS_DOCKER: true
-        run: docker-compose up -d
+        run: DOCKER_BUILDKIT=1 docker-compose up -d
       - name: Seed the Docker db
         env:
           IS_DOCKER: true
         run: npm run db:reset
-      - name: Run Docker tests
-        run: docker-compose exec -T app npm run test
-        env:
-          IS_DOCKER: true

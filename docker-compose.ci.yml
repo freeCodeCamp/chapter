@@ -1,0 +1,16 @@
+# Production-like configuration for testing
+version: "3.7"
+services:
+  app:
+    command: npm start
+
+  client:
+    command: npm start
+
+  mailhog:
+    depends_on:
+      - app
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

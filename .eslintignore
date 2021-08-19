@@ -4,3 +4,6 @@ next.config.js
 client/@types/
 
 server/migrations
+server/src/**/*.js
+server/db/**/*.js
+server/tests/**/*.js

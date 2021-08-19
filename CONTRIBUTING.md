@@ -211,8 +211,7 @@ You are almost ready to make changes to files, but before that you should **alwa
 
     Verify all automated code quality checks will pass before submitting a pull request because PRs with failures will not be merged.
 
-    * When using _Docker Mode_, run `NODE_ENV=test docker-compose exec app npm run lint-and-test` OR `NODE_ENV=test docker-compose exec app npm run test:watch` to start "watch" mode.
-    * When using _Manual Mode_, run `npm run lint-and-test` OR `npm run test:watch` to start "watch" mode.
+    To run the checks locally use `npm run lint-and-test` OR `npm run test:watch` to start "watch" mode.
  
 6. Stage the changes and make a commit
 
@@ -315,7 +314,7 @@ You have successfully created a PR. Congratulations! :tada:
 # Running the Application
 **Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary>Step 1 - Install Node.js and Run npx</summary>
+<details><summary>Step 1 - Install Node.js and dependencies</summary>
  
 **Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
 > Note: Close and re-open your terminal after the installation finishes.
@@ -325,7 +324,7 @@ Ensure the Node.js tools are installed:
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
 * npm 6 or greater - `npm --version` and the output should be like **6**.14.11
 
-Run `npx i` to install all of the necessary dependencies.
+Run `npm i` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory
@@ -367,9 +366,9 @@ Run _Docker Compose_ `docker-compose up` from the root code directory and wait f
     app_1     | Listening on http://localhost:5000/graphql
 
 Once Docker is running:
-* The server will automatically restart anytime you save a _.ts_ or _.js_ file within the _server/_ directory.
+* The server will automatically restart anytime you save a _.ts_ or _.js_ file used by the server.
 * You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
-* If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services. 
+* If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services.
 
 Proceed to the **Prepare the Database for Development** step, below.
 
@@ -510,11 +509,11 @@ If you prefer to run some or all of the steps manually, then they are:
 
 `npm run typeorm entity:create -- --name=ModelName`
 
-This would create _ModelName.ts_ in _server/models_
+This would create _ModelName.ts_ in _server/src/models_
 
-To keep everything DRY, add `extends BaseModel` to the class and import it from 'server/models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
+To keep everything DRY, add `extends BaseModel` to the class and import it from 'models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
 
-You could also run `npx typeorm` since here you're not actually loading any ts files, but because regular `npx typeorm` runs inside of node it import from _.ts_ files, so we run it with `ts-node` and our custom server config (check package.json)
+`npx typeorm` can also be used, but must be run inside _server_.
 
 #### Creating a Migration
 

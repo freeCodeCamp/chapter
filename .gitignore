@@ -62,3 +62,13 @@ typings/
 
 # Jetbrains project settings
 .idea/
+
+# tsc output
+
+/server/src/**/*.js
+/server/db/**/*.js
+/server/tests/**/*.js
+/server/src/**/*.map
+/server/db/**/*.map
+/server/tests/**/*.map
+tsconfig.tsbuildinfo

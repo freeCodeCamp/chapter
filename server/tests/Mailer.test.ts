@@ -61,7 +61,7 @@ describe('MailerService Class', () => {
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {
-    sinon.stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
+    stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
     new MailerService(emailAddresses, subject, htmlEmail);
     expect(console.warn).to.have.been.calledOnce;
   });

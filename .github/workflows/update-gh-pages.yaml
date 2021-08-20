@@ -1,0 +1,46 @@
+name: Update GitHub pages
+on:
+  push:
+    branches: [main]
+jobs:
+  publish:
+    name: Publish to GitHub pages
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [14.x]
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: chapter
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      # since our lockfiles are v2, we should use npm 7
+      - name: Install
+        run: npm i -g npm@7 && npm i
+      - name: Create the schema
+        env:
+          IS_DOCKER: false
+        run: "npm run db:sync"
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+      - name: Run SchemaSpy
+        run: |
+          docker run --user="root" --network="host" -v "$PWD:/output" schemaspy/schemaspy --debug -vizjs -t pgsql -db chapter -host localhost -port 5432 -u postgres -p password
+
+      - name: Publish to GitHub pages
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "docs: update database documentation"
+          git push

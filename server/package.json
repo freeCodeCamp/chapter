@@ -48,7 +48,7 @@
     "pg-hstore": "2.3.4",
     "reflect-metadata": "0.1.13",
     "swagger-ui-express": "4.1.6",
-    "tsconfig-paths": "3.10.1",
+    "tsconfig-paths": "3.11.0",
     "type-graphql": "1.1.1",
     "typeorm": "0.2.36"
   },

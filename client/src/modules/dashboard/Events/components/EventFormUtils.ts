@@ -24,8 +24,8 @@ export const fields: Field[] = [
   {
     key: 'image',
     type: 'text',
-    label: 'Event title',
-    placeholder: 'Foo and the Bars',
+    label: 'Event image',
+    placeholder: 'https://www.example.image/url',
   },
   {
     key: 'url',

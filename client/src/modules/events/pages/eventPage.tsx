@@ -116,8 +116,10 @@ export const EventPage: NextPage = () => {
         </Link>
       </Heading>
       <Text>{data.event.description}</Text>
-
-      <Heading>RSVPs:</Heading>
+      <VStack align="start">
+        {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}
+        {waitlist && <Heading>Waitlist:{waitlist.length}</Heading>}
+      </VStack>
       {userRsvped === 'rsvp' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>

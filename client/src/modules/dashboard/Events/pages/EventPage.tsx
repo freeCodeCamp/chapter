@@ -86,7 +86,12 @@ export const EventPage: NextPage = () => {
 
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
         <DataTable
-          title="RSVPs:"
+          title={
+            'RSVPs: ' +
+            (data.event.rsvps
+              ? data.event.rsvps.filter((r) => !r.on_waitlist).length
+              : '0')
+          }
           data={data.event.rsvps.filter((r) => !r.on_waitlist)}
           keys={['id', 'user', 'ops'] as const}
           emptyText="No users"
@@ -102,7 +107,12 @@ export const EventPage: NextPage = () => {
         />
 
         <DataTable
-          title="Waitlist:"
+          title={
+            'Waitlist: ' +
+            (data.event.rsvps
+              ? data.event.rsvps.filter((r) => r.on_waitlist).length
+              : 0)
+          }
           data={data.event.rsvps.filter((r) => r.on_waitlist)}
           keys={['id', 'user', 'ops'] as const}
           emptyText="No users"

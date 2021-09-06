@@ -42,7 +42,7 @@
     "jsonwebtoken": "8.5.1",
     "morgan": "1.10.0",
     "next": "11.1.2",
-    "node-fetch": "2.6.1",
+    "node-fetch": "2.6.2",
     "nodemailer": "6.6.3",
     "pg": "8.7.1",
     "pg-hstore": "2.3.4",

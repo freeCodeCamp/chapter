@@ -1,4 +1,5 @@
-import { Button, FormControl } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
+import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -73,9 +74,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
         </FormControl>
       ))}
       <Button
-        className={styles.item}
-        variant="contained"
-        color="primary"
+        mt="20px"
+        variant="solid"
+        colorScheme="blue"
         type="submit"
         disabled={loading}
       >

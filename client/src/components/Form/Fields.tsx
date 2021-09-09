@@ -30,7 +30,7 @@ export const Field: React.FC<BaseProps<any>> = ({
       control={control}
       render={({ field }) => (
         <Fragment>
-          <FormLabel>
+          <FormLabel htmlFor={name}>
             {label} {required ? '*' : ''} :{' '}
           </FormLabel>
           <Input

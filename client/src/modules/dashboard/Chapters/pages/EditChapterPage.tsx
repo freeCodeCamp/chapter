@@ -59,7 +59,7 @@ export const EditChapterPage: NextPage = () => {
         data={data}
         loading={loadingUpdate}
         onSubmit={onSubmit}
-        submitText={'Update chapter'}
+        submitText={'Save Chapter Changes'}
       />
     </Layout>
   );

@@ -1,5 +1,5 @@
-import { TextField } from '@material-ui/core';
-import React from 'react';
+import { Input, FormLabel } from '@chakra-ui/react';
+import React, { Fragment } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 interface InputFieldProps<T> {
@@ -29,15 +29,21 @@ export const Field: React.FC<BaseProps<any>> = ({
     <Controller
       control={control}
       render={({ field }) => (
-        <TextField
-          {...field}
-          id={name}
-          name={name}
-          type={type}
-          label={label}
-          placeholder={placeholder}
-          required={required}
-        />
+        <Fragment>
+          <FormLabel>
+            {label} {required ? '*' : ''} :{' '}
+          </FormLabel>
+          <Input
+            {...field}
+            id={name}
+            name={name}
+            type={type}
+            label={label}
+            placeholder={placeholder}
+            required={required}
+            variant="flushed"
+          />
+        </Fragment>
       )}
       name={name}
       rules={{ required }}

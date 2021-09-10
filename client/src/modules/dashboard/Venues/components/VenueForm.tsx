@@ -58,6 +58,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     >
       {fields.map(([name, required, number]) => (
         <Field
+          key={name}
           {...{ control, name }}
           type={number ? 'number' : 'text'}
           required={required}

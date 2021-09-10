@@ -62,6 +62,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     >
       {fields.map(([name, required, number]) => (
         <Field
+          key={name}
           {...{ control, name }}
           type={number ? 'number' : 'text'}
           required={required}

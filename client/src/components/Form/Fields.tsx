@@ -1,5 +1,5 @@
-import { Input, FormLabel } from '@chakra-ui/react';
-import React, { Fragment } from 'react';
+import { Input, FormLabel, FormControl } from '@chakra-ui/react';
+import React from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 interface InputFieldProps<T> {
@@ -29,10 +29,8 @@ export const Field: React.FC<BaseProps<any>> = ({
     <Controller
       control={control}
       render={({ field }) => (
-        <Fragment>
-          <FormLabel htmlFor={name}>
-            {label} {required ? '*' : ''} :{' '}
-          </FormLabel>
+        <FormControl mt="20px" key={name} isRequired={required}>
+          <FormLabel htmlFor={name}>{label}</FormLabel>
           <Input
             {...field}
             id={name}
@@ -43,7 +41,7 @@ export const Field: React.FC<BaseProps<any>> = ({
             required={required}
             variant="flushed"
           />
-        </Fragment>
+        </FormControl>
       )}
       name={name}
       rules={{ required }}

@@ -1,4 +1,4 @@
-import { Button, FormControl } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Field } from '../../../../components/Form/Fields';
@@ -57,13 +57,11 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
       style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
     >
       {fields.map(([name, required, number]) => (
-        <FormControl mt="20px" key={name}>
-          <Field
-            {...{ control, name }}
-            type={number ? 'number' : 'text'}
-            required={required}
-          />
-        </FormControl>
+        <Field
+          {...{ control, name }}
+          type={number ? 'number' : 'text'}
+          required={required}
+        />
       ))}
       <Button
         mt="20px"

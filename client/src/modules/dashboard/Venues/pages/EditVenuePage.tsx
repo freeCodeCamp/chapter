@@ -62,7 +62,7 @@ export const EditVenuePage: NextPage = () => {
         data={data}
         loading={loadingUpdate}
         onSubmit={onSubmit}
-        submitText={'Update venue'}
+        submitText={'Save Venue Changes'}
       />
     </Layout>
   );

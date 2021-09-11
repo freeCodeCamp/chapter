@@ -76,7 +76,7 @@ export const EditEventPage: NextPage = () => {
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}
-        submitText={'Update event'}
+        submitText={'Save Event Changes'}
       />
     </Layout>
   );

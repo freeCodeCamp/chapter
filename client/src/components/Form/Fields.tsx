@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core';
+import { Input, FormLabel, FormControl } from '@chakra-ui/react';
 import React from 'react';
 import { Control, Controller } from 'react-hook-form';
 
@@ -29,15 +29,19 @@ export const Field: React.FC<BaseProps<any>> = ({
     <Controller
       control={control}
       render={({ field }) => (
-        <TextField
-          {...field}
-          id={name}
-          name={name}
-          type={type}
-          label={label}
-          placeholder={placeholder}
-          required={required}
-        />
+        <FormControl mt="20px" key={name} isRequired={required}>
+          <FormLabel htmlFor={name}>{label}</FormLabel>
+          <Input
+            {...field}
+            id={name}
+            name={name}
+            type={type}
+            label={label}
+            placeholder={placeholder}
+            required={required}
+            variant="flushed"
+          />
+        </FormControl>
       )}
       name={name}
       rules={{ required }}

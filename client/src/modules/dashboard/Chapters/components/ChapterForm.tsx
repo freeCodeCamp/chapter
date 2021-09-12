@@ -1,10 +1,8 @@
-import { Button, FormControl } from '@material-ui/core';
+import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-
 import { Field } from '../../../../components/Form/Fields';
 import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
-import useFormStyles from '../../shared/components/formStyles';
 
 export type ChapterFormData = Omit<
   Chapter,
@@ -42,7 +40,6 @@ const fields: Fields[] = [
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { loading, onSubmit, data, submitText } = props;
   const chapter = data?.chapter;
-  const styles = useFormStyles();
 
   const defaultValues: ChapterFormData = {
     name: chapter?.name ?? '',
@@ -61,21 +58,20 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     <form
       aria-label={submitText}
       onSubmit={handleSubmit(onSubmit)}
-      className={styles.form}
+      style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
     >
       {fields.map(([name, required, number]) => (
-        <FormControl className={styles.item} key={name}>
-          <Field
-            {...{ control, name }}
-            type={number ? 'number' : 'text'}
-            required={required}
-          />
-        </FormControl>
+        <Field
+          key={name}
+          {...{ control, name }}
+          type={number ? 'number' : 'text'}
+          required={required}
+        />
       ))}
       <Button
-        className={styles.item}
-        variant="contained"
-        color="primary"
+        mt="20px"
+        variant="solid"
+        colorScheme="blue"
         type="submit"
         disabled={loading}
       >

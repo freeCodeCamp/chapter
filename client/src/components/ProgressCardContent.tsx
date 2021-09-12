@@ -1,4 +1,4 @@
-import { CardContent, CircularProgress } from '@material-ui/core';
+import { CircularProgress, Box } from '@chakra-ui/react';
 import React from 'react';
 
 interface Props {
@@ -8,6 +8,10 @@ interface Props {
 const ProgressCardContent: React.FC<Props> = ({
   loading = false,
   children,
-}) => <CardContent>{loading ? <CircularProgress /> : children}</CardContent>;
+}) => (
+  <Box m="5px 0px">
+    {loading ? <CircularProgress isIndeterminate /> : children}
+  </Box>
+);
 
 export default ProgressCardContent;

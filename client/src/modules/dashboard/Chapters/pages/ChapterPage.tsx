@@ -1,21 +1,14 @@
-import { makeStyles, Card, Typography } from '@material-ui/core';
+import { Heading } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
-
+import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import { Layout } from '../../shared/components/Layout';
 
-const useStyles = makeStyles(() => ({
-  responseDiv: {
-    margin: '15px 0',
-  },
-}));
-
 export const ChapterPage: NextPage = () => {
-  const styles = useStyles();
   const router = useRouter();
   const id = getId(router.query) || -1;
 
@@ -25,7 +18,7 @@ export const ChapterPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.responseDiv}>{error}</div>}
+        {error && <div style={{ margin: '15px 0' }}>{error}</div>}
       </Layout>
     );
   }
@@ -33,10 +26,10 @@ export const ChapterPage: NextPage = () => {
   return (
     <Layout>
       <Card style={{ marginTop: '12px' }}>
-        <ProgressCardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+        <ProgressCardContent loading={loading}>
+          <Heading as="h5" fontWeight="normal">
             {data.chapter.name}
-          </Typography>
+          </Heading>
         </ProgressCardContent>
       </Card>
       <h3>Placeholder for events...</h3>

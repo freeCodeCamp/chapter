@@ -11,7 +11,6 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { useVenuesQuery } from '../../../../generated/graphql';
-import useFormStyles from '../../shared/components/formStyles';
 import {
   EventFormProps,
   fields,
@@ -45,14 +44,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const { register, handleSubmit, watch, setValue } = useForm<EventFormData>({
     defaultValues,
   });
-  const styles = useFormStyles();
   const inviteOnly = watch('invite_only');
 
   return (
     <form
       aria-label={submitText}
       onSubmit={handleSubmit(onSubmit)}
-      className={styles.form}
+      style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
     >
       <VStack align="flex-start">
         {fields.map((field) =>
@@ -104,7 +102,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </FormControl>
         )}
 
-        <Button colorScheme="blue" type="submit" isDisabled={loading}>
+        <Button
+          width="100%"
+          colorScheme="blue"
+          type="submit"
+          isDisabled={loading}
+        >
           {submitText}
         </Button>
       </VStack>

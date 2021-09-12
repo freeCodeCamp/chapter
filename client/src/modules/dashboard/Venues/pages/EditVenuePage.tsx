@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -12,16 +11,9 @@ import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
 
-const useStyles = makeStyles(() => ({
-  responseDiv: {
-    margin: '15px 0',
-  },
-}));
-
 export const EditVenuePage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-  const styles = useStyles();
   const router = useRouter();
   const id = getId(router.query) || -1;
 
@@ -51,7 +43,7 @@ export const EditVenuePage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.responseDiv}>{error}</div>}
+        {error && <div style={{ margin: '15px 0px' }}>{error}</div>}
       </Layout>
     );
   }
@@ -62,7 +54,7 @@ export const EditVenuePage: NextPage = () => {
         data={data}
         loading={loadingUpdate}
         onSubmit={onSubmit}
-        submitText={'Update venue'}
+        submitText={'Save Venue Changes'}
       />
     </Layout>
   );

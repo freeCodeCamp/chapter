@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -12,16 +11,9 @@ import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 
-const useStyles = makeStyles(() => ({
-  responseDiv: {
-    margin: '15px 0',
-  },
-}));
-
 export const EditChapterPage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-  const styles = useStyles();
   const router = useRouter();
   const id = getId(router.query) || -1;
 
@@ -48,7 +40,7 @@ export const EditChapterPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.responseDiv}>{error}</div>}
+        {error && <div style={{ margin: '15px 0px' }}>{error}</div>}
       </Layout>
     );
   }
@@ -59,7 +51,7 @@ export const EditChapterPage: NextPage = () => {
         data={data}
         loading={loadingUpdate}
         onSubmit={onSubmit}
-        submitText={'Update chapter'}
+        submitText={'Save Chapter Changes'}
       />
     </Layout>
   );

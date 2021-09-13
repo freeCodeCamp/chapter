@@ -77,7 +77,7 @@
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-config-react": "1.1.7",
-    "eslint-import-resolver-typescript": "2.4.0",
+    "eslint-import-resolver-typescript": "2.5.0",
     "eslint-plugin-cypress": "2.11.3",
     "eslint-plugin-import": "2.24.2",
     "eslint-plugin-jest": "24.4.0",

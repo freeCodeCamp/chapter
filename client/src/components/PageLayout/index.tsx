@@ -1,14 +1,13 @@
+import { Box } from '@chakra-ui/layout';
 import React from 'react';
 
 import { Header } from './Header';
-import usePageLayoutStyles from './pageLayout.styles';
 
 const PageLayout: React.FC = ({ children }) => {
-  const classes = usePageLayoutStyles();
   return (
     <>
       <Header />
-      <div className={classes.pageRoot}>{children}</div>
+      <Box px={[4, 4, 8, 16]}>{children}</Box>
     </>
   );
 };

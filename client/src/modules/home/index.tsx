@@ -28,7 +28,12 @@ const Home: React.FC = () => {
       });
       setHasMore(res.data.paginatedEvents.length > 0);
     } catch (err) {
-      toast({ title: err.message || err.name || err });
+      if (err instanceof Error) {
+        toast({ title: err.message || err.name || err });
+      } else {
+        toast({ title: 'An unexpected error occurred' });
+        console.log(err);
+      }
     }
   };
 

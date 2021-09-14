@@ -6,6 +6,10 @@
   "directories": {
     "doc": "docs"
   },
+  "engines": {
+    "node": "^14",
+    "npm": "^7"
+  },
   "scripts": {
     "typeorm": "cd server && node_modules/.bin/typeorm",
     "db:generate": "npm run typeorm -- migration:generate -n",

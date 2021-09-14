@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { execSync, spawn } = require('child_process');
-const { existsSync, copyFileSync } = require('fs');
-const isDocker = require('is-docker');
+import { execSync, spawn } from 'child_process';
+import { existsSync, copyFileSync } from 'fs';
+import isDocker from 'is-docker';
 
 console.log('--------------------------');
 console.log('🎉 WELCOME TO CHAPTER 🎉');
@@ -14,9 +13,9 @@ if (!isDocker()) {
   install('client', () => install('server', setup));
 }
 
-function install(package, cb) {
-  console.log(`Installing ${package}...`);
-  const child = spawn('npm', ['i'], { cwd: package });
+function install(pkg, cb) {
+  console.log(`Installing ${pkg}...`);
+  const child = spawn('npm', ['i'], { cwd: pkg });
   child.on('error', (err) => {
     console.error(err);
   });
@@ -28,7 +27,7 @@ function install(package, cb) {
     if (code === 0) {
       cb();
     } else {
-      console.log(`Installing ${package} returned error code`, code);
+      console.log(`Installing ${pkg} returned error code`, code);
     }
   });
 }

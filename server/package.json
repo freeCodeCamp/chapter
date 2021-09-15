@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "rimraf tsconfig.tsbuildinfo && ttsc",
     "start": "node ./src/app.js",
-    "dev": "concurrently \"ttsc --watch\" \"node-dev --notify=false src/app.js\""
+    "dev": "concurrently \"ttsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\""
   },
   "repository": {
     "type": "git",

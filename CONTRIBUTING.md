@@ -72,7 +72,7 @@ Follow these steps to fork the repository:
     * _Git Bash_ - this terminal shell emulates Linux and is included in _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
     * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
 
-**Prerequisite**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.
+**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.  You will also need to have [Node.js](https://nodejs.org/en/) 14 and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 7.  We recommend using [nvm](https://github.com/nvm-sh/nvm) to simplify the process of installing Node.js and `npm i -g npm@7` to update npm to a compatible version.
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
     * SSH - uses SSH key authentication instead of a username and password.
@@ -549,3 +549,5 @@ When not running locally, the client needs to be passed the server's location by
 # Troubleshooting
 
 Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+
+If you see a JsonWebTokenError in the console, it's likely that you need to clear the token from your browser's local storage.

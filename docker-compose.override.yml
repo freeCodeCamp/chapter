@@ -2,7 +2,7 @@
 version: "3.7"
 services:
   app:
-    command: npm run dev
+    command: sh -c './wait-for db:5432 -- npm run dev'
     volumes:
       - ./server:/usr/chapter/server
 

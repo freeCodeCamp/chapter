@@ -322,7 +322,7 @@ You have successfully created a PR. Congratulations! :tada:
 Ensure the Node.js tools are installed:
 
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
-* npm 6 or greater - `npm --version` and the output should be like **6**.14.11
+* npm 7 or greater - `npm --version` and the output should be like **7**.23.0
 
 Run `npm i` to install all of the necessary dependencies.
 

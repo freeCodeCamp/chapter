@@ -20,7 +20,7 @@ describe('events dashboard', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create an event', async () => {
+  it('lets a user create an event', () => {
     const fix = {
       title: 'Test Event',
       description: 'Test Description',

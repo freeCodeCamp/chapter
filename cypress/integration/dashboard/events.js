@@ -44,8 +44,9 @@ describe('events dashboard', () => {
     );
     // TODO: it shouldn't be necessary to clear the date textboxes - the page needs to
     // be fixed
-    cy.find('input[name=start_at]').clear().type(fix.startAt);
-    cy.find('input[name=ends_at]').clear().type(fix.endAt);
+    cy.get('input[name=start_at]').clear().type(fix.startAt);
+
+    cy.get('input[name=ends_at]').clear().type(fix.endAt);
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();
@@ -60,7 +61,9 @@ describe('events dashboard', () => {
       .as('venueTitle');
 
     cy.findByRole('form', { name: 'Add event' }).submit();
-    cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
+    cy.wait(5000)
+      .location('pathname')
+      .should('match', /^\/dashboard\/events\/\d/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(fix)).each(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled

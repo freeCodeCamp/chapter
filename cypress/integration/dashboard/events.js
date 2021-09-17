@@ -42,11 +42,10 @@ describe('events dashboard', () => {
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',
     );
-    // TODO: it shouldn't be necessary to clear the date textboxes - the page needs to
-    // be fixed
-    cy.get('input[name=start_at]').clear().type(fix.startAt);
 
-    cy.get('input[name=ends_at]').clear().type(fix.endAt);
+    cy.findByLabelText(/^Start at/).type(fix.startAt);
+
+    cy.findByLabelText(/^End at/).type(fix.endAt);
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();

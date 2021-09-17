@@ -1,6 +1,7 @@
+import { IsUrl } from 'class-validator';
 import { InputType, Field, Int } from 'type-graphql';
 import { VenueType } from 'src/models';
-import { IsUrl } from 'class-validator';
+
 @InputType()
 export class CreateEventInputs {
   @Field(() => String)

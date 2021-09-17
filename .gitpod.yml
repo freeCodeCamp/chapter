@@ -14,7 +14,8 @@ tasks:
       echo 'export IS_DOCKER=false' >> ~/.bashrc &&
       export IS_DOCKER=false &&
       echo NEXT_PUBLIC_APOLLO_SERVER=$(gp url 5000) > client/.env.development.local &&
-      nvm install lts/fermium && nvm alias default lts/fermium
+      nvm install lts/fermium && nvm alias default lts/fermium &&
+      npm i -g npm@7
     # the rest, environment variables, installation and db setup, get persisted,
     # so we can save time and use init:
     init: |

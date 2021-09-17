@@ -20,7 +20,7 @@ describe('events dashboard', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create an event', () => {
+  it('lets a user create an event', async () => {
     const fix = {
       title: 'Test Event',
       description: 'Test Description',
@@ -61,9 +61,8 @@ describe('events dashboard', () => {
       .as('venueTitle');
 
     cy.findByRole('form', { name: 'Add event' }).submit();
-    cy.wait(5000)
-      .location('pathname')
-      .should('match', /^\/dashboard\/events\/\d/);
+
+    cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(fix)).each(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled

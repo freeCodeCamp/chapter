@@ -106,10 +106,11 @@ export const EventPage: NextPage = () => {
         modalProps={modalProps}
       />
       <Image
+        data-cy="event-image"
         boxSize="100%"
         maxH="300px"
         src={data.event.image}
-        alt="The freeCodeCamp logo"
+        alt=""
         borderRadius="md"
         objectFit="cover"
       />

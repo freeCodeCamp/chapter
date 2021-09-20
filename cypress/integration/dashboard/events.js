@@ -8,6 +8,7 @@ const testEvent = {
   startAt: '2022-01-01T00:01',
   endAt: '2022-01-02T00:02',
   venueId: '1',
+  image: 'https://test.event.org/image',
 };
 
 describe('events dashboard', () => {
@@ -72,6 +73,7 @@ describe('events dashboard', () => {
     cy.findByRole('textbox', { name: 'Description' }).type(
       testEvent.description,
     );
+    cy.findByRole('textbox', { name: 'Event image' }).type(testEvent.image);
     cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
     cy.findByRole('textbox', { name: 'Video Url' }).type(testEvent.videoUrl);
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);

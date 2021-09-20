@@ -61,7 +61,7 @@ export type CreateEventInputs = {
   chapterId: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
-  image: Scalars['String'];
+  image_url: Scalars['String'];
   invite_only?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
@@ -100,7 +100,7 @@ export type Event = {
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   id: Scalars['Int'];
-  image: Scalars['String'];
+  image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
   rsvps: Array<Rsvp>;
@@ -326,7 +326,7 @@ export type UpdateEventInputs = {
   capacity?: Maybe<Scalars['Float']>;
   description?: Maybe<Scalars['String']>;
   ends_at?: Maybe<Scalars['DateTime']>;
-  image?: Maybe<Scalars['String']>;
+  image_url?: Maybe<Scalars['String']>;
   invite_only?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   start_at?: Maybe<Scalars['DateTime']>;
@@ -623,7 +623,7 @@ export type EventQuery = {
         capacity: number;
         start_at: any;
         ends_at: any;
-        image: string;
+        image_url: string;
         chapter: { __typename?: 'Chapter'; id: number; name: string };
         tags?:
           | Array<{ __typename?: 'Tag'; id: number; name: string }>
@@ -1476,7 +1476,7 @@ export const EventDocument = gql`
       capacity
       start_at
       ends_at
-      image
+      image_url
       chapter {
         id
         name

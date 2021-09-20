@@ -510,7 +510,7 @@
             "deprecationReason": null
           },
           {
-            "name": "image",
+            "name": "image_url",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -976,7 +976,7 @@
             "deprecationReason": null
           },
           {
-            "name": "image",
+            "name": "image_url",
             "description": null,
             "args": [],
             "type": {
@@ -2978,7 +2978,7 @@
             "deprecationReason": null
           },
           {
-            "name": "image",
+            "name": "image_url",
             "description": null,
             "type": {
               "kind": "SCALAR",

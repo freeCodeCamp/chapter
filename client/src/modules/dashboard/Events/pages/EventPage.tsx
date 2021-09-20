@@ -56,9 +56,10 @@ export const EventPage: NextPage = () => {
 
         {data.event.canceled && <Heading color="red.500">Canceled</Heading>}
         <Text>{data.event.description}</Text>
-        {data.event.image && (
+        {data.event.image_url && (
           <Text>
-            Event Image: <a href={data.event.image}>{data.event.image}</a>
+            Event Image Url:{' '}
+            <a href={data.event.image_url}>{data.event.image_url}</a>
           </Text>
         )}
         {data.event.url && (

@@ -37,7 +37,7 @@ export const EVENT = gql`
       capacity
       start_at
       ends_at
-      image
+      image_url
       chapter {
         id
         name

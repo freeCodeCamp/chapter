@@ -92,7 +92,7 @@ export class Event extends BaseModel {
 
   @Field(() => String)
   @Column({ nullable: false })
-  image!: string;
+  image_url!: string;
 
   constructor(params: {
     name: string;
@@ -108,7 +108,7 @@ export class Event extends BaseModel {
     chapter: Chapter;
     invite_only?: boolean;
     user_roles: UserEventRole[];
-    image: string;
+    image_url: string;
   }) {
     super();
     if (params) {
@@ -126,7 +126,7 @@ export class Event extends BaseModel {
         chapter,
         invite_only,
         user_roles,
-        image,
+        image_url,
       } = params;
 
       this.name = name;
@@ -142,7 +142,7 @@ export class Event extends BaseModel {
       this.chapter = chapter;
       this.invite_only = invite_only || false;
       this.user_roles = user_roles;
-      this.image = image;
+      this.image_url = image_url;
     }
   }
 }

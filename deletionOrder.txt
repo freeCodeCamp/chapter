@@ -1,4 +1,3 @@
-migrations
 user_event_roles
 user_chapter_roles
 user_bans

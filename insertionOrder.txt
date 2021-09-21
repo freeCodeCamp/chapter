@@ -10,4 +10,3 @@ rsvps
 user_bans
 user_chapter_roles
 user_event_roles
-migrations

@@ -1,5 +1,5 @@
-date=2021-07-30 20:01:23-0400
-os=Linux 5.4.0-80-generic
+date=2021-09-21 16:20:12+0000
+os=Linux 5.8.0-1041-azure
 schemaspy-version=6.1.0
 schemaspy-build=6.1.0.41 2019-09-17 21:52:57
 diagramImplementation=Viz.js 1.7.1 (Graphviz 2.40.1, Expat 2.1.0, Emscripten 1.37.9)

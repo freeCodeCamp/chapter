@@ -5,8 +5,8 @@
   - [Using GitPod](#using-gitpod)
   - [Using a Traditional Dev Environment](#using-a-traditional-dev-environment)
 - [Running the Application](#running-the-application)
-  - [Docker Mode](#docker-mode)
-  - [Manual Mode](#manual-mode)
+  - [Docker Mode](#running-the-application)
+  - [Manual Mode](#running-the-application)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -46,7 +46,7 @@ All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a G
 
 This approach is more common and involves the step below to setup and configuring a development environment within a local, virtual, or remote operating system that you own or control.
 
-<details><summary>Step 1 - Fork the Repository on GitHub</summary>
+<details><summary><b>Step 1</b> - Fork the Repository on GitHub</summary>
 
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of **_Chapter's_** repository (a.k.a repo) on GitHub.
 
@@ -60,7 +60,7 @@ Follow these steps to fork the repository:
 ![an image illustrating the fork button](docs/assets/how-to-fork.png)
 </details>
 
-<details><summary>Step 2 - Prepare the Development Environment</summary>
+<details><summary><b>Step 2</b> - Prepare the Development Environment</summary>
 
 **Prerequisite**:  All `commands` will be run within a terminal's command line / shell on your development device. Options vary by operating system.
 
@@ -110,7 +110,7 @@ Follow these steps to fork the repository:
 
 </details>
 
-<details><summary>Step 3 - Decide Whether to Run the Application Now, or Later</summary>
+<details><summary><b>Step 3</b> - Decide Whether to Run the Application Now, or Later</summary>
 
 It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
 
@@ -118,7 +118,7 @@ If you want to proceed immeditely with running the client, database, and server,
 
 </details>
 
-<details><summary>Step 4 - Make Changes and Test the Code :fire:</summary>
+<details><summary><b>Step 4</b> - Make Changes and Test the Code :fire:</summary>
 
 You are almost ready to make changes to files, but before that you should **always** follow these steps:
 
@@ -272,7 +272,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     ```
 </details>
 
-<details><summary>Step 5: Propose a Pull Request (PR)</summary>
+<details><summary><b>Step 5</b> - Propose a Pull Request (PR)</summary>
 
 When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
 
@@ -314,7 +314,7 @@ You have successfully created a PR. Congratulations! :tada:
 # Running the Application
 **Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary>Step 1 - Install Node.js and dependencies</summary>
+<details><summary><b>Step 1</b> - Install Node.js and dependencies</summary>
  
 **Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
 > Note: Close and re-open your terminal after the installation finishes.
@@ -332,7 +332,7 @@ This step will **automatically** read and process the _package.json_ file. Most 
     > Note: this is done "magically" via the _postinstall_ hook.
 </details>
     
-<details><summary>Step 2 - Run the App Using Docker Mode OR Manual Mode</summary>
+<details><summary><b>Step 2</b> - Run the App Using Docker Mode OR Manual Mode</summary>
 
 There are two approaches to running the **_Chapter_** application. 
 
@@ -370,8 +370,6 @@ Once Docker is running:
 * You can run any command within the container by prefixing it with `docker-compose exec app`, e.g. `docker-compose exec app npm install express`
 * If you, or someone else via a commit, updates _Dockerfile_ or the contents of its build directory, run `docker-compose build` to get the new image. Then, run `docker-compose up` to start the container's services.
 
-Proceed to the **Prepare the Database for Development** step, below.
-
 ## Manual Mode
 
 This is a much lighter development footprint than _Docker Mode_, but you will need to manually manage the client-server, database, and API server.
@@ -382,16 +380,15 @@ Set _IS_DOCKER=false_ in [_.env_](#env-configuration-file).
 
 Run `npm run both` to start the api-server and client-server:
 
-Proceed to the **Prepare the Database for Development** step, below.
 </details>
 
-<details><summary>Step 3 - Prepare the Database for Development</summary>
-The database may be empty or need to be recreated to get schema changes.
+<details><summary><b>Step 3</b> - Prepare the Database for Development</summary>
+The database may be empty and / or need to be recreated to get the last schema changes.
     
 See the [Initializing the Database](#initializing-the-database) section, below, before continuing to the next step in this section.
 </details>
 
-<details><summary>Step 4 - View the Running Application</summary>
+<details><summary><b>Step 4</b> - View the Running Application</summary>
 Once the app has started you should be able to pull up these URLs in your web browser:
 
 * Main Client Website - http://localhost:3000
@@ -403,7 +400,9 @@ Once the app has started you should be able to pull up these URLs in your web br
 
 <details><summary>What do we need help with right now?</summary>
 
-We are in the very early stages of development on this new application. We value your insight and expertise.  In order to prevent duplicate issues, please search through our existing issues to see if there is one for which you would like to provide feedback. We are currently trying to consolidate many of the issues based on topics like documentation, user interface, API endpoints, and architecture. Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
+We are in the early stages of development on this new application, but we value any contributions and insights.  In order to prevent duplication, please browse and search our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list and [existing issues](https://github.com/freeCodeCamp/chapter/issues).
+  
+Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
 </details>
 
 <details><summary>I found a typo. Should I report an issue before I can make a pull request?</summary>
@@ -413,21 +412,22 @@ For typos and other wording changes, you can directly open pull requests without
     
 <details><summary>I am new to GitHub and Open Source, where should I start?</summary>
 
-Read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
+Please read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
 
-We are excited to help you contribute to any of the topics that you would like to work on. Feel free to ask us questions on the related issue threads, and we will be glad to clarify. Make sure you search for your query before posting a new one. Be polite and patient. Our community of volunteers and moderators are always around to guide you through your queries.
+Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://chat.freecodecamp.org/channel/chapter). Please be polite and patient and our community members will be glad to guide you to next steps.
 
-When in doubt, you can reach out to current project lead(s):
+When in doubt, you can reach out to current lead(s):
 
 | Name            | GitHub | Role |
 |:----------------|:-------|:-----|
+| Oliver Eyton-Williams | [@ojeytonwilliams](https://github.com/ojeytonwilliams) | Project Lead
+| Jim Ciallella | [@allella](https://github.com/allella) | Documentation, Newbie Questions, & Schema
 | Fran Zeko | [@Zeko369](https://github.com/Zeko369) | Admin UI, routes, models, and data migrations
 | Ayotomide Oladipo | [@tomiiide](https://github.com/tomiiide) | Public-facing client pages / forms
 | Timmy Chen | [@timmyichen](https://github.com/timmyichen) | API
 | Patrick San Juan | [@pdotsani](https://github.com/pdotsani) | Google Authentication
 | Jonathan Seubert | [@megajon](https://github.com/megajon) | Email
 | Vaibhav Singh | [@vaibhavsingh97](https://github.com/vaibhavsingh97) | Heroku 1-click deployment
-| Jim Ciallella | [@allella](https://github.com/allella) | Documentation
 | Quincy Larson | [@QuincyLarson](https://github.com/QuincyLarson) | Executive Lead
 
 You are a champion :).
@@ -463,9 +463,9 @@ The initial values of the _.env_ will be copied from the _.env.example_ file. Ho
 [PostgreSQL](https://www.postgresql.org/download) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
 
 ### Schema
-Our [database schema](https://freecodecamp.github.io/chapter/) and [ER Diagram](https://freecodecamp.github.io/chapter/relationships.html) are hosted online on a GitHub pages domain.
+Our [database schema and ER Diagrams are available online](https://opensource.freecodecamp.org/chapter/) using a custom GitHub pages domain using the [SchemaSpy](http://schemaspy.org/) format.
 
-This is [currently manually generated and updated](https://github.com/freeCodeCamp/chapter/issues/54#issuecomment-799653569) on the _gh-pages_ branch by running [SchemaSpy](http://schemaspy.org/).
+Updates to the _gh-pages_ branch and [online schema](https://opensource.freecodecamp.org/chapter/) are [automatically triggered](https://github.com/freeCodeCamp/chapter/pull/695) by commits to the _main_ branch.
 
 ### Username and Password
 * Set your specific values in [_.env_](#env-configuration-file).

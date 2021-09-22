@@ -465,7 +465,7 @@ The initial values of the _.env_ will be copied from the _.env.example_ file. Ho
 ### Schema
 Our [database schema and ER Diagrams are available online](https://opensource.freecodecamp.org/chapter/) using a custom GitHub pages domain using the [SchemaSpy](http://schemaspy.org/) format.
 
-Updates to the _gh-pages_ branch and [online schema](https://opensource.freecodecamp.org/chapter/) are automatically triggered by commits to the _main_ branch, so we no longer require [manual steps](https://github.com/freeCodeCamp/chapter/issues/54#issuecomment-799653569).
+Updates to the _gh-pages_ branch and [online schema](https://opensource.freecodecamp.org/chapter/) are automatically triggered by commits to the _main_ branch.
 
 ### Username and Password
 * Set your specific values in [_.env_](#env-configuration-file).

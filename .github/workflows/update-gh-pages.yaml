@@ -4,6 +4,7 @@ on:
     branches: [main]
 jobs:
   publish:
+    if: github.repository == 'freeCodeCamp/chapter'
     name: Publish to GitHub pages
     runs-on: ubuntu-20.04
     strategy:
@@ -35,7 +36,7 @@ jobs:
           ref: gh-pages
       - name: Run SchemaSpy
         run: |
-          docker run --user="root" --network="host" -v "$PWD:/output" schemaspy/schemaspy --debug -vizjs -t pgsql -db chapter -host localhost -port 5432 -u postgres -p password
+          docker run --user="root" --network="host" -v "$PWD:/output" schemaspy/schemaspy -vizjs -t pgsql -db chapter -host localhost -port 5432 -u postgres -p password
 
       - name: Publish to GitHub pages
         run: |

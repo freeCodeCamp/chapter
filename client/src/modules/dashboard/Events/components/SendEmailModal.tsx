@@ -11,9 +11,9 @@ import {
   ModalOverlay,
 } from '@chakra-ui/modal';
 import { Alert, AlertIcon, AlertDescription } from '@chakra-ui/react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSendEventInviteMutation } from 'generated/graphql';
-
 interface SendEmailModalProps {
   onClose: () => any;
   isOpen: boolean;

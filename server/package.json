@@ -43,7 +43,7 @@
     "morgan": "1.10.0",
     "next": "11.1.2",
     "node-fetch": "3.0.0",
-    "nodemailer": "6.6.4",
+    "nodemailer": "6.6.5",
     "pg": "8.7.1",
     "pg-hstore": "2.3.4",
     "reflect-metadata": "0.1.13",

@@ -11,8 +11,8 @@ import {
   ModalOverlay,
 } from '@chakra-ui/modal';
 import { Alert, AlertIcon, AlertDescription } from '@chakra-ui/react';
-import { useSendEventInviteMutation } from 'generated/graphql';
 import { useForm } from 'react-hook-form';
+import { useSendEventInviteMutation } from 'generated/graphql';
 
 interface SendEmailModalProps {
   onClose: () => any;
@@ -43,7 +43,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
   const onSubmit = (data: any) => {
     console.log(data);
     const emailGroups = [];
-    for (let key of Object.keys(data)) {
+    for (const key of Object.keys(data)) {
       if (data[key]) {
         emailGroups.push(key);
       }

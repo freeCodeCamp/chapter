@@ -1,16 +1,15 @@
+import { useDisclosure } from '@chakra-ui/hooks';
 import { Button, HStack } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo } from 'react';
-import { useDisclosure } from '@chakra-ui/hooks';
-
 import { EVENT, EVENTS } from '../graphql/queries';
+import SendEmailModal from './SendEmailModal';
 import {
   Event,
   useCancelEventMutation,
   useDeleteEventMutation,
 } from 'generated/graphql';
-import SendEmailModal from './SendEmailModal';
 
 interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;

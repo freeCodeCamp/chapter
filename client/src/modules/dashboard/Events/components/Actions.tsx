@@ -2,6 +2,7 @@ import { Button, HStack } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo } from 'react';
+import { useDisclosure } from '@chakra-ui/hooks';
 
 import { EVENT, EVENTS } from '../graphql/queries';
 import {
@@ -9,6 +10,7 @@ import {
   useCancelEventMutation,
   useDeleteEventMutation,
 } from 'generated/graphql';
+import SendEmailModal from './SendEmailModal';
 
 interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
@@ -17,6 +19,7 @@ interface ActionsProps {
 }
 
 const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [cancel] = useCancelEventMutation();
   const [remove] = useDeleteEventMutation();
 
@@ -53,6 +56,9 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
     }
   };
 
+  const clickEmailAttendees = () => {
+    onOpen();
+  };
   return (
     <HStack spacing="1">
       <Button size="sm" colorScheme="red" onClick={clickDelete}>
@@ -70,6 +76,10 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
           Cancel
         </Button>
       )}
+      <Button size="sm" colorScheme="blue" onClick={clickEmailAttendees}>
+        Email Attendees
+      </Button>
+      <SendEmailModal onClose={onClose} isOpen={isOpen} eventId={event.id} />
     </HStack>
   );
 };

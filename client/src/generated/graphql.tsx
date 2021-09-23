@@ -4,12 +4,14 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  {
+    [SubKey in K]?: Maybe<T[SubKey]>;
+  };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  {
+    [SubKey in K]: Maybe<T[SubKey]>;
+  };
 const defaultOptions = {};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -729,6 +731,7 @@ export type DeleteRsvpMutation = {
 
 export type SendEventInviteMutationVariables = Exact<{
   id: Scalars['Int'];
+  emailGroups?: Maybe<Array<string>>;
 }>;
 
 export type SendEventInviteMutation = {
@@ -1892,8 +1895,8 @@ export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
   DeleteRsvpMutationVariables
 >;
 export const SendEventInviteDocument = gql`
-  mutation sendEventInvite($id: Int!) {
-    sendEventInvite(id: $id)
+  mutation sendEventInvite($id: Int!, $emailGroups: [String!]) {
+    sendEventInvite(id: $id, emailGroups: $emailGroups)
   }
 `;
 export type SendEventInviteMutationFn = Apollo.MutationFunction<

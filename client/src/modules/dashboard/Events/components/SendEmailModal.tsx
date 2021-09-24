@@ -34,7 +34,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
   const checkAtLeastOne = () => {
     return getValues('confirmed') ||
       getValues('on_waitlist') ||
-      getValues('interested')
+      getValues('canceled')
       ? true
       : 'Please tell me if this is too hard.';
   };
@@ -67,6 +67,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
             <Stack spacing={10} direction="row">
               <Checkbox
                 {...register('confirmed', { validate: checkAtLeastOne })}
+                defaultChecked
               >
                 Confirmed
               </Checkbox>
@@ -76,10 +77,9 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
                 Waitlist
               </Checkbox>
               <Checkbox
-                {...register('interested', { validate: checkAtLeastOne })}
-                defaultChecked
+                {...register('canceled', { validate: checkAtLeastOne })}
               >
-                Interested
+                Cancelled
               </Checkbox>
             </Stack>
           </form>

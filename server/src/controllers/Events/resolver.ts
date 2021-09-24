@@ -305,19 +305,30 @@ ${venue.postal_code} <br>
     }
     if (emailGroups.includes('on_waitlist')) {
       const waitlistUsers: string[] = event.rsvps
-        .filter((rsvp) => rsvp.on_waitlist)
+        .filter((rsvp) => rsvp.on_waitlist && rsvp.interested)
         .map(({ user }) => user.email);
       addresses.push(...waitlistUsers);
     }
     if (emailGroups.includes('confirmed')) {
       const confirmedUsers: string[] = event.rsvps
-        .filter((rsvp) => !rsvp.on_waitlist)
+        .filter(
+          (rsvp) => !rsvp.on_waitlist && !rsvp.canceled && rsvp.interested,
+        )
+        .map(({ user }) => user.email);
+      addresses.push(...confirmedUsers);
+    }
+    if (emailGroups.includes('canceled')) {
+      const confirmedUsers: string[] = event.rsvps
+        .filter((rsvp) => rsvp.canceled && rsvp.interested)
         .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }
 
     console.log(addresses);
 
+    if (!addresses.length) {
+      return true;
+    }
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;

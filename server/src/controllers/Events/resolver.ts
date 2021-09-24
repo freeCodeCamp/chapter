@@ -279,7 +279,7 @@ ${venue.postal_code} <br>
       nullable: true,
       defaultValue: ['interested'],
     })
-    emailGroups: Array<string>,
+    emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
   ) {
     const event = await Event.findOne(id, {
       relations: [
@@ -323,8 +323,6 @@ ${venue.postal_code} <br>
         .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }
-
-    console.log(addresses);
 
     if (!addresses.length) {
       return true;

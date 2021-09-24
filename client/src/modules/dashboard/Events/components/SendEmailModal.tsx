@@ -19,6 +19,11 @@ interface SendEmailModalProps {
   isOpen: boolean;
   eventId: number;
 }
+interface FormInputs {
+  confirmed: boolean;
+  on_waitlist: boolean;
+  canceled: boolean;
+}
 const SendEmailModal: React.FC<SendEmailModalProps> = ({
   onClose,
   isOpen,
@@ -29,27 +34,28 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormInputs>({ defaultValues: { confirmed: true } });
 
-  const checkAtLeastOne = () => {
-    return getValues('confirmed') ||
+  const atLeastOneChecked = () => {
+    return (
+      getValues('confirmed') ||
       getValues('on_waitlist') ||
       getValues('canceled')
-      ? true
-      : 'Please tell me if this is too hard.';
+    );
   };
 
   const [publish] = useSendEventInviteMutation();
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (data: FormInputs) => {
     const emailGroups = [];
-    for (const key of Object.keys(data)) {
-      if (data[key]) {
-        emailGroups.push(key);
-      }
+    if (data.confirmed) {
+      emailGroups.push('confirmed');
     }
-    console.log(emailGroups);
-
+    if (data.canceled) {
+      emailGroups.push('canceled');
+    }
+    if (data.on_waitlist) {
+      emailGroups.push('on_waitlist');
+    }
     publish({ variables: { id: eventId, emailGroups: emailGroups } });
     onClose();
   };
@@ -66,18 +72,17 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
             </label>
             <Stack spacing={10} direction="row">
               <Checkbox
-                {...register('confirmed', { validate: checkAtLeastOne })}
-                defaultChecked
+                {...register('confirmed', { validate: atLeastOneChecked })}
               >
                 Confirmed
               </Checkbox>
               <Checkbox
-                {...register('on_waitlist', { validate: checkAtLeastOne })}
+                {...register('on_waitlist', { validate: atLeastOneChecked })}
               >
                 Waitlist
               </Checkbox>
               <Checkbox
-                {...register('canceled', { validate: checkAtLeastOne })}
+                {...register('canceled', { validate: atLeastOneChecked })}
               >
                 Cancelled
               </Checkbox>

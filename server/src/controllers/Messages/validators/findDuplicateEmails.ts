@@ -10,7 +10,7 @@ export class FindDuplicateEmailsConstraint
   implements ValidatorConstraintInterface
 {
   validate(emailList: string[]) {
-    const checkedEmails = {};
+    const checkedEmails: Record<string, number> = {};
     for (let i = 0; i <= emailList.length; i++) {
       if (emailList[i] in checkedEmails) {
         return false;

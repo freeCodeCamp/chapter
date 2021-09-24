@@ -27,10 +27,10 @@ export const randomItems = <T>(arr: T[], n: number, uniq = true): T[] => {
   return out;
 };
 
-export const randomEnum = <T>(anEnum: T): T[keyof T] => {
-  const enumValues = Object.keys(anEnum)
+export const randomEnum = <T>(anEnum: Record<number, T>): T => {
+  const enumNumericKeys = Object.keys(anEnum)
     .map((n) => Number.parseInt(n))
-    .filter((n) => !Number.isNaN(n)) as unknown as T[keyof T][];
-  const randomIndex = Math.floor(Math.random() * enumValues.length);
+    .filter((n) => !Number.isNaN(n));
+  const randomIndex = Math.floor(Math.random() * enumNumericKeys.length);
   return anEnum[randomIndex];
 };

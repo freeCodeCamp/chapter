@@ -39,7 +39,7 @@
     "@graphql-codegen/typescript-react-apollo": "3.1.4",
     "@testing-library/dom": "8.6.0",
     "@testing-library/react": "11.2.7",
-    "@types/node": "14.17.18",
+    "@types/node": "14.17.19",
     "@types/react": "17.0.24",
     "@types/react-dom": "17.0.9",
     "prettier": "2.4.1",

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="chapter" schema="public" type="PostgreSQL - 13.4 (Debian 13.4-1.pgdg100+1)">
+<database name="chapter" schema="public" type="PostgreSQL - 13.4 (Debian 13.4-1.pgdg110+1)">
    <sequences>
       <sequence increment="1" name="chapters_id_seq" startValue="1"/>
       <sequence increment="1" name="event_sponsors_id_seq" startValue="1"/>

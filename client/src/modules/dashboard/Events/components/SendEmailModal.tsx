@@ -92,7 +92,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
             <Alert status="error">
               <AlertIcon />
               <AlertDescription>
-                Please select atleast one checkbox
+                Please select at least one checkbox
               </AlertDescription>
             </Alert>
           )}

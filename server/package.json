@@ -56,7 +56,7 @@
     "@types/jest": "27.0.2",
     "@zerollup/ts-transform-paths": "1.7.18",
     "chai": "4.3.4",
-    "concurrently": "6.2.1",
+    "concurrently": "6.2.2",
     "date-fns": "2.24.0",
     "get-port": "5.1.1",
     "node-dev": "7.0.0",

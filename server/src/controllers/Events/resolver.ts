@@ -273,17 +273,60 @@ ${venue.postal_code} <br>
   }
 
   @Mutation(() => Boolean)
-  async sendEventInvite(@Arg('id', () => Int) id: number) {
+  async sendEventInvite(
+    @Arg('id', () => Int) id: number,
+    @Arg('emailGroups', () => [String], {
+      nullable: true,
+      defaultValue: ['interested'],
+    })
+    emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
+  ) {
     const event = await Event.findOne(id, {
-      relations: ['venue', 'chapter', 'chapter.users', 'chapter.users.user'],
+      relations: [
+        'venue',
+        'chapter',
+        'chapter.users',
+        'chapter.users.user',
+        'rsvps',
+        'rsvps.user',
+      ],
     });
 
     if (!event) throw new Error("Can't find event");
 
     // TODO: the default should probably be to bcc everyone.
-    const addresses = event.chapter.users
-      .filter((role) => role.interested)
-      .map(({ user }) => user.email);
+    const addresses: string[] = [];
+    if (emailGroups.includes('interested')) {
+      const interestedUsers: string[] = event.chapter.users
+        .filter((role) => role.interested)
+        .map(({ user }) => user.email);
+
+      addresses.push(...interestedUsers);
+    }
+    if (emailGroups.includes('on_waitlist')) {
+      const waitlistUsers: string[] = event.rsvps
+        .filter((rsvp) => rsvp.on_waitlist && rsvp.interested)
+        .map(({ user }) => user.email);
+      addresses.push(...waitlistUsers);
+    }
+    if (emailGroups.includes('confirmed')) {
+      const confirmedUsers: string[] = event.rsvps
+        .filter(
+          (rsvp) => !rsvp.on_waitlist && !rsvp.canceled && rsvp.interested,
+        )
+        .map(({ user }) => user.email);
+      addresses.push(...confirmedUsers);
+    }
+    if (emailGroups.includes('canceled')) {
+      const confirmedUsers: string[] = event.rsvps
+        .filter((rsvp) => rsvp.canceled && rsvp.interested)
+        .map(({ user }) => user.email);
+      addresses.push(...confirmedUsers);
+    }
+
+    if (!addresses.length) {
+      return true;
+    }
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;

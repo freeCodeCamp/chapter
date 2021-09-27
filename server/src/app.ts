@@ -26,7 +26,7 @@ export const main = async (app: Express) => {
   app.use(cors({ credentials: true, origin: true }));
   app.use(userMiddleware);
 
-  const schema = await buildSchema({ resolvers, validate: false });
+  const schema = await buildSchema({ resolvers });
   const server = new ApolloServer({
     schema,
     context: ({ req, res }: { req: Request; res: Response }): GQLCtx => ({

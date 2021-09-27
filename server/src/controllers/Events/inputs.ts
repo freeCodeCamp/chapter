@@ -1,3 +1,4 @@
+import { IsUrl } from 'class-validator';
 import { InputType, Field, Int } from 'type-graphql';
 import { VenueType } from 'src/models';
 
@@ -10,9 +11,11 @@ export class CreateEventInputs {
   description: string;
 
   @Field(() => String, { nullable: true })
+  @IsUrl()
   url?: string;
 
   @Field(() => String, { nullable: true })
+  @IsUrl()
   video_url?: string;
 
   @Field(() => VenueType, { nullable: true })
@@ -46,9 +49,11 @@ export class UpdateEventInputs {
   description: string;
 
   @Field(() => String, { nullable: true })
+  @IsUrl()
   url?: string;
 
   @Field(() => String, { nullable: true })
+  @IsUrl()
   video_url?: string;
 
   @Field(() => VenueType, { nullable: true })

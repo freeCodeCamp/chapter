@@ -23,13 +23,13 @@ export const fields: Field[] = [
   },
   {
     key: 'url',
-    type: 'text',
+    type: 'url',
     label: 'Url',
     placeholder: '',
   },
   {
     key: 'video_url',
-    type: 'text',
+    type: 'url',
     label: 'Video Url',
     placeholder: '',
   },

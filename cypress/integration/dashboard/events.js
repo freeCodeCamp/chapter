@@ -38,14 +38,14 @@ describe('events dashboard', () => {
     cy.findByRole('textbox', { name: 'Description' }).type(fix.description);
     cy.findByRole('textbox', { name: 'Url' }).type(fix.url);
     cy.findByRole('textbox', { name: 'Video Url' }).type(fix.videoUrl);
-    cy.findByRole('textbox', { name: 'Capacity' }).type(fix.capacity);
+    cy.findByRole('spinbutton', { name: 'Capacity' }).type(fix.capacity);
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',
     );
-    // TODO: it shouldn't be necessary to clear the date textboxes - the page needs to
-    // be fixed
-    cy.findByRole('textbox', { name: 'Start at' }).clear().type(fix.startAt);
-    cy.findByRole('textbox', { name: 'End at' }).clear().type(fix.endAt);
+
+    cy.findByLabelText(/^Start at/).type(fix.startAt);
+
+    cy.findByLabelText(/^End at/).type(fix.endAt);
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();
@@ -60,6 +60,7 @@ describe('events dashboard', () => {
       .as('venueTitle');
 
     cy.findByRole('form', { name: 'Add event' }).submit();
+
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(fix)).each(([key, value]) => {

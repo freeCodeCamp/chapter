@@ -27,15 +27,21 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   } = useVenuesQuery();
 
   const defaultValues = useMemo(() => {
-    if (!data) return {};
+    if (!data)
+      return {
+        start_at: new Date().toISOString().slice(0, 16),
+        ends_at: new Date(Date.now() + 1000 * 60 * 60)
+          .toISOString()
+          .slice(0, 16),
+      };
     return {
       name: data.name,
       description: data.description,
       url: data.url,
       video_url: data.video_url,
       capacity: data.capacity,
-      start_at: data.start_at,
-      ends_at: data.ends_at,
+      start_at: new Date(data.start_at).toISOString().slice(0, 16),
+      ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
       tags: (data.tags || []).map((t) => t.name).join(', '),
       venueId: data.venueId,
     };
@@ -66,11 +72,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           ) : (
             <Input
               key={field.key}
+              type={field.type}
               label={field.label}
               placeholder={field.placeholder}
               isRequired
               {...register(field.key)}
-              defaultValue={formatValue(field, data)}
             />
           ),
         )}

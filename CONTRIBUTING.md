@@ -496,10 +496,10 @@ Our DB commands closely mirror their Rails counterparts (there isn't anything qu
 
 If you're starting the application for the first time, or syncronizing with the latest development changes, then you like need to:
 * drop the database - to delete all the structure and data
-* migrate the database - to structure by setup tables based on the schema
+* sync the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-The `npm run db:reset` command will do all three tasks by running `npm run db:drop`, `npm run db:migrate` and `npm run db:seed` sequentially.
+The `npm run db:reset` command will do all three tasks by running `npm run db:drop`, `npm run db:sync` and `npm run db:seed` sequentially.
 
 #### Creating a New Model / Entity
 
@@ -513,13 +513,13 @@ To keep everything DRY, add `extends BaseModel` to the class and import it from 
 
 #### Syncing the Schema
 
-* For development environments, [TypeORM will kept the database migrations in sync](https://github.com/typeorm/typeorm/blob/master/README.md) with the definitions in _server/models_ when the server is started. Developers must still create and commit a [migration](#creating-a-migration) for any modifications to the ORM / database schema.
+* For development environments, [TypeORM will keep the database schema in sync](https://github.com/typeorm/typeorm/blob/master/README.md) with the definitions in _server/models_ when the server is started.
 * If a manual sync becomes necessary, run the `npm run db:sync` command.
 * For production environments, run the `npm run db:migrate` command.
 
 #### Creating a Migration
 
-After you created a new model or updated an existing one, you need to generate a migration for those changes. To do so run:
+After you created a new model or updated an existing one and you wish to update a production database, you need to generate a migration for those changes. To do so run:
 
 `npm run db:generate MIGRATION_NAME`
 

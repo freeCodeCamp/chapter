@@ -37,7 +37,7 @@
     "@graphql-codegen/typescript-graphql-files-modules": "2.1.0",
     "@graphql-codegen/typescript-operations": "2.1.4",
     "@graphql-codegen/typescript-react-apollo": "3.1.4",
-    "@testing-library/dom": "8.6.0",
+    "@testing-library/dom": "8.7.0",
     "@testing-library/react": "11.2.7",
     "@types/node": "14.17.19",
     "@types/react": "17.0.24",

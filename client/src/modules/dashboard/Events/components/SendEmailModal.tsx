@@ -56,7 +56,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
     if (data.on_waitlist) {
       emailGroups.push('on_waitlist');
     }
-    publish({ variables: { id: eventId, emailGroups: emailGroups } });
+    publish({ variables: { id: eventId, emailGroups } });
     onClose();
   };
   return (

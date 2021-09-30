@@ -17,7 +17,7 @@
     "db:seed": "cd server && node ./db/generator/index.js",
     "db:sync": "npm run typeorm schema:sync",
     "db:migrate": "npm run typeorm migration:run",
-    "db:reset": "npm run db:drop && npm run db:migrate && npm run db:seed",
+    "db:reset": "npm run db:drop && npm run db:sync && npm run db:seed",
     "both": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
     "build:client": "cd client && npm run build",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",

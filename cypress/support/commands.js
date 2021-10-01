@@ -94,6 +94,29 @@ Cypress.Commands.add('interceptGQL', (operationName) => {
   });
 });
 
+Cypress.Commands.add('getChapterMembers', (chapterId) => {
+  const chapterQuery = {
+    operationName: 'chapterUsers',
+    variables: {
+      id: chapterId,
+    },
+    query: `query chapterUsers($id: Int!) {
+      chapter(id: $id) {
+        users {
+          user {
+            name
+            email
+          }
+          interested
+        }
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', chapterQuery)
+    .then((response) => response.body.data.chapter.users);
+});
+
 Cypress.Commands.add('waitUntilMail', (alias) => {
   cy.waitUntil(() =>
     cy

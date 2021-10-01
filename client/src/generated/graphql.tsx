@@ -520,6 +520,7 @@ export type ChapterUsersQuery = {
         __typename?: 'Chapter';
         users: Array<{
           __typename?: 'UserChapterRole';
+          interested: boolean;
           user: { __typename?: 'User'; name: string; email: string };
         }>;
       }
@@ -1174,6 +1175,7 @@ export const ChapterUsersDocument = gql`
           name
           email
         }
+        interested
       }
     }
   }

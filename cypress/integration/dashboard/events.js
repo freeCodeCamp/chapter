@@ -1,5 +1,18 @@
+const testEvent = {
+  title: 'Test Event',
+  description: 'Test Description',
+  url: 'https://test.event.org',
+  videoUrl: 'https://test.event.org/video',
+  capacity: '10',
+  tags: 'Test, Event, Tag',
+  startAt: '2022-01-01T00:01',
+  endAt: '2022-01-02T00:02',
+  venueId: '1',
+};
+
 describe('events dashboard', () => {
   beforeEach(() => {
+    cy.exec('npm run db:reset');
     cy.login();
     cy.mhDeleteAll();
   });
@@ -20,32 +33,55 @@ describe('events dashboard', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create an event', () => {
-    const fix = {
-      title: 'Test Event',
-      description: 'Test Description',
-      url: 'https://test.event.org',
-      videoUrl: 'https://test.event.org/video',
-      capacity: '10',
-      tags: 'Test, Event, Tag',
-      startAt: '2022-01-01T00:01',
-      endAt: '2022-01-02T00:02',
-      venueId: '1',
-    };
+  it('emails interested users when an event is created', () => {
+    createEvent();
+    cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
+    // confirm that the test data appears in the new event
+    cy.wrap(Object.entries(testEvent)).each(([key, value]) => {
+      // TODO: simplify this conditional when tags and dates are handled
+      // properly.
+      if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
+        cy.contains(value);
+      }
+    });
+    // check that the title we selected is in the event we created.
+    cy.get('@venueTitle').then((venueTitle) => {
+      cy.contains(venueTitle);
+    });
+
+    // check that the interested users have been emailed
+    cy.waitUntilMail('allMail');
+
+    cy.get('@allMail').mhFirst().as('invitation');
+    // TODO: select chapter during event creation and use that here (much like @venueTitle
+    // ) i.e. remove the hardcoding.
+    cy.getChapterMembers(1).then((members) => {
+      const subscriberEmails = members
+        .filter(({ interested }) => interested)
+        .map(({ user: { email } }) => email);
+      cy.get('@invitation')
+        .mhGetRecipients()
+        .should('have.members', subscriberEmails);
+    });
+  });
+
+  function createEvent() {
     cy.visit('/dashboard/events');
     cy.get('a[href="/dashboard/events/new"]').click();
-    cy.findByRole('textbox', { name: 'Event title' }).type(fix.title);
-    cy.findByRole('textbox', { name: 'Description' }).type(fix.description);
-    cy.findByRole('textbox', { name: 'Url' }).type(fix.url);
-    cy.findByRole('textbox', { name: 'Video Url' }).type(fix.videoUrl);
-    cy.findByRole('spinbutton', { name: 'Capacity' }).type(fix.capacity);
+    cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.title);
+    cy.findByRole('textbox', { name: 'Description' }).type(
+      testEvent.description,
+    );
+    cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
+    cy.findByRole('textbox', { name: 'Video Url' }).type(testEvent.videoUrl);
+    cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',
     );
 
-    cy.findByLabelText(/^Start at/).type(fix.startAt);
+    cy.findByLabelText(/^Start at/).type(testEvent.startAt);
 
-    cy.findByLabelText(/^End at/).type(fix.endAt);
+    cy.findByLabelText(/^End at/).type(testEvent.endAt);
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();
@@ -53,27 +89,14 @@ describe('events dashboard', () => {
     // combobox?
     cy.findByRole('combobox', { name: 'Venue' })
       .as('venueSelect')
-      .select(fix.venueId);
+      .select(testEvent.venueId);
     cy.get('@venueSelect')
-      .find(`option[value=${fix.venueId}]`)
+      .find(`option[value=${testEvent.venueId}]`)
       .invoke('text')
       .as('venueTitle');
 
     cy.findByRole('form', { name: 'Add event' }).submit();
-
-    cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
-    // confirm that the test data appears in the new event
-    cy.wrap(Object.entries(fix)).each(([key, value]) => {
-      // TODO: simplify this conditional when tags and dates are handled
-      // properly.
-      if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
-        cy.contains(value);
-      }
-    });
-    cy.get('@venueTitle').then((venueTitle) => {
-      cy.contains(venueTitle);
-    });
-  });
+  }
 
   it("emails the users when an event's venue is changed", () => {
     cy.visit('/dashboard/events');

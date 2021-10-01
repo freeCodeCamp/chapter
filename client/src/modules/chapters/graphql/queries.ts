@@ -35,6 +35,7 @@ export const CHAPTER_USERS = gql`
           name
           email
         }
+        interested
       }
     }
   }

@@ -33,7 +33,7 @@ describe('events dashboard', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create an event', () => {
+  it('emails interested users when an event is created', () => {
     createEvent();
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
     // confirm that the test data appears in the new event
@@ -47,6 +47,21 @@ describe('events dashboard', () => {
     // check that the title we selected is in the event we created.
     cy.get('@venueTitle').then((venueTitle) => {
       cy.contains(venueTitle);
+    });
+
+    // check that the interested users have been emailed
+    cy.waitUntilMail('allMail');
+
+    cy.get('@allMail').mhFirst().as('invitation');
+    // TODO: select chapter during event creation and use that here (much like @venueTitle
+    // ) i.e. remove the hardcoding.
+    cy.getChapterMembers(1).then((members) => {
+      const subscriberEmails = members
+        .filter(({ interested }) => interested)
+        .map(({ user: { email } }) => email);
+      cy.get('@invitation')
+        .mhGetRecipients()
+        .should('have.members', subscriberEmails);
     });
   });
 

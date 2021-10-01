@@ -12,6 +12,7 @@ const testEvent = {
 
 describe('events dashboard', () => {
   beforeEach(() => {
+    cy.exec('npm run db:reset');
     cy.login();
     cy.mhDeleteAll();
   });

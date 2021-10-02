@@ -8,7 +8,7 @@ import MailerService from 'src/services/MailerService';
 
 //Place holder for unsubscribe
 //TODO: Replace placeholder with actual unsubscribe link
-let unsubscribe: string = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
+const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
 
 @Resolver()
 export class EventResolver {

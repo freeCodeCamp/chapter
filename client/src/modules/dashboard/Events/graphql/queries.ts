@@ -164,3 +164,9 @@ export const sendEventInvite = gql`
     sendEventInvite(id: $id)
   }
 `;
+
+export const setUserInterestForChapter = gql`
+  mutation Mutation($event_id: Int!) {
+    setUserInterestForChapter(event_id: $event_id)
+  }
+`;

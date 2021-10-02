@@ -19,7 +19,11 @@ import React, { useMemo } from 'react';
 import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
-import { useEventQuery, useRsvpToEventMutation } from 'generated/graphql';
+import {
+  useEventQuery,
+  useRsvpToEventMutation,
+  useSetUserInterestForChapter,
+} from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
@@ -27,6 +31,7 @@ export const EventPage: NextPage = () => {
   const { user } = useAuth();
 
   const [rsvpToEvent] = useRsvpToEventMutation();
+  const [setUserInterestForChapter] = useSetUserInterestForChapter();
   const { loading, error, data } = useEventQuery({
     variables: { id: id || -1 },
   });
@@ -80,6 +85,11 @@ export const EventPage: NextPage = () => {
               }
             : { title: 'You canceled your RSVP 👋', status: 'error' },
         );
+        if (add) {
+          await setUserInterestForChapter({
+            variables: { event_id: 3 },
+          });
+        }
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);

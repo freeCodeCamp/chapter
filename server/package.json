@@ -63,7 +63,7 @@
     "@types/supertest": "2.0.11",
     "@zerollup/ts-transform-paths": "1.7.18",
     "chai": "4.3.4",
-    "concurrently": "6.2.2",
+    "concurrently": "6.3.0",
     "date-fns": "2.24.0",
     "get-port": "5.1.1",
     "node-dev": "7.0.0",

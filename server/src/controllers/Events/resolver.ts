@@ -6,6 +6,10 @@ import { GQLCtx } from 'src/common-types/gql';
 import { Event, Venue, Chapter, Rsvp, UserEventRole } from 'src/models';
 import MailerService from 'src/services/MailerService';
 
+//Place holder for unsubscribe
+//TODO: Replace placeholder with actual unsubscribe link
+const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
+
 @Resolver()
 export class EventResolver {
   @Query(() => [Event])
@@ -118,6 +122,8 @@ To add this event to your calendar(s) you can use these links:
 <a href=${google(linkDetails)}>Google</a>
 </br>
 <a href=${outlook(linkDetails)}>Outlook</a>
+
+${unsubscribe}
       `,
     ).sendEmail();
     // TODO: rather than getting all the roles and filtering them, we should
@@ -128,7 +134,7 @@ To add this event to your calendar(s) you can use these links:
     await new MailerService(
       organizersEmails,
       `New RSVP for ${event.name}`,
-      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd.`,
+      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd. ${unsubscribe}`,
     ).sendEmail();
     return rsvp;
   }
@@ -242,6 +248,7 @@ ${venue.street_address ? venue.street_address + '<br>' : ''}
 ${venue.city} <br>
 ${venue.region} <br>
 ${venue.postal_code} <br>
+${unsubscribe}
 `;
         new MailerService(emailList, subject, body).sendEmail();
       }
@@ -334,6 +341,7 @@ ${venue.postal_code} <br>
     // TODO: this needs to include an ical file
     // TODO: it needs a link to unsubscribe from just this event.  See
     // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
+    // Update the place holder with actual
     const body =
       `When: ${event.start_at} to ${event.ends_at}<br>` +
       (event.venue ? `Where: ${event.venue?.name}<br>` : '') +
@@ -345,7 +353,9 @@ ${venue.postal_code} <br>
 ----------------------------<br>
 You received this email because you follow this chapter.<br>
 <br>
-See the options above to change your notifications.`;
+See the options above to change your notifications.
+${unsubscribe}
+`;
 
     await new MailerService(addresses, subject, body).sendEmail();
 

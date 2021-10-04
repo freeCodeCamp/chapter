@@ -2336,3 +2336,46 @@ const result: PossibleTypesResultData = {
   possibleTypes: {},
 };
 export default result;
+
+export const initUserInterestForChapterDocument = gql`
+  mutation initUserInterestForChapter($event_id: Int!) {
+    initUserInterestForChapter(event_id: $event_id) {
+      id
+    }
+  }
+`;
+export type initUserInterestForChapterFn = Apollo.MutationFunction<
+  initUserInterestForChapterMutation,
+  initUserInterestForChapterMutationVariables
+>;
+
+export type initUserInterestForChapterMutation = {
+  __typename?: 'Mutation';
+  initUserInterestForChapter: {
+    __typename: 'setUserChapterRole';
+    event_id: Scalars['Int'];
+  };
+};
+
+export type initUserInterestForChapterMutationVariables = Exact<{
+  event_id: Scalars['Int'];
+}>;
+
+export function useinitUserInterestForChapter(
+  baseOptions?: Apollo.MutationHookOptions<
+    initUserInterestForChapterMutation,
+    initUserInterestForChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    initUserInterestForChapterMutation,
+    initUserInterestForChapterMutationVariables
+  >(initUserInterestForChapterDocument, options);
+}
+
+export type initUserInterestForChapterMutationHookResult = ReturnType<
+  typeof useinitUserInterestForChapter
+>;
+export type initUserInterestForChapterMutationResult =
+  Apollo.MutationResult<initUserInterestForChapterMutation>;

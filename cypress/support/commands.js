@@ -117,6 +117,31 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
     .then((response) => response.body.data.chapter.users);
 });
 
+Cypress.Commands.add('getRSVPs', (eventId) => {
+  const chapterQuery = {
+    operationName: 'rsvpsForEvent',
+    variables: {
+      id: eventId,
+    },
+    query: `query rsvpsForEvent($id: Int!) {
+      event(id: $id) {
+        rsvps {
+          on_waitlist
+          canceled
+          user {
+            id
+            name
+            email
+          }
+        }
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', chapterQuery)
+    .then((response) => response.body.data.event.rsvps);
+});
+
 Cypress.Commands.add('waitUntilMail', (alias) => {
   cy.waitUntil(() =>
     cy

@@ -73,7 +73,9 @@ describe('events dashboard', () => {
     cy.findByRole('textbox', { name: 'Description' }).type(
       testEvent.description,
     );
-    cy.findByRole('textbox', { name: 'Event image' }).type(testEvent.imageUrl);
+    cy.findByRole('textbox', { name: 'Event Image Url' }).type(
+      testEvent.imageUrl,
+    );
     cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
     cy.findByRole('textbox', { name: 'Video Url' }).type(testEvent.videoUrl);
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);

@@ -25,7 +25,7 @@ export class UserChapterRoleResolver {
     });
 
     if (!userChapterRole) {
-      return await new UserChapterRole({
+      return new UserChapterRole({
         userId: ctx.user.id,
         chapterId: event.chapter.id,
         roleName: 'member',

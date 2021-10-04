@@ -1,7 +1,7 @@
 import { Server } from 'http';
 import express from 'express';
 import { responseErrorHandler } from 'express-response-errors';
-import getPort from 'get-port';
+import getPort, { portNumbers } from 'get-port';
 import request from 'supertest';
 import { Request } from 'src/common-types/gql';
 import { User } from 'src/models';
@@ -37,7 +37,7 @@ class App {
     this.server.use(responseErrorHandler);
 
     const server = this.server.listen(
-      await getPort({ port: getPort.makeRange(9000, 10000) }),
+      await getPort({ port: portNumbers(9000, 10000) }),
     );
 
     this._server = server;

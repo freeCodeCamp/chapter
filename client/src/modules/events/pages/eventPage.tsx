@@ -22,7 +22,7 @@ import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,
   useRsvpToEventMutation,
-  useSetUserInterestForChapter,
+  useinitUserInterestForChapter,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
@@ -31,7 +31,7 @@ export const EventPage: NextPage = () => {
   const { user } = useAuth();
 
   const [rsvpToEvent] = useRsvpToEventMutation();
-  const [setUserInterestForChapter] = useSetUserInterestForChapter();
+  const [initUserInterestForChapter] = useinitUserInterestForChapter();
   const { loading, error, data } = useEventQuery({
     variables: { id: id || -1 },
   });
@@ -86,7 +86,7 @@ export const EventPage: NextPage = () => {
             : { title: 'You canceled your RSVP 👋', status: 'error' },
         );
         if (add) {
-          await setUserInterestForChapter({
+          await initUserInterestForChapter({
             variables: { event_id: 3 },
           });
         }

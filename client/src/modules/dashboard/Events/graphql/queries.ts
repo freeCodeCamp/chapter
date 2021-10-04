@@ -165,8 +165,8 @@ export const sendEventInvite = gql`
   }
 `;
 
-export const setUserInterestForChapter = gql`
+export const initUserInterestForChapter = gql`
   mutation Mutation($event_id: Int!) {
-    setUserInterestForChapter(event_id: $event_id)
+    initUserInterestForChapter(event_id: $event_id)
   }
 `;

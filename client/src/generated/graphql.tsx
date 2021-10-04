@@ -2293,45 +2293,45 @@ const result: PossibleTypesResultData = {
 };
 export default result;
 
-export const setUserInterestForChapterDocument = gql`
-  mutation setUserInterestForChapter($event_id: Int!) {
-    setUserInterestForChapter(event_id: $event_id) {
+export const initUserInterestForChapterDocument = gql`
+  mutation initUserInterestForChapter($event_id: Int!) {
+    initUserInterestForChapter(event_id: $event_id) {
       id
     }
   }
 `;
-export type setUserInterestForChapterFn = Apollo.MutationFunction<
-  setUserInterestForChapterMutation,
-  setUserInterestForChapterMutationVariables
+export type initUserInterestForChapterFn = Apollo.MutationFunction<
+  initUserInterestForChapterMutation,
+  initUserInterestForChapterMutationVariables
 >;
 
-export type setUserInterestForChapterMutation = {
+export type initUserInterestForChapterMutation = {
   __typename?: 'Mutation';
-  setUserInterestForChapter: {
+  initUserInterestForChapter: {
     __typename: 'setUserChapterRole';
     event_id: Scalars['Int'];
   };
 };
 
-export type setUserInterestForChapterMutationVariables = Exact<{
+export type initUserInterestForChapterMutationVariables = Exact<{
   event_id: Scalars['Int'];
 }>;
 
-export function useSetUserInterestForChapter(
+export function useinitUserInterestForChapter(
   baseOptions?: Apollo.MutationHookOptions<
-    setUserInterestForChapterMutation,
-    setUserInterestForChapterMutationVariables
+    initUserInterestForChapterMutation,
+    initUserInterestForChapterMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    setUserInterestForChapterMutation,
-    setUserInterestForChapterMutationVariables
-  >(setUserInterestForChapterDocument, options);
+    initUserInterestForChapterMutation,
+    initUserInterestForChapterMutationVariables
+  >(initUserInterestForChapterDocument, options);
 }
 
-export type setUserInterestForChapterMutationHookResult = ReturnType<
-  typeof useSetUserInterestForChapter
+export type initUserInterestForChapterMutationHookResult = ReturnType<
+  typeof useinitUserInterestForChapter
 >;
-export type setUserInterestForChapterMutationResult =
-  Apollo.MutationResult<setUserInterestForChapterMutation>;
+export type initUserInterestForChapterMutationResult =
+  Apollo.MutationResult<initUserInterestForChapterMutation>;

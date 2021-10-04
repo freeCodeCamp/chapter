@@ -5,7 +5,7 @@ import { Event, UserChapterRole } from 'src/models';
 @Resolver()
 export class UserChapterRoleResolver {
   @Mutation(() => UserChapterRole)
-  async setUserInterestForChapter(
+  async initUserInterestForChapter(
     @Arg('event_id', () => Int) event_id: number,
     @Ctx() ctx: GQLCtx,
   ) {

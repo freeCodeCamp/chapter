@@ -413,7 +413,7 @@ The Chapter client uses the React framework [Next.js](https://nextjs.org/) with 
 
 ## Where to find the code
 
-The database and GraphQL schema are defined by files in _server/models_
+The database and GraphQL schema are defined by files in _server/src/models_
 
 The resolvers for the GraphQL queries are defined in _server/src/controllers_
 

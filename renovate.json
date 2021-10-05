@@ -13,6 +13,5 @@
       "groupName": "Jest and ts-jest",
       "matchPackageNames": ["jest", "ts-jest", "@types/jest"]
     }
-  ],
-  "rangeStrategy": "pin"
+  ]
 }

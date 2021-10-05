@@ -120,6 +120,7 @@ describe('events dashboard', () => {
         .mhGetRecipients()
         .should('have.members', confirmedEmails);
     });
+    cy.mhDeleteAll();
 
     // sending to waitlist
     cy.findByRole('button', { name: 'Email Attendees' }).click();
@@ -128,7 +129,6 @@ describe('events dashboard', () => {
     cy.findByLabelText('Waitlist').click({ force: true });
     cy.findByRole('button', { name: 'Send Email' }).click();
 
-    cy.mhDeleteAll();
     cy.waitUntilMail('allMail');
     cy.get('@allMail').mhFirst().as('emailsToWaitlist');
 
@@ -140,6 +140,7 @@ describe('events dashboard', () => {
         .mhGetRecipients()
         .should('have.members', waitlistEmails);
     });
+    cy.mhDeleteAll();
 
     // sending to cancelled
     cy.findByRole('button', { name: 'Email Attendees' }).click();
@@ -148,7 +149,6 @@ describe('events dashboard', () => {
     cy.findByLabelText('Cancelled').click({ force: true });
     cy.findByRole('button', { name: 'Send Email' }).click();
 
-    cy.mhDeleteAll();
     cy.waitUntilMail('allMail');
     cy.get('@allMail').mhFirst().as('emailsToCancelled');
 
@@ -160,6 +160,7 @@ describe('events dashboard', () => {
         .mhGetRecipients()
         .should('have.members', cancelledEmails);
     });
+    cy.mhDeleteAll();
 
     // sending to all
     cy.findByRole('button', { name: 'Email Attendees' }).click();
@@ -169,7 +170,6 @@ describe('events dashboard', () => {
 
     cy.findByRole('button', { name: 'Send Email' }).click();
 
-    cy.mhDeleteAll();
     cy.waitUntilMail('allMail');
     cy.get('@allMail').mhFirst().as('emailsToAll');
 

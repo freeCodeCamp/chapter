@@ -98,6 +98,89 @@ describe('events dashboard', () => {
     cy.findByRole('form', { name: 'Add event' }).submit();
   }
 
+  it('has a button to email attendees', () => {
+    cy.visit('/dashboard/events/1');
+    // sending to confirmed first
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+    cy.findByLabelText('Confirmed').should('be.checked');
+    cy.findByLabelText('Waitlist').should('not.be.checked');
+    cy.findByLabelText('Cancelled').should('not.be.checked');
+
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    cy.waitUntilMail('allMail');
+    cy.get('@allMail').mhFirst().as('emailsToConfirmed');
+
+    // TODO: can we avoid getting this multiple times?
+    cy.getRSVPs(1).then((rsvps) => {
+      const confirmedEmails = rsvps
+        .filter((r) => r.on_waitlist === false && r.canceled === false)
+        .map(({ user: { email } }) => email);
+      cy.get('@emailsToConfirmed')
+        .mhGetRecipients()
+        .should('have.members', confirmedEmails);
+    });
+    cy.mhDeleteAll();
+
+    // sending to waitlist
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+    // we have to force because cypress thinks the label is covered - it is not.
+    cy.findByLabelText('Confirmed').click({ force: true });
+    cy.findByLabelText('Waitlist').click({ force: true });
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    cy.waitUntilMail('allMail');
+    cy.get('@allMail').mhFirst().as('emailsToWaitlist');
+
+    cy.getRSVPs(1).then((rsvps) => {
+      const waitlistEmails = rsvps
+        .filter((r) => r.on_waitlist === true)
+        .map(({ user: { email } }) => email);
+      cy.get('@emailsToWaitlist')
+        .mhGetRecipients()
+        .should('have.members', waitlistEmails);
+    });
+    cy.mhDeleteAll();
+
+    // sending to cancelled
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+    // we have to force because cypress thinks the label is covered - it is not.
+    cy.findByLabelText('Waitlist').click({ force: true });
+    cy.findByLabelText('Cancelled').click({ force: true });
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    cy.waitUntilMail('allMail');
+    cy.get('@allMail').mhFirst().as('emailsToCancelled');
+
+    cy.getRSVPs(1).then((rsvps) => {
+      const cancelledEmails = rsvps
+        .filter((r) => r.canceled === true)
+        .map(({ user: { email } }) => email);
+      cy.get('@emailsToCancelled')
+        .mhGetRecipients()
+        .should('have.members', cancelledEmails);
+    });
+    cy.mhDeleteAll();
+
+    // sending to all
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+    // we have to force because cypress thinks the label is covered - it is not.
+    cy.findByLabelText('Waitlist').click({ force: true });
+    cy.findByLabelText('Confirmed').click({ force: true });
+
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    cy.waitUntilMail('allMail');
+    cy.get('@allMail').mhFirst().as('emailsToAll');
+
+    cy.getRSVPs(1).then((rsvps) => {
+      const allEmails = rsvps.map(({ user: { email } }) => email);
+      cy.get('@emailsToAll')
+        .mhGetRecipients()
+        .should('have.members', allEmails);
+    });
+  });
+
   it("emails the users when an event's venue is changed", () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('link', { name: 'Edit' }).first().click();

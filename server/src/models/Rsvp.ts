@@ -51,6 +51,7 @@ export class Rsvp extends BaseModel {
     event: Event;
     user: User;
     interested?: boolean;
+    canceled?: boolean;
     confirmed_at: Date | null;
   }) {
     super();
@@ -62,12 +63,13 @@ export class Rsvp extends BaseModel {
         user,
         interested = true,
         confirmed_at,
+        canceled = false,
       } = params;
       this.date = date;
       this.on_waitlist = on_waitlist;
       this.event = event;
       this.user = user;
-      this.canceled = false;
+      this.canceled = canceled;
       this.interested = interested;
       this.confirmed_at = confirmed_at;
     }

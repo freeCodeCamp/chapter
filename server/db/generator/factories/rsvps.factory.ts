@@ -7,15 +7,21 @@ const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
 
   for (const event of events) {
     const eventUsers = randomItems(users, users.length / 2);
-    const numberWaiting = 1 + random(eventUsers.length - 1);
+    const numberWaiting = 1 + random(eventUsers.length - 2);
+    const numberCanceled = 1 + random(eventUsers.length - numberWaiting - 1);
+
     for (let i = 0; i < eventUsers.length; i++) {
+      const on_waitlist = i < numberWaiting;
+      const canceled = !on_waitlist && i < numberWaiting + numberCanceled;
       const rsvp = new Rsvp({
         event,
         user: eventUsers[i],
         date: date.future(),
-        on_waitlist: i < numberWaiting,
+        on_waitlist,
+        canceled,
         confirmed_at: new Date(),
       });
+
       rsvps.push(rsvp);
     }
   }

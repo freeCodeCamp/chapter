@@ -143,6 +143,7 @@ export type Mutation = {
   deleteEvent: Scalars['Boolean'];
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Scalars['Boolean'];
+  initUserInterestForChapter: Scalars['Boolean'];
   login: LoginType;
   register: User;
   rsvpEvent?: Maybe<Rsvp>;
@@ -191,6 +192,10 @@ export type MutationDeleteRsvpArgs = {
 
 export type MutationDeleteVenueArgs = {
   id: Scalars['Int'];
+};
+
+export type MutationInitUserInterestForChapterArgs = {
+  event_id: Scalars['Int'];
 };
 
 export type MutationLoginArgs = {
@@ -771,6 +776,15 @@ export type SendEventInviteMutationVariables = Exact<{
 export type SendEventInviteMutation = {
   __typename?: 'Mutation';
   sendEventInvite: boolean;
+};
+
+export type InitUserInterestForChapterMutationVariables = Exact<{
+  event_id: Scalars['Int'];
+}>;
+
+export type InitUserInterestForChapterMutation = {
+  __typename?: 'Mutation';
+  initUserInterestForChapter: boolean;
 };
 
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
@@ -1984,6 +1998,55 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutation,
   SendEventInviteMutationVariables
 >;
+export const InitUserInterestForChapterDocument = gql`
+  mutation initUserInterestForChapter($event_id: Int!) {
+    initUserInterestForChapter(event_id: $event_id)
+  }
+`;
+export type InitUserInterestForChapterMutationFn = Apollo.MutationFunction<
+  InitUserInterestForChapterMutation,
+  InitUserInterestForChapterMutationVariables
+>;
+
+/**
+ * __useInitUserInterestForChapterMutation__
+ *
+ * To run a mutation, you first call `useInitUserInterestForChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInitUserInterestForChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [initUserInterestForChapterMutation, { data, loading, error }] = useInitUserInterestForChapterMutation({
+ *   variables: {
+ *      event_id: // value for 'event_id'
+ *   },
+ * });
+ */
+export function useInitUserInterestForChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    InitUserInterestForChapterMutation,
+    InitUserInterestForChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    InitUserInterestForChapterMutation,
+    InitUserInterestForChapterMutationVariables
+  >(InitUserInterestForChapterDocument, options);
+}
+export type InitUserInterestForChapterMutationHookResult = ReturnType<
+  typeof useInitUserInterestForChapterMutation
+>;
+export type InitUserInterestForChapterMutationResult =
+  Apollo.MutationResult<InitUserInterestForChapterMutation>;
+export type InitUserInterestForChapterMutationOptions =
+  Apollo.BaseMutationOptions<
+    InitUserInterestForChapterMutation,
+    InitUserInterestForChapterMutationVariables
+  >;
 export const VenuesDocument = gql`
   query venues {
     venues {
@@ -2336,46 +2399,3 @@ const result: PossibleTypesResultData = {
   possibleTypes: {},
 };
 export default result;
-
-export const initUserInterestForChapterDocument = gql`
-  mutation initUserInterestForChapter($event_id: Int!) {
-    initUserInterestForChapter(event_id: $event_id) {
-      id
-    }
-  }
-`;
-export type initUserInterestForChapterFn = Apollo.MutationFunction<
-  initUserInterestForChapterMutation,
-  initUserInterestForChapterMutationVariables
->;
-
-export type initUserInterestForChapterMutation = {
-  __typename?: 'Mutation';
-  initUserInterestForChapter: {
-    __typename: 'setUserChapterRole';
-    event_id: Scalars['Int'];
-  };
-};
-
-export type initUserInterestForChapterMutationVariables = Exact<{
-  event_id: Scalars['Int'];
-}>;
-
-export function useinitUserInterestForChapter(
-  baseOptions?: Apollo.MutationHookOptions<
-    initUserInterestForChapterMutation,
-    initUserInterestForChapterMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    initUserInterestForChapterMutation,
-    initUserInterestForChapterMutationVariables
-  >(initUserInterestForChapterDocument, options);
-}
-
-export type initUserInterestForChapterMutationHookResult = ReturnType<
-  typeof useinitUserInterestForChapter
->;
-export type initUserInterestForChapterMutationResult =
-  Apollo.MutationResult<initUserInterestForChapterMutation>;

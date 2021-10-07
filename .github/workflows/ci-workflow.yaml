@@ -40,9 +40,10 @@ jobs:
         run: npm t
       - name:
           Check code generation
-          # 1) try to generate code, 2) check if the correct code has been committed
+          # 1) try to generate code, 2) clean up, 3) check if the correct code has been committed
         run: |
           npm run start:server & ./server/wait-for localhost:5000 -- npm run gen
+          kill -- -$!
           git diff --quiet HEAD
       - name: Start Docker service
         env:

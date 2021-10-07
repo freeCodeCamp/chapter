@@ -20,6 +20,7 @@
     "db:reset": "npm run db:drop && npm run db:sync && npm run db:seed",
     "both": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
     "build:client": "cd client && npm run build",
+    "gen": "cd client && npm run gen",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:server": "cd server && npm start",
     "start:client": "cd client && npm start",

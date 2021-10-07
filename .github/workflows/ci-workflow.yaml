@@ -25,12 +25,16 @@ jobs:
         run: cd client && npx tsc
       - name: Type check server
         run: cd server && npx tsc
-      - name: Build client 
+      - name: Build client
         run: npm run build:client
       - name: Run local tests
         run: npm t
+      - name: Check code generation
+        run: |
+          npm run start:server & ./server/wait-for localhost:5000 -- npm run gen
+          kill -- -$!
       - name: Start Docker service
-        env: 
+        env:
           IS_DOCKER: true
         run: DOCKER_BUILDKIT=1 docker-compose up -d
       - name: Seed the Docker db

@@ -4,6 +4,15 @@ jobs:
   build:
     name: build and test
     runs-on: ubuntu-20.04
+    # npm start:server tries to connect to the db, so we need the service
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: chapter
+        ports:
+          - 5432:5432
     strategy:
       fail-fast: false
       matrix:

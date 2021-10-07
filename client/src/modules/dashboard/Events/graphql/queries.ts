@@ -166,7 +166,7 @@ export const sendEventInvite = gql`
 `;
 
 export const initUserInterestForChapter = gql`
-  mutation Mutation($event_id: Int!) {
+  mutation initUserInterestForChapter($event_id: Int!) {
     initUserInterestForChapter(event_id: $event_id)
   }
 `;

@@ -2,6 +2,7 @@ import { LockIcon } from '@chakra-ui/icons';
 import {
   Heading,
   VStack,
+  Image,
   Text,
   Button,
   useToast,
@@ -113,6 +114,15 @@ export const EventPage: NextPage = () => {
         onRsvp={onRsvp}
         userIds={data?.event?.rsvps.map((r) => r.user.id) || []}
         modalProps={modalProps}
+      />
+      <Image
+        data-cy="event-image"
+        boxSize="100%"
+        maxH="300px"
+        src={data.event.image_url}
+        alt=""
+        borderRadius="md"
+        objectFit="cover"
       />
 
       <Heading as="h1">

@@ -17,6 +17,9 @@ describe('event page', () => {
       .next()
       .should('be.visible')
       .should('match', 'ul');
+    cy.get('[data-cy="event-image"]')
+      .should('be.visible')
+      .and('have.attr', 'alt', '');
   });
 
   it('ask the user to login before they can RSVP', () => {

@@ -90,6 +90,10 @@ export class Event extends BaseModel {
   @OneToMany((_type) => UserEventRole, (UserEventRole) => UserEventRole.event)
   user_roles!: UserEventRole[];
 
+  @Field(() => String)
+  @Column({ nullable: false })
+  image_url!: string;
+
   constructor(params: {
     name: string;
     description: string;
@@ -104,6 +108,7 @@ export class Event extends BaseModel {
     chapter: Chapter;
     invite_only?: boolean;
     user_roles: UserEventRole[];
+    image_url: string;
   }) {
     super();
     if (params) {
@@ -121,6 +126,7 @@ export class Event extends BaseModel {
         chapter,
         invite_only,
         user_roles,
+        image_url,
       } = params;
 
       this.name = name;
@@ -136,6 +142,7 @@ export class Event extends BaseModel {
       this.chapter = chapter;
       this.invite_only = invite_only || false;
       this.user_roles = user_roles;
+      this.image_url = image_url;
     }
   }
 }

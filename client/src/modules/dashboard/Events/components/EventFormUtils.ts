@@ -22,6 +22,12 @@ export const fields: Field[] = [
     placeholder: '',
   },
   {
+    key: 'image_url',
+    type: 'text',
+    label: 'Event Image Url',
+    placeholder: 'https://www.example.image/url',
+  },
+  {
     key: 'url',
     type: 'url',
     label: 'Url',
@@ -65,6 +71,7 @@ export interface EventFormData {
   name: string;
   description: string;
   url?: string | null;
+  image_url: string;
   video_url?: string | null;
   capacity: number;
   tags: string;

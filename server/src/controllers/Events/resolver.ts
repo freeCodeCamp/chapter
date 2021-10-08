@@ -233,6 +233,7 @@ ${unsubscribe}
     event.start_at = new Date(data.start_at) ?? event.start_at;
     event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;
+    event.image_url = data.image_url ?? event.image_url;
 
     if (data.venueId) {
       const venue = await Venue.findOne(data.venueId);

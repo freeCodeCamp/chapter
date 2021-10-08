@@ -38,6 +38,9 @@ export class CreateEventInputs {
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
+
+  @Field(() => String)
+  image_url: string;
 }
 
 @InputType()
@@ -73,4 +76,7 @@ export class UpdateEventInputs {
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
+
+  @Field(() => String, { nullable: true })
+  image_url: string;
 }

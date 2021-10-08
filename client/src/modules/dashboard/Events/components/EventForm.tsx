@@ -139,14 +139,14 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               Add
             </Button>
           </Box>
-          {sponsors.map((data, index) => {
+          {sponsors.map((sponsor, index) => {
             return (
               <Flex borderWidth="1px" p="5" mb="5">
                 <Box display="flex" flexGrow={1}>
                   <FormControl m="1">
                     <FormLabel> Sponsor Type</FormLabel>
                     <Select
-                      defaultValue={data.type}
+                      defaultValue={sponsor.type}
                       {...register(`sponsors.${index}.type` as const, {
                         required: true,
                       })}

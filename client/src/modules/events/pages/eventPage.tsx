@@ -22,7 +22,7 @@ import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,
   useRsvpToEventMutation,
-  useinitUserInterestForChapter,
+  useInitUserInterestForChapterMutation,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
@@ -31,7 +31,7 @@ export const EventPage: NextPage = () => {
   const { user } = useAuth();
 
   const [rsvpToEvent] = useRsvpToEventMutation();
-  const [initUserInterestForChapter] = useinitUserInterestForChapter();
+  const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
   const { loading, error, data } = useEventQuery({
     variables: { id: id || -1 },
   });

@@ -139,6 +139,7 @@ describe('events dashboard', () => {
     cy.waitUntilMail('allMail');
     cy.get('@allMail').mhFirst().as('emails');
 
+    // TODO: can we avoid getting this multiple times?
     cy.getRSVPs(1).then((rsvps) => {
       const expectedEmails = rsvps
         .filter(filterCallback)

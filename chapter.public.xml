@@ -71,10 +71,11 @@
          <column autoUpdated="false" defaultValue="false" digits="0" id="10" name="canceled" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="capacity" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
          <column autoUpdated="false" defaultValue="false" digits="0" id="12" name="invite_only" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="venue_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="image_url" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="venue_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_26e10dc1ae5cdd5a20279e08b4a" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="chapter_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_987a4efcef7b92bd79e1071719d" implied="false" onDeleteCascade="false" schema="public" table="chapters"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>

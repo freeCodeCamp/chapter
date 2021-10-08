@@ -79,6 +79,10 @@ export interface EventFormData {
   ends_at: string;
   venueId?: number | null;
   invite_only?: boolean;
+  sponsors?: {
+    name: string;
+    type: string;
+  }[];
 }
 
 export type IEventData = Pick<

@@ -5,9 +5,13 @@ import {
   FormLabel,
   FormControl,
   Select,
+  Box,
+  Spacer,
+  CloseButton,
+  Flex,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { useVenuesQuery } from '../../../../generated/graphql';
@@ -42,14 +46,26 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       capacity: data.capacity,
       start_at: new Date(data.start_at).toISOString().slice(0, 16),
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
+      sponsors: [],
       tags: (data.tags || []).map((t) => t.name).join(', '),
       venueId: data.venueId,
     };
   }, []);
 
-  const { register, handleSubmit, watch, setValue } = useForm<EventFormData>({
-    defaultValues,
+  const { register, control, handleSubmit, watch, setValue } =
+    useForm<EventFormData>({
+      defaultValues,
+    });
+
+  const {
+    fields: sponsors,
+    append,
+    remove,
+  } = useFieldArray({
+    name: 'sponsors',
+    control,
   });
+
   const inviteOnly = watch('invite_only');
 
   return (
@@ -108,6 +124,54 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </FormControl>
         )}
 
+        <FormControl id="first-name" isRequired>
+          <Box display="flex" alignItems="end" m="1">
+            <FormLabel> Sponsers</FormLabel>
+            <Spacer />
+            <Button
+              onClick={() => {
+                append({
+                  name: '',
+                  type: 'Food',
+                });
+              }}
+            >
+              Add
+            </Button>
+          </Box>
+          {sponsors.map((data, index) => {
+            return (
+              <Flex borderWidth="1px" p="5" mb="5">
+                <Box display="flex" flexGrow={1}>
+                  <FormControl m="1">
+                    <FormLabel> Sponsor Type</FormLabel>
+                    <Select
+                      defaultValue={data.type}
+                      {...register(`sponsors.${index}.type` as const, {
+                        required: true,
+                      })}
+                    >
+                      <option>Food</option>
+                      <option>Venue</option>
+                      <option>Other</option>
+                    </Select>
+                  </FormControl>
+
+                  <FormControl m="1">
+                    <Input
+                      placeholder="name"
+                      label="Sponser link"
+                      {...register(`sponsors.${index}.name` as const, {
+                        required: true,
+                      })}
+                    />
+                  </FormControl>
+                </Box>
+                <CloseButton onClick={() => remove(index)} />
+              </Flex>
+            );
+          })}
+        </FormControl>
         <Button
           width="100%"
           colorScheme="blue"

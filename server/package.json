@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "dependencies": {
-    "apollo-server-express": "3.3.0",
+    "apollo-server-express": "3.4.0",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-transform-typescript-metadata": "0.3.2",
     "calendar-link": "2.1.1",

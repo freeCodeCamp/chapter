@@ -42,7 +42,7 @@ export class ChapterResolver {
     chapter.city = data.city ?? chapter.city;
     chapter.region = data.region ?? chapter.region;
     chapter.country = data.country ?? chapter.country;
-    chapter.image = data.image ?? chapter.image;
+    chapter.imageUrl = data.imageUrl ?? chapter.imageUrl;
 
     return chapter.save();
   }

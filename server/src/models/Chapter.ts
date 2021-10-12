@@ -60,7 +60,7 @@ export class Chapter extends BaseModel {
 
   @Field(() => String)
   @Column({ nullable: false })
-  image!: string;
+  imageUrl!: string;
 
   constructor(params: {
     name: string;
@@ -71,7 +71,7 @@ export class Chapter extends BaseModel {
     region: string;
     country: string;
     creator?: User;
-    image: string;
+    imageUrl: string;
   }) {
     super();
     if (params) {
@@ -84,7 +84,7 @@ export class Chapter extends BaseModel {
       this.city = params.city;
       this.region = params.region;
       this.country = params.country;
-      this.image = params.image;
+      this.imageUrl = params.imageUrl;
       creator && (this.creator = creator);
     }
   }

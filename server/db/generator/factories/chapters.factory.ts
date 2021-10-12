@@ -19,7 +19,7 @@ const createChapters = async (user: User): Promise<Chapter[]> => {
       country: address.country(),
       city: address.city(),
       region: address.state(),
-      image: image.imageUrl(640, 480, 'tech', true),
+      imageUrl: image.imageUrl(640, 480, 'tech', true),
     });
 
     chapters.push(chapter);

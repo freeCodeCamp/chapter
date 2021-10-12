@@ -11,7 +11,7 @@ export const CHAPTER = gql`
       city
       region
       country
-      image
+      imageUrl
       events {
         id
         name

@@ -24,7 +24,7 @@ export class CreateChapterInputs {
   country: string;
 
   @Field(() => String)
-  image: string;
+  imageUrl: string;
 }
 
 @InputType()
@@ -51,5 +51,5 @@ export class UpdateChapterInputs {
   country: string;
 
   @Field(() => String, { nullable: true })
-  image: string;
+  imageUrl: string;
 }

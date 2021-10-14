@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@codesee/babel-plugin-instrument": "0.112.1",
-    "@codesee/tracker": "^0.101.0",
+    "@codesee/tracker": "0.101.0",
     "@graphql-codegen/cli": "2.2.0",
     "@graphql-codegen/fragment-matcher": "3.1.0",
     "@graphql-codegen/introspection": "2.1.0",

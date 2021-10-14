@@ -64,7 +64,7 @@
     "cypress-mailhog": "1.4.0",
     "cypress-wait-until": "1.7.1",
     "dotenv": "10.0.0",
-    "eslint": "7.32.0",
+    "eslint": "8.0.1",
     "eslint-config-prettier": "8.3.0",
     "eslint-config-react": "1.1.7",
     "eslint-import-resolver-typescript": "2.5.0",

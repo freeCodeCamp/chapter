@@ -1,5 +1,5 @@
-import { ObjectType, Field } from 'type-graphql';
-import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { ObjectType, Field, Int } from 'type-graphql';
+import { Entity, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { BaseModel } from './BaseModel';
 import { Event } from './Event';
 import { Sponsor } from './Sponsor';
@@ -7,6 +7,14 @@ import { Sponsor } from './Sponsor';
 @ObjectType()
 @Entity({ name: 'event_sponsors' })
 export class EventSponsor extends BaseModel {
+  @Field(() => Int)
+  @PrimaryColumn()
+  sponsor_id!: number;
+
+  @Field(() => Int)
+  @PrimaryColumn()
+  event_id!: number;
+
   @Field(() => Sponsor)
   @ManyToOne((_type) => Sponsor, (sponsor) => sponsor.events)
   @JoinColumn({ name: 'sponsor_id' })
@@ -17,12 +25,11 @@ export class EventSponsor extends BaseModel {
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
-  constructor(params: { sponsor: Sponsor; event: Event }) {
+  constructor(params: { sponsorId: number; eventId: number }) {
     super();
     if (params) {
-      const { sponsor, event } = params;
-      this.sponsor = sponsor;
-      this.event = event;
+      this.sponsor_id = params.sponsorId;
+      this.event_id = params.eventId;
     }
   }
 }

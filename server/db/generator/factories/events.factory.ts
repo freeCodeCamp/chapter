@@ -52,7 +52,10 @@ const createEvents = async (
 
     await Promise.all(
       randomItems(sponsors, 2)
-        .map((sponsor) => new EventSponsor({ event, sponsor }))
+        .map(
+          (sponsor) =>
+            new EventSponsor({ eventId: event.id, sponsorId: sponsor.id }),
+        )
         .map((es) => es.save()),
     );
 

@@ -69,6 +69,7 @@ export type CreateEventInputs = {
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
   video_url?: Maybe<Scalars['String']>;
+  sponsors?: number[];
 };
 
 export type CreateVenueInputs = {
@@ -104,7 +105,7 @@ export type Event = {
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
   rsvps: Array<Rsvp>;
-  sponsors: Array<EventSponsor>;
+  sponsors: Array<EventSponsorInput>;
   start_at: Scalars['DateTime'];
   tags?: Maybe<Array<Tag>>;
   updated_at: Scalars['DateTime'];
@@ -114,7 +115,10 @@ export type Event = {
   venue_type: VenueType;
   video_url?: Maybe<Scalars['String']>;
 };
-
+export type EventSponsorInput = {
+  type: string;
+  id: number;
+};
 export type EventSponsor = {
   __typename?: 'EventSponsor';
   created_at: Scalars['DateTime'];
@@ -339,6 +343,7 @@ export type UpdateEventInputs = {
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
   video_url?: Maybe<Scalars['String']>;
+  sponsors?: Maybe<Scalars['Int'][]>;
 };
 
 export type UpdateVenueInputs = {
@@ -653,6 +658,18 @@ export type EventQuery = {
           on_waitlist: boolean;
           user: { __typename?: 'User'; id: number; name: string };
         }>;
+        sponsors?:
+          | Array<{
+              __typename?: 'EventSponsor';
+              sponsor: {
+                __typename?: 'Sponsor';
+                id: number;
+                name: string;
+                type: string;
+              };
+            }>
+          | null
+          | undefined;
       }
     | null
     | undefined;
@@ -701,6 +718,7 @@ export type CreateEventMutation = {
     url?: string | null | undefined;
     video_url?: string | null | undefined;
     capacity: number;
+    sponsors?: number[];
     tags?:
       | Array<{ __typename?: 'Tag'; id: number; name: string }>
       | null
@@ -1507,6 +1525,13 @@ export const EventDocument = gql`
         postal_code
         region
         country
+      }
+      sponsors {
+        sponsor {
+          type
+          name
+          id
+        }
       }
       rsvps {
         id
@@ -2404,3 +2429,83 @@ const result: PossibleTypesResultData = {
   possibleTypes: {},
 };
 export default result;
+
+export const initUserInterestForChapterDocument = gql`
+  mutation initUserInterestForChapter($event_id: Int!) {
+    initUserInterestForChapter(event_id: $event_id) {
+      id
+    }
+  }
+`;
+export type initUserInterestForChapterFn = Apollo.MutationFunction<
+  initUserInterestForChapterMutation,
+  initUserInterestForChapterMutationVariables
+>;
+
+export type initUserInterestForChapterMutation = {
+  __typename?: 'Mutation';
+  initUserInterestForChapter: {
+    __typename: 'setUserChapterRole';
+    event_id: Scalars['Int'];
+  };
+};
+
+export type initUserInterestForChapterMutationVariables = Exact<{
+  event_id: Scalars['Int'];
+}>;
+
+export function useinitUserInterestForChapter(
+  baseOptions?: Apollo.MutationHookOptions<
+    initUserInterestForChapterMutation,
+    initUserInterestForChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    initUserInterestForChapterMutation,
+    initUserInterestForChapterMutationVariables
+  >(initUserInterestForChapterDocument, options);
+}
+
+export type initUserInterestForChapterMutationHookResult = ReturnType<
+  typeof useinitUserInterestForChapter
+>;
+export type initUserInterestForChapterMutationResult =
+  Apollo.MutationResult<initUserInterestForChapterMutation>;
+
+export const SponsorsDocument = gql`
+  query sponsors {
+    sponsors {
+      id
+      created_at
+      updated_at
+      name
+      website
+      logo_path
+      type
+    }
+  }
+`;
+export type SponsorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SponsorsQuery = {
+  __typename?: 'Query';
+  sponsors: Array<{
+    __typename?: 'Sponsor';
+    id: number;
+    name: string;
+    website: string;
+    logo_path: string;
+    type: string;
+  }>;
+};
+
+export function useEventSponsorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<SponsorsQuery, SponsorsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SponsorsQuery, SponsorsQueryVariables>(
+    SponsorsDocument,
+    options,
+  );
+}

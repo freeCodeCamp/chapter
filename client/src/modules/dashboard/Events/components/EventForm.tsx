@@ -14,7 +14,10 @@ import React, { useMemo } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
-import { useVenuesQuery } from '../../../../generated/graphql';
+import {
+  useEventSponsorsQuery,
+  useVenuesQuery,
+} from '../../../../generated/graphql';
 import {
   EventFormProps,
   fields,
@@ -29,6 +32,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     error: errorVenus,
     data: dataVenues,
   } = useVenuesQuery();
+
+  const {
+    loading: loadingSponsors,
+    error: errorSponsor,
+    data: sponsorData,
+  } = useEventSponsorsQuery();
 
   const defaultValues = useMemo(() => {
     if (!data)
@@ -46,13 +55,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       capacity: data.capacity,
       start_at: new Date(data.start_at).toISOString().slice(0, 16),
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
-      sponsors: [],
+      sponsors: data.sponsors,
       tags: (data.tags || []).map((t) => t.name).join(', '),
       venueId: data.venueId,
     };
   }, []);
 
-  const { register, control, handleSubmit, watch, setValue } =
+  const { register, control, handleSubmit, watch, setValue, getValues } =
     useForm<EventFormData>({
       defaultValues,
     });
@@ -131,7 +140,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             <Button
               onClick={() => {
                 append({
-                  name: '',
                   type: 'Food',
                 });
               }}
@@ -141,30 +149,42 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </Box>
           {sponsors.map((sponsor, index) => {
             return (
-              <Flex borderWidth="1px" p="5" mb="5">
+              <Flex key={sponsor.id} borderWidth="1px" p="5" mb="5">
                 <Box display="flex" flexGrow={1}>
                   <FormControl m="1">
                     <FormLabel> Sponsor Type</FormLabel>
                     <Select
-                      defaultValue={sponsor.type}
+                      defaultValue={getValues(`sponsors.${index}.type`)}
                       {...register(`sponsors.${index}.type` as const, {
                         required: true,
                       })}
                     >
-                      <option>Food</option>
-                      <option>Venue</option>
-                      <option>Other</option>
+                      <option value="FOOD">Food</option>
+                      <option value="VENUE">Venue</option>
+                      <option value="OTHER">Other</option>
                     </Select>
                   </FormControl>
 
                   <FormControl m="1">
-                    <Input
-                      placeholder="name"
-                      label="Sponser link"
-                      {...register(`sponsors.${index}.name` as const, {
-                        required: true,
-                      })}
-                    />
+                    <FormLabel> Sponsor Name</FormLabel>
+                    {loadingSponsors ? (
+                      <h5>loading sponsors</h5>
+                    ) : errorSponsor || !sponsorData ? (
+                      <h5> Error loading sponsors</h5>
+                    ) : (
+                      <Select
+                        defaultValue={getValues(`sponsors.${index}.id`)}
+                        {...register(`sponsors.${index}.id` as const, {
+                          required: true,
+                        })}
+                      >
+                        {sponsorData.sponsors.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
                   </FormControl>
                 </Box>
                 <CloseButton onClick={() => remove(index)} />

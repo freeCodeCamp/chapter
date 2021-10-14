@@ -12,6 +12,11 @@
     {
       "groupName": "Jest and ts-jest",
       "matchPackageNames": ["jest", "ts-jest", "@types/jest"]
+    },
+    {
+      "groupName": "CodeSee",
+      "matchPackagePrefixes": ["@codesee/"],
+      "automerge": true
     }
   ]
 }

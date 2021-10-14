@@ -144,7 +144,7 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -153,7 +153,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('user_chapter_roles_id_seq'::regclass)",
+        "defaultValue": "nextval('tags_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -170,7 +170,7 @@
         "comments": ""
     },
     {
-        "tableName": "users",
+        "tableName": "sponsors",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -261,24 +261,24 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "foreignKey",
-        "keyTitle": "Foreign Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>event_id",
-        "type": "int4",
-        "length": 10,
-        "nullable": "√",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "interested",
+        "type": "bool",
+        "length": 1,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
     },
     {
-        "tableName": "sponsors",
+        "tableName": "users",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "logo_path",
+        "name": "last_name",
         "type": "varchar",
         "length": 2147483647,
         "nullable": "",
@@ -300,11 +300,11 @@
         "comments": ""
     },
     {
-        "tableName": "sponsors",
+        "tableName": "users",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "website",
+        "name": "first_name",
         "type": "varchar",
         "length": 2147483647,
         "nullable": "",
@@ -313,7 +313,7 @@
         "comments": ""
     },
     {
-        "tableName": "users",
+        "tableName": "sponsors",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -322,7 +322,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('users_id_seq'::regclass)",
+        "defaultValue": "nextval('sponsors_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -352,16 +352,16 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "created_at",
-        "type": "timestamp",
-        "length": 29,
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>user_id",
+        "type": "int4",
+        "length": 10,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "now()",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -512,12 +512,12 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "interested",
-        "type": "bool",
-        "length": 1,
+        "name": "created_at",
+        "type": "timestamp",
+        "length": 29,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "null",
+        "defaultValue": "now()",
         "comments": ""
     },
     {
@@ -534,16 +534,16 @@
         "comments": ""
     },
     {
-        "tableName": "sponsors",
+        "tableName": "users",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "name",
-        "type": "varchar",
-        "length": 2147483647,
+        "name": "updated_at",
+        "type": "timestamp",
+        "length": 29,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "null",
+        "defaultValue": "now()",
         "comments": ""
     },
     {
@@ -573,11 +573,11 @@
         "comments": ""
     },
     {
-        "tableName": "users",
+        "tableName": "sponsors",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "first_name",
+        "name": "name",
         "type": "varchar",
         "length": 2147483647,
         "nullable": "",
@@ -586,11 +586,11 @@
         "comments": ""
     },
     {
-        "tableName": "sponsors",
+        "tableName": "users",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "updated_at",
+        "name": "created_at",
         "type": "timestamp",
         "length": 29,
         "nullable": "",
@@ -603,25 +603,25 @@
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>role_name",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": ""
-    },
-    {
-        "tableName": "sponsors",
-        "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
         "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
         "type": "serial",
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('sponsors_id_seq'::regclass)",
+        "defaultValue": "nextval('user_chapter_roles_id_seq'::regclass)",
+        "comments": ""
+    },
+    {
+        "tableName": "sponsors",
+        "tableType": "Table",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "type",
+        "type": "varchar",
+        "length": 2147483647,
+        "nullable": "",
+        "autoUpdated": "",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -690,11 +690,11 @@
         "comments": ""
     },
     {
-        "tableName": "users",
+        "tableName": "sponsors",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "last_name",
+        "name": "website",
         "type": "varchar",
         "length": 2147483647,
         "nullable": "",
@@ -768,20 +768,20 @@
         "comments": ""
     },
     {
-        "tableName": "sponsors",
+        "tableName": "users",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "created_at",
-        "type": "timestamp",
-        "length": 29,
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
+        "type": "serial",
+        "length": 10,
         "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "now()",
+        "autoUpdated": "√",
+        "defaultValue": "nextval('users_id_seq'::regclass)",
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -807,14 +807,14 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>chapter_id",
+        "keyClass": "foreignKey",
+        "keyTitle": "Foreign Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>event_id",
         "type": "int4",
         "length": 10,
-        "nullable": "",
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -833,12 +833,12 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "name",
-        "type": "varchar",
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>role_name",
+        "type": "text",
         "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
@@ -911,7 +911,7 @@
         "comments": ""
     },
     {
-        "tableName": "users",
+        "tableName": "sponsors",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -924,11 +924,11 @@
         "comments": ""
     },
     {
-        "tableName": "users",
+        "tableName": "sponsors",
         "tableType": "Table",
-        "keyClass": "indexedColumn",
-        "keyTitle": "Indexed",
-        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>email",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "logo_path",
         "type": "varchar",
         "length": 2147483647,
         "nullable": "",
@@ -989,13 +989,13 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>user_id",
-        "type": "int4",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "name",
+        "type": "varchar",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
@@ -1028,16 +1028,16 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "updated_at",
-        "type": "timestamp",
-        "length": 29,
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>chapter_id",
+        "type": "int4",
+        "length": 10,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "now()",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -1054,7 +1054,7 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1158,11 +1158,11 @@
         "comments": ""
     },
     {
-        "tableName": "sponsors",
+        "tableName": "users",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "type",
+        "keyClass": "indexedColumn",
+        "keyTitle": "Indexed",
+        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>email",
         "type": "varchar",
         "length": 2147483647,
         "nullable": "",
@@ -1210,16 +1210,16 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
-        "type": "serial",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "updated_at",
+        "type": "timestamp",
+        "length": 29,
         "nullable": "",
-        "autoUpdated": "√",
-        "defaultValue": "nextval('tags_id_seq'::regclass)",
+        "autoUpdated": "",
+        "defaultValue": "now()",
         "comments": ""
     },
     {

@@ -465,6 +465,14 @@ You are a champion :).
 
 </details>
 
+<details><summary>What is that floating red eye?</summary>
+
+That's the button to start a developer tool called [CodeSee](https://www.codesee.io/) that helps debugging and understanding the application as it's used. The reason it's red is that you need to sign up.  Once you do, it turns blue and lets you start and stop recording.
+
+To learn more, take a look at their [docs](https://docs.codesee.io/projects/recordings/en/latest/use/quick-start/) or just click the button and find out.
+
+</details>
+
 # Server-side Technical Documentation
 
 ## API Specification

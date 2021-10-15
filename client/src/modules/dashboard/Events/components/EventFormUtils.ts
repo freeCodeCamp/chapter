@@ -1,4 +1,4 @@
-import { Event, Venue, EventSponsorInput } from '../../../../generated/graphql';
+import { Event, Venue } from '../../../../generated/graphql';
 
 export interface Field {
   key: keyof EventFormData;
@@ -8,6 +8,10 @@ export interface Field {
   defaultValue?: string;
 }
 
+export interface EventSponsorInput {
+  id: number;
+  type: string;
+}
 export const fields: Field[] = [
   {
     key: 'name',
@@ -79,16 +83,17 @@ export interface EventFormData {
   ends_at: string;
   venueId?: number | null;
   invite_only?: boolean;
-  sponsors: EventSponsorInput[];
+  sponsors: Array<EventSponsorInput>;
 }
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venueId' | 'tags'> | 'id'
+  keyof Omit<EventFormData, 'venueId' | 'tags' | 'sponsors'> | 'id'
 > & {
   venueId?: number;
   tags: { name: string }[];
   venue?: Omit<Venue, 'created_at' | 'updated_at' | 'events'> | null;
+  sponsors: EventSponsorInput[];
 };
 
 export interface EventFormProps {

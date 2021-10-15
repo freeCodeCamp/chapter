@@ -284,7 +284,6 @@ export type Rsvp = {
   date: Scalars['DateTime'];
   event: Event;
   id: Scalars['Int'];
-  interested: Scalars['Boolean'];
   on_waitlist: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -399,6 +398,7 @@ export type UserEventRole = {
   event_id: Scalars['Int'];
   id: Scalars['Int'];
   role_name: Scalars['String'];
+  subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
   user_id: Scalars['Int'];

@@ -37,20 +37,11 @@ export class Rsvp extends BaseModel {
   @Column({ nullable: false })
   canceled: boolean;
 
-  /*
-    This indicates whether he use wants to receive notifications about the event they RSVP'd to.
-    Defaults to True when the RSVP is created
-   */
-  @Field(() => Boolean)
-  @Column({ nullable: false })
-  interested: boolean;
-
   constructor(params: {
     date: Date;
     on_waitlist: boolean;
     event: Event;
     user: User;
-    interested?: boolean;
     canceled?: boolean;
     confirmed_at: Date | null;
   }) {
@@ -61,7 +52,6 @@ export class Rsvp extends BaseModel {
         on_waitlist,
         event,
         user,
-        interested = true,
         confirmed_at,
         canceled = false,
       } = params;
@@ -70,7 +60,6 @@ export class Rsvp extends BaseModel {
       this.event = event;
       this.user = user;
       this.canceled = canceled;
-      this.interested = interested;
       this.confirmed_at = confirmed_at;
     }
   }

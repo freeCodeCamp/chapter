@@ -99,7 +99,6 @@ export class EventResolver {
       event,
       user: ctx.user,
       date: new Date(),
-      interested: false, // TODO handle this
       on_waitlist: event.invite_only ? true : waitlist,
       confirmed_at: event.invite_only ? null : new Date(),
     });
@@ -205,6 +204,7 @@ ${unsubscribe}
         userId: ctx.user.id,
         eventId: event.id,
         roleName: 'organizer',
+        subscribed: true, // TODO: even organizers may wish to opt out of emails
       }),
     ];
 
@@ -297,6 +297,7 @@ ${unsubscribe}
         'chapter.users.user',
         'rsvps',
         'rsvps.user',
+        'user_roles',
       ],
     });
 
@@ -311,23 +312,34 @@ ${unsubscribe}
 
       addresses.push(...interestedUsers);
     }
+
+    const subscribedUsers = event.user_roles
+      .filter((role) => role.subscribed)
+      .map((role) => role.user_id);
     if (emailGroups.includes('on_waitlist')) {
       const waitlistUsers: string[] = event.rsvps
-        .filter((rsvp) => rsvp.on_waitlist && rsvp.interested)
+        .filter(
+          (rsvp) => rsvp.on_waitlist && subscribedUsers.includes(rsvp.user.id),
+        )
         .map(({ user }) => user.email);
       addresses.push(...waitlistUsers);
     }
     if (emailGroups.includes('confirmed')) {
       const confirmedUsers: string[] = event.rsvps
         .filter(
-          (rsvp) => !rsvp.on_waitlist && !rsvp.canceled && rsvp.interested,
+          (rsvp) =>
+            !rsvp.on_waitlist &&
+            !rsvp.canceled &&
+            subscribedUsers.includes(rsvp.user.id),
         )
         .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }
     if (emailGroups.includes('canceled')) {
       const confirmedUsers: string[] = event.rsvps
-        .filter((rsvp) => rsvp.canceled && rsvp.interested)
+        .filter(
+          (rsvp) => rsvp.canceled && subscribedUsers.includes(rsvp.user.id),
+        )
         .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }

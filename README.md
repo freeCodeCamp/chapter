@@ -150,6 +150,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
     <td align="center"><a href="http://www.nhcarrigan.com"><img src="https://avatars.githubusercontent.com/u/63889819?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicholas Carrigan (he/him)</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=nhcarrigan" title="Documentation">📖</a></td>
     <td align="center"><a href="http://vividventures.biz"><img src="https://avatars.githubusercontent.com/u/9598008?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Joe Devlin</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/issues?q=author%3ANorthDecoder" title="Bug reports">🐛</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=NorthDecoder" title="Documentation">📖</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=NorthDecoder" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/rahul1990gupta"><img src="https://avatars.githubusercontent.com/u/8749679?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Rahul Gupta</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/issues?q=author%3Arahul1990gupta" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/Ravichandra-C"><img src="https://avatars.githubusercontent.com/u/17808008?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ravichandra</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Ravichandra-C" title="Code">💻</a></td>
   </tr>
 </table>
 

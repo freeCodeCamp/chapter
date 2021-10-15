@@ -509,7 +509,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/63889819?v=4",
       "profile": "http://www.nhcarrigan.com",
       "contributions": [
-        "doc"
+        "doc",
+        "infra",
+        "code"
       ]
     },
     {

@@ -15,7 +15,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import {
-  useEventSponsorsQuery,
+  useSponsorsQuery,
   useVenuesQuery,
 } from '../../../../generated/graphql';
 import {
@@ -37,7 +37,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     loading: loadingSponsors,
     error: errorSponsor,
     data: sponsorData,
-  } = useEventSponsorsQuery();
+  } = useSponsorsQuery();
 
   const defaultValues = useMemo(() => {
     if (!data)

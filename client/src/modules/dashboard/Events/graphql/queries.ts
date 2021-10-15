@@ -179,7 +179,7 @@ export const initUserInterestForChapter = gql`
   }
 `;
 
-export const SPONSORS = gql`
+export const Sponsors = gql`
   query sponsors {
     sponsors {
       id

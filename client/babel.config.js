@@ -3,7 +3,10 @@ var config = {
   plugins: [],
 };
 
-if (process.env.NODE_ENV === 'development') {
+if (
+  process.env.NODE_ENV === 'development' &&
+  !process.env.GITPOD_WORKSPACE_URL
+) {
   config.plugins.push(['@codesee/instrument', { hosted: true }]);
 }
 

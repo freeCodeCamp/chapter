@@ -91,11 +91,10 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="on_waitlist" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="confirmed_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="canceled" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="interested" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="event_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="event_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_04d52fc9fe91004aa1860603ea3" implied="false" onDeleteCascade="false" schema="public" table="events"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="user_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="user_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_5ef6c963e9f7d98f6e0f79053a3" implied="false" onDeleteCascade="false" schema="public" table="users"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
@@ -180,6 +179,7 @@
             <parent column="id" foreignKey="FK_f098ebd3c390d8e0f1e6ce882c6" implied="false" onDeleteCascade="false" schema="public" table="events"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="role_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="subscribed" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <primaryKey column="user_id" sequenceNumberInPK="2"/>
          <primaryKey column="event_id" sequenceNumberInPK="3"/>

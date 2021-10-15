@@ -69,7 +69,7 @@ export type CreateEventInputs = {
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
   video_url?: Maybe<Scalars['String']>;
-  sponsors?: number[];
+  sponsors?: Maybe<Scalars['Int'][]>;
 };
 
 export type CreateVenueInputs = {

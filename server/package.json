@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@types/chai": "4.2.22",
-    "@types/faker": "5.5.8",
+    "@types/faker": "5.5.9",
     "@types/jest": "27.0.2",
     "@types/jsonwebtoken": "8.5.5",
     "@types/nodemailer": "6.4.4",

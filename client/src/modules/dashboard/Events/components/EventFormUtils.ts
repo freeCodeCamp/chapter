@@ -6,6 +6,7 @@ export interface Field {
   placeholder?: string;
   type: string;
   defaultValue?: string;
+  isRequired: boolean;
 }
 
 export interface EventSponsorInput {
@@ -18,48 +19,56 @@ export const fields: Field[] = [
     type: 'text',
     label: 'Event title',
     placeholder: 'Foo and the Bars',
+    isRequired: true,
   },
   {
     key: 'description',
     type: 'textarea',
     label: 'Description',
     placeholder: '',
+    isRequired: true,
   },
   {
     key: 'image_url',
     type: 'text',
     label: 'Event Image Url',
     placeholder: 'https://www.example.image/url',
+    isRequired: true,
   },
   {
     key: 'url',
     type: 'url',
     label: 'Url',
     placeholder: '',
+    isRequired: true,
   },
   {
     key: 'video_url',
     type: 'url',
     label: 'Video Url',
     placeholder: '',
+    isRequired: true,
   },
   {
     key: 'capacity',
     type: 'number',
     label: 'Capacity',
     placeholder: '50',
+    isRequired: true,
   },
   {
     key: 'tags',
     type: 'text',
     label: 'Tags (separated by a comma)',
     placeholder: 'Foo, bar',
+    isRequired: false,
   },
   {
     key: 'start_at',
     type: 'datetime-local',
     label: 'Start at',
     defaultValue: new Date().toISOString().slice(0, 16),
+    isRequired: true,
   },
   {
     key: 'ends_at',
@@ -68,6 +77,7 @@ export const fields: Field[] = [
     defaultValue: new Date(Date.now() + 1000 * 60 * 60)
       .toISOString()
       .slice(0, 16),
+    isRequired: true,
   },
 ];
 

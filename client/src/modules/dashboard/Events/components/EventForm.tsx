@@ -58,6 +58,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       sponsors: data.sponsors,
       tags: (data.tags || []).map((t) => t.name).join(', '),
       venueId: data.venueId,
+      image_url: data.image_url,
     };
   }, []);
 
@@ -90,7 +91,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               key={field.key}
               label={field.label}
               placeholder={field.placeholder}
-              isRequired
+              isRequired={field.isRequired}
               {...register(field.key)}
               defaultValue={formatValue(field, data)}
             />
@@ -100,7 +101,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               type={field.type}
               label={field.label}
               placeholder={field.placeholder}
-              isRequired
+              isRequired={field.isRequired}
               {...register(field.key)}
             />
           ),

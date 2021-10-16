@@ -509,7 +509,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/63889819?v=4",
       "profile": "http://www.nhcarrigan.com",
       "contributions": [
-        "doc"
+        "doc",
+        "infra",
+        "code"
       ]
     },
     {
@@ -530,6 +532,15 @@
       "profile": "https://github.com/rahul1990gupta",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "Ravichandra-C",
+      "name": "Ravichandra",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17808008?v=4",
+      "profile": "https://github.com/Ravichandra-C",
+      "contributions": [
+        "code"
       ]
     }
   ],

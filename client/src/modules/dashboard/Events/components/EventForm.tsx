@@ -140,7 +140,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             <Button
               onClick={() => {
                 append({
-                  type: 'Food',
+                  type: 'FOOD',
                 });
               }}
             >

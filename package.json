@@ -70,7 +70,7 @@
     "eslint-import-resolver-typescript": "2.5.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-import": "2.25.2",
-    "eslint-plugin-jest": "25.2.1",
+    "eslint-plugin-jest": "25.2.2",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.26.1",
     "execa": "5.1.1",

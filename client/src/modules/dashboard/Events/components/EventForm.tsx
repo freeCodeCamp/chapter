@@ -73,9 +73,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     remove,
   } = useFieldArray({
     name: 'sponsors',
+    keyName: 'key',
     control,
   });
 
+  const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
 
   return (
@@ -142,6 +144,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               onClick={() => {
                 append({
                   type: 'FOOD',
+                  id: 0,
                 });
               }}
             >
@@ -150,10 +153,10 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </Box>
           {sponsors.map((sponsor, index) => {
             return (
-              <Flex key={sponsor.id} borderWidth="1px" p="5" mb="5">
+              <Flex key={sponsor.key} borderWidth="1px" p="5" mb="5">
                 <Box display="flex" flexGrow={1}>
                   <FormControl m="1">
-                    <FormLabel> Sponsor Type</FormLabel>
+                    <FormLabel>Sponsor Type</FormLabel>
                     <Select
                       defaultValue={getValues(`sponsors.${index}.type`)}
                       {...register(`sponsors.${index}.type` as const, {
@@ -179,11 +182,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                           required: true,
                         })}
                       >
-                        {sponsorData.sponsors.map((s) => (
-                          <option key={s.id} value={s.id}>
-                            {s.name}
-                          </option>
-                        ))}
+                        {sponsorData.sponsors
+                          ?.filter(
+                            (item) =>
+                              item.type === watchSponsorsArray[index]?.type,
+                          )
+                          .map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.name}
+                            </option>
+                          ))}
                       </Select>
                     )}
                   </FormControl>

@@ -1,4 +1,13 @@
-import { Button, Box, Heading, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Heading,
+  Text,
+  Flex,
+  Badge,
+  Spacer,
+  Link,
+} from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -48,7 +57,6 @@ export const EventPage: NextPage = () => {
       </Layout>
     );
   }
-
   return (
     <Layout>
       <Box p="2" borderWidth="1px" borderRadius="lg">
@@ -89,7 +97,33 @@ export const EventPage: NextPage = () => {
           <h2>Venue: Online</h2>
         )}
       </Box>
-
+      {data.event.sponsors.length ? (
+        <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
+          <Heading size="lg">Sponsors</Heading>
+          <Spacer />
+          <Flex wrap="wrap" justifyContent="center">
+            {data.event.sponsors.map((item) => (
+              <Box
+                key={item.sponsor.id}
+                p="6"
+                m="6"
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+              >
+                <Heading size="sm">
+                  <Link href={item.sponsor.website} isExternal>
+                    {item.sponsor.name}
+                  </Link>
+                </Heading>
+                <Badge>{item.sponsor.type}</Badge>
+              </Box>
+            ))}
+          </Flex>
+        </Box>
+      ) : (
+        false
+      )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
         <DataTable
           title={

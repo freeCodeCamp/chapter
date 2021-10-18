@@ -643,8 +643,10 @@ export type EventQuery = {
           __typename?: 'EventSponsor';
           sponsor: {
             __typename?: 'Sponsor';
-            type: string;
             name: string;
+            website: string;
+            logo_path: string;
+            type: string;
             id: number;
           };
         }>;
@@ -1531,8 +1533,10 @@ export const EventDocument = gql`
       }
       sponsors {
         sponsor {
-          type
           name
+          website
+          logo_path
+          type
           id
         }
       }

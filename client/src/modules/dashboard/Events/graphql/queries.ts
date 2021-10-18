@@ -48,8 +48,10 @@ export const EVENT = gql`
       }
       sponsors {
         sponsor {
-          type
           name
+          website
+          logo_path
+          type
           id
         }
       }

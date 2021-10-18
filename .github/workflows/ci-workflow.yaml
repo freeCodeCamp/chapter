@@ -44,7 +44,7 @@ jobs:
         run: |
           npm run start:server & ./server/wait-for localhost:5000 -- npm run gen
           killall node
-          git diff --quiet HEAD
+          ./scripts/check-generated-code.sh
       - name: Start Docker service
         env:
           IS_DOCKER: true

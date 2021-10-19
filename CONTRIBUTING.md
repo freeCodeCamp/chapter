@@ -465,9 +465,11 @@ You are a champion :).
 
 </details>
 
-<details><summary>What is that floating red eye?</summary>
+<details><summary>How do I enable CodeSee?</summary>
 
-That's the button to start a developer tool called [CodeSee](https://www.codesee.io/) that helps debugging and understanding the application as it's used. The reason it's red is that you need to sign up.  Once you do, it turns blue and lets you start and stop recording.
+Copy the `client/.example.env.local` to `client/.env.local`. 
+
+[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter, after creating `.env.local`, you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
 
 To learn more, take a look at their [docs](https://docs.codesee.io/projects/recordings/en/latest/use/quick-start/) or just click the button and find out.
 

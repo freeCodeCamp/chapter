@@ -13,8 +13,8 @@ import {
 import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
 import { Layout } from '../../shared/components/Layout';
-import SponsorCard from '../components/EventSponsorCard';
 import Actions from '../components/Actions';
+import SponsorCard from '../components/EventSponsorCard';
 import { EVENT } from '../graphql/queries';
 
 const args = (id: number) => ({

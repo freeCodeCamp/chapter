@@ -46,6 +46,7 @@ const createEvents = async (
       ends_at: addHours(start_at, random(5)),
       user_roles: [],
       image_url: image.imageUrl(640, 480, 'nature', true),
+      sponsors: [],
     });
 
     await event.save();

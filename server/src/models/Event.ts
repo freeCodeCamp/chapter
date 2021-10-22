@@ -66,8 +66,7 @@ export class Event extends BaseModel {
   @OneToMany((_type) => EventSponsor, (eventSponsor) => eventSponsor.event, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'id' })
-  sponsors?: EventSponsor[];
+  sponsors: EventSponsor[];
 
   @Field(() => Venue, { nullable: true })
   @ManyToOne((_type) => Venue, (venue) => venue.events, { nullable: true })
@@ -110,7 +109,7 @@ export class Event extends BaseModel {
     invite_only?: boolean;
     user_roles: UserEventRole[];
     image_url: string;
-    sponsors?: EventSponsor[];
+    sponsors: EventSponsor[];
   }) {
     super();
     if (params) {

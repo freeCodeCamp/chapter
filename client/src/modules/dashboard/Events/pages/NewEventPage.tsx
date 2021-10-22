@@ -36,7 +36,7 @@ export const NewEventPage: NextPage = () => {
         ends_at: new Date(data.ends_at).toISOString(),
         ...HARD_CODE,
         tags: undefined,
-        sponsors: sponsorArray,
+        sponsorIds: sponsorArray,
       };
       const event = await createEvent({
         variables: { data: { ...eventData } },

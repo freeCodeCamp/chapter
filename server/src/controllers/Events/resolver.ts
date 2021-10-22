@@ -210,7 +210,7 @@ ${unsubscribe}
     }).save();
 
     event.sponsors = await Promise.all(
-      data.sponsors.map((s) =>
+      data.sponsorIds.map((s) =>
         new EventSponsor({
           eventId: event.id,
           sponsorId: s,
@@ -261,7 +261,7 @@ ${unsubscribe}
     );
 
     event.sponsors = await Promise.all(
-      data.sponsors.map((s) =>
+      data.sponsorIds.map((s) =>
         new EventSponsor({
           eventId: id,
           sponsorId: s,

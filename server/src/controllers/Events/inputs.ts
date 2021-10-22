@@ -41,8 +41,8 @@ export class CreateEventInputs {
 
   @Field(() => String)
   image_url: string;
-  @Field(() => [Int], { nullable: true })
-  sponsors: number[];
+  @Field(() => [Int])
+  sponsorIds: number[];
 }
 
 @InputType()
@@ -81,6 +81,6 @@ export class UpdateEventInputs {
 
   @Field(() => String, { nullable: true })
   image_url: string;
-  @Field(() => [Int], { nullable: true })
-  sponsors: number[];
+  @Field(() => [Int])
+  sponsorIds: number[];
 }

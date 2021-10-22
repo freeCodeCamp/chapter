@@ -43,7 +43,7 @@ export const EditEventPage: NextPage = () => {
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
         tags: undefined,
-        sponsors: sponsorArray,
+        sponsorIds: sponsorArray,
       };
 
       const event = await updateEvent({

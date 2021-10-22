@@ -1,13 +1,4 @@
-import {
-  Button,
-  Box,
-  Heading,
-  Text,
-  Flex,
-  Badge,
-  Spacer,
-  Link,
-} from '@chakra-ui/react';
+import { Button, Box, Heading, Text } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -22,6 +13,7 @@ import {
 import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
 import { Layout } from '../../shared/components/Layout';
+import SponsorCard from '../components/EventSponsorCard';
 import Actions from '../components/Actions';
 import { EVENT } from '../graphql/queries';
 
@@ -98,29 +90,7 @@ export const EventPage: NextPage = () => {
         )}
       </Box>
       {data.event.sponsors.length ? (
-        <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-          <Heading size="lg">Sponsors</Heading>
-          <Spacer />
-          <Flex wrap="wrap" justifyContent="center">
-            {data.event.sponsors.map((item) => (
-              <Box
-                key={item.sponsor.id}
-                p="6"
-                m="6"
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-              >
-                <Heading size="sm">
-                  <Link href={item.sponsor.website} isExternal>
-                    {item.sponsor.name}
-                  </Link>
-                </Heading>
-                <Badge>{item.sponsor.type}</Badge>
-              </Box>
-            ))}
-          </Flex>
-        </Box>
+        <SponsorCard sponsors={data.event.sponsors} />
       ) : (
         false
       )}

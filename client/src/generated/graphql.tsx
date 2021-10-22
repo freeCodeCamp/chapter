@@ -64,7 +64,7 @@ export type CreateEventInputs = {
   image_url: Scalars['String'];
   invite_only?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
-  sponsors?: Maybe<Array<Scalars['Int']>>;
+  sponsorIds: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
   venueId?: Maybe<Scalars['Int']>;
@@ -337,7 +337,7 @@ export type UpdateEventInputs = {
   image_url?: Maybe<Scalars['String']>;
   invite_only?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
-  sponsors?: Maybe<Array<Scalars['Int']>>;
+  sponsorIds: Array<Scalars['Int']>;
   start_at?: Maybe<Scalars['DateTime']>;
   url?: Maybe<Scalars['String']>;
   venueId?: Maybe<Scalars['Int']>;

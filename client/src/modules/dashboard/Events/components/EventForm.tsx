@@ -184,9 +184,26 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                       >
                         {sponsorData.sponsors
                           ?.filter(
+                            //Filtering out the options of only selected type
                             (item) =>
                               item.type === watchSponsorsArray[index]?.type,
                           )
+                          //Filtering out options that are already selected
+                          .filter((item) => {
+                            for (
+                              let i = 0;
+                              i < watchSponsorsArray?.length;
+                              i++
+                            ) {
+                              if (
+                                index != i &&
+                                item.type == watchSponsorsArray[i]?.type
+                              ) {
+                                return item.id != watchSponsorsArray[i]?.id;
+                              }
+                            }
+                            return true;
+                          })
                           .map((s) => (
                             <option key={s.id} value={s.id}>
                               {s.name}

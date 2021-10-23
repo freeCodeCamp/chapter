@@ -53,10 +53,9 @@ const createEvents = async (
 
     await Promise.all(
       randomItems(sponsors, 2)
-        .map(
-          (sponsor) =>
-            new EventSponsor({ eventId: event.id, sponsorId: sponsor.id }),
-        )
+        .map((sponsor) => {
+          return new EventSponsor({ eventId: event.id, sponsorId: sponsor.id });
+        })
         .map((es) => es.save()),
     );
 
@@ -69,14 +68,6 @@ const createEvents = async (
 
     events.push(event);
   }
-
-  try {
-    await Promise.all(events.map((event) => event.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding events');
-  }
-
   return events;
 };
 

@@ -7,23 +7,23 @@ import { EventSponsor } from './EventSponsor';
 @Entity({ name: 'sponsors' })
 export class Sponsor extends BaseModel {
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   name!: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   website!: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   logo_path!: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   type!: string;
 
   @Field(() => [EventSponsor])
-  @OneToMany((_type) => EventSponsor, (eventSponsor) => eventSponsor.event)
+  @OneToMany((_type) => EventSponsor, (events) => events.event)
   events!: EventSponsor[];
 
   constructor(params: {

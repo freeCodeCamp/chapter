@@ -38,7 +38,7 @@ export class UserChapterRole extends BaseModel {
     Defaults to True when the user joins this chapter
    */
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column()
   interested: boolean;
 
   constructor(params: {

@@ -7,7 +7,7 @@ import { Event } from './Event';
 @Entity({ name: 'tags' })
 export class Tag extends BaseModel {
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   name!: string;
 
   @Field(() => Event)

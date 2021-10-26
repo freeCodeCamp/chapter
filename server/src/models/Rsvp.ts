@@ -8,11 +8,11 @@ import { User } from './User';
 @Entity({ name: 'rsvps' })
 export class Rsvp extends BaseModel {
   @Field(() => Date)
-  @Column({ type: 'timestamp', nullable: false })
+  @Column({ type: 'timestamp' })
   date!: Date;
 
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column()
   on_waitlist!: boolean;
 
   @Field(() => Date)
@@ -34,7 +34,7 @@ export class Rsvp extends BaseModel {
   Defaults to False when the RSVP is created
  */
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column()
   canceled: boolean;
 
   constructor(params: {

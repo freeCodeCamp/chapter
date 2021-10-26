@@ -34,7 +34,7 @@ export class UserEventRole extends BaseModel {
   role_name!: EventRoles;
 
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column()
   subscribed!: boolean;
 
   constructor(params: {

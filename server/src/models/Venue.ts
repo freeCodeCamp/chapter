@@ -23,7 +23,7 @@ export class Venue extends BaseModel {
   name!: string;
 
   @Field(() => [Event])
-  @OneToMany((_type) => Event, (event) => event.venue)
+  @OneToMany((_type) => Event, (events) => events.venue)
   events!: Event[];
 
   @Field(() => String, { nullable: true })

@@ -10,15 +10,15 @@ import { UserChapterRole } from './UserChapterRole';
 @Entity({ name: 'chapters' })
 export class Chapter extends BaseModel {
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   name!: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   description!: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   category!: string;
 
   // TODO: Fix this
@@ -39,11 +39,11 @@ export class Chapter extends BaseModel {
   country: string;
 
   @Field(() => [Event])
-  @OneToMany((_type) => Event, (event) => event.chapter)
+  @OneToMany((_type) => Event, (events) => events.chapter)
   events!: Event[];
 
   @Field(() => User)
-  @ManyToOne((_type) => User, (user) => user.created_chapters)
+  @ManyToOne((_type) => User, (creator) => creator.created_chapters)
   @JoinColumn({ name: 'creator_id' })
   creator!: User;
 
@@ -55,7 +55,7 @@ export class Chapter extends BaseModel {
   users!: UserChapterRole[];
 
   @Field(() => [UserBan])
-  @OneToMany((_type) => UserBan, (userBan) => userBan.chapter)
+  @OneToMany((_type) => UserBan, (banned_users) => banned_users.chapter)
   banned_users!: UserBan[];
 
   @Field(() => String)

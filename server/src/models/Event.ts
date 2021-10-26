@@ -23,11 +23,11 @@ registerEnumType(VenueType, {
 @Entity({ name: 'events' })
 export class Event extends BaseModel {
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   name!: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   description!: string;
 
   @Field(() => String, { nullable: true })
@@ -55,7 +55,7 @@ export class Event extends BaseModel {
   canceled!: boolean;
 
   @Field(() => Int)
-  @Column({ nullable: false })
+  @Column()
   capacity!: number;
 
   @Field(() => Boolean)
@@ -63,7 +63,7 @@ export class Event extends BaseModel {
   invite_only!: boolean;
 
   @Field(() => [EventSponsor])
-  @OneToMany((_type) => EventSponsor, (eventSponsor) => eventSponsor.event, {
+  @OneToMany((_type) => EventSponsor, (sponsors) => sponsors.event, {
     onDelete: 'CASCADE',
   })
   sponsors: EventSponsor[];
@@ -79,11 +79,11 @@ export class Event extends BaseModel {
   chapter!: Chapter;
 
   @Field(() => [Rsvp])
-  @OneToMany((_type) => Rsvp, (rsvp) => rsvp.event, { onDelete: 'CASCADE' })
+  @OneToMany((_type) => Rsvp, (rsvps) => rsvps.event, { onDelete: 'CASCADE' })
   rsvps!: Rsvp[];
 
   @Field(() => [Tag], { nullable: true })
-  @OneToMany((_type) => Tag, (tag) => tag.event, { onDelete: 'CASCADE' })
+  @OneToMany((_type) => Tag, (tags) => tags.event, { onDelete: 'CASCADE' })
   tags!: Tag[];
 
   @Field(() => [UserEventRole])
@@ -91,7 +91,7 @@ export class Event extends BaseModel {
   user_roles!: UserEventRole[];
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column()
   image_url!: string;
 
   constructor(params: {

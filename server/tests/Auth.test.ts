@@ -30,7 +30,7 @@ const getExpTime = (token: string): number => {
 };
 
 const nowInSeconds = Date.now() / 1000;
-const expTimeInSeconds = isTokenExpired(token);
+const expTimeInSeconds = getExpTime(token);
 const ninetyMinsInSeconds = 90 * 60;
 
 // Tests

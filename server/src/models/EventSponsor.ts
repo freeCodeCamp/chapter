@@ -1,13 +1,13 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 import { Entity, ManyToOne, JoinColumn, PrimaryColumn, Unique } from 'typeorm';
-import { BaseModel } from './BaseModel';
+import { BaseJunctionModel } from './BaseJunctionModel';
 import { Event } from './Event';
 import { Sponsor } from './Sponsor';
 
 @ObjectType()
 @Entity({ name: 'event_sponsors' })
 @Unique(['sponsor_id', 'event_id'])
-export class EventSponsor extends BaseModel {
+export class EventSponsor extends BaseJunctionModel {
   @Field(() => Int)
   @PrimaryColumn()
   sponsor_id!: number;

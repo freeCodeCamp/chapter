@@ -1,12 +1,12 @@
 import { ObjectType, Field } from 'type-graphql';
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { BaseModel } from './BaseModel';
+import { BaseJunctionModel } from './BaseJunctionModel';
 import { Event } from './Event';
 import { User } from './User';
 
 @ObjectType()
 @Entity({ name: 'rsvps' })
-export class Rsvp extends BaseModel {
+export class Rsvp extends BaseJunctionModel {
   @Field(() => Date)
   @Column({ type: 'timestamp' })
   date!: Date;
@@ -20,12 +20,12 @@ export class Rsvp extends BaseModel {
   confirmed_at: Date | null;
 
   @Field(() => Event)
-  @ManyToOne((_type) => Event, (event) => event.rsvps)
+  @ManyToOne((_type) => Event, (event) => event.rsvps, { primary: true })
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
   @Field(() => User)
-  @ManyToOne((_type) => User, (user) => user.rsvps)
+  @ManyToOne((_type) => User, (user) => user.rsvps, { primary: true })
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn, Column } from 'typeorm';
-import { BaseModel } from './BaseModel';
+import { BaseJunctionModel } from './BaseJunctionModel';
 import { Chapter } from './Chapter';
 import { User } from './User';
 
@@ -10,7 +10,7 @@ export type ChapterRoles = 'organizer' | 'member';
 
 @ObjectType()
 @Entity({ name: 'user_chapter_roles' })
-export class UserChapterRole extends BaseModel {
+export class UserChapterRole extends BaseJunctionModel {
   @Field(() => Int)
   @PrimaryColumn()
   user_id!: number;

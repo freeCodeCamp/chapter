@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { BaseModel } from './BaseModel';
+import { BaseJunctionModel } from './BaseJunctionModel';
 import { Event } from './Event';
 import { User } from './User';
 
@@ -10,7 +10,7 @@ type EventRoles = 'organizer' | 'attendee';
 
 @ObjectType()
 @Entity({ name: 'user_event_roles' })
-export class UserEventRole extends BaseModel {
+export class UserEventRole extends BaseJunctionModel {
   @Field(() => Int)
   @PrimaryColumn()
   user_id!: number;

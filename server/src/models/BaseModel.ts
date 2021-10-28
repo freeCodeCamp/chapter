@@ -1,22 +1,10 @@
 import { ObjectType, Field, Int } from 'type-graphql';
-import {
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { PrimaryGeneratedColumn } from 'typeorm';
+import { BaseJunctionModel } from './BaseJunctionModel';
 
 @ObjectType()
-export class BaseModel extends BaseEntity {
+export class BaseModel extends BaseJunctionModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Field(() => Date)
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at!: Date;
-
-  @Field(() => Date)
-  @UpdateDateColumn({ type: 'timestamp' })
-  updated_at!: Date;
 }

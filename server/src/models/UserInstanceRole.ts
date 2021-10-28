@@ -5,6 +5,7 @@ import { User } from './User';
 // TODO: Make this enum
 export type InstanceRoles = 'admin' | 'owner';
 
+// TODO: this should have the same structure as chapter roles
 @ObjectType()
 @Entity({ name: 'user_instance_roles' })
 export class UserInstanceRole {

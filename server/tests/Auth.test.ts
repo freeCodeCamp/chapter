@@ -20,7 +20,6 @@ afterEach(() => {
 });
 
 // Setup
-//const mock_secret = 'SetThisTo32orMoreRandomCharacters';
 const secret = getConfig('JWT_SECRET');
 const email = 'joe.smith@example.com';
 const { token, code } = authTokenService.generateToken(email);
@@ -35,7 +34,7 @@ const now = Date.now() / 1000;
 
 // Tests
 describe('AuthToken Setup', () => {
-  it('Secret should be 32 or more characters.', () => {
+  it('Secret should be 32 or more characters', () => {
     expect(secret).to.have.lengthOf.above(31);
   });
 });
@@ -50,7 +49,7 @@ describe('Generation of Token', () => {
     expect(code).to.have.lengthOf(8);
   });
 
-  it('The token had not expired yet', () => {
+  it('The token should not have expired yet', () => {
     expect(now).to.be.below(isTokenExpired(token));
   });
 });

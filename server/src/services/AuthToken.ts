@@ -11,7 +11,7 @@ class AuthToken {
   public generateToken(email: string) {
     const code = AuthToken.generateCode();
     const token = jwt.sign({ email, code }, this.secret, {
-      expiresIn: '120min',
+      expiresIn: '2h',
     });
 
     return { token, code };

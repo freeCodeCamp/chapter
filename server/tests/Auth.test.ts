@@ -21,6 +21,7 @@ afterEach(() => {
 const secret = getConfig('JWT_SECRET');
 const email = 'joe.smith@example.com';
 const { token, code } = authTokenService.generateToken(email);
+
 const isTokenExpired = (token: string): number => {
   const { exp } = jwt.decode(token) as {
     exp: number;
@@ -28,7 +29,9 @@ const isTokenExpired = (token: string): number => {
   return exp;
 };
 
-const now = Date.now() / 1000;
+const nowInSeconds = Date.now() / 1000;
+const expTimeInSeconds = isTokenExpired(token);
+const ninetyMinsInSeconds = 90 * 60;
 
 // Tests
 describe('AuthToken Setup', () => {
@@ -48,6 +51,7 @@ describe('Generation of Code and Token', () => {
   });
 
   it('The token should not have expired yet', () => {
-    expect(now).to.be.below(isTokenExpired(token));
+    expect(nowInSeconds).to.be.below(expTimeInSeconds);
+    expect(expTimeInSeconds).to.be.above(nowInSeconds + ninetyMinsInSeconds);
   });
 });

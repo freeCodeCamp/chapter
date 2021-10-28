@@ -1,10 +1,10 @@
 import assert from 'assert';
 import chai, { expect } from 'chai';
+import jwt from 'jsonwebtoken';
 import { stub, restore } from 'sinon';
 import sinonChai from 'sinon-chai';
 import { getConfig } from 'src/config';
 import { authTokenService } from 'src/services/AuthToken';
-import jwt from 'jsonwebtoken';
 
 chai.use(sinonChai);
 

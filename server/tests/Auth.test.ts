@@ -1,11 +1,9 @@
 import assert from 'assert';
 import chai, { expect } from 'chai';
-//import chai from 'chai';
 import { stub, restore } from 'sinon';
 import sinonChai from 'sinon-chai';
 import { authTokenService } from 'src/services/AuthToken';
 import { getConfig } from 'src/config';
-//import { User } from 'src/models';
 import jwt from 'jsonwebtoken';
 
 chai.use(sinonChai);
@@ -39,7 +37,7 @@ describe('AuthToken Setup', () => {
   });
 });
 
-describe('Generation of Token', () => {
+describe('Generation of Code and Token', () => {
   it('The token and code should not be null', () => {
     assert.notEqual(token, null);
     assert.notEqual(code, null);

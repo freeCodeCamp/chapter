@@ -22,7 +22,7 @@ const secret = getConfig('JWT_SECRET');
 const email = 'joe.smith@example.com';
 const { token, code } = authTokenService.generateToken(email);
 
-const isTokenExpired = (token: string): number => {
+const getExpTime = (token: string): number => {
   const { exp } = jwt.decode(token) as {
     exp: number;
   };

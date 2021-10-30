@@ -36,7 +36,7 @@ export const fields: Field[] = [
   {
     key: 'streaming_url',
     type: 'url',
-    label: 'Video Url',
+    label: 'Streaming Url',
     placeholder: '',
   },
   {

@@ -69,7 +69,7 @@ export const EventPage: NextPage = () => {
         )}
         {data.event.streaming_url && (
           <Text>
-            Video Url:{' '}
+            Streaming Url:{' '}
             <a href={data.event.streaming_url}>{data.event.streaming_url}</a>
           </Text>
         )}

@@ -2,7 +2,7 @@ const testEvent = {
   title: 'Test Event',
   description: 'Test Description',
   url: 'https://test.event.org',
-  videoUrl: 'https://test.event.org/video',
+  streamingUrl: 'https://test.event.org/video',
   capacity: '10',
   tags: 'Test, Event, Tag',
   startAt: '2022-01-01T00:01',
@@ -77,7 +77,9 @@ describe('events dashboard', () => {
       testEvent.imageUrl,
     );
     cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
-    cy.findByRole('textbox', { name: 'Video Url' }).type(testEvent.videoUrl);
+    cy.findByRole('textbox', { name: 'Streaming Url' }).type(
+      testEvent.streamingUrl,
+    );
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',

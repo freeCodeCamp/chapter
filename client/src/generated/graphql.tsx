@@ -65,10 +65,10 @@ export type CreateEventInputs = {
   invite_only?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
-  streaming_url?: Maybe<Scalars['String']>;
 };
 
 export type CreateVenueInputs = {
@@ -106,13 +106,13 @@ export type Event = {
   rsvps: Array<Rsvp>;
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
   updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
   user_roles: Array<UserEventRole>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
-  streaming_url?: Maybe<Scalars['String']>;
 };
 
 export type EventSponsor = {
@@ -334,10 +334,10 @@ export type UpdateEventInputs = {
   invite_only?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   start_at?: Maybe<Scalars['DateTime']>;
+  streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
-  streaming_url?: Maybe<Scalars['String']>;
 };
 
 export type UpdateVenueInputs = {

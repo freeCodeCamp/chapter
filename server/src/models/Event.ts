@@ -36,7 +36,7 @@ export class Event extends BaseModel {
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  video_url?: string;
+  streaming_url?: string;
 
   @Field(() => VenueType)
   @Column({ type: 'enum', enum: VenueType, default: VenueType.Physical })
@@ -98,7 +98,7 @@ export class Event extends BaseModel {
     name: string;
     description: string;
     url?: string;
-    video_url?: string;
+    streaming_url?: string;
     venue_type: VenueType;
     start_at: Date;
     ends_at: Date;
@@ -116,7 +116,7 @@ export class Event extends BaseModel {
         name,
         description,
         url,
-        video_url,
+        streaming_url,
         venue_type,
         start_at,
         ends_at,
@@ -132,7 +132,7 @@ export class Event extends BaseModel {
       this.name = name;
       this.description = description;
       this.url = url;
-      this.video_url = video_url;
+      this.streaming_url = streaming_url;
       this.venue_type = venue_type;
       this.start_at = start_at;
       this.ends_at = ends_at;

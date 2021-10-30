@@ -52,7 +52,7 @@ type Event {
     url: String
     venue: Venue
     venue_type: VenueType!
-    video_url: String
+    streaming_url: String
 }
 
 type EventSponsor {
@@ -216,7 +216,7 @@ input CreateEventInputs {
     url: String
     venueId: Int
     venue_type: VenueType
-    video_url: String
+    streaming_url: String
 }
 
 input CreateVenueInputs {
@@ -265,7 +265,7 @@ input UpdateEventInputs {
     url: String
     venueId: Int
     venue_type: VenueType
-    video_url: String
+    streaming_url: String
 }
 
 input UpdateVenueInputs {

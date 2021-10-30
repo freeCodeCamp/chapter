@@ -606,7 +606,7 @@
             "deprecationReason": null
           },
           {
-            "name": "video_url",
+            "name": "streaming_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -1188,7 +1188,7 @@
             "deprecationReason": null
           },
           {
-            "name": "video_url",
+            "name": "streaming_url",
             "description": null,
             "args": [],
             "type": {
@@ -3079,7 +3079,7 @@
             "deprecationReason": null
           },
           {
-            "name": "video_url",
+            "name": "streaming_url",
             "description": null,
             "type": {
               "kind": "SCALAR",

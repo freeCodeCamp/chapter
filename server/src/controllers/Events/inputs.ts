@@ -16,7 +16,7 @@ export class CreateEventInputs {
 
   @Field(() => String, { nullable: true })
   @IsUrl()
-  video_url?: string;
+  streaming_url?: string;
 
   @Field(() => VenueType, { nullable: true })
   venue_type: VenueType;
@@ -57,7 +57,7 @@ export class UpdateEventInputs {
 
   @Field(() => String, { nullable: true })
   @IsUrl()
-  video_url?: string;
+  streaming_url?: string;
 
   @Field(() => VenueType, { nullable: true })
   venue_type: VenueType;

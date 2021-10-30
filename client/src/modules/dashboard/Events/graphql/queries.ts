@@ -9,7 +9,7 @@ export const EVENTS = gql`
       description
       url
       invite_only
-      video_url
+      streaming_url
       start_at
       capacity
       venue {
@@ -32,7 +32,7 @@ export const EVENT = gql`
       description
       url
       invite_only
-      video_url
+      streaming_url
       canceled
       capacity
       start_at
@@ -74,7 +74,7 @@ export const EVENT_WITH_VENU = gql`
       name
       description
       url
-      video_url
+      streaming_url
       capacity
       start_at
       ends_at
@@ -101,7 +101,7 @@ export const createEvent = gql`
       canceled
       description
       url
-      video_url
+      streaming_url
       capacity
       tags {
         id
@@ -119,7 +119,7 @@ export const updateEvent = gql`
       canceled
       description
       url
-      video_url
+      streaming_url
       capacity
       tags {
         id

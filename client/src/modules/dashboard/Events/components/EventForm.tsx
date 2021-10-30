@@ -38,7 +38,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       name: data.name,
       description: data.description,
       url: data.url,
-      video_url: data.video_url,
+      streaming_url: data.streaming_url,
       capacity: data.capacity,
       start_at: new Date(data.start_at).toISOString().slice(0, 16),
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),

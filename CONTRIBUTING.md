@@ -534,12 +534,14 @@ Our DB commands closely mirror their Rails counterparts (there isn't anything qu
 
 #### Initializing the Database
 
-If you're starting the application for the first time, or syncronizing with the latest development changes, then you like need to:
+If starting the application for the first time, or syncronizing with the latest development changes, then the following must occur
 * drop the database - to delete all the structure and data
 * sync the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
 The `npm run db:reset` command will do all three tasks by running `npm run db:drop`, `npm run db:sync` and `npm run db:seed` sequentially.
+  
+_Troubleshooting:_ If using ElephantSQL you may have to submit each of these commands individually.
 
 #### Creating a New Model / Entity
 

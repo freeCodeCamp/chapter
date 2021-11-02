@@ -64,7 +64,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="false" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="url" nullable="true" remarks="" size="2147483647" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="video_url" nullable="true" remarks="" size="2147483647" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="streaming_url" nullable="true" remarks="" size="2147483647" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'Physical'::events_venue_type_enum" digits="0" id="7" name="venue_type" nullable="false" remarks="" size="2147483647" type="events_venue_type_enum" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="start_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="ends_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>

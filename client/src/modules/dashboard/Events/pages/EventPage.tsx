@@ -67,9 +67,10 @@ export const EventPage: NextPage = () => {
             Event Url: <a href={data.event.url}>{data.event.url}</a>
           </Text>
         )}
-        {data.event.video_url && (
+        {data.event.streaming_url && (
           <Text>
-            Video Url: <a href={data.event.video_url}>{data.event.video_url}</a>
+            Streaming Url:{' '}
+            <a href={data.event.streaming_url}>{data.event.streaming_url}</a>
           </Text>
         )}
         <Text>Capacity: {data.event.capacity}</Text>

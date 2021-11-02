@@ -37,7 +37,7 @@ const createEvents = async (
       chapter: randomItem(chapters),
       description: lorem.words(),
       url: internet.url(),
-      video_url: internet.url(),
+      streaming_url: internet.url(),
       venue_type: randomEnum(VenueType),
       capacity: random(1000),
       venue: randomItem(venues),

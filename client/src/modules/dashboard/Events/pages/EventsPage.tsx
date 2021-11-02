@@ -39,7 +39,7 @@ export const EventsPage: NextPage = () => {
                 'invite only',
                 'venue',
                 'capacity',
-                'video_url',
+                'streaming_url',
                 'date',
                 'actions',
               ] as const
@@ -71,7 +71,7 @@ export const EventsPage: NextPage = () => {
               'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
               venue: (event) => event.venue?.name || '',
               capacity: true,
-              video_url: true,
+              streaming_url: true,
               date: (event) => formatDate(event.start_at),
               actions: (event) => (
                 <LinkButton

@@ -34,9 +34,9 @@ export const fields: Field[] = [
     placeholder: '',
   },
   {
-    key: 'video_url',
+    key: 'streaming_url',
     type: 'url',
-    label: 'Video Url',
+    label: 'Streaming Url',
     placeholder: '',
   },
   {
@@ -72,7 +72,7 @@ export interface EventFormData {
   description: string;
   url?: string | null;
   image_url: string;
-  video_url?: string | null;
+  streaming_url?: string | null;
   capacity: number;
   tags: string;
   start_at: string;

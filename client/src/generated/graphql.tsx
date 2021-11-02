@@ -65,10 +65,10 @@ export type CreateEventInputs = {
   invite_only?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
-  video_url?: Maybe<Scalars['String']>;
 };
 
 export type CreateVenueInputs = {
@@ -106,13 +106,13 @@ export type Event = {
   rsvps: Array<Rsvp>;
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
   updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
   user_roles: Array<UserEventRole>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
-  video_url?: Maybe<Scalars['String']>;
 };
 
 export type EventSponsor = {
@@ -334,10 +334,10 @@ export type UpdateEventInputs = {
   invite_only?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   start_at?: Maybe<Scalars['DateTime']>;
+  streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venueId?: Maybe<Scalars['Int']>;
   venue_type?: Maybe<VenueType>;
-  video_url?: Maybe<Scalars['String']>;
 };
 
 export type UpdateVenueInputs = {
@@ -595,7 +595,7 @@ export type EventsQuery = {
     description: string;
     url?: string | null | undefined;
     invite_only: boolean;
-    video_url?: string | null | undefined;
+    streaming_url?: string | null | undefined;
     start_at: any;
     capacity: number;
     venue?:
@@ -623,7 +623,7 @@ export type EventQuery = {
         description: string;
         url?: string | null | undefined;
         invite_only: boolean;
-        video_url?: string | null | undefined;
+        streaming_url?: string | null | undefined;
         canceled: boolean;
         capacity: number;
         start_at: any;
@@ -671,7 +671,7 @@ export type EventVenuesQuery = {
         name: string;
         description: string;
         url?: string | null | undefined;
-        video_url?: string | null | undefined;
+        streaming_url?: string | null | undefined;
         capacity: number;
         start_at: any;
         ends_at: any;
@@ -699,7 +699,7 @@ export type CreateEventMutation = {
     canceled: boolean;
     description: string;
     url?: string | null | undefined;
-    video_url?: string | null | undefined;
+    streaming_url?: string | null | undefined;
     capacity: number;
     tags?:
       | Array<{ __typename?: 'Tag'; id: number; name: string }>
@@ -722,7 +722,7 @@ export type UpdateEventMutation = {
     canceled: boolean;
     description: string;
     url?: string | null | undefined;
-    video_url?: string | null | undefined;
+    streaming_url?: string | null | undefined;
     capacity: number;
     tags?:
       | Array<{ __typename?: 'Tag'; id: number; name: string }>
@@ -1423,7 +1423,7 @@ export const EventsDocument = gql`
       description
       url
       invite_only
-      video_url
+      streaming_url
       start_at
       capacity
       venue {
@@ -1485,7 +1485,7 @@ export const EventDocument = gql`
       description
       url
       invite_only
-      video_url
+      streaming_url
       canceled
       capacity
       start_at
@@ -1567,7 +1567,7 @@ export const EventVenuesDocument = gql`
       name
       description
       url
-      video_url
+      streaming_url
       capacity
       start_at
       ends_at
@@ -1642,7 +1642,7 @@ export const CreateEventDocument = gql`
       canceled
       description
       url
-      video_url
+      streaming_url
       capacity
       tags {
         id
@@ -1702,7 +1702,7 @@ export const UpdateEventDocument = gql`
       canceled
       description
       url
-      video_url
+      streaming_url
       capacity
       tags {
         id

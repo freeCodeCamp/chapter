@@ -3,8 +3,12 @@ import {
   InMemoryCache,
   ApolloProvider,
   createHttpLink,
+  from,
+  ServerError,
+  ServerParseError,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
 import { offsetLimitPagination } from '@apollo/client/utilities';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
@@ -30,8 +34,29 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const errorLink = onError(({ networkError }) => {
+  if (isServerError(networkError)) {
+    if (networkError.statusCode === 401) {
+      localStorage.removeItem('token');
+    }
+    // TODO: do we want to implement some kind of refresh token instead of
+    // forcing the user to log in again?
+    if (networkError.result.message === 'Token expired') {
+      window.location.href = '/auth/login';
+    } else {
+      window.location.reload();
+    }
+  }
+});
+
+function isServerError(
+  err?: Error | ServerError | ServerParseError,
+): err is ServerError {
+  return typeof err !== 'undefined' && 'result' in err && 'statusCode' in err;
+}
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {

@@ -39,6 +39,20 @@ module.exports = (on, config) => {
     },
   );
 
+  config.env.JWT_EXPIRED = jwt.sign(
+    { email: 'foo@bar.com' },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '1',
+    },
+  );
+
+  // Standard JWT (with id, exp etc.), but with the signature removed:
+  config.env.JWT_UNSIGNED =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjM1ODYzNjQ2LCJleHAiOjE2Mzg1NDIwNDZ9.';
+
+  config.env.JWT_MALFORMED = 'not-a-valid-format';
+
   // This makes sure the db is populated before running any tests. Without this,
   // it's difficult (when running docker-compose up) to guarantee that both the
   // docker container is running and that the db has been seeded.

@@ -33,4 +33,35 @@ describe('login', () => {
         cy.get('[data-cy="logout-button"]').should('not.exist');
       });
   });
+
+  it('should redirect to /auth/login after the token expires', () => {
+    cy.window().then((win) => {
+      win.localStorage.setItem('token', Cypress.env('JWT_EXPIRED'));
+    });
+    cy.visit('/');
+    cy.location('pathname').should('eq', '/auth/login');
+    cy.window().should((win) => {
+      expect(win.localStorage.getItem('token')).to.be.null;
+    });
+  });
+
+  it('should clear the JWT if it has no signature', () => {
+    cy.window().then((win) => {
+      win.localStorage.setItem('token', Cypress.env('JWT_UNSIGNED'));
+    });
+    cy.visit('/');
+    cy.window().should((win) => {
+      expect(win.localStorage.getItem('token')).to.be.null;
+    });
+  });
+
+  it('should clear the JWT if it is malformed', () => {
+    cy.window().then((win) => {
+      win.localStorage.setItem('token', Cypress.env('JWT_MALFORMED'));
+    });
+    cy.visit('/');
+    cy.window().should((win) => {
+      expect(win.localStorage.getItem('token')).to.be.null;
+    });
+  });
 });

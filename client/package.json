@@ -42,7 +42,7 @@
     "@testing-library/dom": "8.10.1",
     "@testing-library/react": "11.2.7",
     "@types/node": "14.17.32",
-    "@types/react": "17.0.33",
+    "@types/react": "17.0.34",
     "@types/react-dom": "17.0.10",
     "prettier": "2.4.1",
     "typescript": "4.4.4"

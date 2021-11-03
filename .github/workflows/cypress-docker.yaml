@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         browsers: [chrome, firefox]
-        node-version: [14.x]
+        node-version: [16.x]
     steps:
       - name: Set Action Environment Variables
         run: |

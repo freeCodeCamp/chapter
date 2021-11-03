@@ -25,7 +25,8 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "allowJs": true
+    "allowJs": true,
+    "incremental": true
   },
   "exclude": [
     "node_modules"

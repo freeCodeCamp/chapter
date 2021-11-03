@@ -7,7 +7,7 @@ WORKDIR /usr/chapter/client
 COPY . .
 
 # Installing dependencies
-RUN npm i -g npm@7 && npm i
+RUN npm i -g npm@8 && npm i
 
 # Building app
 RUN npm run build

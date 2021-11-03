@@ -76,7 +76,7 @@ Follow these steps to fork the repository:
     * _Git Bash_ - this terminal shell emulates Linux and is included in _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
     * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
 
-**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.  You will also need to have [Node.js](https://nodejs.org/en/) 14 and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 7.  We recommend using [nvm](https://github.com/nvm-sh/nvm) to simplify the process of installing Node.js and `npm i -g npm@7` to update npm to a compatible version.
+**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.  You will also need to have [Node.js](https://nodejs.org/en/) 14 and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 8.  We recommend using [nvm](https://github.com/nvm-sh/nvm) to simplify the process of installing Node.js and `npm i -g npm@8` to update npm to a compatible version.
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
     * SSH - uses SSH key authentication instead of a username and password.
@@ -326,7 +326,7 @@ You have successfully created a PR. Congratulations! :tada:
 Ensure the Node.js tools are installed:
 
 * Node.js 14 or greater - `node --version` and the output should be like **v14**.16.0
-* npm 7 or greater - `npm --version` and the output should be like **7**.23.0
+* npm 8 or greater - `npm --version` and the output should be like **8**.0.0
 
 Run `npm i` to install all of the necessary dependencies.
 

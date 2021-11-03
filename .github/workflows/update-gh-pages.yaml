@@ -24,9 +24,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      # since our lockfiles are v2, we should use npm 7
+      # since our lockfiles are v2, we should use npm 8
       - name: Install
-        run: npm i -g npm@7 && npm i
+        run: npm i -g npm@8 && npm i
       - name: Create the schema
         env:
           IS_DOCKER: false

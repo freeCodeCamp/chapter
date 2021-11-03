@@ -28,7 +28,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - name: Update npm
-        run: npm i -g npm@latest
+        run: npm i -g npm@8
 
       - name: Set Chapter Environment Variables
         run: |

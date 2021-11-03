@@ -6,7 +6,7 @@ WORKDIR /usr/chapter/server
 COPY . .
 
 # Install app dependencies
-RUN npm i -g npm@7 && npm i
+RUN npm i -g npm@8 && npm i
 
 EXPOSE 5000
 

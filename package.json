@@ -8,7 +8,7 @@
   },
   "engines": {
     "node": "^14.18.0",
-    "npm": "^7.24.2"
+    "npm": "^8.0.0"
   },
   "scripts": {
     "typeorm": "cd server && node_modules/.bin/typeorm",

@@ -397,7 +397,9 @@ Once the app has started you should be able to pull up these URLs in your web br
 
 * Main Client Website - http://localhost:3000
 * GraphQL Playground - http://localhost:5000/graphql
-* Mailhog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface 
+* MailHog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface 
+
+Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog) 
 </details>
 
 # Adding a New Feature

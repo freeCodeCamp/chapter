@@ -551,7 +551,7 @@ _Troubleshooting:_ If using ElephantSQL you may have to submit each of these com
 
 This would create _ModelName.ts_ in _server/src/models_
 
-To keep everything DRY, add `extends BaseModel` to the class and import it from 'models/BaseModel' to no repeat id, createdAt, and updatedAt fields on every single model
+To keep everything DRY, add `extends BaseModel` to the class and import it from 'models/BaseModel' to not repeat id, createdAt, and updatedAt fields on every single model
 
 `npx typeorm` can also be used, but must be run inside _server_.
 

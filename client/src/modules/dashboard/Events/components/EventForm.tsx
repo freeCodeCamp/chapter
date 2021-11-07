@@ -79,7 +79,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
-
+  const firstSponsorType = sponsorData?.sponsors[0]?.type as string | undefined;
+  const firstSponsorId = sponsorData?.sponsors[0]?.id as number | undefined;
   return (
     <form
       aria-label={submitText}
@@ -143,8 +144,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             <Button
               onClick={() => {
                 append({
-                  type: 'FOOD',
-                  id: 0,
+                  type: firstSponsorType,
+                  id: firstSponsorId,
                 });
               }}
             >
@@ -152,6 +153,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             </Button>
           </Box>
           {sponsors.map((sponsor, index) => {
+            const registeredSponsor = register(
+              `sponsors.${index}.type` as const,
+              {
+                required: true,
+              },
+            );
+
             return (
               <Flex key={sponsor.key} borderWidth="1px" p="5" mb="5">
                 <Box display="flex" flexGrow={1}>
@@ -159,9 +167,18 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                     <FormLabel>Sponsor Type</FormLabel>
                     <Select
                       defaultValue={getValues(`sponsors.${index}.type`)}
-                      {...register(`sponsors.${index}.type` as const, {
-                        required: true,
-                      })}
+                      {...registeredSponsor}
+                      onChange={(e) => {
+                        registeredSponsor.onChange(e);
+                        const sponsorsForThisType =
+                          sponsorData?.sponsors.filter(
+                            (s) => s.type === e.target.value,
+                          ) ?? [];
+                        setValue(
+                          `sponsors.${index}.id`,
+                          sponsorsForThisType[0]?.id,
+                        );
+                      }}
                     >
                       <option value="FOOD">Food</option>
                       <option value="VENUE">Venue</option>

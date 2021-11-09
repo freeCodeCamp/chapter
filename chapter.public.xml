@@ -41,15 +41,23 @@
          <column autoUpdated="true" defaultValue="nextval('event_sponsors_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="1" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="2" name="updated_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="sponsor_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="sponsor_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_4cb75f6aae3ff8fe35cd3417383" implied="false" onDeleteCascade="false" schema="public" table="sponsors"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="event_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="event_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="FK_8fab88035a7a74536060237b404" implied="false" onDeleteCascade="false" schema="public" table="events"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
-         <index name="PK_01cc19189077b93d6e832cd2d14" unique="true">
+         <primaryKey column="sponsor_id" sequenceNumberInPK="2"/>
+         <primaryKey column="event_id" sequenceNumberInPK="3"/>
+         <index name="PK_85155c4974c197d49237d08537a" unique="true">
             <column ascending="true" name="id"/>
+            <column ascending="true" name="sponsor_id"/>
+            <column ascending="true" name="event_id"/>
+         </index>
+         <index name="UQ_7efb6474e1d10a623f65697ffed" unique="true">
+            <column ascending="true" name="sponsor_id"/>
+            <column ascending="true" name="event_id"/>
          </index>
       </table>
       <table name="events" numRows="0" remarks="" schema="public" type="TABLE">

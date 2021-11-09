@@ -139,7 +139,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
         <FormControl id="first-name" isRequired>
           <Box display="flex" alignItems="end" m="1">
-            <FormLabel> Sponsers</FormLabel>
+            <FormLabel> Sponsors</FormLabel>
             <Spacer />
             <Button
               onClick={() => {

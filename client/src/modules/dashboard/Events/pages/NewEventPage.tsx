@@ -26,19 +26,18 @@ export const NewEventPage: NextPage = () => {
 
     try {
       const HARD_CODE = { chapterId: 1 };
-
-      console.log(data.start_at);
-
+      const { sponsors, ...rest } = data;
+      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
       const eventData = {
-        ...data,
+        ...rest,
         capacity: parseInt(String(data.capacity)),
         venueId: parseInt(String(data.venueId)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
         ...HARD_CODE,
         tags: undefined,
+        sponsorIds: sponsorArray,
       };
-
       const event = await createEvent({
         variables: { data: { ...eventData } },
       });
@@ -51,7 +50,7 @@ export const NewEventPage: NextPage = () => {
         );
       }
     } catch (err) {
-      console.error(err);
+      console.error(JSON.stringify(err, null, 2));
     } finally {
       setLoading(false);
     }

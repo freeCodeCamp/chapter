@@ -6,56 +6,69 @@ export interface Field {
   placeholder?: string;
   type: string;
   defaultValue?: string;
+  isRequired: boolean;
 }
 
+export interface EventSponsorInput {
+  id: number;
+  type: string;
+}
 export const fields: Field[] = [
   {
     key: 'name',
     type: 'text',
     label: 'Event title',
     placeholder: 'Foo and the Bars',
+    isRequired: true,
   },
   {
     key: 'description',
     type: 'textarea',
     label: 'Description',
     placeholder: '',
+    isRequired: true,
   },
   {
     key: 'image_url',
     type: 'text',
     label: 'Event Image Url',
     placeholder: 'https://www.example.image/url',
+    isRequired: true,
   },
   {
     key: 'url',
     type: 'url',
     label: 'Url',
     placeholder: '',
+    isRequired: true,
   },
   {
     key: 'streaming_url',
     type: 'url',
     label: 'Streaming Url',
     placeholder: '',
+    isRequired: true,
   },
   {
     key: 'capacity',
     type: 'number',
     label: 'Capacity',
     placeholder: '50',
+    isRequired: true,
   },
   {
     key: 'tags',
     type: 'text',
     label: 'Tags (separated by a comma)',
     placeholder: 'Foo, bar',
+    isRequired: false,
   },
   {
     key: 'start_at',
     type: 'datetime-local',
     label: 'Start at',
     defaultValue: new Date().toISOString().slice(0, 16),
+    isRequired: true,
   },
   {
     key: 'ends_at',
@@ -64,6 +77,7 @@ export const fields: Field[] = [
     defaultValue: new Date(Date.now() + 1000 * 60 * 60)
       .toISOString()
       .slice(0, 16),
+    isRequired: true,
   },
 ];
 
@@ -79,15 +93,17 @@ export interface EventFormData {
   ends_at: string;
   venueId?: number | null;
   invite_only?: boolean;
+  sponsors: Array<EventSponsorInput>;
 }
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venueId' | 'tags'> | 'id'
+  keyof Omit<EventFormData, 'venueId' | 'tags' | 'sponsors'> | 'id'
 > & {
   venueId?: number;
   tags: { name: string }[];
   venue?: Omit<Venue, 'created_at' | 'updated_at' | 'events'> | null;
+  sponsors: EventSponsorInput[];
 };
 
 export interface EventFormProps {

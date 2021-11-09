@@ -3,7 +3,14 @@ import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { GQLCtx } from 'src/common-types/gql';
-import { Event, Venue, Chapter, Rsvp, UserEventRole } from 'src/models';
+import {
+  Event,
+  Venue,
+  Chapter,
+  Rsvp,
+  UserEventRole,
+  EventSponsor,
+} from 'src/models';
 import MailerService from 'src/services/MailerService';
 
 //Place holder for unsubscribe
@@ -54,6 +61,8 @@ export class EventResolver {
         'rsvps',
         'rsvps.user',
         'user_roles',
+        'sponsors',
+        'sponsors.sponsor',
       ],
     });
   }
@@ -190,25 +199,35 @@ ${unsubscribe}
     if (!hasPermission)
       throw Error('User does not have permission to create events');
 
-    const event = new Event({
+    const event = await new Event({
       ...data,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue,
       chapter,
       user_roles: [],
-    });
+      sponsors: [],
+    }).save();
+
+    event.sponsors = await Promise.all(
+      data.sponsorIds.map((s) =>
+        new EventSponsor({
+          eventId: event.id,
+          sponsorId: s,
+        }).save(),
+      ),
+    );
 
     event.user_roles = [
-      new UserEventRole({
+      await new UserEventRole({
         userId: ctx.user.id,
         eventId: event.id,
         roleName: 'organizer',
         subscribed: true, // TODO: even organizers may wish to opt out of emails
-      }),
+      }).save(),
     ];
 
-    return event.save();
+    return event;
   }
 
   @Mutation(() => Event)
@@ -234,6 +253,21 @@ ${unsubscribe}
     event.ends_at = new Date(data.ends_at) ?? event.ends_at;
     event.capacity = data.capacity ?? event.capacity;
     event.image_url = data.image_url ?? event.image_url;
+
+    await Promise.all(
+      (
+        await EventSponsor.find({ where: { event_id: id } })
+      ).map((row) => row.remove()),
+    );
+
+    event.sponsors = await Promise.all(
+      data.sponsorIds.map((s) =>
+        new EventSponsor({
+          eventId: id,
+          sponsorId: s,
+        }).save(),
+      ),
+    );
 
     if (data.venueId) {
       const venue = await Venue.findOne(data.venueId);

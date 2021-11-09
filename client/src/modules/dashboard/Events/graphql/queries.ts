@@ -46,6 +46,15 @@ export const EVENT = gql`
         id
         name
       }
+      sponsors {
+        sponsor {
+          name
+          website
+          logo_path
+          type
+          id
+        }
+      }
       venue {
         id
         name
@@ -169,5 +178,19 @@ export const sendEventInvite = gql`
 export const initUserInterestForChapter = gql`
   mutation initUserInterestForChapter($event_id: Int!) {
     initUserInterestForChapter(event_id: $event_id)
+  }
+`;
+
+export const Sponsors = gql`
+  query sponsors {
+    sponsors {
+      id
+      created_at
+      updated_at
+      name
+      website
+      logo_path
+      type
+    }
   }
 `;

@@ -169,7 +169,7 @@ describe('events dashboard', () => {
     // to change it.
     cy.findByRole('combobox', { name: 'Venue' })
       .as('venueSelect')
-      .get(':checked')
+      .find(':checked')
       .invoke('val')
       .as('currentVenueId');
     cy.get('@currentVenueId').then((id) => {
@@ -178,7 +178,7 @@ describe('events dashboard', () => {
       id = id == '1' ? '2' : '1';
       cy.get('@venueSelect')
         .select(id)
-        .get(':checked')
+        .find(':checked')
         .invoke('text')
         .as('newVenueTitle');
     });

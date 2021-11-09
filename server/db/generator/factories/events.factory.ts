@@ -46,13 +46,16 @@ const createEvents = async (
       ends_at: addHours(start_at, random(5)),
       user_roles: [],
       image_url: image.imageUrl(640, 480, 'nature', true),
+      sponsors: [],
     });
 
     await event.save();
 
     await Promise.all(
       randomItems(sponsors, 2)
-        .map((sponsor) => new EventSponsor({ event, sponsor }))
+        .map((sponsor) => {
+          return new EventSponsor({ eventId: event.id, sponsorId: sponsor.id });
+        })
         .map((es) => es.save()),
     );
 
@@ -65,14 +68,6 @@ const createEvents = async (
 
     events.push(event);
   }
-
-  try {
-    await Promise.all(events.map((event) => event.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding events');
-  }
-
   return events;
 };
 

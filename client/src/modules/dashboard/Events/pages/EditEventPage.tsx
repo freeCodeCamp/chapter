@@ -10,7 +10,7 @@ import { getId } from '../../../../helpers/getId';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
-import { EVENTS } from '../graphql/queries';
+import { EVENTS, EVENT } from '../graphql/queries';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
@@ -25,8 +25,10 @@ export const EditEventPage: NextPage = () => {
     variables: { id },
   });
 
+  // TODO: update the cache directly:
+  // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
-    refetchQueries: [{ query: EVENTS }],
+    refetchQueries: [{ query: EVENTS }, { query: EVENT, variables: { id } }],
   });
 
   const onSubmit = async (data: EventFormData) => {
@@ -34,13 +36,16 @@ export const EditEventPage: NextPage = () => {
     setLoadingUpdate(true);
 
     try {
+      const { sponsors, ...rest } = data;
+      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
       const eventData = {
-        ...data,
+        ...rest,
         capacity: parseInt(String(data.capacity)),
         venueId: parseInt(String(data.venueId)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
         tags: undefined,
+        sponsorIds: sponsorArray,
       };
 
       const event = await updateEvent({
@@ -65,12 +70,19 @@ export const EditEventPage: NextPage = () => {
       </Layout>
     );
   }
-
+  const { sponsors, ...rest } = data.event;
+  const sponsorData = sponsors?.map((s) => {
+    return {
+      id: s.sponsor.id,
+      type: s.sponsor.type,
+    };
+  });
   return (
     <Layout>
       <EventForm
         data={{
-          ...data.event,
+          ...rest,
+          sponsors: sponsorData || [],
           venueId: data.event?.venue?.id,
           tags: data.event.tags || [],
         }}

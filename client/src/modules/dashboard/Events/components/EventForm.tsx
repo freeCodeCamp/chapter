@@ -5,12 +5,19 @@ import {
   FormLabel,
   FormControl,
   Select,
+  Box,
+  Spacer,
+  CloseButton,
+  Flex,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
-import { useVenuesQuery } from '../../../../generated/graphql';
+import {
+  useSponsorsQuery,
+  useVenuesQuery,
+} from '../../../../generated/graphql';
 import {
   EventFormProps,
   fields,
@@ -25,6 +32,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     error: errorVenus,
     data: dataVenues,
   } = useVenuesQuery();
+
+  const {
+    loading: loadingSponsors,
+    error: errorSponsor,
+    data: sponsorData,
+  } = useSponsorsQuery();
 
   const defaultValues = useMemo(() => {
     if (!data)
@@ -42,16 +55,32 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       capacity: data.capacity,
       start_at: new Date(data.start_at).toISOString().slice(0, 16),
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
+      sponsors: data.sponsors,
       tags: (data.tags || []).map((t) => t.name).join(', '),
       venueId: data.venueId,
+      image_url: data.image_url,
     };
   }, []);
 
-  const { register, handleSubmit, watch, setValue } = useForm<EventFormData>({
-    defaultValues,
-  });
-  const inviteOnly = watch('invite_only');
+  const { register, control, handleSubmit, watch, setValue, getValues } =
+    useForm<EventFormData>({
+      defaultValues,
+    });
 
+  const {
+    fields: sponsors,
+    append,
+    remove,
+  } = useFieldArray({
+    name: 'sponsors',
+    keyName: 'key',
+    control,
+  });
+
+  const watchSponsorsArray = watch('sponsors');
+  const inviteOnly = watch('invite_only');
+  const firstSponsorType = sponsorData?.sponsors[0]?.type as string | undefined;
+  const firstSponsorId = sponsorData?.sponsors[0]?.id as number | undefined;
   return (
     <form
       aria-label={submitText}
@@ -65,7 +94,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               key={field.key}
               label={field.label}
               placeholder={field.placeholder}
-              isRequired
+              isRequired={field.isRequired}
               {...register(field.key)}
               defaultValue={formatValue(field, data)}
             />
@@ -75,7 +104,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               type={field.type}
               label={field.label}
               placeholder={field.placeholder}
-              isRequired
+              isRequired={field.isRequired}
               {...register(field.key)}
             />
           ),
@@ -108,6 +137,88 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </FormControl>
         )}
 
+        <FormControl id="first-name" isRequired>
+          <Box display="flex" alignItems="end" m="1">
+            <FormLabel> Sponsors</FormLabel>
+            <Spacer />
+            <Button
+              onClick={() => {
+                append({
+                  type: firstSponsorType,
+                  id: firstSponsorId,
+                });
+              }}
+            >
+              Add
+            </Button>
+          </Box>
+          {sponsors.map((sponsor, index) => {
+            const registeredSponsor = register(
+              `sponsors.${index}.type` as const,
+              {
+                required: true,
+              },
+            );
+
+            return (
+              <Flex key={sponsor.key} borderWidth="1px" p="5" mb="5">
+                <Box display="flex" flexGrow={1}>
+                  <FormControl m="1">
+                    <FormLabel>Sponsor Type</FormLabel>
+                    <Select
+                      defaultValue={getValues(`sponsors.${index}.type`)}
+                      {...registeredSponsor}
+                      onChange={(e) => {
+                        registeredSponsor.onChange(e);
+                        const sponsorsForThisType =
+                          sponsorData?.sponsors.filter(
+                            (s) => s.type === e.target.value,
+                          ) ?? [];
+                        setValue(
+                          `sponsors.${index}.id`,
+                          sponsorsForThisType[0]?.id,
+                        );
+                      }}
+                    >
+                      <option value="FOOD">Food</option>
+                      <option value="VENUE">Venue</option>
+                      <option value="OTHER">Other</option>
+                    </Select>
+                  </FormControl>
+
+                  <FormControl m="1">
+                    <FormLabel> Sponsor Name</FormLabel>
+                    {loadingSponsors ? (
+                      <h5>loading sponsors</h5>
+                    ) : errorSponsor || !sponsorData ? (
+                      <h5> Error loading sponsors</h5>
+                    ) : (
+                      <Select
+                        defaultValue={getValues(`sponsors.${index}.id`)}
+                        {...register(`sponsors.${index}.id` as const, {
+                          required: true,
+                        })}
+                      >
+                        {sponsorData.sponsors
+                          ?.filter(
+                            //Filtering out the options of only selected type
+                            (item) =>
+                              item.type === watchSponsorsArray[index]?.type,
+                          )
+                          .map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.name}
+                            </option>
+                          ))}
+                      </Select>
+                    )}
+                  </FormControl>
+                </Box>
+                <CloseButton onClick={() => remove(index)} />
+              </Flex>
+            );
+          })}
+        </FormControl>
         <Button
           width="100%"
           colorScheme="blue"

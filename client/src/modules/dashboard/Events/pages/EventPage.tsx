@@ -14,6 +14,7 @@ import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
+import SponsorCard from '../components/EventSponsorCard';
 import { EVENT } from '../graphql/queries';
 
 const args = (id: number) => ({
@@ -48,7 +49,6 @@ export const EventPage: NextPage = () => {
       </Layout>
     );
   }
-
   return (
     <Layout>
       <Box p="2" borderWidth="1px" borderRadius="lg">
@@ -90,7 +90,11 @@ export const EventPage: NextPage = () => {
           <h2>Venue: Online</h2>
         )}
       </Box>
-
+      {data.event.sponsors.length ? (
+        <SponsorCard sponsors={data.event.sponsors} />
+      ) : (
+        false
+      )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
         <DataTable
           title={

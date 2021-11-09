@@ -10,7 +10,7 @@
     "gen:dev": "npm run gen -- --watch"
   },
   "dependencies": {
-    "@apollo/client": "3.4.16",
+    "@apollo/client": "3.4.17",
     "@chakra-ui/icons": "1.0.17",
     "@chakra-ui/react": "1.6.12",
     "@emotion/react": "11.5.0",

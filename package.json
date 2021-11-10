@@ -72,7 +72,7 @@
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-jest": "25.2.4",
     "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.26.1",
+    "eslint-plugin-react": "7.27.0",
     "execa": "5.1.1",
     "husky": "7.0.4",
     "is-docker": "2.2.1",

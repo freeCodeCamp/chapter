@@ -204,7 +204,7 @@ export const EventPage: NextPage = () => {
       </Heading>
       <List>
         {rsvps.map((rsvp) => (
-          <ListItem key={rsvp.id} mb="2">
+          <ListItem key={rsvp.user.id} mb="2">
             <HStack>
               <Avatar name={rsvp.user.name} />
               <Heading size="md">{rsvp.user.name}</Heading>
@@ -220,7 +220,7 @@ export const EventPage: NextPage = () => {
           </Heading>
           <List>
             {waitlist.map((rsvp) => (
-              <ListItem key={rsvp.id} mb="2">
+              <ListItem key={rsvp.user.id} mb="2">
                 <HStack>
                   <Avatar name={rsvp.user.name} />
                   <Heading size="md">{rsvp.user.name}</Heading>

@@ -69,21 +69,33 @@ export class EventResolver {
 
   @Mutation(() => Rsvp, { nullable: true })
   async rsvpEvent(
-    @Arg('id', () => Int) id: number,
+    @Arg('eventId', () => Int) eventId: number,
     @Ctx() ctx: GQLCtx,
   ): Promise<Rsvp | null> {
     if (!ctx.user) {
       throw new Error('You need to be logged in');
     }
-    const event = await Event.findOne(id, {
-      relations: ['rsvps', 'user_roles', 'user_roles.user'],
+    // Since we're saving rsvps, we have to get the rsvps.event and rsvps.user
+    // relations.
+    const event = await Event.findOne(eventId, {
+      relations: [
+        'rsvps',
+        'rsvps.event',
+        'rsvps.user',
+        'user_roles',
+        'user_roles.user',
+      ],
     });
     if (!event) {
       throw new Error('Event not found');
     }
 
+    // We need to loadRelationIds so that rsvp.remove() knows which record to
+    // delete. disableMixedMap stops typeorm mapping flattening the object. i.e.
+    // we want { event: { id: n } }, not { event: n}
     let rsvp = await Rsvp.findOne({
-      where: { event: { id: id }, user: { id: ctx.user.id } },
+      where: { event: { id: eventId }, user: { id: ctx.user.id } },
+      loadRelationIds: { disableMixedMap: true },
     });
 
     if (rsvp) {
@@ -148,8 +160,16 @@ ${unsubscribe}
   }
 
   @Mutation(() => Rsvp)
-  async confirmRsvp(@Arg('id', () => Int) id: number): Promise<Rsvp> {
-    const rsvp = await Rsvp.findOne({ where: { id }, relations: ['event'] });
+  async confirmRsvp(
+    @Arg('eventId', () => Int) eventId: number,
+    @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<Rsvp> {
+    if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
+    const rsvp = await Rsvp.findOne({
+      where: { event_id: eventId, user_id: userId },
+      relations: ['event'],
+    });
     if (!rsvp) {
       throw new Error('RSVP not found');
     }
@@ -163,8 +183,13 @@ ${unsubscribe}
   }
 
   @Mutation(() => Boolean)
-  async deleteRsvp(@Arg('id', () => Int) id: number): Promise<boolean> {
-    const rsvp = await Rsvp.findOne({ where: { id } });
+  async deleteRsvp(
+    @Arg('eventId', () => Int) eventId: number,
+    @Arg('userId', () => Int) userId: number,
+  ): Promise<boolean> {
+    const rsvp = await Rsvp.findOne({
+      where: { event_id: eventId, user_id: userId },
+    });
     if (!rsvp) {
       throw new Error('RSVP not found');
     }
@@ -236,7 +261,7 @@ ${unsubscribe}
     @Arg('data') data: UpdateEventInputs,
   ) {
     const event = await Event.findOne(id, {
-      relations: ['rsvps', 'rsvps.user', 'venue'],
+      relations: ['rsvps', 'rsvps.user', 'rsvps.event', 'venue'],
     });
     if (!event) throw new Error('Cant find event');
 

@@ -124,7 +124,6 @@ export type EventSponsor = {
   created_at: Scalars['DateTime'];
   event: Event;
   event_id: Scalars['Int'];
-  id: Scalars['Int'];
   sponsor: Sponsor;
   sponsor_id: Scalars['Int'];
   updated_at: Scalars['DateTime'];
@@ -171,7 +170,8 @@ export type MutationCancelEventArgs = {
 };
 
 export type MutationConfirmRsvpArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationCreateChapterArgs = {
@@ -195,7 +195,8 @@ export type MutationDeleteEventArgs = {
 };
 
 export type MutationDeleteRsvpArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationDeleteVenueArgs = {
@@ -215,7 +216,7 @@ export type MutationRegisterArgs = {
 };
 
 export type MutationRsvpEventArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 };
 
 export type MutationSendEmailArgs = {
@@ -290,7 +291,6 @@ export type Rsvp = {
   created_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
   event: Event;
-  id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -382,7 +382,6 @@ export type UserBan = {
   __typename?: 'UserBan';
   chapter: Chapter;
   created_at: Scalars['DateTime'];
-  id: Scalars['Int'];
   updated_at: Scalars['DateTime'];
   user: User;
 };
@@ -392,7 +391,6 @@ export type UserChapterRole = {
   chapter: Chapter;
   chapter_id: Scalars['Int'];
   created_at: Scalars['DateTime'];
-  id: Scalars['Int'];
   interested: Scalars['Boolean'];
   role_name: Scalars['String'];
   updated_at: Scalars['DateTime'];
@@ -405,7 +403,6 @@ export type UserEventRole = {
   created_at: Scalars['DateTime'];
   event: Event;
   event_id: Scalars['Int'];
-  id: Scalars['Int'];
   role_name: Scalars['String'];
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
@@ -674,7 +671,6 @@ export type EventQuery = {
           | undefined;
         rsvps: Array<{
           __typename?: 'Rsvp';
-          id: number;
           on_waitlist: boolean;
           user: { __typename?: 'User'; id: number; name: string };
         }>;
@@ -775,21 +771,18 @@ export type DeleteEventMutation = {
 };
 
 export type ConfirmRsvpMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 }>;
 
 export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
-  confirmRsvp: {
-    __typename?: 'Rsvp';
-    id: number;
-    confirmed_at: any;
-    on_waitlist: boolean;
-  };
+  confirmRsvp: { __typename?: 'Rsvp'; confirmed_at: any; on_waitlist: boolean };
 };
 
 export type DeleteRsvpMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 }>;
 
 export type DeleteRsvpMutation = {
@@ -920,7 +913,7 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent?: { __typename?: 'Rsvp'; id: number } | null | undefined;
+  rsvpEvent?: { __typename?: 'Rsvp'; confirmed_at: any } | null | undefined;
 };
 
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1594,7 +1587,6 @@ export const EventDocument = gql`
         country
       }
       rsvps {
-        id
         on_waitlist
         user {
           id
@@ -1940,9 +1932,8 @@ export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutationVariables
 >;
 export const ConfirmRsvpDocument = gql`
-  mutation confirmRsvp($id: Int!) {
-    confirmRsvp(id: $id) {
-      id
+  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
+    confirmRsvp(eventId: $eventId, userId: $userId) {
       confirmed_at
       on_waitlist
     }
@@ -1966,7 +1957,8 @@ export type ConfirmRsvpMutationFn = Apollo.MutationFunction<
  * @example
  * const [confirmRsvpMutation, { data, loading, error }] = useConfirmRsvpMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -1992,8 +1984,8 @@ export type ConfirmRsvpMutationOptions = Apollo.BaseMutationOptions<
   ConfirmRsvpMutationVariables
 >;
 export const DeleteRsvpDocument = gql`
-  mutation deleteRsvp($id: Int!) {
-    deleteRsvp(id: $id)
+  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
+    deleteRsvp(eventId: $eventId, userId: $userId)
   }
 `;
 export type DeleteRsvpMutationFn = Apollo.MutationFunction<
@@ -2014,7 +2006,8 @@ export type DeleteRsvpMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteRsvpMutation, { data, loading, error }] = useDeleteRsvpMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -2425,8 +2418,8 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RsvpToEventDocument = gql`
   mutation rsvpToEvent($eventId: Int!) {
-    rsvpEvent(id: $eventId) {
-      id
+    rsvpEvent(eventId: $eventId) {
+      confirmed_at
     }
   }
 `;

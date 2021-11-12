@@ -291,9 +291,11 @@ export type Rsvp = {
   created_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
   event: Event;
+  event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
+  user_id: Scalars['Int'];
 };
 
 export type SendEmailInputs = {

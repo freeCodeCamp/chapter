@@ -1,5 +1,5 @@
-import { ObjectType, Field } from 'type-graphql';
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { ObjectType, Field, Int } from 'type-graphql';
+import { Column, Entity, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { BaseJunctionModel } from './BaseJunctionModel';
 import { Event } from './Event';
 import { User } from './User';
@@ -7,6 +7,14 @@ import { User } from './User';
 @ObjectType()
 @Entity({ name: 'rsvps' })
 export class Rsvp extends BaseJunctionModel {
+  @Field(() => Int)
+  @PrimaryColumn()
+  user_id!: number;
+
+  @Field(() => Int)
+  @PrimaryColumn()
+  event_id!: number;
+
   @Field(() => Date)
   @Column({ type: 'timestamp' })
   date!: Date;
@@ -20,12 +28,12 @@ export class Rsvp extends BaseJunctionModel {
   confirmed_at: Date | null;
 
   @Field(() => Event)
-  @ManyToOne((_type) => Event, (event) => event.rsvps, { primary: true })
+  @ManyToOne((_type) => Event, (event) => event.rsvps)
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
   @Field(() => User)
-  @ManyToOne((_type) => User, (user) => user.rsvps, { primary: true })
+  @ManyToOne((_type) => User, (user) => user.rsvps)
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

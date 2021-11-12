@@ -182,7 +182,7 @@ describe('events dashboard', () => {
         .invoke('text')
         .as('newVenueTitle');
     });
-    cy.findByRole('form', { name: 'Save Event Changes' }).submit();
+    cy.findByRole('form', { name: 'Save Event Changes' }).click();
 
     cy.waitUntilMail('allMail');
 

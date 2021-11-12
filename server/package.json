@@ -41,7 +41,7 @@
     "pg": "8.7.1",
     "reflect-metadata": "0.1.13",
     "type-graphql": "1.1.1",
-    "typeorm": "0.2.39"
+    "typeorm": "0.2.40"
   },
   "devDependencies": {
     "@types/chai": "4.2.22",

@@ -40,10 +40,14 @@ describe('venues dashboard', () => {
     cy.findByRole('spinbutton', { name: 'latitude' }).type(fix.latitude);
     cy.findByRole('spinbutton', { name: 'longitude' }).type(fix.longitude);
 
-    cy.findByRole('form', { name: 'Add venue' }).submit();
+    cy.findByRole('form', { name: 'Add venue' })
+      .findByRole('button', {
+        name: 'Add venue',
+      })
+      .click();
     // TODO: this should mirror events. i.e. either both should go to the list
     // or both should go to the newly created page
-    cy.location('pathname').should('match', /^\/dashboard\/venues/);
+    cy.location('pathname').should('match', /^\/dashboard\/venues$/);
     // TODO: if it goes to /dashboard/venues/<n>/edit, look for the rest of the
     // data
 

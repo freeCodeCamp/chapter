@@ -38,10 +38,14 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'category' }).type(fix.category);
     cy.findByRole('textbox', { name: 'imageUrl' }).type(fix.imageUrl);
 
-    cy.findByRole('form', { name: 'Add chapter' }).submit();
+    cy.findByRole('form', { name: 'Add chapter' })
+      .findByRole('button', {
+        name: 'Add chapter',
+      })
+      .click();
     // TODO: this should mirror events. i.e. either both should go to the list
     // or both should go to the newly created page
-    cy.location('pathname').should('match', /^\/dashboard\/chapters/);
+    cy.location('pathname').should('match', /^\/dashboard\/chapters$/);
     // TODO: if go to /dashboard/chapters/<n>/edit, look for the rest of the
     // data
 

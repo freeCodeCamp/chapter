@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { MoreThan } from 'typeorm';
@@ -11,6 +12,7 @@ import {
   UserEventRole,
   EventSponsor,
 } from 'src/models';
+import { prisma } from 'src/prisma';
 import MailerService from 'src/services/MailerService';
 
 //Place holder for unsubscribe
@@ -260,46 +262,51 @@ ${unsubscribe}
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
   ) {
-    const event = await Event.findOne(id, {
-      relations: ['rsvps', 'rsvps.user', 'rsvps.event', 'venue'],
+    const event = await prisma.events.findUnique({
+      where: { id },
+      include: {
+        venues: true,
+        event_sponsors: true,
+        rsvps: { include: { users: true } },
+      },
     });
     if (!event) throw new Error('Cant find event');
 
+    const eventSponsorInput: Prisma.event_sponsorsCreateManyInput[] =
+      data.sponsorIds.map((sId) => ({
+        event_id: id,
+        sponsor_id: sId,
+      }));
+    // TODO: if possible, replace (i.e. delete and create replacements in a
+    // batch)
+    await prisma.event_sponsors.deleteMany({ where: { event_id: id } });
+    await prisma.event_sponsors.createMany({
+      data: eventSponsorInput,
+    });
+
     // TODO: Handle tags
-    event.tags = [];
-
-    event.invite_only = data.invite_only ?? event.invite_only;
-    event.name = data.name ?? event.name;
-    event.description = data.description ?? event.description;
-    event.url = data.url ?? event.url;
-    event.streaming_url = data.streaming_url ?? event.streaming_url;
-    event.venue_type = data.venue_type ?? event.venue_type;
-    event.start_at = new Date(data.start_at) ?? event.start_at;
-    event.ends_at = new Date(data.ends_at) ?? event.ends_at;
-    event.capacity = data.capacity ?? event.capacity;
-    event.image_url = data.image_url ?? event.image_url;
-
-    await Promise.all(
-      (
-        await EventSponsor.find({ where: { event_id: id } })
-      ).map((row) => row.remove()),
-    );
-
-    event.sponsors = await Promise.all(
-      data.sponsorIds.map((s) =>
-        new EventSponsor({
-          eventId: id,
-          sponsorId: s,
-        }).save(),
-      ),
-    );
+    const update: Prisma.eventsUpdateInput = {
+      invite_only: data.invite_only ?? event.invite_only,
+      name: data.name ?? event.name,
+      description: data.description ?? event.description,
+      url: data.url ?? event.url,
+      streaming_url: data.streaming_url ?? event.streaming_url,
+      venue_type: data.venue_type ?? event.venue_type,
+      start_at: new Date(data.start_at) ?? event.start_at,
+      ends_at: new Date(data.ends_at) ?? event.ends_at,
+      capacity: data.capacity ?? event.capacity,
+      image_url: data.image_url ?? event.image_url,
+      venues: { connect: { id: data.venueId } },
+    };
 
     if (data.venueId) {
-      const venue = await Venue.findOne(data.venueId);
+      const venue = await prisma.venues.findUnique({
+        where: { id: data.venueId },
+      });
       if (!venue) throw new Error('Cant find venue');
       // TODO: include a link back to the venue page
-      if (event.venue?.id !== venue.id) {
-        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
+      if (event.venue_id !== venue.id) {
+        const emailList = event.rsvps.map((rsvp) => rsvp.users.email);
         const subject = `Venue changed for event ${event.name}`;
         const body = `We have had to change the location of ${event.name}.
 The event is now being held at <br>
@@ -312,10 +319,9 @@ ${unsubscribe}
 `;
         new MailerService(emailList, subject, body).sendEmail();
       }
-      event.venue = venue;
     }
 
-    return event.save();
+    return await prisma.events.update({ where: { id }, data: update });
   }
 
   @Mutation(() => Event)

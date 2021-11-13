@@ -52,12 +52,14 @@ const EditSponsorPage: NextPage = () => {
     );
   }
   return (
-    <SponsorForm
-      loading={loading}
-      onSubmit={onSubmit}
-      data={data}
-      submitText="Save Sponsor Changes"
-    />
+    <Layout>
+      <SponsorForm
+        loading={loading}
+        onSubmit={onSubmit}
+        data={data}
+        submitText="Save Sponsor Changes"
+      />
+    </Layout>
   );
 };
 

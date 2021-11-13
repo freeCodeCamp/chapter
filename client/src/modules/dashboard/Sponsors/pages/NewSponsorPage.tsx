@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { Sponsors } from '../../Events/graphql/queries';
+import { Layout } from '../../shared/components/Layout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { useCreateSponsorMutation } from 'generated/graphql';
 const NewSponsorPage: NextPage = () => {
@@ -28,11 +29,13 @@ const NewSponsorPage: NextPage = () => {
     }
   };
   return (
-    <SponsorForm
-      loading={loading}
-      onSubmit={onSubmit}
-      submitText="Add New Sponsor"
-    />
+    <Layout>
+      <SponsorForm
+        loading={loading}
+        onSubmit={onSubmit}
+        submitText="Add New Sponsor"
+      />
+    </Layout>
   );
 };
 

@@ -54,7 +54,7 @@
     "@types/supertest": "2.0.11",
     "@zerollup/ts-transform-paths": "1.7.18",
     "chai": "4.3.4",
-    "concurrently": "6.3.0",
+    "concurrently": "6.4.0",
     "date-fns": "2.25.0",
     "get-port": "6.0.0",
     "node-dev": "7.1.0",

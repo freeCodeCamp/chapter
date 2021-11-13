@@ -22,3 +22,14 @@ export const createSponsor = gql`
     }
   }
 `;
+
+export const updateSponsor = gql`
+  mutation UpdateSponsor($data: UpdateSponsorInputs!, $updateSponsorId: Int!) {
+    updateSponsor(data: $data, id: $updateSponsorId) {
+      name
+      website
+      logo_path
+      type
+    }
+  }
+`;

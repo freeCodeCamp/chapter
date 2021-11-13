@@ -1,7 +1,9 @@
 import { Button } from '@chakra-ui/button';
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import { Select } from '@chakra-ui/select';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Field } from '../../../../components/Form/Fields';
+import { Input } from '../../../../components/Form/Input';
 import { Sponsor, SponsorQuery } from 'generated/graphql';
 
 export type SponsorFormData = Omit<
@@ -15,11 +17,31 @@ interface SpornsorFormProps {
   data?: SponsorQuery;
   submitText: string;
 }
-type Fields = [keyof Omit<SponsorFormData, '__typename'>, boolean];
-const fields: Fields[] = [
-  ['name', true],
-  ['website', true],
-  ['logo_path', true],
+export interface FormField {
+  key: keyof Omit<SponsorFormData, '__typename'>;
+  placeholder: string;
+  label: string;
+  isRequired: boolean;
+}
+const fields: FormField[] = [
+  {
+    key: 'name',
+    placeholder: 'freecodecamp',
+    label: 'Sponsor Name',
+    isRequired: true,
+  },
+  {
+    key: 'website',
+    placeholder: 'www.freecodecamp.com',
+    label: 'Website Url',
+    isRequired: true,
+  },
+  {
+    key: 'logo_path',
+    placeholder: 'www.freecodecamp.com',
+    label: 'Logo Path',
+    isRequired: true,
+  },
 ];
 const SponsorForm: React.FC<SpornsorFormProps> = (props) => {
   const { loading, onSubmit, data, submitText } = props;
@@ -31,23 +53,34 @@ const SponsorForm: React.FC<SpornsorFormProps> = (props) => {
     type: sponsor?.type ?? 'FOOD',
   };
 
-  const { control, handleSubmit } = useForm({
+  const { handleSubmit, register } = useForm({
     defaultValues,
   });
-  console.log(fields);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
     >
-      {fields.map(([name, required]) => {
-        <Field
-          key={name}
-          {...{ control, name }}
-          type="text"
-          required={required}
-        />;
+      {fields.map((field) => {
+        return (
+          <Input
+            key={field.key}
+            label={field.label}
+            placeholder={field.placeholder}
+            isRequired={field.isRequired}
+            {...register(field.key)}
+          />
+        );
       })}
+
+      <FormControl mt="20px">
+        <FormLabel>Sponsor Type</FormLabel>
+        <Select {...register('type')}>
+          <option value="FOOD">Food</option>
+          <option value="VENUE">Venue</option>
+          <option value="OTHER">Other</option>
+        </Select>
+      </FormControl>
       <Button
         mt="20px"
         variant="solid"

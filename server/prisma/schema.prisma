@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model chapters {
+  created_at         DateTime             @default(now()) @db.Timestamp(6)
+  updated_at         DateTime             @default(now()) @db.Timestamp(6)
+  id                 Int                  @id(map: "PK_a2bbdbb4bdc786fe0cb0fcfc4a0") @default(autoincrement())
+  name               String               @db.VarChar
+  description        String               @db.VarChar
+  category           String               @db.VarChar
+  details            Json                 @db.Json
+  city               String               @db.VarChar
+  region             String               @db.VarChar
+  country            String               @db.VarChar
+  creator_id         Int?
+  users              users?               @relation(fields: [creator_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_60315cd6f39d467818aa7c60505")
+  events             events[]
+  user_bans          user_bans[]
+  user_chapter_roles user_chapter_roles[]
+}
+
+model event_sponsors {
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  sponsor_id Int
+  event_id   Int
+  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8fab88035a7a74536060237b404")
+  sponsors   sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4cb75f6aae3ff8fe35cd3417383")
+
+  @@id([sponsor_id, event_id], map: "PK_7efb6474e1d10a623f65697ffed")
+}
+
+model events {
+  created_at       DateTime               @default(now()) @db.Timestamp(6)
+  updated_at       DateTime               @default(now()) @db.Timestamp(6)
+  id               Int                    @id(map: "PK_40731c7151fe4be3116e45ddf73") @default(autoincrement())
+  name             String                 @db.VarChar
+  description      String                 @db.VarChar
+  url              String?                @db.VarChar
+  streaming_url    String?                @db.VarChar
+  venue_type       events_venue_type_enum @default(Physical)
+  start_at         DateTime               @db.Timestamp(6)
+  ends_at          DateTime               @db.Timestamp(6)
+  canceled         Boolean                @default(false)
+  capacity         Int
+  invite_only      Boolean                @default(false)
+  image_url        String                 @db.VarChar
+  venue_id         Int?
+  chapter_id       Int?
+  chapters         chapters?              @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")
+  venues           venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_26e10dc1ae5cdd5a20279e08b4a")
+  event_sponsors   event_sponsors[]
+  rsvps            rsvps[]
+  tags             tags[]
+  user_event_roles user_event_roles[]
+}
+
+model rsvps {
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @default(now()) @db.Timestamp(6)
+  user_id      Int
+  event_id     Int
+  date         DateTime  @db.Timestamp(6)
+  on_waitlist  Boolean
+  confirmed_at DateTime? @db.Timestamp(6)
+  canceled     Boolean
+  events       events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_04d52fc9fe91004aa1860603ea3")
+  users        users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5ef6c963e9f7d98f6e0f79053a3")
+
+  @@id([user_id, event_id], map: "PK_06894530ca7ca824ae08ab4b029")
+}
+
+model sponsors {
+  created_at     DateTime         @default(now()) @db.Timestamp(6)
+  updated_at     DateTime         @default(now()) @db.Timestamp(6)
+  id             Int              @id(map: "PK_6d1114fe7e65855154351b66bfc") @default(autoincrement())
+  name           String           @db.VarChar
+  website        String           @db.VarChar
+  logo_path      String           @db.VarChar
+  type           String           @db.VarChar
+  event_sponsors event_sponsors[]
+}
+
+model tags {
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  id         Int      @id(map: "PK_e7dc17249a1148a1970748eda99") @default(autoincrement())
+  name       String   @db.VarChar
+  event_id   Int?
+  events     events?  @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_fd793b86b010970181e155eb750")
+}
+
+model user_bans {
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  user_id    Int
+  chapter_id Int
+  chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bc062ec92b68995ff3ad5d00cdd")
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a142c9954b2fd911b3e7ea8c307")
+
+  @@id([user_id, chapter_id], map: "PK_b36d582555d25b149d3a29fad1d")
+}
+
+model user_chapter_roles {
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  user_id    Int
+  chapter_id Int
+  role_name  String
+  interested Boolean
+  chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c4b23ce3d811d599cea97d064fc")
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dff88cec5f2df9a6e9d9a7af03e")
+
+  @@id([user_id, chapter_id, role_name], map: "PK_d4726976f7c0d644f1a01cebe6d")
+}
+
+model user_event_roles {
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  user_id    Int
+  event_id   Int
+  role_name  String
+  subscribed Boolean
+  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f098ebd3c390d8e0f1e6ce882c6")
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bb21cc4b5de8cf9e8476d75b7a7")
+
+  @@id([user_id, event_id, role_name], map: "PK_7e8150634b33c58decf1cde3de3")
+}
+
+model user_instance_roles {
+  user_id   Int
+  role_name String
+  users     users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f6aa9d1d5bffdd18382d18729d0")
+
+  @@id([user_id, role_name], map: "PK_a6668338a373b7a8d914a193f3f")
+}
+
+model users {
+  created_at          DateTime              @default(now()) @db.Timestamp(6)
+  updated_at          DateTime              @default(now()) @db.Timestamp(6)
+  id                  Int                   @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(autoincrement())
+  first_name          String                @db.VarChar
+  last_name           String                @db.VarChar
+  email               String                @unique(map: "UQ_97672ac88f789774dd47f7c8be3") @db.VarChar
+  chapters            chapters[]
+  rsvps               rsvps[]
+  user_bans           user_bans[]
+  user_chapter_roles  user_chapter_roles[]
+  user_event_roles    user_event_roles[]
+  user_instance_roles user_instance_roles[]
+}
+
+model venues {
+  created_at     DateTime @default(now()) @db.Timestamp(6)
+  updated_at     DateTime @default(now()) @db.Timestamp(6)
+  id             Int      @id(map: "PK_cb0f885278d12384eb7a81818be") @default(autoincrement())
+  name           String   @db.VarChar
+  street_address String?  @db.VarChar
+  city           String   @db.VarChar
+  postal_code    String   @db.VarChar
+  region         String   @db.VarChar
+  country        String   @db.VarChar
+  latitude       Float?
+  longitude      Float?
+  events         events[]
+}
+
+enum events_venue_type_enum {
+  Physical
+  Online
+  PhysicalAndOnline
+}

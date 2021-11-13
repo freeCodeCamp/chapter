@@ -1,6 +1,23 @@
 import { join } from 'path';
 import { config } from 'dotenv';
-config({ path: join(__dirname, '../../../.env') });
+import expand from 'dotenv-expand';
+
+const result = config({ path: join(__dirname, '../../../.env') });
+
+if (result.error) {
+  console.warn(`
+  ----------------------------------------------------
+  Warning: .env file not found.
+  ----------------------------------------------------
+  Please copy .env.example to .env
+  You can ignore this warning if using a different way
+  to setup this environment.
+  ----------------------------------------------------
+  `);
+} else {
+  expand(result);
+}
+
 export interface Environment {
   NODE_ENV: 'production' | 'development' | 'test' | undefined;
   JWT_SECRET: string;

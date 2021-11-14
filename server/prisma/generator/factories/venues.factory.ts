@@ -1,30 +1,27 @@
+import { Prisma } from '@prisma/client';
 import { company, address } from 'faker';
-import { Venue } from 'src/models';
+import { prisma } from 'src/prisma';
 
-const createVenues = async (): Promise<Venue[]> => {
-  const venues: Venue[] = [];
+const createVenues = async (): Promise<number[]> => {
+  const venueIds: number[] = [];
 
   for (let i = 0; i < 4; i++) {
-    const venue = new Venue({
+    const venueData: Prisma.venuesCreateInput = {
       name: company.companyName(),
       city: address.city(),
       region: address.state(),
       postal_code: address.zipCode(),
       country: address.country(),
       street_address: Math.random() > 0.5 ? address.streetAddress() : undefined,
-    });
+    };
 
-    venues.push(venue);
+    // TODO: batch this once createMany returns the records.
+    const venue = await prisma.venues.create({ data: venueData });
+
+    venueIds.push(venue.id);
   }
 
-  try {
-    await Promise.all(venues.map((venue) => venue.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding venues');
-  }
-
-  return venues;
+  return venueIds;
 };
 
 export default createVenues;

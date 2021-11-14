@@ -2,12 +2,12 @@ import { Prisma } from '@prisma/client';
 import { addHours, add } from 'date-fns';
 import { company, internet, lorem, image } from 'faker';
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
-import { Chapter, Sponsor, Venue, VenueType } from 'src/models';
+import { Chapter, Sponsor, VenueType } from 'src/models';
 import { prisma } from 'src/prisma';
 
 const createEvents = async (
   chapters: Chapter[],
-  venues: Venue[],
+  venueIds: number[],
   sponsors: Sponsor[],
 ): Promise<number[]> => {
   const events: number[] = [];
@@ -32,7 +32,7 @@ const createEvents = async (
       streaming_url: internet.url(),
       venue_type: randomEnum(VenueType),
       capacity: random(1000),
-      venues: { connect: { id: randomItem(venues.map(({ id }) => id)) } },
+      venues: { connect: { id: randomItem(venueIds) } },
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),

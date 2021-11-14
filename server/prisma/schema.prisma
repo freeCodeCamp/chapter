@@ -18,6 +18,7 @@ model chapters {
   city        String               @db.VarChar
   region      String               @db.VarChar
   country     String               @db.VarChar
+  imageUrl    String               @db.VarChar
   creator_id  Int?
   events      events[]
   user_bans   user_bans[]

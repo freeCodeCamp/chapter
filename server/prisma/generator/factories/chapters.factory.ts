@@ -1,35 +1,34 @@
+import { Prisma } from '@prisma/client';
 import { company, lorem, address, image } from 'faker';
-import { Chapter, User } from 'src/models';
+import { User } from 'src/models';
+import { prisma } from 'src/prisma';
 
-const createChapters = async (user: User): Promise<Chapter[]> => {
-  const chapters: Chapter[] = [];
+const createChapters = async (user: User): Promise<number[]> => {
+  const chapters: number[] = [];
 
   for (let i = 0; i < 4; i++) {
     const name = company.companyName();
     const description = lorem.words();
     const category = lorem.word();
-    // const details = { email: internet.email() };
 
-    const chapter = new Chapter({
+    // TODO: we shouldn't need to use the unchecked type here. The database
+    // schema may need modifying.
+    const chapterData: Prisma.chaptersUncheckedCreateInput = {
       name,
       description,
       category,
       details: 'random',
-      creator: user,
+      creator_id: user.id,
       country: address.country(),
       city: address.city(),
       region: address.state(),
       imageUrl: image.imageUrl(640, 480, 'tech', true),
-    });
+    };
 
-    chapters.push(chapter);
-  }
+    // TODO: batch this once createMany returns the records.
+    const chapter = await prisma.chapters.create({ data: chapterData });
 
-  try {
-    await Promise.all(chapters.map((chapter) => chapter.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding chapters');
+    chapters.push(chapter.id);
   }
 
   return chapters;

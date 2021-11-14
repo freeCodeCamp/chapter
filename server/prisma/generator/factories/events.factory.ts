@@ -2,13 +2,13 @@ import { Prisma } from '@prisma/client';
 import { addHours, add } from 'date-fns';
 import { company, internet, lorem, image } from 'faker';
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
-import { Sponsor, VenueType } from 'src/models';
+import { VenueType } from 'src/models';
 import { prisma } from 'src/prisma';
 
 const createEvents = async (
   chapterIds: number[],
   venueIds: number[],
-  sponsors: Sponsor[],
+  sponsorIds: number[],
 ): Promise<number[]> => {
   const events: number[] = [];
 
@@ -42,10 +42,10 @@ const createEvents = async (
     const event = await prisma.events.create({ data: eventData });
 
     await Promise.all(
-      randomItems(sponsors, 2).map(async (sponsor) => {
+      randomItems(sponsorIds, 2).map(async (sponsor) => {
         const eventSponsorData: Prisma.event_sponsorsCreateInput = {
           events: { connect: { id: event.id } },
-          sponsors: { connect: { id: sponsor.id } },
+          sponsors: { connect: { id: sponsor } },
         };
         return prisma.event_sponsors.create({ data: eventSponsorData });
       }),

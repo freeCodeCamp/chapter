@@ -13,12 +13,12 @@ import setupRoles from './setupRoles';
   const connection = await createConnection();
 
   const [user, users] = await createUsers();
-  const sponsors = await createSponsors();
+  const sponsorIds = await createSponsors();
 
   const chapterIds = await createChapters(user);
   const venueIds = await createVenues();
 
-  const eventIds = await createEvents(chapterIds, venueIds, sponsors);
+  const eventIds = await createEvents(chapterIds, venueIds, sponsorIds);
 
   await createRsvps(
     eventIds,

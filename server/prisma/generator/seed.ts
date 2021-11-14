@@ -12,23 +12,16 @@ import setupRoles from './setupRoles';
 (async () => {
   const connection = await createConnection();
 
-  const [user, users] = await createUsers();
+  const [userId, userIds] = await createUsers();
   const sponsorIds = await createSponsors();
 
-  const chapterIds = await createChapters(user);
+  const chapterIds = await createChapters(userId);
   const venueIds = await createVenues();
 
   const eventIds = await createEvents(chapterIds, venueIds, sponsorIds);
 
-  await createRsvps(
-    eventIds,
-    users.map(({ id }) => id),
-  );
-  await setupRoles(
-    user.id,
-    users.map(({ id }) => id),
-    chapterIds,
-  );
+  await createRsvps(eventIds, userIds);
+  await setupRoles(userId, userIds, chapterIds);
 
   await connection.close();
 })();

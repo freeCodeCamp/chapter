@@ -1,32 +1,33 @@
+import { Prisma } from '@prisma/client';
 import { name, internet } from 'faker';
-import { User } from 'src/models';
+import { prisma } from 'src/prisma';
 
-const createUsers = async (): Promise<[User, User[]]> => {
+const createUsers = async (): Promise<[number, number[]]> => {
   // TODO: add seeding admin
-  const user = new User({
+  const userData: Prisma.usersCreateInput = {
     email: 'foo@bar.com',
     first_name: name.firstName(),
     last_name: name.lastName(),
-  });
+  };
 
-  const others = Array.from(
+  const user = await prisma.users.create({ data: userData });
+
+  const othersData: Prisma.usersCreateInput[] = Array.from(
     new Array(10),
-    () =>
-      new User({
-        email: internet.email(),
-        first_name: name.firstName(),
-        last_name: name.lastName(),
-      }),
+    () => ({
+      email: internet.email(),
+      first_name: name.firstName(),
+      last_name: name.lastName(),
+    }),
   );
 
-  try {
-    await Promise.all([user, ...others].map((u) => u.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding users');
-  }
+  const otherIds = (
+    await Promise.all(
+      othersData.map((other) => prisma.users.create({ data: other })),
+    )
+  ).map((other) => other.id);
 
-  return [user, others];
+  return [user.id, otherIds];
 };
 
 export default createUsers;

@@ -1,10 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { company, lorem, address, image } from 'faker';
-import { User } from 'src/models';
 import { prisma } from 'src/prisma';
 
-const createChapters = async (user: User): Promise<number[]> => {
-  const chapters: number[] = [];
+const createChapters = async (userId: number): Promise<number[]> => {
+  const chapterIds: number[] = [];
 
   for (let i = 0; i < 4; i++) {
     const name = company.companyName();
@@ -18,7 +17,7 @@ const createChapters = async (user: User): Promise<number[]> => {
       description,
       category,
       details: 'random',
-      creator_id: user.id,
+      creator_id: userId,
       country: address.country(),
       city: address.city(),
       region: address.state(),
@@ -28,10 +27,10 @@ const createChapters = async (user: User): Promise<number[]> => {
     // TODO: batch this once createMany returns the records.
     const chapter = await prisma.chapters.create({ data: chapterData });
 
-    chapters.push(chapter.id);
+    chapterIds.push(chapter.id);
   }
 
-  return chapters;
+  return chapterIds;
 };
 
 export default createChapters;

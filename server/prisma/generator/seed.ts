@@ -1,6 +1,3 @@
-import 'reflect-metadata';
-import { createConnection } from 'typeorm';
-
 import createChapters from './factories/chapters.factory';
 import createEvents from './factories/events.factory';
 import createRsvps from './factories/rsvps.factory';
@@ -10,8 +7,6 @@ import createVenues from './factories/venues.factory';
 import setupRoles from './setupRoles';
 
 (async () => {
-  const connection = await createConnection();
-
   const [userId, userIds] = await createUsers();
   const sponsorIds = await createSponsors();
 
@@ -22,6 +17,4 @@ import setupRoles from './setupRoles';
 
   await createRsvps(eventIds, userIds);
   await setupRoles(userId, userIds, chapterIds);
-
-  await connection.close();
 })();

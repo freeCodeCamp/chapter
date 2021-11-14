@@ -41,11 +41,11 @@ export const EditEventPage: NextPage = () => {
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
-        venueId: parseInt(String(data.venueId)),
+        venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
         tags: undefined,
-        sponsorIds: sponsorArray,
+        sponsor_ids: sponsorArray,
       };
 
       const event = await updateEvent({
@@ -83,7 +83,7 @@ export const EditEventPage: NextPage = () => {
         data={{
           ...rest,
           sponsors: sponsorData || [],
-          venueId: data.event?.venue?.id,
+          venue_id: data.event?.venue?.id,
           tags: data.event.tags || [],
         }}
         loading={loadingUpdate}

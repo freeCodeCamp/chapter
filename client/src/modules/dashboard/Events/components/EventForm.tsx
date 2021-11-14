@@ -57,7 +57,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
       sponsors: data.sponsors,
       tags: (data.tags || []).map((t) => t.name).join(', '),
-      venueId: data.venueId,
+      venue_id: data.venue_id,
       image_url: data.image_url,
     };
   }, []);
@@ -125,7 +125,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         ) : (
           <FormControl>
             <FormLabel>Venue</FormLabel>
-            <Select {...register('venueId')}>
+            <Select {...register('venue_id')}>
               {dataVenues.venues.map((v) => (
                 <option key={v.id} value={v.id}>
                   {v.name}

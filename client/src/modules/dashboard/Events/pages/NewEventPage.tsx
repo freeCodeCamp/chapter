@@ -25,18 +25,18 @@ export const NewEventPage: NextPage = () => {
     setLoading(true);
 
     try {
-      const HARD_CODE = { chapterId: 1 };
+      const HARD_CODE = { chapter_id: 1 };
       const { sponsors, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
-        venueId: parseInt(String(data.venueId)),
+        venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
         ...HARD_CODE,
         tags: undefined,
-        sponsorIds: sponsorArray,
+        sponsor_ids: sponsorArray,
       };
       const event = await createEvent({
         variables: { data: { ...eventData } },

@@ -51,6 +51,7 @@ model events {
   capacity         Int
   invite_only      Boolean                @default(false)
   image_url        String                 @db.VarChar
+  // TODO: none of these should be optional
   venue_id         Int?
   chapter_id       Int?
   chapters         chapters?              @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")

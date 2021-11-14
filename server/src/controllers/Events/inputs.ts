@@ -31,10 +31,10 @@ export class CreateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venueId?: number;
+  venue_id?: number;
 
   @Field(() => Int)
-  chapterId: number;
+  chapter_id: number;
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
@@ -42,7 +42,7 @@ export class CreateEventInputs {
   @Field(() => String)
   image_url: string;
   @Field(() => [Int])
-  sponsorIds: number[];
+  sponsor_ids: number[];
 }
 
 @InputType()
@@ -74,7 +74,7 @@ export class UpdateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venueId?: number;
+  venue_id?: number;
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
@@ -82,5 +82,5 @@ export class UpdateEventInputs {
   @Field(() => String, { nullable: true })
   image_url: string;
   @Field(() => [Int])
-  sponsorIds: number[];
+  sponsor_ids: number[];
 }

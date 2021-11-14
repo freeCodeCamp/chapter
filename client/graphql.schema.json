@@ -494,7 +494,7 @@
             "deprecationReason": null
           },
           {
-            "name": "chapterId",
+            "name": "chapter_id",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -586,7 +586,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sponsorIds",
+            "name": "sponsor_ids",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -650,7 +650,7 @@
             "deprecationReason": null
           },
           {
-            "name": "venueId",
+            "name": "venue_id",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3187,7 +3187,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sponsorIds",
+            "name": "sponsor_ids",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -3247,7 +3247,7 @@
             "deprecationReason": null
           },
           {
-            "name": "venueId",
+            "name": "venue_id",
             "description": null,
             "type": {
               "kind": "SCALAR",

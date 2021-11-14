@@ -61,13 +61,13 @@ export type CreateChapterInputs = {
 
 export type CreateEventInputs = {
   capacity: Scalars['Float'];
-  chapterId: Scalars['Int'];
+  chapter_id: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   image_url: Scalars['String'];
   invite_only?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
-  sponsorIds: Array<Scalars['Int']>;
+  sponsor_ids: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;

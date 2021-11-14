@@ -91,16 +91,16 @@ export interface EventFormData {
   tags: string;
   start_at: string;
   ends_at: string;
-  venueId?: number | null;
+  venue_id?: number | null;
   invite_only?: boolean;
   sponsors: Array<EventSponsorInput>;
 }
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venueId' | 'tags' | 'sponsors'> | 'id'
+  keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors'> | 'id'
 > & {
-  venueId?: number;
+  venue_id?: number;
   tags: { name: string }[];
   venue?: Omit<Venue, 'created_at' | 'updated_at' | 'events'> | null;
   sponsors: EventSponsorInput[];

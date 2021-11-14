@@ -1,49 +1,48 @@
+import { Prisma } from '@prisma/client';
+
 import { makeBooleanIterator } from './lib/util';
-import { User, Chapter, UserChapterRole, UserBan } from 'src/models';
+import { prisma } from 'src/prisma';
 
 const setupRoles = async (
-  admin: User,
-  users: User[],
-  chapters: Chapter[],
+  adminId: number,
+  userIds: number[],
+  chapterIds: number[],
 ): Promise<void> => {
-  const ucr: (UserChapterRole | UserBan)[] = [];
-
+  const data: Prisma.user_chapter_rolesCreateManyInput[] = [];
   const chapterIterator = makeBooleanIterator();
-  for (const chapter of chapters) {
-    const chapterUser = new UserChapterRole({
-      chapterId: chapter.id,
-      userId: admin.id,
-      roleName: 'organizer',
+  for (const chapterId of chapterIds) {
+    const chapterUserData = {
+      chapter_id: chapterId,
+      user_id: adminId,
+      role_name: 'organizer',
       interested: true,
-    });
+    };
 
-    const [banned, ...others] = users;
-    const ban = new UserBan({ chapter, user: banned });
+    data.push(chapterUserData);
+
+    const [banned, ...others] = userIds;
+    const banData: Prisma.user_bansCreateInput = {
+      users: { connect: { id: banned } },
+      chapters: { connect: { id: chapterId } },
+    };
+    await prisma.user_bans.create({ data: banData });
     // makes sure half of each chapter's users are interested, but
     // alternates which half.
     const interestedIterator = makeBooleanIterator(
       chapterIterator.next().value,
     );
     for (const user of others) {
-      const chapterUser = new UserChapterRole({
-        chapterId: chapter.id,
-        userId: user.id,
-        roleName: 'member',
+      const chapterUserData = {
+        chapter_id: chapterId,
+        user_id: user,
+        role_name: 'member',
         interested: interestedIterator.next().value,
-      });
-      ucr.push(chapterUser);
+      };
+
+      data.push(chapterUserData);
     }
-
-    ucr.push(chapterUser);
-    ucr.push(ban);
   }
-
-  try {
-    await Promise.all(ucr.map((user) => user.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding user-chapter-roles');
-  }
+  await prisma.user_chapter_roles.createMany({ data });
 };
 
 export default setupRoles;

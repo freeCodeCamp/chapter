@@ -1,22 +1,16 @@
+import { Prisma } from '@prisma/client';
 import { addHours, add } from 'date-fns';
 import { company, internet, lorem, image } from 'faker';
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
-import {
-  Chapter,
-  Event,
-  EventSponsor,
-  Sponsor,
-  Tag,
-  Venue,
-  VenueType,
-} from 'src/models';
+import { Chapter, Sponsor, Venue, VenueType } from 'src/models';
+import { prisma } from 'src/prisma';
 
 const createEvents = async (
   chapters: Chapter[],
   venues: Venue[],
   sponsors: Sponsor[],
-): Promise<Event[]> => {
-  const events: Event[] = [];
+): Promise<number[]> => {
+  const events: number[] = [];
 
   for (let i = 0; i < 4; i++) {
     const date = new Date();
@@ -30,43 +24,44 @@ const createEvents = async (
       minutes: random(4) * 15,
     });
 
-    console.log(start_at);
-
-    const event = new Event({
+    const eventData: Prisma.eventsCreateInput = {
       name: company.companyName(),
-      chapter: randomItem(chapters),
+      chapters: { connect: { id: randomItem(chapters.map(({ id }) => id)) } },
       description: lorem.words(),
       url: internet.url(),
       streaming_url: internet.url(),
       venue_type: randomEnum(VenueType),
       capacity: random(1000),
-      venue: randomItem(venues),
+      venues: { connect: { id: randomItem(venues.map(({ id }) => id)) } },
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
-      user_roles: [],
       image_url: image.imageUrl(640, 480, 'nature', true),
-      sponsors: [],
-    });
+    };
 
-    await event.save();
-
-    await Promise.all(
-      randomItems(sponsors, 2)
-        .map((sponsor) => {
-          return new EventSponsor({ eventId: event.id, sponsorId: sponsor.id });
-        })
-        .map((es) => es.save()),
-    );
+    const event = await prisma.events.create({ data: eventData });
 
     await Promise.all(
-      Array.from(new Array(1 + random(3)), () => {
-        const tag = new Tag({ event, name: lorem.words(1) });
-        return tag.save();
+      randomItems(sponsors, 2).map(async (sponsor) => {
+        const eventSponsorData: Prisma.event_sponsorsCreateInput = {
+          events: { connect: { id: event.id } },
+          sponsors: { connect: { id: sponsor.id } },
+        };
+        return prisma.event_sponsors.create({ data: eventSponsorData });
       }),
     );
 
-    events.push(event);
+    await Promise.all(
+      Array.from(new Array(1 + random(3)), async () => {
+        const tagData: Prisma.tagsCreateInput = {
+          events: { connect: { id: event.id } },
+          name: lorem.words(1),
+        };
+        return await prisma.tags.create({ data: tagData });
+      }),
+    );
+
+    events.push(event.id);
   }
   return events;
 };

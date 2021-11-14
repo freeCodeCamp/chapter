@@ -18,10 +18,10 @@ import setupRoles from './setupRoles';
   const chapters = await createChapters(user);
   const venues = await createVenues();
 
-  const events = await createEvents(chapters, venues, sponsors);
+  const eventIds = await createEvents(chapters, venues, sponsors);
 
   await createRsvps(
-    events.map(({ id }) => id),
+    eventIds,
     users.map(({ id }) => id),
   );
   await setupRoles(

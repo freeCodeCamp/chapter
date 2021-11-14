@@ -1,8 +1,8 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, events_venue_type_enum } from '@prisma/client';
 import { addHours, add } from 'date-fns';
 import { company, internet, lorem, image } from 'faker';
+
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
-import { VenueType } from 'src/models';
 import { prisma } from 'src/prisma';
 
 const createEvents = async (
@@ -30,7 +30,7 @@ const createEvents = async (
       description: lorem.words(),
       url: internet.url(),
       streaming_url: internet.url(),
-      venue_type: randomEnum(VenueType),
+      venue_type: randomEnum(events_venue_type_enum),
       capacity: random(1000),
       venues: { connect: { id: randomItem(venueIds) } },
       canceled: Math.random() > 0.5,

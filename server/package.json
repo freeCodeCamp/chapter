@@ -23,6 +23,9 @@
     "url": "https://github.com/freeCodeCamp/chapter/issues"
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
+  "prisma": {
+    "seed": "node prisma/generator/seed.js"
+  },
   "dependencies": {
     "@prisma/client": "^3.4.2",
     "apollo-server-express": "3.5.0",

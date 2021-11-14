@@ -27,11 +27,11 @@
     "incremental": true,
     "plugins": [
       {
-          "transform": "@zerollup/ts-transform-paths",
-          "exclude": ["*"]
+        "transform": "@zerollup/ts-transform-paths",
+        "exclude": ["*"]
       }
-  ]
+    ]
   },
-  "include": ["src/**/*", "db/**/*", "tests/**/*"],
+  "include": ["src/**/*", "prisma/**/*", "tests/**/*"],
   "exclude": ["node_modules"]
 }

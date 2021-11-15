@@ -48,34 +48,18 @@ export class EventResolver {
 
   @Query(() => Event, { nullable: true })
   event(@Arg('id', () => Int) id: number) {
-    // TODO: since the query expects to see { chapter } not { chapters }, this
-    // won't work. It will have to wait until we rename chapters in the schema.
-
-    // const event = await prisma.events.findUnique({
-    //   where: { id },
-    //   include: {
-    //     chapters: true,
-    //     tags: true,
-    //     venues: true,
-    //     rsvps: {
-    //       include: { users: true },
-    //     },
-    //     user_event_roles: true,
-    //     event_sponsors: { include: { sponsors: true } },
-    //   },
-    // });
-
-    return Event.findOne(id, {
-      relations: [
-        'chapter',
-        'tags',
-        'venue',
-        'rsvps',
-        'rsvps.user',
-        'user_roles',
-        'sponsors',
-        'sponsors.sponsor',
-      ],
+    return prisma.events.findUnique({
+      where: { id },
+      include: {
+        chapter: true,
+        tags: true,
+        venue: true,
+        rsvps: {
+          include: { user: true },
+        },
+        user_event_roles: true,
+        sponsors: { include: { sponsor: true } },
+      },
     });
   }
 
@@ -93,7 +77,7 @@ export class EventResolver {
       include: {
         rsvps: true,
         user_event_roles: { include: { users: true } },
-        venues: true,
+        venue: true,
       },
     });
 
@@ -144,7 +128,7 @@ export class EventResolver {
 
     const rsvpData: Prisma.rsvpsCreateInput = {
       events: { connect: { id: eventId } },
-      users: { connect: { id: ctx.user.id } },
+      user: { connect: { id: ctx.user.id } },
       date: new Date(),
       on_waitlist: event.invite_only ? true : waitlist,
       confirmed_at: event.invite_only ? null : new Date(),
@@ -159,7 +143,7 @@ export class EventResolver {
       end: event.ends_at,
       description: event.description,
     };
-    if (event.venues?.name) linkDetails.location = event.venues?.name;
+    if (event.venue?.name) linkDetails.location = event.venue?.name;
 
     await new MailerService(
       [ctx.user.email],
@@ -275,8 +259,8 @@ ${unsubscribe}
       url: data.url,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
-      venues: { connect: { id: venue?.id } },
-      chapters: { connect: { id: chapter.id } },
+      venue: { connect: { id: venue?.id } },
+      chapter: { connect: { id: chapter.id } },
     };
 
     const event = await prisma.events.create({ data: eventData });
@@ -315,9 +299,9 @@ ${unsubscribe}
     const event = await prisma.events.findUnique({
       where: { id },
       include: {
-        venues: true,
-        event_sponsors: true,
-        rsvps: { include: { users: true } },
+        venue: true,
+        sponsors: true,
+        rsvps: { include: { user: true } },
       },
     });
     if (!event) throw new Error('Cant find event');
@@ -346,7 +330,7 @@ ${unsubscribe}
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
-      venues: { connect: { id: data.venue_id } },
+      venue: { connect: { id: data.venue_id } },
     };
 
     if (data.venue_id) {
@@ -356,7 +340,7 @@ ${unsubscribe}
       if (!venue) throw new Error('Cant find venue');
       // TODO: include a link back to the venue page
       if (event.venue_id !== venue.id) {
-        const emailList = event.rsvps.map((rsvp) => rsvp.users.email);
+        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
         const subject = `Venue changed for event ${event.name}`;
         const body = `We have had to change the location of ${event.name}.
 The event is now being held at <br>
@@ -406,8 +390,8 @@ ${unsubscribe}
     const event = await prisma.events.findUnique({
       where: { id },
       include: {
-        venues: true,
-        chapters: {
+        venue: true,
+        chapter: {
           include: {
             users: {
               include: {
@@ -418,7 +402,7 @@ ${unsubscribe}
         },
         rsvps: {
           include: {
-            users: true,
+            user: true,
           },
         },
         user_event_roles: true,
@@ -436,7 +420,7 @@ ${unsubscribe}
       // TODO: event.chapters should be event.chapter and not be optional Once
       // that's fixed, we can make several chains non-optional (remove the ?s)
       const interestedUsers: string[] =
-        event.chapters?.users
+        event.chapter?.users
           ?.filter((role) => role.interested)
           .map(({ user }) => user.email) ?? [];
 
@@ -449,9 +433,9 @@ ${unsubscribe}
     if (emailGroups.includes('on_waitlist')) {
       const waitlistUsers: string[] = event.rsvps
         .filter(
-          (rsvp) => rsvp.on_waitlist && subscribedUsers.includes(rsvp.users.id),
+          (rsvp) => rsvp.on_waitlist && subscribedUsers.includes(rsvp.user.id),
         )
-        .map(({ users }) => users.email);
+        .map(({ user }) => user.email);
       addresses.push(...waitlistUsers);
     }
     if (emailGroups.includes('confirmed')) {
@@ -460,17 +444,17 @@ ${unsubscribe}
           (rsvp) =>
             !rsvp.on_waitlist &&
             !rsvp.canceled &&
-            subscribedUsers.includes(rsvp.users.id),
+            subscribedUsers.includes(rsvp.user.id),
         )
-        .map(({ users }) => users.email);
+        .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }
     if (emailGroups.includes('canceled')) {
       const confirmedUsers: string[] = event.rsvps
         .filter(
-          (rsvp) => rsvp.canceled && subscribedUsers.includes(rsvp.users.id),
+          (rsvp) => rsvp.canceled && subscribedUsers.includes(rsvp.user.id),
         )
-        .map(({ users }) => users.email);
+        .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }
 
@@ -479,7 +463,7 @@ ${unsubscribe}
     }
     const subject = `Invitation to ${event.name}.`;
 
-    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapters?.id}`;
+    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter?.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
     // TODO: this needs to include an ical file
     // TODO: it needs a link to unsubscribe from just this event.  See
@@ -487,11 +471,11 @@ ${unsubscribe}
     // Update the place holder with actual
     const body =
       `When: ${event.start_at} to ${event.ends_at}<br>` +
-      (event.venues ? `Where: ${event.venues?.name}<br>` : '') +
+      (event.venue ? `Where: ${event.venue?.name}<br>` : '') +
       `Event Details: <a href="${eventURL}">${eventURL}</a><br>
     <br>
     - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
-    - More about ${event.chapters?.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+    - More about ${event.chapter?.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
     <br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>

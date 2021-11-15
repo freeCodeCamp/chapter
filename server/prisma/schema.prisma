@@ -30,7 +30,7 @@ model event_sponsors {
   sponsor_id Int
   event_id   Int
   events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8fab88035a7a74536060237b404")
-  sponsors   sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4cb75f6aae3ff8fe35cd3417383")
+  sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4cb75f6aae3ff8fe35cd3417383")
 
   @@id([sponsor_id, event_id], map: "PK_7efb6474e1d10a623f65697ffed")
 }
@@ -53,9 +53,9 @@ model events {
   // TODO: none of these should be optional
   venue_id         Int?
   chapter_id       Int?
-  chapters         chapters?              @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")
-  venues           venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_26e10dc1ae5cdd5a20279e08b4a")
-  event_sponsors   event_sponsors[]
+  chapter          chapters?              @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")
+  venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_26e10dc1ae5cdd5a20279e08b4a")
+  sponsors         event_sponsors[]
   rsvps            rsvps[]
   tags             tags[]
   user_event_roles user_event_roles[]
@@ -71,7 +71,7 @@ model rsvps {
   confirmed_at DateTime? @db.Timestamp(6)
   canceled     Boolean
   events       events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_04d52fc9fe91004aa1860603ea3")
-  users        users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5ef6c963e9f7d98f6e0f79053a3")
+  user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5ef6c963e9f7d98f6e0f79053a3")
 
   @@id([user_id, event_id], map: "PK_06894530ca7ca824ae08ab4b029")
 }

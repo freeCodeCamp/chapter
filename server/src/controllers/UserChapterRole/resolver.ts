@@ -14,12 +14,12 @@ export class UserChapterRoleResolver {
     }
     const event = await prisma.events.findUnique({
       where: { id: event_id },
-      include: { chapters: true },
+      include: { chapter: true },
     });
     if (!event) {
       throw Error('Cannot find the event with id ' + event_id);
     }
-    if (!event.chapters) {
+    if (!event.chapter) {
       throw Error('Cannot find the chapter of the event with id ' + event_id);
     }
 
@@ -29,15 +29,15 @@ export class UserChapterRoleResolver {
     const userChapterRole = await prisma.user_chapter_roles.findFirst({
       where: {
         user_id: ctx.user.id,
-        chapter_id: event.chapters.id,
+        chapter_id: event.chapter.id,
       },
     });
 
     if (!userChapterRole) {
       await prisma.user_chapter_roles.create({
         data: {
-          users: { connect: { id: ctx.user.id } },
-          chapters: { connect: { id: event.chapters.id } },
+          user: { connect: { id: ctx.user.id } },
+          chapters: { connect: { id: event.chapter.id } },
           role_name: 'member',
           interested: true,
         },

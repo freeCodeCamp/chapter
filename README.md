@@ -38,7 +38,7 @@ We are using the following tools:
 * [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [Apollo Client 3](https://www.apollographql.com/docs/react/)
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Chakra-UI](https://chakra-ui.com/) - for styling  + super easy DSL for custom css (we still have some legacy MUI stuff that's being removed [#608](https://github.com/freeCodeCamp/chapter/issues/608))
+  * [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 * [chai](https://www.chaijs.com/) - for writing unit tests.
   * [sinon](https://sinonjs.org/)

@@ -26,13 +26,13 @@ const createEvents = async (
 
     const eventData: Prisma.eventsCreateInput = {
       name: company.companyName(),
-      chapters: { connect: { id: randomItem(chapterIds) } },
+      chapter: { connect: { id: randomItem(chapterIds) } },
       description: lorem.words(),
       url: internet.url(),
       streaming_url: internet.url(),
       venue_type: randomEnum(events_venue_type_enum),
       capacity: random(1000),
-      venues: { connect: { id: randomItem(venueIds) } },
+      venue: { connect: { id: randomItem(venueIds) } },
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
@@ -45,7 +45,7 @@ const createEvents = async (
       randomItems(sponsorIds, 2).map(async (sponsor) => {
         const eventSponsorData: Prisma.event_sponsorsCreateInput = {
           events: { connect: { id: event.id } },
-          sponsors: { connect: { id: sponsor } },
+          sponsor: { connect: { id: sponsor } },
         };
         return prisma.event_sponsors.create({ data: eventSponsorData });
       }),

@@ -29,7 +29,7 @@ export const userMiddleware = (
   prisma.users
     .findUnique({
       where: { id: value.id },
-      include: { user_chapter_roles: true },
+      include: { chapter_roles: true },
     })
     .then((user) => {
       if (!user) {

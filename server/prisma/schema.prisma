@@ -151,7 +151,7 @@ model users {
   email               String                @unique(map: "UQ_97672ac88f789774dd47f7c8be3") @db.VarChar
   rsvps               rsvps[]
   user_bans           user_bans[]
-  user_chapter_roles  user_chapter_roles[]
+  chapter_roles       user_chapter_roles[]
   user_event_roles    user_event_roles[]
   user_instance_roles user_instance_roles[]
 }

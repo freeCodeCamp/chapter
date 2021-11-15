@@ -31,17 +31,25 @@ export class EventResolver {
     });
   }
 
+  // TODO: add TypeGraphQL return type
   @Query(() => [Event])
   async paginatedEvents(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<Event[]> {
-    return await Event.find({
-      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
-      order: {
-        start_at: 'ASC',
+  ) {
+    return prisma.events.findMany({
+      include: {
+        chapter: true,
+        tags: true,
+        venue: true,
+        rsvps: {
+          include: { user: true },
+        },
       },
-      take: limit || 10,
+      orderBy: {
+        start_at: 'asc',
+      },
+      take: limit ?? 10,
       skip: offset,
     });
   }

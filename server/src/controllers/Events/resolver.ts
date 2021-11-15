@@ -409,8 +409,10 @@ ${unsubscribe}
         venues: true,
         chapters: {
           include: {
-            user_chapter_roles: {
-              include: { users: true },
+            users: {
+              include: {
+                user: true,
+              },
             },
           },
         },
@@ -434,9 +436,9 @@ ${unsubscribe}
       // TODO: event.chapters should be event.chapter and not be optional Once
       // that's fixed, we can make several chains non-optional (remove the ?s)
       const interestedUsers: string[] =
-        event.chapters?.user_chapter_roles
+        event.chapters?.users
           ?.filter((role) => role.interested)
-          .map(({ users }) => users.email) ?? [];
+          .map(({ user }) => user.email) ?? [];
 
       addresses.push(...interestedUsers);
     }

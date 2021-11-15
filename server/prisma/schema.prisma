@@ -8,21 +8,20 @@ datasource db {
 }
 
 model chapters {
-  created_at         DateTime             @default(now()) @db.Timestamp(6)
-  updated_at         DateTime             @default(now()) @db.Timestamp(6)
-  id                 Int                  @id(map: "PK_a2bbdbb4bdc786fe0cb0fcfc4a0") @default(autoincrement())
-  name               String               @db.VarChar
-  description        String               @db.VarChar
-  category           String               @db.VarChar
-  details            Json                 @db.Json
-  city               String               @db.VarChar
-  region             String               @db.VarChar
-  country            String               @db.VarChar
-  creator_id         Int?
-  users              users?               @relation(fields: [creator_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_60315cd6f39d467818aa7c60505")
-  events             events[]
-  user_bans          user_bans[]
-  user_chapter_roles user_chapter_roles[]
+  created_at  DateTime             @default(now()) @db.Timestamp(6)
+  updated_at  DateTime             @default(now()) @db.Timestamp(6)
+  id          Int                  @id(map: "PK_a2bbdbb4bdc786fe0cb0fcfc4a0") @default(autoincrement())
+  name        String               @db.VarChar
+  description String               @db.VarChar
+  category    String               @db.VarChar
+  details     Json                 @db.Json
+  city        String               @db.VarChar
+  region      String               @db.VarChar
+  country     String               @db.VarChar
+  creator_id  Int?
+  events      events[]
+  user_bans   user_bans[]
+  users       user_chapter_roles[]
 }
 
 model event_sponsors {
@@ -116,7 +115,7 @@ model user_chapter_roles {
   role_name  String
   interested Boolean
   chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c4b23ce3d811d599cea97d064fc")
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dff88cec5f2df9a6e9d9a7af03e")
+  user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dff88cec5f2df9a6e9d9a7af03e")
 
   @@id([user_id, chapter_id, role_name], map: "PK_d4726976f7c0d644f1a01cebe6d")
 }
@@ -149,7 +148,6 @@ model users {
   first_name          String                @db.VarChar
   last_name           String                @db.VarChar
   email               String                @unique(map: "UQ_97672ac88f789774dd47f7c8be3") @db.VarChar
-  chapters            chapters[]
   rsvps               rsvps[]
   user_bans           user_bans[]
   user_chapter_roles  user_chapter_roles[]

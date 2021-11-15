@@ -13,12 +13,14 @@ export class ChapterResolver {
   }
 
   // TODO: add TypeGraphQL return type
-  // TODO: use Prisma once the schema names are updated (right now prisma is
-  // returning objects with the wrong name/shape)
   @Query(() => Chapter, { nullable: true })
   chapter(@Arg('id', () => Int) id: number) {
-    return Chapter.findOne(id, {
-      relations: ['events', 'users', 'users.user'],
+    return prisma.chapters.findUnique({
+      where: { id },
+      include: {
+        events: true,
+        users: { include: { user: true } },
+      },
     });
   }
 

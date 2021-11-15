@@ -25,6 +25,7 @@ describe('chapters dashboard', () => {
       region: 'Location in the world',
       country: 'Home country',
       category: 'Type of chapter',
+      imageUrl: 'https://example.com/image.jpg',
     };
     cy.visit('/dashboard/chapters');
     cy.get('a[href="/dashboard/chapters/new"]').click();
@@ -35,6 +36,7 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'region' }).type(fix.region);
     cy.findByRole('textbox', { name: 'country' }).type(fix.country);
     cy.findByRole('textbox', { name: 'category' }).type(fix.category);
+    cy.findByRole('textbox', { name: 'imageUrl' }).type(fix.imageUrl);
 
     cy.findByRole('form', { name: 'Add chapter' }).submit();
     // TODO: this should mirror events. i.e. either both should go to the list

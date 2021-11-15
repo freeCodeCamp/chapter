@@ -1,4 +1,3 @@
-export * from './BaseModel';
 export * from './Chapter';
 export * from './Event';
 export * from './EventSponsor';

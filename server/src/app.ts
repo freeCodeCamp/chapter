@@ -4,8 +4,6 @@ import cors from 'cors';
 import express, { Express, Response } from 'express';
 import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
-
-import { initDB } from './db';
 import { GQLCtx, Request } from 'src/common-types/gql';
 import { resolvers } from 'src/controllers';
 import {
@@ -25,7 +23,6 @@ if (isDocker() && process.env.IS_DOCKER !== 'true') {
 const PORT = process.env.PORT || 5000;
 
 export const main = async (app: Express) => {
-  await initDB();
   app.use(cors({ credentials: true, origin: true }));
   app.use(userMiddleware);
   app.use(handleAuthenticationError);

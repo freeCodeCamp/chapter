@@ -1,13 +1,12 @@
 import { ObjectType, Field } from 'type-graphql';
-import { BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
+// TODO: do the ObjectTypes that extend this need these fields? Can we just get
+// rid of this?  Also, if we keep it, it should probably not be called a model.
 @ObjectType()
-export class BaseJunctionModel extends BaseEntity {
+export class BaseJunctionModel {
   @Field(() => Date)
-  @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 
   @Field(() => Date)
-  @UpdateDateColumn({ type: 'timestamp' })
   updated_at!: Date;
 }

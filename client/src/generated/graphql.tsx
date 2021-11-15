@@ -414,7 +414,9 @@ export type UserEventRole = {
 
 export type UserInstanceRole = {
   __typename?: 'UserInstanceRole';
+  created_at: Scalars['DateTime'];
   role_name: Scalars['String'];
+  updated_at: Scalars['DateTime'];
   user: User;
   user_id: Scalars['Int'];
 };

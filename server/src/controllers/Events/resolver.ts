@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
-import { MoreThan } from 'typeorm';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { GQLCtx } from 'src/common-types/gql';
 import { Event, Rsvp } from 'src/models';
@@ -19,14 +18,21 @@ export class EventResolver {
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showAll', { nullable: true }) showAll?: boolean,
   ) {
-    return Event.find({
-      relations: ['chapter', 'tags', 'venue', 'rsvps', 'rsvps.user'],
-      take: limit,
-      order: {
-        start_at: 'ASC',
-      },
+    return prisma.events.findMany({
       where: {
-        ...(!showAll && { start_at: MoreThan(new Date()) }),
+        ...(!showAll && { start_at: { gt: new Date() } }),
+      },
+      include: {
+        chapter: true,
+        tags: true,
+        venue: true,
+        rsvps: {
+          include: { user: true },
+        },
+      },
+      take: limit,
+      orderBy: {
+        start_at: 'asc',
       },
     });
   }

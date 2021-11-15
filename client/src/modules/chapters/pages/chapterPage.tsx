@@ -1,9 +1,10 @@
 import { Heading, VStack, Spinner, Stack, Text, Image } from '@chakra-ui/react';
+import { NextPage } from 'next';
+import React from 'react';
+
 import { EventCard } from 'components/EventCard';
 import { useChapterQuery } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
-import { NextPage } from 'next';
-import React from 'react';
 
 export const ChapterPage: NextPage = () => {
   const id = useParam('chapterId');

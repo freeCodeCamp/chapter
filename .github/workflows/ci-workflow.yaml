@@ -47,9 +47,9 @@ jobs:
           ./scripts/check-generated-code.sh
       - name: Start Docker service
         env:
-          IS_DOCKER: true
+          DB_PORT: 54320
         run: DOCKER_BUILDKIT=1 docker-compose up -d
       - name: Seed the Docker db
         env:
-          IS_DOCKER: true
+          DB_PORT: 54320
         run: npm run db:reset

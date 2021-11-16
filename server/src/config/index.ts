@@ -21,17 +21,6 @@ if (result.error) {
 export interface Environment {
   NODE_ENV: 'production' | 'development' | 'test' | undefined;
   JWT_SECRET: string;
-
-  // DB_USER=dev
-  // DB_PASSWORD=foobar123
-  // DB_NAME=chapter
-  // DB_URL=localhost
-  // IS_DOCKER=false
-
-  // CHAPTER_EMAIL=ourEmail@placeholder.place
-  // EMAIL_USERNAME=project.1
-  // EMAIL_PASSWORD=secret.1
-  // EMAIL_SERVICE=emailServicePlaceholder
 }
 
 export const getConfig = <T extends keyof Environment>(

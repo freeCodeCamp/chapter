@@ -40,6 +40,7 @@ export type Chapter = {
   details: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
+  imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   updated_at: Scalars['DateTime'];
@@ -52,6 +53,7 @@ export type CreateChapterInputs = {
   country: Scalars['String'];
   description: Scalars['String'];
   details?: Maybe<Scalars['String']>;
+  imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -326,6 +328,7 @@ export type UpdateChapterInputs = {
   country?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   details?: Maybe<Scalars['String']>;
+  imageUrl?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   region?: Maybe<Scalars['String']>;
 };
@@ -504,6 +507,7 @@ export type ChapterQuery = {
         city: string;
         region: string;
         country: string;
+        imageUrl: string;
         events: Array<{
           __typename?: 'Event';
           id: number;
@@ -1158,6 +1162,7 @@ export const ChapterDocument = gql`
       city
       region
       country
+      imageUrl
       events {
         id
         name

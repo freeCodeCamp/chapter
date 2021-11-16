@@ -1,4 +1,4 @@
-import { company, lorem, address } from 'faker';
+import { company, lorem, address, image } from 'faker';
 import { Chapter, User } from 'src/models';
 
 const createChapters = async (user: User): Promise<Chapter[]> => {
@@ -19,6 +19,7 @@ const createChapters = async (user: User): Promise<Chapter[]> => {
       country: address.country(),
       city: address.city(),
       region: address.state(),
+      imageUrl: image.imageUrl(640, 480, 'tech', true),
     });
 
     chapters.push(chapter);

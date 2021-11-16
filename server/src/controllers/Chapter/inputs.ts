@@ -22,6 +22,9 @@ export class CreateChapterInputs {
 
   @Field(() => String)
   country: string;
+
+  @Field(() => String)
+  imageUrl: string;
 }
 
 @InputType()
@@ -46,4 +49,7 @@ export class UpdateChapterInputs {
 
   @Field(() => String, { nullable: true })
   country: string;
+
+  @Field(() => String, { nullable: true })
+  imageUrl: string;
 }

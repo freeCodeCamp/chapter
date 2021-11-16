@@ -1,6 +1,7 @@
-import { Heading, VStack, Text, Spinner } from '@chakra-ui/react';
+import { Heading, VStack, Spinner, Stack, Text, Image } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import React from 'react';
+
 import { EventCard } from 'components/EventCard';
 import { useChapterQuery } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
@@ -27,11 +28,33 @@ export const ChapterPage: NextPage = () => {
 
   return (
     <VStack>
-      <Heading as="h1">{data.chapter.name}</Heading>
-      <Text>{data.chapter.description}</Text>
-
-      <Heading size="md">Events:</Heading>
-      <VStack w={['60%', '90%', '60%']} maxW="800px">
+      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+        <Image
+          boxSize="100%"
+          maxH="300px"
+          src={data.chapter.imageUrl}
+          alt=""
+          borderRadius="md"
+          objectFit="cover"
+        />
+        <Heading
+          as="h1"
+          lineHeight={1.1}
+          fontWeight={600}
+          color={'gray.700'}
+          fontSize={{ base: 'xl', sm: '4xl', lg: '3xl' }}
+        >
+          <Text as={'span'} position={'relative'}>
+            {data.chapter.name}
+          </Text>
+          <br />
+        </Heading>
+        <Text fontSize={'lg'} color={'gray.500'}>
+          {data.chapter.description}
+        </Text>
+        <Heading size="md" color={'gray.700'}>
+          Events:
+        </Heading>
         {data.chapter.events.map((event) => (
           <EventCard
             key={event.id}
@@ -42,7 +65,7 @@ export const ChapterPage: NextPage = () => {
             }}
           />
         ))}
-      </VStack>
+      </Stack>
     </VStack>
   );
 };

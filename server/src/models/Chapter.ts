@@ -58,6 +58,10 @@ export class Chapter extends BaseModel {
   @OneToMany((_type) => UserBan, (userBan) => userBan.chapter)
   banned_users!: UserBan[];
 
+  @Field(() => String)
+  @Column({ nullable: false })
+  imageUrl!: string;
+
   constructor(params: {
     name: string;
     description: string;
@@ -67,6 +71,7 @@ export class Chapter extends BaseModel {
     region: string;
     country: string;
     creator?: User;
+    imageUrl: string;
   }) {
     super();
     if (params) {
@@ -79,6 +84,7 @@ export class Chapter extends BaseModel {
       this.city = params.city;
       this.region = params.region;
       this.country = params.country;
+      this.imageUrl = params.imageUrl;
       creator && (this.creator = creator);
     }
   }

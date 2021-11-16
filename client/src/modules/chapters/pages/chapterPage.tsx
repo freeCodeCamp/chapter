@@ -33,7 +33,7 @@ export const ChapterPage: NextPage = () => {
           boxSize="100%"
           maxH="300px"
           src={data.chapter.imageUrl}
-          alt="The freeCodeCamp logo"
+          alt=""
           borderRadius="md"
           objectFit="cover"
         />

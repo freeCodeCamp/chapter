@@ -37,6 +37,7 @@ export type Chapter = {
   description: Scalars['String'];
   details: Scalars['String'];
   id: Scalars['Int'];
+  imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };

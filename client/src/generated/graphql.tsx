@@ -165,7 +165,7 @@ export type EventWithEverything = {
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
-  rsvps: Array<Rsvp>;
+  rsvps: Array<RsvpWithUser>;
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
@@ -333,6 +333,18 @@ export type RegisterInput = {
 
 export type Rsvp = {
   __typename?: 'Rsvp';
+  canceled: Scalars['Boolean'];
+  confirmed_at: Scalars['DateTime'];
+  created_at: Scalars['DateTime'];
+  date: Scalars['DateTime'];
+  event_id: Scalars['Int'];
+  on_waitlist: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+};
+
+export type RsvpWithUser = {
+  __typename?: 'RsvpWithUser';
   canceled: Scalars['Boolean'];
   confirmed_at: Scalars['DateTime'];
   created_at: Scalars['DateTime'];
@@ -679,7 +691,7 @@ export type EventQuery = {
           | null
           | undefined;
         rsvps: Array<{
-          __typename?: 'Rsvp';
+          __typename?: 'RsvpWithUser';
           on_waitlist: boolean;
           user: { __typename?: 'User'; id: number; name: string };
         }>;

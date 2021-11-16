@@ -188,7 +188,7 @@ ${unsubscribe}
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
     @Ctx() ctx: GQLCtx,
-  ) {
+  ): Promise<Rsvp> {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const rsvp = await prisma.rsvps.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
@@ -228,7 +228,10 @@ ${unsubscribe}
   }
 
   @Mutation(() => Event)
-  async createEvent(@Arg('data') data: CreateEventInputs, @Ctx() ctx: GQLCtx) {
+  async createEvent(
+    @Arg('data') data: CreateEventInputs,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<Event | null> {
     if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venue_id) {
@@ -306,7 +309,7 @@ ${unsubscribe}
   async updateEvent(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
-  ) {
+  ): Promise<Event | null> {
     const event = await prisma.events.findUnique({
       where: { id },
       include: {
@@ -370,7 +373,7 @@ ${unsubscribe}
   }
 
   @Mutation(() => Event)
-  async cancelEvent(@Arg('id', () => Int) id: number) {
+  async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
@@ -382,7 +385,7 @@ ${unsubscribe}
   // TODO: This will need a real GraphQL return type (AFAIK you have to return
   // an object type)
   @Mutation(() => Boolean)
-  async deleteEvent(@Arg('id', () => Int) id: number) {
+  async deleteEvent(@Arg('id', () => Int) id: number): Promise<boolean> {
     await prisma.events.delete({ where: { id } });
     return true;
   }
@@ -397,7 +400,7 @@ ${unsubscribe}
       defaultValue: ['interested'],
     })
     emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
-  ) {
+  ): Promise<boolean> {
     const event = await prisma.events.findUnique({
       where: { id },
       include: {

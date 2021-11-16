@@ -5,7 +5,7 @@ import { prisma } from 'src/prisma';
 export class SponsorResolver {
   // TODO: add TypeGraphQL return type
   @Query(() => [Sponsor])
-  sponsors() {
+  sponsors(): Promise<Sponsor[]> {
     return prisma.sponsors.findMany();
   }
 }

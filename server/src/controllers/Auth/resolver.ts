@@ -29,10 +29,8 @@ export class AuthResolver {
     return ctx.user || null;
   }
 
-  // TODO: add back in return type of Promise<User>when the TypeGraphQL type is
-  // updated
   @Mutation(() => User)
-  async register(@Arg('data') data: RegisterInput) {
+  async register(@Arg('data') data: RegisterInput): Promise<User> {
     const existingUser = await prisma.users.findUnique({
       where: { email: data.email },
     });
@@ -73,10 +71,8 @@ export class AuthResolver {
     };
   }
 
-  // TODO: add back in return type of Promise<AuthenticateType> when the
-  // TypeGraphQL type is updated
   @Mutation(() => AuthenticateType)
-  async authenticate(@Arg('token') token: string) {
+  async authenticate(@Arg('token') token: string): Promise<AuthenticateType> {
     let data: TokenResponseType;
     try {
       data = verify(token, getConfig('JWT_SECRET')) as TokenResponseType;
@@ -86,7 +82,6 @@ export class AuthResolver {
       throw new Error('Token wrong / missing / expired');
     }
 
-    // const user = await User.findOne({ where: { email: data.email } });
     const user = await prisma.users.findUnique({
       where: { email: data.email },
     });

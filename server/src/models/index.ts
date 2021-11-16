@@ -5,6 +5,7 @@ export * from './EventWithEverything';
 export * from './EventWithChapter';
 export * from './EventSponsor';
 export * from './Rsvp';
+export * from './RsvpWithUser';
 export * from './Sponsor';
 export * from './Tag';
 export * from './User';

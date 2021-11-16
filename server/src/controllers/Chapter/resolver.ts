@@ -7,12 +7,10 @@ import { prisma } from 'src/prisma';
 @Resolver()
 export class ChapterResolver {
   @Query(() => [Chapter])
-  // TODO: add TypeGraphQL return type
   async chapters(): Promise<Chapter[]> {
     return await prisma.chapters.findMany();
   }
 
-  // TODO: add TypeGraphQL return type
   @Query(() => ChapterWithRelations, { nullable: true })
   async chapter(
     @Arg('id', () => Int) id: number,
@@ -26,9 +24,10 @@ export class ChapterResolver {
     });
   }
 
-  // TODO: add TypeGraphQL return type
   @Mutation(() => Chapter)
-  async createChapter(@Arg('data') data: CreateChapterInputs) {
+  async createChapter(
+    @Arg('data') data: CreateChapterInputs,
+  ): Promise<Chapter> {
     // TODO: Use logged in user
     const user = await prisma.users.findFirst();
     // TODO: fix the TypeGraphQL type, CreateChapterInputs (it should include
@@ -44,19 +43,17 @@ export class ChapterResolver {
     return prisma.chapters.create({ data: chapterData });
   }
 
-  // TODO: add TypeGraphQL return type
   @Mutation(() => Chapter)
   async updateChapter(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateChapterInputs,
-  ) {
+  ): Promise<Chapter> {
     const chapterData: Prisma.chaptersUpdateInput = data;
     return prisma.chapters.update({ where: { id }, data: chapterData });
   }
 
-  // TODO: add TypeGraphQL return type
   @Mutation(() => Boolean)
-  async deleteChapter(@Arg('id', () => Int) id: number) {
+  async deleteChapter(@Arg('id', () => Int) id: number): Promise<boolean> {
     await prisma.chapters.delete({ where: { id } });
     return true;
   }

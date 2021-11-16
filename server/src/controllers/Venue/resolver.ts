@@ -6,31 +6,27 @@ import { prisma } from 'src/prisma';
 
 @Resolver()
 export class VenueResolver {
-  // TODO: add TypeGraphQL return type
   @Query(() => [Venue])
-  venues() {
+  venues(): Promise<Venue[]> {
     return prisma.venues.findMany();
   }
 
-  // TODO: add TypeGraphQL return type
   @Query(() => Venue, { nullable: true })
-  venue(@Arg('id', () => Int) id: number) {
+  venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({ where: { id } });
   }
 
-  // TODO: add TypeGraphQL return type
   @Mutation(() => Venue)
-  async createVenue(@Arg('data') data: CreateVenueInputs) {
+  async createVenue(@Arg('data') data: CreateVenueInputs): Promise<Venue> {
     const venueData: Prisma.venuesCreateInput = data;
     return prisma.venues.create({ data: venueData });
   }
 
-  // TODO: add TypeGraphQL return type
   @Mutation(() => Venue)
   updateVenue(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateVenueInputs,
-  ) {
+  ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
     return prisma.venues.update({ where: { id }, data: venueData });
   }

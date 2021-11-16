@@ -5,7 +5,9 @@ import MailerService from 'src/services/MailerService';
 
 @Resolver()
 export class EmailResolver {
-  @Mutation(() => Email) async sendEmail(@Arg('data') data: SendEmailInputs) {
+  @Mutation(() => Email) async sendEmail(
+    @Arg('data') data: SendEmailInputs,
+  ): Promise<Email> {
     const email = new MailerService(data.to, data.subject, data.html);
     await email.sendEmail();
     return {

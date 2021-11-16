@@ -415,15 +415,12 @@ The Chapter client uses the React framework [Next.js](https://nextjs.org/) with 
 
 ## Where to Find the Code
 
-The database and GraphQL schema are defined by files in _server/src/models_
-
-The resolvers for the GraphQL queries are defined in _server/src/controllers_
-
-The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
-
-To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
-
-Pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
+* Database and GraphQL schema are defined by files in _server/src/models_
+* Resolvers for the GraphQL queries are defined in _server/src/controllers_
+* The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
+* To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
+* Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
+* Cypress test coverage spec files should go in _/cypress/integration_, roughly mirroring the client pages pattern
 
 ## Where to Find the Issues
 

@@ -1,24 +1,26 @@
 import { Prisma } from '@prisma/client';
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
-import { Chapter } from 'src/models';
+import { Chapter, ChapterWithRelations } from 'src/models';
 import { prisma } from 'src/prisma';
 
 @Resolver()
 export class ChapterResolver {
   @Query(() => [Chapter])
   // TODO: add TypeGraphQL return type
-  chapters() {
-    return prisma.chapters.findMany();
+  async chapters(): Promise<Chapter[]> {
+    return await prisma.chapters.findMany();
   }
 
   // TODO: add TypeGraphQL return type
-  @Query(() => Chapter, { nullable: true })
-  chapter(@Arg('id', () => Int) id: number) {
-    return prisma.chapters.findUnique({
+  @Query(() => ChapterWithRelations, { nullable: true })
+  async chapter(
+    @Arg('id', () => Int) id: number,
+  ): Promise<ChapterWithRelations | null> {
+    return await prisma.chapters.findUnique({
       where: { id },
       include: {
-        events: true,
+        events: { include: { tags: true } },
         users: { include: { user: true } },
       },
     });

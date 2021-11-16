@@ -3,7 +3,7 @@ import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { GQLCtx } from 'src/common-types/gql';
-import { Event, Rsvp } from 'src/models';
+import { Event, Rsvp, EventWithEverything, EventWithChapter } from 'src/models';
 import { prisma } from 'src/prisma';
 import MailerService from 'src/services/MailerService';
 
@@ -13,12 +13,12 @@ const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe<
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [Event])
-  events(
+  @Query(() => [EventWithEverything])
+  async events(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ) {
-    return prisma.events.findMany({
+  ): Promise<EventWithEverything[]> {
+    return await prisma.events.findMany({
       where: {
         ...(!showAll && { start_at: { gt: new Date() } }),
       },
@@ -29,6 +29,7 @@ export class EventResolver {
         rsvps: {
           include: { user: true },
         },
+        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
       },
       take: limit,
       orderBy: {
@@ -37,20 +38,15 @@ export class EventResolver {
     });
   }
 
-  // TODO: add TypeGraphQL return type
-  @Query(() => [Event])
+  @Query(() => [EventWithChapter])
   async paginatedEvents(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ) {
-    return prisma.events.findMany({
+  ): Promise<EventWithChapter[]> {
+    return await prisma.events.findMany({
       include: {
         chapter: true,
         tags: true,
-        venue: true,
-        rsvps: {
-          include: { user: true },
-        },
       },
       orderBy: {
         start_at: 'asc',
@@ -60,9 +56,11 @@ export class EventResolver {
     });
   }
 
-  @Query(() => Event, { nullable: true })
-  event(@Arg('id', () => Int) id: number) {
-    return prisma.events.findUnique({
+  @Query(() => EventWithEverything, { nullable: true })
+  async event(
+    @Arg('id', () => Int) id: number,
+  ): Promise<EventWithEverything | null> {
+    return await prisma.events.findUnique({
       where: { id },
       include: {
         chapter: true,
@@ -71,7 +69,6 @@ export class EventResolver {
         rsvps: {
           include: { user: true },
         },
-        user_event_roles: true,
         sponsors: { include: { sponsor: true } },
       },
     });

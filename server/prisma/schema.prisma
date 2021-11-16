@@ -53,8 +53,8 @@ model events {
   image_url        String                 @db.VarChar
   // TODO: none of these should be optional
   venue_id         Int?
-  chapter_id       Int?
-  chapter          chapters?              @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")
+  chapter_id       Int
+  chapter          chapters               @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")
   venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_26e10dc1ae5cdd5a20279e08b4a")
   sponsors         event_sponsors[]
   rsvps            rsvps[]
@@ -115,7 +115,7 @@ model user_chapter_roles {
   chapter_id Int
   role_name  String
   interested Boolean
-  chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c4b23ce3d811d599cea97d064fc")
+  chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c4b23ce3d811d599cea97d064fc")
   user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dff88cec5f2df9a6e9d9a7af03e")
 
   @@id([user_id, chapter_id, role_name], map: "PK_d4726976f7c0d644f1a01cebe6d")

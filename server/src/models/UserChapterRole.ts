@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 import { BaseJunctionModel } from './BaseJunctionModel';
-import { Chapter } from './Chapter';
+// import { Chapter } from './Chapter';
 import { User } from './User';
 
 // registerEnumType(ChapterRoles, { name: 'ChapterRoles' });
@@ -10,19 +10,19 @@ export type ChapterRoles = 'organizer' | 'member';
 @ObjectType()
 export class UserChapterRole extends BaseJunctionModel {
   @Field(() => Int)
-  user_id!: number;
+  user_id: number;
 
   @Field(() => Int)
-  chapter_id!: number;
+  chapter_id: number;
 
-  @Field(() => String)
-  role_name!: ChapterRoles;
+  // @Field(() => String)
+  // role_name!: ChapterRoles;
 
   @Field(() => User)
-  user!: User;
+  user: User;
 
-  @Field(() => Chapter)
-  chapter!: Chapter;
+  // @Field(() => Chapter)
+  // chapter!: Chapter;
 
   @Field(() => Boolean)
   interested: boolean;

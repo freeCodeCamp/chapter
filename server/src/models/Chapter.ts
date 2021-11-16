@@ -1,9 +1,5 @@
 import { ObjectType, Field } from 'type-graphql';
 import { BaseModel } from './BaseModel';
-import { Event } from './Event';
-import { User } from './User';
-import { UserBan } from './UserBan';
-import { UserChapterRole } from './UserChapterRole';
 
 @ObjectType()
 export class Chapter extends BaseModel {
@@ -30,16 +26,4 @@ export class Chapter extends BaseModel {
 
   @Field(() => String)
   imageUrl!: string;
-
-  @Field(() => [Event])
-  events!: Event[];
-
-  @Field(() => User)
-  creator!: User;
-
-  @Field(() => [UserChapterRole])
-  users!: UserChapterRole[];
-
-  @Field(() => [UserBan])
-  banned_users!: UserBan[];
 }

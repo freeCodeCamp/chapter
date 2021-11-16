@@ -1,6 +1,6 @@
 import { IsUrl } from 'class-validator';
 import { InputType, Field, Int } from 'type-graphql';
-import { VenueType } from 'src/models';
+import { events_venue_type_enum } from 'src/models';
 
 @InputType()
 export class CreateEventInputs {
@@ -18,8 +18,8 @@ export class CreateEventInputs {
   @IsUrl()
   streaming_url?: string;
 
-  @Field(() => VenueType, { nullable: true })
-  venue_type: VenueType;
+  @Field(() => events_venue_type_enum, { nullable: true })
+  venue_type: events_venue_type_enum;
 
   @Field(() => Date)
   start_at: number;
@@ -61,8 +61,8 @@ export class UpdateEventInputs {
   @IsUrl()
   streaming_url?: string;
 
-  @Field(() => VenueType, { nullable: true })
-  venue_type: VenueType;
+  @Field(() => events_venue_type_enum, { nullable: true })
+  venue_type: events_venue_type_enum;
 
   @Field(() => Date, { nullable: true })
   start_at: number;

@@ -37,7 +37,7 @@ export class UserChapterRoleResolver {
       await prisma.user_chapter_roles.create({
         data: {
           user: { connect: { id: ctx.user.id } },
-          chapters: { connect: { id: event.chapter.id } },
+          chapter: { connect: { id: event.chapter.id } },
           role_name: 'member',
           interested: true,
         },

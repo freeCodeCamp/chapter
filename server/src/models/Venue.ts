@@ -1,17 +1,13 @@
 import { Field, ObjectType, Float } from 'type-graphql';
 import { BaseModel } from './BaseModel';
-import { Event } from './Event';
 
 @ObjectType()
 export class Venue extends BaseModel {
   @Field(() => String)
-  name!: string;
-
-  @Field(() => [Event])
-  events!: Event[];
+  name: string;
 
   @Field(() => String, { nullable: true })
-  street_address?: string;
+  street_address?: string | null;
 
   @Field(() => String)
   city: string;
@@ -26,8 +22,8 @@ export class Venue extends BaseModel {
   country: string;
 
   @Field(() => Float, { nullable: true })
-  latitude?: number;
+  latitude?: number | null;
 
   @Field(() => Float, { nullable: true })
-  longitude?: number;
+  longitude?: number | null;
 }

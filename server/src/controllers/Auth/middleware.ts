@@ -35,9 +35,6 @@ export const userMiddleware = (
       if (!user) {
         return next('User not found');
       }
-      // @ts-expect-error we're currently pretending the user has all possible
-      // relations, so we need to 'Pick' the ones we want. That or simplify the
-      // User type
       req.user = user;
       next();
     })

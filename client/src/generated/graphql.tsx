@@ -31,12 +31,24 @@ export type AuthenticateType = {
 
 export type Chapter = {
   __typename?: 'Chapter';
-  banned_users: Array<UserBan>;
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
   created_at: Scalars['DateTime'];
-  creator: User;
+  description: Scalars['String'];
+  details: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+  updated_at: Scalars['DateTime'];
+};
+
+export type ChapterWithRelations = {
+  __typename?: 'ChapterWithRelations';
+  category: Scalars['String'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   details: Scalars['String'];
   events: Array<Event>;
@@ -99,6 +111,52 @@ export type Event = {
   __typename?: 'Event';
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Tag>>;
+  updated_at: Scalars['DateTime'];
+  url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
+};
+
+export type EventSponsor = {
+  __typename?: 'EventSponsor';
+  created_at: Scalars['DateTime'];
+  sponsor: Sponsor;
+  updated_at: Scalars['DateTime'];
+};
+
+export type EventWithChapter = {
+  __typename?: 'EventWithChapter';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  created_at: Scalars['DateTime'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Tag>>;
+  updated_at: Scalars['DateTime'];
+  url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
+};
+
+export type EventWithEverything = {
+  __typename?: 'EventWithEverything';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
   chapter: Chapter;
   created_at: Scalars['DateTime'];
   description: Scalars['String'];
@@ -114,19 +172,8 @@ export type Event = {
   tags?: Maybe<Array<Tag>>;
   updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
-  user_roles: Array<UserEventRole>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
-};
-
-export type EventSponsor = {
-  __typename?: 'EventSponsor';
-  created_at: Scalars['DateTime'];
-  event: Event;
-  event_id: Scalars['Int'];
-  sponsor: Sponsor;
-  sponsor_id: Scalars['Int'];
-  updated_at: Scalars['DateTime'];
 };
 
 export type LoginInput = {
@@ -245,12 +292,12 @@ export type MutationUpdateVenueArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  chapter?: Maybe<Chapter>;
+  chapter?: Maybe<ChapterWithRelations>;
   chapters: Array<Chapter>;
-  event?: Maybe<Event>;
-  events: Array<Event>;
+  event?: Maybe<EventWithEverything>;
+  events: Array<EventWithEverything>;
   me?: Maybe<User>;
-  paginatedEvents: Array<Event>;
+  paginatedEvents: Array<EventWithChapter>;
   sponsors: Array<Sponsor>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -290,7 +337,6 @@ export type Rsvp = {
   confirmed_at: Scalars['DateTime'];
   created_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
-  event: Event;
   event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
@@ -307,7 +353,6 @@ export type SendEmailInputs = {
 export type Sponsor = {
   __typename?: 'Sponsor';
   created_at: Scalars['DateTime'];
-  events: Array<EventSponsor>;
   id: Scalars['Int'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
@@ -319,7 +364,6 @@ export type Sponsor = {
 export type Tag = {
   __typename?: 'Tag';
   created_at: Scalars['DateTime'];
-  event: Event;
   id: Scalars['Int'];
   name: Scalars['String'];
   updated_at: Scalars['DateTime'];
@@ -364,58 +408,20 @@ export type UpdateVenueInputs = {
 
 export type User = {
   __typename?: 'User';
-  banned_chapters: Array<UserBan>;
-  chapter_roles: Array<UserChapterRole>;
-  chapters: Array<UserChapterRole>;
   created_at: Scalars['DateTime'];
-  created_chapters: Array<Chapter>;
   email: Scalars['String'];
-  event_roles: Array<UserEventRole>;
   first_name: Scalars['String'];
   id: Scalars['Int'];
-  instance_roles: Array<UserInstanceRole>;
   last_name: Scalars['String'];
   name: Scalars['String'];
-  rsvps: Array<Rsvp>;
   updated_at: Scalars['DateTime'];
-};
-
-export type UserBan = {
-  __typename?: 'UserBan';
-  chapter: Chapter;
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  user: User;
 };
 
 export type UserChapterRole = {
   __typename?: 'UserChapterRole';
-  chapter: Chapter;
   chapter_id: Scalars['Int'];
   created_at: Scalars['DateTime'];
   interested: Scalars['Boolean'];
-  role_name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
-  user: User;
-  user_id: Scalars['Int'];
-};
-
-export type UserEventRole = {
-  __typename?: 'UserEventRole';
-  created_at: Scalars['DateTime'];
-  event: Event;
-  event_id: Scalars['Int'];
-  role_name: Scalars['String'];
-  subscribed: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
-  user: User;
-  user_id: Scalars['Int'];
-};
-
-export type UserInstanceRole = {
-  __typename?: 'UserInstanceRole';
-  created_at: Scalars['DateTime'];
-  role_name: Scalars['String'];
   updated_at: Scalars['DateTime'];
   user: User;
   user_id: Scalars['Int'];
@@ -426,7 +432,6 @@ export type Venue = {
   city: Scalars['String'];
   country: Scalars['String'];
   created_at: Scalars['DateTime'];
-  events: Array<Event>;
   id: Scalars['Int'];
   latitude?: Maybe<Scalars['Float']>;
   longitude?: Maybe<Scalars['Float']>;
@@ -500,7 +505,7 @@ export type ChapterQuery = {
   __typename?: 'Query';
   chapter?:
     | {
-        __typename?: 'Chapter';
+        __typename?: 'ChapterWithRelations';
         id: number;
         name: string;
         description: string;
@@ -537,7 +542,7 @@ export type ChapterUsersQuery = {
   __typename?: 'Query';
   chapter?:
     | {
-        __typename?: 'Chapter';
+        __typename?: 'ChapterWithRelations';
         users: Array<{
           __typename?: 'UserChapterRole';
           interested: boolean;
@@ -603,7 +608,7 @@ export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 export type EventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'Event';
+    __typename?: 'EventWithEverything';
     id: number;
     name: string;
     canceled: boolean;
@@ -632,7 +637,7 @@ export type EventQuery = {
   __typename?: 'Query';
   event?:
     | {
-        __typename?: 'Event';
+        __typename?: 'EventWithEverything';
         id: number;
         name: string;
         description: string;
@@ -691,7 +696,7 @@ export type EventVenuesQuery = {
   __typename?: 'Query';
   event?:
     | {
-        __typename?: 'Event';
+        __typename?: 'EventWithEverything';
         id: number;
         name: string;
         description: string;
@@ -954,7 +959,7 @@ export type HomeQueryVariables = Exact<{
 export type HomeQuery = {
   __typename?: 'Query';
   paginatedEvents: Array<{
-    __typename?: 'Event';
+    __typename?: 'EventWithChapter';
     id: number;
     name: string;
     description: string;

@@ -187,7 +187,6 @@ ${unsubscribe}
     return rsvp;
   }
 
-  // TODO: add a return type once the TypeORM decorators have been removed
   @Mutation(() => Rsvp)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,

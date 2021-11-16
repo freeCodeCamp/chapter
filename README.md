@@ -34,7 +34,7 @@ We are using the following tools:
 
 * [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
   * [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
-* [Postgres](https://www.postgresql.org) with [TypeORM](https://typeorm.io/#/) - for nice integration with `type-graphql`
+* [Postgres](https://www.postgresql.org) with [Prisma](https://prisma.io/) - for fully type-safe queries
 * [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
   * [Apollo Client 3](https://www.apollographql.com/docs/react/)
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)

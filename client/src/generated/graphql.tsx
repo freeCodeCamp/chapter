@@ -34,13 +34,11 @@ export type Chapter = {
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
-  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   details: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
   region: Scalars['String'];
-  updated_at: Scalars['DateTime'];
 };
 
 export type ChapterWithRelations = {
@@ -48,7 +46,6 @@ export type ChapterWithRelations = {
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
-  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   details: Scalars['String'];
   events: Array<Event>;
@@ -56,7 +53,6 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  updated_at: Scalars['DateTime'];
   users: Array<UserChapterRole>;
 };
 
@@ -111,7 +107,6 @@ export type Event = {
   __typename?: 'Event';
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
-  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   id: Scalars['Int'];
@@ -121,16 +116,13 @@ export type Event = {
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
-  updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
 
 export type EventSponsor = {
   __typename?: 'EventSponsor';
-  created_at: Scalars['DateTime'];
   sponsor: Sponsor;
-  updated_at: Scalars['DateTime'];
 };
 
 export type EventWithChapter = {
@@ -138,7 +130,6 @@ export type EventWithChapter = {
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
-  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   id: Scalars['Int'];
@@ -148,7 +139,6 @@ export type EventWithChapter = {
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
-  updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -158,7 +148,6 @@ export type EventWithEverything = {
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
-  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   id: Scalars['Int'];
@@ -170,7 +159,6 @@ export type EventWithEverything = {
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
-  updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -335,11 +323,9 @@ export type Rsvp = {
   __typename?: 'Rsvp';
   canceled: Scalars['Boolean'];
   confirmed_at: Scalars['DateTime'];
-  created_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
   event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
   user_id: Scalars['Int'];
 };
 
@@ -347,11 +333,9 @@ export type RsvpWithUser = {
   __typename?: 'RsvpWithUser';
   canceled: Scalars['Boolean'];
   confirmed_at: Scalars['DateTime'];
-  created_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
   event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
   user: User;
   user_id: Scalars['Int'];
 };
@@ -364,21 +348,17 @@ export type SendEmailInputs = {
 
 export type Sponsor = {
   __typename?: 'Sponsor';
-  created_at: Scalars['DateTime'];
   id: Scalars['Int'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
   type: Scalars['String'];
-  updated_at: Scalars['DateTime'];
   website: Scalars['String'];
 };
 
 export type Tag = {
   __typename?: 'Tag';
-  created_at: Scalars['DateTime'];
   id: Scalars['Int'];
   name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
 };
 
 export type UpdateChapterInputs = {
@@ -420,21 +400,17 @@ export type UpdateVenueInputs = {
 
 export type User = {
   __typename?: 'User';
-  created_at: Scalars['DateTime'];
   email: Scalars['String'];
   first_name: Scalars['String'];
   id: Scalars['Int'];
   last_name: Scalars['String'];
   name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
 };
 
 export type UserChapterRole = {
   __typename?: 'UserChapterRole';
   chapter_id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
   interested: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
   user: User;
   user_id: Scalars['Int'];
 };
@@ -443,7 +419,6 @@ export type Venue = {
   __typename?: 'Venue';
   city: Scalars['String'];
   country: Scalars['String'];
-  created_at: Scalars['DateTime'];
   id: Scalars['Int'];
   latitude?: Maybe<Scalars['Float']>;
   longitude?: Maybe<Scalars['Float']>;
@@ -451,7 +426,6 @@ export type Venue = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
-  updated_at: Scalars['DateTime'];
 };
 
 /** All possible venue types for an event */
@@ -837,8 +811,6 @@ export type SponsorsQuery = {
   sponsors: Array<{
     __typename?: 'Sponsor';
     id: number;
-    created_at: any;
-    updated_at: any;
     name: string;
     website: string;
     logo_path: string;
@@ -2155,8 +2127,6 @@ export const SponsorsDocument = gql`
   query sponsors {
     sponsors {
       id
-      created_at
-      updated_at
       name
       website
       logo_path

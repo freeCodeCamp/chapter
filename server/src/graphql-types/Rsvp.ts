@@ -1,8 +1,7 @@
 import { ObjectType, Field, Int } from 'type-graphql';
-import { BaseJunctionModel } from './BaseJunctionModel';
 
 @ObjectType()
-export class Rsvp extends BaseJunctionModel {
+export class Rsvp {
   @Field(() => Int)
   user_id: number;
 

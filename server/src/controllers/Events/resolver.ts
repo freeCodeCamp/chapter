@@ -3,7 +3,12 @@ import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 import { GQLCtx } from 'src/common-types/gql';
-import { Event, Rsvp, EventWithEverything, EventWithChapter } from 'src/models';
+import {
+  Event,
+  Rsvp,
+  EventWithEverything,
+  EventWithChapter,
+} from 'src/graphql-types';
 import { prisma } from 'src/prisma';
 import MailerService from 'src/services/MailerService';
 

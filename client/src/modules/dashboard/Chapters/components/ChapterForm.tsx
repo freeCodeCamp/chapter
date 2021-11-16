@@ -6,13 +6,7 @@ import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
 
 export type ChapterFormData = Omit<
   Chapter,
-  | 'id'
-  | 'created_at'
-  | 'updated_at'
-  | 'events'
-  | 'creator'
-  | 'users'
-  | 'banned_users'
+  'id' | 'events' | 'creator' | 'users' | 'banned_users'
 >;
 
 interface ChapterFormProps {

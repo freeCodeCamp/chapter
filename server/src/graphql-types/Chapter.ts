@@ -1,19 +1,19 @@
 import { ObjectType, Field } from 'type-graphql';
-import { BaseModel } from './BaseModel';
+import { BaseObject } from './BaseObject';
 
 @ObjectType()
-export class Chapter extends BaseModel {
+export class Chapter extends BaseObject {
   @Field(() => String)
-  name!: string;
+  name: string;
 
   @Field(() => String)
-  description!: string;
+  description: string;
 
   @Field(() => String)
-  category!: string;
+  category: string;
 
   @Field(() => String)
-  details!: any;
+  details: any;
 
   @Field(() => String)
   city: string;

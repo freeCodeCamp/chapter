@@ -1,6 +1,6 @@
 import { events_venue_type_enum } from '@prisma/client';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
-import { BaseModel } from './BaseModel';
+import { BaseObject } from './BaseObject';
 import { Tag } from '.';
 
 export { events_venue_type_enum };
@@ -11,7 +11,7 @@ registerEnumType(events_venue_type_enum, {
 });
 
 @ObjectType()
-export class Event extends BaseModel {
+export class Event extends BaseObject {
   @Field(() => String)
   name: string;
 

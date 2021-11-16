@@ -10,7 +10,7 @@ import {
 } from './inputs';
 import { GQLCtx } from 'src/common-types/gql';
 import { getConfig, isDev } from 'src/config';
-import { User } from 'src/models';
+import { User } from 'src/graphql-types';
 import { prisma } from 'src/prisma';
 import { authTokenService } from 'src/services/AuthToken';
 import MailerService from 'src/services/MailerService';

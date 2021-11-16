@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
-import { Chapter, ChapterWithRelations } from 'src/models';
+import { Chapter, ChapterWithRelations } from 'src/graphql-types';
 import { prisma } from 'src/prisma';
 
 @Resolver()

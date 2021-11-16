@@ -1,5 +1,4 @@
 import { Field, Int, ObjectType } from 'type-graphql';
-import { BaseJunctionModel } from './BaseJunctionModel';
 import { Event } from './Event';
 import { User } from './User';
 
@@ -8,22 +7,22 @@ import { User } from './User';
 type EventRoles = 'organizer' | 'attendee';
 
 @ObjectType()
-export class UserEventRole extends BaseJunctionModel {
+export class UserEventRole {
   @Field(() => Int)
-  user_id!: number;
+  user_id: number;
 
   @Field(() => Int)
-  event_id!: number;
+  event_id: number;
 
   @Field(() => User)
-  user!: User;
+  user: User;
 
   @Field(() => Event)
-  event!: Event;
+  event: Event;
 
   @Field(() => String)
-  role_name!: EventRoles;
+  role_name: EventRoles;
 
   @Field(() => Boolean)
-  subscribed!: boolean;
+  subscribed: boolean;
 }

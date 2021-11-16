@@ -1,13 +1,12 @@
 import { ObjectType, Field } from 'type-graphql';
-import { BaseJunctionModel } from './BaseJunctionModel';
 import { Chapter } from './Chapter';
 import { User } from './User';
 
 @ObjectType()
-export class UserBan extends BaseJunctionModel {
+export class UserBan {
   @Field(() => User)
-  user!: User;
+  user: User;
 
   @Field(() => Chapter)
-  chapter!: Chapter;
+  chapter: Chapter;
 }

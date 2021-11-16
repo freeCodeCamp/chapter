@@ -1,8 +1,8 @@
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
-import { BaseModel } from './BaseModel';
+import { BaseObject } from './BaseObject';
 
 @ObjectType()
-export class User extends BaseModel {
+export class User extends BaseObject {
   @Field(() => String)
   first_name: string;
 

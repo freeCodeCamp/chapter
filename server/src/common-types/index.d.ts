@@ -1,4 +1,4 @@
-import { User } from 'src/models';
+import { User } from 'src/graphql-types';
 
 declare global {
   namespace Express {

@@ -183,8 +183,6 @@ export const Sponsors = gql`
   query sponsors {
     sponsors {
       id
-      created_at
-      updated_at
       name
       website
       logo_path

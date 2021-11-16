@@ -8,12 +8,12 @@ import {
   UserBan,
   UserChapterRole,
   UserEventRole,
-} from './';
+} from '.';
 
 @ObjectType()
 export class UserWithRelations extends User {
   @Field(() => [Chapter])
-  created_chapters!: Chapter[];
+  created_chapters: Chapter[];
 
   @Field(() => [Rsvp])
   rsvps: Rsvp[];

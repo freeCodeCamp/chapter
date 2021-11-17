@@ -51,7 +51,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <Box>
           {event.invite_only && <LockIcon />}{' '}
           <Link data-cy="event-link" href={`/events/${event.id}`}>
-            <Heading size="sm"> {event.name}</Heading>
+            <Heading size="sm">{event.name}</Heading>
           </Link>
           {event.canceled && (
             <Text as="span" color="red.500" ml="2">

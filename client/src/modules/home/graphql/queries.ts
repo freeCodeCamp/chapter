@@ -9,6 +9,7 @@ export const HOME_PAGE_QUERY = gql`
       invite_only
       canceled
       start_at
+      image_url
       tags {
         id
         name
@@ -25,6 +26,7 @@ export const HOME_PAGE_QUERY = gql`
       description
       category
       details
+      imageUrl
     }
   }
 `;

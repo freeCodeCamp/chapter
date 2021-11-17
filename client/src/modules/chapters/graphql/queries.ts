@@ -17,6 +17,9 @@ export const CHAPTER = gql`
         name
         description
         start_at
+        invite_only
+        canceled
+        image_url
         tags {
           id
           name
@@ -48,6 +51,9 @@ export const CHAPTERS = gql`
       id
       name
       description
+      details
+      category
+      imageUrl
     }
   }
 `;

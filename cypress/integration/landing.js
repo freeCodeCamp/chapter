@@ -22,7 +22,7 @@ describe('landing page', () => {
 
   it('should have links to chapters', () => {
     cy.visit('/');
-    cy.get('[data-cy="chapter-card"] [data-cy="chapter-link"]')
+    cy.get('[data-cy="chapter-card"] [data-cy="chapter-heading"]')
       .first()
       .then(($chapterLink) => {
         const chapterTitle = $chapterLink.text();

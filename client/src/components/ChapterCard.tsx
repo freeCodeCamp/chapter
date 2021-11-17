@@ -22,7 +22,7 @@ type ChapterCardProps = {
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
     <Center m={2} data-cy="chapter-card">
-      <Link data-cy="chapter-link" href={`/chapters/${chapter.id}`} _hover={{}}>
+      <Link href={`/chapters/${chapter.id}`} _hover={{}}>
         <Box
           w={'full'}
           bg={useColorModeValue('white', 'gray.800')}
@@ -38,6 +38,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           <Box>
             <Stack spacing={0} align={'center'} mb={5} mt={-20}>
               <Heading
+                data-cy="chapter-heading"
                 fontSize={'xl'}
                 fontWeight={500}
                 fontFamily={'body'}

@@ -14,7 +14,7 @@ datasource db {
 model chapters {
   created_at  DateTime             @default(now())
   updated_at  DateTime             @default(now())
-  id          Int                  @id(map: "PK_a2bbdbb4bdc786fe0cb0fcfc4a0") @default(autoincrement())
+  id          Int                  @id @default(autoincrement())
   name        String
   description String
   category    String
@@ -34,16 +34,16 @@ model event_sponsors {
   updated_at DateTime @default(now())
   sponsor_id Int
   event_id   Int
-  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8fab88035a7a74536060237b404")
-  sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4cb75f6aae3ff8fe35cd3417383")
+  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([sponsor_id, event_id], map: "PK_7efb6474e1d10a623f65697ffed")
+  @@id([sponsor_id, event_id])
 }
 
 model events {
   created_at       DateTime               @default(now())
   updated_at       DateTime               @default(now())
-  id               Int                    @id(map: "PK_40731c7151fe4be3116e45ddf73") @default(autoincrement())
+  id               Int                    @id @default(autoincrement())
   name             String
   description      String
   url              String?
@@ -58,8 +58,8 @@ model events {
   // TODO: none of these should be optional
   venue_id         Int?
   chapter_id       Int
-  chapter          chapters               @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_987a4efcef7b92bd79e1071719d")
-  venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_26e10dc1ae5cdd5a20279e08b4a")
+  chapter          chapters               @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sponsors         event_sponsors[]
   rsvps            rsvps[]
   tags             tags[]
@@ -75,16 +75,16 @@ model rsvps {
   on_waitlist  Boolean
   confirmed_at DateTime?
   canceled     Boolean
-  events       events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_04d52fc9fe91004aa1860603ea3")
-  user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5ef6c963e9f7d98f6e0f79053a3")
+  events       events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([user_id, event_id], map: "PK_06894530ca7ca824ae08ab4b029")
+  @@id([user_id, event_id])
 }
 
 model sponsors {
   created_at     DateTime         @default(now())
   updated_at     DateTime         @default(now())
-  id             Int              @id(map: "PK_6d1114fe7e65855154351b66bfc") @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   name           String
   website        String
   logo_path      String
@@ -95,10 +95,10 @@ model sponsors {
 model tags {
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
-  id         Int      @id(map: "PK_e7dc17249a1148a1970748eda99") @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   name       String
   event_id   Int?
-  events     events?  @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_fd793b86b010970181e155eb750")
+  events     events?  @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model user_bans {
@@ -106,10 +106,10 @@ model user_bans {
   updated_at DateTime @default(now())
   user_id    Int
   chapter_id Int
-  chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bc062ec92b68995ff3ad5d00cdd")
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a142c9954b2fd911b3e7ea8c307")
+  chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([user_id, chapter_id], map: "PK_b36d582555d25b149d3a29fad1d")
+  @@id([user_id, chapter_id])
 }
 
 model user_chapter_roles {
@@ -119,10 +119,10 @@ model user_chapter_roles {
   chapter_id Int
   role_name  String
   interested Boolean
-  chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c4b23ce3d811d599cea97d064fc")
-  user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dff88cec5f2df9a6e9d9a7af03e")
+  chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([user_id, chapter_id, role_name], map: "PK_d4726976f7c0d644f1a01cebe6d")
+  @@id([user_id, chapter_id, role_name])
 }
 
 model user_event_roles {
@@ -132,27 +132,27 @@ model user_event_roles {
   event_id   Int
   role_name  String
   subscribed Boolean
-  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f098ebd3c390d8e0f1e6ce882c6")
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bb21cc4b5de8cf9e8476d75b7a7")
+  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([user_id, event_id, role_name], map: "PK_7e8150634b33c58decf1cde3de3")
+  @@id([user_id, event_id, role_name])
 }
 
 model user_instance_roles {
   user_id   Int
   role_name String
-  users     users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f6aa9d1d5bffdd18382d18729d0")
+  users     users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([user_id, role_name], map: "PK_a6668338a373b7a8d914a193f3f")
+  @@id([user_id, role_name])
 }
 
 model users {
   created_at          DateTime              @default(now())
   updated_at          DateTime              @default(now())
-  id                  Int                   @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(autoincrement())
+  id                  Int                   @id @default(autoincrement())
   first_name          String
   last_name           String
-  email               String                @unique(map: "UQ_97672ac88f789774dd47f7c8be3")
+  email               String                @unique
   rsvps               rsvps[]
   user_bans           user_bans[]
   chapter_roles       user_chapter_roles[]
@@ -163,7 +163,7 @@ model users {
 model venues {
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now())
-  id             Int      @id(map: "PK_cb0f885278d12384eb7a81818be") @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
   street_address String?
   city           String

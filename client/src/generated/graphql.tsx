@@ -915,7 +915,7 @@ export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
 export type MinEventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'Event';
+    __typename?: 'EventWithEverything';
     id: number;
     name: string;
     description: string;

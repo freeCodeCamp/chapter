@@ -80,7 +80,7 @@ export type CreateEventInputs = {
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
-  venueId?: InputMaybe<Scalars['Int']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
 };
 
@@ -380,11 +380,11 @@ export type UpdateEventInputs = {
   image_url?: InputMaybe<Scalars['String']>;
   invite_only?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
-  sponsorIds: Array<Scalars['Int']>;
+  sponsor_ids: Array<Scalars['Int']>;
   start_at?: InputMaybe<Scalars['DateTime']>;
   streaming_url?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
-  venueId?: InputMaybe<Scalars['Int']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
 };
 

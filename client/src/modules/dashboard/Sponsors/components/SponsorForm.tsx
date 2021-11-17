@@ -11,7 +11,7 @@ export type SponsorFormData = Omit<
   'id' | 'created_at' | 'updated_at' | 'events'
 >;
 
-interface SpornsorFormProps {
+interface SponsorFormProps {
   loading: boolean;
   onSubmit: (data: SponsorFormData) => Promise<void>;
   data?: SponsorQuery;
@@ -43,7 +43,7 @@ const fields: FormField[] = [
     isRequired: true,
   },
 ];
-const SponsorForm: React.FC<SpornsorFormProps> = (props) => {
+const SponsorForm: React.FC<SponsorFormProps> = (props) => {
   const { loading, onSubmit, data, submitText } = props;
   const sponsor = data?.sponsor;
   const defaultValues: SponsorFormData = {

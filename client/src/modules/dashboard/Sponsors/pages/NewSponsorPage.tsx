@@ -13,8 +13,6 @@ const NewSponsorPage: NextPage = () => {
   });
   const onSubmit = async (data: SponsorFormData) => {
     setLoading(true);
-    console.log('Logging the data');
-
     try {
       createSponsor({
         variables: {

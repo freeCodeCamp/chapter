@@ -5,8 +5,25 @@ import createSponsors from './factories/sponsors.factory';
 import createUsers from './factories/user.factory';
 import createVenues from './factories/venues.factory';
 import setupRoles from './setupRoles';
+import { prisma } from 'src/prisma';
 
 (async () => {
+  const tablenames = await prisma.$queryRaw<
+    Array<{ tablename: string }>
+  >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+
+  for (const { tablename } of tablenames) {
+    if (tablename !== '_prisma_migrations') {
+      try {
+        await prisma.$executeRawUnsafe(
+          `TRUNCATE TABLE "public"."${tablename}" RESTART IDENTITY CASCADE;`,
+        );
+      } catch (error) {
+        console.log({ error });
+      }
+    }
+  }
+
   const [userId, userIds] = await createUsers();
   const sponsorIds = await createSponsors();
 

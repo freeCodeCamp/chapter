@@ -44,5 +44,5 @@ export const getConfig = <T extends keyof Environment>(
 
 export const getEnv = () => getConfig('NODE_ENV', 'development');
 export const isDev = () => getEnv() === 'development';
-export const isProd = () => getEnv() === 'production';
+export const isProd = () => !isDev() && !isTest();
 export const isTest = () => getEnv() === 'test';

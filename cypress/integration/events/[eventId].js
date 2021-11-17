@@ -1,6 +1,6 @@
 describe('event page', () => {
   beforeEach(() => {
-    cy.exec('npm run db:reset');
+    cy.exec('npm run db:seed');
     cy.visit('/events/1');
     cy.mhDeleteAll();
   });

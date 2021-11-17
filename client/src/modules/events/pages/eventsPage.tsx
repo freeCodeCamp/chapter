@@ -1,8 +1,8 @@
-import React from 'react';
-import { NextPage } from 'next';
-import { useMinEventsQuery } from 'generated/graphql';
 import { Heading, VStack, Stack } from '@chakra-ui/layout';
+import { NextPage } from 'next';
+import React from 'react';
 import { EventCard } from 'components/EventCard';
+import { useMinEventsQuery } from 'generated/graphql';
 
 export const EventsPage: NextPage = () => {
   const { loading, error, data } = useMinEventsQuery();

@@ -2340,7 +2340,7 @@ export type CreateSponsorMutationOptions = Apollo.BaseMutationOptions<
   CreateSponsorMutationVariables
 >;
 export const UpdateSponsorDocument = gql`
-  mutation UpdateSponsor($data: UpdateSponsorInputs!, $updateSponsorId: Int!) {
+  mutation updateSponsor($data: UpdateSponsorInputs!, $updateSponsorId: Int!) {
     updateSponsor(data: $data, id: $updateSponsorId) {
       name
       website

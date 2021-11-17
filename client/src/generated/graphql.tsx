@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
@@ -52,7 +53,7 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  details?: Maybe<Scalars['String']>;
+  details?: InputMaybe<Scalars['String']>;
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
@@ -64,25 +65,25 @@ export type CreateEventInputs = {
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   image_url: Scalars['String'];
-  invite_only?: Maybe<Scalars['Boolean']>;
+  invite_only?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
   sponsorIds: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
-  streaming_url?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  venueId?: Maybe<Scalars['Int']>;
-  venue_type?: Maybe<VenueType>;
+  streaming_url?: InputMaybe<Scalars['String']>;
+  url?: InputMaybe<Scalars['String']>;
+  venueId?: InputMaybe<Scalars['Int']>;
+  venue_type?: InputMaybe<VenueType>;
 };
 
 export type CreateVenueInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
+  latitude?: InputMaybe<Scalars['Float']>;
+  longitude?: InputMaybe<Scalars['Float']>;
   name: Scalars['String'];
   postal_code: Scalars['String'];
   region: Scalars['String'];
-  street_address?: Maybe<Scalars['String']>;
+  street_address?: InputMaybe<Scalars['String']>;
 };
 
 export type Email = {
@@ -222,7 +223,7 @@ export type MutationSendEmailArgs = {
 };
 
 export type MutationSendEventInviteArgs = {
-  emailGroups?: Maybe<Array<Scalars['String']>>;
+  emailGroups?: InputMaybe<Array<Scalars['String']>>;
   id: Scalars['Int'];
 };
 
@@ -263,13 +264,13 @@ export type QueryEventArgs = {
 };
 
 export type QueryEventsArgs = {
-  limit?: Maybe<Scalars['Int']>;
-  showAll?: Maybe<Scalars['Boolean']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  showAll?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryPaginatedEventsArgs = {
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryVenueArgs = {
@@ -323,40 +324,40 @@ export type Tag = {
 };
 
 export type UpdateChapterInputs = {
-  category?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  details?: Maybe<Scalars['String']>;
-  imageUrl?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  region?: Maybe<Scalars['String']>;
+  category?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  details?: InputMaybe<Scalars['String']>;
+  imageUrl?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  region?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateEventInputs = {
-  capacity?: Maybe<Scalars['Float']>;
-  description?: Maybe<Scalars['String']>;
-  ends_at?: Maybe<Scalars['DateTime']>;
-  image_url?: Maybe<Scalars['String']>;
-  invite_only?: Maybe<Scalars['Boolean']>;
-  name?: Maybe<Scalars['String']>;
+  capacity?: InputMaybe<Scalars['Float']>;
+  description?: InputMaybe<Scalars['String']>;
+  ends_at?: InputMaybe<Scalars['DateTime']>;
+  image_url?: InputMaybe<Scalars['String']>;
+  invite_only?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
   sponsorIds: Array<Scalars['Int']>;
-  start_at?: Maybe<Scalars['DateTime']>;
-  streaming_url?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  venueId?: Maybe<Scalars['Int']>;
-  venue_type?: Maybe<VenueType>;
+  start_at?: InputMaybe<Scalars['DateTime']>;
+  streaming_url?: InputMaybe<Scalars['String']>;
+  url?: InputMaybe<Scalars['String']>;
+  venueId?: InputMaybe<Scalars['Int']>;
+  venue_type?: InputMaybe<VenueType>;
 };
 
 export type UpdateVenueInputs = {
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
-  name?: Maybe<Scalars['String']>;
-  postal_code?: Maybe<Scalars['String']>;
-  region?: Maybe<Scalars['String']>;
-  street_address?: Maybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  latitude?: InputMaybe<Scalars['Float']>;
+  longitude?: InputMaybe<Scalars['Float']>;
+  name?: InputMaybe<Scalars['String']>;
+  postal_code?: InputMaybe<Scalars['String']>;
+  region?: InputMaybe<Scalars['String']>;
+  street_address?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {

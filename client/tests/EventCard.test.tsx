@@ -18,6 +18,7 @@ describe('EventCard', () => {
           start_at: 123,
           invite_only: true,
           canceled: false,
+          image_url: 'http://example.com/image.png',
         }}
       />,
     );

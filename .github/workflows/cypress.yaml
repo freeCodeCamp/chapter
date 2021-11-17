@@ -15,7 +15,7 @@ jobs:
         node-version: [16.x]
     services:
       postgres:
-        image: postgres:13
+        image: postgres:14
         env:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: chapter

@@ -12,7 +12,8 @@ jobs:
         node-version: [16.x]
     services:
       postgres:
-        image: postgres:14
+        # For now schema spy doesn't get on with postgres:14
+        image: postgres:13
         env:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: chapter

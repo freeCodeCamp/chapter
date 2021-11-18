@@ -7,7 +7,7 @@ jobs:
     # npm start:server tries to connect to the db, so we need the service
     services:
       postgres:
-        image: postgres:13
+        image: postgres:14
         env:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: chapter

@@ -103,53 +103,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
-                                    <td>serial</td>
-                                    <td>10</td>
-                                    <td title=''></td>
-                                    <td title='Automatically updated by the database'>√</td>
-                                    <td>nextval(&#39;users_id_seq&#39;::regclass)</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="chapters.creator_id references users.id via FK_60315cd6f39d467818aa7c60505"><a href='chapters.html'>chapters</a><span class='relatedKey'>.creator_id</span></td>
-                                                <td class="constraint detail">FK_60315cd6f39d467818aa7c60505<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="rsvps.user_id references users.id via FK_5ef6c963e9f7d98f6e0f79053a3"><a href='rsvps.html'>rsvps</a><span class='relatedKey'>.user_id</span></td>
-                                                <td class="constraint detail">FK_5ef6c963e9f7d98f6e0f79053a3<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_bans.user_id references users.id via FK_a142c9954b2fd911b3e7ea8c307"><a href='user_bans.html'>user_bans</a><span class='relatedKey'>.user_id</span></td>
-                                                <td class="constraint detail">FK_a142c9954b2fd911b3e7ea8c307<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_chapter_roles.user_id references users.id via FK_dff88cec5f2df9a6e9d9a7af03e"><a href='user_chapter_roles.html'>user_chapter_roles</a><span class='relatedKey'>.user_id</span></td>
-                                                <td class="constraint detail">FK_dff88cec5f2df9a6e9d9a7af03e<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_event_roles.user_id references users.id via FK_bb21cc4b5de8cf9e8476d75b7a7"><a href='user_event_roles.html'>user_event_roles</a><span class='relatedKey'>.user_id</span></td>
-                                                <td class="constraint detail">FK_bb21cc4b5de8cf9e8476d75b7a7<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_instance_roles.user_id references users.id via FK_f6aa9d1d5bffdd18382d18729d0"><a href='user_instance_roles.html'>user_instance_roles</a><span class='relatedKey'>.user_id</span></td>
-                                                <td class="constraint detail">FK_f6aa9d1d5bffdd18382d18729d0<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td><span id="created_at">created_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -163,10 +122,10 @@
                                 <tr>
                                     <td><span id="updated_at">updated_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -178,8 +137,45 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
+                                    <td>serial</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title='Automatically updated by the database'>√</td>
+                                    <td>nextval(&#39;users_id_seq&#39;::regclass)</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="rsvps.user_id references users.id via rsvps_user_id_fkey"><a href='rsvps.html'>rsvps</a><span class='relatedKey'>.user_id</span></td>
+                                                <td class="constraint detail">rsvps_user_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="user_bans.user_id references users.id via user_bans_user_id_fkey"><a href='user_bans.html'>user_bans</a><span class='relatedKey'>.user_id</span></td>
+                                                <td class="constraint detail">user_bans_user_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="user_chapter_roles.user_id references users.id via user_chapter_roles_user_id_fkey"><a href='user_chapter_roles.html'>user_chapter_roles</a><span class='relatedKey'>.user_id</span></td>
+                                                <td class="constraint detail">user_chapter_roles_user_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="user_event_roles.user_id references users.id via user_event_roles_user_id_fkey"><a href='user_event_roles.html'>user_event_roles</a><span class='relatedKey'>.user_id</span></td>
+                                                <td class="constraint detail">user_event_roles_user_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="user_instance_roles.user_id references users.id via user_instance_roles_user_id_fkey"><a href='user_instance_roles.html'>user_instance_roles</a><span class='relatedKey'>.user_id</span></td>
+                                                <td class="constraint detail">user_instance_roles_user_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="first_name">first_name</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -196,7 +192,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="last_name">last_name</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -213,7 +209,7 @@
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="email">email</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -253,13 +249,13 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_a3ffb1c0c8416b9fc6f907b7433</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> users_pkey</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>id</td>
                                 </tr>
                                 <tr>
-                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> UQ_97672ac88f789774dd47f7c8be3</td>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> users_email_key</td>
                                     <td>Must be unique</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>email</td>

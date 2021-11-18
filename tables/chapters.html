@@ -103,41 +103,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
-                                    <td>serial</td>
-                                    <td>10</td>
-                                    <td title=''></td>
-                                    <td title='Automatically updated by the database'>√</td>
-                                    <td>nextval(&#39;chapters_id_seq&#39;::regclass)</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="events.chapter_id references chapters.id via FK_987a4efcef7b92bd79e1071719d"><a href='events.html'>events</a><span class='relatedKey'>.chapter_id</span></td>
-                                                <td class="constraint detail">FK_987a4efcef7b92bd79e1071719d<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_bans.chapter_id references chapters.id via FK_bc062ec92b68995ff3ad5d00cdd"><a href='user_bans.html'>user_bans</a><span class='relatedKey'>.chapter_id</span></td>
-                                                <td class="constraint detail">FK_bc062ec92b68995ff3ad5d00cdd<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_chapter_roles.chapter_id references chapters.id via FK_c4b23ce3d811d599cea97d064fc"><a href='user_chapter_roles.html'>user_chapter_roles</a><span class='relatedKey'>.chapter_id</span></td>
-                                                <td class="constraint detail">FK_c4b23ce3d811d599cea97d064fc<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td><span id="created_at">created_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -151,10 +122,10 @@
                                 <tr>
                                     <td><span id="updated_at">updated_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -166,8 +137,37 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
+                                    <td>serial</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title='Automatically updated by the database'>√</td>
+                                    <td>nextval(&#39;chapters_id_seq&#39;::regclass)</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="events.chapter_id references chapters.id via events_chapter_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.chapter_id</span></td>
+                                                <td class="constraint detail">events_chapter_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="user_bans.chapter_id references chapters.id via user_bans_chapter_id_fkey"><a href='user_bans.html'>user_bans</a><span class='relatedKey'>.chapter_id</span></td>
+                                                <td class="constraint detail">user_bans_chapter_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="user_chapter_roles.chapter_id references chapters.id via user_chapter_roles_chapter_id_fkey"><a href='user_chapter_roles.html'>user_chapter_roles</a><span class='relatedKey'>.chapter_id</span></td>
+                                                <td class="constraint detail">user_chapter_roles_chapter_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="name">name</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -184,7 +184,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="description">description</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -201,7 +201,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="category">category</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -235,7 +235,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="city">city</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -252,7 +252,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="region">region</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -269,7 +269,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="country">country</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -286,7 +286,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="imageUrl">imageUrl</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -302,7 +302,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="creator_id">creator_id</span></td>
+                                    <td><span id="creator_id">creator_id</span></td>
                                     <td>int4</td>
                                     <td>10</td>
                                     <td title='nullable'>√</td>
@@ -314,10 +314,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="chapters.creator_id references users.id via FK_60315cd6f39d467818aa7c60505"><a href='users.html'>users</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">FK_60315cd6f39d467818aa7c60505<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -347,7 +343,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_a2bbdbb4bdc786fe0cb0fcfc4a0</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> chapters_pkey</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>id</td>

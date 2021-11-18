@@ -6,7 +6,7 @@ event_sponsors
 user_instance_roles
 tags
 events
-chapters
 venues
 sponsors
+chapters
 users

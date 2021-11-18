@@ -116,8 +116,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="user_instance_roles.user_id references users.id via FK_f6aa9d1d5bffdd18382d18729d0"><a href='users.html'>users</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">FK_f6aa9d1d5bffdd18382d18729d0<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="user_instance_roles.user_id references users.id via user_instance_roles_user_id_fkey"><a href='users.html'>users</a><span class='relatedKey'>.id</span></td>
+                                                <td class="constraint detail">user_instance_roles_user_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -165,7 +165,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_a6668338a373b7a8d914a193f3f</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> user_instance_roles_pkey</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
                                     <td>user_id + role_name</td>

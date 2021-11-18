@@ -103,29 +103,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
-                                    <td>serial</td>
-                                    <td>10</td>
-                                    <td title=''></td>
-                                    <td title='Automatically updated by the database'>√</td>
-                                    <td>nextval(&#39;event_sponsors_id_seq&#39;::regclass)</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td><span id="created_at">created_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -139,10 +122,10 @@
                                 <tr>
                                     <td><span id="updated_at">updated_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -167,8 +150,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="event_sponsors.sponsor_id references sponsors.id via FK_4cb75f6aae3ff8fe35cd3417383"><a href='sponsors.html'>sponsors</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">FK_4cb75f6aae3ff8fe35cd3417383<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="event_sponsors.sponsor_id references sponsors.id via event_sponsors_sponsor_id_fkey"><a href='sponsors.html'>sponsors</a><span class='relatedKey'>.id</span></td>
+                                                <td class="constraint detail">event_sponsors_sponsor_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -188,8 +171,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="event_sponsors.event_id references events.id via FK_8fab88035a7a74536060237b404"><a href='events.html'>events</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">FK_8fab88035a7a74536060237b404<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="event_sponsors.event_id references events.id via event_sponsors_event_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.id</span></td>
+                                                <td class="constraint detail">event_sponsors_event_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -220,14 +203,8 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_85155c4974c197d49237d08537a</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> event_sponsors_pkey</td>
                                     <td>Primary key</td>
-                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
-                                    <td>id + sponsor_id + event_id</td>
-                                </tr>
-                                <tr>
-                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> UQ_7efb6474e1d10a623f65697ffed</td>
-                                    <td>Must be unique</td>
                                     <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
                                     <td>sponsor_id + event_id</td>
                                 </tr>

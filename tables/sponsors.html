@@ -103,33 +103,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
-                                    <td>serial</td>
-                                    <td>10</td>
-                                    <td title=''></td>
-                                    <td title='Automatically updated by the database'>√</td>
-                                    <td>nextval(&#39;sponsors_id_seq&#39;::regclass)</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="event_sponsors.sponsor_id references sponsors.id via FK_4cb75f6aae3ff8fe35cd3417383"><a href='event_sponsors.html'>event_sponsors</a><span class='relatedKey'>.sponsor_id</span></td>
-                                                <td class="constraint detail">FK_4cb75f6aae3ff8fe35cd3417383<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td><span id="created_at">created_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -143,10 +122,10 @@
                                 <tr>
                                     <td><span id="updated_at">updated_at</span></td>
                                     <td>timestamp</td>
-                                    <td>29,6</td>
+                                    <td>26,3</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>now()</td>
+                                    <td>CURRENT_TIMESTAMP</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -158,8 +137,29 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="id">id</span></td>
+                                    <td>serial</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title='Automatically updated by the database'>√</td>
+                                    <td>nextval(&#39;sponsors_id_seq&#39;::regclass)</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="event_sponsors.sponsor_id references sponsors.id via event_sponsors_sponsor_id_fkey"><a href='event_sponsors.html'>event_sponsors</a><span class='relatedKey'>.sponsor_id</span></td>
+                                                <td class="constraint detail">event_sponsors_sponsor_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="name">name</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -176,7 +176,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="website">website</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -193,7 +193,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="logo_path">logo_path</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -210,7 +210,7 @@
                                 </tr>
                                 <tr>
                                     <td><span id="type">type</span></td>
-                                    <td>varchar</td>
+                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -250,7 +250,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_6d1114fe7e65855154351b66bfc</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> sponsors_pkey</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>id</td>

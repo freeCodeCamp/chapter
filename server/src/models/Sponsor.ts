@@ -29,15 +29,15 @@ export class Sponsor extends BaseModel {
   constructor(params: {
     name: string;
     website: string;
-    logoPath: string;
+    logo_path: string;
     type: string;
   }) {
     super();
     if (params) {
-      const { name, website, logoPath, type } = params;
+      const { name, website, logo_path, type } = params;
       this.name = name;
       this.website = website;
-      this.logo_path = logoPath;
+      this.logo_path = logo_path;
       this.type = type;
     }
   }

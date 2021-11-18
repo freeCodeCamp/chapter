@@ -75,6 +75,13 @@ export type CreateEventInputs = {
   venue_type?: InputMaybe<VenueType>;
 };
 
+export type CreateSponsorInputs = {
+  logo_path: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  website: Scalars['String'];
+};
+
 export type CreateVenueInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
@@ -146,6 +153,7 @@ export type Mutation = {
   confirmRsvp: Rsvp;
   createChapter: Chapter;
   createEvent: Event;
+  createSponsor: Sponsor;
   createVenue: Venue;
   deleteChapter: Scalars['Boolean'];
   deleteEvent: Scalars['Boolean'];
@@ -159,6 +167,7 @@ export type Mutation = {
   sendEventInvite: Scalars['Boolean'];
   updateChapter: Chapter;
   updateEvent: Event;
+  updateSponsor: Sponsor;
   updateVenue: Venue;
 };
 
@@ -180,6 +189,10 @@ export type MutationCreateChapterArgs = {
 
 export type MutationCreateEventArgs = {
   data: CreateEventInputs;
+};
+
+export type MutationCreateSponsorArgs = {
+  data: CreateSponsorInputs;
 };
 
 export type MutationCreateVenueArgs = {
@@ -237,6 +250,11 @@ export type MutationUpdateEventArgs = {
   id: Scalars['Int'];
 };
 
+export type MutationUpdateSponsorArgs = {
+  data: UpdateSponsorInputs;
+  id: Scalars['Int'];
+};
+
 export type MutationUpdateVenueArgs = {
   data: UpdateVenueInputs;
   id: Scalars['Int'];
@@ -250,6 +268,7 @@ export type Query = {
   events: Array<Event>;
   me?: Maybe<User>;
   paginatedEvents: Array<Event>;
+  sponsor?: Maybe<Sponsor>;
   sponsors: Array<Sponsor>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -271,6 +290,10 @@ export type QueryEventsArgs = {
 export type QueryPaginatedEventsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+};
+
+export type QuerySponsorArgs = {
+  id: Scalars['Int'];
 };
 
 export type QueryVenueArgs = {
@@ -347,6 +370,13 @@ export type UpdateEventInputs = {
   url?: InputMaybe<Scalars['String']>;
   venueId?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
+};
+
+export type UpdateSponsorInputs = {
+  logo_path: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  website: Scalars['String'];
 };
 
 export type UpdateVenueInputs = {
@@ -830,6 +860,56 @@ export type SponsorsQuery = {
     logo_path: string;
     type: string;
   }>;
+};
+
+export type SponsorQueryVariables = Exact<{
+  sponsorId: Scalars['Int'];
+}>;
+
+export type SponsorQuery = {
+  __typename?: 'Query';
+  sponsor?:
+    | {
+        __typename?: 'Sponsor';
+        id: number;
+        name: string;
+        website: string;
+        logo_path: string;
+        type: string;
+      }
+    | null
+    | undefined;
+};
+
+export type CreateSponsorMutationVariables = Exact<{
+  data: CreateSponsorInputs;
+}>;
+
+export type CreateSponsorMutation = {
+  __typename?: 'Mutation';
+  createSponsor: {
+    __typename?: 'Sponsor';
+    name: string;
+    website: string;
+    logo_path: string;
+    type: string;
+  };
+};
+
+export type UpdateSponsorMutationVariables = Exact<{
+  data: UpdateSponsorInputs;
+  updateSponsorId: Scalars['Int'];
+}>;
+
+export type UpdateSponsorMutation = {
+  __typename?: 'Mutation';
+  updateSponsor: {
+    __typename?: 'Sponsor';
+    name: string;
+    website: string;
+    logo_path: string;
+    type: string;
+  };
 };
 
 export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
@@ -2194,6 +2274,168 @@ export type SponsorsLazyQueryHookResult = ReturnType<
 export type SponsorsQueryResult = Apollo.QueryResult<
   SponsorsQuery,
   SponsorsQueryVariables
+>;
+export const SponsorDocument = gql`
+  query sponsor($sponsorId: Int!) {
+    sponsor(id: $sponsorId) {
+      id
+      name
+      website
+      logo_path
+      type
+    }
+  }
+`;
+
+/**
+ * __useSponsorQuery__
+ *
+ * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSponsorQuery({
+ *   variables: {
+ *      sponsorId: // value for 'sponsorId'
+ *   },
+ * });
+ */
+export function useSponsorQuery(
+  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
+    SponsorDocument,
+    options,
+  );
+}
+export function useSponsorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SponsorQuery,
+    SponsorQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
+    SponsorDocument,
+    options,
+  );
+}
+export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
+export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
+export type SponsorQueryResult = Apollo.QueryResult<
+  SponsorQuery,
+  SponsorQueryVariables
+>;
+export const CreateSponsorDocument = gql`
+  mutation createSponsor($data: CreateSponsorInputs!) {
+    createSponsor(data: $data) {
+      name
+      website
+      logo_path
+      type
+    }
+  }
+`;
+export type CreateSponsorMutationFn = Apollo.MutationFunction<
+  CreateSponsorMutation,
+  CreateSponsorMutationVariables
+>;
+
+/**
+ * __useCreateSponsorMutation__
+ *
+ * To run a mutation, you first call `useCreateSponsorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSponsorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSponsorMutation, { data, loading, error }] = useCreateSponsorMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateSponsorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateSponsorMutation,
+    CreateSponsorMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateSponsorMutation,
+    CreateSponsorMutationVariables
+  >(CreateSponsorDocument, options);
+}
+export type CreateSponsorMutationHookResult = ReturnType<
+  typeof useCreateSponsorMutation
+>;
+export type CreateSponsorMutationResult =
+  Apollo.MutationResult<CreateSponsorMutation>;
+export type CreateSponsorMutationOptions = Apollo.BaseMutationOptions<
+  CreateSponsorMutation,
+  CreateSponsorMutationVariables
+>;
+export const UpdateSponsorDocument = gql`
+  mutation updateSponsor($data: UpdateSponsorInputs!, $updateSponsorId: Int!) {
+    updateSponsor(data: $data, id: $updateSponsorId) {
+      name
+      website
+      logo_path
+      type
+    }
+  }
+`;
+export type UpdateSponsorMutationFn = Apollo.MutationFunction<
+  UpdateSponsorMutation,
+  UpdateSponsorMutationVariables
+>;
+
+/**
+ * __useUpdateSponsorMutation__
+ *
+ * To run a mutation, you first call `useUpdateSponsorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSponsorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSponsorMutation, { data, loading, error }] = useUpdateSponsorMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *      updateSponsorId: // value for 'updateSponsorId'
+ *   },
+ * });
+ */
+export function useUpdateSponsorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateSponsorMutation,
+    UpdateSponsorMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateSponsorMutation,
+    UpdateSponsorMutationVariables
+  >(UpdateSponsorDocument, options);
+}
+export type UpdateSponsorMutationHookResult = ReturnType<
+  typeof useUpdateSponsorMutation
+>;
+export type UpdateSponsorMutationResult =
+  Apollo.MutationResult<UpdateSponsorMutation>;
+export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
+  UpdateSponsorMutation,
+  UpdateSponsorMutationVariables
 >;
 export const VenuesDocument = gql`
   query venues {

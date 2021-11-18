@@ -49,6 +49,7 @@ export const EventPage: NextPage = () => {
       </Layout>
     );
   }
+
   return (
     <Layout>
       <Box p="2" borderWidth="1px" borderRadius="lg">

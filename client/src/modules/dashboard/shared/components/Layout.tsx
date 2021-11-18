@@ -7,6 +7,7 @@ const links = [
   { text: 'Chapters', link: '/dashboard/chapters' },
   { text: 'Events', link: '/dashboard/events' },
   { text: 'Venues', link: '/dashboard/venues' },
+  { text: 'Sponsors', link: '/dashboard/sponsors' },
 ];
 
 export const Layout: React.FC = ({ children }) => {

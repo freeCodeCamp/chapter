@@ -1,20 +1,26 @@
 import { join } from 'path';
 import { config } from 'dotenv';
-config({ path: join(__dirname, '../../../.env') });
+import expand from 'dotenv-expand';
+
+const result = config({ path: join(__dirname, '../../../.env') });
+
+if (result.error) {
+  console.warn(`
+  ----------------------------------------------------
+  Warning: .env file not found.
+  ----------------------------------------------------
+  Please copy .env.example to .env
+  You can ignore this warning if using a different way
+  to setup this environment.
+  ----------------------------------------------------
+  `);
+} else {
+  expand(result);
+}
+
 export interface Environment {
   NODE_ENV: 'production' | 'development' | 'test' | undefined;
   JWT_SECRET: string;
-
-  // DB_USER=dev
-  // DB_PASSWORD=foobar123
-  // DB_NAME=chapter
-  // DB_URL=localhost
-  // IS_DOCKER=false
-
-  // CHAPTER_EMAIL=ourEmail@placeholder.place
-  // EMAIL_USERNAME=project.1
-  // EMAIL_PASSWORD=secret.1
-  // EMAIL_SERVICE=emailServicePlaceholder
 }
 
 export const getConfig = <T extends keyof Environment>(
@@ -38,5 +44,5 @@ export const getConfig = <T extends keyof Environment>(
 
 export const getEnv = () => getConfig('NODE_ENV', 'development');
 export const isDev = () => getEnv() === 'development';
-export const isProd = () => getEnv() === 'production';
+export const isProd = () => !isDev() && !isTest();
 export const isTest = () => getEnv() === 'test';

@@ -1,6 +1,6 @@
 import { IsUrl } from 'class-validator';
 import { InputType, Field, Int } from 'type-graphql';
-import { VenueType } from 'src/models';
+import { events_venue_type_enum } from 'src/graphql-types';
 
 @InputType()
 export class CreateEventInputs {
@@ -18,8 +18,8 @@ export class CreateEventInputs {
   @IsUrl()
   streaming_url?: string;
 
-  @Field(() => VenueType, { nullable: true })
-  venue_type: VenueType;
+  @Field(() => events_venue_type_enum, { nullable: true })
+  venue_type: events_venue_type_enum;
 
   @Field(() => Date)
   start_at: number;
@@ -31,10 +31,10 @@ export class CreateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venueId?: number;
+  venue_id?: number;
 
   @Field(() => Int)
-  chapterId: number;
+  chapter_id: number;
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
@@ -42,7 +42,7 @@ export class CreateEventInputs {
   @Field(() => String)
   image_url: string;
   @Field(() => [Int])
-  sponsorIds: number[];
+  sponsor_ids: number[];
 }
 
 @InputType()
@@ -61,8 +61,8 @@ export class UpdateEventInputs {
   @IsUrl()
   streaming_url?: string;
 
-  @Field(() => VenueType, { nullable: true })
-  venue_type: VenueType;
+  @Field(() => events_venue_type_enum, { nullable: true })
+  venue_type: events_venue_type_enum;
 
   @Field(() => Date, { nullable: true })
   start_at: number;
@@ -74,7 +74,7 @@ export class UpdateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venueId?: number;
+  venue_id?: number;
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
@@ -82,5 +82,5 @@ export class UpdateEventInputs {
   @Field(() => String, { nullable: true })
   image_url: string;
   @Field(() => [Int])
-  sponsorIds: number[];
+  sponsor_ids: number[];
 }

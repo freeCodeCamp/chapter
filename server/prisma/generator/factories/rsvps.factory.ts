@@ -1,48 +1,50 @@
+import { Prisma } from '@prisma/client';
 import { date } from 'faker';
+
 import { random, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
-import { Event, User, Rsvp, UserEventRole } from 'src/models';
+import { prisma } from 'src/prisma';
 
-const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
-  const rsvps: Rsvp[] = [];
-  const userEventRoles: UserEventRole[] = [];
+const createRsvps = async (eventIds: number[], userIds: number[]) => {
+  const rsvps: Prisma.rsvpsCreateManyInput[] = [];
+  const userEventRoles: Prisma.user_event_rolesCreateManyInput[] = [];
 
   const eventIterator = makeBooleanIterator();
-  for (const event of events) {
-    const eventUsers = randomItems(users, users.length / 2);
-    const numberWaiting = 1 + random(eventUsers.length - 2);
-    const numberCanceled = 1 + random(eventUsers.length - numberWaiting - 1);
+  for (const eventId of eventIds) {
+    const eventUserIds = randomItems(userIds, userIds.length / 2);
+    const numberWaiting = 1 + random(eventUserIds.length - 2);
+    const numberCanceled = 1 + random(eventUserIds.length - numberWaiting - 1);
 
     // makes sure half of each event's users are organisers, but
     // alternates which half.
     const organizerIterator = makeBooleanIterator(eventIterator.next().value);
 
-    for (let i = 0; i < eventUsers.length; i++) {
+    for (let i = 0; i < eventUserIds.length; i++) {
       const on_waitlist = i < numberWaiting;
       const canceled = !on_waitlist && i < numberWaiting + numberCanceled;
-      const rsvp = new Rsvp({
-        event,
-        user: eventUsers[i],
+      const rsvp = {
+        event_id: eventId,
+        user_id: eventUserIds[i],
         date: date.future(),
         on_waitlist,
         canceled,
         confirmed_at: new Date(),
-      });
+      };
 
-      const attendee = new UserEventRole({
-        userId: eventUsers[i].id,
-        eventId: event.id,
-        roleName: 'attendee',
+      const attendee = {
+        user_id: eventUserIds[i],
+        event_id: eventId,
+        role_name: 'attendee',
         subscribed: true, // TODO: have some unsubscribed users
-      });
+      };
 
       if (organizerIterator.next().value) {
-        const organizer = new UserEventRole({
-          userId: eventUsers[i].id,
-          eventId: event.id,
-          roleName: 'organizer',
+        const organizer = {
+          user_id: eventUserIds[i],
+          event_id: eventId,
+          role_name: 'organizer',
           subscribed: true, // TODO: even organizers may wish to opt out of emails
-        });
+        };
         userEventRoles.push(organizer);
       }
 
@@ -52,22 +54,18 @@ const createRsvps = async (events: Event[], users: User[]): Promise<Rsvp[]> => {
   }
 
   try {
-    await Promise.all(rsvps.map((rsvp) => rsvp.save()));
+    await prisma.rsvps.createMany({ data: rsvps });
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding rsvps');
   }
 
   try {
-    await Promise.all(
-      userEventRoles.map((userEventRole) => userEventRole.save()),
-    );
+    await prisma.user_event_roles.createMany({ data: userEventRoles });
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding user-event-roles');
   }
-
-  return rsvps;
 };
 
 export default createRsvps;

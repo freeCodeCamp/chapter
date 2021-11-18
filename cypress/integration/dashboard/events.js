@@ -13,7 +13,7 @@ const testEvent = {
 
 describe('events dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:reset');
+    cy.exec('npm run db:seed');
     cy.login();
     cy.mhDeleteAll();
   });
@@ -36,7 +36,7 @@ describe('events dashboard', () => {
 
   it('emails interested users when an event is created', () => {
     createEvent();
-    cy.location('pathname').should('match', /^\/dashboard\/events\/\d/);
+    cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(testEvent)).each(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
@@ -101,7 +101,12 @@ describe('events dashboard', () => {
       .invoke('text')
       .as('venueTitle');
 
-    cy.findByRole('form', { name: 'Add event' }).submit();
+    cy.findByRole('form', { name: 'Add event' })
+      .findByRole('button', {
+        name: 'Add event',
+      })
+      .click();
+    cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
   }
 
   it('has a button to email attendees', () => {
@@ -182,7 +187,13 @@ describe('events dashboard', () => {
         .invoke('text')
         .as('newVenueTitle');
     });
-    cy.findByRole('form', { name: 'Save Event Changes' }).submit();
+    cy.findByRole('form', { name: 'Save Event Changes' })
+      .findByRole('button', {
+        name: 'Save Event Changes',
+      })
+      .click();
+
+    cy.location('pathname').should('match', /^\/dashboard\/events$/);
 
     cy.waitUntilMail('allMail');
 

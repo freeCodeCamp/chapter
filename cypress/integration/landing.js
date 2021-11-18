@@ -15,7 +15,7 @@ describe('landing page', () => {
       .then(($eventLink) => {
         const eventTitle = $eventLink.text();
         cy.wrap($eventLink).click();
-        cy.location('pathname').should('match', /^\/events\/\d/);
+        cy.location('pathname').should('match', /^\/events\/\d+$/);
         cy.get('h1').should('have.text', eventTitle);
       });
   });
@@ -27,7 +27,7 @@ describe('landing page', () => {
       .then(($chapterLink) => {
         const chapterTitle = $chapterLink.text();
         cy.wrap($chapterLink).click();
-        cy.location('pathname').should('match', /^\/chapters\/\d/);
+        cy.location('pathname').should('match', /^\/chapters\/\d+$/);
         cy.get('h1').should('have.text', chapterTitle);
       });
   });

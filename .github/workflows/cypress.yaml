@@ -48,7 +48,7 @@ jobs:
       - name: Set Chapter Environment Variables
         run: | 
           cp .env.example .env
-          echo IS_DOCKER=false >> .env
+          echo DB_PORT=5432 >> .env
 
       - name: Install Dependencies
         run: npm i

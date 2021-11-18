@@ -1,6 +1,6 @@
 import { Arg, Ctx, Int, Mutation, Resolver } from 'type-graphql';
 import { GQLCtx } from 'src/common-types/gql';
-import { Event, UserChapterRole } from 'src/models';
+import { prisma } from 'src/prisma';
 
 @Resolver()
 export class UserChapterRoleResolver {
@@ -8,11 +8,14 @@ export class UserChapterRoleResolver {
   async initUserInterestForChapter(
     @Arg('event_id', () => Int) event_id: number,
     @Ctx() ctx: GQLCtx,
-  ) {
+  ): Promise<boolean> {
     if (!ctx.user) {
       throw Error('User must be logged in to update role ');
     }
-    const event = await Event.findOne(event_id, { relations: ['chapter'] });
+    const event = await prisma.events.findUnique({
+      where: { id: event_id },
+      include: { chapter: true },
+    });
     if (!event) {
       throw Error('Cannot find the event with id ' + event_id);
     }
@@ -20,18 +23,27 @@ export class UserChapterRoleResolver {
       throw Error('Cannot find the chapter of the event with id ' + event_id);
     }
 
-    const userChapterRole = await UserChapterRole.findOne({
-      where: { user_id: ctx.user.id, chapter_id: event.chapter.id },
+    // TODO: can we try to create a member role in one query? Wrap it in a try
+    // catch and simply return true if it fails due to unique constraint
+    // violation?
+    const userChapterRole = await prisma.user_chapter_roles.findFirst({
+      where: {
+        user_id: ctx.user.id,
+        chapter_id: event.chapter.id,
+      },
     });
 
     if (!userChapterRole) {
-      new UserChapterRole({
-        userId: ctx.user.id,
-        chapterId: event.chapter.id,
-        roleName: 'member',
-        interested: true,
-      }).save();
+      await prisma.user_chapter_roles.create({
+        data: {
+          user: { connect: { id: ctx.user.id } },
+          chapter: { connect: { id: event.chapter.id } },
+          role_name: 'member',
+          interested: true,
+        },
+      });
     }
+
     return true;
   }
 }

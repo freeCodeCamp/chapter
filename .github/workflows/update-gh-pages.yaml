@@ -30,7 +30,7 @@ jobs:
         run: npm i -g npm@8 && npm i
       - name: Create the schema
         env:
-          IS_DOCKER: false
+          DB_PORT: 5432
         run: "npm run db:sync"
       - uses: actions/checkout@v2
         with:

@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { TokenExpiredError, JsonWebTokenError, verify } from 'jsonwebtoken';
 import { Request } from 'src/common-types/gql';
 import { getConfig } from 'src/config';
-import { User } from 'src/models';
+import { prisma } from 'src/prisma';
 
 export const userMiddleware = (
   req: Request,
@@ -26,12 +26,15 @@ export const userMiddleware = (
     return next(new JsonWebTokenError('Missing contents'));
   }
 
-  User.findOne(value.id, { relations: ['chapter_roles'] })
+  prisma.users
+    .findUnique({
+      where: { id: value.id },
+      include: { chapter_roles: true },
+    })
     .then((user) => {
       if (!user) {
         return next('User not found');
       }
-
       req.user = user;
       next();
     })

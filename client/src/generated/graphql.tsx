@@ -31,12 +31,22 @@ export type AuthenticateType = {
 
 export type Chapter = {
   __typename?: 'Chapter';
-  banned_users: Array<UserBan>;
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
-  created_at: Scalars['DateTime'];
-  creator: User;
+  description: Scalars['String'];
+  details: Scalars['String'];
+  id: Scalars['Int'];
+  imageUrl: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
+export type ChapterWithRelations = {
+  __typename?: 'ChapterWithRelations';
+  category: Scalars['String'];
+  city: Scalars['String'];
+  country: Scalars['String'];
   description: Scalars['String'];
   details: Scalars['String'];
   events: Array<Event>;
@@ -44,7 +54,6 @@ export type Chapter = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  updated_at: Scalars['DateTime'];
   users: Array<UserChapterRole>;
 };
 
@@ -61,17 +70,17 @@ export type CreateChapterInputs = {
 
 export type CreateEventInputs = {
   capacity: Scalars['Float'];
-  chapterId: Scalars['Int'];
+  chapter_id: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   image_url: Scalars['String'];
   invite_only?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
-  sponsorIds: Array<Scalars['Int']>;
+  sponsor_ids: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
-  venueId?: InputMaybe<Scalars['Int']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
 };
 
@@ -106,35 +115,61 @@ export type Event = {
   __typename?: 'Event';
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
-  chapter: Chapter;
-  created_at: Scalars['DateTime'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
-  rsvps: Array<Rsvp>;
-  sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
-  updated_at: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
-  user_roles: Array<UserEventRole>;
-  venue?: Maybe<Venue>;
   venue_type: VenueType;
 };
 
 export type EventSponsor = {
   __typename?: 'EventSponsor';
-  created_at: Scalars['DateTime'];
-  event: Event;
-  event_id: Scalars['Int'];
-  id: Scalars['Int'];
   sponsor: Sponsor;
-  sponsor_id: Scalars['Int'];
-  updated_at: Scalars['DateTime'];
+};
+
+export type EventWithChapter = {
+  __typename?: 'EventWithChapter';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Tag>>;
+  url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
+};
+
+export type EventWithEverything = {
+  __typename?: 'EventWithEverything';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  rsvps: Array<RsvpWithUser>;
+  sponsors: Array<EventSponsor>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Tag>>;
+  url?: Maybe<Scalars['String']>;
+  venue?: Maybe<Venue>;
+  venue_type: VenueType;
 };
 
 export type LoginInput = {
@@ -180,7 +215,8 @@ export type MutationCancelEventArgs = {
 };
 
 export type MutationConfirmRsvpArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationCreateChapterArgs = {
@@ -208,7 +244,8 @@ export type MutationDeleteEventArgs = {
 };
 
 export type MutationDeleteRsvpArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationDeleteVenueArgs = {
@@ -228,7 +265,7 @@ export type MutationRegisterArgs = {
 };
 
 export type MutationRsvpEventArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 };
 
 export type MutationSendEmailArgs = {
@@ -262,12 +299,12 @@ export type MutationUpdateVenueArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  chapter?: Maybe<Chapter>;
+  chapter?: Maybe<ChapterWithRelations>;
   chapters: Array<Chapter>;
-  event?: Maybe<Event>;
-  events: Array<Event>;
+  event?: Maybe<EventWithEverything>;
+  events: Array<EventWithEverything>;
   me?: Maybe<User>;
-  paginatedEvents: Array<Event>;
+  paginatedEvents: Array<EventWithChapter>;
   sponsor?: Maybe<Sponsor>;
   sponsors: Array<Sponsor>;
   venue?: Maybe<Venue>;
@@ -310,13 +347,21 @@ export type Rsvp = {
   __typename?: 'Rsvp';
   canceled: Scalars['Boolean'];
   confirmed_at: Scalars['DateTime'];
-  created_at: Scalars['DateTime'];
   date: Scalars['DateTime'];
-  event: Event;
-  id: Scalars['Int'];
+  event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+};
+
+export type RsvpWithUser = {
+  __typename?: 'RsvpWithUser';
+  canceled: Scalars['Boolean'];
+  confirmed_at: Scalars['DateTime'];
+  date: Scalars['DateTime'];
+  event_id: Scalars['Int'];
+  on_waitlist: Scalars['Boolean'];
   user: User;
+  user_id: Scalars['Int'];
 };
 
 export type SendEmailInputs = {
@@ -327,23 +372,17 @@ export type SendEmailInputs = {
 
 export type Sponsor = {
   __typename?: 'Sponsor';
-  created_at: Scalars['DateTime'];
-  events: Array<EventSponsor>;
   id: Scalars['Int'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
   type: Scalars['String'];
-  updated_at: Scalars['DateTime'];
   website: Scalars['String'];
 };
 
 export type Tag = {
   __typename?: 'Tag';
-  created_at: Scalars['DateTime'];
-  event: Event;
   id: Scalars['Int'];
   name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
 };
 
 export type UpdateChapterInputs = {
@@ -364,11 +403,11 @@ export type UpdateEventInputs = {
   image_url?: InputMaybe<Scalars['String']>;
   invite_only?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
-  sponsorIds: Array<Scalars['Int']>;
+  sponsor_ids: Array<Scalars['Int']>;
   start_at?: InputMaybe<Scalars['DateTime']>;
   streaming_url?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
-  venueId?: InputMaybe<Scalars['Int']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
 };
 
@@ -392,60 +431,17 @@ export type UpdateVenueInputs = {
 
 export type User = {
   __typename?: 'User';
-  banned_chapters: Array<UserBan>;
-  chapter_roles: Array<UserChapterRole>;
-  chapters: Array<UserChapterRole>;
-  created_at: Scalars['DateTime'];
-  created_chapters: Array<Chapter>;
   email: Scalars['String'];
-  event_roles: Array<UserEventRole>;
   first_name: Scalars['String'];
   id: Scalars['Int'];
-  instance_roles: Array<UserInstanceRole>;
   last_name: Scalars['String'];
   name: Scalars['String'];
-  rsvps: Array<Rsvp>;
-  updated_at: Scalars['DateTime'];
-};
-
-export type UserBan = {
-  __typename?: 'UserBan';
-  chapter: Chapter;
-  created_at: Scalars['DateTime'];
-  id: Scalars['Int'];
-  updated_at: Scalars['DateTime'];
-  user: User;
 };
 
 export type UserChapterRole = {
   __typename?: 'UserChapterRole';
-  chapter: Chapter;
   chapter_id: Scalars['Int'];
-  created_at: Scalars['DateTime'];
-  id: Scalars['Int'];
   interested: Scalars['Boolean'];
-  role_name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
-  user: User;
-  user_id: Scalars['Int'];
-};
-
-export type UserEventRole = {
-  __typename?: 'UserEventRole';
-  created_at: Scalars['DateTime'];
-  event: Event;
-  event_id: Scalars['Int'];
-  id: Scalars['Int'];
-  role_name: Scalars['String'];
-  subscribed: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
-  user: User;
-  user_id: Scalars['Int'];
-};
-
-export type UserInstanceRole = {
-  __typename?: 'UserInstanceRole';
-  role_name: Scalars['String'];
   user: User;
   user_id: Scalars['Int'];
 };
@@ -454,8 +450,6 @@ export type Venue = {
   __typename?: 'Venue';
   city: Scalars['String'];
   country: Scalars['String'];
-  created_at: Scalars['DateTime'];
-  events: Array<Event>;
   id: Scalars['Int'];
   latitude?: Maybe<Scalars['Float']>;
   longitude?: Maybe<Scalars['Float']>;
@@ -463,7 +457,6 @@ export type Venue = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
-  updated_at: Scalars['DateTime'];
 };
 
 /** All possible venue types for an event */
@@ -529,7 +522,7 @@ export type ChapterQuery = {
   __typename?: 'Query';
   chapter?:
     | {
-        __typename?: 'Chapter';
+        __typename?: 'ChapterWithRelations';
         id: number;
         name: string;
         description: string;
@@ -566,7 +559,7 @@ export type ChapterUsersQuery = {
   __typename?: 'Query';
   chapter?:
     | {
-        __typename?: 'Chapter';
+        __typename?: 'ChapterWithRelations';
         users: Array<{
           __typename?: 'UserChapterRole';
           interested: boolean;
@@ -632,7 +625,7 @@ export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 export type EventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'Event';
+    __typename?: 'EventWithEverything';
     id: number;
     name: string;
     canceled: boolean;
@@ -661,7 +654,7 @@ export type EventQuery = {
   __typename?: 'Query';
   event?:
     | {
-        __typename?: 'Event';
+        __typename?: 'EventWithEverything';
         id: number;
         name: string;
         description: string;
@@ -703,8 +696,7 @@ export type EventQuery = {
           | null
           | undefined;
         rsvps: Array<{
-          __typename?: 'Rsvp';
-          id: number;
+          __typename?: 'RsvpWithUser';
           on_waitlist: boolean;
           user: { __typename?: 'User'; id: number; name: string };
         }>;
@@ -721,7 +713,7 @@ export type EventVenuesQuery = {
   __typename?: 'Query';
   event?:
     | {
-        __typename?: 'Event';
+        __typename?: 'EventWithEverything';
         id: number;
         name: string;
         description: string;
@@ -805,21 +797,18 @@ export type DeleteEventMutation = {
 };
 
 export type ConfirmRsvpMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 }>;
 
 export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
-  confirmRsvp: {
-    __typename?: 'Rsvp';
-    id: number;
-    confirmed_at: any;
-    on_waitlist: boolean;
-  };
+  confirmRsvp: { __typename?: 'Rsvp'; confirmed_at: any; on_waitlist: boolean };
 };
 
 export type DeleteRsvpMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 }>;
 
 export type DeleteRsvpMutation = {
@@ -853,8 +842,6 @@ export type SponsorsQuery = {
   sponsors: Array<{
     __typename?: 'Sponsor';
     id: number;
-    created_at: any;
-    updated_at: any;
     name: string;
     website: string;
     logo_path: string;
@@ -1000,7 +987,7 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent?: { __typename?: 'Rsvp'; id: number } | null | undefined;
+  rsvpEvent?: { __typename?: 'Rsvp'; confirmed_at: any } | null | undefined;
 };
 
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1008,7 +995,7 @@ export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
 export type MinEventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'Event';
+    __typename?: 'EventWithEverything';
     id: number;
     name: string;
     description: string;
@@ -1037,7 +1024,7 @@ export type HomeQueryVariables = Exact<{
 export type HomeQuery = {
   __typename?: 'Query';
   paginatedEvents: Array<{
-    __typename?: 'Event';
+    __typename?: 'EventWithChapter';
     id: number;
     name: string;
     description: string;
@@ -1674,7 +1661,6 @@ export const EventDocument = gql`
         country
       }
       rsvps {
-        id
         on_waitlist
         user {
           id
@@ -2020,9 +2006,8 @@ export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutationVariables
 >;
 export const ConfirmRsvpDocument = gql`
-  mutation confirmRsvp($id: Int!) {
-    confirmRsvp(id: $id) {
-      id
+  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
+    confirmRsvp(eventId: $eventId, userId: $userId) {
       confirmed_at
       on_waitlist
     }
@@ -2046,7 +2031,8 @@ export type ConfirmRsvpMutationFn = Apollo.MutationFunction<
  * @example
  * const [confirmRsvpMutation, { data, loading, error }] = useConfirmRsvpMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -2072,8 +2058,8 @@ export type ConfirmRsvpMutationOptions = Apollo.BaseMutationOptions<
   ConfirmRsvpMutationVariables
 >;
 export const DeleteRsvpDocument = gql`
-  mutation deleteRsvp($id: Int!) {
-    deleteRsvp(id: $id)
+  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
+    deleteRsvp(eventId: $eventId, userId: $userId)
   }
 `;
 export type DeleteRsvpMutationFn = Apollo.MutationFunction<
@@ -2094,7 +2080,8 @@ export type DeleteRsvpMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteRsvpMutation, { data, loading, error }] = useDeleteRsvpMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -2221,8 +2208,6 @@ export const SponsorsDocument = gql`
   query sponsors {
     sponsors {
       id
-      created_at
-      updated_at
       name
       website
       logo_path
@@ -2667,8 +2652,8 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RsvpToEventDocument = gql`
   mutation rsvpToEvent($eventId: Int!) {
-    rsvpEvent(id: $eventId) {
-      id
+    rsvpEvent(eventId: $eventId) {
+      confirmed_at
     }
   }
 `;

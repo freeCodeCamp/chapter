@@ -19,7 +19,7 @@
     - [Username and Password](#username-and-password)
     - [Host and Port](#host-and-port)
     - [Admin Tools](#admin-tools)
-    - [Using TypeORM and NPM](#using-typeorm-and-npm)
+    - [Using Prisma and NPM](#using-prisma-and-npm)
       - [Initializing the Database](#initializing-the-database)
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
@@ -360,7 +360,7 @@ Ensure the Docker tools are installed:
 * _Docker_ using `docker --version` and it should output something like _Docker version 19.03.13..._
 * _Docker Compose_ using `docker-compose --version` and it should output something like _docker-compose version 1.28.5..._
 
-Make sure _IS_DOCKER=true_ is set in [_.env_](#env-configuration-file).
+Make sure _DB_PORT=54320_ is set in [_.env_](#env-configuration-file).
 
 Run _Docker Compose_ `docker-compose up` from the root code directory and wait for the successful output as shown in the following example.
 > Note: This could take minutes for each line to appear.
@@ -380,7 +380,7 @@ This is a much lighter development footprint than _Docker Mode_, but you will ne
 
 **Prerequisite**: PostgreSQL must exist and be [configured](#database).
 
-Set _IS_DOCKER=false_ in [_.env_](#env-configuration-file). 
+Set _DB_PORT=5432_ in [_.env_](#env-configuration-file). 
 
 Run `npm run both` to start the api-server and client-server:
 
@@ -408,14 +408,15 @@ In order to understand where to start, it may help to familiarize yourself with 
 
 <details><summary>Tech Stack Overview</summary>
 
-The database we use is [PostgreSQL](https://www.postgresql.org/), which we interact with via [TypeORM](https://typeorm.io/).  This ORM lets us define our database tables via classes whose properties map to columns in the database.  It makes use of decorators to specify the details of the db.  The [Express](https://expressjs.com/) server itself uses [Apollo GraphQL server](https://www.apollographql.com/docs/apollo-server/) to handle requests from the client. Apollo needs to know the GraphQL schema and we define that by using [TypeGraphQL](https://typegraphql.com/) since it lets us use decorators, much like TypeORM.  This means we can use both sets of decorators in the same Model class, keeping our database and GraphQL schema definitions together.
+The database we use is [PostgreSQL](https://www.postgresql.org/), which we interact with via [Prisma](https://www.prisma.io/).  Prisma maps between our database and our code, providing a fully type-safe way to interact with the database.  The [Express](https://expressjs.com/) server itself uses [Apollo GraphQL server](https://www.apollographql.com/docs/apollo-server/) to handle requests from the client. Apollo needs to know the GraphQL schema and we define that by using [TypeGraphQL](https://typegraphql.com/) since it lets us automate schema generation and uses decorators for a clean syntax.
 
 The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
 </details>
 
 ## Where to Find the Code
 
-* Database and GraphQL schema are defined by files in _server/src/models_
+* The database schema is defined in _server/prisma/schema.prisma_
+* GraphQL object types are defined by files in _server/src/graphql-types_
 * Resolvers for the GraphQL queries are defined in _server/src/controllers_
 * The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
 * To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
@@ -500,7 +501,7 @@ The initial values of the _.env_ will be copied from the _.env.example_ file. Ho
 
 ## Database
 
-[PostgreSQL](https://www.postgresql.org/download) is our database and [TypeORM](https://typeorm.io/) is used to map tables to JS objects.
+[PostgreSQL](https://www.postgresql.org/download) is our database and [Prisma](https://www.prisma.io) is used to map tables to JS objects.
 
 ### Schema
 Our [database schema and ER Diagrams are available online](https://opensource.freecodecamp.org/chapter/) using a custom GitHub pages domain using the [SchemaSpy](http://schemaspy.org/) format.
@@ -522,12 +523,10 @@ Updates to the _gh-pages_ branch and [online schema](https://opensource.freecode
   * In **Docker Mode** - `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
   * In **Manual Mode** - `psql -h localhost -p 5432 -U postgres` 
 
-### Using TypeORM and NPM
+### Using Prisma and NPM
 
 Our DB commands closely mirror their Rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
 
-`npm run db:generate NAME` -> `rake db:generate NAME`, note that this command checks for the diff between models and db, unlike rails where you need to specify the migration by hand
-`npm run db:migrate` -> `rake db:migrate`
 `npm run db:seed` -> `rake db:seed`
 `npm run db:reset` -> `rake db:reset`
 
@@ -538,52 +537,21 @@ If starting the application for the first time, or syncronizing with the latest 
 * sync the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-The `npm run db:reset` command will do all three tasks by running `npm run db:drop`, `npm run db:sync` and `npm run db:seed` sequentially.
+The `npm run db:reset` command will do all three tasks by running `npm run db:sync` and `npm run db:seed` sequentially.
   
 _Troubleshooting:_ If using ElephantSQL you may have to submit each of these commands individually.
 
-#### Creating a New Model / Entity
+#### Creating a new table
 
-`npm run typeorm entity:create -- --name=ModelName`
-
-This would create _ModelName.ts_ in _server/src/models_
-
-To keep everything DRY, add `extends BaseModel` to the class and import it from 'models/BaseModel' to not repeat id, createdAt, and updatedAt fields on every single model
-
-`npx typeorm` can also be used, but must be run inside _server_.
+The _prisma.schema_ file is the single source of truth for the database schema.
 
 #### Syncing the Schema
 
-* For development environments, [TypeORM will keep the database schema in sync](https://github.com/typeorm/typeorm/blob/master/README.md) with the definitions in _server/models_ when the server is started.
-* If a manual sync becomes necessary, run the `npm run db:sync` command.
-* For production environments, run the `npm run db:migrate` command.
+* In development, run the `npm run db:sync` command.
 
 #### Creating a Migration
 
-After you created a new model or updated an existing one and you wish to update a production database, you need to generate a migration for those changes. To do so run:
-
-`npm run db:generate MIGRATION_NAME`
-
-Since this runs a compare agains the current db schema, you need to have the DB running (If you're using docker-compose, you need to have that running).
-
-After that, check the generated SQL in _db/migrations/date-MigrationName.ts_
-
-#### Running Migrations and Checking They Were Run
-
-You can manually run them by doing
-`npm run db:migrate`
-
-and then check if it happened correctly
-
-`npm run typeorm migration:show`
-
-it should ouput something like
-
-```
- [X] Chapter1574341690449
- ...
- [X] MigrationName1575633316367
-```
+The database is currently undergoing a re-write and we are using `prisma db push` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
 
 # Running Remotely
 

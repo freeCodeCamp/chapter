@@ -15,7 +15,7 @@ services:
     build: ./server
     working_dir: /usr/chapter/server
     environment:
-      - DB_URL=db
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
       - EMAIL_HOST=mailhog
     ports:
       - "5000:5000"

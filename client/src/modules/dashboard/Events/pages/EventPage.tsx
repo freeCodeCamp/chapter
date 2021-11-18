@@ -9,6 +9,8 @@ import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
   useEventQuery,
+  MutationConfirmRsvpArgs,
+  MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
@@ -23,22 +25,32 @@ const args = (id: number) => ({
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
-  const id = getId(router.query) || -1;
-  const { loading, error, data } = useEventQuery({ variables: { id } });
+  const eventId = getId(router.query) || -1;
+  const { loading, error, data } = useEventQuery({
+    variables: { id: eventId },
+  });
 
-  const [confirmRsvpFn] = useConfirmRsvpMutation(args(id));
-  const [kickRsvpFn] = useDeleteRsvpMutation(args(id));
+  const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
+  const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
 
-  const confirmRSVP = (id: number) => () => {
-    return confirm().then(() => confirmRsvpFn({ variables: { id } }));
-  };
+  const confirmRSVP =
+    ({ eventId, userId }: MutationConfirmRsvpArgs) =>
+    () => {
+      return confirm().then(() =>
+        confirmRsvpFn({ variables: { eventId, userId } }),
+      );
+    };
 
-  const kick = (id: number) => () => {
-    return confirmDelete().then(() => kickRsvpFn({ variables: { id } }));
-  };
+  const kick =
+    ({ eventId, userId }: MutationDeleteRsvpArgs) =>
+    () => {
+      return confirmDelete().then(() =>
+        kickRsvpFn({ variables: { eventId, userId } }),
+      );
+    };
 
   if (loading || error || !data || !data.event) {
     return (
@@ -105,13 +117,16 @@ export const EventPage: NextPage = () => {
               : '0')
           }
           data={data.event.rsvps.filter((r) => !r.on_waitlist)}
-          keys={['id', 'user', 'ops'] as const}
+          keys={['user', 'ops'] as const}
           emptyText="No users"
           mapper={{
-            id: (_, i) => <Text>{i + 1}</Text>,
             user: (r) => r.user.name,
             ops: (rsvp) => (
-              <Button size="xs" colorScheme="red" onClick={kick(rsvp.id)}>
+              <Button
+                size="xs"
+                colorScheme="red"
+                onClick={kick({ eventId, userId: rsvp.user.id })}
+              >
                 Kick
               </Button>
             ),
@@ -126,16 +141,18 @@ export const EventPage: NextPage = () => {
               : 0)
           }
           data={data.event.rsvps.filter((r) => r.on_waitlist)}
-          keys={['id', 'user', 'ops'] as const}
+          keys={['user', 'ops'] as const}
           emptyText="No users"
           mapper={{
-            id: (_, i) => <Text>{i + 1}</Text>,
             user: (r) => r.user.name,
             ops: (rsvp) => (
               <Button
                 size="xs"
                 colorScheme="green"
-                onClick={confirmRSVP(rsvp.id)}
+                onClick={confirmRSVP({
+                  eventId,
+                  userId: rsvp.user.id,
+                })}
               >
                 Confirm
               </Button>

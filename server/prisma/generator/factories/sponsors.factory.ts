@@ -1,6 +1,7 @@
+import { Prisma } from '@prisma/client';
 import { company, internet, system } from 'faker';
 import { randomEnum } from '../lib/random';
-import { Sponsor } from 'src/models';
+import { prisma } from 'src/prisma';
 
 enum SponsorTypes {
   'FOOD',
@@ -8,8 +9,8 @@ enum SponsorTypes {
   'OTHER',
 }
 
-const createSponsors = async (): Promise<Sponsor[]> => {
-  const sponsors: Sponsor[] = [];
+const createSponsors = async (): Promise<number[]> => {
+  const sponsors: number[] = [];
 
   for (let i = 0; i < 4; i++) {
     const name = company.companyName();
@@ -17,21 +18,17 @@ const createSponsors = async (): Promise<Sponsor[]> => {
     const logo_path = system.commonFileName('png');
     const type = String(randomEnum(SponsorTypes));
 
-    const sponsor = new Sponsor({
+    const sponsorData: Prisma.sponsorsCreateInput = {
       name,
       website,
       logo_path,
       type,
-    });
+    };
 
-    sponsors.push(sponsor);
-  }
+    // TODO: batch this once createMany returns the records.
+    const sponsor = await prisma.sponsors.create({ data: sponsorData });
 
-  try {
-    await Promise.all(sponsors.map((sponsor) => sponsor.save()));
-  } catch (e) {
-    console.error(e);
-    throw new Error('Error seeding locations');
+    sponsors.push(sponsor.id);
   }
 
   return sponsors;

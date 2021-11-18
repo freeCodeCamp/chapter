@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { verify, sign } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 
@@ -9,7 +10,8 @@ import {
 } from './inputs';
 import { GQLCtx } from 'src/common-types/gql';
 import { getConfig, isDev } from 'src/config';
-import { User } from 'src/models';
+import { User } from 'src/graphql-types';
+import { prisma } from 'src/prisma';
 import { authTokenService } from 'src/services/AuthToken';
 import MailerService from 'src/services/MailerService';
 
@@ -29,21 +31,23 @@ export class AuthResolver {
 
   @Mutation(() => User)
   async register(@Arg('data') data: RegisterInput): Promise<User> {
-    let user = await User.findOne({ where: { email: data.email } });
-    if (user) {
+    const existingUser = await prisma.users.findUnique({
+      where: { email: data.email },
+    });
+    if (existingUser) {
       throw new Error('EMAIL_IN_USE');
     }
 
-    user = new User({ ...data });
-    await user.save();
+    const userData: Prisma.usersCreateInput = data;
 
-    return user;
+    return await prisma.users.create({ data: userData });
   }
 
   @Mutation(() => LoginType)
   async login(@Arg('data') data: LoginInput): Promise<LoginType> {
-    const user = await User.findOne({ where: { email: data.email } });
-
+    const user = await prisma.users.findUnique({
+      where: { email: data.email },
+    });
     if (!user) {
       throw new Error('USER_NOT_FOUND');
     }
@@ -60,7 +64,7 @@ export class AuthResolver {
       ).sendEmail();
     }
 
-    // TODO: Send email
+    // TODO: Send email in production
 
     return {
       code,
@@ -78,7 +82,10 @@ export class AuthResolver {
       throw new Error('Token wrong / missing / expired');
     }
 
-    const user = await User.findOne({ where: { email: data.email } });
+    const user = await prisma.users.findUnique({
+      where: { email: data.email },
+    });
+
     if (!user) {
       throw new Error('User not found');
     }

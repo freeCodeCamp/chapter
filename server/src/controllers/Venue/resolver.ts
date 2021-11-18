@@ -1,53 +1,40 @@
+import { Prisma } from '@prisma/client';
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
-import { Venue } from 'src/models';
+import { Venue } from 'src/graphql-types';
+import { prisma } from 'src/prisma';
 
 @Resolver()
 export class VenueResolver {
   @Query(() => [Venue])
-  venues() {
-    return Venue.find();
+  venues(): Promise<Venue[]> {
+    return prisma.venues.findMany();
   }
 
   @Query(() => Venue, { nullable: true })
-  venue(@Arg('id', () => Int) id: number) {
-    return Venue.findOne(id);
+  venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
+    return prisma.venues.findUnique({ where: { id } });
   }
 
   @Mutation(() => Venue)
-  async createVenue(@Arg('data') data: CreateVenueInputs) {
-    const venue = new Venue({ ...data });
-    return venue.save();
+  async createVenue(@Arg('data') data: CreateVenueInputs): Promise<Venue> {
+    const venueData: Prisma.venuesCreateInput = data;
+    return prisma.venues.create({ data: venueData });
   }
 
   @Mutation(() => Venue)
-  async updateVenue(
+  updateVenue(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateVenueInputs,
-  ) {
-    const venue = await Venue.findOne(id);
-    if (!venue) throw new Error('Cant find venue');
-
-    venue.name = data.name ?? venue.name;
-    venue.street_address = data.street_address ?? venue.street_address;
-    venue.city = data.city ?? venue.city;
-    venue.postal_code = data.postal_code ?? venue.postal_code;
-    venue.region = data.region ?? venue.region;
-    venue.country = data.country ?? venue.country;
-    venue.latitude = data.latitude ?? venue.latitude;
-    venue.longitude = data.longitude ?? venue.longitude;
-
-    return venue.save();
+  ): Promise<Venue | null> {
+    const venueData: Prisma.venuesUpdateInput = data;
+    return prisma.venues.update({ where: { id }, data: venueData });
   }
 
   @Mutation(() => Boolean)
-  async deleteVenue(@Arg('id', () => Int) id: number) {
-    const venue = await Venue.findOne(id);
-
-    if (!venue) throw new Error('Cant find venue');
-
-    await venue.remove();
-
+  async deleteVenue(@Arg('id', () => Int) id: number): Promise<boolean> {
+    // TODO: handle deletion of non-existent venue
+    await prisma.venues.delete({ where: { id } });
     return true;
   }
 }

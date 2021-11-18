@@ -1,0 +1,182 @@
+generator client {
+  provider      = "prisma-client-js"
+  // since we support Docker as well as 'manual' we need to add additional
+  // targets
+  // TODO: specify single target via env()
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model chapters {
+  created_at  DateTime             @default(now())
+  updated_at  DateTime             @default(now())
+  id          Int                  @id @default(autoincrement())
+  name        String
+  description String
+  category    String
+  details     Json                 @db.Json
+  city        String
+  region      String
+  country     String
+  imageUrl    String
+  creator_id  Int?
+  events      events[]
+  user_bans   user_bans[]
+  users       user_chapter_roles[]
+}
+
+model event_sponsors {
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  sponsor_id Int
+  event_id   Int
+  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([sponsor_id, event_id])
+}
+
+model events {
+  created_at       DateTime               @default(now())
+  updated_at       DateTime               @default(now())
+  id               Int                    @id @default(autoincrement())
+  name             String
+  description      String
+  url              String?
+  streaming_url    String?
+  venue_type       events_venue_type_enum @default(Physical)
+  start_at         DateTime
+  ends_at          DateTime
+  canceled         Boolean                @default(false)
+  capacity         Int
+  invite_only      Boolean                @default(false)
+  image_url        String
+  // TODO: none of these should be optional
+  venue_id         Int?
+  chapter_id       Int
+  chapter          chapters               @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sponsors         event_sponsors[]
+  rsvps            rsvps[]
+  tags             tags[]
+  user_event_roles user_event_roles[]
+}
+
+model rsvps {
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+  user_id      Int
+  event_id     Int
+  date         DateTime
+  on_waitlist  Boolean
+  confirmed_at DateTime?
+  canceled     Boolean
+  events       events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, event_id])
+}
+
+model sponsors {
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @default(now())
+  id             Int              @id @default(autoincrement())
+  name           String
+  website        String
+  logo_path      String
+  type           String
+  event_sponsors event_sponsors[]
+}
+
+model tags {
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  name       String
+  event_id   Int?
+  events     events?  @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_bans {
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  user_id    Int
+  chapter_id Int
+  chapters   chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, chapter_id])
+}
+
+model user_chapter_roles {
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  user_id    Int
+  chapter_id Int
+  role_name  String
+  interested Boolean
+  chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, chapter_id, role_name])
+}
+
+model user_event_roles {
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  user_id    Int
+  event_id   Int
+  role_name  String
+  subscribed Boolean
+  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, event_id, role_name])
+}
+
+model user_instance_roles {
+  user_id   Int
+  role_name String
+  users     users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, role_name])
+}
+
+model users {
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @default(now())
+  id                  Int                   @id @default(autoincrement())
+  first_name          String
+  last_name           String
+  email               String                @unique
+  rsvps               rsvps[]
+  user_bans           user_bans[]
+  chapter_roles       user_chapter_roles[]
+  user_event_roles    user_event_roles[]
+  user_instance_roles user_instance_roles[]
+}
+
+model venues {
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  name           String
+  street_address String?
+  city           String
+  postal_code    String
+  region         String
+  country        String
+  latitude       Float?
+  longitude      Float?
+  events         events[]
+}
+
+enum events_venue_type_enum {
+  Physical
+  Online
+  PhysicalAndOnline
+}

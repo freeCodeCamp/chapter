@@ -11,13 +11,9 @@
     "npm": "^8.0.0"
   },
   "scripts": {
-    "typeorm": "cd server && node_modules/.bin/typeorm",
-    "db:generate": "npm run typeorm -- migration:generate -n",
-    "db:drop": "npm run typeorm schema:drop",
-    "db:seed": "cd server && node ./db/generator/index.js",
-    "db:sync": "npm run typeorm schema:sync",
-    "db:migrate": "npm run typeorm migration:run",
-    "db:reset": "npm run db:drop && npm run db:sync && npm run db:seed",
+    "db:seed": "npm run prisma -- db seed",
+    "db:sync": "npm run prisma -- db push --force-reset",
+    "db:reset": "npm run db:sync && npm run db:seed",
     "both": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
     "build:client": "cd client && npm run build",
     "gen": "cd client && npm run gen",
@@ -35,7 +31,8 @@
     "lint-and-test": "npm run lint && npm run test",
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
-    "prepare": "is-docker || husky install"
+    "prepare": "is-docker || husky install",
+    "prisma": "cd server && npx dotenv -e ../.env -- npx prisma"
   },
   "repository": {
     "type": "git",

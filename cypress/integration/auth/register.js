@@ -2,7 +2,7 @@ describe('registration', () => {
   beforeEach(() => {
     // This is a bit slow and somewhat overkill, since we only care about the
     // users.  It could be worth just truncating the user table.
-    cy.exec('npm run db:reset');
+    cy.exec('npm run db:seed');
   });
   it('should be possible to register, but only once', () => {
     cy.interceptGQL('register');

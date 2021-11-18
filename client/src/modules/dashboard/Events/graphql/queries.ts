@@ -65,7 +65,6 @@ export const EVENT = gql`
         country
       }
       rsvps {
-        id
         on_waitlist
         user {
           id
@@ -154,9 +153,8 @@ export const deleteEvent = gql`
 `;
 
 export const confirmRSVP = gql`
-  mutation confirmRsvp($id: Int!) {
-    confirmRsvp(id: $id) {
-      id
+  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
+    confirmRsvp(eventId: $eventId, userId: $userId) {
       confirmed_at
       on_waitlist
     }
@@ -164,8 +162,8 @@ export const confirmRSVP = gql`
 `;
 
 export const deleteRSVP = gql`
-  mutation deleteRsvp($id: Int!) {
-    deleteRsvp(id: $id)
+  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
+    deleteRsvp(eventId: $eventId, userId: $userId)
   }
 `;
 
@@ -185,8 +183,6 @@ export const Sponsors = gql`
   query sponsors {
     sponsors {
       id
-      created_at
-      updated_at
       name
       website
       logo_path

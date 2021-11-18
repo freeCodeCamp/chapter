@@ -3,7 +3,6 @@ node_modules/
 next.config.js
 client/@types/
 
-server/migrations
 server/src/**/*.js
-server/db/**/*.js
+server/prisma/**/*.js
 server/tests/**/*.js

@@ -4,10 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Field } from '../../../../components/Form/Fields';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
 
-export type VenueFormData = Omit<
-  Venue,
-  'id' | 'created_at' | 'updated_at' | 'events'
->;
+export type VenueFormData = Omit<Venue, 'id' | 'events'>;
 
 interface VenueFormProps {
   loading: boolean;

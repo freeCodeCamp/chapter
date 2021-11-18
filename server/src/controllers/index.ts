@@ -5,7 +5,7 @@ import { SponsorResolver } from './Sponsors/resolver';
 import { UserChapterRoleResolver } from './UserChapterRole/resolver';
 import { VenueResolver } from './Venue/resolver';
 import { AuthResolver } from 'src/controllers/Auth/resolver';
-import { UserResolver } from 'src/models';
+import { UserResolver } from 'src/graphql-types';
 const resolvers = [
   ChapterResolver,
   VenueResolver,

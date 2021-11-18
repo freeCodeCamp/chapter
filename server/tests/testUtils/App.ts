@@ -3,8 +3,8 @@ import express from 'express';
 import { responseErrorHandler } from 'express-response-errors';
 import getPort, { portNumbers } from 'get-port';
 import request from 'supertest';
-import { Request } from 'src/common-types/gql';
-import { User } from 'src/models';
+import { Request, ChapterRoles } from 'src/common-types/gql';
+import { User } from 'src/graphql-types';
 
 type InitProps = {
   withRouter?: express.Router;
@@ -14,7 +14,7 @@ class App {
   server: express.Application;
   request: request.SuperTest<request.Test>;
   private _server: Server;
-  authedUser: User | null = null;
+  authedUser: (User & ChapterRoles) | null = null;
 
   constructor() {
     const app = express();
@@ -48,7 +48,7 @@ class App {
     this._server.close();
   }
 
-  login(user: User) {
+  login(user: User & ChapterRoles) {
     this.authedUser = user;
   }
 

@@ -5,7 +5,7 @@ import getPort, { portNumbers } from 'get-port';
 import request from 'supertest';
 
 import { Request } from '../../src/common-types/gql';
-import { User, ChapterUser } from '../../src/graphql-types';
+import { UserWithRoles } from '../../src/graphql-types';
 
 type InitProps = {
   withRouter?: express.Router;
@@ -15,7 +15,7 @@ class App {
   server: express.Application;
   request: request.SuperTest<request.Test>;
   private _server: Server;
-  authedUser: (User & { user_chapters: ChapterUser[] }) | null = null;
+  authedUser: UserWithRoles | null = null;
 
   constructor() {
     const app = express();
@@ -49,7 +49,7 @@ class App {
     this._server.close();
   }
 
-  login(user: User & { user_chapters: ChapterUser[] }) {
+  login(user: UserWithRoles) {
     this.authedUser = user;
   }
 

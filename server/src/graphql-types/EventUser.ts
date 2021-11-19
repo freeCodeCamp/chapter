@@ -40,3 +40,9 @@ export class EventUser {
   @Field(() => User)
   user: User;
 }
+
+@ObjectType()
+export class EventUserOnlyRoles {
+  @Field(() => EventRole)
+  event_role: EventRole;
+}

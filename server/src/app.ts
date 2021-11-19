@@ -5,6 +5,7 @@ import express, { Express, Response } from 'express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 
+import { authorizationChecker } from './authorization';
 import { GQLCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import {
@@ -29,7 +30,10 @@ export const main = async (app: Express) => {
   app.use(userMiddleware);
   app.use(handleAuthenticationError);
 
-  const schema = await buildSchema({ resolvers });
+  const schema = await buildSchema({
+    resolvers,
+    authChecker: authorizationChecker,
+  });
   const server = new ApolloServer({
     schema,
     context: ({ req, res }: { req: Request; res: Response }): GQLCtx => ({

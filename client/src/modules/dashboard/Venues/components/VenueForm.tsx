@@ -68,7 +68,7 @@ const fields: Fields[] = [
   },
   {
     key: 'latitude',
-    label: 'Latitute',
+    label: 'Latitude',
     placeholder: '',
     isRequired: false,
     type: 'number',
@@ -78,7 +78,7 @@ const fields: Fields[] = [
   },
   {
     key: 'longitude',
-    label: 'Logitude',
+    label: 'Longitude',
     placeholder: '',
     isRequired: false,
     type: 'number',

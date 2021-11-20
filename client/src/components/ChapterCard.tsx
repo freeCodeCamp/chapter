@@ -15,7 +15,7 @@ import { Chapter } from 'generated/graphql';
 type ChapterCardProps = {
   chapter: Pick<
     Chapter,
-    'id' | 'name' | 'description' | 'category' | 'details' | 'imageUrl'
+    'id' | 'name' | 'description' | 'category' | 'imageUrl'
   >;
 };
 

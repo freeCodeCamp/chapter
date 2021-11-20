@@ -20,7 +20,6 @@ describe('chapters dashboard', () => {
     const fix = {
       name: 'Name goes here',
       description: 'Summary of the chapter',
-      details: 'Paragraph going into more depth',
       city: 'City it is based in',
       region: 'Location in the world',
       country: 'Home country',
@@ -31,7 +30,6 @@ describe('chapters dashboard', () => {
     cy.get('a[href="/dashboard/chapters/new"]').click();
     cy.findByRole('textbox', { name: 'name' }).type(fix.name);
     cy.findByRole('textbox', { name: 'description' }).type(fix.description);
-    cy.findByRole('textbox', { name: 'details' }).type(fix.details);
     cy.findByRole('textbox', { name: 'city' }).type(fix.city);
     cy.findByRole('textbox', { name: 'region' }).type(fix.region);
     cy.findByRole('textbox', { name: 'country' }).type(fix.country);

@@ -16,7 +16,6 @@ const createChapters = async (userId: number): Promise<number[]> => {
       name,
       description,
       category,
-      details: 'random',
       creator_id: userId,
       country: address.country(),
       city: address.city(),

@@ -6,7 +6,6 @@ export const CHAPTER = gql`
       id
       name
       description
-      details
       category
       city
       region
@@ -51,7 +50,6 @@ export const CHAPTERS = gql`
       id
       name
       description
-      details
       category
       imageUrl
     }

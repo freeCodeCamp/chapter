@@ -42,13 +42,6 @@ const fields: Fields[] = [
     type: 'textarea',
   },
   {
-    key: 'details',
-    label: 'Details',
-    placeholder: 'freeCodeCamp details',
-    required: true,
-    type: 'text',
-  },
-  {
     key: 'city',
     label: 'City',
     placeholder: 'San Fransisco',
@@ -92,7 +85,6 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const defaultValues: ChapterFormData = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
-    details: chapter?.details ?? '',
     city: chapter?.city ?? '',
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',

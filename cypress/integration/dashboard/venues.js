@@ -29,16 +29,16 @@ describe('venues dashboard', () => {
     };
     cy.visit('/dashboard/venues');
     cy.get('a[href="/dashboard/venues/new"]').click();
-    cy.findByRole('textbox', { name: 'name' }).type(fix.name);
-    cy.findByRole('textbox', { name: 'street_address' }).type(
+    cy.findByRole('textbox', { name: 'Venue name' }).type(fix.name);
+    cy.findByRole('textbox', { name: 'Street address' }).type(
       fix.streetAddress,
     );
-    cy.findByRole('textbox', { name: 'city' }).type(fix.city);
-    cy.findByRole('textbox', { name: 'postal_code' }).type(fix.postalCode);
-    cy.findByRole('textbox', { name: 'region' }).type(fix.region);
-    cy.findByRole('textbox', { name: 'country' }).type(fix.country);
-    cy.findByRole('spinbutton', { name: 'latitude' }).type(fix.latitude);
-    cy.findByRole('spinbutton', { name: 'longitude' }).type(fix.longitude);
+    cy.findByRole('textbox', { name: 'City' }).type(fix.city);
+    cy.findByRole('textbox', { name: 'Postal Code' }).type(fix.postalCode);
+    cy.findByRole('textbox', { name: 'Region' }).type(fix.region);
+    cy.findByRole('textbox', { name: 'Country' }).type(fix.country);
+    cy.findByRole('spinbutton', { name: 'Latitude' }).type(fix.latitude);
+    cy.findByRole('spinbutton', { name: 'Longitude' }).type(fix.longitude);
 
     cy.findByRole('form', { name: 'Add venue' })
       .findByRole('button', {

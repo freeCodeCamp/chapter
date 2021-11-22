@@ -818,7 +818,7 @@ export type DeleteRsvpMutation = {
 
 export type SendEventInviteMutationVariables = Exact<{
   id: Scalars['Int'];
-  emailGroups?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  emailGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type SendEventInviteMutation = {
@@ -1017,8 +1017,8 @@ export type MinEventsQuery = {
 };
 
 export type HomeQueryVariables = Exact<{
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 }>;
 
 export type HomeQuery = {

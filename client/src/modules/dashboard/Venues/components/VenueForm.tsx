@@ -41,7 +41,7 @@ const fields: Fields[] = [
   {
     key: 'city',
     label: 'City',
-    placeholder: 'San fransisco',
+    placeholder: 'San Francisco',
     isRequired: true,
     type: 'text',
   },

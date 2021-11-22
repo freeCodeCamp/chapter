@@ -37,14 +37,14 @@ const fields: Fields[] = [
     key: 'description',
     label: 'Description',
     placeholder:
-      'freeCodeCamp is a non-profit organization that helps people learn to code for free',
+      'freeCodeCamp is a nonprofit organization that helps people learn to code for free',
     required: true,
     type: 'textarea',
   },
   {
     key: 'city',
     label: 'City',
-    placeholder: 'San Fransisco',
+    placeholder: 'San Francisco',
     required: true,
     type: 'text',
   },
@@ -72,7 +72,7 @@ const fields: Fields[] = [
   {
     key: 'imageUrl',
     label: 'Image Url',
-    placeholder: 'www.freecodecamp.com',
+    placeholder: 'https://www.freecodecamp.org',
     required: true,
     type: 'url',
   },

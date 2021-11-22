@@ -18,7 +18,6 @@ model chapters {
   name        String
   description String
   category    String
-  details     Json                 @db.Json
   city        String
   region      String
   country     String

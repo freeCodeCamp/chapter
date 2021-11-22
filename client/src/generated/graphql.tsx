@@ -35,7 +35,6 @@ export type Chapter = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  details: Scalars['String'];
   id: Scalars['Int'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
@@ -48,7 +47,6 @@ export type ChapterWithRelations = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  details: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
   imageUrl: Scalars['String'];
@@ -62,7 +60,6 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  details?: InputMaybe<Scalars['String']>;
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
@@ -390,7 +387,6 @@ export type UpdateChapterInputs = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  details?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
@@ -526,7 +522,6 @@ export type ChapterQuery = {
         id: number;
         name: string;
         description: string;
-        details: string;
         category: string;
         city: string;
         region: string;
@@ -579,7 +574,6 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    details: string;
     category: string;
     imageUrl: string;
   }>;
@@ -1049,7 +1043,6 @@ export type HomeQuery = {
     name: string;
     description: string;
     category: string;
-    details: string;
     imageUrl: string;
   }>;
 };
@@ -1257,7 +1250,6 @@ export const ChapterDocument = gql`
       id
       name
       description
-      details
       category
       city
       region
@@ -1395,7 +1387,6 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      details
       category
       imageUrl
     }
@@ -2796,7 +2787,6 @@ export const HomeDocument = gql`
       name
       description
       category
-      details
       imageUrl
     }
   }

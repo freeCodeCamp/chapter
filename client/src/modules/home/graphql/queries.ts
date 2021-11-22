@@ -25,7 +25,6 @@ export const HOME_PAGE_QUERY = gql`
       name
       description
       category
-      details
       imageUrl
     }
   }

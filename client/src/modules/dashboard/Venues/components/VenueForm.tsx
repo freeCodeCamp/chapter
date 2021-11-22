@@ -1,7 +1,7 @@
-import { Button } from '@chakra-ui/react';
+import { Button, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Field } from '../../../../components/Form/Fields';
+import { Input } from '../../../../components/Form/Input';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
 
 export type VenueFormData = Omit<Venue, 'id' | 'events'>;
@@ -13,20 +13,79 @@ interface VenueFormProps {
   submitText: string;
 }
 
-type Fields =
-  | [keyof VenueFormData, boolean, boolean]
-  | [keyof VenueFormData, boolean]
-  | [keyof VenueFormData];
-
+type Fields = {
+  key: keyof VenueFormData;
+  label: string;
+  placeholder: string;
+  isRequired: boolean;
+  type: string;
+  max?: number;
+  min?: number;
+  step?: number;
+};
 const fields: Fields[] = [
-  ['name', true],
-  ['street_address'],
-  ['city', true],
-  ['postal_code', true],
-  ['region', true],
-  ['country', true],
-  ['latitude', false, true],
-  ['longitude', false, true],
+  {
+    key: 'name',
+    label: 'Venue name',
+    placeholder: 'Venue name',
+    isRequired: true,
+    type: 'text',
+  },
+  {
+    key: 'street_address',
+    label: 'Street address',
+    placeholder: 'Street address',
+    isRequired: true,
+    type: 'text',
+  },
+  {
+    key: 'city',
+    label: 'City',
+    placeholder: 'San Francisco',
+    isRequired: true,
+    type: 'text',
+  },
+  {
+    key: 'postal_code',
+    label: 'Postal Code',
+    placeholder: '94501',
+    isRequired: true,
+    type: 'text',
+  },
+  {
+    key: 'region',
+    label: 'Region',
+    placeholder: 'Bay Area',
+    isRequired: true,
+    type: 'text',
+  },
+  {
+    key: 'country',
+    label: 'Country',
+    placeholder: 'United States of America',
+    isRequired: true,
+    type: 'text',
+  },
+  {
+    key: 'latitude',
+    label: 'Latitude',
+    placeholder: '',
+    isRequired: false,
+    type: 'number',
+    max: 90,
+    min: -90,
+    step: 0.01,
+  },
+  {
+    key: 'longitude',
+    label: 'Longitude',
+    placeholder: '',
+    isRequired: false,
+    type: 'number',
+    max: 180,
+    min: -180,
+    step: 0.001,
+  },
 ];
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
@@ -43,7 +102,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     latitude: venue?.latitude ?? undefined,
     longitude: venue?.longitude ?? undefined,
   };
-  const { control, handleSubmit } = useForm<VenueFormData>({
+  const { handleSubmit, register } = useForm<VenueFormData>({
     defaultValues,
   });
 
@@ -53,23 +112,30 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
       onSubmit={handleSubmit(onSubmit)}
       style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
     >
-      {fields.map(([name, required, number]) => (
-        <Field
-          key={name}
-          {...{ control, name }}
-          type={number ? 'number' : 'text'}
-          required={required}
-        />
-      ))}
-      <Button
-        mt="20px"
-        variant="solid"
-        colorScheme="blue"
-        type="submit"
-        disabled={loading}
-      >
-        {submitText}
-      </Button>
+      <VStack>
+        {fields.map(({ key, isRequired, label, type, step, max, min }) => (
+          <Input
+            key={key}
+            label={label}
+            {...register(key)}
+            type={type}
+            isRequired={isRequired}
+            step={step ? step : undefined}
+            max={max ? max : undefined}
+            min={min ? min : undefined}
+          />
+        ))}
+        <Button
+          mt="30px"
+          width="100%"
+          variant="solid"
+          colorScheme="blue"
+          type="submit"
+          disabled={loading}
+        >
+          {submitText}
+        </Button>
+      </VStack>
     </form>
   );
 };

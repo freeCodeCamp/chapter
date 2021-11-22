@@ -20,7 +20,6 @@ describe('chapters dashboard', () => {
     const fix = {
       name: 'Name goes here',
       description: 'Summary of the chapter',
-      details: 'Paragraph going into more depth',
       city: 'City it is based in',
       region: 'Location in the world',
       country: 'Home country',
@@ -29,14 +28,13 @@ describe('chapters dashboard', () => {
     };
     cy.visit('/dashboard/chapters');
     cy.get('a[href="/dashboard/chapters/new"]').click();
-    cy.findByRole('textbox', { name: 'name' }).type(fix.name);
-    cy.findByRole('textbox', { name: 'description' }).type(fix.description);
-    cy.findByRole('textbox', { name: 'details' }).type(fix.details);
-    cy.findByRole('textbox', { name: 'city' }).type(fix.city);
-    cy.findByRole('textbox', { name: 'region' }).type(fix.region);
-    cy.findByRole('textbox', { name: 'country' }).type(fix.country);
-    cy.findByRole('textbox', { name: 'category' }).type(fix.category);
-    cy.findByRole('textbox', { name: 'imageUrl' }).type(fix.imageUrl);
+    cy.findByRole('textbox', { name: 'Chapter name' }).type(fix.name);
+    cy.findByRole('textbox', { name: 'Description' }).type(fix.description);
+    cy.findByRole('textbox', { name: 'City' }).type(fix.city);
+    cy.findByRole('textbox', { name: 'Region' }).type(fix.region);
+    cy.findByRole('textbox', { name: 'Country' }).type(fix.country);
+    cy.findByRole('textbox', { name: 'Category' }).type(fix.category);
+    cy.findByRole('textbox', { name: 'Image Url' }).type(fix.imageUrl);
 
     cy.findByRole('form', { name: 'Add chapter' })
       .findByRole('button', {

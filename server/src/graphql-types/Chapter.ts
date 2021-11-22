@@ -13,9 +13,6 @@ export class Chapter extends BaseObject {
   category: string;
 
   @Field(() => String)
-  details: any;
-
-  @Field(() => String)
   city: string;
 
   @Field(() => String)

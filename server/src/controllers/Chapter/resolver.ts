@@ -36,7 +36,6 @@ export class ChapterResolver {
     // here
     const chapterData: Prisma.chaptersUncheckedCreateInput = {
       ...data,
-      details: data.details ?? '',
       creator_id: user?.id,
     };
 

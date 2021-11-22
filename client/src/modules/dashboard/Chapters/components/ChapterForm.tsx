@@ -1,7 +1,8 @@
-import { Button } from '@chakra-ui/react';
+import { Button, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Field } from '../../../../components/Form/Fields';
+import { Input } from '../../../../components/Form/Input';
+import { TextArea } from '../../../../components/Form/TextArea';
 import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
 
 export type ChapterFormData = Omit<
@@ -16,20 +17,65 @@ interface ChapterFormProps {
   submitText: string;
 }
 
-type Fields =
-  | [keyof ChapterFormData, boolean, boolean]
-  | [keyof ChapterFormData, boolean]
-  | [keyof ChapterFormData];
+type Fields = {
+  key: keyof ChapterFormData;
+  placeholder: string;
+  label: string;
+  required: boolean;
+  type: string;
+};
 
 const fields: Fields[] = [
-  ['name', true],
-  ['description', true],
-  ['details', true],
-  ['city', true],
-  ['region', true],
-  ['country', true],
-  ['category', true],
-  ['imageUrl', true],
+  {
+    key: 'name',
+    label: 'Chapter name',
+    placeholder: 'freeCodeCamp',
+    required: true,
+    type: 'text',
+  },
+  {
+    key: 'description',
+    label: 'Description',
+    placeholder:
+      'freeCodeCamp is a nonprofit organization that helps people learn to code for free',
+    required: true,
+    type: 'textarea',
+  },
+  {
+    key: 'city',
+    label: 'City',
+    placeholder: 'San Francisco',
+    required: true,
+    type: 'text',
+  },
+  {
+    key: 'region',
+    label: 'Region',
+    placeholder: 'California',
+    required: true,
+    type: 'text',
+  },
+  {
+    key: 'country',
+    label: 'Country',
+    placeholder: 'United States of America',
+    required: true,
+    type: 'text',
+  },
+  {
+    key: 'category',
+    label: 'Category',
+    placeholder: 'Education and nonprofit work',
+    required: true,
+    type: 'text',
+  },
+  {
+    key: 'imageUrl',
+    label: 'Image Url',
+    placeholder: 'https://www.freecodecamp.org',
+    required: true,
+    type: 'url',
+  },
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
@@ -39,14 +85,13 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const defaultValues: ChapterFormData = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
-    details: chapter?.details ?? '',
     city: chapter?.city ?? '',
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
     imageUrl: chapter?.imageUrl ?? '',
   };
-  const { control, handleSubmit } = useForm<ChapterFormData>({
+  const { handleSubmit, register } = useForm<ChapterFormData>({
     defaultValues,
   });
 
@@ -56,23 +101,40 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       onSubmit={handleSubmit(onSubmit)}
       style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
     >
-      {fields.map(([name, required, number]) => (
-        <Field
-          key={name}
-          {...{ control, name }}
-          type={number ? 'number' : 'text'}
-          required={required}
-        />
-      ))}
-      <Button
-        mt="20px"
-        variant="solid"
-        colorScheme="blue"
-        type="submit"
-        disabled={loading}
-      >
-        {submitText}
-      </Button>
+      <VStack>
+        {fields.map(({ key, label, placeholder, required, type }) =>
+          type == 'textarea' ? (
+            <TextArea
+              key={key}
+              label={label}
+              placeholder={placeholder}
+              {...register(key)}
+              isRequired={required}
+              defaultValue={defaultValues[key]}
+            />
+          ) : (
+            <Input
+              key={key}
+              label={label}
+              placeholder={placeholder}
+              {...register(key)}
+              type={type}
+              isRequired={required}
+              defaultValue={defaultValues[key]}
+            />
+          ),
+        )}
+        <Button
+          mt="6"
+          width="100%"
+          variant="solid"
+          colorScheme="blue"
+          type="submit"
+          disabled={loading}
+        >
+          {submitText}
+        </Button>
+      </VStack>
     </form>
   );
 };

@@ -11,9 +11,6 @@ export class CreateChapterInputs {
   @Field(() => String)
   category: string;
 
-  @Field(() => String, { nullable: true })
-  details?: any;
-
   @Field(() => String)
   city: string;
 
@@ -37,9 +34,6 @@ export class UpdateChapterInputs {
 
   @Field(() => String, { nullable: true })
   category: string;
-
-  @Field(() => String, { nullable: true })
-  details?: any;
 
   @Field(() => String, { nullable: true })
   city: string;

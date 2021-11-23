@@ -5,8 +5,8 @@ import {
   createHttpLink,
   from,
   ServerError,
-  ServerParseError,
 } from '@apollo/client';
+import { NetworkError } from '@apollo/client/errors';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { offsetLimitPagination } from '@apollo/client/utilities';
@@ -49,10 +49,8 @@ const errorLink = onError(({ networkError }) => {
   }
 });
 
-function isServerError(
-  err?: Error | ServerError | ServerParseError,
-): err is ServerError {
-  return typeof err !== 'undefined' && 'result' in err && 'statusCode' in err;
+function isServerError(err?: NetworkError): err is ServerError {
+  return !(err == null) && 'result' in err && 'statusCode' in err;
 }
 
 const client = new ApolloClient({

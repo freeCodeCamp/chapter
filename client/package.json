@@ -13,7 +13,7 @@
     "@apollo/client": "3.5.5",
     "@chakra-ui/icons": "1.1.1",
     "@chakra-ui/react": "1.7.2",
-    "@emotion/react": "11.6.0",
+    "@emotion/react": "11.7.0",
     "@emotion/styled": "11.6.0",
     "chakra-confirm": "1.2.4",
     "chakra-data-table": "1.2.2",

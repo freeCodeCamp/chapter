@@ -97,13 +97,16 @@ export const EventPage: NextPage = () => {
     if (!rsvp) return null;
     return rsvp.on_waitlist ? 'waitlist' : 'rsvp';
   }, [data?.event]);
-
+  const allDataLoaded = !loading && user;
+  const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
-    if (router.query?.emaillink && user && !userRsvped) {
-      checkOnRsvp(true);
+    if (allDataLoaded) {
+      if (canCheckRsvp) {
+        checkOnRsvp(true);
+      }
       router.replace('/events/' + id, undefined, { shallow: true });
     }
-  }, [userRsvped, router.query, user]);
+  }, [allDataLoaded, canCheckRsvp]);
 
   if (loading) {
     return <h1>Loading...</h1>;

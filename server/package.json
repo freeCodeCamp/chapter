@@ -60,7 +60,7 @@
     "chai": "4.3.4",
     "concurrently": "6.4.0",
     "date-fns": "2.26.0",
-    "dotenv-cli": "4.1.0",
+    "dotenv-cli": "4.1.1",
     "get-port": "6.0.0",
     "node-dev": "7.1.0",
     "prisma": "3.5.0",

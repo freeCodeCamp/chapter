@@ -482,7 +482,7 @@ ${unsubscribe}
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter?.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
     // TODO: this needs to include an ical file
     // TODO: it needs a link to unsubscribe from just this event.  See
     // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322

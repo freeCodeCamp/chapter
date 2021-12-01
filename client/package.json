@@ -15,7 +15,7 @@
     "@chakra-ui/react": "1.7.2",
     "@emotion/react": "11.7.0",
     "@emotion/styled": "11.6.0",
-    "chakra-confirm": "1.2.7",
+    "chakra-confirm": "1.2.11",
     "chakra-data-table": "1.2.2",
     "chakra-next-link": "1.0.10",
     "date-fns": "2.27.0",

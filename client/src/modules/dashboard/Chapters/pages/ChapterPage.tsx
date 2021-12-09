@@ -31,12 +31,9 @@ export const ChapterPage: NextPage = () => {
             {data.chapter.name}
           </Heading>
           <Box>
-            <span>
-              Chapter Users :
-              <Link href={`${id}/users`} target="_blank">
-                Users
-              </Link>
-            </span>
+            <Link href={`${id}/users`} target="_blank">
+              Chapter Users
+            </Link>
           </Box>
         </ProgressCardContent>
       </Card>

@@ -1,4 +1,4 @@
-import { Heading } from '@chakra-ui/layout';
+import { Heading, Link, Box } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -30,6 +30,11 @@ export const ChapterPage: NextPage = () => {
           <Heading as="h5" fontWeight="normal">
             {data.chapter.name}
           </Heading>
+          <Box>
+            <Link href={`${id}/users`} target="_blank">
+              Chapter Users
+            </Link>
+          </Box>
         </ProgressCardContent>
       </Card>
       <h3>Placeholder for events...</h3>

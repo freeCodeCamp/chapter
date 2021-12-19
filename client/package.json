@@ -16,7 +16,7 @@
     "@emotion/react": "11.7.1",
     "@emotion/styled": "11.6.0",
     "chakra-confirm": "1.2.11",
-    "chakra-data-table": "1.2.2",
+    "chakra-data-table": "1.2.3",
     "chakra-next-link": "1.0.10",
     "date-fns": "2.27.0",
     "graphql": "15.8.0",

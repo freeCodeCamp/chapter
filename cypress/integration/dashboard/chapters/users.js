@@ -8,4 +8,9 @@ describe('Chapter Users dashboard', () => {
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'email' }).should('be.visible');
   });
+
+  it('should not be possible to create users', () => {
+    cy.visit('/dashboard/chapters/1/users/new', { failOnStatusCode: false });
+    cy.contains('This page could not be found');
+  });
 });

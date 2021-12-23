@@ -1,6 +1,5 @@
 import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -23,9 +22,6 @@ export const ChapterUsersPage: NextPage = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>
-          <LinkButton href={`/dashboard/chapters/${id}/users/new`}>
-            Invite user
-          </LinkButton>
         </Flex>
         {loading ? (
           <Heading>Loading...</Heading>

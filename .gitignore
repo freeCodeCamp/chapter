@@ -63,6 +63,10 @@ typings/
 # Jetbrains project settings
 .idea/
 
+# Cypress.io
+cypress/videos
+cypress/screenshots
+
 # tsc output
 
 /server/src/**/*.js

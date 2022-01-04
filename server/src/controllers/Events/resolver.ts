@@ -362,7 +362,7 @@ ${unsubscribe}
         const subject = `Venue changed for event ${event.name}`;
         const body = `We have had to change the location of ${event.name}.
 The event is now being held at <br>
-${venue.name} <br> 
+${venue.name} <br>
 ${venue.street_address ? venue.street_address + '<br>' : ''}
 ${venue.city} <br>
 ${venue.region} <br>
@@ -382,6 +382,22 @@ ${unsubscribe}
       where: { id },
       data: { canceled: true },
     });
+
+    const notCancelledRsvps = await prisma.rsvps.findMany({
+      where: {
+        event_id: id,
+        canceled: false,
+      },
+      include: { user: true },
+    });
+
+    if (notCancelledRsvps) {
+      const emailList = notCancelledRsvps.map((rsvp) => rsvp.user.email);
+      const subject = `Event ${event.name} cancelled`;
+      const body = `placeholder body`;
+
+      new MailerService(emailList, subject, body).sendEmail();
+    }
 
     return event;
   }

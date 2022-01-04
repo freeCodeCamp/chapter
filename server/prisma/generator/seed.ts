@@ -30,7 +30,7 @@ import { prisma } from 'src/prisma';
   const chapterIds = await createChapters(userId);
   const venueIds = await createVenues();
 
-  const eventIds = await createEvents(chapterIds, venueIds, sponsorIds);
+  const eventIds = await createEvents(chapterIds, venueIds, sponsorIds, 15);
 
   await createRsvps(eventIds, userIds);
   await setupRoles(userId, userIds, chapterIds);

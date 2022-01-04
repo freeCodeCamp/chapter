@@ -9,10 +9,11 @@ const createEvents = async (
   chapterIds: number[],
   venueIds: number[],
   sponsorIds: number[],
+  count: number,
 ): Promise<number[]> => {
   const events: number[] = [];
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < count; i++) {
     const date = new Date();
     date.setMilliseconds(0);
     date.setSeconds(0);

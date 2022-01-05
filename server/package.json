@@ -37,7 +37,7 @@
     "dotenv-expand": "^5.1.0",
     "express": "4.17.2",
     "express-response-errors": "1.0.5",
-    "faker": "5.5.3",
+    "faker": "6.6.6",
     "graphql": "15.8.0",
     "is-docker": "2.2.1",
     "jsonwebtoken": "8.5.1",

@@ -68,7 +68,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     });
 
   const {
-    fields: sponsors,
+    fields: sponsorFields,
     append,
     remove,
   } = useFieldArray({
@@ -152,21 +152,23 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               Add
             </Button>
           </Box>
-          {sponsors.map((sponsor, index) => {
+          {sponsorFields.map((sponsorField, sponsorFieldId) => {
             const registeredSponsor = register(
-              `sponsors.${index}.type` as const,
+              `sponsors.${sponsorFieldId}.type` as const,
               {
                 required: true,
               },
             );
 
             return (
-              <Flex key={sponsor.key} borderWidth="1px" p="5" mb="5">
+              <Flex key={sponsorField.key} borderWidth="1px" p="5" mb="5">
                 <Box display="flex" flexGrow={1}>
                   <FormControl m="1">
                     <FormLabel>Sponsor Type</FormLabel>
                     <Select
-                      defaultValue={getValues(`sponsors.${index}.type`)}
+                      defaultValue={getValues(
+                        `sponsors.${sponsorFieldId}.type`,
+                      )}
                       {...registeredSponsor}
                       onChange={(e) => {
                         registeredSponsor.onChange(e);
@@ -175,7 +177,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                             (s) => s.type === e.target.value,
                           ) ?? [];
                         setValue(
-                          `sponsors.${index}.id`,
+                          `sponsors.${sponsorFieldId}.id`,
                           sponsorsForThisType[0]?.id,
                         );
                       }}
@@ -194,8 +196,10 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                       <h5> Error loading sponsors</h5>
                     ) : (
                       <Select
-                        defaultValue={getValues(`sponsors.${index}.id`)}
-                        {...register(`sponsors.${index}.id` as const, {
+                        defaultValue={getValues(
+                          `sponsors.${sponsorFieldId}.id`,
+                        )}
+                        {...register(`sponsors.${sponsorFieldId}.id` as const, {
                           required: true,
                           valueAsNumber: true,
                         })}
@@ -203,16 +207,19 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                         {sponsorData.sponsors
                           ?.filter((sponsor) => {
                             const isRightSponsorType =
-                              sponsor.type === watchSponsorsArray[index]?.type;
+                              sponsor.type ===
+                              watchSponsorsArray[sponsorFieldId]?.type;
                             if (!isRightSponsorType) {
                               return false;
                             }
-                            const selectionIndex = watchSponsorsArray.findIndex(
-                              (selectedSponsor) =>
-                                selectedSponsor.id === sponsor.id,
-                            );
+                            const selectedSponsorId =
+                              watchSponsorsArray.findIndex(
+                                (selectedSponsor) =>
+                                  selectedSponsor.id === sponsor.id,
+                              );
                             const sponsorNotSelectedElsewhere =
-                              selectionIndex === -1 || selectionIndex === index;
+                              selectedSponsorId === -1 ||
+                              selectedSponsorId === sponsorFieldId;
                             return sponsorNotSelectedElsewhere;
                           })
                           .map((s) => (
@@ -224,7 +231,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                     )}
                   </FormControl>
                 </Box>
-                <CloseButton onClick={() => remove(index)} />
+                <CloseButton onClick={() => remove(sponsorFieldId)} />
               </Flex>
             );
           })}

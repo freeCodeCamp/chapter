@@ -197,14 +197,24 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                         defaultValue={getValues(`sponsors.${index}.id`)}
                         {...register(`sponsors.${index}.id` as const, {
                           required: true,
+                          valueAsNumber: true,
                         })}
                       >
                         {sponsorData.sponsors
-                          ?.filter(
-                            //Filtering out the options of only selected type
-                            (item) =>
-                              item.type === watchSponsorsArray[index]?.type,
-                          )
+                          ?.filter((sponsor) => {
+                            const isRightSponsorType =
+                              sponsor.type === watchSponsorsArray[index]?.type;
+                            if (!isRightSponsorType) {
+                              return false;
+                            }
+                            const selectionIndex = watchSponsorsArray.findIndex(
+                              (selectedSponsor) =>
+                                selectedSponsor.id === sponsor.id,
+                            );
+                            const sponsorNotSelectedElsewhere =
+                              selectionIndex === -1 || selectionIndex === index;
+                            return sponsorNotSelectedElsewhere;
+                          })
                           .map((s) => (
                             <option key={s.id} value={s.id}>
                               {s.name}

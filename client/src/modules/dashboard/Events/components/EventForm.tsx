@@ -148,6 +148,14 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                   id: firstSponsorId,
                 });
               }}
+              isDisabled={
+                loadingSponsors ||
+                errorSponsor ||
+                !sponsorData ||
+                sponsorFields.length < sponsorData.sponsors.length
+                  ? false
+                  : true
+              }
             >
               Add
             </Button>

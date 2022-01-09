@@ -9,6 +9,14 @@ export interface Field {
   isRequired: boolean;
 }
 
+export type sponsorType = {
+  name: string;
+  logo_path: string;
+  website: string;
+  type: string;
+  id: number;
+};
+
 export interface EventSponsorInput {
   id: number;
   type: string;

@@ -17,6 +17,26 @@ export type sponsorType = {
   id: number;
 };
 
+export interface EventSponsorTypeInput {
+  name: string;
+  type: string;
+}
+
+export const sponsorTypes: EventSponsorTypeInput[] = [
+  {
+    name: 'Food',
+    type: 'FOOD',
+  },
+  {
+    name: 'Venue',
+    type: 'VENUE',
+  },
+  {
+    name: 'Other',
+    type: 'OTHER',
+  },
+];
+
 export interface EventSponsorInput {
   id: number;
   type: string;

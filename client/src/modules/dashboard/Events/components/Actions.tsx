@@ -1,15 +1,12 @@
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Button, HStack } from '@chakra-ui/react';
-import { useConfirm, useConfirmDelete } from 'chakra-confirm';
+import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo } from 'react';
 import { EVENT, EVENTS } from '../graphql/queries';
+import EventCancelButton from './EventCancelButton';
 import SendEmailModal from './SendEmailModal';
-import {
-  Event,
-  useCancelEventMutation,
-  useDeleteEventMutation,
-} from 'generated/graphql';
+import { Event, useDeleteEventMutation } from 'generated/graphql';
 
 interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
@@ -19,7 +16,6 @@ interface ActionsProps {
 
 const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [cancel] = useCancelEventMutation();
   const [remove] = useDeleteEventMutation();
 
   const data = useMemo(
@@ -33,19 +29,7 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
     [event],
   );
 
-  const confirmCancel = useConfirm({
-    title: 'Are you sure you want to cancel this',
-    body: 'Canceling this will send emails to everyone who RSVPd',
-    buttonColor: 'orange',
-  });
   const confirmDelete = useConfirmDelete();
-
-  const clickCancel = async () => {
-    const ok = await confirmCancel();
-    if (ok) {
-      await cancel(data);
-    }
-  };
 
   const clickDelete = async () => {
     const ok = await confirmDelete();
@@ -71,9 +55,7 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
         Edit
       </LinkButton>
       {!hideCancel && !event.canceled && (
-        <Button size="sm" colorScheme="orange" onClick={clickCancel}>
-          Cancel
-        </Button>
+        <EventCancelButton size="sm" event={event} buttonText="Cancel" />
       )}
       <Button size="sm" colorScheme="blue" onClick={clickEmailAttendees}>
         Email Attendees

@@ -219,4 +219,40 @@ describe('events dashboard', () => {
       });
     });
   });
+
+  it('emails not cancelled rsvps when event is cancelled', () => {
+    cy.visit('/dashboard/events');
+    cy.findAllByRole('row')
+      .not(':contains("canceled")')
+      .find('a')
+      .first('contains(/dashboard/events/\\d+$)')
+      .click()
+      .invoke('text')
+      .as('eventTitle');
+
+    cy.findByRole('button', { name: 'Cancel' }).click();
+    cy.findByRole('alertdialog').findByText('Confirm').click();
+
+    cy.waitUntilMail('allMail');
+    cy.get('@allMail').mhFirst().as('emails');
+
+    cy.url()
+      .then((url) => parseInt(url.match(/\d+$/)))
+      .as('eventId');
+    cy.get('@eventId')
+      .then((eventId) => cy.getRSVPs(eventId))
+      .then((rsvps) => {
+        const expectedEmails = rsvps
+          .filter((rsvp) => !rsvp.canceled)
+          .map(({ user: { email } }) => email);
+        cy.get('@emails')
+          .mhGetRecipients()
+          .should('have.members', expectedEmails);
+      });
+
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.get('@emails').mhGetSubject().should('include', eventTitle);
+    });
+    cy.mhDeleteAll();
+  });
 });

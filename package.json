@@ -71,7 +71,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.28.0",
     "husky": "7.0.4",
-    "is-docker": "2.2.1",
+    "is-docker": "3.0.0",
     "jest": "27.4.7",
     "jsonwebtoken": "8.5.1",
     "lint-staged": "12.1.7",

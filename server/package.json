@@ -39,7 +39,7 @@
     "express-response-errors": "1.0.5",
     "faker": "5.5.3",
     "graphql": "15.8.0",
-    "is-docker": "2.2.1",
+    "is-docker": "3.0.0",
     "jsonwebtoken": "8.5.1",
     "next": "12.0.4",
     "nodemailer": "6.7.2",

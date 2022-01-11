@@ -23,9 +23,10 @@ import {
   fields,
   formatValue,
   EventFormData,
-  EventSponsorInput,
-  EventSponsorTypeInput,
   sponsorTypes,
+  getAllowedSponsors,
+  getAllowedSponsorTypes,
+  getAllowedSponsorsForType,
 } from './EventFormUtils';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
@@ -79,59 +80,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     keyName: 'key',
     control,
   });
-
-  const filterAllowedSponsorTypes = (
-    sponsorTypes: EventSponsorTypeInput[],
-    sponsorFieldId: number,
-  ) => {
-    const allowedSponsorTypes =
-      sponsorTypes.filter(({ type }) => {
-        const allSponsorsForType = sponsorData?.sponsors.filter(
-          (sponsor) => sponsor.type === type,
-        );
-        const allowedSponsorsForType =
-          allSponsorsForType?.filter((sponsor) => {
-            const selectedSponsorId = watchSponsorsArray.findIndex(
-              (selectedSponsor) => selectedSponsor.id === sponsor.id,
-            );
-            return (
-              selectedSponsorId === -1 || selectedSponsorId === sponsorFieldId
-            );
-          }) ?? [];
-        return allowedSponsorsForType.length > 0;
-      }) ?? [];
-    return allowedSponsorTypes;
-  };
-
-  const filterAllowedSponsorsForType = (sponsorType: string) => {
-    return (
-      sponsorData?.sponsors
-        .filter((sponsor) => sponsor.type === sponsorType)
-        .filter(
-          (sponsor) =>
-            watchSponsorsArray.findIndex(
-              (selectedSponsor) => selectedSponsor.id === sponsor.id,
-            ) === -1,
-        ) ?? []
-    );
-  };
-
-  const filterSponsors = (
-    sponsor: EventSponsorInput,
-    sponsorFieldId: number,
-  ) => {
-    const isRightSponsorType =
-      sponsor.type === watchSponsorsArray[sponsorFieldId]?.type;
-    if (!isRightSponsorType) {
-      return false;
-    }
-    const selectedSponsorId = watchSponsorsArray.findIndex(
-      (selectedSponsor) => selectedSponsor.id === sponsor.id,
-    );
-    const sponsorNotSelectedElsewhere =
-      selectedSponsorId === -1 || selectedSponsorId === sponsorFieldId;
-    return sponsorNotSelectedElsewhere;
-  };
 
   const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
@@ -197,17 +145,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             <Spacer />
             <Button
               onClick={() => {
-                const allowedSponsorTypes = filterAllowedSponsorTypes(
-                  sponsorTypes,
-                  sponsorFields.length,
-                );
-                const allowedSponsorsForType = filterAllowedSponsorsForType(
-                  allowedSponsorTypes[0]?.type,
-                );
-                append({
-                  type: allowedSponsorTypes[0]?.type,
-                  id: allowedSponsorsForType[0]?.id,
-                });
+                if (sponsorData) {
+                  const allowedSponsors = getAllowedSponsors(
+                    sponsorData,
+                    watchSponsorsArray,
+                  );
+                  append({
+                    type: allowedSponsors[0]?.type,
+                    id: allowedSponsors[0]?.id,
+                  });
+                }
               }}
               isDisabled={
                 loadingSponsors ||
@@ -234,30 +181,45 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 <Box display="flex" flexGrow={1}>
                   <FormControl m="1">
                     <FormLabel>Sponsor Type</FormLabel>
-                    <Select
-                      defaultValue={getValues(
-                        `sponsors.${sponsorFieldId}.type`,
-                      )}
-                      {...registeredSponsor}
-                      onChange={(e) => {
-                        registeredSponsor.onChange(e);
-                        const sponsorsForThisType =
-                          filterAllowedSponsorsForType(e.target.value);
-                        setValue(
-                          `sponsors.${sponsorFieldId}.id`,
-                          sponsorsForThisType[0]?.id,
-                        );
-                      }}
-                    >
-                      {filterAllowedSponsorTypes(
-                        sponsorTypes,
-                        sponsorFieldId,
-                      ).map((sponsorType) => (
-                        <option key={sponsorType.type} value={sponsorType.type}>
-                          {sponsorType.name}
-                        </option>
-                      ))}
-                    </Select>
+                    {loadingSponsors ? (
+                      <h5>loading sponsors</h5>
+                    ) : errorSponsor || !sponsorData ? (
+                      <h5> Error loading sponsors</h5>
+                    ) : (
+                      <Select
+                        defaultValue={getValues(
+                          `sponsors.${sponsorFieldId}.type`,
+                        )}
+                        {...registeredSponsor}
+                        onChange={(e) => {
+                          registeredSponsor.onChange(e);
+                          const sponsorsForThisType = getAllowedSponsorsForType(
+                            sponsorData,
+                            e.target.value,
+                            watchSponsorsArray,
+                            sponsorFieldId,
+                          );
+                          setValue(
+                            `sponsors.${sponsorFieldId}.id`,
+                            sponsorsForThisType[0]?.id,
+                          );
+                        }}
+                      >
+                        {getAllowedSponsorTypes(
+                          sponsorData,
+                          sponsorTypes,
+                          watchSponsorsArray,
+                          sponsorFieldId,
+                        ).map((sponsorType) => (
+                          <option
+                            key={sponsorType.type}
+                            value={sponsorType.type}
+                          >
+                            {sponsorType.name}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
                   </FormControl>
 
                   <FormControl m="1">
@@ -276,15 +238,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                           valueAsNumber: true,
                         })}
                       >
-                        {sponsorData.sponsors
-                          ?.filter((sponsor) =>
-                            filterSponsors(sponsor, sponsorFieldId),
-                          )
-                          .map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.name}
-                            </option>
-                          ))}
+                        {getAllowedSponsorsForType(
+                          sponsorData,
+                          watchSponsorsArray[sponsorFieldId].type,
+                          watchSponsorsArray,
+                          sponsorFieldId,
+                        ).map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
                       </Select>
                     )}
                   </FormControl>

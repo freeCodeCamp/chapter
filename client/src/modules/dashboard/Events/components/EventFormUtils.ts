@@ -200,7 +200,6 @@ export const getAllowedSponsors = (
       !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
   );
 
-
 const getSelectedFieldIdForSponsor = (
   sponsor: EventSponsorInput,
   watchSponsorsArray: EventSponsorInput[],

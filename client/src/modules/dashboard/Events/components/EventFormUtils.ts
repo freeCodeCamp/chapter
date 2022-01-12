@@ -1,4 +1,4 @@
-import { Event, Venue } from '../../../../generated/graphql';
+import { Event, Venue, SponsorsQuery } from '../../../../generated/graphql';
 
 export interface Field {
   key: keyof EventFormData;
@@ -8,6 +8,34 @@ export interface Field {
   defaultValue?: string;
   isRequired: boolean;
 }
+
+export type sponsorType = {
+  name: string;
+  logo_path: string;
+  website: string;
+  type: string;
+  id: number;
+};
+
+export interface EventSponsorTypeInput {
+  name: string;
+  type: string;
+}
+
+export const sponsorTypes: EventSponsorTypeInput[] = [
+  {
+    name: 'Food',
+    type: 'FOOD',
+  },
+  {
+    name: 'Venue',
+    type: 'VENUE',
+  },
+  {
+    name: 'Other',
+    type: 'OTHER',
+  },
+];
 
 export interface EventSponsorInput {
   id: number;
@@ -132,4 +160,65 @@ export const formatValue = (field: Field, store?: IEventData): any => {
   }
 
   return store[key];
+};
+
+export const getAllowedSponsorTypes = (
+  sponsorData: SponsorsQuery,
+  sponsorTypes: EventSponsorTypeInput[],
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId: number,
+) =>
+  sponsorTypes.filter(
+    ({ type }) =>
+      getAllowedSponsorsForType(
+        sponsorData,
+        type,
+        watchSponsorsArray,
+        sponsorFieldId,
+      ).length,
+  );
+
+export const getAllowedSponsorsForType = (
+  sponsorData: SponsorsQuery,
+  sponsorType: string,
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId?: number,
+) =>
+  sponsorData.sponsors.filter(
+    (sponsor) =>
+      sponsor.type === sponsorType &&
+      !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
+  );
+
+export const getAllowedSponsors = (
+  sponsorData: SponsorsQuery,
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId?: number,
+) =>
+  sponsorData.sponsors.filter(
+    (sponsor) =>
+      !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
+  );
+
+const getSelectedFieldIdForSponsor = (
+  sponsor: EventSponsorInput,
+  watchSponsorsArray: EventSponsorInput[],
+) =>
+  watchSponsorsArray.findIndex(
+    (selectedSponsor) => selectedSponsor.id === sponsor.id,
+  );
+
+const isSponsorSelectedElsewhere = (
+  sponsor: EventSponsorInput,
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId?: number,
+) => {
+  const selectedFieldId = getSelectedFieldIdForSponsor(
+    sponsor,
+    watchSponsorsArray,
+  );
+  return (
+    selectedFieldId !== -1 &&
+    (sponsorFieldId === undefined || selectedFieldId !== sponsorFieldId)
+  );
 };

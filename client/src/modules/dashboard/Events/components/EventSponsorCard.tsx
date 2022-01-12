@@ -1,12 +1,6 @@
 import { Box, Heading, Flex, Spacer, Link, Badge } from '@chakra-ui/react';
 import React from 'react';
-type sponsorType = {
-  name: string;
-  logo_path: string;
-  website: string;
-  type: string;
-  id: number;
-};
+import { sponsorType } from './EventFormUtils';
 
 interface SponsorProps {
   sponsor: sponsorType;

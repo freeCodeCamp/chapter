@@ -168,14 +168,15 @@ export const getAllowedSponsorTypes = (
   watchSponsorsArray: EventSponsorInput[],
   sponsorFieldId: number,
 ) =>
-  sponsorTypes.filter(({ type }) =>
-    hasTypeAllowedSponsors(
-      sponsorData,
-      type,
-      watchSponsorsArray,
-      sponsorFieldId,
-    ),
-  ) ?? [];
+  sponsorTypes.filter(
+    ({ type }) =>
+      getAllowedSponsorsForType(
+        sponsorData,
+        type,
+        watchSponsorsArray,
+        sponsorFieldId,
+      ).length,
+  );
 
 export const getAllowedSponsorsForType = (
   sponsorData: SponsorsQuery,
@@ -185,9 +186,9 @@ export const getAllowedSponsorsForType = (
 ) =>
   sponsorData.sponsors.filter(
     (sponsor) =>
-      hasMatchingSponsorType(sponsor, sponsorType) &&
+      sponsor.type === sponsorType &&
       !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
-  ) ?? [];
+  );
 
 export const getAllowedSponsors = (
   sponsorData: SponsorsQuery,
@@ -199,20 +200,6 @@ export const getAllowedSponsors = (
       !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
   );
 
-const hasTypeAllowedSponsors = (
-  sponsorData: SponsorsQuery,
-  sponsorType: string,
-  watchSponsorsArray: EventSponsorInput[],
-  sponsorFieldId: number,
-) =>
-  (
-    getAllowedSponsorsForType(
-      sponsorData,
-      sponsorType,
-      watchSponsorsArray,
-      sponsorFieldId,
-    ) ?? []
-  ).length > 0;
 
 const getSelectedFieldIdForSponsor = (
   sponsor: EventSponsorInput,
@@ -221,11 +208,6 @@ const getSelectedFieldIdForSponsor = (
   watchSponsorsArray.findIndex(
     (selectedSponsor) => selectedSponsor.id === sponsor.id,
   );
-
-const hasMatchingSponsorType = (
-  sponsor: EventSponsorInput,
-  sponsorType: string,
-) => sponsor.type === sponsorType;
 
 const isSponsorSelectedElsewhere = (
   sponsor: EventSponsorInput,

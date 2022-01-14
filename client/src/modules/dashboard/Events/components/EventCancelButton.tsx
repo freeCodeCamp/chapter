@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Event, useCancelEventMutation } from '../../../../generated/graphql';
 import { EVENT, EVENTS } from '../graphql/queries';
 

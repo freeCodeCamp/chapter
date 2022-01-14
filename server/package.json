@@ -63,7 +63,7 @@
     "dotenv-cli": "4.1.1",
     "get-port": "6.0.0",
     "node-dev": "7.1.0",
-    "prisma": "3.8.0",
+    "prisma": "3.8.1",
     "rimraf": "3.0.2",
     "sinon": "12.0.1",
     "sinon-chai": "3.7.0",

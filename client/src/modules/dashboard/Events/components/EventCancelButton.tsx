@@ -21,16 +21,13 @@ const EventCancelButton: React.FC<EventCancelButtonProps> = (props) => {
     buttonColor: 'orange',
   });
 
-  const data = useMemo(
-    () => ({
-      variables: { id: event.id },
-      refetchQueries: [
-        { query: EVENT, variables: { id: event.id } },
-        { query: EVENTS },
-      ],
-    }),
-    [event],
-  );
+  const data = {
+    variables: { id: event.id },
+    refetchQueries: [
+      { query: EVENT, variables: { id: event.id } },
+      { query: EVENTS },
+    ],
+  };
 
   const clickCancel = async () => {
     const ok = await confirmCancel();

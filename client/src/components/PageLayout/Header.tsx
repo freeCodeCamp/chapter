@@ -42,15 +42,7 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      {/* TODO: Extract color into theme */}
-      <Grid
-        w="full"
-        bg="#1b1b32"
-        as="header"
-        templateColumns="repeat(3, 1fr)"
-        px="8"
-        py="4"
-      >
+      <Grid w="full" as="header" templateColumns="repeat(3, 1fr)" px="8" py="4">
         <Item justifyContent="flex-start">
           <Link href="/">
             <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />

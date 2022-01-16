@@ -19,6 +19,8 @@ import React from 'react';
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
 
+import '../styles/global.css';
+
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
 

@@ -34,6 +34,7 @@ export type Chapter = {
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
+  creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
   imageUrl: Scalars['String'];
@@ -46,6 +47,7 @@ export type ChapterWithRelations = {
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
+  creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];

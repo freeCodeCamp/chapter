@@ -1,7 +1,8 @@
 import { InputType, Field } from 'type-graphql';
+import { Chapter } from 'src/graphql-types';
 
 @InputType()
-export class CreateChapterInputs {
+export class CreateChapterInputs implements Partial<Chapter> {
   @Field(() => String)
   name: string;
 
@@ -25,7 +26,7 @@ export class CreateChapterInputs {
 }
 
 @InputType()
-export class UpdateChapterInputs {
+export class UpdateChapterInputs implements Partial<Chapter> {
   @Field(() => String, { nullable: true })
   name: string;
 

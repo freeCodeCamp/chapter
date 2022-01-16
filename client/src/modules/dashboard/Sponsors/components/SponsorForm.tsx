@@ -4,6 +4,7 @@ import { Select } from '@chakra-ui/select';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
+import styles from '../../../../styles/Form.module.css';
 import { Sponsor, SponsorQuery } from 'generated/graphql';
 
 export type SponsorFormData = Omit<
@@ -57,10 +58,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
     defaultValues,
   });
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       {fields.map((field) => {
         return (
           <Input

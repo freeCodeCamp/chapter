@@ -3,6 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
+import styles from '../../../../styles/Form.module.css';
 
 export type VenueFormData = Omit<Venue, 'id' | 'events'>;
 
@@ -110,7 +111,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     <form
       aria-label={submitText}
       onSubmit={handleSubmit(onSubmit)}
-      style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
+      className={styles.form}
     >
       <VStack>
         {fields.map(({ key, isRequired, label, type, step, max, min }) => (

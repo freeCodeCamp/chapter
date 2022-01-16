@@ -6,6 +6,7 @@ import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useSponsorQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
+import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const SponsorPage: NextPage = () => {
@@ -24,7 +25,7 @@ export const SponsorPage: NextPage = () => {
   }
   return (
     <Layout>
-      <Card style={{ marginTop: '12px' }}>
+      <Card className={styles.card}>
         <ProgressCardContent>
           <Heading as="h2" fontWeight="normal" mb="2">
             {data?.sponsor?.name}

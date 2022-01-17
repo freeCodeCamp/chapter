@@ -31,7 +31,7 @@ export class ChapterResolver {
     @Ctx() ctx: GQLCtx,
   ): Promise<Chapter> {
     if (!ctx.user) {
-      throw Error('User must be logged in to create events');
+      throw Error('User must be logged in to create chapters');
     }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,

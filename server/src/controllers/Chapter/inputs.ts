@@ -2,7 +2,7 @@ import { InputType, Field } from 'type-graphql';
 import { Chapter } from 'src/graphql-types';
 
 @InputType()
-export class CreateChapterInputs implements Partial<Chapter> {
+export class CreateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   @Field(() => String)
   name: string;
 
@@ -26,7 +26,7 @@ export class CreateChapterInputs implements Partial<Chapter> {
 }
 
 @InputType()
-export class UpdateChapterInputs implements Partial<Chapter> {
+export class UpdateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   @Field(() => String, { nullable: true })
   name: string;
 

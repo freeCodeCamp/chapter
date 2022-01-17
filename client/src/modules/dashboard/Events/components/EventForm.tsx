@@ -1,5 +1,6 @@
 import {
   VStack,
+  HStack,
   Checkbox,
   Button,
   FormLabel,
@@ -9,6 +10,7 @@ import {
   Spacer,
   CloseButton,
   Flex,
+  Text,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -18,6 +20,7 @@ import {
   useSponsorsQuery,
   useVenuesQuery,
 } from '../../../../generated/graphql';
+import EventCancelButton from './EventCancelButton';
 import {
   EventFormProps,
   fields,
@@ -257,14 +260,24 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             );
           })}
         </FormControl>
-        <Button
-          width="100%"
-          colorScheme="blue"
-          type="submit"
-          isDisabled={loading}
-        >
-          {submitText}
-        </Button>
+        {data?.canceled && <Text color="red.500">Event canceled</Text>}
+        <HStack width="100%">
+          <Button
+            isFullWidth={true}
+            colorScheme="blue"
+            type="submit"
+            isDisabled={loading}
+          >
+            {submitText}
+          </Button>
+          {data && !data.canceled && (
+            <EventCancelButton
+              isFullWidth={true}
+              event={data}
+              buttonText="Cancel this Event"
+            />
+          )}
+        </HStack>
       </VStack>
     </form>
   );

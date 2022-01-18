@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
-import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
+import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
+import { GQLCtx } from 'src/common-types/gql';
 import { Chapter, ChapterWithRelations } from 'src/graphql-types';
 import { prisma } from 'src/prisma';
 
@@ -27,16 +28,14 @@ export class ChapterResolver {
   @Mutation(() => Chapter)
   async createChapter(
     @Arg('data') data: CreateChapterInputs,
+    @Ctx() ctx: GQLCtx,
   ): Promise<Chapter> {
-    // TODO: Use logged in user
-    const user = await prisma.users.findFirst();
-    // TODO: fix the TypeGraphQL type, CreateChapterInputs (it should include
-    // details or the db should not require it)
-    // TODO: creator_id should not be optional and we shouldn't need Unchecked
-    // here
-    const chapterData: Prisma.chaptersUncheckedCreateInput = {
+    if (!ctx.user) {
+      throw Error('User must be logged in to create chapters');
+    }
+    const chapterData: Prisma.chaptersCreateInput = {
       ...data,
-      creator_id: user?.id,
+      creator_id: ctx.user.id,
     };
 
     return prisma.chapters.create({ data: chapterData });

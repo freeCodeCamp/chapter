@@ -11,7 +11,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-const defaultOptions = {};
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -34,6 +34,7 @@ export type Chapter = {
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
+  creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
   imageUrl: Scalars['String'];
@@ -46,6 +47,7 @@ export type ChapterWithRelations = {
   category: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
+  creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];

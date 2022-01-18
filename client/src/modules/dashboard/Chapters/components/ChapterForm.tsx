@@ -8,7 +8,7 @@ import styles from '../../../../styles/Form.module.css';
 
 export type ChapterFormData = Omit<
   Chapter,
-  'id' | 'events' | 'creator' | 'users' | 'banned_users'
+  'id' | 'events' | 'creator_id' | 'users' | 'banned_users'
 >;
 
 interface ChapterFormProps {

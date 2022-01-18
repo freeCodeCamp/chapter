@@ -1,4 +1,4 @@
-import { ObjectType, Field } from 'type-graphql';
+import { ObjectType, Field, Int } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 
 @ObjectType()
@@ -23,4 +23,7 @@ export class Chapter extends BaseObject {
 
   @Field(() => String)
   imageUrl!: string;
+
+  @Field(() => Int)
+  creator_id: number;
 }

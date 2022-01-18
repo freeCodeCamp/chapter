@@ -122,6 +122,7 @@ export interface EventFormData {
   venue_id?: number | null;
   invite_only?: boolean;
   sponsors: Array<EventSponsorInput>;
+  canceled: boolean;
 }
 
 export type IEventData = Pick<

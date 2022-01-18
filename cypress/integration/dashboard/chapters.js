@@ -26,6 +26,7 @@ describe('chapters dashboard', () => {
       category: 'Type of chapter',
       imageUrl: 'https://example.com/image.jpg',
     };
+    cy.login();
     cy.visit('/dashboard/chapters');
     cy.get('a[href="/dashboard/chapters/new"]').click();
     cy.findByRole('textbox', { name: 'Chapter name' }).type(fix.name);

@@ -60,7 +60,7 @@
     "cypress": "9.2.1",
     "cypress-mailhog": "1.4.0",
     "cypress-wait-until": "1.7.2",
-    "dotenv": "12.0.4",
+    "dotenv": "14.2.0",
     "eslint": "8.7.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-config-react": "1.1.7",

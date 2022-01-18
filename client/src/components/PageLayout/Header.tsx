@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 
 import { useAuthStore } from '../../modules/auth/store';
+import styles from '../../styles/Header.module.css';
 import { Input } from '../Form/Input';
 
 const Item = forwardRef<HTMLDivElement, GridItemProps>((props, ref) => {
@@ -42,7 +43,14 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <Grid w="full" as="header" templateColumns="repeat(3, 1fr)" px="8" py="4">
+      <Grid
+        w="full"
+        as="header"
+        templateColumns="repeat(3, 1fr)"
+        px="8"
+        py="4"
+        className={styles.header}
+      >
         <Item justifyContent="flex-start">
           <Link href="/">
             <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />

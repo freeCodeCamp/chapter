@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { config } from 'dotenv';
-import expand from 'dotenv-expand';
+import { expand } from 'dotenv-expand';
 
 const result = config({ path: join(__dirname, '../../../.env') });
 

@@ -7,6 +7,7 @@ import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useVenueQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
+import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
@@ -20,14 +21,14 @@ export const VenuePage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div style={{ margin: '15px 0px' }}>{error}</div>}
+        {error && <div className={styles.error}>{error}</div>}
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Card style={{ marginTop: '12px' }}>
+      <Card className={styles.card}>
         <ProgressCardContent>
           <Heading as="h2" fontWeight="normal" mb="2">
             {data.venue.name}

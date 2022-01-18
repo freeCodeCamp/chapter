@@ -96,7 +96,7 @@ export const EventPage: NextPage = () => {
         {data.event.venue ? (
           <>
             <h2>Venue:</h2>
-            <h1 style={{ padding: 0 }}>{data.event.venue.name}</h1>
+            <h3>{data.event.venue.name}</h3>
             <h4>{getLocationString(data.event.venue, true)}</h4>
           </>
         ) : (

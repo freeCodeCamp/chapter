@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
+import styles from '../../../../styles/Form.module.css';
 
 export type ChapterFormData = Omit<
   Chapter,
@@ -99,7 +100,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     <form
       aria-label={submitText}
       onSubmit={handleSubmit(onSubmit)}
-      style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
+      className={styles.form}
     >
       <VStack>
         {fields.map(({ key, label, placeholder, required, type }) =>

@@ -6,6 +6,7 @@ import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
+import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
@@ -18,14 +19,14 @@ export const ChapterPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div style={{ margin: '15px 0' }}>{error}</div>}
+        {error && <div className={styles.error}>{error}</div>}
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Card style={{ marginTop: '12px' }}>
+      <Card className={styles.card}>
         <ProgressCardContent loading={loading}>
           <Heading as="h5" fontWeight="normal">
             {data.chapter.name}

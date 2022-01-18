@@ -20,6 +20,7 @@ import {
   useSponsorsQuery,
   useVenuesQuery,
 } from '../../../../generated/graphql';
+import styles from '../../../../styles/Form.module.css';
 import EventCancelButton from './EventCancelButton';
 import {
   EventFormProps,
@@ -90,7 +91,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     <form
       aria-label={submitText}
       onSubmit={handleSubmit(onSubmit)}
-      style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px' }}
+      className={styles.form}
     >
       <VStack align="flex-start">
         {fields.map((field) =>

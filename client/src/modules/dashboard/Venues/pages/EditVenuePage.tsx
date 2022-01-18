@@ -7,6 +7,7 @@ import {
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
+import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
@@ -43,7 +44,7 @@ export const EditVenuePage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div style={{ margin: '15px 0px' }}>{error}</div>}
+        {error && <div className={styles.error}>{error}</div>}
       </Layout>
     );
   }

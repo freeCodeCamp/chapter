@@ -67,6 +67,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       tags: (data.tags || []).map((t) => t.name).join(', '),
       venue_id: data.venue_id,
       image_url: data.image_url,
+      invite_only: data.invite_only,
     };
   }, []);
 

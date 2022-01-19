@@ -767,11 +767,29 @@ export type UpdateEventMutation = {
     url?: string | null | undefined;
     streaming_url?: string | null | undefined;
     capacity: number;
+    start_at: any;
+    ends_at: any;
+    image_url: string;
+    invite_only: boolean;
     tags?:
       | Array<{ __typename?: 'Tag'; id: number; name: string }>
       | null
       | undefined;
   };
+};
+
+export type UpdateEventFragmentFragment = {
+  __typename?: 'Event';
+  id: number;
+  name: string;
+  description: string;
+  url?: string | null | undefined;
+  streaming_url?: string | null | undefined;
+  capacity: number;
+  start_at: any;
+  ends_at: any;
+  image_url: string;
+  invite_only: boolean;
 };
 
 export type CancelEventMutationVariables = Exact<{
@@ -1049,6 +1067,21 @@ export type HomeQuery = {
   }>;
 };
 
+export const UpdateEventFragmentFragmentDoc = gql`
+  fragment updateEventFragment on Event {
+    id
+    name
+    description
+    url
+    streaming_url
+    capacity
+    start_at
+    ends_at
+    capacity
+    image_url
+    invite_only
+  }
+`;
 export const LoginDocument = gql`
   mutation login($email: String!) {
     login(data: { email: $email }) {
@@ -1848,6 +1881,10 @@ export const UpdateEventDocument = gql`
       url
       streaming_url
       capacity
+      start_at
+      ends_at
+      image_url
+      invite_only
       tags {
         id
         name

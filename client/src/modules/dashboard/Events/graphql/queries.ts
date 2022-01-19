@@ -129,11 +129,31 @@ export const updateEvent = gql`
       url
       streaming_url
       capacity
+      start_at
+      ends_at
+      image_url
+      invite_only
       tags {
         id
         name
       }
     }
+  }
+`;
+
+export const EVENT_FRAGMENT_UPDATE = gql`
+  fragment updateEventFragment on Event {
+    id
+    name
+    description
+    url
+    streaming_url
+    capacity
+    start_at
+    ends_at
+    capacity
+    image_url
+    invite_only
   }
 `;
 

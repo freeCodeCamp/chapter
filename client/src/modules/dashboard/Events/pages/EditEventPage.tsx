@@ -10,7 +10,7 @@ import { getId } from '../../../../helpers/getId';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
-import { EVENTS, EVENT } from '../graphql/queries';
+import { EVENT_FRAGMENT_UPDATE } from '../graphql/queries';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
@@ -25,10 +25,29 @@ export const EditEventPage: NextPage = () => {
     variables: { id },
   });
 
-  // TODO: update the cache directly:
-  // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
-    refetchQueries: [{ query: EVENTS }, { query: EVENT, variables: { id } }],
+    update(cache, { data: event }) {
+      cache.modify({
+        fields: {
+          events(existingData) {
+            cache.writeFragment({
+              id: `EventWithEverything:${event?.updateEvent.id}`,
+              data: event?.updateEvent,
+              fragment: EVENT_FRAGMENT_UPDATE,
+            });
+            return existingData;
+          },
+          paginatedEvents(existingData) {
+            cache.writeFragment({
+              id: `EventWithChapter:${event?.updateEvent.id}`,
+              data: event?.updateEvent,
+              fragment: EVENT_FRAGMENT_UPDATE,
+            });
+            return existingData;
+          },
+        },
+      });
+    },
   });
 
   const onSubmit = async (data: EventFormData) => {

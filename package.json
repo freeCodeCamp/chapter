@@ -83,5 +83,9 @@
     "*.{ts,tsx,js,jsx}": [
       "npm run pretty"
     ]
-  }
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }

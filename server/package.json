@@ -4,9 +4,9 @@
   "description": "A self-hosted event management tool for nonprofits",
   "main": "index.js",
   "scripts": {
-    "prepare": "rimraf tsconfig.tsbuildinfo && ttsc",
+    "prepare": "rimraf tsconfig.tsbuildinfo",
     "start": "node ./src/app.js",
-    "dev": "concurrently \"ttsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\""
+    "dev": "ttsc && concurrently \"ttsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\""
   },
   "repository": {
     "type": "git",

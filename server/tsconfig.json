@@ -23,7 +23,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "types": ["jest", "node"],
-    "typeRoots": ["src/common-types/index.d.ts", "./node_modules/@types"],
+    "typeRoots": ["src/common-types/index.d.ts", "../node_modules/@types"],
     "incremental": true,
     "plugins": [
       {

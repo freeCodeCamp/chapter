@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { execSync, spawn } = require('child_process');
+const { execSync } = require('child_process');
 const { existsSync, copyFileSync } = require('fs');
-const isDocker = require('is-docker');
 
 console.log('--------------------------');
 console.log('🎉 WELCOME TO CHAPTER 🎉');
@@ -10,28 +9,7 @@ console.log('--------------------------');
 const CHAPTER_REMOTE = 'freeCodeCamp/chapter.git';
 let IS_ERROR = false;
 
-if (!isDocker()) {
-  install('client', () => install('server', setup));
-}
-
-function install(package, cb) {
-  console.log(`Installing ${package}...`);
-  const child = spawn('npm', ['i'], { cwd: package });
-  child.on('error', (err) => {
-    console.error(err);
-  });
-  child.stdout.setEncoding('utf8');
-  child.stdout.on('data', function (data) {
-    console.log(data);
-  });
-  child.on('close', function (code) {
-    if (code === 0) {
-      cb();
-    } else {
-      console.log(`Installing ${package} returned error code`, code);
-    }
-  });
-}
+setup();
 
 function setup() {
   try {

@@ -138,6 +138,8 @@ model user_event_roles {
 }
 
 model user_instance_roles {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   user_id   Int
   role_name String
   users     users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)

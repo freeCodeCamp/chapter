@@ -50,8 +50,8 @@ jobs:
           cp .env.example .env
           echo DB_PORT=5432 >> .env
 
-      - name: Install Dependencies
-        run: npm i
+      - name: Install deps and build server
+        run: npm i && cd server && npx prisma generate && npx ttsc
 
       - name: Seed Database
         run: npm run db:reset

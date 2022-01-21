@@ -200,7 +200,7 @@ export type Mutation = {
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   updateChapter: Chapter;
-  updateEvent: Event;
+  updateEvent: EventWithEverything;
   updateSponsor: Sponsor;
   updateVenue: Venue;
 };
@@ -396,6 +396,7 @@ export type UpdateChapterInputs = {
 
 export type UpdateEventInputs = {
   capacity?: InputMaybe<Scalars['Float']>;
+  chapter_id?: InputMaybe<Scalars['Int']>;
   description?: InputMaybe<Scalars['String']>;
   ends_at?: InputMaybe<Scalars['DateTime']>;
   image_url?: InputMaybe<Scalars['String']>;
@@ -759,7 +760,7 @@ export type UpdateEventMutationVariables = Exact<{
 export type UpdateEventMutation = {
   __typename?: 'Mutation';
   updateEvent: {
-    __typename?: 'Event';
+    __typename?: 'EventWithEverything';
     id: number;
     name: string;
     canceled: boolean;
@@ -775,11 +776,36 @@ export type UpdateEventMutation = {
       | Array<{ __typename?: 'Tag'; id: number; name: string }>
       | null
       | undefined;
+    sponsors: Array<{
+      __typename?: 'EventSponsor';
+      sponsor: {
+        __typename?: 'Sponsor';
+        name: string;
+        website: string;
+        logo_path: string;
+        type: string;
+        id: number;
+      };
+    }>;
+    venue?:
+      | {
+          __typename?: 'Venue';
+          id: number;
+          name: string;
+          street_address?: string | null | undefined;
+          city: string;
+          postal_code: string;
+          region: string;
+          country: string;
+        }
+      | null
+      | undefined;
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
   };
 };
 
-export type UpdateEventFragmentFragment = {
-  __typename?: 'Event';
+export type UpdateFragmentEventWithChapterFragment = {
+  __typename?: 'EventWithChapter';
   id: number;
   name: string;
   description: string;
@@ -790,6 +816,54 @@ export type UpdateEventFragmentFragment = {
   ends_at: any;
   image_url: string;
   invite_only: boolean;
+  chapter: { __typename?: 'Chapter'; id: number; name: string };
+  tags?:
+    | Array<{ __typename?: 'Tag'; id: number; name: string }>
+    | null
+    | undefined;
+};
+
+export type UpdateFragmengEventWithEverythingFragment = {
+  __typename?: 'EventWithEverything';
+  id: number;
+  name: string;
+  description: string;
+  url?: string | null | undefined;
+  streaming_url?: string | null | undefined;
+  capacity: number;
+  start_at: any;
+  ends_at: any;
+  image_url: string;
+  invite_only: boolean;
+  chapter: { __typename?: 'Chapter'; id: number; name: string };
+  tags?:
+    | Array<{ __typename?: 'Tag'; id: number; name: string }>
+    | null
+    | undefined;
+  sponsors: Array<{
+    __typename?: 'EventSponsor';
+    sponsor: {
+      __typename?: 'Sponsor';
+      name: string;
+      website: string;
+      logo_path: string;
+      type: string;
+      id: number;
+    };
+  }>;
+  venue?:
+    | {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        street_address?: string | null | undefined;
+        city: string;
+        postal_code: string;
+        region: string;
+        country: string;
+      }
+    | null
+    | undefined;
 };
 
 export type CancelEventMutationVariables = Exact<{
@@ -1067,8 +1141,8 @@ export type HomeQuery = {
   }>;
 };
 
-export const UpdateEventFragmentFragmentDoc = gql`
-  fragment updateEventFragment on Event {
+export const UpdateFragmentEventWithChapterFragmentDoc = gql`
+  fragment updateFragmentEventWithChapter on EventWithChapter {
     id
     name
     description
@@ -1080,6 +1154,55 @@ export const UpdateEventFragmentFragmentDoc = gql`
     capacity
     image_url
     invite_only
+    chapter {
+      id
+      name
+    }
+    tags {
+      id
+      name
+    }
+  }
+`;
+export const UpdateFragmengEventWithEverythingFragmentDoc = gql`
+  fragment updateFragmengEventWithEverything on EventWithEverything {
+    id
+    name
+    description
+    url
+    streaming_url
+    capacity
+    start_at
+    ends_at
+    capacity
+    image_url
+    invite_only
+    chapter {
+      id
+      name
+    }
+    tags {
+      id
+      name
+    }
+    sponsors {
+      sponsor {
+        name
+        website
+        logo_path
+        type
+        id
+      }
+    }
+    venue {
+      id
+      name
+      street_address
+      city
+      postal_code
+      region
+      country
+    }
   }
 `;
 export const LoginDocument = gql`
@@ -1886,6 +2009,28 @@ export const UpdateEventDocument = gql`
       image_url
       invite_only
       tags {
+        id
+        name
+      }
+      sponsors {
+        sponsor {
+          name
+          website
+          logo_path
+          type
+          id
+        }
+      }
+      venue {
+        id
+        name
+        street_address
+        city
+        postal_code
+        region
+        country
+      }
+      chapter {
         id
         name
       }

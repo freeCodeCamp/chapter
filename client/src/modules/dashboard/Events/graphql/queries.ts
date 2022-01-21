@@ -137,12 +137,34 @@ export const updateEvent = gql`
         id
         name
       }
+      sponsors {
+        sponsor {
+          name
+          website
+          logo_path
+          type
+          id
+        }
+      }
+      venue {
+        id
+        name
+        street_address
+        city
+        postal_code
+        region
+        country
+      }
+      chapter {
+        id
+        name
+      }
     }
   }
 `;
 
-export const EVENT_FRAGMENT_UPDATE = gql`
-  fragment updateEventFragment on Event {
+export const EVENT_WITH_CHAPTER_FRAGMENT_UPDATE = gql`
+  fragment updateFragmentEventWithChapter on EventWithChapter {
     id
     name
     description
@@ -154,6 +176,56 @@ export const EVENT_FRAGMENT_UPDATE = gql`
     capacity
     image_url
     invite_only
+    chapter {
+      id
+      name
+    }
+    tags {
+      id
+      name
+    }
+  }
+`;
+
+export const EVENT_WITH_EVERYTHING_FRAGMENT_UPDATE = gql`
+  fragment updateFragmengEventWithEverything on EventWithEverything {
+    id
+    name
+    description
+    url
+    streaming_url
+    capacity
+    start_at
+    ends_at
+    capacity
+    image_url
+    invite_only
+    chapter {
+      id
+      name
+    }
+    tags {
+      id
+      name
+    }
+    sponsors {
+      sponsor {
+        name
+        website
+        logo_path
+        type
+        id
+      }
+    }
+    venue {
+      id
+      name
+      street_address
+      city
+      postal_code
+      region
+      country
+    }
   }
 `;
 

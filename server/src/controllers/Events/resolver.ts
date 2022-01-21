@@ -309,14 +309,15 @@ ${unsubscribe}
     return fullEvent;
   }
 
-  @Mutation(() => Event)
+  @Mutation(() => EventWithEverything)
   async updateEvent(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
-  ): Promise<Event | null> {
+  ): Promise<EventWithEverything | null> {
     const event = await prisma.events.findUnique({
       where: { id },
       include: {
+        chapter: true,
         venue: true,
         sponsors: true,
         rsvps: { include: { user: true } },
@@ -348,7 +349,16 @@ ${unsubscribe}
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
-      venue: { connect: { id: data.venue_id } },
+      venue: { connect: { id: data?.venue_id } },
+      chapter: { connect: { id: data.chapter_id ?? event.chapter.id } },
+      sponsors: {
+        connect: data.sponsor_ids.map((sId) => ({
+          sponsor_id_event_id: {
+            event_id: id,
+            sponsor_id: sId,
+          },
+        })),
+      },
     };
 
     if (data.venue_id) {
@@ -373,7 +383,16 @@ ${unsubscribe}
       }
     }
 
-    return await prisma.events.update({ where: { id }, data: update });
+    return await prisma.events.update({
+      where: { id },
+      data: update,
+      include: {
+        sponsors: { include: { sponsor: true } },
+        venue: true,
+        chapter: true,
+        rsvps: { include: { user: true } },
+      },
+    });
   }
 
   @Mutation(() => Event)

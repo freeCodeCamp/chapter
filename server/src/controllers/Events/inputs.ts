@@ -81,6 +81,10 @@ export class UpdateEventInputs {
 
   @Field(() => String, { nullable: true })
   image_url: string;
+
   @Field(() => [Int])
   sponsor_ids: number[];
+
+  @Field(() => Int, { nullable: true })
+  chapter_id: number;
 }

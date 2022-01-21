@@ -10,7 +10,10 @@ import { getId } from '../../../../helpers/getId';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
-import { EVENT_FRAGMENT_UPDATE } from '../graphql/queries';
+import {
+  EVENT_WITH_CHAPTER_FRAGMENT_UPDATE,
+  EVENT_WITH_EVERYTHING_FRAGMENT_UPDATE,
+} from '../graphql/queries';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
@@ -27,13 +30,14 @@ export const EditEventPage: NextPage = () => {
 
   const [updateEvent] = useUpdateEventMutation({
     update(cache, { data: event }) {
+      console.log(event);
       cache.modify({
         fields: {
           events(existingData) {
             cache.writeFragment({
               id: `EventWithEverything:${event?.updateEvent.id}`,
               data: event?.updateEvent,
-              fragment: EVENT_FRAGMENT_UPDATE,
+              fragment: EVENT_WITH_EVERYTHING_FRAGMENT_UPDATE,
             });
             return existingData;
           },
@@ -41,7 +45,7 @@ export const EditEventPage: NextPage = () => {
             cache.writeFragment({
               id: `EventWithChapter:${event?.updateEvent.id}`,
               data: event?.updateEvent,
-              fragment: EVENT_FRAGMENT_UPDATE,
+              fragment: EVENT_WITH_CHAPTER_FRAGMENT_UPDATE,
             });
             return existingData;
           },

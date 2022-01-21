@@ -6,7 +6,7 @@
   "scripts": {
     "build": "ttsc",
     "dev": "ttsc && concurrently \"ttsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
-    "prepare": "rimraf tsconfig.tsbuildinfo",
+    "prepare": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js"
   },
   "repository": {

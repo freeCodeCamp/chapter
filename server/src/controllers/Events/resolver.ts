@@ -330,12 +330,12 @@ ${unsubscribe}
         event_id: id,
         sponsor_id: sId,
       }));
-    // TODO: if possible, replace (i.e. delete and create replacements in a
-    // batch)
-    await prisma.event_sponsors.deleteMany({ where: { event_id: id } });
-    await prisma.event_sponsors.createMany({
-      data: eventSponsorInput,
-    });
+    await prisma.$transaction([
+      prisma.event_sponsors.deleteMany({ where: { event_id: id } }),
+      prisma.event_sponsors.createMany({
+        data: eventSponsorInput,
+      }),
+    ]);
 
     // TODO: Handle tags
     const update: Prisma.eventsUpdateInput = {
@@ -351,14 +351,6 @@ ${unsubscribe}
       image_url: data.image_url ?? event.image_url,
       venue: { connect: { id: data?.venue_id } },
       chapter: { connect: { id: data.chapter_id ?? event.chapter.id } },
-      sponsors: {
-        connect: data.sponsor_ids.map((sId) => ({
-          sponsor_id_event_id: {
-            event_id: id,
-            sponsor_id: sId,
-          },
-        })),
-      },
     };
 
     if (data.venue_id) {

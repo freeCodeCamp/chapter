@@ -30,7 +30,6 @@ export const EditEventPage: NextPage = () => {
 
   const [updateEvent] = useUpdateEventMutation({
     update(cache, { data: event }) {
-      console.log(event);
       cache.modify({
         fields: {
           events(existingData) {

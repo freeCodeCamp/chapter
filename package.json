@@ -15,7 +15,7 @@
     "dev:server": "npm -w=server run dev",
     "db:seed": "npm run prisma -- db seed",
     "db:sync": "npm run prisma -- db push --force-reset",
-    "db:reset": "npm run db:sync && npm run db:seed",
+    "db:reset": "npm run build:server && npm run db:sync && npm run db:seed",
     "both": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run gen\"",
     "build": "npm run build:client && npm run build:server",
     "build:client": "npm -w=client run build",

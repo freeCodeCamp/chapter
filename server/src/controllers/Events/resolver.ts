@@ -261,6 +261,16 @@ ${unsubscribe}
     if (!hasPermission)
       throw Error('User does not have permission to create events');
 
+    const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =
+      data.sponsor_ids.map((sponsor_id) => ({
+        sponsor_id,
+      }));
+    const userEventRoleData: Prisma.user_event_rolesCreateWithoutEventsInput = {
+      users: { connect: { id: ctx.user.id } },
+      role_name: 'organizer',
+      subscribed: true, // TODO: even organizers may wish to opt out of emails
+    };
+
     // TODO: the type safety if we start with ...data is a bit weak here: it
     // does not correctly check if data has all the required properties
     // (presumably because we're adding extras). Can we use the ...data shortcut
@@ -279,34 +289,15 @@ ${unsubscribe}
       ends_at: new Date(data.ends_at),
       venue: { connect: { id: venue?.id } },
       chapter: { connect: { id: chapter.id } },
+      sponsors: {
+        createMany: { data: eventSponsorsData },
+      },
+      user_event_roles: {
+        create: userEventRoleData,
+      },
     };
 
-    const event = await prisma.events.create({ data: eventData });
-
-    const eventSponsorsData: Prisma.event_sponsorsCreateManyInput[] =
-      data.sponsor_ids.map((sponsor_id) => ({
-        event_id: event.id,
-        sponsor_id,
-      }));
-
-    await prisma.event_sponsors.createMany({ data: eventSponsorsData });
-
-    const userEventRoleData: Prisma.user_event_rolesCreateManyInput = {
-      user_id: ctx.user.id,
-      event_id: event.id,
-      role_name: 'organizer',
-      subscribed: true, // TODO: even organizers may wish to opt out of emails
-    };
-
-    await prisma.user_event_roles.create({ data: userEventRoleData });
-
-    // TODO: create the event with a single create call - then we will not have to
-    // do yet another query to get the completed event
-    const fullEvent = await prisma.events.findUnique({
-      where: { id: event.id },
-    });
-
-    return fullEvent;
+    return await prisma.events.create({ data: eventData });
   }
 
   @Mutation(() => Event)

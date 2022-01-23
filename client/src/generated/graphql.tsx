@@ -866,6 +866,8 @@ export type UpdateFragmengEventWithEverythingFragment = {
     | undefined;
 };
 
+export type CancelEventFragment = { __typename?: 'Event'; canceled: boolean };
+
 export type CancelEventMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -1203,6 +1205,11 @@ export const UpdateFragmengEventWithEverythingFragmentDoc = gql`
       region
       country
     }
+  }
+`;
+export const CancelEventFragmentDoc = gql`
+  fragment cancelEvent on Event {
+    canceled
   }
 `;
 export const LoginDocument = gql`

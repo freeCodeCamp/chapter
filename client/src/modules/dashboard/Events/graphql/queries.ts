@@ -229,6 +229,12 @@ export const EVENT_WITH_EVERYTHING_FRAGMENT_UPDATE = gql`
   }
 `;
 
+export const EVENT_CANCEL_FRAGMENT = gql`
+  fragment cancelEvent on Event {
+    canceled
+  }
+`;
+
 export const cancelEvent = gql`
   mutation cancelEvent($id: Int!) {
     cancelEvent(id: $id) {

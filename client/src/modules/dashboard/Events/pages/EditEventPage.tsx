@@ -43,7 +43,7 @@ export const EditEventPage: NextPage = () => {
           paginatedEvents(existingData) {
             cache.writeFragment({
               id: `EventWithChapter:${event?.updateEvent.id}`,
-              data: event?.updateEvent,
+              data: { ...event?.updateEvent, __typename: 'EventWithChapter' },
               fragment: EVENT_WITH_CHAPTER_FRAGMENT_UPDATE,
             });
             return existingData;

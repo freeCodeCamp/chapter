@@ -190,7 +190,7 @@ export type Mutation = {
   createSponsor: Sponsor;
   createVenue: Venue;
   deleteChapter: Scalars['Boolean'];
-  deleteEvent: Scalars['Boolean'];
+  deleteEvent: Event;
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Scalars['Boolean'];
   initUserInterestForChapter: Scalars['Boolean'];
@@ -789,7 +789,7 @@ export type DeleteEventMutationVariables = Exact<{
 
 export type DeleteEventMutation = {
   __typename?: 'Mutation';
-  deleteEvent: boolean;
+  deleteEvent: { __typename?: 'Event'; id: number };
 };
 
 export type ConfirmRsvpMutationVariables = Exact<{
@@ -1952,7 +1952,9 @@ export type CancelEventMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const DeleteEventDocument = gql`
   mutation deleteEvent($id: Int!) {
-    deleteEvent(id: $id)
+    deleteEvent(id: $id) {
+      id
+    }
   }
 `;
 export type DeleteEventMutationFn = Apollo.MutationFunction<

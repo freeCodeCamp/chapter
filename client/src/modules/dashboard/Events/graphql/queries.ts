@@ -148,7 +148,9 @@ export const cancelEvent = gql`
 
 export const deleteEvent = gql`
   mutation deleteEvent($id: Int!) {
-    deleteEvent(id: $id)
+    deleteEvent(id: $id) {
+      id
+    }
   }
 `;
 

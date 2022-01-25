@@ -393,12 +393,9 @@ ${unsubscribe}
     return event;
   }
 
-  // TODO: This will need a real GraphQL return type (AFAIK you have to return
-  // an object type)
-  @Mutation(() => Boolean)
-  async deleteEvent(@Arg('id', () => Int) id: number): Promise<boolean> {
-    await prisma.events.delete({ where: { id } });
-    return true;
+  @Mutation(() => Event)
+  async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
+    return await prisma.events.delete({ where: { id } });
   }
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return

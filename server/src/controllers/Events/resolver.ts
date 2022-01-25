@@ -404,13 +404,7 @@ ${unsubscribe}
 
   @Mutation(() => Event)
   async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
-    const result = await prisma.$transaction([
-      prisma.event_sponsors.deleteMany({ where: { event_id: id } }),
-      prisma.rsvps.deleteMany({ where: { event_id: id } }),
-      prisma.user_event_roles.deleteMany({ where: { event_id: id } }),
-      prisma.events.delete({ where: { id } }),
-    ]);
-    return result[3];
+    return await prisma.events.delete({ where: { id } });
   }
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return

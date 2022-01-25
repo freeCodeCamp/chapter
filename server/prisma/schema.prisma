@@ -33,7 +33,7 @@ model event_sponsors {
   updated_at DateTime @default(now())
   sponsor_id Int
   event_id   Int
-  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events     events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([sponsor_id, event_id])
@@ -74,7 +74,7 @@ model rsvps {
   on_waitlist  Boolean
   confirmed_at DateTime?
   canceled     Boolean
-  events       events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events       events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, event_id])
@@ -131,7 +131,7 @@ model user_event_roles {
   event_id   Int
   role_name  String
   subscribed Boolean
-  events     events   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events     events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, event_id, role_name])

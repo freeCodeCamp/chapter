@@ -30,12 +30,10 @@ jobs:
         run: npm i
       - name: Run linter
         run: npm run lint
-      - name: Type check client
-        run: cd client && npx tsc
-      - name: Type check server
-        run: cd server && npx tsc
       - name: Build client
         run: npm run build:client
+      - name: Build server
+        run: npm run build:server
       - name: Run local tests
         run: npm t
       - name:

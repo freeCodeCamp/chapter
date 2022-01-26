@@ -34,8 +34,11 @@ jobs:
         run: |
           cp .env.example .env
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm i
+
+      - name: Build client and server
+        run: npm run build
 
       - name: Cypress run
         uses: cypress-io/github-action@v2

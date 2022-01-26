@@ -475,6 +475,17 @@ To learn more, take a look at their [docs](https://docs.codesee.io/projects/reco
 
 </details>
 
+<details><summary>How do I work with dependencies?</summary>
+
+The client and server are npm [workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces).  This means that adding and removing packages work slightly differently from the usual.  All that changes is that commands are run from root with the `-w=name-of-workspace` flag.
+
+For example, to add a new `express` to the client, run `npm i -w=client express`.  Similarly, to remove it, run `npm un -w=client express`.
+## Updating dependencies
+
+We rely on renovate to update dependencies automatically.
+
+</details>
+
 # Server-side Technical Documentation
 
 ## API Specification
@@ -537,7 +548,7 @@ If starting the application for the first time, or syncronizing with the latest 
 * sync the database - to structure by setup tables based on the schema
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
-The `npm run db:reset` command will do all three tasks by running `npm run db:sync` and `npm run db:seed` sequentially.
+The `npm run db:reset` command will do all three tasks by running `npm run db:sync` and `npm run db:seed` sequentially. It also builds the server, since `db:sync` needs the compiled JavaScript to run.
   
 _Troubleshooting:_ If using ElephantSQL you may have to submit each of these commands individually.
 

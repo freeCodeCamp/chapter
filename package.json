@@ -11,15 +11,19 @@
     "npm": "^8.0.0"
   },
   "scripts": {
+    "dev:client": "npm -w=client run dev",
+    "dev:server": "npm -w=server run dev",
     "db:seed": "npm run prisma -- db seed",
     "db:sync": "npm run prisma -- db push --force-reset",
-    "db:reset": "npm run db:sync && npm run db:seed",
-    "both": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\" \"cd client && npm run gen:dev\"",
-    "build:client": "cd client && npm run build",
-    "gen": "cd client && npm run gen",
+    "db:reset": "npm run build:server && npm run db:sync && npm run db:seed",
+    "both": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run gen\"",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "npm -w=client run build",
+    "build:server": "npm -w=server run build",
+    "gen": "npm -w=client run gen",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
-    "start:server": "cd server && npm start",
-    "start:client": "cd client && npm start",
+    "start:server": "npm -w=server start",
+    "start:client": "npm -w=client start",
     "start:docker": "cross-env DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d",
     "stop:docker": "docker-compose down",
     "cypress:open": "cypress open",
@@ -32,7 +36,7 @@
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prepare": "is-docker || husky install",
-    "prisma": "cd server && npx dotenv -e ../.env -- npx prisma"
+    "prisma": "npx -w=server dotenv -e ../.env -- prisma"
   },
   "repository": {
     "type": "git",
@@ -53,6 +57,17 @@
     "@babel/plugin-proposal-decorators": "7.16.7",
     "@babel/plugin-proposal-nullish-coalescing-operator": "7.16.7",
     "@testing-library/cypress": "8.0.2",
+    "@types/chai": "4.3.0",
+    "@types/faker": "5.5.9",
+    "@types/jest": "27.4.0",
+    "@types/jsonwebtoken": "8.5.8",
+    "@types/node": "16.11.21",
+    "@types/nodemailer": "6.4.4",
+    "@types/sinon": "10.0.6",
+    "@types/sinon-chai": "3.2.8",
+    "@types/supertest": "2.0.11",
+    "@types/react": "17.0.38",
+    "@types/react-dom": "17.0.11",
     "@typescript-eslint/eslint-plugin": "5.10.1",
     "@typescript-eslint/parser": "5.10.1",
     "concurrently": "7.0.0",
@@ -83,5 +98,9 @@
     "*.{ts,tsx,js,jsx}": [
       "npm run pretty"
     ]
-  }
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }

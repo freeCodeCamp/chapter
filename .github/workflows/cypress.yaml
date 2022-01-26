@@ -27,7 +27,7 @@ jobs:
         ports:
           - 1025:1025
           - 8025:8025
-          
+
     steps:
       - name: Set Action Environment Variables
         run: |
@@ -46,12 +46,15 @@ jobs:
         run: npm i -g npm@8
 
       - name: Set Chapter Environment Variables
-        run: | 
+        run: |
           cp .env.example .env
           echo DB_PORT=5432 >> .env
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm i
+
+      - name: Build client and server
+        run: npm run build
 
       - name: Seed Database
         run: npm run db:reset
@@ -60,7 +63,6 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          build: npm run build:client
           start: npm start
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           config: baseUrl=http://localhost:3000

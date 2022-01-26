@@ -63,7 +63,7 @@
     "@types/jsonwebtoken": "8.5.8",
     "@types/node": "16.11.21",
     "@types/nodemailer": "6.4.4",
-    "@types/sinon": "10.0.6",
+    "@types/sinon": "10.0.8",
     "@types/sinon-chai": "3.2.8",
     "@types/supertest": "2.0.11",
     "@types/react": "17.0.38",

@@ -475,6 +475,17 @@ To learn more, take a look at their [docs](https://docs.codesee.io/projects/reco
 
 </details>
 
+<details><summary>How do I work with dependencies?</summary>
+
+The client and server are npm [workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces).  This means that adding and removing packages work slightly differently from the usual.  All that changes is that commands are run from root with the `-w=name-of-workspace` flag.
+
+For example, to add a new `express` to the client, run `npm i -w=client express`.  Similarly, to remove it, run `npm un -w=client express`.
+## Updating dependencies
+
+We rely on renovate to update dependencies automatically.
+
+</details>
+
 # Server-side Technical Documentation
 
 ## API Specification

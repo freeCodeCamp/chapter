@@ -50,9 +50,8 @@ export class ChapterResolver {
     return prisma.chapters.update({ where: { id }, data: chapterData });
   }
 
-  @Mutation(() => Boolean)
-  async deleteChapter(@Arg('id', () => Int) id: number): Promise<boolean> {
-    await prisma.chapters.delete({ where: { id } });
-    return true;
+  @Mutation(() => Chapter)
+  async deleteChapter(@Arg('id', () => Int) id: number): Promise<Chapter> {
+    return await prisma.chapters.delete({ where: { id } });
   }
 }

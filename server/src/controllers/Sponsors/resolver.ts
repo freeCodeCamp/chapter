@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
 
-import { CreateSponsorInputs, UpdateSponsorInputs } from './input';
+import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';
 import { Sponsor } from 'src/graphql-types/Sponsor';
 import { prisma } from 'src/prisma';
 

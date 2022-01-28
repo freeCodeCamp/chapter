@@ -1,7 +1,9 @@
+import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
-import { company, internet, system } from 'faker';
 import { randomEnum } from '../lib/random';
 import { prisma } from 'src/prisma';
+
+const { company, internet, system } = faker;
 
 enum SponsorTypes {
   'FOOD',

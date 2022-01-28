@@ -1,9 +1,11 @@
+import { faker } from '@faker-js/faker';
 import { Prisma, events_venue_type_enum } from '@prisma/client';
 import { addHours, add } from 'date-fns';
-import { company, internet, lorem, image } from 'faker';
 
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
 import { prisma } from 'src/prisma';
+
+const { company, internet, lorem, image } = faker;
 
 const createEvents = async (
   chapterIds: number[],

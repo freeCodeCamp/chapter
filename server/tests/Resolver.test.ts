@@ -1,5 +1,5 @@
+import { faker } from '@faker-js/faker';
 import { expect } from 'chai';
-import faker from 'faker';
 import { GraphQLError } from 'graphql';
 import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
 import { callSchema } from './testUtils/callSchema';

@@ -1,6 +1,8 @@
+import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
-import { name, internet } from 'faker';
 import { prisma } from 'src/prisma';
+
+const { name, internet } = faker;
 
 const createUsers = async (): Promise<[number, number[]]> => {
   // TODO: add seeding admin

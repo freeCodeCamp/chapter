@@ -13,9 +13,9 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('chapters_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
-            <child column="chapter_id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="events"/>
-            <child column="chapter_id" foreignKey="user_bans_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
-            <child column="chapter_id" foreignKey="user_chapter_roles_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_chapter_roles"/>
+            <child column="chapter_id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
+            <child column="chapter_id" foreignKey="user_bans_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="user_bans"/>
+            <child column="chapter_id" foreignKey="user_chapter_roles_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="user_chapter_roles"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
@@ -70,7 +70,7 @@
             <parent column="id" foreignKey="events_venue_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="chapters"/>
+            <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="events_pkey" unique="true">
@@ -132,7 +132,7 @@
             <parent column="id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="user_bans_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="chapters"/>
+            <parent column="id" foreignKey="user_bans_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
          </column>
          <primaryKey column="user_id" sequenceNumberInPK="1"/>
          <primaryKey column="chapter_id" sequenceNumberInPK="2"/>
@@ -148,7 +148,7 @@
             <parent column="id" foreignKey="user_chapter_roles_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="user_chapter_roles_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="chapters"/>
+            <parent column="id" foreignKey="user_chapter_roles_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="role_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="interested" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>

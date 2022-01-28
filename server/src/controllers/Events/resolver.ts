@@ -92,7 +92,10 @@ export class EventResolver {
       where: { id: eventId },
       include: {
         rsvps: true,
-        user_event_roles: { include: { users: true } },
+        user_event_roles: {
+          include: { users: true },
+          where: { role_name: 'organizer', subscribed: true },
+        },
         venue: true,
       },
     });
@@ -174,11 +177,10 @@ To add this event to your calendar(s) you can use these links:
 ${unsubscribe}
       `,
     ).sendEmail();
-    // TODO: rather than getting all the roles and filtering them, we should
-    // create a query to get only the relevant roles
-    const organizersEmails = event.user_event_roles
-      .filter((role) => role.role_name == 'organizer')
-      .map((role) => role.users.email);
+
+    const organizersEmails = event.user_event_roles.map(
+      (role) => role.users.email,
+    );
     await new MailerService(
       organizersEmails,
       `New RSVP for ${event.name}`,

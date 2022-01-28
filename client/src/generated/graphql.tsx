@@ -189,7 +189,7 @@ export type Mutation = {
   createEvent: Event;
   createSponsor: Sponsor;
   createVenue: Venue;
-  deleteChapter: Scalars['Boolean'];
+  deleteChapter: Chapter;
   deleteEvent: Event;
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Scalars['Boolean'];

@@ -1,9 +1,11 @@
+import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
-import { date } from 'faker';
 
 import { random, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
 import { prisma } from 'src/prisma';
+
+const { date } = faker;
 
 const createRsvps = async (eventIds: number[], userIds: number[]) => {
   const rsvps: Prisma.rsvpsCreateManyInput[] = [];

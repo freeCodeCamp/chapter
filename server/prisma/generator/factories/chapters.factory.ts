@@ -1,6 +1,8 @@
+import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
-import { company, lorem, address, image } from 'faker';
 import { prisma } from 'src/prisma';
+
+const { company, lorem, address, image } = faker;
 
 const createChapters = async (userId: number): Promise<number[]> => {
   const chapterIds: number[] = [];

@@ -4,12 +4,12 @@ services:
   app:
     command: sh -c './wait-for db:5432 -- npm run dev'
     volumes:
-      - ./server:/usr/chapter/server
+      - ./:/usr/chapter/
 
   client:
     command: npm run dev
     volumes:
-      - ./client:/usr/chapter/client
+      - ./:/usr/chapter/
 
   mailhog:
     depends_on:

@@ -104,7 +104,7 @@ export class EventResolver {
       throw new Error('Event not found');
     }
 
-    const rsvp = await prisma.rsvps.findUnique({
+    const oldRsvp = await prisma.rsvps.findUnique({
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -113,17 +113,17 @@ export class EventResolver {
       },
     });
 
-    if (rsvp) {
+    if (oldRsvp) {
       await prisma.rsvps.delete({
         where: {
           user_id_event_id: {
-            user_id: rsvp.user_id,
-            event_id: rsvp.event_id,
+            user_id: oldRsvp.user_id,
+            event_id: oldRsvp.event_id,
           },
         },
       });
 
-      if (!rsvp.on_waitlist) {
+      if (!oldRsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
 
         if (waitingList.length > 0) {
@@ -154,7 +154,7 @@ export class EventResolver {
       canceled: false,
     };
 
-    await prisma.rsvps.create({ data: rsvpData });
+    const rsvp = await prisma.rsvps.create({ data: rsvpData });
 
     const linkDetails: CalendarEvent = {
       title: event.name,

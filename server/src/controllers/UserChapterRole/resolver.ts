@@ -31,6 +31,7 @@ export class UserChapterRoleResolver {
         user_id: ctx.user.id,
         chapter_id: event.chapter.id,
       },
+      rejectOnNotFound: false,
     });
 
     if (!userChapterRole) {

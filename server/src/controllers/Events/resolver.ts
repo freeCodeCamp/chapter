@@ -111,6 +111,7 @@ export class EventResolver {
           event_id: eventId,
         },
       },
+      rejectOnNotFound: false,
     });
 
     if (rsvp) {

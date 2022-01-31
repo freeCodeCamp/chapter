@@ -1,8 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
+
+import { Venue } from '../../graphql-types';
+import { prisma } from '../../prisma';
 import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
-import { Venue } from 'src/graphql-types';
-import { prisma } from 'src/prisma';
 
 @Resolver()
 export class VenueResolver {

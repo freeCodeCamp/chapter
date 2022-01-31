@@ -1,5 +1,6 @@
 import { InputType, Field } from 'type-graphql';
-import { Chapter } from 'src/graphql-types';
+
+import { Chapter } from '../../graphql-types';
 
 @InputType()
 export class CreateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {

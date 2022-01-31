@@ -3,7 +3,6 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
-    "baseUrl": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -25,12 +24,6 @@
     "types": ["jest", "node"],
     "typeRoots": ["src/common-types/index.d.ts", "../node_modules/@types"],
     "incremental": true,
-    "plugins": [
-      {
-        "transform": "@zerollup/ts-transform-paths",
-        "exclude": ["*"]
-      }
-    ]
   },
   "include": ["src/**/*", "prisma/**/*", "tests/**/*"],
   "exclude": ["node_modules"]

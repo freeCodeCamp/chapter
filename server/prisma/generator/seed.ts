@@ -1,3 +1,4 @@
+import { prisma } from '../../src/prisma';
 import createChapters from './factories/chapters.factory';
 import createEvents from './factories/events.factory';
 import createRsvps from './factories/rsvps.factory';
@@ -5,7 +6,6 @@ import createSponsors from './factories/sponsors.factory';
 import createUsers from './factories/user.factory';
 import createVenues from './factories/venues.factory';
 import setupRoles from './setupRoles';
-import { prisma } from 'src/prisma';
 
 (async () => {
   const tablenames = await prisma.$queryRaw<

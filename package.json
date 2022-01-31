@@ -20,6 +20,7 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "npm -w=client run build",
     "build:server": "npm -w=server run build",
+    "clean": "shx rm ./server/tsconfig.tsbuildinfo",
     "gen": "npm -w=client run gen",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:server": "npm -w=server start",
@@ -91,6 +92,7 @@
     "jsonwebtoken": "8.5.1",
     "lint-staged": "12.3.2",
     "prettier": "2.5.1",
+    "shx": "^0.3.4",
     "ts-jest": "27.1.3",
     "typescript": "4.4.4"
   },

@@ -1,8 +1,9 @@
 import { NextFunction, Response } from 'express';
 import { TokenExpiredError, JsonWebTokenError, verify } from 'jsonwebtoken';
-import { Request } from 'src/common-types/gql';
-import { getConfig } from 'src/config';
-import { prisma } from 'src/prisma';
+
+import { Request } from '../../common-types/gql';
+import { getConfig } from '../../config';
+import { prisma } from '../../prisma';
 
 export const userMiddleware = (
   req: Request,

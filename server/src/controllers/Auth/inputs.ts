@@ -1,5 +1,6 @@
 import { InputType, Field, ObjectType } from 'type-graphql';
-import { User } from 'src/graphql-types';
+
+import { User } from '../../graphql-types';
 
 @InputType()
 export class RegisterInput {

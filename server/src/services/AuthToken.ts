@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { getConfig } from 'src/config';
+
+import { getConfig } from '../config';
 
 class AuthToken {
   private readonly secret: string;

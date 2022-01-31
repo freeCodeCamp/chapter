@@ -4,12 +4,13 @@ import cors from 'cors';
 import express, { Express, Response } from 'express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
-import { GQLCtx, Request } from 'src/common-types/gql';
-import { resolvers } from 'src/controllers';
+
+import { GQLCtx, Request } from './common-types/gql';
+import { resolvers } from './controllers';
 import {
   userMiddleware,
   handleAuthenticationError,
-} from 'src/controllers/Auth/middleware';
+} from './controllers/Auth/middleware';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose

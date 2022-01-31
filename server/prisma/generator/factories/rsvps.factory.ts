@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
 
+import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
-import { prisma } from 'src/prisma';
 
 const { date } = faker;
 

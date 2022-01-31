@@ -1,9 +1,10 @@
 import { Prisma } from '@prisma/client';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+
+import { GQLCtx } from '../../common-types/gql';
+import { Chapter, ChapterWithRelations } from '../../graphql-types';
+import { prisma } from '../../prisma';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
-import { GQLCtx } from 'src/common-types/gql';
-import { Chapter, ChapterWithRelations } from 'src/graphql-types';
-import { prisma } from 'src/prisma';
 
 @Resolver()
 export class ChapterResolver {

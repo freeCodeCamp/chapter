@@ -1,5 +1,6 @@
 import { Request as ExpressRequest, Response } from 'express';
-import { User } from 'src/graphql-types';
+
+import { User } from '../graphql-types';
 
 // TODO: import from the TypeGraphQL user chapter role object, once that's fixed
 // rather than defining it here

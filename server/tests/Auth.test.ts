@@ -1,8 +1,9 @@
 import { assert, expect } from 'chai';
 import jwt from 'jsonwebtoken';
 import { stub, restore } from 'sinon';
-import { getConfig } from 'src/config';
-import { authTokenService } from 'src/services/AuthToken';
+
+import { getConfig } from '../src/config';
+import { authTokenService } from '../src/services/AuthToken';
 
 beforeEach(() => {
   stub(console, 'warn');

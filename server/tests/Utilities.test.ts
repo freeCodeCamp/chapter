@@ -1,5 +1,6 @@
 import assert from 'assert';
-import Utilities from 'src/util/Utilities';
+
+import Utilities from '../src/util/Utilities';
 
 describe('Utilities Class', () => {
   it('allValuesAreDefined should correctly catch undefined, null, and empty string values', () => {

@@ -1,6 +1,7 @@
 import { Arg, Ctx, Int, Mutation, Resolver } from 'type-graphql';
-import { GQLCtx } from 'src/common-types/gql';
-import { prisma } from 'src/prisma';
+
+import { GQLCtx } from '../../common-types/gql';
+import { prisma } from '../../prisma';
 
 @Resolver()
 export class UserChapterRoleResolver {

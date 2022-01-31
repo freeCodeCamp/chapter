@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker';
 import { Prisma, events_venue_type_enum } from '@prisma/client';
 import { addHours, add } from 'date-fns';
 
+import { prisma } from '../../../src/prisma';
 import { random, randomEnum, randomItem, randomItems } from '../lib/random';
-import { prisma } from 'src/prisma';
 
 const { company, internet, lorem, image } = faker;
 

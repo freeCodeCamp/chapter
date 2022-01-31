@@ -3,8 +3,9 @@ import express from 'express';
 import { responseErrorHandler } from 'express-response-errors';
 import getPort, { portNumbers } from 'get-port';
 import request from 'supertest';
-import { Request, ChapterRoles } from 'src/common-types/gql';
-import { User } from 'src/graphql-types';
+
+import { Request, ChapterRoles } from '../../src/common-types/gql';
+import { User } from '../../src/graphql-types';
 
 type InitProps = {
   withRouter?: express.Router;

@@ -3,7 +3,6 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": ["dom", "es2017"],
-    "baseUrl": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,

@@ -1,5 +1,6 @@
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
-import Utilities from 'src/util/Utilities';
+
+import Utilities from '../util/Utilities';
 
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders

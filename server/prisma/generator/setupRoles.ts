@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
+import { prisma } from '../../src/prisma';
 import { makeBooleanIterator } from './lib/util';
-import { prisma } from 'src/prisma';
 
 const setupRoles = async (
   adminId: number,

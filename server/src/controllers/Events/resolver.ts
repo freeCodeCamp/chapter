@@ -1,16 +1,17 @@
 import { Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
-import { CreateEventInputs, UpdateEventInputs } from './inputs';
-import { GQLCtx } from 'src/common-types/gql';
+
+import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
   Rsvp,
   EventWithEverything,
   EventWithChapter,
-} from 'src/graphql-types';
-import { prisma } from 'src/prisma';
-import MailerService from 'src/services/MailerService';
+} from '../../graphql-types';
+import { prisma } from '../../prisma';
+import MailerService from '../../services/MailerService';
+import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 //Place holder for unsubscribe
 //TODO: Replace placeholder with actual unsubscribe link

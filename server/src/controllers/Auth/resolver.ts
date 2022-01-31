@@ -2,18 +2,18 @@ import { Prisma } from '@prisma/client';
 import { verify, sign } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 
+import { GQLCtx } from '../../common-types/gql';
+import { getConfig, isDev } from '../../config';
+import { User } from '../../graphql-types';
+import { prisma } from '../../prisma';
+import { authTokenService } from '../../services/AuthToken';
+import MailerService from '../../services/MailerService';
 import {
   AuthenticateType,
   LoginInput,
   LoginType,
   RegisterInput,
 } from './inputs';
-import { GQLCtx } from 'src/common-types/gql';
-import { getConfig, isDev } from 'src/config';
-import { User } from 'src/graphql-types';
-import { prisma } from 'src/prisma';
-import { authTokenService } from 'src/services/AuthToken';
-import MailerService from 'src/services/MailerService';
 
 type TokenResponseType = {
   email: string;

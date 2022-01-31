@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
+
+import { prisma } from '../../../src/prisma';
 import { randomEnum } from '../lib/random';
-import { prisma } from 'src/prisma';
 
 const { company, internet, system } = faker;
 

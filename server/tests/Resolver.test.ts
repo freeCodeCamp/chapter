@@ -2,7 +2,8 @@ import { faker } from '@faker-js/faker';
 import { expect } from 'chai';
 import { GraphQLError } from 'graphql';
 import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
-import longString from '../src/controllers/Messages/longString';
+
+import longString from './fixtures/longString';
 import { callSchema } from './testUtils/callSchema';
 
 interface WithValidationError extends GraphQLError {

@@ -90,7 +90,7 @@
     "is-docker": "2.2.1",
     "jest": "27.4.7",
     "jsonwebtoken": "8.5.1",
-    "lint-staged": "12.3.2",
+    "lint-staged": "12.3.3",
     "prettier": "2.5.1",
     "shx": "0.3.4",
     "ts-jest": "27.1.3",

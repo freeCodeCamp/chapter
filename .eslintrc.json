@@ -61,7 +61,7 @@
     "react/display-name": 0,
     "react/prop-types": 0,
     "import/no-unresolved": "error",
-    "import/order": ["error", { "alphabetize": { "order": "asc" } }]
+    "import/order": "error"
   },
   "settings": {
     "react": {

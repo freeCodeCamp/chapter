@@ -124,7 +124,7 @@ export class EventResolver {
         },
       });
 
-      if (!oldRsvp.on_waitlist) {
+      if (!event.invite_only && !oldRsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
 
         if (waitingList.length > 0) {

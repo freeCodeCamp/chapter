@@ -37,7 +37,7 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
         user_id: eventUserIds[i],
         event_id: eventId,
         role_name: 'attendee',
-        subscribed: true, // TODO: have some unsubscribed users
+        subscribed: randomItems([true, false], 1)[0], // TODO: have some unsubscribed users
       };
 
       if (organizerIterator.next().value) {
@@ -45,7 +45,7 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
           user_id: eventUserIds[i],
           event_id: eventId,
           role_name: 'organizer',
-          subscribed: true, // TODO: even organizers may wish to opt out of emails
+          subscribed: randomItems([true, false], 1)[0], // TODO: even organizers may wish to opt out of emails
         };
         userEventRoles.push(organizer);
       }

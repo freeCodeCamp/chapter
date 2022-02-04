@@ -11,6 +11,8 @@ import {
   CloseButton,
   Flex,
   Text,
+  RadioGroup,
+  Radio,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -19,6 +21,7 @@ import { TextArea } from '../../../../components/Form/TextArea';
 import {
   useSponsorsQuery,
   useVenuesQuery,
+  VenueType,
 } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
 import EventCancelButton from './EventCancelButton';
@@ -28,6 +31,7 @@ import {
   formatValue,
   EventFormData,
   sponsorTypes,
+  venueTypes,
   getAllowedSponsors,
   getAllowedSponsorTypes,
   getAllowedSponsorsForType,
@@ -65,6 +69,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
       sponsors: data.sponsors,
       tags: (data.tags || []).map((t) => t.name).join(', '),
+      venue_type: data.venue_type,
       venue_id: data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,
@@ -88,6 +93,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
+  const venueType = watch('venue_type');
   return (
     <form
       aria-label={submitText}
@@ -106,14 +112,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               defaultValue={formatValue(field, data)}
             />
           ) : (
-            <Input
-              key={field.key}
-              type={field.type}
-              label={field.label}
-              placeholder={field.placeholder}
-              isRequired={field.isRequired}
-              {...register(field.key)}
-            />
+            (field.key !== 'streaming_url' ||
+              getValues('venue_type') !== VenueType.Physical) && (
+              <Input
+                key={field.key}
+                type={field.type}
+                label={field.label}
+                placeholder={field.placeholder}
+                isRequired={field.isRequired}
+                {...register(field.key)}
+              />
+            )
           ),
         )}
 
@@ -125,23 +134,38 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           Invite only
         </Checkbox>
 
+        <FormLabel>Venue Type</FormLabel>
+        <RadioGroup defaultValue={venueType}>
+          <HStack>
+            {venueTypes.map((venueType) => (
+              <Radio
+                key={venueType.value}
+                value={venueType.value}
+                {...register('venue_type')}
+              >
+                {venueType.name}
+              </Radio>
+            ))}
+          </HStack>
+        </RadioGroup>
+
         {loadingVenues ? (
           <h1>Loading venues...</h1>
         ) : errorVenus || !dataVenues ? (
           <h1>Error loading venues</h1>
         ) : (
-          <FormControl>
-            <FormLabel>Venue</FormLabel>
-            <Select {...register('venue_id')}>
-              {dataVenues.venues.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.name}
-                </option>
-              ))}
-
-              <option>None</option>
-            </Select>
-          </FormControl>
+          getValues('venue_type') !== VenueType.Online && (
+            <>
+              <FormLabel>Venue</FormLabel>
+              <Select {...register('venue_id')}>
+                {dataVenues.venues.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
+                ))}
+              </Select>
+            </>
+          )
         )}
 
         <FormControl id="first-name" isRequired>

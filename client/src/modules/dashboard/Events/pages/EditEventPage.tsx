@@ -44,6 +44,7 @@ export const EditEventPage: NextPage = () => {
         venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
+        streaming_url: data.streaming_url === '' ? null : data.streaming_url,
         tags: undefined,
         sponsor_ids: sponsorArray,
       };

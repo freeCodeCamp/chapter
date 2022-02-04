@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { events_venue_type_enum, Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
@@ -351,18 +351,25 @@ ${unsubscribe}
       });
       if (!venue) throw new Error('Cant find venue');
       // TODO: include a link back to the venue page
-      if (event.venue_id !== venue.id) {
+      if (event.venue_id !== venue.id || event.venue_type !== data.venue_type) {
         const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
         const subject = `Venue changed for event ${event.name}`;
-        const body = `We have had to change the location of ${event.name}.
-The event is now being held at <br>
+        let venueDetails = '';
+        if (data.venue_type !== events_venue_type_enum.Physical) {
+          venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+        }
+        if (data.venue_type !== events_venue_type_enum.Online) {
+          venueDetails += `The event is now being held at <br>
 ${venue.name} <br>
 ${venue.street_address ? venue.street_address + '<br>' : ''}
 ${venue.city} <br>
 ${venue.region} <br>
 ${venue.postal_code} <br>
-${unsubscribe}
 `;
+        }
+        const body = `We have had to change the location of ${event.name}.<br>
+${venueDetails}
+${unsubscribe}`;
         new MailerService(emailList, subject, body).sendEmail();
       }
     }

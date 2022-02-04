@@ -6,7 +6,7 @@ import React from 'react';
 
 import { formatDate } from '../../../../helpers/date';
 import { Layout } from '../../shared/components/Layout';
-import { useEventsQuery } from 'generated/graphql';
+import { useEventsQuery, VenueType } from 'generated/graphql';
 
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();
@@ -69,9 +69,15 @@ export const EventsPage: NextPage = () => {
                 </VStack>
               ),
               'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
-              venue: (event) => event.venue?.name || '',
+              venue: (event) =>
+                event.venue_type !== VenueType.Online
+                  ? event.venue?.name || ''
+                  : 'Online only',
               capacity: true,
-              streaming_url: true,
+              streaming_url: (event) =>
+                event.venue_type !== VenueType.Physical
+                  ? event.streaming_url
+                  : 'In-person only',
               date: (event) => formatDate(event.start_at),
               actions: (event) => (
                 <LinkButton

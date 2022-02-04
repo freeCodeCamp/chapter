@@ -12,6 +12,7 @@ export const EVENTS = gql`
       streaming_url
       start_at
       capacity
+      venue_type
       venue {
         id
         name
@@ -55,6 +56,7 @@ export const EVENT = gql`
           id
         }
       }
+      venue_type
       venue {
         id
         name

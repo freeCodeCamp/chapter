@@ -14,7 +14,7 @@ export class Rsvp {
   @Field(() => Boolean)
   on_waitlist: boolean;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   confirmed_at: Date | null;
 
   @Field(() => Boolean)

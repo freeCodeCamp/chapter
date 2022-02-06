@@ -221,6 +221,23 @@ ${unsubscribe}
       on_waitlist: false,
     };
 
+    const subscribedRoles = await prisma.user_event_roles.findMany({
+      where: {
+        user_id: userId,
+        event_id: eventId,
+        subscribed: true,
+      },
+    });
+
+    if (subscribedRoles) {
+      await prisma.event_reminders.create({
+        data: {
+          user_id: userId,
+          event_id: eventId,
+        },
+      });
+    }
+
     return await prisma.rsvps.update({
       data: rsvpData,
       where: {

@@ -1,6 +1,7 @@
 export * from './Chapter';
 export * from './ChapterWithRelations';
 export * from './Event';
+export * from './EventReminder';
 export * from './EventWithEverything';
 export * from './EventWithChapter';
 export * from './EventSponsor';

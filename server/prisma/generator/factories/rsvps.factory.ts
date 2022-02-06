@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '../../../src/prisma';
-import { random, randomItems } from '../lib/random';
+import { random, randomItem, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
 
 const { date } = faker;
@@ -10,6 +10,7 @@ const { date } = faker;
 const createRsvps = async (eventIds: number[], userIds: number[]) => {
   const rsvps: Prisma.rsvpsCreateManyInput[] = [];
   const userEventRoles: Prisma.user_event_rolesCreateManyInput[] = [];
+  const eventReminders: Prisma.event_remindersCreateManyInput[] = [];
 
   const eventIterator = makeBooleanIterator();
   for (const eventId of eventIds) {
@@ -33,25 +34,24 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
         confirmed_at: new Date(),
       };
 
-      const attendee = {
+      const role = {
         user_id: eventUserIds[i],
         event_id: eventId,
-        role_name: 'attendee',
-        subscribed: randomItems([true, false], 1)[0], // TODO: have some unsubscribed users
+        role_name: organizerIterator.next().value ? 'organizer' : 'attendee',
+        subscribed: randomItem([true, false]),
       };
 
-      if (organizerIterator.next().value) {
-        const organizer = {
-          user_id: eventUserIds[i],
+      if (role.subscribed && !rsvp.on_waitlist && !rsvp.canceled) {
+        const reminder = {
           event_id: eventId,
-          role_name: 'organizer',
-          subscribed: randomItems([true, false], 1)[0], // TODO: even organizers may wish to opt out of emails
+          user_id: eventUserIds[i],
+          notified: false,
         };
-        userEventRoles.push(organizer);
+        eventReminders.push(reminder);
       }
 
       rsvps.push(rsvp);
-      userEventRoles.push(attendee);
+      userEventRoles.push(role);
     }
   }
 
@@ -60,6 +60,13 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
   } catch (e) {
     console.error(e);
     throw new Error('Error seeding rsvps');
+  }
+
+  try {
+    await prisma.event_reminders.createMany({ data: eventReminders });
+  } catch (e) {
+    console.error(e);
+    throw new Error('Error seeding event reminders');
   }
 
   try {

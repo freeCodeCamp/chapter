@@ -166,6 +166,15 @@ export class EventResolver {
     };
 
     await prisma.rsvps.create({ data: rsvpData });
+    if (!event.invite_only && !waitlist && roleData.subscribed) {
+      await prisma.event_reminders.create({
+        data: {
+          user_id: ctx.user.id,
+          event_id: eventId,
+          notified: false,
+        },
+      });
+    }
 
     const linkDetails: CalendarEvent = {
       title: event.name,

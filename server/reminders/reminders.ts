@@ -5,6 +5,7 @@ import MailerService from '../src/services/MailerService';
 const daysForward = 5;
 
 const SEND_MAIL = true;
+const FLIP_NOTIFY = true;
 
 const getDateTimeRanges = (daysForward: number) => {
   const now = new Date();
@@ -19,31 +20,29 @@ const getDateTimeRanges = (daysForward: number) => {
   return { startDateTime, endDateTime };
 };
 
-const getEventsInRange = async (startDateTime: Date, endDateTime: Date) =>
+const getEventsWithRemindersInRange = async (
+  startDateTime: Date,
+  endDateTime: Date,
+) =>
   await prisma.events.findMany({
     include: {
       chapter: true,
-      rsvps: {
-        include: {
-          user: true,
-        },
-        where: {
-          canceled: false,
-          on_waitlist: false,
-        },
-      },
-      user_event_roles: {
-        where: {
-          subscribed: true,
-        },
-      },
       venue: true,
+      rsvps: true,
+      event_reminders: {
+        include: { user: true },
+      },
     },
     where: {
       canceled: false,
       start_at: {
         gte: startDateTime,
         lte: endDateTime,
+      },
+      event_reminders: {
+        some: {
+          notified: false,
+        },
       },
     },
     orderBy: {
@@ -52,7 +51,7 @@ const getEventsInRange = async (startDateTime: Date, endDateTime: Date) =>
   });
 
 const reminderMessage = (
-  event: Omit<EventWithEverything, 'sponsors'>,
+  event: Omit<EventWithEverything, 'sponsors' | 'rsvps'>,
   user: Omit<UserEventRole, 'event' | 'role_name' | 'subscribed'>,
   date: string,
   start_time: string,
@@ -81,14 +80,17 @@ Unsubscribe Options
 
 (async () => {
   const { startDateTime, endDateTime } = getDateTimeRanges(daysForward);
-  const eventsWithConfirmedRsvps = await getEventsInRange(
+
+  const eventsWithReminders = await getEventsWithRemindersInRange(
     startDateTime,
     endDateTime,
   );
   console.log(
     `Events from ${startDateTime.toUTCString()} to ${endDateTime.toUTCString()}`,
   );
-  console.log(`Events in range: ${eventsWithConfirmedRsvps.length}`);
+  console.log(
+    `Events in next ${daysForward} days with reminders: ${eventsWithReminders.length}`,
+  );
   console.log();
 
   const dateFormatter = new Intl.DateTimeFormat('en-us', {
@@ -104,27 +106,21 @@ Unsubscribe Options
     timeZone: 'GMT',
   });
 
-  eventsWithConfirmedRsvps.forEach((event) => {
-    const subscribedUsers = event.rsvps.filter((rsvp) =>
-      event.user_event_roles.findIndex(
-        (role) => role.user_id === rsvp.user_id && role.subscribed === true,
-      ),
-    );
+  eventsWithReminders.forEach((event) => {
+    const reminders = event.event_reminders;
 
     const date = dateFormatter.format(event.start_at);
     const start_time = timeFormatter.format(event.start_at);
     const end_time = timeFormatter.format(event.ends_at);
     console.log(`Event: ${event.name}`);
     console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
-    console.log(
-      `Not canceled rsvps: ${event.rsvps.length}, Users to remind (subscribed): ${subscribedUsers.length}`,
-    );
+    console.log(`Reminders to send to subscribed users: ${reminders.length}`);
 
-    subscribedUsers.forEach(async (user) => {
+    reminders.forEach(async (user) => {
       const email = reminderMessage(event, user, date, start_time, end_time);
       const subject = `Upcoming Event Reminder for ${event.name}`;
+      console.log(`Reminder for ${user.user.email}`);
       if (SEND_MAIL) {
-        console.log(`Sending reminder to ${user.user.email}`);
         await new MailerService([user.user.email], subject, email).sendEmail();
       }
     });

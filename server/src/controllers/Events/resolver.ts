@@ -146,6 +146,13 @@ export class EventResolver {
     const going = event.rsvps.filter((r) => !r.on_waitlist);
     const waitlist = going.length >= event.capacity;
 
+    const roleData: Prisma.user_event_rolesCreateWithoutRsvpInput = {
+      subscribed: true, // TODO change to user specified value
+      role_name: 'attendee',
+      users: { connect: { id: ctx.user.id } },
+      events: { connect: { id: eventId } },
+    };
+
     const rsvpData: Prisma.rsvpsCreateInput = {
       events: { connect: { id: eventId } },
       user: { connect: { id: ctx.user.id } },
@@ -153,6 +160,9 @@ export class EventResolver {
       on_waitlist: event.invite_only ? true : waitlist,
       confirmed_at: event.invite_only ? null : new Date(),
       canceled: false,
+      user_event_role: {
+        create: roleData,
+      },
     };
 
     await prisma.rsvps.create({ data: rsvpData });

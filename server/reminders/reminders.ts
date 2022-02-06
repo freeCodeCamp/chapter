@@ -123,6 +123,20 @@ Unsubscribe Options
       if (SEND_MAIL) {
         await new MailerService([user.user.email], subject, email).sendEmail();
       }
+
+      if (FLIP_NOTIFY) {
+        await prisma.event_reminders.update({
+          data: {
+            notified: true,
+          },
+          where: {
+            user_id_event_id: {
+              user_id: user.user_id,
+              event_id: event.id,
+            },
+          },
+        });
+      }
     });
     console.log();
   });

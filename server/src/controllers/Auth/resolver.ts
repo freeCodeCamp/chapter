@@ -33,6 +33,7 @@ export class AuthResolver {
   async register(@Arg('data') data: RegisterInput): Promise<User> {
     const existingUser = await prisma.users.findUnique({
       where: { email: data.email },
+      rejectOnNotFound: false,
     });
     if (existingUser) {
       throw new Error('EMAIL_IN_USE');
@@ -47,10 +48,8 @@ export class AuthResolver {
   async login(@Arg('data') data: LoginInput): Promise<LoginType> {
     const user = await prisma.users.findUnique({
       where: { email: data.email },
+      rejectOnNotFound: () => new Error('USER_NOT_FOUND'),
     });
-    if (!user) {
-      throw new Error('USER_NOT_FOUND');
-    }
 
     const { token, code } = authTokenService.generateToken(user.email);
     if (isDev()) {
@@ -85,10 +84,6 @@ export class AuthResolver {
     const user = await prisma.users.findUnique({
       where: { email: data.email },
     });
-
-    if (!user) {
-      throw new Error('User not found');
-    }
 
     const authToken = sign({ id: user.id }, getConfig('JWT_SECRET'), {
       expiresIn: '31d',

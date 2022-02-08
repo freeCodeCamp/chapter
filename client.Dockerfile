@@ -1,16 +1,17 @@
 FROM node:16-alpine
 
 # Setting working directory. All the path will be relative to WORKDIR
-WORKDIR /usr/chapter/client
+WORKDIR /usr/chapter/
 
 # Copying source files
-COPY . .
+COPY client ./client
+COPY package*.json ./
 
 # Installing dependencies
-RUN npm i -g npm@8 && npm i
+RUN npm ci -w=client --ignore-scripts
 
 # Building app
-RUN npm run build
+RUN npm run build:client
 
 EXPOSE 3000
 

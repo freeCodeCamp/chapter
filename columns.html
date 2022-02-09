@@ -144,16 +144,16 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>user_id",
-        "type": "int4",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
+        "type": "serial",
         "length": 10,
         "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
+        "autoUpdated": "√",
+        "defaultValue": "nextval('tags_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -261,16 +261,16 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
-        "type": "serial",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>chapter_id",
+        "type": "int4",
         "length": 10,
         "nullable": "",
-        "autoUpdated": "√",
-        "defaultValue": "nextval('tags_id_seq'::regclass)",
+        "autoUpdated": "",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -352,13 +352,13 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>chapter_id",
-        "type": "int4",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "name",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
@@ -391,16 +391,16 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "created_at",
+        "name": "updated_at",
         "type": "timestamp",
         "length": 26,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "CURRENT_TIMESTAMP",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -560,7 +560,7 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -625,7 +625,7 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -651,11 +651,11 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "name",
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>role_name",
         "type": "text",
         "length": 2147483647,
         "nullable": "",
@@ -664,14 +664,14 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "foreignKey",
-        "keyTitle": "Foreign Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>event_id",
-        "type": "int4",
-        "length": 10,
-        "nullable": "√",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "interested",
+        "type": "bool",
+        "length": 1,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -785,12 +785,12 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "interested",
-        "type": "bool",
-        "length": 1,
+        "name": "created_at",
+        "type": "timestamp",
+        "length": 26,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "null",
+        "defaultValue": "CURRENT_TIMESTAMP",
         "comments": ""
     },
     {
@@ -1145,14 +1145,14 @@
         "comments": ""
     },
     {
-        "tableName": "user_chapter_roles",
+        "tableName": "tags",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>role_name",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "",
+        "keyClass": "foreignKey",
+        "keyTitle": "Foreign Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>event_id",
+        "type": "int4",
+        "length": 10,
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -1223,13 +1223,13 @@
         "comments": ""
     },
     {
-        "tableName": "tags",
+        "tableName": "user_chapter_roles",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "updated_at",
-        "type": "timestamp",
-        "length": 26,
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>user_id",
+        "type": "int4",
+        "length": 10,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",

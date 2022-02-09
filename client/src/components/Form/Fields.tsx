@@ -36,7 +36,6 @@ export const Field: React.FC<BaseProps<any>> = ({
             id={name}
             name={name}
             type={type}
-            label={label}
             placeholder={placeholder}
             required={required}
             variant="flushed"

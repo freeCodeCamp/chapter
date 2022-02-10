@@ -34,7 +34,7 @@
     "class-validator": "0.13.2",
     "cors": "2.8.5",
     "dotenv": "16.0.0",
-    "dotenv-expand": "6.0.1",
+    "dotenv-expand": "8.0.1",
     "express": "4.17.2",
     "express-response-errors": "1.0.5",
     "graphql": "15.8.0",

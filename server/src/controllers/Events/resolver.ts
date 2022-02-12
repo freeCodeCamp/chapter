@@ -140,7 +140,7 @@ export class EventResolver {
       if (!rsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
 
-        if (waitingList) {
+        if (waitingList.length) {
           const acceptedRsvp = waitingList[0];
           await prisma.rsvps.update({
             where: {
@@ -154,7 +154,7 @@ export class EventResolver {
 
           const isSubscribed = acceptedRsvp.user.user_event_roles;
 
-          if (isSubscribed) {
+          if (isSubscribed.length) {
             await prisma.event_reminders.create({
               data: {
                 user_id: waitingList[0].user_id,

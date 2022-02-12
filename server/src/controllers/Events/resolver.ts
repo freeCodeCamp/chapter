@@ -157,8 +157,8 @@ export class EventResolver {
           if (isSubscribed.length) {
             await prisma.event_reminders.create({
               data: {
-                user_id: waitingList[0].user_id,
-                event_id: waitingList[0].event_id,
+                user_id: acceptedRsvp.user_id,
+                event_id: acceptedRsvp.event_id,
                 notified: false,
               },
             });

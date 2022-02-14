@@ -11,8 +11,10 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService from '../../services/MailerService';
+import { getDateTimeNMinutesBefore } from '../../util/dateUtils';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
+const DAY_IN_MINUTES = 1440;
 //Place holder for unsubscribe
 //TODO: Replace placeholder with actual unsubscribe link
 const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
@@ -160,6 +162,10 @@ export class EventResolver {
                 user_id: acceptedRsvp.user_id,
                 event_id: acceptedRsvp.event_id,
                 notified: false,
+                remind_at: getDateTimeNMinutesBefore(
+                  event.start_at,
+                  DAY_IN_MINUTES,
+                ),
               },
             });
           }
@@ -198,6 +204,7 @@ export class EventResolver {
           user_id: ctx.user.id,
           event_id: eventId,
           notified: false,
+          remind_at: getDateTimeNMinutesBefore(event.start_at, DAY_IN_MINUTES),
         },
       });
     }
@@ -244,6 +251,7 @@ ${unsubscribe}
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const rsvp = await prisma.rsvps.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+      include: { events: true },
     });
 
     // TODO: tell TS that rsvp exists more directly
@@ -269,6 +277,11 @@ ${unsubscribe}
         data: {
           user_id: userId,
           event_id: eventId,
+          notified: false,
+          remind_at: getDateTimeNMinutesBefore(
+            rsvp.events.start_at,
+            DAY_IN_MINUTES,
+          ),
         },
       });
     }
@@ -376,6 +389,7 @@ ${unsubscribe}
         venue: true,
         sponsors: true,
         rsvps: { include: { user: true } },
+        event_reminders: true,
       },
     });
     if (!event) throw new Error('Cant find event');
@@ -393,6 +407,7 @@ ${unsubscribe}
     });
 
     // TODO: Handle tags
+    const start_at = new Date(data.start_at) ?? event.start_at;
     const update: Prisma.eventsUpdateInput = {
       invite_only: data.invite_only ?? event.invite_only,
       name: data.name ?? event.name,
@@ -400,12 +415,28 @@ ${unsubscribe}
       url: data.url ?? event.url,
       streaming_url: data.streaming_url ?? event.streaming_url,
       venue_type: data.venue_type ?? event.venue_type,
-      start_at: new Date(data.start_at) ?? event.start_at,
+      start_at: start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
       venue: { connect: { id: data.venue_id } },
     };
+
+    if (update.start_at !== event.start_at) {
+      event.event_reminders.forEach(async (reminder) => {
+        await prisma.event_reminders.update({
+          data: {
+            remind_at: getDateTimeNMinutesBefore(start_at, DAY_IN_MINUTES),
+          },
+          where: {
+            user_id_event_id: {
+              user_id: reminder.user_id,
+              event_id: reminder.event_id,
+            },
+          },
+        });
+      });
+    }
 
     if (data.venue_id) {
       const venue = await prisma.venues.findUnique({

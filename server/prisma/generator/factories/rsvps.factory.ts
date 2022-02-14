@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '../../../src/prisma';
+import { getDateTimeNMinutesBefore } from '../../../src/util/dateUtils';
 import { random, randomItem, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
 
@@ -42,10 +43,15 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
       };
 
       if (role.subscribed && !rsvp.on_waitlist && !rsvp.canceled) {
+        const event = await prisma.events.findUnique({
+          where: { id: eventId },
+          rejectOnNotFound: true,
+        });
         const reminder = {
           event_id: eventId,
           user_id: eventUserIds[i],
           notified: false,
+          remind_at: getDateTimeNMinutesBefore(event.start_at, 1440),
         };
         eventReminders.push(reminder);
       }

@@ -47,13 +47,15 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
           where: { id: eventId },
           rejectOnNotFound: true,
         });
-        const reminder = {
-          event_id: eventId,
-          user_id: eventUserIds[i],
-          notified: false,
-          remind_at: getDateTimeNMinutesBefore(event.start_at, 1440),
-        };
-        eventReminders.push(reminder);
+        if (!event.canceled) {
+          const reminder = {
+            event_id: eventId,
+            user_id: eventUserIds[i],
+            notified: false,
+            remind_at: getDateTimeNMinutesBefore(event.start_at, 1440),
+          };
+          eventReminders.push(reminder);
+        }
       }
 
       rsvps.push(rsvp);

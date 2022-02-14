@@ -1,11 +1,24 @@
-import { EventWithEverything, User } from '../src/graphql-types';
+import { EventReminder, EventWithEverything, User } from '../src/graphql-types';
 import { prisma } from '../src/prisma';
 import MailerService from '../src/services/MailerService';
 
 const daysForward = 5;
 
-const SEND_MAIL = true;
-const FLIP_NOTIFY = true;
+const SEND_MAIL = false;
+const DELETE_REMINDER = false;
+const LOCK_REMINDER = true;
+const dateFormatter = new Intl.DateTimeFormat('en-us', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'GMT',
+});
+const timeFormatter = new Intl.DateTimeFormat('en-us', {
+  hour: 'numeric',
+  minute: 'numeric',
+  timeZone: 'GMT',
+});
 
 const getRemindersOlderThanDate = async (date: Date) =>
   await prisma.event_reminders.findMany({
@@ -27,6 +40,26 @@ const getRemindersOlderThanDate = async (date: Date) =>
     },
     orderBy: {
       remind_at: 'asc',
+    },
+  });
+
+const getOldReminders = async (date: Date) =>
+  await prisma.event_reminders.findMany({
+    include: {
+      rsvp: true,
+      user: true,
+      event: {
+        include: {
+          chapter: true,
+          venue: true,
+        },
+      },
+    },
+    where: {
+      notified: true,
+      updated_at: {
+        lte: date,
+      },
     },
   });
 
@@ -58,6 +91,43 @@ Unsubscribe Options
 [Privacy Policy](link to privacy page)`;
 };
 
+const getEmailData = (reminder: EventReminder) => {
+  const date = dateFormatter.format(reminder.event.start_at);
+  const start_time = timeFormatter.format(reminder.event.start_at);
+  const end_time = timeFormatter.format(reminder.event.ends_at);
+  console.log(`Event: ${reminder.event.name}`);
+  console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
+  console.log(
+    `Remind at ${reminder.remind_at.toUTCString()} to ${reminder.user.email}`,
+  );
+  console.log();
+
+  const email = reminderMessage(
+    reminder.event,
+    reminder.user,
+    date,
+    start_time,
+    end_time,
+  );
+  const subject = `Upcoming Event Reminder for ${reminder.event.name}`;
+  return { email: email, subject: subject };
+};
+
+const sendEmailForReminder = async (reminder: EventReminder) => {
+  const { email, subject } = getEmailData(reminder);
+  await new MailerService([reminder.user.email], subject, email).sendEmail();
+};
+
+const deleteReminder = async (reminder: EventReminder) =>
+  await prisma.event_reminders.delete({
+    where: {
+      user_id_event_id: {
+        user_id: reminder.user.id,
+        event_id: reminder.event.id,
+      },
+    },
+  });
+
 (async () => {
   const date = new Date();
   date.setDate(date.getDate() + daysForward);
@@ -67,58 +137,47 @@ Unsubscribe Options
   );
   console.log();
 
-  const dateFormatter = new Intl.DateTimeFormat('en-us', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'GMT',
-  });
-  const timeFormatter = new Intl.DateTimeFormat('en-us', {
-    hour: 'numeric',
-    minute: 'numeric',
-    timeZone: 'GMT',
-  });
-
   reminders.forEach(async (reminder) => {
-    const date = dateFormatter.format(reminder.event.start_at);
-    const start_time = timeFormatter.format(reminder.event.start_at);
-    const end_time = timeFormatter.format(reminder.event.ends_at);
-    console.log(`Event: ${reminder.event.name}`);
-    console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
-    console.log(
-      `Remind at ${reminder.remind_at.toUTCString()} to ${reminder.user.email}`,
-    );
-
-    const email = reminderMessage(
-      reminder.event,
-      reminder.user,
-      date,
-      start_time,
-      end_time,
-    );
-    const subject = `Upcoming Event Reminder for ${reminder.event.name}`;
-    if (SEND_MAIL) {
-      await new MailerService(
-        [reminder.user.email],
-        subject,
-        email,
-      ).sendEmail();
-    }
-
-    if (FLIP_NOTIFY) {
-      await prisma.event_reminders.update({
+    if (LOCK_REMINDER) {
+      const lock = await prisma.event_reminders.updateMany({
         data: {
           notified: true,
         },
         where: {
-          user_id_event_id: {
-            user_id: reminder.user.id,
-            event_id: reminder.event.id,
-          },
+          user_id: reminder.user_id,
+          event_id: reminder.event_id,
+          notified: false,
         },
       });
+      if (lock.count === 0) {
+        return;
+      }
     }
-    console.log();
+
+    if (SEND_MAIL) {
+      await sendEmailForReminder(reminder);
+    }
+
+    if (DELETE_REMINDER) {
+      await deleteReminder(reminder);
+    }
+  });
+
+  const updateDate = new Date();
+  updateDate.setMinutes(updateDate.getMinutes() - 10);
+  const oldReminders = await getOldReminders(updateDate);
+  console.log(
+    `Old reminders updated before ${updateDate.toUTCString()}: ${
+      oldReminders.length
+    }`,
+  );
+
+  oldReminders.forEach(async (reminder) => {
+    if (SEND_MAIL) {
+      await sendEmailForReminder(reminder);
+    }
+    if (DELETE_REMINDER) {
+      await deleteReminder(reminder);
+    }
   });
 })();

@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from 'type-graphql';
-import { Event, User } from '.';
+import { EventWithEverything, User } from '.';
 
 @ObjectType()
 export class EventReminder {
@@ -9,11 +9,14 @@ export class EventReminder {
   @Field(() => Int)
   event_id: number;
 
+  @Field(() => Date)
+  remind_at: Date;
+
   @Field(() => User)
   user: User;
 
-  @Field(() => Event)
-  event: Event;
+  @Field(() => EventWithEverything)
+  event: Omit<EventWithEverything, 'sponsors' | 'rsvps'>;
 
   @Field(() => Boolean)
   notified: boolean;

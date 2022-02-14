@@ -60,7 +60,7 @@
     "@types/chai": "4.3.0",
     "@types/jest": "27.4.0",
     "@types/jsonwebtoken": "8.5.8",
-    "@types/node": "16.11.24",
+    "@types/node": "16.11.25",
     "@types/nodemailer": "6.4.4",
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.11",

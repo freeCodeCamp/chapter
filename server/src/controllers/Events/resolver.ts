@@ -469,6 +469,11 @@ ${unsubscribe}
       where: { id },
       data: { canceled: true },
     });
+    await prisma.event_reminders.deleteMany({
+      where: {
+        event_id: id,
+      },
+    });
 
     const notCancelledRsvps = await prisma.rsvps.findMany({
       where: {

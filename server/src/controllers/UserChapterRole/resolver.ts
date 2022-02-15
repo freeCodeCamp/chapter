@@ -17,9 +17,6 @@ export class UserChapterRoleResolver {
       where: { id: event_id },
       include: { chapter: true },
     });
-    if (!event) {
-      throw Error('Cannot find the event with id ' + event_id);
-    }
     if (!event.chapter) {
       throw Error('Cannot find the chapter of the event with id ' + event_id);
     }
@@ -32,6 +29,7 @@ export class UserChapterRoleResolver {
         user_id: ctx.user.id,
         chapter_id: event.chapter.id,
       },
+      rejectOnNotFound: false,
     });
 
     if (!userChapterRole) {

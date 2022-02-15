@@ -120,26 +120,27 @@ export class EventResolver {
       throw new Error('Event not found');
     }
 
-    const rsvp = await prisma.rsvps.findUnique({
+    const oldRsvp = await prisma.rsvps.findUnique({
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
           event_id: eventId,
         },
       },
+      rejectOnNotFound: false,
     });
 
-    if (rsvp) {
+    if (oldRsvp) {
       await prisma.rsvps.delete({
         where: {
           user_id_event_id: {
-            user_id: rsvp.user_id,
-            event_id: rsvp.event_id,
+            user_id: oldRsvp.user_id,
+            event_id: oldRsvp.event_id,
           },
         },
       });
 
-      if (!rsvp.on_waitlist) {
+      if (!event.invite_only && !oldRsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
 
         if (waitingList.length) {
@@ -197,7 +198,7 @@ export class EventResolver {
       },
     };
 
-    await prisma.rsvps.create({ data: rsvpData });
+    const rsvp = await prisma.rsvps.create({ data: rsvpData });
     if (!event.invite_only && !waitlist && roleData.subscribed) {
       await prisma.event_reminders.create({
         data: {
@@ -253,11 +254,6 @@ ${unsubscribe}
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       include: { events: true },
     });
-
-    // TODO: tell TS that rsvp exists more directly
-    if (!rsvp) {
-      throw new Error('RSVP not found');
-    }
 
     const rsvpData: Prisma.rsvpsUpdateInput = {
       confirmed_at: new Date(),
@@ -318,13 +314,11 @@ ${unsubscribe}
     let venue;
     if (data.venue_id) {
       venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
-      if (!venue) throw new Error('Venue missing');
     }
 
     const chapter = await prisma.chapters.findUnique({
       where: { id: data.chapter_id },
     });
-    if (!chapter) throw new Error('Chapter missing');
 
     // TODO: add admin and owner once you've figured out how to handle instance
     // roles
@@ -392,7 +386,6 @@ ${unsubscribe}
         event_reminders: true,
       },
     });
-    if (!event) throw new Error('Cant find event');
 
     const eventSponsorInput: Prisma.event_sponsorsCreateManyInput[] =
       data.sponsor_ids.map((sId) => ({
@@ -442,7 +435,6 @@ ${unsubscribe}
       const venue = await prisma.venues.findUnique({
         where: { id: data.venue_id },
       });
-      if (!venue) throw new Error('Cant find venue');
       // TODO: include a link back to the venue page
       if (event.venue_id !== venue.id) {
         const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
@@ -531,11 +523,6 @@ ${unsubscribe}
         user_event_roles: true,
       },
     });
-
-    // TODO: if we've got here, the event exists, since findUnique throws if it
-    // fails to find something (find a better way to convince TypesScript of
-    // this)
-    if (!event) throw new Error("Can't find event");
 
     // TODO: the default should probably be to bcc everyone.
     const addresses: string[] = [];

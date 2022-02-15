@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { execSync } = require('child_process');
 const { existsSync, copyFileSync } = require('fs');
 

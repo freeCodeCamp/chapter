@@ -31,6 +31,7 @@ export const userMiddleware = (
     .findUnique({
       where: { id: value.id },
       include: { chapter_roles: true },
+      rejectOnNotFound: false,
     })
     .then((user) => {
       if (!user) {

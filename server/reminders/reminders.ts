@@ -3,6 +3,7 @@ import { prisma } from '../src/prisma';
 import MailerService from '../src/services/MailerService';
 
 const daysForward = 5;
+const processingLimitInMinutes = 10;
 
 const SEND_MAIL = false;
 const DELETE_REMINDER = false;
@@ -164,7 +165,7 @@ const deleteReminder = async (reminder: EventReminder) =>
   });
 
   const updateDate = new Date();
-  updateDate.setMinutes(updateDate.getMinutes() - 10);
+  updateDate.setMinutes(updateDate.getMinutes() - processingLimitInMinutes);
   const oldReminders = await getOldReminders(updateDate);
   console.log(
     `Old reminders updated before ${updateDate.toUTCString()}: ${

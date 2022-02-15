@@ -139,6 +139,15 @@ export class EventResolver {
           },
         },
       });
+      await prisma.user_event_roles.delete({
+        where: {
+          user_id_event_id_role_name: {
+            user_id: oldRsvp.user_id,
+            event_id: oldRsvp.event_id,
+            role_name: 'attendee',
+          },
+        },
+      });
 
       if (!event.invite_only && !oldRsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
@@ -179,7 +188,7 @@ export class EventResolver {
     const going = event.rsvps.filter((r) => !r.on_waitlist);
     const waitlist = going.length >= event.capacity;
 
-    const roleData: Prisma.user_event_rolesCreateWithoutRsvpInput = {
+    const roleData: Prisma.user_event_rolesCreateInput = {
       subscribed: true, // TODO change to user specified value
       role_name: 'attendee',
       users: { connect: { id: ctx.user.id } },
@@ -193,12 +202,10 @@ export class EventResolver {
       on_waitlist: event.invite_only ? true : waitlist,
       confirmed_at: event.invite_only ? null : new Date(),
       canceled: false,
-      user_event_role: {
-        create: roleData,
-      },
     };
 
     const rsvp = await prisma.rsvps.create({ data: rsvpData });
+    await prisma.user_event_roles.create({ data: roleData });
     if (!event.invite_only && !waitlist && roleData.subscribed) {
       await prisma.event_reminders.create({
         data: {
@@ -300,6 +307,15 @@ ${unsubscribe}
   ): Promise<boolean> {
     await prisma.rsvps.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+    });
+    await prisma.user_event_roles.delete({
+      where: {
+        user_id_event_id_role_name: {
+          user_id: userId,
+          event_id: eventId,
+          role_name: 'attendee',
+        },
+      },
     });
 
     return true;

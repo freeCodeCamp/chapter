@@ -506,12 +506,10 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
   __typename?: 'Query';
-  me?: {
-    __typename?: 'User';
-    id: number;
-    first_name: string;
-    last_name: string;
-  } | null;
+  me?:
+    | { __typename?: 'User'; id: number; first_name: string; last_name: string }
+    | null
+    | undefined;
 };
 
 export type ChapterQueryVariables = Exact<{
@@ -520,28 +518,34 @@ export type ChapterQueryVariables = Exact<{
 
 export type ChapterQuery = {
   __typename?: 'Query';
-  chapter?: {
-    __typename?: 'ChapterWithRelations';
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-    city: string;
-    region: string;
-    country: string;
-    imageUrl: string;
-    events: Array<{
-      __typename?: 'Event';
-      id: number;
-      name: string;
-      description: string;
-      start_at: any;
-      invite_only: boolean;
-      canceled: boolean;
-      image_url: string;
-      tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
-    }>;
-  } | null;
+  chapter?:
+    | {
+        __typename?: 'ChapterWithRelations';
+        id: number;
+        name: string;
+        description: string;
+        category: string;
+        city: string;
+        region: string;
+        country: string;
+        imageUrl: string;
+        events: Array<{
+          __typename?: 'Event';
+          id: number;
+          name: string;
+          description: string;
+          start_at: any;
+          invite_only: boolean;
+          canceled: boolean;
+          image_url: string;
+          tags?:
+            | Array<{ __typename?: 'Tag'; id: number; name: string }>
+            | null
+            | undefined;
+        }>;
+      }
+    | null
+    | undefined;
 };
 
 export type ChapterUsersQueryVariables = Exact<{
@@ -550,14 +554,17 @@ export type ChapterUsersQueryVariables = Exact<{
 
 export type ChapterUsersQuery = {
   __typename?: 'Query';
-  chapter?: {
-    __typename?: 'ChapterWithRelations';
-    users: Array<{
-      __typename?: 'UserChapterRole';
-      interested: boolean;
-      user: { __typename?: 'User'; name: string; email: string };
-    }>;
-  } | null;
+  chapter?:
+    | {
+        __typename?: 'ChapterWithRelations';
+        users: Array<{
+          __typename?: 'UserChapterRole';
+          interested: boolean;
+          user: { __typename?: 'User'; name: string; email: string };
+        }>;
+      }
+    | null
+    | undefined;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -619,13 +626,19 @@ export type EventsQuery = {
     name: string;
     canceled: boolean;
     description: string;
-    url?: string | null;
+    url?: string | null | undefined;
     invite_only: boolean;
-    streaming_url?: string | null;
+    streaming_url?: string | null | undefined;
     start_at: any;
     capacity: number;
-    venue?: { __typename?: 'Venue'; id: number; name: string } | null;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    venue?:
+      | { __typename?: 'Venue'; id: number; name: string }
+      | null
+      | undefined;
+    tags?:
+      | Array<{ __typename?: 'Tag'; id: number; name: string }>
+      | null
+      | undefined;
   }>;
 };
 
@@ -635,48 +648,57 @@ export type EventQueryVariables = Exact<{
 
 export type EventQuery = {
   __typename?: 'Query';
-  event?: {
-    __typename?: 'EventWithEverything';
-    id: number;
-    name: string;
-    description: string;
-    url?: string | null;
-    invite_only: boolean;
-    streaming_url?: string | null;
-    canceled: boolean;
-    capacity: number;
-    start_at: any;
-    ends_at: any;
-    image_url: string;
-    chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
-    sponsors: Array<{
-      __typename?: 'EventSponsor';
-      sponsor: {
-        __typename?: 'Sponsor';
-        name: string;
-        website: string;
-        logo_path: string;
-        type: string;
+  event?:
+    | {
+        __typename?: 'EventWithEverything';
         id: number;
-      };
-    }>;
-    venue?: {
-      __typename?: 'Venue';
-      id: number;
-      name: string;
-      street_address?: string | null;
-      city: string;
-      postal_code: string;
-      region: string;
-      country: string;
-    } | null;
-    rsvps: Array<{
-      __typename?: 'RsvpWithUser';
-      on_waitlist: boolean;
-      user: { __typename?: 'User'; id: number; name: string };
-    }>;
-  } | null;
+        name: string;
+        description: string;
+        url?: string | null | undefined;
+        invite_only: boolean;
+        streaming_url?: string | null | undefined;
+        canceled: boolean;
+        capacity: number;
+        start_at: any;
+        ends_at: any;
+        image_url: string;
+        chapter: { __typename?: 'Chapter'; id: number; name: string };
+        tags?:
+          | Array<{ __typename?: 'Tag'; id: number; name: string }>
+          | null
+          | undefined;
+        sponsors: Array<{
+          __typename?: 'EventSponsor';
+          sponsor: {
+            __typename?: 'Sponsor';
+            name: string;
+            website: string;
+            logo_path: string;
+            type: string;
+            id: number;
+          };
+        }>;
+        venue?:
+          | {
+              __typename?: 'Venue';
+              id: number;
+              name: string;
+              street_address?: string | null | undefined;
+              city: string;
+              postal_code: string;
+              region: string;
+              country: string;
+            }
+          | null
+          | undefined;
+        rsvps: Array<{
+          __typename?: 'RsvpWithUser';
+          on_waitlist: boolean;
+          user: { __typename?: 'User'; id: number; name: string };
+        }>;
+      }
+    | null
+    | undefined;
 };
 
 export type EventVenuesQueryVariables = Exact<{
@@ -685,19 +707,25 @@ export type EventVenuesQueryVariables = Exact<{
 
 export type EventVenuesQuery = {
   __typename?: 'Query';
-  event?: {
-    __typename?: 'EventWithEverything';
-    id: number;
-    name: string;
-    description: string;
-    url?: string | null;
-    streaming_url?: string | null;
-    capacity: number;
-    start_at: any;
-    ends_at: any;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
-    venue?: { __typename?: 'Venue'; id: number } | null;
-  } | null;
+  event?:
+    | {
+        __typename?: 'EventWithEverything';
+        id: number;
+        name: string;
+        description: string;
+        url?: string | null | undefined;
+        streaming_url?: string | null | undefined;
+        capacity: number;
+        start_at: any;
+        ends_at: any;
+        tags?:
+          | Array<{ __typename?: 'Tag'; id: number; name: string }>
+          | null
+          | undefined;
+        venue?: { __typename?: 'Venue'; id: number } | null | undefined;
+      }
+    | null
+    | undefined;
   venues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
 };
 
@@ -713,10 +741,13 @@ export type CreateEventMutation = {
     name: string;
     canceled: boolean;
     description: string;
-    url?: string | null;
-    streaming_url?: string | null;
+    url?: string | null | undefined;
+    streaming_url?: string | null | undefined;
     capacity: number;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags?:
+      | Array<{ __typename?: 'Tag'; id: number; name: string }>
+      | null
+      | undefined;
   };
 };
 
@@ -733,10 +764,13 @@ export type UpdateEventMutation = {
     name: string;
     canceled: boolean;
     description: string;
-    url?: string | null;
-    streaming_url?: string | null;
+    url?: string | null | undefined;
+    streaming_url?: string | null | undefined;
     capacity: number;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags?:
+      | Array<{ __typename?: 'Tag'; id: number; name: string }>
+      | null
+      | undefined;
   };
 };
 
@@ -767,7 +801,7 @@ export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
   confirmRsvp: {
     __typename?: 'Rsvp';
-    confirmed_at?: any | null;
+    confirmed_at?: any | null | undefined;
     on_waitlist: boolean;
   };
 };
@@ -821,14 +855,17 @@ export type SponsorQueryVariables = Exact<{
 
 export type SponsorQuery = {
   __typename?: 'Query';
-  sponsor?: {
-    __typename?: 'Sponsor';
-    id: number;
-    name: string;
-    website: string;
-    logo_path: string;
-    type: string;
-  } | null;
+  sponsor?:
+    | {
+        __typename?: 'Sponsor';
+        id: number;
+        name: string;
+        website: string;
+        logo_path: string;
+        type: string;
+      }
+    | null
+    | undefined;
 };
 
 export type CreateSponsorMutationVariables = Exact<{
@@ -870,13 +907,13 @@ export type VenuesQuery = {
     __typename?: 'Venue';
     id: number;
     name: string;
-    street_address?: string | null;
+    street_address?: string | null | undefined;
     city: string;
     postal_code: string;
     region: string;
     country: string;
-    latitude?: number | null;
-    longitude?: number | null;
+    latitude?: number | null | undefined;
+    longitude?: number | null | undefined;
   }>;
 };
 
@@ -886,18 +923,21 @@ export type VenueQueryVariables = Exact<{
 
 export type VenueQuery = {
   __typename?: 'Query';
-  venue?: {
-    __typename?: 'Venue';
-    id: number;
-    name: string;
-    street_address?: string | null;
-    city: string;
-    postal_code: string;
-    region: string;
-    country: string;
-    latitude?: number | null;
-    longitude?: number | null;
-  } | null;
+  venue?:
+    | {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        street_address?: string | null | undefined;
+        city: string;
+        postal_code: string;
+        region: string;
+        country: string;
+        latitude?: number | null | undefined;
+        longitude?: number | null | undefined;
+      }
+    | null
+    | undefined;
 };
 
 export type CreateVenueMutationVariables = Exact<{
@@ -910,13 +950,13 @@ export type CreateVenueMutation = {
     __typename?: 'Venue';
     id: number;
     name: string;
-    street_address?: string | null;
+    street_address?: string | null | undefined;
     city: string;
     postal_code: string;
     region: string;
     country: string;
-    latitude?: number | null;
-    longitude?: number | null;
+    latitude?: number | null | undefined;
+    longitude?: number | null | undefined;
   };
 };
 
@@ -931,13 +971,13 @@ export type UpdateVenueMutation = {
     __typename?: 'Venue';
     id: number;
     name: string;
-    street_address?: string | null;
+    street_address?: string | null | undefined;
     city: string;
     postal_code: string;
     region: string;
     country: string;
-    latitude?: number | null;
-    longitude?: number | null;
+    latitude?: number | null | undefined;
+    longitude?: number | null | undefined;
   };
 };
 
@@ -947,7 +987,10 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent?: { __typename?: 'Rsvp'; confirmed_at?: any | null } | null;
+  rsvpEvent?:
+    | { __typename?: 'Rsvp'; confirmed_at?: any | null | undefined }
+    | null
+    | undefined;
 };
 
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -963,7 +1006,10 @@ export type MinEventsQuery = {
     invite_only: boolean;
     canceled: boolean;
     image_url: string;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags?:
+      | Array<{ __typename?: 'Tag'; id: number; name: string }>
+      | null
+      | undefined;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -989,7 +1035,10 @@ export type HomeQuery = {
     canceled: boolean;
     start_at: any;
     image_url: string;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags?:
+      | Array<{ __typename?: 'Tag'; id: number; name: string }>
+      | null
+      | undefined;
     chapter: {
       __typename?: 'Chapter';
       id: number;

@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 
 import { prisma } from '../../../src/prisma';
 import { getDateTimeNMinutesBefore } from '../../../src/util/dateUtils';
-import { random, randomItem, randomItems } from '../lib/random';
+import { random, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
 
 const { date } = faker;
@@ -39,7 +39,7 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
         user_id: eventUserIds[i],
         event_id: eventId,
         role_name: organizerIterator.next().value ? 'organizer' : 'attendee',
-        subscribed: randomItem([true, false]),
+        subscribed: true, // TODO: have some unsubscribed users
       };
 
       if (role.subscribed && !rsvp.on_waitlist && !rsvp.canceled) {

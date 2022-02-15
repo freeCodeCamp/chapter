@@ -45,7 +45,6 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
       if (role.subscribed && !rsvp.on_waitlist && !rsvp.canceled) {
         const event = await prisma.events.findUnique({
           where: { id: eventId },
-          rejectOnNotFound: true,
         });
         if (!event.canceled) {
           const reminder = {

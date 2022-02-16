@@ -42,6 +42,7 @@ export class CreateEventInputs {
 
   @Field(() => String)
   image_url: string;
+
   @Field(() => [Int])
   sponsor_ids: number[];
 }
@@ -77,11 +78,15 @@ export class UpdateEventInputs {
   @Field(() => Int, { nullable: true })
   venue_id?: number;
 
+  @Field(() => Int)
+  chapter_id: number;
+
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;
 
   @Field(() => String, { nullable: true })
   image_url: string;
+
   @Field(() => [Int])
   sponsor_ids: number[];
 }

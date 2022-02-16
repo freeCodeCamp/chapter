@@ -123,16 +123,19 @@ export interface EventFormData {
   invite_only?: boolean;
   sponsors: Array<EventSponsorInput>;
   canceled: boolean;
+  chapter_id: number;
 }
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors'> | 'id'
+  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'chapter_id'>
+  | 'id'
 > & {
   venue_id?: number;
   tags: { name: string }[];
   venue?: Omit<Venue, 'events'> | null;
   sponsors: EventSponsorInput[];
+  chapter_id: number;
 };
 
 export interface EventFormProps {
@@ -140,6 +143,7 @@ export interface EventFormProps {
   loading: boolean;
   data?: IEventData;
   submitText: string;
+  chapterId?: number;
 }
 
 export const formatValue = (field: Field, store?: IEventData): any => {

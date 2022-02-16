@@ -9,8 +9,10 @@ import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
 import { EVENTS } from '../graphql/queries';
+import { useParam } from '../../../../hooks/useParam';
 
 export const NewEventPage: NextPage = () => {
+  const chapterId = useParam('id');
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -21,11 +23,9 @@ export const NewEventPage: NextPage = () => {
   const [publish] = useSendEventInviteMutation();
 
   const onSubmit = async (data: EventFormData) => {
-    // TODO: load chapter from url or something like that
     setLoading(true);
 
     try {
-      const HARD_CODE = { chapter_id: 1 };
       const { sponsors, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
       const eventData = {
@@ -34,7 +34,6 @@ export const NewEventPage: NextPage = () => {
         venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
-        ...HARD_CODE,
         tags: undefined,
         sponsor_ids: sponsorArray,
       };
@@ -62,6 +61,7 @@ export const NewEventPage: NextPage = () => {
         loading={loading}
         onSubmit={onSubmit}
         submitText={'Add event'}
+        chapterId={chapterId !== -1 ? chapterId : 1}
       />
     </Layout>
   );

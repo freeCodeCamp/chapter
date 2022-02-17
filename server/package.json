@@ -35,7 +35,7 @@
     "cors": "2.8.5",
     "dotenv": "16.0.0",
     "dotenv-expand": "8.0.1",
-    "express": "4.17.2",
+    "express": "4.17.3",
     "express-response-errors": "1.0.5",
     "graphql": "15.8.0",
     "is-docker": "2.2.1",

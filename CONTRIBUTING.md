@@ -322,16 +322,13 @@ You have successfully created a PR. Congratulations! :tada:
  
 **Prerequisite**: Node.js must exist on your system
 
-> Note: Close and re-open your terminal after the installation finishes.
-
 Check that compatible versions of _node_ and _npm_ are installed:
 * Node.js 16 or greater - run `node --version` and the output should be like **v16**.0.0
 * npm 8 or greater - run `npm --version` and the output should be like **8**.0.0
 
 > Note: If your version of _node_ or _npm_ are not sufficient, then: 
-> * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js, then running `nvm install` within the root code directory.
- > * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/)
-
+> * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js and run `nvm install` within the root code directory.
+ > * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/). Be sure to close and re-open your terminal for the changes to take effect.
 
 Now, run `npm i` to install all of the necessary dependencies.
 

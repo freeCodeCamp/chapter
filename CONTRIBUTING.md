@@ -76,7 +76,7 @@ Follow these steps to fork the repository:
     * _Git Bash_ - this terminal shell emulates Linux and is included in _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
     * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
 
-**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.  You will also need to have [Node.js](https://nodejs.org/en/) 16 and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 8.  We recommend using [nvm](https://github.com/nvm-sh/nvm) to simplify the process of installing Node.js - `nvm install` will automatically install the correct version. Then `npm i -g npm@8` will update npm to a compatible version.
+**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
     * SSH - uses SSH key authentication instead of a username and password.
@@ -318,17 +318,22 @@ You have successfully created a PR. Congratulations! :tada:
 # Running the Application
 **Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary><b>Step 1</b> - Install Node.js and dependencies</summary>
+<details><summary><b>Step 1</b> - Install Node.js and Dependencies</summary>
  
-**Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
+**Prerequisite**: Node.js must exist on your system
+
 > Note: Close and re-open your terminal after the installation finishes.
 
-Ensure the Node.js tools are installed:
+Check that compatible versions of _node_ and _npm_ are installed:
+* Node.js 16 or greater - run `node --version` and the output should be like **v16**.0.0
+* npm 8 or greater - run `npm --version` and the output should be like **8**.0.0
 
-* Node.js 16 or greater - `node --version` and the output should be like **v16**.0.0
-* npm 8 or greater - `npm --version` and the output should be like **8**.0.0
+> Note: If your version of _node_ or _npm_ are not sufficient, then: 
+> * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js, then running `nvm install` within the root code directory.
+ > * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/)
 
-Run `npm i` to install all of the necessary dependencies.
+
+Now, run `npm i` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory

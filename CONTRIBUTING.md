@@ -64,7 +64,7 @@ Follow these steps to fork the repository:
 ![an image illustrating the fork button](docs/assets/how-to-fork.png)
 </details>
 
-<details><summary><b>Step 2</b> - Prepare the Development Environment</summary>
+<details><summary><b>Step 2</b> - Prepare the Terminal and Git Environment</summary>
 
 **Prerequisite**:  All `commands` will be run within a terminal's command line / shell on your development device. Options vary by operating system.
 

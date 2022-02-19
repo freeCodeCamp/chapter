@@ -320,17 +320,17 @@ You have successfully created a PR. Congratulations! :tada:
 
 <details><summary><b>Step 1</b> - Install Node.js and Dependencies</summary>
  
-**Prerequisite**: Node.js must exist on your system
+**Prerequisite**: _Node.js_ 16+ and _npm_ 8+ must be installed
 
-Check that compatible versions of _node_ and _npm_ are installed:
-* Node.js 16 or greater - run `node --version` and the output should be like **v16**.0.0
-* npm 8 or greater - run `npm --version` and the output should be like **8**.0.0
+> Note
+> * To check Node.js, run `node --version` and the output should be like **v16**.#.#
+> * If _Node.js_ is not installed, or using an older version, then:  
+>   * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js and run `nvm install` within the root code directory.
+ >   * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/). Be sure to close and re-open your terminal for the changes to take effect.
+> * To check npm, run `npm --version` and the output should be like **8**.#.#
+> * Update npm to the latest version by running `npm i -g npm@8` in the root code directory.
 
-> Note: If your version of _node_ or _npm_ are not sufficient, then: 
-> * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js and run `nvm install` within the root code directory.
- > * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/). Be sure to close and re-open your terminal for the changes to take effect.
-
-Now, run `npm i` to install all of the necessary dependencies.
+Run `npm i` to install all of the necessary dependencies.
 
 This step will **automatically** read and process the _package.json_ file. Most notably it:
 * Downloads all Node package dependencies to the _node_modules_ sub-directory

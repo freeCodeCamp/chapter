@@ -279,12 +279,18 @@ ${unsubscribe}
       capacity: data.capacity,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      streaming_url: data.streaming_url,
+      streaming_url:
+        data.venue_type !== events_venue_type_enum.Physical
+          ? data.streaming_url
+          : null,
       venue_type: data.venue_type,
       url: data.url,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
-      venue: { connect: { id: venue?.id } },
+      venue:
+        data.venue_type !== events_venue_type_enum.Online
+          ? { connect: { id: venue?.id } }
+          : {},
       chapter: { connect: { id: chapter.id } },
       sponsors: {
         createMany: { data: eventSponsorsData },

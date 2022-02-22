@@ -42,8 +42,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name: Update npm
-        run: npm i -g npm@8
 
       - name: Set Chapter Environment Variables
         run: |
@@ -51,7 +49,7 @@ jobs:
           echo DB_PORT=5432 >> .env
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
       - name: Build client and server
         run: npm run build

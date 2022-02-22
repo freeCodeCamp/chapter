@@ -112,6 +112,7 @@ export class EventResolver {
           event_id: eventId,
         },
       },
+      rejectOnNotFound: false,
     });
 
     if (oldRsvp) {
@@ -124,7 +125,7 @@ export class EventResolver {
         },
       });
 
-      if (!oldRsvp.on_waitlist) {
+      if (!event.invite_only && !oldRsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
 
         if (waitingList.length > 0) {
@@ -201,11 +202,6 @@ ${unsubscribe}
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
     });
 
-    // TODO: tell TS that rsvp exists more directly
-    if (!rsvp) {
-      throw new Error('RSVP not found');
-    }
-
     const rsvpData: Prisma.rsvpsUpdateInput = {
       confirmed_at: new Date(),
       on_waitlist: false,
@@ -243,13 +239,11 @@ ${unsubscribe}
     let venue;
     if (data.venue_id) {
       venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
-      if (!venue) throw new Error('Venue missing');
     }
 
     const chapter = await prisma.chapters.findUnique({
       where: { id: data.chapter_id },
     });
-    if (!chapter) throw new Error('Chapter missing');
 
     // TODO: add admin and owner once you've figured out how to handle instance
     // roles
@@ -316,7 +310,6 @@ ${unsubscribe}
         rsvps: { include: { user: true } },
       },
     });
-    if (!event) throw new Error('Cant find event');
 
     const eventSponsorInput: Prisma.event_sponsorsCreateManyInput[] =
       data.sponsor_ids.map((sId) => ({
@@ -349,7 +342,6 @@ ${unsubscribe}
       const venue = await prisma.venues.findUnique({
         where: { id: data.venue_id },
       });
-      if (!venue) throw new Error('Cant find venue');
       // TODO: include a link back to the venue page
       if (event.venue_id !== venue.id || event.venue_type !== data.venue_type) {
         const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
@@ -440,11 +432,6 @@ ${unsubscribe}`;
         user_event_roles: true,
       },
     });
-
-    // TODO: if we've got here, the event exists, since findUnique throws if it
-    // fails to find something (find a better way to convince TypesScript of
-    // this)
-    if (!event) throw new Error("Can't find event");
 
     // TODO: the default should probably be to bcc everyone.
     const addresses: string[] = [];

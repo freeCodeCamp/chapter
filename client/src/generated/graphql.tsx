@@ -345,7 +345,7 @@ export type RegisterInput = {
 export type Rsvp = {
   __typename?: 'Rsvp';
   canceled: Scalars['Boolean'];
-  confirmed_at: Scalars['DateTime'];
+  confirmed_at?: Maybe<Scalars['DateTime']>;
   date: Scalars['DateTime'];
   event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
@@ -355,7 +355,7 @@ export type Rsvp = {
 export type RsvpWithUser = {
   __typename?: 'RsvpWithUser';
   canceled: Scalars['Boolean'];
-  confirmed_at: Scalars['DateTime'];
+  confirmed_at?: Maybe<Scalars['DateTime']>;
   date: Scalars['DateTime'];
   event_id: Scalars['Int'];
   on_waitlist: Scalars['Boolean'];
@@ -767,7 +767,11 @@ export type ConfirmRsvpMutationVariables = Exact<{
 
 export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
-  confirmRsvp: { __typename?: 'Rsvp'; confirmed_at: any; on_waitlist: boolean };
+  confirmRsvp: {
+    __typename?: 'Rsvp';
+    confirmed_at?: any | null;
+    on_waitlist: boolean;
+  };
 };
 
 export type DeleteRsvpMutationVariables = Exact<{
@@ -945,7 +949,7 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent?: { __typename?: 'Rsvp'; confirmed_at: any } | null;
+  rsvpEvent?: { __typename?: 'Rsvp'; confirmed_at?: any | null } | null;
 };
 
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;

@@ -12,7 +12,9 @@ services:
     env_file: .env
     depends_on:
       - db
-    build: ./server
+    build: 
+      context: .
+      dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
@@ -22,7 +24,9 @@ services:
   client:
     depends_on:
       - app
-    build: ./client
+    build:
+      context: .
+      dockerfile: client.Dockerfile
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client

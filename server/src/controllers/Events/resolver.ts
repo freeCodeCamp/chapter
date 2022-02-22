@@ -511,13 +511,15 @@ ${unsubscribe}`;
     // TODO: it needs a link to unsubscribe from just this event.  See
     // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
     // Update the place holder with actual
-    const body =
-      `When: ${event.start_at} to ${event.ends_at}<br>` +
-      (event.venue ? `Where: ${event.venue?.name}<br>` : '') +
-      `Event Details: <a href="${eventURL}">${eventURL}</a><br>
+    const body = `When: ${event.start_at} to ${event.ends_at}<br>
+${event.venue ? `Where: ${event.venue.name}<br>` : ''}
+${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
+Event Details: <a href="${eventURL}">${eventURL}</a><br>
     <br>
     - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
-    - More about ${event.chapter?.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+    - More about ${
+      event.chapter?.name
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
     <br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>

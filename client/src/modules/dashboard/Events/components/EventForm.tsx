@@ -113,17 +113,14 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               defaultValue={formatValue(field, data)}
             />
           ) : (
-            (field.key !== 'streaming_url' ||
-              getValues('venue_type') !== VenueType.Physical) && (
-              <Input
-                key={field.key}
-                type={field.type}
-                label={field.label}
-                placeholder={field.placeholder}
-                isRequired={field.isRequired}
-                {...register(field.key)}
-              />
-            )
+            <Input
+              key={field.key}
+              type={field.type}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired={field.isRequired}
+              {...register(field.key)}
+            />
           ),
         )}
 
@@ -135,39 +132,52 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           Invite only
         </Checkbox>
 
-        <FormLabel>Venue Type</FormLabel>
-        <RadioGroup defaultValue={venueType}>
-          <HStack>
-            {venueTypes.map((venueType) => (
-              <Radio
-                key={venueType.value}
-                value={venueType.value}
-                {...register('venue_type')}
-              >
-                {venueType.name}
-              </Radio>
-            ))}
-          </HStack>
-        </RadioGroup>
+        <FormControl isRequired>
+          <FormLabel>Venue Type</FormLabel>
+          <RadioGroup defaultValue={venueType}>
+            <HStack>
+              {venueTypes.map((venueType) => (
+                <Radio
+                  key={venueType.value}
+                  value={venueType.value}
+                  {...register('venue_type')}
+                >
+                  {venueType.name}
+                </Radio>
+              ))}
+            </HStack>
+          </RadioGroup>
 
-        {loadingVenues ? (
-          <h1>Loading venues...</h1>
-        ) : errorVenus || !dataVenues ? (
-          <h1>Error loading venues</h1>
-        ) : (
-          getValues('venue_type') !== VenueType.Online && (
-            <>
-              <FormLabel>Venue</FormLabel>
-              <Select {...register('venue_id')}>
-                {dataVenues.venues.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
-                ))}
-              </Select>
-            </>
-          )
-        )}
+          {loadingVenues ? (
+            <h1>Loading venues...</h1>
+          ) : errorVenus || !dataVenues ? (
+            <h1>Error loading venues</h1>
+          ) : (
+            getValues('venue_type') !== VenueType.Online && (
+              <FormControl isRequired>
+                <FormLabel>Venue</FormLabel>
+                <Select {...register('venue_id')}>
+                  {dataVenues.venues.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            )
+          )}
+
+          {getValues('venue_type') !== VenueType.Physical && (
+            <Input
+              key="streaming url"
+              type="url"
+              label="Streaming URL"
+              placeholder=""
+              isRequired
+              {...register('streaming_url')}
+            />
+          )}
+        </FormControl>
 
         <FormControl id="first-name" isRequired>
           <Box display="flex" alignItems="end" m="1">

@@ -17,7 +17,7 @@ export class CreateEventInputs {
 
   @Field(() => String, { nullable: true })
   @IsUrl()
-  streaming_url?: string;
+  streaming_url: string;
 
   @Field(() => events_venue_type_enum, { nullable: true })
   venue_type: events_venue_type_enum;
@@ -32,7 +32,7 @@ export class CreateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venue_id?: number;
+  venue_id: number;
 
   @Field(() => Int)
   chapter_id: number;
@@ -60,7 +60,7 @@ export class UpdateEventInputs {
 
   @Field(() => String, { nullable: true })
   @IsUrl()
-  streaming_url?: string;
+  streaming_url: string;
 
   @Field(() => events_venue_type_enum, { nullable: true })
   venue_type: events_venue_type_enum;
@@ -75,7 +75,7 @@ export class UpdateEventInputs {
   capacity: number;
 
   @Field(() => Int, { nullable: true })
-  venue_id?: number;
+  venue_id: number;
 
   @Field(() => Boolean, { nullable: true })
   invite_only: boolean;

@@ -96,13 +96,6 @@ export const fields: Field[] = [
     isRequired: true,
   },
   {
-    key: 'streaming_url',
-    type: 'url',
-    label: 'Streaming Url',
-    placeholder: '',
-    isRequired: true,
-  },
-  {
     key: 'capacity',
     type: 'number',
     label: 'Capacity',

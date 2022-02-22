@@ -58,6 +58,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         ends_at: new Date(Date.now() + 1000 * 60 * 60)
           .toISOString()
           .slice(0, 16),
+        venue_type: VenueType.PhysicalAndOnline,
       };
     return {
       name: data.name,

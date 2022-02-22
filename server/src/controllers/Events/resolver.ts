@@ -329,47 +329,64 @@ ${unsubscribe}
       data: eventSponsorInput,
     });
 
+    const venueType = data.venue_type ?? event.venue_type;
+    const venueData = {
+      streaming_url:
+        venueType !== events_venue_type_enum.Physical
+          ? data.streaming_url ?? event.streaming_url
+          : null,
+      venue:
+        venueType !== events_venue_type_enum.Online
+          ? { connect: { id: data.venue_id } }
+          : { disconnect: true },
+    };
     // TODO: Handle tags
     const update: Prisma.eventsUpdateInput = {
       invite_only: data.invite_only ?? event.invite_only,
       name: data.name ?? event.name,
       description: data.description ?? event.description,
       url: data.url ?? event.url,
-      streaming_url: data.streaming_url ?? event.streaming_url,
-      venue_type: data.venue_type ?? event.venue_type,
       start_at: new Date(data.start_at) ?? event.start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
-      venue: { connect: { id: data.venue_id } },
+      venue_type: venueType,
+      ...venueData,
     };
 
-    if (data.venue_id) {
-      const venue = await prisma.venues.findUnique({
-        where: { id: data.venue_id },
-      });
-      // TODO: include a link back to the venue page
-      if (event.venue_id !== venue.id || event.venue_type !== data.venue_type) {
-        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
-        const subject = `Venue changed for event ${event.name}`;
-        let venueDetails = '';
-        if (data.venue_type !== events_venue_type_enum.Physical) {
-          venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-        }
-        if (data.venue_type !== events_venue_type_enum.Online) {
-          venueDetails += `The event is now being held at <br>
+    const isVenueChanged =
+      data.venue_type !== event.venue_type ||
+      (venueType !== events_venue_type_enum.Physical &&
+        data.streaming_url !== event.streaming_url) ||
+      (venueType !== events_venue_type_enum.Online &&
+        data.venue_id !== event.venue_id);
+
+    if (isVenueChanged) {
+      const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
+      const subject = `Venue changed for event ${event.name}`;
+      let venueDetails = '';
+
+      if (venueType !== events_venue_type_enum.Online) {
+        const venue = await prisma.venues.findUnique({
+          where: { id: data.venue_id },
+        });
+        venueDetails += `The event is now being held at <br>
 ${venue.name} <br>
 ${venue.street_address ? venue.street_address + '<br>' : ''}
 ${venue.city} <br>
 ${venue.region} <br>
 ${venue.postal_code} <br>
 `;
-        }
-        const body = `We have had to change the location of ${event.name}.<br>
+      }
+
+      if (venueType !== events_venue_type_enum.Physical) {
+        venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+      }
+      // TODO: include a link back to the venue page
+      const body = `We have had to change the location of ${event.name}.<br>
 ${venueDetails}
 ${unsubscribe}`;
-        new MailerService(emailList, subject, body).sendEmail();
-      }
+      new MailerService(emailList, subject, body).sendEmail();
     }
 
     return await prisma.events.update({ where: { id }, data: update });

@@ -58,7 +58,7 @@
     "@faker-js/faker": "6.0.0-alpha.7",
     "@testing-library/cypress": "8.0.2",
     "@types/chai": "4.3.0",
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/jsonwebtoken": "8.5.8",
     "@types/node": "16.11.25",
     "@types/nodemailer": "6.4.4",

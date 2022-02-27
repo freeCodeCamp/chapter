@@ -83,15 +83,15 @@ model rsvps {
 }
 
 model event_reminders {
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
-  user_id      Int
-  event_id     Int
-  remind_at    DateTime
-  notified     Boolean   @default(false)
-  event        events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user         users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  rsvp         rsvps     @relation(fields: [user_id, event_id], references: [user_id, event_id], onDelete: Cascade, onUpdate: NoAction)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  user_id       Int
+  event_id      Int
+  remind_at     DateTime
+  notifying     Boolean   @default(false) @map("notified")
+  event         events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  rsvp          rsvps     @relation(fields: [user_id, event_id], references: [user_id, event_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([user_id, event_id])
 }

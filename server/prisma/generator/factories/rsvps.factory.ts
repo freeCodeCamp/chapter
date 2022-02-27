@@ -1,8 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
 
+import { sub } from 'date-fns';
+
 import { prisma } from '../../../src/prisma';
-import { getDateTimeNMinutesBefore } from '../../../src/util/dateUtils';
 import { random, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
 
@@ -50,8 +51,8 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
           const reminder = {
             event_id: eventId,
             user_id: eventUserIds[i],
-            notified: false,
-            remind_at: getDateTimeNMinutesBefore(event.start_at, 1440),
+            notifying: false,
+            remind_at: sub(event.start_at, { days: 1 }),
           };
           eventReminders.push(reminder);
         }

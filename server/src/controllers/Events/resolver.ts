@@ -2,6 +2,8 @@ import { Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
+import { isEqual, sub } from 'date-fns';
+
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
@@ -11,10 +13,8 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService from '../../services/MailerService';
-import { getDateTimeNMinutesBefore } from '../../util/dateUtils';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
-const DAY_IN_MINUTES = 1440;
 //Place holder for unsubscribe
 //TODO: Replace placeholder with actual unsubscribe link
 const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
@@ -171,11 +171,8 @@ export class EventResolver {
               data: {
                 user_id: acceptedRsvp.user_id,
                 event_id: acceptedRsvp.event_id,
-                notified: false,
-                remind_at: getDateTimeNMinutesBefore(
-                  event.start_at,
-                  DAY_IN_MINUTES,
-                ),
+                notifying: false,
+                remind_at: sub(event.start_at, { days: 1 }),
               },
             });
           }
@@ -211,8 +208,8 @@ export class EventResolver {
         data: {
           user_id: ctx.user.id,
           event_id: eventId,
-          notified: false,
-          remind_at: getDateTimeNMinutesBefore(event.start_at, DAY_IN_MINUTES),
+          notifying: false,
+          remind_at: sub(event.start_at, { days: 1 }),
         },
       });
     }
@@ -275,16 +272,13 @@ ${unsubscribe}
       },
     });
 
-    if (subscribedRoles) {
+    if (subscribedRoles.length) {
       await prisma.event_reminders.create({
         data: {
           user_id: userId,
           event_id: eventId,
-          notified: false,
-          remind_at: getDateTimeNMinutesBefore(
-            rsvp.events.start_at,
-            DAY_IN_MINUTES,
-          ),
+          notifying: false,
+          remind_at: sub(rsvp.events.start_at, { days: 1 }),
         },
       });
     }
@@ -431,11 +425,11 @@ ${unsubscribe}
       venue: { connect: { id: data.venue_id } },
     };
 
-    if (update.start_at !== event.start_at) {
+    if (!isEqual(start_at, event.start_at)) {
       event.event_reminders.forEach(async (reminder) => {
         await prisma.event_reminders.update({
           data: {
-            remind_at: getDateTimeNMinutesBefore(start_at, DAY_IN_MINUTES),
+            remind_at: sub(start_at, { days: 1 }),
           },
           where: {
             user_id_event_id: {

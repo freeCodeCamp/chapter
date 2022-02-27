@@ -19,5 +19,5 @@ export class EventReminder {
   event: Omit<EventWithEverything, 'sponsors' | 'rsvps'>;
 
   @Field(() => Boolean)
-  notified: boolean;
+  notifying: boolean;
 }

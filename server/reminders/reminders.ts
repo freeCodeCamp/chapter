@@ -37,7 +37,7 @@ const getRemindersOlderThanDate = async (date: Date) =>
       remind_at: {
         lte: date,
       },
-      notified: false,
+      notifying: false,
     },
     orderBy: {
       remind_at: 'asc',
@@ -57,7 +57,7 @@ const getOldReminders = async (date: Date) =>
       },
     },
     where: {
-      notified: true,
+      notifying: true,
       updated_at: {
         lte: date,
       },
@@ -142,12 +142,12 @@ const deleteReminder = async (reminder: EventReminder) =>
     if (LOCK_REMINDER) {
       const lock = await prisma.event_reminders.updateMany({
         data: {
-          notified: true,
+          notifying: true,
         },
         where: {
           user_id: reminder.user_id,
           event_id: reminder.event_id,
-          notified: false,
+          notifying: false,
         },
       });
       if (lock.count === 0) {

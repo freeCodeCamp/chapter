@@ -174,6 +174,17 @@ const deleteReminder = async (reminder: EventReminder) =>
   );
 
   oldReminders.forEach(async (reminder) => {
+    const lock = await prisma.event_reminders.updateMany({
+      data: { updated_at: new Date() },
+      where: {
+        user_id: reminder.user_id,
+        event_id: reminder.event_id,
+        updated_at: reminder.updated_at,
+      },
+    });
+    if (lock.count === 0) {
+      return;
+    }
     if (SEND_MAIL) {
       await sendEmailForReminder(reminder);
     }

@@ -339,6 +339,26 @@ ${unsubscribe}
       data: eventSponsorInput,
     });
 
+    const tagNames = data.tags
+      .map((tagName) => tagName.trim())
+      .filter((tagName) => tagName);
+    const eventTagsData: Prisma.tagsCreateManyInput[] = tagNames.map(
+      (tagName) => ({ name: tagName }),
+    );
+    await prisma.tags.createMany({ data: eventTagsData, skipDuplicates: true });
+    const tags = await prisma.tags.findMany({
+      where: { name: { in: tagNames } },
+    });
+
+    await prisma.event_tags.deleteMany({ where: { event_id: id } });
+    await prisma.event_tags.createMany({
+      data: tags.map((tag) => ({
+        tag_id: tag.id,
+        event_id: id,
+      })),
+      skipDuplicates: true,
+    });
+
     // TODO: Handle tags
     const update: Prisma.eventsUpdateInput = {
       invite_only: data.invite_only ?? event.invite_only,

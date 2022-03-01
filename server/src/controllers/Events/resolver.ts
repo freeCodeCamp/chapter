@@ -30,7 +30,7 @@ export class EventResolver {
       },
       include: {
         chapter: true,
-        tags: true,
+        tags: { include: { tag: true } },
         venue: true,
         rsvps: {
           include: { user: true },
@@ -52,7 +52,7 @@ export class EventResolver {
     return await prisma.events.findMany({
       include: {
         chapter: true,
-        tags: true,
+        tags: { include: { tag: true } },
       },
       orderBy: {
         start_at: 'asc',
@@ -70,7 +70,7 @@ export class EventResolver {
       where: { id },
       include: {
         chapter: true,
-        tags: true,
+        tags: { include: { tag: true } },
         venue: true,
         rsvps: {
           include: { user: true },
@@ -294,7 +294,10 @@ ${unsubscribe}
       },
     };
 
-    return await prisma.events.create({ data: eventData });
+    return await prisma.events.create({
+      data: eventData,
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   @Mutation(() => Event)
@@ -359,7 +362,11 @@ ${unsubscribe}
       }
     }
 
-    return await prisma.events.update({ where: { id }, data: update });
+    return await prisma.events.update({
+      where: { id },
+      data: update,
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   @Mutation(() => Event)
@@ -367,6 +374,7 @@ ${unsubscribe}
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
+      include: { tags: { include: { tag: true } } },
     });
 
     const notCancelledRsvps = await prisma.rsvps.findMany({
@@ -390,7 +398,10 @@ ${unsubscribe}
 
   @Mutation(() => Event)
   async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
-    return await prisma.events.delete({ where: { id } });
+    return await prisma.events.delete({
+      where: { id },
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return

@@ -54,15 +54,18 @@ const createEvents = async (
       }),
     );
 
-    await Promise.all(
-      Array.from(new Array(1 + random(3)), async () => {
-        const tagData: Prisma.tagsCreateInput = {
-          events: { connect: { id: event.id } },
-          name: lorem.words(1),
-        };
-        return await prisma.tags.create({ data: tagData });
-      }),
-    );
+    const tagNames = Array.from(new Array(1 + random(3)), () => lorem.words(1));
+    const tagsData = tagNames.map((tagName) => ({ name: tagName }));
+    await prisma.tags.createMany({
+      data: tagsData,
+      skipDuplicates: true,
+    });
+    const tags = await prisma.tags.findMany({
+      where: { name: { in: tagNames } },
+    });
+    await prisma.event_tags.createMany({
+      data: tags.map((tag) => ({ tag_id: tag.id, event_id: event.id })),
+    });
 
     events.push(event.id);
   }

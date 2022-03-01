@@ -268,6 +268,18 @@ ${unsubscribe}
       subscribed: true, // TODO: even organizers may wish to opt out of emails
     };
 
+    const tagNames = data.tags
+      .map((tagName) => tagName.trim())
+      .filter((tagName) => tagName);
+    const eventTagsData: Prisma.tagsCreateManyInput[] = tagNames.map(
+      (tagName) => ({ name: tagName }),
+    );
+
+    await prisma.tags.createMany({ data: eventTagsData, skipDuplicates: true });
+    const tags = await prisma.tags.findMany({
+      where: { name: { in: tagNames } },
+    });
+
     // TODO: the type safety if we start with ...data is a bit weak here: it
     // does not correctly check if data has all the required properties
     // (presumably because we're adding extras). Can we use the ...data shortcut
@@ -292,6 +304,7 @@ ${unsubscribe}
       user_event_roles: {
         create: userEventRoleData,
       },
+      tags: { createMany: { data: tags.map((tag) => ({ tag_id: tag.id })) } },
     };
 
     return await prisma.events.create({

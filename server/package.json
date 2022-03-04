@@ -51,7 +51,7 @@
     "date-fns": "2.28.0",
     "dotenv-cli": "5.0.0",
     "get-port": "6.1.2",
-    "node-dev": "7.1.0",
+    "node-dev": "7.2.0",
     "prisma": "3.10.0",
     "rimraf": "3.0.2",
     "sinon": "13.0.1",

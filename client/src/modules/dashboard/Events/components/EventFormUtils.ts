@@ -143,7 +143,7 @@ export interface EventFormProps {
   loading: boolean;
   data?: IEventData;
   submitText: string;
-  chapterId?: number;
+  chapterId: number;
 }
 
 export const formatValue = (field: Field, store?: IEventData): any => {

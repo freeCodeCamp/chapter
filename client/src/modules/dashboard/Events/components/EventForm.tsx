@@ -37,13 +37,12 @@ import {
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText, chapterId } = props;
-  const chapter_id = chapterId ?? data?.chapter_id ?? 1;
   const {
     loading: loadingChapter,
     error: errorChapter,
     data: dataChapter,
   } = useChapterQuery({
-    variables: { id: chapter_id },
+    variables: { id: chapterId },
   });
   const {
     loading: loadingVenues,
@@ -60,7 +59,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const defaultValues = useMemo(() => {
     if (!data)
       return {
-        chapter_id: chapter_id,
+        chapter_id: chapterId,
         start_at: new Date().toISOString().slice(0, 16),
         ends_at: new Date(Date.now() + 1000 * 60 * 60)
           .toISOString()

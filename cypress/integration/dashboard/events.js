@@ -67,7 +67,7 @@ describe('events dashboard', () => {
 
   function createEvent(chapterId) {
     cy.visit(`/dashboard/chapters/${chapterId}`);
-    cy.get(`a[href="/dashboard/chapters${chapterId}/new_event"]`).click();
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/new_event"]`).click();
     cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.title);
     cy.findByRole('textbox', { name: 'Description' }).type(
       testEvent.description,

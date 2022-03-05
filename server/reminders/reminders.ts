@@ -2,12 +2,7 @@ import { EventReminder, EventWithEverything, User } from '../src/graphql-types';
 import { prisma } from '../src/prisma';
 import MailerService from '../src/services/MailerService';
 
-const daysForward = 5;
 const processingLimitInMinutes = 10;
-
-const SEND_MAIL = false;
-const DELETE_REMINDER = false;
-const LOCK_REMINDER = true;
 const dateFormatter = new Intl.DateTimeFormat('en-us', {
   weekday: 'long',
   year: 'numeric',
@@ -63,6 +58,58 @@ const getOldReminders = async (date: Date) =>
       },
     },
   });
+
+interface ReminderLock {
+  user_id: number;
+  event_id: number;
+}
+
+interface ReminderRetryLock extends ReminderLock {
+  updated_at: Date;
+}
+
+const lockForNotifying = async (reminder: ReminderLock) => {
+  const lock = await prisma.event_reminders.updateMany({
+    data: {
+      notifying: true,
+    },
+    where: {
+      user_id: reminder.user_id,
+      event_id: reminder.event_id,
+      notifying: false,
+    },
+  });
+  return lock.count !== 0;
+};
+
+const lockForRetry = async (reminder: ReminderRetryLock) => {
+  const lock = await prisma.event_reminders.updateMany({
+    data: { updated_at: new Date() },
+    where: {
+      user_id: reminder.user_id,
+      event_id: reminder.event_id,
+      updated_at: reminder.updated_at,
+    },
+  });
+  return lock.count !== 0;
+};
+
+type LockCheck = (
+  reminder: ReminderLock | ReminderRetryLock,
+) => Promise<boolean>;
+
+const processReminders = async (
+  reminders: EventReminder[],
+  lock: LockCheck,
+) => {
+  reminders.forEach(async (reminder) => {
+    if (!(await lock(reminder))) {
+      return;
+    }
+    await sendEmailForReminder(reminder);
+    await deleteReminder(reminder);
+  });
+};
 
 const reminderMessage = (
   event: Omit<EventWithEverything, 'sponsors' | 'rsvps'>,
@@ -131,38 +178,12 @@ const deleteReminder = async (reminder: EventReminder) =>
 
 (async () => {
   const date = new Date();
-  date.setDate(date.getDate() + daysForward);
   const reminders = await getRemindersOlderThanDate(date);
   console.log(
     `Reminders older than ${date.toUTCString()}: ${reminders.length}`,
   );
   console.log();
-
-  reminders.forEach(async (reminder) => {
-    if (LOCK_REMINDER) {
-      const lock = await prisma.event_reminders.updateMany({
-        data: {
-          notifying: true,
-        },
-        where: {
-          user_id: reminder.user_id,
-          event_id: reminder.event_id,
-          notifying: false,
-        },
-      });
-      if (lock.count === 0) {
-        return;
-      }
-    }
-
-    if (SEND_MAIL) {
-      await sendEmailForReminder(reminder);
-    }
-
-    if (DELETE_REMINDER) {
-      await deleteReminder(reminder);
-    }
-  });
+  await processReminders(reminders, lockForNotifying);
 
   const updateDate = new Date();
   updateDate.setMinutes(updateDate.getMinutes() - processingLimitInMinutes);
@@ -172,24 +193,5 @@ const deleteReminder = async (reminder: EventReminder) =>
       oldReminders.length
     }`,
   );
-
-  oldReminders.forEach(async (reminder) => {
-    const lock = await prisma.event_reminders.updateMany({
-      data: { updated_at: new Date() },
-      where: {
-        user_id: reminder.user_id,
-        event_id: reminder.event_id,
-        updated_at: reminder.updated_at,
-      },
-    });
-    if (lock.count === 0) {
-      return;
-    }
-    if (SEND_MAIL) {
-      await sendEmailForReminder(reminder);
-    }
-    if (DELETE_REMINDER) {
-      await deleteReminder(reminder);
-    }
-  });
+  await processReminders(oldReminders, lockForRetry);
 })();

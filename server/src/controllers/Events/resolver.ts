@@ -17,6 +17,10 @@ import { CreateEventInputs, UpdateEventInputs } from './inputs';
 //TODO: Replace placeholder with actual unsubscribe link
 const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
 
+const getUniqueTags = (tags: string[]) => [
+  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
+];
+
 @Resolver()
 export class EventResolver {
   @Query(() => [EventWithEverything])
@@ -268,18 +272,6 @@ ${unsubscribe}
       subscribed: true, // TODO: even organizers may wish to opt out of emails
     };
 
-    const tagNames = data.tags
-      .map((tagName) => tagName.trim())
-      .filter((tagName) => tagName);
-    const eventTagsData: Prisma.tagsCreateManyInput[] = tagNames.map(
-      (tagName) => ({ name: tagName }),
-    );
-
-    await prisma.tags.createMany({ data: eventTagsData, skipDuplicates: true });
-    const tags = await prisma.tags.findMany({
-      where: { name: { in: tagNames } },
-    });
-
     // TODO: the type safety if we start with ...data is a bit weak here: it
     // does not correctly check if data has all the required properties
     // (presumably because we're adding extras). Can we use the ...data shortcut
@@ -304,7 +296,16 @@ ${unsubscribe}
       user_event_roles: {
         create: userEventRoleData,
       },
-      tags: { createMany: { data: tags.map((tag) => ({ tag_id: tag.id })) } },
+      tags: {
+        create: getUniqueTags(data.tags).map((tagName) => ({
+          tag: {
+            connectOrCreate: {
+              create: { name: tagName },
+              where: { name: tagName },
+            },
+          },
+        })),
+      },
     };
 
     return await prisma.events.create({
@@ -339,25 +340,27 @@ ${unsubscribe}
       data: eventSponsorInput,
     });
 
-    const tagNames = data.tags
-      .map((tagName) => tagName.trim())
-      .filter((tagName) => tagName);
-    const eventTagsData: Prisma.tagsCreateManyInput[] = tagNames.map(
-      (tagName) => ({ name: tagName }),
-    );
-    await prisma.tags.createMany({ data: eventTagsData, skipDuplicates: true });
-    const tags = await prisma.tags.findMany({
-      where: { name: { in: tagNames } },
-    });
-
-    await prisma.event_tags.deleteMany({ where: { event_id: id } });
-    await prisma.event_tags.createMany({
-      data: tags.map((tag) => ({
-        tag_id: tag.id,
-        event_id: id,
-      })),
-      skipDuplicates: true,
-    });
+    await prisma.$transaction([
+      prisma.events.update({
+        where: { id },
+        data: { tags: { deleteMany: {} } },
+      }),
+      prisma.events.update({
+        where: { id },
+        data: {
+          tags: {
+            create: getUniqueTags(data.tags).map((tagName) => ({
+              tag: {
+                connectOrCreate: {
+                  create: { name: tagName },
+                  where: { name: tagName },
+                },
+              },
+            })),
+          },
+        },
+      }),
+    ]);
 
     // TODO: Handle tags
     const update: Prisma.eventsUpdateInput = {

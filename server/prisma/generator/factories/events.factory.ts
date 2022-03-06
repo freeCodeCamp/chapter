@@ -55,16 +55,20 @@ const createEvents = async (
     );
 
     const tagNames = Array.from(new Array(1 + random(3)), () => lorem.word());
-    const tagsData = tagNames.map((tagName) => ({ name: tagName }));
-    await prisma.tags.createMany({
-      data: tagsData,
-      skipDuplicates: true,
-    });
-    const tags = await prisma.tags.findMany({
-      where: { name: { in: tagNames } },
-    });
-    await prisma.event_tags.createMany({
-      data: tags.map((tag) => ({ tag_id: tag.id, event_id: event.id })),
+    await prisma.events.update({
+      where: { id: event.id },
+      data: {
+        tags: {
+          create: [...new Set(tagNames)].map((tagName) => ({
+            tag: {
+              connectOrCreate: {
+                create: { name: tagName },
+                where: { name: tagName },
+              },
+            },
+          })),
+        },
+      },
     });
 
     events.push(event.id);

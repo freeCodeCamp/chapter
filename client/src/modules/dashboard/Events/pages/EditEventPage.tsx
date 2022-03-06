@@ -41,7 +41,7 @@ export const EditEventPage: NextPage = () => {
       const tagsArray = tags
         .split(',')
         .map((tag) => tag.trim())
-        .filter((tag) => tag);
+        .filter(Boolean);
 
       const eventData = {
         ...rest,

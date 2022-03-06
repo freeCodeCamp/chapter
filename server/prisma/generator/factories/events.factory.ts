@@ -54,7 +54,7 @@ const createEvents = async (
       }),
     );
 
-    const tagNames = Array.from(new Array(1 + random(3)), () => lorem.words(1));
+    const tagNames = Array.from(new Array(1 + random(3)), () => lorem.word());
     const tagsData = tagNames.map((tagName) => ({ name: tagName }));
     await prisma.tags.createMany({
       data: tagsData,

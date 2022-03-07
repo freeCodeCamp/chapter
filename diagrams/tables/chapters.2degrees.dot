@@ -19,11 +19,11 @@ digraph "twoDegreesRelationshipsDiagram" {
     arrowsize="0.8"
   ];
   "event_sponsors":"elipses":w -> "events":"id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "event_tags":"elipses":w -> "events":"id":e [arrowhead=none dir=back arrowtail=crowodot];
   "events":"chapter_id":w -> "chapters":"id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "events":"venue_id":w -> "venues":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "rsvps":"elipses":w -> "events":"id":e [arrowhead=none dir=back arrowtail=crowodot];
   "rsvps":"elipses":w -> "users":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "tags":"elipses":w -> "events":"id":e [arrowhead=none dir=back arrowtail=crowodot];
   "user_bans":"chapter_id":w -> "chapters":"id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "user_bans":"user_id":w -> "users":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "user_chapter_roles":"chapter_id":w -> "chapters":"id.type":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -62,6 +62,17 @@ digraph "twoDegreesRelationshipsDiagram" {
     target="_top"
     tooltip="event_sponsors"
   ];
+  "event_tags" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>event_tags</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/event_tags.html"
+    target="_top"
+    tooltip="event_tags"
+  ];
   "events" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -86,17 +97,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="../../tables/rsvps.html"
     target="_top"
     tooltip="rsvps"
-  ];
-  "tags" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>tags</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
-    </TABLE>>
-    URL="../../tables/tags.html"
-    target="_top"
-    tooltip="tags"
   ];
   "user_bans" [
    label=<

@@ -46,13 +46,29 @@
             <column ascending="true" name="event_id"/>
          </index>
       </table>
+      <table name="event_tags" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="event_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="event_tags_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="tag_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="event_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="tags"/>
+         </column>
+         <primaryKey column="event_id" sequenceNumberInPK="1"/>
+         <primaryKey column="tag_id" sequenceNumberInPK="2"/>
+         <index name="event_tags_pkey" unique="true">
+            <column ascending="true" name="event_id"/>
+            <column ascending="true" name="tag_id"/>
+         </index>
+      </table>
       <table name="events" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('events_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
             <child column="event_id" foreignKey="event_sponsors_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_sponsors"/>
+            <child column="event_id" foreignKey="event_tags_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_tags"/>
             <child column="event_id" foreignKey="rsvps_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
-            <child column="event_id" foreignKey="tags_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="tags"/>
             <child column="event_id" foreignKey="user_event_roles_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="user_event_roles"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
@@ -115,14 +131,16 @@
       <table name="tags" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
-         <column autoUpdated="true" defaultValue="nextval('tags_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="event_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="tags_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
+         <column autoUpdated="true" defaultValue="nextval('tags_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="tag_id" foreignKey="event_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_tags"/>
          </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="tags_pkey" unique="true">
             <column ascending="true" name="id"/>
+         </index>
+         <index name="tags_name_key" unique="true">
+            <column ascending="true" name="name"/>
          </index>
       </table>
       <table name="user_bans" numRows="0" remarks="" schema="public" type="TABLE">

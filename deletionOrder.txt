@@ -2,11 +2,12 @@ user_event_roles
 user_chapter_roles
 user_bans
 rsvps
+event_tags
 event_sponsors
 user_instance_roles
-tags
 events
 venues
+tags
 sponsors
 chapters
 users

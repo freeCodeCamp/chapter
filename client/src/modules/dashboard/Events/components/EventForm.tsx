@@ -64,7 +64,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       start_at: new Date(data.start_at).toISOString().slice(0, 16),
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
       sponsors: data.sponsors,
-      tags: (data.tags || []).map((t) => t.name).join(', '),
+      tags: (data.tags || []).map(({ tag }) => tag.name).join(', '),
       venue_id: data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,

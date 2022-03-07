@@ -11,8 +11,10 @@ export const HOME_PAGE_QUERY = gql`
       start_at
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id

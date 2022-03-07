@@ -36,15 +36,20 @@ export const EditEventPage: NextPage = () => {
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, ...rest } = data;
+      const { sponsors, tags, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
+      const tagsArray = tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
         venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
-        tags: undefined,
+        tags: tagsArray,
         sponsor_ids: sponsorArray,
       };
 

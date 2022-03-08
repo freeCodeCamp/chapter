@@ -18,8 +18,10 @@ export const EVENTS = gql`
         name
       }
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -44,8 +46,10 @@ export const EVENT = gql`
         name
       }
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       sponsors {
         sponsor {
@@ -89,8 +93,10 @@ export const EVENT_WITH_VENU = gql`
       start_at
       ends_at
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       venue {
         id
@@ -114,8 +120,10 @@ export const createEvent = gql`
       streaming_url
       capacity
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -132,8 +140,10 @@ export const updateEvent = gql`
       streaming_url
       capacity
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }

@@ -27,8 +27,13 @@ export const NewEventPage: NextPage = () => {
 
     try {
       const HARD_CODE = { chapter_id: 1 };
-      const { sponsors, ...rest } = data;
+      const { sponsors, tags, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
+      const tagsArray = tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
@@ -41,7 +46,7 @@ export const NewEventPage: NextPage = () => {
         streaming_url:
           data.venue_type !== VenueType.Physical ? data.streaming_url : null,
         ...HARD_CODE,
-        tags: undefined,
+        tags: tagsArray,
         sponsor_ids: sponsorArray,
       };
       const event = await createEvent({

@@ -39,6 +39,17 @@ model event_sponsors {
   @@id([sponsor_id, event_id])
 }
 
+model event_tags {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  event_id   Int
+  tag_id     Int
+  event      events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tag        tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([event_id, tag_id])
+}
+
 model events {
   created_at       DateTime               @default(now())
   updated_at       DateTime               @updatedAt
@@ -61,7 +72,7 @@ model events {
   venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sponsors         event_sponsors[]
   rsvps            rsvps[]
-  tags             tags[]
+  tags             event_tags[]
   user_event_roles user_event_roles[]
 }
 
@@ -95,9 +106,8 @@ model tags {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   id         Int      @id @default(autoincrement())
-  name       String
-  event_id   Int?
-  events     events?  @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  name       String   @unique
+  event_tags event_tags[]
 }
 
 model user_bans {

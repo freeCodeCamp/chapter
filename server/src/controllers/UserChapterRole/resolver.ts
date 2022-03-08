@@ -1,7 +1,10 @@
+import { Prisma } from '@prisma/client';
 import { Arg, Ctx, Int, Mutation, Resolver } from 'type-graphql';
 
 import { GQLCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
+
+const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
 @Resolver()
 export class UserChapterRoleResolver {
@@ -21,18 +24,7 @@ export class UserChapterRoleResolver {
       throw Error('Cannot find the chapter of the event with id ' + event_id);
     }
 
-    // TODO: can we try to create a member role in one query? Wrap it in a try
-    // catch and simply return true if it fails due to unique constraint
-    // violation?
-    const userChapterRole = await prisma.user_chapter_roles.findFirst({
-      where: {
-        user_id: ctx.user.id,
-        chapter_id: event.chapter.id,
-      },
-      rejectOnNotFound: false,
-    });
-
-    if (!userChapterRole) {
+    try {
       await prisma.user_chapter_roles.create({
         data: {
           user: { connect: { id: ctx.user.id } },
@@ -41,6 +33,13 @@ export class UserChapterRoleResolver {
           interested: true,
         },
       });
+    } catch (e) {
+      if (
+        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+      ) {
+        throw e;
+      }
     }
 
     return true;

@@ -20,7 +20,7 @@ export class ChapterResolver {
     return await prisma.chapters.findUnique({
       where: { id },
       include: {
-        events: { include: { tags: true } },
+        events: { include: { tags: { include: { tag: true } } } },
         users: { include: { user: true } },
       },
     });

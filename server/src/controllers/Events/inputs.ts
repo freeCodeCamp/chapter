@@ -45,6 +45,9 @@ export class CreateEventInputs {
 
   @Field(() => [Int])
   sponsor_ids: number[];
+
+  @Field(() => [String])
+  tags: string[];
 }
 
 @InputType()
@@ -89,4 +92,7 @@ export class UpdateEventInputs {
 
   @Field(() => [Int])
   sponsor_ids: number[];
+
+  @Field(() => [String])
+  tags: string[];
 }

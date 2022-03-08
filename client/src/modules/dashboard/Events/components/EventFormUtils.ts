@@ -1,4 +1,9 @@
-import { Event, Venue, SponsorsQuery } from '../../../../generated/graphql';
+import {
+  Event,
+  Venue,
+  SponsorsQuery,
+  EventTag,
+} from '../../../../generated/graphql';
 
 export interface Field {
   key: keyof EventFormData;
@@ -131,7 +136,7 @@ export type IEventData = Pick<
   | 'id'
 > & {
   venue_id?: number;
-  tags: { name: string }[];
+  tags: EventTag[];
   venue?: Omit<Venue, 'events'> | null;
   sponsors: EventSponsorInput[];
 };
@@ -158,7 +163,7 @@ export const formatValue = (field: Field, store?: IEventData): any => {
   if (key === 'tags') {
     const tags = store[key];
     if (tags) {
-      return tags.map((tag) => tag.name).join(', ');
+      return tags.map(({ tag }) => tag.name).join(', ');
     }
   }
 

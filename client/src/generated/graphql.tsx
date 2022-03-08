@@ -78,6 +78,7 @@ export type CreateEventInputs = {
   sponsor_ids: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -122,7 +123,7 @@ export type Event = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -130,6 +131,11 @@ export type Event = {
 export type EventSponsor = {
   __typename?: 'EventSponsor';
   sponsor: Sponsor;
+};
+
+export type EventTag = {
+  __typename?: 'EventTag';
+  tag: Tag;
 };
 
 export type EventWithChapter = {
@@ -145,7 +151,7 @@ export type EventWithChapter = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -165,7 +171,7 @@ export type EventWithEverything = {
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -405,6 +411,7 @@ export type UpdateEventInputs = {
   sponsor_ids: Array<Scalars['Int']>;
   start_at?: InputMaybe<Scalars['DateTime']>;
   streaming_url?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -540,7 +547,10 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+      tags: Array<{
+        __typename?: 'EventTag';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
     }>;
   } | null;
 };
@@ -626,7 +636,10 @@ export type EventsQuery = {
     start_at: any;
     capacity: number;
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   }>;
 };
 
@@ -650,7 +663,10 @@ export type EventQuery = {
     ends_at: any;
     image_url: string;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     sponsors: Array<{
       __typename?: 'EventSponsor';
       sponsor: {
@@ -696,7 +712,10 @@ export type EventVenuesQuery = {
     capacity: number;
     start_at: any;
     ends_at: any;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     venue?: { __typename?: 'Venue'; id: number } | null;
   } | null;
   venues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
@@ -717,7 +736,10 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   };
 };
 
@@ -737,7 +759,10 @@ export type UpdateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   };
 };
 
@@ -964,7 +989,10 @@ export type MinEventsQuery = {
     invite_only: boolean;
     canceled: boolean;
     image_url: string;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -990,7 +1018,10 @@ export type HomeQuery = {
     canceled: boolean;
     start_at: any;
     image_url: string;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -1225,8 +1256,10 @@ export const ChapterDocument = gql`
         canceled
         image_url
         tags {
-          id
-          name
+          tag {
+            id
+            name
+          }
         }
         invite_only
         canceled
@@ -1526,8 +1559,10 @@ export const EventsDocument = gql`
         name
       }
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -1591,8 +1626,10 @@ export const EventDocument = gql`
         name
       }
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       sponsors {
         sponsor {
@@ -1675,8 +1712,10 @@ export const EventVenuesDocument = gql`
       start_at
       ends_at
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       venue {
         id
@@ -1748,8 +1787,10 @@ export const CreateEventDocument = gql`
       streaming_url
       capacity
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -1808,8 +1849,10 @@ export const UpdateEventDocument = gql`
       streaming_url
       capacity
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -2666,8 +2709,10 @@ export const MinEventsDocument = gql`
       canceled
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id
@@ -2736,8 +2781,10 @@ export const HomeDocument = gql`
       start_at
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id

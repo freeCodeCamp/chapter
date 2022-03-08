@@ -59,7 +59,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const defaultValues = useMemo(() => {
     if (!data)
       return {
-        chapter_id: chapterId,
         start_at: new Date().toISOString().slice(0, 16),
         ends_at: new Date(Date.now() + 1000 * 60 * 60)
           .toISOString()
@@ -78,7 +77,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       venue_id: data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      chapter_id: data.chapter_id,
     };
   }, []);
 
@@ -110,7 +108,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       )}
       <form
         aria-label={submitText}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit((data) => onSubmit(data, chapterId))}
         className={styles.form}
       >
         <VStack align="flex-start">

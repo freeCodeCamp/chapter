@@ -31,7 +31,7 @@ export const EditEventPage: NextPage = () => {
     refetchQueries: [{ query: EVENTS }, { query: EVENT, variables: { id } }],
   });
 
-  const onSubmit = async (data: EventFormData) => {
+  const onSubmit = async (data: EventFormData, chapterId: number) => {
     // TODO: load chapter from url or something like that
     setLoadingUpdate(true);
 
@@ -46,6 +46,7 @@ export const EditEventPage: NextPage = () => {
         ends_at: new Date(data.ends_at).toISOString(),
         tags: undefined,
         sponsor_ids: sponsorArray,
+        chapter_id: chapterId,
       };
 
       const event = await updateEvent({
@@ -85,7 +86,6 @@ export const EditEventPage: NextPage = () => {
           sponsors: sponsorData || [],
           venue_id: data.event?.venue?.id,
           tags: data.event.tags || [],
-          chapter_id: data.event.chapter.id,
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}

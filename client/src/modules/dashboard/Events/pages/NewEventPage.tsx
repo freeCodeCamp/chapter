@@ -22,7 +22,7 @@ export const NewEventPage: NextPage = () => {
 
   const [publish] = useSendEventInviteMutation();
 
-  const onSubmit = async (data: EventFormData) => {
+  const onSubmit = async (data: EventFormData, chapterId: number) => {
     setLoading(true);
 
     try {
@@ -36,6 +36,7 @@ export const NewEventPage: NextPage = () => {
         ends_at: new Date(data.ends_at).toISOString(),
         tags: undefined,
         sponsor_ids: sponsorArray,
+        chapter_id: chapterId,
       };
       const event = await createEvent({
         variables: { data: { ...eventData } },
@@ -61,7 +62,7 @@ export const NewEventPage: NextPage = () => {
         loading={loading}
         onSubmit={onSubmit}
         submitText={'Add event'}
-        chapterId={chapterId !== -1 ? chapterId : 1}
+        chapterId={chapterId}
       />
     </Layout>
   );

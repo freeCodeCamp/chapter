@@ -123,7 +123,6 @@ export interface EventFormData {
   invite_only?: boolean;
   sponsors: Array<EventSponsorInput>;
   canceled: boolean;
-  chapter_id: number;
 }
 
 export type IEventData = Pick<
@@ -135,11 +134,10 @@ export type IEventData = Pick<
   tags: { name: string }[];
   venue?: Omit<Venue, 'events'> | null;
   sponsors: EventSponsorInput[];
-  chapter_id: number;
 };
 
 export interface EventFormProps {
-  onSubmit: (data: EventFormData) => void;
+  onSubmit: (data: EventFormData, chapterId: number) => void;
   loading: boolean;
   data?: IEventData;
   submitText: string;

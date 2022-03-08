@@ -46,7 +46,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   });
   const {
     loading: loadingVenues,
-    error: errorVenus,
+    error: errorVenues,
     data: dataVenues,
   } = useVenuesQuery();
 
@@ -144,7 +144,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
           {loadingVenues ? (
             <h1>Loading venues...</h1>
-          ) : errorVenus || !dataVenues ? (
+          ) : errorVenues || !dataVenues ? (
             <h1>Error loading venues</h1>
           ) : (
             <FormControl>

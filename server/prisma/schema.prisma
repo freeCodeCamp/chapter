@@ -152,10 +152,10 @@ model instance_permissions {
   updated_at                 DateTime                     @updatedAt
   id                         Int                          @id @default(autoincrement())
   name                       String                       @unique
-  instance_roles_permissions instance_role_persmissions[]
+  instance_role_permissions instance_role_permissions[]
 }
 
-model instance_role_persmissions {
+model instance_role_permissions {
   created_at             DateTime             @default(now())
   updated_at             DateTime             @updatedAt
   instance_role_id       Int
@@ -171,7 +171,7 @@ model instance_roles {
   updated_at                DateTime                     @updatedAt
   id                        Int                          @id @default(autoincrement())
   name                      String
-  instance_role_permissions instance_role_persmissions[]
+  instance_role_permissions instance_role_permissions[]
   users                     users[]
 }
 

@@ -1,35 +1,35 @@
 import { prisma } from '../../../src/prisma';
 
-const createInstanceRoles = async () => {
-  const administrator = await prisma.instance_roles.create({
-    data: {
-      name: 'administrator',
-      instance_role_permissions: {
-        create: {
-          instance_permission: {
-            connectOrCreate: {
-              create: {
-                name: 'create chapter',
-              },
-              where: {
-                name: 'create chapter',
-              },
-            },
-          },
-        },
+interface Role {
+  name: string;
+  permissions: string[];
+}
+
+const roles = [
+  { name: 'administrator', permissions: ['chapter-create', 'chapter-edit'] },
+  { name: 'member', permissions: [] },
+];
+
+const createRole = async ({ name, permissions }: Role) => {
+  const permissionsData = permissions.map((permission) => ({
+    instance_permission: {
+      connectOrCreate: {
+        create: { name: permission },
+        where: { name: permission },
       },
     },
-  });
-
-  const member = await prisma.instance_roles.create({
+  }));
+  const createdRole = await prisma.instance_roles.create({
     data: {
-      name: 'member',
+      name: name,
+      instance_role_permissions: { create: permissionsData },
     },
   });
-  return {
-    administrator: { name: administrator.name, id: administrator.id },
-    member: { name: member.name, id: member.id },
-  };
+  return { [name]: { name: createdRole.name, id: createdRole.id } };
+};
+
+const createInstanceRoles = async () => {
+  return Object.assign({}, ...(await Promise.all(roles.map(createRole))));
 };
 
 export default createInstanceRoles;

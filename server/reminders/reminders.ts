@@ -98,19 +98,17 @@ type LockCheck = (
   reminder: ReminderLock | ReminderRetryLock,
 ) => Promise<{ hasLock: boolean }>;
 
-const processReminders = async (
-  reminders: EventReminder[],
-  lock: LockCheck,
-) => {
-  reminders.forEach(async (reminder) => {
-    const { hasLock } = await lock(reminder);
-    if (!hasLock) {
-      return;
-    }
-    await sendEmailForReminder(reminder);
-    await deleteReminder(reminder);
-  });
-};
+const processReminders = async (reminders: EventReminder[], lock: LockCheck) =>
+  await Promise.all(
+    reminders.map(async (reminder) => {
+      const { hasLock } = await lock(reminder);
+      if (!hasLock) {
+        return;
+      }
+      await sendEmailForReminder(reminder);
+      await deleteReminder(reminder);
+    }),
+  );
 
 const reminderMessage = (
   event: Omit<EventWithEverything, 'sponsors' | 'rsvps'>,

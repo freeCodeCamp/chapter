@@ -132,8 +132,7 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'chapter_id'>
-  | 'id'
+  keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors'> | 'id'
 > & {
   venue_id?: number;
   tags: EventTag[];

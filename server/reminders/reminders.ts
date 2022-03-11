@@ -79,7 +79,7 @@ const lockForNotifying = async (reminder: ReminderLock) => {
       notifying: false,
     },
   });
-  return lock.count !== 0;
+  return { hasLock: lock.count !== 0 };
 };
 
 const lockForRetry = async (reminder: ReminderRetryLock) => {
@@ -91,19 +91,20 @@ const lockForRetry = async (reminder: ReminderRetryLock) => {
       updated_at: reminder.updated_at,
     },
   });
-  return lock.count !== 0;
+  return { hasLock: lock.count !== 0 };
 };
 
 type LockCheck = (
   reminder: ReminderLock | ReminderRetryLock,
-) => Promise<boolean>;
+) => Promise<{ hasLock: boolean }>;
 
 const processReminders = async (
   reminders: EventReminder[],
   lock: LockCheck,
 ) => {
   reminders.forEach(async (reminder) => {
-    if (!(await lock(reminder))) {
+    const { hasLock } = await lock(reminder);
+    if (!hasLock) {
       return;
     }
     await sendEmailForReminder(reminder);

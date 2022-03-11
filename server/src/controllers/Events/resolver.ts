@@ -164,14 +164,13 @@ export class EventResolver {
             data: { on_waitlist: false },
           });
 
-          const isSubscribed = acceptedRsvp.user.user_event_roles;
+          const isSubscribed = acceptedRsvp.user.user_event_roles.length;
 
-          if (isSubscribed.length) {
+          if (isSubscribed) {
             await prisma.event_reminders.create({
               data: {
                 user_id: acceptedRsvp.user_id,
                 event_id: acceptedRsvp.event_id,
-                notifying: false,
                 remind_at: sub(event.start_at, { days: 1 }),
               },
             });
@@ -208,7 +207,6 @@ export class EventResolver {
         data: {
           user_id: ctx.user.id,
           event_id: eventId,
-          notifying: false,
           remind_at: sub(event.start_at, { days: 1 }),
         },
       });
@@ -277,7 +275,6 @@ ${unsubscribe}
         data: {
           user_id: userId,
           event_id: eventId,
-          notifying: false,
           remind_at: sub(rsvp.events.start_at, { days: 1 }),
         },
       });

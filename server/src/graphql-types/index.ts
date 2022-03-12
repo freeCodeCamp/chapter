@@ -1,4 +1,5 @@
 export * from './Chapter';
+export * from './ChapterUser';
 export * from './ChapterWithRelations';
 export * from './Event';
 export * from './EventWithEverything';
@@ -11,6 +12,5 @@ export * from './Sponsor';
 export * from './Tag';
 export * from './User';
 export * from './UserBan';
-export * from './UserChapterRole';
 export * from './UserEventRole';
 export * from './Venue';

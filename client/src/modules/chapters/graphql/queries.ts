@@ -35,12 +35,12 @@ export const CHAPTER = gql`
 export const CHAPTER_USERS = gql`
   query chapterUsers($id: Int!) {
     chapter(id: $id) {
-      users {
+      chapter_users {
         user {
           name
           email
         }
-        interested
+        subscribed
       }
     }
   }

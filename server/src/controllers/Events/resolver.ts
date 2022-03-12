@@ -253,11 +253,11 @@ ${unsubscribe}
     // roles
     const allowedRoles = ['organizer'] as const;
     const hasPermission =
-      ctx.user.chapter_roles.findIndex(
-        ({ chapter_id, role_name }) =>
+      ctx.user.user_chapters.findIndex(
+        ({ chapter_id, chapter_role }) =>
           chapter_id === data.chapter_id &&
-          allowedRoles.findIndex((x) => x === role_name) > -1,
-      ) !== -1;
+          allowedRoles.findIndex((x) => x === chapter_role.name) > -1,
+      ) !== -1 || true;
 
     if (!hasPermission)
       throw Error('User does not have permission to create events');
@@ -457,7 +457,7 @@ ${unsubscribe}
         venue: true,
         chapter: {
           include: {
-            users: {
+            chapter_users: {
               include: {
                 user: true,
               },
@@ -479,8 +479,8 @@ ${unsubscribe}
       // TODO: event.chapters should be event.chapter and not be optional Once
       // that's fixed, we can make several chains non-optional (remove the ?s)
       const interestedUsers: string[] =
-        event.chapter?.users
-          ?.filter((role) => role.interested)
+        event.chapter?.chapter_users
+          ?.filter((user) => user.subscribed)
           .map(({ user }) => user.email) ?? [];
 
       addresses.push(...interestedUsers);

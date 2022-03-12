@@ -25,7 +25,7 @@ export const ChapterUsersPage: NextPage = () => {
         </Flex>
         {loading ? (
           <Heading>Loading...</Heading>
-        ) : error || !data?.chapter?.users ? (
+        ) : error || !data?.chapter?.chapter_users ? (
           <>
             <Heading>Error</Heading>
             <Text>
@@ -34,7 +34,7 @@ export const ChapterUsersPage: NextPage = () => {
           </>
         ) : (
           <DataTable
-            data={data.chapter.users}
+            data={data.chapter.chapter_users}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             keys={['name', 'email'] as const}
             mapper={{

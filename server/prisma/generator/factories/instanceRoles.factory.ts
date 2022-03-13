@@ -1,22 +1,21 @@
 import { prisma } from '../../../src/prisma';
 
-interface Role {
+const instancePermissions = ['chapter-create', 'chapter-edit'] as const;
+type Permissions = typeof instancePermissions[number];
+interface InstanceRole {
   name: string;
-  permissions: string[];
+  permissions: Permissions[];
 }
 
-const roles = [
+const roles: InstanceRole[] = [
   { name: 'administrator', permissions: ['chapter-create', 'chapter-edit'] },
   { name: 'member', permissions: [] },
 ];
 
-const createRole = async ({ name, permissions }: Role) => {
+const createRole = async ({ name, permissions }: InstanceRole) => {
   const permissionsData = permissions.map((permission) => ({
     instance_permission: {
-      connectOrCreate: {
-        create: { name: permission },
-        where: { name: permission },
-      },
+      connect: { name: permission },
     },
   }));
   const createdRole = await prisma.instance_roles.create({
@@ -29,6 +28,9 @@ const createRole = async ({ name, permissions }: Role) => {
 };
 
 const createInstanceRoles = async () => {
+  await prisma.instance_permissions.createMany({
+    data: instancePermissions.map((permission) => ({ name: permission })),
+  });
   return Object.assign({}, ...(await Promise.all(roles.map(createRole))));
 };
 

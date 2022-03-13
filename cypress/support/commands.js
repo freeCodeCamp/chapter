@@ -114,7 +114,7 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
   };
   return cy
     .request('POST', 'http://localhost:5000/graphql', chapterQuery)
-    .then((response) => response.body.data.chapter.users);
+    .then((response) => response.body.data.chapter.chapter_users);
 });
 
 Cypress.Commands.add('getRSVPs', (eventId) => {

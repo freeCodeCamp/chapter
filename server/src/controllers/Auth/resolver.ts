@@ -42,7 +42,6 @@ export class AuthResolver {
     const instanceMember = await prisma.instance_roles.findFirst({
       where: { name: 'member' },
     });
-    console.log(instanceMember);
 
     const userData: Prisma.usersCreateInput = {
       ...data,

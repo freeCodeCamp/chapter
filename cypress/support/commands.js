@@ -102,12 +102,12 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
     },
     query: `query chapterUsers($id: Int!) {
       chapter(id: $id) {
-        users {
+        chapter_users {
           user {
             name
             email
           }
-          interested
+          subscribed
         }
       }
     }`,

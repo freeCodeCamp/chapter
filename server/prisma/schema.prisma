@@ -170,7 +170,7 @@ model instance_roles {
   created_at                DateTime                     @default(now())
   updated_at                DateTime                     @updatedAt
   id                        Int                          @id @default(autoincrement())
-  name                      String
+  name                      String                       @unique
   instance_role_permissions instance_role_permissions[]
   users                     users[]
 }

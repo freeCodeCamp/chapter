@@ -1,4 +1,5 @@
 import { Heading, Link, Box } from '@chakra-ui/layout';
+import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -36,6 +37,9 @@ export const ChapterPage: NextPage = () => {
               Chapter Users
             </Link>
           </Box>
+          <LinkButton size="sm" href={`${id}/new_event`}>
+            Add new event
+          </LinkButton>
         </ProgressCardContent>
       </Card>
       <h3>Placeholder for events...</h3>

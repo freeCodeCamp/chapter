@@ -141,10 +141,11 @@ export type IEventData = Pick<
 };
 
 export interface EventFormProps {
-  onSubmit: (data: EventFormData) => void;
+  onSubmit: (data: EventFormData, chapterId: number) => void;
   loading: boolean;
   data?: IEventData;
   submitText: string;
+  chapterId: number;
 }
 
 export const formatValue = (field: Field, store?: IEventData): any => {

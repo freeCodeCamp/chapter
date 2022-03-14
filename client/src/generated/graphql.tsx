@@ -402,6 +402,7 @@ export type UpdateChapterInputs = {
 
 export type UpdateEventInputs = {
   capacity?: InputMaybe<Scalars['Float']>;
+  chapter_id: Scalars['Int'];
   description?: InputMaybe<Scalars['String']>;
   ends_at?: InputMaybe<Scalars['DateTime']>;
   image_url?: InputMaybe<Scalars['String']>;

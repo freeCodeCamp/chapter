@@ -12,8 +12,10 @@ export const MINIMAL_DATA_EVENTS_QUERY = gql`
       canceled
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id

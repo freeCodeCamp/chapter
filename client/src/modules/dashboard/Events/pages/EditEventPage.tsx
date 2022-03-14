@@ -31,21 +31,27 @@ export const EditEventPage: NextPage = () => {
     refetchQueries: [{ query: EVENTS }, { query: EVENT, variables: { id } }],
   });
 
-  const onSubmit = async (data: EventFormData) => {
+  const onSubmit = async (data: EventFormData, chapterId: number) => {
     // TODO: load chapter from url or something like that
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, ...rest } = data;
+      const { sponsors, tags, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
+      const tagsArray = tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
         venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
-        tags: undefined,
+        tags: tagsArray,
         sponsor_ids: sponsorArray,
+        chapter_id: chapterId,
       };
 
       const event = await updateEvent({
@@ -89,6 +95,7 @@ export const EditEventPage: NextPage = () => {
         loading={loadingUpdate}
         onSubmit={onSubmit}
         submitText={'Save Event Changes'}
+        chapterId={data.event.chapter.id}
       />
     </Layout>
   );

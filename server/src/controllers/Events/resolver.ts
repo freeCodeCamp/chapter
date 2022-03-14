@@ -19,6 +19,10 @@ import { CreateEventInputs, UpdateEventInputs } from './inputs';
 //TODO: Replace placeholder with actual unsubscribe link
 const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
 
+const getUniqueTags = (tags: string[]) => [
+  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
+];
+
 @Resolver()
 export class EventResolver {
   @Query(() => [EventWithEverything])
@@ -32,7 +36,7 @@ export class EventResolver {
       },
       include: {
         chapter: true,
-        tags: true,
+        tags: { include: { tag: true } },
         venue: true,
         rsvps: {
           include: { user: true },
@@ -54,7 +58,7 @@ export class EventResolver {
     return await prisma.events.findMany({
       include: {
         chapter: true,
-        tags: true,
+        tags: { include: { tag: true } },
       },
       orderBy: {
         start_at: 'asc',
@@ -72,7 +76,7 @@ export class EventResolver {
       where: { id },
       include: {
         chapter: true,
-        tags: true,
+        tags: { include: { tag: true } },
         venue: true,
         rsvps: {
           include: { user: true },
@@ -374,9 +378,22 @@ ${unsubscribe}
       user_event_roles: {
         create: userEventRoleData,
       },
+      tags: {
+        create: getUniqueTags(data.tags).map((tagName) => ({
+          tag: {
+            connectOrCreate: {
+              create: { name: tagName },
+              where: { name: tagName },
+            },
+          },
+        })),
+      },
     };
 
-    return await prisma.events.create({ data: eventData });
+    return await prisma.events.create({
+      data: eventData,
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   @Mutation(() => Event)
@@ -405,6 +422,28 @@ ${unsubscribe}
     await prisma.event_sponsors.createMany({
       data: eventSponsorInput,
     });
+
+    await prisma.$transaction([
+      prisma.events.update({
+        where: { id },
+        data: { tags: { deleteMany: {} } },
+      }),
+      prisma.events.update({
+        where: { id },
+        data: {
+          tags: {
+            create: getUniqueTags(data.tags).map((tagName) => ({
+              tag: {
+                connectOrCreate: {
+                  create: { name: tagName },
+                  where: { name: tagName },
+                },
+              },
+            })),
+          },
+        },
+      }),
+    ]);
 
     // TODO: Handle tags
     const start_at = new Date(data.start_at) ?? event.start_at;
@@ -459,7 +498,11 @@ ${unsubscribe}
       }
     }
 
-    return await prisma.events.update({ where: { id }, data: update });
+    return await prisma.events.update({
+      where: { id },
+      data: update,
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   @Mutation(() => Event)
@@ -467,6 +510,7 @@ ${unsubscribe}
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
+      include: { tags: { include: { tag: true } } },
     });
     await prisma.event_reminders.deleteMany({
       where: {
@@ -495,7 +539,10 @@ ${unsubscribe}
 
   @Mutation(() => Event)
   async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
-    return await prisma.events.delete({ where: { id } });
+    return await prisma.events.delete({
+      where: { id },
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return

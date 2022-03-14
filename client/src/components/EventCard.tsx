@@ -2,7 +2,7 @@ import { LockIcon } from '@chakra-ui/icons';
 import { Heading, Text, Tag, Box, Flex, Image, Spacer } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
-import { Chapter, Event, Tag as DBTag } from '../generated/graphql';
+import { Chapter, Event, EventTag } from '../generated/graphql';
 import { formatDate } from '../helpers/date';
 
 type EventCardProps = {
@@ -17,7 +17,7 @@ type EventCardProps = {
     | 'canceled'
   > & {
     chapter: Pick<Chapter, 'id' | 'name'>;
-    tags?: Pick<DBTag, 'name'>[] | null;
+    tags?: EventTag[] | null;
   };
 };
 
@@ -64,20 +64,22 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             {event.chapter.name}
           </Link>
         </Box>
-        <Box d="flex" alignItems="baseline" pt={3}>
-          {event.tags?.map((t) => (
-            <Tag
-              borderRadius="full"
-              pl="2"
-              px="2"
-              colorScheme="teal"
-              key={t.name}
-              mr="2"
-            >
-              {t.name}
-            </Tag>
-          ))}
-        </Box>
+        {event.tags && (
+          <Box d="flex" alignItems="baseline" pt={3}>
+            {event.tags.map(({ tag }) => (
+              <Tag
+                borderRadius="full"
+                pl="2"
+                px="2"
+                colorScheme="teal"
+                key={tag.name}
+                mr="2"
+              >
+                {tag.name}
+              </Tag>
+            ))}
+          </Box>
+        )}
       </Box>
     </Flex>
   );

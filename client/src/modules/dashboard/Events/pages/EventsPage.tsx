@@ -16,7 +16,6 @@ export const EventsPage: NextPage = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Events</Heading>
-          <LinkButton href="/dashboard/events/new">Add new</LinkButton>
         </Flex>
 
         {loading ? (

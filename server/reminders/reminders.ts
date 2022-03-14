@@ -111,7 +111,7 @@ const processReminders = async (reminders: EventReminder[], lock: LockCheck) =>
   );
 
 const reminderMessage = (
-  event: Omit<EventWithEverything, 'sponsors' | 'rsvps'>,
+  event: Omit<EventWithEverything, 'sponsors' | 'rsvps' | 'tags'>,
   user: User,
   date: string,
   start_time: string,

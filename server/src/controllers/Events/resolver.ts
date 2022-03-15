@@ -5,7 +5,7 @@ import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
-  Rsvp,
+  EventUser,
   EventWithEverything,
   EventWithChapter,
 } from '../../graphql-types';
@@ -36,8 +36,20 @@ export class EventResolver {
         chapter: true,
         tags: { include: { tag: true } },
         venue: true,
-        rsvps: {
-          include: { user: true },
+        event_users: {
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: {
+                    event_permission: true,
+                  },
+                },
+              },
+            },
+          },
         },
         sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
       },
@@ -76,19 +88,31 @@ export class EventResolver {
         chapter: true,
         tags: { include: { tag: true } },
         venue: true,
-        rsvps: {
-          include: { user: true },
+        event_users: {
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: {
+                    event_permission: true,
+                  },
+                },
+              },
+            },
+          },
         },
         sponsors: { include: { sponsor: true } },
       },
     });
   }
 
-  @Mutation(() => Rsvp, { nullable: true })
+  @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
     @Ctx() ctx: GQLCtx,
-  ): Promise<Rsvp | null> {
+  ): Promise<EventUser | null> {
     if (!ctx.user) {
       throw new Error('You need to be logged in');
     }
@@ -96,10 +120,12 @@ export class EventResolver {
     const event = await prisma.events.findUnique({
       where: { id: eventId },
       include: {
-        rsvps: true,
-        user_event_roles: {
-          include: { users: true },
-          where: { role_name: 'organizer', subscribed: true },
+        event_users: {
+          include: { user: true, rsvp: true },
+          where: {
+            event_role: { name: 'organizer' },
+            subscribed: true,
+          },
         },
         venue: true,
       },
@@ -109,7 +135,10 @@ export class EventResolver {
       throw new Error('Event not found');
     }
 
-    const oldRsvp = await prisma.rsvps.findUnique({
+    const oldUserRole = await prisma.event_users.findUnique({
+      include: {
+        rsvp: true,
+      },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -119,48 +148,67 @@ export class EventResolver {
       rejectOnNotFound: false,
     });
 
-    if (oldRsvp) {
-      await prisma.rsvps.delete({
+    if (oldUserRole) {
+      await prisma.event_users.delete({
         where: {
           user_id_event_id: {
-            user_id: oldRsvp.user_id,
-            event_id: oldRsvp.event_id,
+            user_id: oldUserRole.user_id,
+            event_id: oldUserRole.event_id,
           },
         },
       });
 
-      if (!event.invite_only && !oldRsvp.on_waitlist) {
-        const waitingList = event.rsvps.filter((r) => r.on_waitlist);
+      if (!event.invite_only && oldUserRole.rsvp.name !== 'waitlist') {
+        const waitList = event.event_users.filter(
+          ({ rsvp }) => rsvp.name === 'waitlist',
+        );
 
-        if (waitingList.length > 0) {
-          await prisma.rsvps.update({
+        if (waitList.length) {
+          await prisma.event_users.update({
+            data: { rsvp: { connect: { name: 'yes' } } },
             where: {
               user_id_event_id: {
-                user_id: waitingList[0].user_id,
-                event_id: waitingList[0].event_id,
+                user_id: waitList[0].user_id,
+                event_id: waitList[0].event_id,
               },
             },
-            data: { on_waitlist: false },
           });
         }
       }
-
       return null;
     }
 
-    const going = event.rsvps.filter((r) => !r.on_waitlist);
+    const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
     const waitlist = going.length >= event.capacity;
 
-    const rsvpData: Prisma.rsvpsCreateInput = {
-      events: { connect: { id: eventId } },
+    const eventUserData: Prisma.event_usersCreateInput = {
       user: { connect: { id: ctx.user.id } },
-      date: new Date(),
-      on_waitlist: event.invite_only ? true : waitlist,
-      confirmed_at: event.invite_only ? null : new Date(),
-      canceled: false,
+      event: { connect: { id: eventId } },
+      rsvp: {
+        connect: {
+          name: event.invite_only || waitlist ? 'waitlist' : 'yes',
+        },
+      },
+      event_role: { connect: { name: 'attendee' } },
+      subscribed: true, // TODO use user specified setting
     };
 
-    const rsvp = await prisma.rsvps.create({ data: rsvpData });
+    const userRole = await prisma.event_users.create({
+      data: eventUserData,
+      include: {
+        rsvp: true,
+        user: true,
+        event_role: {
+          include: {
+            event_role_permissions: {
+              include: {
+                event_permission: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
     const linkDetails: CalendarEvent = {
       title: event.name,
@@ -184,40 +232,46 @@ ${unsubscribe}
       `,
     ).sendEmail();
 
-    const organizersEmails = event.user_event_roles.map(
-      (role) => role.users.email,
-    );
+    const organizersEmails = event.event_users.map(({ user }) => user.email);
     await new MailerService(
       organizersEmails,
       `New RSVP for ${event.name}`,
       `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd. ${unsubscribe}`,
     ).sendEmail();
-    return rsvp;
+    return userRole;
   }
 
-  @Mutation(() => Rsvp)
+  @Mutation(() => EventUser)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
     @Ctx() ctx: GQLCtx,
-  ): Promise<Rsvp> {
+  ): Promise<EventUser> {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
-    const rsvp = await prisma.rsvps.findUnique({
+    const eventUser = await prisma.event_users.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
     });
 
-    const rsvpData: Prisma.rsvpsUpdateInput = {
-      confirmed_at: new Date(),
-      on_waitlist: false,
-    };
-
-    return await prisma.rsvps.update({
-      data: rsvpData,
+    return await prisma.event_users.update({
+      data: { rsvp: { connect: { name: 'yes' } } },
       where: {
         user_id_event_id: {
-          user_id: rsvp.user_id,
-          event_id: rsvp.event_id,
+          user_id: eventUser.user_id,
+          event_id: eventUser.event_id,
         },
+      },
+      include: {
+        rsvp: true,
+        event_role: {
+          include: {
+            event_role_permissions: {
+              include: {
+                event_permission: true,
+              },
+            },
+          },
+        },
+        user: true,
       },
     });
   }
@@ -227,7 +281,7 @@ ${unsubscribe}
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    await prisma.rsvps.delete({
+    await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
     });
 
@@ -266,9 +320,19 @@ ${unsubscribe}
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
       }));
-    const userEventRoleData: Prisma.user_event_rolesCreateWithoutEventsInput = {
-      users: { connect: { id: ctx.user.id } },
-      role_name: 'organizer',
+
+    const eventUserOrganizer: Prisma.event_usersCreateWithoutEventInput = {
+      user: { connect: { id: ctx.user.id } },
+      event_role: {
+        connect: {
+          name: 'organizer',
+        },
+      },
+      rsvp: {
+        connect: {
+          name: 'yes',
+        },
+      },
       subscribed: true, // TODO: even organizers may wish to opt out of emails
     };
 
@@ -293,8 +357,8 @@ ${unsubscribe}
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
-      user_event_roles: {
-        create: userEventRoleData,
+      event_users: {
+        create: eventUserOrganizer,
       },
       tags: {
         create: getUniqueTags(data.tags).map((tagName) => ({
@@ -324,7 +388,10 @@ ${unsubscribe}
       include: {
         venue: true,
         sponsors: true,
-        rsvps: { include: { user: true } },
+        event_users: {
+          include: { user: true },
+          where: { subscribed: true },
+        },
       },
     });
 
@@ -383,7 +450,7 @@ ${unsubscribe}
       });
       // TODO: include a link back to the venue page
       if (event.venue_id !== venue.id) {
-        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
+        const emailList = event.event_users.map(({ user }) => user.email);
         const subject = `Venue changed for event ${event.name}`;
         const body = `We have had to change the location of ${event.name}.
 The event is now being held at <br>
@@ -410,19 +477,26 @@ ${unsubscribe}
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
-      include: { tags: { include: { tag: true } } },
-    });
-
-    const notCancelledRsvps = await prisma.rsvps.findMany({
-      where: {
-        event_id: id,
-        canceled: false,
+      include: {
+        tags: { include: { tag: true } },
+        event_users: {
+          include: { user: true },
+          where: {
+            subscribed: true,
+            rsvp: {
+              name: {
+                not: 'no',
+              },
+            },
+          },
+        },
       },
-      include: { user: true },
     });
 
-    if (notCancelledRsvps) {
-      const emailList = notCancelledRsvps.map((rsvp) => rsvp.user.email);
+    const notCancelledRsvps = event.event_users;
+
+    if (notCancelledRsvps.length) {
+      const emailList = notCancelledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} cancelled`;
       const body = `placeholder body`;
 
@@ -464,12 +538,15 @@ ${unsubscribe}
             },
           },
         },
-        rsvps: {
+        event_users: {
           include: {
+            rsvp: true,
             user: true,
           },
+          where: {
+            subscribed: true,
+          },
         },
-        user_event_roles: true,
       },
     });
 
@@ -486,35 +563,23 @@ ${unsubscribe}
       addresses.push(...interestedUsers);
     }
 
-    const subscribedUsers = event.user_event_roles
-      .filter((role) => role.subscribed)
-      .map((role) => role.user_id);
     if (emailGroups.includes('on_waitlist')) {
-      const waitlistUsers: string[] = event.rsvps
-        .filter(
-          (rsvp) => rsvp.on_waitlist && subscribedUsers.includes(rsvp.user.id),
-        )
+      const waitlistUsers: string[] = event.event_users
+        .filter(({ rsvp }) => rsvp.name === 'waitlist')
         .map(({ user }) => user.email);
       addresses.push(...waitlistUsers);
     }
     if (emailGroups.includes('confirmed')) {
-      const confirmedUsers: string[] = event.rsvps
-        .filter(
-          (rsvp) =>
-            !rsvp.on_waitlist &&
-            !rsvp.canceled &&
-            subscribedUsers.includes(rsvp.user.id),
-        )
+      const confirmedUsers: string[] = event.event_users
+        .filter(({ rsvp }) => rsvp.name === 'yes')
         .map(({ user }) => user.email);
       addresses.push(...confirmedUsers);
     }
     if (emailGroups.includes('canceled')) {
-      const confirmedUsers: string[] = event.rsvps
-        .filter(
-          (rsvp) => rsvp.canceled && subscribedUsers.includes(rsvp.user.id),
-        )
+      const canceledUsers: string[] = event.event_users
+        .filter(({ rsvp }) => rsvp.name === 'no')
         .map(({ user }) => user.email);
-      addresses.push(...confirmedUsers);
+      addresses.push(...canceledUsers);
     }
 
     if (!addresses.length) {

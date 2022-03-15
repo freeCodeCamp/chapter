@@ -28,7 +28,7 @@
     "seed": "node prisma/generator/seed.js"
   },
   "dependencies": {
-    "@prisma/client": "3.10.0",
+    "@prisma/client": "3.11.0",
     "apollo-server-express": "3.6.4",
     "calendar-link": "2.1.1",
     "class-validator": "0.13.2",
@@ -52,7 +52,7 @@
     "dotenv-cli": "5.0.0",
     "get-port": "6.1.2",
     "node-dev": "7.2.0",
-    "prisma": "3.10.0",
+    "prisma": "3.11.0",
     "rimraf": "3.0.2",
     "sinon": "13.0.1",
     "sinon-chai": "3.7.0",

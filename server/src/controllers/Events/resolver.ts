@@ -6,7 +6,7 @@ import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
   Rsvp,
-  EventWithEverything,
+  EventWithRelations,
   EventWithChapter,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -23,11 +23,11 @@ const getUniqueTags = (tags: string[]) => [
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [EventWithEverything])
+  @Query(() => [EventWithRelations])
   async events(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ): Promise<EventWithEverything[]> {
+  ): Promise<EventWithRelations[]> {
     return await prisma.events.findMany({
       where: {
         ...(!showAll && { start_at: { gt: new Date() } }),
@@ -66,10 +66,10 @@ export class EventResolver {
     });
   }
 
-  @Query(() => EventWithEverything, { nullable: true })
+  @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('id', () => Int) id: number,
-  ): Promise<EventWithEverything | null> {
+  ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
       where: { id },
       include: {

@@ -112,11 +112,14 @@ export const EventPage: NextPage = () => {
         <DataTable
           title={
             'RSVPs: ' +
-            (data.event.rsvps
-              ? data.event.rsvps.filter((r) => !r.on_waitlist).length
+            (data.event.event_users
+              ? data.event.event_users.filter(({ rsvp }) => rsvp.name === 'yes')
+                  .length
               : '0')
           }
-          data={data.event.rsvps.filter((r) => !r.on_waitlist)}
+          data={data.event.event_users.filter(
+            ({ rsvp }) => rsvp.name === 'yes',
+          )}
           keys={['user', 'ops'] as const}
           emptyText="No users"
           mapper={{
@@ -135,23 +138,52 @@ export const EventPage: NextPage = () => {
 
         <DataTable
           title={
-            'Waitlist: ' +
-            (data.event.rsvps
-              ? data.event.rsvps.filter((r) => r.on_waitlist).length
-              : 0)
+            'Canceled: ' +
+            (data.event.event_users
+              ? data.event.event_users.filter(({ rsvp }) => rsvp.name === 'no')
+                  .length
+              : '0')
           }
-          data={data.event.rsvps.filter((r) => r.on_waitlist)}
+          data={data.event.event_users.filter(({ rsvp }) => rsvp.name === 'no')}
           keys={['user', 'ops'] as const}
           emptyText="No users"
           mapper={{
-            user: (r) => r.user.name,
-            ops: (rsvp) => (
+            user: ({ user }) => user.name,
+            ops: ({ user }) => (
+              <Button
+                size="xs"
+                colorScheme="red"
+                onClick={kick({ eventId, userId: user.id })}
+              >
+                Kick
+              </Button>
+            ),
+          }}
+        />
+
+        <DataTable
+          title={
+            'Waitlist: ' +
+            (data.event.event_users
+              ? data.event.event_users.filter(
+                  ({ rsvp }) => rsvp.name === 'waitlist',
+                ).length
+              : 0)
+          }
+          data={data.event.event_users.filter(
+            ({ rsvp }) => rsvp.name === 'waitlist',
+          )}
+          keys={['user', 'ops'] as const}
+          emptyText="No users"
+          mapper={{
+            user: ({ user }) => user.name,
+            ops: ({ user }) => (
               <Button
                 size="xs"
                 colorScheme="green"
                 onClick={confirmRSVP({
                   eventId,
-                  userId: rsvp.user.id,
+                  userId: user.id,
                 })}
               >
                 Confirm

@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 export const rsvpToEvent = gql`
   mutation rsvpToEvent($eventId: Int!) {
     rsvpEvent(eventId: $eventId) {
-      confirmed_at
+      updated_at
     }
   }
 `;

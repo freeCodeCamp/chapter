@@ -2701,7 +2701,6 @@ export const MinEventsDocument = gql`
   query minEvents {
     events {
       id
-      id
       name
       description
       start_at

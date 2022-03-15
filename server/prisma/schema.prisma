@@ -71,24 +71,61 @@ model events {
   chapter          chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sponsors         event_sponsors[]
-  rsvps            rsvps[]
   tags             event_tags[]
-  user_event_roles user_event_roles[]
+  event_users      event_users[]
 }
 
-model rsvps {
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
-  user_id      Int
-  event_id     Int
-  date         DateTime
-  on_waitlist  Boolean
-  confirmed_at DateTime?
-  canceled     Boolean
-  events       events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model event_roles {
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique
+  event_role_permissions event_role_permissions[]
+  event_users            event_users[]
+}
+
+model event_role_permissions {
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+  event_role_id       Int
+  event_permission_id Int
+  event_role          event_roles       @relation(fields: [event_role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event_permission    event_permissions @relation(fields: [event_permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([event_role_id, event_permission_id])
+}
+
+model event_permissions {
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique
+  event_role_permissions event_role_permissions[]
+}
+
+model event_users {
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  user_id       Int
+  event_id      Int
+  event_role_id Int
+  rsvp_id       Int
+  subscribed    Boolean
+  title         String[]
+  user          users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event         events      @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event_role    event_roles @relation(fields: [event_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rsvp          rsvp    @relation(fields: [rsvp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, event_id])
+}
+
+model rsvp {
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  event_users  event_users[]
 }
 
 model sponsors {
@@ -134,19 +171,6 @@ model user_chapter_roles {
   @@id([user_id, chapter_id, role_name])
 }
 
-model user_event_roles {
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user_id    Int
-  event_id   Int
-  role_name  String
-  subscribed Boolean
-  events     events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([user_id, event_id, role_name])
-}
-
 model user_instance_roles {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -164,11 +188,10 @@ model users {
   first_name          String
   last_name           String
   email               String                @unique
-  rsvps               rsvps[]
   user_bans           user_bans[]
   chapter_roles       user_chapter_roles[]
-  user_event_roles    user_event_roles[]
   user_instance_roles user_instance_roles[]
+  user_events         event_users[]
 }
 
 model venues {

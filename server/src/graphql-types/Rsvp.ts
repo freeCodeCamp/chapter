@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from 'type-graphql';
+import { User } from '.';
 
 @ObjectType()
 export class Rsvp {
@@ -19,4 +20,10 @@ export class Rsvp {
 
   @Field(() => Boolean)
   canceled: boolean;
+}
+
+@ObjectType()
+export class RsvpWithUser extends Rsvp {
+  @Field(() => User)
+  user: User;
 }

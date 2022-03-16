@@ -1,4 +1,4 @@
-import { EventReminder, EventWithEverything, User } from '../src/graphql-types';
+import { EventReminder, EventWithRelations, User } from '../src/graphql-types';
 import { prisma } from '../src/prisma';
 import MailerService from '../src/services/MailerService';
 
@@ -111,7 +111,7 @@ const processReminders = async (reminders: EventReminder[], lock: LockCheck) =>
   );
 
 const reminderMessage = (
-  event: Omit<EventWithEverything, 'sponsors' | 'rsvps' | 'tags'>,
+  event: Omit<EventWithRelations, 'sponsors' | 'rsvps' | 'tags'>,
   user: User,
   date: string,
   start_time: string,

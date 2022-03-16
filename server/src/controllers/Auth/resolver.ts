@@ -39,7 +39,7 @@ export class AuthResolver {
       throw new Error('EMAIL_IN_USE');
     }
 
-    const instanceMember = await prisma.instance_roles.findFirst({
+    const instanceMember = await prisma.instance_roles.findUnique({
       where: { name: 'member' },
     });
 

@@ -1594,7 +1594,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "EventWithEverything",
+        "name": "EventWithRelations",
         "description": null,
         "fields": [
           {
@@ -2858,7 +2858,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "EventWithEverything",
+              "name": "EventWithRelations",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2904,7 +2904,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "EventWithEverything",
+                    "name": "EventWithRelations",
                     "ofType": null
                   }
                 }

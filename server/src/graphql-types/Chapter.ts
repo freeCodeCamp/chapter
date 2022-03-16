@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 import { BaseObject } from './BaseObject';
+import { Event, UserChapterRole } from '.';
 
 @ObjectType()
 export class Chapter extends BaseObject {
@@ -26,4 +27,13 @@ export class Chapter extends BaseObject {
 
   @Field(() => Int)
   creator_id: number;
+}
+
+@ObjectType()
+export class ChapterWithRelations extends Chapter {
+  @Field(() => [Event])
+  events: Event[];
+
+  @Field(() => [UserChapterRole])
+  users: UserChapterRole[];
 }

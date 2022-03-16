@@ -182,29 +182,29 @@
 <g id="node4" class="node">
 <title>users</title>
 <g id="a_node4"><a xlink:href="../../tables/users.html" xlink:title="users" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="284.5,-120.2 284.5,-181.2 355.5,-181.2 355.5,-120.2 284.5,-120.2"/>
-<polygon fill="#f5f5f5" stroke="transparent" points="285,-157.7 285,-180.7 356,-180.7 356,-157.7 285,-157.7"/>
-<polygon fill="none" stroke="#000000" points="285,-157.7 285,-180.7 356,-180.7 356,-157.7 285,-157.7"/>
-<text text-anchor="start" x="290" y="-166.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">users</text>
-<text text-anchor="start" x="321.0437" y="-165.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
-<polygon fill="none" stroke="#000000" points="285,-138.7 285,-157.7 356,-157.7 356,-138.7 285,-138.7"/>
-<text text-anchor="start" x="288" y="-144.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="285,-119.7 285,-138.7 297,-138.7 297,-119.7 285,-119.7"/>
-<polygon fill="none" stroke="#000000" points="285,-119.7 285,-138.7 297,-138.7 297,-119.7 285,-119.7"/>
-<text text-anchor="start" x="287.9431" y="-125.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
-<polygon fill="#ffffff" stroke="transparent" points="297,-119.7 297,-138.7 335,-138.7 335,-119.7 297,-119.7"/>
-<polygon fill="none" stroke="#000000" points="297,-119.7 297,-138.7 335,-138.7 335,-119.7 297,-119.7"/>
-<text text-anchor="start" x="299.8053" y="-125.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="335,-119.7 335,-138.7 356,-138.7 356,-119.7 335,-119.7"/>
-<polygon fill="none" stroke="#000000" points="335,-119.7 335,-138.7 356,-138.7 356,-119.7 335,-119.7"/>
-<text text-anchor="start" x="337.7027" y="-125.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">6 &gt;</text>
+<polygon fill="#ffffff" stroke="transparent" points="280,-120.2 280,-181.2 360,-181.2 360,-120.2 280,-120.2"/>
+<polygon fill="#f5f5f5" stroke="transparent" points="280,-157.7 280,-180.7 360,-180.7 360,-157.7 280,-157.7"/>
+<polygon fill="none" stroke="#000000" points="280,-157.7 280,-180.7 360,-180.7 360,-157.7 280,-157.7"/>
+<text text-anchor="start" x="285" y="-166.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">users</text>
+<text text-anchor="start" x="325.0437" y="-165.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
+<polygon fill="none" stroke="#000000" points="280,-138.7 280,-157.7 360,-157.7 360,-138.7 280,-138.7"/>
+<text text-anchor="start" x="283" y="-144.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
+<polygon fill="#ffffff" stroke="transparent" points="280,-119.7 280,-138.7 301,-138.7 301,-119.7 280,-119.7"/>
+<polygon fill="none" stroke="#000000" points="280,-119.7 280,-138.7 301,-138.7 301,-119.7 280,-119.7"/>
+<text text-anchor="start" x="282.7027" y="-125.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 1</text>
+<polygon fill="#ffffff" stroke="transparent" points="301,-119.7 301,-138.7 339,-138.7 339,-119.7 301,-119.7"/>
+<polygon fill="none" stroke="#000000" points="301,-119.7 301,-138.7 339,-138.7 339,-119.7 301,-119.7"/>
+<text text-anchor="start" x="303.8053" y="-125.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="339,-119.7 339,-138.7 360,-138.7 360,-119.7 339,-119.7"/>
+<polygon fill="none" stroke="#000000" points="339,-119.7 339,-138.7 360,-138.7 360,-119.7 339,-119.7"/>
+<text text-anchor="start" x="341.7027" y="-125.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">5 &gt;</text>
 </a>
 </g>
 </g>
 <!-- event_reminders&#45;&gt;users -->
 <g id="edge4" class="edge">
 <title>event_reminders:w&#45;&gt;users:e</title>
-<path fill="none" stroke="#000000" d="M695.8332,-298.8903C677.9462,-285.786 696.1451,-242.2469 669,-221.7 613.7485,-179.8784 583.4543,-207.5647 516,-191.7 444.2079,-174.8151 429.751,-147.7 356,-147.7"/>
+<path fill="none" stroke="#000000" d="M695.8332,-298.8903C677.9462,-285.786 696.1451,-242.2469 669,-221.7 613.7485,-179.8784 583.4021,-207.7853 516,-191.7 445.9293,-174.9778 432.0384,-147.7 360,-147.7"/>
 <polygon fill="#000000" stroke="#000000" points="702.2745,-300.6224 709.0651,-306.1765 706.1372,-301.6612 710,-302.7 710,-302.7 710,-302.7 706.1372,-301.6612 710.9349,-299.2235 702.2745,-300.6224 702.2745,-300.6224"/>
 <ellipse fill="none" stroke="#000000" cx="699.1843" cy="-299.7914" rx="3.2" ry="3.2"/>
 </g>
@@ -284,9 +284,9 @@
 <!-- rsvps&#45;&gt;users -->
 <g id="edge12" class="edge">
 <title>rsvps:w&#45;&gt;users:e</title>
-<path fill="none" stroke="#000000" d="M528.2012,-300.5075C493.6186,-287.9265 521.2641,-224.3322 483,-191.7 437.548,-152.9378 415.736,-147.7 356,-147.7"/>
-<polygon fill="#000000" stroke="#000000" points="534.5924,-301.4874 541.9543,-306.2584 538.5462,-302.0937 542.5,-302.7 542.5,-302.7 542.5,-302.7 538.5462,-302.0937 543.0457,-299.1416 534.5924,-301.4874 534.5924,-301.4874"/>
-<ellipse fill="none" stroke="#000000" cx="531.4294" cy="-301.0024" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M528.1962,-300.5134C493.5852,-287.9654 521.1,-224.5235 483,-191.7 439.0133,-153.805 418.0591,-147.7 360,-147.7"/>
+<polygon fill="#000000" stroke="#000000" points="534.5919,-301.4911 541.956,-306.2587 538.5459,-302.0955 542.5,-302.7 542.5,-302.7 542.5,-302.7 538.5459,-302.0955 543.044,-299.1413 534.5919,-301.4911 534.5919,-301.4911"/>
+<ellipse fill="none" stroke="#000000" cx="531.4286" cy="-301.0075" rx="3.2" ry="3.2"/>
 </g>
 <!-- event_sponsors -->
 <g id="node5" class="node">
@@ -446,7 +446,7 @@
 <!-- user_bans&#45;&gt;users -->
 <g id="edge14" class="edge">
 <title>user_bans:w&#45;&gt;users:e</title>
-<path fill="none" stroke="#000000" d="M530.8685,-147.7C458.4965,-147.7 435.1228,-147.7 356,-147.7"/>
+<path fill="none" stroke="#000000" d="M530.7361,-147.7C460.2376,-147.7 437.2917,-147.7 360,-147.7"/>
 <polygon fill="#000000" stroke="#000000" points="537.5,-147.7001 545.5,-151.3 541.5,-147.7 545.5,-147.7 545.5,-147.7 545.5,-147.7 541.5,-147.7 545.5,-144.1 537.5,-147.7001 537.5,-147.7001"/>
 <ellipse fill="none" stroke="#000000" cx="534.3" cy="-147.7001" rx="3.2" ry="3.2"/>
 </g>
@@ -483,9 +483,9 @@
 <!-- user_chapter_roles&#45;&gt;users -->
 <g id="edge16" class="edge">
 <title>user_chapter_roles:w&#45;&gt;users:e</title>
-<path fill="none" stroke="#000000" d="M510.2639,-68.1541C465.682,-81.7979 393.3323,-147.7 356,-147.7"/>
-<polygon fill="#000000" stroke="#000000" points="516.6163,-67.0591 525.1116,-69.2477 520.5581,-66.3795 524.5,-65.7 524.5,-65.7 524.5,-65.7 520.5581,-66.3795 523.8884,-62.1523 516.6163,-67.0591 516.6163,-67.0591"/>
-<ellipse fill="none" stroke="#000000" cx="513.4628" cy="-67.6027" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M510.2743,-68.244C466.6537,-82.0847 396.5376,-147.7 360,-147.7"/>
+<polygon fill="#000000" stroke="#000000" points="516.6249,-67.1084 525.1338,-69.2438 520.5625,-66.4042 524.5,-65.7 524.5,-65.7 524.5,-65.7 520.5625,-66.4042 523.8662,-62.1562 516.6249,-67.1084 516.6249,-67.1084"/>
+<ellipse fill="none" stroke="#000000" cx="513.4749" cy="-67.6717" rx="3.2" ry="3.2"/>
 </g>
 <!-- user_chapter_roles&#45;&gt;chapters -->
 <g id="edge15" class="edge">
@@ -536,9 +536,9 @@
 <!-- user_event_roles&#45;&gt;users -->
 <g id="edge18" class="edge">
 <title>user_event_roles:w&#45;&gt;users:e</title>
-<path fill="none" stroke="#000000" d="M515.7515,-445.3597C479.6221,-411.9656 517.441,-231.9759 483,-191.7 444.1771,-146.2998 415.736,-147.7 356,-147.7"/>
-<polygon fill="#000000" stroke="#000000" points="522.0428,-447.8034 528.1965,-454.0557 525.7714,-449.2517 529.5,-450.7 529.5,-450.7 529.5,-450.7 525.7714,-449.2517 530.8035,-447.3443 522.0428,-447.8034 522.0428,-447.8034"/>
-<ellipse fill="none" stroke="#000000" cx="519.0599" cy="-446.6447" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M515.7462,-445.3642C479.5842,-411.9979 517.2387,-232.148 483,-191.7 445.4886,-147.3857 418.0591,-147.7 360,-147.7"/>
+<polygon fill="#000000" stroke="#000000" points="522.0416,-447.8065 528.1979,-454.0563 525.7708,-449.2532 529.5,-450.7 529.5,-450.7 529.5,-450.7 525.7708,-449.2532 530.8021,-447.3437 522.0416,-447.8065 522.0416,-447.8065"/>
+<ellipse fill="none" stroke="#000000" cx="519.0582" cy="-446.6491" rx="3.2" ry="3.2"/>
 </g>
 </g>
 </svg>

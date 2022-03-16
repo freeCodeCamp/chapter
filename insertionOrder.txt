@@ -1,13 +1,15 @@
-users
 chapters
+instance_roles
+instance_permissions
 sponsors
 tags
 venues
+users
 events
 rsvps
-user_instance_roles
 event_sponsors
 event_tags
+instance_role_permissions
 user_bans
 user_chapter_roles
 user_event_roles

@@ -1,6 +1,17 @@
 import { Field, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { ChapterRolePermission } from './ChapterRolePermission';
+
+@ObjectType()
+export class ChapterPermission extends BaseObject {
+  @Field(() => String)
+  name: string;
+}
+
+@ObjectType()
+export class ChapterRolePermission {
+  @Field(() => ChapterPermission)
+  chapter_permission: ChapterPermission;
+}
 
 @ObjectType()
 export class ChapterRole extends BaseObject {

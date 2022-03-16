@@ -1,4 +1,4 @@
-import { Button, Box, Heading, Text } from '@chakra-ui/react';
+import { Button, Box, Heading, Link, Text } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -72,18 +72,25 @@ export const EventPage: NextPage = () => {
         {data.event.image_url && (
           <Text>
             Event Image Url:{' '}
-            <a href={data.event.image_url}>{data.event.image_url}</a>
+            <Link href={data.event.image_url} isExternal>
+              {data.event.image_url}
+            </Link>
           </Text>
         )}
         {data.event.url && (
           <Text>
-            Event Url: <a href={data.event.url}>{data.event.url}</a>
+            Event Url:{' '}
+            <Link href={data.event.url} isExternal>
+              {data.event.url}
+            </Link>
           </Text>
         )}
         {data.event.streaming_url && (
           <Text>
             Streaming Url:{' '}
-            <a href={data.event.streaming_url}>{data.event.streaming_url}</a>
+            <Link href={data.event.streaming_url} isExternal>
+              {data.event.streaming_url}
+            </Link>
           </Text>
         )}
         <Text>Capacity: {data.event.capacity}</Text>

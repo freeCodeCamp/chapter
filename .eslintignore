@@ -4,5 +4,6 @@ next.config.js
 client/@types/
 
 server/src/**/*.js
+server/reminders/**/*.js
 server/prisma/**/*.js
 server/tests/**/*.js

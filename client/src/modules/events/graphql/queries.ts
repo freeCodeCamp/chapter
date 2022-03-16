@@ -4,7 +4,6 @@ export const MINIMAL_DATA_EVENTS_QUERY = gql`
   query minEvents {
     events {
       id
-      id
       name
       description
       start_at

@@ -30,6 +30,26 @@
             <column ascending="true" name="id"/>
          </index>
       </table>
+      <table name="event_reminders" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="event_reminders_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="users"/>
+            <parent column="user_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="event_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="event_reminders_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
+            <parent column="event_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="3" id="4" name="remind_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="notifying" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <primaryKey column="user_id" sequenceNumberInPK="1"/>
+         <primaryKey column="event_id" sequenceNumberInPK="2"/>
+         <index name="event_reminders_pkey" unique="true">
+            <column ascending="true" name="user_id"/>
+            <column ascending="true" name="event_id"/>
+         </index>
+      </table>
       <table name="event_sponsors" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
@@ -66,6 +86,7 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('events_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="event_id" foreignKey="event_reminders_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_reminders"/>
             <child column="event_id" foreignKey="event_sponsors_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_sponsors"/>
             <child column="event_id" foreignKey="event_tags_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_tags"/>
             <child column="event_id" foreignKey="rsvps_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
@@ -97,9 +118,11 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="user_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_reminders"/>
             <parent column="id" foreignKey="rsvps_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="event_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="event_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_reminders"/>
             <parent column="id" foreignKey="rsvps_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="3" id="4" name="date" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
@@ -217,6 +240,7 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('users_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="user_id" foreignKey="event_reminders_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_reminders"/>
             <child column="user_id" foreignKey="rsvps_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="rsvps"/>
             <child column="user_id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
             <child column="user_id" foreignKey="user_chapter_roles_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_chapter_roles"/>

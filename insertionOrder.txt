@@ -4,10 +4,11 @@ sponsors
 tags
 venues
 events
+rsvps
 user_instance_roles
 event_sponsors
 event_tags
-rsvps
 user_bans
 user_chapter_roles
 user_event_roles
+event_reminders

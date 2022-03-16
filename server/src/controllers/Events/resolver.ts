@@ -2,6 +2,8 @@ import { Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
+import { isEqual, sub } from 'date-fns';
+
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
@@ -96,7 +98,20 @@ export class EventResolver {
     const event = await prisma.events.findUnique({
       where: { id: eventId },
       include: {
-        rsvps: true,
+        rsvps: {
+          include: {
+            user: {
+              include: {
+                user_event_roles: {
+                  where: {
+                    event_id: eventId,
+                    subscribed: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         user_event_roles: {
           include: { users: true },
           where: { role_name: 'organizer', subscribed: true },
@@ -128,20 +143,42 @@ export class EventResolver {
           },
         },
       });
+      await prisma.user_event_roles.delete({
+        where: {
+          user_id_event_id_role_name: {
+            user_id: oldRsvp.user_id,
+            event_id: oldRsvp.event_id,
+            role_name: 'attendee',
+          },
+        },
+      });
 
       if (!event.invite_only && !oldRsvp.on_waitlist) {
         const waitingList = event.rsvps.filter((r) => r.on_waitlist);
 
-        if (waitingList.length > 0) {
+        if (waitingList.length) {
+          const acceptedRsvp = waitingList[0];
           await prisma.rsvps.update({
             where: {
               user_id_event_id: {
-                user_id: waitingList[0].user_id,
-                event_id: waitingList[0].event_id,
+                user_id: acceptedRsvp.user_id,
+                event_id: acceptedRsvp.event_id,
               },
             },
             data: { on_waitlist: false },
           });
+
+          const isSubscribed = acceptedRsvp.user.user_event_roles.length;
+
+          if (isSubscribed) {
+            await prisma.event_reminders.create({
+              data: {
+                user_id: acceptedRsvp.user_id,
+                event_id: acceptedRsvp.event_id,
+                remind_at: sub(event.start_at, { days: 1 }),
+              },
+            });
+          }
         }
       }
 
@@ -150,6 +187,13 @@ export class EventResolver {
 
     const going = event.rsvps.filter((r) => !r.on_waitlist);
     const waitlist = going.length >= event.capacity;
+
+    const roleData: Prisma.user_event_rolesCreateInput = {
+      subscribed: true, // TODO change to user specified value
+      role_name: 'attendee',
+      users: { connect: { id: ctx.user.id } },
+      events: { connect: { id: eventId } },
+    };
 
     const rsvpData: Prisma.rsvpsCreateInput = {
       events: { connect: { id: eventId } },
@@ -161,6 +205,16 @@ export class EventResolver {
     };
 
     const rsvp = await prisma.rsvps.create({ data: rsvpData });
+    await prisma.user_event_roles.create({ data: roleData });
+    if (!event.invite_only && !waitlist && roleData.subscribed) {
+      await prisma.event_reminders.create({
+        data: {
+          user_id: ctx.user.id,
+          event_id: eventId,
+          remind_at: sub(event.start_at, { days: 1 }),
+        },
+      });
+    }
 
     const linkDetails: CalendarEvent = {
       title: event.name,
@@ -204,12 +258,31 @@ ${unsubscribe}
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const rsvp = await prisma.rsvps.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+      include: { events: true },
     });
 
     const rsvpData: Prisma.rsvpsUpdateInput = {
       confirmed_at: new Date(),
       on_waitlist: false,
     };
+
+    const subscribedRoles = await prisma.user_event_roles.findMany({
+      where: {
+        user_id: userId,
+        event_id: eventId,
+        subscribed: true,
+      },
+    });
+
+    if (subscribedRoles.length) {
+      await prisma.event_reminders.create({
+        data: {
+          user_id: userId,
+          event_id: eventId,
+          remind_at: sub(rsvp.events.start_at, { days: 1 }),
+        },
+      });
+    }
 
     return await prisma.rsvps.update({
       data: rsvpData,
@@ -229,6 +302,15 @@ ${unsubscribe}
   ): Promise<boolean> {
     await prisma.rsvps.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+    });
+    await prisma.user_event_roles.delete({
+      where: {
+        user_id_event_id_role_name: {
+          user_id: userId,
+          event_id: eventId,
+          role_name: 'attendee',
+        },
+      },
     });
 
     return true;
@@ -325,6 +407,7 @@ ${unsubscribe}
         venue: true,
         sponsors: true,
         rsvps: { include: { user: true } },
+        event_reminders: true,
       },
     });
 
@@ -363,6 +446,7 @@ ${unsubscribe}
     ]);
 
     // TODO: Handle tags
+    const start_at = new Date(data.start_at) ?? event.start_at;
     const update: Prisma.eventsUpdateInput = {
       invite_only: data.invite_only ?? event.invite_only,
       name: data.name ?? event.name,
@@ -370,12 +454,28 @@ ${unsubscribe}
       url: data.url ?? event.url,
       streaming_url: data.streaming_url ?? event.streaming_url,
       venue_type: data.venue_type ?? event.venue_type,
-      start_at: new Date(data.start_at) ?? event.start_at,
+      start_at: start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
       venue: { connect: { id: data.venue_id } },
     };
+
+    if (!isEqual(start_at, event.start_at)) {
+      event.event_reminders.forEach(async (reminder) => {
+        await prisma.event_reminders.update({
+          data: {
+            remind_at: sub(start_at, { days: 1 }),
+          },
+          where: {
+            user_id_event_id: {
+              user_id: reminder.user_id,
+              event_id: reminder.event_id,
+            },
+          },
+        });
+      });
+    }
 
     if (data.venue_id) {
       const venue = await prisma.venues.findUnique({
@@ -411,6 +511,11 @@ ${unsubscribe}
       where: { id },
       data: { canceled: true },
       include: { tags: { include: { tag: true } } },
+    });
+    await prisma.event_reminders.deleteMany({
+      where: {
+        event_id: id,
+      },
     });
 
     const notCancelledRsvps = await prisma.rsvps.findMany({

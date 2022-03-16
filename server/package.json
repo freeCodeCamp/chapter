@@ -7,7 +7,8 @@
     "build": "tsc",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
     "prepare": "rimraf tsconfig.tsbuildinfo && prisma generate",
-    "start": "node ./src/app.js"
+    "start": "node ./src/app.js",
+    "reminders:send": "node ./reminders/reminders.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "calendar-link": "2.1.1",
     "class-validator": "0.13.2",
     "cors": "2.8.5",
+    "date-fns": "^2.28.0",
     "dotenv": "16.0.0",
     "dotenv-expand": "8.0.2",
     "express": "4.17.3",
@@ -48,7 +50,6 @@
   "devDependencies": {
     "chai": "4.3.6",
     "concurrently": "7.0.0",
-    "date-fns": "2.28.0",
     "dotenv-cli": "5.0.0",
     "get-port": "6.1.2",
     "node-dev": "7.2.0",

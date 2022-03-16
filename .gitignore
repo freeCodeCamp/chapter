@@ -73,8 +73,10 @@ cypress/screenshots
 /server/db/**/*.js
 /server/prisma/generator/**/*.js
 /server/tests/**/*.js
+/server/reminders/**/*.js
 /server/src/**/*.map
 /server/db/**/*.map
 /server/prisma/generator/**/*.map
 /server/tests/**/*.map
+/server/reminders/**/*.map
 tsconfig.tsbuildinfo

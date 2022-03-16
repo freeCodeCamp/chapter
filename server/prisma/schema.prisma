@@ -74,19 +74,35 @@ model events {
   rsvps            rsvps[]
   tags             event_tags[]
   user_event_roles user_event_roles[]
+  event_reminders  event_reminders[]
 }
 
 model rsvps {
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
-  user_id      Int
-  event_id     Int
-  date         DateTime
-  on_waitlist  Boolean
-  confirmed_at DateTime?
-  canceled     Boolean
-  events       events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_at       DateTime            @default(now())
+  updated_at       DateTime            @updatedAt
+  user_id          Int
+  event_id         Int
+  date             DateTime
+  on_waitlist      Boolean
+  confirmed_at     DateTime?
+  canceled         Boolean
+  events           events              @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user             users               @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  event_reminder   event_reminders[]
+
+  @@id([user_id, event_id])
+}
+
+model event_reminders {
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  user_id       Int
+  event_id      Int
+  remind_at     DateTime
+  notifying     Boolean   @default(false)
+  event         events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  rsvp          rsvps     @relation(fields: [user_id, event_id], references: [user_id, event_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([user_id, event_id])
 }
@@ -135,14 +151,14 @@ model user_chapter_roles {
 }
 
 model user_event_roles {
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   user_id    Int
   event_id   Int
   role_name  String
   subscribed Boolean
-  events     events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events     events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, event_id, role_name])
 }
@@ -169,6 +185,7 @@ model users {
   chapter_roles       user_chapter_roles[]
   user_event_roles    user_event_roles[]
   user_instance_roles user_instance_roles[]
+  event_reminders     event_reminders[]
 }
 
 model venues {

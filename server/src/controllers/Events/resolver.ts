@@ -23,9 +23,9 @@ const getUniqueTags = (tags: string[]) => [
   ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
 ];
 const isPhysical = (venue_type: events_venue_type_enum) =>
-  venue_type !== events_venue_type_enum.Physical;
-const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
+const isOnline = (venue_type: events_venue_type_enum) =>
+  venue_type !== events_venue_type_enum.Physical;
 
 @Resolver()
 export class EventResolver {

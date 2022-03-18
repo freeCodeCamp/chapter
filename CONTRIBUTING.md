@@ -64,7 +64,7 @@ Follow these steps to fork the repository:
 ![an image illustrating the fork button](docs/assets/how-to-fork.png)
 </details>
 
-<details><summary><b>Step 2</b> - Prepare the Development Environment</summary>
+<details><summary><b>Step 2</b> - Prepare the Terminal and Git Environment</summary>
 
 **Prerequisite**:  All `commands` will be run within a terminal's command line / shell on your development device. Options vary by operating system.
 
@@ -76,7 +76,7 @@ Follow these steps to fork the repository:
     * _Git Bash_ - this terminal shell emulates Linux and is included in _Git for Windows_. It works, but is more likely to have permission errors or minor inconsistencies.
     * _PowerShell_ and _cmd_ may run the **_Chapter_** app in _Docker Mode_, but these Windows native shells are not supported for this project.
 
-**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.  You will also need to have [Node.js](https://nodejs.org/en/) 16 and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 8.  We recommend using [nvm](https://github.com/nvm-sh/nvm) to simplify the process of installing Node.js - `nvm install` will automatically install the correct version. Then `npm i -g npm@8` will update npm to a compatible version.
+**Prerequisites**: [Git](https://git-scm.com/downloads) must exist (run ``git --version`` to check) within your development terminal / shell.
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
     * SSH - uses SSH key authentication instead of a username and password.
@@ -318,15 +318,17 @@ You have successfully created a PR. Congratulations! :tada:
 # Running the Application
 **Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
 
-<details><summary><b>Step 1</b> - Install Node.js and dependencies</summary>
+<details><summary><b>Step 1</b> - Install Node.js and Dependencies</summary>
  
-**Prerequisite**: [Node.js](https://nodejs.org/en/download/) must exist on your system.
-> Note: Close and re-open your terminal after the installation finishes.
+**Prerequisite**: _Node.js_ 16+ and _npm_ 8+ must be installed
 
-Ensure the Node.js tools are installed:
-
-* Node.js 16 or greater - `node --version` and the output should be like **v16**.0.0
-* npm 8 or greater - `npm --version` and the output should be like **8**.0.0
+> Note
+> * To check Node.js, run `node --version` and the output should be like **v16**.#.#
+> * If _Node.js_ is not installed, or using an older version, then:  
+>   * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js and run `nvm install` within the root code directory.
+ >   * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/). Be sure to close and re-open your terminal for the changes to take effect.
+> * To check npm, run `npm --version` and the output should be like **8**.#.#
+> * Update npm to the latest version by running `npm i -g npm@8` in the root code directory.
 
 Run `npm i` to install all of the necessary dependencies.
 

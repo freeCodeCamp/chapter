@@ -54,15 +54,22 @@ const createEvents = async (
       }),
     );
 
-    await Promise.all(
-      Array.from(new Array(1 + random(3)), async () => {
-        const tagData: Prisma.tagsCreateInput = {
-          events: { connect: { id: event.id } },
-          name: lorem.words(1),
-        };
-        return await prisma.tags.create({ data: tagData });
-      }),
-    );
+    const tagNames = Array.from(new Array(1 + random(3)), () => lorem.word());
+    await prisma.events.update({
+      where: { id: event.id },
+      data: {
+        tags: {
+          create: [...new Set(tagNames)].map((tagName) => ({
+            tag: {
+              connectOrCreate: {
+                create: { name: tagName },
+                where: { name: tagName },
+              },
+            },
+          })),
+        },
+      },
+    });
 
     events.push(event.id);
   }

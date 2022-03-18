@@ -78,6 +78,7 @@ export type CreateEventInputs = {
   sponsor_ids: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -122,7 +123,7 @@ export type Event = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -130,6 +131,11 @@ export type Event = {
 export type EventSponsor = {
   __typename?: 'EventSponsor';
   sponsor: Sponsor;
+};
+
+export type EventTag = {
+  __typename?: 'EventTag';
+  tag: Tag;
 };
 
 export type EventWithChapter = {
@@ -145,13 +151,13 @@ export type EventWithChapter = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
 
-export type EventWithEverything = {
-  __typename?: 'EventWithEverything';
+export type EventWithRelations = {
+  __typename?: 'EventWithRelations';
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
@@ -165,7 +171,7 @@ export type EventWithEverything = {
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Tag>>;
+  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -300,8 +306,8 @@ export type Query = {
   __typename?: 'Query';
   chapter?: Maybe<ChapterWithRelations>;
   chapters: Array<Chapter>;
-  event?: Maybe<EventWithEverything>;
-  events: Array<EventWithEverything>;
+  event?: Maybe<EventWithRelations>;
+  events: Array<EventWithRelations>;
   me?: Maybe<User>;
   paginatedEvents: Array<EventWithChapter>;
   sponsor?: Maybe<Sponsor>;
@@ -396,6 +402,7 @@ export type UpdateChapterInputs = {
 
 export type UpdateEventInputs = {
   capacity?: InputMaybe<Scalars['Float']>;
+  chapter_id: Scalars['Int'];
   description?: InputMaybe<Scalars['String']>;
   ends_at?: InputMaybe<Scalars['DateTime']>;
   image_url?: InputMaybe<Scalars['String']>;
@@ -404,6 +411,7 @@ export type UpdateEventInputs = {
   sponsor_ids: Array<Scalars['Int']>;
   start_at?: InputMaybe<Scalars['DateTime']>;
   streaming_url?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -539,7 +547,10 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+      tags: Array<{
+        __typename?: 'EventTag';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
     }>;
   } | null;
 };
@@ -614,7 +625,7 @@ export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 export type EventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     canceled: boolean;
@@ -626,7 +637,10 @@ export type EventsQuery = {
     capacity: number;
     venue_type: VenueType;
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   }>;
 };
 
@@ -637,7 +651,7 @@ export type EventQueryVariables = Exact<{
 export type EventQuery = {
   __typename?: 'Query';
   event?: {
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     description: string;
@@ -651,7 +665,10 @@ export type EventQuery = {
     image_url: string;
     venue_type: VenueType;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     sponsors: Array<{
       __typename?: 'EventSponsor';
       sponsor: {
@@ -688,7 +705,7 @@ export type EventVenuesQueryVariables = Exact<{
 export type EventVenuesQuery = {
   __typename?: 'Query';
   event?: {
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     description: string;
@@ -697,7 +714,10 @@ export type EventVenuesQuery = {
     capacity: number;
     start_at: any;
     ends_at: any;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     venue?: { __typename?: 'Venue'; id: number } | null;
   } | null;
   venues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
@@ -718,7 +738,10 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   };
 };
 
@@ -738,7 +761,10 @@ export type UpdateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   };
 };
 
@@ -957,7 +983,7 @@ export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
 export type MinEventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     description: string;
@@ -965,7 +991,10 @@ export type MinEventsQuery = {
     invite_only: boolean;
     canceled: boolean;
     image_url: string;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -991,7 +1020,10 @@ export type HomeQuery = {
     canceled: boolean;
     start_at: any;
     image_url: string;
-    tags?: Array<{ __typename?: 'Tag'; id: number; name: string }> | null;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -1226,8 +1258,10 @@ export const ChapterDocument = gql`
         canceled
         image_url
         tags {
-          id
-          name
+          tag {
+            id
+            name
+          }
         }
         invite_only
         canceled
@@ -1528,8 +1562,10 @@ export const EventsDocument = gql`
         name
       }
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -1593,8 +1629,10 @@ export const EventDocument = gql`
         name
       }
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       sponsors {
         sponsor {
@@ -1678,8 +1716,10 @@ export const EventVenuesDocument = gql`
       start_at
       ends_at
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       venue {
         id
@@ -1751,8 +1791,10 @@ export const CreateEventDocument = gql`
       streaming_url
       capacity
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -1811,8 +1853,10 @@ export const UpdateEventDocument = gql`
       streaming_url
       capacity
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -2661,7 +2705,6 @@ export const MinEventsDocument = gql`
   query minEvents {
     events {
       id
-      id
       name
       description
       start_at
@@ -2669,8 +2712,10 @@ export const MinEventsDocument = gql`
       canceled
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id
@@ -2739,8 +2784,10 @@ export const HomeDocument = gql`
       start_at
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id

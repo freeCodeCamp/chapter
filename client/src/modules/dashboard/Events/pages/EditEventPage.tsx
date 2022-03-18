@@ -32,13 +32,18 @@ export const EditEventPage: NextPage = () => {
     refetchQueries: [{ query: EVENTS }, { query: EVENT, variables: { id } }],
   });
 
-  const onSubmit = async (data: EventFormData) => {
+  const onSubmit = async (data: EventFormData, chapterId: number) => {
     // TODO: load chapter from url or something like that
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, ...rest } = data;
+      const { sponsors, tags, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
+      const tagsArray = tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
@@ -48,8 +53,9 @@ export const EditEventPage: NextPage = () => {
           ? parseInt(String(data.venue_id))
           : null,
         streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: undefined,
+        tags: tagsArray,
         sponsor_ids: sponsorArray,
+        chapter_id: chapterId,
       };
 
       const event = await updateEvent({
@@ -93,6 +99,7 @@ export const EditEventPage: NextPage = () => {
         loading={loadingUpdate}
         onSubmit={onSubmit}
         submitText={'Save Event Changes'}
+        chapterId={data.event.chapter.id}
       />
     </Layout>
   );

@@ -4,7 +4,6 @@ export const MINIMAL_DATA_EVENTS_QUERY = gql`
   query minEvents {
     events {
       id
-      id
       name
       description
       start_at
@@ -12,8 +11,10 @@ export const MINIMAL_DATA_EVENTS_QUERY = gql`
       canceled
       image_url
       tags {
-        id
-        name
+        tag {
+          id
+          name
+        }
       }
       chapter {
         id

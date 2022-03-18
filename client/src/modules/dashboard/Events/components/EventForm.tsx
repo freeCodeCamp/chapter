@@ -24,6 +24,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
+import { isOnline, isPhysical } from '../../../../helpers/venueType';
 import EventCancelButton from './EventCancelButton';
 import {
   EventFormProps,
@@ -153,7 +154,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           ) : errorVenus || !dataVenues ? (
             <h1>Error loading venues</h1>
           ) : (
-            getValues('venue_type') !== VenueType.Online && (
+            isPhysical(getValues('venue_type')) && (
               <FormControl isRequired>
                 <FormLabel>Venue</FormLabel>
                 <Select {...register('venue_id')}>
@@ -167,7 +168,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             )
           )}
 
-          {getValues('venue_type') !== VenueType.Physical && (
+          {isOnline(getValues('venue_type')) && (
             <Input
               key="streaming url"
               type="url"

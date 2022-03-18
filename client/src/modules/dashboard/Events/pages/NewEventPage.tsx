@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import {
   useCreateEventMutation,
   useSendEventInviteMutation,
-  VenueType,
 } from '../../../../generated/graphql';
+import { isOnline, isPhysical } from '../../../../helpers/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
@@ -34,12 +34,10 @@ export const NewEventPage: NextPage = () => {
         capacity: parseInt(String(data.capacity)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
-        venue_id:
-          data.venue_type !== VenueType.Online
-            ? parseInt(String(data.venue_id))
-            : null,
-        streaming_url:
-          data.venue_type !== VenueType.Physical ? data.streaming_url : null,
+        venue_id: isPhysical(data.venue_type)
+          ? parseInt(String(data.venue_id))
+          : null,
+        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
         ...HARD_CODE,
         tags: undefined,
         sponsor_ids: sponsorArray,

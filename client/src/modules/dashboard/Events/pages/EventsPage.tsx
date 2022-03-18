@@ -6,7 +6,8 @@ import React from 'react';
 
 import { formatDate } from '../../../../helpers/date';
 import { Layout } from '../../shared/components/Layout';
-import { useEventsQuery, VenueType } from 'generated/graphql';
+import { isOnline, isPhysical } from 'helpers/venueType';
+import { useEventsQuery } from 'generated/graphql';
 
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();
@@ -70,12 +71,12 @@ export const EventsPage: NextPage = () => {
               ),
               'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
               venue: (event) =>
-                event.venue_type !== VenueType.Online
+                isPhysical(event.venue_type)
                   ? event.venue?.name || ''
                   : 'Online only',
               capacity: true,
               streaming_url: (event) =>
-                event.venue_type !== VenueType.Physical
+                isOnline(event.venue_type)
                   ? event.streaming_url
                   : 'In-person only',
               date: (event) => formatDate(event.start_at),

@@ -17,6 +17,11 @@ import { CreateEventInputs, UpdateEventInputs } from './inputs';
 //TODO: Replace placeholder with actual unsubscribe link
 const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
 
+const isPhysical = (venue_type: events_venue_type_enum) =>
+  venue_type !== events_venue_type_enum.Physical;
+const isOnline = (venue_type: events_venue_type_enum) =>
+  venue_type !== events_venue_type_enum.Online;
+
 @Resolver()
 export class EventResolver {
   @Query(() => [EventWithEverything])
@@ -279,18 +284,12 @@ ${unsubscribe}
       capacity: data.capacity,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      streaming_url:
-        data.venue_type !== events_venue_type_enum.Physical
-          ? data.streaming_url
-          : null,
+      streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
       venue_type: data.venue_type,
       url: data.url,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
-      venue:
-        data.venue_type !== events_venue_type_enum.Online
-          ? { connect: { id: venue?.id } }
-          : {},
+      venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},
       chapter: { connect: { id: chapter.id } },
       sponsors: {
         createMany: { data: eventSponsorsData },
@@ -330,15 +329,15 @@ ${unsubscribe}
     });
 
     const venueType = data.venue_type ?? event.venue_type;
+    const eventOnline = isOnline(venueType);
+    const eventPhysical = isPhysical(venueType);
     const venueData = {
-      streaming_url:
-        venueType !== events_venue_type_enum.Physical
-          ? data.streaming_url ?? event.streaming_url
-          : null,
-      venue:
-        venueType !== events_venue_type_enum.Online
-          ? { connect: { id: data.venue_id } }
-          : { disconnect: true },
+      streaming_url: eventOnline
+        ? data.streaming_url ?? event.streaming_url
+        : null,
+      venue: eventPhysical
+        ? { connect: { id: data.venue_id } }
+        : { disconnect: true },
     };
     // TODO: Handle tags
     const update: Prisma.eventsUpdateInput = {
@@ -356,17 +355,15 @@ ${unsubscribe}
 
     const isVenueChanged =
       data.venue_type !== event.venue_type ||
-      (venueType !== events_venue_type_enum.Physical &&
-        data.streaming_url !== event.streaming_url) ||
-      (venueType !== events_venue_type_enum.Online &&
-        data.venue_id !== event.venue_id);
+      (eventOnline && data.streaming_url !== event.streaming_url) ||
+      (eventPhysical && data.venue_id !== event.venue_id);
 
     if (isVenueChanged) {
       const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
       const subject = `Venue changed for event ${event.name}`;
       let venueDetails = '';
 
-      if (venueType !== events_venue_type_enum.Online) {
+      if (eventPhysical) {
         const venue = await prisma.venues.findUnique({
           where: { id: data.venue_id },
         });
@@ -379,7 +376,7 @@ ${venue.postal_code} <br>
 `;
       }
 
-      if (venueType !== events_venue_type_enum.Physical) {
+      if (eventOnline) {
         venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
       }
       // TODO: include a link back to the venue page

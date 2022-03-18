@@ -11,10 +11,10 @@ import {
   useEventQuery,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
-  VenueType,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
+import { isOnline, isPhysical } from '../../../../helpers/venueType';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorCard from '../components/EventSponsorCard';
@@ -88,20 +88,19 @@ export const EventPage: NextPage = () => {
           event={data.event}
           onDelete={() => router.replace('/dashboard/events')}
         />
-        {data.event.venue_type !== VenueType.Online && data.event.venue && (
+        {isPhysical(data.event.venue_type) && data.event.venue && (
           <>
             <h2>Venue:</h2>
             <h3>{data.event.venue.name}</h3>
             <h4>{getLocationString(data.event.venue, true)}</h4>
           </>
         )}
-        {data.event.venue_type !== VenueType.Physical &&
-          data.event.streaming_url && (
-            <Text>
-              Streaming Url:{' '}
-              <a href={data.event.streaming_url}>{data.event.streaming_url}</a>
-            </Text>
-          )}
+        {isOnline(data.event.venue_type) && data.event.streaming_url && (
+          <Text>
+            Streaming Url:{' '}
+            <a href={data.event.streaming_url}>{data.event.streaming_url}</a>
+          </Text>
+        )}
       </Box>
       {data.event.sponsors.length ? (
         <SponsorCard sponsors={data.event.sponsors} />

@@ -44,11 +44,7 @@ export class EventResolver {
             rsvp: true,
             event_role: {
               include: {
-                event_role_permissions: {
-                  include: {
-                    event_permission: true,
-                  },
-                },
+                event_role_permissions: { include: { event_permission: true } },
               },
             },
           },
@@ -96,11 +92,7 @@ export class EventResolver {
             rsvp: true,
             event_role: {
               include: {
-                event_role_permissions: {
-                  include: {
-                    event_permission: true,
-                  },
-                },
+                event_role_permissions: { include: { event_permission: true } },
               },
             },
           },
@@ -350,16 +342,8 @@ ${unsubscribe}
 
     const eventUserOrganizer: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
-      event_role: {
-        connect: {
-          name: 'organizer',
-        },
-      },
-      rsvp: {
-        connect: {
-          name: 'yes',
-        },
-      },
+      event_role: { connect: { name: 'organizer' } },
+      rsvp: { connect: { name: 'yes' } },
       subscribed: true, // TODO: even organizers may wish to opt out of emails
     };
 
@@ -528,11 +512,7 @@ ${unsubscribe}
           include: { user: true },
           where: {
             subscribed: true,
-            rsvp: {
-              name: {
-                not: 'no',
-              },
-            },
+            rsvp: { name: { not: 'no' } },
           },
         },
       },

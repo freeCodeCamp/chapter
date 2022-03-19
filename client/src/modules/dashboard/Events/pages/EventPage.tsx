@@ -130,12 +130,12 @@ export const EventPage: NextPage = () => {
           keys={['user', 'ops'] as const}
           emptyText="No users"
           mapper={{
-            user: (r) => r.user.name,
-            ops: (rsvp) => (
+            user: ({ user }) => user.name,
+            ops: ({ user }) => (
               <Button
                 size="xs"
                 colorScheme="red"
-                onClick={kick({ eventId, userId: rsvp.user.id })}
+                onClick={kick({ eventId, userId: user.id })}
               >
                 Kick
               </Button>

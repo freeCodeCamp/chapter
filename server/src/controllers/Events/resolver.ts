@@ -10,6 +10,7 @@ import {
   EventUser,
   EventWithRelations,
   EventWithChapter,
+  Venue,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService from '../../services/MailerService';
@@ -22,6 +23,77 @@ const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe<
 const getUniqueTags = (tags: string[]) => [
   ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
 ];
+
+interface RsvpInvitationUser {
+  first_name: string;
+  email: string;
+}
+interface RsvpInvitationEvent {
+  name: string;
+  start_at: Date;
+  ends_at: Date;
+  description: string;
+  venue: Venue | null;
+}
+const sendRsvpInvitation = async (
+  user: RsvpInvitationUser,
+  event: RsvpInvitationEvent,
+) => {
+  const linkDetails: CalendarEvent = {
+    title: event.name,
+    start: event.start_at,
+    end: event.ends_at,
+    description: event.description,
+  };
+  if (event.venue?.name) linkDetails.location = event.venue?.name;
+
+  await new MailerService(
+    [user.email],
+    `Invitation: ${event.name}`,
+    `Hi ${user.first_name},</br>
+To add this event to your calendar(s) you can use these links:
+</br>
+<a href=${google(linkDetails)}>Google</a>
+</br>
+<a href=${outlook(linkDetails)}>Outlook</a>
+
+${unsubscribe}
+      `,
+  ).sendEmail();
+};
+
+interface RsvpNotificationUser {
+  first_name: string;
+  last_name: string;
+}
+interface RsvpNotificationEvent {
+  name: string;
+  event_users: Pick<EventUser, 'user' | 'event_role'>[];
+}
+const rsvpNotifyOrganizer = async (
+  user: RsvpNotificationUser,
+  event: RsvpNotificationEvent,
+) => {
+  const organizersEmails = event.event_users
+    .filter(({ event_role }) => event_role.name === 'organizer')
+    .map(({ user }) => user.email);
+  await new MailerService(
+    organizersEmails,
+    `New RSVP for ${event.name}`,
+    `User ${user.first_name} ${user.last_name} has RSVP'd. ${unsubscribe}`,
+  ).sendEmail();
+};
+
+interface EventRsvpName {
+  capacity: number;
+  event_users: Pick<EventUser, 'rsvp'>[];
+  invite_only: boolean;
+}
+const getRsvpName = (event: EventRsvpName) => {
+  const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
+  const waitlist = going.length >= event.capacity;
+  return event.invite_only || waitlist ? 'waitlist' : 'yes';
+};
 
 @Resolver()
 export class EventResolver {
@@ -110,29 +182,26 @@ export class EventResolver {
     if (!ctx.user) {
       throw new Error('You need to be logged in');
     }
-    // TODO: can we stop including rsvps.events and rsvps.users?
     const event = await prisma.events.findUnique({
       where: { id: eventId },
       include: {
         event_users: {
-          include: { user: true, rsvp: true },
-          where: {
-            event_role: { name: 'organizer' },
-            subscribed: true,
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: { include: { event_permission: true } },
+              },
+            },
           },
         },
         venue: true,
       },
     });
 
-    if (!event) {
-      throw new Error('Event not found');
-    }
-
     const oldUserRole = await prisma.event_users.findUnique({
-      include: {
-        rsvp: true,
-      },
+      include: { rsvp: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -143,60 +212,74 @@ export class EventResolver {
     });
 
     if (oldUserRole) {
-      await prisma.event_users.delete({
+      let updateData: Prisma.event_usersUpdateInput;
+      if (['yes', 'waitlist'].includes(oldUserRole.rsvp.name)) {
+        updateData = {
+          rsvp: { connect: { name: 'no' } },
+        };
+        if (!event.invite_only && oldUserRole.rsvp.name !== 'waitlist') {
+          const waitList = event.event_users.filter(
+            ({ rsvp, user_id }) =>
+              user_id !== oldUserRole.user_id && rsvp.name === 'waitlist',
+          );
+
+          if (waitList.length) {
+            const acceptedRsvp = waitList[0];
+            await prisma.event_users.update({
+              data: { rsvp: { connect: { name: 'yes' } } },
+              where: {
+                user_id_event_id: {
+                  user_id: acceptedRsvp.user_id,
+                  event_id: acceptedRsvp.event_id,
+                },
+              },
+            });
+
+            if (acceptedRsvp.subscribed) {
+              await prisma.event_reminders.create({
+                data: {
+                  user: { connect: { id: acceptedRsvp.user_id } },
+                  event: { connect: { id: acceptedRsvp.event_id } },
+                  rsvp: { connect: { name: 'yes' } },
+                  remind_at: sub(event.start_at, { days: 1 }),
+                },
+              });
+            }
+          }
+        }
+      } else {
+        updateData = {
+          rsvp: { connect: { name: getRsvpName(event) } },
+        };
+
+        await sendRsvpInvitation(ctx.user, event);
+        await rsvpNotifyOrganizer(ctx.user, event);
+      }
+      return await prisma.event_users.update({
+        data: updateData,
+        include: {
+          rsvp: true,
+          user: true,
+          event_role: {
+            include: {
+              event_role_permissions: { include: { event_permission: true } },
+            },
+          },
+        },
         where: {
           user_id_event_id: {
-            user_id: oldUserRole.user_id,
-            event_id: oldUserRole.event_id,
+            user_id: ctx.user.id,
+            event_id: eventId,
           },
         },
       });
-
-      if (!event.invite_only && oldUserRole.rsvp.name !== 'waitlist') {
-        const waitList = event.event_users.filter(
-          ({ rsvp }) => rsvp.name === 'waitlist',
-        );
-
-        if (waitList.length) {
-          const acceptedRsvp = waitList[0];
-          await prisma.event_users.update({
-            data: { rsvp: { connect: { name: 'yes' } } },
-            where: {
-              user_id_event_id: {
-                user_id: acceptedRsvp.user_id,
-                event_id: acceptedRsvp.event_id,
-              },
-            },
-          });
-
-          const isSubscribed = acceptedRsvp.subscribed;
-
-          if (isSubscribed) {
-            await prisma.event_reminders.create({
-              data: {
-                user: { connect: { id: acceptedRsvp.user_id } },
-                event: { connect: { id: acceptedRsvp.event_id } },
-                rsvp: { connect: { name: 'yes' } },
-                remind_at: sub(event.start_at, { days: 1 }),
-              },
-            });
-          }
-        }
-      }
-      return null;
     }
 
-    const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
-    const waitlist = going.length >= event.capacity;
-
+    const rsvpName = getRsvpName(event);
     const eventUserData: Prisma.event_usersCreateInput = {
       user: { connect: { id: ctx.user.id } },
       event: { connect: { id: eventId } },
-      rsvp: {
-        connect: {
-          name: event.invite_only || waitlist ? 'waitlist' : 'yes',
-        },
-      },
+      rsvp: { connect: { name: rsvpName } },
       event_role: { connect: { name: 'attendee' } },
       subscribed: true, // TODO use user specified setting
     };
@@ -208,16 +291,12 @@ export class EventResolver {
         user: true,
         event_role: {
           include: {
-            event_role_permissions: {
-              include: {
-                event_permission: true,
-              },
-            },
+            event_role_permissions: { include: { event_permission: true } },
           },
         },
       },
     });
-    if (!event.invite_only && !waitlist && eventUserData.subscribed) {
+    if (rsvpName !== 'waitlist' && eventUserData.subscribed) {
       await prisma.event_reminders.create({
         data: {
           user: { connect: { id: ctx.user.id } },
@@ -228,34 +307,8 @@ export class EventResolver {
       });
     }
 
-    const linkDetails: CalendarEvent = {
-      title: event.name,
-      start: event.start_at,
-      end: event.ends_at,
-      description: event.description,
-    };
-    if (event.venue?.name) linkDetails.location = event.venue?.name;
-
-    await new MailerService(
-      [ctx.user.email],
-      `Invitation: ${event.name}`,
-      `Hi ${ctx.user.first_name},</br>
-To add this event to your calendar(s) you can use these links:
-</br>
-<a href=${google(linkDetails)}>Google</a>
-</br>
-<a href=${outlook(linkDetails)}>Outlook</a>
-
-${unsubscribe}
-      `,
-    ).sendEmail();
-
-    const organizersEmails = event.event_users.map(({ user }) => user.email);
-    await new MailerService(
-      organizersEmails,
-      `New RSVP for ${event.name}`,
-      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd. ${unsubscribe}`,
-    ).sendEmail();
+    await sendRsvpInvitation(ctx.user, event);
+    await rsvpNotifyOrganizer(ctx.user, event);
     return userRole;
   }
 

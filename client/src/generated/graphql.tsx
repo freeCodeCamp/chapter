@@ -183,8 +183,8 @@ export type EventWithChapter = {
   venue_type: VenueType;
 };
 
-export type EventWithEverything = {
-  __typename?: 'EventWithEverything';
+export type EventWithRelations = {
+  __typename?: 'EventWithRelations';
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
@@ -333,8 +333,8 @@ export type Query = {
   __typename?: 'Query';
   chapter?: Maybe<ChapterWithRelations>;
   chapters: Array<Chapter>;
-  event?: Maybe<EventWithEverything>;
-  events: Array<EventWithEverything>;
+  event?: Maybe<EventWithRelations>;
+  events: Array<EventWithRelations>;
   me?: Maybe<User>;
   paginatedEvents: Array<EventWithChapter>;
   sponsor?: Maybe<Sponsor>;
@@ -415,6 +415,7 @@ export type UpdateChapterInputs = {
 
 export type UpdateEventInputs = {
   capacity?: InputMaybe<Scalars['Float']>;
+  chapter_id: Scalars['Int'];
   description?: InputMaybe<Scalars['String']>;
   ends_at?: InputMaybe<Scalars['DateTime']>;
   image_url?: InputMaybe<Scalars['String']>;
@@ -637,7 +638,7 @@ export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 export type EventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     canceled: boolean;
@@ -662,7 +663,7 @@ export type EventQueryVariables = Exact<{
 export type EventQuery = {
   __typename?: 'Query';
   event?: {
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     description: string;
@@ -723,7 +724,7 @@ export type EventVenuesQueryVariables = Exact<{
 export type EventVenuesQuery = {
   __typename?: 'Query';
   event?: {
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     description: string;
@@ -1000,7 +1001,7 @@ export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
 export type MinEventsQuery = {
   __typename?: 'Query';
   events: Array<{
-    __typename?: 'EventWithEverything';
+    __typename?: 'EventWithRelations';
     id: number;
     name: string;
     description: string;
@@ -2731,7 +2732,6 @@ export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
 export const MinEventsDocument = gql`
   query minEvents {
     events {
-      id
       id
       name
       description

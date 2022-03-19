@@ -1,3 +1,5 @@
+import { sub } from 'date-fns';
+
 import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
 import { makeBooleanIterator } from '../lib/util';
@@ -25,6 +27,8 @@ const createRsvps = async (
     for (let i = 0; i < eventUserIds.length; i++) {
       const on_waitlist = i < numberWaiting;
       const canceled = !on_waitlist && i < numberWaiting + numberCanceled;
+      const subscribed = true; // TODO: have some unsubscribed users
+      const rsvpName = on_waitlist ? 'waitlist' : canceled ? 'no' : 'yes';
 
       await prisma.event_users.create({
         data: {
@@ -39,12 +43,28 @@ const createRsvps = async (
           },
           rsvp: {
             connect: {
-              name: on_waitlist ? 'waitlist' : canceled ? 'no' : 'yes',
+              name: rsvpName,
             },
           },
-          subscribed: true, // TODO: have some unsubscribed users
+          subscribed: subscribed,
         },
       });
+
+      if (subscribed && rsvpName === 'yes') {
+        const event = await prisma.events.findUnique({
+          where: { id: eventId },
+        });
+        if (!event.canceled) {
+          await prisma.event_reminders.create({
+            data: {
+              event: { connect: { id: eventId } },
+              user: { connect: { id: eventUserIds[i] } },
+              remind_at: sub(event.start_at, { days: 1 }),
+              rsvp: { connect: { name: rsvpName } },
+            },
+          });
+        }
+      }
     }
   }
 };

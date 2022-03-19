@@ -2,11 +2,13 @@ import { Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
+import { isEqual, sub } from 'date-fns';
+
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
   EventUser,
-  EventWithEverything,
+  EventWithRelations,
   EventWithChapter,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -23,11 +25,11 @@ const getUniqueTags = (tags: string[]) => [
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [EventWithEverything])
+  @Query(() => [EventWithRelations])
   async events(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ): Promise<EventWithEverything[]> {
+  ): Promise<EventWithRelations[]> {
     return await prisma.events.findMany({
       where: {
         ...(!showAll && { start_at: { gt: new Date() } }),
@@ -78,10 +80,10 @@ export class EventResolver {
     });
   }
 
-  @Query(() => EventWithEverything, { nullable: true })
+  @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('id', () => Int) id: number,
-  ): Promise<EventWithEverything | null> {
+  ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
       where: { id },
       include: {
@@ -164,15 +166,29 @@ export class EventResolver {
         );
 
         if (waitList.length) {
+          const acceptedRsvp = waitList[0];
           await prisma.event_users.update({
             data: { rsvp: { connect: { name: 'yes' } } },
             where: {
               user_id_event_id: {
-                user_id: waitList[0].user_id,
-                event_id: waitList[0].event_id,
+                user_id: acceptedRsvp.user_id,
+                event_id: acceptedRsvp.event_id,
               },
             },
           });
+
+          const isSubscribed = acceptedRsvp.subscribed;
+
+          if (isSubscribed) {
+            await prisma.event_reminders.create({
+              data: {
+                user: { connect: { id: acceptedRsvp.user_id } },
+                event: { connect: { id: acceptedRsvp.event_id } },
+                rsvp: { connect: { name: 'yes' } },
+                remind_at: sub(event.start_at, { days: 1 }),
+              },
+            });
+          }
         }
       }
       return null;
@@ -209,6 +225,16 @@ export class EventResolver {
         },
       },
     });
+    if (!event.invite_only && !waitlist && eventUserData.subscribed) {
+      await prisma.event_reminders.create({
+        data: {
+          user: { connect: { id: ctx.user.id } },
+          event: { connect: { id: eventId } },
+          rsvp: { connect: { name: 'yes' } },
+          remind_at: sub(event.start_at, { days: 1 }),
+        },
+      });
+    }
 
     const linkDetails: CalendarEvent = {
       title: event.name,
@@ -250,6 +276,7 @@ ${unsubscribe}
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const eventUser = await prisma.event_users.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+      include: { event: true },
     });
 
     return await prisma.event_users.update({
@@ -392,6 +419,7 @@ ${unsubscribe}
           include: { user: true },
           where: { subscribed: true },
         },
+        event_reminders: true,
       },
     });
 
@@ -430,6 +458,7 @@ ${unsubscribe}
     ]);
 
     // TODO: Handle tags
+    const start_at = new Date(data.start_at) ?? event.start_at;
     const update: Prisma.eventsUpdateInput = {
       invite_only: data.invite_only ?? event.invite_only,
       name: data.name ?? event.name,
@@ -437,12 +466,28 @@ ${unsubscribe}
       url: data.url ?? event.url,
       streaming_url: data.streaming_url ?? event.streaming_url,
       venue_type: data.venue_type ?? event.venue_type,
-      start_at: new Date(data.start_at) ?? event.start_at,
+      start_at: start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
       venue: { connect: { id: data.venue_id } },
     };
+
+    if (!isEqual(start_at, event.start_at)) {
+      event.event_reminders.forEach(async (reminder) => {
+        await prisma.event_reminders.update({
+          data: {
+            remind_at: sub(start_at, { days: 1 }),
+          },
+          where: {
+            user_id_event_id: {
+              user_id: reminder.user_id,
+              event_id: reminder.event_id,
+            },
+          },
+        });
+      });
+    }
 
     if (data.venue_id) {
       const venue = await prisma.venues.findUnique({
@@ -490,6 +535,11 @@ ${unsubscribe}
             },
           },
         },
+      },
+    });
+    await prisma.event_reminders.deleteMany({
+      where: {
+        event_id: id,
       },
     });
 

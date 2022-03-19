@@ -30,12 +30,11 @@ describe('events dashboard', () => {
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
     cy.get('a[href="/dashboard/events/1"]').should('be.visible');
-    cy.get('a[href="/dashboard/events/new"]').should('be.visible');
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
   it('emails interested users when an event is created', () => {
-    createEvent();
+    createEvent(1);
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(testEvent)).each(([key, value]) => {
@@ -66,9 +65,9 @@ describe('events dashboard', () => {
     });
   });
 
-  function createEvent() {
-    cy.visit('/dashboard/events');
-    cy.get('a[href="/dashboard/events/new"]').click();
+  function createEvent(chapterId) {
+    cy.visit(`/dashboard/chapters/${chapterId}`);
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/new_event"]`).click();
     cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.title);
     cy.findByRole('textbox', { name: 'Description' }).type(
       testEvent.description,

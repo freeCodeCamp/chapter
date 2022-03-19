@@ -127,7 +127,7 @@ export const EventPage: NextPage = () => {
           data={data.event.event_users.filter(
             ({ rsvp }) => rsvp.name === 'yes',
           )}
-          keys={['user', 'ops'] as const}
+          keys={['user', 'ops', 'role'] as const}
           emptyText="No users"
           mapper={{
             user: ({ user }) => user.name,
@@ -140,6 +140,7 @@ export const EventPage: NextPage = () => {
                 Kick
               </Button>
             ),
+            role: ({ event_role }) => event_role.name,
           }}
         />
 
@@ -152,7 +153,7 @@ export const EventPage: NextPage = () => {
               : '0')
           }
           data={data.event.event_users.filter(({ rsvp }) => rsvp.name === 'no')}
-          keys={['user', 'ops'] as const}
+          keys={['user', 'ops', 'role'] as const}
           emptyText="No users"
           mapper={{
             user: ({ user }) => user.name,
@@ -165,6 +166,7 @@ export const EventPage: NextPage = () => {
                 Kick
               </Button>
             ),
+            role: ({ event_role }) => event_role.name,
           }}
         />
 
@@ -180,7 +182,7 @@ export const EventPage: NextPage = () => {
           data={data.event.event_users.filter(
             ({ rsvp }) => rsvp.name === 'waitlist',
           )}
-          keys={['user', 'ops'] as const}
+          keys={['user', 'ops', 'role'] as const}
           emptyText="No users"
           mapper={{
             user: ({ user }) => user.name,
@@ -196,6 +198,7 @@ export const EventPage: NextPage = () => {
                 Confirm
               </Button>
             ),
+            role: ({ event_role }) => event_role.name,
           }}
         />
       </Box>

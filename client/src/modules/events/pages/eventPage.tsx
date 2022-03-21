@@ -20,7 +20,7 @@ import React, { useEffect, useMemo } from 'react';
 
 import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
-import SponsorCard from '../../../components/EventSponsorCard';
+import SponsorCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,

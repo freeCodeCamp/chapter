@@ -15,9 +15,9 @@ const EventSponsorCard: React.FC<{ sponsors: SponsorProps[] }> = ({
       <Heading size="lg">Sponsors</Heading>
       <Spacer />
       <Flex wrap="wrap" justifyContent="center">
-        {sponsors.map((item) => (
+        {sponsors.map(({ sponsor }) => (
           <Box
-            key={item.sponsor.id}
+            key={sponsor.id}
             p="6"
             m="6"
             borderWidth="1px"
@@ -25,11 +25,11 @@ const EventSponsorCard: React.FC<{ sponsors: SponsorProps[] }> = ({
             overflow="hidden"
           >
             <Heading size="sm">
-              <Link href={item.sponsor.website} isExternal>
-                {item.sponsor.name}
+              <Link href={sponsor.website} isExternal>
+                {sponsor.name}
               </Link>
             </Heading>
-            <Badge m="1">{item.sponsor.type}</Badge>
+            <Badge m="1">{sponsor.type}</Badge>
           </Box>
         ))}
       </Flex>

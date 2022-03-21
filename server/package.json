@@ -42,7 +42,7 @@
     "graphql": "15.8.0",
     "is-docker": "2.2.1",
     "jsonwebtoken": "8.5.1",
-    "nodemailer": "6.7.2",
+    "nodemailer": "6.7.3",
     "pg": "8.7.3",
     "reflect-metadata": "0.1.13",
     "type-graphql": "1.1.1"

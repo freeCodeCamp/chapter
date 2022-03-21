@@ -1,10 +1,12 @@
 import { Box, Heading, Flex, Spacer, Link, Badge } from '@chakra-ui/react';
 import React from 'react';
-import { sponsorType } from './EventFormUtils';
+
+import { Sponsor } from '../../../../generated/graphql';
 
 interface SponsorProps {
-  sponsor: sponsorType;
+  sponsor: Sponsor;
 }
+
 const EventSponsorCard: React.FC<{ sponsors: SponsorProps[] }> = ({
   sponsors,
 }) => {

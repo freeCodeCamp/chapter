@@ -3,11 +3,11 @@ import React from 'react';
 
 import { Sponsor } from '../generated/graphql';
 
-interface SponsorProps {
+interface SponsorsProps {
   sponsors: { sponsor: Sponsor }[];
 }
 
-const EventSponsorCard = ({ sponsors }: SponsorProps) => {
+const SponsorsCard = ({ sponsors }: SponsorsProps) => {
   return (
     <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
       <Heading size="lg">Sponsors</Heading>
@@ -34,4 +34,4 @@ const EventSponsorCard = ({ sponsors }: SponsorProps) => {
     </Box>
   );
 };
-export default EventSponsorCard;
+export default SponsorsCard;

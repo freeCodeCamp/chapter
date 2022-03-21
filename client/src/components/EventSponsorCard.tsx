@@ -4,12 +4,10 @@ import React from 'react';
 import { Sponsor } from '../generated/graphql';
 
 interface SponsorProps {
-  sponsor: Sponsor;
+  sponsors: { sponsor: Sponsor }[];
 }
 
-const EventSponsorCard: React.FC<{ sponsors: SponsorProps[] }> = ({
-  sponsors,
-}) => {
+const EventSponsorCard = ({ sponsors }: SponsorProps) => {
   return (
     <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
       <Heading size="lg">Sponsors</Heading>

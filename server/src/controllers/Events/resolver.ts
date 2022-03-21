@@ -339,7 +339,7 @@ ${unsubscribe}
         ({ chapter_id, chapter_role }) =>
           chapter_id === data.chapter_id &&
           allowedRoles.findIndex((x) => x === chapter_role.name) > -1,
-      ) !== -1 || true;
+      ) !== -1;
 
     if (!hasPermission)
       throw Error('User does not have permission to create events');

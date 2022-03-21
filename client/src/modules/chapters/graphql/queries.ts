@@ -40,6 +40,9 @@ export const CHAPTER_USERS = gql`
           name
           email
         }
+        chapter_role {
+          name
+        }
         subscribed
       }
     }

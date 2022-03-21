@@ -587,6 +587,7 @@ export type ChapterUsersQuery = {
       __typename?: 'ChapterUser';
       subscribed: boolean;
       user: { __typename?: 'User'; name: string; email: string };
+      chapter_role: { __typename?: 'ChapterRole'; name: string };
     }>;
   } | null;
 };
@@ -1338,6 +1339,9 @@ export const ChapterUsersDocument = gql`
         user {
           name
           email
+        }
+        chapter_role {
+          name
         }
         subscribed
       }

@@ -1,7 +1,7 @@
 import { Box, Heading, Flex, Spacer, Link, Badge } from '@chakra-ui/react';
 import React from 'react';
 
-import { Sponsor } from '../../../../generated/graphql';
+import { Sponsor } from '../generated/graphql';
 
 interface SponsorProps {
   sponsor: Sponsor;

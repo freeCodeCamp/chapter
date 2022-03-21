@@ -51,16 +51,8 @@ export class ChapterResolver {
       chapter_users: {
         create: {
           joined_date: new Date(),
-          chapter_role: {
-            connect: {
-              name: 'organizer',
-            },
-          },
-          user: {
-            connect: {
-              id: ctx.user.id,
-            },
-          },
+          chapter_role: { connect: { name: 'organizer' } },
+          user: { connect: { id: ctx.user.id } },
           subscribed: true, // TODO use user specified setting
         },
       },

@@ -36,9 +36,7 @@ export const userMiddleware = (
             chapter_role: {
               include: {
                 chapter_role_permissions: {
-                  include: {
-                    chapter_permission: true,
-                  },
+                  include: { chapter_permission: true },
                 },
               },
             },

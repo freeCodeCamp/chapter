@@ -560,20 +560,8 @@ ${unsubscribe}
       where: { id },
       include: {
         venue: true,
-        chapter: {
-          include: {
-            chapter_users: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-        rsvps: {
-          include: {
-            user: true,
-          },
-        },
+        chapter: { include: { chapter_users: { include: { user: true } } } },
+        rsvps: { include: { user: true } },
         user_event_roles: true,
       },
     });

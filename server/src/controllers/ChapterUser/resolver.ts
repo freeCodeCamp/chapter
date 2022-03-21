@@ -29,11 +29,7 @@ export class ChapterUserResolver {
         data: {
           user: { connect: { id: ctx.user.id } },
           chapter: { connect: { id: event.chapter.id } },
-          chapter_role: {
-            connect: {
-              name: 'member',
-            },
-          },
+          chapter_role: { connect: { name: 'member' } },
           subscribed: true, // TODO use user specified setting
           joined_date: new Date(),
         },

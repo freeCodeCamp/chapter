@@ -569,10 +569,8 @@ ${unsubscribe}
     // TODO: the default should probably be to bcc everyone.
     const addresses: string[] = [];
     if (emailGroups.includes('interested')) {
-      // TODO: event.chapters should be event.chapter and not be optional Once
-      // that's fixed, we can make several chains non-optional (remove the ?s)
       const interestedUsers: string[] =
-        event.chapter?.chapter_users
+        event.chapter.chapter_users
           ?.filter((user) => user.subscribed)
           .map(({ user }) => user.email) ?? [];
 
@@ -615,7 +613,7 @@ ${unsubscribe}
     }
     const subject = `Invitation to ${event.name}.`;
 
-    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter?.id}`;
+    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
     // TODO: this needs to include an ical file
     // TODO: it needs a link to unsubscribe from just this event.  See
@@ -627,7 +625,7 @@ ${unsubscribe}
       `Event Details: <a href="${eventURL}">${eventURL}</a><br>
     <br>
     - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
-    - More about ${event.chapter?.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+    - More about ${event.chapter.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
     <br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>

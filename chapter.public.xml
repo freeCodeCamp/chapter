@@ -36,12 +36,12 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="user_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
             <parent column="id" foreignKey="event_reminders_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="users"/>
+            <parent column="user_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="event_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="event_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
             <parent column="id" foreignKey="event_reminders_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
+            <parent column="event_id" foreignKey="event_reminders_user_id_event_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="rsvps"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="3" id="4" name="remind_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="notifying" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>

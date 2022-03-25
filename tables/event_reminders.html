@@ -175,12 +175,12 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="event_reminders.event_id references events.id via event_reminders_event_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">event_reminders_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="event_reminders.[user_id, event_id] references rsvps.[user_id, event_id] via event_reminders_user_id_event_id_fkey"><a href='rsvps.html'>rsvps</a><span class='relatedKey'>.event_id</span></td>
                                                 <td class="constraint detail">event_reminders_user_id_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="event_reminders.event_id references events.id via event_reminders_event_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.id</span></td>
+                                                <td class="constraint detail">event_reminders_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>
                                     </td>

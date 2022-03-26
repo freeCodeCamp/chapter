@@ -52,7 +52,7 @@
     "concurrently": "7.0.0",
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",
-    "node-dev": "7.3.1",
+    "node-dev": "7.4.0",
     "prisma": "3.11.1",
     "rimraf": "3.0.2",
     "sinon": "13.0.1",

@@ -16,7 +16,7 @@ import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
-import SponsorCard from '../components/EventSponsorCard';
+import SponsorsCard from '../../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
 
 const args = (id: number) => ({
@@ -111,7 +111,7 @@ export const EventPage: NextPage = () => {
         )}
       </Box>
       {data.event.sponsors.length ? (
-        <SponsorCard sponsors={data.event.sponsors} />
+        <SponsorsCard sponsors={data.event.sponsors} />
       ) : (
         false
       )}

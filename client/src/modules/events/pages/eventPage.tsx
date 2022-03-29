@@ -11,10 +11,6 @@ import {
   ListItem,
   Avatar,
   useDisclosure,
-  Box,
-  Flex,
-  Spacer,
-  Badge,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
@@ -24,6 +20,7 @@ import React, { useEffect, useMemo } from 'react';
 
 import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
+import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,
@@ -185,29 +182,7 @@ export const EventPage: NextPage = () => {
       )}
 
       {data.event.sponsors.length ? (
-        <Box p="2" borderRadius="lg" mt="2">
-          <Heading size="lg">Sponsors</Heading>
-          <Spacer />
-          <Flex wrap="wrap" justifyContent="center">
-            {data.event.sponsors.map((item) => (
-              <Box
-                key={item.sponsor.id}
-                p="6"
-                m="6"
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-              >
-                <Heading size="sm">
-                  <Link href={item.sponsor.website} isExternal>
-                    {item.sponsor.name}
-                  </Link>
-                </Heading>
-                <Badge m="1">{item.sponsor.type}</Badge>
-              </Box>
-            ))}
-          </Flex>
-        </Box>
+        <SponsorsCard sponsors={data.event.sponsors} />
       ) : (
         false
       )}

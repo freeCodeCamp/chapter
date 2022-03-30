@@ -6,8 +6,8 @@ import {
   useEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../helpers/getId';
-import { isOnline, isPhysical } from '../../../../helpers/venueType';
+import { getId } from '../../../../util/getId';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';

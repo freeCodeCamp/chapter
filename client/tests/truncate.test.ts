@@ -1,4 +1,4 @@
-import { truncate } from '../src/helpers/truncate';
+import { truncate } from '../src/util/truncate';
 
 const shortSentence = 'a short sentence';
 const twoCharEnd = 'short word at the en';

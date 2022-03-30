@@ -4,9 +4,9 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import React from 'react';
 
-import { formatDate } from '../../../../helpers/date';
+import { formatDate } from '../../../../util/date';
 import { Layout } from '../../shared/components/Layout';
-import { isOnline, isPhysical } from 'helpers/venueType';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useEventsQuery } from 'generated/graphql';
 
 export const EventsPage: NextPage = () => {

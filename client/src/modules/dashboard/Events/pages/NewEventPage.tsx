@@ -5,7 +5,7 @@ import {
   useCreateEventMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
-import { isOnline, isPhysical } from '../../../../helpers/venueType';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';

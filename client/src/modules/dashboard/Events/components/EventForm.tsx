@@ -26,7 +26,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
-import { isOnline, isPhysical } from '../../../../helpers/venueType';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import EventCancelButton from './EventCancelButton';
 import {
   EventFormProps,

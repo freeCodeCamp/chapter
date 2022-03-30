@@ -6,7 +6,7 @@ import React from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
-import { getId } from '../../../../helpers/getId';
+import { getId } from '../../../../util/getId';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 

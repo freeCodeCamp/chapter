@@ -76,9 +76,6 @@ describe('events dashboard', () => {
       testEvent.imageUrl,
     );
     cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
-    cy.findByRole('textbox', { name: 'Streaming Url' }).type(
-      testEvent.streamingUrl,
-    );
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',
@@ -99,6 +96,9 @@ describe('events dashboard', () => {
       .find(`option[value=${testEvent.venueId}]`)
       .invoke('text')
       .as('venueTitle');
+    cy.findByRole('textbox', { name: 'Streaming URL' }).type(
+      testEvent.streamingUrl,
+    );
 
     cy.findByRole('form', { name: 'Add event' })
       .findByRole('button', {

@@ -7,6 +7,7 @@ import {
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
+import { isOnline, isPhysical } from '../../../../helpers/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
@@ -46,9 +47,12 @@ export const EditEventPage: NextPage = () => {
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
-        venue_id: parseInt(String(data.venue_id)),
         start_at: new Date(data.start_at).toISOString(),
         ends_at: new Date(data.ends_at).toISOString(),
+        venue_id: isPhysical(data.venue_type)
+          ? parseInt(String(data.venue_id))
+          : null,
+        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
         tags: tagsArray,
         sponsor_ids: sponsorArray,
         chapter_id: chapterId,

@@ -653,7 +653,9 @@ ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
 Event Details: <a href="${eventURL}">${eventURL}</a><br>
     <br>
     - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
-    - More about ${event.chapter.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+    - More about ${
+      event.chapter.name
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
     <br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { events_venue_type_enum, Prisma } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
@@ -22,6 +22,10 @@ const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe<
 const getUniqueTags = (tags: string[]) => [
   ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
 ];
+const isPhysical = (venue_type: events_venue_type_enum) =>
+  venue_type !== events_venue_type_enum.Online;
+const isOnline = (venue_type: events_venue_type_enum) =>
+  venue_type !== events_venue_type_enum.Physical;
 
 @Resolver()
 export class EventResolver {
@@ -365,12 +369,12 @@ ${unsubscribe}
       capacity: data.capacity,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      streaming_url: data.streaming_url,
+      streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
       venue_type: data.venue_type,
       url: data.url,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
-      venue: { connect: { id: venue?.id } },
+      venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},
       chapter: { connect: { id: chapter.id } },
       sponsors: {
         createMany: { data: eventSponsorsData },
@@ -445,6 +449,18 @@ ${unsubscribe}
       }),
     ]);
 
+    const venueType = data.venue_type ?? event.venue_type;
+    const eventOnline = isOnline(venueType);
+    const eventPhysical = isPhysical(venueType);
+    const venueData = {
+      streaming_url: eventOnline
+        ? data.streaming_url ?? event.streaming_url
+        : null,
+      venue: eventPhysical
+        ? { connect: { id: data.venue_id } }
+        : { disconnect: true },
+    };
+
     // TODO: Handle tags
     const start_at = new Date(data.start_at) ?? event.start_at;
     const update: Prisma.eventsUpdateInput = {
@@ -452,13 +468,12 @@ ${unsubscribe}
       name: data.name ?? event.name,
       description: data.description ?? event.description,
       url: data.url ?? event.url,
-      streaming_url: data.streaming_url ?? event.streaming_url,
-      venue_type: data.venue_type ?? event.venue_type,
       start_at: start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,
       image_url: data.image_url ?? event.image_url,
-      venue: { connect: { id: data.venue_id } },
+      venue_type: venueType,
+      ...venueData,
     };
 
     if (!isEqual(start_at, event.start_at)) {
@@ -477,25 +492,38 @@ ${unsubscribe}
       });
     }
 
-    if (data.venue_id) {
-      const venue = await prisma.venues.findUnique({
-        where: { id: data.venue_id },
-      });
-      // TODO: include a link back to the venue page
-      if (event.venue_id !== venue.id) {
-        const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
-        const subject = `Venue changed for event ${event.name}`;
-        const body = `We have had to change the location of ${event.name}.
-The event is now being held at <br>
+    const isVenueChanged =
+      data.venue_type !== event.venue_type ||
+      (eventOnline && data.streaming_url !== event.streaming_url) ||
+      (eventPhysical && data.venue_id !== event.venue_id);
+
+    if (isVenueChanged) {
+      const emailList = event.rsvps.map((rsvp) => rsvp.user.email);
+      const subject = `Venue changed for event ${event.name}`;
+      let venueDetails = '';
+
+      if (eventPhysical) {
+        const venue = await prisma.venues.findUnique({
+          where: { id: data.venue_id },
+        });
+        // TODO: include a link back to the venue page
+        venueDetails += `The event is now being held at <br>
 ${venue.name} <br>
 ${venue.street_address ? venue.street_address + '<br>' : ''}
 ${venue.city} <br>
 ${venue.region} <br>
 ${venue.postal_code} <br>
-${unsubscribe}
 `;
-        new MailerService(emailList, subject, body).sendEmail();
       }
+
+      if (eventOnline) {
+        venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+      }
+      // TODO: include a link back to the venue page
+      const body = `We have had to change the location of ${event.name}.<br>
+${venueDetails}
+${unsubscribe}`;
+      new MailerService(emailList, subject, body).sendEmail();
     }
 
     return await prisma.events.update({
@@ -633,13 +661,15 @@ ${unsubscribe}
     // TODO: it needs a link to unsubscribe from just this event.  See
     // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
     // Update the place holder with actual
-    const body =
-      `When: ${event.start_at} to ${event.ends_at}<br>` +
-      (event.venue ? `Where: ${event.venue?.name}<br>` : '') +
-      `Event Details: <a href="${eventURL}">${eventURL}</a><br>
+    const body = `When: ${event.start_at} to ${event.ends_at}<br>
+${event.venue ? `Where: ${event.venue.name}<br>` : ''}
+${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
+Event Details: <a href="${eventURL}">${eventURL}</a><br>
     <br>
     - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
-    - More about ${event.chapter?.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+    - More about ${
+      event.chapter?.name
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
     <br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>

@@ -14,6 +14,7 @@ import {
 } from '../../../../generated/graphql';
 import { getId } from '../../../../helpers/getId';
 import getLocationString from '../../../../helpers/getLocationString';
+import { isOnline, isPhysical } from '../../../../helpers/venueType';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
@@ -85,14 +86,6 @@ export const EventPage: NextPage = () => {
             </Link>
           </Text>
         )}
-        {data.event.streaming_url && (
-          <Text>
-            Streaming Url:{' '}
-            <Link href={data.event.streaming_url} isExternal>
-              {data.event.streaming_url}
-            </Link>
-          </Text>
-        )}
         <Text>Capacity: {data.event.capacity}</Text>
         {/* <Tags tags={data.event.tags} /> */}
 
@@ -100,14 +93,20 @@ export const EventPage: NextPage = () => {
           event={data.event}
           onDelete={() => router.replace('/dashboard/events')}
         />
-        {data.event.venue ? (
+        {isPhysical(data.event.venue_type) && data.event.venue && (
           <>
             <h2>Venue:</h2>
             <h3>{data.event.venue.name}</h3>
             <h4>{getLocationString(data.event.venue, true)}</h4>
           </>
-        ) : (
-          <h2>Venue: Online</h2>
+        )}
+        {isOnline(data.event.venue_type) && data.event.streaming_url && (
+          <Text>
+            Streaming Url:{' '}
+            <Link href={data.event.streaming_url} isExternal>
+              {data.event.streaming_url}
+            </Link>
+          </Text>
         )}
       </Box>
       {data.event.sponsors.length ? (

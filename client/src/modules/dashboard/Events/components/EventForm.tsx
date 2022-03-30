@@ -11,6 +11,8 @@ import {
   CloseButton,
   Flex,
   Text,
+  RadioGroup,
+  Radio,
   Heading,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
@@ -21,8 +23,10 @@ import {
   useChapterQuery,
   useSponsorsQuery,
   useVenuesQuery,
+  VenueType,
 } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
+import { isOnline, isPhysical } from '../../../../helpers/venueType';
 import EventCancelButton from './EventCancelButton';
 import {
   EventFormProps,
@@ -30,6 +34,7 @@ import {
   formatValue,
   EventFormData,
   sponsorTypes,
+  venueTypes,
   getAllowedSponsors,
   getAllowedSponsorTypes,
   getAllowedSponsorsForType,
@@ -63,6 +68,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         ends_at: new Date(Date.now() + 1000 * 60 * 60)
           .toISOString()
           .slice(0, 16),
+        venue_type: VenueType.PhysicalAndOnline,
       };
     return {
       name: data.name,
@@ -74,6 +80,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
       sponsors: data.sponsors,
       tags: (data.tags || []).map(({ tag }) => tag.name).join(', '),
+      venue_type: data.venue_type,
       venue_id: data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,
@@ -97,6 +104,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
+  const venueType = watch('venue_type');
   return (
     <>
       {loadingChapter ? (
@@ -142,24 +150,52 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             Invite only
           </Checkbox>
 
-          {loadingVenues ? (
-            <h1>Loading venues...</h1>
-          ) : errorVenues || !dataVenues ? (
-            <h1>Error loading venues</h1>
-          ) : (
-            <FormControl>
-              <FormLabel>Venue</FormLabel>
-              <Select {...register('venue_id')}>
-                {dataVenues.venues.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
+          <FormControl isRequired>
+            <FormLabel>Venue Type</FormLabel>
+            <RadioGroup defaultValue={venueType}>
+              <HStack>
+                {venueTypes.map((venueType) => (
+                  <Radio
+                    key={venueType.value}
+                    value={venueType.value}
+                    {...register('venue_type')}
+                  >
+                    {venueType.name}
+                  </Radio>
                 ))}
+              </HStack>
+            </RadioGroup>
 
-                <option>None</option>
-              </Select>
-            </FormControl>
-          )}
+            {loadingVenues ? (
+              <h1>Loading venues...</h1>
+            ) : errorVenues || !dataVenues ? (
+              <h1>Error loading venues</h1>
+            ) : (
+              isPhysical(getValues('venue_type')) && (
+                <FormControl isRequired>
+                  <FormLabel>Venue</FormLabel>
+                  <Select {...register('venue_id')}>
+                    {dataVenues.venues.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+              )
+            )}
+
+            {isOnline(getValues('venue_type')) && (
+              <Input
+                key="streaming url"
+                type="url"
+                label="Streaming URL"
+                placeholder=""
+                isRequired
+                {...register('streaming_url')}
+              />
+            )}
+          </FormControl>
 
           <FormControl id="first-name" isRequired>
             <Box display="flex" alignItems="end" m="1">

@@ -1,8 +1,9 @@
 import {
   Event,
-  Venue,
-  SponsorsQuery,
   EventTag,
+  SponsorsQuery,
+  Venue,
+  VenueType,
 } from '../../../../generated/graphql';
 
 export interface Field {
@@ -31,6 +32,26 @@ export const sponsorTypes: EventSponsorTypeInput[] = [
   {
     name: 'Other',
     type: 'OTHER',
+  },
+];
+
+export interface VenueTypeInput {
+  name: string;
+  value: VenueType;
+}
+
+export const venueTypes: VenueTypeInput[] = [
+  {
+    name: 'In-person',
+    value: VenueType.Physical,
+  },
+  {
+    name: 'Online',
+    value: VenueType.Online,
+  },
+  {
+    name: 'In-person & Online',
+    value: VenueType.PhysicalAndOnline,
   },
 ];
 
@@ -64,13 +85,6 @@ export const fields: Field[] = [
     key: 'url',
     type: 'url',
     label: 'Url',
-    placeholder: '',
-    isRequired: true,
-  },
-  {
-    key: 'streaming_url',
-    type: 'url',
-    label: 'Streaming Url',
     placeholder: '',
     isRequired: true,
   },
@@ -116,6 +130,7 @@ export interface EventFormData {
   tags: string;
   start_at: string;
   ends_at: string;
+  venue_type: VenueType;
   venue_id?: number | null;
   invite_only?: boolean;
   sponsors: Array<EventSponsorInput>;

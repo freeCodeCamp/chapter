@@ -635,6 +635,7 @@ export type EventsQuery = {
     streaming_url?: string | null;
     start_at: any;
     capacity: number;
+    venue_type: VenueType;
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
     tags: Array<{
       __typename?: 'EventTag';
@@ -662,6 +663,7 @@ export type EventQuery = {
     start_at: any;
     ends_at: any;
     image_url: string;
+    venue_type: VenueType;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
     tags: Array<{
       __typename?: 'EventTag';
@@ -1554,6 +1556,7 @@ export const EventsDocument = gql`
       streaming_url
       start_at
       capacity
+      venue_type
       venue {
         id
         name
@@ -1640,6 +1643,7 @@ export const EventDocument = gql`
           id
         }
       }
+      venue_type
       venue {
         id
         name

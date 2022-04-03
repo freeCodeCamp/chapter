@@ -26,6 +26,19 @@ const emailAddresses = [
 const subject = 'Welcome To Chapter!';
 const htmlEmail = '<div><h1>Hello Test</h1></div>';
 const backupText = 'Email html failed to load';
+const calendar = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//sebbo.net//ical-generator//EN
+BEGIN:VEVENT
+UID:3b4a4873-161f-43e0-873d-10aa90488339
+SEQUENCE:0
+DTSTAMP:20220403T072207Z
+DTSTART:20220325T234500Z
+DTEND:20220326T014500Z
+SUMMARY:Rolfson, Emmerich and Davis
+URL;VALUE=URI:http://localhost:3000/events/15?emaillink=true
+END:VEVENT
+END:VCALENDAR`;
 
 describe('MailerService Class', () => {
   it('Should assign the email username, password, and service to transporter', () => {
@@ -34,6 +47,7 @@ describe('MailerService Class', () => {
       subject,
       htmlEmail,
       backupText,
+      calendar,
     );
 
     const { auth, service } = mailer.transporter.options as any;
@@ -48,17 +62,24 @@ describe('MailerService Class', () => {
       subject,
       htmlEmail,
       backupText,
+      calendar,
     );
 
     assert.equal(subject, mailer.subject);
     assert.equal(htmlEmail, mailer.htmlEmail);
     assert.equal(backupText, mailer.backupText);
+    assert.equal(calendar, mailer.iCalEvent);
     expect(emailAddresses).to.have.members(mailer.emailList);
   });
 
   it('Should provide a blank string if backup text is undefined', () => {
     const mailer = new MailerService(emailAddresses, subject, htmlEmail);
     assert.equal(mailer.backupText, '');
+  });
+
+  it('Should default iCalEvent to undefined', () => {
+    const mailer = new MailerService(emailAddresses, subject, htmlEmail);
+    expect(mailer.iCalEvent).to.be.undefined;
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {

@@ -1,15 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { User } from '.';
-
-@ObjectType()
-export class Rsvp extends BaseObject {
-  @Field(() => Date)
-  updated_at: Date;
-
-  @Field(() => String)
-  name: string;
-}
+import { Rsvp, User } from '.';
 
 @ObjectType()
 export class EventPermission extends BaseObject {

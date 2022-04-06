@@ -393,7 +393,7 @@ export class EventResolver {
         sponsor_id,
       }));
 
-    const eventUserOrganizer: Prisma.event_usersCreateWithoutEventInput = {
+    const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'organizer' } },
       rsvp: { connect: { name: 'yes' } },
@@ -422,7 +422,7 @@ export class EventResolver {
         createMany: { data: eventSponsorsData },
       },
       event_users: {
-        create: eventUserOrganizer,
+        create: eventUserData,
       },
       tags: {
         create: getUniqueTags(data.tags).map((tagName) => ({

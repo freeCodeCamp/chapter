@@ -64,7 +64,7 @@
     "@types/node": "16.11.26",
     "@types/nodemailer": "6.4.4",
     "@types/react": "17.0.44",
-    "@types/react-dom": "17.0.14",
+    "@types/react-dom": "17.0.15",
     "@types/sinon": "10.0.11",
     "@types/sinon-chai": "3.2.8",
     "@types/supertest": "2.0.12",

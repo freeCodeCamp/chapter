@@ -219,6 +219,66 @@ describe('events dashboard', () => {
     });
   });
 
+  it('editing event updates cached events on home page', () => {
+    cy.visit('');
+    cy.get('a[href*="/events/"').first().as('eventToEdit');
+    cy.get('@eventToEdit').invoke('text').as('eventTitle');
+    cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
+
+    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.findByRole('link', { name: 'Events' }).click();
+    cy.get('#page-heading').contains('Events');
+    cy.contains('Loading...').should('not.exist');
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: eventTitle }).click();
+    });
+
+    cy.findByRole('link', { name: 'Edit' }).click();
+    const titleAddon = ' new title';
+
+    cy.findByRole('textbox', { name: 'Event title' }).type(titleAddon);
+    cy.findByRole('form', { name: 'Save Event Changes' })
+      .findByRole('button', {
+        name: 'Save Event Changes',
+      })
+      .click();
+
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
+    });
+    cy.get('a[href="/"]').click();
+    cy.get('@eventHref').then((eventHref) => {
+      cy.get(`a[href="${eventHref}"]`)
+        .invoke('text')
+        .should('contain', titleAddon);
+    });
+  });
+
+  it('deleting event updates cached events on home page', () => {
+    cy.visit('');
+    cy.get('a[href*="/events/"').first().as('eventToDelete');
+    cy.get('@eventToDelete').invoke('text').as('eventTitle');
+
+    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.findByRole('link', { name: 'Events' }).click();
+    cy.get('#page-heading').contains('Events');
+    cy.contains('Loading...').should('not.exist');
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: eventTitle }).click();
+    });
+
+    cy.findByRole('button', { name: 'Delete' }).click();
+    cy.findByRole('button', { name: 'Delete' }).click();
+
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.contains(eventTitle).should('not.exist');
+    });
+    cy.get('a[href="/"]').click();
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.contains(eventTitle).should('not.exist');
+    });
+  });
+
   it('emails not cancelled rsvps when event is cancelled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')

@@ -16,7 +16,7 @@ export const EditVenuePage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
 
   const { loading, error, data } = useVenueQuery({ variables: { id } });
   const [updateVenue] = useUpdateVenueMutation({

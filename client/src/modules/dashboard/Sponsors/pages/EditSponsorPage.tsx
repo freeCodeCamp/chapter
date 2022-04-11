@@ -10,7 +10,7 @@ import { useSponsorQuery, useUpdateSponsorMutation } from 'generated/graphql';
 const EditSponsorPage: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
   const {
     loading: sponsorLoading,
     error,

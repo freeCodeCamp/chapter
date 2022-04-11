@@ -11,7 +11,7 @@ import { Layout } from '../../shared/components/Layout';
 
 export const SponsorPage: NextPage = () => {
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
   const { loading, error, data } = useSponsorQuery({
     variables: { sponsorId: id },
   });

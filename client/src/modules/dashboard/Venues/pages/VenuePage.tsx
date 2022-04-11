@@ -12,7 +12,7 @@ import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
 
   const { loading, error, data } = useVenueQuery({ variables: { id } });
   console.log('In Venue Page');

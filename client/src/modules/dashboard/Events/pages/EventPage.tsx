@@ -26,7 +26,7 @@ const args = (id: number) => ({
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
-  const eventId = getId(router.query) || -1;
+  const eventId = getId(router.query);
   const { loading, error, data } = useEventQuery({
     variables: { id: eventId },
   });

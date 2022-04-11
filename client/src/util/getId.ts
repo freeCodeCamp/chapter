@@ -9,5 +9,5 @@ export const getId = (query: ParsedUrlQuery): number => {
     return parseInt(query.id);
   }
 
-  return 1;
+  throw new Error('No id in query');
 };

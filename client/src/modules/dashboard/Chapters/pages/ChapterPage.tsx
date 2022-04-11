@@ -12,7 +12,7 @@ import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
 
   const { loading, error, data } = useChapterQuery({ variables: { id } });
 

@@ -16,7 +16,7 @@ import { EVENTS, EVENT } from '../graphql/queries';
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
 
   const {
     loading: eventLoading,

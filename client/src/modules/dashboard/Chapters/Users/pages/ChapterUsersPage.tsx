@@ -11,7 +11,7 @@ import { getId } from '../../../../../util/getId';
 export const ChapterUsersPage: NextPage = () => {
   const router = useRouter();
 
-  const id = getId(router.query) || -1;
+  const id = getId(router.query);
 
   const { loading, error, data } = useChapterUsersQuery({
     variables: { id },

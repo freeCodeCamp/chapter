@@ -8,9 +8,9 @@ import React from 'react';
 import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
-  useEventQuery,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
+  useEventLazyQuery,
 } from '../../../../generated/graphql';
 import { getId } from '../../../../util/getId';
 import getLocationString from '../../../../util/getLocationString';
@@ -19,18 +19,17 @@ import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
+import { useFetchIfId } from '../../../../hooks/useFetchIfId';
 
-const args = (id: number) => ({
+const args = (id: number | null) => ({
   refetchQueries: [{ query: EVENT, variables: { id } }],
 });
 
 export const EventPage: NextPage = () => {
+  const [getEvent, { loading, error, data }] = useEventLazyQuery();
   const router = useRouter();
   const eventId = getId(router.query);
-  const { loading, error, data } = useEventQuery({
-    variables: { id: eventId },
-  });
-
+  useFetchIfId(eventId, getEvent);
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
   const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
 
@@ -53,11 +52,15 @@ export const EventPage: NextPage = () => {
       );
     };
 
-  if (loading || error || !data || !data.event) {
+  if (loading || error || !data || !data.event || eventId === null) {
     return (
       <Layout>
         <h1>
-          {loading ? 'Loading...' : !error ? "Can't find event :(" : 'Error...'}
+          {loading || eventId === null
+            ? 'Loading...'
+            : !error
+            ? "Can't find event :("
+            : 'Error...'}
         </h1>
       </Layout>
     );

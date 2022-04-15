@@ -658,7 +658,8 @@ ${unsubscribe}`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter?.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
-    const calendar = ical().createEvent({
+    const calendar = ical();
+    calendar.createEvent({
       start: event.start_at,
       end: event.ends_at,
       summary: event.name,

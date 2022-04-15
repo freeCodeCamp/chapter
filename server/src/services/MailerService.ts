@@ -16,17 +16,20 @@ export default class MailerService {
   emailPassword: string;
   emailService: string;
   emailHost: string;
+  iCalEvent?: string;
 
   constructor(
     emailList: Array<string>,
     subject: string,
     htmlEmail: string,
     backupText?: string,
+    iCalEvent?: string,
   ) {
     this.emailList = emailList;
     this.subject = subject;
     this.htmlEmail = htmlEmail;
     this.backupText = backupText || '';
+    this.iCalEvent = iCalEvent;
 
     // to be replaced with env vars
     this.ourEmail =
@@ -66,12 +69,21 @@ export default class MailerService {
 
   public async sendEmail(): Promise<SentMessageInfo> {
     try {
+      const calendarEvent = this.iCalEvent
+        ? {
+            icalEvent: {
+              filename: 'calendar.ics',
+              content: this.iCalEvent,
+            },
+          }
+        : {};
       return await this.transporter.sendMail({
         from: this.ourEmail,
         to: this.emailList,
         subject: this.subject,
         text: this.backupText,
         html: this.htmlEmail,
+        ...calendarEvent,
       });
     } catch (e) {
       console.log('Email failed to send. ', e);

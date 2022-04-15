@@ -3,6 +3,7 @@ import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
+import ical from 'ical-generator';
 
 import { GQLCtx } from '../../common-types/gql';
 import {
@@ -657,7 +658,13 @@ ${unsubscribe}`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter?.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
-    // TODO: this needs to include an ical file
+    const calendar = ical();
+    calendar.createEvent({
+      start: event.start_at,
+      end: event.ends_at,
+      summary: event.name,
+      url: eventURL,
+    });
     // TODO: it needs a link to unsubscribe from just this event.  See
     // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
     // Update the place holder with actual
@@ -678,7 +685,13 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
     ${unsubscribe}
     `;
 
-    await new MailerService(addresses, subject, body).sendEmail();
+    await new MailerService(
+      addresses,
+      subject,
+      body,
+      '',
+      calendar.toString(),
+    ).sendEmail();
 
     return true;
   }

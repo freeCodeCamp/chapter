@@ -32,6 +32,7 @@ export type AuthenticateType = {
 export type Chapter = {
   __typename?: 'Chapter';
   category: Scalars['String'];
+  chatUrl?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
@@ -45,6 +46,7 @@ export type Chapter = {
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   category: Scalars['String'];
+  chatUrl?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
@@ -59,6 +61,7 @@ export type ChapterWithRelations = {
 
 export type CreateChapterInputs = {
   category: Scalars['String'];
+  chatUrl?: InputMaybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
@@ -392,6 +395,7 @@ export type Tag = {
 
 export type UpdateChapterInputs = {
   category?: InputMaybe<Scalars['String']>;
+  chatUrl?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
@@ -538,6 +542,7 @@ export type ChapterQuery = {
     region: string;
     country: string;
     imageUrl: string;
+    chatUrl?: string | null;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -599,6 +604,7 @@ export type CreateChapterMutation = {
     city: string;
     region: string;
     country: string;
+    chatUrl?: string | null;
   };
 };
 
@@ -617,6 +623,7 @@ export type UpdateChapterMutation = {
     city: string;
     region: string;
     country: string;
+    chatUrl?: string | null;
   };
 };
 
@@ -1249,6 +1256,7 @@ export const ChapterDocument = gql`
       region
       country
       imageUrl
+      chatUrl
       events {
         id
         name
@@ -1442,6 +1450,7 @@ export const CreateChapterDocument = gql`
       city
       region
       country
+      chatUrl
     }
   }
 `;
@@ -1497,6 +1506,7 @@ export const UpdateChapterDocument = gql`
       city
       region
       country
+      chatUrl
     }
   }
 `;

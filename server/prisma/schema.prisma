@@ -22,6 +22,7 @@ model chapters {
   region      String
   country     String
   imageUrl    String
+  chatUrl     String?
   creator_id  Int
   events      events[]
   user_bans   user_bans[]

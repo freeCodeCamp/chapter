@@ -2,6 +2,14 @@ import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
 
+export interface MailerData {
+  emailList: Array<string>;
+  subject: string;
+  htmlEmail: string;
+  backupText?: string;
+  iCalEvent?: string;
+}
+
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
@@ -18,18 +26,12 @@ export default class MailerService {
   emailHost: string;
   iCalEvent?: string;
 
-  constructor(
-    emailList: Array<string>,
-    subject: string,
-    htmlEmail: string,
-    backupText?: string,
-    iCalEvent?: string,
-  ) {
-    this.emailList = emailList;
-    this.subject = subject;
-    this.htmlEmail = htmlEmail;
-    this.backupText = backupText || '';
-    this.iCalEvent = iCalEvent;
+  constructor(data: MailerData) {
+    this.emailList = data.emailList;
+    this.subject = data.subject;
+    this.htmlEmail = data.htmlEmail;
+    this.backupText = data.backupText || '';
+    this.iCalEvent = data.iCalEvent;
 
     // to be replaced with env vars
     this.ourEmail =

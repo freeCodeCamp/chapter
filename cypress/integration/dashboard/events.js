@@ -161,6 +161,38 @@ describe('events dashboard', () => {
     cy.mhDeleteAll();
   }
 
+  it('invitation email should include calendar file', () => {
+    cy.visit('/dashboard/events/1');
+
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+
+    // try to make sure there will be recipient
+    cy.findByLabelText('Waitlist').click({ force: true });
+    cy.findByLabelText('Cancelled').click({ force: true });
+
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    const calendarMIME = 'application/ics; name=calendar.ics';
+    const bodyRegex = new RegExp(
+      /BEGIN:VCALENDAR.*BEGIN:VEVENT.*END:VEVENT.*END:VCALENDAR/,
+      's',
+    );
+
+    cy.waitUntilMail('email');
+    cy.get('@email')
+      .mhFirst()
+      .then((mail) => {
+        const hasCalendar = mail.MIME.Parts.some((part) => {
+          const contentType = part.Headers['Content-Type'];
+          if (contentType?.includes(calendarMIME)) {
+            const body = Buffer.from(part.Body, 'base64').toString();
+            return bodyRegex.test(body);
+          }
+        });
+        expect(hasCalendar).to.be.true;
+      });
+  });
+
   it("emails the users when an event's venue is changed", () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('link', { name: 'Edit' }).first().click();

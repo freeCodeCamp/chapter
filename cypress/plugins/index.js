@@ -59,5 +59,6 @@ module.exports = (on, config) => {
   on('before:run', () => {
     execSync('npm run db:reset');
   });
+  require('@cypress/code-coverage/task')(on, config);
   return config;
 };

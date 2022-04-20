@@ -9,7 +9,11 @@ export class EmailResolver {
   @Mutation(() => Email) async sendEmail(
     @Arg('data') data: SendEmailInputs,
   ): Promise<Email> {
-    const email = new MailerService(data.to, data.subject, data.html);
+    const email = new MailerService({
+      emailList: data.to,
+      subject: data.subject,
+      htmlEmail: data.html,
+    });
     await email.sendEmail();
     return {
       ourEmail: email.ourEmail,

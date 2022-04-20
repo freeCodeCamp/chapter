@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import { stub, restore } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import MailerService from '../src/services/MailerService';
+import MailerService, { MailerData } from '../src/services/MailerService';
 import Utilities from '../src/util/Utilities';
 
 chai.use(sinonChai);
@@ -40,15 +40,21 @@ URL;VALUE=URI:http://localhost:3000/events/15?emaillink=true
 END:VEVENT
 END:VCALENDAR`;
 
+const data: MailerData = {
+  emailList: emailAddresses,
+  subject: subject,
+  htmlEmail: htmlEmail,
+};
+
+const dataWithOptional: MailerData = {
+  ...data,
+  backupText: backupText,
+  iCalEvent: calendar,
+};
+
 describe('MailerService Class', () => {
   it('Should assign the email username, password, and service to transporter', () => {
-    const mailer = new MailerService(
-      emailAddresses,
-      subject,
-      htmlEmail,
-      backupText,
-      calendar,
-    );
+    const mailer = new MailerService(dataWithOptional);
 
     const { auth, service } = mailer.transporter.options as any;
     assert.equal(service, mailer.emailService);
@@ -57,13 +63,7 @@ describe('MailerService Class', () => {
   });
 
   it('Should correctly instantiate values', () => {
-    const mailer = new MailerService(
-      emailAddresses,
-      subject,
-      htmlEmail,
-      backupText,
-      calendar,
-    );
+    const mailer = new MailerService(dataWithOptional);
 
     assert.equal(subject, mailer.subject);
     assert.equal(htmlEmail, mailer.htmlEmail);
@@ -73,18 +73,18 @@ describe('MailerService Class', () => {
   });
 
   it('Should provide a blank string if backup text is undefined', () => {
-    const mailer = new MailerService(emailAddresses, subject, htmlEmail);
+    const mailer = new MailerService(data);
     assert.equal(mailer.backupText, '');
   });
 
   it('Should default iCalEvent to undefined', () => {
-    const mailer = new MailerService(emailAddresses, subject, htmlEmail);
+    const mailer = new MailerService(data);
     expect(mailer.iCalEvent).to.be.undefined;
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {
     stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
-    new MailerService(emailAddresses, subject, htmlEmail);
+    new MailerService(data);
     expect(console.warn).to.have.been.calledOnce;
   });
 });

@@ -38,7 +38,6 @@ export const EditEventPage: NextPage = () => {
   });
 
   const onSubmit = async (data: EventFormData, chapterId: number) => {
-    // TODO: load chapter from url or something like that
     setLoadingUpdate(true);
 
     try {

@@ -29,6 +29,7 @@
     "stop:docker": "docker-compose down",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:coverage:report": "npx nyc report",
     "test": "npx jest --coverage --verbose",
     "test:watch": "npx jest --watchAll",
     "postinstall": "node scripts/postInstall.js",
@@ -93,12 +94,16 @@
     "prettier": "2.6.2",
     "shx": "0.3.4",
     "ts-jest": "27.1.4",
-    "typescript": "4.6.3"
+    "typescript": "4.6.3",
+    "@cypress/code-coverage": "3.9.12"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "npm run pretty"
     ]
+  },
+  "nyc": {
+    "report-dir": "cypress-coverage"
   },
   "workspaces": [
     "client",

@@ -121,25 +121,22 @@ describe('events dashboard', () => {
 
     // sending to waitlist
     cy.findByRole('button', { name: 'Email Attendees' }).click();
-    // we have to force because cypress thinks the label is covered - it is not.
-    cy.findByLabelText('Confirmed').click({ force: true });
-    cy.findByLabelText('Waitlist').click({ force: true });
+    cy.findByLabelText('Confirmed').parent().click();
+    cy.findByLabelText('Waitlist').parent().click();
     const isRsvpOnWaitlist = (r) => r.on_waitlist === true;
     sendAndCheckEmails(isRsvpOnWaitlist);
 
     // sending to cancelled
     cy.findByRole('button', { name: 'Email Attendees' }).click();
-    // we have to force because cypress thinks the label is covered - it is not.
-    cy.findByLabelText('Waitlist').click({ force: true });
-    cy.findByLabelText('Cancelled').click({ force: true });
+    cy.findByLabelText('Waitlist').parent().click();
+    cy.findByLabelText('Cancelled').parent().click();
     const isRSVPCancelled = (r) => r.canceled === true;
     sendAndCheckEmails(isRSVPCancelled);
 
     // sending to all
     cy.findByRole('button', { name: 'Email Attendees' }).click();
-    // we have to force because cypress thinks the label is covered - it is not.
-    cy.findByLabelText('Waitlist').click({ force: true });
-    cy.findByLabelText('Confirmed').click({ force: true });
+    cy.findByLabelText('Waitlist').parent().click();
+    cy.findByLabelText('Confirmed').parent().click();
     sendAndCheckEmails(() => true);
   });
 
@@ -167,8 +164,8 @@ describe('events dashboard', () => {
     cy.findByRole('button', { name: 'Email Attendees' }).click();
 
     // try to make sure there will be recipient
-    cy.findByLabelText('Waitlist').click({ force: true });
-    cy.findByLabelText('Cancelled').click({ force: true });
+    cy.findByLabelText('Waitlist').parent().click();
+    cy.findByLabelText('Cancelled').parent().click();
 
     cy.findByRole('button', { name: 'Send Email' }).click();
 

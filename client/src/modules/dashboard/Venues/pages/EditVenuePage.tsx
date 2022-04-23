@@ -6,7 +6,7 @@ import {
   useVenueQuery,
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../helpers/getId';
+import { getId } from '../../../../util/getId';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';

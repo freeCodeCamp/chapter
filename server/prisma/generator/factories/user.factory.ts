@@ -8,7 +8,6 @@ const { name, internet } = faker;
 const createUsers = async (
   instanceRoles: Record<string, { name: string; id: number }>,
 ): Promise<[number, number[]]> => {
-  // TODO: add seeding admin
   const userData: Prisma.usersCreateInput = {
     email: 'foo@bar.com',
     first_name: name.firstName(),

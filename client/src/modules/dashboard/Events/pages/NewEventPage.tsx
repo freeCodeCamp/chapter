@@ -5,11 +5,12 @@ import {
   useCreateEventMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
-import { isOnline, isPhysical } from '../../../../helpers/venueType';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
 import { EVENTS } from '../graphql/queries';
+import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 
 export const NewEventPage: NextPage = () => {
@@ -18,7 +19,10 @@ export const NewEventPage: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [createEvent] = useCreateEventMutation({
-    refetchQueries: [{ query: EVENTS }],
+    refetchQueries: [
+      { query: EVENTS },
+      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+    ],
   });
 
   const [publish] = useSendEventInviteMutation();

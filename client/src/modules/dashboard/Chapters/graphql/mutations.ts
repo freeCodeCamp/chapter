@@ -9,6 +9,7 @@ export const createChapter = gql`
       city
       region
       country
+      chatUrl
     }
   }
 `;
@@ -22,6 +23,7 @@ export const updateChapter = gql`
       city
       region
       country
+      chatUrl
     }
   }
 `;

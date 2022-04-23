@@ -2,6 +2,14 @@ import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
 
+export interface MailerData {
+  emailList: Array<string>;
+  subject: string;
+  htmlEmail: string;
+  backupText?: string;
+  iCalEvent?: string;
+}
+
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
@@ -16,17 +24,14 @@ export default class MailerService {
   emailPassword: string;
   emailService: string;
   emailHost: string;
+  iCalEvent?: string;
 
-  constructor(
-    emailList: Array<string>,
-    subject: string,
-    htmlEmail: string,
-    backupText?: string,
-  ) {
-    this.emailList = emailList;
-    this.subject = subject;
-    this.htmlEmail = htmlEmail;
-    this.backupText = backupText || '';
+  constructor(data: MailerData) {
+    this.emailList = data.emailList;
+    this.subject = data.subject;
+    this.htmlEmail = data.htmlEmail;
+    this.backupText = data.backupText || '';
+    this.iCalEvent = data.iCalEvent;
 
     // to be replaced with env vars
     this.ourEmail =
@@ -66,12 +71,21 @@ export default class MailerService {
 
   public async sendEmail(): Promise<SentMessageInfo> {
     try {
+      const calendarEvent = this.iCalEvent
+        ? {
+            icalEvent: {
+              filename: 'calendar.ics',
+              content: this.iCalEvent,
+            },
+          }
+        : {};
       return await this.transporter.sendMail({
         from: this.ourEmail,
         to: this.emailList,
         subject: this.subject,
         text: this.backupText,
         html: this.htmlEmail,
+        ...calendarEvent,
       });
     } catch (e) {
       console.log('Email failed to send. ', e);

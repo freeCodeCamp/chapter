@@ -3,6 +3,7 @@ import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
+import ical from 'ical-generator';
 
 import { GQLCtx } from '../../common-types/gql';
 import {
@@ -228,10 +229,10 @@ export class EventResolver {
     };
     if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-    await new MailerService(
-      [ctx.user.email],
-      `Invitation: ${event.name}`,
-      `Hi ${ctx.user.first_name},</br>
+    await new MailerService({
+      emailList: [ctx.user.email],
+      subject: `Invitation: ${event.name}`,
+      htmlEmail: `Hi ${ctx.user.first_name},</br>
 To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${google(linkDetails)}>Google</a>
@@ -240,16 +241,16 @@ To add this event to your calendar(s) you can use these links:
 
 ${unsubscribe}
       `,
-    ).sendEmail();
+    }).sendEmail();
 
     const organizersEmails = event.user_event_roles.map(
       (role) => role.users.email,
     );
-    await new MailerService(
-      organizersEmails,
-      `New RSVP for ${event.name}`,
-      `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd. ${unsubscribe}`,
-    ).sendEmail();
+    await new MailerService({
+      emailList: organizersEmails,
+      subject: `New RSVP for ${event.name}`,
+      htmlEmail: `User ${ctx.user.first_name} ${ctx.user.last_name} has RSVP'd. ${unsubscribe}`,
+    }).sendEmail();
     return rsvp;
   }
 
@@ -523,7 +524,11 @@ ${venue.postal_code} <br>
       const body = `We have had to change the location of ${event.name}.<br>
 ${venueDetails}
 ${unsubscribe}`;
-      new MailerService(emailList, subject, body).sendEmail();
+      new MailerService({
+        emailList: emailList,
+        subject: subject,
+        htmlEmail: body,
+      }).sendEmail();
     }
 
     return await prisma.events.update({
@@ -559,7 +564,11 @@ ${unsubscribe}`;
       const subject = `Event ${event.name} cancelled`;
       const body = `placeholder body`;
 
-      new MailerService(emailList, subject, body).sendEmail();
+      new MailerService({
+        emailList: emailList,
+        subject: subject,
+        htmlEmail: body,
+      }).sendEmail();
     }
 
     return event;
@@ -643,7 +652,13 @@ ${unsubscribe}`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
-    // TODO: this needs to include an ical file
+    const calendar = ical();
+    calendar.createEvent({
+      start: event.start_at,
+      end: event.ends_at,
+      summary: event.name,
+      url: eventURL,
+    });
     // TODO: it needs a link to unsubscribe from just this event.  See
     // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
     // Update the place holder with actual
@@ -664,7 +679,12 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
     ${unsubscribe}
     `;
 
-    await new MailerService(addresses, subject, body).sendEmail();
+    await new MailerService({
+      emailList: addresses,
+      subject: subject,
+      htmlEmail: body,
+      iCalEvent: calendar.toString(),
+    }).sendEmail();
 
     return true;
   }

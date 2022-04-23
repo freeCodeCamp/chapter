@@ -6,7 +6,7 @@ import React from 'react';
 
 import { useChapterUsersQuery } from '../../../../../generated/graphql';
 import { Layout } from '../../../shared/components/Layout';
-import { getId } from 'helpers/getId';
+import { getId } from '../../../../../util/getId';
 
 export const ChapterUsersPage: NextPage = () => {
   const router = useRouter();

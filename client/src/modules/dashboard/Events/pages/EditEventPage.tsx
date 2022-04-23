@@ -6,12 +6,13 @@ import {
   useEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../helpers/getId';
-import { isOnline, isPhysical } from '../../../../helpers/venueType';
+import { getId } from '../../../../util/getId';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
 import { EVENTS, EVENT } from '../graphql/queries';
+import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
@@ -29,11 +30,14 @@ export const EditEventPage: NextPage = () => {
   // TODO: update the cache directly:
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
-    refetchQueries: [{ query: EVENTS }, { query: EVENT, variables: { id } }],
+    refetchQueries: [
+      { query: EVENTS },
+      { query: EVENT, variables: { id } },
+      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+    ],
   });
 
   const onSubmit = async (data: EventFormData, chapterId: number) => {
-    // TODO: load chapter from url or something like that
     setLoadingUpdate(true);
 
     try {

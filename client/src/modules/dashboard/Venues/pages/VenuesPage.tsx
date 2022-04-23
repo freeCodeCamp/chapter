@@ -6,7 +6,7 @@ import React from 'react';
 
 import { useVenuesQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
-import getLocationString from 'helpers/getLocationString';
+import getLocationString from '../../../../util/getLocationString';
 
 export const VenuesPage: NextPage = () => {
   const { loading, error, data } = useVenuesQuery();

@@ -77,6 +77,13 @@ const fields: Fields[] = [
     required: true,
     type: 'url',
   },
+  {
+    key: 'chatUrl',
+    label: 'Chat link',
+    placeholder: 'https://discord.gg/KVUmVXA',
+    required: false,
+    type: 'url',
+  },
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
@@ -91,6 +98,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
     imageUrl: chapter?.imageUrl ?? '',
+    chatUrl: chapter?.chatUrl ?? '',
   };
   const { handleSubmit, register } = useForm<ChapterFormData>({
     defaultValues,
@@ -111,7 +119,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               placeholder={placeholder}
               {...register(key)}
               isRequired={required}
-              defaultValue={defaultValues[key]}
+              defaultValue={defaultValues[key] ?? undefined}
             />
           ) : (
             <Input
@@ -121,7 +129,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               {...register(key)}
               type={type}
               isRequired={required}
-              defaultValue={defaultValues[key]}
+              defaultValue={defaultValues[key] ?? undefined}
             />
           ),
         )}

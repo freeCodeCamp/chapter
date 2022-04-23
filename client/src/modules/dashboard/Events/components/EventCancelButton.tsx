@@ -3,6 +3,7 @@ import { useConfirm } from 'chakra-confirm';
 import React from 'react';
 import { Event, useCancelEventMutation } from '../../../../generated/graphql';
 import { EVENT, EVENTS } from '../graphql/queries';
+import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 
 interface EventCancelButtonProps extends ButtonProps {
   isFullWidth?: boolean;
@@ -26,6 +27,7 @@ const EventCancelButton: React.FC<EventCancelButtonProps> = (props) => {
     refetchQueries: [
       { query: EVENT, variables: { id: event.id } },
       { query: EVENTS },
+      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   };
 

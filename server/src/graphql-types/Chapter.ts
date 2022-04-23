@@ -10,6 +10,9 @@ export class Chapter extends BaseObject {
   @Field(() => String)
   description: string;
 
+  @Field(() => String, { nullable: true })
+  chatUrl?: string | null;
+
   @Field(() => String)
   category: string;
 

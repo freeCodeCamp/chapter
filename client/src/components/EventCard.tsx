@@ -3,7 +3,7 @@ import { Heading, Text, Tag, Box, Flex, Image, Spacer } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 import { Chapter, Event, EventTag } from '../generated/graphql';
-import { formatDate } from '../helpers/date';
+import { formatDate } from '../util/date';
 
 type EventCardProps = {
   event: Pick<

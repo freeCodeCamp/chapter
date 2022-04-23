@@ -162,7 +162,11 @@ const getEmailData = (reminder: EventReminder) => {
 
 const sendEmailForReminder = async (reminder: EventReminder) => {
   const { email, subject } = getEmailData(reminder);
-  await new MailerService([reminder.user.email], subject, email).sendEmail();
+  await new MailerService({
+    emailList: [reminder.user.email],
+    subject: subject,
+    htmlEmail: email,
+  }).sendEmail();
 };
 
 const deleteReminder = async (reminder: EventReminder) =>

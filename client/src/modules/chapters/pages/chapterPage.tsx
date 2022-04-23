@@ -1,4 +1,12 @@
-import { Heading, VStack, Spinner, Stack, Text, Image } from '@chakra-ui/react';
+import {
+  Heading,
+  VStack,
+  Spinner,
+  Stack,
+  Text,
+  Image,
+  Link,
+} from '@chakra-ui/react';
 import { NextPage } from 'next';
 import React from 'react';
 
@@ -52,6 +60,14 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
+        {data.chapter.chatUrl && (
+          <div>
+            <Heading size="md" color={'gray.700'}>
+              Chat Link:
+            </Heading>
+            <Link>{data.chapter.chatUrl}</Link>
+          </div>
+        )}
         <Heading size="md" color={'gray.700'}>
           Events:
         </Heading>

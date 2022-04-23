@@ -11,6 +11,7 @@ export const CHAPTER = gql`
       region
       country
       imageUrl
+      chatUrl
       events {
         id
         name

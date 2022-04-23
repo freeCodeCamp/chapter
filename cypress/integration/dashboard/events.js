@@ -122,25 +122,22 @@ describe('events dashboard', () => {
 
       // sending to waitlist
       cy.findByRole('button', { name: 'Email Attendees' }).click();
-      // we have to force because cypress thinks the label is covered - it is not.
-      cy.findByLabelText('Confirmed').click({ force: true });
-      cy.findByLabelText('Waitlist').click({ force: true });
+      cy.findByLabelText('Confirmed').parent().click();
+      cy.findByLabelText('Waitlist').parent().click();
       const isRsvpOnWaitlist = ({ rsvp }) => rsvp.name === 'waitlist';
       sendAndCheckEmails(isRsvpOnWaitlist, eventUsers);
 
       // sending to cancelled
       cy.findByRole('button', { name: 'Email Attendees' }).click();
-      // we have to force because cypress thinks the label is covered - it is not.
-      cy.findByLabelText('Waitlist').click({ force: true });
-      cy.findByLabelText('Cancelled').click({ force: true });
+      cy.findByLabelText('Waitlist').parent().click();
+      cy.findByLabelText('Cancelled').parent().click();
       const isRSVPCancelled = ({ rsvp }) => rsvp.name === 'no';
       sendAndCheckEmails(isRSVPCancelled, eventUsers);
 
       // sending to all
       cy.findByRole('button', { name: 'Email Attendees' }).click();
-      // we have to force because cypress thinks the label is covered - it is not.
-      cy.findByLabelText('Waitlist').click({ force: true });
-      cy.findByLabelText('Confirmed').click({ force: true });
+      cy.findByLabelText('Waitlist').parent().click();
+      cy.findByLabelText('Confirmed').parent().click();
       sendAndCheckEmails(() => true, eventUsers);
     });
   });
@@ -157,6 +154,38 @@ describe('events dashboard', () => {
     cy.get('@emails').mhGetRecipients().should('have.members', emails);
     cy.mhDeleteAll();
   }
+
+  it('invitation email should include calendar file', () => {
+    cy.visit('/dashboard/events/1');
+
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+
+    // try to make sure there will be recipient
+    cy.findByLabelText('Waitlist').parent().click();
+    cy.findByLabelText('Cancelled').parent().click();
+
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    const calendarMIME = 'application/ics; name=calendar.ics';
+    const bodyRegex = new RegExp(
+      /BEGIN:VCALENDAR.*BEGIN:VEVENT.*END:VEVENT.*END:VCALENDAR/,
+      's',
+    );
+
+    cy.waitUntilMail('email');
+    cy.get('@email')
+      .mhFirst()
+      .then((mail) => {
+        const hasCalendar = mail.MIME.Parts.some((part) => {
+          const contentType = part.Headers['Content-Type'];
+          if (contentType?.includes(calendarMIME)) {
+            const body = Buffer.from(part.Body, 'base64').toString();
+            return bodyRegex.test(body);
+          }
+        });
+        expect(hasCalendar).to.be.true;
+      });
+  });
 
   it("emails the users when an event's venue is changed", () => {
     cy.visit('/dashboard/events');
@@ -213,6 +242,66 @@ describe('events dashboard', () => {
       cy.findAllByRole('row').then((rows) => {
         cy.wrap(rows[1]).should('contain.text', venueTitle);
       });
+    });
+  });
+
+  it('editing event updates cached events on home page', () => {
+    cy.visit('');
+    cy.get('a[href*="/events/"').first().as('eventToEdit');
+    cy.get('@eventToEdit').invoke('text').as('eventTitle');
+    cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
+
+    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.findByRole('link', { name: 'Events' }).click();
+    cy.get('#page-heading').contains('Events');
+    cy.contains('Loading...').should('not.exist');
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: eventTitle }).click();
+    });
+
+    cy.findByRole('link', { name: 'Edit' }).click();
+    const titleAddon = ' new title';
+
+    cy.findByRole('textbox', { name: 'Event title' }).type(titleAddon);
+    cy.findByRole('form', { name: 'Save Event Changes' })
+      .findByRole('button', {
+        name: 'Save Event Changes',
+      })
+      .click();
+
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
+    });
+    cy.get('a[href="/"]').click();
+    cy.get('@eventHref').then((eventHref) => {
+      cy.get(`a[href="${eventHref}"]`)
+        .invoke('text')
+        .should('contain', titleAddon);
+    });
+  });
+
+  it('deleting event updates cached events on home page', () => {
+    cy.visit('');
+    cy.get('a[href*="/events/"').first().as('eventToDelete');
+    cy.get('@eventToDelete').invoke('text').as('eventTitle');
+
+    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.findByRole('link', { name: 'Events' }).click();
+    cy.get('#page-heading').contains('Events');
+    cy.contains('Loading...').should('not.exist');
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: eventTitle }).click();
+    });
+
+    cy.findByRole('button', { name: 'Delete' }).click();
+    cy.findByRole('button', { name: 'Delete' }).click();
+
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.contains(eventTitle).should('not.exist');
+    });
+    cy.get('a[href="/"]').click();
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.contains(eventTitle).should('not.exist');
     });
   });
 

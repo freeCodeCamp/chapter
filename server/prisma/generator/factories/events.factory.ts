@@ -27,19 +27,28 @@ const createEvents = async (
       minutes: random(4) * 15,
     });
 
+    const venueType = randomEnum(events_venue_type_enum);
+    const venueData = {
+      ...(venueType !== events_venue_type_enum.Physical && {
+        streaming_url: internet.url(),
+      }),
+      ...(venueType !== events_venue_type_enum.Online && {
+        venue: { connect: { id: randomItem(venueIds) } },
+      }),
+    };
+
     const eventData: Prisma.eventsCreateInput = {
       name: company.companyName(),
       chapter: { connect: { id: randomItem(chapterIds) } },
       description: lorem.words(),
       url: internet.url(),
-      streaming_url: internet.url(),
-      venue_type: randomEnum(events_venue_type_enum),
+      venue_type: venueType,
       capacity: random(1000),
-      venue: { connect: { id: randomItem(venueIds) } },
       canceled: Math.random() > 0.5,
       start_at,
       ends_at: addHours(start_at, random(5)),
       image_url: image.imageUrl(640, 480, 'nature', true),
+      ...venueData,
     };
 
     const event = await prisma.events.create({ data: eventData });

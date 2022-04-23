@@ -63,5 +63,9 @@ export function handleAuthenticationError(
     return res.status(401).send({
       message: 'Token invalid',
     });
+  } else {
+    return res.status(401).send({
+      message: 'User not found',
+    });
   }
 }

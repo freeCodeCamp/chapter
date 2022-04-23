@@ -67,11 +67,11 @@ export class AuthResolver {
       console.log(
         `Code: ${code}\nhttp://localhost:3000/auth/token?token=${token}`,
       );
-      await new MailerService(
-        [data.email],
-        'Login to Chapter',
-        `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
-      ).sendEmail();
+      await new MailerService({
+        emailList: [data.email],
+        subject: 'Login to Chapter',
+        htmlEmail: `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
+      }).sendEmail();
     }
 
     // TODO: Send email in production

@@ -5,8 +5,8 @@ import React from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useVenueQuery } from '../../../../generated/graphql';
-import { getId } from '../../../../helpers/getId';
-import getLocationString from '../../../../helpers/getLocationString';
+import { getId } from '../../../../util/getId';
+import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 

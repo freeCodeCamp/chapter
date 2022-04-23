@@ -12,9 +12,9 @@ import {
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../helpers/getId';
-import getLocationString from '../../../../helpers/getLocationString';
-import { isOnline, isPhysical } from '../../../../helpers/venueType';
+import { getId } from '../../../../util/getId';
+import getLocationString from '../../../../util/getLocationString';
+import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';

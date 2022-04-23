@@ -52,7 +52,7 @@ const sendRsvpInvitation = async (
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-  await new MailerService(
+  await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
     htmlEmail: `Hi ${user.first_name},</br>
@@ -64,7 +64,7 @@ To add this event to your calendar(s) you can use these links:
 
 ${unsubscribe}
       `,
-  ).sendEmail();
+  }).sendEmail();
 };
 
 interface RsvpNotificationUser {
@@ -82,11 +82,11 @@ const rsvpNotifyOrganizer = async (
   const organizersEmails = event.event_users
     .filter(({ event_role }) => event_role.name === 'organizer')
     .map(({ user }) => user.email);
-  await new MailerService(
+  await new MailerService({
     emailList: organizersEmails,
     subject: `New RSVP for ${event.name}`,
     htmlEmail: `User ${user.first_name} ${user.last_name} has RSVP'd. ${unsubscribe}`,
-  ).sendEmail();
+  }).sendEmail();
 };
 
 interface EventRsvpName {

@@ -54,6 +54,7 @@ export const LoginRegisterModal: React.FC<{
         try {
           await registerMutation({ variables: { ...data } });
           toast({ title: 'User registered', status: 'success' });
+          toggle();
         } catch (err) {
           toast({ title: 'Something went wrong', status: 'error' });
           // TODO: error handling

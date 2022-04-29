@@ -1,14 +1,9 @@
 describe('registration', () => {
-  beforeEach(() => {
-    // This is a bit slow and somewhat overkill, since we only care about the
-    // users.  It could be worth just truncating the user table.
+  before(() => {
     cy.exec('npm run db:seed');
   });
-
-  it('should redirect to login after successful registration', () => {
-    cy.registerViaUI('An', 'User', 'an@user.com');
-    cy.contains(/User registered/);
-    cy.location('pathname').should('eq', '/auth/login');
+  beforeEach(() => {
+    cy.exec('npm run db:reset:users');
   });
 
   it('should not allow registation, when using the same email twice', () => {

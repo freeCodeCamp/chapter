@@ -6,9 +6,8 @@ describe('registration', () => {
     cy.exec('npm run db:reset:users');
   });
 
-  it('should not allow registation, when using the same email twice', () => {
+  it('should redirect to login after successful registration', () => {
     cy.interceptGQL('register');
-
     cy.registerViaUI('An', 'User', 'an@user.com');
     cy.wait('@GQLregister')
       .its('response')
@@ -17,7 +16,13 @@ describe('registration', () => {
         cy.wrap(response.statusCode).should('eq', 200);
       });
     cy.contains(/User registered/);
+    cy.location('pathname').should('eq', '/auth/login');
+  });
 
+  it('should not allow registation, when using the same email twice', () => {
+    cy.register('An', 'User', 'an@user.com');
+
+    cy.interceptGQL('register');
     cy.registerViaUI('An', 'User', 'an@user.com');
     cy.wait('@GQLregister')
       .its('response')

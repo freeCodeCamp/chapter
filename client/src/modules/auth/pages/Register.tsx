@@ -31,7 +31,6 @@ export const RegisterPage: NextPage = () => {
 
     try {
       const res = await registerMutation({ variables: { ...data } });
-      console.log(res);
       toast({ title: 'User registered', status: 'success' });
       router.push('/auth/login');
     } catch (err) {

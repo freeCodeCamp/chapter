@@ -1,10 +1,11 @@
 event_reminders
+chapter_users
 user_event_roles
-user_chapter_roles
 user_bans
 instance_role_permissions
 event_tags
 event_sponsors
+chapter_role_permissions
 rsvps
 events
 users
@@ -12,5 +13,7 @@ venues
 tags
 sponsors
 instance_permissions
+chapter_permissions
 instance_roles
+chapter_roles
 chapters

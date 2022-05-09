@@ -102,19 +102,19 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
     },
     query: `query chapterUsers($id: Int!) {
       chapter(id: $id) {
-        users {
+        chapter_users {
           user {
             name
             email
           }
-          interested
+          subscribed
         }
       }
     }`,
   };
   return cy
     .request('POST', 'http://localhost:5000/graphql', chapterQuery)
-    .then((response) => response.body.data.chapter.users);
+    .then((response) => response.body.data.chapter.chapter_users);
 });
 
 Cypress.Commands.add('getRSVPs', (eventId) => {

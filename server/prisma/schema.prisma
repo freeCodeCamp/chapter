@@ -12,21 +12,64 @@ datasource db {
 }
 
 model chapters {
-  created_at  DateTime             @default(now())
-  updated_at  DateTime             @updatedAt
-  id          Int                  @id @default(autoincrement())
-  name        String
-  description String
-  category    String
-  city        String
-  region      String
-  country     String
-  imageUrl    String
-  chatUrl     String?
-  creator_id  Int
-  events      events[]
-  user_bans   user_bans[]
-  users       user_chapter_roles[]
+  created_at    DateTime             @default(now())
+  updated_at    DateTime             @updatedAt
+  id            Int                  @id @default(autoincrement())
+  name          String
+  description   String
+  category      String
+  city          String
+  region        String
+  country       String
+  imageUrl      String
+  chatUrl       String?
+  creator_id    Int
+  events        events[]
+  user_bans     user_bans[]
+  chapter_users chapter_users[]
+}
+
+model chapter_users {
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  joined_date     DateTime
+  user_id         Int
+  chapter_id      Int
+  chapter_role_id Int
+  subscribed      Boolean
+  user            users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chapter         chapters       @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chapter_role    chapter_roles  @relation(fields: [chapter_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, chapter_id])
+}
+
+model chapter_roles {
+  created_at               DateTime                   @default(now())
+  updated_at               DateTime                   @updatedAt
+  id                       Int                        @id @default(autoincrement())
+  name                     String                     @unique
+  chapter_users            chapter_users[]
+  chapter_role_permissions chapter_role_permissions[]
+}
+
+model chapter_role_permissions {
+  created_at             DateTime           @default(now())
+  updated_at             DateTime           @updatedAt
+  chapter_role_id        Int
+  chapter_permissions_id Int
+  chapter_role           chapter_roles      @relation(fields: [chapter_role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chapter_permission     chapter_permissions @relation(fields: [chapter_permissions_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([chapter_role_id, chapter_permissions_id])
+}
+
+model chapter_permissions {
+  created_at                DateTime                   @default(now())
+  updated_at                DateTime                   @updatedAt
+  id                        Int                        @id @default(autoincrement())
+  name                      String                     @unique
+  chapter_role_permissions  chapter_role_permissions[]
 }
 
 model event_sponsors {
@@ -138,19 +181,6 @@ model user_bans {
   @@id([user_id, chapter_id])
 }
 
-model user_chapter_roles {
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user_id    Int
-  chapter_id Int
-  role_name  String
-  interested Boolean
-  chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([user_id, chapter_id, role_name])
-}
-
 model user_event_roles {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -201,8 +231,8 @@ model users {
   email               String                @unique
   rsvps               rsvps[]
   user_bans           user_bans[]
-  chapter_roles       user_chapter_roles[]
   user_event_roles    user_event_roles[]
+  user_chapters       chapter_users[]
   instance_role_id    Int
   instance_role       instance_roles        @relation(fields: [instance_role_id], references: [id])
   event_reminders     event_reminders[]

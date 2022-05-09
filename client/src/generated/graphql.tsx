@@ -43,9 +43,38 @@ export type Chapter = {
   region: Scalars['String'];
 };
 
+export type ChapterPermission = {
+  __typename?: 'ChapterPermission';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type ChapterRole = {
+  __typename?: 'ChapterRole';
+  chapter_role_permissions: Array<ChapterRolePermission>;
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type ChapterRolePermission = {
+  __typename?: 'ChapterRolePermission';
+  chapter_permission: ChapterPermission;
+};
+
+export type ChapterUser = {
+  __typename?: 'ChapterUser';
+  chapter_id: Scalars['Int'];
+  chapter_role: ChapterRole;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
+  user: User;
+  user_id: Scalars['Int'];
+};
+
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   category: Scalars['String'];
+  chapter_users: Array<ChapterUser>;
   chatUrl?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -56,7 +85,6 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  users: Array<UserChapterRole>;
 };
 
 export type CreateChapterInputs = {
@@ -448,14 +476,6 @@ export type User = {
   name: Scalars['String'];
 };
 
-export type UserChapterRole = {
-  __typename?: 'UserChapterRole';
-  chapter_id: Scalars['Int'];
-  interested: Scalars['Boolean'];
-  user: User;
-  user_id: Scalars['Int'];
-};
-
 export type Venue = {
   __typename?: 'Venue';
   city: Scalars['String'];
@@ -568,10 +588,11 @@ export type ChapterUsersQuery = {
   __typename?: 'Query';
   chapter?: {
     __typename?: 'ChapterWithRelations';
-    users: Array<{
-      __typename?: 'UserChapterRole';
-      interested: boolean;
+    chapter_users: Array<{
+      __typename?: 'ChapterUser';
+      subscribed: boolean;
       user: { __typename?: 'User'; name: string; email: string };
+      chapter_role: { __typename?: 'ChapterRole'; name: string };
     }>;
   } | null;
 };
@@ -1324,12 +1345,15 @@ export type ChapterQueryResult = Apollo.QueryResult<
 export const ChapterUsersDocument = gql`
   query chapterUsers($id: Int!) {
     chapter(id: $id) {
-      users {
+      chapter_users {
         user {
           name
           email
         }
-        interested
+        chapter_role {
+          name
+        }
+        subscribed
       }
     }
   }

@@ -30,7 +30,20 @@ export const userMiddleware = (
   prisma.users
     .findUnique({
       where: { id: value.id },
-      include: { chapter_roles: true },
+      include: {
+        user_chapters: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+        },
+      },
       rejectOnNotFound: false,
     })
     .then((user) => {

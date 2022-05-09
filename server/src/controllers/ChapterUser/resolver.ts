@@ -7,7 +7,7 @@ import { prisma } from '../../prisma';
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
 @Resolver()
-export class UserChapterRoleResolver {
+export class ChapterUserResolver {
   @Mutation(() => Boolean)
   async initUserInterestForChapter(
     @Arg('event_id', () => Int) event_id: number,
@@ -25,12 +25,13 @@ export class UserChapterRoleResolver {
     }
 
     try {
-      await prisma.user_chapter_roles.create({
+      await prisma.chapter_users.create({
         data: {
           user: { connect: { id: ctx.user.id } },
           chapter: { connect: { id: event.chapter.id } },
-          role_name: 'member',
-          interested: true,
+          chapter_role: { connect: { name: 'member' } },
+          subscribed: true, // TODO use user specified setting
+          joined_date: new Date(),
         },
       });
     } catch (e) {

@@ -21,7 +21,7 @@ tasks:
       cp .env.example .env &&
       createuser -d postgres &&
       createdb chapter &&
-      npm i &&
+      npm ci &&
       npm run db:reset
     command: npm run both
 github:

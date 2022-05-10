@@ -384,10 +384,10 @@ export class EventResolver {
     // roles
     const allowedRoles = ['organizer'] as const;
     const hasPermission =
-      ctx.user.chapter_roles.findIndex(
-        ({ chapter_id, role_name }) =>
+      ctx.user.user_chapters.findIndex(
+        ({ chapter_id, chapter_role }) =>
           chapter_id === data.chapter_id &&
-          allowedRoles.findIndex((x) => x === role_name) > -1,
+          allowedRoles.findIndex((x) => x === chapter_role.name) > -1,
       ) !== -1;
 
     if (!hasPermission)
@@ -649,23 +649,10 @@ ${unsubscribe}`;
       where: { id },
       include: {
         venue: true,
-        chapter: {
-          include: {
-            users: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
+        chapter: { include: { chapter_users: { include: { user: true } } } },
         event_users: {
-          include: {
-            rsvp: true,
-            user: true,
-          },
-          where: {
-            subscribed: true,
-          },
+          include: { rsvp: true, user: true },
+          where: { subscribed: true },
         },
       },
     });
@@ -673,11 +660,9 @@ ${unsubscribe}`;
     // TODO: the default should probably be to bcc everyone.
     const addresses: string[] = [];
     if (emailGroups.includes('interested')) {
-      // TODO: event.chapters should be event.chapter and not be optional Once
-      // that's fixed, we can make several chains non-optional (remove the ?s)
       const interestedUsers: string[] =
-        event.chapter?.users
-          ?.filter((role) => role.interested)
+        event.chapter.chapter_users
+          ?.filter((user) => user.subscribed)
           .map(({ user }) => user.email) ?? [];
 
       addresses.push(...interestedUsers);
@@ -707,7 +692,7 @@ ${unsubscribe}`;
     }
     const subject = `Invitation to ${event.name}.`;
 
-    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter?.id}`;
+    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
     const calendar = ical();
     calendar.createEvent({
@@ -726,7 +711,7 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
     <br>
     - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
     - More about ${
-      event.chapter?.name
+      event.chapter.name
     } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
     <br>
     ----------------------------<br>

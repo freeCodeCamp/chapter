@@ -66,6 +66,7 @@ typings/
 # Cypress.io
 cypress/videos
 cypress/screenshots
+cypress-coverage/
 
 # tsc output
 

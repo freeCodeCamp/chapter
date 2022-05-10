@@ -7,18 +7,20 @@ const setupRoles = async (
   adminId: number,
   userIds: number[],
   chapterIds: number[],
+  chapterRoles: Record<string, { name: string; id: number }>,
 ): Promise<void> => {
-  const data: Prisma.user_chapter_rolesCreateManyInput[] = [];
-  const chapterIterator = makeBooleanIterator();
+  const usersData: Prisma.chapter_usersCreateManyInput[] = [];
+  const subscribeIterator = makeBooleanIterator();
   for (const chapterId of chapterIds) {
-    const chapterUserData = {
+    const userData: Prisma.chapter_usersCreateManyInput = {
+      joined_date: new Date(),
       chapter_id: chapterId,
       user_id: adminId,
-      role_name: 'organizer',
-      interested: true,
+      chapter_role_id: chapterRoles.organizer.id,
+      subscribed: true,
     };
 
-    data.push(chapterUserData);
+    usersData.push(userData);
 
     const [banned, ...others] = userIds;
     const banData: Prisma.user_bansCreateInput = {
@@ -28,21 +30,20 @@ const setupRoles = async (
     await prisma.user_bans.create({ data: banData });
     // makes sure half of each chapter's users are interested, but
     // alternates which half.
-    const interestedIterator = makeBooleanIterator(
-      chapterIterator.next().value,
-    );
+    const userSubscribed = makeBooleanIterator(subscribeIterator.next().value);
     for (const user of others) {
-      const chapterUserData = {
+      const userData: Prisma.chapter_usersCreateManyInput = {
+        joined_date: new Date(),
         chapter_id: chapterId,
         user_id: user,
-        role_name: 'member',
-        interested: interestedIterator.next().value,
+        chapter_role_id: chapterRoles.member.id,
+        subscribed: userSubscribed.next().value,
       };
 
-      data.push(chapterUserData);
+      usersData.push(userData);
     }
   }
-  await prisma.user_chapter_roles.createMany({ data });
+  await prisma.chapter_users.createMany({ data: usersData });
 };
 
 export default setupRoles;

@@ -1,5 +1,6 @@
 import { prisma } from '../../src/prisma';
 import createChapters from './factories/chapters.factory';
+import createChapterRoles from './factories/chapterRoles.factory';
 import createEvents from './factories/events.factory';
 import createEventRoles from './factories/eventRoles.factory';
 import createRsvps from './factories/rsvps.factory';
@@ -38,5 +39,6 @@ import setupRoles from './setupRoles';
 
   const eventRoles = await createEventRoles();
   await createRsvps(eventIds, userIds, eventRoles);
-  await setupRoles(userId, userIds, chapterIds);
+  const chapterRoles = await createChapterRoles();
+  await setupRoles(userId, userIds, chapterIds, chapterRoles);
 })();

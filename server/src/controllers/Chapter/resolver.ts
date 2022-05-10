@@ -21,7 +21,18 @@ export class ChapterResolver {
       where: { id },
       include: {
         events: { include: { tags: { include: { tag: true } } } },
-        users: { include: { user: true } },
+        chapter_users: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+        },
       },
     });
   }
@@ -37,6 +48,14 @@ export class ChapterResolver {
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,
       creator_id: ctx.user.id,
+      chapter_users: {
+        create: {
+          joined_date: new Date(),
+          chapter_role: { connect: { name: 'organizer' } },
+          user: { connect: { id: ctx.user.id } },
+          subscribed: true, // TODO use user specified setting
+        },
+      },
     };
 
     return prisma.chapters.create({ data: chapterData });

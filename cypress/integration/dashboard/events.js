@@ -49,7 +49,7 @@ describe('events dashboard', () => {
       cy.contains(venueTitle);
     });
 
-    // check that the interested users have been emailed
+    // check that the subscribed users have been emailed
     cy.waitUntilMail('allMail');
 
     cy.get('@allMail').mhFirst().as('invitation');
@@ -57,7 +57,7 @@ describe('events dashboard', () => {
     // ) i.e. remove the hardcoding.
     cy.getChapterMembers(1).then((members) => {
       const subscriberEmails = members
-        .filter(({ interested }) => interested)
+        .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
       cy.get('@invitation')
         .mhGetRecipients()

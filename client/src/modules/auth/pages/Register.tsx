@@ -1,7 +1,8 @@
 import { Heading, VStack } from '@chakra-ui/layout';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Text, useToast } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -22,13 +23,18 @@ export const RegisterPage: NextPage = () => {
   } = useForm<RegisterFormData>();
   const [registerMutation] = useRegisterMutation();
 
+  const toast = useToast();
+  const router = useRouter();
+
   const onSubmit = async (data: RegisterFormData) => {
     console.log(data);
 
     try {
-      const res = await registerMutation({ variables: { ...data } });
-      console.log(res);
+      await registerMutation({ variables: { ...data } });
+      toast({ title: 'User registered', status: 'success' });
+      router.push('/auth/login');
     } catch (err) {
+      toast({ title: 'Something went wrong', status: 'error' });
       // TODO: Setup error handling
       // if (err.name === 'EMAIL_IN_USE') {
       //   setError('email', { message: 'Email alredy in use' });

@@ -1,5 +1,5 @@
 # Welcome to Chapter
-[![All Contributors](https://img.shields.io/badge/all_contributors-40-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/github/all-contributors/freeCodeCamp/chapter?color=orange&style=flat-square)](#contributors-)
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 

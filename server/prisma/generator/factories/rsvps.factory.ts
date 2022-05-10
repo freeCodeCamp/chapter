@@ -57,10 +57,15 @@ const createRsvps = async (
         if (!event.canceled) {
           await prisma.event_reminders.create({
             data: {
-              event: { connect: { id: eventId } },
-              user: { connect: { id: eventUserIds[i] } },
+              event_user: {
+                connect: {
+                  user_id_event_id: {
+                    event_id: eventId,
+                    user_id: eventUserIds[i],
+                  },
+                },
+              },
               remind_at: sub(event.start_at, { days: 1 }),
-              rsvp: { connect: { name: rsvpName } },
             },
           });
         }

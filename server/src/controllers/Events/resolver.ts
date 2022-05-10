@@ -1,4 +1,13 @@
-import { events_venue_type_enum, Prisma } from '@prisma/client';
+import {
+  events,
+  events_venue_type_enum,
+  event_roles,
+  event_users,
+  Prisma,
+  rsvp,
+  users,
+  venues,
+} from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
@@ -11,7 +20,7 @@ import {
   EventUser,
   EventWithRelations,
   EventWithChapter,
-  Venue,
+  User,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService from '../../services/MailerService';
@@ -29,20 +38,9 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
 
-interface RsvpInvitationUser {
-  first_name: string;
-  email: string;
-}
-interface RsvpInvitationEvent {
-  name: string;
-  start_at: Date;
-  ends_at: Date;
-  description: string;
-  venue: Venue | null;
-}
 const sendRsvpInvitation = async (
-  user: RsvpInvitationUser,
-  event: RsvpInvitationEvent,
+  user: User,
+  event: events & { venue: venues | null },
 ) => {
   const linkDetails: CalendarEvent = {
     title: event.name,
@@ -67,16 +65,11 @@ ${unsubscribe}
   }).sendEmail();
 };
 
-interface RsvpNotificationUser {
-  first_name: string;
-  last_name: string;
-}
-interface RsvpNotificationEvent {
-  name: string;
-  event_users: Pick<EventUser, 'user' | 'event_role'>[];
-}
+type RsvpNotificationEvent = events & {
+  event_users: { event_role: event_roles; user: users }[];
+};
 const rsvpNotifyOrganizer = async (
-  user: RsvpNotificationUser,
+  user: User,
   event: RsvpNotificationEvent,
 ) => {
   const organizersEmails = event.event_users
@@ -89,11 +82,7 @@ const rsvpNotifyOrganizer = async (
   }).sendEmail();
 };
 
-interface EventRsvpName {
-  capacity: number;
-  event_users: Pick<EventUser, 'rsvp'>[];
-  invite_only: boolean;
-}
+type EventRsvpName = events & { event_users: (event_users & { rsvp: rsvp })[] };
 const getRsvpName = (event: EventRsvpName) => {
   const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
   const waitlist = going.length >= event.capacity;
@@ -243,9 +232,14 @@ export class EventResolver {
             if (acceptedRsvp.subscribed) {
               await prisma.event_reminders.create({
                 data: {
-                  user: { connect: { id: acceptedRsvp.user_id } },
-                  event: { connect: { id: acceptedRsvp.event_id } },
-                  rsvp: { connect: { name: 'yes' } },
+                  event_user: {
+                    connect: {
+                      user_id_event_id: {
+                        event_id: acceptedRsvp.event_id,
+                        user_id: acceptedRsvp.user_id,
+                      },
+                    },
+                  },
                   remind_at: sub(event.start_at, { days: 1 }),
                 },
               });
@@ -304,9 +298,11 @@ export class EventResolver {
     if (rsvpName !== 'waitlist' && eventUserData.subscribed) {
       await prisma.event_reminders.create({
         data: {
-          user: { connect: { id: ctx.user.id } },
-          event: { connect: { id: eventId } },
-          rsvp: { connect: { name: 'yes' } },
+          event_user: {
+            connect: {
+              user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
+            },
+          },
           remind_at: sub(event.start_at, { days: 1 }),
         },
       });
@@ -458,10 +454,9 @@ export class EventResolver {
         venue: true,
         sponsors: true,
         event_users: {
-          include: { user: true },
+          include: { user: true, event_reminder: true },
           where: { subscribed: true },
         },
-        event_reminders: true,
       },
     });
 
@@ -526,19 +521,22 @@ export class EventResolver {
       ...venueData,
     };
 
+    // This is asychronous, but we don't use the result, so we don't wait for it
     if (!isEqual(start_at, event.start_at)) {
-      event.event_reminders.forEach(async (reminder) => {
-        await prisma.event_reminders.update({
-          data: {
-            remind_at: sub(start_at, { days: 1 }),
-          },
-          where: {
-            user_id_event_id: {
-              user_id: reminder.user_id,
-              event_id: reminder.event_id,
+      event.event_users.forEach(({ event_reminder }) => {
+        if (event_reminder) {
+          prisma.event_reminders.update({
+            data: {
+              remind_at: sub(start_at, { days: 1 }),
             },
-          },
-        });
+            where: {
+              user_id_event_id: {
+                user_id: event_reminder.user_id,
+                event_id: event_reminder.event_id,
+              },
+            },
+          });
+        }
       });
     }
 

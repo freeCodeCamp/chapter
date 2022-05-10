@@ -1,13 +1,6 @@
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import {
-  Chapter,
-  ChapterUser,
-  EventUser,
-  InstanceRole,
-  Rsvp,
-  UserBan,
-} from '.';
+import { Chapter, ChapterUser, EventUser, InstanceRole, UserBan } from '.';
 
 @ObjectType()
 export class User extends BaseObject {
@@ -33,9 +26,6 @@ export class UserResolver {
 export class UserWithRelations extends User {
   @Field(() => [Chapter])
   created_chapters: Chapter[];
-
-  @Field(() => [Rsvp])
-  rsvps: Rsvp[];
 
   @Field(() => [UserBan])
   banned_chapters: UserBan[];

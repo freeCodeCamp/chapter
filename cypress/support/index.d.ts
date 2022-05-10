@@ -39,5 +39,17 @@ declare namespace Cypress {
      * @param alias Name of the alias to reference emails by
      */
     waitUntilMail(alias: string): void;
+
+    /**
+     * Create event using GQL mutation
+     * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+     */
+    createEvent(data): Chainable<any>;
+
+    /**
+     * Delete event using GQL mutation
+     * @param eventId Id of the event for deletion
+     */
+    deleteEvent(eventId: number): Chainable<any>;
   }
 }

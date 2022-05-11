@@ -12,9 +12,9 @@ datasource db {
 }
 
 model chapters {
-  created_at    DateTime             @default(now())
-  updated_at    DateTime             @updatedAt
-  id            Int                  @id @default(autoincrement())
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  id            Int             @id @default(autoincrement())
   name          String
   description   String
   category      String
@@ -30,16 +30,16 @@ model chapters {
 }
 
 model chapter_users {
-  created_at      DateTime       @default(now())
-  updated_at      DateTime       @updatedAt
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
   joined_date     DateTime
   user_id         Int
   chapter_id      Int
   chapter_role_id Int
   subscribed      Boolean
-  user            users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  chapter         chapters       @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  chapter_role    chapter_roles  @relation(fields: [chapter_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user            users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chapter         chapters      @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chapter_role    chapter_roles @relation(fields: [chapter_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([user_id, chapter_id])
 }
@@ -54,22 +54,22 @@ model chapter_roles {
 }
 
 model chapter_role_permissions {
-  created_at             DateTime           @default(now())
-  updated_at             DateTime           @updatedAt
+  created_at             DateTime            @default(now())
+  updated_at             DateTime            @updatedAt
   chapter_role_id        Int
   chapter_permissions_id Int
-  chapter_role           chapter_roles      @relation(fields: [chapter_role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chapter_role           chapter_roles       @relation(fields: [chapter_role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   chapter_permission     chapter_permissions @relation(fields: [chapter_permissions_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([chapter_role_id, chapter_permissions_id])
 }
 
 model chapter_permissions {
-  created_at                DateTime                   @default(now())
-  updated_at                DateTime                   @updatedAt
-  id                        Int                        @id @default(autoincrement())
-  name                      String                     @unique
-  chapter_role_permissions  chapter_role_permissions[]
+  created_at               DateTime                   @default(now())
+  updated_at               DateTime                   @updatedAt
+  id                       Int                        @id @default(autoincrement())
+  name                     String                     @unique
+  chapter_role_permissions chapter_role_permissions[]
 }
 
 model event_sponsors {
@@ -95,60 +95,94 @@ model event_tags {
 }
 
 model events {
-  created_at       DateTime               @default(now())
-  updated_at       DateTime               @updatedAt
-  id               Int                    @id @default(autoincrement())
-  name             String
-  description      String
-  url              String?
-  streaming_url    String?
-  venue_type       events_venue_type_enum @default(Physical)
-  start_at         DateTime
-  ends_at          DateTime
-  canceled         Boolean                @default(false)
-  capacity         Int
-  invite_only      Boolean                @default(false)
-  image_url        String
+  created_at    DateTime               @default(now())
+  updated_at    DateTime               @updatedAt
+  id            Int                    @id @default(autoincrement())
+  name          String
+  description   String
+  url           String?
+  streaming_url String?
+  venue_type    events_venue_type_enum @default(Physical)
+  start_at      DateTime
+  ends_at       DateTime
+  canceled      Boolean                @default(false)
+  capacity      Int
+  invite_only   Boolean                @default(false)
+  image_url     String
   // TODO: none of these should be optional
-  venue_id         Int?
-  chapter_id       Int
-  chapter          chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  venue            venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sponsors         event_sponsors[]
-  rsvps            rsvps[]
-  tags             event_tags[]
-  user_event_roles user_event_roles[]
-  event_reminders  event_reminders[]
+  venue_id      Int?
+  chapter_id    Int
+  chapter       chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  venue         venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sponsors      event_sponsors[]
+  tags          event_tags[]
+  event_users   event_users[]
 }
 
-model rsvps {
-  created_at       DateTime            @default(now())
-  updated_at       DateTime            @updatedAt
-  user_id          Int
-  event_id         Int
-  date             DateTime
-  on_waitlist      Boolean
-  confirmed_at     DateTime?
-  canceled         Boolean
-  events           events              @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user             users               @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  event_reminder   event_reminders[]
+model event_roles {
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique
+  event_role_permissions event_role_permissions[]
+  event_users            event_users[]
+}
+
+model event_role_permissions {
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+  event_role_id       Int
+  event_permission_id Int
+  event_role          event_roles       @relation(fields: [event_role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event_permission    event_permissions @relation(fields: [event_permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([event_role_id, event_permission_id])
+}
+
+model event_permissions {
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique
+  event_role_permissions event_role_permissions[]
+}
+
+model event_users {
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+  user_id        Int
+  event_id       Int
+  event_role_id  Int
+  rsvp_id        Int
+  subscribed     Boolean
+  title          String[]
+  user           users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event          events          @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event_role     event_roles     @relation(fields: [event_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rsvp           rsvp            @relation(fields: [rsvp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  event_reminder event_reminders?
 
   @@id([user_id, event_id])
 }
 
 model event_reminders {
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
-  user_id       Int
-  event_id      Int
-  remind_at     DateTime
-  notifying     Boolean   @default(false)
-  event         events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  rsvp          rsvps     @relation(fields: [user_id, event_id], references: [user_id, event_id], onDelete: Cascade, onUpdate: NoAction)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  user_id    Int
+  event_id   Int
+  remind_at  DateTime
+  notifying  Boolean     @default(false)
+  event_user event_users @relation(fields: [user_id, event_id], references: [user_id, event_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([user_id, event_id])
+}
+
+model rsvp {
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  event_users event_users[]
 }
 
 model sponsors {
@@ -163,10 +197,10 @@ model sponsors {
 }
 
 model tags {
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  id         Int      @id @default(autoincrement())
-  name       String   @unique
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
   event_tags event_tags[]
 }
 
@@ -181,24 +215,11 @@ model user_bans {
   @@id([user_id, chapter_id])
 }
 
-model user_event_roles {
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  user_id    Int
-  event_id   Int
-  role_name  String
-  subscribed Boolean
-  events     events    @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users      users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([user_id, event_id, role_name])
-}
-
 model instance_permissions {
-  created_at                 DateTime                     @default(now())
-  updated_at                 DateTime                     @updatedAt
-  id                         Int                          @id @default(autoincrement())
-  name                       String                       @unique
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime                    @updatedAt
+  id                        Int                         @id @default(autoincrement())
+  name                      String                      @unique
   instance_role_permissions instance_role_permissions[]
 }
 
@@ -214,28 +235,26 @@ model instance_role_permissions {
 }
 
 model instance_roles {
-  created_at                DateTime                     @default(now())
-  updated_at                DateTime                     @updatedAt
-  id                        Int                          @id @default(autoincrement())
-  name                      String                       @unique
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime                    @updatedAt
+  id                        Int                         @id @default(autoincrement())
+  name                      String                      @unique
   instance_role_permissions instance_role_permissions[]
   users                     users[]
 }
 
 model users {
-  created_at          DateTime              @default(now())
-  updated_at          DateTime              @updatedAt
-  id                  Int                   @id @default(autoincrement())
-  first_name          String
-  last_name           String
-  email               String                @unique
-  rsvps               rsvps[]
-  user_bans           user_bans[]
-  user_event_roles    user_event_roles[]
-  user_chapters       chapter_users[]
-  instance_role_id    Int
-  instance_role       instance_roles        @relation(fields: [instance_role_id], references: [id])
-  event_reminders     event_reminders[]
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+  id               Int             @id @default(autoincrement())
+  first_name       String
+  last_name        String
+  email            String          @unique
+  user_bans        user_bans[]
+  user_chapters    chapter_users[]
+  instance_role_id Int
+  instance_role    instance_roles  @relation(fields: [instance_role_id], references: [id])
+  user_events      event_users[]
 }
 
 model venues {

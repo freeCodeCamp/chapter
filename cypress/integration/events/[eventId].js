@@ -95,5 +95,6 @@ describe('event page', () => {
     cy.get('@rsvp-list').within(() => {
       cy.findByText('Test User').should('not.exist');
     });
+    cy.findByRole('button', { name: 'Cancel' }).should('not.exist');
   });
 });

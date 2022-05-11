@@ -70,11 +70,21 @@ export const EVENT = gql`
         region
         country
       }
-      rsvps {
-        on_waitlist
+      event_users {
+        rsvp {
+          name
+        }
         user {
           id
           name
+        }
+        event_role {
+          name
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
         }
       }
     }
@@ -169,8 +179,10 @@ export const deleteEvent = gql`
 export const confirmRSVP = gql`
   mutation confirmRsvp($eventId: Int!, $userId: Int!) {
     confirmRsvp(eventId: $eventId, userId: $userId) {
-      confirmed_at
-      on_waitlist
+      rsvp {
+        updated_at
+        name
+      }
     }
   }
 `;

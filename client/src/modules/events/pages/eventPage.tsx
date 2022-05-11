@@ -90,9 +90,12 @@ export const EventPage: NextPage = () => {
     await onRsvp(add);
   };
   const userRsvped = useMemo(() => {
-    const rsvp = data?.event?.rsvps.find((rsvp) => rsvp.user.id === user?.id);
+    const rsvp = data?.event?.event_users.find(
+      ({ user: event_user, rsvp }) =>
+        event_user.id === user?.id && rsvp.name !== 'no',
+    );
     if (!rsvp) return null;
-    return rsvp.on_waitlist ? 'waitlist' : 'rsvp';
+    return rsvp.rsvp.name;
   }, [data?.event]);
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
@@ -118,14 +121,18 @@ export const EventPage: NextPage = () => {
     );
   }
 
-  const rsvps = data.event.rsvps.filter((r) => !r.on_waitlist);
-  const waitlist = data.event.rsvps.filter((r) => r.on_waitlist);
+  const rsvps = data.event.event_users.filter(
+    ({ rsvp }) => rsvp.name === 'yes',
+  );
+  const waitlist = data.event.event_users.filter(
+    ({ rsvp }) => rsvp.name === 'waitlist',
+  );
 
   return (
     <VStack align="flex-start">
       <LoginRegisterModal
         onRsvp={onRsvp}
-        userIds={data?.event?.rsvps.map((r) => r.user.id) || []}
+        userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
         modalProps={modalProps}
       />
       <Image
@@ -153,7 +160,7 @@ export const EventPage: NextPage = () => {
         {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}
         {waitlist && <Heading>Waitlist:{waitlist.length}</Heading>}
       </VStack>
-      {userRsvped === 'rsvp' ? (
+      {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
           <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
@@ -190,11 +197,11 @@ export const EventPage: NextPage = () => {
         RSVPs:
       </Heading>
       <List>
-        {rsvps.map((rsvp) => (
-          <ListItem key={rsvp.user.id} mb="2">
+        {rsvps.map(({ user }) => (
+          <ListItem key={user.id} mb="2">
             <HStack>
-              <Avatar name={rsvp.user.name} />
-              <Heading size="md">{rsvp.user.name}</Heading>
+              <Avatar name={user.name} />
+              <Heading size="md">{user.name}</Heading>
             </HStack>
           </ListItem>
         ))}
@@ -206,11 +213,11 @@ export const EventPage: NextPage = () => {
             Waitlist:
           </Heading>
           <List>
-            {waitlist.map((rsvp) => (
-              <ListItem key={rsvp.user.id} mb="2">
+            {waitlist.map(({ user }) => (
+              <ListItem key={user.id} mb="2">
                 <HStack>
-                  <Avatar name={rsvp.user.name} />
-                  <Heading size="md">{rsvp.user.name}</Heading>
+                  <Avatar name={user.name} />
+                  <Heading size="md">{user.name}</Heading>
                 </HStack>
               </ListItem>
             ))}

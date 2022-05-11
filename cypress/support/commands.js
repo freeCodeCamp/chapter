@@ -190,7 +190,6 @@ Cypress.Commands.add('createEvent', (data) => {
       }
     }`,
   };
-  cy.login();
   return cy
     .request({
       method: 'POST',

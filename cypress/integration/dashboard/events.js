@@ -188,60 +188,59 @@ describe('events dashboard', () => {
   });
 
   it("emails the users when an event's venue is changed", () => {
-    cy.visit('/dashboard/events');
-    cy.findAllByRole('link', { name: 'Edit' }).first().click();
+    const eventData = {
+      venue_id: 1,
+      chapter_id: 1,
+      sponsor_ids: [],
+      name: 'Event Venue change test',
+      description: 'Test Description',
+      url: 'https://test.event.org',
+      venue_type: 'PhysicalAndOnline',
+      capacity: 10,
+      image_url: 'https://test.event.org/image',
+      streaming_url: 'https://test.event.org/video',
+      start_at: '2022-01-01T00:01',
+      ends_at: '2022-01-02T00:02',
+      tags: 'Test, Event, Tag',
+    };
+    const newVenueId = 2;
 
-    cy.findByRole('textbox', { name: 'Event title' })
-      .invoke('val')
-      .as('eventTitle');
-
-    // This is a bit convoluted, but we need to know the current venue in order
-    // to change it.
-    cy.findByRole('combobox', { name: 'Venue' })
-      .as('venueSelect')
-      .find(':checked')
-      .invoke('val')
-      .as('currentVenueId');
-    cy.get('@currentVenueId').then((id) => {
-      // Small venue ids will definitely be present, so we select '1', unless
-      // it's currently selected, in which case we select '2'.
-      id = id == '1' ? '2' : '1';
-      cy.get('@venueSelect')
-        .select(id)
+    cy.createEvent(eventData).then((eventId) => {
+      cy.visit(`/dashboard/events/${eventId}/edit`);
+      cy.findByRole('combobox', { name: 'Venue' })
+        .select(newVenueId)
         .find(':checked')
         .invoke('text')
         .as('newVenueTitle');
-    });
-    cy.findByRole('form', { name: 'Save Event Changes' })
-      .findByRole('button', {
-        name: 'Save Event Changes',
-      })
-      .click();
 
-    cy.location('pathname').should('match', /^\/dashboard\/events$/);
+      cy.findByRole('form', { name: 'Save Event Changes' })
+        .findByRole('button', {
+          name: 'Save Event Changes',
+        })
+        .click();
 
-    cy.waitUntilMail('allMail');
+      cy.location('pathname').should('match', /^\/dashboard\/events$/);
 
-    cy.get('@allMail').mhFirst().as('venueMail');
+      cy.waitUntilMail('allMail');
 
-    cy.get('@newVenueTitle').then((venueTitle) => {
-      cy.get('@eventTitle').then((eventTitle) => {
+      cy.get('@allMail').mhFirst().as('venueMail');
+
+      cy.get('@newVenueTitle').then((venueTitle) => {
         cy.get('@venueMail')
           .mhGetSubject()
-          .should('eq', `Venue changed for event ${eventTitle}`);
+          .should('eq', `Venue changed for event ${eventData['name']}`);
         cy.get('@venueMail')
           .mhGetBody()
           .should('include', 'We have had to change the location')
-          .and('include', eventTitle)
+          .and('include', eventData['name'])
           .and('include', venueTitle);
+
+        cy.findAllByRole('row')
+          .filter(`:contains(${eventData['name']})`)
+          .should('contain.text', venueTitle);
       });
 
-      // TODO: this is a bit brittle, since we're looking for a specific row
-      // within the datatable. Also, is this table an accessible way to present
-      // the events?
-      cy.findAllByRole('row').then((rows) => {
-        cy.wrap(rows[1]).should('contain.text', venueTitle);
-      });
+      cy.deleteEvent(eventId);
     });
   });
 

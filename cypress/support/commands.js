@@ -177,3 +177,46 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
       .then((mails) => mails?.length > 0),
   );
 });
+
+Cypress.Commands.add('createEvent', (data) => {
+  const eventMutation = {
+    operationName: 'createEvent',
+    variables: {
+      data: { ...data },
+    },
+    query: `mutation createEvent($data: CreateEventInputs!) {
+      createEvent(data: $data) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .request({
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: eventMutation,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+      },
+    })
+    .then((response) => {
+      return response.body.data.createEvent.id;
+    });
+});
+
+Cypress.Commands.add('deleteEvent', (eventId) => {
+  const eventMutation = {
+    operationName: 'deleteEvent',
+    variables: {
+      id: eventId,
+    },
+    query: `mutation deleteEvent($id: Int!) {
+      deleteEvent(id: $id) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', eventMutation)
+    .then((response) => response.body.data.deleteEvent.id);
+});

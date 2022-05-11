@@ -146,10 +146,6 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="event_reminders.event_id references events.id via event_reminders_event_id_fkey"><a href='event_reminders.html'>event_reminders</a><span class='relatedKey'>.event_id</span></td>
-                                                <td class="constraint detail">event_reminders_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="event_sponsors.event_id references events.id via event_sponsors_event_id_fkey"><a href='event_sponsors.html'>event_sponsors</a><span class='relatedKey'>.event_id</span></td>
                                                 <td class="constraint detail">event_sponsors_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
@@ -158,12 +154,8 @@
                                                 <td class="constraint detail">event_tags_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="rsvps.event_id references events.id via rsvps_event_id_fkey"><a href='rsvps.html'>rsvps</a><span class='relatedKey'>.event_id</span></td>
-                                                <td class="constraint detail">rsvps_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="user_event_roles.event_id references events.id via user_event_roles_event_id_fkey"><a href='user_event_roles.html'>user_event_roles</a><span class='relatedKey'>.event_id</span></td>
-                                                <td class="constraint detail">user_event_roles_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                                <td title="event_users.event_id references events.id via event_users_event_id_fkey"><a href='event_users.html'>event_users</a><span class='relatedKey'>.event_id</span></td>
+                                                <td class="constraint detail">event_users_event_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>
                                     </td>

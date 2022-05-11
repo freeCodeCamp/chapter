@@ -115,46 +115,43 @@ describe('events dashboard', () => {
     cy.findByLabelText('Confirmed').should('be.checked');
     cy.findByLabelText('Waitlist').should('not.be.checked');
     cy.findByLabelText('Cancelled').should('not.be.checked');
-    const isRsvpConfirmed = (r) =>
-      r.on_waitlist === false && r.canceled === false;
-    sendAndCheckEmails(isRsvpConfirmed);
+    cy.getEventUsers(1).then((results) => {
+      const eventUsers = results.filter(({ subscribed }) => subscribed);
+      const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
+      sendAndCheckEmails(isRsvpConfirmed, eventUsers);
 
-    // sending to waitlist
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    cy.findByLabelText('Confirmed').parent().click();
-    cy.findByLabelText('Waitlist').parent().click();
-    const isRsvpOnWaitlist = (r) => r.on_waitlist === true;
-    sendAndCheckEmails(isRsvpOnWaitlist);
+      // sending to waitlist
+      cy.findByRole('button', { name: 'Email Attendees' }).click();
+      cy.findByLabelText('Confirmed').parent().click();
+      cy.findByLabelText('Waitlist').parent().click();
+      const isRsvpOnWaitlist = ({ rsvp }) => rsvp.name === 'waitlist';
+      sendAndCheckEmails(isRsvpOnWaitlist, eventUsers);
 
-    // sending to cancelled
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    cy.findByLabelText('Waitlist').parent().click();
-    cy.findByLabelText('Cancelled').parent().click();
-    const isRSVPCancelled = (r) => r.canceled === true;
-    sendAndCheckEmails(isRSVPCancelled);
+      // sending to cancelled
+      cy.findByRole('button', { name: 'Email Attendees' }).click();
+      cy.findByLabelText('Waitlist').parent().click();
+      cy.findByLabelText('Cancelled').parent().click();
+      const isRSVPCancelled = ({ rsvp }) => rsvp.name === 'no';
+      sendAndCheckEmails(isRSVPCancelled, eventUsers);
 
-    // sending to all
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    cy.findByLabelText('Waitlist').parent().click();
-    cy.findByLabelText('Confirmed').parent().click();
-    sendAndCheckEmails(() => true);
+      // sending to all
+      cy.findByRole('button', { name: 'Email Attendees' }).click();
+      cy.findByLabelText('Waitlist').parent().click();
+      cy.findByLabelText('Confirmed').parent().click();
+      sendAndCheckEmails(() => true, eventUsers);
+    });
   });
 
-  function sendAndCheckEmails(filterCallback) {
+  function sendAndCheckEmails(filterCallback, users) {
     cy.findByRole('button', { name: 'Send Email' }).click();
 
     cy.waitUntilMail('allMail');
     cy.get('@allMail').mhFirst().as('emails');
 
-    // TODO: can we avoid getting this multiple times?
-    cy.getRSVPs(1).then((rsvps) => {
-      const expectedEmails = rsvps
-        .filter(filterCallback)
-        .map(({ user: { email } }) => email);
-      cy.get('@emails')
-        .mhGetRecipients()
-        .should('have.members', expectedEmails);
-    });
+    const emails = users
+      .filter(filterCallback)
+      .map(({ user: { email } }) => email);
+    cy.get('@emails').mhGetRecipients().should('have.members', emails);
     cy.mhDeleteAll();
   }
 
@@ -328,10 +325,10 @@ describe('events dashboard', () => {
       .then((url) => parseInt(url.match(/\d+$/)))
       .as('eventId');
     cy.get('@eventId')
-      .then((eventId) => cy.getRSVPs(eventId))
-      .then((rsvps) => {
-        const expectedEmails = rsvps
-          .filter((rsvp) => !rsvp.canceled)
+      .then((eventId) => cy.getEventUsers(eventId))
+      .then((eventUsers) => {
+        const expectedEmails = eventUsers
+          .filter(({ rsvp }) => rsvp.name !== 'no')
           .map(({ user: { email } }) => email);
         cy.get('@emails')
           .mhGetRecipients()

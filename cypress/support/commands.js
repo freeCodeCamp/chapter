@@ -117,6 +117,33 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
     .then((response) => response.body.data.chapter.chapter_users);
 });
 
+Cypress.Commands.add('getEventUsers', (eventId) => {
+  const eventQuery = {
+    operationName: 'eventUsers',
+    variables: {
+      id: eventId,
+    },
+    query: `query eventUsers($id: Int!) {
+      event(id: $id) {
+        event_users {
+          rsvp {
+            name
+          }
+          user {
+            id
+            name
+            email
+          }
+          subscribed
+        }
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', eventQuery)
+    .then((response) => response.body.data.event.event_users);
+});
+
 Cypress.Commands.add('getRSVPs', (eventId) => {
   const chapterQuery = {
     operationName: 'rsvpsForEvent',

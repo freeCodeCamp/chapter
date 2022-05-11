@@ -15,7 +15,6 @@ export const VenuePage: NextPage = () => {
   const id = getId(router.query) || -1;
 
   const { loading, error, data } = useVenueQuery({ variables: { id } });
-  console.log('In Venue Page');
 
   if (loading || error || !data?.venue) {
     return (

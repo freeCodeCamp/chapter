@@ -18,7 +18,6 @@ jobs:
           path: |
             README.md
             License
-          transform: (?<=[Copyright © |Copyright (c) ])(?<from>\d{4})?-?(\d{4})?
           commitTitle: update my license
           commitBody: Let's keep legal happy.
           prTitle: Update my license

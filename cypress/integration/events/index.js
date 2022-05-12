@@ -1,6 +1,6 @@
 describe('events page', () => {
   before(() => {
-    cy.exec('npm run db:reset');
+    cy.exec('npm run db:seed');
   });
 
   it('should contain a list of event cards', () => {

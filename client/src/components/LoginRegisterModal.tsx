@@ -131,8 +131,8 @@ export const LoginRegisterModal: React.FC<{
 
             {isRegister && (
               <>
-                <Input {...register('first_name')} />
-                <Input {...register('last_name')} />
+                <Input label="First name" {...register('first_name')} />
+                <Input label="Last name" {...register('last_name')} />
               </>
             )}
 

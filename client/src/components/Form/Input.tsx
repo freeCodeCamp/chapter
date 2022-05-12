@@ -8,8 +8,6 @@ import {
 } from '@chakra-ui/react';
 import React, { forwardRef } from 'react';
 
-import { capitalize } from '../../util/capitalize';
-
 const allowed_types = ['text', 'email', 'number'] as const;
 
 function isSpecifiedType(name?: string) {
@@ -23,7 +21,6 @@ const resolveType = (name?: string) => {
 type AllowedTypes = typeof allowed_types[number];
 
 interface BaseProps extends Omit<ChakraInputProps, 'type'> {
-  label?: string;
   error?: string;
   type?: AllowedTypes | string;
   outerProps?: FormControlProps;
@@ -32,10 +29,12 @@ interface BaseProps extends Omit<ChakraInputProps, 'type'> {
 
 type NoLabelProps = BaseProps & {
   noLabel: true;
+  label?: never;
 };
 
 type HasLabelProps = BaseProps & {
   noLabel?: false;
+  label: string;
   name: string;
 };
 
@@ -58,15 +57,13 @@ export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
         isRequired={isRequired} //TODO: determine which inputs are required
         {...outerProps}
       >
-        {!noLabel && (
-          <FormLabel htmlFor={name}>{label || capitalize(name)}</FormLabel>
-        )}
+        {!noLabel && <FormLabel htmlFor={name}>{label}</FormLabel>}
         <ChakraInput
           type={resolveType(name)}
           id={name}
           name={name}
           ref={ref}
-          placeholder={placeholder || label || capitalize(name)}
+          placeholder={placeholder ?? label}
           {...rest}
         />
         <FormErrorMessage>{props.error}</FormErrorMessage>

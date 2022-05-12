@@ -127,7 +127,7 @@ export const LoginRegisterModal: React.FC<{
           </>
         ) : (
           <>
-            <Input {...register('email')} error={error} />
+            <Input label="Email" {...register('email')} error={error} />
 
             {isRegister && (
               <>

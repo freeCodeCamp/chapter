@@ -18,7 +18,7 @@ jobs:
           path: |
             README.md
             LICENSE
-          commitTitle: update my license
+          commitTitle: docs: update copyright years
           prTitle: docs: update copyright years
           prBody: It's that time of the year, let's update the license
           labels: Documentation

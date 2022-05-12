@@ -15,3 +15,12 @@ jobs:
       - uses: FantasticFiasco/action-update-license-year@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: |
+            README.md
+            License
+          transform: (?<=[Copyright © |Copyright (c) ])(?<from>\d{4})?-?(\d{4})?
+          commitTitle: update my license
+          commitBody: Let's keep legal happy.
+          prTitle: Update my license
+          prBody: It's that time of the year, let's update the license
+          labels: documentation

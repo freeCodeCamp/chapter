@@ -9,7 +9,7 @@ describe('events page', () => {
       .should('be.visible')
       .should('have.length', 15)
       .as('eventCards');
-    cy.get('@eventCards').find('[data-cy="event-cancelled"]').should('exist');
+    cy.get('@eventCards').find('[data-cy="event-canceled"]').should('exist');
     cy.get('@eventCards').find('[data-cy="event-invite-only"]').should('exist');
   });
 });

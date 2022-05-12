@@ -127,7 +127,7 @@ describe('events dashboard', () => {
       const isRsvpOnWaitlist = ({ rsvp }) => rsvp.name === 'waitlist';
       sendAndCheckEmails(isRsvpOnWaitlist, eventUsers);
 
-      // sending to cancelled
+      // sending to canceled
       cy.findByRole('button', { name: 'Email Attendees' }).click();
       cy.findByLabelText('Waitlist').parent().click();
       cy.findByLabelText('Cancelled').parent().click();
@@ -304,7 +304,7 @@ describe('events dashboard', () => {
     });
   });
 
-  it('emails not cancelled rsvps when event is cancelled', () => {
+  it('emails not canceled rsvps when event is canceled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')
       .not(':contains("canceled")')

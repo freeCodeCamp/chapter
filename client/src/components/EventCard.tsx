@@ -24,7 +24,7 @@ type EventCardProps = {
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const metaTag = event.canceled ? (
     <Tag
-      data-cy="event-cancelled"
+      data-cy="event-canceled"
       borderRadius="full"
       pl="2"
       px="2"

@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: |
             README.md
-            License
+            LICENSE
           commitTitle: update my license
           commitBody: Let's keep legal happy.
           prTitle: Update my license

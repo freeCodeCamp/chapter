@@ -20,6 +20,6 @@ jobs:
             LICENSE
           commitTitle: update my license
           commitBody: Let's keep legal happy.
-          prTitle: Update my license
+          prTitle: docs: update copyright years
           prBody: It's that time of the year, let's update the license
           labels: documentation

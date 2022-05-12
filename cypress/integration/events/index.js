@@ -1,4 +1,8 @@
 describe('events page', () => {
+  before(() => {
+    cy.exec('npm run db:reset');
+  });
+
   it('should contain a list of event cards', () => {
     cy.visit('/events');
     cy.get('[data-cy="event-card"]')

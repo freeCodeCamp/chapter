@@ -11,22 +11,16 @@ import {
   Heading,
   ModalProps as ChakraModalProps,
   HStack,
-  Flex,
 } from '@chakra-ui/react';
 import React from 'react';
 
 export interface ConditionalWrapProps {
-  val: boolean | undefined | null | number | string;
-  Wrap: (children: React.ReactNode | null | undefined) => JSX.Element | null;
+  Wrap?: (children: React.ReactNode | null | undefined) => JSX.Element;
 }
 
 export const ConditionalWrap: React.FC<ConditionalWrapProps> = (props) => {
-  const { val, Wrap, children } = props;
-  if (val) {
-    return Wrap(children);
-  }
-
-  return <>{children}</>;
+  const { Wrap, children } = props;
+  return Wrap ? Wrap(children) : <>{children}</>;
 };
 
 interface ModalProps {
@@ -35,7 +29,8 @@ interface ModalProps {
   title?: string;
   buttons?: React.ReactElement;
   buttonsLeft?: React.ReactElement;
-  wrapBody?: ConditionalWrapProps['Wrap'];
+  wrapChildren?: ConditionalWrapProps['Wrap'];
+  wrapLeftButtons?: ConditionalWrapProps['Wrap'];
   formButtonText?: string;
 }
 
@@ -46,7 +41,8 @@ export const Modal: React.FC<ModalProps> = (props) => {
     buttons,
     buttonsLeft,
     formButtonText,
-    wrapBody,
+    wrapChildren,
+    wrapLeftButtons,
     size = 'xl',
     children,
   } = props;
@@ -61,18 +57,11 @@ export const Modal: React.FC<ModalProps> = (props) => {
           </ModalHeader>
         )}
         <ModalCloseButton />
-        <ConditionalWrap val={!!wrapBody} Wrap={wrapBody || (() => null)}>
+        <ConditionalWrap Wrap={wrapChildren}>
           <ModalBody>{children}</ModalBody>
 
           <ModalFooter>
-            <ConditionalWrap
-              val={!!buttonsLeft}
-              Wrap={(c) => (
-                <Flex w="full" justify="space-between">
-                  {c}
-                </Flex>
-              )}
-            >
+            <ConditionalWrap Wrap={wrapLeftButtons}>
               {buttonsLeft}
               <HStack>
                 <Button colorScheme="blue" onClick={modalProps.onClose}>

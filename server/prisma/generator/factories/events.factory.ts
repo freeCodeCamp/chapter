@@ -61,7 +61,8 @@ const createEvents = async (
       venue_type: venueType,
       capacity: random(1000),
       canceled: canceled[i],
-      invite_only: inviteOnly[i],
+      // Setting the first event to be open, so that we can test the RSVP flow
+      invite_only: i == 0 ? false : inviteOnly[i],
       start_at,
       ends_at: addHours(start_at, random(5)),
       image_url: image.imageUrl(640, 480, 'nature', true),

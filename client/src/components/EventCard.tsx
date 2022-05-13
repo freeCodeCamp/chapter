@@ -30,7 +30,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       px="2"
       colorScheme="red"
     >
-      Cancelled
+      Canceled
     </Tag>
   ) : event.invite_only ? (
     <Tag

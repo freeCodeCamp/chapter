@@ -114,7 +114,7 @@ describe('events dashboard', () => {
     cy.findByRole('button', { name: 'Email Attendees' }).click();
     cy.findByLabelText('Confirmed').should('be.checked');
     cy.findByLabelText('Waitlist').should('not.be.checked');
-    cy.findByLabelText('Cancelled').should('not.be.checked');
+    cy.findByLabelText('Canceled').should('not.be.checked');
     cy.getEventUsers(1).then((results) => {
       const eventUsers = results.filter(({ subscribed }) => subscribed);
       const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
@@ -130,9 +130,9 @@ describe('events dashboard', () => {
       // sending to canceled
       cy.findByRole('button', { name: 'Email Attendees' }).click();
       cy.findByLabelText('Waitlist').parent().click();
-      cy.findByLabelText('Cancelled').parent().click();
-      const isRSVPCancelled = ({ rsvp }) => rsvp.name === 'no';
-      sendAndCheckEmails(isRSVPCancelled, eventUsers);
+      cy.findByLabelText('Canceled').parent().click();
+      const isRSVPCanceled = ({ rsvp }) => rsvp.name === 'no';
+      sendAndCheckEmails(isRSVPCanceled, eventUsers);
 
       // sending to all
       cy.findByRole('button', { name: 'Email Attendees' }).click();
@@ -162,7 +162,7 @@ describe('events dashboard', () => {
 
     // try to make sure there will be recipient
     cy.findByLabelText('Waitlist').parent().click();
-    cy.findByLabelText('Cancelled').parent().click();
+    cy.findByLabelText('Canceled').parent().click();
 
     cy.findByRole('button', { name: 'Send Email' }).click();
 

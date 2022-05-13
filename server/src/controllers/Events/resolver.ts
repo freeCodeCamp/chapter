@@ -607,10 +607,10 @@ ${unsubscribe}`;
       },
     });
 
-    const notCancelledRsvps = event.event_users;
+    const notCanceledRsvps = event.event_users;
 
-    if (notCancelledRsvps.length) {
-      const emailList = notCancelledRsvps.map(({ user }) => user.email);
+    if (notCanceledRsvps.length) {
+      const emailList = notCanceledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} canceled`;
       const body = `placeholder body`;
 

@@ -38,7 +38,7 @@ const createEvents = async (
     date.setMinutes(0);
 
     const start_at = add(date, {
-      days: random(10),
+      days: random(10) + 1,
       hours: random(5),
       minutes: random(4) * 15,
     });

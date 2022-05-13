@@ -84,7 +84,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
               <Checkbox
                 {...register('canceled', { validate: atLeastOneChecked })}
               >
-                Cancelled
+                Canceled
               </Checkbox>
             </Stack>
           </form>

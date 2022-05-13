@@ -3,7 +3,13 @@ import { Prisma, events_venue_type_enum } from '@prisma/client';
 import { addHours, add } from 'date-fns';
 
 import { prisma } from '../../../src/prisma';
-import { random, randomEnum, randomItem, randomItems } from '../lib/random';
+import {
+  random,
+  randomEnum,
+  randomItem,
+  randomItems,
+  shuffle,
+} from '../lib/random';
 
 const { company, internet, lorem, image } = faker;
 
@@ -14,7 +20,17 @@ const createEvents = async (
   count: number,
 ): Promise<number[]> => {
   const events: number[] = [];
-
+  const halfCount: number = Math.floor(count + 1 / 2);
+  const inviteOnly: boolean[] = [
+    ...new Array<boolean>(halfCount).fill(false),
+    ...new Array<boolean>(halfCount).fill(true),
+  ];
+  const canceled = [
+    ...new Array<boolean>(halfCount).fill(false),
+    ...new Array<boolean>(halfCount).fill(true),
+  ];
+  shuffle(inviteOnly);
+  shuffle(canceled);
   for (let i = 0; i < count; i++) {
     const date = new Date();
     date.setMilliseconds(0);
@@ -44,7 +60,9 @@ const createEvents = async (
       url: internet.url(),
       venue_type: venueType,
       capacity: random(1000),
-      canceled: Math.random() > 0.5,
+      canceled: canceled[i],
+      // Setting the first event to be open, so that we can test the RSVP flow
+      invite_only: i == 0 ? false : inviteOnly[i],
       start_at,
       ends_at: addHours(start_at, random(5)),
       image_url: image.imageUrl(640, 480, 'nature', true),

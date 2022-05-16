@@ -1675,6 +1675,7 @@ export const EventDocument = gql`
       streaming_url
       canceled
       capacity
+      time_zone
       start_at
       ends_at
       image_url

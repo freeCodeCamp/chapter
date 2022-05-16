@@ -147,12 +147,14 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors'> | 'id'
+  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'time_zone'>
+  | 'id'
 > & {
   venue_id?: number;
   tags: EventTag[];
   venue?: Omit<Venue, 'events'> | null;
   sponsors: EventSponsorInput[];
+  time_zone: string;
 };
 
 export interface EventFormProps {

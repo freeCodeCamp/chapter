@@ -11,15 +11,6 @@ registerEnumType(events_venue_type_enum, {
   description: 'All possible venue types for an event',
 });
 
-// //https://stackoverflow.com/questions/52173855/convert-array-of-strings-to-typescript-type
-// function asLiterals<T extends string>(arr: T[]): T[] {
-//   return arr;
-// }
-// const timeZoneLabels = timezones.map((timezone) => timezone.tzCode);
-// const s = asLiterals(timeZoneLabels);
-
-// type TimeZoneTypes = { [K in typeof s[number]]: string };
-
 @ObjectType()
 export class Event extends BaseObject {
   @Field(() => String)

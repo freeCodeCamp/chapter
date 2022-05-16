@@ -415,6 +415,7 @@ export class EventResolver {
       streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
       venue_type: data.venue_type,
       url: data.url,
+      time_zone: data.time_zone,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},

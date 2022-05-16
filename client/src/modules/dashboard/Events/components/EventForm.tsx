@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import timezones from 'timezones-list';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import {
@@ -61,9 +62,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     data: sponsorData,
   } = useSponsorsQuery();
 
+  const defaultTimezone = timezones.find(
+    (timezone) =>
+      timezone.tzCode === Intl.DateTimeFormat().resolvedOptions().timeZone,
+  )?.tzCode;
+
+  console.log('defaultTimezone ', defaultTimezone);
+
   const defaultValues = useMemo(() => {
     if (!data)
       return {
+        time_zone: defaultTimezone,
         start_at: new Date().toISOString().slice(0, 16),
         ends_at: new Date(Date.now() + 1000 * 60 * 60)
           .toISOString()
@@ -76,6 +85,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       url: data.url,
       streaming_url: data.streaming_url,
       capacity: data.capacity,
+      time_zone: defaultTimezone,
       start_at: new Date(data.start_at).toISOString().slice(0, 16),
       ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
       sponsors: data.sponsors,
@@ -121,7 +131,18 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       >
         <VStack align="flex-start">
           {fields.map((field) =>
-            field.type === 'textarea' ? (
+            field.key === 'time_zone' ? (
+              <FormControl isRequired>
+                <FormLabel>Time Zone</FormLabel>
+                <Select {...register('time_zone')}>
+                  {timezones.map((t) => (
+                    <option key={t.tzCode} value={t.tzCode}>
+                      {t.label}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : field.type === 'textarea' ? (
               <TextArea
                 key={field.key}
                 label={field.label}

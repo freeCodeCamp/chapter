@@ -103,6 +103,13 @@ export const fields: Field[] = [
     isRequired: false,
   },
   {
+    key: 'time_zone',
+    type: 'text',
+    label: 'Time Zone',
+    defaultValue: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    isRequired: true,
+  },
+  {
     key: 'start_at',
     type: 'datetime-local',
     label: 'Start at',
@@ -128,6 +135,7 @@ export interface EventFormData {
   streaming_url?: string | null;
   capacity: number;
   tags: string;
+  time_zone: string;
   start_at: string;
   ends_at: string;
   venue_type: VenueType;

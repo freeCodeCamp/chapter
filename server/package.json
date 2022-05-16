@@ -47,6 +47,7 @@
     "nodemailer": "6.7.3",
     "pg": "8.7.3",
     "reflect-metadata": "0.1.13",
+    "timezones-list": "^3.0.1",
     "type-graphql": "1.1.1"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import { events_venue_type_enum } from '@prisma/client';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
+import timezones from 'timezones-list';
 import { BaseObject } from './BaseObject';
 import { Chapter, EventTag, EventSponsor, EventUser, Venue } from '.';
 
@@ -9,6 +10,15 @@ registerEnumType(events_venue_type_enum, {
   name: 'VenueType',
   description: 'All possible venue types for an event',
 });
+
+//https://stackoverflow.com/questions/52173855/convert-array-of-strings-to-typescript-type
+function asLiterals<T extends string>(arr: T[]): T[] {
+  return arr;
+}
+const timeZoneLabels = timezones.map((timezone) => timezone.tzCode);
+const s = asLiterals(timeZoneLabels);
+
+type TimeZoneTypes = { [K in typeof s[number]]: string };
 
 @ObjectType()
 export class Event extends BaseObject {
@@ -26,6 +36,9 @@ export class Event extends BaseObject {
 
   @Field(() => events_venue_type_enum)
   venue_type: events_venue_type_enum;
+
+  @Field(() => String)
+  time_zone: TimeZoneTypes;
 
   @Field(() => Date)
   start_at: Date;

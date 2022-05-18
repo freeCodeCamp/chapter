@@ -39,18 +39,20 @@ export const EventPage: NextPage = () => {
 
   const confirmRSVP =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
-    () => {
-      return confirm().then(() =>
-        confirmRsvpFn({ variables: { eventId, userId } }),
-      );
+    async () => {
+      const ok = await confirm();
+      if (ok) {
+        return confirmRsvpFn({ variables: { eventId, userId } });
+      }
     };
 
   const kick =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
-    () => {
-      return confirmDelete().then(() =>
-        kickRsvpFn({ variables: { eventId, userId } }),
-      );
+    async () => {
+      const ok = await confirmDelete();
+      if (ok) {
+        return kickRsvpFn({ variables: { eventId, userId } });
+      }
     };
 
   if (loading || error || !data || !data.event) {

@@ -110,6 +110,7 @@ export type CreateEventInputs = {
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
   tags: Array<Scalars['String']>;
+  time_zone: Scalars['String'];
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -155,6 +156,7 @@ export type Event = {
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags: Array<EventTag>;
+  time_zone: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -210,6 +212,7 @@ export type EventWithChapter = {
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags: Array<EventTag>;
+  time_zone: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -230,6 +233,7 @@ export type EventWithRelations = {
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags: Array<EventTag>;
+  time_zone: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -457,6 +461,7 @@ export type UpdateEventInputs = {
   start_at?: InputMaybe<Scalars['DateTime']>;
   streaming_url?: InputMaybe<Scalars['String']>;
   tags: Array<Scalars['String']>;
+  time_zone: Scalars['String'];
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -674,6 +679,7 @@ export type EventsQuery = {
     url?: string | null;
     invite_only: boolean;
     streaming_url?: string | null;
+    time_zone: string;
     start_at: any;
     capacity: number;
     venue_type: VenueType;
@@ -701,6 +707,7 @@ export type EventQuery = {
     streaming_url?: string | null;
     canceled: boolean;
     capacity: number;
+    time_zone: string;
     start_at: any;
     ends_at: any;
     image_url: string;
@@ -761,6 +768,7 @@ export type EventVenuesQuery = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    time_zone: string;
     start_at: any;
     ends_at: any;
     tags: Array<{
@@ -784,6 +792,7 @@ export type CreateEventMutation = {
     name: string;
     canceled: boolean;
     description: string;
+    time_zone: string;
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
@@ -1035,6 +1044,7 @@ export type MinEventsQuery = {
     id: number;
     name: string;
     description: string;
+    time_zone: string;
     start_at: any;
     invite_only: boolean;
     canceled: boolean;
@@ -1608,6 +1618,7 @@ export const EventsDocument = gql`
       url
       invite_only
       streaming_url
+      time_zone
       start_at
       capacity
       venue_type
@@ -1778,6 +1789,7 @@ export const EventVenuesDocument = gql`
       url
       streaming_url
       capacity
+      time_zone
       start_at
       ends_at
       tags {
@@ -1852,6 +1864,7 @@ export const CreateEventDocument = gql`
       name
       canceled
       description
+      time_zone
       url
       streaming_url
       capacity
@@ -2774,6 +2787,7 @@ export const MinEventsDocument = gql`
       id
       name
       description
+      time_zone
       start_at
       invite_only
       canceled

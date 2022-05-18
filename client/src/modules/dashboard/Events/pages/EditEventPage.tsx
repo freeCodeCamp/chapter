@@ -68,6 +68,7 @@ export const EditEventPage: NextPage = () => {
 
       if (event.data) {
         await router.push('/dashboard/events');
+        console.log(event.data);
       }
     } catch (err) {
       console.error(err);

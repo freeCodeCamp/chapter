@@ -6,6 +6,7 @@ export const MINIMAL_DATA_EVENTS_QUERY = gql`
       id
       name
       description
+      time_zone
       start_at
       invite_only
       canceled

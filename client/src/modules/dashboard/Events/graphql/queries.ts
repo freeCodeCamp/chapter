@@ -10,6 +10,7 @@ export const EVENTS = gql`
       url
       invite_only
       streaming_url
+      time_zone
       start_at
       capacity
       venue_type
@@ -38,6 +39,7 @@ export const EVENT = gql`
       streaming_url
       canceled
       capacity
+      time_zone
       start_at
       ends_at
       image_url
@@ -100,6 +102,7 @@ export const EVENT_WITH_VENU = gql`
       url
       streaming_url
       capacity
+      time_zone
       start_at
       ends_at
       tags {
@@ -126,6 +129,7 @@ export const createEvent = gql`
       name
       canceled
       description
+      time_zone
       url
       streaming_url
       capacity

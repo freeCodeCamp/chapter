@@ -18,6 +18,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
+import Head from 'next/head';
 import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
 import SponsorsCard from '../../../components/SponsorsCard';
@@ -155,6 +156,7 @@ export const EventPage: NextPage = () => {
           {data.event.chapter.name}
         </Link>
       </Heading>
+      <Heading size="sm">{data.event.time_zone}</Heading>
       <Text>{data.event.description}</Text>
       <VStack align="start">
         {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}

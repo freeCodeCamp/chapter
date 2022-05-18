@@ -59,6 +59,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           {formatDate(event.start_at)}
           <Spacer />
           {metaTag}
+          <Spacer />
         </Flex>
         <Box>
           {event.invite_only && <LockIcon />}{' '}

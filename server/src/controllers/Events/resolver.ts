@@ -514,6 +514,7 @@ export class EventResolver {
       name: data.name ?? event.name,
       description: data.description ?? event.description,
       url: data.url ?? event.url,
+      time_zone: data.time_zone ?? event.time_zone,
       start_at: start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,

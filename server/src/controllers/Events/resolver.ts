@@ -655,7 +655,6 @@ ${unsubscribe}`;
       },
     });
 
-    // TODO: the default should probably be to bcc everyone.
     const addresses: string[] = [];
     if (emailGroups.includes('interested')) {
       const interestedUsers: string[] =

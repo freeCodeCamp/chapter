@@ -587,6 +587,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "c-ehrlich",
+      "name": "Christopher Ehrlich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8353666?v=4",
+      "profile": "http://c-ehrlich.dev",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,

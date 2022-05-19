@@ -81,7 +81,7 @@ export default class MailerService {
         : {};
       return await this.transporter.sendMail({
         from: this.ourEmail,
-        to: this.emailList,
+        bcc: this.emailList,
         subject: this.subject,
         text: this.backupText,
         html: this.htmlEmail,

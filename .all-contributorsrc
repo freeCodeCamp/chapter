@@ -594,7 +594,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/8353666?v=4",
       "profile": "http://c-ehrlich.dev",
       "contributions": [
-        "infra"
+        "infra",
+        "test",
+        "code"
       ]
     }
   ],

@@ -22,6 +22,3 @@ jobs:
           prTitle: "docs: update copyright years"
           prBody: It's that time of the year, let's update the license
           labels: Documentation
-         
-         
-        

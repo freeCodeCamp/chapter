@@ -1,21 +1,13 @@
 import { Request as ExpressRequest, Response } from 'express';
 
-import { User } from '../graphql-types';
+import { User, ChapterUser } from '../graphql-types';
 
-// TODO: import from the TypeGraphQL user chapter role object, once that's fixed
-// rather than defining it here
-export interface ChapterRoles {
-  chapter_roles: {
-    chapter_id: number;
-    role_name: string;
-  }[];
-}
 export interface GQLCtx {
-  user?: User & ChapterRoles;
+  user?: User & { user_chapters: ChapterUser[] };
   res: Response;
   req: ExpressRequest;
 }
 
 export interface Request extends ExpressRequest {
-  user?: User & ChapterRoles;
+  user?: User & { user_chapters: ChapterUser[] };
 }

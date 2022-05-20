@@ -21,10 +21,12 @@ export const NewVenuePage: NextPage = () => {
       const latitude = parseFloat(String(data.latitude));
       const longitude = parseFloat(String(data.longitude));
 
-      await createVenue({
+      const venue = await createVenue({
         variables: { data: { ...data, latitude, longitude } },
       });
-      router.replace('/dashboard/venues');
+      if (venue.data) {
+        router.replace(`/dashboard/venues/${venue.data.createVenue.id}`);
+      }
     } catch (err) {
       console.error(err);
     } finally {

@@ -102,19 +102,46 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
     },
     query: `query chapterUsers($id: Int!) {
       chapter(id: $id) {
-        users {
+        chapter_users {
           user {
             name
             email
           }
-          interested
+          subscribed
         }
       }
     }`,
   };
   return cy
     .request('POST', 'http://localhost:5000/graphql', chapterQuery)
-    .then((response) => response.body.data.chapter.users);
+    .then((response) => response.body.data.chapter.chapter_users);
+});
+
+Cypress.Commands.add('getEventUsers', (eventId) => {
+  const eventQuery = {
+    operationName: 'eventUsers',
+    variables: {
+      id: eventId,
+    },
+    query: `query eventUsers($id: Int!) {
+      event(id: $id) {
+        event_users {
+          rsvp {
+            name
+          }
+          user {
+            id
+            name
+            email
+          }
+          subscribed
+        }
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', eventQuery)
+    .then((response) => response.body.data.event.event_users);
 });
 
 Cypress.Commands.add('getRSVPs', (eventId) => {
@@ -149,4 +176,52 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
       .as(alias)
       .then((mails) => mails?.length > 0),
   );
+});
+
+Cypress.Commands.add('createEvent', (data) => {
+  const eventMutation = {
+    operationName: 'createEvent',
+    variables: {
+      data: { ...data },
+    },
+    query: `mutation createEvent($data: CreateEventInputs!) {
+      createEvent(data: $data) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .request({
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: eventMutation,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+      },
+    })
+    .then((response) => {
+      return response.body.data.createEvent.id;
+    });
+});
+
+Cypress.Commands.add('deleteEvent', (eventId) => {
+  const eventMutation = {
+    operationName: 'deleteEvent',
+    variables: {
+      id: eventId,
+    },
+    query: `mutation deleteEvent($id: Int!) {
+      deleteEvent(id: $id) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', eventMutation)
+    .then((response) => response.body.data.deleteEvent.id);
+});
+
+Cypress.Commands.add('checkBcc', (mail) => {
+  const headers = mail.Content.Headers;
+  return cy.wrap(!('To' in headers));
 });

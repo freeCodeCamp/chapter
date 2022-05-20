@@ -22,6 +22,7 @@ exports[`EventCard should render 1`] = `
         />
         <span
           class="css-ba69m4"
+          data-cy="event-invite-only"
         >
           <svg
             class="chakra-icon css-onkibi"
@@ -98,6 +99,7 @@ exports[`EventCard should render with tags 1`] = `
         />
         <span
           class="css-ba69m4"
+          data-cy="event-invite-only"
         >
           <svg
             class="chakra-icon css-onkibi"

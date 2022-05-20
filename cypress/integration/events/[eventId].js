@@ -43,8 +43,7 @@ describe('event page', () => {
     cy.findByRole('button', { name: 'Register' }).click();
     cy.wait('@GQLregister');
 
-    // TODO: should this be called 'Switch to login'?
-    cy.findByRole('button', { name: 'Login' }).click();
+    cy.contains(/User registered/);
     cy.get('@login-submit').click();
     // TODO: data-cy? findByRole?
     cy.contains('We sent you a magic link to your email');
@@ -95,5 +94,6 @@ describe('event page', () => {
     cy.get('@rsvp-list').within(() => {
       cy.findByText('Test User').should('not.exist');
     });
+    cy.findByRole('button', { name: 'Cancel' }).should('not.exist');
   });
 });

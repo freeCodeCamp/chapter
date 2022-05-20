@@ -12,6 +12,7 @@ services:
     env_file: .env
     depends_on:
       - db
+    platform: "linux/amd64"
     build: 
       context: .
       dockerfile: server.Dockerfile

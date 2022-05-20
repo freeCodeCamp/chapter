@@ -43,9 +43,38 @@ export type Chapter = {
   region: Scalars['String'];
 };
 
+export type ChapterPermission = {
+  __typename?: 'ChapterPermission';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type ChapterRole = {
+  __typename?: 'ChapterRole';
+  chapter_role_permissions: Array<ChapterRolePermission>;
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type ChapterRolePermission = {
+  __typename?: 'ChapterRolePermission';
+  chapter_permission: ChapterPermission;
+};
+
+export type ChapterUser = {
+  __typename?: 'ChapterUser';
+  chapter_id: Scalars['Int'];
+  chapter_role: ChapterRole;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
+  user: User;
+  user_id: Scalars['Int'];
+};
+
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   category: Scalars['String'];
+  chapter_users: Array<ChapterUser>;
   chatUrl?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -56,7 +85,6 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  users: Array<UserChapterRole>;
 };
 
 export type CreateChapterInputs = {
@@ -131,6 +159,24 @@ export type Event = {
   venue_type: VenueType;
 };
 
+export type EventPermission = {
+  __typename?: 'EventPermission';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type EventRole = {
+  __typename?: 'EventRole';
+  event_role_permissions: Array<EventRolePermission>;
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type EventRolePermission = {
+  __typename?: 'EventRolePermission';
+  event_permission: EventPermission;
+};
+
 export type EventSponsor = {
   __typename?: 'EventSponsor';
   sponsor: Sponsor;
@@ -139,6 +185,15 @@ export type EventSponsor = {
 export type EventTag = {
   __typename?: 'EventTag';
   tag: Tag;
+};
+
+export type EventUser = {
+  __typename?: 'EventUser';
+  event_role: EventRole;
+  rsvp: Rsvp;
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user: User;
 };
 
 export type EventWithChapter = {
@@ -166,11 +221,11 @@ export type EventWithRelations = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_users: Array<EventUser>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
-  rsvps: Array<RsvpWithUser>;
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
@@ -193,7 +248,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticate: AuthenticateType;
   cancelEvent: Event;
-  confirmRsvp: Rsvp;
+  confirmRsvp: EventUser;
   createChapter: Chapter;
   createEvent: Event;
   createSponsor: Sponsor;
@@ -205,7 +260,7 @@ export type Mutation = {
   initUserInterestForChapter: Scalars['Boolean'];
   login: LoginType;
   register: User;
-  rsvpEvent?: Maybe<Rsvp>;
+  rsvpEvent?: Maybe<EventUser>;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   updateChapter: Chapter;
@@ -353,23 +408,9 @@ export type RegisterInput = {
 
 export type Rsvp = {
   __typename?: 'Rsvp';
-  canceled: Scalars['Boolean'];
-  confirmed_at?: Maybe<Scalars['DateTime']>;
-  date: Scalars['DateTime'];
-  event_id: Scalars['Int'];
-  on_waitlist: Scalars['Boolean'];
-  user_id: Scalars['Int'];
-};
-
-export type RsvpWithUser = {
-  __typename?: 'RsvpWithUser';
-  canceled: Scalars['Boolean'];
-  confirmed_at?: Maybe<Scalars['DateTime']>;
-  date: Scalars['DateTime'];
-  event_id: Scalars['Int'];
-  on_waitlist: Scalars['Boolean'];
-  user: User;
-  user_id: Scalars['Int'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  updated_at: Scalars['DateTime'];
 };
 
 export type SendEmailInputs = {
@@ -446,14 +487,6 @@ export type User = {
   id: Scalars['Int'];
   last_name: Scalars['String'];
   name: Scalars['String'];
-};
-
-export type UserChapterRole = {
-  __typename?: 'UserChapterRole';
-  chapter_id: Scalars['Int'];
-  interested: Scalars['Boolean'];
-  user: User;
-  user_id: Scalars['Int'];
 };
 
 export type Venue = {
@@ -568,10 +601,11 @@ export type ChapterUsersQuery = {
   __typename?: 'Query';
   chapter?: {
     __typename?: 'ChapterWithRelations';
-    users: Array<{
-      __typename?: 'UserChapterRole';
-      interested: boolean;
+    chapter_users: Array<{
+      __typename?: 'ChapterUser';
+      subscribed: boolean;
       user: { __typename?: 'User'; name: string; email: string };
+      chapter_role: { __typename?: 'ChapterRole'; name: string };
     }>;
   } | null;
 };
@@ -697,10 +731,18 @@ export type EventQuery = {
       region: string;
       country: string;
     } | null;
-    rsvps: Array<{
-      __typename?: 'RsvpWithUser';
-      on_waitlist: boolean;
+    event_users: Array<{
+      __typename?: 'EventUser';
+      rsvp: { __typename?: 'Rsvp'; name: string };
       user: { __typename?: 'User'; id: number; name: string };
+      event_role: {
+        __typename?: 'EventRole';
+        name: string;
+        event_role_permissions: Array<{
+          __typename?: 'EventRolePermission';
+          event_permission: { __typename?: 'EventPermission'; name: string };
+        }>;
+      };
     }>;
   } | null;
 };
@@ -801,9 +843,8 @@ export type ConfirmRsvpMutationVariables = Exact<{
 export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
   confirmRsvp: {
-    __typename?: 'Rsvp';
-    confirmed_at?: any | null;
-    on_waitlist: boolean;
+    __typename?: 'EventUser';
+    rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
   };
 };
 
@@ -982,7 +1023,7 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent?: { __typename?: 'Rsvp'; confirmed_at?: any | null } | null;
+  rsvpEvent?: { __typename?: 'EventUser'; updated_at: any } | null;
 };
 
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1324,12 +1365,15 @@ export type ChapterQueryResult = Apollo.QueryResult<
 export const ChapterUsersDocument = gql`
   query chapterUsers($id: Int!) {
     chapter(id: $id) {
-      users {
+      chapter_users {
         user {
           name
           email
         }
-        interested
+        chapter_role {
+          name
+        }
+        subscribed
       }
     }
   }
@@ -1663,11 +1707,21 @@ export const EventDocument = gql`
         region
         country
       }
-      rsvps {
-        on_waitlist
+      event_users {
+        rsvp {
+          name
+        }
         user {
           id
           name
+        }
+        event_role {
+          name
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
         }
       }
     }
@@ -2019,8 +2073,10 @@ export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
 export const ConfirmRsvpDocument = gql`
   mutation confirmRsvp($eventId: Int!, $userId: Int!) {
     confirmRsvp(eventId: $eventId, userId: $userId) {
-      confirmed_at
-      on_waitlist
+      rsvp {
+        updated_at
+        name
+      }
     }
   }
 `;
@@ -2664,7 +2720,7 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
 export const RsvpToEventDocument = gql`
   mutation rsvpToEvent($eventId: Int!) {
     rsvpEvent(eventId: $eventId) {
-      confirmed_at
+      updated_at
     }
   }
 `;

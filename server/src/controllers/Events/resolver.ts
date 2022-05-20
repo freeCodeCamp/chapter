@@ -275,12 +275,18 @@ export class EventResolver {
     }
 
     const rsvpName = getRsvpName(event);
+
+    const userChapter = ctx.user.user_chapters.find(
+      (user_chapter) => user_chapter.chapter_id === event.chapter_id,
+    );
+    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
+
     const eventUserData: Prisma.event_usersCreateInput = {
       user: { connect: { id: ctx.user.id } },
       event: { connect: { id: eventId } },
       rsvp: { connect: { name: rsvpName } },
       event_role: { connect: { name: 'attendee' } },
-      subscribed: true, // TODO use user specified setting
+      subscribed: isSubscribedToEvent,
     };
 
     const userRole = await prisma.event_users.create({
@@ -375,16 +381,16 @@ export class EventResolver {
     const chapter = await prisma.chapters.findUnique({
       where: { id: data.chapter_id },
     });
+    const userChapter = ctx.user.user_chapters.find(
+      ({ chapter_id }) => chapter_id === data.chapter_id,
+    );
 
     // TODO: add admin and owner once you've figured out how to handle instance
     // roles
     const allowedRoles = ['organizer'] as const;
     const hasPermission =
-      ctx.user.user_chapters.findIndex(
-        ({ chapter_id, chapter_role }) =>
-          chapter_id === data.chapter_id &&
-          allowedRoles.findIndex((x) => x === chapter_role.name) > -1,
-      ) !== -1;
+      allowedRoles.findIndex((x) => x === userChapter?.chapter_role.name) !==
+      -1;
 
     if (!hasPermission)
       throw Error('User does not have permission to create events');
@@ -394,11 +400,13 @@ export class EventResolver {
         sponsor_id,
       }));
 
+    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
+
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'organizer' } },
       rsvp: { connect: { name: 'yes' } },
-      subscribed: true, // TODO: even organizers may wish to opt out of emails
+      subscribed: isSubscribedToEvent,
     };
 
     // TODO: the type safety if we start with ...data is a bit weak here: it

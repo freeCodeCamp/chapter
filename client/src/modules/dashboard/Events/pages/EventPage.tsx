@@ -41,7 +41,7 @@ export const EventPage: NextPage = () => {
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
     async () => {
       const ok = await confirm();
-      if (ok)  confirmRsvpFn({ variables: { eventId, userId } });
+      if (ok) confirmRsvpFn({ variables: { eventId, userId } });
     };
 
   const kick =

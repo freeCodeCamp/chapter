@@ -22,3 +22,5 @@ jobs:
           prBody: It's that time of the year, let's update the license
           labels: Documentation
           token: ${{ secrets.GITHUB_TOKEN }}
+         
+        

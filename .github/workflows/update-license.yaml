@@ -14,7 +14,6 @@ jobs:
           fetch-depth: 0
       - uses: FantasticFiasco/action-update-license-year@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           path: |
             README.md
             LICENSE
@@ -22,3 +21,4 @@ jobs:
           prTitle: "docs: update copyright years"
           prBody: It's that time of the year, let's update the license
           labels: Documentation
+          token: ${{ secrets.GITHUB_TOKEN }}

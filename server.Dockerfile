@@ -1,4 +1,5 @@
 FROM node:16-alpine
+ARG build
 
 WORKDIR /usr/chapter/
 
@@ -7,7 +8,10 @@ COPY ./server ./server
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm ci -w=server --ignore-scripts
+# TODO: split this into stages
+RUN npm ci -w=server --ignore-scripts --include-workspace-root
+
+RUN if [ $build = true ]; then npm run build:server; fi
 
 EXPOSE 5000
 

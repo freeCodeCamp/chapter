@@ -2,6 +2,9 @@
 version: "3.7"
 services:
   app:
+    build:
+      args:
+        - build=true
     command: npm start
 
   client:

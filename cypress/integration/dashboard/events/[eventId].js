@@ -67,7 +67,7 @@ describe('event dashboard', () => {
       });
     });
 
-    it.only('canceling kicking user should not remove user from event', () => {
+    it('canceling kicking user should not remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.contains(/Waitlist/);
       cy.findAllByRole('row').filter(':contains("Kick")').first().as('rsvpRow');

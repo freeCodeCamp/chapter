@@ -41,18 +41,14 @@ export const EventPage: NextPage = () => {
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
     async () => {
       const ok = await confirm();
-      if (ok) {
-        return confirmRsvpFn({ variables: { eventId, userId } });
-      }
+      if (ok)  confirmRsvpFn({ variables: { eventId, userId } });
     };
 
   const kick =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
     async () => {
       const ok = await confirmDelete();
-      if (ok) {
-        return kickRsvpFn({ variables: { eventId, userId } });
-      }
+      if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
   if (loading || error || !data || !data.event) {

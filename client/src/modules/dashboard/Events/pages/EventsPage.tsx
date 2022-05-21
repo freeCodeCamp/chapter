@@ -12,8 +12,6 @@ import { useEventsQuery } from 'generated/graphql';
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();
 
-  console.log('events ', data);
-
   return (
     <Layout>
       <VStack>

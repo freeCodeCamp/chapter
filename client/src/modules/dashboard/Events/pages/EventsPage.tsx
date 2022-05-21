@@ -12,6 +12,8 @@ import { useEventsQuery } from 'generated/graphql';
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();
 
+  console.log('events ', data);
+
   return (
     <Layout>
       <VStack>
@@ -78,7 +80,8 @@ export const EventsPage: NextPage = () => {
                 isOnline(event.venue_type)
                   ? event.streaming_url
                   : 'In-person only',
-              date: (event) => formatDate(event.start_at),
+              date: (event) =>
+                formatDate(new Date(event.start_at).toISOString().slice(0, 16)),
               actions: (event) => (
                 <LinkButton
                   colorScheme="green"

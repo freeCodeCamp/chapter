@@ -248,6 +248,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticate: AuthenticateType;
   cancelEvent: Event;
+  chapterSubscribe: ChapterUser;
   confirmRsvp: EventUser;
   createChapter: Chapter;
   createEvent: Event;
@@ -258,6 +259,7 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Scalars['Boolean'];
   initUserInterestForChapter: Scalars['Boolean'];
+  joinChapter: ChapterUser;
   login: LoginType;
   register: User;
   rsvpEvent?: Maybe<EventUser>;
@@ -275,6 +277,10 @@ export type MutationAuthenticateArgs = {
 
 export type MutationCancelEventArgs = {
   id: Scalars['Int'];
+};
+
+export type MutationChapterSubscribeArgs = {
+  chapterId: Scalars['Int'];
 };
 
 export type MutationConfirmRsvpArgs = {
@@ -317,6 +323,10 @@ export type MutationDeleteVenueArgs = {
 
 export type MutationInitUserInterestForChapterArgs = {
   event_id: Scalars['Int'];
+};
+
+export type MutationJoinChapterArgs = {
+  chapterId: Scalars['Int'];
 };
 
 export type MutationLoginArgs = {
@@ -363,6 +373,7 @@ export type MutationUpdateVenueArgs = {
 export type Query = {
   __typename?: 'Query';
   chapter?: Maybe<ChapterWithRelations>;
+  chapterUser: ChapterUser;
   chapters: Array<Chapter>;
   event?: Maybe<EventWithRelations>;
   events: Array<EventWithRelations>;
@@ -376,6 +387,10 @@ export type Query = {
 
 export type QueryChapterArgs = {
   id: Scalars['Int'];
+};
+
+export type QueryChapterUserArgs = {
+  chapterId: Scalars['Int'];
 };
 
 export type QueryEventArgs = {
@@ -559,6 +574,29 @@ export type MeQuery = {
   } | null;
 };
 
+export type JoinChapterMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type JoinChapterMutation = {
+  __typename?: 'Mutation';
+  joinChapter: {
+    __typename?: 'ChapterUser';
+    subscribed: boolean;
+    user: { __typename?: 'User'; name: string };
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
+  };
+};
+
+export type ChapterSubscribeMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type ChapterSubscribeMutation = {
+  __typename?: 'Mutation';
+  chapterSubscribe: { __typename?: 'ChapterUser'; subscribed: boolean };
+};
+
 export type ChapterQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -608,6 +646,20 @@ export type ChapterUsersQuery = {
       chapter_role: { __typename?: 'ChapterRole'; name: string };
     }>;
   } | null;
+};
+
+export type ChapterUserQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type ChapterUserQuery = {
+  __typename?: 'Query';
+  chapterUser: {
+    __typename?: 'ChapterUser';
+    subscribed: boolean;
+    user: { __typename?: 'User'; name: string };
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
+  };
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -1286,6 +1338,112 @@ export function useMeLazyQuery(
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const JoinChapterDocument = gql`
+  mutation joinChapter($chapterId: Int!) {
+    joinChapter(chapterId: $chapterId) {
+      user {
+        name
+      }
+      chapter_role {
+        name
+      }
+      subscribed
+    }
+  }
+`;
+export type JoinChapterMutationFn = Apollo.MutationFunction<
+  JoinChapterMutation,
+  JoinChapterMutationVariables
+>;
+
+/**
+ * __useJoinChapterMutation__
+ *
+ * To run a mutation, you first call `useJoinChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinChapterMutation, { data, loading, error }] = useJoinChapterMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useJoinChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    JoinChapterMutation,
+    JoinChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<JoinChapterMutation, JoinChapterMutationVariables>(
+    JoinChapterDocument,
+    options,
+  );
+}
+export type JoinChapterMutationHookResult = ReturnType<
+  typeof useJoinChapterMutation
+>;
+export type JoinChapterMutationResult =
+  Apollo.MutationResult<JoinChapterMutation>;
+export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
+  JoinChapterMutation,
+  JoinChapterMutationVariables
+>;
+export const ChapterSubscribeDocument = gql`
+  mutation chapterSubscribe($chapterId: Int!) {
+    chapterSubscribe(chapterId: $chapterId) {
+      subscribed
+    }
+  }
+`;
+export type ChapterSubscribeMutationFn = Apollo.MutationFunction<
+  ChapterSubscribeMutation,
+  ChapterSubscribeMutationVariables
+>;
+
+/**
+ * __useChapterSubscribeMutation__
+ *
+ * To run a mutation, you first call `useChapterSubscribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChapterSubscribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [chapterSubscribeMutation, { data, loading, error }] = useChapterSubscribeMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useChapterSubscribeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ChapterSubscribeMutation,
+    ChapterSubscribeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ChapterSubscribeMutation,
+    ChapterSubscribeMutationVariables
+  >(ChapterSubscribeDocument, options);
+}
+export type ChapterSubscribeMutationHookResult = ReturnType<
+  typeof useChapterSubscribeMutation
+>;
+export type ChapterSubscribeMutationResult =
+  Apollo.MutationResult<ChapterSubscribeMutation>;
+export type ChapterSubscribeMutationOptions = Apollo.BaseMutationOptions<
+  ChapterSubscribeMutation,
+  ChapterSubscribeMutationVariables
+>;
 export const ChapterDocument = gql`
   query chapter($id: Int!) {
     chapter(id: $id) {
@@ -1428,6 +1586,68 @@ export type ChapterUsersLazyQueryHookResult = ReturnType<
 export type ChapterUsersQueryResult = Apollo.QueryResult<
   ChapterUsersQuery,
   ChapterUsersQueryVariables
+>;
+export const ChapterUserDocument = gql`
+  query chapterUser($chapterId: Int!) {
+    chapterUser(chapterId: $chapterId) {
+      user {
+        name
+      }
+      chapter_role {
+        name
+      }
+      subscribed
+    }
+  }
+`;
+
+/**
+ * __useChapterUserQuery__
+ *
+ * To run a query within a React component, call `useChapterUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterUserQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useChapterUserQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ChapterUserQuery,
+    ChapterUserQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChapterUserQuery, ChapterUserQueryVariables>(
+    ChapterUserDocument,
+    options,
+  );
+}
+export function useChapterUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChapterUserQuery,
+    ChapterUserQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChapterUserQuery, ChapterUserQueryVariables>(
+    ChapterUserDocument,
+    options,
+  );
+}
+export type ChapterUserQueryHookResult = ReturnType<typeof useChapterUserQuery>;
+export type ChapterUserLazyQueryHookResult = ReturnType<
+  typeof useChapterUserLazyQuery
+>;
+export type ChapterUserQueryResult = Apollo.QueryResult<
+  ChapterUserQuery,
+  ChapterUserQueryVariables
 >;
 export const ChaptersDocument = gql`
   query chapters {

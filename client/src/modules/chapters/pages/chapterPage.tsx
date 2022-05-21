@@ -1,17 +1,28 @@
 import {
   Heading,
   VStack,
+  HStack,
   Spinner,
   Stack,
   Text,
   Image,
   Link,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
+import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import React from 'react';
 
+import { useConfirm } from 'chakra-confirm';
+import { CHAPTER_USER } from '../graphql/queries';
 import { EventCard } from 'components/EventCard';
-import { useChapterQuery } from 'generated/graphql';
+import {
+  useChapterQuery,
+  useChapterUserQuery,
+  useJoinChapterMutation,
+  useChapterSubscribeMutation,
+} from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
@@ -20,6 +31,65 @@ export const ChapterPage: NextPage = () => {
   const { loading, error, data } = useChapterQuery({
     variables: { id: id || -1 },
   });
+
+  const confirm = useConfirm();
+  const toast = useToast();
+
+  const [joinChapterFn] = useJoinChapterMutation({
+    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
+  });
+
+  const [chapterSubscribeFn] = useChapterSubscribeMutation({
+    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
+  });
+
+  const { loading: loadingChapterUser, data: dataChapterUser } =
+    useChapterUserQuery({
+      variables: { chapterId: id },
+    });
+
+  const joinChapter = async () => {
+    const ok = await confirm();
+    if (ok) {
+      try {
+        await joinChapterFn({ variables: { chapterId: id } });
+        toast({ title: 'You successfully joined chapter', status: 'success' });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const chapterSubscribe = async (subscribed: boolean) => {
+    const ok = await confirm(
+      subscribed
+        ? {
+            title: 'Unsubscribe from chapter?',
+            body: 'Unsubscribing from chapter will affect subscriptions of all exising events, and new events in the chapter.',
+          }
+        : { title: 'Do you want to subscribe?' },
+    );
+
+    if (ok) {
+      try {
+        await chapterSubscribeFn({ variables: { chapterId: id } });
+        toast(
+          subscribed
+            ? {
+                title: 'You have unsubscribed from chapter',
+                status: 'info',
+              }
+            : {
+                title: 'You successfully subscribed to chapter',
+                status: 'success',
+              },
+        );
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+      }
+    }
+  };
 
   if (loading) {
     return <Spinner />;
@@ -60,6 +130,35 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
+        {loadingChapterUser ? (
+          <Spinner />
+        ) : dataChapterUser ? (
+          <HStack>
+            <CheckIcon />
+            <Text>
+              {dataChapterUser.chapterUser.chapter_role.name} of the chapter
+            </Text>
+            {dataChapterUser.chapterUser.subscribed ? (
+              <Button
+                colorScheme="orange"
+                onClick={() => chapterSubscribe(true)}
+              >
+                Unsubscribe
+              </Button>
+            ) : (
+              <Button
+                colorScheme="green"
+                onClick={() => chapterSubscribe(false)}
+              >
+                Subscribe
+              </Button>
+            )}
+          </HStack>
+        ) : (
+          <Button colorScheme="blue" onClick={joinChapter}>
+            Join chapter
+          </Button>
+        )}
         {data.chapter.chatUrl && (
           <div>
             <Heading size="md" color={'gray.700'}>

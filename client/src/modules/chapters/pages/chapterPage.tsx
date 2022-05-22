@@ -16,6 +16,7 @@ import React from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
+import { useAuth } from '../../auth/store';
 import { EventCard } from 'components/EventCard';
 import {
   useChapterQuery,
@@ -27,6 +28,7 @@ import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
   const id = useParam('chapterId');
+  const { user } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
     variables: { id: id || -1 },
@@ -130,35 +132,38 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {loadingChapterUser ? (
-          <Spinner />
-        ) : dataChapterUser ? (
-          <HStack>
-            <CheckIcon />
-            <Text>
-              {dataChapterUser.chapterUser.chapter_role.name} of the chapter
-            </Text>
-            {dataChapterUser.chapterUser.subscribed ? (
-              <Button
-                colorScheme="orange"
-                onClick={() => chapterSubscribe(true)}
-              >
-                Unsubscribe
-              </Button>
-            ) : (
-              <Button
-                colorScheme="green"
-                onClick={() => chapterSubscribe(false)}
-              >
-                Subscribe
-              </Button>
-            )}
-          </HStack>
-        ) : (
-          <Button colorScheme="blue" onClick={joinChapter}>
-            Join chapter
-          </Button>
-        )}
+        {user &&
+          (loadingChapterUser ? (
+            <Spinner />
+          ) : dataChapterUser ? (
+            <HStack>
+              <CheckIcon />
+              <Text>
+                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
+              </Text>
+              {dataChapterUser.chapterUser.subscribed ? (
+                <Button
+                  colorScheme="orange"
+                  onClick={() => chapterSubscribe(true)}
+                  size="md"
+                >
+                  Unsubscribe
+                </Button>
+              ) : (
+                <Button
+                  colorScheme="green"
+                  onClick={() => chapterSubscribe(false)}
+                  size="md"
+                >
+                  Subscribe
+                </Button>
+              )}
+            </HStack>
+          ) : (
+            <Button colorScheme="blue" onClick={joinChapter}>
+              Join chapter
+            </Button>
+          ))}
         {data.chapter.chatUrl && (
           <div>
             <Heading size="md" color={'gray.700'}>

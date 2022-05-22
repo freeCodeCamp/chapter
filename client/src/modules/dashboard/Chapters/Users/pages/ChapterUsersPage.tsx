@@ -2,11 +2,16 @@ import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useChapterUsersQuery } from '../../../../../generated/graphql';
+import {
+  useChapterUsersQuery,
+  useChapterRolesQuery,
+  useChangeChapterUserRoleMutation,
+} from '../../../../../generated/graphql';
 import { Layout } from '../../../shared/components/Layout';
 import { getId } from '../../../../../util/getId';
+import { CHAPTER_USERS } from 'modules/chapters/graphql/queries';
 
 export const ChapterUsersPage: NextPage = () => {
   const router = useRouter();
@@ -16,6 +21,29 @@ export const ChapterUsersPage: NextPage = () => {
   const { loading, error, data } = useChapterUsersQuery({
     variables: { id },
   });
+  const { data: chapterRoles } = useChapterRolesQuery();
+  const modalProps = useDisclosure();
+
+  const [chapterUser, setChapterUser] = useState<RoleChangeModalData>();
+
+  const [changeRoleMutation] = useChangeChapterUserRoleMutation({
+    refetchQueries: [{ query: CHAPTER_USERS, variables: { id: id } }],
+  });
+
+  const changeRole = (data: RoleChangeModalData) => {
+    setChapterUser(data);
+    modalProps.onOpen();
+  };
+  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+    changeRoleMutation({
+      variables: {
+        chapterId: id,
+        roleId: data.newRoleId,
+        userId: data.userId,
+      },
+    });
+    modalProps.onClose();
+  };
 
   return (
     <Layout>

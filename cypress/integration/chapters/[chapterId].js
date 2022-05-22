@@ -35,8 +35,4 @@ describe('chapter page', () => {
       ).to.not.equal(-1);
     });
   });
-
-  // it('user can subscribe and unsubscribe from chapter', () => {
-  //   cy.visit('/chapters/1');
-  // });
 });

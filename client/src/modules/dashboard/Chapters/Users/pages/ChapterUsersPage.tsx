@@ -17,6 +17,10 @@ import {
   useChangeChapterUserRoleMutation,
 } from '../../../../../generated/graphql';
 import { Layout } from '../../../shared/components/Layout';
+import {
+  RoleChangeModal,
+  RoleChangeModalData,
+} from '../../../shared/components/RoleChangeModal';
 import { getId } from '../../../../../util/getId';
 import { CHAPTER_USERS } from 'modules/chapters/graphql/queries';
 
@@ -54,6 +58,18 @@ export const ChapterUsersPage: NextPage = () => {
 
   return (
     <Layout>
+      {chapterRoles && chapterUser && (
+        <RoleChangeModal
+          modalProps={modalProps}
+          data={chapterUser}
+          roles={chapterRoles.chapterRoles.map(({ id, name }) => ({
+            id,
+            name,
+          }))}
+          title="Change chapter role"
+          onSubmit={onModalSubmit}
+        />
+      )}
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>

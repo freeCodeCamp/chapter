@@ -1,4 +1,11 @@
-import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
+import {
+  VStack,
+  Flex,
+  Text,
+  Heading,
+  Button,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -64,11 +71,29 @@ export const ChapterUsersPage: NextPage = () => {
           <DataTable
             data={data.chapter.chapter_users}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            keys={['name', 'email', 'role'] as const}
+            keys={['name', 'email', 'role', 'change role'] as const}
             mapper={{
               name: ({ user }) => user.name,
               email: ({ user }) => user.email,
-              role: ({ chapter_role }) => chapter_role.name,
+              role: ({ chapter_role: { name } }) => (
+                <Text data-cy="role">{name}</Text>
+              ),
+              'change role': ({ user: { id, name }, chapter_role }) => (
+                <Button
+                  data-cy="changeRole"
+                  colorScheme="blue"
+                  size="xs"
+                  onClick={() =>
+                    changeRole({
+                      roleId: chapter_role.id,
+                      userId: id,
+                      userName: name,
+                    })
+                  }
+                >
+                  Change
+                </Button>
+              ),
             }}
           />
         )}

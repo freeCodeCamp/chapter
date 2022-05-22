@@ -17,4 +17,18 @@ describe('Chapter Users dashboard', () => {
     cy.visit('/dashboard/chapters/1/users/new', { failOnStatusCode: false });
     cy.contains('This page could not be found');
   });
+
+  it('can change user chapter role', () => {
+    cy.visit('/dashboard/chapters/1/users');
+
+    cy.get('[data-cy=changeRole]').first().click();
+    cy.findByRole('combobox').select('member');
+    cy.findByRole('button', { name: 'Change' }).click();
+    cy.get('[data-cy=role]').first().contains('member');
+
+    cy.get('[data-cy=changeRole]').first().click();
+    cy.findByRole('combobox').select('organizer');
+    cy.findByRole('button', { name: 'Change' }).click();
+    cy.get('[data-cy=role]').first().contains('organizer');
+  });
 });

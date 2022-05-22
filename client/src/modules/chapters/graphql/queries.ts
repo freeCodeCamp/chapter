@@ -38,10 +38,12 @@ export const CHAPTER_USERS = gql`
     chapter(id: $id) {
       chapter_users {
         user {
+          id
           name
           email
         }
         chapter_role {
+          id
           name
         }
         subscribed

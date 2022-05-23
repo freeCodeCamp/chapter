@@ -89,13 +89,24 @@ export class ChapterUserResolver {
     });
 
     if (chapterUser.subscribed) {
+      const chapter = await prisma.chapters.findUnique({
+        include: { events: true },
+        where: { id: chapterId },
+      });
+
+      const onlyUserEventsFromChapter = {
+        AND: [
+          { user_id: ctx.user.id },
+          { event_id: { in: chapter.events.map(({ id }) => id) } },
+        ],
+      };
+
       await prisma.event_users.updateMany({
-        data: {
-          subscribed: false,
-        },
-        where: {
-          user_id: ctx.user.id,
-        },
+        data: { subscribed: false },
+        where: onlyUserEventsFromChapter,
+      });
+      await prisma.event_reminders.deleteMany({
+        where: onlyUserEventsFromChapter,
       });
     }
     return await prisma.chapter_users.update({

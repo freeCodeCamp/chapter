@@ -37,18 +37,16 @@ export const ChapterPage: NextPage = () => {
   const confirm = useConfirm();
   const toast = useToast();
 
-  const [joinChapterFn] = useJoinChapterMutation({
-    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
-  });
-
-  const [chapterSubscribeFn] = useChapterSubscribeMutation({
-    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
-  });
-
   const { loading: loadingChapterUser, data: dataChapterUser } =
     useChapterUserQuery({
       variables: { chapterId: id },
     });
+
+  const refetch = {
+    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
+  };
+  const [joinChapterFn] = useJoinChapterMutation(refetch);
+  const [chapterSubscribeFn] = useChapterSubscribeMutation(refetch);
 
   const joinChapter = async () => {
     const ok = await confirm();

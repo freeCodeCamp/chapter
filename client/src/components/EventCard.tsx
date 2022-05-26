@@ -56,7 +56,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           lineHeight="tight"
           isTruncated
         >
-          {formatDate(event.start_at)}
+          {formatDate(new Date(event.start_at).toISOString().slice(0, 16))}
           <Spacer />
           {metaTag}
         </Flex>

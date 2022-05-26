@@ -1,5 +1,12 @@
-import { prisma } from '../src/prisma';
 import MailerService from '../src/services/MailerService';
+import {
+  deleteReminder,
+  getRemindersOlderThanDate,
+  getOldReminders,
+  lockForNotifying,
+  lockForRetry,
+  Reminder,
+} from '../src/services/Reminders';
 
 const processingLimitInMinutes = 10;
 const dateFormatter = new Intl.DateTimeFormat('en-us', {
@@ -14,73 +21,6 @@ const timeFormatter = new Intl.DateTimeFormat('en-us', {
   minute: 'numeric',
   timeZone: 'GMT',
 });
-
-const getRemindersOlderThanDate = async (date: Date) =>
-  await prisma.event_reminders.findMany({
-    include: reminderIncludes,
-    where: {
-      remind_at: {
-        lte: date,
-      },
-      notifying: false,
-    },
-    orderBy: {
-      remind_at: 'asc',
-    },
-  });
-
-const getOldReminders = async (date: Date) =>
-  await prisma.event_reminders.findMany({
-    include: reminderIncludes,
-    where: {
-      notifying: true,
-      updated_at: {
-        lte: date,
-      },
-    },
-  });
-
-const reminderIncludes = {
-  event_user: {
-    include: {
-      user: true,
-      event: {
-        include: {
-          venue: true,
-          chapter: true,
-        },
-      },
-    },
-  },
-};
-
-type Reminder = Awaited<ReturnType<typeof getRemindersOlderThanDate>>[number];
-
-const lockForNotifying = async (reminder: Reminder) => {
-  const lock = await prisma.event_reminders.updateMany({
-    data: {
-      notifying: true,
-    },
-    where: {
-      user_id: reminder.user_id,
-      event_id: reminder.event_id,
-      notifying: false,
-    },
-  });
-  return { hasLock: lock.count !== 0 };
-};
-
-const lockForRetry = async (reminder: Reminder) => {
-  const lock = await prisma.event_reminders.updateMany({
-    data: { updated_at: new Date() },
-    where: {
-      user_id: reminder.user_id,
-      event_id: reminder.event_id,
-      updated_at: reminder.updated_at,
-    },
-  });
-  return { hasLock: lock.count !== 0 };
-};
 
 type LockCheck = (reminder: Reminder) => Promise<{ hasLock: boolean }>;
 
@@ -156,16 +96,6 @@ const sendEmailForReminder = async (reminder: Reminder) => {
     htmlEmail: email,
   }).sendEmail();
 };
-
-const deleteReminder = async (reminder: Reminder) =>
-  await prisma.event_reminders.delete({
-    where: {
-      user_id_event_id: {
-        user_id: reminder.user_id,
-        event_id: reminder.event_id,
-      },
-    },
-  });
 
 (async () => {
   const date = new Date();

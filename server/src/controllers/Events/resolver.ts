@@ -328,8 +328,14 @@ export class EventResolver {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const eventUser = await prisma.event_users.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: true },
+      include: { event: true, user: true },
     });
+
+    await new MailerService({
+      emailList: [eventUser.user.email],
+      subject: 'Your RSVP is confirmed',
+      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}`,
+    }).sendEmail();
 
     return await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'yes' } } },

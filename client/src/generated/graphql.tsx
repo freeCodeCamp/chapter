@@ -679,7 +679,7 @@ export type ChangeChapterUserRoleMutation = {
   __typename?: 'Mutation';
   changeChapterUserRole: {
     __typename?: 'ChapterUser';
-    chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
+    chapter_role: { __typename?: 'ChapterRole'; id: number };
   };
 };
 
@@ -1642,7 +1642,6 @@ export const ChangeChapterUserRoleDocument = gql`
     ) {
       chapter_role {
         id
-        name
       }
     }
   }

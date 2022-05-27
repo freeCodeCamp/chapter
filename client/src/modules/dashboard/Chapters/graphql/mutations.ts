@@ -41,7 +41,6 @@ export const changeChapterUserRole = gql`
     ) {
       chapter_role {
         id
-        name
       }
     }
   }

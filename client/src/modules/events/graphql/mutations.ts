@@ -9,3 +9,11 @@ export const rsvpToEvent = gql`
     }
   }
 `;
+
+export const subscribeEvent = gql`
+  mutation eventSubscribe($eventId: Int!) {
+    eventSubscribe(eventId: $eventId) {
+      subscribed
+    }
+  }
+`;

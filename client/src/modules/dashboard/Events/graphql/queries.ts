@@ -86,6 +86,7 @@ export const EVENT = gql`
             }
           }
         }
+        subscribed
       }
     }
   }

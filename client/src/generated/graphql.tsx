@@ -257,6 +257,7 @@ export type Mutation = {
   deleteEvent: Event;
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Scalars['Boolean'];
+  eventSubscribe: EventUser;
   initUserInterestForChapter: Scalars['Boolean'];
   login: LoginType;
   register: User;
@@ -313,6 +314,10 @@ export type MutationDeleteRsvpArgs = {
 
 export type MutationDeleteVenueArgs = {
   id: Scalars['Int'];
+};
+
+export type MutationEventSubscribeArgs = {
+  eventId: Scalars['Int'];
 };
 
 export type MutationInitUserInterestForChapterArgs = {
@@ -733,6 +738,7 @@ export type EventQuery = {
     } | null;
     event_users: Array<{
       __typename?: 'EventUser';
+      subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
       user: { __typename?: 'User'; id: number; name: string };
       event_role: {
@@ -1024,6 +1030,15 @@ export type RsvpToEventMutationVariables = Exact<{
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
   rsvpEvent?: { __typename?: 'EventUser'; updated_at: any } | null;
+};
+
+export type EventSubscribeMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
+
+export type EventSubscribeMutation = {
+  __typename?: 'Mutation';
+  eventSubscribe: { __typename?: 'EventUser'; subscribed: boolean };
 };
 
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1723,6 +1738,7 @@ export const EventDocument = gql`
             }
           }
         }
+        subscribed
       }
     }
   }
@@ -2766,6 +2782,56 @@ export type RsvpToEventMutationResult =
 export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutation,
   RsvpToEventMutationVariables
+>;
+export const EventSubscribeDocument = gql`
+  mutation eventSubscribe($eventId: Int!) {
+    eventSubscribe(eventId: $eventId) {
+      subscribed
+    }
+  }
+`;
+export type EventSubscribeMutationFn = Apollo.MutationFunction<
+  EventSubscribeMutation,
+  EventSubscribeMutationVariables
+>;
+
+/**
+ * __useEventSubscribeMutation__
+ *
+ * To run a mutation, you first call `useEventSubscribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEventSubscribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [eventSubscribeMutation, { data, loading, error }] = useEventSubscribeMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useEventSubscribeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    EventSubscribeMutation,
+    EventSubscribeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    EventSubscribeMutation,
+    EventSubscribeMutationVariables
+  >(EventSubscribeDocument, options);
+}
+export type EventSubscribeMutationHookResult = ReturnType<
+  typeof useEventSubscribeMutation
+>;
+export type EventSubscribeMutationResult =
+  Apollo.MutationResult<EventSubscribeMutation>;
+export type EventSubscribeMutationOptions = Apollo.BaseMutationOptions<
+  EventSubscribeMutation,
+  EventSubscribeMutationVariables
 >;
 export const MinEventsDocument = gql`
   query minEvents {

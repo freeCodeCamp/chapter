@@ -61,28 +61,28 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const chapterSubscribe = async (subscribed: boolean) => {
+  const chapterSubscribe = async (toSubscribe: boolean) => {
     const ok = await confirm(
-      subscribed
-        ? {
+      toSubscribe
+        ? { title: 'Do you want to subscribe?' }
+        : {
             title: 'Unsubscribe from chapter?',
             body: 'Unsubscribing from chapter will affect subscriptions of all exising events, and new events in the chapter.',
-          }
-        : { title: 'Do you want to subscribe?' },
+          },
     );
 
     if (ok) {
       try {
         await chapterSubscribeFn({ variables: { chapterId: id } });
         toast(
-          subscribed
+          toSubscribe
             ? {
-                title: 'You have unsubscribed from chapter',
-                status: 'info',
-              }
-            : {
                 title: 'You successfully subscribed to chapter',
                 status: 'success',
+              }
+            : {
+                title: 'You have unsubscribed from chapter',
+                status: 'info',
               },
         );
       } catch (err) {
@@ -142,7 +142,7 @@ export const ChapterPage: NextPage = () => {
               {dataChapterUser.chapterUser.subscribed ? (
                 <Button
                   colorScheme="orange"
-                  onClick={() => chapterSubscribe(true)}
+                  onClick={() => chapterSubscribe(false)}
                   size="md"
                 >
                   Unsubscribe
@@ -150,7 +150,7 @@ export const ChapterPage: NextPage = () => {
               ) : (
                 <Button
                   colorScheme="green"
-                  onClick={() => chapterSubscribe(false)}
+                  onClick={() => chapterSubscribe(true)}
                   size="md"
                 >
                   Subscribe

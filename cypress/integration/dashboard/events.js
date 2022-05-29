@@ -63,6 +63,9 @@ describe('events dashboard', () => {
         .mhGetRecipients()
         .should('have.members', subscriberEmails);
     });
+    cy.get('@invitation').then((mail) => {
+      cy.checkBcc(mail).should('eq', true);
+    });
   });
 
   function createEvent(chapterId) {
@@ -152,6 +155,9 @@ describe('events dashboard', () => {
       .filter(filterCallback)
       .map(({ user: { email } }) => email);
     cy.get('@emails').mhGetRecipients().should('have.members', emails);
+    cy.get('@emails').then((mail) => {
+      cy.checkBcc(mail).should('eq', true);
+    });
     cy.mhDeleteAll();
   }
 
@@ -238,6 +244,10 @@ describe('events dashboard', () => {
         cy.findAllByRole('row')
           .filter(`:contains(${eventData['name']})`)
           .should('contain.text', venueTitle);
+      });
+
+      cy.get('@venueMail').then((mail) => {
+        cy.checkBcc(mail).should('eq', true);
       });
 
       cy.deleteEvent(eventId);
@@ -337,6 +347,11 @@ describe('events dashboard', () => {
     cy.get('@eventTitle').then((eventTitle) => {
       cy.get('@emails').mhGetSubject().should('include', eventTitle);
     });
+
+    cy.get('@emails').then((emails) => {
+      cy.checkBcc(emails).should('eq', true);
+    });
+
     cy.mhDeleteAll();
   });
 });

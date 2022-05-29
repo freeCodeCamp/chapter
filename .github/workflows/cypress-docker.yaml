@@ -32,18 +32,12 @@ jobs:
         run: |
           cp .env.example .env
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build client and server
-        run: npm run build
-
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
           env: DOCKER_BUILDKIT=1
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          build: docker-compose build
+          build: npm run build:docker-ci
           start: npm run start:docker
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           config: baseUrl=http://localhost:3000

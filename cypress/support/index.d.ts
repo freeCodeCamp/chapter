@@ -51,5 +51,11 @@ declare namespace Cypress {
      * @param eventId Id of the event for deletion
      */
     deleteEvent(eventId: number): Chainable<any>;
+
+    /**
+     * Check if mail recipients are bcc
+     * @param mail The sent mail of type Item(cypress-mailhog)
+     */
+    checkBcc(mail): Chainable<boolean>;
   }
 }

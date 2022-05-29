@@ -69,7 +69,7 @@ Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) 
 
 ## License
 
-Copyright © 2021 freeCodeCamp.org
+Copyright (c) 2019-2022 freeCodeCamp.org
 
 The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 
@@ -158,6 +158,8 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
     <td align="center"><a href="https://github.com/gikf"><img src="https://avatars.githubusercontent.com/u/60067306?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Krzysztof G.</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=gikf" title="Code">💻</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/ismailtlemcani/"><img src="https://avatars.githubusercontent.com/u/34961373?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ismail Tlemcani</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Ismailtlem" title="Code">💻</a></td>
     <td align="center"><a href="https://sboonny.vercel.app/"><img src="https://avatars.githubusercontent.com/u/88248797?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Muhammed Mustafa</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Sboonny" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Nirajn2311"><img src="https://avatars.githubusercontent.com/u/36357875?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Niraj Nandish</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Nirajn2311" title="Code">💻</a></td>
+    <td align="center"><a href="http://c-ehrlich.dev"><img src="https://avatars.githubusercontent.com/u/8353666?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christopher Ehrlich</b></sub></a><br /><a href="#infra-c-ehrlich" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Tests">⚠️</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Code">💻</a></td>
   </tr>
 </table>
 

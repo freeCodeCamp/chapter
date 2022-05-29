@@ -39,18 +39,16 @@ export const EventPage: NextPage = () => {
 
   const confirmRSVP =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
-    () => {
-      return confirm().then(() =>
-        confirmRsvpFn({ variables: { eventId, userId } }),
-      );
+    async () => {
+      const ok = await confirm();
+      if (ok) confirmRsvpFn({ variables: { eventId, userId } });
     };
 
   const kick =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
-    () => {
-      return confirmDelete().then(() =>
-        kickRsvpFn({ variables: { eventId, userId } }),
-      );
+    async () => {
+      const ok = await confirmDelete();
+      if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
   if (loading || error || !data || !data.event) {
@@ -115,91 +113,104 @@ export const EventPage: NextPage = () => {
         false
       )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        <DataTable
-          title={
-            'RSVPs: ' +
-            (data.event.event_users
-              ? data.event.event_users.filter(({ rsvp }) => rsvp.name === 'yes')
-                  .length
-              : '0')
-          }
-          data={data.event.event_users.filter(
-            ({ rsvp }) => rsvp.name === 'yes',
-          )}
-          keys={['user', 'ops', 'role'] as const}
-          emptyText="No users"
-          mapper={{
-            user: ({ user }) => user.name,
-            ops: ({ user }) => (
-              <Button
-                size="xs"
-                colorScheme="red"
-                onClick={kick({ eventId, userId: user.id })}
-              >
-                Kick
-              </Button>
-            ),
-            role: ({ event_role }) => event_role.name,
-          }}
-        />
+        <Box data-cy="rsvps">
+          <DataTable
+            title={
+              'RSVPs: ' +
+              (data.event.event_users
+                ? data.event.event_users.filter(
+                    ({ rsvp }) => rsvp.name === 'yes',
+                  ).length
+                : '0')
+            }
+            data={data.event.event_users.filter(
+              ({ rsvp }) => rsvp.name === 'yes',
+            )}
+            keys={['user', 'ops', 'role'] as const}
+            emptyText="No users"
+            mapper={{
+              user: ({ user }) => <Text data-cy="username">{user.name}</Text>,
+              ops: ({ user }) => (
+                <Button
+                  data-cy="kick"
+                  size="xs"
+                  colorScheme="red"
+                  onClick={kick({ eventId, userId: user.id })}
+                >
+                  Kick
+                </Button>
+              ),
+              role: ({ event_role }) => event_role.name,
+            }}
+          />
+        </Box>
 
-        <DataTable
-          title={
-            'Canceled: ' +
-            (data.event.event_users
-              ? data.event.event_users.filter(({ rsvp }) => rsvp.name === 'no')
-                  .length
-              : '0')
-          }
-          data={data.event.event_users.filter(({ rsvp }) => rsvp.name === 'no')}
-          keys={['user', 'ops', 'role'] as const}
-          emptyText="No users"
-          mapper={{
-            user: ({ user }) => user.name,
-            ops: ({ user }) => (
-              <Button
-                size="xs"
-                colorScheme="red"
-                onClick={kick({ eventId, userId: user.id })}
-              >
-                Kick
-              </Button>
-            ),
-            role: ({ event_role }) => event_role.name,
-          }}
-        />
+        <Box data-cy="canceled">
+          <DataTable
+            title={
+              'Canceled: ' +
+              (data.event.event_users
+                ? data.event.event_users.filter(
+                    ({ rsvp }) => rsvp.name === 'no',
+                  ).length
+                : '0')
+            }
+            data={data.event.event_users.filter(
+              ({ rsvp }) => rsvp.name === 'no',
+            )}
+            keys={['user', 'ops', 'role'] as const}
+            emptyText="No users"
+            mapper={{
+              user: ({ user }) => <Text data-cy="username">{user.name}</Text>,
+              ops: ({ user }) => (
+                <Button
+                  data-cy="kick"
+                  size="xs"
+                  colorScheme="red"
+                  onClick={kick({ eventId, userId: user.id })}
+                >
+                  Kick
+                </Button>
+              ),
+              role: ({ event_role }) => event_role.name,
+            }}
+          />
+        </Box>
 
-        <DataTable
-          title={
-            'Waitlist: ' +
-            (data.event.event_users
-              ? data.event.event_users.filter(
-                  ({ rsvp }) => rsvp.name === 'waitlist',
-                ).length
-              : 0)
-          }
-          data={data.event.event_users.filter(
-            ({ rsvp }) => rsvp.name === 'waitlist',
-          )}
-          keys={['user', 'ops', 'role'] as const}
-          emptyText="No users"
-          mapper={{
-            user: ({ user }) => user.name,
-            ops: ({ user }) => (
-              <Button
-                size="xs"
-                colorScheme="green"
-                onClick={confirmRSVP({
-                  eventId,
-                  userId: user.id,
-                })}
-              >
-                Confirm
-              </Button>
-            ),
-            role: ({ event_role }) => event_role.name,
-          }}
-        />
+        <Box data-cy="waitlist">
+          <DataTable
+            title={
+              'Waitlist: ' +
+              (data.event.event_users
+                ? data.event.event_users.filter(
+                    ({ rsvp }) => rsvp.name === 'waitlist',
+                  ).length
+                : 0)
+            }
+            data={data.event.event_users.filter(
+              ({ rsvp }) => rsvp.name === 'waitlist',
+            )}
+            keys={['user', 'ops', 'role'] as const}
+            emptyText="No users"
+            mapper={{
+              user: ({ user }) => <Text data-cy="username">{user.name}</Text>,
+              ops: ({ user }) => (
+                <Button
+                  data-cy="confirmRSVP"
+                  size="xs"
+                  colorScheme="green"
+                  onClick={confirmRSVP({
+                    eventId,
+                    userId: user.id,
+                  })}
+                >
+                  Confirm
+                </Button>
+              ),
+              role: ({ event_role }) => event_role.name,
+            }}
+          />
+        </Box>
       </Box>
     </Layout>
   );

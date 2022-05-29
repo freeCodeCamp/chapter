@@ -24,9 +24,10 @@ import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,
+  useEventSubscribeMutation,
   useRsvpToEventMutation,
   useInitUserInterestForChapterMutation,
-} from 'generated/graphql';
+} from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
@@ -36,6 +37,9 @@ export const EventPage: NextPage = () => {
 
   const [rsvpToEvent] = useRsvpToEventMutation();
   const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
+  const [eventSubscribeFn] = useEventSubscribeMutation({
+    refetchQueries: [{ query: EVENT, variables: { id: id } }],
+  });
   const { loading, error, data } = useEventQuery({
     variables: { id: id || -1 },
   });
@@ -46,6 +50,33 @@ export const EventPage: NextPage = () => {
 
   const handleLoginUserFirst = () => {
     modalProps.onOpen();
+  };
+
+  const eventSubscribe = async (toSubscribe: boolean) => {
+    const ok = await confirm(
+      toSubscribe
+        ? { title: 'Do you want to subscribe?' }
+        : {
+            title: 'Unsubscribe from event?',
+            body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before event.',
+          },
+    );
+    if (ok) {
+      try {
+        await eventSubscribeFn({ variables: { eventId: id } });
+        toast(
+          toSubscribe
+            ? {
+                title: 'You successfully subscribed to event',
+                status: 'success',
+              }
+            : { title: 'You have unsubscribed from event', status: 'info' },
+        );
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
   };
 
   const onRsvp = async (add: boolean) => {
@@ -89,14 +120,16 @@ export const EventPage: NextPage = () => {
 
     await onRsvp(add);
   };
-  const userRsvped = useMemo(() => {
-    const rsvp = data?.event?.event_users.find(
-      ({ user: event_user, rsvp }) =>
-        event_user.id === user?.id && rsvp.name !== 'no',
+
+  const eventUser = useMemo(() => {
+    const eUser = data?.event?.event_users.find(
+      ({ user: event_user }) => event_user.id === user?.id,
     );
-    if (!rsvp) return null;
-    return rsvp.rsvp.name;
+    if (!eUser) return null;
+    return eUser;
   }, [data?.event]);
+  const userRsvped =
+    eventUser?.rsvp.name !== 'no' ? eventUser?.rsvp.name : null;
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
@@ -186,6 +219,28 @@ export const EventPage: NextPage = () => {
         >
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
+      )}
+      {eventUser && (
+        <HStack>
+          {eventUser.subscribed ? (
+            <>
+              <Heading>You are subscribed</Heading>
+              <Button
+                colorScheme="orange"
+                onClick={() => eventSubscribe(false)}
+              >
+                Unsubscribe
+              </Button>
+            </>
+          ) : (
+            <>
+              <Heading>Not subscribed</Heading>
+              <Button colorScheme="blue" onClick={() => eventSubscribe(true)}>
+                Subscribe
+              </Button>
+            </>
+          )}
+        </HStack>
       )}
 
       {data.event.sponsors.length ? (

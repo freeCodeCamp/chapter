@@ -1,4 +1,7 @@
-import { format } from 'date-fns';
+import { format, addMinutes } from 'date-fns';
 
-export const formatDate = (date?: Date | string | number) =>
-  format(new Date(date || Date.now()), 'E, LLL d @ HH:mm');
+export const formatDate = (date: string) => {
+  const offset = new Date().getTimezoneOffset();
+  const zonedDate = addMinutes(new Date(date), offset);
+  return format(zonedDate, 'E, LLL d @ HH:mm');
+};

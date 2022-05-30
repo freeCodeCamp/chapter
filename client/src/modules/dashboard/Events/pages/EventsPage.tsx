@@ -78,8 +78,10 @@ export const EventsPage: NextPage = () => {
                 isOnline(event.venue_type)
                   ? event.streaming_url
                   : 'In-person only',
-              date: (event) =>
-                formatDate(new Date(event.start_at).toISOString().slice(0, 16)),
+              date: (event) => {
+                console.log('start_at ', event.start_at);
+                return formatDate(event.start_at);
+              },
               actions: (event) => (
                 <LinkButton
                   colorScheme="green"

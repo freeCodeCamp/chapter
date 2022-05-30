@@ -63,8 +63,10 @@ export type ChapterRolePermission = {
 
 export type ChapterUser = {
   __typename?: 'ChapterUser';
+  canBeBanned: Scalars['Boolean'];
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
+  isBanned: Scalars['Boolean'];
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
@@ -85,6 +87,7 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
+  user_bans: Array<UserBan>;
 };
 
 export type CreateChapterInputs = {
@@ -247,6 +250,7 @@ export type LoginType = {
 export type Mutation = {
   __typename?: 'Mutation';
   authenticate: AuthenticateType;
+  banUser: UserBan;
   cancelEvent: Event;
   confirmRsvp: EventUser;
   createChapter: Chapter;
@@ -271,6 +275,11 @@ export type Mutation = {
 
 export type MutationAuthenticateArgs = {
   token: Scalars['String'];
+};
+
+export type MutationBanUserArgs = {
+  chapterId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationCancelEventArgs = {
@@ -363,6 +372,7 @@ export type MutationUpdateVenueArgs = {
 export type Query = {
   __typename?: 'Query';
   chapter?: Maybe<ChapterWithRelations>;
+  chapterUsers: Array<ChapterUser>;
   chapters: Array<Chapter>;
   event?: Maybe<EventWithRelations>;
   events: Array<EventWithRelations>;
@@ -376,6 +386,10 @@ export type Query = {
 
 export type QueryChapterArgs = {
   id: Scalars['Int'];
+};
+
+export type QueryChapterUsersArgs = {
+  chapter_id: Scalars['Int'];
 };
 
 export type QueryEventArgs = {
@@ -487,6 +501,12 @@ export type User = {
   id: Scalars['Int'];
   last_name: Scalars['String'];
   name: Scalars['String'];
+};
+
+export type UserBan = {
+  __typename?: 'UserBan';
+  chapter: Chapter;
+  user: User;
 };
 
 export type Venue = {
@@ -604,8 +624,14 @@ export type ChapterUsersQuery = {
     chapter_users: Array<{
       __typename?: 'ChapterUser';
       subscribed: boolean;
-      user: { __typename?: 'User'; name: string; email: string };
+      isBanned: boolean;
+      canBeBanned: boolean;
+      user: { __typename?: 'User'; id: number; name: string; email: string };
       chapter_role: { __typename?: 'ChapterRole'; name: string };
+    }>;
+    user_bans: Array<{
+      __typename?: 'UserBan';
+      user: { __typename?: 'User'; id: number };
     }>;
   } | null;
 };
@@ -658,6 +684,19 @@ export type UpdateChapterMutation = {
     region: string;
     country: string;
     chatUrl?: string | null;
+  };
+};
+
+export type BanUserMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type BanUserMutation = {
+  __typename?: 'Mutation';
+  banUser: {
+    __typename?: 'UserBan';
+    user: { __typename?: 'User'; name: string };
   };
 };
 
@@ -1367,6 +1406,7 @@ export const ChapterUsersDocument = gql`
     chapter(id: $id) {
       chapter_users {
         user {
+          id
           name
           email
         }
@@ -1374,6 +1414,13 @@ export const ChapterUsersDocument = gql`
           name
         }
         subscribed
+        isBanned
+        canBeBanned
+      }
+      user_bans {
+        user {
+          id
+        }
       }
     }
   }
@@ -1597,6 +1644,56 @@ export type UpdateChapterMutationResult =
 export type UpdateChapterMutationOptions = Apollo.BaseMutationOptions<
   UpdateChapterMutation,
   UpdateChapterMutationVariables
+>;
+export const BanUserDocument = gql`
+  mutation banUser($chapterId: Int!, $userId: Int!) {
+    banUser(chapterId: $chapterId, userId: $userId) {
+      user {
+        name
+      }
+    }
+  }
+`;
+export type BanUserMutationFn = Apollo.MutationFunction<
+  BanUserMutation,
+  BanUserMutationVariables
+>;
+
+/**
+ * __useBanUserMutation__
+ *
+ * To run a mutation, you first call `useBanUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBanUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [banUserMutation, { data, loading, error }] = useBanUserMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useBanUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    BanUserMutation,
+    BanUserMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<BanUserMutation, BanUserMutationVariables>(
+    BanUserDocument,
+    options,
+  );
+}
+export type BanUserMutationHookResult = ReturnType<typeof useBanUserMutation>;
+export type BanUserMutationResult = Apollo.MutationResult<BanUserMutation>;
+export type BanUserMutationOptions = Apollo.BaseMutationOptions<
+  BanUserMutation,
+  BanUserMutationVariables
 >;
 export const EventsDocument = gql`
   query events {

@@ -38,6 +38,7 @@ export const CHAPTER_USERS = gql`
     chapter(id: $id) {
       chapter_users {
         user {
+          id
           name
           email
         }
@@ -45,6 +46,13 @@ export const CHAPTER_USERS = gql`
           name
         }
         subscribed
+        isBanned
+        canBeBanned
+      }
+      user_bans {
+        user {
+          id
+        }
       }
     }
   }

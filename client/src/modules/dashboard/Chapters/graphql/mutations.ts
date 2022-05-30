@@ -27,3 +27,13 @@ export const updateChapter = gql`
     }
   }
 `;
+
+export const banUser = gql`
+  mutation banUser($chapterId: Int!, $userId: Int!) {
+    banUser(chapterId: $chapterId, userId: $userId) {
+      user {
+        name
+      }
+    }
+  }
+`;

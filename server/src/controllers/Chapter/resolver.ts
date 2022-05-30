@@ -33,6 +33,7 @@ export class ChapterResolver {
             user: true,
           },
         },
+        user_bans: { include: { user: true, chapter: true } },
       },
     });
   }

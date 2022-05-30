@@ -22,16 +22,16 @@ const setupRoles = async (
 
     usersData.push(userData);
 
-    const [banned, ...others] = userIds;
+    const [banned] = userIds;
     const banData: Prisma.user_bansCreateInput = {
-      users: { connect: { id: banned } },
-      chapters: { connect: { id: chapterId } },
+      user: { connect: { id: banned } },
+      chapter: { connect: { id: chapterId } },
     };
     await prisma.user_bans.create({ data: banData });
     // makes sure half of each chapter's users are interested, but
     // alternates which half.
     const userSubscribed = makeBooleanIterator(subscribeIterator.next().value);
-    for (const user of others) {
+    for (const user of userIds) {
       const userData: Prisma.chapter_usersCreateManyInput = {
         joined_date: new Date(),
         chapter_id: chapterId,

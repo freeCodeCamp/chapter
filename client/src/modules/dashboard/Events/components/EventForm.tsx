@@ -130,12 +130,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           {fields.map((field) =>
             field.type === 'datetime' ? (
               <FormControl key={field.key} isRequired>
-                <FormLabel>{field.label}</FormLabel>
+                {/* <FormLabel>{field.label}</FormLabel> */}
                 <DatePicker
                   selected={field.key === 'start_at' ? startDate : endDate}
                   showTimeSelect
+                  timeIntervals={5}
                   onChange={(date: Date) => {
-                    console.log('datechage ', date);
                     if (field.key === 'start_at') {
                       setValue('start_at', date.toISOString());
                       setStartDate(date);
@@ -145,6 +145,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                     }
                   }}
                   dateFormat="MMMM d, yyyy h:mm aa"
+                  customInput={
+                    <Input
+                      label={field.label}
+                      value={
+                        field.key === 'start_at'
+                          ? startDate.toDateString()
+                          : endDate.toDateString()
+                      }
+                    />
+                  }
                 />
               </FormControl>
             ) : field.type === 'textarea' ? (

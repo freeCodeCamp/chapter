@@ -23,13 +23,13 @@ export class CreateEventInputs {
   venue_type: events_venue_type_enum;
 
   @Field(() => Date)
-  start_at: number;
+  start_at: Date;
 
   @Field(() => Date)
   ends_at: Date;
 
   @Field(() => Number)
-  capacity: Date;
+  capacity: number;
 
   @Field(() => Int, { nullable: true })
   venue_id: number;

@@ -23,7 +23,8 @@
     "next": "12.1.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "7.30.0"
+    "react-hook-form": "7.30.0",
+    "timezones-list": "^3.0.1"
   },
   "devDependencies": {
     "@codesee/babel-plugin-instrument": "0.242.0",

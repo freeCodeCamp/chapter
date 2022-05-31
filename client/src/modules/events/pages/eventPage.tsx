@@ -18,7 +18,6 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import Head from 'next/head';
 import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
 import SponsorsCard from '../../../components/SponsorsCard';

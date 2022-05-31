@@ -16,8 +16,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import timezones from 'timezones-list';
+import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';

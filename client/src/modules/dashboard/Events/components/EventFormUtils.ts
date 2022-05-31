@@ -5,7 +5,6 @@ import {
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
-import { formatDate } from 'util/date';
 
 export interface Field {
   key: keyof EventFormData;

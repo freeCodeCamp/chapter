@@ -103,7 +103,6 @@ model events {
   url           String?
   streaming_url String?
   venue_type    events_venue_type_enum @default(Physical)
-  time_zone     String
   start_at      DateTime
   ends_at       DateTime
   canceled      Boolean                @default(false)

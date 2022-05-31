@@ -22,9 +22,6 @@ export class CreateEventInputs {
   @Field(() => events_venue_type_enum, { nullable: true })
   venue_type: events_venue_type_enum;
 
-  @Field(() => String)
-  time_zone: string;
-
   @Field(() => Date)
   start_at: number;
 
@@ -71,9 +68,6 @@ export class UpdateEventInputs {
 
   @Field(() => events_venue_type_enum, { nullable: true })
   venue_type: events_venue_type_enum;
-
-  @Field(() => String)
-  time_zone: string;
 
   @Field(() => Date, { nullable: true })
   start_at: number;

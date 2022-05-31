@@ -2,7 +2,6 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { DateTime } from 'luxon';
 import {
   useEventQuery,
   useUpdateEventMutation,

@@ -5,6 +5,7 @@ import {
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
+import { formatDate } from 'util/date';
 
 export interface Field {
   key: keyof EventFormData;
@@ -103,26 +104,17 @@ export const fields: Field[] = [
     isRequired: false,
   },
   {
-    key: 'time_zone',
-    type: 'text',
-    label: 'Time Zone',
-    defaultValue: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    isRequired: true,
-  },
-  {
     key: 'start_at',
-    type: 'datetime-local',
+    type: 'datetime',
     label: 'Start at',
-    defaultValue: new Date().toISOString().slice(0, 16),
+    defaultValue: new Date().toISOString(),
     isRequired: true,
   },
   {
     key: 'ends_at',
-    type: 'datetime-local',
+    type: 'datetime',
     label: 'End at',
-    defaultValue: new Date(Date.now() + 1000 * 60 * 60)
-      .toISOString()
-      .slice(0, 16),
+    defaultValue: new Date(Date.now() + 1000 * 60 * 60).toISOString(),
     isRequired: true,
   },
 ];
@@ -135,7 +127,6 @@ export interface EventFormData {
   streaming_url?: string | null;
   capacity: number;
   tags: string;
-  time_zone: string;
   start_at: string;
   ends_at: string;
   venue_type: VenueType;
@@ -147,14 +138,12 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'time_zone'>
-  | 'id'
+  keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors'> | 'id'
 > & {
   venue_id?: number;
   tags: EventTag[];
   venue?: Omit<Venue, 'events'> | null;
   sponsors: EventSponsorInput[];
-  time_zone: string;
 };
 
 export interface EventFormProps {

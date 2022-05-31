@@ -15,9 +15,10 @@ import {
   Radio,
   Heading,
 } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import React, { useMemo, useState } from 'react';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import timezones from 'timezones-list';
+import DatePicker from 'react-datepicker';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import {
@@ -41,8 +42,14 @@ import {
   getAllowedSponsorsForType,
 } from './EventFormUtils';
 
+import 'react-datepicker/dist/react-datepicker.css';
+
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText, chapterId } = props;
+  const [startDate, setStartDate] = useState(
+    new Date(data?.start_at) || new Date(),
+  );
+  const [endDate, setEndDate] = useState(new Date(data?.ends_at) || new Date());
   const {
     loading: loadingChapter,
     error: errorChapter,
@@ -65,7 +72,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const defaultValues = useMemo(() => {
     if (!data)
       return {
-        time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         start_at: new Date().toISOString().slice(0, 16),
         ends_at: new Date(Date.now() + 1000 * 60 * 60)
           .toISOString()
@@ -78,9 +84,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       url: data.url,
       streaming_url: data.streaming_url,
       capacity: data.capacity,
-      time_zone: data.time_zone,
-      start_at: new Date(data.start_at).toISOString().slice(0, 16),
-      ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
+      start_at: data.start_at,
+      ends_at: data.ends_at,
       sponsors: data.sponsors,
       tags: (data.tags || []).map(({ tag }) => tag.name).join(', '),
       venue_type: data.venue_type,
@@ -124,16 +129,24 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       >
         <VStack align="flex-start">
           {fields.map((field) =>
-            field.key === 'time_zone' ? (
-              <FormControl key={'time_zone'} isRequired>
-                <FormLabel>Time Zone</FormLabel>
-                <Select {...register('time_zone')}>
-                  {timezones.map((t) => (
-                    <option key={t.tzCode} value={t.tzCode}>
-                      {t.label}
-                    </option>
-                  ))}
-                </Select>
+            field.type === 'datetime' ? (
+              <FormControl key={field.key} isRequired>
+                <FormLabel>{field.label}</FormLabel>
+                <DatePicker
+                  selected={field.key === 'start_at' ? startDate : endDate}
+                  showTimeSelect
+                  onChange={(date: Date) => {
+                    console.log('datechage ', date);
+                    if (field.key === 'start_at') {
+                      setValue('start_at', date.toISOString());
+                      setStartDate(date);
+                    } else {
+                      setValue('ends_at', date.toISOString());
+                      setEndDate(date);
+                    }
+                  }}
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                />
               </FormControl>
             ) : field.type === 'textarea' ? (
               <TextArea

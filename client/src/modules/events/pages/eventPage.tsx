@@ -156,7 +156,6 @@ export const EventPage: NextPage = () => {
           {data.event.chapter.name}
         </Link>
       </Heading>
-      <Heading size="sm">{data.event.time_zone}</Heading>
       <Text>{data.event.description}</Text>
       <VStack align="start">
         {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}

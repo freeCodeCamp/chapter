@@ -63,7 +63,6 @@ const createEvents = async (
       canceled: canceled[i],
       // Setting the first event to be open, so that we can test the RSVP flow
       invite_only: i == 0 ? false : inviteOnly[i],
-      time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       start_at,
       ends_at: addHours(start_at, random(5)),
       image_url: image.imageUrl(640, 480, 'nature', true),

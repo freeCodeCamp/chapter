@@ -28,9 +28,6 @@ export class Event extends BaseObject {
   @Field(() => events_venue_type_enum)
   venue_type: events_venue_type_enum;
 
-  @Field(() => String)
-  time_zone: string;
-
   @Field(() => Date)
   start_at: Date;
 

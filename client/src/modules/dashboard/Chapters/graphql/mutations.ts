@@ -27,3 +27,21 @@ export const updateChapter = gql`
     }
   }
 `;
+
+export const changeChapterUserRole = gql`
+  mutation changeChapterUserRole(
+    $chapterId: Int!
+    $roleId: Int!
+    $userId: Int!
+  ) {
+    changeChapterUserRole(
+      chapterId: $chapterId
+      roleId: $roleId
+      userId: $userId
+    ) {
+      chapter_role {
+        id
+      }
+    }
+  }
+`;

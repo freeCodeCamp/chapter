@@ -5,7 +5,7 @@ describe('event dashboard', () => {
   });
 
   describe('users lists', () => {
-    it('confirming user on waitlist should move user to RSVPs', () => {
+    it('confirming user on waitlist should move user to RSVPs and send email', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=waitlist]').as('waitlist');
       cy.get('@waitlist')
@@ -14,14 +14,32 @@ describe('event dashboard', () => {
         .invoke('text')
         .as('userName');
 
-      cy.get('@waitlist').find('[data-cy=confirmRSVP]').first().click();
+      cy.get('@waitlist').find('[data-cy=confirm]').first().click();
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Confirm' })
         .click();
 
+      cy.waitUntilMail('allMail');
+      cy.get('@allMail').mhFirst().as('email');
+
       cy.get('@userName').then((userName) => {
         cy.get('@waitlist').not(`:contains(${userName})`);
         cy.get('[data-cy=rsvps]').contains(userName);
+      });
+
+      cy.get('@email')
+        .mhGetSubject()
+        .should('include', 'Your RSVP is confirmed');
+      cy.get('@email')
+        .mhGetBody()
+        .should('include', 'reservation is confirmed');
+      cy.getEventUsers(1).then((eventUsers) => {
+        cy.get('@userName').then((userName) => {
+          const userEmail = eventUsers
+            .filter(({ user: { name } }) => name === userName)
+            .map(({ user: { email } }) => email);
+          cy.get('@email').mhGetRecipients().should('have.members', userEmail);
+        });
       });
     });
 
@@ -51,7 +69,7 @@ describe('event dashboard', () => {
         .invoke('text')
         .as('userName');
 
-      cy.get('@waitlist').find('[data-cy=confirmRSVP]').first().click();
+      cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
       cy.intercept('/graphql', cy.spy().as('request'));
       cy.findByRole('alertdialog')

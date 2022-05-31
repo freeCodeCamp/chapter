@@ -248,6 +248,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticate: AuthenticateType;
   cancelEvent: Event;
+  changeChapterUserRole: ChapterUser;
   confirmRsvp: EventUser;
   createChapter: Chapter;
   createEvent: Event;
@@ -275,6 +276,12 @@ export type MutationAuthenticateArgs = {
 
 export type MutationCancelEventArgs = {
   id: Scalars['Int'];
+};
+
+export type MutationChangeChapterUserRoleArgs = {
+  chapterId: Scalars['Int'];
+  roleId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationConfirmRsvpArgs = {
@@ -363,6 +370,7 @@ export type MutationUpdateVenueArgs = {
 export type Query = {
   __typename?: 'Query';
   chapter?: Maybe<ChapterWithRelations>;
+  chapterRoles: Array<ChapterRole>;
   chapters: Array<Chapter>;
   event?: Maybe<EventWithRelations>;
   events: Array<EventWithRelations>;
@@ -604,8 +612,8 @@ export type ChapterUsersQuery = {
     chapter_users: Array<{
       __typename?: 'ChapterUser';
       subscribed: boolean;
-      user: { __typename?: 'User'; name: string; email: string };
-      chapter_role: { __typename?: 'ChapterRole'; name: string };
+      user: { __typename?: 'User'; id: number; name: string; email: string };
+      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
   } | null;
 };
@@ -659,6 +667,27 @@ export type UpdateChapterMutation = {
     country: string;
     chatUrl?: string | null;
   };
+};
+
+export type ChangeChapterUserRoleMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+  roleId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type ChangeChapterUserRoleMutation = {
+  __typename?: 'Mutation';
+  changeChapterUserRole: {
+    __typename?: 'ChapterUser';
+    chapter_role: { __typename?: 'ChapterRole'; id: number };
+  };
+};
+
+export type ChapterRolesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ChapterRolesQuery = {
+  __typename?: 'Query';
+  chapterRoles: Array<{ __typename?: 'ChapterRole'; id: number; name: string }>;
 };
 
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1367,10 +1396,12 @@ export const ChapterUsersDocument = gql`
     chapter(id: $id) {
       chapter_users {
         user {
+          id
           name
           email
         }
         chapter_role {
+          id
           name
         }
         subscribed
@@ -1597,6 +1628,126 @@ export type UpdateChapterMutationResult =
 export type UpdateChapterMutationOptions = Apollo.BaseMutationOptions<
   UpdateChapterMutation,
   UpdateChapterMutationVariables
+>;
+export const ChangeChapterUserRoleDocument = gql`
+  mutation changeChapterUserRole(
+    $chapterId: Int!
+    $roleId: Int!
+    $userId: Int!
+  ) {
+    changeChapterUserRole(
+      chapterId: $chapterId
+      roleId: $roleId
+      userId: $userId
+    ) {
+      chapter_role {
+        id
+      }
+    }
+  }
+`;
+export type ChangeChapterUserRoleMutationFn = Apollo.MutationFunction<
+  ChangeChapterUserRoleMutation,
+  ChangeChapterUserRoleMutationVariables
+>;
+
+/**
+ * __useChangeChapterUserRoleMutation__
+ *
+ * To run a mutation, you first call `useChangeChapterUserRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeChapterUserRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeChapterUserRoleMutation, { data, loading, error }] = useChangeChapterUserRoleMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *      roleId: // value for 'roleId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useChangeChapterUserRoleMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ChangeChapterUserRoleMutation,
+    ChangeChapterUserRoleMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ChangeChapterUserRoleMutation,
+    ChangeChapterUserRoleMutationVariables
+  >(ChangeChapterUserRoleDocument, options);
+}
+export type ChangeChapterUserRoleMutationHookResult = ReturnType<
+  typeof useChangeChapterUserRoleMutation
+>;
+export type ChangeChapterUserRoleMutationResult =
+  Apollo.MutationResult<ChangeChapterUserRoleMutation>;
+export type ChangeChapterUserRoleMutationOptions = Apollo.BaseMutationOptions<
+  ChangeChapterUserRoleMutation,
+  ChangeChapterUserRoleMutationVariables
+>;
+export const ChapterRolesDocument = gql`
+  query chapterRoles {
+    chapterRoles {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useChapterRolesQuery__
+ *
+ * To run a query within a React component, call `useChapterRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChapterRolesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    ChapterRolesQuery,
+    ChapterRolesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChapterRolesQuery, ChapterRolesQueryVariables>(
+    ChapterRolesDocument,
+    options,
+  );
+}
+export function useChapterRolesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChapterRolesQuery,
+    ChapterRolesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChapterRolesQuery, ChapterRolesQueryVariables>(
+    ChapterRolesDocument,
+    options,
+  );
+}
+export type ChapterRolesQueryHookResult = ReturnType<
+  typeof useChapterRolesQuery
+>;
+export type ChapterRolesLazyQueryHookResult = ReturnType<
+  typeof useChapterRolesLazyQuery
+>;
+export type ChapterRolesQueryResult = Apollo.QueryResult<
+  ChapterRolesQuery,
+  ChapterRolesQueryVariables
 >;
 export const EventsDocument = gql`
   query events {

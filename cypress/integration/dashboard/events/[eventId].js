@@ -14,7 +14,7 @@ describe('event dashboard', () => {
         .invoke('text')
         .as('userName');
 
-      cy.get('@waitlist').find('[data-cy=confirmRSVP]').first().click();
+      cy.get('@waitlist').find('[data-cy=confirm]').first().click();
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Confirm' })
         .click();
@@ -69,7 +69,7 @@ describe('event dashboard', () => {
         .invoke('text')
         .as('userName');
 
-      cy.get('@waitlist').find('[data-cy=confirmRSVP]').first().click();
+      cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
       cy.intercept('/graphql', cy.spy().as('request'));
       cy.findByRole('alertdialog')

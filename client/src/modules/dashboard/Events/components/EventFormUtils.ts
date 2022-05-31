@@ -126,8 +126,8 @@ export interface EventFormData {
   streaming_url?: string | null;
   capacity: number;
   tags: string;
-  start_at: string;
-  ends_at: string;
+  start_at: Date;
+  ends_at: Date;
   venue_type: VenueType;
   venue_id?: number | null;
   invite_only?: boolean;

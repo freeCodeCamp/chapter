@@ -26,10 +26,10 @@ export class CreateEventInputs {
   start_at: number;
 
   @Field(() => Date)
-  ends_at: number;
+  ends_at: Date;
 
   @Field(() => Number)
-  capacity: number;
+  capacity: Date;
 
   @Field(() => Int, { nullable: true })
   venue_id: number;
@@ -70,10 +70,10 @@ export class UpdateEventInputs {
   venue_type: events_venue_type_enum;
 
   @Field(() => Date, { nullable: true })
-  start_at: number;
+  start_at: Date;
 
   @Field(() => Date, { nullable: true })
-  ends_at: number;
+  ends_at: Date;
 
   @Field(() => Number, { nullable: true })
   capacity: number;

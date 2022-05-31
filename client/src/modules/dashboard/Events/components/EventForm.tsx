@@ -130,7 +130,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           {fields.map((field) =>
             field.type === 'datetime' ? (
               <FormControl key={field.key} isRequired>
-                {/* <FormLabel>{field.label}</FormLabel> */}
                 <DatePicker
                   selected={field.key === 'start_at' ? startDate : endDate}
                   showTimeSelect

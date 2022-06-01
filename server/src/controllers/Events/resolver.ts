@@ -9,15 +9,7 @@ import {
   venues,
 } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
-import {
-  Resolver,
-  Query,
-  Arg,
-  Int,
-  Mutation,
-  Ctx,
-  Authorized,
-} from 'type-graphql';
+import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
@@ -155,11 +147,6 @@ export class EventResolver {
     });
   }
 
-  // DEBUG: demonstrates that if you have an event role, but for the wrong
-  // event, you won't see this.  To test: register new user. go to
-  // /dashboard/events/1 see error create event, then go to
-  // /dashboard/events/[newId] and see the working page
-  @Authorized(['chapter-edit'])
   @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('eventId', () => Int) eventId: number,
@@ -399,7 +386,6 @@ export class EventResolver {
 
     // TODO: add admin and owner once you've figured out how to handle instance
     // roles
-    // TODO: REMOVE THIS - it's the job of the authorization 'middleware'
     const allowedRoles = ['organizer'] as const;
     const hasPermission =
       allowedRoles.findIndex((x) => x === userChapter?.chapter_role.name) !==

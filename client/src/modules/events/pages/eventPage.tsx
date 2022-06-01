@@ -24,8 +24,9 @@ import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,
-  useEventSubscribeMutation,
   useRsvpToEventMutation,
+  useSubscribeToEventMutation,
+  useUnsubscribeFromEventMutation,
   useInitUserInterestForChapterMutation,
 } from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
@@ -35,11 +36,14 @@ export const EventPage: NextPage = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [rsvpToEvent] = useRsvpToEventMutation();
-  const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
-  const [eventSubscribeFn] = useEventSubscribeMutation({
+  const refetch = {
     refetchQueries: [{ query: EVENT, variables: { id: id } }],
-  });
+  };
+
+  const [rsvpToEvent] = useRsvpToEventMutation(refetch);
+  const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
+  const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
+  const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
   const { loading, error, data } = useEventQuery({
     variables: { id: id || -1 },
   });
@@ -52,26 +56,34 @@ export const EventPage: NextPage = () => {
     modalProps.onOpen();
   };
 
-  const eventSubscribe = async (toSubscribe: boolean) => {
-    const ok = await confirm(
-      toSubscribe
-        ? { title: 'Do you want to subscribe?' }
-        : {
-            title: 'Unsubscribe from event?',
-            body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before event.',
-          },
-    );
+  const onSubscribeToEvent = async () => {
+    const ok = await confirm({ title: 'Do you want to subscribe?' });
     if (ok) {
       try {
-        await eventSubscribeFn({ variables: { eventId: id } });
-        toast(
-          toSubscribe
-            ? {
-                title: 'You successfully subscribed to event',
-                status: 'success',
-              }
-            : { title: 'You have unsubscribed from event', status: 'info' },
-        );
+        await subscribeToEvent({ variables: { eventId: id } });
+        toast({
+          title: 'You successfully subscribed to this event',
+          status: 'success',
+        });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const onUnsubscribeFromEvent = async () => {
+    const ok = await confirm({
+      title: 'Unsubscribe from event?',
+      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
+    });
+    if (ok) {
+      try {
+        await unsubscribeFromEvent({ variables: { eventId: id } });
+        toast({
+          title: 'You have unsubscribed from this event',
+          status: 'info',
+        });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -90,7 +102,6 @@ export const EventPage: NextPage = () => {
       try {
         await rsvpToEvent({
           variables: { eventId: id },
-          refetchQueries: [{ query: EVENT, variables: { id } }],
         });
 
         toast(
@@ -225,17 +236,14 @@ export const EventPage: NextPage = () => {
           {eventUser.subscribed ? (
             <>
               <Heading>You are subscribed</Heading>
-              <Button
-                colorScheme="orange"
-                onClick={() => eventSubscribe(false)}
-              >
+              <Button colorScheme="orange" onClick={onUnsubscribeFromEvent}>
                 Unsubscribe
               </Button>
             </>
           ) : (
             <>
               <Heading>Not subscribed</Heading>
-              <Button colorScheme="blue" onClick={() => eventSubscribe(true)}>
+              <Button colorScheme="blue" onClick={onSubscribeToEvent}>
                 Subscribe
               </Button>
             </>

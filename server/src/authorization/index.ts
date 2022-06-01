@@ -41,7 +41,7 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
    * update event 1.
    * */
 
-  // if (isAllowedByInstanceRole(user, roles, info)) return true;
+  if (await isAllowedByInstanceRole(user, permissions)) return true;
   if (await isAllowedByChapterRole(user, permissions, variableValues))
     return true;
   if (isAllowedByEventRole(user, permissions, variableValues)) return true;
@@ -70,6 +70,14 @@ async function isAllowedByChapterRole(
   if (chapterId === null) return false;
   const chapterPermissions = getChapterPermissionsById(user, chapterId);
   return hasNecessaryPermission(roles, chapterPermissions);
+}
+
+async function isAllowedByInstanceRole(
+  user: UserWithRoles,
+  roles: string[],
+): Promise<boolean> {
+  const instancePermissions = getInstancePermissions(user);
+  return hasNecessaryPermission(roles, instancePermissions);
 }
 
 async function getRelatedChapterId(
@@ -102,6 +110,12 @@ function isAllowedByEventRole(
   return hasNecessaryPermission(permissions, eventPermissions);
 }
 
+function getInstancePermissions(user: UserWithRoles): string[] {
+  return user.instance_role.instance_role_permissions.map(
+    (x) => x.instance_permission.name,
+  );
+}
+
 function getChapterPermissionsById(
   user: UserWithRoles,
   chapterId: number,
@@ -114,10 +128,6 @@ function getChapterPermissionsById(
     : [];
 }
 
-// TODO: this is pretending there are multiple roles, but for now there's only
-// one. For this to change, we need to extend the db to support multiple roles
-// for each role type. (i.e. an 'organizer' would have things like
-// 'UPDATE_EVENT', 'CONFIRM_RSVP' etc.)
 function getEventPermissions(
   user: UserWithRoles,
   variableValues: VariableValues,

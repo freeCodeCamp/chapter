@@ -30,7 +30,6 @@ interface ModalProps {
   buttons?: React.ReactElement;
   buttonsLeft?: React.ReactElement;
   wrapChildren?: ConditionalWrapProps['Wrap'];
-  wrapLeftButtons?: ConditionalWrapProps['Wrap'];
   formButtonText?: string;
 }
 
@@ -42,7 +41,6 @@ export const Modal: React.FC<ModalProps> = (props) => {
     buttonsLeft,
     formButtonText,
     wrapChildren,
-    wrapLeftButtons,
     size = 'xl',
     children,
   } = props;
@@ -61,20 +59,18 @@ export const Modal: React.FC<ModalProps> = (props) => {
           <ModalBody>{children}</ModalBody>
 
           <ModalFooter>
-            <ConditionalWrap Wrap={wrapLeftButtons}>
-              {buttonsLeft}
-              <HStack>
-                <Button colorScheme="blue" onClick={modalProps.onClose}>
-                  Close
+            {buttonsLeft}
+            <HStack>
+              <Button colorScheme="blue" onClick={modalProps.onClose}>
+                Close
+              </Button>
+              {buttons}
+              {formButtonText && (
+                <Button colorScheme={'green'} type="submit">
+                  {formButtonText}
                 </Button>
-                {buttons}
-                {formButtonText && (
-                  <Button colorScheme={'green'} type="submit">
-                    {formButtonText}
-                  </Button>
-                )}
-              </HStack>
-            </ConditionalWrap>
+              )}
+            </HStack>
           </ModalFooter>
         </ConditionalWrap>
       </ModalContent>

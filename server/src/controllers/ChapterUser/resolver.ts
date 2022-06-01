@@ -18,7 +18,7 @@ export class ChapterUserResolver {
       return null;
     }
 
-    const chapterUser = await prisma.chapter_users.findUnique({
+    return await prisma.chapter_users.findUnique({
       include: {
         chapter_role: {
           include: {
@@ -32,12 +32,6 @@ export class ChapterUserResolver {
       },
       rejectOnNotFound: false,
     });
-
-    if (!chapterUser) {
-      return null;
-    }
-
-    return chapterUser;
   }
 
   @Mutation(() => ChapterUser)
@@ -49,7 +43,7 @@ export class ChapterUserResolver {
       throw Error('User must be logged in to join chapter');
     }
 
-    const chapterUser = await prisma.chapter_users.create({
+    return await prisma.chapter_users.create({
       data: {
         user: { connect: { id: ctx.user.id } },
         chapter: { connect: { id: chapterId } },
@@ -66,12 +60,10 @@ export class ChapterUserResolver {
         },
       },
     });
-
-    return chapterUser;
   }
 
   @Mutation(() => ChapterUser)
-  async chapterSubscribe(
+  async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: GQLCtx,
   ): Promise<ChapterUser> {
@@ -86,14 +78,11 @@ export class ChapterUserResolver {
           user_id: ctx.user.id,
         },
       },
+      include: { chapter: { include: { events: true } } },
     });
+    const chapter = chapterUser.chapter;
 
     if (chapterUser.subscribed) {
-      const chapter = await prisma.chapters.findUnique({
-        include: { events: true },
-        where: { id: chapterId },
-      });
-
       const onlyUserEventsFromChapter = {
         AND: [
           { user_id: ctx.user.id },

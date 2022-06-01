@@ -248,7 +248,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticate: AuthenticateType;
   cancelEvent: Event;
-  chapterSubscribe: ChapterUser;
   confirmRsvp: EventUser;
   createChapter: Chapter;
   createEvent: Event;
@@ -265,6 +264,7 @@ export type Mutation = {
   rsvpEvent?: Maybe<EventUser>;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
+  toggleChapterSubscription: ChapterUser;
   updateChapter: Chapter;
   updateEvent: Event;
   updateSponsor: Sponsor;
@@ -277,10 +277,6 @@ export type MutationAuthenticateArgs = {
 
 export type MutationCancelEventArgs = {
   id: Scalars['Int'];
-};
-
-export type MutationChapterSubscribeArgs = {
-  chapterId: Scalars['Int'];
 };
 
 export type MutationConfirmRsvpArgs = {
@@ -348,6 +344,10 @@ export type MutationSendEmailArgs = {
 export type MutationSendEventInviteArgs = {
   emailGroups?: InputMaybe<Array<Scalars['String']>>;
   id: Scalars['Int'];
+};
+
+export type MutationToggleChapterSubscriptionArgs = {
+  chapterId: Scalars['Int'];
 };
 
 export type MutationUpdateChapterArgs = {
@@ -582,19 +582,20 @@ export type JoinChapterMutation = {
   __typename?: 'Mutation';
   joinChapter: {
     __typename?: 'ChapterUser';
-    subscribed: boolean;
-    user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
 };
 
-export type ChapterSubscribeMutationVariables = Exact<{
+export type ToggleChapterSubscriptionMutationVariables = Exact<{
   chapterId: Scalars['Int'];
 }>;
 
-export type ChapterSubscribeMutation = {
+export type ToggleChapterSubscriptionMutation = {
   __typename?: 'Mutation';
-  chapterSubscribe: { __typename?: 'ChapterUser'; subscribed: boolean };
+  toggleChapterSubscription: {
+    __typename?: 'ChapterUser';
+    subscribed: boolean;
+  };
 };
 
 export type ChapterQueryVariables = Exact<{
@@ -1341,13 +1342,9 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const JoinChapterDocument = gql`
   mutation joinChapter($chapterId: Int!) {
     joinChapter(chapterId: $chapterId) {
-      user {
-        name
-      }
       chapter_role {
         name
       }
-      subscribed
     }
   }
 `;
@@ -1394,56 +1391,57 @@ export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
   JoinChapterMutation,
   JoinChapterMutationVariables
 >;
-export const ChapterSubscribeDocument = gql`
-  mutation chapterSubscribe($chapterId: Int!) {
-    chapterSubscribe(chapterId: $chapterId) {
+export const ToggleChapterSubscriptionDocument = gql`
+  mutation toggleChapterSubscription($chapterId: Int!) {
+    toggleChapterSubscription(chapterId: $chapterId) {
       subscribed
     }
   }
 `;
-export type ChapterSubscribeMutationFn = Apollo.MutationFunction<
-  ChapterSubscribeMutation,
-  ChapterSubscribeMutationVariables
+export type ToggleChapterSubscriptionMutationFn = Apollo.MutationFunction<
+  ToggleChapterSubscriptionMutation,
+  ToggleChapterSubscriptionMutationVariables
 >;
 
 /**
- * __useChapterSubscribeMutation__
+ * __useToggleChapterSubscriptionMutation__
  *
- * To run a mutation, you first call `useChapterSubscribeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useChapterSubscribeMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useToggleChapterSubscriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleChapterSubscriptionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [chapterSubscribeMutation, { data, loading, error }] = useChapterSubscribeMutation({
+ * const [toggleChapterSubscriptionMutation, { data, loading, error }] = useToggleChapterSubscriptionMutation({
  *   variables: {
  *      chapterId: // value for 'chapterId'
  *   },
  * });
  */
-export function useChapterSubscribeMutation(
+export function useToggleChapterSubscriptionMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    ChapterSubscribeMutation,
-    ChapterSubscribeMutationVariables
+    ToggleChapterSubscriptionMutation,
+    ToggleChapterSubscriptionMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    ChapterSubscribeMutation,
-    ChapterSubscribeMutationVariables
-  >(ChapterSubscribeDocument, options);
+    ToggleChapterSubscriptionMutation,
+    ToggleChapterSubscriptionMutationVariables
+  >(ToggleChapterSubscriptionDocument, options);
 }
-export type ChapterSubscribeMutationHookResult = ReturnType<
-  typeof useChapterSubscribeMutation
+export type ToggleChapterSubscriptionMutationHookResult = ReturnType<
+  typeof useToggleChapterSubscriptionMutation
 >;
-export type ChapterSubscribeMutationResult =
-  Apollo.MutationResult<ChapterSubscribeMutation>;
-export type ChapterSubscribeMutationOptions = Apollo.BaseMutationOptions<
-  ChapterSubscribeMutation,
-  ChapterSubscribeMutationVariables
->;
+export type ToggleChapterSubscriptionMutationResult =
+  Apollo.MutationResult<ToggleChapterSubscriptionMutation>;
+export type ToggleChapterSubscriptionMutationOptions =
+  Apollo.BaseMutationOptions<
+    ToggleChapterSubscriptionMutation,
+    ToggleChapterSubscriptionMutationVariables
+  >;
 export const ChapterDocument = gql`
   query chapter($id: Int!) {
     chapter(id: $id) {

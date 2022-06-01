@@ -22,7 +22,7 @@ import {
   useChapterQuery,
   useChapterUserQuery,
   useJoinChapterMutation,
-  useChapterSubscribeMutation,
+  useToggleChapterSubscriptionMutation,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
@@ -46,7 +46,7 @@ export const ChapterPage: NextPage = () => {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
   };
   const [joinChapterFn] = useJoinChapterMutation(refetch);
-  const [chapterSubscribeFn] = useChapterSubscribeMutation(refetch);
+  const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
   const joinChapter = async () => {
     const ok = await confirm();
@@ -67,7 +67,7 @@ export const ChapterPage: NextPage = () => {
         ? { title: 'Do you want to subscribe?' }
         : {
             title: 'Unsubscribe from chapter?',
-            body: 'Unsubscribing from chapter will affect subscriptions of all exising events, and new events in the chapter.',
+            body: 'Unsubscribing from this chapter will affect subscriptions of all existing events, and new events in the chapter.',
           },
     );
 
@@ -77,11 +77,11 @@ export const ChapterPage: NextPage = () => {
         toast(
           toSubscribe
             ? {
-                title: 'You successfully subscribed to chapter',
+                title: 'You successfully subscribed to this chapter',
                 status: 'success',
               }
             : {
-                title: 'You have unsubscribed from chapter',
+                title: 'You have unsubscribed from this chapter',
                 status: 'info',
               },
         );

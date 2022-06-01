@@ -420,7 +420,7 @@ export type QueryChapterUserArgs = {
 };
 
 export type QueryEventArgs = {
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 };
 
 export type QueryEventsArgs = {
@@ -784,7 +784,7 @@ export type CreateEventMutation = {
 };
 
 export type UpdateEventMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
   data: UpdateEventInputs;
 }>;
 
@@ -905,7 +905,7 @@ export type EventsQuery = {
 };
 
 export type EventQueryVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 }>;
 
 export type EventQuery = {
@@ -969,7 +969,7 @@ export type EventQuery = {
 };
 
 export type EventVenuesQueryVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 }>;
 
 export type EventVenuesQuery = {
@@ -2089,8 +2089,8 @@ export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutationVariables
 >;
 export const UpdateEventDocument = gql`
-  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
-    updateEvent(id: $id, data: $data) {
+  mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+    updateEvent(id: $eventId, data: $data) {
       id
       name
       canceled
@@ -2125,7 +2125,7 @@ export type UpdateEventMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateEventMutation, { data, loading, error }] = useUpdateEventMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
  *      data: // value for 'data'
  *   },
  * });
@@ -2574,8 +2574,8 @@ export type EventsQueryResult = Apollo.QueryResult<
   EventsQueryVariables
 >;
 export const EventDocument = gql`
-  query event($id: Int!) {
-    event(id: $id) {
+  query event($eventId: Int!) {
+    event(eventId: $eventId) {
       id
       name
       description
@@ -2651,7 +2651,7 @@ export const EventDocument = gql`
  * @example
  * const { data, loading, error } = useEventQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
  *   },
  * });
  */
@@ -2680,8 +2680,8 @@ export type EventQueryResult = Apollo.QueryResult<
   EventQueryVariables
 >;
 export const EventVenuesDocument = gql`
-  query eventVenues($id: Int!) {
-    event(id: $id) {
+  query eventVenues($eventId: Int!) {
+    event(eventId: $eventId) {
       id
       name
       description
@@ -2719,7 +2719,7 @@ export const EventVenuesDocument = gql`
  * @example
  * const { data, loading, error } = useEventVenuesQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
  *   },
  * });
  */

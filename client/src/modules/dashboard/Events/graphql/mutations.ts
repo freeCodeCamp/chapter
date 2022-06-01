@@ -21,8 +21,8 @@ export const createEvent = gql`
 `;
 
 export const updateEvent = gql`
-  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
-    updateEvent(id: $id, data: $data) {
+  mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+    updateEvent(id: $eventId, data: $data) {
       id
       name
       canceled

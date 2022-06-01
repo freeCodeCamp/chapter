@@ -149,10 +149,10 @@ export class EventResolver {
 
   @Query(() => EventWithRelations, { nullable: true })
   async event(
-    @Arg('id', () => Int) id: number,
+    @Arg('eventId', () => Int) eventId: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id },
+      where: { id: eventId },
       include: {
         chapter: true,
         tags: { include: { tag: true } },

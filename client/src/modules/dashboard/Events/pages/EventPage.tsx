@@ -34,15 +34,15 @@ import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
 
-const args = (id: number) => ({
-  refetchQueries: [{ query: EVENT, variables: { id } }],
+const args = (eventId: number) => ({
+  refetchQueries: [{ query: EVENT, variables: { eventId } }],
 });
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
   const eventId = getId(router.query) || -1;
   const { loading, error, data } = useEventQuery({
-    variables: { id: eventId },
+    variables: { eventId },
   });
 
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));

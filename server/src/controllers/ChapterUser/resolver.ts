@@ -2,7 +2,6 @@ import { Prisma } from '@prisma/client';
 import { Arg, Ctx, Int, Mutation, Resolver, Query } from 'type-graphql';
 
 import { GQLCtx } from '../../common-types/gql';
-import { ChapterUser } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { ChapterUser } from '../../graphql-types';
 

@@ -67,8 +67,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const defaultValues = useMemo(() => {
     if (!data) {
       return {
-        start_at: new Date(),
-        ends_at: new Date(Date.now() + 1000 * 60 * 60),
         venue_type: VenueType.PhysicalAndOnline,
       };
     }
@@ -88,10 +86,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       invite_only: data.invite_only,
     };
   }, []);
-
-  console.log('defaultValues ', defaultValues);
-  console.log('data.start_at ', data?.start_at);
-  console.log('data.ends_at ', data?.ends_at);
 
   const { register, control, handleSubmit, watch, setValue, getValues } =
     useForm<EventFormData>({
@@ -158,6 +152,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                   dateFormat="MMMM d, yyyy h:mm aa"
                   customInput={
                     <Input
+                      name={`${field.key}_placeholder`}
                       label={field.label}
                       value={
                         field.key === 'start_at'

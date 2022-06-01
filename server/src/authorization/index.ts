@@ -1,9 +1,9 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
-import { GQLCtx, Roles } from 'src/common-types/gql';
-import { User } from 'src/graphql-types';
-import { prisma } from 'src/prisma';
+import { GQLCtx } from '../common-types/gql';
+import { UserWithRoles } from '../graphql-types';
+import { prisma } from '../prisma';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -62,7 +62,7 @@ Accepted id names: ${allowedVariables.join(', ')}`);
 }
 
 async function isAllowedByChapterRole(
-  user: User & Roles,
+  user: UserWithRoles,
   roles: string[],
   variableValues: VariableValues,
 ): Promise<boolean> {
@@ -94,7 +94,7 @@ async function getRelatedChapterId(
 }
 
 function isAllowedByEventRole(
-  user: User & Roles,
+  user: UserWithRoles,
   permissions: string[],
   info: VariableValues,
 ): boolean {
@@ -103,11 +103,15 @@ function isAllowedByEventRole(
 }
 
 function getChapterPermissionsById(
-  user: User & Roles,
+  user: UserWithRoles,
   chapterId: number,
 ): string[] {
-  const role = user.chapter_roles.find((role) => role.chapter_id === chapterId);
-  return role ? [role.role_name] : [];
+  const role = user.user_chapters.find((role) => role.chapter_id === chapterId);
+  return role
+    ? role.chapter_role.chapter_role_permissions.map(
+        (x) => x.chapter_permission.name,
+      )
+    : [];
 }
 
 // TODO: this is pretending there are multiple roles, but for now there's only
@@ -115,13 +119,15 @@ function getChapterPermissionsById(
 // for each role type. (i.e. an 'organizer' would have things like
 // 'UPDATE_EVENT', 'CONFIRM_RSVP' etc.)
 function getEventPermissions(
-  user: User & Roles,
+  user: UserWithRoles,
   variableValues: VariableValues,
 ): string[] {
-  const role = user.user_event_roles.find(
+  const role = user.user_events.find(
     ({ event_id }) => event_id === variableValues.eventId,
   );
-  return role ? [role.role_name] : [];
+  return role
+    ? role.event_role.event_role_permissions.map((x) => x.event_permission.name)
+    : [];
 }
 
 // TODO: do we need more than one permission per resolver? Probably not. A

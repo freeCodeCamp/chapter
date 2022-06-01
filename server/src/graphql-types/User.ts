@@ -1,7 +1,7 @@
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { Chapter, ChapterUser, EventUser, InstanceRole, UserBan } from '.';
 import { EventUserOnlyRoles } from './EventUser';
+import { Chapter, ChapterUser, EventUser, InstanceRole, UserBan } from '.';
 
 @ObjectType()
 export class User extends BaseObject {

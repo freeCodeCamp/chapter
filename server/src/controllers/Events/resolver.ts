@@ -608,7 +608,7 @@ ${unsubscribe}`;
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} canceled`;
-      const body = `placeholder body`;
+      const body = `The event ${event.name} was canceled`;
 
       new MailerService({
         emailList: emailList,

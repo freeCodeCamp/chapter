@@ -121,10 +121,10 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
   const eventQuery = {
     operationName: 'eventUsers',
     variables: {
-      id: eventId,
+      eventId,
     },
-    query: `query eventUsers($id: Int!) {
-      event(id: $id) {
+    query: `query eventUsers($eventId: Int!) {
+      event(eventId: $eventId) {
         event_users {
           rsvp {
             name

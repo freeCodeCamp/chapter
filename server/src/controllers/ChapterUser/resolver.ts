@@ -4,6 +4,7 @@ import { Arg, Ctx, Int, Mutation, Resolver, Query } from 'type-graphql';
 import { GQLCtx } from '../../common-types/gql';
 import { ChapterUser } from '../../graphql-types';
 import { prisma } from '../../prisma';
+import { ChapterUser } from '../../graphql-types';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
@@ -155,5 +156,34 @@ export class ChapterUserResolver {
     }
 
     return true;
+  }
+
+  @Mutation(() => ChapterUser)
+  async changeChapterUserRole(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Arg('roleId', () => Int) roleId: number,
+    @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<ChapterUser> {
+    if (!ctx.user) {
+      throw Error('User must be logged in to change chapter role');
+    }
+    return await prisma.chapter_users.update({
+      data: { chapter_role: { connect: { id: roleId } } },
+      where: {
+        user_id_chapter_id: {
+          chapter_id: chapterId,
+          user_id: userId,
+        },
+      },
+      include: {
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+        user: true,
+      },
+    });
   }
 }

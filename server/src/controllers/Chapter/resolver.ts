@@ -32,6 +32,7 @@ export class ChapterResolver {
             },
             user: true,
           },
+          orderBy: { user: { first_name: 'asc' } },
         },
       },
     });

@@ -220,3 +220,8 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
     .request('POST', 'http://localhost:5000/graphql', eventMutation)
     .then((response) => response.body.data.deleteEvent.id);
 });
+
+Cypress.Commands.add('checkBcc', (mail) => {
+  const headers = mail.Content.Headers;
+  return cy.wrap(!('To' in headers));
+});

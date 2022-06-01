@@ -8,79 +8,66 @@ import {
 } from '@chakra-ui/react';
 import React, { forwardRef } from 'react';
 
-const capitalize = (s: string) =>
-  s.slice(0, 1).toUpperCase() + s.slice(1).toLowerCase();
+const allowed_types = ['text', 'email', 'number'] as const;
 
-const allowed_types = [
-  'text',
-  'password',
-  'current_password',
-  'confirm_password',
-  'email',
-  'number',
-] as const;
-
-function isSpecifiedType(name: string): name is AllowedTypes {
-  return (allowed_types as any).includes(name);
+function isSpecifiedType(name?: string) {
+  return name ? (allowed_types as unknown as string[]).includes(name) : false;
 }
 
-const resoleType = (name: string) => {
-  if (isSpecifiedType(name)) {
-    if (name === 'confirm_password' || name === 'current_password') {
-      return 'password';
-    }
-
-    return name;
-  }
-
-  return 'text';
+const resolveType = (name?: string) => {
+  return isSpecifiedType(name) ? name : 'text';
 };
 
 type AllowedTypes = typeof allowed_types[number];
 
-export interface InputProps extends Omit<ChakraInputProps, 'type'> {
-  label?: string;
-  noLabel?: boolean;
+interface BaseProps extends Omit<ChakraInputProps, 'type'> {
   error?: string;
-  name?: string;
   type?: AllowedTypes | string;
   outerProps?: FormControlProps;
-
   isTextArea?: boolean;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const {
-    name: baseName = 'Input Field',
-    isInvalid,
-    isRequired,
-    label,
-    placeholder,
-    outerProps,
-    noLabel,
-    ...rest
-  } = props;
+type NoLabelProps = BaseProps & {
+  noLabel: true;
+  label?: never;
+};
 
-  const name = baseName.split('_').join(' ');
+type HasLabelProps = BaseProps & {
+  noLabel?: false;
+  label: string;
+  name: string;
+};
 
-  return (
-    <FormControl
-      isInvalid={isInvalid || !!props.error}
-      isRequired={isRequired} //TODO: determine which inputs are required
-      {...outerProps}
-    >
-      {!noLabel && (
-        <FormLabel htmlFor={baseName}>{label || capitalize(name)}</FormLabel>
-      )}
-      <ChakraInput
-        type={resoleType(baseName)}
-        id={baseName}
-        name={baseName}
-        ref={ref}
-        placeholder={placeholder || label || capitalize(name)}
-        {...rest}
-      />
-      <FormErrorMessage>{props.error}</FormErrorMessage>
-    </FormControl>
-  );
-});
+export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
+  (props, ref) => {
+    const {
+      name,
+      isInvalid,
+      isRequired,
+      label,
+      placeholder,
+      outerProps,
+      noLabel,
+      ...rest
+    } = props;
+
+    return (
+      <FormControl
+        isInvalid={isInvalid || !!props.error}
+        isRequired={isRequired} //TODO: determine which inputs are required
+        {...outerProps}
+      >
+        {!noLabel && <FormLabel htmlFor={name}>{label}</FormLabel>}
+        <ChakraInput
+          type={resolveType(name)}
+          id={name}
+          name={name}
+          ref={ref}
+          placeholder={placeholder ?? label}
+          {...rest}
+        />
+        <FormErrorMessage>{props.error}</FormErrorMessage>
+      </FormControl>
+    );
+  },
+);

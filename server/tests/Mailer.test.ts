@@ -1,6 +1,6 @@
 import assert from 'assert';
 import chai, { expect } from 'chai';
-import { stub, restore } from 'sinon';
+import { match, mock, stub, restore } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import MailerService, { MailerData } from '../src/services/MailerService';
@@ -70,6 +70,16 @@ describe('MailerService Class', () => {
     assert.equal(backupText, mailer.backupText);
     assert.equal(calendar, mailer.iCalEvent);
     expect(emailAddresses).to.have.members(mailer.emailList);
+  });
+
+  it("Should use 'bcc' if sending to multiple email addresses", async () => {
+    const mailer = new MailerService(data);
+    const mockSendMail = mock(mailer.transporter).expects('sendMail');
+    mailer.sendEmail();
+
+    expect(mockSendMail.calledOnceWith(match({ bcc: emailAddresses }))).to.be
+      .true;
+    expect(mockSendMail.neverCalledWith(match.has('to'))).to.be.true;
   });
 
   it('Should provide a blank string if backup text is undefined', () => {

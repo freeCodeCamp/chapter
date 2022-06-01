@@ -24,6 +24,11 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService from '../../services/MailerService';
+import {
+  createReminder,
+  deleteEventReminders,
+  updateRemindAt,
+} from '../../services/Reminders';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 //Place holder for unsubscribe
@@ -230,18 +235,10 @@ export class EventResolver {
             });
 
             if (acceptedRsvp.subscribed) {
-              await prisma.event_reminders.create({
-                data: {
-                  event_user: {
-                    connect: {
-                      user_id_event_id: {
-                        event_id: acceptedRsvp.event_id,
-                        user_id: acceptedRsvp.user_id,
-                      },
-                    },
-                  },
-                  remind_at: sub(event.start_at, { days: 1 }),
-                },
+              await createReminder({
+                eventId: acceptedRsvp.event_id,
+                remindAt: sub(event.start_at, { days: 1 }),
+                userId: acceptedRsvp.user_id,
               });
             }
           }
@@ -275,12 +272,18 @@ export class EventResolver {
     }
 
     const rsvpName = getRsvpName(event);
+
+    const userChapter = ctx.user.user_chapters.find(
+      (user_chapter) => user_chapter.chapter_id === event.chapter_id,
+    );
+    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
+
     const eventUserData: Prisma.event_usersCreateInput = {
       user: { connect: { id: ctx.user.id } },
       event: { connect: { id: eventId } },
       rsvp: { connect: { name: rsvpName } },
       event_role: { connect: { name: 'attendee' } },
-      subscribed: true, // TODO use user specified setting
+      subscribed: isSubscribedToEvent,
     };
 
     const userRole = await prisma.event_users.create({
@@ -296,15 +299,10 @@ export class EventResolver {
       },
     });
     if (rsvpName !== 'waitlist' && eventUserData.subscribed) {
-      await prisma.event_reminders.create({
-        data: {
-          event_user: {
-            connect: {
-              user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
-            },
-          },
-          remind_at: sub(event.start_at, { days: 1 }),
-        },
+      await createReminder({
+        eventId: eventId,
+        remindAt: sub(event.start_at, { days: 1 }),
+        userId: ctx.user.id,
       });
     }
 
@@ -322,8 +320,14 @@ export class EventResolver {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const eventUser = await prisma.event_users.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: true },
+      include: { event: true, user: true },
     });
+
+    await new MailerService({
+      emailList: [eventUser.user.email],
+      subject: 'Your RSVP is confirmed',
+      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}`,
+    }).sendEmail();
 
     return await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'yes' } } },
@@ -375,16 +379,16 @@ export class EventResolver {
     const chapter = await prisma.chapters.findUnique({
       where: { id: data.chapter_id },
     });
+    const userChapter = ctx.user.user_chapters.find(
+      ({ chapter_id }) => chapter_id === data.chapter_id,
+    );
 
     // TODO: add admin and owner once you've figured out how to handle instance
     // roles
     const allowedRoles = ['organizer'] as const;
     const hasPermission =
-      ctx.user.user_chapters.findIndex(
-        ({ chapter_id, chapter_role }) =>
-          chapter_id === data.chapter_id &&
-          allowedRoles.findIndex((x) => x === chapter_role.name) > -1,
-      ) !== -1;
+      allowedRoles.findIndex((x) => x === userChapter?.chapter_role.name) !==
+      -1;
 
     if (!hasPermission)
       throw Error('User does not have permission to create events');
@@ -394,11 +398,13 @@ export class EventResolver {
         sponsor_id,
       }));
 
+    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
+
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'organizer' } },
       rsvp: { connect: { name: 'yes' } },
-      subscribed: true, // TODO: even organizers may wish to opt out of emails
+      subscribed: isSubscribedToEvent,
     };
 
     // TODO: the type safety if we start with ...data is a bit weak here: it
@@ -525,16 +531,10 @@ export class EventResolver {
     if (!isEqual(start_at, event.start_at)) {
       event.event_users.forEach(({ event_reminder }) => {
         if (event_reminder) {
-          prisma.event_reminders.update({
-            data: {
-              remind_at: sub(start_at, { days: 1 }),
-            },
-            where: {
-              user_id_event_id: {
-                user_id: event_reminder.user_id,
-                event_id: event_reminder.event_id,
-              },
-            },
+          updateRemindAt({
+            eventId: event_reminder.event_id,
+            remindAt: sub(start_at, { days: 1 }),
+            userId: event_reminder.user_id,
           });
         }
       });
@@ -601,11 +601,7 @@ ${unsubscribe}`;
         },
       },
     });
-    await prisma.event_reminders.deleteMany({
-      where: {
-        event_id: id,
-      },
-    });
+    await deleteEventReminders(id);
 
     const notCanceledRsvps = event.event_users;
 
@@ -655,7 +651,6 @@ ${unsubscribe}`;
       },
     });
 
-    // TODO: the default should probably be to bcc everyone.
     const addresses: string[] = [];
     if (emailGroups.includes('interested')) {
       const interestedUsers: string[] =

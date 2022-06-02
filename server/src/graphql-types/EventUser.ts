@@ -42,7 +42,12 @@ export class EventUser {
 }
 
 @ObjectType()
-export class EventUserOnlyRoles {
+export class EventUserOnlyRolesAndIds {
+  @Field(() => ({
+    chapter_id: Int,
+  }))
+  event: { chapter_id: number };
+
   @Field(() => Int)
   event_id: number;
 

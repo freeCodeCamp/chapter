@@ -45,6 +45,11 @@ export const userMiddleware = (
         },
         user_events: {
           include: {
+            event: {
+              select: {
+                chapter_id: true,
+              },
+            },
             event_role: {
               include: {
                 event_role_permissions: {

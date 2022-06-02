@@ -3,7 +3,6 @@ import { AuthChecker } from 'type-graphql';
 
 import { GQLCtx } from '../common-types/gql';
 import { UserWithRoles } from '../graphql-types';
-import { prisma } from '../prisma';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -66,7 +65,7 @@ async function isAllowedByChapterRole(
   roles: string[],
   variableValues: VariableValues,
 ): Promise<boolean> {
-  const chapterId = await getRelatedChapterId(variableValues);
+  const chapterId = await getRelatedChapterId(user, variableValues);
   if (chapterId === null) return false;
   const chapterPermissions = getChapterPermissionsById(user, chapterId);
   return hasNecessaryPermission(roles, chapterPermissions);
@@ -81,6 +80,7 @@ async function isAllowedByInstanceRole(
 }
 
 async function getRelatedChapterId(
+  user: UserWithRoles,
   variableValues: VariableValues,
 ): Promise<number | null> {
   const { chapterId, eventId } = variableValues;
@@ -88,15 +88,11 @@ async function getRelatedChapterId(
   if (chapterId) return chapterId;
 
   if (eventId) {
-    const event = await prisma.events.findUnique({
-      where: { id: eventId },
-      select: { chapter_id: true },
-    });
-    if (event) return event.chapter_id;
+    const userEvent = user.user_events.find(
+      ({ event_id }) => event_id === eventId,
+    );
+    if (userEvent) return userEvent.event.chapter_id;
   }
-
-  // TODO: any other cases *must* be resolved via findUnique, or we risk someone
-  // getting access to a chapter they shouldn't.
 
   return null;
 }

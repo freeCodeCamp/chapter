@@ -38,14 +38,30 @@ export const CHAPTER_USERS = gql`
     chapter(id: $id) {
       chapter_users {
         user {
+          id
           name
           email
         }
         chapter_role {
+          id
           name
         }
         subscribed
       }
+    }
+  }
+`;
+
+export const CHAPTER_USER = gql`
+  query chapterUser($chapterId: Int!) {
+    chapterUser(chapterId: $chapterId) {
+      user {
+        name
+      }
+      chapter_role {
+        name
+      }
+      subscribed
     }
   }
 `;

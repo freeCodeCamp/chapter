@@ -6,6 +6,7 @@ import { EventUserResolver } from './EventUser/resolver';
 import { EmailResolver } from './Messages/resolver';
 import { SponsorResolver } from './Sponsors/resolver';
 import { ChapterUserResolver } from './ChapterUser/resolver';
+import { ChapterRoleResolver } from './ChapterRole/resolver';
 import { VenueResolver } from './Venue/resolver';
 
 const resolvers = [
@@ -17,6 +18,7 @@ const resolvers = [
   AuthResolver,
   SponsorResolver,
   ChapterUserResolver,
+  ChapterRoleResolver,
   UserResolver, // Somehow extract this somewhere else
 ] as const;
 

@@ -50,9 +50,13 @@ export const RegisterPage: NextPage = () => {
         <VStack>
           <Heading>Register</Heading>
 
-          <Input {...register('first_name')} />
-          <Input {...register('last_name')} />
-          <Input {...register('email')} error={errors.email?.message} />
+          <Input label="First name" {...register('first_name')} />
+          <Input label="Last name" {...register('last_name')} />
+          <Input
+            label="Email"
+            {...register('email')}
+            error={errors.email?.message}
+          />
 
           <Button
             data-cy="submit-button"

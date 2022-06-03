@@ -13,7 +13,7 @@ const baseUser = {
   email: 'an@add.ress',
 };
 
-export const instanceUser = merge(baseUser, {
+export const userWithInstanceRole = merge(baseUser, {
   instance_role: {
     name: 'some-role',
     instance_role_permissions: [
@@ -26,7 +26,7 @@ export const instanceUser = merge(baseUser, {
   },
 });
 
-const chapterTwoUserEvent = [
+export const chapterTwoUserEvent = [
   {
     event: {
       chapter_id: 2,
@@ -45,7 +45,7 @@ const chapterTwoUserEvent = [
   },
 ];
 
-const chapterOneUserEvent = [
+export const chapterOneUserEvent = [
   {
     event: {
       chapter_id: 1,
@@ -64,7 +64,7 @@ const chapterOneUserEvent = [
   },
 ];
 
-export const chapterOneUser = merge(baseUser, {
+export const userWithRoleForChapterOne = merge(baseUser, {
   user_chapters: [
     {
       chapter_role: {
@@ -82,15 +82,7 @@ export const chapterOneUser = merge(baseUser, {
   ],
 });
 
-export const chapterOneEventTwoUser = merge(chapterOneUser, {
-  user_events: chapterTwoUserEvent,
-});
-
-export const chapterOneEventOneUser = merge(chapterOneUser, {
-  user_events: chapterOneUserEvent,
-});
-
-export const eventUser = merge(baseUser, {
+export const userWithRoleForEventOne = merge(baseUser, {
   user_events: [
     {
       event: {

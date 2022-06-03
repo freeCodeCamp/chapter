@@ -101,7 +101,7 @@ export const LoginRegisterModal: React.FC<{
     <Modal
       modalProps={modalProps}
       title={isRegister ? 'Register' : 'Login'}
-      wrapBody={(children) => (
+      wrapChildren={(children) => (
         <form onSubmit={handleSubmit(onSubmit)}>{children}</form>
       )}
       buttons={

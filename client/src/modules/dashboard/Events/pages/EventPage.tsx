@@ -1,14 +1,24 @@
-import { Button, Box, Heading, Link, Text, Wrap } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Heading,
+  HStack,
+  Link,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
   useEventQuery,
+  useEventRolesQuery,
+  useChangeEventUserRoleMutation,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
@@ -16,6 +26,10 @@ import { getId } from '../../../../util/getId';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
+import {
+  RoleChangeModal,
+  RoleChangeModalData,
+} from '../../shared/components/RoleChangeModal';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
@@ -37,6 +51,11 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
 
+  const { data: eventRoles } = useEventRolesQuery();
+  const modalProps = useDisclosure();
+  const [eventUser, setEventUser] = useState<RoleChangeModalData>();
+  const [changeRoleMutation] = useChangeEventUserRoleMutation(args(eventId));
+
   const confirmRSVP =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
     async () => {
@@ -50,6 +69,21 @@ export const EventPage: NextPage = () => {
       const ok = await confirmDelete();
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
+
+  const changeRole = (data: RoleChangeModalData) => {
+    setEventUser(data);
+    modalProps.onOpen();
+  };
+  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+    changeRoleMutation({
+      variables: {
+        eventId: eventId,
+        roleId: data.newRoleId,
+        userId: data.userId,
+      },
+    });
+    modalProps.onClose();
+  };
 
   if (loading || error || !data || !data.event) {
     return (
@@ -75,18 +109,24 @@ export const EventPage: NextPage = () => {
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      ops: [
-        {
-          title: 'Confirm',
-          onClick: confirmRSVP,
-          colorScheme: 'green',
-        },
-      ],
+      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'green' }],
     },
   ];
 
   return (
     <Layout>
+      {eventRoles && eventUser && (
+        <RoleChangeModal
+          modalProps={modalProps}
+          data={eventUser}
+          roles={eventRoles.eventRoles.map(({ id, name }) => ({
+            id,
+            name,
+          }))}
+          title="Change event role"
+          onSubmit={onModalSubmit}
+        />
+      )}
       <Box p="2" borderWidth="1px" borderRadius="lg">
         <Heading>{data.event.name}</Heading>
 
@@ -148,14 +188,14 @@ export const EventPage: NextPage = () => {
               <DataTable
                 title={`${title}: ${users.length}`}
                 data={users}
-                keys={['user', 'ops', 'role'] as const}
+                keys={['user', 'role', 'ops'] as const}
                 emptyText="No users"
                 mapper={{
                   user: ({ user }) => (
                     <Text data-cy="username">{user.name}</Text>
                   ),
-                  ops: ({ user }) => (
-                    <Wrap>
+                  ops: ({ user, event_role }) => (
+                    <HStack>
                       {ops.map(({ title, onClick, colorScheme }) => (
                         <Button
                           key={title.toLowerCase()}
@@ -167,7 +207,21 @@ export const EventPage: NextPage = () => {
                           {title}
                         </Button>
                       ))}
-                    </Wrap>
+                      <Button
+                        data-cy="changeRole"
+                        colorScheme="blue"
+                        size="xs"
+                        onClick={() =>
+                          changeRole({
+                            roleId: event_role.id,
+                            userId: user.id,
+                            userName: user.name,
+                          })
+                        }
+                      >
+                        Change role
+                      </Button>
+                    </HStack>
                   ),
                   role: ({ event_role }) => (
                     <Text data-cy="role">{event_role.name}</Text>

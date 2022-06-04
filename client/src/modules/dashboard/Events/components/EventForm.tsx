@@ -67,6 +67,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const defaultValues = useMemo(() => {
     if (!data) {
       return {
+        start_at: new Date(),
+        ends_at: new Date(),
         venue_type: VenueType.PhysicalAndOnline,
       };
     }
@@ -106,11 +108,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const inviteOnly = watch('invite_only');
   const venueType = watch('venue_type');
 
-  const [startDate, setStartDate] = useState<Date | null | undefined>(
-    data?.start_at ? new Date(data.start_at) : undefined,
+  const [startDate, setStartDate] = useState<Date>(
+    data?.start_at ? new Date(data.start_at) : new Date(),
   );
-  const [endDate, setEndDate] = useState<Date | null | undefined>(
-    data?.ends_at ? new Date(data?.ends_at) : undefined,
+  const [endDate, setEndDate] = useState<Date>(
+    data?.ends_at ? new Date(data?.ends_at) : new Date(),
   );
   const onDatePickerChange = useCallback(
     (key: string) => {
@@ -152,7 +154,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                   dateFormat="MMMM d, yyyy h:mm aa"
                   customInput={
                     <Input
-                      name={`${field.key}_placeholder`}
+                      id={`${field.key}_trigger`}
+                      name={`${field.key}`}
                       label={field.label}
                       value={
                         field.key === 'start_at'

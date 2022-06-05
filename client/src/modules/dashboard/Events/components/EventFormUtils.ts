@@ -106,14 +106,12 @@ export const fields: Field[] = [
     key: 'start_at',
     type: 'datetime',
     label: 'Start at',
-    defaultValue: new Date().toISOString(),
     isRequired: true,
   },
   {
     key: 'ends_at',
     type: 'datetime',
     label: 'End at',
-    defaultValue: new Date(Date.now() + 1000 * 60 * 60).toISOString(),
     isRequired: true,
   },
 ];

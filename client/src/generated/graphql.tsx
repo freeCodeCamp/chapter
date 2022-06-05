@@ -743,6 +743,111 @@ export type ChapterRolesQuery = {
   chapterRoles: Array<{ __typename?: 'ChapterRole'; id: number; name: string }>;
 };
 
+export type CreateEventMutationVariables = Exact<{
+  data: CreateEventInputs;
+}>;
+
+export type CreateEventMutation = {
+  __typename?: 'Mutation';
+  createEvent: {
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    canceled: boolean;
+    description: string;
+    url?: string | null;
+    streaming_url?: string | null;
+    capacity: number;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
+  };
+};
+
+export type UpdateEventMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: UpdateEventInputs;
+}>;
+
+export type UpdateEventMutation = {
+  __typename?: 'Mutation';
+  updateEvent: {
+    __typename?: 'Event';
+    id: number;
+    name: string;
+    canceled: boolean;
+    description: string;
+    url?: string | null;
+    streaming_url?: string | null;
+    capacity: number;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
+  };
+};
+
+export type CancelEventMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type CancelEventMutation = {
+  __typename?: 'Mutation';
+  cancelEvent: { __typename?: 'Event'; id: number; canceled: boolean };
+};
+
+export type DeleteEventMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type DeleteEventMutation = {
+  __typename?: 'Mutation';
+  deleteEvent: { __typename?: 'Event'; id: number };
+};
+
+export type ConfirmRsvpMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type ConfirmRsvpMutation = {
+  __typename?: 'Mutation';
+  confirmRsvp: {
+    __typename?: 'EventUser';
+    rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+  };
+};
+
+export type DeleteRsvpMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type DeleteRsvpMutation = {
+  __typename?: 'Mutation';
+  deleteRsvp: boolean;
+};
+
+export type SendEventInviteMutationVariables = Exact<{
+  id: Scalars['Int'];
+  emailGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+export type SendEventInviteMutation = {
+  __typename?: 'Mutation';
+  sendEventInvite: boolean;
+};
+
+export type InitUserInterestForChapterMutationVariables = Exact<{
+  event_id: Scalars['Int'];
+}>;
+
+export type InitUserInterestForChapterMutation = {
+  __typename?: 'Mutation';
+  initUserInterestForChapter: boolean;
+};
+
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EventsQuery = {
@@ -854,111 +959,6 @@ export type EventVenuesQuery = {
   venues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
 };
 
-export type CreateEventMutationVariables = Exact<{
-  data: CreateEventInputs;
-}>;
-
-export type CreateEventMutation = {
-  __typename?: 'Mutation';
-  createEvent: {
-    __typename?: 'Event';
-    id: number;
-    name: string;
-    canceled: boolean;
-    description: string;
-    url?: string | null;
-    streaming_url?: string | null;
-    capacity: number;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
-  };
-};
-
-export type UpdateEventMutationVariables = Exact<{
-  id: Scalars['Int'];
-  data: UpdateEventInputs;
-}>;
-
-export type UpdateEventMutation = {
-  __typename?: 'Mutation';
-  updateEvent: {
-    __typename?: 'Event';
-    id: number;
-    name: string;
-    canceled: boolean;
-    description: string;
-    url?: string | null;
-    streaming_url?: string | null;
-    capacity: number;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
-  };
-};
-
-export type CancelEventMutationVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-export type CancelEventMutation = {
-  __typename?: 'Mutation';
-  cancelEvent: { __typename?: 'Event'; id: number; canceled: boolean };
-};
-
-export type DeleteEventMutationVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-export type DeleteEventMutation = {
-  __typename?: 'Mutation';
-  deleteEvent: { __typename?: 'Event'; id: number };
-};
-
-export type ConfirmRsvpMutationVariables = Exact<{
-  eventId: Scalars['Int'];
-  userId: Scalars['Int'];
-}>;
-
-export type ConfirmRsvpMutation = {
-  __typename?: 'Mutation';
-  confirmRsvp: {
-    __typename?: 'EventUser';
-    rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
-  };
-};
-
-export type DeleteRsvpMutationVariables = Exact<{
-  eventId: Scalars['Int'];
-  userId: Scalars['Int'];
-}>;
-
-export type DeleteRsvpMutation = {
-  __typename?: 'Mutation';
-  deleteRsvp: boolean;
-};
-
-export type SendEventInviteMutationVariables = Exact<{
-  id: Scalars['Int'];
-  emailGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
-}>;
-
-export type SendEventInviteMutation = {
-  __typename?: 'Mutation';
-  sendEventInvite: boolean;
-};
-
-export type InitUserInterestForChapterMutationVariables = Exact<{
-  event_id: Scalars['Int'];
-}>;
-
-export type InitUserInterestForChapterMutation = {
-  __typename?: 'Mutation';
-  initUserInterestForChapter: boolean;
-};
-
 export type SponsorsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SponsorsQuery = {
@@ -971,22 +971,6 @@ export type SponsorsQuery = {
     logo_path: string;
     type: string;
   }>;
-};
-
-export type SponsorQueryVariables = Exact<{
-  sponsorId: Scalars['Int'];
-}>;
-
-export type SponsorQuery = {
-  __typename?: 'Query';
-  sponsor?: {
-    __typename?: 'Sponsor';
-    id: number;
-    name: string;
-    website: string;
-    logo_path: string;
-    type: string;
-  } | null;
 };
 
 export type CreateSponsorMutationVariables = Exact<{
@@ -1020,41 +1004,19 @@ export type UpdateSponsorMutation = {
   };
 };
 
-export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type VenuesQuery = {
-  __typename?: 'Query';
-  venues: Array<{
-    __typename?: 'Venue';
-    id: number;
-    name: string;
-    street_address?: string | null;
-    city: string;
-    postal_code: string;
-    region: string;
-    country: string;
-    latitude?: number | null;
-    longitude?: number | null;
-  }>;
-};
-
-export type VenueQueryVariables = Exact<{
-  id: Scalars['Int'];
+export type SponsorQueryVariables = Exact<{
+  sponsorId: Scalars['Int'];
 }>;
 
-export type VenueQuery = {
+export type SponsorQuery = {
   __typename?: 'Query';
-  venue?: {
-    __typename?: 'Venue';
+  sponsor?: {
+    __typename?: 'Sponsor';
     id: number;
     name: string;
-    street_address?: string | null;
-    city: string;
-    postal_code: string;
-    region: string;
-    country: string;
-    latitude?: number | null;
-    longitude?: number | null;
+    website: string;
+    logo_path: string;
+    type: string;
   } | null;
 };
 
@@ -1097,6 +1059,44 @@ export type UpdateVenueMutation = {
     latitude?: number | null;
     longitude?: number | null;
   };
+};
+
+export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VenuesQuery = {
+  __typename?: 'Query';
+  venues: Array<{
+    __typename?: 'Venue';
+    id: number;
+    name: string;
+    street_address?: string | null;
+    city: string;
+    postal_code: string;
+    region: string;
+    country: string;
+    latitude?: number | null;
+    longitude?: number | null;
+  }>;
+};
+
+export type VenueQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type VenueQuery = {
+  __typename?: 'Query';
+  venue?: {
+    __typename?: 'Venue';
+    id: number;
+    name: string;
+    street_address?: string | null;
+    city: string;
+    postal_code: string;
+    region: string;
+    country: string;
+    latitude?: number | null;
+    longitude?: number | null;
+  } | null;
 };
 
 export type RsvpToEventMutationVariables = Exact<{
@@ -1967,252 +1967,6 @@ export type ChapterRolesQueryResult = Apollo.QueryResult<
   ChapterRolesQuery,
   ChapterRolesQueryVariables
 >;
-export const EventsDocument = gql`
-  query events {
-    events(showAll: true) {
-      id
-      name
-      canceled
-      description
-      url
-      invite_only
-      streaming_url
-      start_at
-      capacity
-      venue_type
-      venue {
-        id
-        name
-      }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useEventsQuery__
- *
- * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useEventsQuery(
-  baseOptions?: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<EventsQuery, EventsQueryVariables>(
-    EventsDocument,
-    options,
-  );
-}
-export function useEventsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(
-    EventsDocument,
-    options,
-  );
-}
-export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
-export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
-export type EventsQueryResult = Apollo.QueryResult<
-  EventsQuery,
-  EventsQueryVariables
->;
-export const EventDocument = gql`
-  query event($id: Int!) {
-    event(id: $id) {
-      id
-      name
-      description
-      url
-      invite_only
-      streaming_url
-      canceled
-      capacity
-      start_at
-      ends_at
-      image_url
-      chapter {
-        id
-        name
-      }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      sponsors {
-        sponsor {
-          name
-          website
-          logo_path
-          type
-          id
-        }
-      }
-      venue_type
-      venue {
-        id
-        name
-        street_address
-        city
-        postal_code
-        region
-        country
-      }
-      event_users {
-        rsvp {
-          name
-        }
-        user {
-          id
-          name
-        }
-        event_role {
-          name
-          event_role_permissions {
-            event_permission {
-              name
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useEventQuery__
- *
- * To run a query within a React component, call `useEventQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useEventQuery(
-  baseOptions: Apollo.QueryHookOptions<EventQuery, EventQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<EventQuery, EventQueryVariables>(
-    EventDocument,
-    options,
-  );
-}
-export function useEventLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EventQuery, EventQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<EventQuery, EventQueryVariables>(
-    EventDocument,
-    options,
-  );
-}
-export type EventQueryHookResult = ReturnType<typeof useEventQuery>;
-export type EventLazyQueryHookResult = ReturnType<typeof useEventLazyQuery>;
-export type EventQueryResult = Apollo.QueryResult<
-  EventQuery,
-  EventQueryVariables
->;
-export const EventVenuesDocument = gql`
-  query eventVenues($id: Int!) {
-    event(id: $id) {
-      id
-      name
-      description
-      url
-      streaming_url
-      capacity
-      start_at
-      ends_at
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      venue {
-        id
-      }
-    }
-    venues {
-      id
-      name
-    }
-  }
-`;
-
-/**
- * __useEventVenuesQuery__
- *
- * To run a query within a React component, call `useEventVenuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventVenuesQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useEventVenuesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    EventVenuesQuery,
-    EventVenuesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<EventVenuesQuery, EventVenuesQueryVariables>(
-    EventVenuesDocument,
-    options,
-  );
-}
-export function useEventVenuesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    EventVenuesQuery,
-    EventVenuesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<EventVenuesQuery, EventVenuesQueryVariables>(
-    EventVenuesDocument,
-    options,
-  );
-}
-export type EventVenuesQueryHookResult = ReturnType<typeof useEventVenuesQuery>;
-export type EventVenuesLazyQueryHookResult = ReturnType<
-  typeof useEventVenuesLazyQuery
->;
-export type EventVenuesQueryResult = Apollo.QueryResult<
-  EventVenuesQuery,
-  EventVenuesQueryVariables
->;
 export const CreateEventDocument = gql`
   mutation createEvent($data: CreateEventInputs!) {
     createEvent(data: $data) {
@@ -2640,6 +2394,252 @@ export type InitUserInterestForChapterMutationOptions =
     InitUserInterestForChapterMutation,
     InitUserInterestForChapterMutationVariables
   >;
+export const EventsDocument = gql`
+  query events {
+    events(showAll: true) {
+      id
+      name
+      canceled
+      description
+      url
+      invite_only
+      streaming_url
+      start_at
+      capacity
+      venue_type
+      venue {
+        id
+        name
+      }
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useEventsQuery__
+ *
+ * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEventsQuery(
+  baseOptions?: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventsQuery, EventsQueryVariables>(
+    EventsDocument,
+    options,
+  );
+}
+export function useEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(
+    EventsDocument,
+    options,
+  );
+}
+export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
+export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
+export type EventsQueryResult = Apollo.QueryResult<
+  EventsQuery,
+  EventsQueryVariables
+>;
+export const EventDocument = gql`
+  query event($id: Int!) {
+    event(id: $id) {
+      id
+      name
+      description
+      url
+      invite_only
+      streaming_url
+      canceled
+      capacity
+      start_at
+      ends_at
+      image_url
+      chapter {
+        id
+        name
+      }
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+      sponsors {
+        sponsor {
+          name
+          website
+          logo_path
+          type
+          id
+        }
+      }
+      venue_type
+      venue {
+        id
+        name
+        street_address
+        city
+        postal_code
+        region
+        country
+      }
+      event_users {
+        rsvp {
+          name
+        }
+        user {
+          id
+          name
+        }
+        event_role {
+          name
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useEventQuery__
+ *
+ * To run a query within a React component, call `useEventQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEventQuery(
+  baseOptions: Apollo.QueryHookOptions<EventQuery, EventQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventQuery, EventQueryVariables>(
+    EventDocument,
+    options,
+  );
+}
+export function useEventLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<EventQuery, EventQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventQuery, EventQueryVariables>(
+    EventDocument,
+    options,
+  );
+}
+export type EventQueryHookResult = ReturnType<typeof useEventQuery>;
+export type EventLazyQueryHookResult = ReturnType<typeof useEventLazyQuery>;
+export type EventQueryResult = Apollo.QueryResult<
+  EventQuery,
+  EventQueryVariables
+>;
+export const EventVenuesDocument = gql`
+  query eventVenues($id: Int!) {
+    event(id: $id) {
+      id
+      name
+      description
+      url
+      streaming_url
+      capacity
+      start_at
+      ends_at
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+      venue {
+        id
+      }
+    }
+    venues {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useEventVenuesQuery__
+ *
+ * To run a query within a React component, call `useEventVenuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventVenuesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEventVenuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    EventVenuesQuery,
+    EventVenuesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventVenuesQuery, EventVenuesQueryVariables>(
+    EventVenuesDocument,
+    options,
+  );
+}
+export function useEventVenuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    EventVenuesQuery,
+    EventVenuesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventVenuesQuery, EventVenuesQueryVariables>(
+    EventVenuesDocument,
+    options,
+  );
+}
+export type EventVenuesQueryHookResult = ReturnType<typeof useEventVenuesQuery>;
+export type EventVenuesLazyQueryHookResult = ReturnType<
+  typeof useEventVenuesLazyQuery
+>;
+export type EventVenuesQueryResult = Apollo.QueryResult<
+  EventVenuesQuery,
+  EventVenuesQueryVariables
+>;
 export const SponsorsDocument = gql`
   query sponsors {
     sponsors {
@@ -2695,61 +2695,6 @@ export type SponsorsLazyQueryHookResult = ReturnType<
 export type SponsorsQueryResult = Apollo.QueryResult<
   SponsorsQuery,
   SponsorsQueryVariables
->;
-export const SponsorDocument = gql`
-  query sponsor($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
-      id
-      name
-      website
-      logo_path
-      type
-    }
-  }
-`;
-
-/**
- * __useSponsorQuery__
- *
- * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
- * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSponsorQuery({
- *   variables: {
- *      sponsorId: // value for 'sponsorId'
- *   },
- * });
- */
-export function useSponsorQuery(
-  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export function useSponsorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SponsorQuery,
-    SponsorQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
-export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
-export type SponsorQueryResult = Apollo.QueryResult<
-  SponsorQuery,
-  SponsorQueryVariables
 >;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {
@@ -2858,116 +2803,60 @@ export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
   UpdateSponsorMutation,
   UpdateSponsorMutationVariables
 >;
-export const VenuesDocument = gql`
-  query venues {
-    venues {
+export const SponsorDocument = gql`
+  query sponsor($sponsorId: Int!) {
+    sponsor(id: $sponsorId) {
       id
       name
-      street_address
-      city
-      postal_code
-      region
-      country
-      latitude
-      longitude
+      website
+      logo_path
+      type
     }
   }
 `;
 
 /**
- * __useVenuesQuery__
+ * __useSponsorQuery__
  *
- * To run a query within a React component, call `useVenuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useVenuesQuery({
+ * const { data, loading, error } = useSponsorQuery({
  *   variables: {
+ *      sponsorId: // value for 'sponsorId'
  *   },
  * });
  */
-export function useVenuesQuery(
-  baseOptions?: Apollo.QueryHookOptions<VenuesQuery, VenuesQueryVariables>,
+export function useSponsorQuery(
+  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<VenuesQuery, VenuesQueryVariables>(
-    VenuesDocument,
+  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
+    SponsorDocument,
     options,
   );
 }
-export function useVenuesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<VenuesQuery, VenuesQueryVariables>,
+export function useSponsorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SponsorQuery,
+    SponsorQueryVariables
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<VenuesQuery, VenuesQueryVariables>(
-    VenuesDocument,
+  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
+    SponsorDocument,
     options,
   );
 }
-export type VenuesQueryHookResult = ReturnType<typeof useVenuesQuery>;
-export type VenuesLazyQueryHookResult = ReturnType<typeof useVenuesLazyQuery>;
-export type VenuesQueryResult = Apollo.QueryResult<
-  VenuesQuery,
-  VenuesQueryVariables
->;
-export const VenueDocument = gql`
-  query venue($id: Int!) {
-    venue(id: $id) {
-      id
-      name
-      street_address
-      city
-      postal_code
-      region
-      country
-      latitude
-      longitude
-    }
-  }
-`;
-
-/**
- * __useVenueQuery__
- *
- * To run a query within a React component, call `useVenueQuery` and pass it any options that fit your needs.
- * When your component renders, `useVenueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useVenueQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useVenueQuery(
-  baseOptions: Apollo.QueryHookOptions<VenueQuery, VenueQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<VenueQuery, VenueQueryVariables>(
-    VenueDocument,
-    options,
-  );
-}
-export function useVenueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<VenueQuery, VenueQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<VenueQuery, VenueQueryVariables>(
-    VenueDocument,
-    options,
-  );
-}
-export type VenueQueryHookResult = ReturnType<typeof useVenueQuery>;
-export type VenueLazyQueryHookResult = ReturnType<typeof useVenueLazyQuery>;
-export type VenueQueryResult = Apollo.QueryResult<
-  VenueQuery,
-  VenueQueryVariables
+export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
+export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
+export type SponsorQueryResult = Apollo.QueryResult<
+  SponsorQuery,
+  SponsorQueryVariables
 >;
 export const CreateVenueDocument = gql`
   mutation createVenue($data: CreateVenueInputs!) {
@@ -3085,6 +2974,117 @@ export type UpdateVenueMutationResult =
 export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
+>;
+export const VenuesDocument = gql`
+  query venues {
+    venues {
+      id
+      name
+      street_address
+      city
+      postal_code
+      region
+      country
+      latitude
+      longitude
+    }
+  }
+`;
+
+/**
+ * __useVenuesQuery__
+ *
+ * To run a query within a React component, call `useVenuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVenuesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useVenuesQuery(
+  baseOptions?: Apollo.QueryHookOptions<VenuesQuery, VenuesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<VenuesQuery, VenuesQueryVariables>(
+    VenuesDocument,
+    options,
+  );
+}
+export function useVenuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<VenuesQuery, VenuesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<VenuesQuery, VenuesQueryVariables>(
+    VenuesDocument,
+    options,
+  );
+}
+export type VenuesQueryHookResult = ReturnType<typeof useVenuesQuery>;
+export type VenuesLazyQueryHookResult = ReturnType<typeof useVenuesLazyQuery>;
+export type VenuesQueryResult = Apollo.QueryResult<
+  VenuesQuery,
+  VenuesQueryVariables
+>;
+export const VenueDocument = gql`
+  query venue($id: Int!) {
+    venue(id: $id) {
+      id
+      name
+      street_address
+      city
+      postal_code
+      region
+      country
+      latitude
+      longitude
+    }
+  }
+`;
+
+/**
+ * __useVenueQuery__
+ *
+ * To run a query within a React component, call `useVenueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVenueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVenueQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVenueQuery(
+  baseOptions: Apollo.QueryHookOptions<VenueQuery, VenueQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<VenueQuery, VenueQueryVariables>(
+    VenueDocument,
+    options,
+  );
+}
+export function useVenueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<VenueQuery, VenueQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<VenueQuery, VenueQueryVariables>(
+    VenueDocument,
+    options,
+  );
+}
+export type VenueQueryHookResult = ReturnType<typeof useVenueQuery>;
+export type VenueLazyQueryHookResult = ReturnType<typeof useVenueLazyQuery>;
+export type VenueQueryResult = Apollo.QueryResult<
+  VenueQuery,
+  VenueQueryVariables
 >;
 export const RsvpToEventDocument = gql`
   mutation rsvpToEvent($eventId: Int!) {

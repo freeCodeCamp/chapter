@@ -50,6 +50,8 @@
     "type-graphql": "1.1.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/nodemailer": "^6.4.4",
     "chai": "4.3.6",
     "concurrently": "7.1.0",
     "dotenv-cli": "5.1.0",

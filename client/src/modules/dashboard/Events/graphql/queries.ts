@@ -79,6 +79,7 @@ export const EVENT = gql`
           name
         }
         event_role {
+          id
           name
           event_role_permissions {
             event_permission {
@@ -128,6 +129,15 @@ export const Sponsors = gql`
       website
       logo_path
       type
+    }
+  }
+`;
+
+export const EventRoles = gql`
+  query eventRoles {
+    eventRoles {
+      id
+      name
     }
   }
 `;

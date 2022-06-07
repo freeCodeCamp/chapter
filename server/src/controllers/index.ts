@@ -2,6 +2,7 @@ import { UserResolver } from '../graphql-types';
 import { AuthResolver } from './Auth/resolver';
 import { ChapterResolver } from './Chapter/resolver';
 import { EventResolver } from './Events/resolver';
+import { EventRoleResolver } from './EventRole/resolver';
 import { EventUserResolver } from './EventUser/resolver';
 import { EmailResolver } from './Messages/resolver';
 import { SponsorResolver } from './Sponsors/resolver';
@@ -13,6 +14,7 @@ const resolvers = [
   ChapterResolver,
   VenueResolver,
   EventResolver,
+  EventRoleResolver,
   EventUserResolver,
   EmailResolver,
   AuthResolver,

@@ -167,6 +167,7 @@ export class EventResolver {
               },
             },
           },
+          orderBy: { user: { first_name: 'asc' } },
         },
         sponsors: { include: { sponsor: true } },
       },

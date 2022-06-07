@@ -249,6 +249,7 @@ export type Mutation = {
   authenticate: AuthenticateType;
   cancelEvent: Event;
   changeChapterUserRole: ChapterUser;
+  changeEventUserRole: EventUser;
   confirmRsvp: EventUser;
   createChapter: Chapter;
   createEvent: Event;
@@ -284,6 +285,12 @@ export type MutationCancelEventArgs = {
 
 export type MutationChangeChapterUserRoleArgs = {
   chapterId: Scalars['Int'];
+  roleId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
+export type MutationChangeEventUserRoleArgs = {
+  eventId: Scalars['Int'];
   roleId: Scalars['Int'];
   userId: Scalars['Int'];
 };
@@ -394,6 +401,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapters: Array<Chapter>;
   event?: Maybe<EventWithRelations>;
+  eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   me?: Maybe<User>;
   paginatedEvents: Array<EventWithChapter>;
@@ -858,6 +866,20 @@ export type InitUserInterestForChapterMutation = {
   initUserInterestForChapter: boolean;
 };
 
+export type ChangeEventUserRoleMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  roleId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type ChangeEventUserRoleMutation = {
+  __typename?: 'Mutation';
+  changeEventUserRole: {
+    __typename?: 'EventUser';
+    event_role: { __typename?: 'EventRole'; id: number };
+  };
+};
+
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EventsQuery = {
@@ -935,6 +957,7 @@ export type EventQuery = {
       user: { __typename?: 'User'; id: number; name: string };
       event_role: {
         __typename?: 'EventRole';
+        id: number;
         name: string;
         event_role_permissions: Array<{
           __typename?: 'EventRolePermission';
@@ -982,6 +1005,13 @@ export type SponsorsQuery = {
     logo_path: string;
     type: string;
   }>;
+};
+
+export type EventRolesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EventRolesQuery = {
+  __typename?: 'Query';
+  eventRoles: Array<{ __typename?: 'EventRole'; id: number; name: string }>;
 };
 
 export type CreateSponsorMutationVariables = Exact<{
@@ -2423,6 +2453,60 @@ export type InitUserInterestForChapterMutationOptions =
     InitUserInterestForChapterMutation,
     InitUserInterestForChapterMutationVariables
   >;
+export const ChangeEventUserRoleDocument = gql`
+  mutation changeEventUserRole($eventId: Int!, $roleId: Int!, $userId: Int!) {
+    changeEventUserRole(eventId: $eventId, roleId: $roleId, userId: $userId) {
+      event_role {
+        id
+      }
+    }
+  }
+`;
+export type ChangeEventUserRoleMutationFn = Apollo.MutationFunction<
+  ChangeEventUserRoleMutation,
+  ChangeEventUserRoleMutationVariables
+>;
+
+/**
+ * __useChangeEventUserRoleMutation__
+ *
+ * To run a mutation, you first call `useChangeEventUserRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeEventUserRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeEventUserRoleMutation, { data, loading, error }] = useChangeEventUserRoleMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *      roleId: // value for 'roleId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useChangeEventUserRoleMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ChangeEventUserRoleMutation,
+    ChangeEventUserRoleMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ChangeEventUserRoleMutation,
+    ChangeEventUserRoleMutationVariables
+  >(ChangeEventUserRoleDocument, options);
+}
+export type ChangeEventUserRoleMutationHookResult = ReturnType<
+  typeof useChangeEventUserRoleMutation
+>;
+export type ChangeEventUserRoleMutationResult =
+  Apollo.MutationResult<ChangeEventUserRoleMutation>;
+export type ChangeEventUserRoleMutationOptions = Apollo.BaseMutationOptions<
+  ChangeEventUserRoleMutation,
+  ChangeEventUserRoleMutationVariables
+>;
 export const EventsDocument = gql`
   query events {
     events(showAll: true) {
@@ -2541,6 +2625,7 @@ export const EventDocument = gql`
           name
         }
         event_role {
+          id
           name
           event_role_permissions {
             event_permission {
@@ -2725,6 +2810,62 @@ export type SponsorsLazyQueryHookResult = ReturnType<
 export type SponsorsQueryResult = Apollo.QueryResult<
   SponsorsQuery,
   SponsorsQueryVariables
+>;
+export const EventRolesDocument = gql`
+  query eventRoles {
+    eventRoles {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useEventRolesQuery__
+ *
+ * To run a query within a React component, call `useEventRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEventRolesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    EventRolesQuery,
+    EventRolesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<EventRolesQuery, EventRolesQueryVariables>(
+    EventRolesDocument,
+    options,
+  );
+}
+export function useEventRolesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    EventRolesQuery,
+    EventRolesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<EventRolesQuery, EventRolesQueryVariables>(
+    EventRolesDocument,
+    options,
+  );
+}
+export type EventRolesQueryHookResult = ReturnType<typeof useEventRolesQuery>;
+export type EventRolesLazyQueryHookResult = ReturnType<
+  typeof useEventRolesLazyQuery
+>;
+export type EventRolesQueryResult = Apollo.QueryResult<
+  EventRolesQuery,
+  EventRolesQueryVariables
 >;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {

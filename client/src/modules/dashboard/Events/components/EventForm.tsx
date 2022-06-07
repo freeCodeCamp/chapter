@@ -157,8 +157,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                       label={field.label}
                       value={
                         field.key === 'start_at'
-                          ? startDate?.toDateString()
-                          : endDate?.toDateString()
+                          ? startDate.toDateString()
+                          : endDate.toDateString()
                       }
                     />
                   }

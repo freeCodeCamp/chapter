@@ -96,4 +96,26 @@ describe('event page', () => {
     });
     cy.findByRole('button', { name: 'Cancel' }).should('not.exist');
   });
+
+  it('should be possible to change event subscription', () => {
+    cy.register();
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+
+    // RSVPing is required for managing event subscription
+    cy.findByRole('button', { name: 'RSVP' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+
+    cy.contains(/You are subscribed/);
+    cy.findByRole('button', { name: 'Unsubscribe' }).click();
+    cy.findByRole('alertdialog').contains(/Unsubscribe/);
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains(/unsubscribed/);
+
+    cy.contains(/Not subscribed/);
+    cy.findByRole('button', { name: 'Subscribe' }).click();
+    cy.findByRole('alertdialog').contains(/subscribe/);
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains(/subscribed/);
+  });
 });

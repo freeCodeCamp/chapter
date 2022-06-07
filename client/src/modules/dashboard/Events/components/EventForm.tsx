@@ -322,7 +322,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           {data?.canceled && <Text color="red.500">Event canceled</Text>}
           <HStack width="100%">
             <Button
-              isFullWidth={true}
+              width="full"
               colorScheme="blue"
               type="submit"
               isDisabled={loading}

@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@apollo/client": "3.6.6",
-    "@chakra-ui/icons": "1.1.7",
-    "@chakra-ui/react": "1.8.8",
+    "@chakra-ui/icons": "^2.0.2",
+    "@chakra-ui/react": "^2.2.0",
     "@emotion/react": "11.9.0",
     "@emotion/styled": "11.8.1",
     "chakra-confirm": "^1.2.13",

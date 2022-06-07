@@ -104,8 +104,5 @@
   "workspaces": [
     "client",
     "server"
-  ],
-  "dependencies": {
-    "react-datepicker": "^4.8.0"
-  }
+  ]
 }

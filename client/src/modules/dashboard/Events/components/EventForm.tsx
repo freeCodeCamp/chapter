@@ -109,11 +109,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const venueType = watch('venue_type');
 
   const [startDate, setStartDate] = useState<Date>(
-    data?.start_at ? new Date(data.start_at) : new Date(),
+    new Date(defaultValues.start_at),
   );
-  const [endDate, setEndDate] = useState<Date>(
-    data?.ends_at ? new Date(data?.ends_at) : new Date(),
-  );
+  const [endDate, setEndDate] = useState<Date>(new Date(defaultValues.ends_at));
   const onDatePickerChange = useCallback(
     (key: string) => {
       return (date: Date | null) => {

@@ -20,7 +20,7 @@ export const VenuePage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );
   }

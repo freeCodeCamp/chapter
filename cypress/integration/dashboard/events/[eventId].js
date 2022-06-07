@@ -102,5 +102,38 @@ describe('event dashboard', () => {
         cy.get('@rsvps').contains(userName);
       });
     });
+
+    it('can change user event role', () => {
+      cy.visit('/dashboard/events/1');
+
+      cy.get('[data-cy=role]').then((roles) => {
+        const roleNames = [...roles.map((_, role) => role.innerText)];
+        const organizerToAttendee = roleNames.findIndex(
+          (role) => role === 'organizer',
+        );
+        const attendeeToOrganizer = roleNames.findIndex(
+          (role) => role === 'attendee',
+        );
+
+        cy.get('[data-cy=changeRole]').eq(attendeeToOrganizer).click();
+        cy.findByRole('combobox').find(':selected').contains('attendee');
+        cy.findByRole('combobox').select('organizer');
+        cy.findByRole('button', { name: 'Change' }).click();
+        cy.get('[data-cy=role]').eq(attendeeToOrganizer).contains('organizer');
+
+        cy.get('[data-cy=changeRole]').eq(organizerToAttendee).click();
+        cy.findByRole('combobox').find(':selected').contains('organizer');
+        cy.findByRole('combobox').select('attendee');
+        cy.findByRole('button', { name: 'Change' }).click();
+        cy.get('[data-cy=role]').eq(organizerToAttendee).contains('attendee');
+
+        // Ensure default value is changed
+        cy.get('[data-cy=changeRole]').eq(attendeeToOrganizer).click();
+        cy.findByRole('combobox').find(':selected').contains('organizer');
+        cy.get('[aria-label=Close]').click();
+        cy.get('[data-cy=changeRole]').eq(organizerToAttendee).click();
+        cy.findByRole('combobox').find(':selected').contains('attendee');
+      });
+    });
   });
 });

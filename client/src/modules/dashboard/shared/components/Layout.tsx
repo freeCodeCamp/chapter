@@ -10,7 +10,7 @@ const links = [
   { text: 'Sponsors', link: '/dashboard/sponsors' },
 ];
 
-export const Layout: React.FC = ({ children }) => {
+export const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   return (

@@ -14,7 +14,7 @@ exports[`EventCard should render 1`] = `
       data-cy="event-card"
     >
       <h4
-        class="css-q4xn2f"
+        class="css-hevq84"
       >
         Thu, Jan 1 @ 00:00
         <div
@@ -91,7 +91,7 @@ exports[`EventCard should render with tags 1`] = `
       data-cy="event-card"
     >
       <h4
-        class="css-q4xn2f"
+        class="css-hevq84"
       >
         Thu, Jan 1 @ 00:00
         <div

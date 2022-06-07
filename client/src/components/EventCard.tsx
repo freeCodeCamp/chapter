@@ -54,7 +54,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           fontWeight="semibold"
           as="h4"
           lineHeight="tight"
-          isTruncated
+          noOfLines={1}
         >
           {formatDate(event.start_at)}
           <Spacer />
@@ -77,7 +77,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </Link>
         </Box>
         {event.tags && (
-          <Box d="flex" alignItems="baseline" pt={3}>
+          <Box display="flex" alignItems="baseline" pt={3}>
             {event.tags.map(({ tag }) => (
               <Tag
                 borderRadius="full"

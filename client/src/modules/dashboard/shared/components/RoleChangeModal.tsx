@@ -33,7 +33,7 @@ export const RoleChangeModal: React.FC<{
       modalProps={modalProps}
       title={title}
       buttons={<Button type="submit">Change</Button>}
-      wrapBody={(children) => (
+      wrapChildren={(children) => (
         <form onSubmit={handleSubmit(onSubmit)}>{children}</form>
       )}
     >

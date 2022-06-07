@@ -21,7 +21,11 @@ export const AuthContext = createContext<{
 export const useAuthStore = () => useContext(AuthContext);
 export const useAuth = () => useContext(AuthContext).data;
 
-export const AuthContextProvider: React.FC = ({ children }) => {
+export const AuthContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [data, setData] = useState<AuthContextType>({});
   const meQuery = useMeQuery();
 

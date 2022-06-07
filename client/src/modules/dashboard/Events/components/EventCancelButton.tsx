@@ -5,13 +5,14 @@ import { Event, useCancelEventMutation } from '../../../../generated/graphql';
 import { EVENT, EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 
-interface EventCancelButtonProps extends ButtonProps {
+interface EventCancelButtonProps {
   isFullWidth?: boolean;
+  size?: ButtonProps['size'];
   buttonText: string;
   event: Pick<Event, 'id' | 'canceled'>;
 }
 
-const EventCancelButton: React.FC<EventCancelButtonProps> = (props) => {
+const EventCancelButton = (props: EventCancelButtonProps) => {
   const { isFullWidth, buttonText, event, ...rest } = props;
 
   const [cancel] = useCancelEventMutation();
@@ -40,7 +41,7 @@ const EventCancelButton: React.FC<EventCancelButtonProps> = (props) => {
   return (
     <Button
       {...rest}
-      isFullWidth={isFullWidth}
+      width={isFullWidth ? 'full' : 'auto'}
       colorScheme="orange"
       onClick={clickCancel}
     >

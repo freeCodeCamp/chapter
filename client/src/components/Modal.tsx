@@ -16,9 +16,10 @@ import React from 'react';
 
 export interface ConditionalWrapProps {
   Wrap?: (children: React.ReactNode | null | undefined) => JSX.Element;
+  children: React.ReactNode;
 }
 
-export const ConditionalWrap: React.FC<ConditionalWrapProps> = (props) => {
+export const ConditionalWrap = (props: ConditionalWrapProps) => {
   const { Wrap, children } = props;
   return Wrap ? Wrap(children) : <>{children}</>;
 };
@@ -31,9 +32,10 @@ interface ModalProps {
   buttonsLeft?: React.ReactElement;
   wrapChildren?: ConditionalWrapProps['Wrap'];
   formButtonText?: string;
+  children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = (props) => {
+export const Modal = (props: ModalProps) => {
   const {
     modalProps,
     title,

@@ -14,7 +14,7 @@ import { ChapterCard } from 'components/ChapterCard';
 import { EventCard } from 'components/EventCard';
 import { useHomeQuery } from 'generated/graphql';
 
-const Home: React.FC = () => {
+const Home = () => {
   const [hasMore, setHasMore] = useState(true);
   const { loading, error, data, fetchMore } = useHomeQuery({
     variables: { offset: 0, limit: 2 },
@@ -29,7 +29,7 @@ const Home: React.FC = () => {
       setHasMore(res.data.paginatedEvents.length > 0);
     } catch (err) {
       if (err instanceof Error) {
-        toast({ title: err.message || err.name || err });
+        toast({ title: err.message || err.name });
       } else {
         toast({ title: 'An unexpected error occurred' });
         console.log(err);

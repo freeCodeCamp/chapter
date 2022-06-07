@@ -80,7 +80,7 @@ export const EditEventPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error}</div>}
+        {error && <div>{error.message}</div>}
       </Layout>
     );
   }

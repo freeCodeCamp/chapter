@@ -5,6 +5,8 @@ const testEvent = {
   streamingUrl: 'https://test.event.org/video',
   capacity: '10',
   tags: 'Test, Event, Tag',
+  startAt: '2022-01-01T00:01',
+  endAt: '2022-01-02T00:02',
   venueId: '1',
   imageUrl: 'https://test.event.org/image',
 };
@@ -81,6 +83,16 @@ describe('events dashboard', () => {
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',
     );
+
+    cy.findByLabelText(/^Start at/)
+      .clear()
+      .type(testEvent.startAt)
+      .type('{esc}');
+    cy.findByLabelText(/^End at/)
+      .clear()
+      .type(testEvent.endAt)
+      .type('{esc}');
+
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();

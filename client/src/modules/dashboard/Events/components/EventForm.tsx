@@ -32,7 +32,6 @@ import EventCancelButton from './EventCancelButton';
 import {
   EventFormProps,
   fields,
-  formatValue,
   EventFormData,
   sponsorTypes,
   venueTypes,
@@ -171,7 +170,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 placeholder={field.placeholder}
                 isRequired={field.isRequired}
                 {...register(field.key)}
-                defaultValue={formatValue(field, data)}
               />
             ) : (
               <Input

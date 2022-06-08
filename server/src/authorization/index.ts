@@ -20,13 +20,10 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
 
   if (!user) return false;
 
-  /** This defines our permission model. In short, a user is allowed to do
-   * something if they have permission to do it. That permission can be instance
-   * wide, specific to a single chapter or specific a single event within a
-   * chapter.
-   *
-   * Those permissions are attached to roles, in that a given role has a set of
-   * permissions (stored in a dedicated role_permissions table).
+  /** This defines our permission model. In short, a user's request will be
+   * denied unless they have a role that grants them permission to use the
+   * resolver that handles their request. That role can be instance wide,
+   * specific to a single chapter or specific a single event within a chapter.
    *
    * Examples:
    *
@@ -34,10 +31,10 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
    * all events.
    *
    * If the user has the permission 'UPDATE_EVENT' for chapter 1, they can
-   * update all events in that chapter 1.
+   * update all events in chapter 1.
    *
-   * If the user has  the permission 'UPDATE_EVENT' for event 1, they can
-   * update event 1.
+   * If the user only has the permission 'UPDATE_EVENT' for event 1, they can
+   * only update event 1.
    * */
 
   if (await isAllowedByInstanceRole(user, permissions)) return true;
@@ -79,6 +76,8 @@ async function isAllowedByInstanceRole(
   return hasNecessaryPermission(roles, instancePermissions);
 }
 
+// a request may be associate with a specific chapter directly (if the request
+// has a chapter id) or indirectly (if the request just has an event id).
 async function getRelatedChapterId(
   user: UserWithRoles,
   variableValues: VariableValues,

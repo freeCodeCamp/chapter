@@ -15,8 +15,9 @@ import {
   Radio,
   Heading,
 } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import DatePicker from 'react-datepicker';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import {
@@ -40,6 +41,8 @@ import {
   getAllowedSponsorsForType,
 } from './EventFormUtils';
 
+import 'react-datepicker/dist/react-datepicker.css';
+
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, loading, submitText, chapterId } = props;
   const {
@@ -62,22 +65,21 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   } = useSponsorsQuery();
 
   const defaultValues = useMemo(() => {
-    if (!data)
+    if (!data) {
       return {
-        start_at: new Date().toISOString().slice(0, 16),
-        ends_at: new Date(Date.now() + 1000 * 60 * 60)
-          .toISOString()
-          .slice(0, 16),
+        start_at: new Date(),
+        ends_at: new Date(),
         venue_type: VenueType.PhysicalAndOnline,
       };
+    }
     return {
       name: data.name,
       description: data.description,
       url: data.url,
       streaming_url: data.streaming_url,
       capacity: data.capacity,
-      start_at: new Date(data.start_at).toISOString().slice(0, 16),
-      ends_at: new Date(data.ends_at).toISOString().slice(0, 16),
+      start_at: data.start_at,
+      ends_at: data.ends_at,
       sponsors: data.sponsors,
       tags: (data.tags || []).map(({ tag }) => tag.name).join(', '),
       venue_type: data.venue_type,
@@ -105,6 +107,25 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
   const venueType = watch('venue_type');
+
+  const [startDate, setStartDate] = useState<Date>(
+    new Date(defaultValues.start_at),
+  );
+  const [endDate, setEndDate] = useState<Date>(new Date(defaultValues.ends_at));
+  const onDatePickerChange = useCallback(
+    (key: string) => {
+      return (date: Date | null) => {
+        if (key === 'start_at' && date) {
+          setValue('start_at', date);
+          setStartDate(date);
+        } else if (key === 'ends_at' && date) {
+          setValue('ends_at', date);
+          setEndDate(date);
+        }
+      };
+    },
+    [setValue, setStartDate],
+  );
   return (
     <>
       {loadingChapter ? (
@@ -121,7 +142,29 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       >
         <VStack align="flex-start">
           {fields.map((field) =>
-            field.type === 'textarea' ? (
+            field.type === 'datetime' ? (
+              <FormControl key={field.key} isRequired>
+                <DatePicker
+                  selected={field.key === 'start_at' ? startDate : endDate}
+                  showTimeSelect
+                  timeIntervals={5}
+                  onChange={onDatePickerChange(field.key)}
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                  customInput={
+                    <Input
+                      id={`${field.key}_trigger`}
+                      name={`${field.key}`}
+                      label={field.label}
+                      value={
+                        field.key === 'start_at'
+                          ? startDate.toDateString()
+                          : endDate.toDateString()
+                      }
+                    />
+                  }
+                />
+              </FormControl>
+            ) : field.type === 'textarea' ? (
               <TextArea
                 key={field.key}
                 label={field.label}

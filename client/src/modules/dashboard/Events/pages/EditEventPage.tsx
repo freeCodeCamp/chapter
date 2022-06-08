@@ -51,8 +51,8 @@ export const EditEventPage: NextPage = () => {
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
-        start_at: new Date(data.start_at).toISOString(),
-        ends_at: new Date(data.ends_at).toISOString(),
+        start_at: data.start_at,
+        ends_at: data.ends_at,
         venue_id: isPhysical(data.venue_type)
           ? parseInt(String(data.venue_id))
           : null,

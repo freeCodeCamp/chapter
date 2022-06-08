@@ -104,18 +104,14 @@ export const fields: Field[] = [
   },
   {
     key: 'start_at',
-    type: 'datetime-local',
+    type: 'datetime',
     label: 'Start at',
-    defaultValue: new Date().toISOString().slice(0, 16),
     isRequired: true,
   },
   {
     key: 'ends_at',
-    type: 'datetime-local',
+    type: 'datetime',
     label: 'End at',
-    defaultValue: new Date(Date.now() + 1000 * 60 * 60)
-      .toISOString()
-      .slice(0, 16),
     isRequired: true,
   },
 ];
@@ -128,8 +124,8 @@ export interface EventFormData {
   streaming_url?: string | null;
   capacity: number;
   tags: string;
-  start_at: string;
-  ends_at: string;
+  start_at: Date;
+  ends_at: Date;
   venue_type: VenueType;
   venue_id?: number | null;
   invite_only?: boolean;

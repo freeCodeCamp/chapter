@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
 
-export const formatDate = (date?: Date | string | number) =>
-  format(new Date(date || Date.now()), 'E, LLL d @ HH:mm');
+export const formatDate = (date: Date) => {
+  return format(new Date(date), 'E, LLL d @ HH:mm');
+};

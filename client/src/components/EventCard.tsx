@@ -56,7 +56,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           lineHeight="tight"
           noOfLines={1}
         >
-          {formatDate(new Date(event.start_at).toISOString().slice(0, 16))}
+          {formatDate(event.start_at)}
           <Spacer />
           {metaTag}
         </Flex>

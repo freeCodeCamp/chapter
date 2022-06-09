@@ -16,6 +16,34 @@ import { ChapterUser, UserBan } from '../../graphql-types';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
+const canToggleBan = (role: string, otherRole: string) =>
+  otherRole !== 'owner' &&
+  ['owner', 'organizer'].includes(role) &&
+  !(role !== 'organizer' && otherRole !== 'organizer');
+
+const getInvolvedChapterRoles = async (
+  chapterId: number,
+  userId: number,
+  otherId: number,
+) => {
+  const users = await prisma.chapter_users.findMany({
+    where: {
+      chapter_id: chapterId,
+      user_id: { in: [userId, otherId] },
+    },
+    include: { chapter_role: true, user: true },
+  });
+
+  const idToRole: Record<number, string> = users.reduce(
+    (acc, { user, chapter_role }) => ({
+      ...acc,
+      [user.id]: chapter_role.name,
+    }),
+    {},
+  );
+  return [idToRole[userId], idToRole[otherId]];
+};
+
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
   @Query(() => ChapterUser)
@@ -171,9 +199,7 @@ export class ChapterUserResolver {
     @Arg('chapter_id', () => Int) chapterId: number,
   ): Promise<ChapterUser[]> {
     return await prisma.chapter_users.findMany({
-      where: {
-        chapter_id: chapterId,
-      },
+      where: { chapter_id: chapterId },
       include: {
         chapter_role: {
           include: {
@@ -227,30 +253,13 @@ export class ChapterUserResolver {
       throw Error('Cannot ban yourself');
     }
 
-    const users = await prisma.chapter_users.findMany({
-      where: {
-        chapter_id: chapterId,
-        user_id: { in: [ctx.user.id, userId] },
-      },
-      include: { chapter_role: true, user: true },
-    });
-
-    const idToRole: Record<number, string> = users.reduce(
-      (acc, { user, chapter_role }) => ({
-        ...acc,
-        [user.id]: chapter_role.name,
-      }),
-      {},
+    const [chapterRole, otherRole] = await getInvolvedChapterRoles(
+      chapterId,
+      ctx.user.id,
+      userId,
     );
 
-    const chapterRole = idToRole[ctx.user.id];
-    const otherRole = idToRole[userId];
-
-    if (
-      otherRole === 'owner' ||
-      !['owner', 'organizer'].includes(chapterRole) ||
-      (chapterRole === 'organizer' && otherRole === 'organizer')
-    ) {
+    if (!canToggleBan(chapterRole, otherRole)) {
       throw Error('Cannot ban');
     }
 
@@ -263,16 +272,33 @@ export class ChapterUserResolver {
     });
   }
 
-  @FieldResolver(() => Boolean)
-  async isBanned(@Root() chapter_user: ChapterUser): Promise<boolean> {
-    const chapterBans = await prisma.user_bans.findMany({
-      where: {
-        user_id: chapter_user.user_id,
-        chapter_id: chapter_user.chapter_id,
-      },
-    });
+  @Mutation(() => UserBan)
+  async unbanUser(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<UserBan> {
+    if (!ctx.user) {
+      throw Error('User must be logged in to unban');
+    }
+    if (ctx.user.id === userId) {
+      throw Error('Cannot unban yourself');
+    }
 
-    return Boolean(chapterBans.length);
+    const [chapterRole, otherRole] = await getInvolvedChapterRoles(
+      chapterId,
+      ctx.user.id,
+      userId,
+    );
+
+    if (!canToggleBan(chapterRole, otherRole)) {
+      throw Error('Cannot unban');
+    }
+
+    return await prisma.user_bans.delete({
+      where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
+      include: { chapter: true, user: true },
+    });
   }
 
   @FieldResolver()
@@ -288,6 +314,7 @@ export class ChapterUserResolver {
       return false;
     }
 
+    // TODO user permission for banning should be handled by authorization
     const chapterRole = ctx.user.user_chapters.find(
       ({ chapter_id }) => chapter_id === chapterId,
     )?.chapter_role.name;

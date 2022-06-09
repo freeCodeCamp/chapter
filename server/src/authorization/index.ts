@@ -14,7 +14,7 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
  * resolver itself must modify the response based on the user's roles */
 export const authorizationChecker: AuthChecker<GQLCtx> = async (
   { context: { user }, info: { variableValues } },
-  allowingPermissions,
+  requiredPermissions,
 ): Promise<boolean> => {
   validateVariableValues(variableValues);
 
@@ -37,10 +37,10 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
    * only update event 1.
    * */
 
-  if (await isAllowedByInstanceRole(user, allowingPermissions)) return true;
-  if (await isAllowedByChapterRole(user, allowingPermissions, variableValues))
+  if (await isAllowedByInstanceRole(user, requiredPermissions)) return true;
+  if (await isAllowedByChapterRole(user, requiredPermissions, variableValues))
     return true;
-  if (isAllowedByEventRole(user, allowingPermissions, variableValues))
+  if (isAllowedByEventRole(user, requiredPermissions, variableValues))
     return true;
 
   return false;
@@ -60,21 +60,21 @@ Accepted id names: ${allowedVariables.join(', ')}`);
 
 async function isAllowedByChapterRole(
   user: UserWithRoles,
-  allowingPermissions: string[],
+  requiredPermissions: string[],
   variableValues: VariableValues,
 ): Promise<boolean> {
   const chapterId = await getRelatedChapterId(user, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
-  return hasNecessaryPermission(allowingPermissions, userChapterPermissions);
+  return hasNecessaryPermission(requiredPermissions, userChapterPermissions);
 }
 
 async function isAllowedByInstanceRole(
   user: UserWithRoles,
-  allowingPermissions: string[],
+  requiredPermissions: string[],
 ): Promise<boolean> {
   const userInstancePermissions = getUserPermissionsForInstance(user);
-  return hasNecessaryPermission(allowingPermissions, userInstancePermissions);
+  return hasNecessaryPermission(requiredPermissions, userInstancePermissions);
 }
 
 // a request may be associate with a specific chapter directly (if the request
@@ -99,11 +99,11 @@ async function getRelatedChapterId(
 
 function isAllowedByEventRole(
   user: UserWithRoles,
-  allowingPermissions: string[],
+  requiredPermissions: string[],
   info: VariableValues,
 ): boolean {
   const userEventPermissions = getUserPermissionsForEvent(user, info);
-  return hasNecessaryPermission(allowingPermissions, userEventPermissions);
+  return hasNecessaryPermission(requiredPermissions, userEventPermissions);
 }
 
 function getUserPermissionsForInstance(user: UserWithRoles): string[] {
@@ -140,10 +140,10 @@ function getUserPermissionsForEvent(
 // better approach might be to throw an error if we're given multiple
 // permissions.
 function hasNecessaryPermission(
-  allowingPermissions: string[],
+  requiredPermissions: string[],
   ownedPermissions: string[],
 ): boolean {
-  return allowingPermissions.some((allowed) =>
+  return requiredPermissions.some((allowed) =>
     ownedPermissions.includes(allowed),
   );
 }

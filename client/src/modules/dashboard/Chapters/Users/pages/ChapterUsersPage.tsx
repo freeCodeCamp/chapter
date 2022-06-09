@@ -12,7 +12,7 @@ import {
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import {
@@ -20,6 +20,7 @@ import {
   useChapterUsersQuery,
   useChapterRolesQuery,
   useChangeChapterUserRoleMutation,
+  useUnbanUserMutation,
 } from '../../../../../generated/graphql';
 import { Layout } from '../../../shared/components/Layout';
 import {
@@ -42,9 +43,11 @@ export const ChapterUsersPage: NextPage = () => {
 
   const [chapterUser, setChapterUser] = useState<RoleChangeModalData>();
 
-  const [changeRoleMutation] = useChangeChapterUserRoleMutation({
-    refetchQueries: [{ query: CHAPTER_USERS, variables: { id: id } }],
-  });
+  const refetch = {
+    refetchQueries: [{ query: CHAPTER_USERS, variables: { id } }],
+  };
+
+  const [changeRoleMutation] = useChangeChapterUserRoleMutation(refetch);
 
   const changeRole = (data: RoleChangeModalData) => {
     setChapterUser(data);
@@ -61,20 +64,18 @@ export const ChapterUsersPage: NextPage = () => {
     modalProps.onClose();
   };
 
-  const [banUser] = useBanUserMutation({
-    refetchQueries: [{ query: CHAPTER_USERS, variables: { id } }],
-  });
+  const [banUser] = useBanUserMutation(refetch);
+  const [unbanUser] = useUnbanUserMutation(refetch);
 
   const confirm = useConfirm();
   const toast = useToast();
 
-  const onBan = async ({
-    id: userId,
-    name: userName,
-  }: {
+  interface BanArgs {
     id: number;
     name: string;
-  }) => {
+  }
+
+  const onBan = async ({ id: userId, name: userName }: BanArgs) => {
     const ok = await confirm({
       buttonColor: 'red',
       body: `Are you sure you want to ban ${userName}?`,
@@ -82,7 +83,7 @@ export const ChapterUsersPage: NextPage = () => {
 
     if (ok) {
       try {
-        await banUser({ variables: { userId: userId, chapterId: id } });
+        await banUser({ variables: { userId, chapterId: id } });
         toast({ title: 'User was banned', status: 'success' });
       } catch (err) {
         console.error(err);
@@ -90,6 +91,28 @@ export const ChapterUsersPage: NextPage = () => {
       }
     }
   };
+
+  const onUnban = async ({ id: userId, name: userName }: BanArgs) => {
+    const ok = await confirm({
+      buttonColor: 'red',
+      body: `Are you sure you want to unban ${userName}`,
+    });
+
+    if (ok) {
+      try {
+        await unbanUser({ variables: { userId, chapterId: id } });
+        toast({ title: 'User was unbanned', status: 'success' });
+      } catch (err) {
+        console.error(err);
+        toast({ title: 'Something went wrong', status: 'error' });
+      }
+    }
+  };
+
+  const bans = useMemo(
+    () => new Set(data?.chapter?.user_bans.map((ban) => ban.user.id)),
+    [data?.chapter?.chapter_users, data?.chapter?.user_bans],
+  );
 
   return (
     <Layout>
@@ -124,14 +147,14 @@ export const ChapterUsersPage: NextPage = () => {
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             keys={['name', 'email', 'role', 'ops'] as const}
             mapper={{
-              name: ({ isBanned, user }) => (
+              name: ({ user }) => (
                 <HStack>
                   <Text>{user.name}</Text>
-                  {isBanned && <Badge colorScheme="red">Banned</Badge>}
+                  {bans.has(user.id) && <Badge colorScheme="red">Banned</Badge>}
                 </HStack>
               ),
               email: ({ user }) => user.email,
-              ops: ({ canBeBanned, isBanned, user, chapter_role }) => (
+              ops: ({ canBeBanned, user, chapter_role }) => (
                 <HStack>
                   <Button
                     data-cy="changeRole"
@@ -147,15 +170,26 @@ export const ChapterUsersPage: NextPage = () => {
                   >
                     Change
                   </Button>
-                  {!isBanned && canBeBanned && (
-                    <Button
-                      colorScheme="red"
-                      size="xs"
-                      onClick={() => onBan(user)}
-                    >
-                      Ban
-                    </Button>
-                  )}
+                  {canBeBanned &&
+                    (bans.has(user.id) ? (
+                      <Button
+                        data-cy="unbanUser"
+                        colorScheme="purple"
+                        size="xs"
+                        onClick={() => onUnban(user)}
+                      >
+                        Unban
+                      </Button>
+                    ) : (
+                      <Button
+                        data-cy="banUser"
+                        colorScheme="red"
+                        size="xs"
+                        onClick={() => onBan(user)}
+                      >
+                        Ban
+                      </Button>
+                    ))}
                 </HStack>
               ),
               role: ({ chapter_role: { name } }) => (

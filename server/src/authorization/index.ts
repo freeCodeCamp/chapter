@@ -14,7 +14,7 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
  * resolver itself must modify the response based on the user's roles */
 export const authorizationChecker: AuthChecker<GQLCtx> = async (
   { context: { user }, info: { variableValues } },
-  permissions,
+  allowingPermissions,
 ): Promise<boolean> => {
   validateVariableValues(variableValues);
 
@@ -37,10 +37,11 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
    * only update event 1.
    * */
 
-  if (await isAllowedByInstanceRole(user, permissions)) return true;
-  if (await isAllowedByChapterRole(user, permissions, variableValues))
+  if (await isAllowedByInstanceRole(user, allowingPermissions)) return true;
+  if (await isAllowedByChapterRole(user, allowingPermissions, variableValues))
     return true;
-  if (isAllowedByEventRole(user, permissions, variableValues)) return true;
+  if (isAllowedByEventRole(user, allowingPermissions, variableValues))
+    return true;
 
   return false;
 };
@@ -59,21 +60,21 @@ Accepted id names: ${allowedVariables.join(', ')}`);
 
 async function isAllowedByChapterRole(
   user: UserWithRoles,
-  roles: string[],
+  allowingPermissions: string[],
   variableValues: VariableValues,
 ): Promise<boolean> {
   const chapterId = await getRelatedChapterId(user, variableValues);
   if (chapterId === null) return false;
-  const chapterPermissions = getChapterPermissionsById(user, chapterId);
-  return hasNecessaryPermission(roles, chapterPermissions);
+  const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
+  return hasNecessaryPermission(allowingPermissions, userChapterPermissions);
 }
 
 async function isAllowedByInstanceRole(
   user: UserWithRoles,
-  roles: string[],
+  allowingPermissions: string[],
 ): Promise<boolean> {
-  const instancePermissions = getInstancePermissions(user);
-  return hasNecessaryPermission(roles, instancePermissions);
+  const userInstancePermissions = getUserPermissionsForInstance(user);
+  return hasNecessaryPermission(allowingPermissions, userInstancePermissions);
 }
 
 // a request may be associate with a specific chapter directly (if the request
@@ -98,20 +99,20 @@ async function getRelatedChapterId(
 
 function isAllowedByEventRole(
   user: UserWithRoles,
-  permissions: string[],
+  allowingPermissions: string[],
   info: VariableValues,
 ): boolean {
-  const eventPermissions = getEventPermissions(user, info);
-  return hasNecessaryPermission(permissions, eventPermissions);
+  const userEventPermissions = getUserPermissionsForEvent(user, info);
+  return hasNecessaryPermission(allowingPermissions, userEventPermissions);
 }
 
-function getInstancePermissions(user: UserWithRoles): string[] {
+function getUserPermissionsForInstance(user: UserWithRoles): string[] {
   return user.instance_role.instance_role_permissions.map(
     (x) => x.instance_permission.name,
   );
 }
 
-function getChapterPermissionsById(
+function getUserPermissionsForChapter(
   user: UserWithRoles,
   chapterId: number,
 ): string[] {
@@ -123,7 +124,7 @@ function getChapterPermissionsById(
     : [];
 }
 
-function getEventPermissions(
+function getUserPermissionsForEvent(
   user: UserWithRoles,
   variableValues: VariableValues,
 ): string[] {
@@ -139,8 +140,10 @@ function getEventPermissions(
 // better approach might be to throw an error if we're given multiple
 // permissions.
 function hasNecessaryPermission(
-  allowedPermissions: string[],
-  roles: string[],
+  allowingPermissions: string[],
+  ownedPermissions: string[],
 ): boolean {
-  return allowedPermissions.some((allowed) => roles.includes(allowed));
+  return allowingPermissions.some((allowed) =>
+    ownedPermissions.includes(allowed),
+  );
 }

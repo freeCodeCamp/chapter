@@ -66,7 +66,6 @@ export type ChapterUser = {
   canBeBanned: Scalars['Boolean'];
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
-  isBanned: Scalars['Boolean'];
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
@@ -272,6 +271,7 @@ export type Mutation = {
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
   toggleChapterSubscription: ChapterUser;
+  unbanUser: UserBan;
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
   updateEvent: Event;
@@ -377,6 +377,11 @@ export type MutationSubscribeToEventArgs = {
 
 export type MutationToggleChapterSubscriptionArgs = {
   chapterId: Scalars['Int'];
+};
+
+export type MutationUnbanUserArgs = {
+  chapterId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationUnsubscribeFromEventArgs = {
@@ -689,7 +694,6 @@ export type ChapterUsersQuery = {
     chapter_users: Array<{
       __typename?: 'ChapterUser';
       subscribed: boolean;
-      isBanned: boolean;
       canBeBanned: boolean;
       user: { __typename?: 'User'; id: number; name: string; email: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
@@ -774,6 +778,19 @@ export type BanUserMutationVariables = Exact<{
 export type BanUserMutation = {
   __typename?: 'Mutation';
   banUser: {
+    __typename?: 'UserBan';
+    user: { __typename?: 'User'; name: string };
+  };
+};
+
+export type UnbanUserMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type UnbanUserMutation = {
+  __typename?: 'Mutation';
+  unbanUser: {
     __typename?: 'UserBan';
     user: { __typename?: 'User'; name: string };
   };
@@ -1659,7 +1676,6 @@ export const ChapterUsersDocument = gql`
           name
         }
         subscribed
-        isBanned
         canBeBanned
       }
       user_bans {
@@ -2001,6 +2017,58 @@ export type BanUserMutationResult = Apollo.MutationResult<BanUserMutation>;
 export type BanUserMutationOptions = Apollo.BaseMutationOptions<
   BanUserMutation,
   BanUserMutationVariables
+>;
+export const UnbanUserDocument = gql`
+  mutation unbanUser($chapterId: Int!, $userId: Int!) {
+    unbanUser(chapterId: $chapterId, userId: $userId) {
+      user {
+        name
+      }
+    }
+  }
+`;
+export type UnbanUserMutationFn = Apollo.MutationFunction<
+  UnbanUserMutation,
+  UnbanUserMutationVariables
+>;
+
+/**
+ * __useUnbanUserMutation__
+ *
+ * To run a mutation, you first call `useUnbanUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnbanUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unbanUserMutation, { data, loading, error }] = useUnbanUserMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUnbanUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UnbanUserMutation,
+    UnbanUserMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UnbanUserMutation, UnbanUserMutationVariables>(
+    UnbanUserDocument,
+    options,
+  );
+}
+export type UnbanUserMutationHookResult = ReturnType<
+  typeof useUnbanUserMutation
+>;
+export type UnbanUserMutationResult = Apollo.MutationResult<UnbanUserMutation>;
+export type UnbanUserMutationOptions = Apollo.BaseMutationOptions<
+  UnbanUserMutation,
+  UnbanUserMutationVariables
 >;
 export const ChangeChapterUserRoleDocument = gql`
   mutation changeChapterUserRole(

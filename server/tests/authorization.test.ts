@@ -130,22 +130,4 @@ describe('authorizationChecker', () => {
       true,
     );
   });
-
-  // TODO: might be best to just return false in production, rather than throw.
-  it('should throw if it receives an invalid variableValue', async () => {
-    const variableValues: GraphQLResolveInfo['variableValues'] = {
-      chipterId: 1,
-    };
-    const info = { variableValues } as GraphQLResolveInfo;
-    const userResolverData = merge(baseResolverData, {
-      info,
-    });
-
-    await expect(
-      authorizationChecker(userResolverData, ['some-permission']),
-    ).rejects.toThrow(
-      `GraphQL id chipterId not allowed.
-Accepted id names: chapterId, eventId, userId`,
-    );
-  });
 });

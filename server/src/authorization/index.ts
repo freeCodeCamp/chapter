@@ -16,8 +16,6 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
   { context: { user }, info: { variableValues } },
   requiredPermissions,
 ): Promise<boolean> => {
-  validateVariableValues(variableValues);
-
   if (!user) return false;
 
   /** This defines our permission model. In short, a user's request will be
@@ -45,18 +43,6 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
 
   return false;
 };
-
-function validateVariableValues(variableValues: VariableValues): void {
-  // TODO: expand this as we extend Authorization.
-  const allowedVariables = ['chapterId', 'eventId', 'userId'];
-
-  Object.keys(variableValues).forEach((key) => {
-    if (!allowedVariables.includes(key)) {
-      throw new Error(`GraphQL id ${key} not allowed.
-Accepted id names: ${allowedVariables.join(', ')}`);
-    }
-  });
-}
 
 async function isAllowedByChapterRole(
   user: UserWithRoles,

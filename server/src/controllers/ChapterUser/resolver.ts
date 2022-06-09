@@ -18,6 +18,116 @@ const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
+  @Query(() => ChapterUser)
+  async chapterUser(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<ChapterUser | null> {
+    if (!ctx.user) {
+      return null;
+    }
+
+    return await prisma.chapter_users.findUnique({
+      include: {
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+        user: true,
+      },
+      where: {
+        user_id_chapter_id: { user_id: ctx.user.id, chapter_id: chapterId },
+      },
+      rejectOnNotFound: false,
+    });
+  }
+
+  @Mutation(() => ChapterUser)
+  async joinChapter(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<ChapterUser> {
+    if (!ctx.user) {
+      throw Error('User must be logged in to join chapter');
+    }
+
+    return await prisma.chapter_users.create({
+      data: {
+        user: { connect: { id: ctx.user.id } },
+        chapter: { connect: { id: chapterId } },
+        chapter_role: { connect: { name: 'member' } },
+        subscribed: true, // TODO add user setting option override
+        joined_date: new Date(),
+      },
+      include: {
+        user: true,
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+      },
+    });
+  }
+
+  @Mutation(() => ChapterUser)
+  async toggleChapterSubscription(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<ChapterUser> {
+    if (!ctx.user) {
+      throw Error('User must be logged in to change subscription');
+    }
+
+    const chapterUser = await prisma.chapter_users.findUnique({
+      where: {
+        user_id_chapter_id: {
+          chapter_id: chapterId,
+          user_id: ctx.user.id,
+        },
+      },
+      include: { chapter: { include: { events: true } } },
+    });
+    const chapter = chapterUser.chapter;
+
+    if (chapterUser.subscribed) {
+      const onlyUserEventsFromChapter = {
+        AND: [
+          { user_id: ctx.user.id },
+          { event_id: { in: chapter.events.map(({ id }) => id) } },
+        ],
+      };
+
+      await prisma.event_users.updateMany({
+        data: { subscribed: false },
+        where: onlyUserEventsFromChapter,
+      });
+      await prisma.event_reminders.deleteMany({
+        where: onlyUserEventsFromChapter,
+      });
+    }
+    return await prisma.chapter_users.update({
+      data: {
+        subscribed: !chapterUser?.subscribed,
+      },
+      where: {
+        user_id_chapter_id: {
+          user_id: ctx.user.id,
+          chapter_id: chapterId,
+        },
+      },
+      include: {
+        user: true,
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+      },
+    });
+  }
+
   @Mutation(() => Boolean)
   async initUserInterestForChapter(
     @Arg('event_id', () => Int) event_id: number,
@@ -63,6 +173,35 @@ export class ChapterUserResolver {
     return await prisma.chapter_users.findMany({
       where: {
         chapter_id: chapterId,
+      },
+      include: {
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+        user: true,
+      },
+    });
+  }
+
+  @Mutation(() => ChapterUser)
+  async changeChapterUserRole(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Arg('roleId', () => Int) roleId: number,
+    @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: GQLCtx,
+  ): Promise<ChapterUser> {
+    if (!ctx.user) {
+      throw Error('User must be logged in to change chapter role');
+    }
+    return await prisma.chapter_users.update({
+      data: { chapter_role: { connect: { id: roleId } } },
+      where: {
+        user_id_chapter_id: {
+          chapter_id: chapterId,
+          user_id: userId,
+        },
       },
       include: {
         chapter_role: {

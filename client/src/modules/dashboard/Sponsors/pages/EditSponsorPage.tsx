@@ -47,7 +47,7 @@ const EditSponsorPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error}</div>}
+        {error && <div>{error.message}</div>}
       </Layout>
     );
   }

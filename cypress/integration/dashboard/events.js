@@ -84,9 +84,15 @@ describe('events dashboard', () => {
       'Test, Event, Tag',
     );
 
-    cy.findByLabelText(/^Start at/).type(testEvent.startAt);
+    cy.findByLabelText(/^Start at/)
+      .clear()
+      .type(testEvent.startAt)
+      .type('{esc}');
+    cy.findByLabelText(/^End at/)
+      .clear()
+      .type(testEvent.endAt)
+      .type('{esc}');
 
-    cy.findByLabelText(/^End at/).type(testEvent.endAt);
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();

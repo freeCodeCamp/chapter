@@ -43,6 +43,7 @@ export const CHAPTER_USERS = gql`
           email
         }
         chapter_role {
+          id
           name
         }
         subscribed
@@ -54,6 +55,20 @@ export const CHAPTER_USERS = gql`
           id
         }
       }
+    }
+  }
+`;
+
+export const CHAPTER_USER = gql`
+  query chapterUser($chapterId: Int!) {
+    chapterUser(chapterId: $chapterId) {
+      user {
+        name
+      }
+      chapter_role {
+        name
+      }
+      subscribed
     }
   }
 `;

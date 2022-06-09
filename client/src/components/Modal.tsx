@@ -11,22 +11,17 @@ import {
   Heading,
   ModalProps as ChakraModalProps,
   HStack,
-  Flex,
 } from '@chakra-ui/react';
 import React from 'react';
 
 export interface ConditionalWrapProps {
-  val: boolean | undefined | null | number | string;
-  Wrap: (children: React.ReactNode | null | undefined) => JSX.Element | null;
+  Wrap?: (children: React.ReactNode | null | undefined) => JSX.Element;
+  children: React.ReactNode;
 }
 
-export const ConditionalWrap: React.FC<ConditionalWrapProps> = (props) => {
-  const { val, Wrap, children } = props;
-  if (val) {
-    return Wrap(children);
-  }
-
-  return <>{children}</>;
+export const ConditionalWrap = (props: ConditionalWrapProps) => {
+  const { Wrap, children } = props;
+  return Wrap ? Wrap(children) : <>{children}</>;
 };
 
 interface ModalProps {
@@ -35,18 +30,19 @@ interface ModalProps {
   title?: string;
   buttons?: React.ReactElement;
   buttonsLeft?: React.ReactElement;
-  wrapBody?: ConditionalWrapProps['Wrap'];
+  wrapChildren?: ConditionalWrapProps['Wrap'];
   formButtonText?: string;
+  children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = (props) => {
+export const Modal = (props: ModalProps) => {
   const {
     modalProps,
     title,
     buttons,
     buttonsLeft,
     formButtonText,
-    wrapBody,
+    wrapChildren,
     size = 'xl',
     children,
   } = props;
@@ -61,31 +57,22 @@ export const Modal: React.FC<ModalProps> = (props) => {
           </ModalHeader>
         )}
         <ModalCloseButton />
-        <ConditionalWrap val={!!wrapBody} Wrap={wrapBody || (() => null)}>
+        <ConditionalWrap Wrap={wrapChildren}>
           <ModalBody>{children}</ModalBody>
 
           <ModalFooter>
-            <ConditionalWrap
-              val={!!buttonsLeft}
-              Wrap={(c) => (
-                <Flex w="full" justify="space-between">
-                  {c}
-                </Flex>
-              )}
-            >
-              {buttonsLeft}
-              <HStack>
-                <Button colorScheme="blue" onClick={modalProps.onClose}>
-                  Close
+            {buttonsLeft}
+            <HStack>
+              <Button colorScheme="blue" onClick={modalProps.onClose}>
+                Close
+              </Button>
+              {buttons}
+              {formButtonText && (
+                <Button colorScheme={'green'} type="submit">
+                  {formButtonText}
                 </Button>
-                {buttons}
-                {formButtonText && (
-                  <Button colorScheme={'green'} type="submit">
-                    {formButtonText}
-                  </Button>
-                )}
-              </HStack>
-            </ConditionalWrap>
+              )}
+            </HStack>
           </ModalFooter>
         </ConditionalWrap>
       </ModalContent>

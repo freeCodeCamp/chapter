@@ -1,12 +1,6 @@
 import { HStack } from '@chakra-ui/layout';
-import {
-  Avatar,
-  Button,
-  Grid,
-  GridItem,
-  GridItemProps,
-  Image,
-} from '@chakra-ui/react';
+import { Avatar, Button, Grid, GridItem, Image } from '@chakra-ui/react';
+import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
@@ -15,10 +9,15 @@ import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Input } from '../Form/Input';
 
-const Item = forwardRef<HTMLDivElement, GridItemProps>((props, ref) => {
+interface Props {
+  children: React.ReactNode;
+  justifyContent?: GridItemProps['justifyContent'];
+}
+
+const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <GridItem
-      d="flex"
+      display="flex"
       justifyContent="center"
       alignItems="center"
       ref={ref}

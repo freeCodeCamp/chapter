@@ -1,14 +1,24 @@
-import { Button, Box, Heading, Link, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Heading,
+  HStack,
+  Link,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
   useEventQuery,
+  useEventRolesQuery,
+  useChangeEventUserRoleMutation,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
@@ -16,6 +26,10 @@ import { getId } from '../../../../util/getId';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
+import {
+  RoleChangeModal,
+  RoleChangeModalData,
+} from '../../shared/components/RoleChangeModal';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
@@ -37,6 +51,11 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
 
+  const { data: eventRoles } = useEventRolesQuery();
+  const modalProps = useDisclosure();
+  const [eventUser, setEventUser] = useState<RoleChangeModalData>();
+  const [changeRoleMutation] = useChangeEventUserRoleMutation(args(eventId));
+
   const confirmRSVP =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
     async () => {
@@ -51,6 +70,21 @@ export const EventPage: NextPage = () => {
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
+  const changeRole = (data: RoleChangeModalData) => {
+    setEventUser(data);
+    modalProps.onOpen();
+  };
+  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+    changeRoleMutation({
+      variables: {
+        eventId: eventId,
+        roleId: data.newRoleId,
+        userId: data.userId,
+      },
+    });
+    modalProps.onClose();
+  };
+
   if (loading || error || !data || !data.event) {
     return (
       <Layout>
@@ -61,8 +95,38 @@ export const EventPage: NextPage = () => {
     );
   }
 
+  const userLists = [
+    {
+      title: 'RSVPs',
+      rsvpFilter: 'yes',
+      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+    },
+    {
+      title: 'Canceled',
+      rsvpFilter: 'no',
+      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+    },
+    {
+      title: 'Waitlist',
+      rsvpFilter: 'waitlist',
+      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'green' }],
+    },
+  ];
+
   return (
     <Layout>
+      {eventRoles && eventUser && (
+        <RoleChangeModal
+          modalProps={modalProps}
+          data={eventUser}
+          roles={eventRoles.eventRoles.map(({ id, name }) => ({
+            id,
+            name,
+          }))}
+          title="Change event role"
+          onSubmit={onModalSubmit}
+        />
+      )}
       <Box p="2" borderWidth="1px" borderRadius="lg">
         <Heading>{data.event.name}</Heading>
 
@@ -113,104 +177,60 @@ export const EventPage: NextPage = () => {
         false
       )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        <Box data-cy="rsvps">
-          <DataTable
-            title={
-              'RSVPs: ' +
-              (data.event.event_users
-                ? data.event.event_users.filter(
-                    ({ rsvp }) => rsvp.name === 'yes',
-                  ).length
-                : '0')
-            }
-            data={data.event.event_users.filter(
-              ({ rsvp }) => rsvp.name === 'yes',
-            )}
-            keys={['user', 'ops', 'role'] as const}
-            emptyText="No users"
-            mapper={{
-              user: ({ user }) => <Text data-cy="username">{user.name}</Text>,
-              ops: ({ user }) => (
-                <Button
-                  data-cy="kick"
-                  size="xs"
-                  colorScheme="red"
-                  onClick={kick({ eventId, userId: user.id })}
-                >
-                  Kick
-                </Button>
-              ),
-              role: ({ event_role }) => event_role.name,
-            }}
-          />
-        </Box>
-
-        <Box data-cy="canceled">
-          <DataTable
-            title={
-              'Canceled: ' +
-              (data.event.event_users
-                ? data.event.event_users.filter(
-                    ({ rsvp }) => rsvp.name === 'no',
-                  ).length
-                : '0')
-            }
-            data={data.event.event_users.filter(
-              ({ rsvp }) => rsvp.name === 'no',
-            )}
-            keys={['user', 'ops', 'role'] as const}
-            emptyText="No users"
-            mapper={{
-              user: ({ user }) => <Text data-cy="username">{user.name}</Text>,
-              ops: ({ user }) => (
-                <Button
-                  data-cy="kick"
-                  size="xs"
-                  colorScheme="red"
-                  onClick={kick({ eventId, userId: user.id })}
-                >
-                  Kick
-                </Button>
-              ),
-              role: ({ event_role }) => event_role.name,
-            }}
-          />
-        </Box>
-
-        <Box data-cy="waitlist">
-          <DataTable
-            title={
-              'Waitlist: ' +
-              (data.event.event_users
-                ? data.event.event_users.filter(
-                    ({ rsvp }) => rsvp.name === 'waitlist',
-                  ).length
-                : 0)
-            }
-            data={data.event.event_users.filter(
-              ({ rsvp }) => rsvp.name === 'waitlist',
-            )}
-            keys={['user', 'ops', 'role'] as const}
-            emptyText="No users"
-            mapper={{
-              user: ({ user }) => <Text data-cy="username">{user.name}</Text>,
-              ops: ({ user }) => (
-                <Button
-                  data-cy="confirmRSVP"
-                  size="xs"
-                  colorScheme="green"
-                  onClick={confirmRSVP({
-                    eventId,
-                    userId: user.id,
-                  })}
-                >
-                  Confirm
-                </Button>
-              ),
-              role: ({ event_role }) => event_role.name,
-            }}
-          />
-        </Box>
+        {userLists.map(({ title, rsvpFilter, ops }) => {
+          const users = data.event
+            ? data.event.event_users.filter(
+                ({ rsvp }) => rsvp.name === rsvpFilter,
+              )
+            : [];
+          return (
+            <Box key={title.toLowerCase()} data-cy={title.toLowerCase()}>
+              <DataTable
+                title={`${title}: ${users.length}`}
+                data={users}
+                keys={['user', 'role', 'ops'] as const}
+                emptyText="No users"
+                mapper={{
+                  user: ({ user }) => (
+                    <Text data-cy="username">{user.name}</Text>
+                  ),
+                  ops: ({ user, event_role }) => (
+                    <HStack>
+                      {ops.map(({ title, onClick, colorScheme }) => (
+                        <Button
+                          key={title.toLowerCase()}
+                          data-cy={title.toLowerCase()}
+                          size="xs"
+                          colorScheme={colorScheme}
+                          onClick={onClick({ eventId, userId: user.id })}
+                        >
+                          {title}
+                        </Button>
+                      ))}
+                      <Button
+                        data-cy="changeRole"
+                        colorScheme="blue"
+                        size="xs"
+                        onClick={() =>
+                          changeRole({
+                            roleId: event_role.id,
+                            userId: user.id,
+                            userName: user.name,
+                          })
+                        }
+                      >
+                        Change role
+                      </Button>
+                    </HStack>
+                  ),
+                  role: ({ event_role }) => (
+                    <Text data-cy="role">{event_role.name}</Text>
+                  ),
+                }}
+              />
+            </Box>
+          );
+        })}
       </Box>
     </Layout>
   );

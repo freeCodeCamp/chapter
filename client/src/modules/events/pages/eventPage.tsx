@@ -25,8 +25,10 @@ import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useEventQuery,
   useRsvpToEventMutation,
+  useSubscribeToEventMutation,
+  useUnsubscribeFromEventMutation,
   useInitUserInterestForChapterMutation,
-} from 'generated/graphql';
+} from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
@@ -34,8 +36,14 @@ export const EventPage: NextPage = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [rsvpToEvent] = useRsvpToEventMutation();
+  const refetch = {
+    refetchQueries: [{ query: EVENT, variables: { id: id } }],
+  };
+
+  const [rsvpToEvent] = useRsvpToEventMutation(refetch);
   const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
+  const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
+  const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
   const { loading, error, data } = useEventQuery({
     variables: { id: id || -1 },
   });
@@ -46,6 +54,41 @@ export const EventPage: NextPage = () => {
 
   const handleLoginUserFirst = () => {
     modalProps.onOpen();
+  };
+
+  const onSubscribeToEvent = async () => {
+    const ok = await confirm({ title: 'Do you want to subscribe?' });
+    if (ok) {
+      try {
+        await subscribeToEvent({ variables: { eventId: id } });
+        toast({
+          title: 'You successfully subscribed to this event',
+          status: 'success',
+        });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const onUnsubscribeFromEvent = async () => {
+    const ok = await confirm({
+      title: 'Unsubscribe from event?',
+      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
+    });
+    if (ok) {
+      try {
+        await unsubscribeFromEvent({ variables: { eventId: id } });
+        toast({
+          title: 'You have unsubscribed from this event',
+          status: 'info',
+        });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
   };
 
   const onRsvp = async (add: boolean) => {
@@ -59,7 +102,6 @@ export const EventPage: NextPage = () => {
       try {
         await rsvpToEvent({
           variables: { eventId: id },
-          refetchQueries: [{ query: EVENT, variables: { id } }],
         });
 
         toast(
@@ -89,14 +131,16 @@ export const EventPage: NextPage = () => {
 
     await onRsvp(add);
   };
-  const userRsvped = useMemo(() => {
-    const rsvp = data?.event?.event_users.find(
-      ({ user: event_user, rsvp }) =>
-        event_user.id === user?.id && rsvp.name !== 'no',
+
+  const eventUser = useMemo(() => {
+    const eUser = data?.event?.event_users.find(
+      ({ user: event_user }) => event_user.id === user?.id,
     );
-    if (!rsvp) return null;
-    return rsvp.rsvp.name;
+    if (!eUser) return null;
+    return eUser;
   }, [data?.event]);
+  const userRsvped =
+    eventUser?.rsvp.name !== 'no' ? eventUser?.rsvp.name : null;
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
@@ -186,6 +230,25 @@ export const EventPage: NextPage = () => {
         >
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
+      )}
+      {eventUser && (
+        <HStack>
+          {eventUser.subscribed ? (
+            <>
+              <Heading>You are subscribed</Heading>
+              <Button colorScheme="orange" onClick={onUnsubscribeFromEvent}>
+                Unsubscribe
+              </Button>
+            </>
+          ) : (
+            <>
+              <Heading>Not subscribed</Heading>
+              <Button colorScheme="blue" onClick={onSubscribeToEvent}>
+                Subscribe
+              </Button>
+            </>
+          )}
+        </HStack>
       )}
 
       {data.event.sponsors.length ? (

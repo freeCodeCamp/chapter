@@ -24,6 +24,11 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService from '../../services/MailerService';
+import {
+  createReminder,
+  deleteEventReminders,
+  updateRemindAt,
+} from '../../services/Reminders';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 //Place holder for unsubscribe
@@ -162,6 +167,7 @@ export class EventResolver {
               },
             },
           },
+          orderBy: { user: { first_name: 'asc' } },
         },
         sponsors: { include: { sponsor: true } },
       },
@@ -230,18 +236,10 @@ export class EventResolver {
             });
 
             if (acceptedRsvp.subscribed) {
-              await prisma.event_reminders.create({
-                data: {
-                  event_user: {
-                    connect: {
-                      user_id_event_id: {
-                        event_id: acceptedRsvp.event_id,
-                        user_id: acceptedRsvp.user_id,
-                      },
-                    },
-                  },
-                  remind_at: sub(event.start_at, { days: 1 }),
-                },
+              await createReminder({
+                eventId: acceptedRsvp.event_id,
+                remindAt: sub(event.start_at, { days: 1 }),
+                userId: acceptedRsvp.user_id,
               });
             }
           }
@@ -302,15 +300,10 @@ export class EventResolver {
       },
     });
     if (rsvpName !== 'waitlist' && eventUserData.subscribed) {
-      await prisma.event_reminders.create({
-        data: {
-          event_user: {
-            connect: {
-              user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
-            },
-          },
-          remind_at: sub(event.start_at, { days: 1 }),
-        },
+      await createReminder({
+        eventId: eventId,
+        remindAt: sub(event.start_at, { days: 1 }),
+        userId: ctx.user.id,
       });
     }
 
@@ -539,16 +532,10 @@ export class EventResolver {
     if (!isEqual(start_at, event.start_at)) {
       event.event_users.forEach(({ event_reminder }) => {
         if (event_reminder) {
-          prisma.event_reminders.update({
-            data: {
-              remind_at: sub(start_at, { days: 1 }),
-            },
-            where: {
-              user_id_event_id: {
-                user_id: event_reminder.user_id,
-                event_id: event_reminder.event_id,
-              },
-            },
+          updateRemindAt({
+            eventId: event_reminder.event_id,
+            remindAt: sub(start_at, { days: 1 }),
+            userId: event_reminder.user_id,
           });
         }
       });
@@ -615,18 +602,14 @@ ${unsubscribe}`;
         },
       },
     });
-    await prisma.event_reminders.deleteMany({
-      where: {
-        event_id: id,
-      },
-    });
+    await deleteEventReminders(id);
 
     const notCanceledRsvps = event.event_users;
 
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} canceled`;
-      const body = `placeholder body`;
+      const body = `The event ${event.name} was canceled`;
 
       new MailerService({
         emailList: emailList,

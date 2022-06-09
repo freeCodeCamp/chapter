@@ -59,15 +59,11 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "devDependencies": {
+    "@cypress/code-coverage": "3.9.12",
     "@faker-js/faker": "6.3.1",
     "@testing-library/cypress": "8.0.2",
     "@types/chai": "4.3.1",
     "@types/jest": "27.4.1",
-    "@types/jsonwebtoken": "8.5.8",
-    "@types/node": "16.11.33",
-    "@types/nodemailer": "6.4.4",
-    "@types/react": "17.0.44",
-    "@types/react-dom": "17.0.15",
     "@types/sinon": "10.0.11",
     "@types/sinon-chai": "3.2.8",
     "@types/supertest": "2.0.12",
@@ -91,13 +87,11 @@
     "husky": "7.0.4",
     "is-docker": "2.2.1",
     "jest": "27.5.1",
-    "jsonwebtoken": "8.5.1",
     "lint-staged": "12.3.8",
     "prettier": "2.6.2",
     "shx": "0.3.4",
     "ts-jest": "27.1.4",
-    "typescript": "4.6.3",
-    "@cypress/code-coverage": "3.9.12"
+    "typescript": "4.6.3"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

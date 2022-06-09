@@ -5,21 +5,27 @@ import {
   Heading,
   HStack,
   Text,
+  useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
-
 import {
-  useChapterUsersQuery,
   useBanUserMutation,
+  useChapterUsersQuery,
+  useChapterRolesQuery,
+  useChangeChapterUserRoleMutation,
 } from '../../../../../generated/graphql';
 import { Layout } from '../../../shared/components/Layout';
+import {
+  RoleChangeModal,
+  RoleChangeModalData,
+} from '../../../shared/components/RoleChangeModal';
 import { getId } from '../../../../../util/getId';
 import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 
@@ -31,6 +37,29 @@ export const ChapterUsersPage: NextPage = () => {
   const { loading, error, data } = useChapterUsersQuery({
     variables: { id },
   });
+  const { data: chapterRoles } = useChapterRolesQuery();
+  const modalProps = useDisclosure();
+
+  const [chapterUser, setChapterUser] = useState<RoleChangeModalData>();
+
+  const [changeRoleMutation] = useChangeChapterUserRoleMutation({
+    refetchQueries: [{ query: CHAPTER_USERS, variables: { id: id } }],
+  });
+
+  const changeRole = (data: RoleChangeModalData) => {
+    setChapterUser(data);
+    modalProps.onOpen();
+  };
+  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+    changeRoleMutation({
+      variables: {
+        chapterId: id,
+        roleId: data.newRoleId,
+        userId: data.userId,
+      },
+    });
+    modalProps.onClose();
+  };
 
   const [banUser] = useBanUserMutation({
     refetchQueries: [{ query: CHAPTER_USERS, variables: { id } }],
@@ -64,6 +93,18 @@ export const ChapterUsersPage: NextPage = () => {
 
   return (
     <Layout>
+      {chapterRoles && chapterUser && (
+        <RoleChangeModal
+          modalProps={modalProps}
+          data={chapterUser}
+          roles={chapterRoles.chapterRoles.map(({ id, name }) => ({
+            id,
+            name,
+          }))}
+          title="Change chapter role"
+          onSubmit={onModalSubmit}
+        />
+      )}
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>
@@ -90,10 +131,23 @@ export const ChapterUsersPage: NextPage = () => {
                 </HStack>
               ),
               email: ({ user }) => user.email,
-              role: ({ chapter_role }) => chapter_role.name,
-              ops: ({ canBeBanned, isBanned, user }) => {
-                if (!isBanned && canBeBanned) {
-                  return (
+              ops: ({ canBeBanned, isBanned, user, chapter_role }) => (
+                <HStack>
+                  <Button
+                    data-cy="changeRole"
+                    colorScheme="blue"
+                    size="xs"
+                    onClick={() =>
+                      changeRole({
+                        roleId: chapter_role.id,
+                        userId: user.id,
+                        userName: user.name,
+                      })
+                    }
+                  >
+                    Change
+                  </Button>
+                  {!isBanned && canBeBanned && (
                     <Button
                       colorScheme="red"
                       size="xs"
@@ -101,9 +155,12 @@ export const ChapterUsersPage: NextPage = () => {
                     >
                       Ban
                     </Button>
-                  );
-                }
-              },
+                  )}
+                </HStack>
+              ),
+              role: ({ chapter_role: { name } }) => (
+                <Text data-cy="role">{name}</Text>
+              ),
             }}
           />
         )}

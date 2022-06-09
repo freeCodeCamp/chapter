@@ -38,6 +38,16 @@ export const banUser = gql`
   }
 `;
 
+export const unbanUser = gql`
+  mutation unbanUser($chapterId: Int!, $userId: Int!) {
+    unbanUser(chapterId: $chapterId, userId: $userId) {
+      user {
+        name
+      }
+    }
+  }
+`;
+
 export const changeChapterUserRole = gql`
   mutation changeChapterUserRole(
     $chapterId: Int!

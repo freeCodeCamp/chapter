@@ -130,4 +130,25 @@ describe('authorizationChecker', () => {
       true,
     );
   });
+
+  it('should return false unless the number of required permissions is 1', async () => {
+    expect.assertions(4);
+    const resolverData = merge(baseResolverData, {
+      context: { user: userWithInstanceRole },
+    });
+
+    expect(await authorizationChecker(resolverData, [])).toBe(false);
+    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
+      true,
+    );
+    expect(
+      await authorizationChecker(resolverData, ['a-different-permission']),
+    ).toBe(true);
+    expect(
+      await authorizationChecker(resolverData, [
+        'some-permission',
+        'a-different-permission',
+      ]),
+    ).toBe(false);
+  });
 });

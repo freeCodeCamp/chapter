@@ -22,6 +22,11 @@ export const userWithInstanceRole = merge(baseUser, {
           name: 'some-permission',
         },
       },
+      {
+        instance_permission: {
+          name: 'a-different-permission',
+        },
+      },
     ],
   },
 });

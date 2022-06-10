@@ -10,6 +10,6 @@ module.exports = {
   },
   watchPathIgnorePatterns: ['/node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  testMatch: ['/**/*.test.(ts|js|tsx|jsx)'],
+  testMatch: ['/**/*.test.(ts|tsx)'],
   globalSetup: './global-setup.js',
 };

@@ -47,4 +47,38 @@ describe('Chapter Users dashboard', () => {
       cy.findByRole('combobox').find(':selected').contains('member');
     });
   });
+
+  it.only('organizer can ban user from chapter', () => {
+    cy.visit('/dashboard/chapters/1/users');
+
+    cy.findAllByRole('row').as('rows');
+
+    cy.get('@rows')
+      .filter(':contains("organizer")')
+      .contains('ban', { matchCase: false })
+      .should('not.exist');
+
+    cy.get('@rows').filter(':contains("member")').as('members');
+    cy.get('@members').should('contain', 'ban', { matchCase: false });
+
+    // .not doesn't do anything here
+    cy.get('@members').not('[data-cy=isBanned]').first().as('userToBan');
+
+    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('was banned', { matchCase: false });
+    cy.get('@userToBan').find('[data-cy=isBanned]');
+    cy.get('@userToBan')
+      .findByRole('button', { name: 'Unban' })
+      .should('exist');
+
+    cy.get('@userToBan').findByRole('button', { name: 'Unban' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('was unbanned', { matchCase: false });
+    cy.get('@userToBan')
+      // nor here
+      .not('[data-cy=isBanned]')
+      .findByRole('button', { name: 'Ban' })
+      .should('exist');
+  });
 });

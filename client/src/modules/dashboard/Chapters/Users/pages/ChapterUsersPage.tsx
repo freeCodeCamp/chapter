@@ -150,7 +150,11 @@ export const ChapterUsersPage: NextPage = () => {
               name: ({ user }) => (
                 <HStack>
                   <Text>{user.name}</Text>
-                  {bans.has(user.id) && <Badge colorScheme="red">Banned</Badge>}
+                  {bans.has(user.id) && (
+                    <Badge data-cy="isBanned" colorScheme="red">
+                      Banned
+                    </Badge>
+                  )}
                 </HStack>
               ),
               email: ({ user }) => user.email,

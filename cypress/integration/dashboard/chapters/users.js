@@ -48,7 +48,7 @@ describe('Chapter Users dashboard', () => {
     });
   });
 
-  it.only('organizer can ban user from chapter', () => {
+  it('organizer can ban user from chapter', () => {
     cy.visit('/dashboard/chapters/1/users');
 
     cy.findAllByRole('row').as('rows');

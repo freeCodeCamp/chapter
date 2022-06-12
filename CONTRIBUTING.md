@@ -572,10 +572,6 @@ When not running locally, the client needs to be passed the server's location by
 
 # Troubleshooting
 
-Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
-
-If you see a JsonWebTokenError in the console, it's likely that you need to clear the token from your browser's local storage.
-
 <details>
  <summary>Application Errors</summary>
 

@@ -605,15 +605,38 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
 <details>
  <summary>Linux Docker Troubleshooting</summary>
 
-* **Problem:** the application shows
+* **Problem:** You are getting this error
    > docker.errors.DockerException: Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied')) </br>
 
   **Solution:** Run `sudo docker-compose up` or add non-privileged user to the docker group as described in [https://docs.docker.com/engine/install/linux-postinstall/](https://docs.docker.com/engine/install/linux-postinstall/) If Docker was run as sudo before adding your user to the docker group.
 
-* **Problem:** The application shows 
+* **Problem:** You are getting this error 
   > "WARNING: Error loading config file: /home/user/.docker/config.json "  </br>
 
   **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>Node / NPM TroubleShooting</summary>
+
+* **Problem:** You are getting this errors
+   > notsup Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"} </br>
+
+  **Solution:** Upgrade to npm version 7 or 8, like `npm install -g npm@latest` or by getting the latest version of NodeJS from your Linux package manager. Or, install [nvm](https://github.com/nvm-sh/nvm).
+
+* **Problem:** You are getting these errors
+  > npm ERR! Error: EACCES: permission denied, rename '/usr/lib/node_modules/npm'</br>
+  > or </br>
+  > Error: EACCES: permission denied, rename '/usr/bin/npm' </br>
+
+  **Solution:**  see [https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally) or [https://stackoverflow.com/a/51024493](https://stackoverflow.com/questions/48910876/error-eacces-permission-denied-access-usr-local-lib-node-modules/51024493#51024493).
+
+  * **Problem:** if you are using Windows / WSL + Ubuntu Terminal, and the application shows
+   > npx /bin/sh^M bad interpreter: No such file or directory </br>
+
+  **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
 
   If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>

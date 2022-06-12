@@ -666,4 +666,21 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
 * **Note:** To shut down Docker on Linux, press Ctrl + C in the terminal where it was started.
 
 * **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
-  </details>
+</details>
+
+<details>
+ <summary>WSL TroubleShooting</summary>
+
+- Install Linux for Windows with WSL:</br>
+  [WSL](https://docs.microsoft.com/en-us/windows/wsl/install#troubleshooting-installation)</br>
+
+* **Problem:** You are getting this error
+   >  WSL2 Installation is Incomplete</br>
+
+  **Solution:** Follow the steps to install the missing component.
+
+* **Problem:** You are getting this error
+   >   WslRegisterDistribution failed with error: 0x80070057</br>
+
+  **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
+</details>

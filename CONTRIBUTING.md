@@ -671,8 +671,7 @@ When not running locally, the client needs to be passed the server's location by
 <details>
  <summary>WSL TroubleShooting</summary>
 
-- Install Linux for Windows with WSL:</br>
-  [WSL](https://docs.microsoft.com/en-us/windows/wsl/install#troubleshooting-installation)</br>
+- Install Linux for Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/install#troubleshooting-installation).</br>
 
 * **Problem:** You are getting this error
    > WSL2 Installation is Incomplete</br>

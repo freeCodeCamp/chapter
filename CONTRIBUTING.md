@@ -576,9 +576,12 @@ Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. 
 
 If you see a JsonWebTokenError in the console, it's likely that you need to clear the token from your browser's local storage.
 
-<details><summary>Application Errors</summary>
+<details>
+ <summary>Application Errors</summary>
 
-* **Problem:** JsonWebTokenError: invalid signature. </br>
+* **Problem:** 
+   > _JsonWebTokenError: invalid signature._ </br>
+
   **Solution:** Clear the browser cookies for the localhost domain, or use an incognito browser window to open the site.
 
 * **Problem:**  Where do application registration and other emails go? </br>
@@ -595,6 +598,22 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The database hasn't been created. Run `npm run db:reset` to clear and re-create the database tables.
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>Linux Docker Troubleshooting</summary>
+
+* **Problem:** the application shows
+   > docker.errors.DockerException: Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied')) </br>
+
+  **Solution:** Run `sudo docker-compose up` or add non-privileged user to the docker group as described in [https://docs.docker.com/engine/install/linux-postinstall/](https://docs.docker.com/engine/install/linux-postinstall/) If Docker was run as sudo before adding your user to the docker group.
+
+* **Problem:** The application shows 
+  > "WARNING: Error loading config file: /home/user/.docker/config.json "  </br>
+
+  **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
 
   If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>

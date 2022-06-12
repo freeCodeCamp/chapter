@@ -621,7 +621,7 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
 <details>
  <summary>Node / NPM TroubleShooting</summary>
 
-* **Problem:** You are getting this errors
+* **Problem:** You are getting this error
    > notsup Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"} </br>
 
   **Solution:** Upgrade to npm version 7 or 8, like `npm install -g npm@latest` or by getting the latest version of NodeJS from your Linux package manager. Or, install [nvm](https://github.com/nvm-sh/nvm).
@@ -640,3 +640,12 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
 
   If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
+
+<details>
+ <summary>ElephantSQL TroubleShooting</summary>
+
+* **Problem:** You are getting this error running `npm run db:reset`
+   > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
+
+  **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
+  </details>

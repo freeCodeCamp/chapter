@@ -649,3 +649,21 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
 
   **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
   </details>
+
+<details>
+ <summary>General Docker TroubleShooting</summary>
+
+- Docker Installation in different operating system:</br>
+  [Linux](https://docs.docker.com/engine/install/linux-postinstall/)</br>
+  [Windows](https://docs.docker.com/desktop/windows/troubleshoot/)</br>
+  [Mac](https://docs.docker.com/desktop/mac/troubleshoot/)
+
+* **Problem:** You are getting this error running
+   >  ERROR: for chapter-npx-test_db_1 Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1 (....): Bind for 0.0.0.0:54320 failed: port is already allocated. ERROR: for db Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1</br>
+
+  **Solution:** Make sure Docker isn't already running and bound to port 54320.
+
+* **Note:** To shut down Docker on Linux, press Ctrl + C in the terminal where it was started.
+
+* **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
+  </details>

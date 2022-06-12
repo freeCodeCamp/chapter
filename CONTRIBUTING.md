@@ -575,7 +575,7 @@ When not running locally, the client needs to be passed the server's location by
 <details>
  <summary>Application Errors</summary>
 
-* **Problem:** 
+* **Problem:** The application shows
    > _JsonWebTokenError: invalid signature._ </br>
 
   **Solution:** Clear the browser cookies for the localhost domain, or use an incognito browser window to open the site.

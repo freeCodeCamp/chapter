@@ -648,7 +648,9 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
    > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
 
   **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
-  </details>
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
 
 <details>
  <summary>General Docker TroubleShooting</summary>
@@ -659,13 +661,15 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
   [Mac](https://docs.docker.com/desktop/mac/troubleshoot/)
 
 * **Problem:** You are getting this error running
-   >  ERROR: for chapter-npx-test_db_1 Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1 (....): Bind for 0.0.0.0:54320 failed: port is already allocated. ERROR: for db Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1</br>
+   > ERROR: for chapter-npx-test_db_1 Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1 (....): Bind for 0.0.0.0:54320 failed: port is already allocated. ERROR: for db Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1</br>
 
   **Solution:** Make sure Docker isn't already running and bound to port 54320.
 
 * **Note:** To shut down Docker on Linux, press Ctrl + C in the terminal where it was started.
 
 * **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -675,12 +679,40 @@ If you see a JsonWebTokenError in the console, it's likely that you need to clea
   [WSL](https://docs.microsoft.com/en-us/windows/wsl/install#troubleshooting-installation)</br>
 
 * **Problem:** You are getting this error
-   >  WSL2 Installation is Incomplete</br>
+   > WSL2 Installation is Incomplete</br>
 
   **Solution:** Follow the steps to install the missing component.
 
 * **Problem:** You are getting this error
-   >   WslRegisterDistribution failed with error: 0x80070057</br>
+   > WslRegisterDistribution failed with error: 0x80070057</br>
 
   **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>Windows Docker TroubleShooting</summary>
+
+* **Problem:** You are getting this error
+   > Docker Desktop requires Windows 10 Pro/Enterprise (######+) or Windows 10 Home (#####.####+)</br>
+
+  **Solution:** Windows 10 is running an old / unsupported version and needs to be updated before Docker will install.
+
+* **Problem:** You are getting this error
+   > Failed to execute script docker-composer</br>
+
+  **Solution:** Start Docker Desktop via the Windows Start Menu and restart Git Bash.
+
+* **Problem:** Docker / WSL2 consumes all your system's RAM and is very slow</br>
+
+  **Solution:** [Limit resources](https://medium.com/@lewwybogus/how-to-stop-wsl2-from-hogging-all-your-ram-with-docker-d7846b9c5b37)
+
+* **Problem:** You are getting this error
+   > Windows Defender Firewall has blocked some features of this app</br>
+
+  **Solution:**  Allow Access.
+
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>

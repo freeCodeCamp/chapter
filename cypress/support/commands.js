@@ -67,6 +67,10 @@ Cypress.Commands.add('login', (token) => {
   );
 });
 
+Cypress.Commands.add('logout', () => {
+  window.localStorage.removeItem('token');
+});
+
 Cypress.Commands.add('register', (firstName, lastName, email) => {
   const user = {
     operationName: 'register',
@@ -224,4 +228,21 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
 Cypress.Commands.add('checkBcc', (mail) => {
   const headers = mail.Content.Headers;
   return cy.wrap(!('To' in headers));
+});
+
+Cypress.Commands.add('rsvpToEvent', (eventId) => {
+  const rsvpMutation = {
+    operationName: 'rsvpToEvent',
+    variables: {
+      eventId,
+    },
+    query: `
+    mutation rsvpToEvent($eventId: Int!) {
+      rsvpEvent(eventId: $eventId) {
+        updated_at
+      }
+    }
+    `,
+  };
+  return cy.request('POST', 'http://localhost:5000/graphql', rsvpMutation);
 });

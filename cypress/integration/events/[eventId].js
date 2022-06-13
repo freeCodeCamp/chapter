@@ -118,4 +118,23 @@ describe('event page', () => {
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains(/subscribed/);
   });
+
+  it.only('should reject requests from logged out users', () => {
+    cy.logout();
+    cy.rsvpToEvent(1).then((response) => {
+      const errors = response.body.errors;
+      expect(errors).to.have.length(1);
+      expect(errors[0].message).to.eq(
+        "Access denied! You don't have permission for this action!",
+      );
+    });
+
+    cy.register();
+    cy.login();
+    cy.reload();
+    cy.rsvpToEvent(1).then((response) => {
+      const errors = response.body.errors;
+      expect(errors).to.have.length(0);
+    });
+  });
 });

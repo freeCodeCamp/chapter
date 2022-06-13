@@ -610,7 +610,7 @@ When not running locally, the client needs to be passed the server's location by
 </details>
 
 <details>
- <summary>Node / NPM TroubleShooting</summary>
+ <summary>Node / NPM Troubleshooting</summary>
 
 * **Problem:** You are getting this error
    > notsup Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"} </br>
@@ -633,7 +633,7 @@ When not running locally, the client needs to be passed the server's location by
 </details>
 
 <details>
- <summary>ElephantSQL TroubleShooting</summary>
+ <summary>ElephantSQL Troubleshooting</summary>
 
 * **Problem:** You are getting this error running `npm run db:reset`
    > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
@@ -644,7 +644,7 @@ When not running locally, the client needs to be passed the server's location by
 </details>
 
 <details>
- <summary>General Docker TroubleShooting</summary>
+ <summary>General Docker Troubleshooting</summary>
 
 - Docker Installation in different operating system:</br>
   [Linux](https://docs.docker.com/engine/install/linux-postinstall/)</br>
@@ -664,7 +664,7 @@ When not running locally, the client needs to be passed the server's location by
 </details>
 
 <details>
- <summary>WSL TroubleShooting</summary>
+ <summary>WSL Troubleshooting</summary>
 
 - Install Linux for Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/install#troubleshooting-installation).</br>
 
@@ -682,7 +682,7 @@ When not running locally, the client needs to be passed the server's location by
 </details>
 
 <details>
- <summary>Windows Docker TroubleShooting</summary>
+ <summary>Windows Docker Troubleshooting</summary>
 
 * **Problem:** You are getting this error
    > Docker Desktop requires Windows 10 Pro/Enterprise (######+) or Windows 10 Home (#####.####+)</br>

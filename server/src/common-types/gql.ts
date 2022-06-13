@@ -1,13 +1,15 @@
 import { Request as ExpressRequest, Response } from 'express';
 
-import { User, ChapterUser } from '../graphql-types';
+import { UserWithRoles } from '../graphql-types';
 
+// TODO: User seems to be duplicated.  Both on req.user and in the context. Why?
+// Can we get rid of one?
 export interface GQLCtx {
-  user?: User & { user_chapters: ChapterUser[] };
+  user?: UserWithRoles;
   res: Response;
   req: ExpressRequest;
 }
 
 export interface Request extends ExpressRequest {
-  user?: User & { user_chapters: ChapterUser[] };
+  user?: UserWithRoles;
 }

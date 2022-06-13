@@ -1,5 +1,6 @@
 export * from './Chapter';
 export * from './ChapterUser';
+export * from './ChapterRole';
 export * from './Event';
 export * from './EventReminder';
 export * from './EventSponsor';

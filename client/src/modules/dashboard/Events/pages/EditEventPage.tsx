@@ -17,14 +17,14 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const id = getId(router.query) || -1;
+  const eventId = getId(router.query) || -1;
 
   const {
     loading: eventLoading,
     error,
     data,
   } = useEventQuery({
-    variables: { id },
+    variables: { eventId: eventId },
   });
 
   // TODO: update the cache directly:
@@ -32,7 +32,7 @@ export const EditEventPage: NextPage = () => {
   const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [
       { query: EVENTS },
-      { query: EVENT, variables: { id } },
+      { query: EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
@@ -63,7 +63,7 @@ export const EditEventPage: NextPage = () => {
       };
 
       const event = await updateEvent({
-        variables: { id, data: { ...eventData } },
+        variables: { eventId, data: { ...eventData } },
       });
 
       if (event.data) {

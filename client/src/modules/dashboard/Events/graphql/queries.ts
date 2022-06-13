@@ -28,8 +28,8 @@ export const EVENTS = gql`
 `;
 
 export const EVENT = gql`
-  query event($id: Int!) {
-    event(id: $id) {
+  query event($eventId: Int!) {
+    event(eventId: $eventId) {
       id
       name
       description
@@ -94,8 +94,8 @@ export const EVENT = gql`
 `;
 
 export const EVENT_WITH_VENU = gql`
-  query eventVenues($id: Int!) {
-    event(id: $id) {
+  query eventVenues($eventId: Int!) {
+    event(eventId: $eventId) {
       id
       name
       description

@@ -43,6 +43,29 @@ export const userMiddleware = (
             user: true,
           },
         },
+        user_events: {
+          include: {
+            event: {
+              select: {
+                chapter_id: true,
+              },
+            },
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
+              },
+            },
+          },
+        },
+        instance_role: {
+          include: {
+            instance_role_permissions: {
+              include: { instance_permission: true },
+            },
+          },
+        },
       },
       rejectOnNotFound: false,
     })

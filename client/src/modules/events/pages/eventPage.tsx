@@ -32,20 +32,21 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
-  const id = useParam('eventId');
+  const eventId = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
 
   const refetch = {
-    refetchQueries: [{ query: EVENT, variables: { id: id } }],
+    refetchQueries: [{ query: EVENT, variables: { eventId } }],
   };
 
   const [rsvpToEvent] = useRsvpToEventMutation(refetch);
   const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
+  // TODO: check if we need to default to -1 here
   const { loading, error, data } = useEventQuery({
-    variables: { id: id || -1 },
+    variables: { eventId: eventId || -1 },
   });
 
   const toast = useToast();
@@ -60,7 +61,7 @@ export const EventPage: NextPage = () => {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
     if (ok) {
       try {
-        await subscribeToEvent({ variables: { eventId: id } });
+        await subscribeToEvent({ variables: { eventId } });
         toast({
           title: 'You successfully subscribed to this event',
           status: 'success',
@@ -79,7 +80,7 @@ export const EventPage: NextPage = () => {
     });
     if (ok) {
       try {
-        await unsubscribeFromEvent({ variables: { eventId: id } });
+        await unsubscribeFromEvent({ variables: { eventId } });
         toast({
           title: 'You have unsubscribed from this event',
           status: 'info',
@@ -101,7 +102,7 @@ export const EventPage: NextPage = () => {
     if (ok) {
       try {
         await rsvpToEvent({
-          variables: { eventId: id },
+          variables: { eventId },
         });
 
         toast(
@@ -114,7 +115,7 @@ export const EventPage: NextPage = () => {
         );
         if (add) {
           await initUserInterestForChapter({
-            variables: { event_id: id },
+            variables: { event_id: eventId },
           });
         }
       } catch (err) {
@@ -148,7 +149,7 @@ export const EventPage: NextPage = () => {
       if (canCheckRsvp) {
         checkOnRsvp(true);
       }
-      router.replace('/events/' + id, undefined, { shallow: true });
+      router.replace('/events/' + eventId, undefined, { shallow: true });
     }
   }, [allDataLoaded, canCheckRsvp]);
 

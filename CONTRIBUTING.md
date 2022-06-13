@@ -583,17 +583,12 @@ When not running locally, the client needs to be passed the server's location by
 * **Problem:**  Where do application registration and other emails go? </br>
   **Solution:** All email are captured and saved by Mailhog. Simply open [http://localhost:8025/](http://localhost:8025/) to see captured emails. For account registration, the email validation link can be opened in the browser to complete the registration process.
 
-* **Problem:** The application shows 
-  > Something went wrong relation "chapters" does not exist. </br>
-
-  **Solution:**  The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database).
-
 * **Problem:** The applications shows 
   > _The table `public.chapters` does not exist in the current database_</br>
   > or
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
-  **Solution:** The database hasn't been created. Run `npm run db:reset` to clear and re-create the database tables.
+  **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
 
   If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>

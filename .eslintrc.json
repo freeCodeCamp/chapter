@@ -6,7 +6,7 @@
     "plugin:cypress/recommended",
     "plugin:import/recommended"
   ],
-  "plugins": ["react", "prettier", "import"],
+  "plugins": ["react", "prettier", "import", "no-only-tests"],
   "env": {
     "browser": true,
     "node": true,
@@ -61,7 +61,8 @@
     "react/display-name": 0,
     "react/prop-types": 0,
     "import/no-unresolved": "error",
-    "import/order": "error"
+    "import/order": "error",
+    "no-only-tests/no-only-tests": "error"
   },
   "settings": {
     "react": {

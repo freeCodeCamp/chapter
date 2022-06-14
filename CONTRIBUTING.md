@@ -573,7 +573,7 @@ When not running locally, the client needs to be passed the server's location by
 # Troubleshooting
 
 <details>
- <summary>Application Errors</summary>
+ <summary>Application Troubleshooting</summary>
 
 * **Problem:** The application shows
    > _JsonWebTokenError: invalid signature._ </br>

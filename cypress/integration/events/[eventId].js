@@ -64,7 +64,7 @@ describe('event page', () => {
         // NOTE: we can't cy.get('@login-submit').should('not.exist') here
         // because that dom element is no longer in the DOM, resolves to
         // undefined and the test fails.
-        cy.findByRole('button', { name: 'Login' }).should('not.exist');
+        cy.findByRole('button', { name: 'Logout' }).should('be.visible');
         cy.findByRole('button', { name: 'Confirm' }).should('be.visible');
       });
   });
@@ -119,9 +119,12 @@ describe('event page', () => {
     cy.contains(/subscribed/);
   });
 
-  it.only('should reject requests from logged out users', () => {
+  it('should reject requests from logged out users', { retries: 0 }, () => {
+    // logged out user
     cy.logout();
-    cy.rsvpToEvent(1).then((response) => {
+    cy.reload();
+    cy.rsvpToEvent(1, { withAuth: false }).then((response) => {
+      expect(response.status).to.eq(200);
       const errors = response.body.errors;
       expect(errors).to.have.length(1);
       expect(errors[0].message).to.eq(
@@ -129,12 +132,13 @@ describe('event page', () => {
       );
     });
 
+    // newly registered user
     cy.register();
-    cy.login();
+    cy.login(Cypress.env('JWT_TEST_USER'));
     cy.reload();
     cy.rsvpToEvent(1).then((response) => {
       const errors = response.body.errors;
-      expect(errors).to.have.length(0);
+      expect(errors).to.be.undefined;
     });
   });
 });

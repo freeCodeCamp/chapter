@@ -230,7 +230,7 @@ Cypress.Commands.add('checkBcc', (mail) => {
   return cy.wrap(!('To' in headers));
 });
 
-Cypress.Commands.add('rsvpToEvent', (eventId) => {
+Cypress.Commands.add('rsvpToEvent', (eventId, options = { withAuth: true }) => {
   const rsvpMutation = {
     operationName: 'rsvpToEvent',
     variables: {
@@ -244,5 +244,18 @@ Cypress.Commands.add('rsvpToEvent', (eventId) => {
     }
     `,
   };
-  return cy.request('POST', 'http://localhost:5000/graphql', rsvpMutation);
+
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: rsvpMutation,
+    failOnStatusCode: false,
+  };
+
+  if (options.withAuth)
+    requestOptions.headers = {
+      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+    };
+
+  return cy.request(requestOptions);
 });

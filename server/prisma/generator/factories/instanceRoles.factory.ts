@@ -1,6 +1,6 @@
 import { prisma } from '../../../src/prisma';
 
-const instancePermissions = ['chapter-create', 'chapter-edit'] as const;
+const instancePermissions = ['chapter-create', 'chapter-edit', 'rsvp'] as const;
 type Permissions = typeof instancePermissions[number];
 interface InstanceRole {
   name: string;
@@ -8,8 +8,11 @@ interface InstanceRole {
 }
 
 const roles: InstanceRole[] = [
-  { name: 'administrator', permissions: ['chapter-create', 'chapter-edit'] },
-  { name: 'member', permissions: [] },
+  {
+    name: 'administrator',
+    permissions: ['chapter-create', 'chapter-edit', 'rsvp'],
+  },
+  { name: 'member', permissions: ['rsvp'] },
 ];
 
 const createRole = async ({ name, permissions }: InstanceRole) => {

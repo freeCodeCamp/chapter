@@ -39,6 +39,10 @@ module.exports = (on, config) => {
     },
   );
 
+  config.env.TOKEN_DELETED_USER = jwt.sign({ id: -1 }, process.env.JWT_SECRET, {
+    expiresIn: '120min',
+  });
+
   config.env.JWT_EXPIRED = jwt.sign(
     { email: 'foo@bar.com' },
     process.env.JWT_SECRET,

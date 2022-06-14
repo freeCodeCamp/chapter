@@ -64,4 +64,23 @@ describe('login', () => {
       expect(win.localStorage.getItem('token')).to.be.null;
     });
   });
+
+  it('should return an error if the user is no longer in the db', () => {
+    const body = {
+      operationName: 'me',
+      query: 'query me { me {id} }',
+    };
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body,
+      headers: {
+        authorization: `Bearer ${Cypress.env('TOKEN_DELETED_USER')}`,
+      },
+      failOnStatusCode: false,
+    }).then((response) => {
+      expect(response.status).to.eq(401);
+      expect(response.body.message).to.eq('User not found');
+    });
+  });
 });

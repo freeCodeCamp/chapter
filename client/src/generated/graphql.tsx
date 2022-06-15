@@ -650,7 +650,7 @@ export type ToggleChapterSubscriptionMutation = {
 };
 
 export type ChapterQueryVariables = Exact<{
-  id: Scalars['Int'];
+  chapterId: Scalars['Int'];
 }>;
 
 export type ChapterQuery = {
@@ -684,7 +684,7 @@ export type ChapterQuery = {
 };
 
 export type ChapterUsersQueryVariables = Exact<{
-  id: Scalars['Int'];
+  chapterId: Scalars['Int'];
 }>;
 
 export type ChapterUsersQuery = {
@@ -752,7 +752,7 @@ export type CreateChapterMutation = {
 };
 
 export type UpdateChapterMutationVariables = Exact<{
-  id: Scalars['Int'];
+  chapterId: Scalars['Int'];
   data: UpdateChapterInputs;
 }>;
 
@@ -1587,8 +1587,8 @@ export type ToggleChapterSubscriptionMutationOptions =
     ToggleChapterSubscriptionMutationVariables
   >;
 export const ChapterDocument = gql`
-  query chapter($id: Int!) {
-    chapter(id: $id) {
+  query chapter($chapterId: Int!) {
+    chapter(id: $chapterId) {
       id
       name
       description
@@ -1631,7 +1631,7 @@ export const ChapterDocument = gql`
  * @example
  * const { data, loading, error } = useChapterQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      chapterId: // value for 'chapterId'
  *   },
  * });
  */
@@ -1663,8 +1663,8 @@ export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQueryVariables
 >;
 export const ChapterUsersDocument = gql`
-  query chapterUsers($id: Int!) {
-    chapter(id: $id) {
+  query chapterUsers($chapterId: Int!) {
+    chapter(id: $chapterId) {
       chapter_users {
         user {
           id
@@ -1699,7 +1699,7 @@ export const ChapterUsersDocument = gql`
  * @example
  * const { data, loading, error } = useChapterUsersQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      chapterId: // value for 'chapterId'
  *   },
  * });
  */
@@ -1912,8 +1912,8 @@ export type CreateChapterMutationOptions = Apollo.BaseMutationOptions<
   CreateChapterMutationVariables
 >;
 export const UpdateChapterDocument = gql`
-  mutation updateChapter($id: Int!, $data: UpdateChapterInputs!) {
-    updateChapter(id: $id, data: $data) {
+  mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
+    updateChapter(id: $chapterId, data: $data) {
       id
       name
       description
@@ -1942,7 +1942,7 @@ export type UpdateChapterMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateChapterMutation, { data, loading, error }] = useUpdateChapterMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      chapterId: // value for 'chapterId'
  *      data: // value for 'data'
  *   },
  * });

@@ -98,7 +98,7 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
   const chapterQuery = {
     operationName: 'chapterUsers',
     variables: {
-      id: chapterId,
+      chapterId,
     },
     query: `query chapterUsers($chapterId: Int!) {
       chapter(id: $chapterId) {

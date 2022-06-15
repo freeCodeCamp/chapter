@@ -343,7 +343,7 @@ export type MutationDeleteVenueArgs = {
 };
 
 export type MutationInitUserInterestForChapterArgs = {
-  event_id: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 export type MutationJoinChapterArgs = {
@@ -435,7 +435,7 @@ export type QueryChapterUserArgs = {
 };
 
 export type QueryChapterUsersArgs = {
-  chapter_id: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 export type QueryEventArgs = {
@@ -863,7 +863,7 @@ export type UpdateEventMutation = {
 };
 
 export type CancelEventMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 }>;
 
 export type CancelEventMutation = {
@@ -872,7 +872,7 @@ export type CancelEventMutation = {
 };
 
 export type DeleteEventMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
 }>;
 
 export type DeleteEventMutation = {
@@ -904,7 +904,7 @@ export type DeleteRsvpMutation = {
 };
 
 export type SendEventInviteMutationVariables = Exact<{
-  id: Scalars['Int'];
+  eventId: Scalars['Int'];
   emailGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
@@ -914,7 +914,7 @@ export type SendEventInviteMutation = {
 };
 
 export type InitUserInterestForChapterMutationVariables = Exact<{
-  event_id: Scalars['Int'];
+  eventId: Scalars['Int'];
 }>;
 
 export type InitUserInterestForChapterMutation = {
@@ -2316,8 +2316,8 @@ export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<
   UpdateEventMutationVariables
 >;
 export const CancelEventDocument = gql`
-  mutation cancelEvent($id: Int!) {
-    cancelEvent(id: $id) {
+  mutation cancelEvent($eventId: Int!) {
+    cancelEvent(id: $eventId) {
       id
       canceled
     }
@@ -2341,7 +2341,7 @@ export type CancelEventMutationFn = Apollo.MutationFunction<
  * @example
  * const [cancelEventMutation, { data, loading, error }] = useCancelEventMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
  *   },
  * });
  */
@@ -2367,8 +2367,8 @@ export type CancelEventMutationOptions = Apollo.BaseMutationOptions<
   CancelEventMutationVariables
 >;
 export const DeleteEventDocument = gql`
-  mutation deleteEvent($id: Int!) {
-    deleteEvent(id: $id) {
+  mutation deleteEvent($eventId: Int!) {
+    deleteEvent(id: $eventId) {
       id
     }
   }
@@ -2391,7 +2391,7 @@ export type DeleteEventMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteEventMutation, { data, loading, error }] = useDeleteEventMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
  *   },
  * });
  */
@@ -2520,8 +2520,8 @@ export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
   DeleteRsvpMutationVariables
 >;
 export const SendEventInviteDocument = gql`
-  mutation sendEventInvite($id: Int!, $emailGroups: [String!]) {
-    sendEventInvite(id: $id, emailGroups: $emailGroups)
+  mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+    sendEventInvite(id: $eventId, emailGroups: $emailGroups)
   }
 `;
 export type SendEventInviteMutationFn = Apollo.MutationFunction<
@@ -2542,7 +2542,7 @@ export type SendEventInviteMutationFn = Apollo.MutationFunction<
  * @example
  * const [sendEventInviteMutation, { data, loading, error }] = useSendEventInviteMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      eventId: // value for 'eventId'
  *      emailGroups: // value for 'emailGroups'
  *   },
  * });
@@ -2569,8 +2569,8 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutationVariables
 >;
 export const InitUserInterestForChapterDocument = gql`
-  mutation initUserInterestForChapter($event_id: Int!) {
-    initUserInterestForChapter(event_id: $event_id)
+  mutation initUserInterestForChapter($eventId: Int!) {
+    initUserInterestForChapter(id: $eventId)
   }
 `;
 export type InitUserInterestForChapterMutationFn = Apollo.MutationFunction<
@@ -2591,7 +2591,7 @@ export type InitUserInterestForChapterMutationFn = Apollo.MutationFunction<
  * @example
  * const [initUserInterestForChapterMutation, { data, loading, error }] = useInitUserInterestForChapterMutation({
  *   variables: {
- *      event_id: // value for 'event_id'
+ *      eventId: // value for 'eventId'
  *   },
  * });
  */

@@ -208,7 +208,7 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
   const eventMutation = {
     operationName: 'deleteEvent',
     variables: {
-      id: eventId,
+      eventId,
     },
     query: `mutation deleteEvent($eventId: Int!) {
       deleteEvent(id: $eventId) {

@@ -145,12 +145,7 @@ export const EventPage: NextPage = () => {
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
-    if (allDataLoaded) {
-      if (canCheckRsvp) {
-        checkOnRsvp(true);
-      }
-      router.replace('/events/' + eventId, undefined, { shallow: true });
-    }
+    if (allDataLoaded && canCheckRsvp) checkOnRsvp(true);
   }, [allDataLoaded, canCheckRsvp]);
 
   if (loading) {

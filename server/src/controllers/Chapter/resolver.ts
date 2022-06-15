@@ -34,6 +34,7 @@ export class ChapterResolver {
           },
           orderBy: { user: { first_name: 'asc' } },
         },
+        user_bans: { include: { user: true, chapter: true } },
       },
     });
   }

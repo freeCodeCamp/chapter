@@ -47,6 +47,12 @@ export const CHAPTER_USERS = gql`
           name
         }
         subscribed
+        canBeBanned
+      }
+      user_bans {
+        user {
+          id
+        }
       }
     }
   }

@@ -11,7 +11,6 @@ export interface Field {
   label: string;
   placeholder?: string;
   type: string;
-  defaultValue?: string;
   isRequired: boolean;
 }
 
@@ -85,7 +84,7 @@ export const fields: Field[] = [
     key: 'url',
     type: 'url',
     label: 'Url',
-    placeholder: '',
+    placeholder: 'https://www.example.com',
     isRequired: true,
   },
   {
@@ -150,27 +149,6 @@ export interface EventFormProps {
   submitText: string;
   chapterId: number;
 }
-
-export const formatValue = (field: Field, store?: IEventData): any => {
-  const { key } = field;
-
-  if (!store || !Object.keys(store).includes(key)) {
-    return field.defaultValue;
-  }
-
-  if (key.endsWith('_at')) {
-    return new Date(store[field.key]).toISOString().slice(0, 16);
-  }
-
-  if (key === 'tags') {
-    const tags = store[key];
-    if (tags) {
-      return tags.map(({ tag }) => tag.name).join(', ');
-    }
-  }
-
-  return store[key];
-};
 
 export const getAllowedSponsorTypes = (
   sponsorData: SponsorsQuery,

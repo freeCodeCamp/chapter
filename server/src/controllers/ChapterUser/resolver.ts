@@ -195,11 +195,9 @@ export class ChapterUserResolver {
   }
 
   @Query(() => [ChapterUser])
-  async chapterUsers(
-    @Arg('chapter_id', () => Int) chapterId: number,
-  ): Promise<ChapterUser[]> {
+  async chapterUsers(@Arg('id', () => Int) id: number): Promise<ChapterUser[]> {
     return await prisma.chapter_users.findMany({
-      where: { chapter_id: chapterId },
+      where: { chapter_id: id },
       include: {
         chapter_role: {
           include: {

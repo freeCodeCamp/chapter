@@ -158,18 +158,18 @@ export class ChapterUserResolver {
 
   @Mutation(() => Boolean)
   async initUserInterestForChapter(
-    @Arg('event_id', () => Int) event_id: number,
+    @Arg('id', () => Int) id: number,
     @Ctx() ctx: GQLCtx,
   ): Promise<boolean> {
     if (!ctx.user) {
       throw Error('User must be logged in to update role ');
     }
     const event = await prisma.events.findUnique({
-      where: { id: event_id },
+      where: { id },
       include: { chapter: true },
     });
     if (!event.chapter) {
-      throw Error('Cannot find the chapter of the event with id ' + event_id);
+      throw Error('Cannot find the chapter of the event with id ' + id);
     }
 
     try {

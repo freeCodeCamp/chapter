@@ -41,8 +41,8 @@ export const updateEvent = gql`
 `;
 
 export const cancelEvent = gql`
-  mutation cancelEvent($id: Int!) {
-    cancelEvent(id: $id) {
+  mutation cancelEvent($eventId: Int!) {
+    cancelEvent(id: $eventId) {
       id
       canceled
     }
@@ -50,8 +50,8 @@ export const cancelEvent = gql`
 `;
 
 export const deleteEvent = gql`
-  mutation deleteEvent($id: Int!) {
-    deleteEvent(id: $id) {
+  mutation deleteEvent($eventId: Int!) {
+    deleteEvent(id: $eventId) {
       id
     }
   }
@@ -75,14 +75,14 @@ export const deleteRSVP = gql`
 `;
 
 export const sendEventInvite = gql`
-  mutation sendEventInvite($id: Int!, $emailGroups: [String!]) {
-    sendEventInvite(id: $id, emailGroups: $emailGroups)
+  mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+    sendEventInvite(id: $eventId, emailGroups: $emailGroups)
   }
 `;
 
 export const initUserInterestForChapter = gql`
-  mutation initUserInterestForChapter($event_id: Int!) {
-    initUserInterestForChapter(event_id: $event_id)
+  mutation initUserInterestForChapter($eventId: Int!) {
+    initUserInterestForChapter(id: $eventId)
   }
 `;
 

@@ -150,8 +150,8 @@ Cypress.Commands.add('getRSVPs', (eventId) => {
     variables: {
       id: eventId,
     },
-    query: `query rsvpsForEvent($id: Int!) {
-      event(id: $id) {
+    query: `query rsvpsForEvent($eventId: Int!) {
+      event(id: $eventId) {
         rsvps {
           on_waitlist
           canceled
@@ -210,8 +210,8 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
     variables: {
       id: eventId,
     },
-    query: `mutation deleteEvent($id: Int!) {
-      deleteEvent(id: $id) {
+    query: `mutation deleteEvent($eventId: Int!) {
+      deleteEvent(id: $eventId) {
         id
       }
     }`,

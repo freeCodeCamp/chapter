@@ -15,8 +15,8 @@ export const createChapter = gql`
 `;
 
 export const updateChapter = gql`
-  mutation updateChapter($id: Int!, $data: UpdateChapterInputs!) {
-    updateChapter(id: $id, data: $data) {
+  mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
+    updateChapter(id: $chapterId, data: $data) {
       id
       name
       description

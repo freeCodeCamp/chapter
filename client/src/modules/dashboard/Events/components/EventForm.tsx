@@ -50,7 +50,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     error: errorChapter,
     data: dataChapter,
   } = useChapterQuery({
-    variables: { id: chapterId },
+    variables: { chapterId },
   });
   const {
     loading: loadingVenues,

@@ -27,11 +27,11 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
-  const id = useParam('chapterId');
+  const chapterId = useParam('chapterId');
   const { user } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
-    variables: { id: id || -1 },
+    variables: { chapterId },
   });
 
   const confirm = useConfirm();
@@ -39,11 +39,11 @@ export const ChapterPage: NextPage = () => {
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
     useChapterUserQuery({
-      variables: { chapterId: id },
+      variables: { chapterId: chapterId },
     });
 
   const refetch = {
-    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId: id } }],
+    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
   const [joinChapterFn] = useJoinChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
@@ -52,7 +52,7 @@ export const ChapterPage: NextPage = () => {
     const ok = await confirm();
     if (ok) {
       try {
-        await joinChapterFn({ variables: { chapterId: id } });
+        await joinChapterFn({ variables: { chapterId } });
         toast({ title: 'You successfully joined chapter', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
@@ -73,7 +73,7 @@ export const ChapterPage: NextPage = () => {
 
     if (ok) {
       try {
-        await chapterSubscribeFn({ variables: { chapterId: id } });
+        await chapterSubscribeFn({ variables: { chapterId: chapterId } });
         toast(
           toSubscribe
             ? {
@@ -179,7 +179,7 @@ export const ChapterPage: NextPage = () => {
             event={{
               ...event,
               // Fix this | undefined
-              chapter: { id, name: data.chapter?.name || '' },
+              chapter: { id: chapterId, name: data.chapter?.name || '' },
             }}
           />
         ))}

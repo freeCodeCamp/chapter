@@ -56,7 +56,7 @@ export const NewEventPage: NextPage = () => {
       });
 
       if (event.data) {
-        publish({ variables: { id: event.data.createEvent.id } });
+        publish({ variables: { eventId: event.data.createEvent.id } });
         router.replace(
           `/dashboard/events/[id]`,
           `/dashboard/events/${event.data.createEvent.id}`,

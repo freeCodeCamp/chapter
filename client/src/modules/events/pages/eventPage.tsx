@@ -115,7 +115,7 @@ export const EventPage: NextPage = () => {
         );
         if (add) {
           await initUserInterestForChapter({
-            variables: { event_id: eventId },
+            variables: { eventId },
           });
         }
       } catch (err) {

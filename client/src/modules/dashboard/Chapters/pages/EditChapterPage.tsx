@@ -16,9 +16,11 @@ export const EditChapterPage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const chapterId = getId(router.query) || -1;
 
-  const { loading, error, data } = useChapterQuery({ variables: { id } });
+  const { loading, error, data } = useChapterQuery({
+    variables: { chapterId },
+  });
   const [updateChapter] = useUpdateChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
   });
@@ -27,7 +29,7 @@ export const EditChapterPage: NextPage = () => {
     setLoadingUpdate(true);
     try {
       await updateChapter({
-        variables: { id, data: { ...data } },
+        variables: { chapterId, data: { ...data } },
       });
       await router.push('/dashboard/chapters');
     } catch (err) {

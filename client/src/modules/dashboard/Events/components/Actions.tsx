@@ -21,9 +21,9 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
 
   const data = useMemo(
     () => ({
-      variables: { id: event.id },
+      variables: { eventId: event.id },
       refetchQueries: [
-        { query: EVENT, variables: { id: event.id } },
+        { query: EVENT, variables: { eventId: event.id } },
         { query: EVENTS },
         { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],

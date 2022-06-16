@@ -46,7 +46,7 @@ export const EventPage: NextPage = () => {
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
   // TODO: check if we need to default to -1 here
   const { loading, error, data } = useEventQuery({
-    variables: { eventId: eventId || -1 },
+    variables: { eventId },
   });
 
   const toast = useToast();
@@ -115,7 +115,7 @@ export const EventPage: NextPage = () => {
         );
         if (add) {
           await initUserInterestForChapter({
-            variables: { event_id: eventId },
+            variables: { eventId },
           });
         }
       } catch (err) {

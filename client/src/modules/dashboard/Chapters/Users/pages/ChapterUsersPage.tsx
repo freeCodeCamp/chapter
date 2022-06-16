@@ -33,10 +33,10 @@ import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 export const ChapterUsersPage: NextPage = () => {
   const router = useRouter();
 
-  const id = getId(router.query) || -1;
+  const chapterId = getId(router.query) || -1;
 
   const { loading, error, data } = useChapterUsersQuery({
-    variables: { id },
+    variables: { chapterId },
   });
   const { data: chapterRoles } = useChapterRolesQuery();
   const modalProps = useDisclosure();
@@ -44,7 +44,7 @@ export const ChapterUsersPage: NextPage = () => {
   const [chapterUser, setChapterUser] = useState<RoleChangeModalData>();
 
   const refetch = {
-    refetchQueries: [{ query: CHAPTER_USERS, variables: { id } }],
+    refetchQueries: [{ query: CHAPTER_USERS, variables: { chapterId } }],
   };
 
   const [changeRoleMutation] = useChangeChapterUserRoleMutation(refetch);
@@ -56,7 +56,7 @@ export const ChapterUsersPage: NextPage = () => {
   const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
     changeRoleMutation({
       variables: {
-        chapterId: id,
+        chapterId: chapterId,
         roleId: data.newRoleId,
         userId: data.userId,
       },
@@ -83,7 +83,7 @@ export const ChapterUsersPage: NextPage = () => {
 
     if (ok) {
       try {
-        await banUser({ variables: { userId, chapterId: id } });
+        await banUser({ variables: { userId, chapterId } });
         toast({ title: 'User was banned', status: 'success' });
       } catch (err) {
         console.error(err);
@@ -100,7 +100,7 @@ export const ChapterUsersPage: NextPage = () => {
 
     if (ok) {
       try {
-        await unbanUser({ variables: { userId, chapterId: id } });
+        await unbanUser({ variables: { userId, chapterId } });
         toast({ title: 'User was unbanned', status: 'success' });
       } catch (err) {
         console.error(err);

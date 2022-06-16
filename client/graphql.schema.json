@@ -3093,7 +3093,7 @@
             "description": null,
             "args": [
               {
-                "name": "event_id",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -3781,7 +3781,7 @@
             "description": null,
             "args": [
               {
-                "name": "chapter_id",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

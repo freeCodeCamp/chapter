@@ -98,10 +98,10 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
   const chapterQuery = {
     operationName: 'chapterUsers',
     variables: {
-      id: chapterId,
+      chapterId,
     },
-    query: `query chapterUsers($id: Int!) {
-      chapter(id: $id) {
+    query: `query chapterUsers($chapterId: Int!) {
+      chapter(id: $chapterId) {
         chapter_users {
           user {
             name
@@ -150,8 +150,8 @@ Cypress.Commands.add('getRSVPs', (eventId) => {
     variables: {
       id: eventId,
     },
-    query: `query rsvpsForEvent($id: Int!) {
-      event(id: $id) {
+    query: `query rsvpsForEvent($eventId: Int!) {
+      event(id: $eventId) {
         rsvps {
           on_waitlist
           canceled
@@ -208,10 +208,10 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
   const eventMutation = {
     operationName: 'deleteEvent',
     variables: {
-      id: eventId,
+      eventId,
     },
-    query: `mutation deleteEvent($id: Int!) {
-      deleteEvent(id: $id) {
+    query: `mutation deleteEvent($eventId: Int!) {
+      deleteEvent(id: $eventId) {
         id
       }
     }`,

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const CHAPTER = gql`
-  query chapter($id: Int!) {
-    chapter(id: $id) {
+  query chapter($chapterId: Int!) {
+    chapter(id: $chapterId) {
       id
       name
       description
@@ -34,8 +34,8 @@ export const CHAPTER = gql`
 `;
 
 export const CHAPTER_USERS = gql`
-  query chapterUsers($id: Int!) {
-    chapter(id: $id) {
+  query chapterUsers($chapterId: Int!) {
+    chapter(id: $chapterId) {
       chapter_users {
         user {
           id

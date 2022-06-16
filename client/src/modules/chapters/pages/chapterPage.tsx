@@ -73,7 +73,7 @@ export const ChapterPage: NextPage = () => {
 
     if (ok) {
       try {
-        await chapterSubscribeFn({ variables: { chapterId: chapterId } });
+        await chapterSubscribeFn({ variables: { chapterId } });
         toast(
           toSubscribe
             ? {

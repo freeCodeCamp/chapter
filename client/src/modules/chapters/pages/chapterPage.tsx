@@ -39,7 +39,7 @@ export const ChapterPage: NextPage = () => {
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
     useChapterUserQuery({
-      variables: { chapterId: chapterId },
+      variables: { chapterId },
     });
 
   const refetch = {

@@ -1,6 +1,4 @@
 import { prisma } from '../prisma';
-import { CalendarEvent, google, outlook } from 'calendar-link';
-import { rsvp, events, event_users, users } from '@prisma/client';
 
 export type Reminder = Awaited<
   ReturnType<typeof getRemindersOlderThanDate>

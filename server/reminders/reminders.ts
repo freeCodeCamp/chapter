@@ -90,8 +90,6 @@ const getEmailData = (reminder: Reminder) => {
 
 const sendEmailForReminder = async (reminder: Reminder) => {
   const { email, subject } = getEmailData(reminder);
-  console.log(email);
-  console.log(subject);
   await new MailerService({
     emailList: [reminder.event_user.user.email],
     subject: subject,

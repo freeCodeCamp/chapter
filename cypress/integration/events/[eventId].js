@@ -119,26 +119,32 @@ describe('event page', () => {
     cy.contains(/subscribed/);
   });
 
-  it('should reject requests from logged out users', { retries: 0 }, () => {
+  it('should reject requests from logged out users and non-members', () => {
     // logged out user
     cy.logout();
     cy.reload();
-    cy.rsvpToEvent(1, { withAuth: false }).then((response) => {
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }, { withAuth: false }).then(
+      (response) => {
+        expect(response.status).to.eq(200);
+        const errors = response.body.errors;
+        expect(errors).to.have.length(1);
+        expect(errors[0].message).to.eq(
+          "Access denied! You don't have permission for this action!",
+        );
+      },
+    );
+
+    // newly registered user (without a chapter_users record)
+    cy.register();
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then((response) => {
       expect(response.status).to.eq(200);
       const errors = response.body.errors;
       expect(errors).to.have.length(1);
       expect(errors[0].message).to.eq(
         "Access denied! You don't have permission for this action!",
       );
-    });
-
-    // newly registered user
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
-    cy.rsvpToEvent(1).then((response) => {
-      const errors = response.body.errors;
-      expect(errors).to.be.undefined;
     });
   });
 });

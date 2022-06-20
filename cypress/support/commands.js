@@ -230,32 +230,36 @@ Cypress.Commands.add('checkBcc', (mail) => {
   return cy.wrap(!('To' in headers));
 });
 
-Cypress.Commands.add('rsvpToEvent', (eventId, options = { withAuth: true }) => {
-  const rsvpMutation = {
-    operationName: 'rsvpToEvent',
-    variables: {
-      eventId,
-    },
-    query: `
-    mutation rsvpToEvent($eventId: Int!) {
-      rsvpEvent(eventId: $eventId) {
+Cypress.Commands.add(
+  'rsvpToEvent',
+  ({ eventId, chapterId }, options = { withAuth: true }) => {
+    const rsvpMutation = {
+      operationName: 'rsvpToEvent',
+      variables: {
+        eventId,
+        chapterId,
+      },
+      query: `
+    mutation rsvpToEvent($eventId: Int!, $chapterId: Int!) {
+      rsvpEvent(eventId: $eventId, chapterId: $chapterId) {
         updated_at
       }
     }
     `,
-  };
-
-  const requestOptions = {
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: rsvpMutation,
-    failOnStatusCode: false,
-  };
-
-  if (options.withAuth)
-    requestOptions.headers = {
-      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
     };
 
-  return cy.request(requestOptions);
-});
+    const requestOptions = {
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: rsvpMutation,
+      failOnStatusCode: false,
+    };
+
+    if (options.withAuth)
+      requestOptions.headers = {
+        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+      };
+
+    return cy.request(requestOptions);
+  },
+);

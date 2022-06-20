@@ -22,7 +22,7 @@ describe('event page', () => {
       .and('have.attr', 'alt', '');
   });
 
-  it.only('ask the user to login before they can RSVP', () => {
+  it('ask the user to login before they can RSVP', () => {
     const fix = { email: 'test@user.org', firstName: 'Test', lastName: 'User' };
 
     cy.findByRole('button', { name: 'RSVP' }).click();

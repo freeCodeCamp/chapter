@@ -12,7 +12,7 @@ const roles: InstanceRole[] = [
     name: 'administrator',
     permissions: ['chapter-create', 'chapter-edit', 'rsvp'],
   },
-  { name: 'member', permissions: ['rsvp'] },
+  { name: 'member', permissions: [] },
 ];
 
 const createRole = async ({ name, permissions }: InstanceRole) => {

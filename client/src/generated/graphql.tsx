@@ -359,6 +359,7 @@ export type MutationRegisterArgs = {
 };
 
 export type MutationRsvpEventArgs = {
+  chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
 };
 
@@ -1198,6 +1199,7 @@ export type VenueQuery = {
 
 export type RsvpToEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
+  chapterId: Scalars['Int'];
 }>;
 
 export type RsvpToEventMutation = {
@@ -3422,8 +3424,8 @@ export type VenueQueryResult = Apollo.QueryResult<
   VenueQueryVariables
 >;
 export const RsvpToEventDocument = gql`
-  mutation rsvpToEvent($eventId: Int!) {
-    rsvpEvent(eventId: $eventId) {
+  mutation rsvpToEvent($eventId: Int!, $chapterId: Int!) {
+    rsvpEvent(eventId: $eventId, chapterId: $chapterId) {
       updated_at
     }
   }
@@ -3447,6 +3449,7 @@ export type RsvpToEventMutationFn = Apollo.MutationFunction<
  * const [rsvpToEventMutation, { data, loading, error }] = useRsvpToEventMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
+ *      chapterId: // value for 'chapterId'
  *   },
  * });
  */

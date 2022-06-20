@@ -22,7 +22,7 @@ describe('event page', () => {
       .and('have.attr', 'alt', '');
   });
 
-  it('ask the user to login before they can RSVP', () => {
+  it.only('ask the user to login before they can RSVP', () => {
     const fix = { email: 'test@user.org', firstName: 'Test', lastName: 'User' };
 
     cy.findByRole('button', { name: 'RSVP' }).click();
@@ -64,7 +64,7 @@ describe('event page', () => {
         // NOTE: we can't cy.get('@login-submit').should('not.exist') here
         // because that dom element is no longer in the DOM, resolves to
         // undefined and the test fails.
-        cy.findByRole('button', { name: 'Logout' }).should('be.visible');
+        cy.contains('You want to join this?');
         cy.findByRole('button', { name: 'Confirm' }).should('be.visible');
       });
   });

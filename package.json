@@ -95,11 +95,6 @@
     "ts-jest": "27.1.4",
     "typescript": "4.6.3"
   },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "npm run pretty"
-    ]
-  },
   "nyc": {
     "report-dir": "cypress-coverage"
   },

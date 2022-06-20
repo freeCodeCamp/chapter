@@ -186,6 +186,7 @@ export class EventResolver {
   @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
+    @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<GQLCtx>,
   ): Promise<EventUser | null> {
     const event = await prisma.events.findUnique({
@@ -281,7 +282,7 @@ export class EventResolver {
     const rsvpName = getRsvpName(event);
 
     const userChapter = ctx.user.user_chapters.find(
-      (user_chapter) => user_chapter.chapter_id === event.chapter_id,
+      (user_chapter) => user_chapter.chapter_id === chapterId,
     );
     const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 

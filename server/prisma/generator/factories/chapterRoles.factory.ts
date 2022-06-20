@@ -4,6 +4,7 @@ const chapterPermissions = [
   'chapter-edit',
   'event-create',
   'event-edit',
+  'rsvp',
 ] as const;
 
 type Permissions = typeof chapterPermissions[number];
@@ -11,11 +12,11 @@ type Permissions = typeof chapterPermissions[number];
 const roles: Array<{ name: string; permissions: Permissions[] }> = [
   {
     name: 'administrator',
-    permissions: ['chapter-edit', 'event-create', 'event-edit'],
+    permissions: ['chapter-edit', 'event-create', 'event-edit', 'rsvp'],
   },
   { name: 'organizer', permissions: ['event-create', 'event-edit'] },
   { name: 'moderator', permissions: ['event-edit'] },
-  { name: 'member', permissions: [] },
+  { name: 'member', permissions: ['rsvp'] },
 ];
 
 const createChapterRoles = async () => {

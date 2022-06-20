@@ -53,6 +53,36 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
   const modalProps = useDisclosure();
 
+  const eventUser = useMemo(() => {
+    const eUser = data?.event?.event_users.find(
+      ({ user: event_user }) => event_user.id === user?.id,
+    );
+    if (!eUser) return null;
+    return eUser;
+  }, [data?.event]);
+  const userRsvped =
+    eventUser?.rsvp.name !== 'no' ? eventUser?.rsvp.name : null;
+  const allDataLoaded = !loading && user;
+  const canCheckRsvp = router.query?.emaillink && !userRsvped;
+  useEffect(() => {
+    if (allDataLoaded && canCheckRsvp) checkOnRsvp(true);
+  }, [allDataLoaded, canCheckRsvp]);
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (error || !data?.event) {
+    return (
+      <div>
+        <h1>error...</h1>
+        <h2>{error?.message}</h2>
+      </div>
+    );
+  }
+
+  const chapterId = data.event.chapter.id;
+
   const handleLoginUserFirst = () => {
     modalProps.onOpen();
   };
@@ -101,8 +131,15 @@ export const EventPage: NextPage = () => {
 
     if (ok) {
       try {
+        // this has to happen before trying to RSVP, since the user needs to be
+        // added to the chapter first.
+        if (add) {
+          await initUserInterestForChapter({
+            variables: { eventId },
+          });
+        }
         await rsvpToEvent({
-          variables: { eventId },
+          variables: { eventId, chapterId },
         });
 
         toast(
@@ -113,11 +150,6 @@ export const EventPage: NextPage = () => {
               }
             : { title: 'You canceled your RSVP 👋', status: 'error' },
         );
-        if (add) {
-          await initUserInterestForChapter({
-            variables: { eventId },
-          });
-        }
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -132,34 +164,6 @@ export const EventPage: NextPage = () => {
 
     await onRsvp(add);
   };
-
-  const eventUser = useMemo(() => {
-    const eUser = data?.event?.event_users.find(
-      ({ user: event_user }) => event_user.id === user?.id,
-    );
-    if (!eUser) return null;
-    return eUser;
-  }, [data?.event]);
-  const userRsvped =
-    eventUser?.rsvp.name !== 'no' ? eventUser?.rsvp.name : null;
-  const allDataLoaded = !loading && user;
-  const canCheckRsvp = router.query?.emaillink && !userRsvped;
-  useEffect(() => {
-    if (allDataLoaded && canCheckRsvp) checkOnRsvp(true);
-  }, [allDataLoaded, canCheckRsvp]);
-
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
-
-  if (error || !data?.event) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
 
   const rsvps = data.event.event_users.filter(
     ({ rsvp }) => rsvp.name === 'yes',
@@ -191,9 +195,7 @@ export const EventPage: NextPage = () => {
       </Heading>
       <Heading size="md">
         Chapter:{' '}
-        <Link href={`/chapters/${data.event.chapter.id}`}>
-          {data.event.chapter.name}
-        </Link>
+        <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
       <VStack align="start">

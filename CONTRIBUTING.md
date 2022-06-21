@@ -24,7 +24,6 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
-      - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
 - [Running Remotely](#running-remotely)
 - [Troubleshooting](#troubleshooting)
     

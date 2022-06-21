@@ -275,37 +275,31 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 <details><summary><b>Step 5</b> - Propose a Pull Request (PR)</summary>
 
-When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
+1. After committing & pushing changes to a branch on your fork, there should be a yellow message bar at the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter). This prompt includes a green _Compare and Pull Request_ button, which opens an "Open a pull request" form page.
 
-_fix/feat/chore/refactor/docs/perf (scope): PR Title_
+2. By default, your [proposed changes should be compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) [base repository: **freeCodeCamp/chapter**] [base:**main**].
 
-An example is _feat(client): night mode_.
+3. In the PR form, include a descriptive title following the pattern _Type(optional scope): A Thoughtful Title_
+  
+    For example: **_feat(client): Send Email on RSVP Confirmation_**
+  
+    > Where Type Can Be
+    > * build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+    > * ci: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+    > * docs: Documentation only changes
+    > * feat: A new feature ( example scopes: api, client, db)
+    > * fix: A bug fix
+    > * perf: A code change that improves performance
+    > * refactor: A code change that neither fixes a bug nor adds a feature
+    > * style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+    > * test: Adding missing tests or correcting existing tests
 
-| Scope | Documentation |
-|---|---|
-| _api_ | For Pull Requests making changes to the APIs, routes and its architecture |
-| _db_ | For Pull Requests making changes related to database |
-| _client_ | For Pull Requests making changes to client platform logic or user interface |
-| _docs_ | For Pull Requests making changes to the project's documentation |
+4. Include a more detailed account of the changes in the form's text area.
+    > The text area will automatically include a checklist of items to confirm before submitting the pull request.
 
-1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
+    > At the end of your PR's description, you may append a pattern like `Closes #1337` to tell GitHub to automatically close a specific issue number when the PR is accepted and merged.
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
-
-4. In the body of your PR include a more detailed summary of the changes you made and why.
-
-    - You will be presented with a pull request template. This is a checklist that you should have followed before opening the pull request.
-
-    - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
-
-    - If the PR is meant to fix an existing bug/issue then, at the end of
-      your PR's description, append the keyword _closes_ and #xxxx (where xxxx
-      is the issue number). Example: _closes #1337_. This tells GitHub to
-      automatically close the existing issue, if the PR is accepted and merged.
-
-You have successfully created a PR. Congratulations! :tada:
+Submit the form and you have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application

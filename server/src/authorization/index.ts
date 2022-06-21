@@ -12,10 +12,10 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
  * on a user's role. It cannot affect what is returned by a resolver, it just
  * determines if the resolver is called or not. For fine-grained control, the
  * resolver itself must modify the response based on the user's roles */
-export const authorizationChecker: AuthChecker<GQLCtx> = async (
+export const authorizationChecker: AuthChecker<GQLCtx> = (
   { context: { user }, info: { variableValues } },
   requiredPermissions,
-): Promise<boolean> => {
+): boolean => {
   /** This defines our permission model. In short, a user's request will be
    * denied unless they have a role that grants them permission to use the
    * resolver that handles their request. That role can be instance wide,
@@ -38,8 +38,8 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
   if (requiredPermissions.length !== 1) return false;
   const requiredPermission = requiredPermissions[0];
 
-  if (await isAllowedByInstanceRole(user, requiredPermission)) return true;
-  if (await isAllowedByChapterRole(user, requiredPermission, variableValues))
+  if (isAllowedByInstanceRole(user, requiredPermission)) return true;
+  if (isAllowedByChapterRole(user, requiredPermission, variableValues))
     return true;
   if (isAllowedByEventRole(user, requiredPermission, variableValues))
     return true;
@@ -47,31 +47,31 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
   return false;
 };
 
-async function isAllowedByChapterRole(
+function isAllowedByChapterRole(
   user: UserWithRoles,
   requiredPermission: string,
   variableValues: VariableValues,
-): Promise<boolean> {
-  const chapterId = await getRelatedChapterId(user, variableValues);
+): boolean {
+  const chapterId = getRelatedChapterId(user, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
   return hasNecessaryPermission(requiredPermission, userChapterPermissions);
 }
 
-async function isAllowedByInstanceRole(
+function isAllowedByInstanceRole(
   user: UserWithRoles,
   requiredPermission: string,
-): Promise<boolean> {
+): boolean {
   const userInstancePermissions = getUserPermissionsForInstance(user);
   return hasNecessaryPermission(requiredPermission, userInstancePermissions);
 }
 
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
-async function getRelatedChapterId(
+function getRelatedChapterId(
   user: UserWithRoles,
   variableValues: VariableValues,
-): Promise<number | null> {
+): number | null {
   const { chapterId, eventId } = variableValues;
 
   if (chapterId) return chapterId;

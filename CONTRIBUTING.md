@@ -290,11 +290,7 @@ An example is _feat(client): night mode_.
 
 1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
 
-    ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
-
 2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-    ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
 3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
 

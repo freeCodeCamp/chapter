@@ -2,7 +2,7 @@ import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
 import { GQLCtx } from '../common-types/gql';
-import { UserWithRoles } from '../graphql-types';
+import type { User } from '../controllers/Auth/middleware';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -32,7 +32,7 @@ export const authorizationChecker: AuthChecker<GQLCtx> = (
 };
 
 function isAllowedByChapterRole(
-  user: UserWithRoles,
+  user: User,
   requiredPermission: string,
   variableValues: VariableValues,
 ): boolean {
@@ -43,7 +43,7 @@ function isAllowedByChapterRole(
 }
 
 function isAllowedByInstanceRole(
-  user: UserWithRoles,
+  user: User,
   requiredPermission: string,
 ): boolean {
   const userInstancePermissions = getUserPermissionsForInstance(user);
@@ -53,7 +53,7 @@ function isAllowedByInstanceRole(
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
 function getRelatedChapterId(
-  user: UserWithRoles,
+  user: User,
   variableValues: VariableValues,
 ): number | null {
   const { chapterId, eventId } = variableValues;
@@ -71,7 +71,7 @@ function getRelatedChapterId(
 }
 
 function isAllowedByEventRole(
-  user: UserWithRoles,
+  user: User,
   requiredPermission: string,
   info: VariableValues,
 ): boolean {
@@ -79,16 +79,13 @@ function isAllowedByEventRole(
   return hasNecessaryPermission(requiredPermission, userEventPermissions);
 }
 
-function getUserPermissionsForInstance(user: UserWithRoles): string[] {
+function getUserPermissionsForInstance(user: User): string[] {
   return user.instance_role.instance_role_permissions.map(
     (x) => x.instance_permission.name,
   );
 }
 
-function getUserPermissionsForChapter(
-  user: UserWithRoles,
-  chapterId: number,
-): string[] {
+function getUserPermissionsForChapter(user: User, chapterId: number): string[] {
   const role = user.user_chapters.find((role) => role.chapter_id === chapterId);
   return role
     ? role.chapter_role.chapter_role_permissions.map(
@@ -98,7 +95,7 @@ function getUserPermissionsForChapter(
 }
 
 function getUserPermissionsForEvent(
-  user: UserWithRoles,
+  user: User,
   variableValues: VariableValues,
 ): string[] {
   const role = user.user_events.find(
@@ -110,15 +107,13 @@ function getUserPermissionsForEvent(
 }
 
 function isBannedFromChapter(
-  user: UserWithRoles,
+  user: User,
   variableValues: VariableValues,
 ): boolean {
   const chapterId = getRelatedChapterId(user, variableValues);
   if (chapterId === null) return false;
 
   const bannedFromChapter = user.user_bans?.some(
-    // @ts-expect-error at least until I stop abusing graphql types. They
-    // shouldn't be here!
     (ban) => ban.chapter_id === chapterId,
   );
 

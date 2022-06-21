@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 import { Rsvp, User } from '.';
 
@@ -39,18 +39,4 @@ export class EventUser {
 
   @Field(() => User)
   user: User;
-}
-
-@ObjectType()
-export class EventUserOnlyRolesAndIds {
-  @Field(() => ({
-    chapter_id: Int,
-  }))
-  event: { chapter_id: number };
-
-  @Field(() => Int)
-  event_id: number;
-
-  @Field(() => EventRole)
-  event_role: EventRole;
 }

@@ -557,7 +557,7 @@ The _prisma.schema_ file is the single source of truth for the database schema.
 
 #### Creating a Migration
 
-The database is currently undergoing a re-write and we are using `prisma db push` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
+The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
 
 # Running Remotely
 

@@ -24,131 +24,143 @@ const baseResolverData = {
 };
 
 describe('authorizationChecker', () => {
-  it('should return false if there is no user', async () => {
-    const result = await authorizationChecker(baseResolverData, [
-      'some-permission',
-    ]);
-
-    expect(result).toBe(false);
-  });
-  it('should return true if a user has an instance role granting permission', async () => {
-    const resolverData = merge(baseResolverData, {
-      context: { user: userWithInstanceRole },
-    });
-
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      true,
-    );
-  });
-
-  it('should return false if a user does not have an instance role granting permission', async () => {
-    const resolverData = merge(baseResolverData, {
-      context: { user: userWithInstanceRole },
-    });
-
-    expect(
-      await authorizationChecker(resolverData, ['some-other-permission']),
-    ).toBe(false);
-  });
-
-  it('should return true if a user has a chapter role granting permission', async () => {
-    const resolverData = merge(baseResolverData, {
-      context: { user: userWithRoleForChapterOne },
-      info: {
-        variableValues: { chapterId: 1 },
-      },
-    });
-
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      true,
-    );
-  });
-
-  it('should return false if a user only has a chapter role granting permission for another chapter', async () => {
-    const resolverData = merge(baseResolverData, {
-      context: { user: userWithRoleForChapterOne },
-      info: {
-        variableValues: { chapterId: 2 },
-      },
-    });
-
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      false,
-    );
-  });
-
-  it('should return true if a user has an event role granting permission', async () => {
-    const resolverData = merge(baseResolverData, {
-      context: { user: userWithRoleForEventOne },
-      info: {
-        variableValues: { eventId: 1 },
-      },
-    });
-
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      true,
-    );
-  });
-
-  it('should return false if a user only has an event role granting permission for another event', async () => {
-    const eventTwoUserResolverData = merge(baseResolverData, {
-      context: { user: userWithRoleForEventOne },
-      info: {
-        variableValues: { eventId: 2 },
-      },
-    });
-
-    expect(
-      await authorizationChecker(eventTwoUserResolverData, ['some-permission']),
-    ).toBe(false);
-  });
-
-  it('should return false if the event is in a chapter for which the user has no role', async () => {
-    const user = merge(userWithRoleForChapterOne, {
-      user_events: chapterTwoUserEvent,
-    });
-    const resolverData = merge(baseResolverData, {
-      context: { user },
-      info: { variableValues: { eventId: 2 } },
-    });
-
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      false,
-    );
-  });
-
-  it('should return true if a user has a chapter role, even if they do not have an event role', async () => {
-    const user = merge(userWithRoleForChapterOne, {
-      user_events: chapterOneUserEvent,
-    });
-    const resolverData = merge(baseResolverData, {
-      context: { user },
-      info: { variableValues: { eventId: 2 } },
-    });
-
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      true,
-    );
-  });
-
-  it('should return false unless the number of required permissions is 1', async () => {
-    expect.assertions(4);
-    const resolverData = merge(baseResolverData, {
-      context: { user: userWithInstanceRole },
-    });
-
-    expect(await authorizationChecker(resolverData, [])).toBe(false);
-    expect(await authorizationChecker(resolverData, ['some-permission'])).toBe(
-      true,
-    );
-    expect(
-      await authorizationChecker(resolverData, ['a-different-permission']),
-    ).toBe(true);
-    expect(
-      await authorizationChecker(resolverData, [
+  describe('unbanned', () => {
+    it('should return false if there is no user', async () => {
+      const result = await authorizationChecker(baseResolverData, [
         'some-permission',
-        'a-different-permission',
-      ]),
-    ).toBe(false);
+      ]);
+
+      expect(result).toBe(false);
+    });
+    it('should return true if a user has an instance role granting permission', async () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithInstanceRole },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
+
+    it('should return false if a user does not have an instance role granting permission', async () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithInstanceRole },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-other-permission']),
+      ).toBe(false);
+    });
+
+    it('should return true if a user has a chapter role granting permission', async () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithRoleForChapterOne },
+        info: {
+          variableValues: { chapterId: 1 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
+
+    it('should return false if a user only has a chapter role granting permission for another chapter', async () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithRoleForChapterOne },
+        info: {
+          variableValues: { chapterId: 2 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(false);
+    });
+
+    it('should return true if a user has an event role granting permission', async () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithRoleForEventOne },
+        info: {
+          variableValues: { eventId: 1 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
+
+    it('should return false if a user only has an event role granting permission for another event', async () => {
+      const eventTwoUserResolverData = merge(baseResolverData, {
+        context: { user: userWithRoleForEventOne },
+        info: {
+          variableValues: { eventId: 2 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(eventTwoUserResolverData, [
+          'some-permission',
+        ]),
+      ).toBe(false);
+    });
+
+    it('should return false if the event is in a chapter for which the user has no role', async () => {
+      const user = merge(userWithRoleForChapterOne, {
+        user_events: chapterTwoUserEvent,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+        info: { variableValues: { eventId: 2 } },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(false);
+    });
+
+    it('should return true if a user has a chapter role, even if they do not have an event role', async () => {
+      const user = merge(userWithRoleForChapterOne, {
+        user_events: chapterOneUserEvent,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+        info: { variableValues: { eventId: 2 } },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
+
+    it('should return false unless the number of required permissions is 1', async () => {
+      expect.assertions(4);
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithInstanceRole },
+      });
+
+      expect(await authorizationChecker(resolverData, [])).toBe(false);
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+      expect(
+        await authorizationChecker(resolverData, ['a-different-permission']),
+      ).toBe(true);
+      expect(
+        await authorizationChecker(resolverData, [
+          'some-permission',
+          'a-different-permission',
+        ]),
+      ).toBe(false);
+    });
+  });
+
+  describe('banned', () => {
+    it('should return true if a user has an instance role and a chapter ban', async () => {});
+    it('should return false if a user has a chapter role and a ban for that chapter', async () => {});
+    it('should return true if a user has a chapter role and a ban for another chapter', async () => {});
+    it('should return false if a user has an event role and a ban for the owning chapter', async () => {});
+    it('should return true if a user has an event role and a ban for the another chapter', async () => {});
   });
 });

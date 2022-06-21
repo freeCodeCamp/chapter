@@ -9,15 +9,7 @@ import {
   venues,
 } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
-import {
-  Resolver,
-  Query,
-  Arg,
-  Int,
-  Mutation,
-  Ctx,
-  Authorized,
-} from 'type-graphql';
+import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
@@ -182,7 +174,6 @@ export class EventResolver {
     });
   }
 
-  @Authorized('rsvp')
   @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,

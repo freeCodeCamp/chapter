@@ -44,7 +44,7 @@ Consider the following options when you are ready to contribute code.
 
 ## Using GitPod
 
-All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account and "ephemeral" workspace.
+All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account, setup an "ephemeral" workspace, and access a running application.
 
 ## Using a Traditional Dev Environment
 
@@ -54,19 +54,16 @@ This approach is more common and involves the step below to setup and configurin
 
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of **_Chapter's_** repository (a.k.a repo) on GitHub.
 
-This is essential as it allows you to work on your own copy of **_Chapter_**. It allows you to request changes to be pulled into the **_Chapter's_** repository from your fork via a pull request.
-
 Follow these steps to fork the repository:
-1. Go to the [Chapter repository on GitHub](https://github.com/freeCodeCamp/chapter).
-2. Click the "Fork" Button in the upper right-hand corner of the interface [Need help?](https://help.github.com/articles/fork-a-repo/).
-3. After the repository has been forked, you will be taken to your copy of the **_Chapter_** repository at `https://github.com/YOUR_USER_NAME/chapter`.
+1. Go to the [Chapter repository on GitHub](https://github.com/freeCodeCamp/chapter) and click the "[Fork](https://help.github.com/articles/fork-a-repo/)" button in the upper right-hand corner.
+2. After the repository has been forked, you will be taken to your copy of the **_Chapter_** repository at `https://github.com/YOUR_USER_NAME/chapter`.
 
-![an image illustrating the fork button](docs/assets/how-to-fork.png)
+Your forked copy may be used to submit suggested changes to the **_Chapter_** repository via [branches and pull requests](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests).
 </details>
 
 <details><summary><b>Step 2</b> - Prepare the Terminal and Git Environment</summary>
 
-**Prerequisite**:  All `commands` will be run within a terminal's command line / shell on your development device. Options vary by operating system.
+**Prerequisite**:  A Linux-compatible command line shell must exist on your development device in order to run `commands` in these docs. Options vary by operating system, but include:
 
 * Linux - the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
 * Mac - the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
@@ -80,19 +77,19 @@ Follow these steps to fork the repository:
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
     * SSH - uses SSH key authentication instead of a username and password.
-    * HTTPS - uses a GitHub username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, use a PAT instead of a GitHub password.
+    * HTTPS - uses a GitHub username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, use a PAT and not a GitHub password.
 
-2. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
-    > Note: Windows using WSL + a Linux distro maintains its own file system. Use a sub-directory within the Linux /home/username/ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
+2. Change directories (`cd`) to where you want your **_Chapter_** fork to be cloned by Git.
+    > Note: Windows using WSL + a Linux distro will maintain its own file system. Use a sub-directory within the Linux shell _/home/yourusername/_ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
 
 3. [Clone](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories) your GitHub fork of **_Chapter_** using the SSH or HTTP method you selected above. Replace _YOUR_USER_NAME_ with your GitHub username.
 
     * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) - `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
     * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls) - `git clone https://github.com/YOUR_USER_NAME/chapter.git`
  
-     This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_ . 
+Cloning will download your fork, referred to as the _origin_, into a _chapter_ sub-directory in the current directory.
 
-4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
+4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. This allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
 
     ```sh
     cd chapter
@@ -293,11 +290,7 @@ An example is _feat(client): night mode_.
 
 1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
 
-    ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
-
 2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-    ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
 3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
 
@@ -316,7 +309,7 @@ You have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
-**Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
+**Prerequisite**: Follow the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.  If you are [using GitPod](#using-gitpod), then this section is unnecessary as GitPod will run the appliction.
 
 <details><summary><b>Step 1</b> - Install Node.js and Dependencies</summary>
  

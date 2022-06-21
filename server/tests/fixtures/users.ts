@@ -9,6 +9,7 @@ import {
   event_users,
   event_roles,
   event_permissions,
+  user_bans,
 } from '@prisma/client';
 
 type User = users & {
@@ -145,3 +146,23 @@ export const userWithRoleForEventOne: User = merge(baseUser, {
     },
   ],
 });
+
+// The user's id is not used directly. Instead we rely on their bans being
+// returned with the original user query.
+export const userBansChapterOne: user_bans[] = [
+  {
+    created_at: new Date(),
+    updated_at: new Date(),
+    chapter_id: 1,
+    user_id: -1,
+  },
+];
+
+export const userBansChapterTwo: user_bans[] = [
+  {
+    created_at: new Date(),
+    updated_at: new Date(),
+    chapter_id: 2,
+    user_id: -1,
+  },
+];

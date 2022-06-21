@@ -16,29 +16,13 @@ export const authorizationChecker: AuthChecker<GQLCtx> = (
   { context: { user }, info: { variableValues } },
   requiredPermissions,
 ): boolean => {
-  /** This defines our permission model. In short, a user's request will be
-   * denied unless they have a role that grants them permission to use the
-   * resolver that handles their request. That role can be instance wide,
-   * specific to a single chapter or specific a single event within a chapter.
-   *
-   * Examples:
-   *
-   * If the user has permission 'UPDATE_EVENT' for the instance, they can update
-   * all events.
-   *
-   * If the user has the permission 'UPDATE_EVENT' for chapter 1, they can
-   * update all events in chapter 1.
-   *
-   * If the user only has the permission 'UPDATE_EVENT' for event 1, they can
-   * only update event 1.
-   * */
-
   if (!user) return false;
 
   if (requiredPermissions.length !== 1) return false;
   const requiredPermission = requiredPermissions[0];
 
   if (isAllowedByInstanceRole(user, requiredPermission)) return true;
+  if (isBannedFromChapter(user, variableValues)) return false;
   if (isAllowedByChapterRole(user, requiredPermission, variableValues))
     return true;
   if (isAllowedByEventRole(user, requiredPermission, variableValues))
@@ -125,9 +109,22 @@ function getUserPermissionsForEvent(
     : [];
 }
 
-// TODO: do we need more than one permission per resolver? Probably not. A
-// better approach might be to throw an error if we're given multiple
-// permissions.
+function isBannedFromChapter(
+  user: UserWithRoles,
+  variableValues: VariableValues,
+): boolean {
+  const chapterId = getRelatedChapterId(user, variableValues);
+  if (chapterId === null) return false;
+
+  const bannedFromChapter = user.user_bans?.some(
+    // @ts-expect-error at least until I stop abusing graphql types. They
+    // shouldn't be here!
+    (ban) => ban.chapter_id === chapterId,
+  );
+
+  return bannedFromChapter;
+}
+
 function hasNecessaryPermission(
   requiredPermission: string,
   ownedPermissions: string[],

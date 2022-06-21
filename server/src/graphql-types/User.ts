@@ -51,4 +51,7 @@ export class UserWithRoles extends User {
 
   @Field(() => [EventUserOnlyRolesAndIds])
   user_events: EventUserOnlyRolesAndIds[];
+
+  @Field(() => [UserBan])
+  user_bans: UserBan[];
 }

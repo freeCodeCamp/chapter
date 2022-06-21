@@ -10,6 +10,8 @@ import {
   userWithRoleForEventOne,
   userWithInstanceRole,
   chapterOneUserEvent,
+  userBansChapterOne,
+  userBansChapterTwo,
 } from './fixtures/users';
 
 const mockReq = {} as Request;
@@ -24,7 +26,7 @@ const baseResolverData = {
 };
 
 describe('authorizationChecker', () => {
-  describe('unbanned', () => {
+  describe('when user is NOT banned', () => {
     it('should return false if there is no user', async () => {
       const result = await authorizationChecker(baseResolverData, [
         'some-permission',
@@ -156,11 +158,78 @@ describe('authorizationChecker', () => {
     });
   });
 
-  describe('banned', () => {
-    it('should return true if a user has an instance role and a chapter ban', async () => {});
-    it('should return false if a user has a chapter role and a ban for that chapter', async () => {});
-    it('should return true if a user has a chapter role and a ban for another chapter', async () => {});
-    it('should return false if a user has an event role and a ban for the owning chapter', async () => {});
-    it('should return true if a user has an event role and a ban for the another chapter', async () => {});
+  describe('when user is banned', () => {
+    it('should return true if a user has an instance role and a chapter ban', async () => {
+      const user = merge(userWithInstanceRole, {
+        user_bans: userBansChapterOne,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
+    it('should return false if a user has a chapter role and a ban for that chapter', async () => {
+      const user = merge(userWithRoleForChapterOne, {
+        user_bans: userBansChapterOne,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+        info: {
+          variableValues: { chapterId: 1 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(false);
+    });
+    it('should return true if a user has a chapter role for one chapter, but is banned from a different one', async () => {
+      const user = merge(userWithRoleForChapterOne, {
+        user_bans: userBansChapterTwo,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+        info: {
+          variableValues: { chapterId: 1 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
+    it('should return false if a user has an event role and a ban for the owning chapter', async () => {
+      const user = merge(userWithRoleForEventOne, {
+        user_bans: userBansChapterOne,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+        info: {
+          variableValues: { eventId: 1 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(false);
+    });
+    it('should return true if a user has an event role and a ban for another chapter', async () => {
+      const user = merge(userWithRoleForEventOne, {
+        user_bans: userBansChapterTwo,
+      });
+      const resolverData = merge(baseResolverData, {
+        context: { user },
+        info: {
+          variableValues: { eventId: 1 },
+        },
+      });
+
+      expect(
+        await authorizationChecker(resolverData, ['some-permission']),
+      ).toBe(true);
+    });
   });
 });

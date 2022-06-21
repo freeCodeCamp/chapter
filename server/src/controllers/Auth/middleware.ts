@@ -31,6 +31,7 @@ export const userMiddleware = (
     .findUnique({
       where: { id: value.id },
       include: {
+        user_bans: true,
         user_chapters: {
           include: {
             chapter_role: {

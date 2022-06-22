@@ -64,7 +64,7 @@ describe('event page', () => {
         // NOTE: we can't cy.get('@login-submit').should('not.exist') here
         // because that dom element is no longer in the DOM, resolves to
         // undefined and the test fails.
-        cy.findByRole('button', { name: 'Login' }).should('not.exist');
+        cy.contains('You want to join this?');
         cy.findByRole('button', { name: 'Confirm' }).should('be.visible');
       });
   });
@@ -117,5 +117,34 @@ describe('event page', () => {
     cy.findByRole('alertdialog').contains(/subscribe/);
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains(/subscribed/);
+  });
+
+  it('should reject requests from logged out users and non-members', () => {
+    // logged out user
+    cy.logout();
+    cy.reload();
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }, { withAuth: false }).then(
+      (response) => {
+        expect(response.status).to.eq(200);
+        const errors = response.body.errors;
+        expect(errors).to.have.length(1);
+        expect(errors[0].message).to.eq(
+          "Access denied! You don't have permission for this action!",
+        );
+      },
+    );
+
+    // newly registered user (without a chapter_users record)
+    cy.register();
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then((response) => {
+      expect(response.status).to.eq(200);
+      const errors = response.body.errors;
+      expect(errors).to.have.length(1);
+      expect(errors[0].message).to.eq(
+        "Access denied! You don't have permission for this action!",
+      );
+    });
   });
 });

@@ -55,7 +55,7 @@ const createEvents = async (
 
     const eventData: Prisma.eventsCreateInput = {
       name: company.companyName(),
-      chapter: { connect: { id: randomItem(chapterIds) } },
+      chapter: { connect: { id: i == 0 ? 1 : randomItem(chapterIds) } },
       description: lorem.words(),
       url: internet.url(),
       venue_type: venueType,

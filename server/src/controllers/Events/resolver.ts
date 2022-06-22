@@ -9,7 +9,15 @@ import {
   venues,
 } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
-import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  Arg,
+  Int,
+  Mutation,
+  Ctx,
+  Authorized,
+} from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
@@ -174,14 +182,13 @@ export class EventResolver {
     });
   }
 
+  @Authorized('rsvp')
   @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
-    @Ctx() ctx: GQLCtx,
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<EventUser | null> {
-    if (!ctx.user) {
-      throw new Error('You need to be logged in');
-    }
     const event = await prisma.events.findUnique({
       where: { id: eventId },
       include: {
@@ -275,7 +282,7 @@ export class EventResolver {
     const rsvpName = getRsvpName(event);
 
     const userChapter = ctx.user.user_chapters.find(
-      (user_chapter) => user_chapter.chapter_id === event.chapter_id,
+      (user_chapter) => user_chapter.chapter_id === chapterId,
     );
     const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 

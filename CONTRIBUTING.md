@@ -274,24 +274,23 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 <details><summary><b>Step 5</b> - Propose a Pull Request (PR)</summary>
 
-1. After committing & pushing changes to a branch on your fork, there should be a yellow message bar at the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter). This prompt includes a green _Compare and Pull Request_ button, which opens an "Open a pull request" form page.
+1. A yellow message bar should appear on the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter) after you've committed & pushed changes to a branch on your fork. Follow the green _Compare and Pull Request_ button to open a new "Open a pull request" form page.
 
 2. By default, your [proposed changes should be compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) [base repository: **freeCodeCamp/chapter**] [base:**main**].
 
-3. In the PR form, include a descriptive title following the pattern _Type(optional scope): A Thoughtful Title_
+3. In the PR form, set a [descriptive title following the pattern](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title). A common pattern you mAY follow is: `_Type(optional scope): With a Thoughtful Title_
   
     For example: **_feat(client): Send Email on RSVP Confirmation_**
   
-    > Where Type Can Be
-    > * build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-    > * ci: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
-    > * docs: Documentation only changes
-    > * feat: A new feature ( example scopes: api, client, db)
+    > **Type Examples**
+    > * chore: Changes that are not related to code, tests, or docs.
+    > * docs: Changes to the contributing guidelines, etc.
+    > * feat: A new feature
     > * fix: A bug fix
-    > * perf: A code change that improves performance
     > * refactor: A code change that neither fixes a bug nor adds a feature
-    > * style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-    > * test: Adding missing tests or correcting existing tests
+    > * test: Changes related to tests
+  
+    **Scope Examples:** api, build, ci, client, db, perf, style, ui 
 
 4. Include a more detailed account of the changes in the form's text area.
     > The text area will automatically include a checklist of items to confirm before submitting the pull request.

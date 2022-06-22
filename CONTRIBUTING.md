@@ -278,7 +278,7 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 2. By default, your [proposed changes should be compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) [base repository: **freeCodeCamp/chapter**] [base:**main**].
 
-3. In the PR form, set a [descriptive title following the pattern](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title). A common pattern you mAY follow is: `_Type(optional scope): With a Thoughtful Title_
+3. In the PR form, set a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title). A common pattern you may wish to follow is: `_Type(optional scope): With a Thoughtful Title_
   
     For example: **_feat(client): Send Email on RSVP Confirmation_**
   

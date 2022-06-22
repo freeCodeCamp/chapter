@@ -1,19 +1,47 @@
 import { merge } from 'lodash/fp';
 
-const baseUser = {
+import {
+  users,
+  events,
+  instance_roles,
+  chapter_users,
+  instance_role_permissions,
+  event_users,
+  event_roles,
+  event_permissions,
+  user_bans,
+} from '@prisma/client';
+
+type User = users & {
+  instance_role: instance_roles & {
+    instance_role_permissions: instance_role_permissions[];
+  };
+} & {
+  user_chapters: chapter_users[];
+} & {
+  user_events: event_users[];
+};
+
+const baseUser: User = {
   instance_role: {
+    id: 1,
+    created_at: new Date(),
+    updated_at: new Date(),
     name: 'zero-permissions-role',
     instance_role_permissions: [],
   },
+  instance_role_id: 1,
   user_chapters: [],
   user_events: [],
   first_name: 'any',
   last_name: 'one',
   id: 1,
+  created_at: new Date(),
+  updated_at: new Date(),
   email: 'an@add.ress',
 };
 
-export const userWithInstanceRole = merge(baseUser, {
+export const userWithInstanceRole: User = merge(baseUser, {
   instance_role: {
     name: 'some-role',
     instance_role_permissions: [
@@ -31,7 +59,18 @@ export const userWithInstanceRole = merge(baseUser, {
   },
 });
 
-export const chapterTwoUserEvent = [
+type EventRolePermissions = {
+  event_permission: Pick<event_permissions, 'name'>;
+};
+
+type EventUser = Pick<event_users, 'event_id'> & {
+  event: Pick<events, 'chapter_id'>;
+  event_role: Pick<event_roles, 'name'> & {
+    event_role_permissions: EventRolePermissions[];
+  };
+};
+
+export const chapterTwoUserEvent: EventUser[] = [
   {
     event: {
       chapter_id: 2,
@@ -50,7 +89,7 @@ export const chapterTwoUserEvent = [
   },
 ];
 
-export const chapterOneUserEvent = [
+export const chapterOneUserEvent: EventUser[] = [
   {
     event: {
       chapter_id: 1,
@@ -69,7 +108,7 @@ export const chapterOneUserEvent = [
   },
 ];
 
-export const userWithRoleForChapterOne = merge(baseUser, {
+export const userWithRoleForChapterOne: User = merge(baseUser, {
   user_chapters: [
     {
       chapter_role: {
@@ -87,7 +126,7 @@ export const userWithRoleForChapterOne = merge(baseUser, {
   ],
 });
 
-export const userWithRoleForEventOne = merge(baseUser, {
+export const userWithRoleForEventOne: User = merge(baseUser, {
   user_events: [
     {
       event: {
@@ -107,3 +146,23 @@ export const userWithRoleForEventOne = merge(baseUser, {
     },
   ],
 });
+
+// The user's id is not used directly. Instead we rely on their bans being
+// returned with the original user query.
+export const userBansChapterOne: user_bans[] = [
+  {
+    created_at: new Date(),
+    updated_at: new Date(),
+    chapter_id: 1,
+    user_id: -1,
+  },
+];
+
+export const userBansChapterTwo: user_bans[] = [
+  {
+    created_at: new Date(),
+    updated_at: new Date(),
+    chapter_id: 2,
+    user_id: -1,
+  },
+];

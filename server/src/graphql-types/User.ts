@@ -1,6 +1,5 @@
 import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { EventUserOnlyRolesAndIds } from './EventUser';
 import { Chapter, ChapterUser, EventUser, InstanceRole, UserBan } from '.';
 
 @ObjectType()
@@ -39,16 +38,4 @@ export class UserWithRelations extends User {
 
   @Field(() => [EventUser])
   event_users: EventUser[];
-}
-
-@ObjectType()
-export class UserWithRoles extends User {
-  @Field(() => [ChapterUser])
-  user_chapters: ChapterUser[];
-
-  @Field(() => InstanceRole)
-  instance_role: InstanceRole;
-
-  @Field(() => [EventUserOnlyRolesAndIds])
-  user_events: EventUserOnlyRolesAndIds[];
 }

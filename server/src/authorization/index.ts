@@ -2,7 +2,7 @@ import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
 import { GQLCtx } from '../common-types/gql';
-import { UserWithRoles } from '../graphql-types';
+import type { User } from '../controllers/Auth/middleware';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -12,34 +12,18 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
  * on a user's role. It cannot affect what is returned by a resolver, it just
  * determines if the resolver is called or not. For fine-grained control, the
  * resolver itself must modify the response based on the user's roles */
-export const authorizationChecker: AuthChecker<GQLCtx> = async (
+export const authorizationChecker: AuthChecker<GQLCtx> = (
   { context: { user }, info: { variableValues } },
   requiredPermissions,
-): Promise<boolean> => {
-  /** This defines our permission model. In short, a user's request will be
-   * denied unless they have a role that grants them permission to use the
-   * resolver that handles their request. That role can be instance wide,
-   * specific to a single chapter or specific a single event within a chapter.
-   *
-   * Examples:
-   *
-   * If the user has permission 'UPDATE_EVENT' for the instance, they can update
-   * all events.
-   *
-   * If the user has the permission 'UPDATE_EVENT' for chapter 1, they can
-   * update all events in chapter 1.
-   *
-   * If the user only has the permission 'UPDATE_EVENT' for event 1, they can
-   * only update event 1.
-   * */
-
+): boolean => {
   if (!user) return false;
 
   if (requiredPermissions.length !== 1) return false;
   const requiredPermission = requiredPermissions[0];
 
-  if (await isAllowedByInstanceRole(user, requiredPermission)) return true;
-  if (await isAllowedByChapterRole(user, requiredPermission, variableValues))
+  if (isAllowedByInstanceRole(user, requiredPermission)) return true;
+  if (isBannedFromChapter(user, variableValues)) return false;
+  if (isAllowedByChapterRole(user, requiredPermission, variableValues))
     return true;
   if (isAllowedByEventRole(user, requiredPermission, variableValues))
     return true;
@@ -47,31 +31,31 @@ export const authorizationChecker: AuthChecker<GQLCtx> = async (
   return false;
 };
 
-async function isAllowedByChapterRole(
-  user: UserWithRoles,
+function isAllowedByChapterRole(
+  user: User,
   requiredPermission: string,
   variableValues: VariableValues,
-): Promise<boolean> {
-  const chapterId = await getRelatedChapterId(user, variableValues);
+): boolean {
+  const chapterId = getRelatedChapterId(user, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
   return hasNecessaryPermission(requiredPermission, userChapterPermissions);
 }
 
-async function isAllowedByInstanceRole(
-  user: UserWithRoles,
+function isAllowedByInstanceRole(
+  user: User,
   requiredPermission: string,
-): Promise<boolean> {
+): boolean {
   const userInstancePermissions = getUserPermissionsForInstance(user);
   return hasNecessaryPermission(requiredPermission, userInstancePermissions);
 }
 
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
-async function getRelatedChapterId(
-  user: UserWithRoles,
+function getRelatedChapterId(
+  user: User,
   variableValues: VariableValues,
-): Promise<number | null> {
+): number | null {
   const { chapterId, eventId } = variableValues;
 
   if (chapterId) return chapterId;
@@ -87,7 +71,7 @@ async function getRelatedChapterId(
 }
 
 function isAllowedByEventRole(
-  user: UserWithRoles,
+  user: User,
   requiredPermission: string,
   info: VariableValues,
 ): boolean {
@@ -95,16 +79,13 @@ function isAllowedByEventRole(
   return hasNecessaryPermission(requiredPermission, userEventPermissions);
 }
 
-function getUserPermissionsForInstance(user: UserWithRoles): string[] {
+function getUserPermissionsForInstance(user: User): string[] {
   return user.instance_role.instance_role_permissions.map(
     (x) => x.instance_permission.name,
   );
 }
 
-function getUserPermissionsForChapter(
-  user: UserWithRoles,
-  chapterId: number,
-): string[] {
+function getUserPermissionsForChapter(user: User, chapterId: number): string[] {
   const role = user.user_chapters.find((role) => role.chapter_id === chapterId);
   return role
     ? role.chapter_role.chapter_role_permissions.map(
@@ -114,7 +95,7 @@ function getUserPermissionsForChapter(
 }
 
 function getUserPermissionsForEvent(
-  user: UserWithRoles,
+  user: User,
   variableValues: VariableValues,
 ): string[] {
   const role = user.user_events.find(
@@ -125,9 +106,20 @@ function getUserPermissionsForEvent(
     : [];
 }
 
-// TODO: do we need more than one permission per resolver? Probably not. A
-// better approach might be to throw an error if we're given multiple
-// permissions.
+function isBannedFromChapter(
+  user: User,
+  variableValues: VariableValues,
+): boolean {
+  const chapterId = getRelatedChapterId(user, variableValues);
+  if (chapterId === null) return false;
+
+  const bannedFromChapter = user.user_bans?.some(
+    (ban) => ban.chapter_id === chapterId,
+  );
+
+  return bannedFromChapter;
+}
+
 function hasNecessaryPermission(
   requiredPermission: string,
   ownedPermissions: string[],

@@ -276,23 +276,21 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 1. A yellow message bar should appear on the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter) after you've committed & pushed changes to a branch on your fork. Follow the green _Compare and Pull Request_ button to open a new "Open a pull request" form page.
 
-2. By default, your [proposed changes should be compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) [base repository: **freeCodeCamp/chapter**] [base:**main**].
+2. The _main_ branch of the [Chapter project](https://github.com/freeCodeCamp/chapter) should automatically show as being [compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) your proposed changes, like:
+    > [base repository: freeCodeCamp/chapter] [base:main] **<-** [your fork] [your proposed branch]
 
-3. In the PR form, set a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title). A common pattern you may wish to follow is: `_Type(optional scope): With a Thoughtful Title_
-  
-    For example: **_feat(client): Send Email on RSVP Confirmation_**
-  
-    > **Type Examples**
-    > * chore: Changes that are not related to code, tests, or docs.
-    > * docs: Changes to the contributing guidelines, etc.
-    > * feat: A new feature
-    > * fix: A bug fix
-    > * refactor: A code change that neither fixes a bug nor adds a feature
-    > * test: Changes related to tests
-  
-    **Scope Examples:** api, build, ci, client, db, perf, style, ui 
+3. Write a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title) in the title field. A common pattern you may like to follow is: _**Type**(optional **scope**): With a Thoughtful Title_.
+    > * Example: _feat(client): Send Email on RSVP Confirmation_
+    > * **Type** examples
+    >   * chore: Changes that are not related to code, tests, or docs.
+    >   * docs: Changes to the contributing guidelines, etc.
+    >   * feat: A new feature
+    >   * fix: A bug fix
+    >   * refactor: A code change that neither fixes a bug nor adds a feature
+    >   * test: Changes related to tests
+    > * **(Scope)** examples: api, build, ci, client, db, perf, style, ui 
 
-4. Include a more detailed account of the changes in the form's text area.
+4. Write a more detailed explaination of the changes in the form's text area.
     > The text area will automatically include a checklist of items to confirm before submitting the pull request.
 
     > At the end of your PR's description, you may append a pattern like `Closes #1337` to tell GitHub to automatically close a specific issue number when the PR is accepted and merged.

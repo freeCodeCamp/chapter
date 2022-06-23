@@ -16,7 +16,11 @@ const setupRoles = async (
       joined_date: new Date(),
       chapter_id: chapterId,
       user_id: adminId,
-      chapter_role_id: chapterRoles.organizer.id,
+      chapter_role_id: chapterRoles.member.id, // This user is an instance owner
+      // so this chapter role should not provide additional permissions beyond
+      // those provided by the instance owner role. It is possible for them to
+      // be a member of a chapater, though, so this grants them the member role
+      // for all chapters.
       subscribed: true,
     };
 

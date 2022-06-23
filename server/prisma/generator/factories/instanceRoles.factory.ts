@@ -9,7 +9,7 @@ interface InstanceRole {
 
 const roles: InstanceRole[] = [
   {
-    name: 'administrator',
+    name: 'owner',
     permissions: ['chapter-create', 'chapter-edit', 'rsvp'],
   },
   { name: 'member', permissions: [] },

@@ -12,7 +12,7 @@ const createUsers = async (
     email: 'foo@bar.com',
     first_name: name.firstName(),
     last_name: name.lastName(),
-    instance_role: { connect: { id: instanceRoles.administrator.id } },
+    instance_role: { connect: { id: instanceRoles.owner.id } },
   };
 
   const user = await prisma.users.create({ data: userData });

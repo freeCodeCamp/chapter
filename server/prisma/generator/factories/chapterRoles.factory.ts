@@ -14,8 +14,6 @@ const roles: Array<{ name: string; permissions: Permissions[] }> = [
     name: 'administrator',
     permissions: ['chapter-edit', 'event-create', 'event-edit', 'rsvp'],
   },
-  { name: 'organizer', permissions: ['event-create', 'event-edit'] },
-  { name: 'moderator', permissions: ['event-edit'] },
   { name: 'member', permissions: ['rsvp'] },
 ];
 

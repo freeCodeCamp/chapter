@@ -1,18 +1,11 @@
 import { prisma } from '../../../src/prisma';
 
-const eventPermissions = [
-  'event-cancel',
-  'event-edit',
-  'send-invites',
-] as const;
+// For the MVP we will not be using event roles to grant permissions, they're
+// essentially placeholders.
+const eventPermissions = [] as const;
 type Permissions = typeof eventPermissions[number];
 
 const eventRoles: { name: string; permissions: Permissions[] }[] = [
-  {
-    name: 'organizer',
-    permissions: ['event-cancel', 'event-edit', 'send-invites'],
-  },
-  { name: 'staff', permissions: ['send-invites'] },
   { name: 'attendee', permissions: [] },
 ];
 

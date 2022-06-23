@@ -2,7 +2,6 @@ import { sub } from 'date-fns';
 
 import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
-import { makeBooleanIterator } from '../lib/util';
 
 const createRsvps = async (
   eventIds: number[],
@@ -14,15 +13,10 @@ const createRsvps = async (
     data: rsvpNames.map((rsvp) => ({ name: rsvp })),
   });
 
-  const eventIterator = makeBooleanIterator();
   for (const eventId of eventIds) {
     const eventUserIds = randomItems(userIds, userIds.length / 2);
     const numberWaiting = 1 + random(eventUserIds.length - 2);
     const numberCanceled = 1 + random(eventUserIds.length - numberWaiting - 1);
-
-    // makes sure half of each event's users are organisers, but
-    // alternates which half.
-    const organizerIterator = makeBooleanIterator(eventIterator.next().value);
 
     for (let i = 0; i < eventUserIds.length; i++) {
       const on_waitlist = i < numberWaiting;
@@ -36,9 +30,7 @@ const createRsvps = async (
           user: { connect: { id: eventUserIds[i] } },
           event_role: {
             connect: {
-              id: organizerIterator.next().value
-                ? eventRoles.organizer.id
-                : eventRoles.attendee.id,
+              id: eventRoles.attendee.id,
             },
           },
           rsvp: {

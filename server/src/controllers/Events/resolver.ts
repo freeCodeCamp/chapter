@@ -391,16 +391,6 @@ export class EventResolver {
       ({ chapter_id }) => chapter_id === data.chapter_id,
     );
 
-    // TODO: add admin and owner once you've figured out how to handle instance
-    // roles
-    const allowedRoles = ['organizer'] as const;
-    const hasPermission =
-      allowedRoles.findIndex((x) => x === userChapter?.chapter_role.name) !==
-      -1;
-
-    if (!hasPermission)
-      throw Error('User does not have permission to create events');
-
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
@@ -410,7 +400,7 @@ export class EventResolver {
 
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
-      event_role: { connect: { name: 'organizer' } },
+      event_role: { connect: { name: 'attendee' } },
       rsvp: { connect: { name: 'yes' } },
       subscribed: isSubscribedToEvent,
     };

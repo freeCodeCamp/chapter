@@ -21,6 +21,8 @@ const createChapterRoles = async () => {
   await prisma.chapter_permissions.createMany({
     data: chapterPermissions.map((permission) => ({ name: permission })),
   });
+
+  // TODO: use reduce
   return Object.assign(
     {},
     ...(

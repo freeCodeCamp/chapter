@@ -290,7 +290,7 @@ export class EventResolver {
       user: { connect: { id: ctx.user.id } },
       event: { connect: { id: eventId } },
       rsvp: { connect: { name: rsvpName } },
-      event_role: { connect: { name: 'attendee' } },
+      event_role: { connect: { name: 'member' } },
       subscribed: isSubscribedToEvent,
     };
 
@@ -400,7 +400,7 @@ export class EventResolver {
 
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
-      event_role: { connect: { name: 'attendee' } },
+      event_role: { connect: { name: 'member' } },
       rsvp: { connect: { name: 'yes' } },
       subscribed: isSubscribedToEvent,
     };

@@ -6,7 +6,7 @@ const eventPermissions = [] as const;
 type Permissions = typeof eventPermissions[number];
 
 const eventRoles: { name: string; permissions: Permissions[] }[] = [
-  { name: 'attendee', permissions: [] },
+  { name: 'member', permissions: [] },
 ];
 
 const createEventRoles = async () => {

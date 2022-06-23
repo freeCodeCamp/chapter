@@ -30,7 +30,7 @@ const createRsvps = async (
           user: { connect: { id: eventUserIds[i] } },
           event_role: {
             connect: {
-              id: eventRoles.attendee.id,
+              id: eventRoles.member.id,
             },
           },
           rsvp: {

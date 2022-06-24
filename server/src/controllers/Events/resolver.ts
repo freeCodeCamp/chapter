@@ -86,7 +86,7 @@ const chapterUserInclude = {
 type ChapterUser = Prisma.chapter_usersGetPayload<typeof chapterUserInclude>;
 
 const rsvpNotifyAdministrator = async (
-  user: User,
+  rsvpingUser: User,
   chapterUsers: ChapterUser[],
   eventName: string,
 ) => {
@@ -96,7 +96,7 @@ const rsvpNotifyAdministrator = async (
   await new MailerService({
     emailList: administratorsEmails,
     subject: `New RSVP for ${eventName}`,
-    htmlEmail: `User ${user.first_name} ${user.last_name} has RSVP'd. ${unsubscribe}`,
+    htmlEmail: `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd. ${unsubscribe}`,
   }).sendEmail();
 };
 

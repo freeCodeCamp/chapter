@@ -175,10 +175,12 @@ Cypress.Commands.add('getRSVPs', (eventId) => {
 
 Cypress.Commands.add('waitUntilMail', (alias) => {
   cy.waitUntil(() =>
-    cy
-      .mhGetAllMails()
-      .as(alias)
-      .then((mails) => mails?.length > 0),
+    alias
+      ? cy
+          .mhGetAllMails()
+          .as(alias)
+          .then((mails) => mails?.length > 0)
+      : cy.mhGetAllMails().then((mails) => mails?.length > 0),
   );
 });
 

@@ -1,11 +1,9 @@
 import {
   events,
   events_venue_type_enum,
-  event_roles,
   event_users,
   Prisma,
   rsvp,
-  users,
   venues,
 } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
@@ -78,19 +76,26 @@ ${unsubscribe}
   }).sendEmail();
 };
 
-type RsvpNotificationEvent = events & {
-  event_users: { event_role: event_roles; user: users }[];
+const chapterUserInclude = {
+  include: {
+    chapter_role: true,
+    user: true,
+  },
 };
-const rsvpNotifyOrganizer = async (
+
+type ChapterUser = Prisma.chapter_usersGetPayload<typeof chapterUserInclude>;
+
+const rsvpNotifyAdministrator = async (
   user: User,
-  event: RsvpNotificationEvent,
+  chapterUsers: ChapterUser[],
+  eventName: string,
 ) => {
-  const organizersEmails = event.event_users
-    .filter(({ event_role }) => event_role.name === 'organizer')
+  const administratorsEmails = chapterUsers
+    .filter(({ chapter_role }) => chapter_role.name === 'administrator')
     .map(({ user }) => user.email);
   await new MailerService({
-    emailList: organizersEmails,
-    subject: `New RSVP for ${event.name}`,
+    emailList: administratorsEmails,
+    subject: `New RSVP for ${eventName}`,
     htmlEmail: `User ${user.first_name} ${user.last_name} has RSVP'd. ${unsubscribe}`,
   }).sendEmail();
 };
@@ -207,6 +212,11 @@ export class EventResolver {
       },
     });
 
+    const chapterUsers = await prisma.chapter_users.findMany({
+      where: { chapter_id: chapterId },
+      ...chapterUserInclude,
+    });
+
     const oldUserRole = await prisma.event_users.findUnique({
       include: { rsvp: true },
       where: {
@@ -257,7 +267,7 @@ export class EventResolver {
         };
 
         await sendRsvpInvitation(ctx.user, event);
-        await rsvpNotifyOrganizer(ctx.user, event);
+        await rsvpNotifyAdministrator(ctx.user, chapterUsers, event.name);
       }
       return await prisma.event_users.update({
         data: updateData,
@@ -315,7 +325,7 @@ export class EventResolver {
     }
 
     await sendRsvpInvitation(ctx.user, event);
-    await rsvpNotifyOrganizer(ctx.user, event);
+    await rsvpNotifyAdministrator(ctx.user, chapterUsers, event.name);
     return userRole;
   }
 

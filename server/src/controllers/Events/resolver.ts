@@ -85,7 +85,7 @@ const chapterUserInclude = {
 
 type ChapterUser = Prisma.chapter_usersGetPayload<typeof chapterUserInclude>;
 
-const rsvpNotifyAdministrator = async (
+const rsvpNotifyAdministrators = async (
   rsvpingUser: User,
   chapterUsers: ChapterUser[],
   eventName: string,
@@ -267,7 +267,7 @@ export class EventResolver {
         };
 
         await sendRsvpInvitation(ctx.user, event);
-        await rsvpNotifyAdministrator(ctx.user, chapterUsers, event.name);
+        await rsvpNotifyAdministrators(ctx.user, chapterUsers, event.name);
       }
       return await prisma.event_users.update({
         data: updateData,
@@ -325,7 +325,7 @@ export class EventResolver {
     }
 
     await sendRsvpInvitation(ctx.user, event);
-    await rsvpNotifyAdministrator(ctx.user, chapterUsers, event.name);
+    await rsvpNotifyAdministrators(ctx.user, chapterUsers, event.name);
     return userRole;
   }
 

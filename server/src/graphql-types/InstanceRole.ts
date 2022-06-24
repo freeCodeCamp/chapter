@@ -14,6 +14,9 @@ export class InstanceRolePermission {
 
 @ObjectType()
 export class InstanceRole {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => String)
   name: string;
 

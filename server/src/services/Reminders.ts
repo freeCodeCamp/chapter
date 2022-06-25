@@ -8,18 +8,24 @@ export interface ReminderData {
   eventId: number;
   remindAt: Date;
   userId: number;
+  rsvpName: string;
 }
 
 export const createReminder = async ({
   eventId,
   remindAt,
   userId,
+  rsvpName,
 }: ReminderData) =>
   await prisma.event_reminders.create({
     data: {
       event_user: {
         connect: {
-          user_id_event_id: { event_id: eventId, user_id: userId },
+          user_id_event_id: {
+            event_id: eventId,
+            user_id: userId,
+            rsvp: rsvpName,
+          },
         },
       },
       remind_at: remindAt,
@@ -47,6 +53,7 @@ const reminderIncludes = {
         include: {
           venue: true,
           chapter: true,
+          rsvp: true,
         },
       },
     },

@@ -20,11 +20,13 @@ export const createReminder = async ({
   await prisma.event_reminders.create({
     data: {
       event_user: {
+        // rsvp: {
+        //   name: rsvpName
+        // },
         connect: {
           user_id_event_id: {
             event_id: eventId,
             user_id: userId,
-            rsvp: rsvpName,
           },
         },
       },

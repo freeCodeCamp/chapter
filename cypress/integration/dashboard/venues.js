@@ -45,13 +45,14 @@ describe('venues dashboard', () => {
         name: 'Add venue',
       })
       .click();
-    // TODO: this should mirror events. i.e. either both should go to the list
-    // or both should go to the newly created page
-    cy.location('pathname').should('match', /^\/dashboard\/venues$/);
-    // TODO: if it goes to /dashboard/venues/<n>/edit, look for the rest of the
-    // data
+
+    cy.location('pathname').should('match', /^\/dashboard\/venues\/\d+$/);
 
     // confirm that the test data appears in the new venue
     cy.contains(fix.name);
+    cy.contains(fix.city);
+    cy.contains(fix.postalCode);
+    cy.contains(fix.region);
+    // TODO: display more details about the venue?
   });
 });

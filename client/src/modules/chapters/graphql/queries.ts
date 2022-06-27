@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const CHAPTER = gql`
-  query chapter($id: Int!) {
-    chapter(id: $id) {
+  query chapter($chapterId: Int!) {
+    chapter(id: $chapterId) {
       id
       name
       description
@@ -11,6 +11,7 @@ export const CHAPTER = gql`
       region
       country
       imageUrl
+      chatUrl
       events {
         id
         name
@@ -33,15 +34,40 @@ export const CHAPTER = gql`
 `;
 
 export const CHAPTER_USERS = gql`
-  query chapterUsers($id: Int!) {
-    chapter(id: $id) {
-      users {
+  query chapterUsers($chapterId: Int!) {
+    chapter(id: $chapterId) {
+      chapter_users {
         user {
+          id
           name
           email
         }
-        interested
+        chapter_role {
+          id
+          name
+        }
+        subscribed
+        canBeBanned
       }
+      user_bans {
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const CHAPTER_USER = gql`
+  query chapterUser($chapterId: Int!) {
+    chapterUser(chapterId: $chapterId) {
+      user {
+        name
+      }
+      chapter_role {
+        name
+      }
+      subscribed
     }
   }
 `;

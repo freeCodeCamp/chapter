@@ -23,11 +23,23 @@ type EventCardProps = {
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const metaTag = event.canceled ? (
-    <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
-      Cancelled
+    <Tag
+      data-cy="event-canceled"
+      borderRadius="full"
+      pl="2"
+      px="2"
+      colorScheme="red"
+    >
+      Canceled
     </Tag>
   ) : event.invite_only ? (
-    <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
+    <Tag
+      data-cy="event-invite-only"
+      borderRadius="full"
+      pl="2"
+      px="2"
+      colorScheme="gray"
+    >
       <LockIcon />
     </Tag>
   ) : (
@@ -42,7 +54,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           fontWeight="semibold"
           as="h4"
           lineHeight="tight"
-          isTruncated
+          noOfLines={1}
         >
           {formatDate(event.start_at)}
           <Spacer />
@@ -65,7 +77,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </Link>
         </Box>
         {event.tags && (
-          <Box d="flex" alignItems="baseline" pt={3}>
+          <Box display="flex" alignItems="baseline" pt={3}>
             {event.tags.map(({ tag }) => (
               <Tag
                 borderRadius="full"

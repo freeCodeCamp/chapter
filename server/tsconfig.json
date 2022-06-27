@@ -23,8 +23,8 @@
     "isolatedModules": true,
     "types": ["jest", "node"],
     "typeRoots": ["src/common-types/index.d.ts", "../node_modules/@types"],
-    "incremental": true,
+    "incremental": true
   },
-  "include": ["src/**/*", "prisma/**/*", "tests/**/*", "reminders/**/*"],
+  "include": ["src/**/*", "prisma/**/*", "reminders/**/*", "tests/**/*"],
   "exclude": ["node_modules"]
 }

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Header } from './Header';
 
-const PageLayout: React.FC = ({ children }) => {
+const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />

@@ -44,7 +44,7 @@ function setup() {
       console.log('Copied!');
     } catch (e) {
       IS_ERROR = true;
-      console.error(`${e} occured while copying .env file`);
+      console.error(`${e} occurred while copying .env file`);
     }
   }
 

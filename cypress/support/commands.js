@@ -67,6 +67,10 @@ Cypress.Commands.add('login', (token) => {
   );
 });
 
+Cypress.Commands.add('logout', () => {
+  window.localStorage.removeItem('token');
+});
+
 Cypress.Commands.add('register', (firstName, lastName, email) => {
   const user = {
     operationName: 'register',
@@ -98,23 +102,50 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
   const chapterQuery = {
     operationName: 'chapterUsers',
     variables: {
-      id: chapterId,
+      chapterId,
     },
-    query: `query chapterUsers($id: Int!) {
-      chapter(id: $id) {
-        users {
+    query: `query chapterUsers($chapterId: Int!) {
+      chapter(id: $chapterId) {
+        chapter_users {
           user {
             name
             email
           }
-          interested
+          subscribed
         }
       }
     }`,
   };
   return cy
     .request('POST', 'http://localhost:5000/graphql', chapterQuery)
-    .then((response) => response.body.data.chapter.users);
+    .then((response) => response.body.data.chapter.chapter_users);
+});
+
+Cypress.Commands.add('getEventUsers', (eventId) => {
+  const eventQuery = {
+    operationName: 'eventUsers',
+    variables: {
+      eventId,
+    },
+    query: `query eventUsers($eventId: Int!) {
+      event(eventId: $eventId) {
+        event_users {
+          rsvp {
+            name
+          }
+          user {
+            id
+            name
+            email
+          }
+          subscribed
+        }
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', eventQuery)
+    .then((response) => response.body.data.event.event_users);
 });
 
 Cypress.Commands.add('getRSVPs', (eventId) => {
@@ -123,8 +154,8 @@ Cypress.Commands.add('getRSVPs', (eventId) => {
     variables: {
       id: eventId,
     },
-    query: `query rsvpsForEvent($id: Int!) {
-      event(id: $id) {
+    query: `query rsvpsForEvent($eventId: Int!) {
+      event(id: $eventId) {
         rsvps {
           on_waitlist
           canceled
@@ -144,9 +175,93 @@ Cypress.Commands.add('getRSVPs', (eventId) => {
 
 Cypress.Commands.add('waitUntilMail', (alias) => {
   cy.waitUntil(() =>
-    cy
-      .mhGetAllMails()
-      .as(alias)
-      .then((mails) => mails?.length > 0),
+    alias
+      ? cy
+          .mhGetAllMails()
+          .as(alias)
+          .then((mails) => mails?.length > 0)
+      : cy.mhGetAllMails().then((mails) => mails?.length > 0),
   );
 });
+
+Cypress.Commands.add('createEvent', (data) => {
+  const eventMutation = {
+    operationName: 'createEvent',
+    variables: {
+      data: { ...data },
+    },
+    query: `mutation createEvent($data: CreateEventInputs!) {
+      createEvent(data: $data) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .request({
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: eventMutation,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+      },
+    })
+    .then((response) => {
+      return response.body.data.createEvent.id;
+    });
+});
+
+Cypress.Commands.add('deleteEvent', (eventId) => {
+  const eventMutation = {
+    operationName: 'deleteEvent',
+    variables: {
+      eventId,
+    },
+    query: `mutation deleteEvent($eventId: Int!) {
+      deleteEvent(id: $eventId) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .request('POST', 'http://localhost:5000/graphql', eventMutation)
+    .then((response) => response.body.data.deleteEvent.id);
+});
+
+Cypress.Commands.add('checkBcc', (mail) => {
+  const headers = mail.Content.Headers;
+  return cy.wrap(!('To' in headers));
+});
+
+Cypress.Commands.add(
+  'rsvpToEvent',
+  ({ eventId, chapterId }, options = { withAuth: true }) => {
+    const rsvpMutation = {
+      operationName: 'rsvpToEvent',
+      variables: {
+        eventId,
+        chapterId,
+      },
+      query: `
+    mutation rsvpToEvent($eventId: Int!, $chapterId: Int!) {
+      rsvpEvent(eventId: $eventId, chapterId: $chapterId) {
+        updated_at
+      }
+    }
+    `,
+    };
+
+    const requestOptions = {
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: rsvpMutation,
+      failOnStatusCode: false,
+    };
+
+    if (options.withAuth)
+      requestOptions.headers = {
+        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+      };
+
+    return cy.request(requestOptions);
+  },
+);

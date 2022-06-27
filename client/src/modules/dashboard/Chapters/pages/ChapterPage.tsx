@@ -12,15 +12,17 @@ import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const chapterId = getId(router.query) || -1;
 
-  const { loading, error, data } = useChapterQuery({ variables: { id } });
+  const { loading, error, data } = useChapterQuery({
+    variables: { chapterId },
+  });
 
   if (loading || error || !data?.chapter) {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );
   }
@@ -33,11 +35,11 @@ export const ChapterPage: NextPage = () => {
             {data.chapter.name}
           </Heading>
           <Box>
-            <Link href={`${id}/users`} target="_blank">
+            <Link href={`${chapterId}/users`} target="_blank">
               Chapter Users
             </Link>
           </Box>
-          <LinkButton size="sm" href={`${id}/new_event`}>
+          <LinkButton size="sm" href={`${chapterId}/new_event`}>
             Add new event
           </LinkButton>
         </ProgressCardContent>

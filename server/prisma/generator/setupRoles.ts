@@ -4,45 +4,63 @@ import { prisma } from '../../src/prisma';
 import { makeBooleanIterator } from './lib/util';
 
 const setupRoles = async (
-  adminId: number,
-  userIds: number[],
+  {
+    ownerId,
+    adminId,
+    userIds,
+  }: { ownerId: number; adminId: number; userIds: number[] },
   chapterIds: number[],
+  chapterRoles: Record<string, { name: string; id: number }>, // TODO: import type from chapterRoles.factory
 ): Promise<void> => {
-  const data: Prisma.user_chapter_rolesCreateManyInput[] = [];
-  const chapterIterator = makeBooleanIterator();
+  const usersData: Prisma.chapter_usersCreateManyInput[] = [];
+  const subscribeIterator = makeBooleanIterator();
   for (const chapterId of chapterIds) {
-    const chapterUserData = {
+    const ownerData: Prisma.chapter_usersCreateManyInput = {
+      joined_date: new Date(),
       chapter_id: chapterId,
-      user_id: adminId,
-      role_name: 'organizer',
-      interested: true,
+      user_id: ownerId,
+      chapter_role_id: chapterRoles.member.id, // This user is an instance owner
+      // so this chapter role should not provide additional permissions beyond
+      // those provided by the instance owner role. It is possible for them to
+      // be a member of a chapater, though, so this grants them the member role
+      // for all chapters.
+      subscribed: true,
     };
 
-    data.push(chapterUserData);
+    usersData.push(ownerData);
 
-    const [banned, ...others] = userIds;
+    const adminData: Prisma.chapter_usersCreateManyInput = {
+      joined_date: new Date(),
+      chapter_id: chapterId,
+      user_id: adminId,
+      chapter_role_id: chapterRoles.administrator.id,
+      subscribed: true,
+    };
+
+    usersData.push(adminData);
+
+    const [banned] = userIds;
     const banData: Prisma.user_bansCreateInput = {
-      users: { connect: { id: banned } },
-      chapters: { connect: { id: chapterId } },
+      user: { connect: { id: banned } },
+      chapter: { connect: { id: chapterId } },
     };
     await prisma.user_bans.create({ data: banData });
     // makes sure half of each chapter's users are interested, but
     // alternates which half.
-    const interestedIterator = makeBooleanIterator(
-      chapterIterator.next().value,
-    );
-    for (const user of others) {
-      const chapterUserData = {
+    const userSubscribed = makeBooleanIterator(subscribeIterator.next().value);
+    for (const user of userIds) {
+      const userData: Prisma.chapter_usersCreateManyInput = {
+        joined_date: new Date(),
         chapter_id: chapterId,
         user_id: user,
-        role_name: 'member',
-        interested: interestedIterator.next().value,
+        chapter_role_id: chapterRoles.member.id,
+        subscribed: userSubscribed.next().value,
       };
 
-      data.push(chapterUserData);
+      usersData.push(userData);
     }
   }
-  await prisma.user_chapter_roles.createMany({ data });
+  await prisma.chapter_users.createMany({ data: usersData });
 };
 
 export default setupRoles;

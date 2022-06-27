@@ -505,7 +505,7 @@
     },
     {
       "login": "nhcarrigan",
-      "name": "Nicholas Carrigan (he/him)",
+      "name": "Naomi Carrigan",
       "avatar_url": "https://avatars.githubusercontent.com/u/63889819?v=4",
       "profile": "http://www.nhcarrigan.com",
       "contributions": [
@@ -558,6 +558,44 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/60067306?v=4",
       "profile": "https://github.com/gikf",
       "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Ismailtlem",
+      "name": "Ismail Tlemcani",
+      "avatar_url": "https://avatars.githubusercontent.com/u/34961373?v=4",
+      "profile": "https://www.linkedin.com/in/ismailtlemcani/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Sboonny",
+      "name": "Muhammed Mustafa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88248797?v=4",
+      "profile": "https://sboonny.vercel.app/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Nirajn2311",
+      "name": "Niraj Nandish",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36357875?v=4",
+      "profile": "https://github.com/Nirajn2311",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "c-ehrlich",
+      "name": "Christopher Ehrlich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8353666?v=4",
+      "profile": "http://c-ehrlich.dev",
+      "contributions": [
+        "infra",
+        "test",
         "code"
       ]
     }

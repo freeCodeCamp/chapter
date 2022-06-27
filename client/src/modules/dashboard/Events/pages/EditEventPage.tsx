@@ -17,14 +17,14 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const id = getId(router.query) || -1;
+  const eventId = getId(router.query) || -1;
 
   const {
     loading: eventLoading,
     error,
     data,
   } = useEventQuery({
-    variables: { id },
+    variables: { eventId: eventId },
   });
 
   // TODO: update the cache directly:
@@ -32,13 +32,12 @@ export const EditEventPage: NextPage = () => {
   const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [
       { query: EVENTS },
-      { query: EVENT, variables: { id } },
+      { query: EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
 
   const onSubmit = async (data: EventFormData, chapterId: number) => {
-    // TODO: load chapter from url or something like that
     setLoadingUpdate(true);
 
     try {
@@ -52,8 +51,8 @@ export const EditEventPage: NextPage = () => {
       const eventData = {
         ...rest,
         capacity: parseInt(String(data.capacity)),
-        start_at: new Date(data.start_at).toISOString(),
-        ends_at: new Date(data.ends_at).toISOString(),
+        start_at: data.start_at,
+        ends_at: data.ends_at,
         venue_id: isPhysical(data.venue_type)
           ? parseInt(String(data.venue_id))
           : null,
@@ -64,7 +63,7 @@ export const EditEventPage: NextPage = () => {
       };
 
       const event = await updateEvent({
-        variables: { id, data: { ...eventData } },
+        variables: { eventId, data: { ...eventData } },
       });
 
       if (event.data) {
@@ -81,7 +80,7 @@ export const EditEventPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error}</div>}
+        {error && <div>{error.message}</div>}
       </Layout>
     );
   }

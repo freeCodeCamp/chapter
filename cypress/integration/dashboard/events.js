@@ -49,7 +49,7 @@ describe('events dashboard', () => {
       cy.contains(venueTitle);
     });
 
-    // check that the interested users have been emailed
+    // check that the subscribed users have been emailed
     cy.waitUntilMail('allMail');
 
     cy.get('@allMail').mhFirst().as('invitation');
@@ -57,11 +57,14 @@ describe('events dashboard', () => {
     // ) i.e. remove the hardcoding.
     cy.getChapterMembers(1).then((members) => {
       const subscriberEmails = members
-        .filter(({ interested }) => interested)
+        .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
       cy.get('@invitation')
         .mhGetRecipients()
         .should('have.members', subscriberEmails);
+    });
+    cy.get('@invitation').then((mail) => {
+      cy.checkBcc(mail).should('eq', true);
     });
   });
 
@@ -81,9 +84,15 @@ describe('events dashboard', () => {
       'Test, Event, Tag',
     );
 
-    cy.findByLabelText(/^Start at/).type(testEvent.startAt);
+    cy.findByLabelText(/^Start at/)
+      .clear()
+      .type(testEvent.startAt)
+      .type('{esc}');
+    cy.findByLabelText(/^End at/)
+      .clear()
+      .type(testEvent.endAt)
+      .type('{esc}');
 
-    cy.findByLabelText(/^End at/).type(testEvent.endAt);
     // TODO: figure out why cypress thinks this is covered.
     // cy.findByRole('checkbox', { name: 'Invite only' }).click();
     cy.get('[data-cy="invite-only-checkbox"]').click();
@@ -114,108 +123,140 @@ describe('events dashboard', () => {
     cy.findByRole('button', { name: 'Email Attendees' }).click();
     cy.findByLabelText('Confirmed').should('be.checked');
     cy.findByLabelText('Waitlist').should('not.be.checked');
-    cy.findByLabelText('Cancelled').should('not.be.checked');
-    const isRsvpConfirmed = (r) =>
-      r.on_waitlist === false && r.canceled === false;
-    sendAndCheckEmails(isRsvpConfirmed);
+    cy.findByLabelText('Canceled').should('not.be.checked');
+    cy.getEventUsers(1).then((results) => {
+      const eventUsers = results.filter(({ subscribed }) => subscribed);
+      const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
+      sendAndCheckEmails(isRsvpConfirmed, eventUsers);
 
-    // sending to waitlist
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    // we have to force because cypress thinks the label is covered - it is not.
-    cy.findByLabelText('Confirmed').click({ force: true });
-    cy.findByLabelText('Waitlist').click({ force: true });
-    const isRsvpOnWaitlist = (r) => r.on_waitlist === true;
-    sendAndCheckEmails(isRsvpOnWaitlist);
+      // sending to waitlist
+      cy.findByRole('button', { name: 'Email Attendees' }).click();
+      cy.findByLabelText('Confirmed').parent().click();
+      cy.findByLabelText('Waitlist').parent().click();
+      const isRsvpOnWaitlist = ({ rsvp }) => rsvp.name === 'waitlist';
+      sendAndCheckEmails(isRsvpOnWaitlist, eventUsers);
 
-    // sending to cancelled
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    // we have to force because cypress thinks the label is covered - it is not.
-    cy.findByLabelText('Waitlist').click({ force: true });
-    cy.findByLabelText('Cancelled').click({ force: true });
-    const isRSVPCancelled = (r) => r.canceled === true;
-    sendAndCheckEmails(isRSVPCancelled);
+      // sending to canceled
+      cy.findByRole('button', { name: 'Email Attendees' }).click();
+      cy.findByLabelText('Waitlist').parent().click();
+      cy.findByLabelText('Canceled').parent().click();
+      const isRSVPCanceled = ({ rsvp }) => rsvp.name === 'no';
+      sendAndCheckEmails(isRSVPCanceled, eventUsers);
 
-    // sending to all
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    // we have to force because cypress thinks the label is covered - it is not.
-    cy.findByLabelText('Waitlist').click({ force: true });
-    cy.findByLabelText('Confirmed').click({ force: true });
-    sendAndCheckEmails(() => true);
+      // sending to all
+      cy.findByRole('button', { name: 'Email Attendees' }).click();
+      cy.findByLabelText('Waitlist').parent().click();
+      cy.findByLabelText('Confirmed').parent().click();
+      sendAndCheckEmails(() => true, eventUsers);
+    });
   });
 
-  function sendAndCheckEmails(filterCallback) {
+  function sendAndCheckEmails(filterCallback, users) {
     cy.findByRole('button', { name: 'Send Email' }).click();
 
     cy.waitUntilMail('allMail');
     cy.get('@allMail').mhFirst().as('emails');
 
-    // TODO: can we avoid getting this multiple times?
-    cy.getRSVPs(1).then((rsvps) => {
-      const expectedEmails = rsvps
-        .filter(filterCallback)
-        .map(({ user: { email } }) => email);
-      cy.get('@emails')
-        .mhGetRecipients()
-        .should('have.members', expectedEmails);
+    const emails = users
+      .filter(filterCallback)
+      .map(({ user: { email } }) => email);
+    cy.get('@emails').mhGetRecipients().should('have.members', emails);
+    cy.get('@emails').then((mail) => {
+      cy.checkBcc(mail).should('eq', true);
     });
     cy.mhDeleteAll();
   }
 
+  it('invitation email should include calendar file', () => {
+    cy.visit('/dashboard/events/1');
+
+    cy.findByRole('button', { name: 'Email Attendees' }).click();
+
+    // try to make sure there will be recipient
+    cy.findByLabelText('Waitlist').parent().click();
+    cy.findByLabelText('Canceled').parent().click();
+
+    cy.findByRole('button', { name: 'Send Email' }).click();
+
+    const calendarMIME = 'application/ics; name=calendar.ics';
+    const bodyRegex = new RegExp(
+      /BEGIN:VCALENDAR.*BEGIN:VEVENT.*END:VEVENT.*END:VCALENDAR/,
+      's',
+    );
+
+    cy.waitUntilMail('email');
+    cy.get('@email')
+      .mhFirst()
+      .then((mail) => {
+        const hasCalendar = mail.MIME.Parts.some((part) => {
+          const contentType = part.Headers['Content-Type'];
+          if (contentType?.includes(calendarMIME)) {
+            const body = Buffer.from(part.Body, 'base64').toString();
+            return bodyRegex.test(body);
+          }
+        });
+        expect(hasCalendar).to.be.true;
+      });
+  });
+
   it("emails the users when an event's venue is changed", () => {
-    cy.visit('/dashboard/events');
-    cy.findAllByRole('link', { name: 'Edit' }).first().click();
+    const eventData = {
+      venue_id: 1,
+      chapter_id: 1,
+      sponsor_ids: [],
+      name: 'Event Venue change test',
+      description: 'Test Description',
+      url: 'https://test.event.org',
+      venue_type: 'PhysicalAndOnline',
+      capacity: 10,
+      image_url: 'https://test.event.org/image',
+      streaming_url: 'https://test.event.org/video',
+      start_at: '2022-01-01T00:01',
+      ends_at: '2022-01-02T00:02',
+      tags: 'Test, Event, Tag',
+    };
+    const newVenueId = 2;
 
-    cy.findByRole('textbox', { name: 'Event title' })
-      .invoke('val')
-      .as('eventTitle');
-
-    // This is a bit convoluted, but we need to know the current venue in order
-    // to change it.
-    cy.findByRole('combobox', { name: 'Venue' })
-      .as('venueSelect')
-      .find(':checked')
-      .invoke('val')
-      .as('currentVenueId');
-    cy.get('@currentVenueId').then((id) => {
-      // Small venue ids will definitely be present, so we select '1', unless
-      // it's currently selected, in which case we select '2'.
-      id = id == '1' ? '2' : '1';
-      cy.get('@venueSelect')
-        .select(id)
+    cy.createEvent(eventData).then((eventId) => {
+      cy.visit(`/dashboard/events/${eventId}/edit`);
+      cy.findByRole('combobox', { name: 'Venue' })
+        .select(newVenueId)
         .find(':checked')
         .invoke('text')
         .as('newVenueTitle');
-    });
-    cy.findByRole('form', { name: 'Save Event Changes' })
-      .findByRole('button', {
-        name: 'Save Event Changes',
-      })
-      .click();
 
-    cy.location('pathname').should('match', /^\/dashboard\/events$/);
+      cy.findByRole('form', { name: 'Save Event Changes' })
+        .findByRole('button', {
+          name: 'Save Event Changes',
+        })
+        .click();
 
-    cy.waitUntilMail('allMail');
+      cy.location('pathname').should('match', /^\/dashboard\/events$/);
 
-    cy.get('@allMail').mhFirst().as('venueMail');
+      cy.waitUntilMail('allMail');
 
-    cy.get('@newVenueTitle').then((venueTitle) => {
-      cy.get('@eventTitle').then((eventTitle) => {
+      cy.get('@allMail').mhFirst().as('venueMail');
+
+      cy.get('@newVenueTitle').then((venueTitle) => {
         cy.get('@venueMail')
           .mhGetSubject()
-          .should('eq', `Venue changed for event ${eventTitle}`);
+          .should('eq', `Venue changed for event ${eventData['name']}`);
         cy.get('@venueMail')
           .mhGetBody()
           .should('include', 'We have had to change the location')
-          .and('include', eventTitle)
+          .and('include', eventData['name'])
           .and('include', venueTitle);
+
+        cy.findAllByRole('row')
+          .filter(`:contains(${eventData['name']})`)
+          .should('contain.text', venueTitle);
       });
 
-      // TODO: this is a bit brittle, since we're looking for a specific row
-      // within the datatable. Also, is this table an accessible way to present
-      // the events?
-      cy.findAllByRole('row').then((rows) => {
-        cy.wrap(rows[1]).should('contain.text', venueTitle);
+      cy.get('@venueMail').then((mail) => {
+        cy.checkBcc(mail).should('eq', true);
       });
+
+      cy.deleteEvent(eventId);
     });
   });
 
@@ -279,7 +320,7 @@ describe('events dashboard', () => {
     });
   });
 
-  it('emails not cancelled rsvps when event is cancelled', () => {
+  it('emails not canceled rsvps when event is canceled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')
       .not(':contains("canceled")')
@@ -299,10 +340,10 @@ describe('events dashboard', () => {
       .then((url) => parseInt(url.match(/\d+$/)))
       .as('eventId');
     cy.get('@eventId')
-      .then((eventId) => cy.getRSVPs(eventId))
-      .then((rsvps) => {
-        const expectedEmails = rsvps
-          .filter((rsvp) => !rsvp.canceled)
+      .then((eventId) => cy.getEventUsers(eventId))
+      .then((eventUsers) => {
+        const expectedEmails = eventUsers
+          .filter(({ rsvp }) => rsvp.name !== 'no')
           .map(({ user: { email } }) => email);
         cy.get('@emails')
           .mhGetRecipients()
@@ -312,6 +353,11 @@ describe('events dashboard', () => {
     cy.get('@eventTitle').then((eventTitle) => {
       cy.get('@emails').mhGetSubject().should('include', eventTitle);
     });
+
+    cy.get('@emails').then((emails) => {
+      cy.checkBcc(emails).should('eq', true);
+    });
+
     cy.mhDeleteAll();
   });
 });

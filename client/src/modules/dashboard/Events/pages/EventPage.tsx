@@ -1,4 +1,4 @@
-import { Button, Box, Heading, Link, Text } from '@chakra-ui/react';
+import { Button, Box, Heading, HStack, Link, Text } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -20,15 +20,15 @@ import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
 
-const args = (id: number) => ({
-  refetchQueries: [{ query: EVENT, variables: { id } }],
+const args = (eventId: number) => ({
+  refetchQueries: [{ query: EVENT, variables: { eventId } }],
 });
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
   const eventId = getId(router.query) || -1;
   const { loading, error, data } = useEventQuery({
-    variables: { id: eventId },
+    variables: { eventId },
   });
 
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
@@ -39,18 +39,16 @@ export const EventPage: NextPage = () => {
 
   const confirmRSVP =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
-    () => {
-      return confirm().then(() =>
-        confirmRsvpFn({ variables: { eventId, userId } }),
-      );
+    async () => {
+      const ok = await confirm();
+      if (ok) confirmRsvpFn({ variables: { eventId, userId } });
     };
 
   const kick =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
-    () => {
-      return confirmDelete().then(() =>
-        kickRsvpFn({ variables: { eventId, userId } }),
-      );
+    async () => {
+      const ok = await confirmDelete();
+      if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
   if (loading || error || !data || !data.event) {
@@ -62,6 +60,24 @@ export const EventPage: NextPage = () => {
       </Layout>
     );
   }
+
+  const userLists = [
+    {
+      title: 'RSVPs',
+      rsvpFilter: 'yes',
+      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+    },
+    {
+      title: 'Canceled',
+      rsvpFilter: 'no',
+      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+    },
+    {
+      title: 'Waitlist',
+      rsvpFilter: 'waitlist',
+      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'green' }],
+    },
+  ];
 
   return (
     <Layout>
@@ -115,56 +131,46 @@ export const EventPage: NextPage = () => {
         false
       )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        <DataTable
-          title={
-            'RSVPs: ' +
-            (data.event.rsvps
-              ? data.event.rsvps.filter((r) => !r.on_waitlist).length
-              : '0')
-          }
-          data={data.event.rsvps.filter((r) => !r.on_waitlist)}
-          keys={['user', 'ops'] as const}
-          emptyText="No users"
-          mapper={{
-            user: (r) => r.user.name,
-            ops: (rsvp) => (
-              <Button
-                size="xs"
-                colorScheme="red"
-                onClick={kick({ eventId, userId: rsvp.user.id })}
-              >
-                Kick
-              </Button>
-            ),
-          }}
-        />
-
-        <DataTable
-          title={
-            'Waitlist: ' +
-            (data.event.rsvps
-              ? data.event.rsvps.filter((r) => r.on_waitlist).length
-              : 0)
-          }
-          data={data.event.rsvps.filter((r) => r.on_waitlist)}
-          keys={['user', 'ops'] as const}
-          emptyText="No users"
-          mapper={{
-            user: (r) => r.user.name,
-            ops: (rsvp) => (
-              <Button
-                size="xs"
-                colorScheme="green"
-                onClick={confirmRSVP({
-                  eventId,
-                  userId: rsvp.user.id,
-                })}
-              >
-                Confirm
-              </Button>
-            ),
-          }}
-        />
+        {userLists.map(({ title, rsvpFilter, ops }) => {
+          const users = data.event
+            ? data.event.event_users.filter(
+                ({ rsvp }) => rsvp.name === rsvpFilter,
+              )
+            : [];
+          return (
+            <Box key={title.toLowerCase()} data-cy={title.toLowerCase()}>
+              <DataTable
+                title={`${title}: ${users.length}`}
+                data={users}
+                keys={['user', 'role', 'ops'] as const}
+                emptyText="No users"
+                mapper={{
+                  user: ({ user }) => (
+                    <Text data-cy="username">{user.name}</Text>
+                  ),
+                  ops: ({ user }) => (
+                    <HStack>
+                      {ops.map(({ title, onClick, colorScheme }) => (
+                        <Button
+                          key={title.toLowerCase()}
+                          data-cy={title.toLowerCase()}
+                          size="xs"
+                          colorScheme={colorScheme}
+                          onClick={onClick({ eventId, userId: user.id })}
+                        >
+                          {title}
+                        </Button>
+                      ))}
+                    </HStack>
+                  ),
+                  role: ({ event_role }) => (
+                    <Text data-cy="role">{event_role.name}</Text>
+                  ),
+                }}
+              />
+            </Box>
+          );
+        })}
       </Box>
     </Layout>
   );

@@ -21,7 +21,20 @@ export class ChapterResolver {
       where: { id },
       include: {
         events: { include: { tags: { include: { tag: true } } } },
-        users: { include: { user: true } },
+        chapter_users: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+          orderBy: { user: { first_name: 'asc' } },
+        },
+        user_bans: { include: { user: true, chapter: true } },
       },
     });
   }
@@ -34,6 +47,9 @@ export class ChapterResolver {
     if (!ctx.user) {
       throw Error('User must be logged in to create chapters');
     }
+
+    // An instance owner may not want or need to join a chapter they've created
+    // so they are not made a member by default.
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,
       creator_id: ctx.user.id,

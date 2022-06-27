@@ -44,7 +44,7 @@ Consider the following options when you are ready to contribute code.
 
 ## Using GitPod
 
-All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account and "ephemeral" workspace.
+All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account, setup an "ephemeral" workspace, and access a running application.
 
 ## Using a Traditional Dev Environment
 
@@ -54,19 +54,16 @@ This approach is more common and involves the step below to setup and configurin
 
 ['Forking'](https://help.github.com/articles/about-forks/) is a step where you get your own copy of **_Chapter's_** repository (a.k.a repo) on GitHub.
 
-This is essential as it allows you to work on your own copy of **_Chapter_**. It allows you to request changes to be pulled into the **_Chapter's_** repository from your fork via a pull request.
-
 Follow these steps to fork the repository:
-1. Go to the [Chapter repository on GitHub](https://github.com/freeCodeCamp/chapter).
-2. Click the "Fork" Button in the upper right-hand corner of the interface [Need help?](https://help.github.com/articles/fork-a-repo/).
-3. After the repository has been forked, you will be taken to your copy of the **_Chapter_** repository at `https://github.com/YOUR_USER_NAME/chapter`.
+1. Go to the [Chapter repository on GitHub](https://github.com/freeCodeCamp/chapter) and click the "[Fork](https://help.github.com/articles/fork-a-repo/)" button in the upper right-hand corner.
+2. After the repository has been forked, you will be taken to your copy of the **_Chapter_** repository at `https://github.com/YOUR_USER_NAME/chapter`.
 
-![an image illustrating the fork button](docs/assets/how-to-fork.png)
+Your forked copy may be used to submit suggested changes to the **_Chapter_** repository via [branches and pull requests](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests).
 </details>
 
 <details><summary><b>Step 2</b> - Prepare the Terminal and Git Environment</summary>
 
-**Prerequisite**:  All `commands` will be run within a terminal's command line / shell on your development device. Options vary by operating system.
+**Prerequisite**:  A Linux-compatible command line shell must exist on your development device in order to run `commands` in these docs. Options vary by operating system, but include:
 
 * Linux - the pre-installed terminal, usually running a _bash_ or _sh_ shell, should work in its default "out of the box" configuration.
 * Mac - the pre-installed _Terminal_ in MacOS, usually running a zsh shell, should work in its default "out of the box" configuration.
@@ -80,19 +77,19 @@ Follow these steps to fork the repository:
 
 1. Decide if you will [authenticate to GitHub using SSH or HTTPS](https://docs.github.com/en/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-command-line).
     * SSH - uses SSH key authentication instead of a username and password.
-    * HTTPS - uses a GitHub username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, use a PAT instead of a GitHub password.
+    * HTTPS - uses a GitHub username and [personal access token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).  For security, use a PAT and not a GitHub password.
 
-2. Change directories (`cd`) to wherever you want the **_Chapter_** project to be downloaded by Git.
-    > Note: Windows using WSL + a Linux distro maintains its own file system. Use a sub-directory within the Linux /home/username/ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
+2. Change directories (`cd`) to where you want your **_Chapter_** fork to be cloned by Git.
+    > Note: Windows using WSL + a Linux distro will maintain its own file system. Use a sub-directory within the Linux shell _/home/yourusername/_ filesystem path. The alternative, using a directory within _C:\_ or _/mnt/c_, will cause everything to run very slowly.
 
 3. [Clone](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories) your GitHub fork of **_Chapter_** using the SSH or HTTP method you selected above. Replace _YOUR_USER_NAME_ with your GitHub username.
 
     * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) - `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
     * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls) - `git clone https://github.com/YOUR_USER_NAME/chapter.git`
  
-     This command will download the entire Git repository fork into a sub-directory named _chapter_ inside of the current directory. Your forked repository of code will be referred to as the _origin_ . 
+Cloning will download your fork, referred to as the _origin_, into a _chapter_ sub-directory in the current directory.
 
-4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. Doing this allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
+4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. This allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
 
     ```sh
     cd chapter
@@ -293,11 +290,7 @@ An example is _feat(client): night mode_.
 
 1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
 
-    ![an image showing Compare & pull request prompt on GitHub](docs/assets/pull-request-prompt.png)
-
 2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-    ![ an image showing the comparison of forks when making a pull request](docs/assets/comparing-forks-for-pull-request.png)
 
 3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
 
@@ -316,7 +309,7 @@ You have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
-**Prerequisite**: Follow steps 1 and 2 of the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.
+**Prerequisite**: Follow the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.  If you are [using GitPod](#using-gitpod), then this section is unnecessary as GitPod will run the appliction.
 
 <details><summary><b>Step 1</b> - Install Node.js and Dependencies</summary>
  
@@ -572,6 +565,137 @@ When not running locally, the client needs to be passed the server's location by
 
 # Troubleshooting
 
-Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+<details>
+ <summary>Application Troubleshooting</summary>
 
-If you see a JsonWebTokenError in the console, it's likely that you need to clear the token from your browser's local storage.
+* **Problem:** The application shows
+   > _JsonWebTokenError: invalid signature._ </br>
+
+  **Solution:** Clear the browser cookies for the localhost domain, or use an incognito browser window to open the site.
+
+* **Problem:**  Where do application registration and other emails go? </br>
+  **Solution:** All email are captured and saved by Mailhog. Simply open [http://localhost:8025/](http://localhost:8025/) to see captured emails. For account registration, the email validation link can be opened in the browser to complete the registration process.
+
+* **Problem:** The applications shows 
+  > _The table `public.chapters` does not exist in the current database_</br>
+  > or
+  > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
+
+  **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>Linux Docker Troubleshooting</summary>
+
+* **Problem:** You are getting this error
+   > docker.errors.DockerException: Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied')) </br>
+
+  **Solution:** Run `sudo docker-compose up` or add non-privileged user to the docker group as described in [https://docs.docker.com/engine/install/linux-postinstall/](https://docs.docker.com/engine/install/linux-postinstall/) If Docker was run as sudo before adding your user to the docker group.
+
+* **Problem:** You are getting this error 
+  > "WARNING: Error loading config file: /home/user/.docker/config.json "  </br>
+
+  **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>Node / NPM Troubleshooting</summary>
+
+* **Problem:** You are getting this error
+   > notsup Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"} </br>
+
+  **Solution:** Upgrade to npm version 7 or 8, like `npm install -g npm@latest` or by getting the latest version of NodeJS from your Linux package manager. Or, install [nvm](https://github.com/nvm-sh/nvm).
+
+* **Problem:** You are getting these errors
+  > npm ERR! Error: EACCES: permission denied, rename '/usr/lib/node_modules/npm'</br>
+  > or </br>
+  > Error: EACCES: permission denied, rename '/usr/bin/npm' </br>
+
+  **Solution:**  see [https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally) or [https://stackoverflow.com/a/51024493](https://stackoverflow.com/questions/48910876/error-eacces-permission-denied-access-usr-local-lib-node-modules/51024493#51024493).
+
+  * **Problem:** if you are using Windows / WSL + Ubuntu Terminal, and the application shows
+   > npx /bin/sh^M bad interpreter: No such file or directory </br>
+
+  **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>ElephantSQL Troubleshooting</summary>
+
+* **Problem:** You are getting this error running `npm run db:reset`
+   > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
+
+  **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>General Docker Troubleshooting</summary>
+
+- Docker Installation in different operating system:</br>
+  [Linux](https://docs.docker.com/engine/install/linux-postinstall/)</br>
+  [Windows](https://docs.docker.com/desktop/windows/troubleshoot/)</br>
+  [Mac](https://docs.docker.com/desktop/mac/troubleshoot/)
+
+* **Problem:** You are getting this error running
+   > ERROR: for chapter-npx-test_db_1 Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1 (....): Bind for 0.0.0.0:54320 failed: port is already allocated. ERROR: for db Cannot start service db: driver failed programming external connectivity on endpoint chapter-npx-test_db_1</br>
+
+  **Solution:** Make sure Docker isn't already running and bound to port 54320.
+
+* **Note:** To shut down Docker on Linux, press Ctrl + C in the terminal where it was started.
+
+* **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>WSL Troubleshooting</summary>
+
+- Install Linux for Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/install#troubleshooting-installation).</br>
+
+* **Problem:** You are getting this error
+   > WSL2 Installation is Incomplete</br>
+
+  **Solution:** Follow the steps to install the missing component.
+
+* **Problem:** You are getting this error
+   > WslRegisterDistribution failed with error: 0x80070057</br>
+
+  **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>
+
+<details>
+ <summary>Windows Docker Troubleshooting</summary>
+
+* **Problem:** You are getting this error
+   > Docker Desktop requires Windows 10 Pro/Enterprise (######+) or Windows 10 Home (#####.####+)</br>
+
+  **Solution:** Windows 10 is running an old / unsupported version and needs to be updated before Docker will install.
+
+* **Problem:** You are getting this error
+   > Failed to execute script docker-composer</br>
+
+  **Solution:** Start Docker Desktop via the Windows Start Menu and restart Git Bash.
+
+* **Problem:** Docker / WSL2 consumes all your system's RAM and is very slow</br>
+
+  **Solution:** [Limit resources](https://medium.com/@lewwybogus/how-to-stop-wsl2-from-hogging-all-your-ram-with-docker-d7846b9c5b37)
+
+* **Problem:** You are getting this error
+   > Windows Defender Firewall has blocked some features of this app</br>
+
+  **Solution:**  Allow Access.
+
+
+  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+</details>

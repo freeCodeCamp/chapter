@@ -45,3 +45,10 @@ create a randomHeterogeneousEnum function`,
 
   return anEnum[keys[randomIndex]];
 };
+
+export function shuffle<T>(xs: T[]): void {
+  for (let i = xs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [xs[i], xs[j]] = [xs[j], xs[i]];
+  }
+}

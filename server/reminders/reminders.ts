@@ -1,6 +1,12 @@
-import { EventReminder, EventWithRelations, User } from '../src/graphql-types';
-import { prisma } from '../src/prisma';
 import MailerService from '../src/services/MailerService';
+import {
+  deleteReminder,
+  getRemindersOlderThanDate,
+  getOldReminders,
+  lockForNotifying,
+  lockForRetry,
+  Reminder,
+} from '../src/services/Reminders';
 
 const processingLimitInMinutes = 10;
 const dateFormatter = new Intl.DateTimeFormat('en-us', {
@@ -16,89 +22,9 @@ const timeFormatter = new Intl.DateTimeFormat('en-us', {
   timeZone: 'GMT',
 });
 
-const getRemindersOlderThanDate = async (date: Date) =>
-  await prisma.event_reminders.findMany({
-    include: {
-      rsvp: true,
-      user: true,
-      event: {
-        include: {
-          chapter: true,
-          venue: true,
-        },
-      },
-    },
-    where: {
-      remind_at: {
-        lte: date,
-      },
-      notifying: false,
-    },
-    orderBy: {
-      remind_at: 'asc',
-    },
-  });
+type LockCheck = (reminder: Reminder) => Promise<{ hasLock: boolean }>;
 
-const getOldReminders = async (date: Date) =>
-  await prisma.event_reminders.findMany({
-    include: {
-      rsvp: true,
-      user: true,
-      event: {
-        include: {
-          chapter: true,
-          venue: true,
-        },
-      },
-    },
-    where: {
-      notifying: true,
-      updated_at: {
-        lte: date,
-      },
-    },
-  });
-
-interface ReminderLock {
-  user_id: number;
-  event_id: number;
-}
-
-interface ReminderRetryLock extends ReminderLock {
-  updated_at: Date;
-}
-
-const lockForNotifying = async (reminder: ReminderLock) => {
-  const lock = await prisma.event_reminders.updateMany({
-    data: {
-      notifying: true,
-    },
-    where: {
-      user_id: reminder.user_id,
-      event_id: reminder.event_id,
-      notifying: false,
-    },
-  });
-  return { hasLock: lock.count !== 0 };
-};
-
-const lockForRetry = async (reminder: ReminderRetryLock) => {
-  const lock = await prisma.event_reminders.updateMany({
-    data: { updated_at: new Date() },
-    where: {
-      user_id: reminder.user_id,
-      event_id: reminder.event_id,
-      updated_at: reminder.updated_at,
-    },
-  });
-  return { hasLock: lock.count !== 0 };
-};
-
-type LockCheck = (
-  reminder: ReminderLock | ReminderRetryLock,
-) => Promise<{ hasLock: boolean }>;
-
-const processReminders = async (reminders: EventReminder[], lock: LockCheck) =>
+const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
   await Promise.all(
     reminders.map(async (reminder) => {
       const { hasLock } = await lock(reminder);
@@ -111,8 +37,8 @@ const processReminders = async (reminders: EventReminder[], lock: LockCheck) =>
   );
 
 const reminderMessage = (
-  event: Omit<EventWithRelations, 'sponsors' | 'rsvps' | 'tags'>,
-  user: User,
+  event: Reminder['event_user']['event'],
+  user: Reminder['event_user']['user'],
   date: string,
   start_time: string,
   end_time: string,
@@ -138,42 +64,38 @@ Unsubscribe Options
 [Privacy Policy](link to privacy page)`;
 };
 
-const getEmailData = (reminder: EventReminder) => {
-  const date = dateFormatter.format(reminder.event.start_at);
-  const start_time = timeFormatter.format(reminder.event.start_at);
-  const end_time = timeFormatter.format(reminder.event.ends_at);
-  console.log(`Event: ${reminder.event.name}`);
+const getEmailData = (reminder: Reminder) => {
+  const date = dateFormatter.format(reminder.event_user.event.start_at);
+  const start_time = timeFormatter.format(reminder.event_user.event.start_at);
+  const end_time = timeFormatter.format(reminder.event_user.event.ends_at);
+  console.log(`Event: ${reminder.event_user.event.name}`);
   console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
   console.log(
-    `Remind at ${reminder.remind_at.toUTCString()} to ${reminder.user.email}`,
+    `Remind at ${reminder.remind_at.toUTCString()} to ${
+      reminder.event_user.user.email
+    }`,
   );
   console.log();
 
   const email = reminderMessage(
-    reminder.event,
-    reminder.user,
+    reminder.event_user.event,
+    reminder.event_user.user,
     date,
     start_time,
     end_time,
   );
-  const subject = `Upcoming Event Reminder for ${reminder.event.name}`;
+  const subject = `Upcoming Event Reminder for ${reminder.event_user.event.name}`;
   return { email: email, subject: subject };
 };
 
-const sendEmailForReminder = async (reminder: EventReminder) => {
+const sendEmailForReminder = async (reminder: Reminder) => {
   const { email, subject } = getEmailData(reminder);
-  await new MailerService([reminder.user.email], subject, email).sendEmail();
+  await new MailerService({
+    emailList: [reminder.event_user.user.email],
+    subject: subject,
+    htmlEmail: email,
+  }).sendEmail();
 };
-
-const deleteReminder = async (reminder: EventReminder) =>
-  await prisma.event_reminders.delete({
-    where: {
-      user_id_event_id: {
-        user_id: reminder.user.id,
-        event_id: reminder.event.id,
-      },
-    },
-  });
 
 (async () => {
   const date = new Date();

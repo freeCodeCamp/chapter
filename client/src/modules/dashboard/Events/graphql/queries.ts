@@ -28,8 +28,8 @@ export const EVENTS = gql`
 `;
 
 export const EVENT = gql`
-  query event($id: Int!) {
-    event(id: $id) {
+  query event($eventId: Int!) {
+    event(eventId: $eventId) {
       id
       name
       description
@@ -70,20 +70,32 @@ export const EVENT = gql`
         region
         country
       }
-      rsvps {
-        on_waitlist
+      event_users {
+        rsvp {
+          name
+        }
         user {
           id
           name
         }
+        event_role {
+          id
+          name
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
+        subscribed
       }
     }
   }
 `;
 
 export const EVENT_WITH_VENU = gql`
-  query eventVenues($id: Int!) {
-    event(id: $id) {
+  query eventVenues($eventId: Int!) {
+    event(eventId: $eventId) {
       id
       name
       description
@@ -109,90 +121,6 @@ export const EVENT_WITH_VENU = gql`
   }
 `;
 
-export const createEvent = gql`
-  mutation createEvent($data: CreateEventInputs!) {
-    createEvent(data: $data) {
-      id
-      name
-      canceled
-      description
-      url
-      streaming_url
-      capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-export const updateEvent = gql`
-  mutation updateEvent($id: Int!, $data: UpdateEventInputs!) {
-    updateEvent(id: $id, data: $data) {
-      id
-      name
-      canceled
-      description
-      url
-      streaming_url
-      capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-export const cancelEvent = gql`
-  mutation cancelEvent($id: Int!) {
-    cancelEvent(id: $id) {
-      id
-      canceled
-    }
-  }
-`;
-
-export const deleteEvent = gql`
-  mutation deleteEvent($id: Int!) {
-    deleteEvent(id: $id) {
-      id
-    }
-  }
-`;
-
-export const confirmRSVP = gql`
-  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
-    confirmRsvp(eventId: $eventId, userId: $userId) {
-      confirmed_at
-      on_waitlist
-    }
-  }
-`;
-
-export const deleteRSVP = gql`
-  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
-    deleteRsvp(eventId: $eventId, userId: $userId)
-  }
-`;
-
-export const sendEventInvite = gql`
-  mutation sendEventInvite($id: Int!, $emailGroups: [String!]) {
-    sendEventInvite(id: $id, emailGroups: $emailGroups)
-  }
-`;
-
-export const initUserInterestForChapter = gql`
-  mutation initUserInterestForChapter($event_id: Int!) {
-    initUserInterestForChapter(event_id: $event_id)
-  }
-`;
-
 export const Sponsors = gql`
   query sponsors {
     sponsors {
@@ -201,6 +129,15 @@ export const Sponsors = gql`
       website
       logo_path
       type
+    }
+  }
+`;
+
+export const EventRoles = gql`
+  query eventRoles {
+    eventRoles {
+      id
+      name
     }
   }
 `;

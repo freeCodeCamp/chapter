@@ -7,6 +7,7 @@ import {
   VStack,
   Spinner,
   Heading,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
@@ -45,15 +46,17 @@ export const LoginRegisterModal: React.FC<{
 
   const { handleSubmit, register } = useForm<RegisterData>();
 
+  const toast = useToast();
+
   const onSubmit = async (data: LoginData | RegisterData) => {
     if (isRegister) {
       if ('last_name' in data) {
         try {
           await registerMutation({ variables: { ...data } });
-          // TODO: display success to user
-          console.log('registration successful');
+          toast({ title: 'User registered', status: 'success' });
+          toggle();
         } catch (err) {
-          console.log('error during registration');
+          toast({ title: 'Something went wrong', status: 'error' });
           // TODO: error handling
         }
       }
@@ -98,7 +101,7 @@ export const LoginRegisterModal: React.FC<{
     <Modal
       modalProps={modalProps}
       title={isRegister ? 'Register' : 'Login'}
-      wrapBody={(children) => (
+      wrapChildren={(children) => (
         <form onSubmit={handleSubmit(onSubmit)}>{children}</form>
       )}
       buttons={
@@ -124,12 +127,12 @@ export const LoginRegisterModal: React.FC<{
           </>
         ) : (
           <>
-            <Input {...register('email')} error={error} />
+            <Input label="Email" {...register('email')} error={error} />
 
             {isRegister && (
               <>
-                <Input {...register('first_name')} />
-                <Input {...register('last_name')} />
+                <Input label="First name" {...register('first_name')} />
+                <Input label="Last name" {...register('last_name')} />
               </>
             )}
 

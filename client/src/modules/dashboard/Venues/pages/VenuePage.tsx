@@ -15,13 +15,12 @@ export const VenuePage: NextPage = () => {
   const id = getId(router.query) || -1;
 
   const { loading, error, data } = useVenueQuery({ variables: { id } });
-  console.log('In Venue Page');
 
   if (loading || error || !data?.venue) {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );
   }

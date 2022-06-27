@@ -4,23 +4,40 @@ import { prisma } from '../../src/prisma';
 import { makeBooleanIterator } from './lib/util';
 
 const setupRoles = async (
-  adminId: number,
-  userIds: number[],
+  {
+    ownerId,
+    adminId,
+    userIds,
+  }: { ownerId: number; adminId: number; userIds: number[] },
   chapterIds: number[],
-  chapterRoles: Record<string, { name: string; id: number }>,
+  chapterRoles: Record<string, { name: string; id: number }>, // TODO: import type from chapterRoles.factory
 ): Promise<void> => {
   const usersData: Prisma.chapter_usersCreateManyInput[] = [];
   const subscribeIterator = makeBooleanIterator();
   for (const chapterId of chapterIds) {
-    const userData: Prisma.chapter_usersCreateManyInput = {
+    const ownerData: Prisma.chapter_usersCreateManyInput = {
       joined_date: new Date(),
       chapter_id: chapterId,
-      user_id: adminId,
-      chapter_role_id: chapterRoles.organizer.id,
+      user_id: ownerId,
+      chapter_role_id: chapterRoles.member.id, // This user is an instance owner
+      // so this chapter role should not provide additional permissions beyond
+      // those provided by the instance owner role. It is possible for them to
+      // be a member of a chapater, though, so this grants them the member role
+      // for all chapters.
       subscribed: true,
     };
 
-    usersData.push(userData);
+    usersData.push(ownerData);
+
+    const adminData: Prisma.chapter_usersCreateManyInput = {
+      joined_date: new Date(),
+      chapter_id: chapterId,
+      user_id: adminId,
+      chapter_role_id: chapterRoles.administrator.id,
+      subscribed: true,
+    };
+
+    usersData.push(adminData);
 
     const [banned] = userIds;
     const banData: Prisma.user_bansCreateInput = {

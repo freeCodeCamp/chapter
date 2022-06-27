@@ -29,10 +29,10 @@ import setupRoles from './setupRoles';
 
   const instanceRoles = await createInstanceRoles();
 
-  const [userId, userIds] = await createUsers(instanceRoles);
+  const { ownerId, adminId, userIds } = await createUsers(instanceRoles);
   const sponsorIds = await createSponsors();
 
-  const chapterIds = await createChapters(userId);
+  const chapterIds = await createChapters(ownerId);
   const venueIds = await createVenues();
 
   const eventIds = await createEvents(chapterIds, venueIds, sponsorIds, 15);
@@ -40,5 +40,5 @@ import setupRoles from './setupRoles';
   const eventRoles = await createEventRoles();
   await createRsvps(eventIds, userIds, eventRoles);
   const chapterRoles = await createChapterRoles();
-  await setupRoles(userId, userIds, chapterIds, chapterRoles);
+  await setupRoles({ ownerId, adminId, userIds }, chapterIds, chapterRoles);
 })();

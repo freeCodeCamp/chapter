@@ -7,7 +7,6 @@ import {
   Mutation,
   Query,
   Resolver,
-  Root,
 } from 'type-graphql';
 
 import { GQLCtx } from '../../common-types/gql';
@@ -15,34 +14,6 @@ import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
-
-const canToggleBan = (role: string, otherRole: string) =>
-  otherRole !== 'owner' &&
-  ['owner', 'organizer'].includes(role) &&
-  !(role !== 'organizer' && otherRole !== 'organizer');
-
-const getInvolvedChapterRoles = async (
-  chapterId: number,
-  userId: number,
-  otherId: number,
-) => {
-  const users = await prisma.chapter_users.findMany({
-    where: {
-      chapter_id: chapterId,
-      user_id: { in: [userId, otherId] },
-    },
-    include: { chapter_role: true, user: true },
-  });
-
-  const idToRole: Record<number, string> = users.reduce(
-    (acc, { user, chapter_role }) => ({
-      ...acc,
-      [user.id]: chapter_role.name,
-    }),
-    {},
-  );
-  return [idToRole[userId], idToRole[otherId]];
-};
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
@@ -251,16 +222,6 @@ export class ChapterUserResolver {
       throw Error('Cannot ban yourself');
     }
 
-    const [chapterRole, otherRole] = await getInvolvedChapterRoles(
-      chapterId,
-      ctx.user.id,
-      userId,
-    );
-
-    if (!canToggleBan(chapterRole, otherRole)) {
-      throw Error('Cannot ban');
-    }
-
     return await prisma.user_bans.create({
       data: {
         chapter: { connect: { id: chapterId } },
@@ -279,18 +240,11 @@ export class ChapterUserResolver {
     if (!ctx.user) {
       throw Error('User must be logged in to unban');
     }
+
+    // TODO: this should not be necessary, since a ban would prevent them from
+    // accessing this resolver. However, we need a Cypress test first.
     if (ctx.user.id === userId) {
       throw Error('Cannot unban yourself');
-    }
-
-    const [chapterRole, otherRole] = await getInvolvedChapterRoles(
-      chapterId,
-      ctx.user.id,
-      userId,
-    );
-
-    if (!canToggleBan(chapterRole, otherRole)) {
-      throw Error('Cannot unban');
     }
 
     return await prisma.user_bans.delete({
@@ -299,34 +253,12 @@ export class ChapterUserResolver {
     });
   }
 
+  // TODO: control this with an Authorization decorator
   @FieldResolver()
-  canBeBanned(@Root() chapter_user: ChapterUser, @Ctx() ctx: GQLCtx): boolean {
+  canBeBanned(@Ctx() ctx: GQLCtx): boolean {
     if (!ctx.user) {
       return false;
     }
-
-    const chapterId = chapter_user.chapter_id;
-
-    const otherRole = chapter_user.chapter_role.name;
-    if (otherRole === 'owner') {
-      return false;
-    }
-
-    // TODO user permission for banning should be handled by authorization
-    const chapterRole = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === chapterId,
-    )?.chapter_role.name;
-    if (!chapterRole) {
-      return false;
-    }
-
-    if (
-      chapterRole === 'owner' ||
-      (chapterRole === 'organizer' && otherRole !== 'organizer')
-    ) {
-      return true;
-    }
-
-    return false;
+    return true;
   }
 }

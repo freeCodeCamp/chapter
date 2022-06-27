@@ -147,4 +147,23 @@ describe('event page', () => {
       );
     });
   });
+
+  it('should email the chapter administrator when a user RSVPs', () => {
+    cy.register('Test', 'User', 'test@user.org');
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+
+    cy.findByRole('button', { name: 'RSVP' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+
+    cy.waitUntilMail();
+    cy.mhGetMailsByRecipient('admin@of.a.chapter').should('have.length', 1);
+    cy.mhGetMailsByRecipient('admin@of.a.chapter').mhFirst().as('rsvp-mail');
+    cy.get('@rsvp-mail')
+      .mhGetSubject()
+      .should('match', /^New RSVP for/);
+    cy.get('@rsvp-mail')
+      .mhGetBody()
+      .should('include', "User Test User has RSVP'd");
+  });
 });

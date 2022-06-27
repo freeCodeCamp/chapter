@@ -269,7 +269,6 @@ export type Mutation = {
   banUser: UserBan;
   cancelEvent: Event;
   changeChapterUserRole: ChapterUser;
-  changeEventUserRole: EventUser;
   changeInstanceUserRole: UserWithInstanceRole;
   confirmRsvp: EventUser;
   createChapter: Chapter;
@@ -312,12 +311,6 @@ export type MutationCancelEventArgs = {
 
 export type MutationChangeChapterUserRoleArgs = {
   chapterId: Scalars['Int'];
-  roleId: Scalars['Int'];
-  userId: Scalars['Int'];
-};
-
-export type MutationChangeEventUserRoleArgs = {
-  eventId: Scalars['Int'];
   roleId: Scalars['Int'];
   userId: Scalars['Int'];
 };
@@ -956,20 +949,6 @@ export type InitUserInterestForChapterMutationVariables = Exact<{
 export type InitUserInterestForChapterMutation = {
   __typename?: 'Mutation';
   initUserInterestForChapter: boolean;
-};
-
-export type ChangeEventUserRoleMutationVariables = Exact<{
-  eventId: Scalars['Int'];
-  roleId: Scalars['Int'];
-  userId: Scalars['Int'];
-}>;
-
-export type ChangeEventUserRoleMutation = {
-  __typename?: 'Mutation';
-  changeEventUserRole: {
-    __typename?: 'EventUser';
-    event_role: { __typename?: 'EventRole'; id: number };
-  };
 };
 
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2690,60 +2669,6 @@ export type InitUserInterestForChapterMutationOptions =
     InitUserInterestForChapterMutation,
     InitUserInterestForChapterMutationVariables
   >;
-export const ChangeEventUserRoleDocument = gql`
-  mutation changeEventUserRole($eventId: Int!, $roleId: Int!, $userId: Int!) {
-    changeEventUserRole(eventId: $eventId, roleId: $roleId, userId: $userId) {
-      event_role {
-        id
-      }
-    }
-  }
-`;
-export type ChangeEventUserRoleMutationFn = Apollo.MutationFunction<
-  ChangeEventUserRoleMutation,
-  ChangeEventUserRoleMutationVariables
->;
-
-/**
- * __useChangeEventUserRoleMutation__
- *
- * To run a mutation, you first call `useChangeEventUserRoleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useChangeEventUserRoleMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [changeEventUserRoleMutation, { data, loading, error }] = useChangeEventUserRoleMutation({
- *   variables: {
- *      eventId: // value for 'eventId'
- *      roleId: // value for 'roleId'
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useChangeEventUserRoleMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    ChangeEventUserRoleMutation,
-    ChangeEventUserRoleMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    ChangeEventUserRoleMutation,
-    ChangeEventUserRoleMutationVariables
-  >(ChangeEventUserRoleDocument, options);
-}
-export type ChangeEventUserRoleMutationHookResult = ReturnType<
-  typeof useChangeEventUserRoleMutation
->;
-export type ChangeEventUserRoleMutationResult =
-  Apollo.MutationResult<ChangeEventUserRoleMutation>;
-export type ChangeEventUserRoleMutationOptions = Apollo.BaseMutationOptions<
-  ChangeEventUserRoleMutation,
-  ChangeEventUserRoleMutationVariables
->;
 export const EventsDocument = gql`
   query events {
     events(showAll: true) {

@@ -10,7 +10,7 @@ export enum unsubscribeType {
 export type UnsubscribeToken = {
   type: unsubscribeType;
   id: number;
-  user_id: number;
+  userId: number;
   iat: number;
   exp: number;
 };
@@ -18,13 +18,13 @@ export type UnsubscribeToken = {
 export const generateToken = (
   type: unsubscribeType,
   id: number,
-  user_id: number,
+  userId: number,
 ) => {
   return sign(
     {
       type: type,
       id: id,
-      user_id: user_id,
+      userId: userId,
     },
     getConfig('JWT_SECRET'),
     { expiresIn: '14d' },

@@ -20,46 +20,48 @@ describe('Chapter Users dashboard', () => {
 
     cy.get('[data-cy=role]').then((roles) => {
       const roleNames = [...roles.map((_, role) => role.innerText)];
-      const organizerToMember = roleNames.findIndex(
-        (role) => role === 'organizer',
+      const administratorToMember = roleNames.findIndex(
+        (role) => role === 'administrator',
       );
-      const memberToOrganizer = roleNames.findIndex(
+      const memberToAdministrator = roleNames.findIndex(
         (role) => role === 'member',
       );
 
-      cy.get('[data-cy=changeRole]').eq(memberToOrganizer).click();
+      cy.get('[data-cy=changeRole]').eq(memberToAdministrator).click();
       cy.findByRole('combobox').find(':selected').contains('member');
-      cy.findByRole('combobox').select('organizer');
+      cy.findByRole('combobox').select('administrator');
       cy.findByRole('button', { name: 'Change' }).click();
-      cy.get('[data-cy=role]').eq(memberToOrganizer).contains('organizer');
+      cy.get('[data-cy=role]')
+        .eq(memberToAdministrator)
+        .contains('administrator');
 
-      cy.get('[data-cy=changeRole]').eq(organizerToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('organizer');
+      cy.get('[data-cy=changeRole]').eq(administratorToMember).click();
+      cy.findByRole('combobox').find(':selected').contains('administrator');
       cy.findByRole('combobox').select('member');
       cy.findByRole('button', { name: 'Change' }).click();
-      cy.get('[data-cy=role]').eq(organizerToMember).contains('member');
+      cy.get('[data-cy=role]').eq(administratorToMember).contains('member');
 
       // Ensure default value is changed
-      cy.get('[data-cy=changeRole]').eq(memberToOrganizer).click();
-      cy.findByRole('combobox').find(':selected').contains('organizer');
+      cy.get('[data-cy=changeRole]').eq(memberToAdministrator).click();
+      cy.findByRole('combobox').find(':selected').contains('administrator');
       cy.get('[aria-label=Close]').click();
-      cy.get('[data-cy=changeRole]').eq(organizerToMember).click();
+      cy.get('[data-cy=changeRole]').eq(administratorToMember).click();
       cy.findByRole('combobox').find(':selected').contains('member');
     });
   });
 
-  it('organizer can ban user from chapter', () => {
+  it('administrator can ban user from chapter', () => {
     cy.visit('/dashboard/chapters/1/users');
 
     cy.findAllByRole('row').as('rows');
 
     cy.get('@rows')
-      .filter(':contains("organizer")')
-      .contains('ban', { matchCase: false })
+      .filter(':contains("administrator")')
+      .find('[data-cy=isBanned]')
       .should('not.exist');
 
     cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@members').should('contain', 'ban', { matchCase: false });
+    cy.get('@members').find('[data-cy=isBanned]');
 
     cy.get('@members')
       .not(':contains("Unban")')

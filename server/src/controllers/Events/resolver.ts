@@ -1,11 +1,9 @@
 import {
   events,
   events_venue_type_enum,
-  event_roles,
   event_users,
   Prisma,
   rsvp,
-  users,
   venues,
 } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
@@ -78,20 +76,35 @@ ${unsubscribe}
   }).sendEmail();
 };
 
-type RsvpNotificationEvent = events & {
-  event_users: { event_role: event_roles; user: users }[];
+const chapterUserInclude = {
+  include: {
+    chapter_role: true,
+    user: true,
+  },
 };
-const rsvpNotifyOrganizer = async (
-  user: User,
-  event: RsvpNotificationEvent,
+
+type ChapterUser = Prisma.chapter_usersGetPayload<typeof chapterUserInclude>;
+
+/* TODO: Tying the notification to a particular chapter role is an unnecessary
+coupling. The roles should just grant permissions and nothing else and,
+Post-MVP, we should consider reworking this.
+
+A possible solution is to have a settings table that contains the types of
+notifications a user wants to receive. The role would be relegated to granting a
+permission that allows the admin to configure the notifications so they get
+these emails. */
+const rsvpNotifyAdministrators = async (
+  rsvpingUser: User,
+  chapterAdministrators: ChapterUser[],
+  eventName: string,
 ) => {
-  const organizersEmails = event.event_users
-    .filter(({ event_role }) => event_role.name === 'organizer')
-    .map(({ user }) => user.email);
+  const administratorsEmails = chapterAdministrators.map(
+    ({ user }) => user.email,
+  );
   await new MailerService({
-    emailList: organizersEmails,
-    subject: `New RSVP for ${event.name}`,
-    htmlEmail: `User ${user.first_name} ${user.last_name} has RSVP'd. ${unsubscribe}`,
+    emailList: administratorsEmails,
+    subject: `New RSVP for ${eventName}`,
+    htmlEmail: `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd. ${unsubscribe}`,
   }).sendEmail();
 };
 
@@ -207,6 +220,15 @@ export class EventResolver {
       },
     });
 
+    const chapterAdministrators = await prisma.chapter_users.findMany({
+      where: {
+        chapter_id: chapterId,
+        subscribed: true,
+        chapter_role: { is: { name: 'administrator' } },
+      },
+      ...chapterUserInclude,
+    });
+
     const oldUserRole = await prisma.event_users.findUnique({
       include: { rsvp: true },
       where: {
@@ -257,7 +279,11 @@ export class EventResolver {
         };
 
         await sendRsvpInvitation(ctx.user, event);
-        await rsvpNotifyOrganizer(ctx.user, event);
+        await rsvpNotifyAdministrators(
+          ctx.user,
+          chapterAdministrators,
+          event.name,
+        );
       }
       return await prisma.event_users.update({
         data: updateData,
@@ -290,7 +316,7 @@ export class EventResolver {
       user: { connect: { id: ctx.user.id } },
       event: { connect: { id: eventId } },
       rsvp: { connect: { name: rsvpName } },
-      event_role: { connect: { name: 'attendee' } },
+      event_role: { connect: { name: 'member' } },
       subscribed: isSubscribedToEvent,
     };
 
@@ -315,7 +341,7 @@ export class EventResolver {
     }
 
     await sendRsvpInvitation(ctx.user, event);
-    await rsvpNotifyOrganizer(ctx.user, event);
+    await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
     return userRole;
   }
 
@@ -391,16 +417,6 @@ export class EventResolver {
       ({ chapter_id }) => chapter_id === data.chapter_id,
     );
 
-    // TODO: add admin and owner once you've figured out how to handle instance
-    // roles
-    const allowedRoles = ['organizer'] as const;
-    const hasPermission =
-      allowedRoles.findIndex((x) => x === userChapter?.chapter_role.name) !==
-      -1;
-
-    if (!hasPermission)
-      throw Error('User does not have permission to create events');
-
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
@@ -410,7 +426,7 @@ export class EventResolver {
 
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
-      event_role: { connect: { name: 'organizer' } },
+      event_role: { connect: { name: 'member' } },
       rsvp: { connect: { name: 'yes' } },
       subscribed: isSubscribedToEvent,
     };

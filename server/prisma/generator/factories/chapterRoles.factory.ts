@@ -14,8 +14,6 @@ const roles: Array<{ name: string; permissions: Permissions[] }> = [
     name: 'administrator',
     permissions: ['chapter-edit', 'event-create', 'event-edit', 'rsvp'],
   },
-  { name: 'organizer', permissions: ['event-create', 'event-edit'] },
-  { name: 'moderator', permissions: ['event-edit'] },
   { name: 'member', permissions: ['rsvp'] },
 ];
 
@@ -23,6 +21,8 @@ const createChapterRoles = async () => {
   await prisma.chapter_permissions.createMany({
     data: chapterPermissions.map((permission) => ({ name: permission })),
   });
+
+  // TODO: use reduce
   return Object.assign(
     {},
     ...(

@@ -1,7 +1,17 @@
-import { Box, Heading, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Heading,
+  HStack,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 
 import { useUnsubscribeMutation } from '../../generated/graphql';
 
@@ -9,23 +19,48 @@ const UnsubscribePage: NextPage = () => {
   const router = useRouter();
   const token = (router.query.token || '') as string;
 
-  const [unsubscribe, { loading, data }] = useUnsubscribeMutation({
+  const { handleSubmit, register, watch } = useForm();
+
+  const [unsubscribe, { loading, data, error }] = useUnsubscribeMutation({
     variables: { token },
   });
 
-  useEffect(() => {
-    unsubscribe();
-  }, [token]);
+  const onUnsubscribe = async () => {
+    try {
+      await unsubscribe();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const confirmed = watch('confirm');
 
   return (
     <Box w="50%" maxW="800px" marginX="auto" mt="10">
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Heading>
-          {data?.unsubscribe ? 'You are unsubscribed' : 'Error'}
-        </Heading>
-      )}
+      <VStack>
+        <Heading>Unsubscrbing</Heading>
+        {!loading && !data && !error ? (
+          <form onSubmit={handleSubmit(onUnsubscribe)}>
+            <HStack>
+              <Checkbox
+                {...register('confirm' as const, { required: true })}
+                value="confirm"
+              >
+                Confirm unsubscribing
+              </Checkbox>
+              <Button type="submit" isDisabled={!confirmed}>
+                Submit
+              </Button>
+            </HStack>
+          </form>
+        ) : loading ? (
+          <Spinner />
+        ) : error ? (
+          <Text>Error: {error.message}</Text>
+        ) : (
+          <Text>Unsubscribed</Text>
+        )}
+      </VStack>
     </Box>
   );
 };

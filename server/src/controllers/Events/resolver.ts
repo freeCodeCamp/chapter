@@ -85,14 +85,22 @@ const chapterUserInclude = {
 
 type ChapterUser = Prisma.chapter_usersGetPayload<typeof chapterUserInclude>;
 
+/* TODO: Tying the notification to a particular chapter role is an unnecessary
+coupling. The roles should just grant permissions and nothing else and,
+Post-MVP, we should consider reworking this.
+
+A possible solution is to have a settings table that contains the types of
+notifications a user wants to receive. The role would be relegated to granting a
+permission that allows the admin to configure the notifications so they get
+these emails. */
 const rsvpNotifyAdministrators = async (
   rsvpingUser: User,
-  chapterUsers: ChapterUser[],
+  chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const administratorsEmails = chapterUsers
-    .filter(({ chapter_role }) => chapter_role.name === 'administrator')
-    .map(({ user }) => user.email);
+  const administratorsEmails = chapterAdministrators.map(
+    ({ user }) => user.email,
+  );
   await new MailerService({
     emailList: administratorsEmails,
     subject: `New RSVP for ${eventName}`,
@@ -212,7 +220,7 @@ export class EventResolver {
       },
     });
 
-    const chapterUsers = await prisma.chapter_users.findMany({
+    const chapterAdministrators = await prisma.chapter_users.findMany({
       where: {
         chapter_id: chapterId,
         subscribed: true,
@@ -271,7 +279,11 @@ export class EventResolver {
         };
 
         await sendRsvpInvitation(ctx.user, event);
-        await rsvpNotifyAdministrators(ctx.user, chapterUsers, event.name);
+        await rsvpNotifyAdministrators(
+          ctx.user,
+          chapterAdministrators,
+          event.name,
+        );
       }
       return await prisma.event_users.update({
         data: updateData,
@@ -329,7 +341,7 @@ export class EventResolver {
     }
 
     await sendRsvpInvitation(ctx.user, event);
-    await rsvpNotifyAdministrators(ctx.user, chapterUsers, event.name);
+    await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
     return userRole;
   }
 

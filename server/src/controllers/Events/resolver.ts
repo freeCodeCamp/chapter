@@ -213,7 +213,11 @@ export class EventResolver {
     });
 
     const chapterUsers = await prisma.chapter_users.findMany({
-      where: { chapter_id: chapterId },
+      where: {
+        chapter_id: chapterId,
+        subscribed: true,
+        chapter_role: { is: { name: 'administrator' } },
+      },
       ...chapterUserInclude,
     });
 

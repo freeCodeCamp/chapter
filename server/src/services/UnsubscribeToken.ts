@@ -5,7 +5,6 @@ import { getConfig } from '../config';
 export enum unsubscribeType {
   Chapter,
   Event,
-  Instance,
 }
 
 export type UnsubscribeToken = {

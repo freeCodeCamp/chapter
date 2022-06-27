@@ -3,27 +3,29 @@ import { verify } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation } from 'type-graphql';
 
 import { getConfig } from '../../config';
+import { prisma } from '../../prisma';
 import {
   UnsubscribeToken,
   unsubscribeType,
 } from '../../services/UnsubscribeToken';
 
-const unsubscribeChapter = async (user_id: number, chapter_id: number) => {
-  return true;
+const unsubscribeChapter = async (userId: number, chapterId: number) => {
+  await prisma.chapter_users.update({
+    data: { subscribed: false },
+    where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
+  });
 };
 
-const unsubscribeEvent = async (user_id: number, event_id: number) => {
-  return true;
-};
-
-const unsubscribeInstance = async (user_id: number, instance: number) => {
-  return true;
+const unsubscribeEvent = async (userId: number, eventId: number) => {
+  await prisma.event_users.update({
+    data: { subscribed: false },
+    where: { user_id_event_id: { event_id: eventId, user_id: userId } },
+  });
 };
 
 const typeToUnsubscribe = {
   [unsubscribeType.Chapter]: unsubscribeChapter,
   [unsubscribeType.Event]: unsubscribeEvent,
-  [unsubscribeType.Instance]: unsubscribeInstance,
 };
 
 @Resolver()
@@ -34,7 +36,7 @@ export class UnsubscribeResolver {
     try {
       data = verify(token, getConfig('JWT_SECRET')) as UnsubscribeToken;
     } catch (e) {
-      return false;
+      throw Error('Invalid token');
     }
 
     await typeToUnsubscribe[data.type](data.user_id, data.id);

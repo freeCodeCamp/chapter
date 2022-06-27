@@ -35,6 +35,10 @@ import {
   deleteEventReminders,
   updateRemindAt,
 } from '../../services/Reminders';
+import {
+  generateToken,
+  unsubscribeType,
+} from '../../services/UnsubscribeToken';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 //Place holder for unsubscribe
@@ -61,6 +65,22 @@ const sendRsvpInvitation = async (
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
+  const chapterUnsubscribeToken = generateToken(
+    unsubscribeType.Chapter,
+    event.chapter_id,
+    user.id,
+  );
+  const eventUnsubscribeToken = generateToken(
+    unsubscribeType.Event,
+    event.id,
+    user.id,
+  );
+
+  const unsubscribeOptions = `
+Unsubscribe Options
+- [Attend this event, but only turn off future notifications for this event](http://localhost:3000/unsubscribe?token=${eventUnsubscribeToken})
+- Or, [stop receiving all notifications by unfollowing chapter](http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken})`;
+
   await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
@@ -71,7 +91,7 @@ To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${outlook(linkDetails)}>Outlook</a>
 
-${unsubscribe}
+${unsubscribeOptions}
       `,
   }).sendEmail();
 };
@@ -354,13 +374,30 @@ export class EventResolver {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const eventUser = await prisma.event_users.findUnique({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: true, user: true },
+      include: { event: { include: { chapter: true } }, user: true },
     });
+
+    const chapterUnsubscribeToken = generateToken(
+      unsubscribeType.Chapter,
+      eventUser.event.chapter_id,
+      userId,
+    );
+    const eventUnsubscribeToken = generateToken(
+      unsubscribeType.Event,
+      eventUser.event_id,
+      userId,
+    );
+
+    const unsubscribeOptions = `
+Unsubscribe Options
+- [Attend this event, but only turn off future notifications for this event](Unsubscribe link, like http://localhost:3000/unsubscribe?token=${eventUnsubscribeToken})
+- Or, [stop receiving all notifications by unfollowing ${eventUser.event.chapter.name}](Unsubscribe link, like http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken})`;
 
     await new MailerService({
       emailList: [eventUser.user.email],
       subject: 'Your RSVP is confirmed',
-      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}`,
+      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}
+${unsubscribeOptions}`,
     }).sendEmail();
 
     return await prisma.event_users.update({

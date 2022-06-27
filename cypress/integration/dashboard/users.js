@@ -28,9 +28,7 @@ describe('Users dashboard', () => {
       cy.findByRole('combobox').find(':selected').contains('member');
       cy.findByRole('combobox').select('owner');
       cy.findByRole('button', { name: 'Change' }).click();
-      cy.get('[data-cy=role]')
-        .eq(memberToOwnerToMember)
-        .contains('administrator');
+      cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains('owner');
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains('owner');
       cy.findByRole('combobox').select('member');

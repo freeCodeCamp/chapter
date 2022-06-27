@@ -19,32 +19,30 @@ describe('Users dashboard', () => {
 
       // We cannot change role of existing administrator, as that's logged in user
       // and after changing role, we will not be authorized to see users.
-      const memberToAdminToMember = roleNames.findIndex(
+      const memberToOwnerToMember = roleNames.findIndex(
         (role) => role === 'member',
       );
-      const administrator = roleNames.findIndex(
-        (role) => role === 'administrator',
-      );
+      const owner = roleNames.findIndex((role) => role === 'owner');
 
-      cy.get('[data-cy=changeRole]').eq(memberToAdminToMember).click();
+      cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains('member');
-      cy.findByRole('combobox').select('administrator');
+      cy.findByRole('combobox').select('owner');
       cy.findByRole('button', { name: 'Change' }).click();
       cy.get('[data-cy=role]')
-        .eq(memberToAdminToMember)
+        .eq(memberToOwnerToMember)
         .contains('administrator');
-      cy.get('[data-cy=changeRole]').eq(memberToAdminToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('administrator');
+      cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
+      cy.findByRole('combobox').find(':selected').contains('owner');
       cy.findByRole('combobox').select('member');
       cy.findByRole('button', { name: 'Change' }).click();
-      cy.get('[data-cy=role]').eq(memberToAdminToMember).contains('member');
+      cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains('member');
 
       // Ensure default value is changed
-      cy.get('[data-cy=changeRole]').eq(memberToAdminToMember).click();
+      cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains('member');
       cy.get('[aria-label=Close]').click();
-      cy.get('[data-cy=changeRole]').eq(administrator).click();
-      cy.findByRole('combobox').find(':selected').contains('administrator');
+      cy.get('[data-cy=changeRole]').eq(owner).click();
+      cy.findByRole('combobox').find(':selected').contains('owner');
     });
   });
 });

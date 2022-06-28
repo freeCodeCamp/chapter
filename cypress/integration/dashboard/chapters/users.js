@@ -27,6 +27,7 @@ describe('Chapter Users dashboard', () => {
       cy.findByRole('combobox').find(':selected').contains('member');
       cy.findByRole('combobox').select('administrator');
       cy.findByRole('button', { name: 'Change' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]')
         .eq(memberToAdministrator)
         .contains('administrator');
@@ -35,6 +36,7 @@ describe('Chapter Users dashboard', () => {
       cy.findByRole('combobox').find(':selected').contains('administrator');
       cy.findByRole('combobox').select('member');
       cy.findByRole('button', { name: 'Change' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]').eq(administratorToMember).contains('member');
 
       // Ensure default value is changed

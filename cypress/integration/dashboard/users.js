@@ -17,8 +17,8 @@ describe('Users dashboard', () => {
     cy.get('[data-cy=role]').then((roles) => {
       const roleNames = [...roles.map((_, role) => role.innerText)];
 
-      // We cannot change role of existing administrator, as that's logged in user
-      // and after changing role, we will not be authorized to see users.
+      // We cannot change role of existing owner, as that's logged in user
+      // and after changing role, we will no longer be authorized to see users.
       const memberToOwnerToMember = roleNames.indexOf('member');
       const owner = roleNames.indexOf('owner');
 
@@ -26,11 +26,13 @@ describe('Users dashboard', () => {
       cy.findByRole('combobox').find(':selected').contains('member');
       cy.findByRole('combobox').select('owner');
       cy.findByRole('button', { name: 'Change' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains('owner');
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains('owner');
       cy.findByRole('combobox').select('member');
       cy.findByRole('button', { name: 'Change' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains('member');
 
       // Ensure default value is changed

@@ -1,6 +1,12 @@
 import { prisma } from '../../../src/prisma';
 
-const instancePermissions = ['chapter-create', 'chapter-edit', 'rsvp'] as const;
+const instancePermissions = [
+  'chapter-create',
+  'chapter-edit',
+  'change-instance-role',
+  'view-users',
+  'rsvp',
+] as const;
 type Permissions = typeof instancePermissions[number];
 interface InstanceRole {
   name: string;
@@ -10,7 +16,13 @@ interface InstanceRole {
 const roles: InstanceRole[] = [
   {
     name: 'owner',
-    permissions: ['chapter-create', 'chapter-edit', 'rsvp'],
+    permissions: [
+      'chapter-create',
+      'chapter-edit',
+      'change-instance-role',
+      'view-users',
+      'rsvp',
+    ],
   },
   { name: 'member', permissions: [] },
 ];

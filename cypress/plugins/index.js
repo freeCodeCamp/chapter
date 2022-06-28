@@ -48,7 +48,7 @@ module.exports = (on, config) => {
   );
 
   config.env.JWT_BANNED_ADMIN_USER = jwt.sign(
-    { email: 'banned.admin@of.a.chapter' },
+    { email: 'banned@chapter.admin' },
     process.env.JWT_SECRET,
     {
       expiresIn: '120min',

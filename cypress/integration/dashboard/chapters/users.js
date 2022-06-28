@@ -113,7 +113,8 @@ describe('Chapter Users dashboard', () => {
 
     cy.get('@administrators')
       .filter(':contains("admin@of.a.chapter")')
-      .as('adminToBan');
+      .as('adminToBan')
+      .should('have.length', 1);
 
     cy.get('@adminToBan').findByRole('button', { name: 'Ban' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
@@ -127,11 +128,10 @@ describe('Chapter Users dashboard', () => {
 
     initializeBanVariables();
 
-    // TODO: get the current user more directly, rather than relying on the fact
-    // there's only one administrator.
     cy.get('@administrators')
-      .filter(':contains("banned.admin@of.a.chapter")')
-      .as('adminToUnban');
+      .filter(':contains("banned@chapter.admin")')
+      .as('adminToUnban')
+      .should('have.length', 1);
 
     cy.get('@adminToUnban').findByRole('button', { name: 'Unban' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();

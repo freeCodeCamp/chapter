@@ -30,7 +30,7 @@ const createUsers = async (
   const admin = await prisma.users.create({ data: adminData });
 
   const bannedAdminData: Prisma.usersCreateInput = {
-    email: 'banned.admin@of.a.chapter',
+    email: 'banned@chapter.admin',
     first_name: name.firstName(),
     last_name: name.lastName(),
     instance_role: { connect: { id: instanceRoles.member.id } },

@@ -53,21 +53,13 @@ describe('Chapter Users dashboard', () => {
   it('administrator can ban user from chapter', () => {
     cy.visit('/dashboard/chapters/1/users');
 
-    cy.findAllByRole('row').as('rows');
+    initializeBanVariables();
 
     cy.get('@rows')
       .filter(':contains("administrator")')
       .find('[data-cy=isBanned]')
       .should('not.exist');
 
-    cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@members').find('[data-cy=isBanned]');
-
-    cy.get('@members')
-      .not(':contains("Unban")')
-      .not(':contains("Banned")')
-      .first()
-      .as('userToBan');
     cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
 
     cy.get('@userToBan').findByRole('button', { name: 'Ban' }).click();
@@ -89,5 +81,33 @@ describe('Chapter Users dashboard', () => {
     cy.get('@userToBan')
       .findByRole('button', { name: 'Unban' })
       .should('not.exist');
+  });
+
+  function initializeBanVariables() {
+    // We don't want to interact with the instance owner here
+    cy.findAllByRole('row').not(':contains("foo@bar.com")').as('rows');
+    cy.get('@rows').filter(':contains("member")').as('members');
+    cy.get('@rows').filter(':contains("administrator")').as('administrators');
+    cy.get('@members')
+      .not(':contains("Unban")')
+      .not(':contains("Banned")')
+      .first()
+      .as('userToBan');
+  }
+
+  it('an admin cannot ban themselves', () => {
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.visit('/dashboard/chapters/1/users');
+
+    initializeBanVariables();
+
+    // TODO: get the current user more directly, rather than relying on the fact
+    // there's only one administrator.
+    cy.get('@administrators').first().as('userToBan');
+
+    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('You cannot ban yourself', { matchCase: false });
+    cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
   });
 });

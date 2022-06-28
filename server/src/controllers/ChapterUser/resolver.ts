@@ -219,7 +219,7 @@ export class ChapterUserResolver {
       throw Error('User must be logged to ban');
     }
     if (ctx.user.id === userId) {
-      throw Error('Cannot ban yourself');
+      throw Error('You cannot ban yourself');
     }
 
     return await prisma.user_bans.create({

@@ -86,8 +86,11 @@ export const ChapterUsersPage: NextPage = () => {
         await banUser({ variables: { userId, chapterId } });
         toast({ title: 'User was banned', status: 'success' });
       } catch (err) {
-        console.error(err);
-        toast({ title: 'Something went wrong', status: 'error' });
+        if (err instanceof Error) {
+          toast({ title: err.message, status: 'error' });
+        } else {
+          toast({ title: 'Something went wrong', status: 'error' });
+        }
       }
     }
   };

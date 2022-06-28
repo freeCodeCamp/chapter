@@ -19,10 +19,8 @@ describe('Users dashboard', () => {
 
       // We cannot change role of existing administrator, as that's logged in user
       // and after changing role, we will not be authorized to see users.
-      const memberToOwnerToMember = roleNames.findIndex(
-        (role) => role === 'member',
-      );
-      const owner = roleNames.findIndex((role) => role === 'owner');
+      const memberToOwnerToMember = roleNames.indexOf('member');
+      const owner = roleNames.indexOf('owner');
 
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains('member');

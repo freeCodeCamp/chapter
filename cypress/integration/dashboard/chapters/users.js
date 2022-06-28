@@ -20,12 +20,8 @@ describe('Chapter Users dashboard', () => {
 
     cy.get('[data-cy=role]').then((roles) => {
       const roleNames = [...roles.map((_, role) => role.innerText)];
-      const administratorToMember = roleNames.findIndex(
-        (role) => role === 'administrator',
-      );
-      const memberToAdministrator = roleNames.findIndex(
-        (role) => role === 'member',
-      );
+      const administratorToMember = roleNames.indexOf('administrator');
+      const memberToAdministrator = roleNames.indexOf('member');
 
       cy.get('[data-cy=changeRole]').eq(memberToAdministrator).click();
       cy.findByRole('combobox').find(':selected').contains('member');

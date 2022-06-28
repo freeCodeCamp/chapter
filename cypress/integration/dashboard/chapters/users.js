@@ -51,41 +51,89 @@ describe('Chapter Users dashboard', () => {
   it('administrator can ban user from chapter', () => {
     cy.visit('/dashboard/chapters/1/users');
 
-    cy.findAllByRole('row').as('rows');
+    initializeBanVariables();
 
     cy.get('@rows')
       .filter(':contains("administrator")')
       .find('[data-cy=isBanned]')
+      .should('have.length', 1);
+
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=isBanned]')
       .should('not.exist');
 
-    cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@members').find('[data-cy=isBanned]');
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Ban' })
+      .click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('was banned', { matchCase: false });
+    cy.get('@firstUnbannedMember').find('[data-cy=isBanned]').should('exist');
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Unban' })
+      .should('exist');
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Ban' })
+      .should('not.exist');
 
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Unban' })
+      .click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('was unbanned', { matchCase: false });
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=isBanned]')
+      .should('not.exist');
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Ban' })
+      .should('exist');
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Unban' })
+      .should('not.exist');
+  });
+
+  function initializeBanVariables() {
+    // We don't want to interact with the instance owner here
+    cy.findAllByRole('row').not(':contains("foo@bar.com")').as('rows');
+    cy.get('@rows').filter(':contains("member")').as('members');
+    cy.get('@rows').filter(':contains("administrator")').as('administrators');
     cy.get('@members')
       .not(':contains("Unban")')
       .not(':contains("Banned")')
       .first()
-      .as('userToBan');
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
+      .as('firstUnbannedMember');
+  }
 
-    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('was banned', { matchCase: false });
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('exist');
-    cy.get('@userToBan')
-      .findByRole('button', { name: 'Unban' })
-      .should('exist');
-    cy.get('@userToBan')
-      .findByRole('button', { name: 'Ban' })
-      .should('not.exist');
+  it('an admin cannot ban themselves', () => {
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.visit('/dashboard/chapters/1/users');
 
-    cy.get('@userToBan').findByRole('button', { name: 'Unban' }).click();
+    initializeBanVariables();
+
+    cy.get('@administrators')
+      .filter(':contains("admin@of.a.chapter")')
+      .as('adminToBan')
+      .should('have.length', 1);
+
+    cy.get('@adminToBan').findByRole('button', { name: 'Ban' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('was unbanned', { matchCase: false });
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
-    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).should('exist');
-    cy.get('@userToBan')
-      .findByRole('button', { name: 'Unban' })
-      .should('not.exist');
+    cy.contains('You cannot ban yourself', { matchCase: false });
+    cy.get('@adminToBan').find('[data-cy=isBanned]').should('not.exist');
+  });
+
+  it('an admin cannot unban themselves', () => {
+    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
+    cy.visit('/dashboard/chapters/1/users');
+
+    initializeBanVariables();
+
+    cy.get('@administrators')
+      .filter(':contains("banned@chapter.admin")')
+      .as('adminToUnban')
+      .should('have.length', 1);
+
+    cy.get('@adminToUnban').findByRole('button', { name: 'Unban' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('You cannot unban yourself', { matchCase: false });
+    cy.get('@adminToUnban').find('[data-cy=isBanned]').should('be.visible');
   });
 });

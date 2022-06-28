@@ -7,7 +7,12 @@ const { name, internet } = faker;
 
 const createUsers = async (
   instanceRoles: Record<string, { name: string; id: number }>,
-): Promise<{ ownerId: number; adminId: number; userIds: number[] }> => {
+): Promise<{
+  ownerId: number;
+  adminId: number;
+  bannedAdminId: number;
+  userIds: number[];
+}> => {
   const ownerData: Prisma.usersCreateInput = {
     email: 'foo@bar.com',
     first_name: name.firstName(),
@@ -24,6 +29,15 @@ const createUsers = async (
   };
   const admin = await prisma.users.create({ data: adminData });
 
+  const bannedAdminData: Prisma.usersCreateInput = {
+    email: 'banned@chapter.admin',
+    first_name: name.firstName(),
+    last_name: name.lastName(),
+    instance_role: { connect: { id: instanceRoles.member.id } },
+  };
+
+  const bannedAdmin = await prisma.users.create({ data: bannedAdminData });
+
   const othersData: Prisma.usersCreateInput[] = Array.from(
     new Array(10),
     () => ({
@@ -39,7 +53,12 @@ const createUsers = async (
     )
   ).map((other) => other.id);
 
-  return { ownerId: owner.id, adminId: admin.id, userIds: otherIds };
+  return {
+    ownerId: owner.id,
+    adminId: admin.id,
+    bannedAdminId: bannedAdmin.id,
+    userIds: otherIds,
+  };
 };
 
 export default createUsers;

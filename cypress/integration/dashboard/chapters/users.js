@@ -58,27 +58,37 @@ describe('Chapter Users dashboard', () => {
     cy.get('@rows')
       .filter(':contains("administrator")')
       .find('[data-cy=isBanned]')
+      .should('have.length', 1);
+
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=isBanned]')
       .should('not.exist');
 
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
-
-    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).click();
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Ban' })
+      .click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('was banned', { matchCase: false });
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('exist');
-    cy.get('@userToBan')
+    cy.get('@firstUnbannedMember').find('[data-cy=isBanned]').should('exist');
+    cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Unban' })
       .should('exist');
-    cy.get('@userToBan')
+    cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Ban' })
       .should('not.exist');
 
-    cy.get('@userToBan').findByRole('button', { name: 'Unban' }).click();
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Unban' })
+      .click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('was unbanned', { matchCase: false });
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
-    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).should('exist');
-    cy.get('@userToBan')
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=isBanned]')
+      .should('not.exist');
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Ban' })
+      .should('exist');
+    cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Unban' })
       .should('not.exist');
   });
@@ -92,7 +102,7 @@ describe('Chapter Users dashboard', () => {
       .not(':contains("Unban")')
       .not(':contains("Banned")')
       .first()
-      .as('userToBan');
+      .as('firstUnbannedMember');
   }
 
   it('an admin cannot ban themselves', () => {
@@ -101,13 +111,31 @@ describe('Chapter Users dashboard', () => {
 
     initializeBanVariables();
 
-    // TODO: get the current user more directly, rather than relying on the fact
-    // there's only one administrator.
-    cy.get('@administrators').first().as('userToBan');
+    cy.get('@administrators')
+      .filter(':contains("admin@of.a.chapter")')
+      .as('adminToBan');
 
-    cy.get('@userToBan').findByRole('button', { name: 'Ban' }).click();
+    cy.get('@adminToBan').findByRole('button', { name: 'Ban' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('You cannot ban yourself', { matchCase: false });
-    cy.get('@userToBan').find('[data-cy=isBanned]').should('not.exist');
+    cy.get('@adminToBan').find('[data-cy=isBanned]').should('not.exist');
+  });
+
+  it('an admin cannot unban themselves', () => {
+    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
+    cy.visit('/dashboard/chapters/1/users');
+
+    initializeBanVariables();
+
+    // TODO: get the current user more directly, rather than relying on the fact
+    // there's only one administrator.
+    cy.get('@administrators')
+      .filter(':contains("banned.admin@of.a.chapter")')
+      .as('adminToUnban');
+
+    cy.get('@adminToUnban').findByRole('button', { name: 'Unban' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('You cannot unban yourself', { matchCase: false });
+    cy.get('@adminToUnban').find('[data-cy=isBanned]').should('be.visible');
   });
 });

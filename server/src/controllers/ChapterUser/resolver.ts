@@ -244,7 +244,7 @@ export class ChapterUserResolver {
     // TODO: this should not be necessary, since a ban would prevent them from
     // accessing this resolver. However, we need a Cypress test first.
     if (ctx.user.id === userId) {
-      throw Error('Cannot unban yourself');
+      throw Error('You cannot unban yourself');
     }
 
     return await prisma.user_bans.delete({

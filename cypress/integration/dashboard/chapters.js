@@ -55,4 +55,15 @@ describe('chapters dashboard', () => {
     // confirm that the test data appears in the new chapter
     cy.contains(fix.name);
   });
+
+  it('prevents other users from creating chapters', () => {
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+
+    cy.visit('/dashboard/chapters');
+    // loading appears briefly...
+    cy.get('[data-cy="me-loading"]').should('be.visible');
+    // ...and then disappears
+    cy.get('[data-cy="me-loading"]').should('not.exist');
+    cy.get('[data-cy="new-chapter"]').should('not.exist');
+  });
 });

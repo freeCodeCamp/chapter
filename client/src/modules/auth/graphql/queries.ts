@@ -6,6 +6,13 @@ export const meQuery = gql`
       id
       first_name
       last_name
+      instance_role {
+        instance_role_permissions {
+          instance_permission {
+            name
+          }
+        }
+      }
     }
   }
 `;

@@ -4094,7 +4094,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "User",
+              "name": "UserWithInstanceRole",
               "ofType": null
             },
             "isDeprecated": false,

@@ -4,7 +4,7 @@ import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 
 import { GQLCtx } from '../../common-types/gql';
 import { getConfig, isDev } from '../../config';
-import { User } from '../../graphql-types';
+import { User, UserWithInstanceRole } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { authTokenService } from '../../services/AuthToken';
 import MailerService from '../../services/MailerService';
@@ -24,7 +24,7 @@ type TokenResponseType = {
 
 @Resolver()
 export class AuthResolver {
-  @Query(() => User, { nullable: true })
+  @Query(() => UserWithInstanceRole, { nullable: true })
   async me(@Ctx() ctx: GQLCtx): Promise<User | null> {
     return ctx.user || null;
   }

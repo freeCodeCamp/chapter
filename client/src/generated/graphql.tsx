@@ -436,7 +436,7 @@ export type Query = {
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<User>;
+  me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
   sponsor?: Maybe<Sponsor>;
   sponsors: Array<Sponsor>;
@@ -647,10 +647,20 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'User';
+    __typename?: 'UserWithInstanceRole';
     id: number;
     first_name: string;
     last_name: string;
+    instance_role: {
+      __typename?: 'InstanceRole';
+      instance_role_permissions: Array<{
+        __typename?: 'InstanceRolePermission';
+        instance_permission: {
+          __typename?: 'InstancePermission';
+          name: string;
+        };
+      }>;
+    };
   } | null;
 };
 
@@ -1501,6 +1511,13 @@ export const MeDocument = gql`
       id
       first_name
       last_name
+      instance_role {
+        instance_role_permissions {
+          instance_permission {
+            name
+          }
+        }
+      }
     }
   }
 `;

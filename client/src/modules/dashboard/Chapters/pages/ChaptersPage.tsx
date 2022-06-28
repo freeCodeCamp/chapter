@@ -15,7 +15,9 @@ export const ChaptersPage: NextPage = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapters</Heading>
-          <LinkButton href="/dashboard/chapters/new">Add new</LinkButton>
+          <LinkButton data-cy="new-chapter" href="/dashboard/chapters/new">
+            Add new
+          </LinkButton>
         </Flex>
         {loading ? (
           <Heading>Loading...</Heading>

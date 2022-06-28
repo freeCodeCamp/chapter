@@ -20,7 +20,7 @@ describe('chapters dashboard', () => {
     cy.get('a[href="/dashboard/chapters/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create a chapter', () => {
+  it('lets an instance owner create a chapter', () => {
     const fix = {
       name: 'Name goes here',
       description: 'Summary of the chapter',
@@ -32,7 +32,7 @@ describe('chapters dashboard', () => {
     };
     cy.login();
     cy.visit('/dashboard/chapters');
-    cy.get('a[href="/dashboard/chapters/new"]').click();
+    cy.get('[data-cy="new-chapter"]').click();
     cy.findByRole('textbox', { name: 'Chapter name' }).type(fix.name);
     cy.findByRole('textbox', { name: 'Description' }).type(fix.description);
     cy.findByRole('textbox', { name: 'City' }).type(fix.city);

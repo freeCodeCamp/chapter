@@ -21,7 +21,7 @@ export const RoleChangeModal: React.FC<{
   data: RoleChangeModalData;
   roles: { id: number; name: string }[];
   title: string;
-  onSubmit: (submitData: SubmitData) => Promise<void>;
+  onSubmit: (submitData: SubmitData) => void;
 }> = ({ modalProps, data, roles, title, onSubmit }) => {
   const { handleSubmit, register, setValue, getValues } = useForm<SubmitData>();
 

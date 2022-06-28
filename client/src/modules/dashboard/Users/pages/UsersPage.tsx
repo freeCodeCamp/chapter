@@ -38,7 +38,7 @@ export const UsersPage: NextPage = () => {
     modalProps.onOpen();
   };
 
-  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = (data: { newRoleId: number; userId: number }) => {
     changeRoleMutation({
       variables: {
         roleId: data.newRoleId,

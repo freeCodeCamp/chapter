@@ -21,6 +21,7 @@ describe('chapters dashboard', () => {
   });
 
   it('should have a table with links to view, create and edit chapters', () => {
+    cy.login();
     cy.visit('/dashboard/chapters');
     cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');

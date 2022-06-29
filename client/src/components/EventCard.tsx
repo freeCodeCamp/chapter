@@ -1,5 +1,5 @@
 import { LockIcon } from '@chakra-ui/icons';
-import { Heading, Text, Tag, Box, Flex, Image, Spacer } from '@chakra-ui/react';
+import { Heading, Tag, Box, Flex, Image, Spacer } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 import { Chapter, Event, EventTag } from '../generated/graphql';
@@ -22,54 +22,45 @@ type EventCardProps = {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const metaTag = event.canceled ? (
-    <Tag
-      data-cy="event-canceled"
-      borderRadius="full"
-      pl="2"
-      px="2"
-      colorScheme="red"
-    >
-      Canceled
-    </Tag>
-  ) : event.invite_only ? (
-    <Tag
-      data-cy="event-invite-only"
-      borderRadius="full"
-      pl="2"
-      px="2"
-      colorScheme="gray"
-    >
-      <LockIcon />
-    </Tag>
-  ) : (
-    ''
+  const metaTag = (
+    <>
+      {event.canceled && (
+        <Tag
+          data-cy="event-canceled"
+          borderRadius="full"
+          pl="2"
+          px="2"
+          colorScheme="red"
+        >
+          Canceled
+        </Tag>
+      )}
+      {event.invite_only && (
+        <Tag
+          data-cy="event-invite-only"
+          borderRadius="full"
+          pl="2"
+          px="2"
+          colorScheme="gray"
+        >
+          <LockIcon />
+        </Tag>
+      )}
+    </>
   );
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
       <Image h={'auto'} w={'200px'} src={event.image_url} objectFit={'cover'} />
       <Box p="3" py={3} width="full" data-cy="event-card">
-        <Flex
-          mb="2"
-          fontWeight="semibold"
-          as="h4"
-          lineHeight="tight"
-          noOfLines={1}
-        >
+        <Flex mb="2" fontWeight="semibold" as="h4" lineHeight="tight">
           {formatDate(event.start_at)}
           <Spacer />
           {metaTag}
         </Flex>
         <Box>
-          {event.invite_only && <LockIcon />}{' '}
           <Link data-cy="event-link" href={`/events/${event.id}`}>
             <Heading size="sm">{event.name}</Heading>
           </Link>
-          {event.canceled && (
-            <Text as="span" color="red.500" ml="2">
-              Canceled
-            </Text>
-          )}
         </Box>
         <Box>
           <Link href={`/chapters/${event.chapter.id}`}>

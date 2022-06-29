@@ -1,13 +1,11 @@
 import { prisma } from '../../src/prisma';
+import createRoles from './init';
 import createChapters from './factories/chapters.factory';
-import createChapterRoles from './factories/chapterRoles.factory';
 import createEvents from './factories/events.factory';
-import createEventRoles from './factories/eventRoles.factory';
 import createRsvps from './factories/rsvps.factory';
 import createSponsors from './factories/sponsors.factory';
 import createUsers from './factories/user.factory';
 import createVenues from './factories/venues.factory';
-import createInstanceRoles from './factories/instanceRoles.factory';
 import setupRoles from './setupRoles';
 
 (async () => {
@@ -27,7 +25,7 @@ import setupRoles from './setupRoles';
     }
   }
 
-  const instanceRoles = await createInstanceRoles();
+  const { instanceRoles, chapterRoles, eventRoles } = await createRoles();
 
   const { ownerId, adminId, bannedAdminId, userIds } = await createUsers(
     instanceRoles,
@@ -39,9 +37,7 @@ import setupRoles from './setupRoles';
 
   const eventIds = await createEvents(chapterIds, venueIds, sponsorIds, 15);
 
-  const eventRoles = await createEventRoles();
   await createRsvps(eventIds, userIds, eventRoles);
-  const chapterRoles = await createChapterRoles();
   await setupRoles(
     { ownerId, adminId, bannedAdminId, userIds },
     chapterIds,

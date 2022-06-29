@@ -28,14 +28,14 @@ const roles: InstanceRole[] = [
 ];
 
 const createRole = async ({ name, permissions }: InstanceRole) => {
-  const permissionsData = permissions.map((permission) => ({
+  const permissionsData = permissions.map((name) => ({
     instance_permission: {
-      connect: { name: permission },
+      connect: { name },
     },
   }));
   const createdRole = await prisma.instance_roles.create({
     data: {
-      name: name,
+      name,
       instance_role_permissions: { create: permissionsData },
     },
   });
@@ -46,7 +46,11 @@ const createInstanceRoles = async () => {
   await prisma.instance_permissions.createMany({
     data: instancePermissions.map((permission) => ({ name: permission })),
   });
-  return Object.assign({}, ...(await Promise.all(roles.map(createRole))));
+  const createdRoles = await Promise.all(roles.map(createRole));
+  return createdRoles.reduce((acc, role) => ({
+    ...acc,
+    ...role,
+  }));
 };
 
 export default createInstanceRoles;

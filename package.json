@@ -13,6 +13,7 @@
   "scripts": {
     "dev:client": "npm -w=client run dev",
     "dev:server": "npm -w=server run dev",
+    "db:init": "npm run build:server && node server/prisma/generator/init.js --execute",
     "db:seed": "npm run prisma -- db seed",
     "db:sync": "npm run prisma -- db push --force-reset",
     "db:reset": "npm run build:server && npm run db:sync && npm run db:seed",

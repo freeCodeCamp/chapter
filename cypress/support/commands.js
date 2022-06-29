@@ -257,11 +257,17 @@ Cypress.Commands.add(
       failOnStatusCode: false,
     };
 
-    if (options.withAuth)
-      requestOptions.headers = {
-        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-      };
-
-    return cy.request(requestOptions);
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
   },
 );
+
+Cypress.Commands.add('authedRequest', (options) => {
+  return cy.request({
+    ...options,
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+    },
+  });
+});

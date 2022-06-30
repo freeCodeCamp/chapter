@@ -24,7 +24,6 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
-      - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
 - [Running Remotely](#running-remotely)
 - [Troubleshooting](#troubleshooting)
     
@@ -275,37 +274,28 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 <details><summary><b>Step 5</b> - Propose a Pull Request (PR)</summary>
 
-When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
+1. A yellow message bar should appear on the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter) after you've committed & pushed changes to a branch on your fork. Follow the green _Compare and Pull Request_ button to open a new "Open a pull request" form page.
 
-_fix/feat/chore/refactor/docs/perf (scope): PR Title_
+2. The _main_ branch of the [Chapter project](https://github.com/freeCodeCamp/chapter) should automatically show as being [compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) your proposed changes, like:
+    > [base repository: freeCodeCamp/chapter] [base:main] **<-** [your fork] [your proposed branch]
 
-An example is _feat(client): night mode_.
+3. Write a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title) in the title field. A common pattern you may like to follow is: _**Type**(optional **scope**): With a Thoughtful Title_.
+    > * Example: _feat(client): Send Email on RSVP Confirmation_
+    > * **Type** examples
+    >   * chore: Changes that are not related to code, tests, or docs.
+    >   * docs: Changes to the contributing guidelines, etc.
+    >   * feat: A new feature
+    >   * fix: A bug fix
+    >   * refactor: A code change that neither fixes a bug nor adds a feature
+    >   * test: Changes related to tests
+    > * **(Scope)** examples: api, build, ci, client, db, perf, style, ui 
 
-| Scope | Documentation |
-|---|---|
-| _api_ | For Pull Requests making changes to the APIs, routes and its architecture |
-| _db_ | For Pull Requests making changes related to database |
-| _client_ | For Pull Requests making changes to client platform logic or user interface |
-| _docs_ | For Pull Requests making changes to the project's documentation |
+4. Write a more detailed explaination of the changes in the form's text area.
+    > The text area will automatically include a checklist of items to confirm before submitting the pull request.
 
-1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
+    > At the end of your PR's description, you may append a pattern like `Closes #1337` to tell GitHub to automatically close a specific issue number when the PR is accepted and merged.
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
-
-4. In the body of your PR include a more detailed summary of the changes you made and why.
-
-    - You will be presented with a pull request template. This is a checklist that you should have followed before opening the pull request.
-
-    - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
-
-    - If the PR is meant to fix an existing bug/issue then, at the end of
-      your PR's description, append the keyword _closes_ and #xxxx (where xxxx
-      is the issue number). Example: _closes #1337_. This tells GitHub to
-      automatically close the existing issue, if the PR is accepted and merged.
-
-You have successfully created a PR. Congratulations! :tada:
+Submit the form and you have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
@@ -569,7 +559,7 @@ The _prisma.schema_ file is the single source of truth for the database schema.
 
 #### Creating a Migration
 
-The database is currently undergoing a re-write and we are using `prisma db push` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
+The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
 
 # Running Remotely
 

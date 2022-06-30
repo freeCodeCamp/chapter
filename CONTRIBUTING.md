@@ -394,7 +394,19 @@ Once the app has started you should be able to pull up these URLs in your web br
 * GraphQL Playground - http://localhost:5000/graphql
 * MailHog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface 
 
-Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog) 
+Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog)
+</details>
+
+<details><summary><b>Step 5</b> - Log In As Different Users</summary>
+
+The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses:
+
+- `foo@bar.com` (an _owner_ with full permissions)
+- `admin@of.a.chapter` (an _administrator_ of chapter 1)
+- The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`
+
+In development the login link will appear in the server logs and the email that Mailhog intercepts.
+
 </details>
 
 # Adding a New Feature

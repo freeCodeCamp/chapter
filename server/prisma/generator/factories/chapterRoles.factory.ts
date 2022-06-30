@@ -1,6 +1,6 @@
 import { prisma } from '../../../src/prisma';
 
-const chapterPermissions = [
+export const chapterPermissions = [
   'chapter-edit',
   'event-create',
   'event-edit',
@@ -11,17 +11,10 @@ const chapterPermissions = [
 
 type Permissions = typeof chapterPermissions[number];
 
-const roles: Array<{ name: string; permissions: Permissions[] }> = [
+const roles: Array<{ name: string; permissions: readonly Permissions[] }> = [
   {
     name: 'administrator',
-    permissions: [
-      'chapter-edit',
-      'event-create',
-      'event-edit',
-      'rsvp-delete',
-      'rsvp-confirm',
-      'rsvp',
-    ],
+    permissions: chapterPermissions,
   },
   { name: 'member', permissions: ['rsvp'] },
 ];

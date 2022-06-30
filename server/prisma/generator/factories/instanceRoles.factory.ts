@@ -1,14 +1,14 @@
 import { prisma } from '../../../src/prisma';
 
+import { chapterPermissions } from './chapterRoles.factory';
+
 const instancePermissions = [
   'chapter-create',
-  'chapter-edit',
   'change-instance-role',
   'view-users',
-  'rsvp-confirm',
-  'rsvp-delete',
-  'rsvp',
+  ...chapterPermissions,
 ] as const;
+
 type Permissions = typeof instancePermissions[number];
 interface InstanceRole {
   name: string;
@@ -18,6 +18,7 @@ interface InstanceRole {
 const roles: InstanceRole[] = [
   {
     name: 'owner',
+    // the owners should be able to do everything
     permissions: instancePermissions,
   },
   { name: 'member', permissions: [] },

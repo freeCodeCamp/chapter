@@ -26,7 +26,7 @@ export type Scalars = {
 export type AuthenticateType = {
   __typename?: 'AuthenticateType';
   token: Scalars['String'];
-  user: User;
+  user: UserWithInstanceRole;
 };
 
 export type Chapter = {
@@ -634,10 +634,20 @@ export type AuthenticateMutation = {
     __typename?: 'AuthenticateType';
     token: string;
     user: {
-      __typename?: 'User';
+      __typename?: 'UserWithInstanceRole';
       id: number;
       first_name: string;
       last_name: string;
+      instance_role: {
+        __typename?: 'InstanceRole';
+        instance_role_permissions: Array<{
+          __typename?: 'InstanceRolePermission';
+          instance_permission: {
+            __typename?: 'InstancePermission';
+            name: string;
+          };
+        }>;
+      };
     };
   };
 };
@@ -1458,6 +1468,13 @@ export const AuthenticateDocument = gql`
         id
         first_name
         last_name
+        instance_role {
+          instance_role_permissions {
+            instance_permission {
+              name
+            }
+          }
+        }
       }
     }
   }

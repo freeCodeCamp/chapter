@@ -38,7 +38,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "UserWithInstanceRole",
                 "ofType": null
               }
             },

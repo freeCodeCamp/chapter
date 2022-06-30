@@ -64,7 +64,7 @@ Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) 
 
 * Please read the [contributing guidelines  and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
 
-* [Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected and follow announcements.
+* [Join our chat](https://discord.gg/QbQd7BpaaH) to get connected and follow announcements.
 
 
 ## License

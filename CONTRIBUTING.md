@@ -398,6 +398,7 @@ Note, MailHog is not started automatically in manual mode.  The easiest way to d
 </details>
 
 <details><summary><b>Step 5</b> - Log In As Different Users</summary>
+
 The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses. The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`, but `foo@bar.com` (a user with full permissions) and `admin@of.a.chapter` (an admin of chapter 1) should be available.
 
 In development the login link will appear in the server logs and the email that Mailhog intercepts.

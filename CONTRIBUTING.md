@@ -34,7 +34,7 @@ Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://w
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct), so please take a moment to read the 196 word policy.
 
-[Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the project's development team.
+[Join our chat](https://discord.gg/PRyKn3Vbay) to get connected with the project's development team.
 
 # Contributing Code
 
@@ -428,7 +428,7 @@ The Chapter client uses the React framework [Next.js](https://nextjs.org/) with 
 
 We are in the early stages of development on this new application, but we value any contributions and insights.  In order to prevent duplication, please browse and search our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list and [existing issues](https://github.com/freeCodeCamp/chapter/issues).
   
-Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
+Please [join our chat](https://discord.gg/PRyKn3Vbay) to stay in the loop.
 </details>
 
 <details><summary>I found a typo. Should I report an issue before I can make a pull request?</summary>
@@ -440,7 +440,7 @@ For typos and other wording changes, you can directly open pull requests without
 
 Please read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
 
-Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://chat.freecodecamp.org/channel/chapter). Please be polite and patient and our community members will be glad to guide you to next steps.
+Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://discord.gg/PRyKn3Vbay). Please be polite and patient and our community members will be glad to guide you to next steps.
 
 When in doubt, you can reach out to current lead(s):
 
@@ -583,7 +583,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -599,7 +599,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -622,7 +622,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -633,7 +633,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -653,7 +653,7 @@ When not running locally, the client needs to be passed the server's location by
 
 * **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -671,7 +671,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -697,5 +697,5 @@ When not running locally, the client needs to be passed the server's location by
   **Solution:**  Allow Access.
 
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/PRyKn3Vbay) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>

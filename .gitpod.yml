@@ -11,16 +11,12 @@ tasks:
   # both .bashrc and nvm settings get wiped when a workspace is restarted, so
   # they need setting here
   - before: |
-      echo 'export DB_PORT=5432' >> ~/.bashrc &&
-      export DB_PORT=5432 &&
       echo NEXT_PUBLIC_APOLLO_SERVER=$(gp url 5000) > client/.env.development.local &&
       nvm install lts/gallium && nvm alias default lts/gallium
     # the rest, environment variables, installation and db setup, get persisted,
     # so we can save time and use init:
     init: |
       cp .env.example .env &&
-      createuser -d postgres &&
-      createdb chapter &&
       npm ci &&
       npm run db:reset
     command: npm run both

@@ -119,7 +119,7 @@ describe('event page', () => {
     cy.contains(/subscribed/);
   });
 
-  it('should reject requests from logged out users and non-members', () => {
+  it('should reject requests from logged out users, non-members and banned users', () => {
     // logged out user
     cy.logout();
     cy.reload();
@@ -137,6 +137,18 @@ describe('event page', () => {
     // newly registered user (without a chapter_users record)
     cy.register();
     cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then((response) => {
+      expect(response.status).to.eq(200);
+      const errors = response.body.errors;
+      expect(errors).to.have.length(1);
+      expect(errors[0].message).to.eq(
+        "Access denied! You don't have permission for this action!",
+      );
+    });
+
+    // banned user
+    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
     cy.reload();
     cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then((response) => {
       expect(response.status).to.eq(200);

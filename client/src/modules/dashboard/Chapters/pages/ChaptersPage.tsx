@@ -4,7 +4,8 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import React from 'react';
 
-import { useChaptersQuery, useMeQuery } from '../../../../generated/graphql';
+import { useAuth } from '../../../auth/store';
+import { useChaptersQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChaptersPage: NextPage = () => {
@@ -13,16 +14,17 @@ export const ChaptersPage: NextPage = () => {
     error: chapterError,
     data: chapterData,
   } = useChaptersQuery();
-  const { loading: meLoading, error: meError, data: meData } = useMeQuery();
 
-  // TODO: this is stringly typed and should be refactored. This, and the prisma
-  // factories, should both draw from a single source of truth (an enum,
-  // probably)
+  const { user } = useAuth();
+
+  // TODO: the permission names are stringly typed and should be refactored.
+  // This page, and the prisma factories, should both draw from a single source
+  // of truth (an enum, probably)
 
   // TODO: Also, the hasPermission function should be a helper, since this page
   // does not need to know the details of the permissions system.
   const hasPermissionToCreateChapter =
-    meData?.me?.instance_role.instance_role_permissions.find(
+    user?.instance_role.instance_role_permissions.find(
       (x) => x.instance_permission.name === 'chapter-create',
     );
 
@@ -31,16 +33,7 @@ export const ChaptersPage: NextPage = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapters</Heading>
-          {meLoading ? (
-            <Heading data-cy="me-loading">Loading...</Heading>
-          ) : meError ? (
-            <>
-              <Heading>Error</Heading>
-              <Text>
-                {meError?.name}: {meError?.message}
-              </Text>
-            </>
-          ) : !hasPermissionToCreateChapter ? null : (
+          {hasPermissionToCreateChapter && (
             <LinkButton data-cy="new-chapter" href="/dashboard/chapters/new">
               Add new
             </LinkButton>

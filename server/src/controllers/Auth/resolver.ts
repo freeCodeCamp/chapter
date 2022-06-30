@@ -25,8 +25,8 @@ type TokenResponseType = {
 @Resolver()
 export class AuthResolver {
   @Query(() => UserWithInstanceRole, { nullable: true })
-  async me(@Ctx() ctx: GQLCtx): Promise<User | null> {
-    return ctx.user || null;
+  async me(@Ctx() ctx: GQLCtx): Promise<UserWithInstanceRole | null> {
+    return ctx.user ?? null;
   }
 
   @Mutation(() => User)
@@ -94,6 +94,15 @@ export class AuthResolver {
 
     const user = await prisma.users.findUnique({
       where: { email: data.email },
+      include: {
+        instance_role: {
+          include: {
+            instance_role_permissions: {
+              include: { instance_permission: true },
+            },
+          },
+        },
+      },
     });
 
     const authToken = sign({ id: user.id }, getConfig('JWT_SECRET'), {

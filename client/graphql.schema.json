@@ -38,7 +38,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "UserWithInstanceRole",
                 "ofType": null
               }
             },
@@ -4094,7 +4094,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "User",
+              "name": "UserWithInstanceRole",
               "ofType": null
             },
             "isDeprecated": false,

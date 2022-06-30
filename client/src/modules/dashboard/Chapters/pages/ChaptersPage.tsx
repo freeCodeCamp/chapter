@@ -4,31 +4,53 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import React from 'react';
 
+import { useAuth } from '../../../auth/store';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChaptersPage: NextPage = () => {
-  const { loading, error, data } = useChaptersQuery();
+  const {
+    loading: chapterLoading,
+    error: chapterError,
+    data: chapterData,
+  } = useChaptersQuery();
+
+  const { user } = useAuth();
+
+  // TODO: the permission names are stringly typed and should be refactored.
+  // This page, and the prisma factories, should both draw from a single source
+  // of truth (an enum, probably)
+
+  // TODO: Also, the hasPermission function should be a helper, since this page
+  // does not need to know the details of the permissions system.
+  const hasPermissionToCreateChapter =
+    user?.instance_role.instance_role_permissions.find(
+      (x) => x.instance_permission.name === 'chapter-create',
+    );
 
   return (
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapters</Heading>
-          <LinkButton href="/dashboard/chapters/new">Add new</LinkButton>
+          {hasPermissionToCreateChapter && (
+            <LinkButton data-cy="new-chapter" href="/dashboard/chapters/new">
+              Add new
+            </LinkButton>
+          )}
         </Flex>
-        {loading ? (
+        {chapterLoading ? (
           <Heading>Loading...</Heading>
-        ) : error || !data?.chapters ? (
+        ) : chapterError || !chapterData?.chapters ? (
           <>
             <Heading>Error</Heading>
             <Text>
-              {error?.name}: {error?.message}
+              {chapterError?.name}: {chapterError?.message}
             </Text>
           </>
         ) : (
           <DataTable
-            data={data.chapters}
+            data={chapterData.chapters}
             keys={['name', 'actions'] as const}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             mapper={{

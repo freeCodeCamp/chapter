@@ -1,3 +1,13 @@
+const chapterData = {
+  name: 'Name goes here',
+  description: 'Summary of the chapter',
+  city: 'City it is based in',
+  region: 'Location in the world',
+  country: 'Home country',
+  category: 'Type of chapter',
+  imageUrl: 'https://example.com/image.jpg',
+};
+
 describe('chapters dashboard', () => {
   before(() => {
     cy.exec('npm run db:seed');
@@ -11,6 +21,7 @@ describe('chapters dashboard', () => {
   });
 
   it('should have a table with links to view, create and edit chapters', () => {
+    cy.login();
     cy.visit('/dashboard/chapters');
     cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
@@ -20,26 +31,19 @@ describe('chapters dashboard', () => {
     cy.get('a[href="/dashboard/chapters/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create a chapter', () => {
-    const fix = {
-      name: 'Name goes here',
-      description: 'Summary of the chapter',
-      city: 'City it is based in',
-      region: 'Location in the world',
-      country: 'Home country',
-      category: 'Type of chapter',
-      imageUrl: 'https://example.com/image.jpg',
-    };
+  it('lets an instance owner create a chapter', () => {
     cy.login();
     cy.visit('/dashboard/chapters');
-    cy.get('a[href="/dashboard/chapters/new"]').click();
-    cy.findByRole('textbox', { name: 'Chapter name' }).type(fix.name);
-    cy.findByRole('textbox', { name: 'Description' }).type(fix.description);
-    cy.findByRole('textbox', { name: 'City' }).type(fix.city);
-    cy.findByRole('textbox', { name: 'Region' }).type(fix.region);
-    cy.findByRole('textbox', { name: 'Country' }).type(fix.country);
-    cy.findByRole('textbox', { name: 'Category' }).type(fix.category);
-    cy.findByRole('textbox', { name: 'Image Url' }).type(fix.imageUrl);
+    cy.get('[data-cy="new-chapter"]').click();
+    cy.findByRole('textbox', { name: 'Chapter name' }).type(chapterData.name);
+    cy.findByRole('textbox', { name: 'Description' }).type(
+      chapterData.description,
+    );
+    cy.findByRole('textbox', { name: 'City' }).type(chapterData.city);
+    cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
+    cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
+    cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
+    cy.findByRole('textbox', { name: 'Image Url' }).type(chapterData.imageUrl);
 
     cy.findByRole('form', { name: 'Add chapter' })
       .findByRole('button', {
@@ -53,6 +57,59 @@ describe('chapters dashboard', () => {
     // data
 
     // confirm that the test data appears in the new chapter
-    cy.contains(fix.name);
+    cy.contains(chapterData.name);
   });
+
+  it('only allows owners to create chapters', () => {
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+
+    cy.visit('/dashboard/chapters');
+    cy.get('[data-cy="new-chapter"]').should('not.exist');
+
+    createChapter(chapterData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).to.exist;
+      expect(response.body.errors).to.have.length(1);
+    });
+
+    // switch to owner account and try to create a chapter
+    cy.login();
+    cy.reload();
+
+    createChapter(chapterData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+
+      cy.visit(`/dashboard/chapters/${response.body.data.createChapter.id}`);
+      cy.contains(chapterData.name);
+    });
+  });
+
+  function createChapter(data) {
+    const createChapterData = {
+      operationName: 'createChapter',
+      variables: {
+        data,
+      },
+      query: `mutation createChapter($data: CreateChapterInputs!) {
+      createChapter(data: $data) {
+        id
+        name
+        description
+        city
+        region
+        country
+        chatUrl
+      }
+    }
+  `,
+    };
+    const requestOptions = {
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: createChapterData,
+    };
+
+    return cy.authedRequest(requestOptions);
+  }
 });

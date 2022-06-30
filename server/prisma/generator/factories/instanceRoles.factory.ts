@@ -1,25 +1,28 @@
 import { prisma } from '../../../src/prisma';
 
-import { chapterPermissions } from './chapterRoles.factory';
+import { ChapterPermission } from './chapterRoles.factory';
 
-const instancePermissions = [
-  'chapter-create',
-  'change-instance-role',
-  'view-users',
-  ...chapterPermissions,
-] as const;
+enum InstancePermission {
+  ChapterCreate = 'chapter-create',
+  ChangeInstanceRole = 'change-instance-role',
+  ViewUsers = 'view-users',
+}
 
-type Permissions = typeof instancePermissions[number];
+// Ideally this would be a new enum, but TS does not (to my knowledge) support
+// that yet.
+export const Permission = { ...InstancePermission, ...ChapterPermission };
+const allPermissions = Object.values(Permission);
+
 interface InstanceRole {
   name: string;
-  permissions: readonly Permissions[];
+  permissions: typeof allPermissions;
 }
 
 const roles: InstanceRole[] = [
   {
     name: 'owner',
     // the owners should be able to do everything
-    permissions: instancePermissions,
+    permissions: allPermissions,
   },
   { name: 'member', permissions: [] },
 ];
@@ -41,7 +44,7 @@ const createRole = async ({ name, permissions }: InstanceRole) => {
 
 const createInstanceRoles = async () => {
   await prisma.instance_permissions.createMany({
-    data: instancePermissions.map((permission) => ({ name: permission })),
+    data: allPermissions.map((permission) => ({ name: permission })),
   });
   const createdRoles = await Promise.all(roles.map(createRole));
   return createdRoles.reduce((acc, role) => ({

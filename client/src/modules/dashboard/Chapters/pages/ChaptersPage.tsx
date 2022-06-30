@@ -4,7 +4,7 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import React from 'react';
 
-import { useAuth } from '../../../auth/store';
+import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 
@@ -15,18 +15,10 @@ export const ChaptersPage: NextPage = () => {
     data: chapterData,
   } = useChaptersQuery();
 
-  const { user } = useAuth();
-
   // TODO: the permission names are stringly typed and should be refactored.
   // This page, and the prisma factories, should both draw from a single source
   // of truth (an enum, probably)
-
-  // TODO: Also, the hasPermission function should be a helper, since this page
-  // does not need to know the details of the permissions system.
-  const hasPermissionToCreateChapter =
-    user?.instance_role.instance_role_permissions.find(
-      (x) => x.instance_permission.name === 'chapter-create',
-    );
+  const hasPermissionToCreateChapter = useCheckPermission('chapter-create');
 
   return (
     <Layout>

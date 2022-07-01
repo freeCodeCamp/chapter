@@ -1,4 +1,4 @@
-import { Button, Select, Text, UseDisclosureReturn } from '@chakra-ui/react';
+import { Select, Text, UseDisclosureReturn } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import React from 'react';
 import { useForm } from 'react-hook-form';

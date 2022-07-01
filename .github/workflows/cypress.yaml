@@ -63,7 +63,6 @@ jobs:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
           start: npm start
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
-          config: baseUrl=http://localhost:3000
           browser: ${{ matrix.browsers }}
   
       - name: Print Cypress coverage report

@@ -105,9 +105,8 @@ describe('event dashboard', () => {
 
     it('prevents members from confirming or kicking users', () => {
       const eventId = 1;
-      // Start as the instance owner to ensure we can find the RSVPs
-      cy.login();
 
+      // Starting as the instance owner to ensure we can find the RSVPs
       cy.getEventUsers(eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
           ({ rsvp: { name } }) => name === 'yes',

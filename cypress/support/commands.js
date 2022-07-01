@@ -256,15 +256,6 @@ Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
   });
 });
 
-Cypress.Commands.add('authedRequest', (options) => {
-  return cy.request({
-    ...options,
-    headers: {
-      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-    },
-  });
-});
-
 Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
   const confirmMutation = {
     operationName: 'confirmRsvp',

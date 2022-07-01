@@ -33,7 +33,7 @@ jobs:
           cp .env.example .env
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           env: DOCKER_BUILDKIT=1
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}

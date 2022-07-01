@@ -58,7 +58,7 @@ jobs:
         run: npm run db:reset
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
           start: npm start

@@ -11,6 +11,23 @@ const testEvent = {
   imageUrl: 'https://test.event.org/image',
 };
 
+// TODO: Consolidate fixtures.
+const eventInChapterTwoData = {
+  venue_id: 1,
+  chapter_id: 1,
+  sponsor_ids: [],
+  name: 'TestEventInChapterTwo',
+  description: 'Test Description',
+  url: 'https://test.event.org',
+  venue_type: 'PhysicalAndOnline',
+  capacity: 10,
+  image_url: 'https://test.event.org/image',
+  streaming_url: 'https://test.event.org/video',
+  start_at: '2022-01-01T00:01',
+  ends_at: '2022-01-02T00:02',
+  tags: 'Test, Event, Tag',
+};
+
 describe('chapter dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -54,6 +71,39 @@ describe('chapter dashboard', () => {
     });
     cy.get('@invitation').then((mail) => {
       cy.checkBcc(mail).should('eq', true);
+    });
+  });
+
+  it('prevents members and admins from other chapters from creating events', () => {
+    // normal member
+    cy.register();
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.createEvent(eventInChapterTwoData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).to.exist;
+      expect(response.body.errors).to.have.length(1);
+    });
+
+    // admin of a different chapter
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.createEvent(eventInChapterTwoData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).to.exist;
+      expect(response.body.errors).to.have.length(1);
+    });
+
+    // switch the chapterId to match the admin's chapter
+    cy.createEvent({
+      ...eventInChapterTwoData,
+      name: 'Created by Admin',
+      chapter_id: 1,
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+
+      cy.visit(`/dashboard/events/`);
+      cy.contains('Created by Admin');
+      cy.contains(eventInChapterTwoData.name).should('not.exist');
     });
   });
 

@@ -89,6 +89,7 @@
     "husky": "7.0.4",
     "is-docker": "2.2.1",
     "jest": "28.1.2",
+    "jest-environment-jsdom": "28.1.2",
     "lint-staged": "13.0.3",
     "lodash": "4.17.21",
     "prettier": "2.7.1",

@@ -102,5 +102,35 @@ describe('event dashboard', () => {
         cy.get('@rsvps').contains(userName);
       });
     });
+
+    it('prevents members from confirming or kicking users', () => {
+      const eventId = 1;
+      // Start as the instance owner to ensure we can find the RSVPs
+      cy.login();
+
+      cy.getEventUsers(eventId).then((eventUsers) => {
+        const confirmedUser = eventUsers.find(
+          ({ rsvp: { name } }) => name === 'yes',
+        ).user;
+        const waitlistUser = eventUsers.find(
+          ({ rsvp: { name } }) => name === 'waitlist',
+        ).user;
+
+        // Switch to new member before trying to confirm and kick
+        cy.register();
+        cy.login(Cypress.env('JWT_TEST_USER'));
+
+        cy.deleteRsvp(eventId, confirmedUser.id).then((response) => {
+          expect(response.status).to.eq(200);
+          expect(response.body.errors).to.exist;
+          expect(response.body.errors).to.have.length(1);
+        });
+        cy.confirmRsvp(eventId, waitlistUser.id).then((response) => {
+          expect(response.status).to.eq(200);
+          expect(response.body.errors).to.exist;
+          expect(response.body.errors).to.have.length(1);
+        });
+      });
+    });
   });
 });

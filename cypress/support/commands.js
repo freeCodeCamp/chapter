@@ -238,6 +238,56 @@ Cypress.Commands.add(
   },
 );
 
+Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
+  const kickMutation = {
+    operationName: 'deleteRsvp',
+    variables: {
+      eventId,
+      userId,
+    },
+    query: `mutation deleteRsvp($eventId: Int!, $userId: Int!) {
+      deleteRsvp(eventId: $eventId, userId: $userId)
+    }`,
+  };
+  return cy.authedRequest({
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: kickMutation,
+  });
+});
+
+Cypress.Commands.add('authedRequest', (options) => {
+  return cy.request({
+    ...options,
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+    },
+  });
+});
+
+Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
+  const confirmMutation = {
+    operationName: 'confirmRsvp',
+    variables: {
+      eventId,
+      userId,
+    },
+    query: `mutation confirmRsvp($eventId: Int!, $userId: Int!) {
+      confirmRsvp(eventId: $eventId, userId: $userId) {
+        rsvp {
+          updated_at
+          name
+        }
+      }
+    }`,
+  };
+  return cy.authedRequest({
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: confirmMutation,
+  });
+});
+
 Cypress.Commands.add('authedRequest', (options) => {
   return cy.request({
     ...options,

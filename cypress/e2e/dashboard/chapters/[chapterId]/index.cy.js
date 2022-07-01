@@ -18,7 +18,7 @@ describe('chapter dashboard', () => {
   });
 
   it('emails interested users when an event is created', () => {
-    createEvent(1);
+    createEventViaUI(1);
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
     cy.wrap(Object.entries(testEvent)).each(([key, value]) => {
@@ -52,7 +52,7 @@ describe('chapter dashboard', () => {
     });
   });
 
-  function createEvent(chapterId) {
+  function createEventViaUI(chapterId) {
     cy.visit(`/dashboard/chapters/${chapterId}`);
     cy.get(`a[href="/dashboard/chapters/${chapterId}/new_event"]`).click();
     cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.title);

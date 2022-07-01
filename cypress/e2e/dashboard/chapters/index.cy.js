@@ -66,7 +66,7 @@ describe('chapters dashboard', () => {
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');
 
-    createChapter(chapterData).then((response) => {
+    cy.createChapter(chapterData).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).to.exist;
       expect(response.body.errors).to.have.length(1);
@@ -76,7 +76,7 @@ describe('chapters dashboard', () => {
     cy.login();
     cy.reload();
 
-    createChapter(chapterData).then((response) => {
+    cy.createChapter(chapterData).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).not.to.exist;
 
@@ -84,32 +84,4 @@ describe('chapters dashboard', () => {
       cy.contains(chapterData.name);
     });
   });
-
-  function createChapter(data) {
-    const createChapterData = {
-      operationName: 'createChapter',
-      variables: {
-        data,
-      },
-      query: `mutation createChapter($data: CreateChapterInputs!) {
-      createChapter(data: $data) {
-        id
-        name
-        description
-        city
-        region
-        country
-        chatUrl
-      }
-    }
-  `,
-    };
-    const requestOptions = {
-      method: 'POST',
-      url: 'http://localhost:5000/graphql',
-      body: createChapterData,
-    };
-
-    return cy.authedRequest(requestOptions);
-  }
 });

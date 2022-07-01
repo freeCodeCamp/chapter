@@ -210,6 +210,56 @@ Cypress.Commands.add('createEvent', (data) => {
     });
 });
 
+Cypress.Commands.add('createChapter', (data) => {
+  const createChapterData = {
+    operationName: 'createChapter',
+    variables: {
+      data,
+    },
+    query: `mutation createChapter($data: CreateChapterInputs!) {
+      createChapter(data: $data) {
+        id
+        name
+        description
+        city
+        region
+        country
+        chatUrl
+      }
+    }
+  `,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: createChapterData,
+  };
+
+  return cy.authedRequest(requestOptions);
+});
+
+Cypress.Commands.add('updateChapter', (chapterId, data) => {
+  const chapterMutation = {
+    operationName: 'updateChapter',
+    variables: {
+      id: chapterId,
+      data: { ...data },
+    },
+    query: `mutation updateChapter($id: Int!, $data: UpdateChapterInputs!) {
+      updateChapter(id: $id, data: $data) {
+        id
+      }
+    }`,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: chapterMutation,
+  };
+
+  return cy.authedRequest(requestOptions);
+});
+
 Cypress.Commands.add('deleteEvent', (eventId) => {
   const eventMutation = {
     operationName: 'deleteEvent',

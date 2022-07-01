@@ -63,6 +63,7 @@ export class ChapterResolver {
     return prisma.chapters.create({ data: chapterData });
   }
 
+  @Authorized('chapter-edit')
   @Mutation(() => Chapter)
   async updateChapter(
     @Arg('id', () => Int) id: number,

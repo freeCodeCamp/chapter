@@ -402,12 +402,12 @@ export class EventResolver {
     return true;
   }
 
+  @Authorized('event-create')
   @Mutation(() => Event)
   async createEvent(
     @Arg('data') data: CreateEventInputs,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<Event | null> {
-    if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venue_id) {
       venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });

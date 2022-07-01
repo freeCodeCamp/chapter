@@ -210,6 +210,34 @@ Cypress.Commands.add('createEvent', (data) => {
     });
 });
 
+Cypress.Commands.add('createChapter', (data) => {
+  const createChapterData = {
+    operationName: 'createChapter',
+    variables: {
+      data,
+    },
+    query: `mutation createChapter($data: CreateChapterInputs!) {
+      createChapter(data: $data) {
+        id
+        name
+        description
+        city
+        region
+        country
+        chatUrl
+      }
+    }
+  `,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: createChapterData,
+  };
+
+  return cy.authedRequest(requestOptions);
+});
+
 Cypress.Commands.add('updateChapter', (chapterId, data) => {
   const chapterMutation = {
     operationName: 'updateChapter',

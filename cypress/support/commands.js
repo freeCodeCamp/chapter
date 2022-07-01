@@ -176,9 +176,7 @@ Cypress.Commands.add('createEvent', (data) => {
     url: 'http://localhost:5000/graphql',
     body: eventMutation,
   };
-  return cy.authedRequest(requestOptions).then((response) => {
-    return response.body.data.createEvent.id;
-  });
+  return cy.authedRequest(requestOptions);
 });
 
 Cypress.Commands.add('createChapter', (data) => {

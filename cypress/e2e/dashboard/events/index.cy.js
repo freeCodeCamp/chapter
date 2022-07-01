@@ -120,7 +120,8 @@ describe('events dashboard', () => {
     };
     const newVenueId = 2;
 
-    cy.createEvent(eventData).then((eventId) => {
+    cy.createEvent(eventData).then((response) => {
+      const eventId = response.body.data.createEvent.id;
       cy.visit(`/dashboard/events/${eventId}/edit`);
       cy.findByRole('combobox', { name: 'Venue' })
         .select(newVenueId)

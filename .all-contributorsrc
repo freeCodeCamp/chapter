@@ -598,6 +598,15 @@
         "test",
         "code"
       ]
+    },
+    {
+      "login": "shootermv",
+      "name": "Moshe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1336862?v=4",
+      "profile": "http://gs500coder.blogspot.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

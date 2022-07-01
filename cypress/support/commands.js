@@ -148,31 +148,6 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
     .then((response) => response.body.data.event.event_users);
 });
 
-Cypress.Commands.add('getRSVPs', (eventId) => {
-  const chapterQuery = {
-    operationName: 'rsvpsForEvent',
-    variables: {
-      id: eventId,
-    },
-    query: `query rsvpsForEvent($eventId: Int!) {
-      event(id: $eventId) {
-        rsvps {
-          on_waitlist
-          canceled
-          user {
-            id
-            name
-            email
-          }
-        }
-      }
-    }`,
-  };
-  return cy
-    .request('POST', 'http://localhost:5000/graphql', chapterQuery)
-    .then((response) => response.body.data.event.rsvps);
-});
-
 Cypress.Commands.add('waitUntilMail', (alias) => {
   cy.waitUntil(() =>
     alias

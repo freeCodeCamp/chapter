@@ -12,6 +12,11 @@ const testEvent = {
 };
 
 describe('chapter dashboard', () => {
+  beforeEach(() => {
+    cy.exec('npm run db:seed');
+    cy.login();
+  });
+
   it('should have link to add event for chapter', () => {
     cy.visit('/dashboard/chapters/1');
     cy.get('a[href="/dashboard/chapters/1/new_event"').should('be.visible');

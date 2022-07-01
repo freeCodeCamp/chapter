@@ -40,9 +40,7 @@ We are using the following tools:
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-* [chai](https://www.chaijs.com/) - for writing unit tests.
-  * [sinon](https://sinonjs.org/)
-  * [sinon-chai](https://github.com/domenic/sinon-chai)
+* [Jest](https://jestjs.io/) - for writing unit tests.
 
 For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
 ## User Stories

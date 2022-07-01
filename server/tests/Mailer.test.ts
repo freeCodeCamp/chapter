@@ -1,23 +1,5 @@
-import assert from 'assert';
-import chai, { expect } from 'chai';
-import { match, mock, stub, restore } from 'sinon';
-import sinonChai from 'sinon-chai';
-
 import MailerService, { MailerData } from '../src/services/MailerService';
-import Utilities from '../src/util/Utilities';
 
-chai.use(sinonChai);
-
-beforeEach(() => {
-  stub(console, 'warn');
-});
-
-afterEach(() => {
-  // Restore the default sandbox here
-  restore();
-});
-
-// Setup
 const emailAddresses = [
   '123@test.com',
   '567@tester.com',
@@ -53,48 +35,60 @@ const dataWithOptional: MailerData = {
 };
 
 describe('MailerService Class', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('Should assign the email username, password, and service to transporter', () => {
     const mailer = new MailerService(dataWithOptional);
 
     const { auth, service } = mailer.transporter.options as any;
-    assert.equal(service, mailer.emailService);
-    assert.equal(auth.user, mailer.emailUsername);
-    assert.equal(auth.pass, mailer.emailPassword);
+    expect(service).toEqual(mailer.emailService);
+    expect(auth.user).toEqual(mailer.emailUsername);
+    expect(auth.pass).toEqual(mailer.emailPassword);
   });
 
   it('Should correctly instantiate values', () => {
     const mailer = new MailerService(dataWithOptional);
 
-    assert.equal(subject, mailer.subject);
-    assert.equal(htmlEmail, mailer.htmlEmail);
-    assert.equal(backupText, mailer.backupText);
-    assert.equal(calendar, mailer.iCalEvent);
-    expect(emailAddresses).to.have.members(mailer.emailList);
+    expect(subject).toEqual(mailer.subject);
+    expect(htmlEmail).toEqual(mailer.htmlEmail);
+    expect(backupText).toEqual(mailer.backupText);
+    expect(calendar).toEqual(mailer.iCalEvent);
+    expect(emailAddresses).toEqual(expect.arrayContaining(mailer.emailList));
   });
 
   it("Should use 'bcc' if sending to multiple email addresses", async () => {
     const mailer = new MailerService(data);
-    const mockSendMail = mock(mailer.transporter).expects('sendMail');
+    const mockSendMail = jest
+      .spyOn(mailer.transporter, 'sendMail')
+      .mockImplementation(jest.fn());
     mailer.sendEmail();
-
-    expect(mockSendMail.calledOnceWith(match({ bcc: emailAddresses }))).to.be
-      .true;
-    expect(mockSendMail.neverCalledWith(match.has('to'))).to.be.true;
+    expect(mockSendMail).toHaveBeenCalledWith(
+      expect.objectContaining({ bcc: emailAddresses }),
+    );
+    expect(mockSendMail).not.toHaveBeenCalledWith(
+      expect.objectContaining({ to: expect.arrayContaining([]) }),
+    );
   });
 
   it('Should provide a blank string if backup text is undefined', () => {
     const mailer = new MailerService(data);
-    assert.equal(mailer.backupText, '');
+    expect(mailer.backupText).toEqual('');
   });
 
   it('Should default iCalEvent to undefined', () => {
     const mailer = new MailerService(data);
-    expect(mailer.iCalEvent).to.be.undefined;
+    expect(mailer.iCalEvent).toBeUndefined();
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {
-    stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
+    // stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
     new MailerService(data);
-    expect(console.warn).to.have.been.calledOnce;
+    expect(console.warn).toHaveBeenCalledTimes(1);
   });
 });

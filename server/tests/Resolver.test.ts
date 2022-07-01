@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { expect } from 'chai';
 import { GraphQLError } from 'graphql';
 import { ArgumentValidationError } from 'type-graphql/dist/errors/ArgumentValidationError';
 
@@ -42,7 +41,7 @@ describe('Test sendEmail resolver', () => {
 
     expect(
       error?.originalError?.validationErrors[0]?.constraints?.maxLength,
-    ).to.equal('subject must be shorter than or equal to 998 characters');
+    ).toEqual('subject must be shorter than or equal to 998 characters');
   });
 
   it('Should reject the mutation call when email recipient list is empty', async () => {
@@ -64,7 +63,7 @@ describe('Test sendEmail resolver', () => {
     expect(
       error?.originalError?.validationErrors[0]?.constraints
         ?.IsListEmptyConstraint,
-    ).to.equal('email list cannot be empty');
+    ).toEqual('email list cannot be empty');
   });
 
   it('Should reject the mutation call when there is an improperly formatted email in the list', async () => {
@@ -85,7 +84,7 @@ describe('Test sendEmail resolver', () => {
 
     expect(
       error?.originalError?.validationErrors[0]?.constraints?.isEmail,
-    ).to.equal('list contains invalid email');
+    ).toEqual('list contains invalid email');
   });
 
   it('Should reject the mutation call when a duplicate email address is found', async () => {
@@ -108,7 +107,7 @@ describe('Test sendEmail resolver', () => {
     expect(
       error?.originalError?.validationErrors[0]?.constraints
         ?.FindDuplicateEmailsConstraint,
-    ).to.equal('list contains one or more duplicate emails');
+    ).toEqual('list contains one or more duplicate emails');
   });
 
   it('Should call the mutation and return an email object when all inputs pass validation', async () => {
@@ -137,6 +136,6 @@ describe('Test sendEmail resolver', () => {
       },
     });
 
-    expect(email.data).to.deep.equal(expectedObject);
+    expect(email.data).toEqual(expectedObject);
   });
 });

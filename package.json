@@ -72,7 +72,7 @@
     "@typescript-eslint/parser": "5.30.0",
     "concurrently": "7.2.2",
     "cross-env": "7.0.3",
-    "cypress": "9.7.0",
+    "cypress": "10.3.0",
     "cypress-mailhog": "1.4.0",
     "cypress-wait-until": "1.7.2",
     "dotenv": "16.0.1",

@@ -39,6 +39,7 @@ We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of
 
 Consider the following options when you are ready to contribute code.
 * [GitPod.io](https://www.gitpod.io/docs) - a ready-to-code development environment that launches in the cloud.
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
 * Traditional Dev Environment - the common method of developing on a computer you control.

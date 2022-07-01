@@ -5,24 +5,20 @@ const instancePermissions = [
   'chapter-edit',
   'change-instance-role',
   'view-users',
+  'rsvp-confirm',
+  'rsvp-delete',
   'rsvp',
 ] as const;
 type Permissions = typeof instancePermissions[number];
 interface InstanceRole {
   name: string;
-  permissions: Permissions[];
+  permissions: readonly Permissions[];
 }
 
 const roles: InstanceRole[] = [
   {
     name: 'owner',
-    permissions: [
-      'chapter-create',
-      'chapter-edit',
-      'change-instance-role',
-      'view-users',
-      'rsvp',
-    ],
+    permissions: instancePermissions,
   },
   { name: 'member', permissions: [] },
 ];

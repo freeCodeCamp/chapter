@@ -4,6 +4,8 @@ const chapterPermissions = [
   'chapter-edit',
   'event-create',
   'event-edit',
+  'rsvp-delete',
+  'rsvp-confirm',
   'rsvp',
 ] as const;
 
@@ -12,7 +14,14 @@ type Permissions = typeof chapterPermissions[number];
 const roles: Array<{ name: string; permissions: Permissions[] }> = [
   {
     name: 'administrator',
-    permissions: ['chapter-edit', 'event-create', 'event-edit', 'rsvp'],
+    permissions: [
+      'chapter-edit',
+      'event-create',
+      'event-edit',
+      'rsvp-delete',
+      'rsvp-confirm',
+      'rsvp',
+    ],
   },
   { name: 'member', permissions: ['rsvp'] },
 ];

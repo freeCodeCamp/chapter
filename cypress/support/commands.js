@@ -148,31 +148,6 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
     .then((response) => response.body.data.event.event_users);
 });
 
-Cypress.Commands.add('getRSVPs', (eventId) => {
-  const chapterQuery = {
-    operationName: 'rsvpsForEvent',
-    variables: {
-      id: eventId,
-    },
-    query: `query rsvpsForEvent($eventId: Int!) {
-      event(id: $eventId) {
-        rsvps {
-          on_waitlist
-          canceled
-          user {
-            id
-            name
-            email
-          }
-        }
-      }
-    }`,
-  };
-  return cy
-    .request('POST', 'http://localhost:5000/graphql', chapterQuery)
-    .then((response) => response.body.data.event.rsvps);
-});
-
 Cypress.Commands.add('waitUntilMail', (alias) => {
   cy.waitUntil(() =>
     alias
@@ -312,6 +287,47 @@ Cypress.Commands.add(
       : cy.request(requestOptions);
   },
 );
+
+Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
+  const kickMutation = {
+    operationName: 'deleteRsvp',
+    variables: {
+      eventId,
+      userId,
+    },
+    query: `mutation deleteRsvp($eventId: Int!, $userId: Int!) {
+      deleteRsvp(eventId: $eventId, userId: $userId)
+    }`,
+  };
+  return cy.authedRequest({
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: kickMutation,
+  });
+});
+
+Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
+  const confirmMutation = {
+    operationName: 'confirmRsvp',
+    variables: {
+      eventId,
+      userId,
+    },
+    query: `mutation confirmRsvp($eventId: Int!, $userId: Int!) {
+      confirmRsvp(eventId: $eventId, userId: $userId) {
+        rsvp {
+          updated_at
+          name
+        }
+      }
+    }`,
+  };
+  return cy.authedRequest({
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: confirmMutation,
+  });
+});
 
 Cypress.Commands.add('authedRequest', (options) => {
   return cy.request({

@@ -20,6 +20,20 @@ const setupRoles = async (
 ): Promise<void> => {
   const usersData: Prisma.chapter_usersCreateManyInput[] = [];
   const subscribeIterator = makeBooleanIterator();
+
+  // We create one admin for chapter one, and none, so that we can test what
+  // happens if an this admin tries to make changes to a chapter that they don't
+  // have access to.
+  const adminData: Prisma.chapter_usersCreateManyInput = {
+    joined_date: new Date(),
+    chapter_id: 1,
+    user_id: adminId,
+    chapter_role_id: chapterRoles.administrator.id,
+    subscribed: true,
+  };
+
+  usersData.push(adminData);
+
   for (const chapterId of chapterIds) {
     const ownerData: Prisma.chapter_usersCreateManyInput = {
       joined_date: new Date(),
@@ -34,16 +48,6 @@ const setupRoles = async (
     };
 
     usersData.push(ownerData);
-
-    const adminData: Prisma.chapter_usersCreateManyInput = {
-      joined_date: new Date(),
-      chapter_id: chapterId,
-      user_id: adminId,
-      chapter_role_id: chapterRoles.administrator.id,
-      subscribed: true,
-    };
-
-    usersData.push(adminData);
 
     const bannedAdminData: Prisma.chapter_usersCreateManyInput = {
       joined_date: new Date(),

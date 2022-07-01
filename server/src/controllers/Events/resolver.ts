@@ -345,6 +345,7 @@ export class EventResolver {
     return userRole;
   }
 
+  @Authorized('rsvp-confirm')
   @Mutation(() => EventUser)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
@@ -387,6 +388,7 @@ export class EventResolver {
     });
   }
 
+  @Authorized('rsvp-delete')
   @Mutation(() => Boolean)
   async deleteRsvp(
     @Arg('eventId', () => Int) eventId: number,

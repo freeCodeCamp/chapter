@@ -20,11 +20,9 @@ export const createReminder = async ({
   await prisma.event_reminders.create({
     data: {
       event_user: {
-        // rsvp: {
-        //   name: rsvpName
-        // },
         connect: {
           user_id_event_id: {
+            rsvp_name: rsvpName,
             event_id: eventId,
             user_id: userId,
           },
@@ -40,6 +38,7 @@ export const deleteReminder = async (reminder: Reminder) =>
       user_id_event_id: {
         user_id: reminder.user_id,
         event_id: reminder.event_id,
+        rsvp_name: reminder.rsvp_name,
       },
     },
   });
@@ -66,11 +65,16 @@ export const updateRemindAt = async ({
   eventId,
   remindAt,
   userId,
+  rsvpName,
 }: ReminderData) =>
   await prisma.event_reminders.update({
     data: { remind_at: remindAt },
     where: {
-      user_id_event_id: { event_id: eventId, user_id: userId },
+      user_id_event_id: {
+        event_id: eventId,
+        user_id: userId,
+        rsvp_name: rsvpName,
+      },
     },
   });
 
@@ -105,6 +109,7 @@ export const lockForNotifying = async (reminder: Reminder) => {
     where: {
       user_id: reminder.user_id,
       event_id: reminder.event_id,
+      rsvp_name: reminder.rsvp_name,
       notifying: false,
     },
   });
@@ -117,8 +122,17 @@ export const lockForRetry = async (reminder: Reminder) => {
     where: {
       user_id: reminder.user_id,
       event_id: reminder.event_id,
+      rsvp_name: reminder.rsvp_name,
       updated_at: reminder.updated_at,
     },
   });
   return { hasLock: lock.count !== 0 };
 };
+function connect(
+  arg0: { data: { event_user: { rsvp: any } } },
+  arg1: { name: void },
+  connect: any,
+  arg3: { user_id_event_id: { event_id: number; user_id: number } },
+) {
+  throw new Error('Function not implemented.');
+}

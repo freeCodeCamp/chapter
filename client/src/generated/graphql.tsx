@@ -26,7 +26,7 @@ export type Scalars = {
 export type AuthenticateType = {
   __typename?: 'AuthenticateType';
   token: Scalars['String'];
-  user: User;
+  user: UserWithInstanceRole;
 };
 
 export type Chapter = {
@@ -237,6 +237,23 @@ export type EventWithRelations = {
   venue_type: VenueType;
 };
 
+export type InstancePermission = {
+  __typename?: 'InstancePermission';
+  name: Scalars['String'];
+};
+
+export type InstanceRole = {
+  __typename?: 'InstanceRole';
+  id: Scalars['Float'];
+  instance_role_permissions: Array<InstanceRolePermission>;
+  name: Scalars['String'];
+};
+
+export type InstanceRolePermission = {
+  __typename?: 'InstanceRolePermission';
+  instance_permission: InstancePermission;
+};
+
 export type LoginInput = {
   email: Scalars['String'];
 };
@@ -252,6 +269,7 @@ export type Mutation = {
   banUser: UserBan;
   cancelEvent: Event;
   changeChapterUserRole: ChapterUser;
+  changeInstanceUserRole: UserWithInstanceRole;
   confirmRsvp: EventUser;
   createChapter: Chapter;
   createEvent: Event;
@@ -294,6 +312,11 @@ export type MutationCancelEventArgs = {
 
 export type MutationChangeChapterUserRoleArgs = {
   chapterId: Scalars['Int'];
+  roleId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
+export type MutationChangeInstanceUserRoleArgs = {
   roleId: Scalars['Int'];
   userId: Scalars['Int'];
 };
@@ -417,10 +440,12 @@ export type Query = {
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
-  me?: Maybe<User>;
+  instanceRoles: Array<InstanceRole>;
+  me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
   sponsor?: Maybe<Sponsor>;
   sponsors: Array<Sponsor>;
+  users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
 };
@@ -554,6 +579,16 @@ export type UserBan = {
   user: User;
 };
 
+export type UserWithInstanceRole = {
+  __typename?: 'UserWithInstanceRole';
+  email: Scalars['String'];
+  first_name: Scalars['String'];
+  id: Scalars['Int'];
+  instance_role: InstanceRole;
+  last_name: Scalars['String'];
+  name: Scalars['String'];
+};
+
 export type Venue = {
   __typename?: 'Venue';
   city: Scalars['String'];
@@ -604,10 +639,20 @@ export type AuthenticateMutation = {
     __typename?: 'AuthenticateType';
     token: string;
     user: {
-      __typename?: 'User';
+      __typename?: 'UserWithInstanceRole';
       id: number;
       first_name: string;
       last_name: string;
+      instance_role: {
+        __typename?: 'InstanceRole';
+        instance_role_permissions: Array<{
+          __typename?: 'InstanceRolePermission';
+          instance_permission: {
+            __typename?: 'InstancePermission';
+            name: string;
+          };
+        }>;
+      };
     };
   };
 };
@@ -617,10 +662,20 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'User';
+    __typename?: 'UserWithInstanceRole';
     id: number;
     first_name: string;
     last_name: string;
+    instance_role: {
+      __typename?: 'InstanceRole';
+      instance_role_permissions: Array<{
+        __typename?: 'InstanceRolePermission';
+        instance_permission: {
+          __typename?: 'InstancePermission';
+          name: string;
+        };
+      }>;
+    };
   } | null;
 };
 
@@ -1102,6 +1157,42 @@ export type SponsorQuery = {
   } | null;
 };
 
+export type ChangeInstanceUserRoleMutationVariables = Exact<{
+  roleId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type ChangeInstanceUserRoleMutation = {
+  __typename?: 'Mutation';
+  changeInstanceUserRole: {
+    __typename?: 'UserWithInstanceRole';
+    instance_role: { __typename?: 'InstanceRole'; id: number };
+  };
+};
+
+export type InstanceRolesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InstanceRolesQuery = {
+  __typename?: 'Query';
+  instanceRoles: Array<{
+    __typename?: 'InstanceRole';
+    id: number;
+    name: string;
+  }>;
+};
+
+export type UsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UsersQuery = {
+  __typename?: 'Query';
+  users: Array<{
+    __typename?: 'UserWithInstanceRole';
+    id: number;
+    name: string;
+    instance_role: { __typename?: 'InstanceRole'; id: number; name: string };
+  }>;
+};
+
 export type CreateVenueMutationVariables = Exact<{
   data: CreateVenueInputs;
 }>;
@@ -1391,6 +1482,13 @@ export const AuthenticateDocument = gql`
         id
         first_name
         last_name
+        instance_role {
+          instance_role_permissions {
+            instance_permission {
+              name
+            }
+          }
+        }
       }
     }
   }
@@ -1444,6 +1542,13 @@ export const MeDocument = gql`
       id
       first_name
       last_name
+      instance_role {
+        instance_role_permissions {
+          instance_permission {
+            name
+          }
+        }
+      }
     }
   }
 `;
@@ -3133,6 +3238,169 @@ export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
 export type SponsorQueryResult = Apollo.QueryResult<
   SponsorQuery,
   SponsorQueryVariables
+>;
+export const ChangeInstanceUserRoleDocument = gql`
+  mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {
+    changeInstanceUserRole(roleId: $roleId, userId: $userId) {
+      instance_role {
+        id
+      }
+    }
+  }
+`;
+export type ChangeInstanceUserRoleMutationFn = Apollo.MutationFunction<
+  ChangeInstanceUserRoleMutation,
+  ChangeInstanceUserRoleMutationVariables
+>;
+
+/**
+ * __useChangeInstanceUserRoleMutation__
+ *
+ * To run a mutation, you first call `useChangeInstanceUserRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeInstanceUserRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeInstanceUserRoleMutation, { data, loading, error }] = useChangeInstanceUserRoleMutation({
+ *   variables: {
+ *      roleId: // value for 'roleId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useChangeInstanceUserRoleMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ChangeInstanceUserRoleMutation,
+    ChangeInstanceUserRoleMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ChangeInstanceUserRoleMutation,
+    ChangeInstanceUserRoleMutationVariables
+  >(ChangeInstanceUserRoleDocument, options);
+}
+export type ChangeInstanceUserRoleMutationHookResult = ReturnType<
+  typeof useChangeInstanceUserRoleMutation
+>;
+export type ChangeInstanceUserRoleMutationResult =
+  Apollo.MutationResult<ChangeInstanceUserRoleMutation>;
+export type ChangeInstanceUserRoleMutationOptions = Apollo.BaseMutationOptions<
+  ChangeInstanceUserRoleMutation,
+  ChangeInstanceUserRoleMutationVariables
+>;
+export const InstanceRolesDocument = gql`
+  query instanceRoles {
+    instanceRoles {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useInstanceRolesQuery__
+ *
+ * To run a query within a React component, call `useInstanceRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInstanceRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInstanceRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInstanceRolesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    InstanceRolesQuery,
+    InstanceRolesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<InstanceRolesQuery, InstanceRolesQueryVariables>(
+    InstanceRolesDocument,
+    options,
+  );
+}
+export function useInstanceRolesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    InstanceRolesQuery,
+    InstanceRolesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<InstanceRolesQuery, InstanceRolesQueryVariables>(
+    InstanceRolesDocument,
+    options,
+  );
+}
+export type InstanceRolesQueryHookResult = ReturnType<
+  typeof useInstanceRolesQuery
+>;
+export type InstanceRolesLazyQueryHookResult = ReturnType<
+  typeof useInstanceRolesLazyQuery
+>;
+export type InstanceRolesQueryResult = Apollo.QueryResult<
+  InstanceRolesQuery,
+  InstanceRolesQueryVariables
+>;
+export const UsersDocument = gql`
+  query users {
+    users {
+      id
+      name
+      instance_role {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<UsersQuery, UsersQueryVariables>(
+    UsersDocument,
+    options,
+  );
+}
+export function useUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(
+    UsersDocument,
+    options,
+  );
+}
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<
+  UsersQuery,
+  UsersQueryVariables
 >;
 export const CreateVenueDocument = gql`
   mutation createVenue($data: CreateVenueInputs!) {

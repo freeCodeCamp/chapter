@@ -1,12 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useMeQuery } from '../../../generated/graphql';
+import { useMeQuery, MeQuery } from '../../../generated/graphql';
 
 interface AuthContextType {
-  user?: {
-    id: number;
-    first_name: string;
-    last_name: string;
-  };
+  user?: MeQuery['me'];
 }
 
 export const AuthContext = createContext<{

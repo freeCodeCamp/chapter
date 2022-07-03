@@ -1,5 +1,6 @@
 # Welcome to Chapter
 [![All Contributors](https://img.shields.io/github/all-contributors/freeCodeCamp/chapter?color=orange&style=flat-square)](#contributors-)
+[![Setup Automated](https://img.shields.io/badge/setup-automated-blue?logo=gitpod)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
@@ -40,9 +41,7 @@ We are using the following tools:
   * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
   * [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
   * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-* [chai](https://www.chaijs.com/) - for writing unit tests.
-  * [sinon](https://sinonjs.org/)
-  * [sinon-chai](https://github.com/domenic/sinon-chai)
+* [Jest](https://jestjs.io/) - for writing unit tests.
 
 For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
 ## User Stories
@@ -64,7 +63,7 @@ Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) 
 
 * Please read the [contributing guidelines  and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
 
-* [Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected and follow announcements.
+* [Join our chat](https://discord.gg/QbQd7BpaaH) to get connected and follow announcements.
 
 
 ## License
@@ -160,6 +159,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
     <td align="center"><a href="https://sboonny.vercel.app/"><img src="https://avatars.githubusercontent.com/u/88248797?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Muhammed Mustafa</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Sboonny" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Nirajn2311"><img src="https://avatars.githubusercontent.com/u/36357875?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Niraj Nandish</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Nirajn2311" title="Code">💻</a></td>
     <td align="center"><a href="http://c-ehrlich.dev"><img src="https://avatars.githubusercontent.com/u/8353666?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christopher Ehrlich</b></sub></a><br /><a href="#infra-c-ehrlich" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Tests">⚠️</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Code">💻</a></td>
+    <td align="center"><a href="http://gs500coder.blogspot.com"><img src="https://avatars.githubusercontent.com/u/1336862?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Moshe</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=shootermv" title="Code">💻</a></td>
   </tr>
 </table>
 

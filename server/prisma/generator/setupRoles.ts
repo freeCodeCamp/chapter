@@ -7,8 +7,14 @@ const setupRoles = async (
   {
     ownerId,
     adminId,
+    bannedAdminId,
     userIds,
-  }: { ownerId: number; adminId: number; userIds: number[] },
+  }: {
+    ownerId: number;
+    adminId: number;
+    bannedAdminId: number;
+    userIds: number[];
+  },
   chapterIds: number[],
   chapterRoles: Record<string, { name: string; id: number }>, // TODO: import type from chapterRoles.factory
 ): Promise<void> => {
@@ -39,12 +45,28 @@ const setupRoles = async (
 
     usersData.push(adminData);
 
-    const [banned] = userIds;
-    const banData: Prisma.user_bansCreateInput = {
-      user: { connect: { id: banned } },
-      chapter: { connect: { id: chapterId } },
+    const bannedAdminData: Prisma.chapter_usersCreateManyInput = {
+      joined_date: new Date(),
+      chapter_id: chapterId,
+      user_id: bannedAdminId,
+      chapter_role_id: chapterRoles.administrator.id,
+      subscribed: false,
     };
-    await prisma.user_bans.create({ data: banData });
+
+    usersData.push(bannedAdminData);
+
+    const [firstUserId] = userIds;
+    const memberBanData: Prisma.user_bansCreateManyInput = {
+      user_id: firstUserId,
+      chapter_id: chapterId,
+    };
+    const adminBanData: Prisma.user_bansCreateManyInput = {
+      user_id: bannedAdminId,
+      chapter_id: chapterId,
+    };
+    await prisma.user_bans.createMany({
+      data: [memberBanData, adminBanData],
+    });
     // makes sure half of each chapter's users are interested, but
     // alternates which half.
     const userSubscribed = makeBooleanIterator(subscribeIterator.next().value);

@@ -39,6 +39,22 @@ module.exports = (on, config) => {
     },
   );
 
+  config.env.JWT_ADMIN_USER = jwt.sign(
+    { email: 'admin@of.a.chapter' },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '120min',
+    },
+  );
+
+  config.env.JWT_BANNED_ADMIN_USER = jwt.sign(
+    { email: 'banned@chapter.admin' },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '120min',
+    },
+  );
+
   config.env.TOKEN_DELETED_USER = jwt.sign({ id: -1 }, process.env.JWT_SECRET, {
     expiresIn: '120min',
   });

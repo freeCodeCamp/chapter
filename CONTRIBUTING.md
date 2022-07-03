@@ -24,7 +24,6 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
-      - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
 - [Running Remotely](#running-remotely)
 - [Troubleshooting](#troubleshooting)
     
@@ -34,7 +33,7 @@ Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://w
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct), so please take a moment to read the 196 word policy.
 
-[Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the project's development team.
+[Join our chat](https://discord.gg/QbQd7BpaaH) to get connected with the project's development team.
 
 # Contributing Code
 
@@ -43,6 +42,8 @@ Consider the following options when you are ready to contribute code.
 * Traditional Dev Environment - the common method of developing on a computer you control.
 
 ## Using GitPod
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
 All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account, setup an "ephemeral" workspace, and access a running application.
 
@@ -275,37 +276,28 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 <details><summary><b>Step 5</b> - Propose a Pull Request (PR)</summary>
 
-When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
+1. A yellow message bar should appear on the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter) after you've committed & pushed changes to a branch on your fork. Follow the green _Compare and Pull Request_ button to open a new "Open a pull request" form page.
 
-_fix/feat/chore/refactor/docs/perf (scope): PR Title_
+2. The _main_ branch of the [Chapter project](https://github.com/freeCodeCamp/chapter) should automatically show as being [compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) your proposed changes, like:
+    > [base repository: freeCodeCamp/chapter] [base:main] **<-** [your fork] [your proposed branch]
 
-An example is _feat(client): night mode_.
+3. Write a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title) in the title field. A common pattern you may like to follow is: _**Type**(optional **scope**): With a Thoughtful Title_.
+    > * Example: _feat(client): Send Email on RSVP Confirmation_
+    > * **Type** examples
+    >   * chore: Changes that are not related to code, tests, or docs.
+    >   * docs: Changes to the contributing guidelines, etc.
+    >   * feat: A new feature
+    >   * fix: A bug fix
+    >   * refactor: A code change that neither fixes a bug nor adds a feature
+    >   * test: Changes related to tests
+    > * **(Scope)** examples: api, build, ci, client, db, perf, style, ui 
 
-| Scope | Documentation |
-|---|---|
-| _api_ | For Pull Requests making changes to the APIs, routes and its architecture |
-| _db_ | For Pull Requests making changes related to database |
-| _client_ | For Pull Requests making changes to client platform logic or user interface |
-| _docs_ | For Pull Requests making changes to the project's documentation |
+4. Write a more detailed explaination of the changes in the form's text area.
+    > The text area will automatically include a checklist of items to confirm before submitting the pull request.
 
-1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
+    > At the end of your PR's description, you may append a pattern like `Closes #1337` to tell GitHub to automatically close a specific issue number when the PR is accepted and merged.
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
-
-4. In the body of your PR include a more detailed summary of the changes you made and why.
-
-    - You will be presented with a pull request template. This is a checklist that you should have followed before opening the pull request.
-
-    - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
-
-    - If the PR is meant to fix an existing bug/issue then, at the end of
-      your PR's description, append the keyword _closes_ and #xxxx (where xxxx
-      is the issue number). Example: _closes #1337_. This tells GitHub to
-      automatically close the existing issue, if the PR is accepted and merged.
-
-You have successfully created a PR. Congratulations! :tada:
+Submit the form and you have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
@@ -394,7 +386,19 @@ Once the app has started you should be able to pull up these URLs in your web br
 * GraphQL Playground - http://localhost:5000/graphql
 * MailHog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface 
 
-Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog) 
+Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog)
+</details>
+
+<details><summary><b>Step 5</b> - Log In As Different Users</summary>
+
+The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses:
+
+- `foo@bar.com` (an _owner_ with full permissions)
+- `admin@of.a.chapter` (an _administrator_ of chapter 1)
+- The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`
+
+In development the login link will appear in the server logs and the email that Mailhog intercepts.
+
 </details>
 
 # Adding a New Feature
@@ -428,7 +432,7 @@ The Chapter client uses the React framework [Next.js](https://nextjs.org/) with 
 
 We are in the early stages of development on this new application, but we value any contributions and insights.  In order to prevent duplication, please browse and search our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list and [existing issues](https://github.com/freeCodeCamp/chapter/issues).
   
-Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
+Please [join our chat](https://discord.gg/QbQd7BpaaH) to stay in the loop.
 </details>
 
 <details><summary>I found a typo. Should I report an issue before I can make a pull request?</summary>
@@ -440,7 +444,7 @@ For typos and other wording changes, you can directly open pull requests without
 
 Please read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
 
-Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://chat.freecodecamp.org/channel/chapter). Please be polite and patient and our community members will be glad to guide you to next steps.
+Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://discord.gg/QbQd7BpaaH). Please be polite and patient and our community members will be glad to guide you to next steps.
 
 When in doubt, you can reach out to current lead(s):
 
@@ -557,7 +561,7 @@ The _prisma.schema_ file is the single source of truth for the database schema.
 
 #### Creating a Migration
 
-The database is currently undergoing a re-write and we are using `prisma db push` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
+The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
 
 # Running Remotely
 
@@ -583,7 +587,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -599,7 +603,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -622,7 +626,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -633,7 +637,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -653,7 +657,7 @@ When not running locally, the client needs to be passed the server's location by
 
 * **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -671,7 +675,7 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -697,5 +701,5 @@ When not running locally, the client needs to be passed the server's location by
   **Solution:**  Allow Access.
 
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>

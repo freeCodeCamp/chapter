@@ -1,6 +1,6 @@
 import { InputType, Field, ObjectType } from 'type-graphql';
 
-import { User } from '../../graphql-types';
+import { UserWithInstanceRole } from '../../graphql-types';
 
 @InputType()
 export class RegisterInput {
@@ -31,6 +31,6 @@ export class AuthenticateType {
   @Field(() => String)
   token: string;
 
-  @Field(() => User)
-  user: User;
+  @Field(() => UserWithInstanceRole)
+  user: UserWithInstanceRole;
 }

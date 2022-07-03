@@ -8,6 +8,7 @@ const links = [
   { text: 'Events', link: '/dashboard/events' },
   { text: 'Venues', link: '/dashboard/venues' },
   { text: 'Sponsors', link: '/dashboard/sponsors' },
+  { text: 'Users', link: '/dashboard/users' },
 ];
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {

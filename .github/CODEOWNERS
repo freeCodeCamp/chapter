@@ -1,0 +1,19 @@
+# -------------------------------------------------
+# CODEOWNERS - For automated review request for
+# high impact files.
+#
+# Important: The order in this file cascades.
+#
+# https://help.github.com/articles/about-codeowners
+# -------------------------------------------------
+
+# -------------------------------------------------
+# All files are owned by dev team
+# -------------------------------------------------
+
+* @freecodecamp/chapter-moderators
+
+# --- Owned by none (negate rule above) ---
+
+package.json
+package-lock.json

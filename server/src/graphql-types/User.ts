@@ -23,6 +23,12 @@ export class UserResolver {
 }
 
 @ObjectType()
+export class UserWithInstanceRole extends User {
+  @Field(() => InstanceRole)
+  instance_role: InstanceRole;
+}
+
+@ObjectType()
 export class UserWithRelations extends User {
   @Field(() => [Chapter])
   created_chapters: Chapter[];

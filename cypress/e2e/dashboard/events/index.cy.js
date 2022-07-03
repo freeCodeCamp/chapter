@@ -1,3 +1,5 @@
+import { aliasQuery } from '../../utils/graphql-test-utils';
+
 const testEvent = {
   title: 'Test Event',
   description: 'Test Description',
@@ -16,10 +18,15 @@ describe('events dashboard', () => {
     cy.exec('npm run db:seed');
     cy.login();
     cy.mhDeleteAll();
+    cy.intercept('POST', 'http://localhost:5000/graphql', (req) => {
+      // Queries
+      aliasQuery(req, 'events');
+    });
   });
+
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
-    cy.get('a[aria-current="page"]').should('have.text', 'Dashboard');
+    //cy.get('a[aria-current="page"]').should('have.text', 'Dashboard');
     cy.get('a[href="/dashboard/events"]').click();
     cy.get('a[aria-current="page"]').should('have.text', 'Events');
   });
@@ -267,9 +274,13 @@ describe('events dashboard', () => {
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
     cy.findByRole('link', { name: 'Dashboard' }).click();
+
     cy.findByRole('link', { name: 'Events' }).click();
+    cy.wait('@gqleventsQuery');
+    cy.url().should('include', '/events');
     cy.get('#page-heading').contains('Events');
     cy.contains('Loading...').should('not.exist');
+
     cy.get('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
@@ -302,6 +313,7 @@ describe('events dashboard', () => {
 
     cy.findByRole('link', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
+    cy.wait('@gqleventsQuery');
     cy.get('#page-heading').contains('Events');
     cy.contains('Loading...').should('not.exist');
     cy.get('@eventTitle').then((eventTitle) => {

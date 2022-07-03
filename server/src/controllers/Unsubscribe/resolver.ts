@@ -1,4 +1,3 @@
-// import { Prisma } from '@prisma/client';
 import { verify } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation } from 'type-graphql';
 

@@ -53,6 +53,31 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
 
+const getUnsubscribeOptions = ({
+  chapterId,
+  eventId,
+  userId,
+}: {
+  chapterId: number;
+  eventId: number;
+  userId: number;
+}) => {
+  const chapterUnsubscribeToken = generateToken(
+    unsubscribeType.Chapter,
+    chapterId,
+    userId,
+  );
+  const eventUnsubscribeToken = generateToken(
+    unsubscribeType.Event,
+    eventId,
+    userId,
+  );
+  return `
+Unsubscribe Options</br>
+- <a href="http://localhost:3000/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
+- Or, <a href="http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+};
+
 const sendRsvpInvitation = async (
   user: User,
   event: events & { venue: venues | null },
@@ -65,21 +90,11 @@ const sendRsvpInvitation = async (
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-  const chapterUnsubscribeToken = generateToken(
-    unsubscribeType.Chapter,
-    event.chapter_id,
-    user.id,
-  );
-  const eventUnsubscribeToken = generateToken(
-    unsubscribeType.Event,
-    event.id,
-    user.id,
-  );
-
-  const unsubscribeOptions = `
-Unsubscribe Options
-- [Attend this event, but only turn off future notifications for this event](http://localhost:3000/unsubscribe?token=${eventUnsubscribeToken})
-- Or, [stop receiving all notifications by unfollowing chapter](http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken})`;
+  const unsubscribeOptions = getUnsubscribeOptions({
+    chapterId: event.chapter_id,
+    eventId: event.id,
+    userId: user.id,
+  });
 
   await new MailerService({
     emailList: [user.email],
@@ -378,21 +393,11 @@ export class EventResolver {
       include: { event: { include: { chapter: true } }, user: true },
     });
 
-    const chapterUnsubscribeToken = generateToken(
-      unsubscribeType.Chapter,
-      eventUser.event.chapter_id,
+    const unsubscribeOptions = getUnsubscribeOptions({
+      chapterId: eventUser.event.chapter_id,
+      eventId: eventUser.event_id,
       userId,
-    );
-    const eventUnsubscribeToken = generateToken(
-      unsubscribeType.Event,
-      eventUser.event_id,
-      userId,
-    );
-
-    const unsubscribeOptions = `
-Unsubscribe Options
-- [Attend this event, but only turn off future notifications for this event](Unsubscribe link, like http://localhost:3000/unsubscribe?token=${eventUnsubscribeToken})
-- Or, [stop receiving all notifications by unfollowing ${eventUser.event.chapter.name}](Unsubscribe link, like http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken})`;
+    });
 
     await new MailerService({
       emailList: [eventUser.user.email],

@@ -7,16 +7,16 @@ declare namespace Cypress {
     interceptGQL(operationName: string): void;
 
     /**
-     * Get users of the chapter directly from server
+     * Get users of the chapter using GQL query
      * @param chapterId Id of the chapter
      */
     getChapterMembers(chapterId: number): Chainable<any>;
 
     /**
-     * Get Rsvps for the event directly from server
+     * Get event users for event with eventId using GQL query
      * @param eventId Id of the event
      */
-    getRSVPs(eventId: number): Chainable<any>;
+    getEventUsers(eventId: number): Chainable<any>;
 
     /**
      * Authenticate with JWT token
@@ -57,5 +57,49 @@ declare namespace Cypress {
      * @param mail The sent mail of type Item(cypress-mailhog)
      */
     checkBcc(mail): Chainable<boolean>;
+
+    /**
+     * Create chapter using GQL mutation
+     * @param data Data of the chapter. Equivalent of CreateChapterInputs for the Chapter resolver.
+     */
+    createChapter(data): Chainable<any>;
+
+    /**
+     * Update chapter using GQL mutation
+     * @param chapterId Id of the chapter
+     * @param data Data of the chapter. Equivalent of UpdateChapterInputs for the Chapter resolver.
+     */
+    updateChapter(chapterId: number, data): Chainable<any>;
+
+    /**
+     * Confirm rsvp of user with userId for the event with eventId
+     * @param eventId Id of the event
+     * @param userId Id of the user
+     */
+    confirmRsvp(eventId: number, userId: number): Chainable<any>;
+
+    /**
+     * Delete rsvp of user with userId for the event with eventId
+     * @param eventId Id of the event
+     * @param userId Id of the user
+     */
+    deleteRsvp(eventId: number, userId: number): Chainable<any>;
+
+    /**
+     * Rsvp to event with eventId and chapterId
+     * @param eventId Id of the event
+     * @param chapterId Id of the chapter
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    rsvpToEvent(
+      { eventId, chapterId }: { eventId: number; chapterId: number },
+      options?: { withAuth: true },
+    ): Chainable<any>;
+
+    /**
+     * Auth request, with token of the logged in user, before sending it.
+     * @param options Request options
+     */
+    authedRequest(options): Chainable<any>;
   }
 }

@@ -171,18 +171,14 @@ Cypress.Commands.add('createEvent', (data) => {
       }
     }`,
   };
-  return cy
-    .request({
-      method: 'POST',
-      url: 'http://localhost:5000/graphql',
-      body: eventMutation,
-      headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-      },
-    })
-    .then((response) => {
-      return response.body.data.createEvent.id;
-    });
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: eventMutation,
+  };
+  return cy.authedRequest(requestOptions).then((response) => {
+    return response.body.data.createEvent.id;
+  });
 });
 
 Cypress.Commands.add('createChapter', (data) => {

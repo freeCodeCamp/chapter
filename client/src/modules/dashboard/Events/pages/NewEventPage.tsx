@@ -49,10 +49,10 @@ export const NewEventPage: NextPage = () => {
         streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
         tags: tagsArray,
         sponsor_ids: sponsorArray,
-        chapter_id: chapterId,
+        // chapter_id: chapterId,
       };
       const event = await createEvent({
-        variables: { data: { ...eventData } },
+        variables: { chapterId, data: { ...eventData } },
       });
 
       if (event.data) {

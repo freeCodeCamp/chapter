@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const createEvent = gql`
-  mutation createEvent($data: CreateEventInputs!) {
-    createEvent(data: $data) {
+  mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+    createEvent(chapterId: $chapterId, data: $data) {
       id
       name
       canceled

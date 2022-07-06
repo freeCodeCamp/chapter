@@ -405,6 +405,7 @@ export class EventResolver {
   @Authorized('event-create')
   @Mutation(() => Event)
   async createEvent(
+    @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: CreateEventInputs,
     @Ctx() ctx: Required<GQLCtx>,
   ): Promise<Event | null> {
@@ -414,10 +415,10 @@ export class EventResolver {
     }
 
     const chapter = await prisma.chapters.findUnique({
-      where: { id: data.chapter_id },
+      where: { id: chapterId },
     });
     const userChapter = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === data.chapter_id,
+      ({ chapter_id }) => chapter_id === chapterId,
     );
 
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =

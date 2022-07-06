@@ -260,6 +260,66 @@ Cypress.Commands.add(
   },
 );
 
+Cypress.Commands.add(
+  'subscribeToEvent',
+  ({ eventId, chapterId }, options = { withAuth: true }) => {
+    const subscribeMutation = {
+      operationName: 'subscribeToEvent',
+      variables: {
+        eventId,
+        chapterId,
+      },
+      query: `
+    mutation subscribeToEvent($eventId: Int!, $chapterId: Int!) {
+      subscribeToEvent(eventId: $eventId, chapterId: $chapterId) {
+        subscribed
+      }
+    }
+  `,
+    };
+    const requestOptions = {
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: subscribeMutation,
+      failOnStatusCode: false,
+    };
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
+Cypress.Commands.add(
+  'unsubscribeFromEvent',
+  ({ eventId, chapterId }, options = { withAuth: true }) => {
+    const unsubscribeMutation = {
+      operationName: 'unsubscribeFromEvent',
+      variables: {
+        eventId,
+        chapterId,
+      },
+      query: `
+    mutation unsubscribeFromEvent($eventId: Int!, $chapterId: Int!) {
+      unsubscribeFromEvent(eventId: $eventId, chapterId: $chapterId) {
+        subscribed
+      }
+    }
+  `,
+    };
+    const requestOptions = {
+      method: 'POST',
+      url: 'http://localhost:5000/graphql',
+      body: unsubscribeMutation,
+      failOnStatusCode: false,
+    };
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
 Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
   const kickMutation = {
     operationName: 'deleteRsvp',

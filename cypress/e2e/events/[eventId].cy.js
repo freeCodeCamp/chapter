@@ -122,10 +122,18 @@ describe('event page', () => {
   });
 
   it('should reject requests from logged out users, non-members and banned users', () => {
+    const requestVariables = { eventId: 1, chapterId: 1 };
     // logged out user
     cy.logout();
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }, { withAuth: false }).then(
+
+    cy.rsvpToEvent(requestVariables, { withAuth: false }).then(
+      expectToBeRejected,
+    );
+    cy.subscribeToEvent(requestVariables, { withAuth: false }).then(
+      expectToBeRejected,
+    );
+    cy.unsubscribeFromEvent(requestVariables, { withAuth: false }).then(
       expectToBeRejected,
     );
 
@@ -133,12 +141,18 @@ describe('event page', () => {
     cy.register();
     cy.login(Cypress.env('JWT_TEST_USER'));
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then(expectToBeRejected);
+
+    cy.rsvpToEvent(requestVariables).then(expectToBeRejected);
+    cy.subscribeToEvent(requestVariables).then(expectToBeRejected);
+    cy.unsubscribeFromEvent(requestVariables).then(expectToBeRejected);
 
     // banned user
     cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then(expectToBeRejected);
+
+    cy.rsvpToEvent(requestVariables).then(expectToBeRejected);
+    cy.subscribeToEvent(requestVariables).then(expectToBeRejected);
+    cy.unsubscribeFromEvent(requestVariables).then(expectToBeRejected);
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {

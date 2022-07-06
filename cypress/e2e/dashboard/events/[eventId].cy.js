@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../../support/util';
+
 describe('event dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -120,16 +122,8 @@ describe('event dashboard', () => {
         cy.register();
         cy.login(Cypress.env('JWT_TEST_USER'));
 
-        cy.deleteRsvp(eventId, confirmedUser.id).then((response) => {
-          expect(response.status).to.eq(200);
-          expect(response.body.errors).to.exist;
-          expect(response.body.errors).to.have.length(1);
-        });
-        cy.confirmRsvp(eventId, waitlistUser.id).then((response) => {
-          expect(response.status).to.eq(200);
-          expect(response.body.errors).to.exist;
-          expect(response.body.errors).to.have.length(1);
-        });
+        cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
+        cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);
       });
     });
   });

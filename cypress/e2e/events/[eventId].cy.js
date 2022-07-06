@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../support/util';
+
 describe('event page', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -124,40 +126,19 @@ describe('event page', () => {
     cy.logout();
     cy.reload();
     cy.rsvpToEvent({ eventId: 1, chapterId: 1 }, { withAuth: false }).then(
-      (response) => {
-        expect(response.status).to.eq(200);
-        const errors = response.body.errors;
-        expect(errors).to.have.length(1);
-        expect(errors[0].message).to.eq(
-          "Access denied! You don't have permission for this action!",
-        );
-      },
+      expectToBeRejected,
     );
 
     // newly registered user (without a chapter_users record)
     cy.register();
     cy.login(Cypress.env('JWT_TEST_USER'));
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then((response) => {
-      expect(response.status).to.eq(200);
-      const errors = response.body.errors;
-      expect(errors).to.have.length(1);
-      expect(errors[0].message).to.eq(
-        "Access denied! You don't have permission for this action!",
-      );
-    });
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then(expectToBeRejected);
 
     // banned user
     cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then((response) => {
-      expect(response.status).to.eq(200);
-      const errors = response.body.errors;
-      expect(errors).to.have.length(1);
-      expect(errors[0].message).to.eq(
-        "Access denied! You don't have permission for this action!",
-      );
-    });
+    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then(expectToBeRejected);
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {

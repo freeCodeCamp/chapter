@@ -11,16 +11,16 @@ export const rsvpToEvent = gql`
 `;
 
 export const subscribeToEvent = gql`
-  mutation subscribeToEvent($eventId: Int!) {
-    subscribeToEvent(eventId: $eventId) {
+  mutation subscribeToEvent($eventId: Int!, $chapterId: Int!) {
+    subscribeToEvent(eventId: $eventId, chapterId: $chapterId) {
       subscribed
     }
   }
 `;
 
 export const unsubscribeFromEvent = gql`
-  mutation unsubscribeFromEvent($eventId: Int!) {
-    unsubscribeFromEvent(eventId: $eventId) {
+  mutation unsubscribeFromEvent($eventId: Int!, $chapterId: Int!) {
+    unsubscribeFromEvent(eventId: $eventId, chapterId: $chapterId) {
       subscribed
     }
   }

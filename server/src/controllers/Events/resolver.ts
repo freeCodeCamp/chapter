@@ -402,7 +402,7 @@ export class EventResolver {
     return true;
   }
 
-  @Authorized('event-create')
+  @Authorized(Permission.EventCreate)
   @Mutation(() => Event)
   async createEvent(
     @Arg('chapterId', () => Int) chapterId: number,

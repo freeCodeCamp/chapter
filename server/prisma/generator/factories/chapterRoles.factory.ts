@@ -11,7 +11,14 @@ const roles: Array<{
     name: 'administrator',
     permissions: Object.values(ChapterPermission),
   },
-  { name: 'member', permissions: [ChapterPermission.Rsvp] },
+  {
+    name: 'member',
+    permissions: [
+      ChapterPermission.Rsvp,
+      ChapterPermission.EventUnsubscribe,
+      ChapterPermission.EventSubscribe,
+    ],
+  },
 ];
 
 const createChapterRoles = async () => {

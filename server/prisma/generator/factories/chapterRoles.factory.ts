@@ -4,6 +4,7 @@ export enum ChapterPermission {
   ChapterEdit = 'chapter-edit',
   EventCreate = 'event-create',
   EventEdit = 'event-edit',
+  SponsorsManage = 'sponsors-manage',
   Rsvp = 'rsvp',
   RsvpDelete = 'rsvp-delete',
   RsvpConfirm = 'rsvp-confirm',

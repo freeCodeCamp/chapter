@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../../../support/util';
+
 const chapterData = {
   name: 'New Chapter Name',
   description: 'New Description',
@@ -56,11 +58,7 @@ describe('chapter edit dashboard', () => {
     cy.login(Cypress.env('JWT_TEST_USER'));
 
     cy.updateChapter(chapterId, chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).to.exist;
-      expect(response.body.errors[0].message).to.eq(
-        "Access denied! You don't have permission for this action!",
-      );
+      expectToBeRejected(response);
 
       cy.visit(`/dashboard/chapters/${chapterId}`);
       cy.contains(chapterData.name).should('not.exist');

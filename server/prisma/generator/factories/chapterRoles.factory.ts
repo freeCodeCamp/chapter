@@ -1,29 +1,25 @@
 import { prisma } from '../../../src/prisma';
 
-const chapterPermissions = [
-  'chapter-edit',
-  'event-create',
-  'event-edit',
-  'rsvp-delete',
-  'rsvp-confirm',
-  'rsvp',
-] as const;
+export enum ChapterPermission {
+  ChapterEdit = 'chapter-edit',
+  EventCreate = 'event-create',
+  EventEdit = 'event-edit',
+  Rsvp = 'rsvp',
+  RsvpDelete = 'rsvp-delete',
+  RsvpConfirm = 'rsvp-confirm',
+}
 
-type Permissions = typeof chapterPermissions[number];
+const chapterPermissions = Object.values(ChapterPermission);
 
-const roles: Array<{ name: string; permissions: Permissions[] }> = [
+const roles: Array<{
+  name: string;
+  permissions: readonly ChapterPermission[];
+}> = [
   {
     name: 'administrator',
-    permissions: [
-      'chapter-edit',
-      'event-create',
-      'event-edit',
-      'rsvp-delete',
-      'rsvp-confirm',
-      'rsvp',
-    ],
+    permissions: Object.values(ChapterPermission),
   },
-  { name: 'member', permissions: ['rsvp'] },
+  { name: 'member', permissions: [ChapterPermission.Rsvp] },
 ];
 
 const createChapterRoles = async () => {

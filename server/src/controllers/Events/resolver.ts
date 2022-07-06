@@ -20,6 +20,7 @@ import {
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
 
+import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
@@ -195,7 +196,7 @@ export class EventResolver {
     });
   }
 
-  @Authorized('rsvp')
+  @Authorized(Permission.Rsvp)
   @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -345,7 +346,7 @@ export class EventResolver {
     return userRole;
   }
 
-  @Authorized('rsvp-confirm')
+  @Authorized(Permission.RsvpConfirm)
   @Mutation(() => EventUser)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
@@ -388,7 +389,7 @@ export class EventResolver {
     });
   }
 
-  @Authorized('rsvp-delete')
+  @Authorized(Permission.RsvpDelete)
   @Mutation(() => Boolean)
   async deleteRsvp(
     @Arg('eventId', () => Int) eventId: number,

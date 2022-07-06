@@ -8,6 +8,7 @@ import {
   Ctx,
   Authorized,
 } from 'type-graphql';
+import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
 
 import { GQLCtx } from '../../common-types/gql';
 import { Chapter, ChapterWithRelations } from '../../graphql-types';
@@ -47,7 +48,7 @@ export class ChapterResolver {
     });
   }
 
-  @Authorized('chapter-create')
+  @Authorized(Permission.ChapterCreate)
   @Mutation(() => Chapter)
   async createChapter(
     @Arg('data') data: CreateChapterInputs,
@@ -63,7 +64,7 @@ export class ChapterResolver {
     return prisma.chapters.create({ data: chapterData });
   }
 
-  @Authorized('chapter-edit')
+  @Authorized(Permission.ChapterEdit)
   @Mutation(() => Chapter)
   async updateChapter(
     @Arg('id', () => Int) id: number,

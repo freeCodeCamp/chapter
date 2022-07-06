@@ -12,11 +12,10 @@ const testEvent = {
 };
 
 // TODO: Consolidate fixtures.
-const eventInChapterTwoData = {
+const eventData = {
   venue_id: 1,
-  chapter_id: 1,
   sponsor_ids: [],
-  name: 'TestEventInChapterTwo',
+  name: 'Other Event',
   description: 'Test Description',
   url: 'https://test.event.org',
   venue_type: 'PhysicalAndOnline',
@@ -75,10 +74,11 @@ describe('chapter dashboard', () => {
   });
 
   it('prevents members and admins from other chapters from creating events', () => {
+    let chapterId = 2;
     // normal member
     cy.register();
     cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.createEvent(eventInChapterTwoData).then((response) => {
+    cy.createEvent(chapterId, eventData).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).to.exist;
       expect(response.body.errors).to.have.length(1);
@@ -86,24 +86,24 @@ describe('chapter dashboard', () => {
 
     // admin of a different chapter
     cy.login(Cypress.env('JWT_ADMIN_USER'));
-    cy.createEvent(eventInChapterTwoData).then((response) => {
+    cy.createEvent(2, eventData).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).to.exist;
       expect(response.body.errors).to.have.length(1);
     });
 
     // switch the chapterId to match the admin's chapter
-    cy.createEvent({
-      ...eventInChapterTwoData,
+    chapterId = 1;
+    cy.createEvent(chapterId, {
+      ...eventData,
       name: 'Created by Admin',
-      chapter_id: 1,
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).not.to.exist;
 
       cy.visit(`/dashboard/events/`);
       cy.contains('Created by Admin');
-      cy.contains(eventInChapterTwoData.name).should('not.exist');
+      cy.contains(eventData.name).should('not.exist');
     });
   });
 

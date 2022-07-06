@@ -159,14 +159,15 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
   );
 });
 
-Cypress.Commands.add('createEvent', (data) => {
+Cypress.Commands.add('createEvent', (chapterId, data) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
-      data: { ...data },
+      chapterId,
+      data,
     },
-    query: `mutation createEvent($data: CreateEventInputs!) {
-      createEvent(data: $data) {
+    query: `mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+      createEvent(chapterId: $chapterId, data: $data) {
         id
       }
     }`,

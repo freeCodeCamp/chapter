@@ -105,7 +105,6 @@ describe('events dashboard', () => {
   it("emails the users when an event's venue is changed", () => {
     const eventData = {
       venue_id: 1,
-      chapter_id: 1,
       sponsor_ids: [],
       name: 'Event Venue change test',
       description: 'Test Description',
@@ -120,7 +119,7 @@ describe('events dashboard', () => {
     };
     const newVenueId = 2;
 
-    cy.createEvent(eventData).then((response) => {
+    cy.createEvent(1, eventData).then((response) => {
       const eventId = response.body.data.createEvent.id;
       cy.visit(`/dashboard/events/${eventId}/edit`);
       cy.findByRole('combobox', { name: 'Venue' })

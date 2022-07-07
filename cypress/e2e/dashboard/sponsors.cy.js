@@ -56,9 +56,9 @@ describe('sponsors dashboard', () => {
     cy.get('[data-cy=type]').contains(testSponsor.type);
   });
 
-  it('prevents members from managing sponsors', () => {
+  it('prevents chapter admins from managing sponsors', () => {
     cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');

@@ -11,7 +11,7 @@ const links = [
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
-    permission: 'sponsors-manage',
+    requiredPermission: 'sponsors-manage',
   },
   { text: 'Users', link: '/dashboard/users' },
 ];
@@ -24,16 +24,15 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
       <HStack as="nav" my="2">
         {links
           .filter(
-            ({ permission }) =>
-              typeof permission === 'undefined' ||
-              useCheckPermission(permission),
+            ({ requiredPermission }) =>
+              !requiredPermission || useCheckPermission(requiredPermission),
           )
           .map((item) => (
             <LinkButton
               key={item.link}
               href={item.link}
               colorScheme={
-                router.pathname.startsWith(item.link) ? 'blue' : undefined
+                router.pathname.startsWith(item.link) ? 'blue' : 'gray'
               }
             >
               {item.text}

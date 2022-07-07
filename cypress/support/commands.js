@@ -333,3 +333,39 @@ Cypress.Commands.add('authedRequest', (options) => {
     },
   });
 });
+
+Cypress.Commands.add('createSponsor', (data) => {
+  const createSponsorData = {
+    operationName: 'createSponsor',
+    variables: { data },
+    query: `mutation createSponsor($data: CreateSponsorInputs!) {
+      createSponsor(data: $data) {
+        id
+      }
+    }`,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: createSponsorData,
+  };
+  return cy.authedRequest(requestOptions);
+});
+
+Cypress.Commands.add('updateSponsor', (id, data) => {
+  const updateSponsorData = {
+    operationName: 'updateSponsor',
+    variables: { id, data },
+    query: `mutation updateSponsor($id: Int!, $data: UpdateSponsorInputs!) {
+      updateSponsor(id: $id, data: $data) {
+        id
+      }
+    }`,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: updateSponsorData,
+  };
+  return cy.authedRequest(requestOptions);
+});

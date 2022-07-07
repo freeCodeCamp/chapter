@@ -101,5 +101,18 @@ declare namespace Cypress {
      * @param options Request options
      */
     authedRequest(options): Chainable<any>;
+
+    /**
+     * Create sponsor using GQL mutation
+     * @param data Data of the sponsor. Equivalent of CreateSponsorInputs for the Sponsor resolver.
+     */
+    createSponsor(data): Chainable<any>;
+
+    /**
+     * Update sponsor using GQL mutation
+     * @param id Sponsor id
+     * @param data Data of the sponsor. Equivalent of UpdateSponsorInputs for the Sponsor resolver.
+     */
+    updateSponsor(id: number, data): Chainable<any>;
   }
 }

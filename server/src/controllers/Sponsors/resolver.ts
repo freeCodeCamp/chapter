@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
-import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
+import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 
+import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
 import { Sponsor } from '../../graphql-types/Sponsor';
 import { prisma } from '../../prisma';
 import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';
@@ -16,12 +17,14 @@ export class SponsorResolver {
     return prisma.sponsors.findUnique({ where: { id } });
   }
 
+  @Authorized(Permission.SponsorsManage)
   @Mutation(() => Sponsor)
   createSponsor(@Arg('data') data: CreateSponsorInputs): Promise<Sponsor> {
     const sponsorData: Prisma.sponsorsCreateInput = data;
     return prisma.sponsors.create({ data: sponsorData });
   }
 
+  @Authorized(Permission.SponsorsManage)
   @Mutation(() => Sponsor)
   updateSponsor(
     @Arg('id', () => Int) id: number,

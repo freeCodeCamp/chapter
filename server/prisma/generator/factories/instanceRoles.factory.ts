@@ -5,6 +5,7 @@ import { ChapterPermission } from './chapterRoles.factory';
 enum InstancePermission {
   ChapterCreate = 'chapter-create',
   ChangeInstanceRole = 'change-instance-role',
+  SponsorsManage = 'sponsors-manage',
   ViewUsers = 'view-users',
 }
 

@@ -4,7 +4,8 @@ ARG build
 WORKDIR /usr/chapter/
 
 # Bundle app source
-COPY ./server ./server
+COPY server ./server
+COPY common ./common
 COPY package*.json ./
 
 # Install app dependencies

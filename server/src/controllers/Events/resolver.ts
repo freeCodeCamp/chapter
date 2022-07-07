@@ -20,7 +20,7 @@ import {
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
 
-import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { Permission } from '../../../../common/permissions';
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,

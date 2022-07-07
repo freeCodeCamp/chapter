@@ -3,7 +3,7 @@ import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { prisma } from '../../prisma';
 
 import { UserWithInstanceRole } from '../../graphql-types';
-import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { Permission } from '../../../../common/permissions';
 
 @Resolver()
 export class UsersResolver {

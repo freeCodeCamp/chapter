@@ -8,7 +8,7 @@ import {
   Ctx,
   Authorized,
 } from 'type-graphql';
-import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { Permission } from '../../../../common/permissions';
 
 import { GQLCtx } from '../../common-types/gql';
 import { Chapter, ChapterWithRelations } from '../../graphql-types';

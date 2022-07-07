@@ -1,13 +1,5 @@
 import { prisma } from '../../../src/prisma';
-
-export enum ChapterPermission {
-  ChapterEdit = 'chapter-edit',
-  EventCreate = 'event-create',
-  EventEdit = 'event-edit',
-  Rsvp = 'rsvp',
-  RsvpDelete = 'rsvp-delete',
-  RsvpConfirm = 'rsvp-confirm',
-}
+import { ChapterPermission } from '../../../../common/permissions';
 
 const chapterPermissions = Object.values(ChapterPermission);
 

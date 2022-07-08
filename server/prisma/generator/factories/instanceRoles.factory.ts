@@ -1,17 +1,7 @@
 import { prisma } from '../../../src/prisma';
 
-import { ChapterPermission } from './chapterRoles.factory';
+import { Permission } from '../../../../common/permissions';
 
-enum InstancePermission {
-  ChapterCreate = 'chapter-create',
-  ChangeInstanceRole = 'change-instance-role',
-  SponsorsManage = 'sponsors-manage',
-  ViewUsers = 'view-users',
-}
-
-// Ideally this would be a new enum, but TS does not (to my knowledge) support
-// that yet.
-export const Permission = { ...InstancePermission, ...ChapterPermission };
 const allPermissions = Object.values(Permission);
 
 interface InstanceRole {

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 
-import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { Permission } from '../../../../common/permissions';
 import { Sponsor } from '../../graphql-types/Sponsor';
 import { prisma } from '../../prisma';
 import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';

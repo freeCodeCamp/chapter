@@ -7,6 +7,7 @@ import React from 'react';
 import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
+import { Permission } from '../../../../../../common/permissions';
 
 export const ChaptersPage: NextPage = () => {
   const {
@@ -15,10 +16,9 @@ export const ChaptersPage: NextPage = () => {
     data: chapterData,
   } = useChaptersQuery();
 
-  // TODO: the permission names are stringly typed and should be refactored.
-  // This page, and the prisma factories, should both draw from a single source
-  // of truth (an enum, probably)
-  const hasPermissionToCreateChapter = useCheckPermission('chapter-create');
+  const hasPermissionToCreateChapter = useCheckPermission(
+    Permission.ChapterCreate,
+  );
 
   return (
     <Layout>

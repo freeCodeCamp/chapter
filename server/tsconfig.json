@@ -25,6 +25,6 @@
     "typeRoots": ["src/common-types/index.d.ts", "../node_modules/@types"],
     "incremental": true
   },
-  "include": ["src/**/*", "prisma/**/*", "reminders/**/*", "tests/**/*"],
+  "include": ["src/**/*", "prisma/**/*", "reminders/**/*", "tests/**/*", "../common/**/*"],
   "exclude": ["node_modules"]
 }

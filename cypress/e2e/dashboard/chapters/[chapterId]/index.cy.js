@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../../../support/util';
+
 const testEvent = {
   title: 'Test Event',
   description: 'Test Description',
@@ -78,19 +80,11 @@ describe('chapter dashboard', () => {
     // normal member
     cy.register();
     cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.createEvent(chapterId, eventData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).to.exist;
-      expect(response.body.errors).to.have.length(1);
-    });
+    cy.createEvent(chapterId, eventData).then(expectToBeRejected);
 
     // admin of a different chapter
     cy.login(Cypress.env('JWT_ADMIN_USER'));
-    cy.createEvent(2, eventData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).to.exist;
-      expect(response.body.errors).to.have.length(1);
-    });
+    cy.createEvent(2, eventData).then(expectToBeRejected);
 
     // switch the chapterId to match the admin's chapter
     chapterId = 1;

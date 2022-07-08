@@ -114,5 +114,27 @@ declare namespace Cypress {
      * @param data Data of the sponsor. Equivalent of UpdateSponsorInputs for the Sponsor resolver.
      */
     updateSponsor(id: number, data): Chainable<any>;
+
+    /**
+     * Subscribe to notifications for a single event
+     * @param eventId Id of the event
+     * @param chapterId Id of the chapter
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    subscribeToEvent(
+      { eventId, chapterId }: { eventId: number; chapterId: number },
+      options?: { withAuth: true },
+    ): Chainable<any>;
+
+    /**
+     * Unsubscribe from notifications for a single event
+     * @param eventId Id of the event
+     * @param chapterId Id of the chapter
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    unsubscribeFromEvent(
+      { eventId, chapterId }: { eventId: number; chapterId: number },
+      options?: { withAuth: true },
+    ): Chainable<any>;
   }
 }

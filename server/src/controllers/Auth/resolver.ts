@@ -56,7 +56,7 @@ export class AuthResolver {
 
   @Mutation(() => LoginType)
   async login(@Arg('data') data: LoginInput): Promise<LoginType> {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findUniqueOrThrow({
       where: { email: data.email },
     });
 

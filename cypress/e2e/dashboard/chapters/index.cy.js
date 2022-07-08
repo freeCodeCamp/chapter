@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../../support/util';
+
 const chapterData = {
   name: 'Name goes here',
   description: 'Summary of the chapter',
@@ -66,11 +68,7 @@ describe('chapters dashboard', () => {
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');
 
-    cy.createChapter(chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).to.exist;
-      expect(response.body.errors).to.have.length(1);
-    });
+    cy.createChapter(chapterData).then(expectToBeRejected);
 
     // switch to owner account and try to create a chapter
     cy.login();

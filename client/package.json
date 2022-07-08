@@ -20,15 +20,15 @@
     "chakra-next-link": "1.0.10",
     "date-fns": "2.28.0",
     "graphql": "15.8.0",
-    "next": "12.2.0",
+    "next": "12.2.1",
     "react": "18.2.0",
     "react-datepicker": "4.8.0",
     "react-dom": "18.2.0",
     "react-hook-form": "7.33.1"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.313.0",
-    "@codesee/tracker": "0.313.0",
+    "@codesee/babel-plugin-instrument": "0.315.0",
+    "@codesee/tracker": "0.315.0",
     "@graphql-codegen/cli": "2.7.0",
     "@graphql-codegen/fragment-matcher": "3.2.1",
     "@graphql-codegen/introspection": "2.1.1",

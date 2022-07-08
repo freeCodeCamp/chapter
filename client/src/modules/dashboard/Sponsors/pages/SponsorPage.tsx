@@ -27,7 +27,7 @@ export const SponsorPage: NextPage = () => {
     <Layout>
       <Card className={styles.card}>
         <ProgressCardContent>
-          <Heading as="h2" fontWeight="normal" mb="2">
+          <Heading data-cy="name" as="h2" fontWeight="normal" mb="2">
             {data?.sponsor?.name}
           </Heading>
         </ProgressCardContent>
@@ -38,8 +38,8 @@ export const SponsorPage: NextPage = () => {
           Details{' '}
         </Heading>
         <Flex mt="2" justifyContent="space-between">
-          <Text>Type: {data?.sponsor?.type}</Text>
-          <Text>
+          <Text data-cy="type">Type: {data?.sponsor?.type}</Text>
+          <Text data-cy="website">
             Website: <Link>{data?.sponsor?.website}</Link>
           </Text>
         </Flex>

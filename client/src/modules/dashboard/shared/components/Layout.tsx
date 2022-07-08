@@ -2,6 +2,8 @@ import { HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import React from 'react';
+
+import { Permission } from '../../../../../../common/permissions';
 import { useCheckPermission } from 'hooks/useCheckPermission';
 
 const links = [
@@ -11,7 +13,7 @@ const links = [
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
-    requiredPermission: 'sponsors-manage',
+    requiredPermission: Permission.SponsorsManage,
   },
   { text: 'Users', link: '/dashboard/users' },
 ];

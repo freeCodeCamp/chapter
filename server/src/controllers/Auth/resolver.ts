@@ -39,7 +39,7 @@ export class AuthResolver {
       throw new Error('EMAIL_IN_USE');
     }
 
-    const instanceMember = await prisma.instance_roles.findUnique({
+    const instanceMember = await prisma.instance_roles.findUniqueOrThrow({
       where: { name: 'member' },
     });
 
@@ -92,7 +92,7 @@ export class AuthResolver {
       throw new Error('Token wrong / missing / expired');
     }
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findUniqueOrThrow({
       where: { email: data.email },
       include: {
         instance_role: {

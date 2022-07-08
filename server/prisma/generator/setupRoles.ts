@@ -21,9 +21,9 @@ const setupRoles = async (
   const usersData: Prisma.chapter_usersCreateManyInput[] = [];
   const subscribeIterator = makeBooleanIterator();
 
-  // We create one admin for chapter one, and none, so that we can test what
-  // happens if this admin tries to make changes to a chapter that they don't
-  // have access to.
+  // We create one admin for chapter 1, but none for the other chapters. That
+  // means we can test requests from that admin to the other chapters and
+  // confirm that the requests are rejected.
   const adminData: Prisma.chapter_usersCreateManyInput = {
     joined_date: new Date(),
     chapter_id: 1,

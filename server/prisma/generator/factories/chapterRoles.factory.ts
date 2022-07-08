@@ -1,4 +1,5 @@
 import { prisma } from '../../../src/prisma';
+
 import { ChapterPermission } from '../../../../common/permissions';
 
 const chapterPermissions = Object.values(ChapterPermission);
@@ -15,8 +16,7 @@ const roles: Array<{
     name: 'member',
     permissions: [
       ChapterPermission.Rsvp,
-      ChapterPermission.EventUnsubscribe,
-      ChapterPermission.EventSubscribe,
+      ChapterPermission.EventSubscriptionsManage,
     ],
   },
 ];

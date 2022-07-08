@@ -10,7 +10,7 @@ import { Permission } from '../../../prisma/generator/factories/instanceRoles.fa
 
 @Resolver()
 export class EventUserResolver {
-  @Authorized(Permission.EventSubscribe)
+  @Authorized(Permission.EventSubscriptionsManage)
   @Mutation(() => EventUser)
   async subscribeToEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -50,7 +50,7 @@ export class EventUserResolver {
     });
   }
 
-  @Authorized(Permission.EventUnsubscribe)
+  @Authorized(Permission.EventSubscriptionsManage)
   @Mutation(() => EventUser)
   async unsubscribeFromEvent(
     @Arg('eventId', () => Int) eventId: number,

@@ -102,7 +102,6 @@ export type CreateChapterInputs = {
 
 export type CreateEventInputs = {
   capacity: Scalars['Float'];
-  chapter_id: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   image_url: Scalars['String'];
@@ -330,6 +329,7 @@ export type MutationCreateChapterArgs = {
 };
 
 export type MutationCreateEventArgs = {
+  chapterId: Scalars['Int'];
   data: CreateEventInputs;
 };
 
@@ -867,6 +867,7 @@ export type ChapterRolesQuery = {
 };
 
 export type CreateEventMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
   data: CreateEventInputs;
 }>;
 
@@ -2277,8 +2278,8 @@ export type ChapterRolesQueryResult = Apollo.QueryResult<
   ChapterRolesQueryVariables
 >;
 export const CreateEventDocument = gql`
-  mutation createEvent($data: CreateEventInputs!) {
-    createEvent(data: $data) {
+  mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+    createEvent(chapterId: $chapterId, data: $data) {
       id
       name
       canceled
@@ -2313,6 +2314,7 @@ export type CreateEventMutationFn = Apollo.MutationFunction<
  * @example
  * const [createEventMutation, { data, loading, error }] = useCreateEventMutation({
  *   variables: {
+ *      chapterId: // value for 'chapterId'
  *      data: // value for 'data'
  *   },
  * });

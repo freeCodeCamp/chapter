@@ -159,14 +159,15 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
   );
 });
 
-Cypress.Commands.add('createEvent', (data) => {
+Cypress.Commands.add('createEvent', (chapterId, data) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
-      data: { ...data },
+      chapterId,
+      data,
     },
-    query: `mutation createEvent($data: CreateEventInputs!) {
-      createEvent(data: $data) {
+    query: `mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+      createEvent(chapterId: $chapterId, data: $data) {
         id
       }
     }`,
@@ -176,9 +177,7 @@ Cypress.Commands.add('createEvent', (data) => {
     url: 'http://localhost:5000/graphql',
     body: eventMutation,
   };
-  return cy.authedRequest(requestOptions).then((response) => {
-    return response.body.data.createEvent.id;
-  });
+  return cy.authedRequest(requestOptions);
 });
 
 Cypress.Commands.add('createChapter', (data) => {

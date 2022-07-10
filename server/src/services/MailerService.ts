@@ -92,3 +92,23 @@ export default class MailerService {
     }
   }
 }
+
+export interface BatchEmailData {
+  email: string;
+  subject: string;
+  text: string;
+  options?: object;
+}
+
+export async function batchSender(
+  mailData: () => Generator<BatchEmailData, void>,
+) {
+  for (const { email, subject, text, options } of mailData()) {
+    await new MailerService({
+      emailList: [email],
+      subject,
+      htmlEmail: text,
+      ...options,
+    }).sendEmail();
+  }
+}

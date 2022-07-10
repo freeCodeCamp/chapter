@@ -29,7 +29,7 @@ import {
   User,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import MailerService from '../../services/MailerService';
+import MailerService, { batchSender } from '../../services/MailerService';
 import {
   createReminder,
   deleteEventReminders,
@@ -40,10 +40,6 @@ import {
   unsubscribeType,
 } from '../../services/UnsubscribeToken';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
-
-//Place holder for unsubscribe
-//TODO: Replace placeholder with actual unsubscribe link
-const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
 
 const getUniqueTags = (tags: string[]) => [
   ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
@@ -133,14 +129,21 @@ const rsvpNotifyAdministrators = async (
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const administratorsEmails = chapterAdministrators.map(
-    ({ user }) => user.email,
-  );
-  await new MailerService({
-    emailList: administratorsEmails,
-    subject: `New RSVP for ${eventName}`,
-    htmlEmail: `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd. ${unsubscribe}`,
-  }).sendEmail();
+  const subject = `New RSVP for ${eventName}`;
+  const body = `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd.`;
+
+  await batchSender(function* () {
+    for (const { chapter_id, user } of chapterAdministrators) {
+      const email = user.email;
+      const chapterUnsubscribeToken = generateToken(
+        unsubscribeType.Chapter,
+        chapter_id,
+        user.id,
+      );
+      const text = `${body}<br><a href="http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
+      yield { email, subject, text };
+    }
+  });
 };
 
 type EventRsvpName = events & { event_users: (event_users & { rsvp: rsvp })[] };
@@ -614,7 +617,6 @@ ${unsubscribeOptions}`,
       (eventPhysical && data.venue_id !== event.venue_id);
 
     if (isVenueChanged) {
-      const emailList = event.event_users.map(({ user }) => user.email);
       const subject = `Venue changed for event ${event.name}`;
       let venueDetails = '';
 
@@ -637,13 +639,19 @@ ${venue.postal_code} <br>
       }
       // TODO: include a link back to the venue page
       const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}
-${unsubscribe}`;
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: body,
-      }).sendEmail();
+${venueDetails}`;
+      batchSender(function* () {
+        for (const { user } of event.event_users) {
+          const email = user.email;
+          const unsubScribeOptions = getUnsubscribeOptions({
+            chapterId: event.chapter_id,
+            eventId: event.id,
+            userId: user.id,
+          });
+          const text = `${body}<br>${unsubScribeOptions}`;
+          yield { email, subject, text };
+        }
+      });
     }
 
     return await prisma.events.update({
@@ -719,36 +727,39 @@ ${unsubscribe}`;
       },
     });
 
-    const addresses: string[] = [];
-    if (emailGroups.includes('interested')) {
-      const interestedUsers: string[] =
-        event.chapter.chapter_users
-          ?.filter((user) => user.subscribed)
-          .map(({ user }) => user.email) ?? [];
+    interface User {
+      user: { id: number; email: string };
+      subscribed: boolean;
+    }
 
-      addresses.push(...interestedUsers);
+    const users: User[] = [];
+    if (emailGroups.includes('interested')) {
+      const interestedUsers =
+        event.chapter.chapter_users?.filter((user) => user.subscribed) ?? [];
+
+      users.push(...interestedUsers);
     }
 
     if (emailGroups.includes('on_waitlist')) {
-      const waitlistUsers: string[] = event.event_users
-        .filter(({ rsvp }) => rsvp.name === 'waitlist')
-        .map(({ user }) => user.email);
-      addresses.push(...waitlistUsers);
+      const waitlistUsers = event.event_users.filter(
+        ({ rsvp }) => rsvp.name === 'waitlist',
+      );
+      users.push(...waitlistUsers);
     }
     if (emailGroups.includes('confirmed')) {
-      const confirmedUsers: string[] = event.event_users
-        .filter(({ rsvp }) => rsvp.name === 'yes')
-        .map(({ user }) => user.email);
-      addresses.push(...confirmedUsers);
+      const confirmedUsers = event.event_users.filter(
+        ({ rsvp }) => rsvp.name === 'yes',
+      );
+      users.push(...confirmedUsers);
     }
     if (emailGroups.includes('canceled')) {
-      const canceledUsers: string[] = event.event_users
-        .filter(({ rsvp }) => rsvp.name === 'no')
-        .map(({ user }) => user.email);
-      addresses.push(...canceledUsers);
+      const canceledUsers = event.event_users.filter(
+        ({ rsvp }) => rsvp.name === 'no',
+      );
+      users.push(...canceledUsers);
     }
 
-    if (!addresses.length) {
+    if (!users.length) {
       return true;
     }
     const subject = `Invitation to ${event.name}.`;
@@ -762,9 +773,7 @@ ${unsubscribe}`;
       summary: event.name,
       url: eventURL,
     });
-    // TODO: it needs a link to unsubscribe from just this event.  See
-    // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
-    // Update the place holder with actual
+
     const body = `When: ${event.start_at} to ${event.ends_at}<br>
 ${event.venue ? `Where: ${event.venue.name}<br>` : ''}
 ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
@@ -778,16 +787,22 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>
     <br>
-    See the options above to change your notifications.
-    ${unsubscribe}
-    `;
+    See the options above to change your notifications.`;
 
-    await new MailerService({
-      emailList: addresses,
-      subject: subject,
-      htmlEmail: body,
-      iCalEvent: calendar.toString(),
-    }).sendEmail();
+    const iCalEvent = calendar.toString();
+
+    await batchSender(function* () {
+      for (const { user } of users) {
+        const email = user.email;
+        const unsubScribeOptions = getUnsubscribeOptions({
+          chapterId: event.chapter_id,
+          eventId: event.id,
+          userId: user.id,
+        });
+        const text = `${body}<br>${unsubScribeOptions}`;
+        yield { email, subject, text, options: { iCalEvent } };
+      }
+    });
 
     return true;
   }

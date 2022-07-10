@@ -30,7 +30,7 @@
     "seed": "node prisma/generator/seed.js"
   },
   "dependencies": {
-    "@prisma/client": "3.15.2",
+    "@prisma/client": "4.0.0",
     "apollo-server-express": "3.9.0",
     "calendar-link": "2.2.0",
     "class-validator": "0.13.2",
@@ -44,7 +44,7 @@
     "ical-generator": "3.4.3",
     "is-docker": "2.2.1",
     "jsonwebtoken": "8.5.1",
-    "nodemailer": "6.7.6",
+    "nodemailer": "6.7.7",
     "pg": "8.7.3",
     "reflect-metadata": "0.1.13",
     "type-graphql": "1.1.1"
@@ -57,7 +57,7 @@
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",
     "node-dev": "7.4.3",
-    "prisma": "3.15.2",
+    "prisma": "4.0.0",
     "rimraf": "3.0.2",
     "supertest": "6.2.4",
     "typescript": "4.7.4"

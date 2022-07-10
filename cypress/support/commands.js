@@ -159,30 +159,25 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
   );
 });
 
-Cypress.Commands.add('createEvent', (data) => {
+Cypress.Commands.add('createEvent', (chapterId, data) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
-      data: { ...data },
+      chapterId,
+      data,
     },
-    query: `mutation createEvent($data: CreateEventInputs!) {
-      createEvent(data: $data) {
+    query: `mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+      createEvent(chapterId: $chapterId, data: $data) {
         id
       }
     }`,
   };
-  return cy
-    .request({
-      method: 'POST',
-      url: 'http://localhost:5000/graphql',
-      body: eventMutation,
-      headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-      },
-    })
-    .then((response) => {
-      return response.body.data.createEvent.id;
-    });
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: eventMutation,
+  };
+  return cy.authedRequest(requestOptions);
 });
 
 Cypress.Commands.add('createChapter', (data) => {
@@ -336,4 +331,40 @@ Cypress.Commands.add('authedRequest', (options) => {
       Authorization: `Bearer ${window.localStorage.getItem('token')}`,
     },
   });
+});
+
+Cypress.Commands.add('createSponsor', (data) => {
+  const createSponsorData = {
+    operationName: 'createSponsor',
+    variables: { data },
+    query: `mutation createSponsor($data: CreateSponsorInputs!) {
+      createSponsor(data: $data) {
+        id
+      }
+    }`,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: createSponsorData,
+  };
+  return cy.authedRequest(requestOptions);
+});
+
+Cypress.Commands.add('updateSponsor', (id, data) => {
+  const updateSponsorData = {
+    operationName: 'updateSponsor',
+    variables: { id, data },
+    query: `mutation updateSponsor($id: Int!, $data: UpdateSponsorInputs!) {
+      updateSponsor(id: $id, data: $data) {
+        id
+      }
+    }`,
+  };
+  const requestOptions = {
+    method: 'POST',
+    url: 'http://localhost:5000/graphql',
+    body: updateSponsorData,
+  };
+  return cy.authedRequest(requestOptions);
 });

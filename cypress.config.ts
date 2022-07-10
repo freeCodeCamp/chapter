@@ -16,19 +16,22 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config
+      if (!process.env.JWT_SECRET)
+        throw Error('JWT_SECRET must be set for e2e tests');
+
       config.env = config.env || {};
       // TODO: ideally the email address should have a common source (since it's
       // used in the db generator, too)
       config.env.JWT = jwt.sign(
         { email: 'foo@bar.com' },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
           expiresIn: '120min',
         },
       );
       config.env.JWT_TEST_USER = jwt.sign(
         { email: 'test@user.org' },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
           expiresIn: '120min',
         },
@@ -36,7 +39,7 @@ export default defineConfig({
 
       config.env.JWT_ADMIN_USER = jwt.sign(
         { email: 'admin@of.a.chapter' },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
           expiresIn: '120min',
         },
@@ -44,7 +47,7 @@ export default defineConfig({
 
       config.env.JWT_BANNED_ADMIN_USER = jwt.sign(
         { email: 'banned@chapter.admin' },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
           expiresIn: '120min',
         },
@@ -52,7 +55,7 @@ export default defineConfig({
 
       config.env.TOKEN_DELETED_USER = jwt.sign(
         { id: -1 },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
           expiresIn: '120min',
         },
@@ -60,7 +63,7 @@ export default defineConfig({
 
       config.env.JWT_EXPIRED = jwt.sign(
         { email: 'foo@bar.com' },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         {
           expiresIn: '1',
         },

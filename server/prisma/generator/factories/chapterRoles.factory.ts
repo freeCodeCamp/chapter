@@ -1,29 +1,17 @@
 import { prisma } from '../../../src/prisma';
+import { ChapterPermission } from '../../../../common/permissions';
 
-const chapterPermissions = [
-  'chapter-edit',
-  'event-create',
-  'event-edit',
-  'rsvp-delete',
-  'rsvp-confirm',
-  'rsvp',
-] as const;
+const chapterPermissions = Object.values(ChapterPermission);
 
-type Permissions = typeof chapterPermissions[number];
-
-const roles: Array<{ name: string; permissions: Permissions[] }> = [
+const roles: Array<{
+  name: string;
+  permissions: readonly ChapterPermission[];
+}> = [
   {
     name: 'administrator',
-    permissions: [
-      'chapter-edit',
-      'event-create',
-      'event-edit',
-      'rsvp-delete',
-      'rsvp-confirm',
-      'rsvp',
-    ],
+    permissions: Object.values(ChapterPermission),
   },
-  { name: 'member', permissions: ['rsvp'] },
+  { name: 'member', permissions: [ChapterPermission.Rsvp] },
 ];
 
 const createChapterRoles = async () => {

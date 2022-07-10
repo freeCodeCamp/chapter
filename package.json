@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "engines": {
-    "node": "16.15.1",
+    "node": "16.16.0",
     "npm": "8.13.2"
   },
   "scripts": {
@@ -65,8 +65,8 @@
     "@testing-library/cypress": "8.0.3",
     "@types/jest": "28.1.4",
     "@types/supertest": "2.0.12",
-    "@typescript-eslint/eslint-plugin": "5.30.4",
-    "@typescript-eslint/parser": "5.30.4",
+    "@typescript-eslint/eslint-plugin": "5.30.5",
+    "@typescript-eslint/parser": "5.30.5",
     "concurrently": "7.2.2",
     "cross-env": "7.0.3",
     "cypress": "10.3.0",
@@ -76,7 +76,7 @@
     "eslint": "8.19.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-react": "1.1.7",
-    "eslint-import-resolver-typescript": "3.2.0",
+    "eslint-import-resolver-typescript": "3.2.5",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jest": "26.5.3",

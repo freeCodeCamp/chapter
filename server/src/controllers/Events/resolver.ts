@@ -20,6 +20,7 @@ import {
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
 
+import { Permission } from '../../../../common/permissions';
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
@@ -233,7 +234,7 @@ export class EventResolver {
     });
   }
 
-  @Authorized('rsvp')
+  @Authorized(Permission.Rsvp)
   @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -383,7 +384,7 @@ export class EventResolver {
     return userRole;
   }
 
-  @Authorized('rsvp-confirm')
+  @Authorized(Permission.RsvpConfirm)
   @Mutation(() => EventUser)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
@@ -433,7 +434,7 @@ ${unsubscribeOptions}`,
     });
   }
 
-  @Authorized('rsvp-delete')
+  @Authorized(Permission.RsvpDelete)
   @Mutation(() => Boolean)
   async deleteRsvp(
     @Arg('eventId', () => Int) eventId: number,
@@ -446,22 +447,23 @@ ${unsubscribeOptions}`,
     return true;
   }
 
+  @Authorized(Permission.EventCreate)
   @Mutation(() => Event)
   async createEvent(
+    @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: CreateEventInputs,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<Event | null> {
-    if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venue_id) {
       venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
     }
 
     const chapter = await prisma.chapters.findUnique({
-      where: { id: data.chapter_id },
+      where: { id: chapterId },
     });
     const userChapter = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === data.chapter_id,
+      ({ chapter_id }) => chapter_id === chapterId,
     );
 
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =

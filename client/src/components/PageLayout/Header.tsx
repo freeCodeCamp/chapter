@@ -69,7 +69,7 @@ export const Header: React.FC = () => {
 
             {user ? (
               <>
-                <Link color="white" href="/dashboard">
+                <Link color="white" href="/dashboard/chapters">
                   Dashboard
                 </Link>
                 <Button data-cy="logout-button" onClick={logout}>

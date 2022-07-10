@@ -5,6 +5,7 @@ WORKDIR /usr/chapter/
 
 # Copying source files
 COPY client ./client
+COPY common ./common
 COPY package*.json ./
 
 # Installing dependencies

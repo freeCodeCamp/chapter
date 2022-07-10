@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../../support/util';
+
 describe('event dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -71,12 +73,13 @@ describe('event dashboard', () => {
 
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
-      cy.intercept('/graphql', cy.spy().as('request'));
+      cy.intercept('http://localhost:5000/graphql', (req) => {
+        expect(req.body?.operationName?.includes('confirmRsvp')).to.be.false;
+      });
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Cancel' })
         .click();
 
-      cy.get('@request').should('not.have.been.called');
       cy.get('@userName').then((userName) => {
         cy.get('@waitlist').contains(userName);
       });
@@ -119,16 +122,8 @@ describe('event dashboard', () => {
         cy.register();
         cy.login(Cypress.env('JWT_TEST_USER'));
 
-        cy.deleteRsvp(eventId, confirmedUser.id).then((response) => {
-          expect(response.status).to.eq(200);
-          expect(response.body.errors).to.exist;
-          expect(response.body.errors).to.have.length(1);
-        });
-        cy.confirmRsvp(eventId, waitlistUser.id).then((response) => {
-          expect(response.status).to.eq(200);
-          expect(response.body.errors).to.exist;
-          expect(response.body.errors).to.have.length(1);
-        });
+        cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
+        cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);
       });
     });
   });

@@ -276,16 +276,10 @@ Cypress.Commands.add(
     }
   `,
     };
-    const requestOptions = {
-      method: 'POST',
-      url: 'http://localhost:5000/graphql',
-      body: subscribeMutation,
-      failOnStatusCode: false,
-    };
 
     return options.withAuth
-      ? cy.authedRequest(requestOptions)
-      : cy.request(requestOptions);
+      ? cy.authedRequest(gqlOptions(subscribeMutation))
+      : cy.request(gqlOptions(subscribeMutation));
   },
 );
 
@@ -305,16 +299,10 @@ Cypress.Commands.add(
     }
   `,
     };
-    const requestOptions = {
-      method: 'POST',
-      url: 'http://localhost:5000/graphql',
-      body: unsubscribeMutation,
-      failOnStatusCode: false,
-    };
 
     return options.withAuth
-      ? cy.authedRequest(requestOptions)
-      : cy.request(requestOptions);
+      ? cy.authedRequest(gqlOptions(unsubscribeMutation))
+      : cy.request(gqlOptions(unsubscribeMutation));
   },
 );
 

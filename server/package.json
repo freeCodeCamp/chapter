@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@prisma/client": "4.0.0",
-    "apollo-server-express": "3.9.0",
+    "apollo-server-express": "3.10.0",
     "calendar-link": "2.2.0",
     "class-validator": "0.13.2",
     "cors": "2.8.5",

@@ -28,7 +28,7 @@ import 'cypress-wait-until';
 import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
-import { gqlOptions } from '../support/util';
+import { gqlOptions } from './util';
 
 Cypress.Commands.add('registerViaUI', (firstName, lastName, email) => {
   cy.visit('/auth/register');

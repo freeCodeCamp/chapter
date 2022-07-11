@@ -7,7 +7,8 @@
       "node",
       "@testing-library/cypress",
       "cypress-mailhog/types"
-    ]
+    ],
+    "noEmit": true
   },
   "include": ["**/*.ts"]
 }

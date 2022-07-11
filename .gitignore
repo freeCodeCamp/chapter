@@ -82,5 +82,4 @@ cypress-coverage/
 /server/reminders/**/*.map
 /common/**/*.js
 /common/**/*.map
-/cypress/**/*.cy.js
 tsconfig.tsbuildinfo

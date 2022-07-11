@@ -91,7 +91,7 @@ export const EventPage: NextPage = () => {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
     if (ok) {
       try {
-        await subscribeToEvent({ variables: { eventId, chapterId } });
+        await subscribeToEvent({ variables: { eventId } });
         toast({
           title: 'You successfully subscribed to this event',
           status: 'success',
@@ -110,7 +110,7 @@ export const EventPage: NextPage = () => {
     });
     if (ok) {
       try {
-        await unsubscribeFromEvent({ variables: { eventId, chapterId } });
+        await unsubscribeFromEvent({ variables: { eventId } });
         toast({
           title: 'You have unsubscribed from this event',
           status: 'info',

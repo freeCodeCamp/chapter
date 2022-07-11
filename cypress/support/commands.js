@@ -260,6 +260,52 @@ Cypress.Commands.add(
   },
 );
 
+Cypress.Commands.add(
+  'subscribeToEvent',
+  ({ eventId }, options = { withAuth: true }) => {
+    const subscribeMutation = {
+      operationName: 'subscribeToEvent',
+      variables: {
+        eventId,
+      },
+      query: `
+    mutation subscribeToEvent($eventId: Int!) {
+      subscribeToEvent(eventId: $eventId) {
+        subscribed
+      }
+    }
+  `,
+    };
+
+    return options.withAuth
+      ? cy.authedRequest(gqlOptions(subscribeMutation))
+      : cy.request(gqlOptions(subscribeMutation));
+  },
+);
+
+Cypress.Commands.add(
+  'unsubscribeFromEvent',
+  ({ eventId }, options = { withAuth: true }) => {
+    const unsubscribeMutation = {
+      operationName: 'unsubscribeFromEvent',
+      variables: {
+        eventId,
+      },
+      query: `
+    mutation unsubscribeFromEvent($eventId: Int!) {
+      unsubscribeFromEvent(eventId: $eventId) {
+        subscribed
+      }
+    }
+  `,
+    };
+
+    return options.withAuth
+      ? cy.authedRequest(gqlOptions(unsubscribeMutation))
+      : cy.request(gqlOptions(unsubscribeMutation));
+  },
+);
+
 Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
   const kickMutation = {
     operationName: 'deleteRsvp',

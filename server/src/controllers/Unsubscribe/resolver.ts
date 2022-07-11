@@ -9,7 +9,7 @@ import {
 } from '../../services/UnsubscribeToken';
 
 const unsubscribeFromChapter = async (userId: number, chapterId: number) => {
-  const chapter = await prisma.chapters.findUnique({
+  const chapter = await prisma.chapters.findUniqueOrThrow({
     where: { id: chapterId },
     include: { events: true },
   });

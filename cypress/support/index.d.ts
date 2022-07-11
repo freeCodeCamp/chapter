@@ -128,7 +128,6 @@ declare namespace Cypress {
     /**
      * Unsubscribe from notifications for a single event
      * @param eventId Id of the event
-     * @param chapterId Id of the chapter
      * @param {object} [options={ withAuth: true }] Optional options object.
      */
     unsubscribeFromEvent(

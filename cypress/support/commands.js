@@ -269,8 +269,8 @@ Cypress.Commands.add(
         eventId,
       },
       query: `
-    mutation subscribeToEvent($eventId: Int!, $chapterId: Int!) {
-      subscribeToEvent(eventId: $eventId, chapterId: $chapterId) {
+    mutation subscribeToEvent($eventId: Int!) {
+      subscribeToEvent(eventId: $eventId) {
         subscribed
       }
     }
@@ -292,8 +292,8 @@ Cypress.Commands.add(
         eventId,
       },
       query: `
-    mutation unsubscribeFromEvent($eventId: Int!, $chapterId: Int!) {
-      unsubscribeFromEvent(eventId: $eventId, chapterId: $chapterId) {
+    mutation unsubscribeFromEvent($eventId: Int!) {
+      unsubscribeFromEvent(eventId: $eventId) {
         subscribed
       }
     }

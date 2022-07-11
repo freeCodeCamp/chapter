@@ -6,7 +6,8 @@
       "cypress",
       "node",
       "@testing-library/cypress",
-      "cypress-mailhog/types"
+      "cypress-mailhog/types",
+      "cypress-mailhog/types/mailhog"
     ],
     "noEmit": true
   },

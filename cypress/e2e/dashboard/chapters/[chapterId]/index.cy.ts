@@ -143,7 +143,7 @@ describe('chapter dashboard', () => {
       .select(testEvent.venueId);
     cy.get('@venueSelect')
       .find(`option[value=${testEvent.venueId}]`)
-      .invoke('text') // This *has* to be done here, because the element will leave the DOM when Add event is clicked
+      .invoke('text')
       .as('venueTitle');
     cy.findByRole('textbox', { name: 'Streaming URL' }).type(
       testEvent.streamingUrl,

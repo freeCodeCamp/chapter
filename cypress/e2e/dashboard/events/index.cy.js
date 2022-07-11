@@ -59,14 +59,19 @@ describe('events dashboard', () => {
     cy.findByRole('button', { name: 'Send Email' }).click();
 
     cy.waitUntilMail('allMail');
-    cy.get('@allMail').mhFirst().as('emails');
 
-    const emails = users
+    const recipientEmails = users
       .filter(filterCallback)
       .map(({ user: { email } }) => email);
-    cy.get('@emails').mhGetRecipients().should('have.members', emails);
-    cy.get('@emails').then((mail) => {
-      cy.checkBcc(mail).should('eq', true);
+    cy.get('@allMail').should('have.length', recipientEmails.length);
+    recipientEmails.forEach((recipientEmail) => {
+      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
+      cy.get('@currentRecipient').should('have.length', 1);
+      cy.get('@currentRecipient')
+        .mhFirst()
+        .then((mail) => {
+          cy.checkBcc(mail).should('eq', true);
+        });
     });
     cy.mhDeleteAll();
   }

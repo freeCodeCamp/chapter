@@ -6,7 +6,7 @@ import { prisma } from '../../prisma';
 
 import { EventUser } from '../../graphql-types/EventUser';
 import { GQLCtx } from '../../common-types/gql';
-import { Permission } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { Permission } from '../../../../common/permissions';
 
 @Resolver()
 export class EventUserResolver {

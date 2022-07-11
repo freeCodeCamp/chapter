@@ -262,12 +262,11 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'subscribeToEvent',
-  ({ eventId, chapterId }, options = { withAuth: true }) => {
+  ({ eventId }, options = { withAuth: true }) => {
     const subscribeMutation = {
       operationName: 'subscribeToEvent',
       variables: {
         eventId,
-        chapterId,
       },
       query: `
     mutation subscribeToEvent($eventId: Int!, $chapterId: Int!) {
@@ -292,12 +291,11 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'unsubscribeFromEvent',
-  ({ eventId, chapterId }, options = { withAuth: true }) => {
+  ({ eventId }, options = { withAuth: true }) => {
     const unsubscribeMutation = {
       operationName: 'unsubscribeFromEvent',
       variables: {
         eventId,
-        chapterId,
       },
       query: `
     mutation unsubscribeFromEvent($eventId: Int!, $chapterId: Int!) {

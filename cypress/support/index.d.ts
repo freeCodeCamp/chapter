@@ -118,11 +118,10 @@ declare namespace Cypress {
     /**
      * Subscribe to notifications for a single event
      * @param eventId Id of the event
-     * @param chapterId Id of the chapter
      * @param {object} [options={ withAuth: true }] Optional options object.
      */
     subscribeToEvent(
-      { eventId, chapterId }: { eventId: number; chapterId: number },
+      { eventId }: { eventId: number },
       options?: { withAuth: true },
     ): Chainable<any>;
 
@@ -133,7 +132,7 @@ declare namespace Cypress {
      * @param {object} [options={ withAuth: true }] Optional options object.
      */
     unsubscribeFromEvent(
-      { eventId, chapterId }: { eventId: number; chapterId: number },
+      { eventId }: { eventId: number },
       options?: { withAuth: true },
     ): Chainable<any>;
   }

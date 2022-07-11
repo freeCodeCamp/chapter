@@ -1,3 +1,16 @@
+import { expectToBeRejected } from '../../support/util';
+
+const venueData = {
+  name: 'Test Venue',
+  street_address: '123 Main St',
+  city: 'New York',
+  postal_code: '10001',
+  region: 'NY',
+  country: 'US',
+  latitude: 40.7128,
+  longitude: -74.006,
+};
+
 describe('venues dashboard', () => {
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
@@ -16,7 +29,7 @@ describe('venues dashboard', () => {
     cy.get('a[href="/dashboard/venues/1/edit"]').should('be.visible');
   });
 
-  it('lets a user create a venue', () => {
+  it('lets an admin create a venue', () => {
     const fix = {
       name: 'Name goes here',
       streetAddress: '10 Random Path',
@@ -27,6 +40,9 @@ describe('venues dashboard', () => {
       latitude: '-45',
       longitude: '35',
     };
+
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+
     cy.visit('/dashboard/venues');
     cy.get('a[href="/dashboard/venues/new"]').click();
     cy.findByRole('textbox', { name: 'Venue name' }).type(fix.name);
@@ -54,5 +70,64 @@ describe('venues dashboard', () => {
     cy.contains(fix.postalCode);
     cy.contains(fix.region);
     // TODO: display more details about the venue?
+  });
+
+  it('only accepts requests from owners and admins of the associated chapter', () => {
+    const venueCreateVariables = {
+      chapterId: 1,
+    };
+    const venueUpdateDeleteVariables = {
+      chapterId: 1,
+      venueId: 1,
+    };
+
+    // logged out user
+    cy.logout();
+    cy.reload();
+
+    cy.createVenue(venueCreateVariables, venueData, { withAuth: false }).then(
+      expectToBeRejected,
+    );
+    cy.updateVenue(venueUpdateDeleteVariables, venueData, {
+      withAuth: false,
+    }).then(expectToBeRejected);
+    cy.deleteVenue(venueUpdateDeleteVariables, { withAuth: false }).then(
+      expectToBeRejected,
+    );
+
+    // newly registered user (without a chapter_users record)
+    cy.register();
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+
+    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
+    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
+      expectToBeRejected,
+    );
+    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
+
+    // banned user
+    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
+    cy.reload();
+
+    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
+    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
+      expectToBeRejected,
+    );
+    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
+
+    // Admin of different chapter
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.reload();
+
+    cy.createVenue({ ...venueCreateVariables, chapterId: 2 }, venueData).then(
+      expectToBeRejected,
+    );
+    cy.updateVenue({ ...venueCreateVariables, chapterId: 2 }, venueData).then(
+      expectToBeRejected,
+    );
+    cy.deleteVenue({ ...venueCreateVariables, chapterId: 2 }).then(
+      expectToBeRejected,
+    );
   });
 });

@@ -52,12 +52,6 @@ declare global {
       registerViaUI(firstName: string, lastName: string, email: string): void;
 
       /**
-       * Wait until emails are received by mailhog
-       * @param alias Name of the alias to reference emails by
-       */
-      waitUntilMail(alias: string): void;
-
-      /**
        * Create event using GQL mutation
        * @param chapterId Id of the chapter
        * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.

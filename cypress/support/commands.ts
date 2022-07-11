@@ -152,7 +152,7 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
     .then((response) => response.body.data.event.event_users);
 });
 
-Cypress.Commands.add('waitUntilMail', (alias) => {
+const waitUntilMail = (alias?: string) => {
   cy.waitUntil(() =>
     alias
       ? cy
@@ -161,7 +161,9 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
           .then((mails) => mails?.length > 0)
       : cy.mhGetAllMails().then((mails) => mails?.length > 0),
   );
-});
+};
+
+Cypress.Commands.add('waitUntilMail', waitUntilMail);
 
 Cypress.Commands.add('createEvent', (chapterId, data) => {
   const eventMutation = {
@@ -474,6 +476,12 @@ declare global {
   namespace Cypress {
     interface Chainable {
       register: typeof register;
+
+      /**
+       * Wait until emails are received by mailhog
+       * @param alias Name of the alias to reference emails by
+       */
+      waitUntilMail: typeof waitUntilMail;
     }
   }
 }

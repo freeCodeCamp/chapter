@@ -14,14 +14,13 @@ export class EventUserResolver {
   @Mutation(() => EventUser)
   async subscribeToEvent(
     @Arg('eventId', () => Int) eventId: number,
-    // chapterId is needed for Authorized to work correctly, even though is not
-    // used in the resolver
-    @Arg('chapterId', () => Int) _chapterId: number,
     @Ctx() ctx: Required<GQLCtx>,
   ): Promise<EventUser> {
     const whereCondition = {
       user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
     };
+    // TODO(perf): ctx.user should have this already, so it should be possible
+    // to search that rather than doing an additional query.
     const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: whereCondition,
       include: { event_reminder: true, event: true },
@@ -54,14 +53,13 @@ export class EventUserResolver {
   @Mutation(() => EventUser)
   async unsubscribeFromEvent(
     @Arg('eventId', () => Int) eventId: number,
-    // chapterId is needed for Authorized to work correctly, even though is not
-    // used in the resolver
-    @Arg('chapterId', () => Int) _chapterId: number,
     @Ctx() ctx: Required<GQLCtx>,
   ): Promise<EventUser> {
     const whereCondition = {
       user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
     };
+    // TODO(perf): ctx.user should have this already, so it should be possible
+    // to search that rather than doing an additional query.
     const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: whereCondition,
       include: { event_reminder: true, event: true },

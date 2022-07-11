@@ -388,7 +388,6 @@ export type MutationSendEventInviteArgs = {
 };
 
 export type MutationSubscribeToEventArgs = {
-  chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
 };
 
@@ -402,7 +401,6 @@ export type MutationUnbanUserArgs = {
 };
 
 export type MutationUnsubscribeFromEventArgs = {
-  chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
 };
 
@@ -1281,7 +1279,6 @@ export type RsvpToEventMutation = {
 
 export type SubscribeToEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
-  chapterId: Scalars['Int'];
 }>;
 
 export type SubscribeToEventMutation = {
@@ -1291,7 +1288,6 @@ export type SubscribeToEventMutation = {
 
 export type UnsubscribeFromEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
-  chapterId: Scalars['Int'];
 }>;
 
 export type UnsubscribeFromEventMutation = {
@@ -3673,8 +3669,8 @@ export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutationVariables
 >;
 export const SubscribeToEventDocument = gql`
-  mutation subscribeToEvent($eventId: Int!, $chapterId: Int!) {
-    subscribeToEvent(eventId: $eventId, chapterId: $chapterId) {
+  mutation subscribeToEvent($eventId: Int!) {
+    subscribeToEvent(eventId: $eventId) {
       subscribed
     }
   }
@@ -3698,7 +3694,6 @@ export type SubscribeToEventMutationFn = Apollo.MutationFunction<
  * const [subscribeToEventMutation, { data, loading, error }] = useSubscribeToEventMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
- *      chapterId: // value for 'chapterId'
  *   },
  * });
  */
@@ -3724,8 +3719,8 @@ export type SubscribeToEventMutationOptions = Apollo.BaseMutationOptions<
   SubscribeToEventMutationVariables
 >;
 export const UnsubscribeFromEventDocument = gql`
-  mutation unsubscribeFromEvent($eventId: Int!, $chapterId: Int!) {
-    unsubscribeFromEvent(eventId: $eventId, chapterId: $chapterId) {
+  mutation unsubscribeFromEvent($eventId: Int!) {
+    unsubscribeFromEvent(eventId: $eventId) {
       subscribed
     }
   }
@@ -3749,7 +3744,6 @@ export type UnsubscribeFromEventMutationFn = Apollo.MutationFunction<
  * const [unsubscribeFromEventMutation, { data, loading, error }] = useUnsubscribeFromEventMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
- *      chapterId: // value for 'chapterId'
  *   },
  * });
  */

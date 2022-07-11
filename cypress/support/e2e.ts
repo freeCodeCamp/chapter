@@ -47,11 +47,6 @@ declare global {
       logout(): void;
 
       /**
-       * Register user using GQL query
-       */
-      register(firstName: string, lastName: string, email: string): void;
-
-      /**
        * Register user using page UI
        */
       registerViaUI(firstName: string, lastName: string, email: string): void;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -68,7 +69,11 @@ Cypress.Commands.add('logout', () => {
   window.localStorage.removeItem('token');
 });
 
-Cypress.Commands.add('register', (firstName, lastName, email) => {
+/**
+ * Register user using GQL query
+ */
+
+const register = (firstName?: string, lastName?: string, email?: string) => {
   const user = {
     operationName: 'register',
     variables: {
@@ -85,7 +90,9 @@ Cypress.Commands.add('register', (firstName, lastName, email) => {
     expect(response.body.data.register).to.have.property('__typename', 'User');
     expect(response.status).to.eq(200);
   });
-});
+};
+
+Cypress.Commands.add('register', register);
 
 Cypress.Commands.add('interceptGQL', (operationName) => {
   cy.intercept(Cypress.env('GQL_URL'), (req) => {
@@ -461,3 +468,12 @@ Cypress.Commands.add('getChapterEvents', (id) => {
     .request(gqlOptions(chapterQuery))
     .then((response) => response.body.data.chapter.events);
 });
+// Cypress will add these commands to the Cypress object, correctly, but it
+// cannot infer the types, so we need to add them manually.
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      register: typeof register;
+    }
+  }
+}

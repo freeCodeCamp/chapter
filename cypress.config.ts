@@ -75,6 +75,10 @@ export default defineConfig({
 
       config.env.JWT_MALFORMED = 'not-a-valid-format';
 
+      config.env.GQL_URL = `${
+        process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000'
+      }/graphql`;
+
       // This makes sure the db is populated before running any tests. Without this,
       // it's difficult (when running docker-compose up) to guarantee that both the
       // docker container is running and that the db has been seeded.

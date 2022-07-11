@@ -38,7 +38,6 @@ export class ChapterUserResolver {
       where: {
         user_id_chapter_id: { user_id: ctx.user.id, chapter_id: chapterId },
       },
-      rejectOnNotFound: false,
     });
   }
 
@@ -79,7 +78,7 @@ export class ChapterUserResolver {
       throw Error('User must be logged in to change subscription');
     }
 
-    const chapterUser = await prisma.chapter_users.findUnique({
+    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
       where: {
         user_id_chapter_id: {
           chapter_id: chapterId,
@@ -139,7 +138,7 @@ export class ChapterUserResolver {
       where: { id },
       include: { chapter: true },
     });
-    if (!event.chapter) {
+    if (!event || !event.chapter) {
       throw Error('Cannot find the chapter of the event with id ' + id);
     }
 

@@ -43,7 +43,7 @@ const createRsvps = async (
       });
 
       if (subscribed && rsvpName === 'yes') {
-        const event = await prisma.events.findUnique({
+        const event = await prisma.events.findUniqueOrThrow({
           where: { id: eventId },
         });
         if (!event.canceled) {

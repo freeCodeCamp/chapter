@@ -21,7 +21,7 @@ export class EventUserResolver {
     const whereCondition = {
       user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
     };
-    const eventUser = await prisma.event_users.findUnique({
+    const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: whereCondition,
       include: { event_reminder: true, event: true },
     });
@@ -61,7 +61,7 @@ export class EventUserResolver {
     const whereCondition = {
       user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
     };
-    const eventUser = await prisma.event_users.findUnique({
+    const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: whereCondition,
       include: { event_reminder: true, event: true },
     });

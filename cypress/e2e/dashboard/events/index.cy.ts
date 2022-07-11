@@ -97,9 +97,13 @@ describe('events dashboard', () => {
     cy.get('@email')
       .mhFirst()
       .then((mail) => {
-        const hasCalendar = mail.MIME.Parts.some((part) => {
+        const MIME = mail.MIME as {
+          Parts: { Headers: unknown; Body: unknown }[];
+        };
+        const hasCalendar = MIME.Parts.some((part) => {
           const contentType = part.Headers['Content-Type'];
           if (contentType?.includes(calendarMIME)) {
+            // @ts-expect-error cypress-mailhog is missing types for this
             const body = Buffer.from(part.Body, 'base64').toString();
             return bodyRegex.test(body);
           }

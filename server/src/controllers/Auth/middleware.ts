@@ -79,7 +79,6 @@ export const userMiddleware = (
     .findUnique({
       where: { id: value.id },
       ...userInclude,
-      rejectOnNotFound: false,
     })
     .then((user) => {
       if (!user) {

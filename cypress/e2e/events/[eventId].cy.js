@@ -32,7 +32,7 @@ describe('event page', () => {
     cy.findByRole('textbox', { name: 'Email' }).as('email').type(fix.email);
     cy.findByRole('button', { name: 'Login' }).as('login-submit').click();
     // TODO: nicer response to un-registered users
-    cy.contains('USER_NOT_FOUND');
+    cy.contains('No users found');
 
     // TODO: should this be called 'Switch to registration'?
     cy.findByRole('button', { name: 'Register' }).click();

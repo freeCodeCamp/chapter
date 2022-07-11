@@ -203,7 +203,7 @@ export class EventResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<GQLCtx>,
   ): Promise<EventUser | null> {
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
         event_users: {
@@ -238,7 +238,6 @@ export class EventResolver {
           event_id: eventId,
         },
       },
-      rejectOnNotFound: false,
     });
 
     if (oldUserRole) {
@@ -354,7 +353,7 @@ export class EventResolver {
     @Ctx() ctx: GQLCtx,
   ): Promise<EventUser> {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
-    const eventUser = await prisma.event_users.findUnique({
+    const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       include: { event: true, user: true },
     });
@@ -414,7 +413,7 @@ export class EventResolver {
       venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
     }
 
-    const chapter = await prisma.chapters.findUnique({
+    const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id: chapterId },
     });
     const userChapter = ctx.user.user_chapters.find(
@@ -482,7 +481,7 @@ export class EventResolver {
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
   ): Promise<Event | null> {
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findUniqueOrThrow({
       where: { id },
       include: {
         venue: true,
@@ -579,7 +578,7 @@ export class EventResolver {
       let venueDetails = '';
 
       if (eventPhysical) {
-        const venue = await prisma.venues.findUnique({
+        const venue = await prisma.venues.findUniqueOrThrow({
           where: { id: data.venue_id },
         });
         // TODO: include a link back to the venue page
@@ -667,7 +666,7 @@ ${unsubscribe}`;
     })
     emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
   ): Promise<boolean> {
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findUniqueOrThrow({
       where: { id },
       include: {
         venue: true,

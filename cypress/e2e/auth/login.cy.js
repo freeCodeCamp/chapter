@@ -72,7 +72,7 @@ describe('login', () => {
     };
     cy.request({
       method: 'POST',
-      url: 'http://localhost:5000/graphql',
+      url: Cypress.env('GQL_URL'),
       body,
       headers: {
         authorization: `Bearer ${Cypress.env('TOKEN_DELETED_USER')}`,

@@ -73,7 +73,7 @@ describe('event dashboard', () => {
 
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
-      cy.intercept('http://localhost:5000/graphql', (req) => {
+      cy.intercept(Cypress.env('GQL_URL'), (req) => {
         expect(req.body?.operationName?.includes('confirmRsvp')).to.be.false;
       });
       cy.findByRole('alertdialog')

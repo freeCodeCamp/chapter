@@ -6,3 +6,12 @@ export function expectToBeRejected(response) {
     "Access denied! You don't have permission for this action!",
   );
 }
+
+export function gqlOptions(body, additionalOptions) {
+  return {
+    method: 'POST',
+    url: Cypress.env('GQL_URL'),
+    body: body,
+    ...additionalOptions,
+  };
+}

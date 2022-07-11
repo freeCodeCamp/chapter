@@ -53,11 +53,12 @@ describe('chapter dashboard', () => {
       }
     });
     // check that the title we selected is in the event we created.
-    cy.get('@venueTitle')
-      .invoke('text')
-      .then((venueTitle) => {
-        cy.contains(venueTitle);
-      });
+
+    // The type has to be set, since TS can't infer that the alias is to a
+    // string
+    cy.get<string>('@venueTitle').then((venueTitle) => {
+      cy.contains(venueTitle);
+    });
 
     // check that the subscribed users have been emailed
     cy.waitUntilMail('allMail');
@@ -142,6 +143,7 @@ describe('chapter dashboard', () => {
       .select(testEvent.venueId);
     cy.get('@venueSelect')
       .find(`option[value=${testEvent.venueId}]`)
+      .invoke('text') // This *has* to be done here, because the element will leave the DOM when Add event is clicked
       .as('venueTitle');
     cy.findByRole('textbox', { name: 'Streaming URL' }).type(
       testEvent.streamingUrl,

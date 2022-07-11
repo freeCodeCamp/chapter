@@ -219,33 +219,27 @@ describe('events dashboard', () => {
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
     cy.get('a[href*="/events/"').first().as('eventToDelete');
-    cy.get('@eventToDelete').as('eventTitle');
+    cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
     cy.findByRole('link', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
     cy.wait('@GQLevents');
     cy.get('#page-heading').contains('Events');
     cy.contains('Loading...').should('not.exist');
-    cy.get('@eventTitle')
-      .invoke('text')
-      .then((eventTitle) => {
-        cy.findByRole('link', { name: eventTitle }).click();
-      });
+    cy.get<string>('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: eventTitle }).click();
+    });
 
     cy.findByRole('button', { name: 'Delete' }).click();
     cy.findByRole('button', { name: 'Delete' }).click();
 
-    cy.get('@eventTitle')
-      .invoke('text')
-      .then((eventTitle) => {
-        cy.contains(eventTitle).should('not.exist');
-      });
+    cy.get<string>('@eventTitle').then((eventTitle) => {
+      cy.contains(eventTitle).should('not.exist');
+    });
     cy.get('a[href="/"]').click();
-    cy.get('@eventTitle')
-      .invoke('text')
-      .then((eventTitle) => {
-        cy.contains(eventTitle).should('not.exist');
-      });
+    cy.get<string>('@eventTitle').then((eventTitle) => {
+      cy.contains(eventTitle).should('not.exist');
+    });
   });
 
   it('emails not canceled rsvps when event is canceled', () => {
@@ -255,6 +249,7 @@ describe('events dashboard', () => {
       .find('a')
       .first()
       .click()
+      .invoke('text')
       .as('eventTitle');
 
     cy.findByRole('button', { name: 'Cancel' }).click();
@@ -275,11 +270,9 @@ describe('events dashboard', () => {
           .should('have.members', expectedEmails);
       });
 
-    cy.get('@eventTitle')
-      .invoke('text')
-      .then((eventTitle) => {
-        cy.get('@emails').mhGetSubject().should('include', eventTitle);
-      });
+    cy.get<string>('@eventTitle').then((eventTitle) => {
+      cy.get('@emails').mhGetSubject().should('include', eventTitle);
+    });
 
     cy.get('@emails').then((emails) => {
       cy.checkBcc(emails).should('eq', true);

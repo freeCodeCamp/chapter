@@ -10,11 +10,7 @@ describe('event dashboard', () => {
     it('confirming user on waitlist should move user to RSVPs and send email', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=waitlist]').as('waitlist');
-      cy.get('@waitlist')
-        .find('[data-cy=username]')
-        .first()
-        .invoke('text')
-        .as('userName');
+      setUsernameAlias('@waitlist');
 
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
       cy.findByRole('alertdialog')
@@ -48,11 +44,7 @@ describe('event dashboard', () => {
     it('kicking user should remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=rsvps]').as('rsvps');
-      cy.get('@rsvps')
-        .find('[data-cy=username]')
-        .first()
-        .invoke('text')
-        .as('userName');
+      setUsernameAlias('@rsvps');
 
       cy.get('@rsvps').find('[data-cy=kick]').first().click();
       cy.findByRole('button', { name: 'Delete' }).click();
@@ -65,11 +57,7 @@ describe('event dashboard', () => {
     it('canceling confirming user on waitlist should not move user to RSVPs', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=waitlist]').as('waitlist');
-      cy.get('@waitlist')
-        .find('[data-cy=username]')
-        .first()
-        .invoke('text')
-        .as('userName');
+      setUsernameAlias('@waitlist');
 
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
@@ -88,11 +76,7 @@ describe('event dashboard', () => {
     it('canceling kicking user should not remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=rsvps]').as('rsvps');
-      cy.get('@rsvps')
-        .find('[data-cy=username]')
-        .first()
-        .invoke('text')
-        .as('userName');
+      setUsernameAlias('@rsvps');
 
       cy.get('@rsvps').find('[data-cy=kick]').first().click();
       cy.intercept('/graphql', cy.spy().as('request'));
@@ -128,3 +112,11 @@ describe('event dashboard', () => {
     });
   });
 });
+
+const setUsernameAlias = (usersAlias: string) =>
+  cy
+    .get(usersAlias)
+    .find('[data-cy=username]')
+    .first()
+    .invoke('text')
+    .as('userName');

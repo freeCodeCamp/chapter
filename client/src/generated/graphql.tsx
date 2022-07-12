@@ -276,7 +276,7 @@ export type Mutation = {
   deleteChapter: Chapter;
   deleteEvent: Event;
   deleteRsvp: Scalars['Boolean'];
-  deleteVenue: Scalars['Boolean'];
+  deleteVenue: Venue;
   initUserInterestForChapter: Scalars['Boolean'];
   joinChapter: ChapterUser;
   login: LoginType;
@@ -355,7 +355,8 @@ export type MutationDeleteRsvpArgs = {
 };
 
 export type MutationDeleteVenueArgs = {
-  id: Scalars['Int'];
+  chapterId: Scalars['Int'];
+  venueId: Scalars['Int'];
 };
 
 export type MutationInitUserInterestForChapterArgs = {

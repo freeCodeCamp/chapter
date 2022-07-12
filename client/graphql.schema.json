@@ -3181,7 +3181,23 @@
             "description": null,
             "args": [
               {
-                "name": "id",
+                "name": "chapterId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "venueId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -3201,8 +3217,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
+                "kind": "OBJECT",
+                "name": "Venue",
                 "ofType": null
               }
             },

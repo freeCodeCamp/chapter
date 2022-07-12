@@ -12,6 +12,9 @@ const venueData = {
 };
 
 describe('venues dashboard', () => {
+  beforeEach(() => {
+    cy.exec('npm run db:seed');
+  });
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[aria-current="page"]').should('not.exist');

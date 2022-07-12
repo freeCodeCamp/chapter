@@ -588,6 +588,7 @@ export type UserWithInstanceRole = {
 
 export type Venue = {
   __typename?: 'Venue';
+  chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
   id: Scalars['Int'];
@@ -1241,6 +1242,7 @@ export type VenuesQuery = {
   venues: Array<{
     __typename?: 'Venue';
     id: number;
+    chapter_id: number;
     name: string;
     street_address?: string | null;
     city: string;
@@ -3521,6 +3523,7 @@ export const VenuesDocument = gql`
   query venues {
     venues {
       id
+      chapter_id
       name
       street_address
       city

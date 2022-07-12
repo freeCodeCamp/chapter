@@ -47,7 +47,7 @@ export const VenuesPage: NextPage = () => {
                   data-cy="edit-venue-button"
                   colorScheme="green"
                   size="xs"
-                  href={`/dashboard/venues/${venue.id}/edit`}
+                  href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
                 >
                   Edit
                 </LinkButton>

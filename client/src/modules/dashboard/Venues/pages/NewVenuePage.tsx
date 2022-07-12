@@ -6,8 +6,10 @@ import { useCreateVenueMutation } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
+import { useParam } from 'hooks/useParam';
 
 export const NewVenuePage: NextPage = () => {
+  const chapterId = useParam('id');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -22,7 +24,7 @@ export const NewVenuePage: NextPage = () => {
       const longitude = parseFloat(String(data.longitude));
 
       const venue = await createVenue({
-        variables: { data: { ...data, latitude, longitude } },
+        variables: { chapterId, data: { ...data, latitude, longitude } },
       });
       if (venue.data) {
         router.replace(`/dashboard/venues/${venue.data.createVenue.id}`);

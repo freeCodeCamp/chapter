@@ -71,8 +71,8 @@ const getUnsubscribeOptions = ({
   );
   return `
 Unsubscribe Options</br>
-- <a href="http://localhost:3000/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
 };
 
 const sendRsvpInvitation = async (
@@ -141,7 +141,7 @@ const rsvpNotifyAdministrators = async (
         chapter_id,
         user.id,
       );
-      const text = `${body}<br><a href="http://localhost:3000/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
+      const text = `${body}<br><a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
       yield { email, subject, text };
     }
   });

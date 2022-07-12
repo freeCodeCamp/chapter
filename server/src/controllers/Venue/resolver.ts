@@ -35,11 +35,15 @@ export class VenueResolver {
 
   @Mutation(() => Venue)
   updateVenue(
-    @Arg('id', () => Int) id: number,
+    @Arg('venueId', () => Int) id: number,
+    @Arg('chapterId', () => Int) chapter_id: number,
     @Arg('data') data: UpdateVenueInputs,
   ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
-    return prisma.venues.update({ where: { id }, data: venueData });
+    return prisma.venues.update({
+      where: { id_chapter_id: { id, chapter_id } },
+      data: venueData,
+    });
   }
 
   @Mutation(() => Boolean)

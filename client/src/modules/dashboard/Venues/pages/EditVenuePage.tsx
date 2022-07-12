@@ -58,7 +58,7 @@ export const EditVenuePage: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout data-cy="edit-venue-page">
       <VenueForm
         data={data}
         loading={loadingUpdate}

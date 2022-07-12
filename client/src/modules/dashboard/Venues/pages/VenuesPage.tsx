@@ -34,13 +34,17 @@ export const VenuesPage: NextPage = () => {
             keys={['name', 'location', 'actions'] as const}
             mapper={{
               name: (venue) => (
-                <LinkButton href={`/dashboard/venues/${venue.id}`}>
+                <LinkButton
+                  data-cy="view-venue-button"
+                  href={`/dashboard/venues/${venue.id}`}
+                >
                   {venue.name}
                 </LinkButton>
               ),
               location: (venue) => getLocationString(venue),
               actions: (venue) => (
                 <LinkButton
+                  data-cy="edit-venue-button"
                   colorScheme="green"
                   size="xs"
                   href={`/dashboard/venues/${venue.id}/edit`}

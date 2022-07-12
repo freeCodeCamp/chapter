@@ -18,12 +18,17 @@ const links = [
   { text: 'Users', link: '/dashboard/users' },
 ];
 
-export const Layout = ({ children }: { children: React.ReactNode }) => {
+export const Layout = ({
+  children,
+  ...rest
+}: {
+  children: React.ReactNode;
+  [prop: string]: unknown;
+}) => {
   const router = useRouter();
-
   return (
     <>
-      <HStack as="nav" my="2">
+      <HStack {...rest} as="nav" my="2">
         {links
           .filter(
             ({ requiredPermission }) =>

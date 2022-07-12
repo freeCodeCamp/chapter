@@ -22,14 +22,23 @@ describe('venues dashboard', () => {
     cy.get('a[aria-current="page"]').should('have.text', 'Venues');
   });
 
-  it('should have a table with links to view, create and edit venues', () => {
+  it('should have a table with links to view and edit venues', () => {
     cy.visit('/dashboard/venues');
     cy.findByRole('table', { name: 'Venues' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
-    cy.get('a[href="/dashboard/venues/1"]').should('be.visible');
-    cy.get('a[href="/dashboard/venues/new"]').should('be.visible');
-    cy.get('a[href="/dashboard/venues/1/edit"]').should('be.visible');
+
+    cy.get('[data-cy="view-venue-button"]')
+      .should('be.visible')
+      .first()
+      .click();
+    cy.get('[data-cy="view-venue-page"]').should('exist');
+    cy.go('back');
+    cy.get('[data-cy="edit-venue-button"]')
+      .should('be.visible')
+      .first()
+      .click();
+    cy.get('[data-cy="edit-venue-page"]').should('exist');
   });
 
   it('lets an admin create a venue', () => {

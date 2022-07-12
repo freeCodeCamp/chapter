@@ -42,6 +42,13 @@ export const ChapterPage: NextPage = () => {
           <LinkButton size="sm" href={`${chapterId}/new_event`}>
             Add new event
           </LinkButton>
+          <LinkButton
+            data-cy="create-venue"
+            size="sm"
+            href={`${chapterId}/new-venue`}
+          >
+            Add new venue
+          </LinkButton>
         </ProgressCardContent>
       </Card>
       <h3>Placeholder for events...</h3>

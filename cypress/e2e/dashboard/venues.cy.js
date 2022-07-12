@@ -43,8 +43,8 @@ describe('venues dashboard', () => {
 
     cy.login(Cypress.env('JWT_ADMIN_USER'));
 
-    cy.visit('/dashboard/venues');
-    cy.get('a[href="/dashboard/venues/new"]').click();
+    cy.visit('/dashboard/chapters/1/');
+    cy.get('[data-cy=create-venue]').click();
     cy.findByRole('textbox', { name: 'Venue name' }).type(fix.name);
     cy.findByRole('textbox', { name: 'Street address' }).type(
       fix.streetAddress,

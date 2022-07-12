@@ -18,9 +18,17 @@ export class VenueResolver {
   }
 
   @Mutation(() => Venue)
-  async createVenue(@Arg('data') data: CreateVenueInputs): Promise<Venue> {
-    const venueData: Prisma.venuesCreateInput = data;
-    return prisma.venues.create({ data: venueData });
+  async createVenue(
+    @Arg('chapterId', () => Int) chapter_id: number,
+    @Arg('data') data: CreateVenueInputs,
+  ): Promise<Venue> {
+    const venueData: Prisma.venuesCreateInput = {
+      ...data,
+      chapter: { connect: { id: chapter_id } },
+    };
+    return prisma.venues.create({
+      data: venueData,
+    });
   }
 
   @Mutation(() => Venue)

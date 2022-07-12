@@ -337,6 +337,7 @@ export type MutationCreateSponsorArgs = {
 };
 
 export type MutationCreateVenueArgs = {
+  chapterId: Scalars['Int'];
   data: CreateVenueInputs;
 };
 
@@ -1189,6 +1190,7 @@ export type UsersQuery = {
 };
 
 export type CreateVenueMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
   data: CreateVenueInputs;
 }>;
 
@@ -3390,8 +3392,8 @@ export type UsersQueryResult = Apollo.QueryResult<
   UsersQueryVariables
 >;
 export const CreateVenueDocument = gql`
-  mutation createVenue($data: CreateVenueInputs!) {
-    createVenue(data: $data) {
+  mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+    createVenue(chapterId: $chapterId, data: $data) {
       id
       name
       street_address
@@ -3422,6 +3424,7 @@ export type CreateVenueMutationFn = Apollo.MutationFunction<
  * @example
  * const [createVenueMutation, { data, loading, error }] = useCreateVenueMutation({
  *   variables: {
+ *      chapterId: // value for 'chapterId'
  *      data: // value for 'data'
  *   },
  * });

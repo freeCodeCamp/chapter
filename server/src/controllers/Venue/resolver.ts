@@ -34,6 +34,7 @@ export class VenueResolver {
   }
 
   @Mutation(() => Venue)
+  @Authorized(Permission.VenueEdit)
   updateVenue(
     @Arg('venueId', () => Int) id: number,
     @Arg('chapterId', () => Int) chapter_id: number,

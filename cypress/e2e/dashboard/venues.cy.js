@@ -126,10 +126,11 @@ describe('venues dashboard', () => {
     cy.createVenue({ ...venueCreateVariables, chapterId: 2 }, venueData).then(
       expectToBeRejected,
     );
-    cy.updateVenue({ ...venueCreateVariables, chapterId: 2 }, venueData).then(
-      expectToBeRejected,
-    );
-    cy.deleteVenue({ ...venueCreateVariables, chapterId: 2 }).then(
+    cy.updateVenue(
+      { ...venueUpdateDeleteVariables, chapterId: 2 },
+      venueData,
+    ).then(expectToBeRejected);
+    cy.deleteVenue({ ...venueUpdateDeleteVariables, chapterId: 2 }).then(
       expectToBeRejected,
     );
   });

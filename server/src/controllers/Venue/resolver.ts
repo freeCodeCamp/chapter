@@ -47,10 +47,15 @@ export class VenueResolver {
     });
   }
 
-  @Mutation(() => Boolean)
-  async deleteVenue(@Arg('id', () => Int) id: number): Promise<boolean> {
+  @Mutation(() => Venue)
+  @Authorized(Permission.VenueDelete)
+  async deleteVenue(
+    @Arg('venueId', () => Int) id: number,
+    @Arg('chapterId', () => Int) chapter_id: number,
+  ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
-    await prisma.venues.delete({ where: { id } });
-    return true;
+    return await prisma.venues.delete({
+      where: { id_chapter_id: { id, chapter_id } },
+    });
   }
 }

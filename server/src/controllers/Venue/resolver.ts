@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { Resolver, Query, Arg, Int, Mutation } from 'type-graphql';
+import { Resolver, Query, Arg, Int, Mutation, Authorized } from 'type-graphql';
+import { Permission } from '../../../../common/permissions';
 
 import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -17,6 +18,7 @@ export class VenueResolver {
     return prisma.venues.findUnique({ where: { id } });
   }
 
+  @Authorized(Permission.VenueCreate)
   @Mutation(() => Venue)
   async createVenue(
     @Arg('chapterId', () => Int) chapter_id: number,

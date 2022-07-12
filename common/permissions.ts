@@ -6,6 +6,7 @@ export enum ChapterPermission {
   Rsvp = 'rsvp',
   RsvpDelete = 'rsvp-delete',
   RsvpConfirm = 'rsvp-confirm',
+  VenueCreate = 'venue-create',
 }
 
 export enum InstancePermission {

@@ -34,12 +34,19 @@ const unsubscribeFromChapter = async (userId: number, chapterId: number) => {
 };
 
 const unsubscribeFromEvent = async (userId: number, eventId: number) => {
-  await prisma.event_users.update({
-    data: { subscribed: false },
-    where: { user_id_event_id: { event_id: eventId, user_id: userId } },
+  const whereCondition = {
+    user_id_event_id: { event_id: eventId, user_id: userId },
+  };
+  const eventUser = await prisma.event_users.findUniqueOrThrow({
+    where: whereCondition,
+    include: { event_reminder: true },
   });
-  await prisma.event_reminders.delete({
-    where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+  await prisma.event_users.update({
+    data: {
+      subscribed: false,
+      ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
+    },
+    where: whereCondition,
   });
 };
 

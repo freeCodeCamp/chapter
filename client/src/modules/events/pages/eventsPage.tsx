@@ -1,9 +1,9 @@
 import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
-import { useMinEventsQuery } from 'generated/graphql';
+import { useHomeQuery, useMinEventsQuery } from 'generated/graphql';
 
 export default function Pagination({
   currentPage = 1,
@@ -51,21 +51,24 @@ export default function Pagination({
     </Flex>
   );
 }
-
+const pageSize = 5;
 export const EventsPage: NextPage = () => {
-  const { loading, error, data } = useMinEventsQuery();
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
-  const paginated = useMemo(() => {
-    const offset = (currentPage - 1) * pageSize;
-    return data?.events.slice(offset, offset + pageSize); // 0 , 4 // 5, 10
-  }, [currentPage, pageSize, data?.events]);
+  const { loading, error, data, fetchMore } = useHomeQuery({
+    variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
+  });
 
+  const { data: total } = useMinEventsQuery();
+  useEffect(() => {
+    fetchMore({
+      variables: { offset: data?.paginatedEvents.length, limit: pageSize },
+    });
+  }, [currentPage]);
   if (loading) {
     return <h1>Loading...</h1>;
   }
 
-  if (error || !data?.events) {
+  if (error || !data?.paginatedEvents) {
     return (
       <div>
         <h1>error...</h1>
@@ -73,19 +76,24 @@ export const EventsPage: NextPage = () => {
       </div>
     );
   }
-
+  console.log('total', total?.events?.length);
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
         <Heading>Events: </Heading>
-        {paginated?.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
+        {data?.paginatedEvents
+          .slice(
+            (currentPage - 1) * pageSize,
+            (currentPage - 1) * pageSize + pageSize,
+          )
+          .map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           pageSize={pageSize}
-          records={data.events.length}
+          records={total?.events?.length || 0}
         />
       </Stack>
     </VStack>

@@ -56,6 +56,7 @@ describe('events dashboard', () => {
   });
 
   function sendAndCheckEmails(filterCallback, users) {
+    cy.mhDeleteAll();
     cy.findByRole('button', { name: 'Send Email' }).click();
 
     cy.waitUntilMail('allMail');
@@ -73,7 +74,6 @@ describe('events dashboard', () => {
           cy.checkBcc(mail).should('eq', true);
         });
     });
-    cy.mhDeleteAll();
   }
 
   it('invitation email should include calendar file', () => {

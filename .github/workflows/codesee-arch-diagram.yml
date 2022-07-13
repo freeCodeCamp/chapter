@@ -27,7 +27,7 @@ jobs:
         uses: Codesee-io/codesee-detect-languages-action@latest
 
       - name: Configure JDK 16
-        uses: actions/setup-java@16cca5479d7c6b6843f6a6515640ba33c6501543 # tag=v3
+        uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 # tag=v3
         if: ${{ fromJSON(steps.detect-languages.outputs.languages).java }}
         with:
           java-version: '16'
@@ -36,7 +36,7 @@ jobs:
       # CodeSee Maps Go support uses a static binary so there's no setup step required.
 
       - name: Configure Node.js 14
-        uses: actions/setup-node@eeb10cff27034e7acf239c5d29f62154018672fd # tag=v3
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a # tag=v3
         if: ${{ fromJSON(steps.detect-languages.outputs.languages).javascript }}
         with:
           node-version: '14'

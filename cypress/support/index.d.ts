@@ -116,6 +116,26 @@ declare namespace Cypress {
     updateSponsor(id: number, data): Chainable<any>;
 
     /**
+     * Subscribe to notifications for a single event
+     * @param eventId Id of the event
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    subscribeToEvent(
+      { eventId }: { eventId: number },
+      options?: { withAuth: true },
+    ): Chainable<any>;
+
+    /**
+     * Unsubscribe from notifications for a single event
+     * @param eventId Id of the event
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    unsubscribeFromEvent(
+      { eventId }: { eventId: number },
+      options?: { withAuth: true },
+    ): Chainable<any>;
+    
+    /**
      * Get events for chapter using GQL query
      * @param id Chapter id
      */

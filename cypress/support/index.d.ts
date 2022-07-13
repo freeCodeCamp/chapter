@@ -114,5 +114,11 @@ declare namespace Cypress {
      * @param data Data of the sponsor. Equivalent of UpdateSponsorInputs for the Sponsor resolver.
      */
     updateSponsor(id: number, data): Chainable<any>;
+
+    /**
+     * Get events for chapter using GQL query
+     * @param id Chapter id
+     */
+    getChapterEvents(id: number): Chainable<any>;
   }
 }

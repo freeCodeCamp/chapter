@@ -35,6 +35,10 @@ const UnsubscribePage: NextPage = () => {
 
   const confirmed = watch('confirm');
 
+  if (!token) {
+    return <Spinner />;
+  }
+
   return (
     <Box w="50%" maxW="800px" marginX="auto" mt="10">
       <VStack>

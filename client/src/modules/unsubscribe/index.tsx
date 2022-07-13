@@ -38,7 +38,7 @@ const UnsubscribePage: NextPage = () => {
   return (
     <Box w="50%" maxW="800px" marginX="auto" mt="10">
       <VStack>
-        <Heading>Unsubscrbing</Heading>
+        <Heading>Unsubscribing</Heading>
         {!loading && !data && !error ? (
           <form onSubmit={handleSubmit(onUnsubscribe)}>
             <HStack>

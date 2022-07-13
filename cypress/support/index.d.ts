@@ -134,7 +134,7 @@ declare namespace Cypress {
       { eventId }: { eventId: number },
       options?: { withAuth: true },
     ): Chainable<any>;
-    
+
     /**
      * Get events for chapter using GQL query
      * @param id Chapter id

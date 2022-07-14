@@ -14,6 +14,8 @@
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
   - [.env Configuration File](#env-configuration-file)
+    - [Running Locally](#running-locally)
+    - [Running Remotely](#running-remotely)
   - [Database](#database)
     - [Schema](#schema)
     - [Username and Password](#username-and-password)
@@ -24,7 +26,6 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
-- [Running Remotely](#running-remotely)
 - [Troubleshooting](#troubleshooting)
     
 # Contribution Guidelines
@@ -497,6 +498,8 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 
 ## .env Configuration File
 
+### Running Locally
+
 An important, local _.env_ configuration file exists in the root code directory. It's used to store [environment variables](https://en.wikipedia.org/wiki/Environment_variable) and their associated values.
 
 Any changes to _.env_ **will not and should not** be committed into your _origin_ fork or the _Chapter_ _upstream_. Plus, a _.gitignore_ rule exists to prevent it. Do not remove this rule or otherwise attempt to commit your _.env_ to any Git repository.
@@ -508,6 +511,10 @@ The _.env_ file is automatically created via the [**Running the Application**](#
 This configuration pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) and is also popular in other frameworks and programming languages.
 
 The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
+
+### Running Remotely
+
+When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 ## Database
 
@@ -562,10 +569,6 @@ The _prisma.schema_ file is the single source of truth for the database schema.
 #### Creating a Migration
 
 The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
-
-# Running Remotely
-
-When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 # Troubleshooting
 

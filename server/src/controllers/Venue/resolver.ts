@@ -37,14 +37,12 @@ export class VenueResolver {
   @Mutation(() => Venue)
   updateVenue(
     @Arg('venueId', () => Int) id: number,
-    // chapterId needs to be passed, so the authChecker can confirm the user has
-    // permission to edit the venue, but it's not used in the resolver
-    @Arg('chapterId', () => Int) _chapterId: number,
+    @Arg('chapterId', () => Int) chapter_id: number,
     @Arg('data') data: UpdateVenueInputs,
   ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
     return prisma.venues.update({
-      where: { id },
+      where: { id_chapter_id: { id, chapter_id } },
       data: venueData,
     });
   }
@@ -53,13 +51,11 @@ export class VenueResolver {
   @Mutation(() => Venue)
   async deleteVenue(
     @Arg('venueId', () => Int) id: number,
-    // chapterId needs to be passed, so the authChecker can confirm the user has
-    // permission to delete the venue, but it's not used in the resolver
-    @Arg('chapterId', () => Int) _chapterId: number,
+    @Arg('chapterId', () => Int) chapter_id: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
     return await prisma.venues.delete({
-      where: { id },
+      where: { id_chapter_id: { id, chapter_id } },
     });
   }
 }

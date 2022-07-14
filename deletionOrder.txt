@@ -8,8 +8,8 @@ event_reminders
 chapter_role_permissions
 event_users
 events
-users
 venues
+users
 tags
 sponsors
 rsvp

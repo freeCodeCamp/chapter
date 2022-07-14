@@ -8,8 +8,8 @@ instance_permissions
 rsvp
 sponsors
 tags
-venues
 users
+venues
 events
 event_users
 chapter_role_permissions

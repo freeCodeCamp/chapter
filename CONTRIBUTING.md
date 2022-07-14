@@ -336,8 +336,10 @@ See [Running Remotely](#running-remotely) if you are using a remote server.
 ## Docker Mode
 
 **Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system:
-* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
-    > Note: Close and re-open your terminal after the installation finishes.
+* Windows & WSL - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+    > * _Docker Desktop_ **must** be installed even when running WSL2 (Windows Subsystem Linux)
+    > * Close and re-open your terminal after the installation finishes.
+    > * Do not use Powershell or Git Bash to run commands. Rather, use a Linux / Ubuntu shell as noted above in "Using a Traditional Dev Environment > Step 2 - Prepare the Terminal and Git Environment".
 * Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
 * Linux
     * [Docker Engine](https://docs.docker.com/engine/install/#server)
@@ -569,6 +571,8 @@ When not running locally, the client needs to be passed the server's location by
 
 # Troubleshooting
 
+If your problem isn't resolved in the sections below, then visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+
 <details>
  <summary>Application Troubleshooting</summary>
 
@@ -586,8 +590,6 @@ When not running locally, the client needs to be passed the server's location by
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
-
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -602,8 +604,6 @@ When not running locally, the client needs to be passed the server's location by
   > "WARNING: Error loading config file: /home/user/.docker/config.json "  </br>
 
   **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
-
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -625,8 +625,6 @@ When not running locally, the client needs to be passed the server's location by
    > npx /bin/sh^M bad interpreter: No such file or directory </br>
 
   **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
-
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -636,8 +634,6 @@ When not running locally, the client needs to be passed the server's location by
    > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
 
   **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
-
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -656,8 +652,6 @@ When not running locally, the client needs to be passed the server's location by
 * **Note:** To shut down Docker on Linux, press Ctrl + C in the terminal where it was started.
 
 * **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
-
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -674,12 +668,10 @@ When not running locally, the client needs to be passed the server's location by
    > WslRegisterDistribution failed with error: 0x80070057</br>
 
   **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
-
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
- <summary>Windows Docker Troubleshooting</summary>
+ <summary>Windows / WSL + Docker Troubleshooting</summary>
 
 * **Problem:** You are getting this error
    > Docker Desktop requires Windows 10 Pro/Enterprise (######+) or Windows 10 Home (#####.####+)</br>
@@ -700,6 +692,9 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:**  Allow Access.
 
+* **Problem:** You are getting either of these errors:
+   > * The Docker Compose file './docker-compose.yml' is invalid because: Unsupported config option for services.app: 'platform'
+   > * Error while fetching server API version: ('Connection aborted.', FileNotFoundError(2, 'No such file or directory'))
 
-  If your problem isn't included above. Visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  **Solution:**  _Docker Desktop for Windows_ must be installed on the host Windows operating system.
 </details>

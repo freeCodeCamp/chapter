@@ -5,7 +5,7 @@ import { prisma } from '../../../src/prisma';
 
 const { company, address } = faker;
 
-const createVenues = async (): Promise<number[]> => {
+const createVenues = async (chapterId: number): Promise<number[]> => {
   const venueIds: number[] = [];
 
   for (let i = 0; i < 4; i++) {
@@ -16,6 +16,7 @@ const createVenues = async (): Promise<number[]> => {
       postal_code: address.zipCode(),
       country: address.country(),
       street_address: Math.random() > 0.5 ? address.streetAddress() : undefined,
+      chapter: { connect: { id: chapterId } },
     };
 
     // TODO: batch this once createMany returns the records.

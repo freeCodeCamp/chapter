@@ -276,7 +276,7 @@ export type Mutation = {
   deleteChapter: Chapter;
   deleteEvent: Event;
   deleteRsvp: Scalars['Boolean'];
-  deleteVenue: Scalars['Boolean'];
+  deleteVenue: Venue;
   initUserInterestForChapter: Scalars['Boolean'];
   joinChapter: ChapterUser;
   login: LoginType;
@@ -337,6 +337,7 @@ export type MutationCreateSponsorArgs = {
 };
 
 export type MutationCreateVenueArgs = {
+  chapterId: Scalars['Int'];
   data: CreateVenueInputs;
 };
 
@@ -354,7 +355,8 @@ export type MutationDeleteRsvpArgs = {
 };
 
 export type MutationDeleteVenueArgs = {
-  id: Scalars['Int'];
+  chapterId: Scalars['Int'];
+  venueId: Scalars['Int'];
 };
 
 export type MutationInitUserInterestForChapterArgs = {
@@ -420,8 +422,9 @@ export type MutationUpdateSponsorArgs = {
 };
 
 export type MutationUpdateVenueArgs = {
+  chapterId: Scalars['Int'];
   data: UpdateVenueInputs;
-  id: Scalars['Int'];
+  venueId: Scalars['Int'];
 };
 
 export type Query = {
@@ -585,6 +588,7 @@ export type UserWithInstanceRole = {
 
 export type Venue = {
   __typename?: 'Venue';
+  chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
   id: Scalars['Int'];
@@ -1189,6 +1193,7 @@ export type UsersQuery = {
 };
 
 export type CreateVenueMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
   data: CreateVenueInputs;
 }>;
 
@@ -1209,7 +1214,8 @@ export type CreateVenueMutation = {
 };
 
 export type UpdateVenueMutationVariables = Exact<{
-  id: Scalars['Int'];
+  venueId: Scalars['Int'];
+  chapterId: Scalars['Int'];
   data: UpdateVenueInputs;
 }>;
 
@@ -1236,6 +1242,7 @@ export type VenuesQuery = {
   venues: Array<{
     __typename?: 'Venue';
     id: number;
+    chapter_id: number;
     name: string;
     street_address?: string | null;
     city: string;
@@ -3390,8 +3397,8 @@ export type UsersQueryResult = Apollo.QueryResult<
   UsersQueryVariables
 >;
 export const CreateVenueDocument = gql`
-  mutation createVenue($data: CreateVenueInputs!) {
-    createVenue(data: $data) {
+  mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+    createVenue(chapterId: $chapterId, data: $data) {
       id
       name
       street_address
@@ -3422,6 +3429,7 @@ export type CreateVenueMutationFn = Apollo.MutationFunction<
  * @example
  * const [createVenueMutation, { data, loading, error }] = useCreateVenueMutation({
  *   variables: {
+ *      chapterId: // value for 'chapterId'
  *      data: // value for 'data'
  *   },
  * });
@@ -3448,8 +3456,12 @@ export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutationVariables
 >;
 export const UpdateVenueDocument = gql`
-  mutation updateVenue($id: Int!, $data: UpdateVenueInputs!) {
-    updateVenue(id: $id, data: $data) {
+  mutation updateVenue(
+    $venueId: Int!
+    $chapterId: Int!
+    $data: UpdateVenueInputs!
+  ) {
+    updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
       id
       name
       street_address
@@ -3480,7 +3492,8 @@ export type UpdateVenueMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateVenueMutation, { data, loading, error }] = useUpdateVenueMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      venueId: // value for 'venueId'
+ *      chapterId: // value for 'chapterId'
  *      data: // value for 'data'
  *   },
  * });
@@ -3510,6 +3523,7 @@ export const VenuesDocument = gql`
   query venues {
     venues {
       id
+      chapter_id
       name
       street_address
       city

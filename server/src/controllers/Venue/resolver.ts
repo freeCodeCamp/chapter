@@ -33,8 +33,8 @@ export class VenueResolver {
     });
   }
 
-  @Mutation(() => Venue)
   @Authorized(Permission.VenueEdit)
+  @Mutation(() => Venue)
   updateVenue(
     @Arg('venueId', () => Int) id: number,
     @Arg('chapterId', () => Int) chapter_id: number,
@@ -47,8 +47,8 @@ export class VenueResolver {
     });
   }
 
-  @Mutation(() => Venue)
   @Authorized(Permission.VenueDelete)
+  @Mutation(() => Venue)
   async deleteVenue(
     @Arg('venueId', () => Int) id: number,
     @Arg('chapterId', () => Int) chapter_id: number,

@@ -1,4 +1,4 @@
-import { Heading, Link, Box } from '@chakra-ui/layout';
+import { Heading, Link, Box, HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';

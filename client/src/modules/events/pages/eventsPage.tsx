@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
-import { useHomeQuery, useMinEventsQuery } from 'generated/graphql';
+import { useMinEventsQuery, usePaginatedEventsQuery } from 'generated/graphql';
 
 export default function Pagination({
   currentPage = 1,
@@ -54,7 +54,7 @@ export default function Pagination({
 const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, fetchMore } = useHomeQuery({
+  const { loading, error, data, fetchMore } = usePaginatedEventsQuery({
     variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
   });
 

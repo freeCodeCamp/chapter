@@ -1,12 +1,12 @@
 describe('events page', () => {
   before(() => {
     cy.exec('npm run db:seed');
-    cy.interceptGQL('home');
+    cy.interceptGQL('PaginatedEvents');
   });
 
   it('should contain a list of event cards', () => {
     cy.visit('/events');
-    cy.wait('@GQLhome');
+    cy.wait('@GQLPaginatedEvents');
     cy.get('[data-cy="event-card"]')
       .should('be.visible')
       .should('have.length', 5)

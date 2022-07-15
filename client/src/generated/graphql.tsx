@@ -1296,6 +1296,35 @@ export type UnsubscribeFromEventMutation = {
   unsubscribeFromEvent: { __typename?: 'EventUser'; subscribed: boolean };
 };
 
+export type PaginatedEventsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type PaginatedEventsQuery = {
+  __typename?: 'Query';
+  paginatedEvents: Array<{
+    __typename?: 'EventWithChapter';
+    id: number;
+    name: string;
+    description: string;
+    start_at: any;
+    invite_only: boolean;
+    canceled: boolean;
+    image_url: string;
+    tags: Array<{
+      __typename?: 'EventTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
+    chapter: {
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+      category: string;
+    };
+  }>;
+};
+
 export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MinEventsQuery = {
@@ -3768,6 +3797,82 @@ export type UnsubscribeFromEventMutationResult =
 export type UnsubscribeFromEventMutationOptions = Apollo.BaseMutationOptions<
   UnsubscribeFromEventMutation,
   UnsubscribeFromEventMutationVariables
+>;
+export const PaginatedEventsDocument = gql`
+  query PaginatedEvents($limit: Int, $offset: Int) {
+    paginatedEvents(limit: $limit, offset: $offset) {
+      id
+      name
+      description
+      start_at
+      invite_only
+      canceled
+      image_url
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+      chapter {
+        id
+        name
+        category
+      }
+    }
+  }
+`;
+
+/**
+ * __usePaginatedEventsQuery__
+ *
+ * To run a query within a React component, call `usePaginatedEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePaginatedEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePaginatedEventsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function usePaginatedEventsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    PaginatedEventsQuery,
+    PaginatedEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<PaginatedEventsQuery, PaginatedEventsQueryVariables>(
+    PaginatedEventsDocument,
+    options,
+  );
+}
+export function usePaginatedEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    PaginatedEventsQuery,
+    PaginatedEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    PaginatedEventsQuery,
+    PaginatedEventsQueryVariables
+  >(PaginatedEventsDocument, options);
+}
+export type PaginatedEventsQueryHookResult = ReturnType<
+  typeof usePaginatedEventsQuery
+>;
+export type PaginatedEventsLazyQueryHookResult = ReturnType<
+  typeof usePaginatedEventsLazyQuery
+>;
+export type PaginatedEventsQueryResult = Apollo.QueryResult<
+  PaginatedEventsQuery,
+  PaginatedEventsQueryVariables
 >;
 export const MinEventsDocument = gql`
   query minEvents {

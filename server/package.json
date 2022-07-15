@@ -4,9 +4,9 @@
   "description": "A self-hosted event management tool for nonprofits",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
-    "prepare": "rimraf tsconfig.tsbuildinfo && prisma generate",
+    "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
     "reminders:send": "node ./reminders/reminders.js",
     "reset:users": "node prisma/generator/resetUsers.js"

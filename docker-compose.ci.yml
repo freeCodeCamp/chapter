@@ -1,15 +1,6 @@
 # Production-like configuration for testing
 version: "3.7"
 services:
-  app:
-    build:
-      args:
-        - build=true
-    command: npm start
-
-  client:
-    command: npm start
-
   mailhog:
     depends_on:
       - app

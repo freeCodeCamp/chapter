@@ -1,8 +1,11 @@
-import { Field, ObjectType, Float } from 'type-graphql';
+import { Field, ObjectType, Float, Int } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 
 @ObjectType()
 export class Venue extends BaseObject {
+  @Field(() => Int)
+  chapter_id: number;
+
   @Field(() => String)
   name: string;
 

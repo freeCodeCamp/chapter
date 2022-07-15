@@ -33,7 +33,7 @@ import setupRoles from './setupRoles';
   const sponsorIds = await createSponsors();
 
   const chapterIds = await createChapters(ownerId);
-  const venueIds = await createVenues();
+  const venueIds = await createVenues(chapterIds[0]);
 
   const eventIds = await createEvents(chapterIds, venueIds, sponsorIds, 15);
 

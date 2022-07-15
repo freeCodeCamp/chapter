@@ -140,5 +140,41 @@ declare namespace Cypress {
      * @param id Chapter id
      */
     getChapterEvents(id: number): Chainable<any>;
+
+    /**
+     * Create venue using GQL mutation
+     * @param chapterId Id of the chapter
+     * @param data Data of the venue. Equivalent of CreateVenueInputs for the Venue resolver.
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    createVenue(
+      { chapterId }: { chapterId: number },
+      data: any,
+      options?: { withAuth: true },
+    ): Chainable<any>;
+
+    /**
+     * Update venue using GQL mutation
+     * @param chapterId Id of the chapter
+     * @param venueId Id of the venue
+     * @param data Data of the venue. Equivalent of UpdateVenueInputs for the Venue resolver.
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    updateVenue(
+      { venueId, chapterId }: { venueId: number; chapterId: number },
+      data: any,
+      options?: { withAuth: true },
+    ): Chainable<any>;
+
+    /**
+     * Delete venue using GQL mutation
+     * @param chapterId Id of the chapter
+     * @param venueId Id of the venue
+     * @param {object} [options={ withAuth: true }] Optional options object.
+     */
+    deleteVenue(
+      { venueId, chapterId }: { venueId: number; chapterId: number },
+      options?: { withAuth: true },
+    ): Chainable<any>;
   }
 }

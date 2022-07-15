@@ -21,6 +21,7 @@ if (result.error) {
 export interface Environment {
   NODE_ENV: 'production' | 'development' | 'test' | undefined;
   JWT_SECRET: string;
+  EMAIL_SECRET: string;
 }
 
 export const getConfig = <T extends keyof Environment>(

@@ -8,7 +8,6 @@ describe('unsubscribe link', () => {
     const chapterId = 1;
     const emailAddress = 'foo@bar.com';
     cy.login();
-    cy.mhDeleteAll();
     cy.getChapterEvents(chapterId).then((events) => {
       const eventIds = events.map(({ id }) => id);
       eventIds.forEach((eventId) => {

@@ -5,7 +5,7 @@ import { Input } from '../../../../components/Form/Input';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
 
-export type VenueFormData = Omit<Venue, 'id' | 'events'>;
+export type VenueFormData = Omit<Venue, 'id' | 'events' | 'chapter_id'>;
 
 interface VenueFormProps {
   loading: boolean;

@@ -1,5 +1,6 @@
 .git
 *Dockerfile*
 *docker-compose*
-node_modules
-.next
+**/node_modules
+*/.next
+cypress

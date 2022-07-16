@@ -63,7 +63,7 @@
     "@cypress/code-coverage": "3.10.0",
     "@faker-js/faker": "6.3.1",
     "@testing-library/cypress": "8.0.3",
-    "@types/jest": "28.1.5",
+    "@types/jest": "28.1.6",
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "5.30.6",
     "@typescript-eslint/parser": "5.30.6",

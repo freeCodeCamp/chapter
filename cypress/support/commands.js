@@ -339,6 +339,77 @@ Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
   return cy.authedRequest(gqlOptions(confirmMutation));
 });
 
+Cypress.Commands.add(
+  'createVenue',
+  ({ chapterId }, data, options = { withAuth: true }) => {
+    const queryData = {
+      operationName: 'createVenue',
+      variables: {
+        chapterId,
+        data,
+      },
+      query: `mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+      createVenue(chapterId: $chapterId, data: $data) {
+        id
+      }
+    }`,
+    };
+
+    const requestOptions = gqlOptions(queryData);
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
+Cypress.Commands.add(
+  'updateVenue',
+  ({ chapterId, venueId }, data, options = { withAuth: true }) => {
+    const queryData = {
+      operationName: 'updateVenue',
+      variables: {
+        chapterId,
+        venueId,
+        data,
+      },
+      query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: UpdateVenueInputs!) {
+      updateVenue(chapterId: $chapterId, venueId: $venueId, data: $data) {
+        id
+      }
+    }`,
+    };
+    const requestOptions = gqlOptions(queryData);
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
+Cypress.Commands.add(
+  'deleteVenue',
+  ({ chapterId, venueId }, options = { withAuth: true }) => {
+    const queryData = {
+      operationName: 'deleteVenue',
+      variables: {
+        chapterId,
+        venueId,
+      },
+      query: `mutation deleteVenue($chapterId: Int!, $venueId: Int!) {
+      deleteVenue(chapterId: $chapterId, venueId: $venueId) {
+        id
+      }
+    }`,
+    };
+    const requestOptions = gqlOptions(queryData);
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
 Cypress.Commands.add('authedRequest', (options) => {
   return cy.request({
     ...options,

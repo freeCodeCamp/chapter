@@ -2,11 +2,15 @@
 version: "3.7"
 services:
   app:
+    build:
+      target: development
     command: sh -c './wait-for db:5432 -- npm run dev'
     volumes:
       - ./:/usr/chapter/
 
   client:
+    build:
+      target: development
     command: npm run dev
     volumes:
       - ./:/usr/chapter/

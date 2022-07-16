@@ -1,9 +1,10 @@
 import { Heading, Link, Box } from '@chakra-ui/layout';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
-// import settingTab
+import { Button } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
@@ -31,19 +32,34 @@ export const ChapterPage: NextPage = () => {
   return (
     <Layout>
       <Card className={styles.card}>
-        <ProgressCardContent loading={loading}>
-          <Heading as="h5" fontWeight="normal">
-            {data.chapter.name}
-          </Heading>
-          <Box>
-            <Link href={`${chapterId}/users`} target="_blank">
-              Chapter Users
-            </Link>
-          </Box>
-          <LinkButton size="sm" href={`${chapterId}/new_event`}>
-            Add new event
-          </LinkButton>
-        </ProgressCardContent>
+        <Tabs>
+          <TabList>
+            <Tab>General</Tab>
+            <Tab>Setting</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <ProgressCardContent loading={loading}>
+                <Heading as="h5" fontWeight="normal">
+                  {data.chapter.name}
+                </Heading>
+                <Box>
+                  <Link href={`${chapterId}/users`} target="_blank">
+                    Chapter Users
+                  </Link>
+                </Box>
+                <LinkButton size="sm" href={`${chapterId}/new_event`}>
+                  Add new event
+                </LinkButton>
+              </ProgressCardContent>
+            </TabPanel>
+            <TabPanel>
+              {/* need to create popup for them */}
+              <Button>Transfer Chapter Ownership</Button>
+              <Button>Delete Chapter</Button>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Card>
       <h3>Placeholder for events...</h3>
     </Layout>

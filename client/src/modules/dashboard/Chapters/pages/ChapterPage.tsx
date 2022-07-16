@@ -4,7 +4,16 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Button } from '@chakra-ui/react';
+import {
+  Button,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogFooter,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
@@ -15,6 +24,8 @@ import { Layout } from '../../shared/components/Layout';
 export const ChapterPage: NextPage = () => {
   const router = useRouter();
   const chapterId = getId(router.query) || -1;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
@@ -55,9 +66,40 @@ export const ChapterPage: NextPage = () => {
             </TabPanel>
             <TabPanel>
               {/* need to create popup for them */}
-              <Button>Transfer Chapter Ownership</Button>
-              <Button>Delete Chapter</Button>
+              <Button colorScheme="red" onClick={onOpen}>
+                Transfer Chapter Ownership
+              </Button>
+              <Button colorScheme="red" ml={4}>
+                Delete Chapter
+              </Button>
             </TabPanel>
+            {/* add leastDestructiveRef to cansel button to guide focus */}
+            <AlertDialog
+              isOpen={isOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                    Transfer Ownership
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                    Are you sure? You cannot undo this action afterwards.
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button colorScheme="red" onClick={onClose} ml={3}>
+                      Conform Transfer Ownership
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
           </TabPanels>
         </Tabs>
       </Card>

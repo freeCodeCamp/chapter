@@ -61,17 +61,17 @@ export const ChapterPage: NextPage = () => {
                   </Link>
                 </Box>
                 <HStack>
-            <LinkButton size="sm" href={`${chapterId}/new_event`}>
-              Add new event
-            </LinkButton>
-            <LinkButton
-              data-cy="create-venue"
-              size="sm"
-              href={`${chapterId}/new-venue`}
-            >
-              Add new venue
-            </LinkButton>
-          </HStack>
+                  <LinkButton size="sm" href={`${chapterId}/new_event`}>
+                    Add new event
+                  </LinkButton>
+                  <LinkButton
+                    data-cy="create-venue"
+                    size="sm"
+                    href={`${chapterId}/new-venue`}
+                  >
+                    Add new venue
+                  </LinkButton>
+                </HStack>
               </ProgressCardContent>
             </TabPanel>
             <TabPanel>

@@ -1,21 +1,27 @@
-FROM node:16-alpine
-
-# Setting working directory. All the path will be relative to WORKDIR
+FROM node:16-alpine as development
 WORKDIR /usr/chapter/
 
-# Copying source files
+FROM development as build
+
 COPY client ./client
 COPY common ./common
 COPY package*.json ./
 
-# Installing dependencies
 RUN npm ci -w=client --ignore-scripts
-
-# Building app
 RUN npm run build:client
+
+FROM development as production
+
+COPY --from=build /usr/chapter/client/.next ./client/.next
+COPY client/public ./client/public
+COPY package*.json ./
+COPY client/package.json ./client/package.json
+
+RUN npm ci -w=client --ignore-scripts --omit=dev 
 
 EXPOSE 3000
 
-# Running the app
+WORKDIR /usr/chapter/client
+
 CMD [ "npm", "run", "start" ]
 

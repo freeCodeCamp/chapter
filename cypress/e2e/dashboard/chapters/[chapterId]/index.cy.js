@@ -38,7 +38,7 @@ describe('chapter dashboard', () => {
 
   it('should have link to add event for chapter', () => {
     cy.visit('/dashboard/chapters/1');
-    cy.get('a[href="/dashboard/chapters/1/new_event"').should('be.visible');
+    cy.get('a[href="/dashboard/chapters/1/new-event"').should('be.visible');
   });
 
   it('emails interested users when an event is created', () => {
@@ -107,7 +107,7 @@ describe('chapter dashboard', () => {
 
   function createEventViaUI(chapterId) {
     cy.visit(`/dashboard/chapters/${chapterId}`);
-    cy.get(`a[href="/dashboard/chapters/${chapterId}/new_event"]`).click();
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
     cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.title);
     cy.findByRole('textbox', { name: 'Description' }).type(
       testEvent.description,

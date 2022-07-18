@@ -21,32 +21,6 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * Get event users for event with eventId using GQL query
-       * @param eventId Id of the event
-       */
-      getEventUsers(eventId: number): Chainable<any>;
-
-      /**
-       * Authenticate with JWT token
-       * @param token JWT token for authorization. If not provided, Cypress.env.JWT token is used.
-       */
-      login(token?: string): void;
-
-      logout(): void;
-
-      /**
-       * Register user using page UI
-       */
-      registerViaUI(firstName: string, lastName: string, email: string): void;
-
-      /**
-       * Create event using GQL mutation
-       * @param chapterId Id of the chapter
-       * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
-       */
-      createEvent(chapterId: number, data): Chainable<any>;
-
-      /**
        * Delete event using GQL mutation
        * @param eventId Id of the event for deletion
        */

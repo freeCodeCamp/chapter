@@ -31,16 +31,25 @@ import '@testing-library/cypress/add-commands';
 
 import { gqlOptions } from './util';
 
-Cypress.Commands.add('registerViaUI', (firstName, lastName, email) => {
+/**
+ * Register user using page UI
+ */
+const registerViaUI = (firstName: string, lastName: string, email: string) => {
   cy.visit('/auth/register');
 
   cy.get('input[name="first_name"]').type(firstName);
   cy.get('input[name="last_name"]').type(lastName);
   cy.get('input[name="email"]').type(email);
   cy.get('[data-cy="submit-button"]').click();
-});
+};
 
-Cypress.Commands.add('login', (token) => {
+Cypress.Commands.add('registerViaUI', registerViaUI);
+
+/**
+ * Authenticate with JWT token
+ * @param token JWT token for authorization. If not provided, Cypress.env.JWT token is used.
+ */
+const login = (token?: string) => {
   const authData = {
     operationName: 'authenticate',
     variables: {
@@ -63,11 +72,13 @@ Cypress.Commands.add('login', (token) => {
     window.localStorage.setItem('token', response.body.data.authenticate.token);
     expect(response.status).to.eq(200);
   });
-});
+};
+Cypress.Commands.add('login', login);
 
-Cypress.Commands.add('logout', () => {
+const logout = () => {
   window.localStorage.removeItem('token');
-});
+};
+Cypress.Commands.add('logout', logout);
 
 /**
  * Register user using GQL query
@@ -134,7 +145,11 @@ const getChapterMembers = (chapterId: number) => {
 };
 Cypress.Commands.add('getChapterMembers', getChapterMembers);
 
-Cypress.Commands.add('getEventUsers', (eventId) => {
+/**
+ * Get event users for event with eventId using GQL query
+ * @param eventId Id of the event
+ */
+const getEventUsers = (eventId: number) => {
   const eventQuery = {
     operationName: 'eventUsers',
     variables: {
@@ -159,7 +174,9 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
   return cy
     .request(gqlOptions(eventQuery))
     .then((response) => response.body.data.event.event_users);
-});
+};
+
+Cypress.Commands.add('getEventUsers', getEventUsers);
 
 /**
  * Wait until emails are received by mailhog
@@ -178,7 +195,7 @@ const waitUntilMail = (alias?: string) => {
 
 Cypress.Commands.add('waitUntilMail', waitUntilMail);
 
-Cypress.Commands.add('createEvent', (chapterId, data) => {
+const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
@@ -192,7 +209,14 @@ Cypress.Commands.add('createEvent', (chapterId, data) => {
     }`,
   };
   return cy.authedRequest(gqlOptions(eventMutation));
-});
+};
+
+/**
+ * Create event using GQL mutation
+ * @param chapterId Id of the chapter
+ * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ */
+Cypress.Commands.add('createEvent', createEvent);
 
 Cypress.Commands.add('createChapter', (data) => {
   const createChapterData = {
@@ -488,9 +512,14 @@ Cypress.Commands.add('getChapterEvents', (id) => {
 declare global {
   namespace Cypress {
     interface Chainable {
-      interceptGQL: typeof interceptGQL;
+      createEvent: typeof createEvent;
       getChapterMembers: typeof getChapterMembers;
+      getEventUsers: typeof getEventUsers;
+      interceptGQL: typeof interceptGQL;
+      login: typeof login;
+      logout: typeof logout;
       register: typeof register;
+      registerViaUI: typeof registerViaUI;
       waitUntilMail: typeof waitUntilMail;
     }
   }

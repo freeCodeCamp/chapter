@@ -444,3 +444,20 @@ Cypress.Commands.add('updateSponsor', (id, data) => {
   };
   return cy.authedRequest(gqlOptions(updateSponsorData));
 });
+
+Cypress.Commands.add('getChapterEvents', (id) => {
+  const chapterQuery = {
+    operationName: 'chapter',
+    variables: { id },
+    query: `query chapter($id: Int!) {
+      chapter(id: $id) {
+        events {
+          id
+        }
+      }
+    }`,
+  };
+  return cy
+    .request(gqlOptions(chapterQuery))
+    .then((response) => response.body.data.chapter.events);
+});

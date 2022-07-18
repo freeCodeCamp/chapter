@@ -287,6 +287,7 @@ export type Mutation = {
   subscribeToEvent: EventUser;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
+  unsubscribe: Scalars['Boolean'];
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
   updateEvent: Event;
@@ -400,6 +401,10 @@ export type MutationToggleChapterSubscriptionArgs = {
 export type MutationUnbanUserArgs = {
   chapterId: Scalars['Int'];
   userId: Scalars['Int'];
+};
+
+export type MutationUnsubscribeArgs = {
+  token: Scalars['String'];
 };
 
 export type MutationUnsubscribeFromEventArgs = {
@@ -1363,6 +1368,15 @@ export type HomeQuery = {
     category: string;
     imageUrl: string;
   }>;
+};
+
+export type UnsubscribeMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+export type UnsubscribeMutation = {
+  __typename?: 'Mutation';
+  unsubscribe: boolean;
 };
 
 export const LoginDocument = gql`
@@ -3921,6 +3935,54 @@ export function useHomeLazyQuery(
 export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
 export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
+export const UnsubscribeDocument = gql`
+  mutation unsubscribe($token: String!) {
+    unsubscribe(token: $token)
+  }
+`;
+export type UnsubscribeMutationFn = Apollo.MutationFunction<
+  UnsubscribeMutation,
+  UnsubscribeMutationVariables
+>;
+
+/**
+ * __useUnsubscribeMutation__
+ *
+ * To run a mutation, you first call `useUnsubscribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnsubscribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unsubscribeMutation, { data, loading, error }] = useUnsubscribeMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useUnsubscribeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UnsubscribeMutation,
+    UnsubscribeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UnsubscribeMutation, UnsubscribeMutationVariables>(
+    UnsubscribeDocument,
+    options,
+  );
+}
+export type UnsubscribeMutationHookResult = ReturnType<
+  typeof useUnsubscribeMutation
+>;
+export type UnsubscribeMutationResult =
+  Apollo.MutationResult<UnsubscribeMutation>;
+export type UnsubscribeMutationOptions = Apollo.BaseMutationOptions<
+  UnsubscribeMutation,
+  UnsubscribeMutationVariables
+>;
 
 export interface PossibleTypesResultData {
   possibleTypes: {

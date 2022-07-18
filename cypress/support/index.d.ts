@@ -136,6 +136,12 @@ declare namespace Cypress {
     ): Chainable<any>;
 
     /**
+     * Get events for chapter using GQL query
+     * @param id Chapter id
+     */
+    getChapterEvents(id: number): Chainable<any>;
+
+    /**
      * Create venue using GQL mutation
      * @param chapterId Id of the chapter
      * @param data Data of the venue. Equivalent of CreateVenueInputs for the Venue resolver.

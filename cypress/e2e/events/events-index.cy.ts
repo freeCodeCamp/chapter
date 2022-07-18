@@ -1,10 +1,10 @@
 describe('events page', () => {
   before(() => {
     cy.exec('npm run db:seed');
-    cy.interceptGQL('PaginatedEventsWithTotal');
   });
 
   it('should contain a list of event cards', () => {
+    cy.interceptGQL('PaginatedEventsWithTotal');
     cy.visit('/events');
     cy.wait('@GQLPaginatedEventsWithTotal');
     cy.get('[data-cy="event-card"]')

@@ -176,7 +176,7 @@ describe('events dashboard', () => {
   it('editing event updates cached events on home page', () => {
     cy.visit('');
     cy.get('a[href*="/events/"').first().as('eventToEdit');
-    cy.get('@eventToEdit').as('eventTitle');
+    cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
     cy.findByRole('link', { name: 'Dashboard' }).click();
@@ -187,11 +187,9 @@ describe('events dashboard', () => {
     cy.get('#page-heading').contains('Events');
     cy.contains('Loading...').should('not.exist');
 
-    cy.get('@eventTitle')
-      .invoke('text')
-      .then((eventTitle) => {
-        cy.findByRole('link', { name: eventTitle }).click();
-      });
+    cy.get<string>('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: eventTitle }).click();
+    });
 
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';

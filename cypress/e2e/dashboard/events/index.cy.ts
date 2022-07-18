@@ -201,11 +201,9 @@ describe('events dashboard', () => {
       })
       .click();
 
-    cy.get('@eventTitle')
-      .invoke('text')
-      .then((eventTitle) => {
-        cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
-      });
+    cy.get('@eventTitle').then((eventTitle) => {
+      cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
+    });
     cy.get('a[href="/"]').click();
     cy.get('@eventHref').then((eventHref) => {
       cy.get(`a[href="${eventHref}"]`)

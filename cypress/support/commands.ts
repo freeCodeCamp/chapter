@@ -106,28 +106,33 @@ const interceptGQL = (operationName: string) => {
 };
 Cypress.Commands.add('interceptGQL', interceptGQL);
 
-Cypress.Commands.add('getChapterMembers', (chapterId) => {
+/**
+ * Get users of the chapter using GQL query
+ * @param chapterId Id of the chapter
+ */
+const getChapterMembers = (chapterId: number) => {
   const chapterQuery = {
     operationName: 'chapterUsers',
     variables: {
       chapterId,
     },
     query: `query chapterUsers($chapterId: Int!) {
-      chapter(id: $chapterId) {
-        chapter_users {
-          user {
-            name
-            email
-          }
-          subscribed
-        }
-      }
-    }`,
+            chapter(id: $chapterId) {
+              chapter_users {
+                user {
+                  name
+                  email
+                }
+                subscribed
+              }
+            }
+          }`,
   };
   return cy
     .request(gqlOptions(chapterQuery))
     .then((response) => response.body.data.chapter.chapter_users);
-});
+};
+Cypress.Commands.add('getChapterMembers', getChapterMembers);
 
 Cypress.Commands.add('getEventUsers', (eventId) => {
   const eventQuery = {
@@ -484,7 +489,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       interceptGQL: typeof interceptGQL;
-
+      getChapterMembers: typeof getChapterMembers;
       register: typeof register;
       waitUntilMail: typeof waitUntilMail;
     }

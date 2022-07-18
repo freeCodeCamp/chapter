@@ -21,12 +21,6 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * Get users of the chapter using GQL query
-       * @param chapterId Id of the chapter
-       */
-      getChapterMembers(chapterId: number): Chainable<any>;
-
-      /**
        * Get event users for event with eventId using GQL query
        * @param eventId Id of the event
        */

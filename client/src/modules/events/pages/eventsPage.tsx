@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
-import { useMinEventsQuery, usePaginatedEventsQuery } from 'generated/graphql';
+import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
 
 export default function Pagination({
   currentPage = 1,
@@ -54,21 +54,23 @@ export default function Pagination({
 const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, fetchMore } = usePaginatedEventsQuery({
+  const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
   });
 
-  const { data: total } = useMinEventsQuery();
   useEffect(() => {
     fetchMore({
-      variables: { offset: data?.paginatedEvents.length, limit: pageSize },
+      variables: {
+        offset: data?.paginatedEventsWithTotal?.events?.length || 0,
+        limit: pageSize,
+      },
     });
   }, [currentPage]);
   if (loading) {
     return <h1>Loading...</h1>;
   }
 
-  if (error || !data?.paginatedEvents) {
+  if (error || !data?.paginatedEventsWithTotal?.events?.length) {
     return (
       <div>
         <h1>error...</h1>
@@ -76,24 +78,19 @@ export const EventsPage: NextPage = () => {
       </div>
     );
   }
-  console.log('total', total?.events?.length);
+
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
         <Heading>Events: </Heading>
-        {data?.paginatedEvents
-          .slice(
-            (currentPage - 1) * pageSize,
-            (currentPage - 1) * pageSize + pageSize,
-          )
-          .map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+        {data?.paginatedEventsWithTotal?.events.map((event) => (
+          <EventCard key={event.id} event={event} />
+        ))}
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           pageSize={pageSize}
-          records={total?.events?.length || 0}
+          records={data?.paginatedEventsWithTotal?.total || 0}
         />
       </Stack>
     </VStack>

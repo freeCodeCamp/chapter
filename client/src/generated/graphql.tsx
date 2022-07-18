@@ -19,7 +19,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
 };
 
@@ -425,6 +424,12 @@ export type MutationUpdateVenueArgs = {
   id: Scalars['Int'];
 };
 
+export type PaginatedEventsWithTotal = {
+  __typename?: 'PaginatedEventsWithTotal';
+  events: Array<EventWithChapter>;
+  total: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
   chapter?: Maybe<ChapterWithRelations>;
@@ -438,6 +443,7 @@ export type Query = {
   instanceRoles: Array<InstanceRole>;
   me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
+  paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsor?: Maybe<Sponsor>;
   sponsors: Array<Sponsor>;
   users: Array<UserWithInstanceRole>;
@@ -467,6 +473,11 @@ export type QueryEventsArgs = {
 };
 
 export type QueryPaginatedEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
@@ -1294,6 +1305,39 @@ export type UnsubscribeFromEventMutationVariables = Exact<{
 export type UnsubscribeFromEventMutation = {
   __typename?: 'Mutation';
   unsubscribeFromEvent: { __typename?: 'EventUser'; subscribed: boolean };
+};
+
+export type PaginatedEventsWithTotalQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type PaginatedEventsWithTotalQuery = {
+  __typename?: 'Query';
+  paginatedEventsWithTotal: {
+    __typename?: 'PaginatedEventsWithTotal';
+    total: number;
+    events: Array<{
+      __typename?: 'EventWithChapter';
+      id: number;
+      name: string;
+      description: string;
+      start_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+      image_url: string;
+      tags: Array<{
+        __typename?: 'EventTag';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
+      chapter: {
+        __typename?: 'Chapter';
+        id: number;
+        name: string;
+        category: string;
+      };
+    }>;
+  };
 };
 
 export type PaginatedEventsQueryVariables = Exact<{
@@ -3797,6 +3841,85 @@ export type UnsubscribeFromEventMutationResult =
 export type UnsubscribeFromEventMutationOptions = Apollo.BaseMutationOptions<
   UnsubscribeFromEventMutation,
   UnsubscribeFromEventMutationVariables
+>;
+export const PaginatedEventsWithTotalDocument = gql`
+  query PaginatedEventsWithTotal($limit: Int, $offset: Int) {
+    paginatedEventsWithTotal(limit: $limit, offset: $offset) {
+      total
+      events {
+        id
+        name
+        description
+        start_at
+        invite_only
+        canceled
+        image_url
+        tags {
+          tag {
+            id
+            name
+          }
+        }
+        chapter {
+          id
+          name
+          category
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePaginatedEventsWithTotalQuery__
+ *
+ * To run a query within a React component, call `usePaginatedEventsWithTotalQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePaginatedEventsWithTotalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePaginatedEventsWithTotalQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function usePaginatedEventsWithTotalQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    PaginatedEventsWithTotalQuery,
+    PaginatedEventsWithTotalQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    PaginatedEventsWithTotalQuery,
+    PaginatedEventsWithTotalQueryVariables
+  >(PaginatedEventsWithTotalDocument, options);
+}
+export function usePaginatedEventsWithTotalLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    PaginatedEventsWithTotalQuery,
+    PaginatedEventsWithTotalQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    PaginatedEventsWithTotalQuery,
+    PaginatedEventsWithTotalQueryVariables
+  >(PaginatedEventsWithTotalDocument, options);
+}
+export type PaginatedEventsWithTotalQueryHookResult = ReturnType<
+  typeof usePaginatedEventsWithTotalQuery
+>;
+export type PaginatedEventsWithTotalLazyQueryHookResult = ReturnType<
+  typeof usePaginatedEventsWithTotalLazyQuery
+>;
+export type PaginatedEventsWithTotalQueryResult = Apollo.QueryResult<
+  PaginatedEventsWithTotalQuery,
+  PaginatedEventsWithTotalQueryVariables
 >;
 export const PaginatedEventsDocument = gql`
   query PaginatedEvents($limit: Int, $offset: Int) {

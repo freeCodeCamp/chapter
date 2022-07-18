@@ -5,7 +5,7 @@ import { Button, Box, Flex } from '@chakra-ui/react';
 import { EventCard } from 'components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
 
-export default function Pagination({
+function Pagination({
   currentPage = 1,
   setCurrentPage,
   pageSize,
@@ -61,7 +61,7 @@ export const EventsPage: NextPage = () => {
   useEffect(() => {
     fetchMore({
       variables: {
-        offset: data?.paginatedEventsWithTotal?.events?.length || 0,
+        offset: data?.paginatedEventsWithTotal.events.length || 0,
         limit: pageSize,
       },
     });
@@ -70,7 +70,7 @@ export const EventsPage: NextPage = () => {
     return <h1>Loading...</h1>;
   }
 
-  if (error || !data?.paginatedEventsWithTotal?.events?.length) {
+  if (error || !data?.paginatedEventsWithTotal.events.length) {
     return (
       <div>
         <h1>error...</h1>
@@ -83,14 +83,14 @@ export const EventsPage: NextPage = () => {
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
         <Heading>Events: </Heading>
-        {data?.paginatedEventsWithTotal?.events.map((event) => (
+        {data?.paginatedEventsWithTotal.events.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           pageSize={pageSize}
-          records={data?.paginatedEventsWithTotal?.total || 0}
+          records={data?.paginatedEventsWithTotal.total || 0}
         />
       </Stack>
     </VStack>

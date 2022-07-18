@@ -26,30 +26,6 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
     }
   }
 `;
-export const DATA_EVENTS_QUERY = gql`
-  query PaginatedEvents($limit: Int, $offset: Int) {
-    paginatedEvents(limit: $limit, offset: $offset) {
-      id
-      name
-      description
-      start_at
-      invite_only
-      canceled
-      image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      chapter {
-        id
-        name
-        category
-      }
-    }
-  }
-`;
 
 export const MINIMAL_DATA_EVENTS_QUERY = gql`
   query minEvents {

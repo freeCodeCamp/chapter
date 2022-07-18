@@ -6,19 +6,23 @@ import {
   useVenueQuery,
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
+import { useParam } from 'hooks/useParam';
 
 export const EditVenuePage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const venueId = useParam('venueId');
+  const chapterId = useParam('id');
 
-  const { loading, error, data } = useVenueQuery({ variables: { id } });
+  const { loading, error, data } = useVenueQuery({
+    variables: { id: venueId },
+  });
   const [updateVenue] = useUpdateVenueMutation({
     refetchQueries: [{ query: VENUES }],
   });
@@ -30,7 +34,11 @@ export const EditVenuePage: NextPage = () => {
       const longitude = parseFloat(String(data.longitude));
 
       await updateVenue({
-        variables: { id, data: { ...data, latitude, longitude } },
+        variables: {
+          venueId,
+          chapterId,
+          data: { ...data, latitude, longitude },
+        },
       });
       await router.push('/dashboard/venues');
     } catch (err) {
@@ -50,7 +58,7 @@ export const EditVenuePage: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout data-cy="edit-venue-page">
       <VenueForm
         data={data}
         loading={loadingUpdate}

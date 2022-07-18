@@ -33,13 +33,12 @@ export class AuthResolver {
   async register(@Arg('data') data: RegisterInput): Promise<User> {
     const existingUser = await prisma.users.findUnique({
       where: { email: data.email },
-      rejectOnNotFound: false,
     });
     if (existingUser) {
       throw new Error('EMAIL_IN_USE');
     }
 
-    const instanceMember = await prisma.instance_roles.findUnique({
+    const instanceMember = await prisma.instance_roles.findUniqueOrThrow({
       where: { name: 'member' },
     });
 
@@ -57,9 +56,8 @@ export class AuthResolver {
 
   @Mutation(() => LoginType)
   async login(@Arg('data') data: LoginInput): Promise<LoginType> {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findUniqueOrThrow({
       where: { email: data.email },
-      rejectOnNotFound: () => new Error('USER_NOT_FOUND'),
     });
 
     const { token, code } = authTokenService.generateToken(user.email);
@@ -92,7 +90,7 @@ export class AuthResolver {
       throw new Error('Token wrong / missing / expired');
     }
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findUniqueOrThrow({
       where: { email: data.email },
       include: {
         instance_role: {

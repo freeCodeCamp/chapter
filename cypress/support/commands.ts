@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -28,6 +29,8 @@ import 'cypress-wait-until';
 import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
+import { gqlOptions } from './util';
+
 Cypress.Commands.add('registerViaUI', (firstName, lastName, email) => {
   cy.visit('/auth/register');
 
@@ -54,24 +57,22 @@ Cypress.Commands.add('login', (token) => {
         }
       }`,
   };
-  cy.request('POST', 'http://localhost:5000/graphql', authData).then(
-    (response) => {
-      expect(response.body.data.authenticate).to.have.property('token');
-      // TODO: change this to set a cookie when Token.tsx is updated.
-      window.localStorage.setItem(
-        'token',
-        response.body.data.authenticate.token,
-      );
-      expect(response.status).to.eq(200);
-    },
-  );
+  cy.request(gqlOptions(authData)).then((response) => {
+    expect(response.body.data.authenticate).to.have.property('token');
+    // TODO: change this to set a cookie when Token.tsx is updated.
+    window.localStorage.setItem('token', response.body.data.authenticate.token);
+    expect(response.status).to.eq(200);
+  });
 });
 
 Cypress.Commands.add('logout', () => {
   window.localStorage.removeItem('token');
 });
 
-Cypress.Commands.add('register', (firstName, lastName, email) => {
+/**
+ * Register user using GQL query
+ */
+const register = (firstName?: string, lastName?: string, email?: string) => {
   const user = {
     operationName: 'register',
     variables: {
@@ -83,15 +84,17 @@ Cypress.Commands.add('register', (firstName, lastName, email) => {
       'mutation register($email: String!, $first_name: String!, $last_name: String!) {\n  register(data: {email: $email, first_name: $first_name, last_name: $last_name}) {\n    id\n    __typename\n  }\n}\n',
   };
 
-  cy.request('POST', 'http://localhost:5000/graphql', user).then((response) => {
+  cy.request(gqlOptions(user)).then((response) => {
     expect(response.body.data.register).to.have.property('id');
     expect(response.body.data.register).to.have.property('__typename', 'User');
     expect(response.status).to.eq(200);
   });
-});
+};
+
+Cypress.Commands.add('register', register);
 
 Cypress.Commands.add('interceptGQL', (operationName) => {
-  cy.intercept('http://localhost:5000/graphql', (req) => {
+  cy.intercept(Cypress.env('GQL_URL'), (req) => {
     if (req.body?.operationName?.includes(operationName)) {
       req.alias = `GQL${operationName}`;
     }
@@ -117,7 +120,7 @@ Cypress.Commands.add('getChapterMembers', (chapterId) => {
     }`,
   };
   return cy
-    .request('POST', 'http://localhost:5000/graphql', chapterQuery)
+    .request(gqlOptions(chapterQuery))
     .then((response) => response.body.data.chapter.chapter_users);
 });
 
@@ -144,11 +147,15 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
     }`,
   };
   return cy
-    .request('POST', 'http://localhost:5000/graphql', eventQuery)
+    .request(gqlOptions(eventQuery))
     .then((response) => response.body.data.event.event_users);
 });
 
-Cypress.Commands.add('waitUntilMail', (alias) => {
+/**
+ * Wait until emails are received by mailhog
+ * @param alias Name of the alias to reference emails by
+ */
+const waitUntilMail = (alias?: string) => {
   cy.waitUntil(() =>
     alias
       ? cy
@@ -157,7 +164,9 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
           .then((mails) => mails?.length > 0)
       : cy.mhGetAllMails().then((mails) => mails?.length > 0),
   );
-});
+};
+
+Cypress.Commands.add('waitUntilMail', waitUntilMail);
 
 Cypress.Commands.add('createEvent', (chapterId, data) => {
   const eventMutation = {
@@ -172,12 +181,7 @@ Cypress.Commands.add('createEvent', (chapterId, data) => {
       }
     }`,
   };
-  const requestOptions = {
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: eventMutation,
-  };
-  return cy.authedRequest(requestOptions);
+  return cy.authedRequest(gqlOptions(eventMutation));
 });
 
 Cypress.Commands.add('createChapter', (data) => {
@@ -199,13 +203,7 @@ Cypress.Commands.add('createChapter', (data) => {
     }
   `,
   };
-  const requestOptions = {
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: createChapterData,
-  };
-
-  return cy.authedRequest(requestOptions);
+  return cy.authedRequest(gqlOptions(createChapterData));
 });
 
 Cypress.Commands.add('updateChapter', (chapterId, data) => {
@@ -221,13 +219,7 @@ Cypress.Commands.add('updateChapter', (chapterId, data) => {
       }
     }`,
   };
-  const requestOptions = {
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: chapterMutation,
-  };
-
-  return cy.authedRequest(requestOptions);
+  return cy.authedRequest(gqlOptions(chapterMutation));
 });
 
 Cypress.Commands.add('deleteEvent', (eventId) => {
@@ -243,7 +235,7 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
     }`,
   };
   return cy
-    .request('POST', 'http://localhost:5000/graphql', eventMutation)
+    .request(gqlOptions(eventMutation))
     .then((response) => response.body.data.deleteEvent.id);
 });
 
@@ -270,16 +262,59 @@ Cypress.Commands.add(
     `,
     };
 
-    const requestOptions = {
-      method: 'POST',
-      url: 'http://localhost:5000/graphql',
-      body: rsvpMutation,
+    const requestOptions = gqlOptions(rsvpMutation, {
       failOnStatusCode: false,
-    };
+    });
 
     return options.withAuth
       ? cy.authedRequest(requestOptions)
       : cy.request(requestOptions);
+  },
+);
+
+Cypress.Commands.add(
+  'subscribeToEvent',
+  ({ eventId }, options = { withAuth: true }) => {
+    const subscribeMutation = {
+      operationName: 'subscribeToEvent',
+      variables: {
+        eventId,
+      },
+      query: `
+    mutation subscribeToEvent($eventId: Int!) {
+      subscribeToEvent(eventId: $eventId) {
+        subscribed
+      }
+    }
+  `,
+    };
+
+    return options.withAuth
+      ? cy.authedRequest(gqlOptions(subscribeMutation))
+      : cy.request(gqlOptions(subscribeMutation));
+  },
+);
+
+Cypress.Commands.add(
+  'unsubscribeFromEvent',
+  ({ eventId }, options = { withAuth: true }) => {
+    const unsubscribeMutation = {
+      operationName: 'unsubscribeFromEvent',
+      variables: {
+        eventId,
+      },
+      query: `
+    mutation unsubscribeFromEvent($eventId: Int!) {
+      unsubscribeFromEvent(eventId: $eventId) {
+        subscribed
+      }
+    }
+  `,
+    };
+
+    return options.withAuth
+      ? cy.authedRequest(gqlOptions(unsubscribeMutation))
+      : cy.request(gqlOptions(unsubscribeMutation));
   },
 );
 
@@ -294,11 +329,7 @@ Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
       deleteRsvp(eventId: $eventId, userId: $userId)
     }`,
   };
-  return cy.authedRequest({
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: kickMutation,
-  });
+  return cy.authedRequest(gqlOptions(kickMutation));
 });
 
 Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
@@ -317,12 +348,79 @@ Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
       }
     }`,
   };
-  return cy.authedRequest({
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: confirmMutation,
-  });
+  return cy.authedRequest(gqlOptions(confirmMutation));
 });
+
+Cypress.Commands.add(
+  'createVenue',
+  ({ chapterId }, data, options = { withAuth: true }) => {
+    const queryData = {
+      operationName: 'createVenue',
+      variables: {
+        chapterId,
+        data,
+      },
+      query: `mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+      createVenue(chapterId: $chapterId, data: $data) {
+        id
+      }
+    }`,
+    };
+
+    const requestOptions = gqlOptions(queryData);
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
+Cypress.Commands.add(
+  'updateVenue',
+  ({ chapterId, venueId }, data, options = { withAuth: true }) => {
+    const queryData = {
+      operationName: 'updateVenue',
+      variables: {
+        chapterId,
+        venueId,
+        data,
+      },
+      query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: UpdateVenueInputs!) {
+      updateVenue(chapterId: $chapterId, venueId: $venueId, data: $data) {
+        id
+      }
+    }`,
+    };
+    const requestOptions = gqlOptions(queryData);
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
+
+Cypress.Commands.add(
+  'deleteVenue',
+  ({ chapterId, venueId }, options = { withAuth: true }) => {
+    const queryData = {
+      operationName: 'deleteVenue',
+      variables: {
+        chapterId,
+        venueId,
+      },
+      query: `mutation deleteVenue($chapterId: Int!, $venueId: Int!) {
+      deleteVenue(chapterId: $chapterId, venueId: $venueId) {
+        id
+      }
+    }`,
+    };
+    const requestOptions = gqlOptions(queryData);
+
+    return options.withAuth
+      ? cy.authedRequest(requestOptions)
+      : cy.request(requestOptions);
+  },
+);
 
 Cypress.Commands.add('authedRequest', (options) => {
   return cy.request({
@@ -343,12 +441,7 @@ Cypress.Commands.add('createSponsor', (data) => {
       }
     }`,
   };
-  const requestOptions = {
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: createSponsorData,
-  };
-  return cy.authedRequest(requestOptions);
+  return cy.authedRequest(gqlOptions(createSponsorData));
 });
 
 Cypress.Commands.add('updateSponsor', (id, data) => {
@@ -361,10 +454,32 @@ Cypress.Commands.add('updateSponsor', (id, data) => {
       }
     }`,
   };
-  const requestOptions = {
-    method: 'POST',
-    url: 'http://localhost:5000/graphql',
-    body: updateSponsorData,
-  };
-  return cy.authedRequest(requestOptions);
+  return cy.authedRequest(gqlOptions(updateSponsorData));
 });
+
+Cypress.Commands.add('getChapterEvents', (id) => {
+  const chapterQuery = {
+    operationName: 'chapter',
+    variables: { id },
+    query: `query chapter($id: Int!) {
+      chapter(id: $id) {
+        events {
+          id
+        }
+      }
+    }`,
+  };
+  return cy
+    .request(gqlOptions(chapterQuery))
+    .then((response) => response.body.data.chapter.events);
+});
+// Cypress will add these commands to the Cypress object, correctly, but it
+// cannot infer the types, so we need to add them manually.
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      register: typeof register;
+      waitUntilMail: typeof waitUntilMail;
+    }
+  }
+}

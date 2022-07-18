@@ -33,6 +33,7 @@ describe('chapter dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
     cy.login();
+    cy.mhDeleteAll();
   });
 
   it('should have link to add event for chapter', () => {
@@ -44,7 +45,7 @@ describe('chapter dashboard', () => {
     createEventViaUI(1);
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
-    cy.wrap(Object.entries(testEvent)).each(([key, value]) => {
+    Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
       if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
@@ -52,26 +53,32 @@ describe('chapter dashboard', () => {
       }
     });
     // check that the title we selected is in the event we created.
-    cy.get('@venueTitle').then((venueTitle) => {
+
+    // The type has to be set, since TS can't infer that the alias is to a
+    // string
+    cy.get<string>('@venueTitle').then((venueTitle) => {
       cy.contains(venueTitle);
     });
 
     // check that the subscribed users have been emailed
     cy.waitUntilMail('allMail');
 
-    cy.get('@allMail').mhFirst().as('invitation');
     // TODO: select chapter during event creation and use that here (much like @venueTitle
     // ) i.e. remove the hardcoding.
     cy.getChapterMembers(1).then((members) => {
       const subscriberEmails = members
         .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
-      cy.get('@invitation')
-        .mhGetRecipients()
-        .should('have.members', subscriberEmails);
-    });
-    cy.get('@invitation').then((mail) => {
-      cy.checkBcc(mail).should('eq', true);
+      cy.get('@allMail').should('have.length', subscriberEmails.length);
+      subscriberEmails.forEach((subscriberEmail) => {
+        cy.mhGetMailsByRecipient(subscriberEmail).as('currentRecipient');
+        cy.get('@currentRecipient').should('have.length', 1);
+        cy.get('@currentRecipient')
+          .mhFirst()
+          .then((mail) => {
+            cy.checkBcc(mail).should('eq', true);
+          });
+      });
     });
   });
 

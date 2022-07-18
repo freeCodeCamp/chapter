@@ -32,7 +32,7 @@ describe('event page', () => {
     cy.findByRole('textbox', { name: 'Email' }).as('email').type(fix.email);
     cy.findByRole('button', { name: 'Login' }).as('login-submit').click();
     // TODO: nicer response to un-registered users
-    cy.contains('USER_NOT_FOUND');
+    cy.contains('No users found');
 
     // TODO: should this be called 'Switch to registration'?
     cy.findByRole('button', { name: 'Register' }).click();
@@ -110,22 +110,29 @@ describe('event page', () => {
 
     cy.contains(/You are subscribed/);
     cy.findByRole('button', { name: 'Unsubscribe' }).click();
-    cy.findByRole('alertdialog').contains(/Unsubscribe/);
+    cy.findByRole('alertdialog').contains('Unsubscribe from event');
     cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains(/unsubscribed/);
+    cy.contains('unsubscribed from');
 
     cy.contains(/Not subscribed/);
     cy.findByRole('button', { name: 'Subscribe' }).click();
-    cy.findByRole('alertdialog').contains(/subscribe/);
+    cy.findByRole('alertdialog').contains('subscribe?');
     cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains(/subscribed/);
+    cy.contains('subscribed to');
   });
 
   it('should reject requests from logged out users, non-members and banned users', () => {
+    const rsvpVariables = { eventId: 1, chapterId: 1 };
+    const subscriptionVariables = { eventId: 1 };
     // logged out user
     cy.logout();
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }, { withAuth: false }).then(
+
+    cy.rsvpToEvent(rsvpVariables, { withAuth: false }).then(expectToBeRejected);
+    cy.subscribeToEvent(subscriptionVariables, { withAuth: false }).then(
+      expectToBeRejected,
+    );
+    cy.unsubscribeFromEvent(subscriptionVariables, { withAuth: false }).then(
       expectToBeRejected,
     );
 
@@ -133,12 +140,18 @@ describe('event page', () => {
     cy.register();
     cy.login(Cypress.env('JWT_TEST_USER'));
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then(expectToBeRejected);
+
+    cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
+    cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
+    cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
 
     // banned user
     cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
     cy.reload();
-    cy.rsvpToEvent({ eventId: 1, chapterId: 1 }).then(expectToBeRejected);
+
+    cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
+    cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
+    cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {

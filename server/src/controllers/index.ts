@@ -7,6 +7,7 @@ import { EventUserResolver } from './EventUser/resolver';
 import { EmailResolver } from './Messages/resolver';
 import { InstanceRoleResolver } from './InstanceRole/resolver';
 import { SponsorResolver } from './Sponsors/resolver';
+import { UnsubscribeResolver } from './Unsubscribe/resolver';
 import { ChapterUserResolver } from './ChapterUser/resolver';
 import { ChapterRoleResolver } from './ChapterRole/resolver';
 import { VenueResolver } from './Venue/resolver';
@@ -22,6 +23,7 @@ const resolvers = [
   InstanceRoleResolver,
   AuthResolver,
   SponsorResolver,
+  UnsubscribeResolver,
   ChapterUserResolver,
   ChapterRoleResolver,
   UserResolver, // Somehow extract this somewhere else

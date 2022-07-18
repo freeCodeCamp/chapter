@@ -56,19 +56,24 @@ describe('events dashboard', () => {
   });
 
   function sendAndCheckEmails(filterCallback, users) {
+    cy.mhDeleteAll();
     cy.findByRole('button', { name: 'Send Email' }).click();
 
     cy.waitUntilMail('allMail');
-    cy.get('@allMail').mhFirst().as('emails');
 
-    const emails = users
+    const recipientEmails = users
       .filter(filterCallback)
       .map(({ user: { email } }) => email);
-    cy.get('@emails').mhGetRecipients().should('have.members', emails);
-    cy.get('@emails').then((mail) => {
-      cy.checkBcc(mail).should('eq', true);
+    cy.get('@allMail').should('have.length', recipientEmails.length);
+    recipientEmails.forEach((recipientEmail) => {
+      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
+      cy.get('@currentRecipient').should('have.length', 1);
+      cy.get('@currentRecipient')
+        .mhFirst()
+        .then((mail) => {
+          cy.checkBcc(mail).should('eq', true);
+        });
     });
-    cy.mhDeleteAll();
   }
 
   it('invitation email should include calendar file', () => {
@@ -92,9 +97,13 @@ describe('events dashboard', () => {
     cy.get('@email')
       .mhFirst()
       .then((mail) => {
-        const hasCalendar = mail.MIME.Parts.some((part) => {
+        const MIME = mail.MIME as {
+          Parts: { Headers: unknown; Body: unknown }[];
+        };
+        const hasCalendar = MIME.Parts.some((part) => {
           const contentType = part.Headers['Content-Type'];
           if (contentType?.includes(calendarMIME)) {
+            // @ts-expect-error cypress-mailhog is missing types for this
             const body = Buffer.from(part.Body, 'base64').toString();
             return bodyRegex.test(body);
           }
@@ -178,7 +187,7 @@ describe('events dashboard', () => {
     cy.get('#page-heading').contains('Events');
     cy.contains('Loading...').should('not.exist');
 
-    cy.get('@eventTitle').then((eventTitle) => {
+    cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
 
@@ -213,18 +222,18 @@ describe('events dashboard', () => {
     cy.wait('@GQLevents');
     cy.get('#page-heading').contains('Events');
     cy.contains('Loading...').should('not.exist');
-    cy.get('@eventTitle').then((eventTitle) => {
+    cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
 
     cy.findByRole('button', { name: 'Delete' }).click();
     cy.findByRole('button', { name: 'Delete' }).click();
 
-    cy.get('@eventTitle').then((eventTitle) => {
+    cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.contains(eventTitle).should('not.exist');
     });
     cy.get('a[href="/"]').click();
-    cy.get('@eventTitle').then((eventTitle) => {
+    cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.contains(eventTitle).should('not.exist');
     });
   });
@@ -234,7 +243,7 @@ describe('events dashboard', () => {
     cy.findAllByRole('row')
       .not(':contains("canceled")')
       .find('a')
-      .first('contains(/dashboard/events/\\d+$)')
+      .first()
       .click()
       .invoke('text')
       .as('eventTitle');
@@ -246,9 +255,7 @@ describe('events dashboard', () => {
     cy.get('@allMail').mhFirst().as('emails');
 
     cy.url()
-      .then((url) => parseInt(url.match(/\d+$/)))
-      .as('eventId');
-    cy.get('@eventId')
+      .then((url) => parseInt(url.match(/\d+$/)[0], 10))
       .then((eventId) => cy.getEventUsers(eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
@@ -259,7 +266,7 @@ describe('events dashboard', () => {
           .should('have.members', expectedEmails);
       });
 
-    cy.get('@eventTitle').then((eventTitle) => {
+    cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.get('@emails').mhGetSubject().should('include', eventTitle);
     });
 

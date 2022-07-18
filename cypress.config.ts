@@ -12,7 +12,6 @@ export default defineConfig({
     projectId: 're65q6',
     baseUrl: 'http://localhost:3000',
     retries: { runMode: 3, openMode: 3 },
-    supportFile: 'cypress/support/index.js',
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config
@@ -74,6 +73,10 @@ export default defineConfig({
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjM1ODYzNjQ2LCJleHAiOjE2Mzg1NDIwNDZ9.';
 
       config.env.JWT_MALFORMED = 'not-a-valid-format';
+
+      config.env.GQL_URL = `${
+        process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000'
+      }/graphql`;
 
       // This makes sure the db is populated before running any tests. Without this,
       // it's difficult (when running docker-compose up) to guarantee that both the

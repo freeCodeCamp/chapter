@@ -4,11 +4,14 @@ describe('events page', () => {
   });
 
   it('should contain a list of event cards', () => {
+    cy.interceptGQL('PaginatedEventsWithTotal');
     cy.visit('/events');
+    cy.wait('@GQLPaginatedEventsWithTotal');
     cy.get('[data-cy="event-card"]')
       .should('be.visible')
-      .should('have.length', 15)
+      .should('have.length', 5)
       .as('eventCards');
+
     cy.get('@eventCards').find('[data-cy="event-canceled"]').should('exist');
     cy.get('@eventCards').find('[data-cy="event-invite-only"]').should('exist');
   });

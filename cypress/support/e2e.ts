@@ -21,12 +21,6 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * Intercept GQL request
-       * @param operationName Name of GQL operation to intercept
-       */
-      interceptGQL(operationName: string): void;
-
-      /**
        * Get users of the chapter using GQL query
        * @param chapterId Id of the chapter
        */

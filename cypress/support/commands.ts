@@ -93,13 +93,18 @@ const register = (firstName?: string, lastName?: string, email?: string) => {
 
 Cypress.Commands.add('register', register);
 
-Cypress.Commands.add('interceptGQL', (operationName) => {
+/**
+ * Intercept GQL request
+ * @param operationName Name of GQL operation to intercept
+ */
+const interceptGQL = (operationName: string) => {
   cy.intercept(Cypress.env('GQL_URL'), (req) => {
     if (req.body?.operationName?.includes(operationName)) {
       req.alias = `GQL${operationName}`;
     }
   });
-});
+};
+Cypress.Commands.add('interceptGQL', interceptGQL);
 
 Cypress.Commands.add('getChapterMembers', (chapterId) => {
   const chapterQuery = {
@@ -478,6 +483,8 @@ Cypress.Commands.add('getChapterEvents', (id) => {
 declare global {
   namespace Cypress {
     interface Chainable {
+      interceptGQL: typeof interceptGQL;
+
       register: typeof register;
       waitUntilMail: typeof waitUntilMail;
     }

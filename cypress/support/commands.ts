@@ -442,39 +442,55 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add(
-  'deleteVenue',
-  ({ chapterId, venueId }, options = { withAuth: true }) => {
-    const queryData = {
-      operationName: 'deleteVenue',
-      variables: {
-        chapterId,
-        venueId,
-      },
-      query: `mutation deleteVenue($chapterId: Int!, $venueId: Int!) {
-      deleteVenue(chapterId: $chapterId, venueId: $venueId) {
-        id
-      }
-    }`,
-    };
-    const requestOptions = gqlOptions(queryData);
+/**
+ * Delete venue using GQL mutation
+ * @param chapterId Id of the chapter
+ * @param venueId Id of the venue
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const deleteVenue = (
+  { chapterId, venueId }: { chapterId: number; venueId: number },
+  options = { withAuth: true },
+) => {
+  const queryData = {
+    operationName: 'deleteVenue',
+    variables: {
+      chapterId,
+      venueId,
+    },
+    query: `mutation deleteVenue($chapterId: Int!, $venueId: Int!) {
+    deleteVenue(chapterId: $chapterId, venueId: $venueId) {
+      id
+    }
+  }`,
+  };
+  const requestOptions = gqlOptions(queryData);
 
-    return options.withAuth
-      ? cy.authedRequest(requestOptions)
-      : cy.request(requestOptions);
-  },
-);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('deleteVenue', deleteVenue);
 
-Cypress.Commands.add('authedRequest', (options) => {
+/**
+ * Auth request, with token of the logged in user, before sending it.
+ * @param options Request options
+ */
+const authedRequest = (options) => {
   return cy.request({
     ...options,
     headers: {
       Authorization: `Bearer ${window.localStorage.getItem('token')}`,
     },
   });
-});
+};
+Cypress.Commands.add('authedRequest', authedRequest);
 
-Cypress.Commands.add('createSponsor', (data) => {
+/**
+ * Create sponsor using GQL mutation
+ * @param data Data of the sponsor. Equivalent of CreateSponsorInputs for the Sponsor resolver.
+ */
+const createSponsor = (data) => {
   const createSponsorData = {
     operationName: 'createSponsor',
     variables: { data },
@@ -485,9 +501,15 @@ Cypress.Commands.add('createSponsor', (data) => {
     }`,
   };
   return cy.authedRequest(gqlOptions(createSponsorData));
-});
+};
+Cypress.Commands.add('createSponsor', createSponsor);
 
-Cypress.Commands.add('updateSponsor', (id, data) => {
+/**
+ * Update sponsor using GQL mutation
+ * @param id Sponsor id
+ * @param data Data of the sponsor. Equivalent of UpdateSponsorInputs for the Sponsor resolver.
+ */
+const updateSponsor = (id: number, data) => {
   const updateSponsorData = {
     operationName: 'updateSponsor',
     variables: { id, data },
@@ -498,7 +520,8 @@ Cypress.Commands.add('updateSponsor', (id, data) => {
     }`,
   };
   return cy.authedRequest(gqlOptions(updateSponsorData));
-});
+};
+Cypress.Commands.add('updateSponsor', updateSponsor);
 
 /**
  * Get events for chapter using GQL query
@@ -526,9 +549,12 @@ Cypress.Commands.add('getChapterEvents', getChapterEvents);
 declare global {
   namespace Cypress {
     interface Chainable {
+      authedRequest: typeof authedRequest;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
+      createSponsor: typeof createSponsor;
       deleteEvent: typeof deleteEvent;
+      deleteVenue: typeof deleteVenue;
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getEventUsers: typeof getEventUsers;
@@ -537,6 +563,7 @@ declare global {
       logout: typeof logout;
       register: typeof register;
       registerViaUI: typeof registerViaUI;
+      updateSponsor: typeof updateSponsor;
       waitUntilMail: typeof waitUntilMail;
     }
   }

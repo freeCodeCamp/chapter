@@ -59,25 +59,6 @@ declare global {
       ): Chainable<any>;
 
       /**
-       * Auth request, with token of the logged in user, before sending it.
-       * @param options Request options
-       */
-      authedRequest(options): Chainable<any>;
-
-      /**
-       * Create sponsor using GQL mutation
-       * @param data Data of the sponsor. Equivalent of CreateSponsorInputs for the Sponsor resolver.
-       */
-      createSponsor(data): Chainable<any>;
-
-      /**
-       * Update sponsor using GQL mutation
-       * @param id Sponsor id
-       * @param data Data of the sponsor. Equivalent of UpdateSponsorInputs for the Sponsor resolver.
-       */
-      updateSponsor(id: number, data): Chainable<any>;
-
-      /**
        * Subscribe to notifications for a single event
        * @param eventId Id of the event
        * @param {object} [options={ withAuth: true }] Optional options object.
@@ -119,17 +100,6 @@ declare global {
       updateVenue(
         { venueId, chapterId }: { venueId: number; chapterId: number },
         data: any,
-        options?: { withAuth: boolean },
-      ): Chainable<any>;
-
-      /**
-       * Delete venue using GQL mutation
-       * @param chapterId Id of the chapter
-       * @param venueId Id of the venue
-       * @param {object} [options={ withAuth: true }] Optional options object.
-       */
-      deleteVenue(
-        { venueId, chapterId }: { venueId: number; chapterId: number },
         options?: { withAuth: boolean },
       ): Chainable<any>;
     }

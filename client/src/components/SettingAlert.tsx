@@ -9,18 +9,17 @@ import {
   useDisclosure,
   Input,
 } from '@chakra-ui/react';
-import React, { RefObject } from 'react';
+import React, { useRef } from 'react';
 
 // Make sure this has no animation because people who use it know what it's so there is no need for attention driven animation.
 
 // interface SettingAlertProps {
-//   canselButton: RefObject<FocusableElement>;
+//   cancelRef: RefObject<FocusableElement>;
 // }
 
-export const AlertDialogExample = (
-  canselButton: RefObject<FocusableElement>,
-) => {
+export const AlertDialogExample = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef() as React.RefObject<HTMLButtonElement>;
 
   return (
     <>
@@ -30,7 +29,7 @@ export const AlertDialogExample = (
 
       <AlertDialog
         isOpen={isOpen}
-        leastDestructiveRef={canselButton}
+        leastDestructiveRef={cancelRef}
         onClose={onClose}
       >
         <AlertDialogOverlay>
@@ -50,7 +49,7 @@ export const AlertDialogExample = (
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={canselButton} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={onClose} ml={3}>

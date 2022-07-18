@@ -4,7 +4,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Button,
   AlertDialog,
@@ -26,7 +26,7 @@ export const ChapterPage: NextPage = () => {
   const router = useRouter();
   const chapterId = getId(router.query) || -1;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
+  const cancelRef = useRef() as React.RefObject<HTMLButtonElement>;
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },

@@ -5,7 +5,7 @@ import { getConfig } from '../../config';
 import { prisma } from '../../prisma';
 import {
   UnsubscribeToken,
-  unsubscribeType,
+  UnsubscribeType,
 } from '../../services/UnsubscribeToken';
 
 const unsubscribeFromChapter = async (userId: number, chapterId: number) => {
@@ -51,8 +51,8 @@ const unsubscribeFromEvent = async (userId: number, eventId: number) => {
 };
 
 const typeToUnsubscribe = {
-  [unsubscribeType.Chapter]: unsubscribeFromChapter,
-  [unsubscribeType.Event]: unsubscribeFromEvent,
+  [UnsubscribeType.Chapter]: unsubscribeFromChapter,
+  [UnsubscribeType.Event]: unsubscribeFromEvent,
 };
 
 @Resolver()

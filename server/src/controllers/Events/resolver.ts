@@ -38,7 +38,7 @@ import {
 } from '../../services/Reminders';
 import {
   generateToken,
-  unsubscribeType,
+  UnsubscribeType,
 } from '../../services/UnsubscribeToken';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
@@ -60,12 +60,12 @@ const getUnsubscribeOptions = ({
   userId: number;
 }) => {
   const chapterUnsubscribeToken = generateToken(
-    unsubscribeType.Chapter,
+    UnsubscribeType.Chapter,
     chapterId,
     userId,
   );
   const eventUnsubscribeToken = generateToken(
-    unsubscribeType.Event,
+    UnsubscribeType.Event,
     eventId,
     userId,
   );
@@ -137,7 +137,7 @@ const rsvpNotifyAdministrators = async (
     for (const { chapter_id, user } of chapterAdministrators) {
       const email = user.email;
       const chapterUnsubscribeToken = generateToken(
-        unsubscribeType.Chapter,
+        UnsubscribeType.Chapter,
         chapter_id,
         user.id,
       );

@@ -2,20 +2,20 @@ import { sign } from 'jsonwebtoken';
 
 import { getConfig } from '../config';
 
-export enum unsubscribeType {
-  Chapter,
-  Event,
+export enum UnsubscribeType {
+  Chapter = 'chapter',
+  Event = 'event',
 }
 
 export type UnsubscribeToken = {
-  type: unsubscribeType;
+  type: UnsubscribeType;
   id: number;
   userId: number;
   iat: number;
 };
 
 export const generateToken = (
-  type: unsubscribeType,
+  type: UnsubscribeType,
   id: number,
   userId: number,
 ) => sign({ type, id, userId }, getConfig('UNSUBSCRIBE_SECRET'));

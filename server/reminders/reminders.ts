@@ -9,7 +9,7 @@ import {
 } from '../src/services/Reminders';
 import {
   generateToken,
-  unsubscribeType,
+  UnsubscribeType,
 } from '../src/services/UnsubscribeToken';
 
 const processingLimitInMinutes = 10;
@@ -94,12 +94,12 @@ const getEmailData = (reminder: Reminder) => {
   console.log();
 
   const chapterUnsubscribeToken = generateToken(
-    unsubscribeType.Chapter,
+    UnsubscribeType.Chapter,
     reminder.event_user.event.chapter_id,
     reminder.event_user.user_id,
   );
   const eventUnsubscribeToken = generateToken(
-    unsubscribeType.Event,
+    UnsubscribeType.Event,
     reminder.event_user.event_id,
     reminder.event_user.user_id,
   );

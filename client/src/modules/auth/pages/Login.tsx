@@ -41,7 +41,7 @@ export const LoginPage: NextPage = () => {
           <VStack>
             <Heading>Login</Heading>
 
-            <Input label="Email" {...register('email')} />
+            <Input label="Email" {...register('email')} isRequired />
 
             <Button
               data-cy="login-button"

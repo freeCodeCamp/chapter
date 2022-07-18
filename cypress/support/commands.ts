@@ -72,7 +72,6 @@ Cypress.Commands.add('logout', () => {
 /**
  * Register user using GQL query
  */
-
 const register = (firstName?: string, lastName?: string, email?: string) => {
   const user = {
     operationName: 'register',
@@ -152,6 +151,10 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
     .then((response) => response.body.data.event.event_users);
 });
 
+/**
+ * Wait until emails are received by mailhog
+ * @param alias Name of the alias to reference emails by
+ */
 const waitUntilMail = (alias?: string) => {
   cy.waitUntil(() =>
     alias
@@ -476,11 +479,6 @@ declare global {
   namespace Cypress {
     interface Chainable {
       register: typeof register;
-
-      /**
-       * Wait until emails are received by mailhog
-       * @param alias Name of the alias to reference emails by
-       */
       waitUntilMail: typeof waitUntilMail;
     }
   }

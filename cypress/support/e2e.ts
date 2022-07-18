@@ -21,22 +21,10 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * Delete event using GQL mutation
-       * @param eventId Id of the event for deletion
-       */
-      deleteEvent(eventId: number): Chainable<any>;
-
-      /**
        * Check if mail recipients are bcc
        * @param mail The sent mail of type Item(cypress-mailhog)
        */
       checkBcc(mail): Chainable<boolean>;
-
-      /**
-       * Create chapter using GQL mutation
-       * @param data Data of the chapter. Equivalent of CreateChapterInputs for the Chapter resolver.
-       */
-      createChapter(data): Chainable<any>;
 
       /**
        * Update chapter using GQL mutation
@@ -108,12 +96,6 @@ declare global {
         { eventId }: { eventId: number },
         options?: { withAuth: boolean },
       ): Chainable<any>;
-
-      /**
-       * Get events for chapter using GQL query
-       * @param id Chapter id
-       */
-      getChapterEvents(id: number): Chainable<any>;
 
       /**
        * Create venue using GQL mutation

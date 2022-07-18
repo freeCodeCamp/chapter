@@ -195,6 +195,11 @@ const waitUntilMail = (alias?: string) => {
 
 Cypress.Commands.add('waitUntilMail', waitUntilMail);
 
+/**
+ * Create event using GQL mutation
+ * @param chapterId Id of the chapter
+ * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ */
 const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
   const eventMutation = {
     operationName: 'createEvent',
@@ -210,15 +215,13 @@ const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
   };
   return cy.authedRequest(gqlOptions(eventMutation));
 };
-
-/**
- * Create event using GQL mutation
- * @param chapterId Id of the chapter
- * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
- */
 Cypress.Commands.add('createEvent', createEvent);
 
-Cypress.Commands.add('createChapter', (data) => {
+/**
+ * Create chapter using GQL mutation
+ * @param data Data of the chapter. Equivalent of CreateChapterInputs for the Chapter resolver.
+ */
+const createChapter = (data) => {
   const createChapterData = {
     operationName: 'createChapter',
     variables: {
@@ -238,7 +241,8 @@ Cypress.Commands.add('createChapter', (data) => {
   `,
   };
   return cy.authedRequest(gqlOptions(createChapterData));
-});
+};
+Cypress.Commands.add('createChapter', createChapter);
 
 Cypress.Commands.add('updateChapter', (chapterId, data) => {
   const chapterMutation = {
@@ -256,7 +260,11 @@ Cypress.Commands.add('updateChapter', (chapterId, data) => {
   return cy.authedRequest(gqlOptions(chapterMutation));
 });
 
-Cypress.Commands.add('deleteEvent', (eventId) => {
+/**
+ * Delete event using GQL mutation
+ * @param eventId Id of the event for deletion
+ */
+const deleteEvent = (eventId: number) => {
   const eventMutation = {
     operationName: 'deleteEvent',
     variables: {
@@ -271,7 +279,8 @@ Cypress.Commands.add('deleteEvent', (eventId) => {
   return cy
     .request(gqlOptions(eventMutation))
     .then((response) => response.body.data.deleteEvent.id);
-});
+};
+Cypress.Commands.add('deleteEvent', deleteEvent);
 
 Cypress.Commands.add('checkBcc', (mail) => {
   const headers = mail.Content.Headers;
@@ -491,7 +500,11 @@ Cypress.Commands.add('updateSponsor', (id, data) => {
   return cy.authedRequest(gqlOptions(updateSponsorData));
 });
 
-Cypress.Commands.add('getChapterEvents', (id) => {
+/**
+ * Get events for chapter using GQL query
+ * @param id Chapter id
+ */
+const getChapterEvents = (id: number) => {
   const chapterQuery = {
     operationName: 'chapter',
     variables: { id },
@@ -506,13 +519,17 @@ Cypress.Commands.add('getChapterEvents', (id) => {
   return cy
     .request(gqlOptions(chapterQuery))
     .then((response) => response.body.data.chapter.events);
-});
+};
+Cypress.Commands.add('getChapterEvents', getChapterEvents);
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
   namespace Cypress {
     interface Chainable {
+      createChapter: typeof createChapter;
       createEvent: typeof createEvent;
+      deleteEvent: typeof deleteEvent;
+      getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getEventUsers: typeof getEventUsers;
       interceptGQL: typeof interceptGQL;

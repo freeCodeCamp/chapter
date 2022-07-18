@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es6", "dom"],
+    "moduleResolution": "node",
+    "types": [
+      "cypress",
+      "node",
+      "@testing-library/cypress",
+      "cypress-mailhog/types",
+      "cypress-mailhog/types/mailhog"
+    ],
+    "noEmit": true
+  },
+  "include": ["**/*.ts"]
+}

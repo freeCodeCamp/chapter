@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -28,7 +29,7 @@ import 'cypress-wait-until';
 import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
-import { gqlOptions } from '../support/util';
+import { gqlOptions } from './util';
 
 Cypress.Commands.add('registerViaUI', (firstName, lastName, email) => {
   cy.visit('/auth/register');
@@ -68,7 +69,10 @@ Cypress.Commands.add('logout', () => {
   window.localStorage.removeItem('token');
 });
 
-Cypress.Commands.add('register', (firstName, lastName, email) => {
+/**
+ * Register user using GQL query
+ */
+const register = (firstName?: string, lastName?: string, email?: string) => {
   const user = {
     operationName: 'register',
     variables: {
@@ -85,7 +89,9 @@ Cypress.Commands.add('register', (firstName, lastName, email) => {
     expect(response.body.data.register).to.have.property('__typename', 'User');
     expect(response.status).to.eq(200);
   });
-});
+};
+
+Cypress.Commands.add('register', register);
 
 Cypress.Commands.add('interceptGQL', (operationName) => {
   cy.intercept(Cypress.env('GQL_URL'), (req) => {
@@ -145,7 +151,11 @@ Cypress.Commands.add('getEventUsers', (eventId) => {
     .then((response) => response.body.data.event.event_users);
 });
 
-Cypress.Commands.add('waitUntilMail', (alias) => {
+/**
+ * Wait until emails are received by mailhog
+ * @param alias Name of the alias to reference emails by
+ */
+const waitUntilMail = (alias?: string) => {
   cy.waitUntil(() =>
     alias
       ? cy
@@ -154,7 +164,9 @@ Cypress.Commands.add('waitUntilMail', (alias) => {
           .then((mails) => mails?.length > 0)
       : cy.mhGetAllMails().then((mails) => mails?.length > 0),
   );
-});
+};
+
+Cypress.Commands.add('waitUntilMail', waitUntilMail);
 
 Cypress.Commands.add('createEvent', (chapterId, data) => {
   const eventMutation = {
@@ -461,3 +473,13 @@ Cypress.Commands.add('getChapterEvents', (id) => {
     .request(gqlOptions(chapterQuery))
     .then((response) => response.body.data.chapter.events);
 });
+// Cypress will add these commands to the Cypress object, correctly, but it
+// cannot infer the types, so we need to add them manually.
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      register: typeof register;
+      waitUntilMail: typeof waitUntilMail;
+    }
+  }
+}

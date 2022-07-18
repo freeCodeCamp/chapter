@@ -18,4 +18,4 @@ export const generateToken = (
   type: unsubscribeType,
   id: number,
   userId: number,
-) => sign({ type, id, userId }, getConfig('EMAIL_SECRET'));
+) => sign({ type, id, userId }, getConfig('UNSUBSCRIBE_SECRET'));

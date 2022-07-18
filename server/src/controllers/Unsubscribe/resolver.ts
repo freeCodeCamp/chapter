@@ -61,7 +61,7 @@ export class UnsubscribeResolver {
   async unsubscribe(@Arg('token') token: string): Promise<boolean> {
     let data;
     try {
-      data = verify(token, getConfig('EMAIL_SECRET')) as UnsubscribeToken;
+      data = verify(token, getConfig('UNSUBSCRIBE_SECRET')) as UnsubscribeToken;
     } catch (e) {
       throw Error('Invalid token');
     }

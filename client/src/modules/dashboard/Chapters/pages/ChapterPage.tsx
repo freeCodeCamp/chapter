@@ -16,6 +16,8 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
+// uncomment the dialog tomorrow, I am going auto pilot without thinking
+// import { AlertDialogExample } from '../../../../components/SettingAlert';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
 import { getId } from '../../../../util/getId';
@@ -44,6 +46,13 @@ export const ChapterPage: NextPage = () => {
   return (
     <Layout>
       <Card className={styles.card}>
+        {/* I am sleepy I will clear this error tomorrow morning Type '{ children: Element; title: string; inputPlaceholder: string; }' is not assignable to type 'IntrinsicAttributes & SettingAlertProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SettingAlertProps'. */}
+        {/* <AlertDialogExample title="hello"  inputPlaceholder="stop" >
+        <Button>
+
+        </Button>
+        </AlertDialogExample> */}
         <Tabs>
           <TabList>
             <Tab>General</Tab>

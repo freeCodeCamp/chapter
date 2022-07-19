@@ -103,7 +103,7 @@ export default class MailerService {
         }
         sendgrid.setApiKey(this.sendgridKey);
         for (const email of this.emailList) {
-          await sendgrid.send({
+          const opts = {
             to: email,
             from: this.sendgridEmail,
             subject: this.subject,
@@ -121,7 +121,18 @@ export default class MailerService {
                 enable: false,
               },
             },
-          });
+          };
+          if (this.iCalEvent) {
+            const attachment = {
+              filename: 'calendar.ics',
+              name: 'calendar.ics',
+              content: this.iCalEvent,
+              disposition: 'attachment',
+              type: 'text/calendar; method=REQUEST',
+            };
+            Object.assign(opts, { attachments: [attachment] });
+          }
+          await sendgrid.send(opts);
         }
       }
     } catch (e) {

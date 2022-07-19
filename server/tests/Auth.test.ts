@@ -4,7 +4,7 @@ import { getConfig } from '../src/config';
 import { authTokenService } from '../src/services/AuthToken';
 
 // Setup
-const secret = getConfig('JWT_SECRET');
+const secret = getConfig('AUTH_JWT_SECRET');
 const email = 'joe.smith@example.com';
 const { token, code } = authTokenService.generateToken(email);
 

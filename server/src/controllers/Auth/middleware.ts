@@ -70,7 +70,7 @@ export const userMiddleware = (
     return next(new JsonWebTokenError('Invalid auth header'));
   }
 
-  const value = verify(raw[1], getConfig('JWT_SECRET')) as { id: number };
+  const value = verify(raw[1], getConfig('AUTH_JWT_SECRET')) as { id: number };
   if (!value.id) {
     return next(new JsonWebTokenError('Missing contents'));
   }

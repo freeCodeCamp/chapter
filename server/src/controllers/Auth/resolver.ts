@@ -83,7 +83,7 @@ export class AuthResolver {
   async authenticate(@Arg('token') token: string): Promise<AuthenticateType> {
     let data: TokenResponseType;
     try {
-      data = verify(token, getConfig('JWT_SECRET')) as TokenResponseType;
+      data = verify(token, getConfig('AUTH_JWT_SECRET')) as TokenResponseType;
     } catch (e) {
       // TODO: Handle different parsing errors
       console.error(e);
@@ -103,7 +103,7 @@ export class AuthResolver {
       },
     });
 
-    const authToken = sign({ id: user.id }, getConfig('JWT_SECRET'), {
+    const authToken = sign({ id: user.id }, getConfig('AUTH_JWT_SECRET'), {
       expiresIn: '31d',
     });
 

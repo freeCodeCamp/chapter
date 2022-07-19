@@ -6,7 +6,7 @@ class AuthToken {
   private readonly secret: string;
 
   constructor() {
-    this.secret = getConfig('JWT_SECRET');
+    this.secret = getConfig('AUTH_JWT_SECRET');
   }
 
   public generateToken(email: string) {

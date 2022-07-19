@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@prisma/client": "4.1.0",
+    "@sendgrid/mail": "^7.7.0",
     "apollo-server-express": "3.10.0",
     "calendar-link": "2.2.0",
     "class-validator": "0.13.2",

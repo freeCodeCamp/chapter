@@ -9,22 +9,26 @@ import {
   useDisclosure,
   Input,
 } from '@chakra-ui/react';
-import React, { useRef } from 'react';
+import React from 'react';
 
 // Make sure this has no animation because people who use it know what it's so there is no need for attention driven animation.
 
-// interface SettingAlertProps {
-//   cancelRef: RefObject<FocusableElement>;
-// }
+interface SettingAlertProps {
+  title?: string;
+  buttonCallToAction: React.ReactNode;
+  inputPlaceholder?: string;
+  refFunction(): React.RefObject<HTMLButtonElement>;
+}
 
-export const AlertDialogExample = () => {
+export const AlertDialogExample = (props: SettingAlertProps) => {
+  const { buttonCallToAction, refFunction, title, inputPlaceholder } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef() as React.RefObject<HTMLButtonElement>;
+  const cancelRef = refFunction();
 
   return (
     <>
       <Button colorScheme="red" onClick={onOpen}>
-        Delete Customer
+        {title}
       </Button>
 
       <AlertDialog
@@ -35,7 +39,7 @@ export const AlertDialogExample = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Customer
+              {title}
             </AlertDialogHeader>
 
             <AlertDialogBody>
@@ -44,6 +48,7 @@ export const AlertDialogExample = () => {
                 variant="outline"
                 errorBorderColor="crimson"
                 size="md"
+                placeholder={inputPlaceholder}
                 isRequired
               />
             </AlertDialogBody>
@@ -52,9 +57,7 @@ export const AlertDialogExample = () => {
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={onClose} ml={3}>
-                Delete
-              </Button>
+              {buttonCallToAction}
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

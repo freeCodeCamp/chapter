@@ -25,24 +25,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const metaTag = (
     <>
       {event.canceled && (
-        <Tag
-          data-cy="event-canceled"
-          borderRadius="full"
-          pl="2"
-          px="2"
-          colorScheme="red"
-        >
+        <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
           Canceled
         </Tag>
       )}
       {event.invite_only && (
-        <Tag
-          data-cy="event-invite-only"
-          borderRadius="full"
-          pl="2"
-          px="2"
-          colorScheme="gray"
-        >
+        <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
           <LockIcon />
         </Tag>
       )}

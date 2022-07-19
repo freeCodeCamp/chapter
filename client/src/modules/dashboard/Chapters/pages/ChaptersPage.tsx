@@ -1,4 +1,4 @@
-import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -52,13 +52,27 @@ export const ChaptersPage: NextPage = () => {
                 </LinkButton>
               ),
               actions: (chapter) => (
-                <LinkButton
-                  colorScheme="green"
-                  size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/edit`}
-                >
-                  Edit
-                </LinkButton>
+                <HStack>
+                  <LinkButton
+                    colorScheme="green"
+                    size="xs"
+                    href={`/dashboard/chapters/${chapter.id}/edit`}
+                  >
+                    Edit
+                  </LinkButton>
+                  <LinkButton
+                    size="xs"
+                    href={`/dashboard/chapters/${chapter.id}/new-event`}
+                  >
+                    Add Event
+                  </LinkButton>
+                  <LinkButton
+                    size="xs"
+                    href={`/dashboard/chapters/${chapter.id}/new-venue`}
+                  >
+                    Add Venue
+                  </LinkButton>
+                </HStack>
               ),
             }}
           />

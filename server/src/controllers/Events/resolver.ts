@@ -28,6 +28,7 @@ import {
   EventWithRelations,
   EventWithChapter,
   User,
+  PaginatedEventsWithTotal,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import MailerService, { batchSender } from '../../services/MailerService';
@@ -187,6 +188,26 @@ export class EventResolver {
         start_at: 'asc',
       },
     });
+  }
+
+  @Query(() => PaginatedEventsWithTotal)
+  async paginatedEventsWithTotal(
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+    @Arg('offset', () => Int, { nullable: true }) offset?: number,
+  ): Promise<PaginatedEventsWithTotal> {
+    const total = await prisma.events.count();
+    const events = await prisma.events.findMany({
+      include: {
+        chapter: true,
+        tags: { include: { tag: true } },
+      },
+      orderBy: {
+        start_at: 'asc',
+      },
+      take: limit ?? 10,
+      skip: offset,
+    });
+    return { total, events };
   }
 
   @Query(() => [EventWithChapter])

@@ -542,6 +542,7 @@ ${unsubscribeOptions}`,
     });
   }
 
+  //@Authorized(Permission.EventEdit)
   @Mutation(() => Event)
   async updateEvent(
     @Arg('id', () => Int) id: number,
@@ -683,6 +684,7 @@ ${venueDetails}`;
     });
   }
 
+  //@Authorized(Permission.EventEdit)
   @Mutation(() => Event)
   async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
     const event = await prisma.events.update({
@@ -718,6 +720,7 @@ ${venueDetails}`;
     return event;
   }
 
+  @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
   async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
     return await prisma.events.delete({
@@ -728,6 +731,7 @@ ${venueDetails}`;
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return
   // an object type)
+  //@Authorized(Permission.EventEdit)
   @Mutation(() => Boolean)
   async sendEventInvite(
     @Arg('id', () => Int) id: number,

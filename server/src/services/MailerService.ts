@@ -1,3 +1,4 @@
+import sendgrid from '@sendgrid/mail';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
@@ -20,10 +21,12 @@ export default class MailerService {
   backupText: string;
   transporter: Transporter;
   ourEmail: string;
-  emailUsername: string;
-  emailPassword: string;
-  emailService: string;
-  emailHost: string;
+  emailUsername?: string;
+  emailPassword?: string;
+  emailService?: string;
+  emailHost?: string;
+  sendgridKey?: string;
+  sendgridEmail?: string;
   iCalEvent?: string;
 
   constructor(data: MailerData) {
@@ -34,14 +37,18 @@ export default class MailerService {
     this.iCalEvent = data.iCalEvent;
 
     // to be replaced with env vars
-    this.ourEmail =
-      (process.env.CHAPTER_EMAIL as string) || 'ourEmail@placeholder.place';
-    this.emailUsername = (process.env.EMAIL_USERNAME as string) || 'project.1';
-    this.emailPassword = (process.env.EMAIL_PASSWORD as string) || 'secret.1';
-    this.emailService = process.env.EMAIL_SERVICE as string;
+    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
+    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
+    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
+    this.emailService = process.env.EMAIL_SERVICE;
     this.emailHost = process.env.EMAIL_HOST || 'localhost';
 
-    this.createTransporter();
+    this.sendgridKey = process.env.SENDGRID_KEY;
+    this.sendgridEmail = process.env.SENDGRID_EMAIL;
+
+    if (process.env.NODE_ENV !== 'production') {
+      this.createTransporter();
+    }
   }
 
   private createTransporter() {
@@ -71,22 +78,52 @@ export default class MailerService {
 
   public async sendEmail(): Promise<SentMessageInfo> {
     try {
-      const calendarEvent = this.iCalEvent
-        ? {
-            icalEvent: {
-              filename: 'calendar.ics',
-              content: this.iCalEvent,
+      if (process.env.NODE_ENV !== 'production') {
+        const calendarEvent = this.iCalEvent
+          ? {
+              icalEvent: {
+                filename: 'calendar.ics',
+                content: this.iCalEvent,
+              },
+            }
+          : {};
+        return await this.transporter.sendMail({
+          from: this.ourEmail,
+          bcc: this.emailList,
+          subject: this.subject,
+          text: this.backupText,
+          html: this.htmlEmail,
+          ...calendarEvent,
+        });
+      } else {
+        if (!this.sendgridKey || !this.sendgridEmail) {
+          throw new Error(
+            'Missing Sendgrid variables and environment is set to production.',
+          );
+        }
+        sendgrid.setApiKey(this.sendgridKey);
+        for (const email of this.emailList) {
+          await sendgrid.send({
+            to: email,
+            from: this.sendgridEmail,
+            subject: this.subject,
+            html: this.htmlEmail,
+            text: this.backupText,
+            trackingSettings: {
+              clickTracking: {
+                enable: false,
+                enableText: false,
+              },
+              openTracking: {
+                enable: false,
+              },
+              subscriptionTracking: {
+                enable: false,
+              },
             },
-          }
-        : {};
-      return await this.transporter.sendMail({
-        from: this.ourEmail,
-        bcc: this.emailList,
-        subject: this.subject,
-        text: this.backupText,
-        html: this.htmlEmail,
-        ...calendarEvent,
-      });
+          });
+        }
+      }
     } catch (e) {
       console.log('Email failed to send. ', e);
     }

@@ -1,8 +1,12 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { Spinner } from '@chakra-ui/react';
 
-import { useCreateVenueMutation } from '../../../../generated/graphql';
+import {
+  useChapterQuery,
+  useCreateVenueMutation,
+} from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
@@ -15,6 +19,10 @@ export const NewVenuePage: NextPage = () => {
 
   const [createVenue] = useCreateVenueMutation({
     refetchQueries: [{ query: VENUES }],
+  });
+
+  const { loading: chapterLoading, data: chapterData } = useChapterQuery({
+    variables: { chapterId },
   });
 
   const onSubmit = async (data: VenueFormData) => {
@@ -38,11 +46,18 @@ export const NewVenuePage: NextPage = () => {
 
   return (
     <Layout>
-      <VenueForm
-        loading={loading}
-        onSubmit={onSubmit}
-        submitText={'Add venue'}
-      />
+      {chapterLoading ? (
+        <Spinner />
+      ) : (
+        chapterData?.chapter && (
+          <VenueForm
+            loading={loading}
+            onSubmit={onSubmit}
+            submitText={'Add venue'}
+            chapter={chapterData.chapter}
+          />
+        )
+      )}
     </Layout>
   );
 };

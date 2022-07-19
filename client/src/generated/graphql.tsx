@@ -438,6 +438,7 @@ export type Query = {
   chapterRoles: Array<ChapterRole>;
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
+  chapterVenues: Array<Venue>;
   chapters: Array<Chapter>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
@@ -462,6 +463,10 @@ export type QueryChapterUserArgs = {
 
 export type QueryChapterUsersArgs = {
   id: Scalars['Int'];
+};
+
+export type QueryChapterVenuesArgs = {
+  chapterId: Scalars['Int'];
 };
 
 export type QueryEventArgs = {
@@ -593,6 +598,7 @@ export type UserWithInstanceRole = {
 
 export type Venue = {
   __typename?: 'Venue';
+  chapter: Chapter;
   chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
@@ -1114,6 +1120,15 @@ export type EventRolesQuery = {
   eventRoles: Array<{ __typename?: 'EventRole'; id: number; name: string }>;
 };
 
+export type ChapterVenuesQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type ChapterVenuesQuery = {
+  __typename?: 'Query';
+  chapterVenues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
+};
+
 export type CreateSponsorMutationVariables = Exact<{
   data: CreateSponsorInputs;
 }>;
@@ -1256,6 +1271,7 @@ export type VenuesQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
   }>;
 };
 
@@ -1276,6 +1292,7 @@ export type VenueQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
   } | null;
 };
 
@@ -3085,6 +3102,65 @@ export type EventRolesQueryResult = Apollo.QueryResult<
   EventRolesQuery,
   EventRolesQueryVariables
 >;
+export const ChapterVenuesDocument = gql`
+  query chapterVenues($chapterId: Int!) {
+    chapterVenues(chapterId: $chapterId) {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useChapterVenuesQuery__
+ *
+ * To run a query within a React component, call `useChapterVenuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterVenuesQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useChapterVenuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ChapterVenuesQuery,
+    ChapterVenuesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChapterVenuesQuery, ChapterVenuesQueryVariables>(
+    ChapterVenuesDocument,
+    options,
+  );
+}
+export function useChapterVenuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChapterVenuesQuery,
+    ChapterVenuesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChapterVenuesQuery, ChapterVenuesQueryVariables>(
+    ChapterVenuesDocument,
+    options,
+  );
+}
+export type ChapterVenuesQueryHookResult = ReturnType<
+  typeof useChapterVenuesQuery
+>;
+export type ChapterVenuesLazyQueryHookResult = ReturnType<
+  typeof useChapterVenuesLazyQuery
+>;
+export type ChapterVenuesQueryResult = Apollo.QueryResult<
+  ChapterVenuesQuery,
+  ChapterVenuesQueryVariables
+>;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {
     createSponsor(data: $data) {
@@ -3546,6 +3622,10 @@ export const VenuesDocument = gql`
       country
       latitude
       longitude
+      chapter {
+        id
+        name
+      }
     }
   }
 `;
@@ -3601,6 +3681,10 @@ export const VenueDocument = gql`
       country
       latitude
       longitude
+      chapter {
+        id
+        name
+      }
     }
   }
 `;

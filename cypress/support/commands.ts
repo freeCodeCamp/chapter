@@ -278,7 +278,7 @@ const deleteEvent = (eventId: number) => {
     }`,
   };
   return cy
-    .request(gqlOptions(eventMutation))
+    .authedRequest(gqlOptions(eventMutation))
     .then((response) => response.body.data.deleteEvent.id);
 };
 Cypress.Commands.add('deleteEvent', deleteEvent);

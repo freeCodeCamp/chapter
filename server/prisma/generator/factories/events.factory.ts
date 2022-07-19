@@ -15,7 +15,7 @@ const { company, internet, lorem, image } = faker;
 
 const createEvents = async (
   chapterIds: number[],
-  venueIds: number[],
+  chapterIdToVenueIds: { [id: number]: number[] },
   sponsorIds: number[],
   count: number,
 ): Promise<number[]> => {
@@ -43,6 +43,9 @@ const createEvents = async (
       minutes: random(4) * 15,
     });
 
+    const chapterId = i === 0 ? 1 : randomItem(chapterIds);
+    const venueIds = chapterIdToVenueIds[chapterId];
+
     const venueType = randomEnum(events_venue_type_enum);
     const venueData = {
       ...(venueType !== events_venue_type_enum.Physical && {
@@ -55,7 +58,7 @@ const createEvents = async (
 
     const eventData: Prisma.eventsCreateInput = {
       name: company.companyName(),
-      chapter: { connect: { id: i == 0 ? 1 : randomItem(chapterIds) } },
+      chapter: { connect: { id: chapterId } },
       description: lorem.words(),
       url: internet.url(),
       venue_type: venueType,

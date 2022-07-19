@@ -13,6 +13,10 @@ export const VENUES = gql`
       country
       latitude
       longitude
+      chapter {
+        id
+        name
+      }
     }
   }
 `;
@@ -29,6 +33,10 @@ export const VENUE = gql`
       country
       latitude
       longitude
+      chapter {
+        id
+        name
+      }
     }
   }
 `;

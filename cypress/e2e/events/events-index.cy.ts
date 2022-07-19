@@ -9,10 +9,29 @@ describe('events page', () => {
     cy.wait('@GQLPaginatedEventsWithTotal');
     cy.get('[data-cy="event-card"]')
       .should('be.visible')
-      .should('have.length', 5)
-      .as('eventCards');
+      .should('have.length', 5);
 
-    cy.get('@eventCards').find('[data-cy="event-canceled"]').should('exist');
-    cy.get('@eventCards').find('[data-cy="event-invite-only"]').should('exist');
+    cy.get('[data-testid="pagination-forward"]').click();
+    cy.get('[data-cy="event-card"]')
+      .should('be.visible')
+      .should('have.length', 5);
+
+    cy.get('[data-testid="pagination-forward"]').click();
+    cy.get('[data-cy="event-card"]')
+      .should('be.visible')
+      .should('have.length', 5);
+
+    cy.get('[data-testid="pagination-forward"]').should('be.disabled');
+    cy.get('[data-testid="pagination-back"]').click();
+    cy.get('[data-cy="event-card"]')
+      .should('be.visible')
+      .should('have.length', 5);
+
+    cy.get('[data-testid="pagination-back"]').click();
+    cy.get('[data-cy="event-card"]')
+      .should('be.visible')
+      .should('have.length', 5);
+
+    cy.get('[data-testid="pagination-back"]').should('be.disabled');
   });
 });

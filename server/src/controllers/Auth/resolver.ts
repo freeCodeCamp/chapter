@@ -63,12 +63,12 @@ export class AuthResolver {
     const { token, code } = authTokenService.generateToken(user.email);
     if (isDev()) {
       console.log(
-        `Code: ${code}\nhttp://localhost:3000/auth/token?token=${token}`,
+        `Code: ${code}\n${process.env.CLIENT_LOCATION}/auth/token?token=${token}`,
       );
       await new MailerService({
         emailList: [data.email],
         subject: 'Login to Chapter',
-        htmlEmail: `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
+        htmlEmail: `<a href=${process.env.CLIENT_LOCATION}/auth/token?token=${token}>Click here to log in to chapter</a>`,
       }).sendEmail();
     }
 

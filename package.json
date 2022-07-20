@@ -65,6 +65,7 @@
     "@faker-js/faker": "6.3.1",
     "@testing-library/cypress": "8.0.3",
     "@types/jest": "28.1.6",
+    "@types/node-fetch": "^2.6.2",
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "5.32.0",
     "@typescript-eslint/parser": "5.32.0",

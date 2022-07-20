@@ -4,6 +4,7 @@ import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
@@ -13,6 +14,22 @@ interface Props {
   children: React.ReactNode;
   justifyContent?: GridItemProps['justifyContent'];
 }
+
+const LoginButton = () => {
+  const { loginWithRedirect } = useAuth0();
+
+  return <Button onClick={() => loginWithRedirect()}>Log In</Button>;
+};
+
+const LogoutButton = () => {
+  const { logout } = useAuth0();
+
+  return (
+    <Button onClick={() => logout({ returnTo: window.location.origin })}>
+      Log Out
+    </Button>
+  );
+};
 
 const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
@@ -66,7 +83,8 @@ export const Header: React.FC = () => {
             <Link color="white" href="/events">
               Events feed
             </Link>
-
+            <LoginButton />
+            <LogoutButton />
             {user ? (
               <>
                 <Link color="white" href="/dashboard/chapters">

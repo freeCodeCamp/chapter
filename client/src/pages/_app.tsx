@@ -7,9 +7,9 @@ import {
   ServerError,
 } from '@apollo/client';
 import { NetworkError } from '@apollo/client/errors';
-import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { offsetLimitPagination } from '@apollo/client/utilities';
+import { Auth0Provider } from '@auth0/auth0-react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
 import { AppProps } from 'next/app';
@@ -22,29 +22,23 @@ import { AuthContextProvider } from '../modules/auth/store';
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
 
-const httpLink = createHttpLink({ uri: new URL('/graphql', serverUri).href });
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('token');
-
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
+const httpLink = createHttpLink({
+  uri: new URL('/graphql', serverUri).href,
+  credentials: 'include',
 });
 
 const errorLink = onError(({ networkError }) => {
   if (isServerError(networkError)) {
     if (networkError.statusCode === 401) {
-      localStorage.removeItem('token');
+      // TODO: now we're using cookies, is there anything to do here?
     }
     // TODO: do we want to implement some kind of refresh token instead of
     // forcing the user to log in again?
     if (networkError.result.message === 'Token expired') {
       window.location.href = '/auth/login';
     } else {
-      window.location.reload();
+      // TODO: do we want to do something else here? We don't want to get stuck
+      // in a loop, but we do want to handle broken tokens.
     }
   }
 });
@@ -54,7 +48,7 @@ function isServerError(err?: NetworkError): err is ServerError {
 }
 
 const client = new ApolloClient({
-  link: from([errorLink, authLink, httpLink]),
+  link: from([errorLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
@@ -67,6 +61,9 @@ const client = new ApolloClient({
 });
 
 const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
+  const domain = process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string;
+  const cliendId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
+  const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
   return (
     <>
       <Head>
@@ -79,13 +76,23 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
       </Head>
       <ApolloProvider client={client}>
         <ChakraProvider>
-          <AuthContextProvider>
-            <ConfirmContextProvider>
-              <PageLayout>
-                <Component {...pageProps} />
-              </PageLayout>
-            </ConfirmContextProvider>
-          </AuthContextProvider>
+          {/* TODO: Can we conditionally use window.location.origin for the redirectUri if
+           we're in the browser? */}
+          <Auth0Provider
+            domain={domain}
+            clientId={cliendId}
+            redirectUri="http://localhost:3000"
+            audience={audience}
+            scope="read:current_user update:current_user_metadata"
+          >
+            <AuthContextProvider>
+              <ConfirmContextProvider>
+                <PageLayout>
+                  <Component {...pageProps} />
+                </PageLayout>
+              </ConfirmContextProvider>
+            </AuthContextProvider>
+          </Auth0Provider>
         </ChakraProvider>
       </ApolloProvider>
     </>

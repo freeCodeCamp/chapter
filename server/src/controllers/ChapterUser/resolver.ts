@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import {
   Arg,
+  Authorized,
   Ctx,
   FieldResolver,
   Int,
@@ -12,6 +13,7 @@ import {
 import { GQLCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
+import { Permission } from '../../../../common/permissions';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
@@ -41,15 +43,12 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterJoin)
   @Mutation(() => ChapterUser)
   async joinChapter(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<ChapterUser> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to join chapter');
-    }
-
     return await prisma.chapter_users.create({
       data: {
         user: { connect: { id: ctx.user.id } },
@@ -69,15 +68,12 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterSubscriptionsManage)
   @Mutation(() => ChapterUser)
   async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<ChapterUser> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to change subscription');
-    }
-
     const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
       where: {
         user_id_chapter_id: {
@@ -126,14 +122,12 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterJoin)
   @Mutation(() => Boolean)
   async initUserInterestForChapter(
     @Arg('id', () => Int) id: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<boolean> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to update role ');
-    }
     const event = await prisma.events.findUnique({
       where: { id },
       include: { chapter: true },

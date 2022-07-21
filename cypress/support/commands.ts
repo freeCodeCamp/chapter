@@ -544,6 +544,79 @@ const getChapterEvents = (id: number) => {
     .then((response) => response.body.data.chapter.events);
 };
 Cypress.Commands.add('getChapterEvents', getChapterEvents);
+
+/**
+ * Join chapter using GQL mutation
+ * @param chapterId Chapter id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const joinChapter = (chapterId: number, options = { withAuth: true }) => {
+  const chapterUserMutation = {
+    operationName: 'joinChapter',
+    variables: { chapterId },
+    query: `mutation joinChapter($chapterId: Int!) {
+      joinChapter(chapterId: $chapterId) {
+        user_id
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('joinChapter', joinChapter);
+
+/**
+ * Toggle subscription status for chapter using GQL mutation
+ * @param chapterId Chapter id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const toggleChapterSubscription = (
+  chapterId: number,
+  options = { withAuth: true },
+) => {
+  const chapterUserMutation = {
+    operationName: 'toggleChapterSubscription',
+    variables: { chapterId },
+    query: `mutation toggleChapterSubscription($chapterId: Int!) {
+      toggleChapterSubscription(chapterId: $chapterId) {
+        user_id
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('toggleChapterSubscription', toggleChapterSubscription);
+
+/**
+ * Join chapter cooresponding to the event using GQL mutation.
+ * @param id Event id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const initUserInterestForChapter = (
+  id: number,
+  options = { withAuth: true },
+) => {
+  const chapterUserMutation = {
+    operationName: 'initUserInterestForChapter',
+    variables: { id },
+    query: `mutation initUserInterestForChapter($id: Int!) {
+      initUserInterestForChapter(id: $id)
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('initUserInterestForChapter', initUserInterestForChapter);
+
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
@@ -558,11 +631,14 @@ declare global {
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getEventUsers: typeof getEventUsers;
+      initUserInterestForChapter: typeof initUserInterestForChapter;
       interceptGQL: typeof interceptGQL;
+      joinChapter: typeof joinChapter;
       login: typeof login;
       logout: typeof logout;
       register: typeof register;
       registerViaUI: typeof registerViaUI;
+      toggleChapterSubscription: typeof toggleChapterSubscription;
       updateSponsor: typeof updateSponsor;
       waitUntilMail: typeof waitUntilMail;
     }

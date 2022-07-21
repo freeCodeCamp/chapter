@@ -15,13 +15,14 @@ import React from 'react';
 
 interface SettingAlertProps {
   title?: string;
-  buttonCallToAction: React.ReactNode;
+  DialogBody?: string;
+  children?: React.ReactNode;
   inputPlaceholder?: string;
   refFunction(): React.RefObject<HTMLButtonElement>;
 }
 
-export const AlertDialogExample = (props: SettingAlertProps) => {
-  const { buttonCallToAction, refFunction, title, inputPlaceholder } = props;
+export const SettingAlertDialog = (props: SettingAlertProps) => {
+  const { title, DialogBody, children, inputPlaceholder, refFunction } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = refFunction();
 
@@ -43,7 +44,7 @@ export const AlertDialogExample = (props: SettingAlertProps) => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              For Safety, Please Type the name of the Chapter.
+              {DialogBody}
               <Input
                 variant="outline"
                 errorBorderColor="crimson"
@@ -57,7 +58,7 @@ export const AlertDialogExample = (props: SettingAlertProps) => {
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              {buttonCallToAction}
+              {children}
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

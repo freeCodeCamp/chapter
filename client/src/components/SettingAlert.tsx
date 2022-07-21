@@ -45,6 +45,7 @@ export const SettingAlertDialog = (props: SettingAlertProps) => {
 
             <AlertDialogBody>
               {DialogBody}
+              {/* Make sure that the Chapter name people see, is the same of what they are expected to input */}
               <Input
                 variant="outline"
                 errorBorderColor="crimson"
@@ -55,7 +56,7 @@ export const SettingAlertDialog = (props: SettingAlertProps) => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose} mr={3}>
                 Cancel
               </Button>
               {children}

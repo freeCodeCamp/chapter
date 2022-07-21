@@ -67,20 +67,21 @@ export const ChapterPage: NextPage = () => {
             </TabPanel>
             <TabPanel>
               <SettingAlertDialog
-                title="hello"
-                DialogBody="Sboon Created something"
+                title="Transfer Ownership"
+                DialogBody="PLease Type Chapter name to transfer its ownership"
                 refFunction={useRef}
-                inputPlaceholder="Sboon was here"
+                inputPlaceholder="Chapter_Name"
               >
-                <Button>Hello</Button>
+                <Button colorScheme="red">Transfer</Button>
               </SettingAlertDialog>
+
               <SettingAlertDialog
-                title="hello"
-                DialogBody="Sboon Created something"
+                title="Delete Chapter"
+                DialogBody="For Deleting Chapter, Please type its name"
                 refFunction={useRef}
-                inputPlaceholder="Sboon was here"
+                inputPlaceholder="Chapter_Name"
               >
-                <Button>Hello</Button>
+                <Button>Delete</Button>
               </SettingAlertDialog>
             </TabPanel>
           </TabPanels>

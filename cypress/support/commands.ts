@@ -277,10 +277,9 @@ const deleteEvent = (eventId: number) => {
       }
     }`,
   };
-  return cy
-    .authedRequest(gqlOptions(eventMutation))
-    .then((response) => response.body.data.deleteEvent.id);
+  return cy.authedRequest(gqlOptions(eventMutation));
 };
+
 Cypress.Commands.add('deleteEvent', deleteEvent);
 
 Cypress.Commands.add('checkBcc', (mail) => {

@@ -1,3 +1,4 @@
+import { expectToBeRejected } from '../../../support/util';
 describe('events dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -131,6 +132,7 @@ describe('events dashboard', () => {
 
     cy.createEvent(1, eventData).then((response) => {
       const eventId = response.body.data.createEvent.id;
+      //expect(eventId).to.equal(5)
       cy.visit(`/dashboard/events/${eventId}/edit`);
       cy.findByRole('combobox', { name: 'Venue' })
         .select(newVenueId)
@@ -209,6 +211,23 @@ describe('events dashboard', () => {
       cy.get(`a[href="${eventHref}"]`)
         .invoke('text')
         .should('contain', titleAddon);
+    });
+  });
+
+  it('only allows owners to delete events', () => {
+    // owner of chapter 1
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+
+    cy.visit('/dashboard/events');
+
+    cy.deleteEvent(1).then(expectToBeRejected);
+    // foo@bar user
+    cy.login();
+    cy.reload();
+
+    cy.deleteEvent(1).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
     });
   });
 

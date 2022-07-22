@@ -216,7 +216,7 @@ describe('events dashboard', () => {
 
   it('only allows owners to delete events', () => {
     // owner of chapter 1
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('CHAPTER_1_OWNER'));
 
     cy.visit('/dashboard/events');
 

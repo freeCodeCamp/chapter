@@ -12,7 +12,8 @@ export const ConfirmPage: NextPage = () => {
         <VStack>
           <Heading>Confirm</Heading>
           <p>Please Type your password to confirm</p>
-          <input type="Password" />
+          <input type="password" />
+          <input type="submit" />
         </VStack>
       </form>
     </Box>

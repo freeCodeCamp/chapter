@@ -30,6 +30,7 @@ To better communicate and more easily build an API and UI, the current contribut
 | _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
 | _organizer_ (not MVP) | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
 | _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
+
 ## Tech Stack
 
 We are using the following tools:

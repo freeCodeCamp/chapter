@@ -52,7 +52,7 @@ export const ChapterPage: NextPage = () => {
                   </Link>
                 </Box>
                 <HStack>
-                  <LinkButton size="sm" href={`${chapterId}/new_event`}>
+                  <LinkButton size="sm" href={`${chapterId}/new-event`}>
                     Add new event
                   </LinkButton>
                   <LinkButton

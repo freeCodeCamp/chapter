@@ -55,6 +55,15 @@ export class EventWithChapter extends Event {
 }
 
 @ObjectType()
+export class PaginatedEventsWithTotal {
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => [EventWithChapter])
+  events: EventWithChapter[];
+}
+
+@ObjectType()
 export class EventWithRelations extends Event {
   @Field(() => Chapter)
   chapter: Chapter;

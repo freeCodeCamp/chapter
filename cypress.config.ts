@@ -12,7 +12,6 @@ export default defineConfig({
     projectId: 're65q6',
     baseUrl: 'http://localhost:3000',
     retries: { runMode: 3, openMode: 3 },
-    supportFile: 'cypress/support/index.js',
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config

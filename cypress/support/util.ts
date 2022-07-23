@@ -7,7 +7,7 @@ export function expectToBeRejected(response) {
   );
 }
 
-export function gqlOptions(body, additionalOptions) {
+export function gqlOptions(body: any, additionalOptions?: any) {
   return {
     method: 'POST',
     url: Cypress.env('GQL_URL'),

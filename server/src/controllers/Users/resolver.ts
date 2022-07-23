@@ -7,7 +7,7 @@ import { Permission } from '../../../../common/permissions';
 
 @Resolver()
 export class UsersResolver {
-  @Authorized(Permission.ViewUsers)
+  @Authorized(Permission.UsersView)
   @Query(() => [UserWithInstanceRole])
   async users(): Promise<UserWithInstanceRole[]> {
     return await prisma.users.findMany({
@@ -24,7 +24,7 @@ export class UsersResolver {
     });
   }
 
-  @Authorized(Permission.ChangeInstanceRole)
+  @Authorized(Permission.UserInstanceRoleChange)
   @Mutation(() => UserWithInstanceRole)
   async changeInstanceUserRole(
     @Arg('roleId', () => Int) roleId: number,

@@ -11,8 +11,6 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-// Make sure this has no animation because people who use it know what it's so there is no need for attention driven animation.
-
 interface SettingAlertProps {
   title?: string;
   DialogBody?: string;
@@ -45,7 +43,6 @@ export const SettingAlertDialog = (props: SettingAlertProps) => {
 
             <AlertDialogBody>
               {DialogBody}
-              {/* Make sure that the Chapter name people see, is the same of what they are expected to input */}
               <Input
                 variant="outline"
                 errorBorderColor="crimson"

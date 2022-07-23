@@ -2,9 +2,6 @@ import { NextPage } from 'next';
 import React from 'react';
 import { Box, VStack, Heading } from '@chakra-ui/react';
 
-// ToDo create confirm mutation
-// import { useLoginMutation } from '../../../generated/graphql';
-
 export const ConfirmPage: NextPage = () => {
   return (
     <Box w="50%" maxW="800px" marginX="auto" mt="10">

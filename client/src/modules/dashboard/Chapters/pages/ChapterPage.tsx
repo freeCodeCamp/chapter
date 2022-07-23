@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import { Button } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
-// uncomment the dialog tomorrow, I am going auto pilot without thinking
 import { SettingAlertDialog } from '../../../../components/SettingAlert';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';

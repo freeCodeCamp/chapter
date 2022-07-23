@@ -1,4 +1,5 @@
 # Welcome to Chapter
+
 [![All Contributors](https://img.shields.io/github/all-contributors/freeCodeCamp/chapter?color=orange&style=flat-square)](#contributors-)
 [![Setup Automated](https://img.shields.io/badge/setup-automated-blue?logo=gitpod)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
@@ -13,58 +14,63 @@ All of an _organization_'s user data will remain under their control.
 Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for **_Chapter_**.
 
 ## Terminology
+
 To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the **_Chapter_** project:
 
-| Term          | Definition      | Example  |
-| ------------- | ------------- | ----- |
-| _instance_      | a web server deployment of the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_. | a Docker container running on a web host |
-| _organization_ | a non-profit with multiple _chapters_ | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
-| _chapter_      | a container for _events_ and _users_  | Women Who Code - New York City |
-| _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
-| _role_ | a named definition of permissions to be attached to _users_ for the purpose of granting authorization | Owner, Adminstrator, Organizer, Member |
-| _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
-| _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
-| _owner_ | the _role_ of a _user_ who can configure the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
-| _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
-| _organizer_ (not MVP) | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
-| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
+| Term                  | Definition                                                                                                                                                                             | Example                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| _instance_            | a web server deployment of the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_.                                                    | a Docker container running on a web host                       |
+| _organization_        | a non-profit with multiple _chapters_                                                                                                                                                  | Women Who Code at the sub-domain: `chapter.womenwhocode.org`   |
+| _chapter_             | a container for _events_ and _users_                                                                                                                                                   | Women Who Code - New York City                                 |
+| _event_               | a meeting with a specific location and time to which _users_ can RSVP                                                                                                                  | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| _role_                | a named definition of permissions to be attached to _users_ for the purpose of granting authorization                                                                                  | Owner, Adminstrator, Organizer, Member                         |
+| _user_                | an authenticated _user_ who is authorized based on their _role(s)_                                                                                                                     | Sally Gold - SallyG@example.com                                |
+| _visitor_             | an non-authenticated web browser session with view-only access to public content                                                                                                       | Anonymous Web Browser Client                                   |
+| _owner_               | the _role_ of a _user_ who can configure the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT                                     |
+| _administrator_       | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_                                                                                      | Women Who Code - European Administrator                        |
+| _organizer_ (not MVP) | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_                                                                                     | Women Who Code - Edinburgh, Local Organizer                    |
+| _member_              | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_                                                                                  | Women Who Code - Edinburgh, Local Member                       |
 
 ## Tech Stack
 
 We are using the following tools:
 
-* [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
-  * [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
-* [Postgres](https://www.postgresql.org) with [Prisma](https://prisma.io/) - for fully type-safe queries
-* [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
-  * [Apollo Client 3](https://www.apollographql.com/docs/react/)
-  * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
-  * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-* [Jest](https://jestjs.io/) - for writing unit tests.
+- [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
+  - [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
+- [Postgres](https://www.postgresql.org) with [Prisma](https://prisma.io/) - for fully type-safe queries
+- [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+  - [Apollo Client 3](https://www.apollographql.com/docs/react/)
+  - [TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  - [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
+  - Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+- [Jest](https://jestjs.io/) - for writing unit tests.
+- [Cypress](https://www.cypress.io/) - to check if specific actions are possible to preform in certain scenarios.
 
 For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
+
 ## User Stories
 
 ### MVP
+
 The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
 ### Post-MVP
+
 We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
 Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 ## UI / UX / Design References
+
 - [Mockups](https://preview.uxpin.com/13c1d07f6dd731123612a8884eb4174459312ac5#/pages/138361235/simulate/sitemap) and earlier [_visitor_ views](https://www.figma.com/proto/q7DikyL3N0c4CUWxHNa97i/Chapter-Prototype?node-id=1%3A2&scaling=scale-down)
 - [User Role Workflows](https://www.figma.com/file/ehgBfxoLKrlSZH0uftD6dA/Chapter-Trial?node-id=0%3A1)
 - [UI / UX Issues](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aopen+is%3Aissue+label%3AUI%2FUX)
 
 ## Contributing
 
-* Please read the [contributing guidelines  and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
+- Please read the [contributing guidelines and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
 
-* [Join our chat](https://discord.gg/QbQd7BpaaH) to get connected and follow announcements.
-
+- [Join our chat](https://discord.gg/QbQd7BpaaH) to get connected and follow announcements.
 
 ## License
 

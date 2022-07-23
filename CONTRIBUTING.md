@@ -413,6 +413,8 @@ In order to understand where to start, it may help to familiarize yourself with 
 The database we use is [PostgreSQL](https://www.postgresql.org/), which we interact with via [Prisma](https://www.prisma.io/).  Prisma maps between our database and our code, providing a fully type-safe way to interact with the database.  The [Express](https://expressjs.com/) server itself uses [Apollo GraphQL server](https://www.apollographql.com/docs/apollo-server/) to handle requests from the client. Apollo needs to know the GraphQL schema and we define that by using [TypeGraphQL](https://typegraphql.com/) since it lets us automate schema generation and uses decorators for a clean syntax.
 
 The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
+
+After you have added new feature, to not lose your sanity while testing multiple possiblites, we recommend using [Cypress](https://www.cypress.io/). It will help you testing different scenarios, created using the data from the schema, and preformed in the client side of the application, while warning you if you didn't receive certain outcome.
 </details>
 
 ## Where to Find the Code

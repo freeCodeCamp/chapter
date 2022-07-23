@@ -14,9 +14,9 @@ export enum ChapterPermission {
 export enum InstancePermission {
   ChapterCreate = 'chapter-create',
   ChapterUserRoleChange = 'chapter-user-role-change',
-  ChangeInstanceRole = 'change-instance-role',
   SponsorsManage = 'sponsors-manage',
-  ViewUsers = 'view-users',
+  UserInstanceRoleChange = 'user-instance-role-change',
+  UsersView = 'users-view',
 }
 
 // Ideally this would be a new enum, but TS does not (to my knowledge) support

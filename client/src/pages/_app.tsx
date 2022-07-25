@@ -86,7 +86,6 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
             clientId={clientId}
             redirectUri={clientURL}
             audience={audience}
-            scope="read:current_user update:current_user_metadata"
           >
             <AuthContextProvider>
               <ConfirmContextProvider>

@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
 
 import { useMeQuery, MeQuery } from '../../../generated/graphql';
+import { useLogin } from 'hooks/useLogin';
 
 interface AuthContextType {
   user?: MeQuery['me'];
 }
-
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 export const AuthContext = createContext<{
   data: AuthContextType;
@@ -29,28 +27,12 @@ export const AuthContextProvider = ({
   const [data, setData] = useState<AuthContextType>({});
   const [loginAttempted, setLoginAttempted] = useState(false);
   const { loading, error, data: meData, refetch } = useMeQuery();
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { isAuthenticated, login } = useLogin();
 
   const tryToLogin = async () => {
-    // TODO: this shouldn't have to know about Auth0. It should be a separate
-    // function that makes the request
-    if (!isAuthenticated) return;
-    setLoginAttempted(true);
-
-    const token = await getAccessTokenSilently();
-
-    const response = await fetch(`${serverUrl}/login`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: 'include',
-    });
-
-    const responseData = await response.json();
-    console.log('tried to login', responseData);
-    if (!loginAttempted) {
-      console.log('refetching');
+    if (isAuthenticated) {
+      setLoginAttempted(true);
+      await login();
       refetch();
     }
   };
@@ -60,8 +42,8 @@ export const AuthContextProvider = ({
       if (meData?.me) {
         setData({ user: meData.me });
       } else if (!loginAttempted) {
-        // TODO: figure out if we need this guard. Is the loginAttempted check in tryToLogin enough?
-        // can we get away with only using isAuthenticated?
+        // TODO: figure out if we need this guard. Can we get away with only
+        // using isAuthenticated?
         tryToLogin();
       }
     }

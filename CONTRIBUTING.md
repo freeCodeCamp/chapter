@@ -414,7 +414,7 @@ The database we use is [PostgreSQL](https://www.postgresql.org/), which we inter
 
 The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
 
-After you have added new feature, to not lose your sanity while testing multiple possiblites, we recommend using [Cypress](https://www.cypress.io/). It will help you testing different scenarios, created using the data from the schema, and preformed in the client side of the application, while warning you if you didn't receive certain outcome.
+After you have added new feature, to make sure it stays working, we recommend using [Cypress](https://www.cypress.io/). It will automatically test different scenarios starting in the client side of the application, communicating with the server, and warning you if you something unexpected happens.
 </details>
 
 ## Where to Find the Code

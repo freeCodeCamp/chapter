@@ -79,10 +79,9 @@ export const events = (req: Request, _res: Response, next: NextFunction) => {
 export const user = (req: Request, _res: Response, next: NextFunction) => {
   const id = req.session?.id;
 
-  // user is not logged in, so we don't need to
-  if (!id) {
-    return next();
-  }
+  // user is not logged in, so we will not be adding user to the request and can
+  // move on
+  if (!id) return next();
 
   // While we can't make a findUnique call here (sessions.id is not in users),
   // there is a 1-1 relationship between user and session. So, if a session

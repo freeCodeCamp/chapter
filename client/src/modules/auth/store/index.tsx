@@ -29,12 +29,14 @@ export const AuthContextProvider = ({
   const [data, setData] = useState<AuthContextType>({});
   const [loginAttempted, setLoginAttempted] = useState(false);
   const results = useMeQuery();
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   const tryToLogin = async () => {
-    setLoginAttempted(true);
     // TODO: this shouldn't have to know about Auth0. It should be a separate
     // function that makes the request
+    if (!isAuthenticated) return;
+    setLoginAttempted(true);
+
     const token = await getAccessTokenSilently();
 
     const response = await fetch(`${serverUrl}/login`, {
@@ -62,7 +64,13 @@ export const AuthContextProvider = ({
         tryToLogin();
       }
     }
-  }, [results.loading, results.error, results.data, loginAttempted]);
+  }, [
+    results.loading,
+    results.error,
+    results.data,
+    loginAttempted,
+    isAuthenticated,
+  ]);
 
   return (
     <AuthContext.Provider value={{ data, setData }}>

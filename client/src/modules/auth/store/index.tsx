@@ -28,7 +28,7 @@ export const AuthContextProvider = ({
 }) => {
   const [data, setData] = useState<AuthContextType>({});
   const [loginAttempted, setLoginAttempted] = useState(false);
-  const results = useMeQuery();
+  const { loading, error, data: meData, refetch } = useMeQuery();
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   const tryToLogin = async () => {
@@ -51,26 +51,21 @@ export const AuthContextProvider = ({
     console.log('tried to login', responseData);
     if (!loginAttempted) {
       console.log('refetching');
-      results.refetch();
+      refetch();
     }
   };
 
   useEffect(() => {
-    if (!results.loading && !results.error) {
-      if (results.data?.me) {
-        setData({ user: results.data.me });
+    if (!loading && !error) {
+      if (meData?.me) {
+        setData({ user: meData.me });
       } else if (!loginAttempted) {
         // TODO: figure out if we need this guard. Is the loginAttempted check in tryToLogin enough?
+        // can we get away with only using isAuthenticated?
         tryToLogin();
       }
     }
-  }, [
-    results.loading,
-    results.error,
-    results.data,
-    loginAttempted,
-    isAuthenticated,
-  ]);
+  }, [loading, error, meData, loginAttempted, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ data, setData }}>

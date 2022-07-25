@@ -7,76 +7,12 @@ import {
   GridItem,
   Button,
   useToast,
-  Box,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
 
 import { ChapterCard } from 'components/ChapterCard';
 import { EventCard } from 'components/EventCard';
 import { useHomeQuery } from 'generated/graphql';
-
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
-
-const Profile = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  // TODO: If the user reloads the page this fails on Brave, because it cannot
-  // store the necessary cookies. We might be able to work around this with
-  // refresh tokens.
-
-  const [message, setMessage] = useState('');
-
-  const login = async () => {
-    try {
-      const token = await getAccessTokenSilently();
-
-      const response = await fetch(`${serverUrl}/login`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: 'include',
-      });
-
-      const responseData = await response.json();
-
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage((error as Error).message);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      const response = await fetch(`${serverUrl}/logout`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      console.log(response);
-
-      const responseData = await response.json();
-
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage((error as Error).message);
-    }
-  };
-
-  if (!isAuthenticated) return null;
-  if (!user) return <> User Not Found</>;
-
-  return (
-    <div>
-      <img src={user.picture} alt={user.name} />
-      <h2>{user.name}</h2>
-      <p>{user.email}</p>
-      <h3>User Metadata</h3>
-      <Button onClick={login}>LOGIN</Button>
-      <Button onClick={logout}>LOGOUT</Button>
-      <Box>message received: {message}</Box>
-    </div>
-  );
-};
 
 const Home = () => {
   const [hasMore, setHasMore] = useState(true);
@@ -128,7 +64,6 @@ const Home = () => {
           )}
         </VStack>
       </GridItem>
-      <Profile />
       <GridItem colSpan={{ base: 3, md: 1 }}>
         <VStack align="flex-start">
           <Heading>Chapters</Heading>

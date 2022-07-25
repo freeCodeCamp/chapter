@@ -250,10 +250,11 @@
          <column autoUpdated="false" defaultValue="false" digits="0" id="12" name="invite_only" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="image_url" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="venue_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="events_venue_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
+            <parent column="id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
+            <parent column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="events_pkey" unique="true">
@@ -394,7 +395,7 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('venues_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
-            <child column="venue_id" foreignKey="events_venue_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="events"/>
+            <child column="venue_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="events"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="street_address" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
@@ -405,6 +406,7 @@
          <column autoUpdated="false" defaultValue="null" digits="17" id="9" name="latitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
          <column autoUpdated="false" defaultValue="null" digits="17" id="10" name="longitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="events"/>
             <parent column="id" foreignKey="venues_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>

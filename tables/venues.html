@@ -146,8 +146,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="events.venue_id references venues.id via events_venue_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.venue_id</span></td>
-                                                <td class="constraint detail">events_venue_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="events.[venue_id, chapter_id] references venues.[id, chapter_id] via events_venue_id_chapter_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.venue_id</span></td>
+                                                <td class="constraint detail">events_venue_id_chapter_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -302,6 +302,10 @@
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="events.[venue_id, chapter_id] references venues.[id, chapter_id] via events_venue_id_chapter_id_fkey"><a href='events.html'>events</a><span class='relatedKey'>.chapter_id</span></td>
+                                                <td class="constraint detail">events_venue_id_chapter_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>

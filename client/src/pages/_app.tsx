@@ -61,9 +61,12 @@ const client = new ApolloClient({
 });
 
 const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
+  // TODO: create a module to handle environment variables
   const domain = process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string;
-  const cliendId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
+  const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
+  const clientURL = process.env.NEXT_PUBLIC_CLIENT_URL as string;
+
   return (
     <>
       <Head>
@@ -77,11 +80,11 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
       <ApolloProvider client={client}>
         <ChakraProvider>
           {/* TODO: Can we conditionally use window.location.origin for the redirectUri if
-           we're in the browser? */}
+           we're in the browser? Or should we require site maintainers to supply it? */}
           <Auth0Provider
             domain={domain}
-            clientId={cliendId}
-            redirectUri="http://localhost:3000"
+            clientId={clientId}
+            redirectUri={clientURL}
             audience={audience}
             scope="read:current_user update:current_user_metadata"
           >

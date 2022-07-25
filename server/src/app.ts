@@ -4,7 +4,7 @@ import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 import express, { Express, Response } from 'express';
-import fetch from 'node-fetch';
+
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 
@@ -19,6 +19,8 @@ import {
 } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
+import { getBearerToken } from './util/sessions';
+import { fetchUserInfo } from './util/auth0';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -49,20 +51,13 @@ export const main = async (app: Express) => {
     // TODO: handle situations where a user is logged in previously (and so has
     // an entry in the sessions table), but has since deleted their session
     // cookie.
-    // TODO: put bearer acquisition somewhere sensible
-    const bearerRaw = req.headers.authorization;
-    if (bearerRaw) {
-      const bearerToken = bearerRaw.split(' ')[1];
-      fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-        },
-      })
-        .then(async (userInfoRes) => {
-          const userInfo = await userInfoRes.json();
-          if (!userInfo.email) throw Error('No email found in user info');
-          const user =
-            (await findUser(userInfo)) ?? (await createUser(userInfo));
+    const token = getBearerToken(req);
+    if (token) {
+      const userInfo = fetchUserInfo(token);
+      userInfo
+        .then(async ({ email }) => {
+          if (!email) throw Error('No email found in user info');
+          const user = (await findUser(email)) ?? (await createUser(email));
 
           try {
             const { id } = await prisma.sessions.upsert({
@@ -91,22 +86,22 @@ export const main = async (app: Express) => {
     }
   });
 
-  async function findUser(userInfo: { email: string }) {
+  async function findUser(email: string) {
     return await prisma.users.findUnique({
       where: {
-        email: userInfo.email,
+        email,
       },
     });
   }
 
   // TODO: use the register resolver instead? Or just delete it? Probably
   // delete.
-  async function createUser(userInfo: { email: string }) {
+  async function createUser(email: string) {
     return prisma.users.create({
       data: {
         first_name: 'place', // TODO: userInfo has 'name'. Do we want to bother with first_name + last_name??
         last_name: 'holder',
-        email: userInfo.email,
+        email,
         instance_role: {
           connect: {
             name: 'member',

@@ -14,21 +14,12 @@ interface Props {
   children: React.ReactNode;
   justifyContent?: GridItemProps['justifyContent'];
 }
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
   return <Button onClick={() => loginWithRedirect()}>Log In</Button>;
-};
-
-const LogoutButton = () => {
-  const { logout } = useAuth0();
-
-  return (
-    <Button onClick={() => logout({ returnTo: window.location.origin })}>
-      Log Out
-    </Button>
-  );
 };
 
 const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -50,9 +41,19 @@ export const Header: React.FC = () => {
     setData,
   } = useAuthStore();
 
+  const { logout: logoutAuth0 } = useAuth0();
+
   const logout = () => {
     setData({ user: undefined });
-    localStorage.removeItem('token');
+    // TODO: logging out of auth0 and the server should be handled by the same
+    // module as logging in.
+    // TODO: do we want to logout of auth0? It might not be necessary, but it
+    // depends how we handle automatic login.
+    logoutAuth0();
+    fetch(`${serverUrl}/logout`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
 
     router.push('/');
   };
@@ -84,7 +85,6 @@ export const Header: React.FC = () => {
               Events feed
             </Link>
             <LoginButton />
-            <LogoutButton />
             {user ? (
               <>
                 <Link color="white" href="/dashboard/chapters">

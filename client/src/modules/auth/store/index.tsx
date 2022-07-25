@@ -33,6 +33,8 @@ export const AuthContextProvider = ({
 
   const tryToLogin = async () => {
     setLoginAttempted(true);
+    // TODO: this shouldn't have to know about Auth0. It should be a separate
+    // function that makes the request
     const token = await getAccessTokenSilently();
 
     const response = await fetch(`${serverUrl}/login`, {

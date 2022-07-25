@@ -623,5 +623,5 @@
   "projectOwner": "freeCodeCamp",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": false
 }

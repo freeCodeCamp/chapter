@@ -94,6 +94,8 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
     })
     .then((user) => {
       if (!user) {
+        // if the session user does not exist in the db, the session is invalid
+        req.session = null;
         return next('User not found');
       }
       req.user = user;

@@ -84,7 +84,6 @@ export const Header: React.FC = () => {
             <Link color="white" href="/events">
               Events feed
             </Link>
-            <LoginButton />
             {user ? (
               <>
                 <Link color="white" href="/dashboard/chapters">
@@ -96,9 +95,7 @@ export const Header: React.FC = () => {
                 <Avatar name={`${user.first_name} ${user.last_name}`} />
               </>
             ) : (
-              <Link color="white" href="/auth/login">
-                Login / Register
-              </Link>
+              <LoginButton />
             )}
           </HStack>
         </Item>

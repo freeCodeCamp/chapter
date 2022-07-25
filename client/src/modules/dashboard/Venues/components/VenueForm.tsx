@@ -1,17 +1,26 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, Heading, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
 
-export type VenueFormData = Omit<Venue, 'id' | 'events' | 'chapter_id'>;
+export type VenueFormData = Omit<
+  Venue,
+  'id' | 'events' | 'chapter_id' | 'chapter'
+>;
+
+interface VenueChapter {
+  id: number;
+  name: string;
+}
 
 interface VenueFormProps {
   loading: boolean;
   onSubmit: (data: VenueFormData) => Promise<void>;
   data?: VenueQuery;
   submitText: string;
+  chapter: VenueChapter;
 }
 
 type Fields = {
@@ -90,7 +99,7 @@ const fields: Fields[] = [
 ];
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText } = props;
+  const { loading, onSubmit, data, submitText, chapter } = props;
   const venue = data?.venue;
 
   const defaultValues: VenueFormData = {
@@ -108,36 +117,39 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   });
 
   return (
-    <form
-      aria-label={submitText}
-      onSubmit={handleSubmit(onSubmit)}
-      className={styles.form}
-    >
-      <VStack>
-        {fields.map(({ key, isRequired, label, type, step, max, min }) => (
-          <Input
-            key={key}
-            label={label}
-            {...register(key)}
-            type={type}
-            isRequired={isRequired}
-            step={step ? step : undefined}
-            max={max ? max : undefined}
-            min={min ? min : undefined}
-          />
-        ))}
-        <Button
-          mt="30px"
-          width="100%"
-          variant="solid"
-          colorScheme="blue"
-          type="submit"
-          disabled={loading}
-        >
-          {submitText}
-        </Button>
-      </VStack>
-    </form>
+    <>
+      {chapter && <Heading>{chapter.name}</Heading>}
+      <form
+        aria-label={submitText}
+        onSubmit={handleSubmit(onSubmit)}
+        className={styles.form}
+      >
+        <VStack>
+          {fields.map(({ key, isRequired, label, type, step, max, min }) => (
+            <Input
+              key={key}
+              label={label}
+              {...register(key)}
+              type={type}
+              isRequired={isRequired}
+              step={step ? step : undefined}
+              max={max ? max : undefined}
+              min={min ? min : undefined}
+            />
+          ))}
+          <Button
+            mt="30px"
+            width="100%"
+            variant="solid"
+            colorScheme="blue"
+            type="submit"
+            disabled={loading}
+          >
+            {submitText}
+          </Button>
+        </VStack>
+      </form>
+    </>
   );
 };
 

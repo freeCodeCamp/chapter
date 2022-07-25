@@ -10,12 +10,28 @@ import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
 export class VenueResolver {
   @Query(() => [Venue])
   venues(): Promise<Venue[]> {
-    return prisma.venues.findMany();
+    return prisma.venues.findMany({
+      include: { chapter: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query(() => [Venue])
+  chapterVenues(
+    @Arg('chapterId', () => Int) chapterId: number,
+  ): Promise<Venue[]> {
+    return prisma.venues.findMany({
+      where: { chapter_id: chapterId },
+      orderBy: { name: 'asc' },
+    });
   }
 
   @Query(() => Venue, { nullable: true })
   venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
-    return prisma.venues.findUnique({ where: { id } });
+    return prisma.venues.findUnique({
+      where: { id },
+      include: { chapter: true },
+    });
   }
 
   @Authorized(Permission.VenueCreate)
@@ -30,6 +46,7 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
+      include: { chapter: true },
     });
   }
 

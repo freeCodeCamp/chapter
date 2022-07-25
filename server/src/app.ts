@@ -64,26 +64,23 @@ export const main = async (app: Express) => {
           const user =
             (await findUser(userInfo)) ?? (await createUser(userInfo));
 
-          // TODO: since we're in an async function, we can use await
-          prisma.sessions
-            .upsert({
+          try {
+            const { id } = await prisma.sessions.upsert({
               where: { user_id: user.id },
               create: { user_id: user.id },
               update: { user_id: user.id },
-            })
-            .then((result) => {
-              if (req.session) req.session.id = result.id;
-              res.send({
-                message: 'created session',
-              });
-              next();
-            })
-            .catch((err) => {
-              res.status(500).send({
-                message: 'error creating session',
-              });
-              next(err);
             });
+            if (req.session) req.session.id = id;
+            res.send({
+              message: 'created session',
+            });
+            next();
+          } catch (err) {
+            res.status(500).send({
+              message: 'error creating session',
+            });
+            next(err);
+          }
         })
         .catch((err) => {
           console.log('Failed to validate user');

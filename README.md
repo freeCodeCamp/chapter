@@ -161,6 +161,9 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
     <td align="center"><a href="http://c-ehrlich.dev"><img src="https://avatars.githubusercontent.com/u/8353666?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christopher Ehrlich</b></sub></a><br /><a href="#infra-c-ehrlich" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Tests">⚠️</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Code">💻</a></td>
     <td align="center"><a href="http://gs500coder.blogspot.com"><img src="https://avatars.githubusercontent.com/u/1336862?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Moshe</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=shootermv" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://www.siruxsolutions.com"><img src="https://avatars.githubusercontent.com/u/52594844?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sirasit Thitirattanakorn</b></sub></a><br /><a href="#design-hisnameispum" title="Design">🎨</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->

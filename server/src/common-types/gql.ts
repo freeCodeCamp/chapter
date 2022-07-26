@@ -4,7 +4,7 @@ import type { User, Events } from '../controllers/Auth/middleware';
 
 export interface GQLCtx {
   user?: User;
-  events?: Events;
+  events: Events;
   res: Response;
   req: ExpressRequest;
 }

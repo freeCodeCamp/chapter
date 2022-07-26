@@ -70,7 +70,7 @@ type EventUser = Pick<event_users, 'event_id'> & {
   };
 };
 
-export const chapterTwoUserEvent: EventUser[] = [
+export const chapterTwoEventUser: EventUser[] = [
   {
     event: {
       chapter_id: 2,
@@ -89,7 +89,7 @@ export const chapterTwoUserEvent: EventUser[] = [
   },
 ];
 
-export const chapterOneUserEvent: EventUser[] = [
+export const chapterOneEventUser: EventUser[] = [
   {
     event: {
       chapter_id: 1,

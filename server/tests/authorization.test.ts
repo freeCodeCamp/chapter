@@ -6,10 +6,10 @@ import { authorizationChecker } from '../src/authorization';
 
 import {
   userWithRoleForChapterOne,
-  chapterTwoUserEvent,
+  chapterTwoEventUser,
   userWithRoleForEventOne,
   userWithInstanceRole,
-  chapterOneUserEvent,
+  chapterOneEventUser,
   userBansChapterOne,
   userBansChapterTwo,
 } from './fixtures/users';
@@ -108,7 +108,7 @@ describe('authorizationChecker', () => {
 
     it('should return false if the event is in a chapter for which the user has no role', () => {
       const user = merge(userWithRoleForChapterOne, {
-        user_events: chapterTwoUserEvent,
+        user_events: chapterTwoEventUser,
       });
       const resolverData = merge(baseResolverData, {
         context: { user },
@@ -122,7 +122,7 @@ describe('authorizationChecker', () => {
 
     it('should return true if a user has a chapter role, even if they do not have an event role', () => {
       const user = merge(userWithRoleForChapterOne, {
-        user_events: chapterOneUserEvent,
+        user_events: chapterOneEventUser,
       });
       const resolverData = merge(baseResolverData, {
         context: { user },

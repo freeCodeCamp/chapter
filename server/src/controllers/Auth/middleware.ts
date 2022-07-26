@@ -78,11 +78,7 @@ export const events = (req: Request, _res: Response, next: NextFunction) => {
     });
 };
 
-export const userMiddleware = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
+export const user = (req: Request, _res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return next();

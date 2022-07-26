@@ -9,7 +9,7 @@ import { authorizationChecker } from './authorization';
 import { GQLCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import {
-  userMiddleware,
+  user,
   events,
   handleAuthenticationError,
 } from './controllers/Auth/middleware';
@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 5000;
 
 export const main = async (app: Express) => {
   app.use(cors({ credentials: true, origin: true }));
-  app.use(userMiddleware);
+  app.use(user);
   app.use(events);
   app.use(handleAuthenticationError);
 

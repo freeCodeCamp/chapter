@@ -52,6 +52,9 @@ type Merge<T> = {
 };
 
 export type User = Merge<Prisma.usersGetPayload<typeof userInclude>>;
+export type Events = Merge<
+  Prisma.eventsGetPayload<{ select: { id: true; chapter_id: true } }>[]
+>;
 
 export const userMiddleware = (
   req: Request,

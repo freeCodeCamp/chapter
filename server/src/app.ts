@@ -6,7 +6,7 @@ import express, { Express, Response } from 'express';
 import { buildSchema } from 'type-graphql';
 
 import { authorizationChecker } from './authorization';
-import { GQLCtx, Request } from './common-types/gql';
+import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import {
   user,
@@ -38,7 +38,7 @@ export const main = async (app: Express) => {
   });
   const server = new ApolloServer({
     schema,
-    context: ({ req, res }: { req: Request; res: Response }): GQLCtx => ({
+    context: ({ req, res }: { req: Request; res: Response }): ResolverCtx => ({
       req,
       res,
       user: req.user,

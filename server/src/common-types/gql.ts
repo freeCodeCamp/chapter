@@ -2,7 +2,7 @@ import { Request as ExpressRequest, Response } from 'express';
 
 import type { User, Events } from '../controllers/Auth/middleware';
 
-export interface GQLCtx {
+export interface ResolverCtx {
   user?: User;
   events?: Events;
   res: Response;

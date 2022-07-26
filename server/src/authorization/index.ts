@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
-import { GQLCtx } from '../common-types/gql';
+import { ResolverCtx } from '../common-types/gql';
 import type { Events, User } from '../controllers/Auth/middleware';
 
 // This is a *very* broad type, but unfortunately variableValues is only
@@ -12,10 +12,9 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
  * on a user's role. It cannot affect what is returned by a resolver, it just
  * determines if the resolver is called or not. For fine-grained control, the
  * resolver itself must modify the response based on the user's roles */
-export const authorizationChecker: AuthChecker<GQLCtx | Required<GQLCtx>> = (
-  { context, info: { variableValues } },
-  requiredPermissions,
-): boolean => {
+export const authorizationChecker: AuthChecker<
+  ResolverCtx | Required<ResolverCtx>
+> = ({ context, info: { variableValues } }, requiredPermissions): boolean => {
   if (!hasUserAndEvents(context)) return false;
 
   if (requiredPermissions.length !== 1) return false;
@@ -32,13 +31,13 @@ export const authorizationChecker: AuthChecker<GQLCtx | Required<GQLCtx>> = (
 };
 
 function hasUserAndEvents(
-  ctx: GQLCtx | Required<GQLCtx>,
-): ctx is Required<GQLCtx> {
+  ctx: ResolverCtx | Required<ResolverCtx>,
+): ctx is Required<ResolverCtx> {
   return typeof ctx.user !== 'undefined' && typeof ctx.events !== 'undefined';
 }
 
 function isAllowedByChapterRole(
-  { user, events }: Required<GQLCtx>,
+  { user, events }: Required<ResolverCtx>,
   requiredPermission: string,
   variableValues: VariableValues,
 ): boolean {
@@ -49,7 +48,7 @@ function isAllowedByChapterRole(
 }
 
 function isAllowedByInstanceRole(
-  { user }: Required<GQLCtx>,
+  { user }: Required<ResolverCtx>,
   requiredPermission: string,
 ): boolean {
   const userInstancePermissions = getUserPermissionsForInstance(user);
@@ -75,7 +74,7 @@ function getRelatedChapterId(
 }
 
 function isAllowedByEventRole(
-  { user }: Required<GQLCtx>,
+  { user }: Required<ResolverCtx>,
   requiredPermission: string,
   info: VariableValues,
 ): boolean {
@@ -113,7 +112,7 @@ function getUserPermissionsForEvent(
 }
 
 function isBannedFromChapter(
-  { user, events }: Required<GQLCtx>,
+  { user, events }: Required<ResolverCtx>,
   variableValues: VariableValues,
 ): boolean {
   const chapterId = getRelatedChapterId(events, variableValues);

@@ -6,6 +6,7 @@ import { isProd } from '../../config';
 // exist and be verified against the Auth0 JSON Web Key Set.
 // TODO: test that this fails in production when the keys are missing.
 // or sign a dev JWT and validate that.
+// TODO: separate the dev and prod code.
 export const checkJwt: RequestHandler = isProd()
   ? auth({
       audience: process.env.AUTH0_AUDIENCE,

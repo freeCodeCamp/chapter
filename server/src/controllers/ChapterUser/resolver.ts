@@ -173,16 +173,13 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterUserRoleChange)
   @Mutation(() => ChapterUser)
   async changeChapterUserRole(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('roleId', () => Int) roleId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: GQLCtx,
   ): Promise<ChapterUser> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to change chapter role');
-    }
     return await prisma.chapter_users.update({
       data: { chapter_role: { connect: { id: roleId } } },
       where: {

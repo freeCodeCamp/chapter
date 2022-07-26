@@ -34,6 +34,7 @@ export const VenuePage: NextPage = () => {
           </Heading>
 
           <Text>{getLocationString(data.venue, true)}</Text>
+          <Text>{data.venue.chapter.name}</Text>
         </ProgressCardContent>
       </Card>
       <h3>Placeholder for events...</h3>

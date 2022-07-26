@@ -131,6 +131,7 @@ const getChapterMembers = (chapterId: number) => {
             chapter(id: $chapterId) {
               chapter_users {
                 user {
+                  id
                   name
                   email
                 }
@@ -587,12 +588,45 @@ const toggleChapterSubscription = (
     }`,
   };
   const requestOptions = gqlOptions(chapterUserMutation);
-
   return options.withAuth
     ? cy.authedRequest(requestOptions)
     : cy.request(requestOptions);
 };
 Cypress.Commands.add('toggleChapterSubscription', toggleChapterSubscription);
+
+/**
+ * Change chapter user role using GQL mutation
+ * @param data Data about change
+ * @param data.chapterId Chapter id
+ * @param data.roleId Role id
+ * @param data.userId User id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const changeChapterUserRole = (
+  {
+    chapterId,
+    roleId,
+    userId,
+  }: { chapterId: number; roleId: number; userId: number },
+  options = { withAuth: true },
+) => {
+  const chapterUserRoleMutation = {
+    operationName: 'changeChapterUserRole',
+    variables: { chapterId, roleId, userId },
+    query: `mutation changeChapterUserRole($chapterId: Int!, $roleId: Int!, $userId: Int!) {
+      changeChapterUserRole(chapterId: $chapterId, roleId: $roleId, userId: $userId) {
+        chapter_role {
+          id
+        }
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserRoleMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('changeChapterUserRole', changeChapterUserRole);
 
 /**
  * Join chapter cooresponding to the event using GQL mutation.
@@ -617,12 +651,32 @@ const initUserInterestForChapter = (
 };
 Cypress.Commands.add('initUserInterestForChapter', initUserInterestForChapter);
 
+/**
+ * Get chapter roles using GQL query
+ */
+const getChapterRoles = () => {
+  const chapterRolesQuery = {
+    operationName: 'chapterRoles',
+    query: `query chapterRoles {
+      chapterRoles {
+        id
+        name
+      }
+    }`,
+  };
+  return cy
+    .request(gqlOptions(chapterRolesQuery))
+    .then((response) => response.body.data.chapterRoles);
+};
+Cypress.Commands.add('getChapterRoles', getChapterRoles);
+
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
   namespace Cypress {
     interface Chainable {
       authedRequest: typeof authedRequest;
+      changeChapterUserRole: typeof changeChapterUserRole;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
       createSponsor: typeof createSponsor;
@@ -630,6 +684,7 @@ declare global {
       deleteVenue: typeof deleteVenue;
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
+      getChapterRoles: typeof getChapterRoles;
       getEventUsers: typeof getEventUsers;
       initUserInterestForChapter: typeof initUserInterestForChapter;
       interceptGQL: typeof interceptGQL;

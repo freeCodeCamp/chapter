@@ -1,4 +1,4 @@
-import { Button, Select, Text, UseDisclosureReturn } from '@chakra-ui/react';
+import { Select, Text, UseDisclosureReturn } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -43,7 +43,7 @@ export const RoleChangeModal: React.FC<{
     <Modal
       modalProps={modalProps}
       title={title}
-      buttons={<Button type="submit">Change</Button>}
+      formButtonText="Change"
       wrapChildren={(children) => (
         <form onSubmit={handleSubmit(confirmSubmit)}>{children}</form>
       )}

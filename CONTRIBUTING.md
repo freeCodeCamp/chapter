@@ -14,6 +14,8 @@
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
   - [.env Configuration File](#env-configuration-file)
+    - [Running Locally](#running-locally)
+    - [Running Remotely](#running-remotely)
   - [Database](#database)
     - [Schema](#schema)
     - [Username and Password](#username-and-password)
@@ -24,8 +26,6 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
-      - [Running Migrations and Checking They Were Run](#running-migrations-and-checking-they-were-run)
-- [Running Remotely](#running-remotely)
 - [Troubleshooting](#troubleshooting)
     
 # Contribution Guidelines
@@ -34,7 +34,7 @@ Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://w
 
 We strictly enforce our ["Code of Conduct"](https://www.freecodecamp.org/code-of-conduct), so please take a moment to read the 196 word policy.
 
-[Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected with the project's development team.
+[Join our chat](https://discord.gg/QbQd7BpaaH) to get connected with the project's development team.
 
 # Contributing Code
 
@@ -43,6 +43,8 @@ Consider the following options when you are ready to contribute code.
 * Traditional Dev Environment - the common method of developing on a computer you control.
 
 ## Using GitPod
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
 All [pull requests](https://github.com/freeCodeCamp/chapter/pulls) will have a GitPod link to allow for quickly opening an "ready-to-code" development environment for that specific issue / task. Follow the [GitPod documentation](https://www.gitpod.io/docs) to configure your account, setup an "ephemeral" workspace, and access a running application.
 
@@ -275,37 +277,28 @@ You are almost ready to make changes to files, but before that you should **alwa
 
 <details><summary><b>Step 5</b> - Propose a Pull Request (PR)</summary>
 
-When opening a Pull Request(PR), use the following scope table to decide what to title your PR in the following format:
+1. A yellow message bar should appear on the top of your GitHub fork page (https://github.com/YOUR_USER_NAME/chapter) after you've committed & pushed changes to a branch on your fork. Follow the green _Compare and Pull Request_ button to open a new "Open a pull request" form page.
 
-_fix/feat/chore/refactor/docs/perf (scope): PR Title_
+2. The _main_ branch of the [Chapter project](https://github.com/freeCodeCamp/chapter) should automatically show as being [compared with](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) your proposed changes, like:
+    > [base repository: freeCodeCamp/chapter] [base:main] **<-** [your fork] [your proposed branch]
 
-An example is _feat(client): night mode_.
+3. Write a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title) in the title field. A common pattern you may like to follow is: _**Type**(optional **scope**): With a Thoughtful Title_.
+    > * Example: _feat(client): Send Email on RSVP Confirmation_
+    > * **Type** examples
+    >   * chore: Changes that are not related to code, tests, or docs.
+    >   * docs: Changes to the contributing guidelines, etc.
+    >   * feat: A new feature
+    >   * fix: A bug fix
+    >   * refactor: A code change that neither fixes a bug nor adds a feature
+    >   * test: Changes related to tests
+    > * **(Scope)** examples: api, build, ci, client, db, perf, style, ui 
 
-| Scope | Documentation |
-|---|---|
-| _api_ | For Pull Requests making changes to the APIs, routes and its architecture |
-| _db_ | For Pull Requests making changes related to database |
-| _client_ | For Pull Requests making changes to client platform logic or user interface |
-| _docs_ | For Pull Requests making changes to the project's documentation |
+4. Write a more detailed explaination of the changes in the form's text area.
+    > The text area will automatically include a checklist of items to confirm before submitting the pull request.
 
-1. Once the edits have been committed & pushed, you will be prompted to create a pull request on your fork's GitHub Page. Click on _Compare and Pull Request_.
+    > At the end of your PR's description, you may append a pattern like `Closes #1337` to tell GitHub to automatically close a specific issue number when the PR is accepted and merged.
 
-2. By default, all pull requests should be against the **_Chapter_** main repo, _main_ branch.
-
-3. Submit the pull request from your branch to **_Chapter's_** _main_ branch.
-
-4. In the body of your PR include a more detailed summary of the changes you made and why.
-
-    - You will be presented with a pull request template. This is a checklist that you should have followed before opening the pull request.
-
-    - Fill in the details as they seem fit to you. This information will be reviewed and a decision will be made whether or not your pull request is going to be accepted.
-
-    - If the PR is meant to fix an existing bug/issue then, at the end of
-      your PR's description, append the keyword _closes_ and #xxxx (where xxxx
-      is the issue number). Example: _closes #1337_. This tells GitHub to
-      automatically close the existing issue, if the PR is accepted and merged.
-
-You have successfully created a PR. Congratulations! :tada:
+Submit the form and you have successfully created a PR. Congratulations! :tada:
 </details>
 
 # Running the Application
@@ -344,8 +337,10 @@ See [Running Remotely](#running-remotely) if you are using a remote server.
 ## Docker Mode
 
 **Prerequisite**: [Docker](https://docs.docker.com/get-docker/) must exist on your system:
-* Windows - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
-    > Note: Close and re-open your terminal after the installation finishes.
+* Windows & WSL - [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+    > * _Docker Desktop_ **must** be installed even when running WSL2 (Windows Subsystem Linux)
+    > * Close and re-open your terminal after the installation finishes.
+    > * Do not use Powershell or Git Bash to run commands. Rather, use a Linux / Ubuntu shell as noted above in "Using a Traditional Dev Environment > Step 2 - Prepare the Terminal and Git Environment".
 * Mac - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
 * Linux
     * [Docker Engine](https://docs.docker.com/engine/install/#server)
@@ -394,7 +389,19 @@ Once the app has started you should be able to pull up these URLs in your web br
 * GraphQL Playground - http://localhost:5000/graphql
 * MailHog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface 
 
-Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog) 
+Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog)
+</details>
+
+<details><summary><b>Step 5</b> - Log In As Different Users</summary>
+
+The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses:
+
+- `foo@bar.com` (an _owner_ with full permissions)
+- `admin@of.a.chapter` (an _administrator_ of chapter 1)
+- The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`
+
+In development the login link will appear in the server logs and the email that Mailhog intercepts.
+
 </details>
 
 # Adding a New Feature
@@ -406,6 +413,8 @@ In order to understand where to start, it may help to familiarize yourself with 
 The database we use is [PostgreSQL](https://www.postgresql.org/), which we interact with via [Prisma](https://www.prisma.io/).  Prisma maps between our database and our code, providing a fully type-safe way to interact with the database.  The [Express](https://expressjs.com/) server itself uses [Apollo GraphQL server](https://www.apollographql.com/docs/apollo-server/) to handle requests from the client. Apollo needs to know the GraphQL schema and we define that by using [TypeGraphQL](https://typegraphql.com/) since it lets us automate schema generation and uses decorators for a clean syntax.
 
 The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
+
+After you have added new feature, to make sure it stays working, we recommend using [Cypress](https://www.cypress.io/). It will automatically test different scenarios starting in the client side of the application, communicating with the server, and warning you if something unexpected happens.
 </details>
 
 ## Where to Find the Code
@@ -428,7 +437,7 @@ The Chapter client uses the React framework [Next.js](https://nextjs.org/) with 
 
 We are in the early stages of development on this new application, but we value any contributions and insights.  In order to prevent duplication, please browse and search our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list and [existing issues](https://github.com/freeCodeCamp/chapter/issues).
   
-Please [join our chat](https://chat.freecodecamp.org/channel/chapter) to stay in the loop.
+Please [join our chat](https://discord.gg/QbQd7BpaaH) to stay in the loop.
 </details>
 
 <details><summary>I found a typo. Should I report an issue before I can make a pull request?</summary>
@@ -440,7 +449,7 @@ For typos and other wording changes, you can directly open pull requests without
 
 Please read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
 
-Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://chat.freecodecamp.org/channel/chapter). Please be polite and patient and our community members will be glad to guide you to next steps.
+Feel free to ask us questions on our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list or [join our chat](https://discord.gg/QbQd7BpaaH). Please be polite and patient and our community members will be glad to guide you to next steps.
 
 When in doubt, you can reach out to current lead(s):
 
@@ -493,6 +502,8 @@ The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the pag
 
 ## .env Configuration File
 
+### Running Locally
+
 An important, local _.env_ configuration file exists in the root code directory. It's used to store [environment variables](https://en.wikipedia.org/wiki/Environment_variable) and their associated values.
 
 Any changes to _.env_ **will not and should not** be committed into your _origin_ fork or the _Chapter_ _upstream_. Plus, a _.gitignore_ rule exists to prevent it. Do not remove this rule or otherwise attempt to commit your _.env_ to any Git repository.
@@ -504,6 +515,10 @@ The _.env_ file is automatically created via the [**Running the Application**](#
 This configuration pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) and is also popular in other frameworks and programming languages.
 
 The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
+
+### Running Remotely
+
+When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 ## Database
 
@@ -557,13 +572,11 @@ The _prisma.schema_ file is the single source of truth for the database schema.
 
 #### Creating a Migration
 
-The database is currently undergoing a re-write and we are using `prisma db push` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
-
-# Running Remotely
-
-When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
+The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
 
 # Troubleshooting
+
+If your problem isn't resolved in the sections below, then visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 
 <details>
  <summary>Application Troubleshooting</summary>
@@ -582,8 +595,6 @@ When not running locally, the client needs to be passed the server's location by
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
-
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -598,8 +609,6 @@ When not running locally, the client needs to be passed the server's location by
   > "WARNING: Error loading config file: /home/user/.docker/config.json "  </br>
 
   **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).
-
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -621,8 +630,6 @@ When not running locally, the client needs to be passed the server's location by
    > npx /bin/sh^M bad interpreter: No such file or directory </br>
 
   **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
-
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -632,8 +639,6 @@ When not running locally, the client needs to be passed the server's location by
    > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
 
   **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
-
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -652,8 +657,6 @@ When not running locally, the client needs to be passed the server's location by
 * **Note:** To shut down Docker on Linux, press Ctrl + C in the terminal where it was started.
 
 * **Note:** To purge old images, which can sometimes be the source of errors, run `docker-compose rm && docker image prune -a`
-
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
@@ -670,12 +673,10 @@ When not running locally, the client needs to be passed the server's location by
    > WslRegisterDistribution failed with error: 0x80070057</br>
 
   **Solution:** this is common on older CPUs which does not support Virtulization, HyperV or SLAT - Solution: Open Powershell and change back to WSL 1 using `wsl --set-default-version 1`
-
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
 </details>
 
 <details>
- <summary>Windows Docker Troubleshooting</summary>
+ <summary>Windows / WSL + Docker Troubleshooting</summary>
 
 * **Problem:** You are getting this error
    > Docker Desktop requires Windows 10 Pro/Enterprise (######+) or Windows 10 Home (#####.####+)</br>
@@ -696,6 +697,9 @@ When not running locally, the client needs to be passed the server's location by
 
   **Solution:**  Allow Access.
 
+* **Problem:** You are getting either of these errors:
+   > * The Docker Compose file './docker-compose.yml' is invalid because: Unsupported config option for services.app: 'platform'
+   > * Error while fetching server API version: ('Connection aborted.', FileNotFoundError(2, 'No such file or directory'))
 
-  If your problem isn't included above. Visit our [chat](https://chat.freecodecamp.org/channel/chapter) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
+  **Solution:**  _Docker Desktop for Windows_ must be installed on the host Windows operating system.
 </details>

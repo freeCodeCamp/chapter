@@ -3,10 +3,11 @@ import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { prisma } from '../../prisma';
 
 import { UserWithInstanceRole } from '../../graphql-types';
+import { Permission } from '../../../../common/permissions';
 
 @Resolver()
 export class UsersResolver {
-  @Authorized('view-users')
+  @Authorized(Permission.UsersView)
   @Query(() => [UserWithInstanceRole])
   async users(): Promise<UserWithInstanceRole[]> {
     return await prisma.users.findMany({
@@ -23,7 +24,7 @@ export class UsersResolver {
     });
   }
 
-  @Authorized('change-instance-role')
+  @Authorized(Permission.UserInstanceRoleChange)
   @Mutation(() => UserWithInstanceRole)
   async changeInstanceUserRole(
     @Arg('roleId', () => Int) roleId: number,

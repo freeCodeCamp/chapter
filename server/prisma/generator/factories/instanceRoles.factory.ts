@@ -1,28 +1,19 @@
 import { prisma } from '../../../src/prisma';
 
-const instancePermissions = [
-  'chapter-create',
-  'chapter-edit',
-  'change-instance-role',
-  'view-users',
-  'rsvp',
-] as const;
-type Permissions = typeof instancePermissions[number];
+import { Permission } from '../../../../common/permissions';
+
+const allPermissions = Object.values(Permission);
+
 interface InstanceRole {
   name: string;
-  permissions: Permissions[];
+  permissions: typeof allPermissions;
 }
 
 const roles: InstanceRole[] = [
   {
     name: 'owner',
-    permissions: [
-      'chapter-create',
-      'chapter-edit',
-      'change-instance-role',
-      'view-users',
-      'rsvp',
-    ],
+    // the owners should be able to do everything
+    permissions: allPermissions,
   },
   { name: 'member', permissions: [] },
 ];
@@ -44,7 +35,7 @@ const createRole = async ({ name, permissions }: InstanceRole) => {
 
 const createInstanceRoles = async () => {
   await prisma.instance_permissions.createMany({
-    data: instancePermissions.map((permission) => ({ name: permission })),
+    data: allPermissions.map((permission) => ({ name: permission })),
   });
   const createdRoles = await Promise.all(roles.map(createRole));
   return createdRoles.reduce((acc, role) => ({

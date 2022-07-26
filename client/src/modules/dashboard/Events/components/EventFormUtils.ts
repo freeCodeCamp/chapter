@@ -138,7 +138,7 @@ export type IEventData = Pick<
 > & {
   venue_id?: number;
   tags: EventTag[];
-  venue?: Omit<Venue, 'events'> | null;
+  venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
   sponsors: EventSponsorInput[];
 };
 

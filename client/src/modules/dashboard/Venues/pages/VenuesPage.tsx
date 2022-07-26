@@ -16,7 +16,6 @@ export const VenuesPage: NextPage = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Venues</Heading>
-          <LinkButton href="/dashboard/venues/new">Add new</LinkButton>
         </Flex>
         {loading ? (
           <Heading>Loading...</Heading>
@@ -31,19 +30,31 @@ export const VenuesPage: NextPage = () => {
           <DataTable
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             data={data.venues}
-            keys={['name', 'location', 'actions'] as const}
+            keys={['name', 'location', 'chapter', 'actions'] as const}
             mapper={{
               name: (venue) => (
-                <LinkButton href={`/dashboard/venues/${venue.id}`}>
+                <LinkButton
+                  data-cy="view-venue-button"
+                  href={`/dashboard/venues/${venue.id}`}
+                >
                   {venue.name}
                 </LinkButton>
               ),
               location: (venue) => getLocationString(venue),
+              chapter: ({ chapter }) => (
+                <LinkButton
+                  data-cy="view-chapter-button"
+                  href={`/dashboard/chapters/${chapter.id}`}
+                >
+                  {chapter.name}
+                </LinkButton>
+              ),
               actions: (venue) => (
                 <LinkButton
+                  data-cy="edit-venue-button"
                   colorScheme="green"
                   size="xs"
-                  href={`/dashboard/venues/${venue.id}/edit`}
+                  href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
                 >
                   Edit
                 </LinkButton>

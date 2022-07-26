@@ -4,9 +4,9 @@
   "description": "A self-hosted event management tool for nonprofits",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
-    "prepare": "rimraf tsconfig.tsbuildinfo && prisma generate",
+    "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
     "reminders:send": "node ./reminders/reminders.js",
     "reset:users": "node prisma/generator/resetUsers.js"
@@ -30,21 +30,22 @@
     "seed": "node prisma/generator/seed.js"
   },
   "dependencies": {
-    "@prisma/client": "3.15.2",
-    "apollo-server-express": "3.9.0",
-    "calendar-link": "2.1.1",
+    "@prisma/client": "4.1.0",
+    "@sendgrid/mail": "^7.7.0",
+    "apollo-server-express": "3.10.0",
+    "calendar-link": "2.2.0",
     "class-validator": "0.13.2",
     "cors": "2.8.5",
-    "date-fns": "2.28.0",
+    "date-fns": "2.29.1",
     "dotenv": "16.0.1",
     "dotenv-expand": "8.0.3",
-    "express": "4.17.3",
+    "express": "4.18.1",
     "express-response-errors": "1.0.5",
     "graphql": "15.8.0",
     "ical-generator": "3.4.3",
     "is-docker": "2.2.1",
     "jsonwebtoken": "8.5.1",
-    "nodemailer": "6.7.5",
+    "nodemailer": "6.7.7",
     "pg": "8.7.3",
     "reflect-metadata": "0.1.13",
     "type-graphql": "1.1.1"
@@ -53,16 +54,13 @@
     "@types/jsonwebtoken": "8.5.8",
     "@types/lodash": "4.14.182",
     "@types/nodemailer": "6.4.4",
-    "chai": "4.3.6",
-    "concurrently": "7.1.0",
+    "concurrently": "7.3.0",
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",
     "node-dev": "7.4.3",
-    "prisma": "3.15.2",
+    "prisma": "4.1.0",
     "rimraf": "3.0.2",
-    "sinon": "13.0.2",
-    "sinon-chai": "3.7.0",
-    "supertest": "6.2.3",
-    "typescript": "4.6.3"
+    "supertest": "6.2.4",
+    "typescript": "4.7.4"
   }
 }

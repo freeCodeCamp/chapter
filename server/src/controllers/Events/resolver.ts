@@ -20,6 +20,7 @@ import {
 import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
 
+import { Permission } from '../../../../common/permissions';
 import { GQLCtx } from '../../common-types/gql';
 import {
   Event,
@@ -27,19 +28,20 @@ import {
   EventWithRelations,
   EventWithChapter,
   User,
+  PaginatedEventsWithTotal,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import MailerService from '../../services/MailerService';
+import MailerService, { batchSender } from '../../services/MailerService';
 import {
   createReminder,
   deleteEventReminders,
   updateRemindAt,
 } from '../../services/Reminders';
+import {
+  generateToken,
+  UnsubscribeType,
+} from '../../services/UnsubscribeToken';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
-
-//Place holder for unsubscribe
-//TODO: Replace placeholder with actual unsubscribe link
-const unsubscribe = `<br/> <a href='https://www.freecodecamp.org/'> Unsubscribe</a>`;
 
 const getUniqueTags = (tags: string[]) => [
   ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
@@ -48,6 +50,31 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
+
+const getUnsubscribeOptions = ({
+  chapterId,
+  eventId,
+  userId,
+}: {
+  chapterId: number;
+  eventId: number;
+  userId: number;
+}) => {
+  const chapterUnsubscribeToken = generateToken(
+    UnsubscribeType.Chapter,
+    chapterId,
+    userId,
+  );
+  const eventUnsubscribeToken = generateToken(
+    UnsubscribeType.Event,
+    eventId,
+    userId,
+  );
+  return `
+Unsubscribe Options</br>
+- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+};
 
 const sendRsvpInvitation = async (
   user: User,
@@ -61,6 +88,12 @@ const sendRsvpInvitation = async (
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
+  const unsubscribeOptions = getUnsubscribeOptions({
+    chapterId: event.chapter_id,
+    eventId: event.id,
+    userId: user.id,
+  });
+
   await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
@@ -71,7 +104,7 @@ To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${outlook(linkDetails)}>Outlook</a>
 
-${unsubscribe}
+${unsubscribeOptions}
       `,
   }).sendEmail();
 };
@@ -98,14 +131,21 @@ const rsvpNotifyAdministrators = async (
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const administratorsEmails = chapterAdministrators.map(
-    ({ user }) => user.email,
-  );
-  await new MailerService({
-    emailList: administratorsEmails,
-    subject: `New RSVP for ${eventName}`,
-    htmlEmail: `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd. ${unsubscribe}`,
-  }).sendEmail();
+  const subject = `New RSVP for ${eventName}`;
+  const body = `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd.`;
+
+  await batchSender(function* () {
+    for (const { chapter_id, user } of chapterAdministrators) {
+      const email = user.email;
+      const chapterUnsubscribeToken = generateToken(
+        UnsubscribeType.Chapter,
+        chapter_id,
+        user.id,
+      );
+      const text = `${body}<br><a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
+      yield { email, subject, text };
+    }
+  });
 };
 
 type EventRsvpName = events & { event_users: (event_users & { rsvp: rsvp })[] };
@@ -148,6 +188,26 @@ export class EventResolver {
         start_at: 'asc',
       },
     });
+  }
+
+  @Query(() => PaginatedEventsWithTotal)
+  async paginatedEventsWithTotal(
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+    @Arg('offset', () => Int, { nullable: true }) offset?: number,
+  ): Promise<PaginatedEventsWithTotal> {
+    const total = await prisma.events.count();
+    const events = await prisma.events.findMany({
+      include: {
+        chapter: true,
+        tags: { include: { tag: true } },
+      },
+      orderBy: {
+        start_at: 'asc',
+      },
+      take: limit ?? 10,
+      skip: offset,
+    });
+    return { total, events };
   }
 
   @Query(() => [EventWithChapter])
@@ -195,14 +255,14 @@ export class EventResolver {
     });
   }
 
-  @Authorized('rsvp')
+  @Authorized(Permission.Rsvp)
   @Mutation(() => EventUser, { nullable: true })
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<GQLCtx>,
   ): Promise<EventUser | null> {
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
         event_users: {
@@ -237,7 +297,6 @@ export class EventResolver {
           event_id: eventId,
         },
       },
-      rejectOnNotFound: false,
     });
 
     if (oldUserRole) {
@@ -345,6 +404,7 @@ export class EventResolver {
     return userRole;
   }
 
+  @Authorized(Permission.RsvpConfirm)
   @Mutation(() => EventUser)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
@@ -352,15 +412,22 @@ export class EventResolver {
     @Ctx() ctx: GQLCtx,
   ): Promise<EventUser> {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
-    const eventUser = await prisma.event_users.findUnique({
+    const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: true, user: true },
+      include: { event: { include: { chapter: true } }, user: true },
+    });
+
+    const unsubscribeOptions = getUnsubscribeOptions({
+      chapterId: eventUser.event.chapter_id,
+      eventId: eventUser.event_id,
+      userId,
     });
 
     await new MailerService({
       emailList: [eventUser.user.email],
       subject: 'Your RSVP is confirmed',
-      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}`,
+      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}
+${unsubscribeOptions}`,
     }).sendEmail();
 
     return await prisma.event_users.update({
@@ -387,6 +454,7 @@ export class EventResolver {
     });
   }
 
+  @Authorized(Permission.RsvpDelete)
   @Mutation(() => Boolean)
   async deleteRsvp(
     @Arg('eventId', () => Int) eventId: number,
@@ -399,22 +467,23 @@ export class EventResolver {
     return true;
   }
 
+  @Authorized(Permission.EventCreate)
   @Mutation(() => Event)
   async createEvent(
+    @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: CreateEventInputs,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<Event | null> {
-    if (!ctx.user) throw Error('User must be logged in to create events');
     let venue;
     if (data.venue_id) {
       venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
     }
 
-    const chapter = await prisma.chapters.findUnique({
-      where: { id: data.chapter_id },
+    const chapter = await prisma.chapters.findUniqueOrThrow({
+      where: { id: chapterId },
     });
     const userChapter = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === data.chapter_id,
+      ({ chapter_id }) => chapter_id === chapterId,
     );
 
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =
@@ -478,7 +547,7 @@ export class EventResolver {
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
   ): Promise<Event | null> {
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findUniqueOrThrow({
       where: { id },
       include: {
         venue: true,
@@ -570,12 +639,11 @@ export class EventResolver {
       (eventPhysical && data.venue_id !== event.venue_id);
 
     if (isVenueChanged) {
-      const emailList = event.event_users.map(({ user }) => user.email);
       const subject = `Venue changed for event ${event.name}`;
       let venueDetails = '';
 
       if (eventPhysical) {
-        const venue = await prisma.venues.findUnique({
+        const venue = await prisma.venues.findUniqueOrThrow({
           where: { id: data.venue_id },
         });
         // TODO: include a link back to the venue page
@@ -593,13 +661,19 @@ ${venue.postal_code} <br>
       }
       // TODO: include a link back to the venue page
       const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}
-${unsubscribe}`;
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: body,
-      }).sendEmail();
+${venueDetails}`;
+      batchSender(function* () {
+        for (const { user } of event.event_users) {
+          const email = user.email;
+          const unsubScribeOptions = getUnsubscribeOptions({
+            chapterId: event.chapter_id,
+            eventId: event.id,
+            userId: user.id,
+          });
+          const text = `${body}<br>${unsubScribeOptions}`;
+          yield { email, subject, text };
+        }
+      });
     }
 
     return await prisma.events.update({
@@ -663,7 +737,7 @@ ${unsubscribe}`;
     })
     emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
   ): Promise<boolean> {
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findUniqueOrThrow({
       where: { id },
       include: {
         venue: true,
@@ -675,36 +749,39 @@ ${unsubscribe}`;
       },
     });
 
-    const addresses: string[] = [];
-    if (emailGroups.includes('interested')) {
-      const interestedUsers: string[] =
-        event.chapter.chapter_users
-          ?.filter((user) => user.subscribed)
-          .map(({ user }) => user.email) ?? [];
+    interface User {
+      user: { id: number; email: string };
+      subscribed: boolean;
+    }
 
-      addresses.push(...interestedUsers);
+    const users: User[] = [];
+    if (emailGroups.includes('interested')) {
+      const interestedUsers =
+        event.chapter.chapter_users?.filter((user) => user.subscribed) ?? [];
+
+      users.push(...interestedUsers);
     }
 
     if (emailGroups.includes('on_waitlist')) {
-      const waitlistUsers: string[] = event.event_users
-        .filter(({ rsvp }) => rsvp.name === 'waitlist')
-        .map(({ user }) => user.email);
-      addresses.push(...waitlistUsers);
+      const waitlistUsers = event.event_users.filter(
+        ({ rsvp }) => rsvp.name === 'waitlist',
+      );
+      users.push(...waitlistUsers);
     }
     if (emailGroups.includes('confirmed')) {
-      const confirmedUsers: string[] = event.event_users
-        .filter(({ rsvp }) => rsvp.name === 'yes')
-        .map(({ user }) => user.email);
-      addresses.push(...confirmedUsers);
+      const confirmedUsers = event.event_users.filter(
+        ({ rsvp }) => rsvp.name === 'yes',
+      );
+      users.push(...confirmedUsers);
     }
     if (emailGroups.includes('canceled')) {
-      const canceledUsers: string[] = event.event_users
-        .filter(({ rsvp }) => rsvp.name === 'no')
-        .map(({ user }) => user.email);
-      addresses.push(...canceledUsers);
+      const canceledUsers = event.event_users.filter(
+        ({ rsvp }) => rsvp.name === 'no',
+      );
+      users.push(...canceledUsers);
     }
 
-    if (!addresses.length) {
+    if (!users.length) {
       return true;
     }
     const subject = `Invitation to ${event.name}.`;
@@ -718,9 +795,7 @@ ${unsubscribe}`;
       summary: event.name,
       url: eventURL,
     });
-    // TODO: it needs a link to unsubscribe from just this event.  See
-    // https://github.com/freeCodeCamp/chapter/issues/276#issuecomment-596913322
-    // Update the place holder with actual
+
     const body = `When: ${event.start_at} to ${event.ends_at}<br>
 ${event.venue ? `Where: ${event.venue.name}<br>` : ''}
 ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
@@ -734,16 +809,22 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
     ----------------------------<br>
     You received this email because you follow this chapter.<br>
     <br>
-    See the options above to change your notifications.
-    ${unsubscribe}
-    `;
+    See the options above to change your notifications.`;
 
-    await new MailerService({
-      emailList: addresses,
-      subject: subject,
-      htmlEmail: body,
-      iCalEvent: calendar.toString(),
-    }).sendEmail();
+    const iCalEvent = calendar.toString();
+
+    await batchSender(function* () {
+      for (const { user } of users) {
+        const email = user.email;
+        const unsubScribeOptions = getUnsubscribeOptions({
+          chapterId: event.chapter_id,
+          eventId: event.id,
+          userId: user.id,
+        });
+        const text = `${body}<br>${unsubScribeOptions}`;
+        yield { email, subject, text, options: { iCalEvent } };
+      }
+    });
 
     return true;
   }

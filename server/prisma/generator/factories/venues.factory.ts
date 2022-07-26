@@ -5,26 +5,36 @@ import { prisma } from '../../../src/prisma';
 
 const { company, address } = faker;
 
-const createVenues = async (): Promise<number[]> => {
-  const venueIds: number[] = [];
+const createVenues = async (
+  chapterIds: number[],
+): Promise<{ [x: number]: number[] }> => {
+  const chapterIdToVenueIds: {
+    [x: number]: number[];
+  } = chapterIds
+    .map((id) => ({ [id]: [] }))
+    .reduce((acc, curr) => ({ ...acc, ...curr }));
 
-  for (let i = 0; i < 4; i++) {
-    const venueData: Prisma.venuesCreateInput = {
-      name: company.companyName(),
-      city: address.city(),
-      region: address.state(),
-      postal_code: address.zipCode(),
-      country: address.country(),
-      street_address: Math.random() > 0.5 ? address.streetAddress() : undefined,
-    };
+  for (const chapterId of chapterIds) {
+    for (let i = 0; i < 4; i++) {
+      const venueData: Prisma.venuesCreateInput = {
+        name: company.companyName(),
+        city: address.city(),
+        region: address.state(),
+        postal_code: address.zipCode(),
+        country: address.country(),
+        street_address:
+          Math.random() > 0.5 ? address.streetAddress() : undefined,
+        chapter: { connect: { id: chapterId } },
+      };
 
-    // TODO: batch this once createMany returns the records.
-    const venue = await prisma.venues.create({ data: venueData });
+      // TODO: batch this once createMany returns the records.
+      const venue = await prisma.venues.create({ data: venueData });
 
-    venueIds.push(venue.id);
+      chapterIdToVenueIds[chapterId].push(venue.id);
+    }
   }
 
-  return venueIds;
+  return chapterIdToVenueIds;
 };
 
 export default createVenues;

@@ -1,34 +1,48 @@
-import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import React from 'react';
 
+import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
+import { Permission } from '../../../../../../common/permissions';
 
 export const ChaptersPage: NextPage = () => {
-  const { loading, error, data } = useChaptersQuery();
+  const {
+    loading: chapterLoading,
+    error: chapterError,
+    data: chapterData,
+  } = useChaptersQuery();
+
+  const hasPermissionToCreateChapter = useCheckPermission(
+    Permission.ChapterCreate,
+  );
 
   return (
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapters</Heading>
-          <LinkButton href="/dashboard/chapters/new">Add new</LinkButton>
+          {hasPermissionToCreateChapter && (
+            <LinkButton data-cy="new-chapter" href="/dashboard/chapters/new">
+              Add new
+            </LinkButton>
+          )}
         </Flex>
-        {loading ? (
+        {chapterLoading ? (
           <Heading>Loading...</Heading>
-        ) : error || !data?.chapters ? (
+        ) : chapterError || !chapterData?.chapters ? (
           <>
             <Heading>Error</Heading>
             <Text>
-              {error?.name}: {error?.message}
+              {chapterError?.name}: {chapterError?.message}
             </Text>
           </>
         ) : (
           <DataTable
-            data={data.chapters}
+            data={chapterData.chapters}
             keys={['name', 'actions'] as const}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             mapper={{
@@ -38,13 +52,27 @@ export const ChaptersPage: NextPage = () => {
                 </LinkButton>
               ),
               actions: (chapter) => (
-                <LinkButton
-                  colorScheme="green"
-                  size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/edit`}
-                >
-                  Edit
-                </LinkButton>
+                <HStack>
+                  <LinkButton
+                    colorScheme="green"
+                    size="xs"
+                    href={`/dashboard/chapters/${chapter.id}/edit`}
+                  >
+                    Edit
+                  </LinkButton>
+                  <LinkButton
+                    size="xs"
+                    href={`/dashboard/chapters/${chapter.id}/new-event`}
+                  >
+                    Add Event
+                  </LinkButton>
+                  <LinkButton
+                    size="xs"
+                    href={`/dashboard/chapters/${chapter.id}/new-venue`}
+                  >
+                    Add Venue
+                  </LinkButton>
+                </HStack>
               ),
             }}
           />

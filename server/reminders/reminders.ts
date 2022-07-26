@@ -7,6 +7,10 @@ import {
   lockForRetry,
   Reminder,
 } from '../src/services/Reminders';
+import {
+  generateToken,
+  UnsubscribeType,
+} from '../src/services/UnsubscribeToken';
 
 const processingLimitInMinutes = 10;
 const dateFormatter = new Intl.DateTimeFormat('en-us', {
@@ -36,13 +40,25 @@ const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
     }),
   );
 
-const reminderMessage = (
-  event: Reminder['event_user']['event'],
-  user: Reminder['event_user']['user'],
-  date: string,
-  start_time: string,
-  end_time: string,
-) => {
+interface ReminderMessageData {
+  event: Reminder['event_user']['event'];
+  user: Reminder['event_user']['user'];
+  date: string;
+  start_time: string;
+  end_time: string;
+  chapterUnsubscribeToken: string;
+  eventUnsubscribeToken: string;
+}
+
+const reminderMessage = ({
+  event,
+  user,
+  date,
+  start_time,
+  end_time,
+  chapterUnsubscribeToken,
+  eventUnsubscribeToken,
+}: ReminderMessageData) => {
   return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}]) organized by ${event.chapter.name} is happening soon.</br>
 </br>
 Your RSVP Status: {rsvps.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
@@ -58,8 +74,8 @@ Copyright © {current year in YYYY format} {Organization}. All rights reserved.<
 
 
 Unsubscribe Options
-- [Attend this event, but only turn off future notifications for this event](Unsubscribe link, like https://{instance domain name}/rsvp/unsubscribe/{users.id}/{events.id}/{unsigned JWOT token} which will set the appropriate {event_users.subscribed} to false when clicked)
-- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](Unsubscribe link, like https://{instance domain name}/chapter/unsubscribe/{users.id}/{chapter.id}/{unsigned JWOT token} which will set the appropriate {chapter_users.subscribed} to false when clicked)
+- [Attend this event, but only turn off future notifications for this event](${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken})
+- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
 
 [Privacy Policy](link to privacy page)`;
 };
@@ -77,13 +93,26 @@ const getEmailData = (reminder: Reminder) => {
   );
   console.log();
 
-  const email = reminderMessage(
-    reminder.event_user.event,
-    reminder.event_user.user,
-    date,
-    start_time,
-    end_time,
+  const chapterUnsubscribeToken = generateToken(
+    UnsubscribeType.Chapter,
+    reminder.event_user.event.chapter_id,
+    reminder.event_user.user_id,
   );
+  const eventUnsubscribeToken = generateToken(
+    UnsubscribeType.Event,
+    reminder.event_user.event_id,
+    reminder.event_user.user_id,
+  );
+
+  const email = reminderMessage({
+    event: reminder.event_user.event,
+    user: reminder.event_user.user,
+    date: date,
+    start_time: start_time,
+    end_time: end_time,
+    chapterUnsubscribeToken: chapterUnsubscribeToken,
+    eventUnsubscribeToken: eventUnsubscribeToken,
+  });
   const subject = `Upcoming Event Reminder for ${reminder.event_user.event.name}`;
   return { email: email, subject: subject };
 };

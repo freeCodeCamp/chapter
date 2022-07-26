@@ -1,5 +1,7 @@
 # Welcome to Chapter
+
 [![All Contributors](https://img.shields.io/github/all-contributors/freeCodeCamp/chapter?color=orange&style=flat-square)](#contributors-)
+[![Setup Automated](https://img.shields.io/badge/setup-automated-blue?logo=gitpod)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
@@ -12,6 +14,7 @@ All of an _organization_'s user data will remain under their control.
 Our [Vision statement](https://github.com/freeCodeCamp/chapter/wiki/Vision) provides more details on the reasons for **_Chapter_**.
 
 ## Terminology
+
 To better communicate and more easily build an API and UI, the current contributors have decided on a collection of terminology to clarify discussions surrounding the **_Chapter_** project:
 
 | Term          | Definition      | Example  |
@@ -32,40 +35,42 @@ To better communicate and more easily build an API and UI, the current contribut
 
 We are using the following tools:
 
-* [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
-  * [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
-* [Postgres](https://www.postgresql.org) with [Prisma](https://prisma.io/) - for fully type-safe queries
-* [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
-  * [Apollo Client 3](https://www.apollographql.com/docs/react/)
-  * [TypeScript](https://www.typescriptlang.org/index.html#download-links)
-  * [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
-  * Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
-* [chai](https://www.chaijs.com/) - for writing unit tests.
-  * [sinon](https://sinonjs.org/)
-  * [sinon-chai](https://github.com/domenic/sinon-chai)
+- [Node.js](https://nodejs.org) / [Apollo server](https://www.npmjs.com/package/apollo-server-express) - extendable graphql server
+  - [type-graphql](https://github.com/MichalLytek/type-graphql) - code first graphql schema definition library
+- [Postgres](https://www.postgresql.org) with [Prisma](https://prisma.io/) - for fully type-safe queries
+- [Next.js](https://nextjs.org/) - for both client and server-side rendering of the frontend (NextJS is based on [React](https://reactjs.org))
+  - [Apollo Client 3](https://www.apollographql.com/docs/react/)
+  - [TypeScript](https://www.typescriptlang.org/index.html#download-links)
+  - [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
+  - Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
+- [Jest](https://jestjs.io/) - for writing unit tests.
+- [Cypress](https://www.cypress.io/) - to check if specific actions are possible to preform in certain scenarios.
 
 For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
+
 ## User Stories
 
 ### MVP
+
 The [MVP user stories are shown in the MVP Project](https://github.com/freeCodeCamp/chapter/projects/1) kanban / cards and as [issues marked with "MVP"](https://github.com/freeCodeCamp/chapter/labels/MVP).
 
 ### Post-MVP
+
 We are maintaining a list of post-MVP conversations and user stories using the ["Roadmap" tag](https://github.com/freeCodeCamp/chapter/issues?utf8=%E2%9C%93&q=is%3Aopen+or+is%3Aclosed+label%3ARoadmap+).
 
 Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) will start "dogfooding" the MVP with several of its local study groups.
 
 ## UI / UX / Design References
+
 - [Mockups](https://preview.uxpin.com/13c1d07f6dd731123612a8884eb4174459312ac5#/pages/138361235/simulate/sitemap) and earlier [_visitor_ views](https://www.figma.com/proto/q7DikyL3N0c4CUWxHNa97i/Chapter-Prototype?node-id=1%3A2&scaling=scale-down)
 - [User Role Workflows](https://www.figma.com/file/ehgBfxoLKrlSZH0uftD6dA/Chapter-Trial?node-id=0%3A1)
 - [UI / UX Issues](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aopen+is%3Aissue+label%3AUI%2FUX)
 
 ## Contributing
 
-* Please read the [contributing guidelines  and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
+- Please read the [contributing guidelines and steps needed to setup **_Chapter_** locally](CONTRIBUTING.md). We take you from local setup to submitting pull requests.
 
-* [Join our chat](https://chat.freecodecamp.org/channel/chapter) to get connected and follow announcements.
-
+- [Join our chat](https://discord.gg/QbQd7BpaaH) to get connected and follow announcements.
 
 ## License
 
@@ -160,6 +165,10 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
     <td align="center"><a href="https://sboonny.vercel.app/"><img src="https://avatars.githubusercontent.com/u/88248797?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Muhammed Mustafa</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Sboonny" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Nirajn2311"><img src="https://avatars.githubusercontent.com/u/36357875?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Niraj Nandish</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Nirajn2311" title="Code">💻</a></td>
     <td align="center"><a href="http://c-ehrlich.dev"><img src="https://avatars.githubusercontent.com/u/8353666?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christopher Ehrlich</b></sub></a><br /><a href="#infra-c-ehrlich" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Tests">⚠️</a> <a href="https://github.com/freeCodeCamp/chapter/commits?author=c-ehrlich" title="Code">💻</a></td>
+    <td align="center"><a href="http://gs500coder.blogspot.com"><img src="https://avatars.githubusercontent.com/u/1336862?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Moshe</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=shootermv" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.siruxsolutions.com"><img src="https://avatars.githubusercontent.com/u/52594844?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sirasit Thitirattanakorn</b></sub></a><br /><a href="#design-hisnameispum" title="Design">🎨</a></td>
   </tr>
 </table>
 

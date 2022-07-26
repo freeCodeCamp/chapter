@@ -33,9 +33,14 @@ import setupRoles from './setupRoles';
   const sponsorIds = await createSponsors();
 
   const chapterIds = await createChapters(ownerId);
-  const venueIds = await createVenues();
+  const chapterIdToVenueIds = await createVenues(chapterIds);
 
-  const eventIds = await createEvents(chapterIds, venueIds, sponsorIds, 15);
+  const eventIds = await createEvents(
+    chapterIds,
+    chapterIdToVenueIds,
+    sponsorIds,
+    15,
+  );
 
   await createRsvps(eventIds, userIds, eventRoles);
   await setupRoles(

@@ -3,4 +3,7 @@ module.exports = {
     // TODO: the client and server need their own eslint configs
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    externalDir: true,
+  },
 };

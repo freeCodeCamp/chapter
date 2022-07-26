@@ -4,6 +4,7 @@ export const VENUES = gql`
   query venues {
     venues {
       id
+      chapter_id
       name
       street_address
       city
@@ -12,6 +13,10 @@ export const VENUES = gql`
       country
       latitude
       longitude
+      chapter {
+        id
+        name
+      }
     }
   }
 `;
@@ -28,6 +33,10 @@ export const VENUE = gql`
       country
       latitude
       longitude
+      chapter {
+        id
+        name
+      }
     }
   }
 `;

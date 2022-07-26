@@ -598,6 +598,24 @@
         "test",
         "code"
       ]
+    },
+    {
+      "login": "shootermv",
+      "name": "Moshe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1336862?v=4",
+      "profile": "http://gs500coder.blogspot.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hisnameispum",
+      "name": "Sirasit Thitirattanakorn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52594844?v=4",
+      "profile": "https://www.siruxsolutions.com",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -605,5 +623,5 @@
   "projectOwner": "freeCodeCamp",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": false
 }

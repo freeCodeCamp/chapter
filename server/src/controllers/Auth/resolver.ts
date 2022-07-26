@@ -4,7 +4,7 @@ import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 
 import { GQLCtx } from '../../common-types/gql';
 import { getConfig, isDev } from '../../config';
-import { User } from '../../graphql-types';
+import { User, UserWithInstanceRole } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { authTokenService } from '../../services/AuthToken';
 import MailerService from '../../services/MailerService';
@@ -24,22 +24,21 @@ type TokenResponseType = {
 
 @Resolver()
 export class AuthResolver {
-  @Query(() => User, { nullable: true })
-  async me(@Ctx() ctx: GQLCtx): Promise<User | null> {
-    return ctx.user || null;
+  @Query(() => UserWithInstanceRole, { nullable: true })
+  async me(@Ctx() ctx: GQLCtx): Promise<UserWithInstanceRole | null> {
+    return ctx.user ?? null;
   }
 
   @Mutation(() => User)
   async register(@Arg('data') data: RegisterInput): Promise<User> {
     const existingUser = await prisma.users.findUnique({
       where: { email: data.email },
-      rejectOnNotFound: false,
     });
     if (existingUser) {
       throw new Error('EMAIL_IN_USE');
     }
 
-    const instanceMember = await prisma.instance_roles.findUnique({
+    const instanceMember = await prisma.instance_roles.findUniqueOrThrow({
       where: { name: 'member' },
     });
 
@@ -57,20 +56,19 @@ export class AuthResolver {
 
   @Mutation(() => LoginType)
   async login(@Arg('data') data: LoginInput): Promise<LoginType> {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findUniqueOrThrow({
       where: { email: data.email },
-      rejectOnNotFound: () => new Error('USER_NOT_FOUND'),
     });
 
     const { token, code } = authTokenService.generateToken(user.email);
     if (isDev()) {
       console.log(
-        `Code: ${code}\nhttp://localhost:3000/auth/token?token=${token}`,
+        `Code: ${code}\n${process.env.CLIENT_LOCATION}/auth/token?token=${token}`,
       );
       await new MailerService({
         emailList: [data.email],
         subject: 'Login to Chapter',
-        htmlEmail: `<a href=http://localhost:3000/auth/token?token=${token}>Click here to log in to chapter</a>`,
+        htmlEmail: `<a href=${process.env.CLIENT_LOCATION}/auth/token?token=${token}>Click here to log in to chapter</a>`,
       }).sendEmail();
     }
 
@@ -92,8 +90,17 @@ export class AuthResolver {
       throw new Error('Token wrong / missing / expired');
     }
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findUniqueOrThrow({
       where: { email: data.email },
+      include: {
+        instance_role: {
+          include: {
+            instance_role_permissions: {
+              include: { instance_permission: true },
+            },
+          },
+        },
+      },
     });
 
     const authToken = sign({ id: user.id }, getConfig('JWT_SECRET'), {

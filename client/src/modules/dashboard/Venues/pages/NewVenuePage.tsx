@@ -1,18 +1,28 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { Spinner } from '@chakra-ui/react';
 
-import { useCreateVenueMutation } from '../../../../generated/graphql';
+import {
+  useChapterQuery,
+  useCreateVenueMutation,
+} from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
+import { useParam } from 'hooks/useParam';
 
 export const NewVenuePage: NextPage = () => {
+  const chapterId = useParam('id');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [createVenue] = useCreateVenueMutation({
     refetchQueries: [{ query: VENUES }],
+  });
+
+  const { loading: chapterLoading, data: chapterData } = useChapterQuery({
+    variables: { chapterId },
   });
 
   const onSubmit = async (data: VenueFormData) => {
@@ -22,7 +32,7 @@ export const NewVenuePage: NextPage = () => {
       const longitude = parseFloat(String(data.longitude));
 
       const venue = await createVenue({
-        variables: { data: { ...data, latitude, longitude } },
+        variables: { chapterId, data: { ...data, latitude, longitude } },
       });
       if (venue.data) {
         router.replace(`/dashboard/venues/${venue.data.createVenue.id}`);
@@ -36,11 +46,18 @@ export const NewVenuePage: NextPage = () => {
 
   return (
     <Layout>
-      <VenueForm
-        loading={loading}
-        onSubmit={onSubmit}
-        submitText={'Add venue'}
-      />
+      {chapterLoading ? (
+        <Spinner />
+      ) : (
+        chapterData?.chapter && (
+          <VenueForm
+            loading={loading}
+            onSubmit={onSubmit}
+            submitText={'Add venue'}
+            chapter={chapterData.chapter}
+          />
+        )
+      )}
     </Layout>
   );
 };

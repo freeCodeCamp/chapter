@@ -1,5 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { Resolver, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  Arg,
+  Int,
+  Mutation,
+  Ctx,
+  Authorized,
+} from 'type-graphql';
+import { Permission } from '../../../../common/permissions';
 
 import { GQLCtx } from '../../common-types/gql';
 import { Chapter, ChapterWithRelations } from '../../graphql-types';
@@ -39,15 +48,12 @@ export class ChapterResolver {
     });
   }
 
+  @Authorized(Permission.ChapterCreate)
   @Mutation(() => Chapter)
   async createChapter(
     @Arg('data') data: CreateChapterInputs,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: Required<GQLCtx>,
   ): Promise<Chapter> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to create chapters');
-    }
-
     // An instance owner may not want or need to join a chapter they've created
     // so they are not made a member by default.
     const chapterData: Prisma.chaptersCreateInput = {
@@ -58,6 +64,7 @@ export class ChapterResolver {
     return prisma.chapters.create({ data: chapterData });
   }
 
+  @Authorized(Permission.ChapterEdit)
   @Mutation(() => Chapter)
   async updateChapter(
     @Arg('id', () => Int) id: number,

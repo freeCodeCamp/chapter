@@ -50,12 +50,13 @@ export const RegisterPage: NextPage = () => {
         <VStack>
           <Heading>Register</Heading>
 
-          <Input label="First name" {...register('first_name')} />
-          <Input label="Last name" {...register('last_name')} />
+          <Input label="First name" {...register('first_name')} isRequired />
+          <Input label="Last name" {...register('last_name')} isRequired />
           <Input
             label="Email"
             {...register('email')}
             error={errors.email?.message}
+            isRequired
           />
 
           <Button

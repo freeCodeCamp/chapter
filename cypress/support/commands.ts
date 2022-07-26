@@ -46,34 +46,33 @@ const registerViaUI = (firstName: string, lastName: string, email: string) => {
 Cypress.Commands.add('registerViaUI', registerViaUI);
 
 /**
- * Authenticate with JWT token
- * @param token JWT token for authorization. If not provided, Cypress.env.JWT token is used.
+ * Create user session
  */
-const login = (token?: string) => {
-  const authData = {
-    operationName: 'authenticate',
-    variables: {
-      token: token ?? Cypress.env('JWT'),
+const login = () => {
+  return cy.request({
+    url: Cypress.env('SERVER_URL') + '/login',
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer dummy-token`,
     },
-    query: `mutation authenticate($token: String!) {
-        authenticate(token: $token) {
-          token
-          user {
-            id
-            first_name
-            last_name
-          }
-        }
-      }`,
-  };
-  cy.request(gqlOptions(authData)).then((response) => {
-    expect(response.body.data.authenticate).to.have.property('token');
-    // TODO: change this to set a cookie when Token.tsx is updated.
-    window.localStorage.setItem('token', response.body.data.authenticate.token);
-    expect(response.status).to.eq(200);
   });
 };
 Cypress.Commands.add('login', login);
+
+/**
+ * Change the current development user
+ * @param email Email of the new user
+ */
+
+const changeUser = (email?: string) => {
+  // Currently changing users modifies the dev-data.json file and that file
+  // needs _not_ to be watched by node-dev. If we change how we store dev users
+  // that can be watched again.
+  return email
+    ? cy.exec(`npm run change-user -- ${email} `)
+    : cy.exec('npm run change-user:owner');
+};
+Cypress.Commands.add('changeUser', changeUser);
 
 const logout = () => {
   window.localStorage.removeItem('token');
@@ -672,6 +671,7 @@ declare global {
     interface Chainable {
       authedRequest: typeof authedRequest;
       changeChapterUserRole: typeof changeChapterUserRole;
+      changeUser: typeof changeUser;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
       createSponsor: typeof createSponsor;

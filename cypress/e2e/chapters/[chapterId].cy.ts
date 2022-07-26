@@ -8,9 +8,9 @@ describe('chapter page', () => {
   });
 
   it('user can join chapter and change subscription status', () => {
-    cy.register('Test', 'User', 'test@user.org');
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.visit(`/chapters/${chapterId}`);
+    cy.changeUser('test@user.org');
+    cy.login();
+    cy.visit('/chapters/${chapterId}');
 
     cy.findByRole('button', { name: 'Join chapter' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();

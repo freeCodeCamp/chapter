@@ -2,7 +2,7 @@ import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
 import { GQLCtx } from '../common-types/gql';
-import type { User } from '../controllers/Auth/middleware';
+import type { Events, User } from '../controllers/Auth/middleware';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -36,11 +36,11 @@ function hasUser(ctx: GQLCtx | Required<GQLCtx>): ctx is Required<GQLCtx> {
 }
 
 function isAllowedByChapterRole(
-  { user }: Required<GQLCtx>,
+  { user, events }: Required<GQLCtx>,
   requiredPermission: string,
   variableValues: VariableValues,
 ): boolean {
-  const chapterId = getRelatedChapterId(user, variableValues);
+  const chapterId = getRelatedChapterId(events, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
   return hasNecessaryPermission(requiredPermission, userChapterPermissions);
@@ -57,7 +57,7 @@ function isAllowedByInstanceRole(
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
 function getRelatedChapterId(
-  user: User,
+  events: Events,
   variableValues: VariableValues,
 ): number | null {
   const { chapterId, eventId } = variableValues;
@@ -65,10 +65,8 @@ function getRelatedChapterId(
   if (chapterId) return chapterId;
 
   if (eventId) {
-    const userEvent = user.user_events.find(
-      ({ event_id }) => event_id === eventId,
-    );
-    if (userEvent) return userEvent.event.chapter_id;
+    const event = events.find(({ id }) => id === eventId);
+    if (event) return event.chapter_id;
   }
 
   return null;
@@ -111,10 +109,10 @@ function getUserPermissionsForEvent(
 }
 
 function isBannedFromChapter(
-  { user }: Required<GQLCtx>,
+  { user, events }: Required<GQLCtx>,
   variableValues: VariableValues,
 ): boolean {
-  const chapterId = getRelatedChapterId(user, variableValues);
+  const chapterId = getRelatedChapterId(events, variableValues);
   if (chapterId === null) return false;
 
   const bannedFromChapter = user.user_bans?.some(

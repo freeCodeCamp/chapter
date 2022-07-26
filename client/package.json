@@ -29,7 +29,7 @@
   "devDependencies": {
     "@codesee/babel-plugin-instrument": "0.331.0",
     "@codesee/tracker": "0.331.0",
-    "@graphql-codegen/cli": "2.9.1",
+    "@graphql-codegen/cli": "2.10.0",
     "@graphql-codegen/fragment-matcher": "3.3.0",
     "@graphql-codegen/introspection": "2.2.0",
     "@graphql-codegen/typescript": "2.7.2",

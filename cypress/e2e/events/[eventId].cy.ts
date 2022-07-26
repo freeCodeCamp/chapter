@@ -128,7 +128,6 @@ describe('event page', () => {
     cy.logout();
     cy.reload();
 
-    cy.initUserInterestForChapter(rsvpVariables.eventId, { withAuth: false });
     cy.rsvpToEvent(rsvpVariables, { withAuth: false }).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables, { withAuth: false }).then(
       expectToBeRejected,

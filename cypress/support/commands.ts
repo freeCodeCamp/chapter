@@ -629,29 +629,6 @@ const changeChapterUserRole = (
 Cypress.Commands.add('changeChapterUserRole', changeChapterUserRole);
 
 /**
- * Join chapter cooresponding to the event using GQL mutation.
- * @param id Event id
- * @param {object} [options={ withAuth: boolean }] Optional options object.
- */
-const initUserInterestForChapter = (
-  id: number,
-  options = { withAuth: true },
-) => {
-  const chapterUserMutation = {
-    operationName: 'initUserInterestForChapter',
-    variables: { id },
-    query: `mutation initUserInterestForChapter($id: Int!) {
-      initUserInterestForChapter(id: $id)
-    }`,
-  };
-  const requestOptions = gqlOptions(chapterUserMutation);
-  return options.withAuth
-    ? cy.authedRequest(requestOptions)
-    : cy.request(requestOptions);
-};
-Cypress.Commands.add('initUserInterestForChapter', initUserInterestForChapter);
-
-/**
  * Get chapter roles using GQL query
  */
 const getChapterRoles = () => {
@@ -686,7 +663,6 @@ declare global {
       getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;
       getEventUsers: typeof getEventUsers;
-      initUserInterestForChapter: typeof initUserInterestForChapter;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
       login: typeof login;

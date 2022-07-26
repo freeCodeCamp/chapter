@@ -122,12 +122,14 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterJoin)
   @Mutation(() => Boolean)
   async initUserInterestForChapter(
     @Arg('id', () => Int) id: number,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: GQLCtx,
   ): Promise<boolean> {
+    if (!ctx.user) {
+      throw Error('User must be logged in to update role ');
+    }
     const event = await prisma.events.findUnique({
       where: { id },
       include: { chapter: true },

@@ -16,7 +16,7 @@ export const authorizationChecker: AuthChecker<GQLCtx | Required<GQLCtx>> = (
   { context, info: { variableValues } },
   requiredPermissions,
 ): boolean => {
-  if (!hasUser(context)) return false;
+  if (!hasUserAndEvents(context)) return false;
 
   if (requiredPermissions.length !== 1) return false;
   const requiredPermission = requiredPermissions[0];
@@ -31,8 +31,10 @@ export const authorizationChecker: AuthChecker<GQLCtx | Required<GQLCtx>> = (
   return false;
 };
 
-function hasUser(ctx: GQLCtx | Required<GQLCtx>): ctx is Required<GQLCtx> {
-  return 'user' in ctx;
+function hasUserAndEvents(
+  ctx: GQLCtx | Required<GQLCtx>,
+): ctx is Required<GQLCtx> {
+  return 'user' in ctx && 'events' in ctx;
 }
 
 function isAllowedByChapterRole(

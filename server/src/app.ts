@@ -10,6 +10,7 @@ import { GQLCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import {
   userMiddleware,
+  events,
   handleAuthenticationError,
 } from './controllers/Auth/middleware';
 
@@ -28,6 +29,7 @@ const PORT = process.env.PORT || 5000;
 export const main = async (app: Express) => {
   app.use(cors({ credentials: true, origin: true }));
   app.use(userMiddleware);
+  app.use(events);
   app.use(handleAuthenticationError);
 
   const schema = await buildSchema({
@@ -40,6 +42,7 @@ export const main = async (app: Express) => {
       req,
       res,
       user: req.user,
+      events: req.events,
     }),
   });
 

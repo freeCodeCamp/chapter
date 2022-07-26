@@ -20,23 +20,48 @@ const mockRes = {} as Response;
 const mockInfo = { variableValues: {} } as GraphQLResolveInfo;
 
 const baseResolverData = {
-  context: { req: mockReq, res: mockRes, events },
+  context: { req: mockReq, res: mockRes },
   info: mockInfo,
   root: {},
   args: {},
 };
 
+const resolverDataWithEvents = merge(baseResolverData, {
+  context: { events },
+});
+
 describe('authorizationChecker', () => {
   describe('when user is NOT banned', () => {
     it('should return false if there is no user', () => {
-      const result = authorizationChecker(baseResolverData, [
+      const result = authorizationChecker(resolverDataWithEvents, [
         'some-permission',
       ]);
 
       expect(result).toBe(false);
     });
-    it('should return true if a user has an instance role granting permission', () => {
+
+    it('should return false if there is a user, but no events property', () => {
       const resolverData = merge(baseResolverData, {
+        context: { user: userWithInstanceRole },
+      });
+
+      expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
+        false,
+      );
+    });
+
+    it('should return true if the events property exists, but is empty', () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithInstanceRole, events: [] },
+      });
+
+      expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
+        true,
+      );
+    });
+
+    it('should return true if a user has an instance role granting permission', () => {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithInstanceRole },
       });
 
@@ -46,7 +71,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return false if a user does not have an instance role granting permission', () => {
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithInstanceRole },
       });
 
@@ -56,7 +81,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return true if a user has a chapter role granting permission', () => {
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithRoleForChapterOne },
         info: {
           variableValues: { chapterId: 1 },
@@ -69,7 +94,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return true if a user has a chapter role granting permission and the chapter is inferred', () => {
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithRoleForChapterOne },
         info: {
           variableValues: { eventId: 1 },
@@ -82,7 +107,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return false if a user has a role for a chapter but a different chapter is inferred', () => {
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithRoleForChapterOne },
         info: {
           // event 3 is chapter 2
@@ -96,7 +121,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return false if a user only has a chapter role granting permission for another chapter', () => {
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithRoleForChapterOne },
         info: {
           variableValues: { chapterId: 2 },
@@ -109,7 +134,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return true if a user has an event role granting permission', () => {
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithRoleForEventOne },
         info: {
           variableValues: { eventId: 1 },
@@ -122,7 +147,7 @@ describe('authorizationChecker', () => {
     });
 
     it('should return false if a user only has an event role granting permission for another event', () => {
-      const eventTwoUserResolverData = merge(baseResolverData, {
+      const eventTwoUserResolverData = merge(resolverDataWithEvents, {
         context: { user: userWithRoleForEventOne },
         info: {
           variableValues: { eventId: 2 },
@@ -138,7 +163,7 @@ describe('authorizationChecker', () => {
       const user = merge(userWithRoleForChapterOne, {
         user_events: chapterTwoEventUser,
       });
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
         // event 4 is in chapter 3
         info: { variableValues: { eventId: 4 } },
@@ -151,7 +176,7 @@ describe('authorizationChecker', () => {
 
     it('should return true if a user has a chapter role, even if they do not have an event role', () => {
       const user = userWithRoleForChapterOne;
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
         // event 2 is in chapter 1
         info: { variableValues: { eventId: 2 } },
@@ -164,7 +189,7 @@ describe('authorizationChecker', () => {
 
     it('should return false unless the number of required permissions is 1', () => {
       expect.assertions(4);
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user: userWithInstanceRole },
       });
 
@@ -189,7 +214,7 @@ describe('authorizationChecker', () => {
       const user = merge(userWithInstanceRole, {
         user_bans: userBansChapterOne,
       });
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
       });
 
@@ -201,7 +226,7 @@ describe('authorizationChecker', () => {
       const user = merge(userWithRoleForChapterOne, {
         user_bans: userBansChapterOne,
       });
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
         info: {
           variableValues: { chapterId: 1 },
@@ -216,7 +241,7 @@ describe('authorizationChecker', () => {
       const user = merge(userWithRoleForChapterOne, {
         user_bans: userBansChapterTwo,
       });
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
         info: {
           variableValues: { chapterId: 1 },
@@ -231,7 +256,7 @@ describe('authorizationChecker', () => {
       const user = merge(userWithRoleForEventOne, {
         user_bans: userBansChapterOne,
       });
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
         info: {
           variableValues: { eventId: 1 },
@@ -246,7 +271,7 @@ describe('authorizationChecker', () => {
       const user = merge(userWithRoleForEventOne, {
         user_bans: userBansChapterTwo,
       });
-      const resolverData = merge(baseResolverData, {
+      const resolverData = merge(resolverDataWithEvents, {
         context: { user },
         info: {
           variableValues: { eventId: 1 },

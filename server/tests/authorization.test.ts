@@ -9,17 +9,18 @@ import {
   chapterTwoEventUser,
   userWithRoleForEventOne,
   userWithInstanceRole,
-  chapterOneEventUser,
   userBansChapterOne,
   userBansChapterTwo,
 } from './fixtures/users';
+
+import { events } from './fixtures/events';
 
 const mockReq = {} as Request;
 const mockRes = {} as Response;
 const mockInfo = { variableValues: {} } as GraphQLResolveInfo;
 
 const baseResolverData = {
-  context: { req: mockReq, res: mockRes },
+  context: { req: mockReq, res: mockRes, events },
   info: mockInfo,
   root: {},
   args: {},
@@ -64,6 +65,33 @@ describe('authorizationChecker', () => {
 
       expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
         true,
+      );
+    });
+
+    it('should return true if a user has a chapter role granting permission and the chapter is inferred', () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithRoleForChapterOne },
+        info: {
+          variableValues: { eventId: 1 },
+        },
+      });
+
+      expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
+        true,
+      );
+    });
+
+    it('should return false if a user has a role for a chapter but a different chapter is inferred', () => {
+      const resolverData = merge(baseResolverData, {
+        context: { user: userWithRoleForChapterOne },
+        info: {
+          // event 3 is chapter 2
+          variableValues: { eventId: 3 },
+        },
+      });
+
+      expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
+        false,
       );
     });
 
@@ -112,7 +140,8 @@ describe('authorizationChecker', () => {
       });
       const resolverData = merge(baseResolverData, {
         context: { user },
-        info: { variableValues: { eventId: 2 } },
+        // event 4 is in chapter 3
+        info: { variableValues: { eventId: 4 } },
       });
 
       expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
@@ -121,11 +150,10 @@ describe('authorizationChecker', () => {
     });
 
     it('should return true if a user has a chapter role, even if they do not have an event role', () => {
-      const user = merge(userWithRoleForChapterOne, {
-        user_events: chapterOneEventUser,
-      });
+      const user = userWithRoleForChapterOne;
       const resolverData = merge(baseResolverData, {
         context: { user },
+        // event 2 is in chapter 1
         info: { variableValues: { eventId: 2 } },
       });
 

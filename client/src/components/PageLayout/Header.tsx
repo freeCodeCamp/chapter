@@ -9,6 +9,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Input } from '../Form/Input';
+import { useLogin } from 'hooks/useLogin';
 
 interface Props {
   children: React.ReactNode;
@@ -20,6 +21,11 @@ const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
   return <Button onClick={() => loginWithRedirect()}>Log In</Button>;
+};
+
+const DevLoginButton = () => {
+  const { login } = useLogin();
+  return <Button onClick={() => login()}>Log In</Button>;
 };
 
 const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -47,9 +53,9 @@ export const Header: React.FC = () => {
     setData({ user: undefined });
     // TODO: logging out of auth0 and the server should be handled by the same
     // module as logging in.
-    // TODO: do we want to logout of auth0? It might not be necessary, but it
-    // depends how we handle automatic login.
-    logoutAuth0();
+    // TODO: inject the auth functions (logout) into the Header so we can switch
+    // strategies easily.
+    if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'development') logoutAuth0();
     fetch(`${serverUrl}/logout`, {
       method: 'DELETE',
       credentials: 'include',
@@ -94,6 +100,8 @@ export const Header: React.FC = () => {
                 </Button>
                 <Avatar name={`${user.first_name} ${user.last_name}`} />
               </>
+            ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+              <DevLoginButton />
             ) : (
               <LoginButton />
             )}

@@ -20,7 +20,7 @@ const mockRes = {} as Response;
 const mockInfo = { variableValues: {} } as GraphQLResolveInfo;
 
 const baseResolverData = {
-  context: { req: mockReq, res: mockRes },
+  context: { req: mockReq, res: mockRes, user: undefined, events: undefined },
   info: mockInfo,
   root: {},
   args: {},
@@ -32,7 +32,7 @@ const resolverDataWithEvents = merge(baseResolverData, {
 
 describe('authorizationChecker', () => {
   describe('when user is NOT banned', () => {
-    it('should return false if there is no user', () => {
+    it('should return false if user is undefined', () => {
       const result = authorizationChecker(resolverDataWithEvents, [
         'some-permission',
       ]);
@@ -40,7 +40,7 @@ describe('authorizationChecker', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false if there is a user, but no events property', () => {
+    it('should return false if user is defined, but events is not', () => {
       const resolverData = merge(baseResolverData, {
         context: { user: userWithInstanceRole },
       });

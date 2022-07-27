@@ -28,7 +28,7 @@ export const Layout = ({
   const router = useRouter();
   return (
     <>
-      <HStack {...rest} as="nav" my="2">
+      <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
         {links
           .filter(
             ({ requiredPermission }) =>

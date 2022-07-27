@@ -13,13 +13,17 @@ const chapterData = {
 describe('chapters dashboard', () => {
   before(() => {
     cy.exec('npm run db:seed');
+    cy.changeUser();
   });
 
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[aria-current="page"]').should('not.exist');
     cy.get('a[href="/dashboard/chapters"]').click();
-    cy.get('a[aria-current="page"]').should('have.text', 'Chapters');
+    cy.get('[data-cy="chapter-dash-heading"]').should('be.visible');
+    cy.get('[data-cy="dashboard-tabs"]')
+      .find('a[aria-current="page"]')
+      .should('have.text', 'Chapters');
   });
 
   it('should have a table with links to view, create and edit chapters', () => {
@@ -63,7 +67,8 @@ describe('chapters dashboard', () => {
   });
 
   it('only allows owners to create chapters', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
 
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');
@@ -71,8 +76,8 @@ describe('chapters dashboard', () => {
     cy.createChapter(chapterData).then(expectToBeRejected);
 
     // switch to owner account and try to create a chapter
+    cy.changeUser();
     cy.login();
-    cy.reload();
 
     cy.createChapter(chapterData).then((response) => {
       expect(response.status).to.eq(200);

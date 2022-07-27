@@ -26,7 +26,7 @@ export const VenuePage: NextPage = () => {
   }
 
   return (
-    <Layout data-cy="view-venue-page">
+    <Layout dataCy="view-venue-page">
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading as="h2" fontWeight="normal" mb="2">

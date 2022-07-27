@@ -14,6 +14,8 @@ const venueData = {
 describe('venues dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
+    cy.changeUser();
+    cy.login();
   });
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');

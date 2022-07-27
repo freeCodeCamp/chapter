@@ -83,8 +83,6 @@ function isAllowedByEventRole(
 }
 
 function getUserPermissionsForInstance(user: User): string[] {
-  console.log('checking instance permissions');
-  console.log('user', user);
   return user.instance_role.instance_role_permissions.map(
     (x) => x.instance_permission.name,
   );

@@ -39,7 +39,7 @@
     "cypress:coverage:report": "npx nyc report",
     "test": "npx jest --coverage --verbose",
     "test:watch": "npx jest --watchAll",
-    "postinstall": "node scripts/postInstall.js",
+    "postinstall": "node scripts/postInstall.js && npm run change-user:owner",
     "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
     "lint-and-test": "npm run lint && npm run test",
     "lint:fix": "eslint './**/*.{ts,tsx,js,jsx}' --fix",

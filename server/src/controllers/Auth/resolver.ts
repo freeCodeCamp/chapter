@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { verify, sign } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation, Query, Ctx } from 'type-graphql';
 
-import { GQLCtx } from '../../common-types/gql';
+import { ResolverCtx } from '../../common-types/gql';
 import { getConfig, isDev } from '../../config';
 import { User, UserWithInstanceRole } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -25,7 +25,7 @@ type TokenResponseType = {
 @Resolver()
 export class AuthResolver {
   @Query(() => UserWithInstanceRole, { nullable: true })
-  async me(@Ctx() ctx: GQLCtx): Promise<UserWithInstanceRole | null> {
+  async me(@Ctx() ctx: ResolverCtx): Promise<UserWithInstanceRole | null> {
     return ctx.user ?? null;
   }
 

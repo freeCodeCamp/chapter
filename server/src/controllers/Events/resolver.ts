@@ -21,7 +21,7 @@ import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
 
 import { Permission } from '../../../../common/permissions';
-import { GQLCtx } from '../../common-types/gql';
+import { ResolverCtx } from '../../common-types/gql';
 import {
   Event,
   EventUser,
@@ -260,7 +260,7 @@ export class EventResolver {
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUser | null> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
@@ -409,7 +409,7 @@ export class EventResolver {
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: ResolverCtx,
   ): Promise<EventUser> {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const eventUser = await prisma.event_users.findUniqueOrThrow({
@@ -472,7 +472,7 @@ ${unsubscribeOptions}`,
   async createEvent(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: CreateEventInputs,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
     let venue;
     if (data.venue_id) {

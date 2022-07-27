@@ -10,7 +10,7 @@ import {
 } from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
 
-import { GQLCtx } from '../../common-types/gql';
+import { ResolverCtx } from '../../common-types/gql';
 import { Chapter, ChapterWithRelations } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
@@ -52,7 +52,7 @@ export class ChapterResolver {
   @Mutation(() => Chapter)
   async createChapter(
     @Arg('data') data: CreateChapterInputs,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
     // An instance owner may not want or need to join a chapter they've created
     // so they are not made a member by default.

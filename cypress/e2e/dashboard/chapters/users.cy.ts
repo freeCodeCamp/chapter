@@ -10,6 +10,7 @@ const knownEmails = [
 describe('Chapter Users dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
+    cy.changeUser();
     cy.login();
   });
   it('should have a table of users', () => {
@@ -60,7 +61,8 @@ describe('Chapter Users dashboard', () => {
   });
 
   it('rejects chapter admin from changing chapter user role', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
 
     cy.getChapterMembers(chapterId).then((chapterUsers) => {
       const userId = chapterUsers.find(
@@ -141,7 +143,8 @@ describe('Chapter Users dashboard', () => {
   }
 
   it('an admin cannot ban themselves', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
@@ -158,7 +161,8 @@ describe('Chapter Users dashboard', () => {
   });
 
   it('an admin cannot unban themselves', () => {
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
+    cy.changeUser('banned@chapter.admin');
+    cy.login();
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();

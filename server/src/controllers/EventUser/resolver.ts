@@ -5,7 +5,7 @@ import { sub } from 'date-fns';
 import { prisma } from '../../prisma';
 
 import { EventUser } from '../../graphql-types/EventUser';
-import { GQLCtx } from '../../common-types/gql';
+import { ResolverCtx } from '../../common-types/gql';
 import { Permission } from '../../../../common/permissions';
 
 @Resolver()
@@ -14,7 +14,7 @@ export class EventUserResolver {
   @Mutation(() => EventUser)
   async subscribeToEvent(
     @Arg('eventId', () => Int) eventId: number,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUser> {
     const whereCondition = {
       user_id_event_id: { event_id: eventId, user_id: ctx.user.id },
@@ -53,7 +53,7 @@ export class EventUserResolver {
   @Mutation(() => EventUser)
   async unsubscribeFromEvent(
     @Arg('eventId', () => Int) eventId: number,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUser> {
     const whereCondition = {
       user_id_event_id: { event_id: eventId, user_id: ctx.user.id },

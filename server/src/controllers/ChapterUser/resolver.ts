@@ -10,7 +10,7 @@ import {
   Resolver,
 } from 'type-graphql';
 
-import { GQLCtx } from '../../common-types/gql';
+import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
@@ -22,7 +22,7 @@ export class ChapterUserResolver {
   @Query(() => ChapterUser)
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: ResolverCtx,
   ): Promise<ChapterUser | null> {
     if (!ctx.user) {
       return null;
@@ -47,7 +47,7 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUser)
   async joinChapter(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
     return await prisma.chapter_users.create({
       data: {
@@ -72,7 +72,7 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUser)
   async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: Required<GQLCtx>,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
     const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
       where: {
@@ -125,7 +125,7 @@ export class ChapterUserResolver {
   @Mutation(() => Boolean)
   async initUserInterestForChapter(
     @Arg('id', () => Int) id: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: ResolverCtx,
   ): Promise<boolean> {
     if (!ctx.user) {
       throw Error('User must be logged in to update role ');
@@ -205,7 +205,7 @@ export class ChapterUserResolver {
   async banUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: ResolverCtx,
   ): Promise<UserBan> {
     if (!ctx.user) {
       throw Error('User must be logged to ban');
@@ -227,7 +227,7 @@ export class ChapterUserResolver {
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: GQLCtx,
+    @Ctx() ctx: ResolverCtx,
   ): Promise<UserBan> {
     if (!ctx.user) {
       throw Error('User must be logged in to unban');
@@ -247,7 +247,7 @@ export class ChapterUserResolver {
 
   // TODO: control this with an Authorization decorator
   @FieldResolver()
-  canBeBanned(@Ctx() ctx: GQLCtx): boolean {
+  canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
     if (!ctx.user) {
       return false;
     }

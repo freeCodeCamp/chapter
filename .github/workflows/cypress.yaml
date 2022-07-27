@@ -46,7 +46,7 @@ jobs:
       - name: Set Chapter Environment Variables
         run: |
           cp .env.example .env
-          echo DB_PORT=5432 >> .env
+          printf "\nDB_PORT=5432" >> .env
 
       - name: Install dependencies
         run: npm ci

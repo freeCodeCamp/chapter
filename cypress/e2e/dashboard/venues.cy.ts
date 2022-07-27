@@ -53,7 +53,8 @@ describe('venues dashboard', () => {
       longitude: '35',
     };
 
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
 
     cy.visit('/dashboard/chapters/1/');
     cy.get('[data-cy=create-venue]').click();
@@ -108,9 +109,8 @@ describe('venues dashboard', () => {
     );
 
     // newly registered user (without a chapter_users record)
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
+    cy.changeUser('test@user.org');
+    cy.login();
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
@@ -119,8 +119,8 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // banned user
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
-    cy.reload();
+    cy.changeUser('banned@chapter.admin');
+    cy.login();
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
@@ -129,8 +129,8 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // Admin of different chapter
-    cy.login(Cypress.env('JWT_CHAPTER_2_ADMIN_USER'));
-    cy.reload();
+    cy.changeUser('admin@of.chapter.two');
+    cy.login();
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(

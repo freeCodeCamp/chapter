@@ -3,6 +3,7 @@ import { expectToBeRejected } from '../../../support/util';
 describe('event dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
+    cy.changeUser();
     cy.login();
   });
 
@@ -103,8 +104,8 @@ describe('event dashboard', () => {
         ).user;
 
         // Switch to new member before trying to confirm and kick
-        cy.register();
-        cy.login(Cypress.env('JWT_TEST_USER'));
+        cy.changeUser('test@user.org');
+        cy.login();
 
         cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
         cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);

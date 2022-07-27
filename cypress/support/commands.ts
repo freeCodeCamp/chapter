@@ -49,13 +49,15 @@ Cypress.Commands.add('registerViaUI', registerViaUI);
  * Create user session
  */
 const login = () => {
-  return cy.request({
-    url: Cypress.env('SERVER_URL') + '/login',
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer dummy-token`,
-    },
-  });
+  return cy
+    .request({
+      url: Cypress.env('SERVER_URL') + '/login',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer dummy-token`,
+      },
+    })
+    .then(() => cy.reload());
 };
 Cypress.Commands.add('login', login);
 

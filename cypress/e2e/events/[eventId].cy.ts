@@ -128,7 +128,6 @@ describe('event page', () => {
     const subscriptionVariables = { eventId: 1 };
     // logged out user
     cy.logout();
-    cy.reload();
 
     cy.rsvpToEvent(rsvpVariables, { withAuth: false }).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables, { withAuth: false }).then(

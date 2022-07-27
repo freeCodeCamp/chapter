@@ -43,15 +43,12 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterJoin)
   @Mutation(() => ChapterUser)
   async joinChapter(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to join chapter');
-    }
-
     return await prisma.chapter_users.create({
       data: {
         user: { connect: { id: ctx.user.id } },
@@ -71,15 +68,12 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterSubscriptionsManage)
   @Mutation(() => ChapterUser)
   async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to change subscription');
-    }
-
     const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
       where: {
         user_id_chapter_id: {

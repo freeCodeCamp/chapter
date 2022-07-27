@@ -547,6 +547,54 @@ const getChapterEvents = (id: number) => {
 Cypress.Commands.add('getChapterEvents', getChapterEvents);
 
 /**
+ * Join chapter using GQL mutation
+ * @param chapterId Chapter id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const joinChapter = (chapterId: number, options = { withAuth: true }) => {
+  const chapterUserMutation = {
+    operationName: 'joinChapter',
+    variables: { chapterId },
+    query: `mutation joinChapter($chapterId: Int!) {
+      joinChapter(chapterId: $chapterId) {
+        user_id
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('joinChapter', joinChapter);
+
+/**
+ * Toggle subscription status for chapter using GQL mutation
+ * @param chapterId Chapter id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const toggleChapterSubscription = (
+  chapterId: number,
+  options = { withAuth: true },
+) => {
+  const chapterUserMutation = {
+    operationName: 'toggleChapterSubscription',
+    variables: { chapterId },
+    query: `mutation toggleChapterSubscription($chapterId: Int!) {
+      toggleChapterSubscription(chapterId: $chapterId) {
+        user_id
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('toggleChapterSubscription', toggleChapterSubscription);
+
+/**
  * Change chapter user role using GQL mutation
  * @param data Data about change
  * @param data.chapterId Chapter id
@@ -616,10 +664,12 @@ declare global {
       getChapterRoles: typeof getChapterRoles;
       getEventUsers: typeof getEventUsers;
       interceptGQL: typeof interceptGQL;
+      joinChapter: typeof joinChapter;
       login: typeof login;
       logout: typeof logout;
       register: typeof register;
       registerViaUI: typeof registerViaUI;
+      toggleChapterSubscription: typeof toggleChapterSubscription;
       updateSponsor: typeof updateSponsor;
       waitUntilMail: typeof waitUntilMail;
     }

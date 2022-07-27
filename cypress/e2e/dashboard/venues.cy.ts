@@ -98,7 +98,6 @@ describe('venues dashboard', () => {
 
     // logged out user
     cy.logout();
-    cy.reload();
 
     cy.createVenue(venueCreateVariables, venueData, { withAuth: false }).then(
       expectToBeRejected,

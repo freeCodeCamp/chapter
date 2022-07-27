@@ -10,6 +10,7 @@ const testSponsor = {
 describe('sponsors dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
+    cy.changeUser();
   });
 
   it('lets an instance owner create sponsors', () => {
@@ -57,8 +58,8 @@ describe('sponsors dashboard', () => {
   });
 
   it('prevents chapter admins from managing sponsors', () => {
-    cy.register();
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');

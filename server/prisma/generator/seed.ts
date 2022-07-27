@@ -7,7 +7,6 @@ import createSponsors from './factories/sponsors.factory';
 import createUsers from './factories/user.factory';
 import createVenues from './factories/venues.factory';
 import setupRoles from './setupRoles';
-import createSession from './factories/session.factory';
 
 (async () => {
   const tablenames = await prisma.$queryRaw<
@@ -48,5 +47,4 @@ import createSession from './factories/session.factory';
     chapterIds,
     chapterRoles,
   );
-  await createSession(ownerId);
 })();

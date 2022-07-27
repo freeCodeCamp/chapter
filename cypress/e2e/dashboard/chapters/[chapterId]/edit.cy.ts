@@ -15,7 +15,8 @@ describe('chapter edit dashboard', () => {
     cy.exec('npm run db:seed');
   });
   it('allows admins to edit a chapter', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
     cy.visit('/dashboard/chapters/1/edit');
 
     cy.findByRole('textbox', { name: 'Chapter name' })
@@ -54,8 +55,8 @@ describe('chapter edit dashboard', () => {
     cy.contains('loading').should('not.exist');
     cy.contains(chapterData.name).should('not.exist');
 
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.changeUser('test@user.org');
+    cy.login();
 
     cy.updateChapter(chapterId, chapterData).then((response) => {
       expectToBeRejected(response);
@@ -64,6 +65,8 @@ describe('chapter edit dashboard', () => {
       cy.contains(chapterData.name).should('not.exist');
     });
 
+    // back to owner
+    cy.changeUser();
     cy.login();
     cy.updateChapter(chapterId, chapterData).then((response) => {
       expect(response.status).to.eq(200);

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "prisma generate && tsc",
-    "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --ignore=dev-data.json --notify=false src/app.js\"",
+    "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
     "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
     "reminders:send": "node ./reminders/reminders.js",

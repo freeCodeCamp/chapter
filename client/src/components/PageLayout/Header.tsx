@@ -17,6 +17,8 @@ interface Props {
 }
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
+// TODO: distinguish between logging into the app and logging into Auth0. Maybe
+// use sign-in for the app?
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
@@ -25,7 +27,11 @@ const LoginButton = () => {
 
 const DevLoginButton = () => {
   const { login } = useLogin();
-  return <Button onClick={() => login()}>Log In</Button>;
+  return (
+    <Button onClick={() => login().then(() => window.location.reload())}>
+      Log In
+    </Button>
+  );
 };
 
 const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {

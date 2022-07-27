@@ -77,7 +77,10 @@ const changeUser = (email?: string) => {
 Cypress.Commands.add('changeUser', changeUser);
 
 const logout = () => {
-  window.localStorage.removeItem('token');
+  cy.request({
+    url: Cypress.env('SERVER_URL') + '/logout',
+    method: 'DELETE',
+  }).then(() => cy.reload());
 };
 Cypress.Commands.add('logout', logout);
 

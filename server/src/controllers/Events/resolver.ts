@@ -43,6 +43,15 @@ import {
 } from '../../services/UnsubscribeToken';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
+const eventUserIncludes = {
+  user: true,
+  rsvp: true,
+  event_role: {
+    include: {
+      event_role_permissions: { include: { event_permission: true } },
+    },
+  },
+};
 const getUniqueTags = (tags: string[]) => [
   ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
 ];
@@ -149,7 +158,7 @@ const rsvpNotifyAdministrators = async (
 };
 
 type EventRsvpName = events & { event_users: (event_users & { rsvp: rsvp })[] };
-const getRsvpName = (event: EventRsvpName) => {
+const getNameForNewRsvp = (event: EventRsvpName) => {
   const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
   const waitlist = going.length >= event.capacity;
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
@@ -266,15 +275,7 @@ export class EventResolver {
       where: { id: eventId },
       include: {
         event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
-          },
+          include: eventUserIncludes,
         },
         venue: true,
       },
@@ -289,7 +290,33 @@ export class EventResolver {
       ...chapterUserInclude,
     });
 
-    const oldUserRole = await prisma.event_users.findUnique({
+    const userChapter = ctx.user.user_chapters.find(
+      (user_chapter) => user_chapter.chapter_id === chapterId,
+    );
+
+    if (!userChapter) {
+      await prisma.chapter_users.create({
+        data: {
+          user: { connect: { id: ctx.user.id } },
+          chapter: { connect: { id: chapterId } },
+          chapter_role: { connect: { name: 'member' } },
+          subscribed: true, // TODO add user setting option override
+          joined_date: new Date(),
+        },
+        include: {
+          user: true,
+          chapter_role: {
+            include: {
+              chapter_role_permissions: {
+                include: { chapter_permission: true },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    const oldEventUser = await prisma.event_users.findUnique({
       include: { rsvp: true },
       where: {
         user_id_event_id: {
@@ -299,62 +326,20 @@ export class EventResolver {
       },
     });
 
-    if (oldUserRole) {
-      let updateData: Prisma.event_usersUpdateInput;
-      if (['yes', 'waitlist'].includes(oldUserRole.rsvp.name)) {
-        updateData = {
-          rsvp: { connect: { name: 'no' } },
-        };
-        if (!event.invite_only && oldUserRole.rsvp.name !== 'waitlist') {
-          const waitList = event.event_users.filter(
-            ({ rsvp, user_id }) =>
-              user_id !== oldUserRole.user_id && rsvp.name === 'waitlist',
-          );
-
-          if (waitList.length) {
-            const acceptedRsvp = waitList[0];
-            await prisma.event_users.update({
-              data: { rsvp: { connect: { name: 'yes' } } },
-              where: {
-                user_id_event_id: {
-                  user_id: acceptedRsvp.user_id,
-                  event_id: acceptedRsvp.event_id,
-                },
-              },
-            });
-
-            if (acceptedRsvp.subscribed) {
-              await createReminder({
-                eventId: acceptedRsvp.event_id,
-                remindAt: sub(event.start_at, { days: 1 }),
-                userId: acceptedRsvp.user_id,
-              });
-            }
-          }
-        }
-      } else {
-        updateData = {
-          rsvp: { connect: { name: getRsvpName(event) } },
-        };
-
-        await sendRsvpInvitation(ctx.user, event);
-        await rsvpNotifyAdministrators(
-          ctx.user,
-          chapterAdministrators,
-          event.name,
-        );
+    if (oldEventUser) {
+      if (['yes', 'waitlist'].includes(oldEventUser.rsvp.name)) {
+        throw Error('Already Rsvped');
       }
+
+      await sendRsvpInvitation(ctx.user, event);
+      await rsvpNotifyAdministrators(
+        ctx.user,
+        chapterAdministrators,
+        event.name,
+      );
       return await prisma.event_users.update({
-        data: updateData,
-        include: {
-          rsvp: true,
-          user: true,
-          event_role: {
-            include: {
-              event_role_permissions: { include: { event_permission: true } },
-            },
-          },
-        },
+        data: { rsvp: { connect: { name: getNameForNewRsvp(event) } } },
+        include: eventUserIncludes,
         where: {
           user_id_event_id: {
             user_id: ctx.user.id,
@@ -364,11 +349,7 @@ export class EventResolver {
       });
     }
 
-    const rsvpName = getRsvpName(event);
-
-    const userChapter = ctx.user.user_chapters.find(
-      (user_chapter) => user_chapter.chapter_id === chapterId,
-    );
+    const rsvpName = getNameForNewRsvp(event);
     const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 
     const eventUserData: Prisma.event_usersCreateInput = {
@@ -379,17 +360,9 @@ export class EventResolver {
       subscribed: isSubscribedToEvent,
     };
 
-    const userRole = await prisma.event_users.create({
+    const eventUser = await prisma.event_users.create({
       data: eventUserData,
-      include: {
-        rsvp: true,
-        user: true,
-        event_role: {
-          include: {
-            event_role_permissions: { include: { event_permission: true } },
-          },
-        },
-      },
+      include: eventUserIncludes,
     });
     if (rsvpName !== 'waitlist' && eventUserData.subscribed) {
       await createReminder({
@@ -401,7 +374,77 @@ export class EventResolver {
 
     await sendRsvpInvitation(ctx.user, event);
     await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
-    return userRole;
+    return eventUser;
+  }
+
+  @Authorized(Permission.Rsvp)
+  @Mutation(() => EventUser, { nullable: true })
+  async cancelRsvp(
+    @Arg('eventId', () => Int) eventId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<EventUser | null> {
+    const eventUser = await prisma.event_users.findUniqueOrThrow({
+      include: { rsvp: true },
+      where: {
+        user_id_event_id: {
+          user_id: ctx.user.id,
+          event_id: eventId,
+        },
+      },
+    });
+    if (eventUser.rsvp.name === 'no') {
+      throw Error('Rsvp is already canceled');
+    }
+
+    const event = await prisma.events.findUniqueOrThrow({
+      where: { id: eventId },
+      include: {
+        event_users: {
+          include: eventUserIncludes,
+        },
+        venue: true,
+      },
+    });
+
+    if (!event.invite_only && eventUser.rsvp.name !== 'waitlist') {
+      const waitList = event.event_users.filter(
+        ({ rsvp, user_id }) =>
+          user_id !== eventUser.user_id && rsvp.name === 'waitlist',
+      );
+
+      if (waitList.length) {
+        const acceptedRsvp = waitList[0];
+        await prisma.event_users.update({
+          data: { rsvp: { connect: { name: 'yes' } } },
+          where: {
+            user_id_event_id: {
+              user_id: acceptedRsvp.user_id,
+              event_id: acceptedRsvp.event_id,
+            },
+          },
+        });
+
+        if (acceptedRsvp.subscribed) {
+          await createReminder({
+            eventId: acceptedRsvp.event_id,
+            remindAt: sub(event.start_at, { days: 1 }),
+            userId: acceptedRsvp.user_id,
+          });
+          // TODO add email about being off waitlist?
+        }
+      }
+    }
+
+    return await prisma.event_users.update({
+      data: { rsvp: { connect: { name: 'no' } } },
+      include: eventUserIncludes,
+      where: {
+        user_id_event_id: {
+          user_id: ctx.user.id,
+          event_id: eventId,
+        },
+      },
+    });
   }
 
   @Authorized(Permission.RsvpConfirm)
@@ -438,19 +481,7 @@ ${unsubscribeOptions}`,
           event_id: eventUser.event_id,
         },
       },
-      include: {
-        rsvp: true,
-        event_role: {
-          include: {
-            event_role_permissions: {
-              include: {
-                event_permission: true,
-              },
-            },
-          },
-        },
-        user: true,
-      },
+      include: eventUserIncludes,
     });
   }
 

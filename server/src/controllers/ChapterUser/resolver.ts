@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import {
   Arg,
   Authorized,
@@ -14,8 +13,6 @@ import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-
-const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
@@ -120,44 +117,6 @@ export class ChapterUserResolver {
         },
       },
     });
-  }
-
-  @Mutation(() => Boolean)
-  async initUserInterestForChapter(
-    @Arg('id', () => Int) id: number,
-    @Ctx() ctx: ResolverCtx,
-  ): Promise<boolean> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to update role ');
-    }
-    const event = await prisma.events.findUnique({
-      where: { id },
-      include: { chapter: true },
-    });
-    if (!event || !event.chapter) {
-      throw Error('Cannot find the chapter of the event with id ' + id);
-    }
-
-    try {
-      await prisma.chapter_users.create({
-        data: {
-          user: { connect: { id: ctx.user.id } },
-          chapter: { connect: { id: event.chapter.id } },
-          chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO use user specified setting
-          joined_date: new Date(),
-        },
-      });
-    } catch (e) {
-      if (
-        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
-        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
-      ) {
-        throw e;
-      }
-    }
-
-    return true;
   }
 
   @Query(() => [ChapterUser])

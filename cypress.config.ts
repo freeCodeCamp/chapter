@@ -44,6 +44,14 @@ export default defineConfig({
         },
       );
 
+      config.env.JWT_CHAPTER_2_ADMIN_USER = jwt.sign(
+        { email: 'admin@of.chapter.two' },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '120min',
+        },
+      );
+
       config.env.JWT_BANNED_ADMIN_USER = jwt.sign(
         { email: 'banned@chapter.admin' },
         process.env.JWT_SECRET,

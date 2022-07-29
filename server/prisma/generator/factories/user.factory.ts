@@ -9,7 +9,8 @@ const createUsers = async (
   instanceRoles: Record<string, { name: string; id: number }>,
 ): Promise<{
   ownerId: number;
-  adminId: number;
+  chapter1AdminId: number;
+  chapter2AdminId: number;
   bannedAdminId: number;
   userIds: number[];
 }> => {
@@ -21,13 +22,21 @@ const createUsers = async (
   };
   const owner = await prisma.users.create({ data: ownerData });
 
-  const adminData: Prisma.usersCreateInput = {
+  const chapter1AdminData: Prisma.usersCreateInput = {
     email: 'admin@of.a.chapter',
     first_name: name.firstName(),
     last_name: name.lastName(),
     instance_role: { connect: { id: instanceRoles.member.id } },
   };
-  const admin = await prisma.users.create({ data: adminData });
+  const chapter1Admin = await prisma.users.create({ data: chapter1AdminData });
+
+  const chapter2AdminData: Prisma.usersCreateInput = {
+    email: 'admin@of.chapter.two',
+    first_name: name.firstName(),
+    last_name: name.lastName(),
+    instance_role: { connect: { id: instanceRoles.member.id } },
+  };
+  const chapter2Admin = await prisma.users.create({ data: chapter2AdminData });
 
   const bannedAdminData: Prisma.usersCreateInput = {
     email: 'banned@chapter.admin',
@@ -55,7 +64,8 @@ const createUsers = async (
 
   return {
     ownerId: owner.id,
-    adminId: admin.id,
+    chapter1AdminId: chapter1Admin.id,
+    chapter2AdminId: chapter2Admin.id,
     bannedAdminId: bannedAdmin.id,
     userIds: otherIds,
   };

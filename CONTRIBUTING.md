@@ -431,6 +431,30 @@ After you have added new feature, to make sure it stays working, we recommend us
 
 [This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
 
+## Overview of Adding New Feature
+
+This is rough rundown what might be needed to add new feature. Order of the steps allows for natural integration between individual pieces - client, db, and server. It doesn't mean everything needs to be done in this order, but at some point it might be required to follow it
+
+<details><summary>Step 1 - Schema changes</summary>
+
+* After making changes to schema it might be needed to change the way sample data is generated in `server/prisma/generator` folder.
+* Schema changes require recreating of the database, this is done with `npm run db:reset` command.
+</details>
+
+<details><summary>Step 2 - Server</summary>
+
+* Grapql object type define object cooresponding to the table in database. It can be used by mutations and queries as an input or return type. More complicated tables can be modelled using multiple graphql objects.
+* Resolver contains the logic required for responding to mutation or query requests send from client.
+* New resolver needs to be exported in the `server/src/controllers/index.ts` file.
+</details>
+
+<details><summary>Step 3 - Client</summary>
+
+* Client communicates with server using hooks generated from `queries.ts` and `mutations.ts` files in `client/src/modules/**/graphql` folders.
+* They don't need to use all fields returned by server. The other way around - indicating field not returned by server - will end up in error when generating hooks.
+* `npm run gen` command generates client hooks.
+</details>
+
 # Frequently Asked Questions
 
 <details><summary>What do we need help with right now?</summary>

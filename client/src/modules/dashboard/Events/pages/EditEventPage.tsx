@@ -70,11 +70,11 @@ export const EditEventPage: NextPage = () => {
       });
 
       if (event.data) {
+        await router.push('/dashboard/events');
         toast({
           title: `Event "${event.data.updateEvent.name}" updated successfuly!`,
           status: 'success',
         });
-        await router.push('/dashboard/events');
       }
     } catch (err) {
       toast({

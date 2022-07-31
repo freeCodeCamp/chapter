@@ -90,7 +90,7 @@ export const EditEventPage: NextPage = () => {
   if (eventLoading || error || !data?.event) {
     return (
       <Layout>
-        <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
+        <h1>{eventLoading ? 'Loading...' : 'Error...'}</h1>
         {error && <div>{error.message}</div>}
       </Layout>
     );

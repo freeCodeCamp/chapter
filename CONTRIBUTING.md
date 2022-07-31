@@ -431,6 +431,83 @@ After you have added new feature, to make sure it stays working, we recommend us
 
 [This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
 
+## Authorizing GraphGQL requests with `@Authorized` decorator
+
+### Overview or roles
+
+Chapter uses role based permission system, with specific permission assigned to one or multiple roles, on one or more different _levels/scopes_).
+
+* Instance role - per instance - every registered user has instance role.
+* Chapter role - per chapter - chapter role is created for user when explicitly joining chapter, or performing on event actions requiring chapter role. Ie. Rsvping to event. Elevated chapter role for one chapter, doesn't impact chapter roles for different chapters.
+* Event role - per event - chapter role is created for user when Rsvping to an event. Elevated event role (permissions) for a one event doesn't impact event roles for different events.
+
+_Note: in MVP Event roles are not used._
+
+### `@Authorized` decorator
+
+Decorator is available as an import from `type-graphql`.
+
+```ts
+import { Authorized } from 'type-graphql';
+```
+
+Adding it in resolver before specific request logic, wraps the request in the authorization logic. Only for authorized users logic of the request will be executed.
+
+By default this will mean only logged in user can be authorized.
+
+```ts
+  @Authorized(Permission.EventCreate)
+  @Mutation(() => Event)
+  async createEvent(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Arg('data') data: CreateEventInputs,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<Event | null> {
+    /* ... */
+  }
+```
+
+To allow authorization logic connecting user roles on specific chapter or event, with their permissions for performing request, certain arguments are required in the request.
+
+| Role _level/scope_ | Required arguments in GraphQL request |
+|:------------------:|:-------------------------------------:|
+| Instance           | -                                     |
+| Chapter            | `chapterId` or `eventId`              |
+| Event              | `eventId`                             |
+
+### Flowchart
+
+```mermaid
+flowchart LR;
+    A["Authorize\n(logged in)"]
+    I{Is allowed by\nInstance role?}
+    CP{Is user banned\nfrom chapter?}
+    C{Is allowed by\nChapter role?}
+    E{Is allowed by\nEvent role?}
+    Y[Authorized]
+    N[Not authorized]
+
+    A-->I;
+    I-->|No| CP;
+    I-->|Yes| Y;
+    CP-->|Not banned| C;
+    CP-->|Banned| N;
+    C-->|No| E;
+    C-->|Yes| Y;
+    E-->|Yes| Y;
+    E-->|No| N;
+```
+
+### Example
+
+Adding `@Authorize(Permissions.EventEdit)` before event editing logic will authorize user if one of the following applies:
+
+* Their Instance role has `Permissions.EventEdit` permission.
+* User is not banned on the chapter, on which edited event is, and for that chapter their Chapter role has `Permission.EventEdit` permission.
+* Their Event role, for the edited event, has `Permission.EventEdit` permission.
+
+Otherwise request will be rejected.
+
 # Frequently Asked Questions
 
 <details><summary>What do we need help with right now?</summary>

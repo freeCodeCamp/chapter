@@ -210,3 +210,20 @@ const isSponsorSelectedElsewhere = (
     (sponsorFieldId === undefined || selectedFieldId !== sponsorFieldId)
   );
 };
+
+const replaceStringNumbersToNumbers = (_key: unknown, value: unknown) => {
+  if (typeof value === 'string' && value.match(/^\d+$/)) {
+    return Number(value);
+  }
+  return value;
+};
+
+export const isFormEdited = (
+  defaultValues: Record<string, unknown>,
+  currentValues: EventFormData,
+) => {
+  return (
+    JSON.stringify(defaultValues) !==
+    JSON.stringify(currentValues, replaceStringNumbersToNumbers)
+  );
+};

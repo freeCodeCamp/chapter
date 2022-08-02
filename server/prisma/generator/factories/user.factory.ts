@@ -23,7 +23,7 @@ const createUsers = async (
   const owner = await prisma.users.create({ data: ownerData });
 
   const chapter1AdminData: Prisma.usersCreateInput = {
-    email: 'admin@of.a.chapter',
+    email: 'admin@of.chapter.one',
     first_name: name.firstName(),
     last_name: name.lastName(),
     instance_role: { connect: { id: instanceRoles.member.id } },

@@ -3,7 +3,7 @@ import { expectToBeRejected } from '../../../support/util';
 const chapterId = 1;
 const knownEmails = [
   'foo@bar.com',
-  'admin@of.a.chapter',
+  'admin@of.chapter.one',
   'banned@chapter.admin',
 ];
 
@@ -67,7 +67,7 @@ describe('Chapter Users dashboard', () => {
         ({ user: { email } }) => knownEmails.indexOf(email) === -1,
       ).user.id;
       const selfUserId = chapterUsers.find(
-        ({ user: { email } }) => email === 'admin@of.a.chapter',
+        ({ user: { email } }) => email === 'admin@of.chapter.one',
       ).user.id;
       cy.getChapterRoles().then((roles) => {
         const roleIds = roles.map(({ id }) => id);
@@ -147,7 +147,7 @@ describe('Chapter Users dashboard', () => {
     initializeBanVariables();
 
     cy.get('@administrators')
-      .filter(':contains("admin@of.a.chapter")')
+      .filter(':contains("admin@of.chapter.one")')
       .as('adminToBan')
       .should('have.length', 1);
 

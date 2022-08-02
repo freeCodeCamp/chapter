@@ -54,7 +54,11 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
     type: sponsor?.type ?? 'FOOD',
   };
 
-  const { handleSubmit, register } = useForm({
+  const {
+    handleSubmit,
+    register,
+    formState: { isSubmitting, isDirty },
+  } = useForm({
     defaultValues,
   });
   return (
@@ -66,6 +70,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
             label={field.label}
             placeholder={field.placeholder}
             isRequired={field.isRequired}
+            isDisabled={isSubmitting}
             {...register(field.key)}
           />
         );
@@ -73,7 +78,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
 
       <FormControl mt="20px">
         <FormLabel>Sponsor Type</FormLabel>
-        <Select {...register('type')}>
+        <Select {...register('type')} isDisabled={isSubmitting}>
           <option value="FOOD">Food</option>
           <option value="VENUE">Venue</option>
           <option value="OTHER">Other</option>
@@ -84,7 +89,9 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
         variant="solid"
         colorScheme="blue"
         type="submit"
-        disabled={loading}
+        isLoading={isSubmitting}
+        loadingText="Saving Changes"
+        isDisabled={!isDirty || isSubmitting || loading}
       >
         {submitText}
       </Button>

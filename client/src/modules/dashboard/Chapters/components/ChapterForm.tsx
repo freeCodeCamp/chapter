@@ -100,7 +100,11 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     imageUrl: chapter?.imageUrl ?? '',
     chatUrl: chapter?.chatUrl ?? '',
   };
-  const { handleSubmit, register } = useForm<ChapterFormData>({
+  const {
+    handleSubmit,
+    register,
+    formState: { isSubmitting, isDirty },
+  } = useForm<ChapterFormData>({
     defaultValues,
   });
 
@@ -120,6 +124,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               {...register(key)}
               isRequired={required}
               defaultValue={defaultValues[key] ?? undefined}
+              isDisabled={isSubmitting}
             />
           ) : (
             <Input
@@ -130,6 +135,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               type={type}
               isRequired={required}
               defaultValue={defaultValues[key] ?? undefined}
+              isDisabled={isSubmitting}
             />
           ),
         )}
@@ -139,7 +145,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           variant="solid"
           colorScheme="blue"
           type="submit"
-          disabled={loading}
+          isDisabled={!isDirty || loading || isSubmitting}
+          isLoading={isSubmitting}
+          loadingText="Saving Changes"
         >
           {submitText}
         </Button>

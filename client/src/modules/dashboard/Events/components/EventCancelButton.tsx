@@ -10,10 +10,11 @@ interface EventCancelButtonProps {
   size?: ButtonProps['size'];
   buttonText: string;
   event: Pick<Event, 'id' | 'canceled'>;
+  isDisabled?: boolean;
 }
 
 const EventCancelButton = (props: EventCancelButtonProps) => {
-  const { isFullWidth, buttonText, event, ...rest } = props;
+  const { isDisabled = false, isFullWidth, buttonText, event, ...rest } = props;
 
   const [cancel] = useCancelEventMutation();
 
@@ -44,6 +45,7 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
       width={isFullWidth ? 'full' : 'auto'}
       colorScheme="orange"
       onClick={clickCancel}
+      isDisabled={isDisabled}
     >
       {buttonText}
     </Button>

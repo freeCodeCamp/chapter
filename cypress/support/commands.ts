@@ -260,6 +260,26 @@ Cypress.Commands.add('updateChapter', (chapterId, data) => {
   };
   return cy.authedRequest(gqlOptions(chapterMutation));
 });
+/**
+ * Update event using GQL mutation
+ * @param eventId Id of the event
+ * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ */
+Cypress.Commands.add('updateEvent', (eventId, data) => {
+  const eventMutation = {
+    operationName: 'updateEvent',
+    variables: {
+      eventId,
+      data,
+    },
+    query: `mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+      updateEvent(id: $eventId, data: $data) {
+        id
+      }
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(eventMutation));
+});
 
 /**
  * Delete event using GQL mutation

@@ -58,7 +58,7 @@ describe('sponsors dashboard', () => {
 
   it('prevents chapter admins from managing sponsors', () => {
     cy.register();
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');

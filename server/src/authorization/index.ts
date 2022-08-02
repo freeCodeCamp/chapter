@@ -1,8 +1,8 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
-import { GQLCtx } from '../common-types/gql';
-import type { User } from '../controllers/Auth/middleware';
+import { ResolverCtx } from '../common-types/gql';
+import type { Events, User } from '../controllers/Auth/middleware';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -12,38 +12,43 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
  * on a user's role. It cannot affect what is returned by a resolver, it just
  * determines if the resolver is called or not. For fine-grained control, the
  * resolver itself must modify the response based on the user's roles */
-export const authorizationChecker: AuthChecker<GQLCtx> = (
-  { context: { user }, info: { variableValues } },
-  requiredPermissions,
-): boolean => {
-  if (!user) return false;
+export const authorizationChecker: AuthChecker<
+  ResolverCtx | Required<ResolverCtx>
+> = ({ context, info: { variableValues } }, requiredPermissions): boolean => {
+  if (!hasUserAndEvents(context)) return false;
 
   if (requiredPermissions.length !== 1) return false;
   const requiredPermission = requiredPermissions[0];
 
-  if (isAllowedByInstanceRole(user, requiredPermission)) return true;
-  if (isBannedFromChapter(user, variableValues)) return false;
-  if (isAllowedByChapterRole(user, requiredPermission, variableValues))
+  if (isAllowedByInstanceRole(context, requiredPermission)) return true;
+  if (isBannedFromChapter(context, variableValues)) return false;
+  if (isAllowedByChapterRole(context, requiredPermission, variableValues))
     return true;
-  if (isAllowedByEventRole(user, requiredPermission, variableValues))
+  if (isAllowedByEventRole(context, requiredPermission, variableValues))
     return true;
 
   return false;
 };
 
+function hasUserAndEvents(
+  ctx: ResolverCtx | Required<ResolverCtx>,
+): ctx is Required<ResolverCtx> {
+  return typeof ctx.user !== 'undefined' && typeof ctx.events !== 'undefined';
+}
+
 function isAllowedByChapterRole(
-  user: User,
+  { user, events }: Required<ResolverCtx>,
   requiredPermission: string,
   variableValues: VariableValues,
 ): boolean {
-  const chapterId = getRelatedChapterId(user, variableValues);
+  const chapterId = getRelatedChapterId(events, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
   return hasNecessaryPermission(requiredPermission, userChapterPermissions);
 }
 
 function isAllowedByInstanceRole(
-  user: User,
+  { user }: Required<ResolverCtx>,
   requiredPermission: string,
 ): boolean {
   const userInstancePermissions = getUserPermissionsForInstance(user);
@@ -53,7 +58,7 @@ function isAllowedByInstanceRole(
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
 function getRelatedChapterId(
-  user: User,
+  events: Events,
   variableValues: VariableValues,
 ): number | null {
   const { chapterId, eventId } = variableValues;
@@ -61,17 +66,15 @@ function getRelatedChapterId(
   if (chapterId) return chapterId;
 
   if (eventId) {
-    const userEvent = user.user_events.find(
-      ({ event_id }) => event_id === eventId,
-    );
-    if (userEvent) return userEvent.event.chapter_id;
+    const event = events.find(({ id }) => id === eventId);
+    if (event) return event.chapter_id;
   }
 
   return null;
 }
 
 function isAllowedByEventRole(
-  user: User,
+  { user }: Required<ResolverCtx>,
   requiredPermission: string,
   info: VariableValues,
 ): boolean {
@@ -107,10 +110,10 @@ function getUserPermissionsForEvent(
 }
 
 function isBannedFromChapter(
-  user: User,
+  { user, events }: Required<ResolverCtx>,
   variableValues: VariableValues,
 ): boolean {
-  const chapterId = getRelatedChapterId(user, variableValues);
+  const chapterId = getRelatedChapterId(events, variableValues);
   if (chapterId === null) return false;
 
   const bannedFromChapter = user.user_bans?.some(

@@ -1,3 +1,21 @@
+import { expectToBeRejected } from '../../../support/util';
+
+const eventData = {
+  name: 'Homer Simpson3',
+  description: 'i will show you damn!',
+  url: 'http://wooden-swing.com',
+  streaming_url: null,
+  capacity: 149,
+  start_at: '2022-08-03T18:45:00.000Z',
+  ends_at: '2022-08-03T18:45:00.000Z',
+  venue_type: 'Physical',
+  venue_id: 2,
+  image_url: 'http://loremflickr.com/640/480/nature?79359',
+  invite_only: false,
+  tags: ['aut'],
+  sponsor_ids: [],
+  chapter_id: 1,
+};
 describe('events dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -275,5 +293,27 @@ describe('events dashboard', () => {
     });
 
     cy.mhDeleteAll();
+  });
+
+  it('chapter admin should be allowed to edit event, but nobody else', () => {
+    const eventId = 1;
+    // admin of chapter 1
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.reload();
+    cy.updateEvent(eventId, eventData).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
+    cy.logout();
+    // newly registered user (without a chapter_users record)
+    cy.register();
+
+    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.reload();
+    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+    cy.logout();
+    // banned admin should be rejected
+    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
+    cy.reload();
+    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
   });
 });

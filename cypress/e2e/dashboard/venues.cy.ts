@@ -53,7 +53,7 @@ describe('venues dashboard', () => {
       longitude: '35',
     };
 
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
 
     cy.visit('/dashboard/chapters/1/');
     cy.get('[data-cy=create-venue]').click();
@@ -129,18 +129,13 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // Admin of different chapter
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_2_ADMIN_USER'));
     cy.reload();
 
-    cy.createVenue({ ...venueCreateVariables, chapterId: 2 }, venueData).then(
+    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
+    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
       expectToBeRejected,
     );
-    cy.updateVenue(
-      { ...venueUpdateDeleteVariables, chapterId: 2 },
-      venueData,
-    ).then(expectToBeRejected);
-    cy.deleteVenue({ ...venueUpdateDeleteVariables, chapterId: 2 }).then(
-      expectToBeRejected,
-    );
+    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
   });
 });

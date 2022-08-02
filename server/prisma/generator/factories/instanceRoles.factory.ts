@@ -1,6 +1,6 @@
 import { prisma } from '../../../src/prisma';
 
-import { Permission } from '../../../../common/permissions';
+import { InstancePermission, Permission } from '../../../../common/permissions';
 
 const allPermissions = Object.values(Permission);
 
@@ -15,7 +15,13 @@ const roles: InstanceRole[] = [
     // the owners should be able to do everything
     permissions: allPermissions,
   },
-  { name: 'member', permissions: [] },
+  {
+    name: 'member',
+    permissions: [
+      InstancePermission.ChapterJoin,
+      InstancePermission.ChapterSubscriptionsManage,
+    ],
+  },
 ];
 
 const createRole = async ({ name, permissions }: InstanceRole) => {

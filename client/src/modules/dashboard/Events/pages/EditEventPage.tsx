@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { useToast } from '@chakra-ui/react';
 
 import {
   useEventQuery,
@@ -26,6 +27,8 @@ export const EditEventPage: NextPage = () => {
   } = useEventQuery({
     variables: { eventId: eventId },
   });
+
+  const toast = useToast();
 
   // TODO: update the cache directly:
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
@@ -68,8 +71,16 @@ export const EditEventPage: NextPage = () => {
 
       if (event.data) {
         await router.push('/dashboard/events');
+        toast({
+          title: `Event "${event.data.updateEvent.name}" updated successfuly!`,
+          status: 'success',
+        });
       }
     } catch (err) {
+      toast({
+        title: 'Something went wrong.',
+        status: 'error',
+      });
       console.error(err);
     } finally {
       setLoadingUpdate(false);
@@ -79,7 +90,7 @@ export const EditEventPage: NextPage = () => {
   if (eventLoading || error || !data?.event) {
     return (
       <Layout>
-        <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
+        <h1>{eventLoading ? 'Loading...' : 'Error...'}</h1>
         {error && <div>{error.message}</div>}
       </Layout>
     );

@@ -163,8 +163,8 @@ describe('event page', () => {
     cy.findByRole('button', { name: 'Confirm' }).click();
 
     cy.waitUntilMail();
-    cy.mhGetMailsByRecipient('admin@of.a.chapter').should('have.length', 1);
-    cy.mhGetMailsByRecipient('admin@of.a.chapter').mhFirst().as('rsvp-mail');
+    cy.mhGetMailsByRecipient('admin@of.chapter.one').should('have.length', 1);
+    cy.mhGetMailsByRecipient('admin@of.chapter.one').mhFirst().as('rsvp-mail');
     cy.get('@rsvp-mail')
       .mhGetSubject()
       .should('match', /^New RSVP for/);

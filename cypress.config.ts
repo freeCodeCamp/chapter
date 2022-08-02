@@ -36,8 +36,16 @@ export default defineConfig({
         },
       );
 
-      config.env.JWT_ADMIN_USER = jwt.sign(
-        { email: 'admin@of.a.chapter' },
+      config.env.JWT_CHAPTER_1_ADMIN_USER = jwt.sign(
+        { email: 'admin@of.chapter.one' },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '120min',
+        },
+      );
+
+      config.env.JWT_CHAPTER_2_ADMIN_USER = jwt.sign(
+        { email: 'admin@of.chapter.two' },
         process.env.JWT_SECRET,
         {
           expiresIn: '120min',

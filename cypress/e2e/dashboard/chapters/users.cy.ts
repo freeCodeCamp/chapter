@@ -3,7 +3,7 @@ import { expectToBeRejected } from '../../../support/util';
 const chapterId = 1;
 const knownEmails = [
   'foo@bar.com',
-  'admin@of.a.chapter',
+  'admin@of.chapter.one',
   'banned@chapter.admin',
 ];
 
@@ -60,14 +60,14 @@ describe('Chapter Users dashboard', () => {
   });
 
   it('rejects chapter admin from changing chapter user role', () => {
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
 
     cy.getChapterMembers(chapterId).then((chapterUsers) => {
       const userId = chapterUsers.find(
         ({ user: { email } }) => knownEmails.indexOf(email) === -1,
       ).user.id;
       const selfUserId = chapterUsers.find(
-        ({ user: { email } }) => email === 'admin@of.a.chapter',
+        ({ user: { email } }) => email === 'admin@of.chapter.one',
       ).user.id;
       cy.getChapterRoles().then((roles) => {
         const roleIds = roles.map(({ id }) => id);
@@ -141,13 +141,13 @@ describe('Chapter Users dashboard', () => {
   }
 
   it('an admin cannot ban themselves', () => {
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
 
     cy.get('@administrators')
-      .filter(':contains("admin@of.a.chapter")')
+      .filter(':contains("admin@of.chapter.one")')
       .as('adminToBan')
       .should('have.length', 1);
 

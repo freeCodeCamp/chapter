@@ -88,10 +88,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     };
   }, []);
 
-  const { register, control, handleSubmit, watch, setValue, getValues } =
-    useForm<EventFormData>({
-      defaultValues,
-    });
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    formState: { isDirty },
+  } = useForm<EventFormData>({
+    defaultValues,
+  });
 
   const {
     fields: sponsorFields,
@@ -125,6 +132,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     },
     [setValue, setStartDate],
   );
+
   return (
     <>
       {loadingChapter ? (
@@ -366,7 +374,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               width="full"
               colorScheme="blue"
               type="submit"
-              isDisabled={loading}
+              isDisabled={!isDirty || loading}
             >
               {submitText}
             </Button>

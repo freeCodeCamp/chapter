@@ -18,3 +18,23 @@ export const mockEvent = {
   venue_id: 1,
   chapter_id: 1,
 };
+
+// All the authChecker needs to know is which chapter a given event belongs to:
+export const events = [
+  {
+    id: 1,
+    chapter_id: 1,
+  },
+  {
+    id: 2,
+    chapter_id: 1,
+  },
+  {
+    id: 3,
+    chapter_id: 2,
+  },
+  {
+    id: 4,
+    chapter_id: 3,
+  },
+];

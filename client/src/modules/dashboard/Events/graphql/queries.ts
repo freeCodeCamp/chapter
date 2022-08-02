@@ -141,3 +141,12 @@ export const EventRoles = gql`
     }
   }
 `;
+
+export const ChapterVenues = gql`
+  query chapterVenues($chapterId: Int!) {
+    chapterVenues(chapterId: $chapterId) {
+      id
+      name
+    }
+  }
+`;

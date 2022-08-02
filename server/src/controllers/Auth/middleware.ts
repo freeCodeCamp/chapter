@@ -52,32 +52,44 @@ type Merge<T> = {
 };
 
 export type User = Merge<Prisma.usersGetPayload<typeof userInclude>>;
+export type Events = Merge<
+  Prisma.eventsGetPayload<{ select: { id: true; chapter_id: true } }>[]
+>;
 
-export const userMiddleware = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
+export const events = (req: Request, _res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return next();
   }
 
-  // We don't, currently, handle different JsonWebTokenError messages
-  // differently but we do need to add messages to the error object.
-  const raw = authorization.split(' ');
-  if (raw.length != 2 || raw[0] != 'Bearer') {
-    return next(new JsonWebTokenError('Invalid auth header'));
+  const { error } = verifyToken(authorization);
+  if (error) return next(error);
+
+  prisma.events
+    .findMany({
+      select: {
+        id: true,
+        chapter_id: true,
+      },
+    })
+    .then((events) => {
+      req.events = events;
+      next();
+    });
+};
+
+export const user = (req: Request, _res: Response, next: NextFunction) => {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    return next();
   }
 
-  const value = verify(raw[1], getConfig('JWT_SECRET')) as { id: number };
-  if (!value.id) {
-    return next(new JsonWebTokenError('Missing contents'));
-  }
+  const { error, id } = verifyToken(authorization);
+  if (error) return next(error);
 
   prisma.users
     .findUnique({
-      where: { id: value.id },
+      where: { id },
       ...userInclude,
     })
     .then((user) => {
@@ -91,6 +103,22 @@ export const userMiddleware = (
       next(err);
     });
 };
+
+function verifyToken(authorization: string) {
+  // We don't, currently, handle different JsonWebTokenError messages
+  // differently but we do need to add messages to the error object.
+  const raw = authorization.split(' ');
+  if (raw.length != 2 || raw[0] != 'Bearer') {
+    return { error: new JsonWebTokenError('Invalid auth header') };
+  }
+
+  const value = verify(raw[1], getConfig('JWT_SECRET')) as { id: number };
+  if (!value.id) {
+    return { error: new JsonWebTokenError('Missing contents') };
+  }
+
+  return { id: value.id };
+}
 
 export function handleAuthenticationError(
   err: any,

@@ -1,22 +1,33 @@
+import { expectToBeRejected } from '../../../support/util';
+
+const chapterId = 1;
+const knownEmails = [
+  'foo@bar.com',
+  'admin@of.a.chapter',
+  'banned@chapter.admin',
+];
+
 describe('Chapter Users dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
     cy.login();
   });
   it('should have a table of users', () => {
-    cy.visit('/dashboard/chapters/1/users');
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
     cy.findByRole('table', { name: 'Chapter Users' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'email' }).should('be.visible');
   });
 
   it('should not be possible to create users', () => {
-    cy.visit('/dashboard/chapters/1/users/new', { failOnStatusCode: false });
+    cy.visit(`/dashboard/chapters/${chapterId}/users/new`, {
+      failOnStatusCode: false,
+    });
     cy.contains('This page could not be found');
   });
 
   it('can change user chapter role', () => {
-    cy.visit('/dashboard/chapters/1/users');
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     cy.get('[data-cy=role]').then((roles) => {
       const roleNames = [...roles.map((_, role) => role.innerText)];
@@ -48,8 +59,34 @@ describe('Chapter Users dashboard', () => {
     });
   });
 
+  it('rejects chapter admin from changing chapter user role', () => {
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+
+    cy.getChapterMembers(chapterId).then((chapterUsers) => {
+      const userId = chapterUsers.find(
+        ({ user: { email } }) => knownEmails.indexOf(email) === -1,
+      ).user.id;
+      const selfUserId = chapterUsers.find(
+        ({ user: { email } }) => email === 'admin@of.a.chapter',
+      ).user.id;
+      cy.getChapterRoles().then((roles) => {
+        const roleIds = roles.map(({ id }) => id);
+        roleIds.forEach((roleId) => {
+          cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
+            expectToBeRejected,
+          );
+          cy.changeChapterUserRole({
+            chapterId,
+            roleId,
+            userId: selfUserId,
+          }).then(expectToBeRejected);
+        });
+      });
+    });
+  });
+
   it('administrator can ban user from chapter', () => {
-    cy.visit('/dashboard/chapters/1/users');
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
 
@@ -105,7 +142,7 @@ describe('Chapter Users dashboard', () => {
 
   it('an admin cannot ban themselves', () => {
     cy.login(Cypress.env('JWT_ADMIN_USER'));
-    cy.visit('/dashboard/chapters/1/users');
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
 
@@ -122,7 +159,7 @@ describe('Chapter Users dashboard', () => {
 
   it('an admin cannot unban themselves', () => {
     cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
-    cy.visit('/dashboard/chapters/1/users');
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
 

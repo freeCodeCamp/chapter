@@ -30,7 +30,7 @@ export const VenuesPage: NextPage = () => {
           <DataTable
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             data={data.venues}
-            keys={['name', 'location', 'actions'] as const}
+            keys={['name', 'location', 'chapter', 'actions'] as const}
             mapper={{
               name: (venue) => (
                 <LinkButton
@@ -41,6 +41,14 @@ export const VenuesPage: NextPage = () => {
                 </LinkButton>
               ),
               location: (venue) => getLocationString(venue),
+              chapter: ({ chapter }) => (
+                <LinkButton
+                  data-cy="view-chapter-button"
+                  href={`/dashboard/chapters/${chapter.id}`}
+                >
+                  {chapter.name}
+                </LinkButton>
+              ),
               actions: (venue) => (
                 <LinkButton
                   data-cy="edit-venue-button"

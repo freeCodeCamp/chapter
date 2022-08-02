@@ -1,3 +1,7 @@
+import { expectToBeRejected } from '../../support/util';
+
+const chapterId = 1;
+
 describe('chapter page', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -6,7 +10,7 @@ describe('chapter page', () => {
   it('user can join chapter and change subscription status', () => {
     cy.register('Test', 'User', 'test@user.org');
     cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.visit('/chapters/1');
+    cy.visit(`/chapters/${chapterId}`);
 
     cy.findByRole('button', { name: 'Join chapter' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
@@ -27,7 +31,7 @@ describe('chapter page', () => {
 
     cy.contains(/subscribed/);
 
-    cy.getChapterMembers(1).then((chapter_users) => {
+    cy.getChapterMembers(chapterId).then((chapter_users) => {
       expect(
         chapter_users.findIndex(
           ({ user: { email }, subscribed }) =>
@@ -35,5 +39,12 @@ describe('chapter page', () => {
         ),
       ).to.not.equal(-1);
     });
+  });
+
+  it('should reject joining and subscribing requests from non-members', () => {
+    cy.joinChapter(chapterId, { withAuth: false }).then(expectToBeRejected);
+    cy.toggleChapterSubscription(chapterId, { withAuth: false }).then(
+      expectToBeRejected,
+    );
   });
 });

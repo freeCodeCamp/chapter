@@ -22,8 +22,8 @@ import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import {
   useChapterQuery,
+  useChapterVenuesQuery,
   useSponsorsQuery,
-  useVenuesQuery,
   VenueType,
 } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
@@ -38,6 +38,7 @@ import {
   getAllowedSponsors,
   getAllowedSponsorTypes,
   getAllowedSponsorsForType,
+  isFormEdited,
 } from './EventFormUtils';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -55,7 +56,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     loading: loadingVenues,
     error: errorVenues,
     data: dataVenues,
-  } = useVenuesQuery();
+  } = useChapterVenuesQuery({ variables: { chapterId } });
 
   const {
     loading: loadingSponsors,
@@ -125,6 +126,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     },
     [setValue, setStartDate],
   );
+
+  const isSaveBtnDisabled = !isFormEdited(defaultValues, watch()) || loading;
   return (
     <>
       {loadingChapter ? (
@@ -216,7 +219,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 <FormControl isRequired>
                   <FormLabel>Venue</FormLabel>
                   <Select {...register('venue_id')}>
-                    {dataVenues.venues.map((v) => (
+                    {dataVenues.chapterVenues.map((v) => (
                       <option key={v.id} value={v.id}>
                         {v.name}
                       </option>
@@ -366,7 +369,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               width="full"
               colorScheme="blue"
               type="submit"
-              isDisabled={loading}
+              isDisabled={isSaveBtnDisabled}
             >
               {submitText}
             </Button>

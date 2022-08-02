@@ -607,6 +607,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hisnameispum",
+      "name": "Sirasit Thitirattanakorn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52594844?v=4",
+      "profile": "https://www.siruxsolutions.com",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "Awais753",
+      "name": "Awais Ahmed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22499873?v=4",
+      "profile": "https://github.com/Awais753",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -614,5 +632,5 @@
   "projectOwner": "freeCodeCamp",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": false
 }

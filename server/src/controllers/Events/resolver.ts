@@ -542,6 +542,7 @@ ${unsubscribeOptions}`,
     });
   }
 
+  @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
   async updateEvent(
     @Arg('id', () => Int) id: number,

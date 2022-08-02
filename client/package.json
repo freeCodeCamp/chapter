@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "gen": "graphql-codegen --config codegen.yml",
-    "gen:dev": "npm run gen -- --watch"
+    "gen:dev": "npm run gen -- --watch",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
@@ -27,6 +29,7 @@
     "react-hook-form": "7.34.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.10",
     "@codesee/babel-plugin-instrument": "0.335.0",
     "@codesee/tracker": "0.335.0",
     "@graphql-codegen/cli": "2.11.3",
@@ -37,11 +40,20 @@
     "@graphql-codegen/typescript-graphql-files-modules": "2.2.0",
     "@graphql-codegen/typescript-operations": "2.5.2",
     "@graphql-codegen/typescript-react-apollo": "3.3.2",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/builder-webpack5": "^6.5.9",
+    "@storybook/manager-webpack5": "^6.5.9",
+    "@storybook/react": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
     "@testing-library/dom": "8.16.0",
     "@testing-library/react": "13.3.0",
     "@types/react": "18.0.15",
     "@types/react-datepicker": "4.4.2",
     "@types/react-dom": "18.0.6",
+    "babel-loader": "^8.2.5",
     "babel-plugin-istanbul": "6.1.1",
     "prettier": "2.7.1",
     "typescript": "4.7.4"

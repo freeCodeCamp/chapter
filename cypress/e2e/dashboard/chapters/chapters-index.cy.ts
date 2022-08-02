@@ -63,7 +63,7 @@ describe('chapters dashboard', () => {
   });
 
   it('only allows owners to create chapters', () => {
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
 
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');

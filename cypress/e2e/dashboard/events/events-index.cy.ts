@@ -298,7 +298,7 @@ describe('events dashboard', () => {
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
     // admin of chapter 1
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
     cy.reload();
     cy.updateEvent(eventId, eventData).then((response) => {
       expect(response.body.errors).not.to.exist;

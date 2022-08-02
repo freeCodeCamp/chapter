@@ -91,7 +91,7 @@ describe('chapter dashboard', () => {
     cy.createEvent(chapterId, eventData).then(expectToBeRejected);
 
     // admin of a different chapter
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
     cy.createEvent(2, eventData).then(expectToBeRejected);
 
     // switch the chapterId to match the admin's chapter

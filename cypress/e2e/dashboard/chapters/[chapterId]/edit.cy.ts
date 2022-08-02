@@ -15,7 +15,7 @@ describe('chapter edit dashboard', () => {
     cy.exec('npm run db:seed');
   });
   it('allows admins to edit a chapter', () => {
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
     cy.visit('/dashboard/chapters/1/edit');
 
     cy.findByRole('textbox', { name: 'Chapter name' })

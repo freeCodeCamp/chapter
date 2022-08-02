@@ -53,7 +53,7 @@ describe('venues dashboard', () => {
       longitude: '35',
     };
 
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
 
     cy.visit('/dashboard/chapters/1/');
     cy.get('[data-cy=create-venue]').click();

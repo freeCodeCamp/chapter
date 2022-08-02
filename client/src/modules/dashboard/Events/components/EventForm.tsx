@@ -38,7 +38,6 @@ import {
   getAllowedSponsors,
   getAllowedSponsorTypes,
   getAllowedSponsorsForType,
-  isFormEdited,
 } from './EventFormUtils';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -89,10 +88,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     };
   }, []);
 
-  const { register, control, handleSubmit, watch, setValue, getValues } =
-    useForm<EventFormData>({
-      defaultValues,
-    });
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    formState: { isDirty },
+  } = useForm<EventFormData>({
+    defaultValues,
+  });
 
   const {
     fields: sponsorFields,
@@ -127,7 +133,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     [setValue, setStartDate],
   );
 
-  const isSaveBtnDisabled = !isFormEdited(defaultValues, watch()) || loading;
   return (
     <>
       {loadingChapter ? (
@@ -369,7 +374,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               width="full"
               colorScheme="blue"
               type="submit"
-              isDisabled={isSaveBtnDisabled}
+              isDisabled={!isDirty || loading}
             >
               {submitText}
             </Button>

@@ -8,7 +8,7 @@ type FlexProps = {
   flexWrap?: string;
 };
 
-const Flex: any = ({
+const Flex: React.FC<FlexProps> = ({
   children,
   direction,
   flexWrap,
@@ -17,11 +17,7 @@ const Flex: any = ({
   ...props
 }: FlexProps) => {
   if ('row' === direction) {
-    return (
-      <div {...props} className="flex flex-row ...">
-        {children}
-      </div>
-    );
+    return <div className="flex flex-row ...">{children}</div>;
   } else if ('column' === direction) {
     return (
       <div {...props} className="flex flex-col ...">
@@ -113,6 +109,7 @@ const Flex: any = ({
       </div>
     );
   }
+  return null;
 };
 
 export default Flex;

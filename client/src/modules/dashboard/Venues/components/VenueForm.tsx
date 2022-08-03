@@ -21,6 +21,7 @@ interface VenueFormProps {
   data?: VenueQuery;
   submitText: string;
   chapter: VenueChapter;
+  loadingText: string;
 }
 
 type Fields = {
@@ -99,7 +100,7 @@ const fields: Fields[] = [
 ];
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, chapter } = props;
+  const { loading, onSubmit, data, submitText, chapter, loadingText } = props;
   const venue = data?.venue;
 
   const defaultValues: VenueFormData = {
@@ -115,7 +116,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isSubmitting, isDirty },
+    formState: { isDirty },
   } = useForm<VenueFormData>({
     defaultValues,
   });
@@ -139,7 +140,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
               step={step ? step : undefined}
               max={max ? max : undefined}
               min={min ? min : undefined}
-              isDisabled={isSubmitting}
+              isDisabled={loading}
             />
           ))}
           <Button
@@ -148,9 +149,9 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
             variant="solid"
             colorScheme="blue"
             type="submit"
-            isDisabled={!isDirty || loading || isSubmitting}
-            isLoading={isSubmitting}
-            loadingText="Saving Changes"
+            isDisabled={!isDirty || loading}
+            isLoading={loading}
+            loadingText={loadingText}
           >
             {submitText}
           </Button>

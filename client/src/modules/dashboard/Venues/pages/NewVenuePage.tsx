@@ -55,6 +55,7 @@ export const NewVenuePage: NextPage = () => {
             onSubmit={onSubmit}
             submitText={'Add venue'}
             chapter={chapterData.chapter}
+            loadingText={'Adding venue'}
           />
         )
       )}

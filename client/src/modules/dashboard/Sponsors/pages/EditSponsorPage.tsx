@@ -58,6 +58,7 @@ const EditSponsorPage: NextPage = () => {
         onSubmit={onSubmit}
         data={data}
         submitText="Save Sponsor Changes"
+        loadingText="Saving Sponsor Changes"
       />
     </Layout>
   );

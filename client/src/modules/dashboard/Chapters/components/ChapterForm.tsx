@@ -16,6 +16,7 @@ interface ChapterFormProps {
   onSubmit: (data: ChapterFormData) => Promise<void>;
   data?: ChapterQuery;
   submitText: string;
+  loadingText: string;
 }
 
 type Fields = {
@@ -87,7 +88,7 @@ const fields: Fields[] = [
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText } = props;
+  const { loading, onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.chapter;
 
   const defaultValues: ChapterFormData = {
@@ -103,7 +104,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isSubmitting, isDirty },
+    formState: { isDirty },
   } = useForm<ChapterFormData>({
     defaultValues,
   });
@@ -124,7 +125,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               {...register(key)}
               isRequired={required}
               defaultValue={defaultValues[key] ?? undefined}
-              isDisabled={isSubmitting}
+              isDisabled={loading}
             />
           ) : (
             <Input
@@ -135,7 +136,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               type={type}
               isRequired={required}
               defaultValue={defaultValues[key] ?? undefined}
-              isDisabled={isSubmitting}
+              isDisabled={loading}
             />
           ),
         )}
@@ -145,9 +146,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           variant="solid"
           colorScheme="blue"
           type="submit"
-          isDisabled={!isDirty || loading || isSubmitting}
-          isLoading={isSubmitting}
-          loadingText="Saving Changes"
+          isDisabled={!isDirty || loading}
+          isLoading={loading}
+          loadingText={loadingText}
         >
           {submitText}
         </Button>

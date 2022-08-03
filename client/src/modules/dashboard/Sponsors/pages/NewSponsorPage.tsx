@@ -32,6 +32,7 @@ const NewSponsorPage: NextPage = () => {
         loading={loading}
         onSubmit={onSubmit}
         submitText="Add New Sponsor"
+        loadingText="Adding New Sponsor"
       />
     </Layout>
   );

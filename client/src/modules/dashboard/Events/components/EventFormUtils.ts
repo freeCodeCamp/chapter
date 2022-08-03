@@ -148,6 +148,7 @@ export interface EventFormProps {
   data?: IEventData;
   submitText: string;
   chapterId: number;
+  loadingText: string;
 }
 
 export const getAllowedSponsorTypes = (

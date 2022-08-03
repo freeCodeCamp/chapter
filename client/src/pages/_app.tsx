@@ -60,13 +60,42 @@ const client = new ApolloClient({
   }),
 });
 
-const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
+// TODO: Reuse this component in Modal
+export interface ConditionalWrapProps {
+  wrapper:
+    | false
+    | ((children: React.ReactNode | null | undefined) => JSX.Element);
+  children: React.ReactNode;
+}
+
+export const ConditionalWrap = (props: ConditionalWrapProps) => {
+  const { wrapper: Wrap, children } = props;
+  return Wrap ? Wrap(children) : <>{children}</>;
+};
+
+const Auth0Wrapper = (children: React.ReactNode) => {
   // TODO: create a module to handle environment variables
   const domain = process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string;
   const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
   const clientURL = process.env.NEXT_PUBLIC_CLIENT_URL as string;
+  {
+    /* TODO: Can we conditionally use window.location.origin for the redirectUri if
+           we're in the browser? Or should we require site maintainers to supply it? */
+  }
+  return (
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      redirectUri={clientURL}
+      audience={audience}
+    >
+      {children}
+    </Auth0Provider>
+  );
+};
 
+const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
   return (
     <>
       <Head>
@@ -79,13 +108,10 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
       </Head>
       <ApolloProvider client={client}>
         <ChakraProvider>
-          {/* TODO: Can we conditionally use window.location.origin for the redirectUri if
-           we're in the browser? Or should we require site maintainers to supply it? */}
-          <Auth0Provider
-            domain={domain}
-            clientId={clientId}
-            redirectUri={clientURL}
-            audience={audience}
+          <ConditionalWrap
+            wrapper={
+              process.env.NEXT_PUBLIC_USE_AUTH0 === 'true' && Auth0Wrapper
+            }
           >
             <AuthContextProvider>
               <ConfirmContextProvider>
@@ -94,7 +120,7 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
                 </PageLayout>
               </ConfirmContextProvider>
             </AuthContextProvider>
-          </Auth0Provider>
+          </ConditionalWrap>
         </ChakraProvider>
       </ApolloProvider>
     </>

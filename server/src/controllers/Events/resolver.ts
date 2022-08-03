@@ -294,28 +294,6 @@ export class EventResolver {
       (user_chapter) => user_chapter.chapter_id === chapterId,
     );
 
-    if (!userChapter) {
-      await prisma.chapter_users.create({
-        data: {
-          user: { connect: { id: ctx.user.id } },
-          chapter: { connect: { id: chapterId } },
-          chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO add user setting option override
-          joined_date: new Date(),
-        },
-        include: {
-          user: true,
-          chapter_role: {
-            include: {
-              chapter_role_permissions: {
-                include: { chapter_permission: true },
-              },
-            },
-          },
-        },
-      });
-    }
-
     const oldEventUser = await prisma.event_users.findUnique({
       include: { rsvp: true },
       where: {

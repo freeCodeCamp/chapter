@@ -25,6 +25,7 @@ import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
   useEventQuery,
+  useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
@@ -42,6 +43,7 @@ export const EventPage: NextPage = () => {
 
   const [rsvpToEvent] = useRsvpToEventMutation(refetch);
   const [cancelRsvp] = useCancelRsvpMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
   // TODO: check if we need to default to -1 here
@@ -130,6 +132,7 @@ export const EventPage: NextPage = () => {
 
     if (ok) {
       try {
+        await joinChapter({ variables: { chapterId } });
         await rsvpToEvent({
           variables: { eventId, chapterId },
         });

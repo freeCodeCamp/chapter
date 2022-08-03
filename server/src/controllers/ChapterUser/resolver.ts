@@ -8,11 +8,14 @@ import {
   Query,
   Resolver,
 } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
+
+const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
@@ -46,22 +49,41 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    return await prisma.chapter_users.create({
-      data: {
-        user: { connect: { id: ctx.user.id } },
-        chapter: { connect: { id: chapterId } },
-        chapter_role: { connect: { name: 'member' } },
-        subscribed: true, // TODO add user setting option override
-        joined_date: new Date(),
-      },
-      include: {
-        user: true,
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
+    const includes = {
+      user: true,
+      chapter_role: {
+        include: {
+          chapter_role_permissions: {
+            include: { chapter_permission: true },
           },
         },
       },
+    };
+    try {
+      return await prisma.chapter_users.create({
+        data: {
+          user: { connect: { id: ctx.user.id } },
+          chapter: { connect: { id: chapterId } },
+          chapter_role: { connect: { name: 'member' } },
+          subscribed: true, // TODO add user setting option override
+          joined_date: new Date(),
+        },
+        include: includes,
+      });
+    } catch (e) {
+      if (
+        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+      ) {
+        throw e;
+      }
+    }
+
+    return await prisma.chapter_users.findUniqueOrThrow({
+      where: {
+        user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
+      },
+      include: includes,
     });
   }
 

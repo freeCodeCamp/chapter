@@ -318,7 +318,7 @@ describe('events dashboard', () => {
 
     cy.logout();
     // admin of chapter 1
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
     cy.reload();
     cy.updateEvent(eventId, eventData).then((response) => {
       expect(response.body.errors).not.to.exist;

@@ -65,6 +65,7 @@ export const EditVenuePage: NextPage = () => {
         onSubmit={onSubmit}
         submitText={'Save Venue Changes'}
         chapter={data.venue.chapter}
+        loadingText={'Saving Venue Changes'}
       />
     </Layout>
   );

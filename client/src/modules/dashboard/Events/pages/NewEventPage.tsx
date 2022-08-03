@@ -74,6 +74,7 @@ export const NewEventPage: NextPage = () => {
         loading={loading}
         onSubmit={onSubmit}
         submitText={'Add event'}
+        loadingText={'Adding Event'}
         chapterId={chapterId}
       />
     </Layout>

@@ -43,7 +43,7 @@ import {
 import 'react-datepicker/dist/react-datepicker.css';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
-  const { onSubmit, data, loading, submitText, chapterId } = props;
+  const { onSubmit, data, loading, submitText, chapterId, loadingText } = props;
   const {
     loading: loadingChapter,
     error: errorChapter,
@@ -156,12 +156,14 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                   showTimeSelect
                   timeIntervals={5}
                   onChange={onDatePickerChange(field.key)}
+                  disabled={loading}
                   dateFormat="MMMM d, yyyy h:mm aa"
                   customInput={
                     <Input
                       id={`${field.key}_trigger`}
                       name={`${field.key}`}
                       label={field.label}
+                      isDisabled={loading}
                       value={
                         field.key === 'start_at'
                           ? startDate.toDateString()
@@ -177,6 +179,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 label={field.label}
                 placeholder={field.placeholder}
                 isRequired={field.isRequired}
+                isDisabled={loading}
                 {...register(field.key)}
               />
             ) : (
@@ -186,6 +189,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 label={field.label}
                 placeholder={field.placeholder}
                 isRequired={field.isRequired}
+                isDisabled={loading}
                 {...register(field.key)}
               />
             ),
@@ -194,6 +198,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <Checkbox
             data-cy="invite-only-checkbox"
             isChecked={inviteOnly}
+            disabled={loading}
             onChange={(e) => setValue('invite_only', e.target.checked)}
           >
             Invite only
@@ -207,6 +212,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                   <Radio
                     key={venueType.value}
                     value={venueType.value}
+                    isDisabled={loading}
                     {...register('venue_type')}
                   >
                     {venueType.name}
@@ -223,7 +229,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               isPhysical(getValues('venue_type')) && (
                 <FormControl isRequired>
                   <FormLabel>Venue</FormLabel>
-                  <Select {...register('venue_id')}>
+                  <Select {...register('venue_id')} isDisabled={loading}>
                     {dataVenues.chapterVenues.map((v) => (
                       <option key={v.id} value={v.id}>
                         {v.name}
@@ -240,6 +246,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 type="url"
                 label="Streaming URL"
                 placeholder=""
+                isDisabled={loading}
                 isRequired
                 {...register('streaming_url')}
               />
@@ -264,6 +271,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                   }
                 }}
                 isDisabled={
+                  loading ||
                   loadingSponsors ||
                   errorSponsor ||
                   !sponsorData ||
@@ -312,6 +320,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                               sponsorsForThisType[0]?.id,
                             );
                           }}
+                          isDisabled={loading}
                         >
                           {getAllowedSponsorTypes(
                             sponsorData,
@@ -348,6 +357,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                               valueAsNumber: true,
                             },
                           )}
+                          isDisabled={loading}
                         >
                           {getAllowedSponsorsForType(
                             sponsorData,
@@ -375,6 +385,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               colorScheme="blue"
               type="submit"
               isDisabled={!isDirty || loading}
+              isLoading={loading}
+              loadingText={loadingText}
             >
               {submitText}
             </Button>
@@ -382,6 +394,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               <EventCancelButton
                 isFullWidth={true}
                 event={data}
+                isDisabled={loading}
                 buttonText="Cancel this Event"
               />
             )}

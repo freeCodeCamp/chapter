@@ -54,6 +54,7 @@ export const EditChapterPage: NextPage = () => {
         data={data}
         loading={loadingUpdate}
         onSubmit={onSubmit}
+        loadingText={'Saving Chapter Changes'}
         submitText={'Save Chapter Changes'}
       />
     </Layout>

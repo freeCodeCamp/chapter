@@ -113,6 +113,7 @@ export const EditEventPage: NextPage = () => {
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}
+        loadingText={'Saving Event Changes'}
         submitText={'Save Event Changes'}
         chapterId={data.event.chapter.id}
       />

@@ -16,6 +16,7 @@ interface ChapterFormProps {
   onSubmit: (data: ChapterFormData) => Promise<void>;
   data?: ChapterQuery;
   submitText: string;
+  loadingText: string;
 }
 
 type Fields = {
@@ -87,7 +88,7 @@ const fields: Fields[] = [
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText } = props;
+  const { loading, onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.chapter;
 
   const defaultValues: ChapterFormData = {
@@ -100,7 +101,11 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     imageUrl: chapter?.imageUrl ?? '',
     chatUrl: chapter?.chatUrl ?? '',
   };
-  const { handleSubmit, register } = useForm<ChapterFormData>({
+  const {
+    handleSubmit,
+    register,
+    formState: { isDirty },
+  } = useForm<ChapterFormData>({
     defaultValues,
   });
 
@@ -120,6 +125,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               {...register(key)}
               isRequired={required}
               defaultValue={defaultValues[key] ?? undefined}
+              isDisabled={loading}
             />
           ) : (
             <Input
@@ -130,6 +136,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
               type={type}
               isRequired={required}
               defaultValue={defaultValues[key] ?? undefined}
+              isDisabled={loading}
             />
           ),
         )}
@@ -139,7 +146,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           variant="solid"
           colorScheme="blue"
           type="submit"
-          disabled={loading}
+          isDisabled={!isDirty || loading}
+          isLoading={loading}
+          loadingText={loadingText}
         >
           {submitText}
         </Button>

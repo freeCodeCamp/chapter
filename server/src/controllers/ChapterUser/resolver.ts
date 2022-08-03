@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import {
   Arg,
   Authorized,
@@ -9,6 +8,7 @@ import {
   Query,
   Resolver,
 } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
@@ -49,22 +49,41 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    return await prisma.chapter_users.create({
-      data: {
-        user: { connect: { id: ctx.user.id } },
-        chapter: { connect: { id: chapterId } },
-        chapter_role: { connect: { name: 'member' } },
-        subscribed: true, // TODO add user setting option override
-        joined_date: new Date(),
-      },
-      include: {
-        user: true,
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
+    const includes = {
+      user: true,
+      chapter_role: {
+        include: {
+          chapter_role_permissions: {
+            include: { chapter_permission: true },
           },
         },
       },
+    };
+    try {
+      return await prisma.chapter_users.create({
+        data: {
+          user: { connect: { id: ctx.user.id } },
+          chapter: { connect: { id: chapterId } },
+          chapter_role: { connect: { name: 'member' } },
+          subscribed: true, // TODO add user setting option override
+          joined_date: new Date(),
+        },
+        include: includes,
+      });
+    } catch (e) {
+      if (
+        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+      ) {
+        throw e;
+      }
+    }
+
+    return await prisma.chapter_users.findUniqueOrThrow({
+      where: {
+        user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
+      },
+      include: includes,
     });
   }
 
@@ -120,44 +139,6 @@ export class ChapterUserResolver {
         },
       },
     });
-  }
-
-  @Mutation(() => Boolean)
-  async initUserInterestForChapter(
-    @Arg('id', () => Int) id: number,
-    @Ctx() ctx: ResolverCtx,
-  ): Promise<boolean> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to update role ');
-    }
-    const event = await prisma.events.findUnique({
-      where: { id },
-      include: { chapter: true },
-    });
-    if (!event || !event.chapter) {
-      throw Error('Cannot find the chapter of the event with id ' + id);
-    }
-
-    try {
-      await prisma.chapter_users.create({
-        data: {
-          user: { connect: { id: ctx.user.id } },
-          chapter: { connect: { id: event.chapter.id } },
-          chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO use user specified setting
-          joined_date: new Date(),
-        },
-      });
-    } catch (e) {
-      if (
-        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
-        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
-      ) {
-        throw e;
-      }
-    }
-
-    return true;
   }
 
   @Query(() => [ChapterUser])

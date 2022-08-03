@@ -266,6 +266,7 @@ export type Mutation = {
   authenticate: AuthenticateType;
   banUser: UserBan;
   cancelEvent: Event;
+  cancelRsvp?: Maybe<EventUser>;
   changeChapterUserRole: ChapterUser;
   changeInstanceUserRole: UserWithInstanceRole;
   confirmRsvp: EventUser;
@@ -277,7 +278,6 @@ export type Mutation = {
   deleteEvent: Event;
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
-  initUserInterestForChapter: Scalars['Boolean'];
   joinChapter: ChapterUser;
   login: LoginType;
   register: User;
@@ -306,6 +306,10 @@ export type MutationBanUserArgs = {
 
 export type MutationCancelEventArgs = {
   id: Scalars['Int'];
+};
+
+export type MutationCancelRsvpArgs = {
+  eventId: Scalars['Int'];
 };
 
 export type MutationChangeChapterUserRoleArgs = {
@@ -358,10 +362,6 @@ export type MutationDeleteRsvpArgs = {
 export type MutationDeleteVenueArgs = {
   chapterId: Scalars['Int'];
   venueId: Scalars['Int'];
-};
-
-export type MutationInitUserInterestForChapterArgs = {
-  id: Scalars['Int'];
 };
 
 export type MutationJoinChapterArgs = {
@@ -989,15 +989,6 @@ export type SendEventInviteMutation = {
   sendEventInvite: boolean;
 };
 
-export type InitUserInterestForChapterMutationVariables = Exact<{
-  eventId: Scalars['Int'];
-}>;
-
-export type InitUserInterestForChapterMutation = {
-  __typename?: 'Mutation';
-  initUserInterestForChapter: boolean;
-};
-
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type EventsQuery = {
@@ -1316,6 +1307,15 @@ export type RsvpToEventMutationVariables = Exact<{
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
   rsvpEvent?: { __typename?: 'EventUser'; updated_at: any } | null;
+};
+
+export type CancelRsvpMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
+
+export type CancelRsvpMutation = {
+  __typename?: 'Mutation';
+  cancelRsvp?: { __typename?: 'EventUser'; updated_at: any } | null;
 };
 
 export type SubscribeToEventMutationVariables = Exact<{
@@ -2738,55 +2738,6 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutation,
   SendEventInviteMutationVariables
 >;
-export const InitUserInterestForChapterDocument = gql`
-  mutation initUserInterestForChapter($eventId: Int!) {
-    initUserInterestForChapter(id: $eventId)
-  }
-`;
-export type InitUserInterestForChapterMutationFn = Apollo.MutationFunction<
-  InitUserInterestForChapterMutation,
-  InitUserInterestForChapterMutationVariables
->;
-
-/**
- * __useInitUserInterestForChapterMutation__
- *
- * To run a mutation, you first call `useInitUserInterestForChapterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInitUserInterestForChapterMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [initUserInterestForChapterMutation, { data, loading, error }] = useInitUserInterestForChapterMutation({
- *   variables: {
- *      eventId: // value for 'eventId'
- *   },
- * });
- */
-export function useInitUserInterestForChapterMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    InitUserInterestForChapterMutation,
-    InitUserInterestForChapterMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    InitUserInterestForChapterMutation,
-    InitUserInterestForChapterMutationVariables
-  >(InitUserInterestForChapterDocument, options);
-}
-export type InitUserInterestForChapterMutationHookResult = ReturnType<
-  typeof useInitUserInterestForChapterMutation
->;
-export type InitUserInterestForChapterMutationResult =
-  Apollo.MutationResult<InitUserInterestForChapterMutation>;
-export type InitUserInterestForChapterMutationOptions =
-  Apollo.BaseMutationOptions<
-    InitUserInterestForChapterMutation,
-    InitUserInterestForChapterMutationVariables
-  >;
 export const EventsDocument = gql`
   query events {
     events(showAll: true) {
@@ -3824,6 +3775,56 @@ export type RsvpToEventMutationResult =
 export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
   RsvpToEventMutation,
   RsvpToEventMutationVariables
+>;
+export const CancelRsvpDocument = gql`
+  mutation cancelRsvp($eventId: Int!) {
+    cancelRsvp(eventId: $eventId) {
+      updated_at
+    }
+  }
+`;
+export type CancelRsvpMutationFn = Apollo.MutationFunction<
+  CancelRsvpMutation,
+  CancelRsvpMutationVariables
+>;
+
+/**
+ * __useCancelRsvpMutation__
+ *
+ * To run a mutation, you first call `useCancelRsvpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelRsvpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelRsvpMutation, { data, loading, error }] = useCancelRsvpMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useCancelRsvpMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CancelRsvpMutation,
+    CancelRsvpMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CancelRsvpMutation, CancelRsvpMutationVariables>(
+    CancelRsvpDocument,
+    options,
+  );
+}
+export type CancelRsvpMutationHookResult = ReturnType<
+  typeof useCancelRsvpMutation
+>;
+export type CancelRsvpMutationResult =
+  Apollo.MutationResult<CancelRsvpMutation>;
+export type CancelRsvpMutationOptions = Apollo.BaseMutationOptions<
+  CancelRsvpMutation,
+  CancelRsvpMutationVariables
 >;
 export const SubscribeToEventDocument = gql`
   mutation subscribeToEvent($eventId: Int!) {

@@ -10,6 +10,14 @@ export const rsvpToEvent = gql`
   }
 `;
 
+export const cancelRsvp = gql`
+  mutation cancelRsvp($eventId: Int!) {
+    cancelRsvp(eventId: $eventId) {
+      updated_at
+    }
+  }
+`;
+
 export const subscribeToEvent = gql`
   mutation subscribeToEvent($eventId: Int!) {
     subscribeToEvent(eventId: $eventId) {

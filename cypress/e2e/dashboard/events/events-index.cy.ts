@@ -315,6 +315,14 @@ describe('events dashboard', () => {
     cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
     cy.reload();
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+
+    cy.logout();
+    // admin of chapter 1
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.reload();
+    cy.updateEvent(eventId, eventData).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
   });
 
   it('chapter admin should be allowed to delete event, but nobody else', () => {

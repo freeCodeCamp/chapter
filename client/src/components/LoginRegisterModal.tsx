@@ -32,9 +32,9 @@ interface RegisterData extends LoginData {
 
 export const LoginRegisterModal: React.FC<{
   modalProps: UseDisclosureReturn;
-  onRsvp: (add: boolean) => void;
+  action: (condition: boolean) => void;
   userIds: number[];
-}> = ({ modalProps, onRsvp, userIds }) => {
+}> = ({ modalProps, action, userIds }) => {
   const client = useApolloClient();
   const [login] = useLoginMutation();
   const [registerMutation] = useRegisterMutation();
@@ -80,7 +80,7 @@ export const LoginRegisterModal: React.FC<{
             if (me) {
               clearInterval(interval);
               modalProps.onClose();
-              onRsvp(!userIds.includes(me.id));
+              action(!userIds.includes(me.id));
             }
           })
           .catch((err) => {

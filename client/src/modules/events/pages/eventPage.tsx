@@ -67,7 +67,7 @@ export const EventPage: NextPage = () => {
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
-    if (allDataLoaded && canCheckRsvp) onRsvp();
+    if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
   if (loading) {
@@ -125,9 +125,6 @@ export const EventPage: NextPage = () => {
   };
 
   const onRsvp = async () => {
-    if (!user) {
-      return handleLoginUserFirst();
-    }
     const ok = await confirm({ title: 'You want to join this?' });
 
     if (ok) {
@@ -167,6 +164,11 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  const checkOnRsvp = async () => {
+    if (!user) return handleLoginUserFirst();
+    await onRsvp();
+  };
+
   const rsvps = data.event.event_users.filter(
     ({ rsvp }) => rsvp.name === 'yes',
   );
@@ -177,7 +179,7 @@ export const EventPage: NextPage = () => {
   return (
     <VStack align="flex-start">
       <LoginRegisterModal
-        onRsvp={onRsvp}
+        action={(notRsvped) => (notRsvped ? onRsvp() : onCancelRsvp())}
         userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
         modalProps={modalProps}
       />
@@ -223,7 +225,7 @@ export const EventPage: NextPage = () => {
           </Button>
         </HStack>
       ) : (
-        <Button data-cy="rsvp-button" colorScheme="blue" onClick={onRsvp}>
+        <Button data-cy="rsvp-button" colorScheme="blue" onClick={checkOnRsvp}>
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}

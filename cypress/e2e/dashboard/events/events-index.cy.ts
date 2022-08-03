@@ -327,12 +327,7 @@ describe('events dashboard', () => {
 
   it('chapter admin should be allowed to delete event, but nobody else', () => {
     const eventId = 1;
-    // admin of chapter 1
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
-    cy.reload();
-    cy.deleteEvent(eventId).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+
     cy.logout();
     // newly registered user (without a chapter_users record)
     cy.register();
@@ -340,10 +335,17 @@ describe('events dashboard', () => {
     cy.login(Cypress.env('JWT_TEST_USER'));
     cy.reload();
     cy.deleteEvent(eventId).then(expectToBeRejected);
-    cy.logout();
+
     // banned admin should be rejected
     cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
     cy.reload();
     cy.deleteEvent(eventId).then(expectToBeRejected);
+    cy.logout();
+    // admin of chapter 1
+    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.reload();
+    cy.deleteEvent(eventId).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
   });
 });

@@ -12,4 +12,4 @@ services:
 # a less silly dev login
   app:
     volumes:
-      - ./scripts/data/:/usr/chapter/scripts/data/
+      - ./scripts/dev-data/:/usr/chapter/scripts/dev-data/

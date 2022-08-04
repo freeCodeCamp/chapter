@@ -32,7 +32,7 @@
     "start:docker-ci": "docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d",
     "stop:docker": "docker compose down",
     "change-user": "node scripts/change-user.js",
-    "change-user:admin": "npm run change-user admin@of.a.chapter",
+    "change-user:admin": "npm run change-user admin@of.chapter.one",
     "change-user:owner": "npm run change-user foo@bar.com",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",

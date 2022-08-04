@@ -33,7 +33,7 @@ const eventData = {
 describe('chapter dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser('admin@of.a.chapter');
+    cy.changeUser('admin@of.chapter.one');
     cy.login();
     cy.mhDeleteAll();
   });

@@ -19,6 +19,7 @@ const eventData = {
 describe('events dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
+    cy.changeUser();
     cy.login();
     cy.mhDeleteAll();
     cy.interceptGQL('events');
@@ -298,43 +299,44 @@ describe('events dashboard', () => {
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
     // admin of chapter 1
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
-    cy.reload();
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
+
     cy.updateEvent(eventId, eventData).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
     // newly registered user (without a chapter_users record)
-    cy.register();
+    cy.changeUser('test@user.org');
+    cy.login();
 
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
-    cy.reload();
+    cy.changeUser('banned@chapter.admin');
+    cy.login();
+
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
   });
 
   it('chapter admin should be allowed to delete event, but nobody else', () => {
     const eventId = 1;
 
-    cy.logout();
     // newly registered user (without a chapter_users record)
-    cy.register();
+    cy.changeUser('test@user.org');
+    cy.login();
 
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
-    cy.reload();
+    cy.changeUser('banned@chapter.admin');
+    cy.login();
+
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // admin of chapter 1
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
-    cy.reload();
+    cy.changeUser('admin@of.chapter.one');
+    cy.login();
+
     cy.deleteEvent(eventId).then((response) => {
       expect(response.body.errors).not.to.exist;
     });

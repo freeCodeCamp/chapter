@@ -48,9 +48,6 @@ export const main = async (app: Express) => {
   );
 
   app.post('/login', checkJwt, (req, res, next) => {
-    // TODO: handle situations where a user is logged in previously (and so has
-    // an entry in the sessions table), but has since deleted their session
-    // cookie.
     const token = getBearerToken(req);
     if (token) {
       const userInfo = fetchUserInfo(token);
@@ -99,7 +96,7 @@ export const main = async (app: Express) => {
   async function createUser(email: string) {
     return prisma.users.create({
       data: {
-        first_name: 'place', // TODO: userInfo has 'name'. Do we want to bother with first_name + last_name??
+        first_name: 'place',
         last_name: 'holder',
         email,
         instance_role: {
@@ -113,9 +110,6 @@ export const main = async (app: Express) => {
 
   // no need to check for identity provider's token on logout
   app.delete('/logout', (req, res, next) => {
-    // TODO: handle situations where a user is logged in previously (and so has
-    // an entry in the sessions table), but has since deleted their session
-    // cookie.
     if (!req.session) return next('session not found');
 
     const id = req.session.id;
@@ -144,6 +138,7 @@ export const main = async (app: Express) => {
   // them.
   app.use(user);
   app.use(events);
+  // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
   // app.use(handleAuthenticationError);
 
   const schema = await buildSchema({

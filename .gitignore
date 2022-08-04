@@ -80,7 +80,7 @@ cypress-coverage/
 /server/prisma/generator/**/*.map
 /server/tests/**/*.map
 /server/reminders/**/*.map
-/server/dev-data.json
+/scripts/dev-data/**/*
 /common/**/*.js
 /common/**/*.map
 tsconfig.tsbuildinfo

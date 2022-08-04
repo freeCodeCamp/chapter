@@ -50,7 +50,7 @@ Cypress.Commands.add('registerViaUI', registerViaUI);
  * @param email Email of the new user
  */
 const login = (email?: string) => {
-  // Currently changing users modifies the dev-data.json file and that file
+  // Currently changing users modifies the current-user.json file and that file
   // needs _not_ to be watched by node-dev. If we change how we store dev users
   // that can be watched again.
   email

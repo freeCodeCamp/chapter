@@ -14,7 +14,6 @@ const venueData = {
 describe('venues dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser();
     cy.login();
   });
   it('should be the active dashboard link', () => {
@@ -55,8 +54,7 @@ describe('venues dashboard', () => {
       longitude: '35',
     };
 
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/chapters/1/');
     cy.get('[data-cy=create-venue]').click();
@@ -110,8 +108,7 @@ describe('venues dashboard', () => {
     );
 
     // newly registered user (without a chapter_users record)
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
@@ -120,8 +117,7 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // banned user
-    cy.changeUser('banned@chapter.admin');
-    cy.login();
+    cy.login('banned@chapter.admin');
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
@@ -130,8 +126,7 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // Admin of different chapter
-    cy.changeUser('admin@of.chapter.two');
-    cy.login();
+    cy.login('admin@of.chapter.two');
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(

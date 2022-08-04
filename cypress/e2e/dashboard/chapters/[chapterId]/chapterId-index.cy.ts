@@ -33,8 +33,7 @@ const eventData = {
 describe('chapter dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
     cy.mhDeleteAll();
   });
 
@@ -87,13 +86,11 @@ describe('chapter dashboard', () => {
   it('prevents members and admins from other chapters from creating events', () => {
     let chapterId = 2;
     // normal member
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
     cy.createEvent(chapterId, eventData).then(expectToBeRejected);
 
     // admin of a different chapter
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
     cy.createEvent(2, eventData).then(expectToBeRejected);
 
     // switch the chapterId to match the admin's chapter

@@ -1,7 +1,6 @@
 describe('Users dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser();
     cy.login();
   });
 

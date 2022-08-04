@@ -8,8 +8,7 @@ describe('chapter page', () => {
   });
 
   it('user can join chapter and change subscription status', () => {
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
     cy.visit(`/chapters/${chapterId}`);
 
     cy.findByRole('button', { name: 'Join chapter' }).click();

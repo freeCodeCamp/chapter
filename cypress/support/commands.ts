@@ -46,9 +46,16 @@ const registerViaUI = (firstName: string, lastName: string, email: string) => {
 Cypress.Commands.add('registerViaUI', registerViaUI);
 
 /**
- * Create user session
+ * Create new user session
+ * @param email Email of the new user
  */
-const login = () => {
+const login = (email?: string) => {
+  // Currently changing users modifies the dev-data.json file and that file
+  // needs _not_ to be watched by node-dev. If we change how we store dev users
+  // that can be watched again.
+  email
+    ? cy.exec(`npm run change-user -- ${email} `)
+    : cy.exec('npm run change-user:owner');
   return cy
     .request({
       url: Cypress.env('SERVER_URL') + '/login',
@@ -60,21 +67,6 @@ const login = () => {
     .then(() => cy.reload());
 };
 Cypress.Commands.add('login', login);
-
-/**
- * Change the current development user
- * @param email Email of the new user
- */
-
-const changeUser = (email?: string) => {
-  // Currently changing users modifies the dev-data.json file and that file
-  // needs _not_ to be watched by node-dev. If we change how we store dev users
-  // that can be watched again.
-  return email
-    ? cy.exec(`npm run change-user -- ${email} `)
-    : cy.exec('npm run change-user:owner');
-};
-Cypress.Commands.add('changeUser', changeUser);
 
 const logout = () => {
   cy.request({
@@ -676,7 +668,6 @@ declare global {
     interface Chainable {
       authedRequest: typeof authedRequest;
       changeChapterUserRole: typeof changeChapterUserRole;
-      changeUser: typeof changeUser;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
       createSponsor: typeof createSponsor;

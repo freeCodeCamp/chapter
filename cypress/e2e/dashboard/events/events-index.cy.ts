@@ -19,7 +19,6 @@ const eventData = {
 describe('events dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser();
     cy.login();
     cy.mhDeleteAll();
     cy.interceptGQL('events');
@@ -299,21 +298,18 @@ describe('events dashboard', () => {
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
     // admin of chapter 1
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
 
     cy.updateEvent(eventId, eventData).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
     // newly registered user (without a chapter_users record)
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.changeUser('banned@chapter.admin');
-    cy.login();
+    cy.login('banned@chapter.admin');
 
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
   });
@@ -322,20 +318,17 @@ describe('events dashboard', () => {
     const eventId = 1;
 
     // newly registered user (without a chapter_users record)
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.changeUser('banned@chapter.admin');
-    cy.login();
+    cy.login('banned@chapter.admin');
 
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // admin of chapter 1
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
 
     cy.deleteEvent(eventId).then((response) => {
       expect(response.body.errors).not.to.exist;

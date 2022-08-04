@@ -76,8 +76,7 @@ describe('event page', () => {
   });
 
   it('should be possible to RSVP and cancel', () => {
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     cy.get('[data-cy="rsvps-heading"]')
       .next()
@@ -103,8 +102,7 @@ describe('event page', () => {
   });
 
   it('should be possible to change event subscription', () => {
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     // RSVPing is required for managing event subscription
     cy.findByRole('button', { name: 'RSVP' }).click();
@@ -136,16 +134,14 @@ describe('event page', () => {
     );
 
     // newly registered user (without a chapter_users record)
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
     cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
 
     // banned user
-    cy.changeUser('banned@chapter.admin');
-    cy.login();
+    cy.login('banned@chapter.admin');
 
     cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
@@ -153,8 +149,7 @@ describe('event page', () => {
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {
-    cy.changeUser('test@user.org');
-    cy.login();
+    cy.login('test@user.org');
 
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();

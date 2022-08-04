@@ -13,7 +13,7 @@ const chapterData = {
 describe('chapters dashboard', () => {
   before(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser();
+    cy.login();
   });
 
   it('should be the active dashboard link', () => {
@@ -27,7 +27,6 @@ describe('chapters dashboard', () => {
   });
 
   it('should have a table with links to view, create and edit chapters', () => {
-    cy.login();
     cy.visit('/dashboard/chapters');
     cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
@@ -38,7 +37,6 @@ describe('chapters dashboard', () => {
   });
 
   it('lets an instance owner create a chapter', () => {
-    cy.login();
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').click();
     cy.findByRole('textbox', { name: 'Chapter name' }).type(chapterData.name);
@@ -67,8 +65,7 @@ describe('chapters dashboard', () => {
   });
 
   it('only allows owners to create chapters', () => {
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');
@@ -76,7 +73,6 @@ describe('chapters dashboard', () => {
     cy.createChapter(chapterData).then(expectToBeRejected);
 
     // switch to owner account and try to create a chapter
-    cy.changeUser();
     cy.login();
 
     cy.createChapter(chapterData).then((response) => {

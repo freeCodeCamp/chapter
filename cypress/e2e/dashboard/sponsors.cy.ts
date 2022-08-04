@@ -10,11 +10,10 @@ const testSponsor = {
 describe('sponsors dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.changeUser();
+    cy.login();
   });
 
   it('lets an instance owner create sponsors', () => {
-    cy.login();
     cy.visit('/dashboard/sponsors/new');
 
     cy.findByRole('textbox', { name: 'Sponsor Name' }).type(testSponsor.name);
@@ -33,8 +32,6 @@ describe('sponsors dashboard', () => {
   });
 
   it('lets an instance owner edit sponsors', () => {
-    cy.login();
-
     cy.visit('/dashboard/sponsors/1/edit');
     cy.findByRole('textbox', { name: 'Sponsor Name' })
       .clear()
@@ -58,8 +55,7 @@ describe('sponsors dashboard', () => {
   });
 
   it('prevents chapter admins from managing sponsors', () => {
-    cy.changeUser('admin@of.chapter.one');
-    cy.login();
+    cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');

@@ -16,9 +16,7 @@ tasks:
       export COOKIE_DOMAIN=gitpod.io &&
       nvm install lts/gallium && nvm alias default lts/gallium
     # the rest, get persisted, so we can save time and use init:
-    init: |
-      cp .env.example .env &&
-      npm ci
+    init: npm ci
     command: |
       npm run db:reset &&
       npm run both

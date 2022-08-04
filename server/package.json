@@ -48,7 +48,7 @@
     "ical-generator": "3.5.1",
     "is-docker": "2.2.1",
     "jsonwebtoken": "8.5.1",
-    "node-fetch": "2",
+    "node-fetch": "^2.6.7",
     "nodemailer": "6.7.7",
     "pg": "8.7.3",
     "reflect-metadata": "0.1.13",

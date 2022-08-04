@@ -728,6 +728,7 @@ ${venueDetails}`;
     return event;
   }
 
+  @Authorized(Permission.EventDelete)
   @Mutation(() => Event)
   async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
     return await prisma.events.delete({

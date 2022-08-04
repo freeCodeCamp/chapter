@@ -3391,9 +3391,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "EventUser",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EventUser",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

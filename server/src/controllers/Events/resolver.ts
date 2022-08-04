@@ -693,6 +693,7 @@ ${venueDetails}`;
     });
   }
 
+  @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
   async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
     const event = await prisma.events.update({

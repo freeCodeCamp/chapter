@@ -19,8 +19,7 @@ import React from 'react';
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
 
-const serverUri =
-  process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
+const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 const httpLink = createHttpLink({
   uri: new URL('/graphql', serverUri).href,

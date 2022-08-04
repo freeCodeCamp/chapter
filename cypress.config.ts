@@ -83,7 +83,7 @@ export default defineConfig({
       config.env.JWT_MALFORMED = 'not-a-valid-format';
 
       config.env.SERVER_URL =
-        process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
+        process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
       config.env.GQL_URL = `${config.env.SERVER_URL}/graphql`;
 
       // This makes sure the db is populated before running any tests. Without this,

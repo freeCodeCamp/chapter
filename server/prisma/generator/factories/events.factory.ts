@@ -84,19 +84,27 @@ const createEvents = async (
       }),
     );
 
-    const tagNames = Array.from(new Array(1 + random(3)), () => lorem.word());
+    const tagNames = [
+      'Front End Development',
+      'Back End Development',
+      'FullStack Development',
+      'Cat Adoring',
+      'Dog Adoring',
+      'SNAKES',
+    ];
+    const randomTag = Math.floor(Math.random() * tagNames.length);
     await prisma.events.update({
       where: { id: event.id },
       data: {
         tags: {
-          create: [...new Set(tagNames)].map((tagName) => ({
+          create: {
             tag: {
               connectOrCreate: {
-                create: { name: tagName },
-                where: { name: tagName },
+                create: { name: tagNames[randomTag] },
+                where: { name: tagNames[randomTag] },
               },
             },
-          })),
+          },
         },
       },
     });

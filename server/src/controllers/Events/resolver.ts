@@ -265,12 +265,12 @@ export class EventResolver {
   }
 
   @Authorized(Permission.Rsvp)
-  @Mutation(() => EventUser, { nullable: true })
+  @Mutation(() => EventUser)
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<EventUser | null> {
+  ): Promise<EventUser> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {

@@ -387,12 +387,12 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="events.chapter_id references chapters.id via events_chapter_id_fkey"><a href='chapters.html'>chapters</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">events_chapter_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="events.[venue_id, chapter_id] references venues.[id, chapter_id] via events_venue_id_chapter_id_fkey"><a href='venues.html'>venues</a><span class='relatedKey'>.chapter_id</span></td>
                                                 <td class="constraint detail">events_venue_id_chapter_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="events.chapter_id references chapters.id via events_chapter_id_fkey"><a href='chapters.html'>chapters</a><span class='relatedKey'>.id</span></td>
+                                                <td class="constraint detail">events_chapter_id_fkey<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>
                                     </td>

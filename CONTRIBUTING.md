@@ -453,7 +453,7 @@ import { Authorized } from 'type-graphql';
 
 Adding it in resolver before specific request logic, wraps the request in the authorization logic. Only for authorized users logic of the request will be executed.
 
-By default this will mean only logged in user can be authorized.
+By default, this means only logged in users can be authorized.
 
 ```ts
   @Authorized(Permission.EventCreate)
@@ -506,7 +506,7 @@ Adding `@Authorize(Permissions.EventEdit)` before event editing logic will autho
 * User is not banned on the chapter, on which edited event is, and for that chapter their Chapter role has `Permission.EventEdit` permission.
 * Their Event role, for the edited event, has `Permission.EventEdit` permission.
 
-Otherwise request will be rejected.
+Otherwise, the request will be rejected.
 
 # Frequently Asked Questions
 

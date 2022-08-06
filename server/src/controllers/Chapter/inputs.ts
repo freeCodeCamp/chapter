@@ -23,6 +23,9 @@ export class CreateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String)
+  tag: string;
+
+  @Field(() => String)
   imageUrl: string;
 
   @Field(() => String, { nullable: true })
@@ -48,6 +51,9 @@ export class UpdateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
 
   @Field(() => String, { nullable: true })
   country: string;
+
+  @Field(() => String, { nullable: true })
+  tag: string;
 
   @Field(() => String, { nullable: true })
   imageUrl: string;

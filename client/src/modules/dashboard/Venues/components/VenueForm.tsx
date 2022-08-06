@@ -1,26 +1,30 @@
-import { Button, Heading, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Select,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
+import {
+  useChapterQuery,
+  useChaptersQuery,
+} from '../../../../generated/graphql';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
 
-export type VenueFormData = Omit<
-  Venue,
-  'id' | 'events' | 'chapter_id' | 'chapter'
->;
-
-interface VenueChapter {
-  id: number;
-  name: string;
-}
+export type VenueFormData = Omit<Venue, 'id' | 'events' | 'chapter'>;
 
 interface VenueFormProps {
   loading: boolean;
   onSubmit: (data: VenueFormData) => Promise<void>;
   data?: VenueQuery;
   submitText: string;
-  chapter: VenueChapter;
+  chapterId: number;
   loadingText: string;
 }
 
@@ -100,8 +104,18 @@ const fields: Fields[] = [
 ];
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, chapter, loadingText } = props;
+  const { loading, onSubmit, data, submitText, chapterId, loadingText } = props;
   const venue = data?.venue;
+
+  const {
+    loading: loadingChapter,
+    data: dataChapter,
+    error: errorChapter,
+  } = useChapterQuery({
+    variables: { chapterId },
+  });
+
+  const { data: chaptersData } = useChaptersQuery(); // placeholder
 
   const defaultValues: VenueFormData = {
     name: venue?.name ?? '',
@@ -112,6 +126,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     country: venue?.country ?? '',
     latitude: venue?.latitude ?? undefined,
     longitude: venue?.longitude ?? undefined,
+    chapter_id: chapterId,
   };
   const {
     handleSubmit,
@@ -123,13 +138,39 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
 
   return (
     <>
-      {chapter && <Heading>{chapter.name}</Heading>}
       <form
         aria-label={submitText}
         onSubmit={handleSubmit(onSubmit)}
         className={styles.form}
       >
         <VStack>
+          {chapterId !== -1 ? (
+            loadingChapter ? (
+              <Text>Loading Chapter</Text>
+            ) : errorChapter || !dataChapter?.chapter ? (
+              <Text>Error loading chapter</Text>
+            ) : (
+              <Heading>{dataChapter.chapter.name}</Heading>
+            )
+          ) : (
+            chaptersData && (
+              <FormControl isRequired>
+                <FormLabel>Chapter</FormLabel>
+                <Select
+                  {...register('chapter_id' as const, {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                >
+                  {chaptersData.chapters.map(({ id, name }) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            )
+          )}
           {fields.map(({ key, isRequired, label, type, step, max, min }) => (
             <Input
               key={key}

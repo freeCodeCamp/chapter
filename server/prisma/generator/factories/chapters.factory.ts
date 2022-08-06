@@ -12,7 +12,21 @@ const createChapters = async (userId: number): Promise<number[]> => {
     const name = company.companyName();
     const description = lorem.words();
     const category = lorem.word();
+    const tagNames = [
+      'Front End Development',
+      'Back End Development',
+      'FullStack Development',
+      'Cat Adoring',
+      'Dog Adoring',
+      'SNAKES',
+      'DevOps',
+      'Consulting',
+      'Hang Out',
+      'Security',
+    ];
+    const randomTag = Math.floor(Math.random() * tagNames.length);
 
+    const tag = tagNames[randomTag];
     // TODO: we shouldn't need to use the unchecked type here. The database
     // schema may need modifying.
     const chapterData: Prisma.chaptersUncheckedCreateInput = {
@@ -23,6 +37,7 @@ const createChapters = async (userId: number): Promise<number[]> => {
       country: address.country(),
       city: address.city(),
       region: address.state(),
+      tag,
       imageUrl: image.imageUrl(640, 480, 'tech', true),
     };
 

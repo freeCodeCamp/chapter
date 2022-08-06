@@ -37,10 +37,10 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  tag: Scalars['String'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
+  tag: Scalars['String'];
 };
 
 export type ChapterPermission = {
@@ -86,6 +86,7 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
+  tag: Scalars['String'];
   user_bans: Array<UserBan>;
 };
 
@@ -95,10 +96,10 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  tag: Scalars['String'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
+  tag: Scalars['String'];
 };
 
 export type CreateEventInputs = {
@@ -545,10 +546,10 @@ export type UpdateChapterInputs = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  tag?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
+  tag?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateEventInputs = {

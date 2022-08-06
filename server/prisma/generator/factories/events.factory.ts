@@ -94,7 +94,7 @@ const createEvents = async (
       'DevOps',
       'Consulting',
       'Hang Out',
-      'Security'
+      'Security',
     ];
     const randomTag = Math.floor(Math.random() * tagNames.length);
     await prisma.events.update({

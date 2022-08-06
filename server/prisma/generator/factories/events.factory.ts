@@ -85,16 +85,27 @@ const createEvents = async (
     );
 
     const tagNames = [
-      'Front End Development',
-      'Back End Development',
-      'FullStack Development',
-      'Cat Adoring',
-      'Dog Adoring',
-      'SNAKES',
-      'DevOps',
-      'Consulting',
-      'Hang Out',
-      'Security',
+      'GraphQl',
+      'NodeJs',
+      'JavaScript',
+      'TypeScript',
+      'HTML',
+      'CSS',
+      'Cypress',
+      'Tailwind',
+      'Sass',
+      'BootStrap',
+      'React',
+      'Vue',
+      'NextJs',
+      'NuxtJs',
+      'Angular',
+      'Svelete',
+      'SveleteKit',
+      'Vite',
+      'Prisma',
+      'Ruby',
+      'Rust',
     ];
     const randomTag = Math.floor(Math.random() * tagNames.length);
     await prisma.events.update({

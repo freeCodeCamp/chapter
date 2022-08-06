@@ -94,6 +94,7 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
+  tag: Scalars['String'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
@@ -543,6 +544,7 @@ export type UpdateChapterInputs = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  tag?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;

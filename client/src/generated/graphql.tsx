@@ -743,6 +743,7 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
+    tag: string;
     imageUrl: string;
     chatUrl?: string | null;
     events: Array<{

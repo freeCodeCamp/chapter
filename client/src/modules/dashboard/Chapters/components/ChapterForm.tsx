@@ -98,6 +98,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
+    tag: chapter?.category ?? '',
     imageUrl: chapter?.imageUrl ?? '',
     chatUrl: chapter?.chatUrl ?? '',
   };

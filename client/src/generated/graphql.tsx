@@ -37,6 +37,7 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
+  tag: Scalars['String'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];

@@ -21,6 +21,7 @@ model chapters {
   city          String
   region        String
   country       String
+  tag           String
   imageUrl      String
   chatUrl       String?
   creator_id    Int

@@ -83,10 +83,10 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  tag: Scalars['String'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
+  tag: Scalars['String'];
   user_bans: Array<UserBan>;
 };
 
@@ -743,7 +743,6 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    tag: string;
     imageUrl: string;
     chatUrl?: string | null;
     events: Array<{

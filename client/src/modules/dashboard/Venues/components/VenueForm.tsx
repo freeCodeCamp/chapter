@@ -10,12 +10,10 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
-import {
-  useChapterQuery,
-  useChaptersQuery,
-} from '../../../../generated/graphql';
+import { useChapterQuery } from '../../../../generated/graphql';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
 import styles from '../../../../styles/Form.module.css';
+import { useAuth } from 'modules/auth/store';
 
 export type VenueFormData = Omit<Venue, 'id' | 'events' | 'chapter'>;
 
@@ -115,7 +113,8 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     variables: { chapterId },
   });
 
-  const { data: chaptersData } = useChaptersQuery(); // placeholder
+  const { user } = useAuth();
+  const adminedChapters = user?.admined_chapters ?? [];
 
   const defaultValues: VenueFormData = {
     name: venue?.name ?? '',
@@ -153,23 +152,22 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
               <Heading>{dataChapter.chapter.name}</Heading>
             )
           ) : (
-            chaptersData && (
-              <FormControl isRequired>
-                <FormLabel>Chapter</FormLabel>
-                <Select
-                  {...register('chapter_id' as const, {
-                    required: true,
-                    valueAsNumber: true,
-                  })}
-                >
-                  {chaptersData.chapters.map(({ id, name }) => (
-                    <option key={id} value={id}>
-                      {name}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
-            )
+            <FormControl isRequired>
+              <FormLabel>Chapter</FormLabel>
+              <Select
+                {...register('chapter_id' as const, {
+                  required: true,
+                  valueAsNumber: true,
+                })}
+                isDisabled={loading}
+              >
+                {adminedChapters.map(({ id, name }) => (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
           )}
           {fields.map(({ key, isRequired, label, type, step, max, min }) => (
             <Input

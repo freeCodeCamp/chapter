@@ -6,6 +6,7 @@ const chapterData = {
   city: 'City it is based in',
   region: 'Location in the world',
   country: 'Home country',
+  tag: 'Chapter Tag',
   category: 'Type of chapter',
   imageUrl: 'https://example.com/image.jpg',
 };

@@ -73,7 +73,7 @@ const fields: Fields[] = [
   },
   {
     key: 'tag',
-    label: 'Tag',
+    label: 'Tag Name',
     placeholder: 'Eductional platform',
     required: true,
     type: 'text',

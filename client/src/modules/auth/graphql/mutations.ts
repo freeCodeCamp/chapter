@@ -37,6 +37,10 @@ export const authenticateMutation = gql`
             }
           }
         }
+        admined_chapters {
+          id
+          name
+        }
       }
     }
   }

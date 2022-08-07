@@ -72,6 +72,13 @@ const fields: Fields[] = [
     type: 'text',
   },
   {
+    key: 'tag',
+    label: 'Tag',
+    placeholder: 'Eductional platform',
+    required: true,
+    type: 'text',
+  },
+  {
     key: 'imageUrl',
     label: 'Image Url',
     placeholder: 'https://www.freecodecamp.org',

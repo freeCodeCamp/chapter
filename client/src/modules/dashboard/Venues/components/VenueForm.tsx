@@ -104,6 +104,7 @@ const fields: Fields[] = [
 const VenueForm: React.FC<VenueFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, chapterId, loadingText } = props;
   const venue = data?.venue;
+  const isChaptersDropdownNeeded = chapterId === -1;
 
   const {
     loading: loadingChapter,
@@ -112,9 +113,6 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   } = useChapterQuery({
     variables: { chapterId },
   });
-
-  const { user } = useAuth();
-  const adminedChapters = user?.admined_chapters ?? [];
 
   const defaultValues: VenueFormData = {
     name: venue?.name ?? '',
@@ -128,12 +126,27 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     chapter_id: chapterId,
   };
   const {
+    formState: { isDirty },
+    getValues,
     handleSubmit,
     register,
-    formState: { isDirty },
+    setValue,
   } = useForm<VenueFormData>({
     defaultValues,
   });
+
+  interface Chapter {
+    id: number;
+    name: string;
+  }
+  let adminedChapters: Chapter[] = [];
+  if (isChaptersDropdownNeeded) {
+    const { user } = useAuth();
+    adminedChapters = user?.admined_chapters ?? [];
+    if (adminedChapters.length) {
+      setValue('chapter_id', adminedChapters[0].id);
+    }
+  }
 
   return (
     <>
@@ -143,7 +156,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         className={styles.form}
       >
         <VStack>
-          {chapterId !== -1 ? (
+          {!isChaptersDropdownNeeded ? (
             loadingChapter ? (
               <Text>Loading Chapter</Text>
             ) : errorChapter || !dataChapter?.chapter ? (
@@ -159,13 +172,17 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
                   required: true,
                   valueAsNumber: true,
                 })}
+                defaultValue={
+                  adminedChapters?.length ? getValues('chapter_id') : undefined
+                }
                 isDisabled={loading}
               >
-                {adminedChapters.map(({ id, name }) => (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                ))}
+                {adminedChapters?.length &&
+                  adminedChapters.map(({ id, name }) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
               </Select>
             </FormControl>
           )}

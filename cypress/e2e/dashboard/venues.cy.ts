@@ -138,4 +138,31 @@ describe('venues dashboard', () => {
     );
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
   });
+
+  describe('adding venue with chapter selected in form', () => {
+    it('only admined chapters can be selected', () => {
+      cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+      cy.visit('/dashboard/venues/new');
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .then((options) => {
+          expect(options).to.have.length(1);
+        });
+
+      cy.register();
+      cy.login(Cypress.env('JWT_TEST_USER'));
+      cy.reload();
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .should('not.exist');
+
+      cy.login();
+      cy.reload();
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .then((options) => {
+          expect(options).to.have.length(4);
+        });
+    });
+  });
 });

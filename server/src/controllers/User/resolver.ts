@@ -4,6 +4,8 @@ import { prisma } from '../../prisma';
 
 import { Permission } from '../../../../common/permissions';
 
+const CHAPTER_ADMIN_PERMISSION = Permission.ChapterEdit;
+
 @Resolver(() => UserWithInstanceRole)
 export class UserWithInstanceRoleResolver {
   @FieldResolver(() => [Chapter])
@@ -13,33 +15,29 @@ export class UserWithInstanceRoleResolver {
     if (
       user.instance_role.instance_role_permissions.some(
         ({ instance_permission }) =>
-          instance_permission.name === Permission.ChapterEdit,
+          instance_permission.name === CHAPTER_ADMIN_PERMISSION,
       )
     ) {
       return await prisma.chapters.findMany();
     }
     return await prisma.chapters.findMany({
       where: {
-        AND: [
-          {
-            chapter_users: {
-              some: { user_id: user.id },
-            },
-          },
-          {
-            chapter_users: {
-              some: {
+        chapter_users: {
+          some: {
+            AND: [
+              { user_id: user.id },
+              {
                 chapter_role: {
                   chapter_role_permissions: {
                     some: {
-                      chapter_permission: { name: Permission.ChapterEdit },
+                      chapter_permission: { name: CHAPTER_ADMIN_PERMISSION },
                     },
                   },
                 },
               },
-            },
+            ],
           },
-        ],
+        },
       },
     });
   }

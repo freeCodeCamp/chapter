@@ -9,6 +9,8 @@ import {
   Link,
   Button,
   useToast,
+  Tag,
+  Flex,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
@@ -130,6 +132,18 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
+        <Flex alignItems="baseline" pt={3}>
+          <Tag
+            borderRadius="full"
+            pl="2"
+            px="2"
+            colorScheme="teal"
+            key={data.chapter.tag}
+            mr="2"
+          >
+            {data.chapter.tag}
+          </Tag>
+        </Flex>
         {user &&
           (loadingChapterUser ? (
             <Spinner />

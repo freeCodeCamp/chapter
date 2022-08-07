@@ -740,6 +740,7 @@ ${venueDetails}`;
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return
   // an object type)
+  @Authorized(Permission.EventEdit)
   @Mutation(() => Boolean)
   async sendEventInvite(
     @Arg('id', () => Int) id: number,

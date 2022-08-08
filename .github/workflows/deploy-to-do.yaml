@@ -19,7 +19,7 @@ jobs:
       - name: Build Images
         env: 
           NEXT_PUBLIC_APOLLO_SERVER: ${{ secrets.CHAPTER_SERVER_URL }}
-        run: npm run build:docker-ci
+        run: npm run build:docker
       - name: Save Images
         run: |
           docker save -o app.tar chapter_app

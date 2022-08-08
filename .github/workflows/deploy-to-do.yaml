@@ -46,4 +46,4 @@ jobs:
           script: |
             docker load -i images/app.tar
             docker load -i images/client.tar
-            cd client && npm run start:docker
+            cd chapter && npm run start:docker

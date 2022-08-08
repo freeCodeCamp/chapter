@@ -38,6 +38,6 @@ jobs:
           env: DOCKER_BUILDKIT=1
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
           build: npm run build:docker-ci
-          start: npm run start:docker
+          start: npm run start:docker-ci
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           browser: ${{ matrix.browsers }}

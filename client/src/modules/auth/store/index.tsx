@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { useMeQuery, MeQuery } from '../../../generated/graphql';
-import { useLogin } from 'hooks/useLogin';
+import { useSession } from 'hooks/useSession';
 
 interface AuthContextType {
   user?: MeQuery['me'];
@@ -27,12 +27,12 @@ export const AuthContextProvider = ({
   const [data, setData] = useState<AuthContextType>({});
   const [loginAttempted, setLoginAttempted] = useState(false);
   const { loading, error, data: meData, refetch } = useMeQuery();
-  const { isAuthenticated, login } = useLogin();
+  const { isAuthenticated, createSession } = useSession();
 
-  const tryToLogin = async () => {
+  const tryToCreateSession = async () => {
     if (isAuthenticated) {
       setLoginAttempted(true);
-      await login();
+      await createSession();
       refetch();
     }
   };
@@ -44,7 +44,7 @@ export const AuthContextProvider = ({
       } else if (!loginAttempted) {
         // TODO: figure out if we need this guard. Can we get away with only
         // using isAuthenticated?
-        tryToLogin();
+        tryToCreateSession();
       }
     }
   }, [loading, error, meData, loginAttempted, isAuthenticated]);

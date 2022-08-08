@@ -9,7 +9,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Input } from '../Form/Input';
-import { useLogin } from 'hooks/useLogin';
+import { useSession } from 'hooks/useSession';
 
 interface Props {
   children: React.ReactNode;
@@ -26,9 +26,11 @@ const LoginButton = () => {
 };
 
 const DevLoginButton = () => {
-  const { login } = useLogin();
+  const { createSession } = useSession();
   return (
-    <Button onClick={() => login().then(() => window.location.reload())}>
+    <Button
+      onClick={() => createSession().then(() => window.location.reload())}
+    >
       Log In
     </Button>
   );

@@ -7,13 +7,13 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 // of the site in one or the other?
 const isDev = process.env.NEXT_PUBLIC_ENVIRONMENT === 'development';
 
-export const useLogin = (): {
+export const useSession = (): {
   isAuthenticated: boolean;
-  login: () => Promise<void>;
+  createSession: () => Promise<void>;
 } => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  const login = async () => {
+  const createSession = async () => {
     const token = isDev ? 'fake-token' : await getAccessTokenSilently();
 
     await fetch(`${serverUrl}/login`, {
@@ -24,5 +24,8 @@ export const useLogin = (): {
       credentials: 'include',
     });
   };
-  return { isAuthenticated: isDev ? true : isAuthenticated, login };
+  return {
+    isAuthenticated: isDev ? true : isAuthenticated,
+    createSession,
+  };
 };

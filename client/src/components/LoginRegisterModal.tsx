@@ -49,7 +49,7 @@ export const LoginRegisterModal: React.FC<{
 
   const onSubmit = async (data: LoginData | RegisterData) => {
     if (isRegister) {
-      if ('last_name' in data) {
+      if ('name' in data) {
         try {
           await registerMutation({ variables: { ...data } });
           toast({ title: 'User registered', status: 'success' });

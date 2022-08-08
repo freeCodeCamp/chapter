@@ -109,8 +109,7 @@ export default class MailerService {
             to: email,
             from: this.sendgridEmail,
             subject: this.subject,
-            html: this.htmlEmail,
-            text: this.backupText,
+            html: this.htmlEmail || this.backupText,
             trackingSettings: {
               clickTracking: {
                 enable: false,

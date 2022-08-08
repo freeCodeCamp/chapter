@@ -98,6 +98,7 @@ exports[`EventCard should render with tags 1`] = `
               fill="currentColor"
             />
           </svg>
+          Invite Only
         </span>
       </h4>
       <div

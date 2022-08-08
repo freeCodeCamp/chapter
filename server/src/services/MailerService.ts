@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import sendgrid from '@sendgrid/mail';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
@@ -136,7 +138,8 @@ export default class MailerService {
         }
       }
     } catch (e) {
-      console.log('Email failed to send. ', e);
+      // We need to inspect, since mail error objects are often quite deep.
+      console.log('Email failed to send. ', inspect(e, false, null));
     }
   }
 }

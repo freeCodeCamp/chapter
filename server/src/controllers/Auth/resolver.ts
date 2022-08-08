@@ -65,14 +65,12 @@ export class AuthResolver {
       console.log(
         `Code: ${code}\n${process.env.CLIENT_LOCATION}/auth/token?token=${token}`,
       );
-      await new MailerService({
-        emailList: [data.email],
-        subject: 'Login to Chapter',
-        htmlEmail: `<a href=${process.env.CLIENT_LOCATION}/auth/token?token=${token}>Click here to log in to chapter</a>`,
-      }).sendEmail();
     }
-
-    // TODO: Send email in production
+    await new MailerService({
+      emailList: [data.email],
+      subject: 'Login to Chapter',
+      htmlEmail: `<a href=${process.env.CLIENT_LOCATION}/auth/token?token=${token}>Click here to log in to chapter</a>`,
+    }).sendEmail();
 
     return {
       code,

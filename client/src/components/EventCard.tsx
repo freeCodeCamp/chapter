@@ -31,7 +31,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       )}
       {event.invite_only && (
         <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
-          <LockIcon />
+          <LockIcon /> Invite Only
         </Tag>
       )}
     </>

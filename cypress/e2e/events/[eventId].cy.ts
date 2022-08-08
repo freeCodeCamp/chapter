@@ -25,11 +25,11 @@ describe('event page', () => {
   });
 
   it('ask the user to login before they can RSVP', () => {
-    const fix = { email: 'test@user.org', firstName: 'Test', lastName: 'User' };
+    const newUser = { email: 'test@user.org', name: 'Test User' };
 
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('heading', { name: 'Login' }).should('be.visible');
-    cy.findByRole('textbox', { name: 'Email' }).as('email').type(fix.email);
+    cy.findByRole('textbox', { name: 'Email' }).as('email').type(newUser.email);
     cy.findByRole('button', { name: 'Login' }).as('login-submit').click();
     // TODO: nicer response to un-registered users
     cy.contains('No users found');
@@ -37,9 +37,8 @@ describe('event page', () => {
     // TODO: should this be called 'Switch to registration'?
     cy.findByRole('button', { name: 'Register' }).click();
 
-    cy.get('@email').should('have.value', fix.email);
-    cy.findByRole('textbox', { name: 'First name' }).type(fix.firstName);
-    cy.findByRole('textbox', { name: 'Last name' }).type(fix.lastName);
+    cy.get('@email').should('have.value', newUser.email);
+    cy.findByRole('textbox', { name: 'Name' }).type(newUser.name);
 
     cy.interceptGQL('register');
     cy.findByRole('button', { name: 'Register' }).click();
@@ -155,7 +154,7 @@ describe('event page', () => {
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {
-    cy.register('Test', 'User', 'test@user.org');
+    cy.register('Test User', 'test@user.org');
     cy.login(Cypress.env('JWT_TEST_USER'));
     cy.reload();
 

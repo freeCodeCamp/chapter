@@ -1,7 +1,7 @@
 describe('login', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
-    cy.register('An', 'User', 'an@user.com');
+    cy.register('An User', 'an@user.com');
     cy.mhDeleteAll();
   });
 

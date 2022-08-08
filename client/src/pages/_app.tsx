@@ -22,7 +22,7 @@ import { AuthContextProvider } from '../modules/auth/store';
 const serverUri =
   process.env.NEXT_PUBLIC_APOLLO_SERVER || 'http://localhost:5000';
 
-const httpLink = createHttpLink({ uri: `${serverUri}/graphql` });
+const httpLink = createHttpLink({ uri: new URL('/graphql', serverUri).href });
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
 

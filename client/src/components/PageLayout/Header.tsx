@@ -75,7 +75,7 @@ export const Header: React.FC = () => {
                 <Button data-cy="logout-button" onClick={logout}>
                   Logout
                 </Button>
-                <Avatar name={`${user.first_name} ${user.last_name}`} />
+                <Avatar name={user.name} />
               </>
             ) : (
               <Link color="white" href="/auth/login">

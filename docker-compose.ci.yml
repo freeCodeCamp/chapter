@@ -8,3 +8,8 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+# TODO: ugly hack to get the dev login working, remove the volume once there is
+# a less silly dev login
+  app:
+    volumes:
+      - ./scripts/dev-data/:/usr/chapter/scripts/dev-data/

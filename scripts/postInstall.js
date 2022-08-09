@@ -35,7 +35,6 @@ function setup() {
     console.error(e);
   }
 
-  // Copy .env.example to .env
   if (!existsSync('.env')) {
     console.log("You don't have a .env\nCopying .env.example to .env");
 
@@ -45,6 +44,20 @@ function setup() {
     } catch (e) {
       IS_ERROR = true;
       console.error(`${e} occurred while copying .env file`);
+    }
+  }
+
+  if (!existsSync('./client/.env.local')) {
+    console.log(
+      "You don't have a .env.local\nCopying .env.local.example to .env.local",
+    );
+
+    try {
+      copyFileSync('./client/.env.local.example', './client/.env.local');
+      console.log('Copied!');
+    } catch (e) {
+      IS_ERROR = true;
+      console.error(`${e} occurred while copying .env.local file`);
     }
   }
 

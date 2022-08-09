@@ -24,7 +24,9 @@ export const ChaptersPage: NextPage = () => {
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
-          <Heading id="page-heading">Chapters</Heading>
+          <Heading data-cy="chapter-dash-heading" id="page-heading">
+            Chapters
+          </Heading>
           {hasPermissionToCreateChapter && (
             <LinkButton data-cy="new-chapter" href="/dashboard/chapters/new">
               Add new

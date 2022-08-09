@@ -13,7 +13,7 @@ services:
     depends_on:
       - db
     platform: "linux/amd64"
-    build: 
+    build:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
@@ -32,13 +32,10 @@ services:
       context: .
       dockerfile: client.Dockerfile
       args:
-    # on remote environments, NEXT_PUBLIC_APOLLO_SERVER in .env (or shell
-    # environment) needs to include the remote address. e.g.
-    # https://example.com:5000
-        NEXT_PUBLIC_APOLLO_SERVER: 
+        # on remote environments, NEXT_PUBLIC_SERVER_URL in .env (or shell
+        # environment) needs to include the remote address. e.g.
+        # https://example.com:5000
+        NEXT_PUBLIC_SERVER_URL:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client
-
-
-

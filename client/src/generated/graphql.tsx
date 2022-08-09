@@ -40,12 +40,7 @@ export type Chapter = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  chapterTags: Array<ChapterTag>;
-};
-
-export type ChapterTag = {
-  __typename?: 'ChapterTag';
-  chapterTag: Tag;
+  tag: Scalars['String'];
 };
 
 export type ChapterPermission = {
@@ -91,7 +86,7 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  chapterTags: Array<ChapterTag>;
+  tag: Scalars['String'];
   user_bans: Array<UserBan>;
 };
 
@@ -104,7 +99,7 @@ export type CreateChapterInputs = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  chapterTags: Array<ChapterTag>;
+  tag: Scalars['String'];
 };
 
 export type CreateEventInputs = {
@@ -212,7 +207,6 @@ export type EventWithChapter = {
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   id: Scalars['Int'];
-  chapterTags: Array<ChapterTag>;
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
@@ -555,7 +549,7 @@ export type UpdateChapterInputs = {
   imageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
-  chapterTags?: Array<Scalars['String']>;
+  tag?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateEventInputs = {
@@ -749,10 +743,7 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    chapterTags: Array<{
-      __typename?: 'ChapterTag';
-      tag: { __typename?: 'ChapterTag'; id: number; name: string };
-    }>;
+    tag: string;
     imageUrl: string;
     chatUrl?: string | null;
     events: Array<{
@@ -819,7 +810,6 @@ export type ChaptersQuery = {
     description: string;
     category: string;
     imageUrl: string;
-    chapterTags: Array<ChapterTag>;
   }>;
 };
 
@@ -838,7 +828,6 @@ export type CreateChapterMutation = {
     region: string;
     country: string;
     chatUrl?: string | null;
-    chapterTags: Array<ChapterTag>;
   };
 };
 
@@ -858,7 +847,6 @@ export type UpdateChapterMutation = {
     region: string;
     country: string;
     chatUrl?: string | null;
-    chapterTags: Array<ChapterTag>;
   };
 };
 
@@ -1431,10 +1419,6 @@ export type HomeQuery = {
     tags: Array<{
       __typename?: 'EventTag';
       tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
-    chapterTags: Array<{
-      __typename?: 'ChapterTag';
-      tag: { __typename?: 'ChapterTag'; id: number; name: string };
     }>;
     chapter: {
       __typename?: 'Chapter';

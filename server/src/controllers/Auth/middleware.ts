@@ -1,9 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { TokenExpiredError, JsonWebTokenError, verify } from 'jsonwebtoken';
+import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { Request } from '../../common-types/gql';
-import { getConfig } from '../../config';
 import { prisma } from '../../prisma';
 
 const userInclude = {
@@ -57,13 +56,12 @@ export type Events = Merge<
 >;
 
 export const events = (req: Request, _res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
-  if (!authorization) {
+  const id = req.session?.id;
+
+  // user is not logged in, so we don't need to do anything here
+  if (!id) {
     return next();
   }
-
-  const { error } = verifyToken(authorization);
-  if (error) return next(error);
 
   prisma.events
     .findMany({
@@ -79,21 +77,24 @@ export const events = (req: Request, _res: Response, next: NextFunction) => {
 };
 
 export const user = (req: Request, _res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
-  if (!authorization) {
-    return next();
-  }
+  const id = req.session?.id;
 
-  const { error, id } = verifyToken(authorization);
-  if (error) return next(error);
+  // user is not logged in, so we will not be adding user to the request and can
+  // move on
+  if (!id) return next();
 
+  // While we can't make a findUnique call here (sessions.id is not in users),
+  // there is a 1-1 relationship between user and session. So, if a session
+  // exists, there can only be one user with that session.
   prisma.users
-    .findUnique({
-      where: { id },
+    .findFirst({
+      where: { session: { id } },
       ...userInclude,
     })
     .then((user) => {
       if (!user) {
+        // if the session user does not exist in the db, the session is invalid
+        req.session = null;
         return next('User not found');
       }
       req.user = user;
@@ -104,22 +105,7 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
     });
 };
 
-function verifyToken(authorization: string) {
-  // We don't, currently, handle different JsonWebTokenError messages
-  // differently but we do need to add messages to the error object.
-  const raw = authorization.split(' ');
-  if (raw.length != 2 || raw[0] != 'Bearer') {
-    return { error: new JsonWebTokenError('Invalid auth header') };
-  }
-
-  const value = verify(raw[1], getConfig('JWT_SECRET')) as { id: number };
-  if (!value.id) {
-    return { error: new JsonWebTokenError('Missing contents') };
-  }
-
-  return { id: value.id };
-}
-
+// TODO: is this necessary now everything is handled by Auth0 and cookie-session?
 export function handleAuthenticationError(
   err: any,
   _req: Request,

@@ -13,7 +13,7 @@ services:
     depends_on:
       - db
     platform: "linux/amd64"
-    build: 
+    build:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
@@ -23,16 +23,19 @@ services:
     ports:
       - "5000:5000"
   client:
+    # This *only* affects the environment of the client, not the build environment.
+    # TODO: reinstate once Auth0 is in.
+    # env_file: client/.env.local
     depends_on:
       - app
     build:
       context: .
       dockerfile: client.Dockerfile
+      args:
+        # on remote environments, NEXT_PUBLIC_SERVER_URL in .env (or shell
+        # environment) needs to include the remote address. e.g.
+        # https://example.com:5000
+        NEXT_PUBLIC_SERVER_URL:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client
-    # on remote environments, NEXT_PUBLIC_APOLLO_SERVER in .env needs to include the
-    # remote address. e.g. https://example.com:5000
-    environment: 
-      NEXT_PUBLIC_APOLLO_SERVER:
-

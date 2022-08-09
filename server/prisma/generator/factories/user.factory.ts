@@ -43,8 +43,17 @@ const createUsers = async (
 
   const bannedAdmin = await prisma.users.create({ data: bannedAdminData });
 
+  const testUserData: Prisma.usersCreateInput = {
+    email: 'test@user.org',
+    first_name: 'Test',
+    last_name: 'User',
+    instance_role: { connect: { id: instanceRoles.member.id } },
+  };
+
+  await prisma.users.create({ data: testUserData });
+
   const othersData: Prisma.usersCreateInput[] = Array.from(
-    new Array(10),
+    new Array(9),
     () => ({
       email: internet.email(),
       name: `${name.firstName()} ${name.lastName()}`,

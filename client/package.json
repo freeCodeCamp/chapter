@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
+    "@auth0/auth0-react": "^1.10.2",
     "@chakra-ui/icons": "2.0.6",
     "@chakra-ui/react": "2.2.6",
     "@emotion/react": "11.10.0",
@@ -27,8 +28,8 @@
     "react-hook-form": "7.34.0"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.342.0",
-    "@codesee/tracker": "0.342.0",
+    "@codesee/babel-plugin-instrument": "0.343.0",
+    "@codesee/tracker": "0.343.0",
     "@graphql-codegen/cli": "2.11.3",
     "@graphql-codegen/fragment-matcher": "3.3.0",
     "@graphql-codegen/introspection": "2.2.0",

@@ -30,14 +30,15 @@ jobs:
 
       - name: Set Chapter Environment Variables
         run: |
-          cp .env.example .env
+          cp .env.example .env 
+          cp client/.env.local.example client/.env.local
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
           env: DOCKER_BUILDKIT=1
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          build: npm run build:docker-ci
-          start: npm run start:docker
+          build: npm run build:docker
+          start: npm run start:docker-ci
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           browser: ${{ matrix.browsers }}

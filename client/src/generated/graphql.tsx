@@ -751,7 +751,7 @@ export type ChapterQuery = {
     country: string;
     chapterTags: Array<{
       __typename?: 'Tag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
+      chapterTag: { __typename?: 'Tag'; id: number; name: string };
     }>;
     imageUrl: string;
     chatUrl?: string | null;
@@ -1434,7 +1434,7 @@ export type HomeQuery = {
     }>;
     chapterTags: Array<{
       __typename?: 'Tag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
+      chapterTag: { __typename?: 'Tag'; id: number; name: string };
     }>;
     chapter: {
       __typename?: 'Chapter';

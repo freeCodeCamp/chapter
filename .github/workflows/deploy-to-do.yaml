@@ -20,7 +20,7 @@ jobs:
       # cp client/.env.local.example client/.env.local
       - name: Build Images
         env: 
-          NEXT_PUBLIC_APOLLO_SERVER: ${{ secrets.CHAPTER_SERVER_URL }}
+          NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
         run: npm run build:docker
       - name: Save Images
         run: |

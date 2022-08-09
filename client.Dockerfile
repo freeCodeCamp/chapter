@@ -3,7 +3,7 @@ WORKDIR /usr/chapter/
 
 FROM development as build
 
-ARG NEXT_PUBLIC_APOLLO_SERVER='http://localhost:5000'
+ARG NEXT_PUBLIC_SERVER_URL='http://localhost:5000'
 
 COPY client ./client
 COPY common ./common

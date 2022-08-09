@@ -1786,7 +1786,7 @@ export const ChapterDocument = gql`
       city
       region
       country
-      tag
+      chapterTags
       imageUrl
       chatUrl
       events {

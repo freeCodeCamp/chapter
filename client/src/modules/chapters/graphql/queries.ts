@@ -10,7 +10,7 @@ export const CHAPTER = gql`
       city
       region
       country
-      tag
+      chapterTags
       imageUrl
       chatUrl
       events {

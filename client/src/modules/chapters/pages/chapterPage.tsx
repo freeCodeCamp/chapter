@@ -138,10 +138,10 @@ export const ChapterPage: NextPage = () => {
             pl="2"
             px="2"
             colorScheme="teal"
-            key={data.chapter.tag}
+            key={data.chapter.chapterTags}
             mr="2"
           >
-            {data.chapter.tag}
+            {data.chapter.chapterTags}
           </Tag>
         </Flex>
         {user &&

@@ -24,8 +24,8 @@ jobs:
         run: npm run build:docker
       - name: Save Images
         run: |
-          docker save -o app.tar chapter_app
-          docker save -o client.tar chapter_client
+          docker save -o app.tar chapter-app
+          docker save -o client.tar chapter-client
       # TODO: upload to repository once this has been shown to work.
       - name: Upload Images
         uses: appleboy/scp-action@v0.1.3

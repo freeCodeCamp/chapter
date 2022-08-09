@@ -1,4 +1,4 @@
-import { Heading, VStack, Stack } from '@chakra-ui/layout';
+import { Heading, VStack, Stack, Flex, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
 
@@ -23,13 +23,23 @@ export const ChaptersPage: NextPage = () => {
 
   return (
     <VStack>
-      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={3} mt={10} mb={5}>
-        <Heading>Chapters: </Heading>
-        {data.chapters.map((chapter) => (
-          <Heading size="md" key={chapter.id}>
-            <ChapterCard key={chapter.id} chapter={chapter} />
-          </Heading>
-        ))}
+      <Stack spacing={3} mt={10} mb={5}>
+        <Flex justify="start">
+          <Heading>Chapters: </Heading>
+        </Flex>
+        <Flex direction="column">
+          <Text fontSize="2xl">
+            {' '}
+            Chapters allow you to organize events based on your preferences.
+          </Text>
+          <Flex wrap="wrap" justify="space-evenly">
+            {data.chapters.map((chapter) => (
+              <Heading size="md" key={chapter.id} mt={10} mr={10}>
+                <ChapterCard key={chapter.id} chapter={chapter} />
+              </Heading>
+            ))}
+          </Flex>
+        </Flex>
       </Stack>
     </VStack>
   );

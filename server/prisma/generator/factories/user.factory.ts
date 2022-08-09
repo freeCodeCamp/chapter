@@ -45,8 +45,7 @@ const createUsers = async (
 
   const testUserData: Prisma.usersCreateInput = {
     email: 'test@user.org',
-    first_name: 'Test',
-    last_name: 'User',
+    name: 'Test User',
     instance_role: { connect: { id: instanceRoles.member.id } },
   };
 

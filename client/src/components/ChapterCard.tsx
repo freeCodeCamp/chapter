@@ -31,14 +31,17 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             <Heading
               data-cy="chapter-heading"
               fontSize={'xl'}
-              fontWeight={500}
+              fontWeight={700}
               fontFamily={'body'}
-              color={'darkblue'}
+              marginBlock="2"
+              as="h3"
             >
               {chapter.name}
             </Heading>
-            <Text color={'darkblue'}>{chapter.category}</Text>
-            <Text color={'darkcyan'}>In-Person</Text>
+            {/* <Text fontWeight="semibold" as="h4">{chapter.category}</Text> */}
+            <Text color={'darkcyan'} fontWeight="bold" as="h4">
+              In-Person
+            </Text>
           </GridItem>
 
           <GridItem colSpan={2} rowStart={1} rowSpan={3} colStart={5}>
@@ -57,7 +60,9 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             colStart={1}
             marginLeft={'0.5em'}
           >
-            <Text color={'Darkblue'}>{chapter.description}</Text>
+            <Text mt="2" as="p">
+              {chapter.description}
+            </Text>
           </GridItem>
           <GridItem colSpan={3} colStart={1} rowStart={3}>
             <Tag marginInline={'.5rem'} marginBottom={'.5rem'}>

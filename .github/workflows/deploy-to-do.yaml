@@ -45,7 +45,7 @@ jobs:
           key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
-          source: 'docker-compose.yml,docker-compose.ci.yml'
+          source: 'docker-compose.yml,docker-compose.mailhog.yml'
           target: chapter
       - name: Unpack Images
         uses: appleboy/ssh-action@v0.1.5
@@ -60,4 +60,4 @@ jobs:
           script: |
             docker load -i images/app.tar
             docker load -i images/client.tar
-            cd chapter && docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+            cd chapter && docker compose -f docker-compose.yml -f docker-compose.mailhog.yml up -d

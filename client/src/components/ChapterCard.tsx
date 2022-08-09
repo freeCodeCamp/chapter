@@ -33,6 +33,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               {chapter.name}
             </Heading>
             <Text color={'darkblue'}>{chapter.category}</Text>
+            <Text color={'darkcyan'}>In-Person</Text>
           </GridItem>
 
           <GridItem

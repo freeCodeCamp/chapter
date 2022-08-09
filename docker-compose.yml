@@ -22,6 +22,7 @@ services:
       - EMAIL_HOST=mailhog
     ports:
       - "5000:5000"
+    image: chapter-app
   client:
     # This *only* affects the environment of the client, not the build environment.
     # TODO: reinstate once Auth0 is in.
@@ -39,3 +40,4 @@ services:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client
+    image: chapter-client

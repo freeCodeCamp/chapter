@@ -44,7 +44,7 @@ export type Chapter = {
 };
 
 export type ChapterTag = {
-  __typename?: 'Tag';
+  __typename?: 'ChapterTag';
   chapterTag: Tag;
 };
 
@@ -750,8 +750,8 @@ export type ChapterQuery = {
     region: string;
     country: string;
     chapterTags: Array<{
-      __typename?: 'Tag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
+      __typename?: 'ChapterTag';
+      tag: { __typename?: 'ChapterTag'; id: number; name: string };
     }>;
     imageUrl: string;
     chatUrl?: string | null;
@@ -1433,8 +1433,8 @@ export type HomeQuery = {
       tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
     chapterTags: Array<{
-      __typename?: 'Tag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
+      __typename?: 'ChapterTag';
+      tag: { __typename?: 'ChapterTag'; id: number; name: string };
     }>;
     chapter: {
       __typename?: 'Chapter';

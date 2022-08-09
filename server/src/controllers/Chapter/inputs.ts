@@ -23,7 +23,7 @@ export class CreateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String)
-  tag: string;
+  chapterTags: Array<ChapterTag>;
 
   @Field(() => String)
   imageUrl: string;
@@ -53,7 +53,7 @@ export class UpdateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String, { nullable: true })
-  tag: string;
+  chapterTags: Array<ChapterTag>;
 
   @Field(() => String, { nullable: true })
   imageUrl: string;

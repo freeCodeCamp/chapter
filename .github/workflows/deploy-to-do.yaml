@@ -37,6 +37,16 @@ jobs:
           port: 22
           source: 'app.tar,client.tar'
           target: images
+      - name: Upload Compose Files
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
+          username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}
+          key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
+          passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
+          port: 22
+          source: 'docker-compose.yml,docker-compose.ci.yml'
+          target: chapter
       - name: Unpack Images
         uses: appleboy/ssh-action@v0.1.5
         with:

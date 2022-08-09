@@ -1,4 +1,4 @@
-import { Stack, Heading, Box, Grid, Image, Text, Tag } from '@chakra-ui/react';
+import { Heading, Grid, Image, Text, Tag, GridItem } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
@@ -13,40 +13,60 @@ type ChapterCardProps = {
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
-    <Grid gridGap={2} data-cy="chapter-card">
+    <Grid data-cy="chapter-card" boxShadow="md">
       <Link href={`/chapters/${chapter.id}`} _hover={{}}>
         <Grid
-          gridGap={2}
+          gridGap={1}
           w={'100vw'}
-          maxW={'40em'}
-          templateColumns="repeat(2, 1fr)"
-          boxShadow="outline"
+          maxW={'35em'}
+          templateRows="repeat(2, 5em)"
+          templateColumns="repeat(5, 5em)"
         >
-          <Box>
-            <Stack spacing={0} boxShadow="outline">
-              <Heading
-                data-cy="chapter-heading"
-                fontSize={'xl'}
-                fontWeight={500}
-                fontFamily={'body'}
-                color={'white'}
-                textShadow={'1px 1px #000'}
-              >
-                {chapter.name}
-              </Heading>
-              <Text color={'white'} textShadow={'1px 1px #000'}>
-                {chapter.category}
-              </Text>
-              <Tag>Random Tag</Tag>
-            </Stack>
-          </Box>
-          <Image
-            boxSize={'100px'}
-            src={chapter.imageUrl}
-            objectFit={'cover'}
-            display="block"
-          />
-          <Text boxShadow="dark-lg">{chapter.description}</Text>
+          <GridItem colSpan={4} marginLeft={'0.5em'}>
+            <Heading
+              data-cy="chapter-heading"
+              fontSize={'xl'}
+              fontWeight={500}
+              fontFamily={'body'}
+              color={'darkblue'}
+            >
+              {chapter.name}
+            </Heading>
+            <Text color={'darkblue'}>{chapter.category}</Text>
+          </GridItem>
+
+          <GridItem
+            colSpan={2}
+            rowStart={1}
+            rowSpan={1}
+            colStart={5}
+            marginRight={'0.5em'}
+            marginTop={'0.5em'}
+          >
+            <Image
+              boxSize={'150px'}
+              src={chapter.imageUrl}
+              objectFit={'cover'}
+              display="block"
+            />
+          </GridItem>
+          <GridItem
+            rowSpan={2}
+            colSpan={2}
+            rowStart={2}
+            colStart={1}
+            marginLeft={'0.5em'}
+          >
+            <Text color={'Darkblue'}>{chapter.description}</Text>
+          </GridItem>
+          <GridItem colSpan={3} colStart={1} rowStart={3}>
+            <Tag marginInline={'.5rem'} marginBottom={'.5rem'}>
+              Frontend Tag
+            </Tag>
+            <Tag marginInline={'.5rem'} marginBottom={'.5rem'}>
+              Backend Tag
+            </Tag>
+          </GridItem>
         </Grid>
       </Link>
     </Grid>

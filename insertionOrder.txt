@@ -12,6 +12,7 @@ users
 venues
 events
 event_users
+sessions
 chapter_role_permissions
 event_reminders
 event_role_permissions

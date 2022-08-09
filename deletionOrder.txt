@@ -6,6 +6,7 @@ event_sponsors
 event_role_permissions
 event_reminders
 chapter_role_permissions
+sessions
 event_users
 events
 venues

@@ -10,6 +10,7 @@
       <sequence increment="1" name="instance_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="instance_roles_id_seq" startValue="1"/>
       <sequence increment="1" name="rsvp_id_seq" startValue="1"/>
+      <sequence increment="1" name="sessions_id_seq" startValue="1"/>
       <sequence increment="1" name="sponsors_id_seq" startValue="1"/>
       <sequence increment="1" name="tags_id_seq" startValue="1"/>
       <sequence increment="1" name="users_id_seq" startValue="1"/>
@@ -323,6 +324,19 @@
             <column ascending="true" name="name"/>
          </index>
       </table>
+      <table name="sessions" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('sessions_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="sessions_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="sessions_user_id_key" unique="true">
+            <column ascending="true" name="user_id"/>
+         </index>
+      </table>
       <table name="sponsors" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
@@ -375,6 +389,7 @@
          <column autoUpdated="true" defaultValue="nextval('users_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
             <child column="user_id" foreignKey="chapter_users_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapter_users"/>
             <child column="user_id" foreignKey="event_users_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_users"/>
+            <child column="user_id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="sessions"/>
             <child column="user_id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="first_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>

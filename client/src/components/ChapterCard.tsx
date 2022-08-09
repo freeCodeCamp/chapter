@@ -13,7 +13,12 @@ type ChapterCardProps = {
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
-    <Grid data-cy="chapter-card" boxShadow="md">
+    <Grid
+      data-cy="chapter-card"
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+    >
       <Link href={`/chapters/${chapter.id}`} _hover={{}}>
         <Grid
           gridGap={1}
@@ -36,16 +41,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             <Text color={'darkcyan'}>In-Person</Text>
           </GridItem>
 
-          <GridItem
-            colSpan={2}
-            rowStart={1}
-            rowSpan={1}
-            colStart={5}
-            marginRight={'0.5em'}
-            marginTop={'0.5em'}
-          >
+          <GridItem colSpan={2} rowStart={1} rowSpan={3} colStart={5}>
             <Image
-              boxSize={'150px'}
+              width={'100%'}
+              height={'100%'}
               src={chapter.imageUrl}
               objectFit={'cover'}
               display="block"

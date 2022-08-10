@@ -13,9 +13,7 @@ exports[`EventCard should render 1`] = `
       class="css-1fuobds"
       data-cy="event-card"
     >
-      <h4
-        class="css-1vbua13"
-      >
+      <h4 class="css-1vbua13">
         Thu, Jan 1 @ 00:00
         <div
           class="css-17xejub"
@@ -35,9 +33,7 @@ exports[`EventCard should render 1`] = `
           </svg>
         </span>
       </h4>
-      <div
-        class="css-0"
-      >
+      <div class="css-0">
         <a
           class="chakra-link css-0"
           data-cy="event-link"
@@ -50,9 +46,7 @@ exports[`EventCard should render 1`] = `
           </h2>
         </a>
       </div>
-      <div
-        class="css-0"
-      >
+      <div class="css-0">
         <a
           class="chakra-link css-0"
           href="/chapters/1"
@@ -126,20 +120,20 @@ exports[`EventCard should render with tags 1`] = `
         </a>
       </div>
       <div
-        class="css-vctkmi"
+        class="css-cwq14a1"
       >
         <span
-          class="css-12ci4mr"
+          class="css-4ewqag"
         >
           notfoo
         </span>
         <span
-          class="css-12ci4mr"
+          class="css-4ewqag"
         >
           notbar
         </span>
         <span
-          class="css-12ci4mr"
+          class="css-4ewqag"
         >
           notbaz
         </span>

@@ -65,10 +65,18 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             </Text>
           </GridItem>
           <GridItem colSpan={3} colStart={1} rowStart={3}>
-            <Tag marginInline={'.5rem'} marginBottom={'.5rem'}>
+            <Tag
+              marginInline={'.5rem'}
+              marginBottom={'.5rem'}
+              colorScheme={'messenger'}
+            >
               Frontend Tag
             </Tag>
-            <Tag marginInline={'.5rem'} marginBottom={'.5rem'}>
+            <Tag
+              marginInline={'.5rem'}
+              marginBottom={'.5rem'}
+              colorScheme={'messenger'}
+            >
               Backend Tag
             </Tag>
           </GridItem>

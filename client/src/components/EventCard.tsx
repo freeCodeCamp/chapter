@@ -59,10 +59,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <Box display="flex" alignItems="baseline" pt={3}>
             {event.tags.map(({ tag }) => (
               <Tag
-                borderRadius="full"
                 pl="2"
                 px="2"
-                colorScheme="teal"
+                colorScheme={'messenger'}
                 key={tag.name}
                 mr="2"
               >

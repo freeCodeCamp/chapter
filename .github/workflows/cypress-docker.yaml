@@ -29,9 +29,7 @@ jobs:
           cache: 'npm'
 
       - name: Set Chapter Environment Variables
-        run: |
-          cp .env.example .env 
-          cp client/.env.local.example client/.env.local
+        run: cp .env.example .env 
 
       - name: Cypress run
         uses: cypress-io/github-action@v4

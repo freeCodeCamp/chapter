@@ -11,9 +11,6 @@ services:
       - "5000:5000"
     image: chapter-app
   client:
-    # This *only* affects the environment of the client, not the build environment.
-    # TODO: reinstate once Auth0 is in.
-    # env_file: client/.env.local
     depends_on:
       - app
     build:

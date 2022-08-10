@@ -14,10 +14,7 @@ jobs:
         with:
           node-version: '16.x'
       - name: Set Chapter Environment Variables
-        run: | 
-          cp .env.example .env
-      # reinstate once Auth0 is in.
-      # cp client/.env.local.example client/.env.local
+        run: cp .env.example .env
       - name: Build Images
         env: 
           NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}

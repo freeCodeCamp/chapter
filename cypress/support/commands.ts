@@ -661,6 +661,23 @@ const getChapterRoles = () => {
 };
 Cypress.Commands.add('getChapterRoles', getChapterRoles);
 
+/**
+ * sends event invites for attendees
+ * @param eventId event id
+ * @param emailGroups Chapter id
+ */
+const sendEventInvite = (eventId: number, emailGroups: [string]) => {
+  const sendEventInviteMutation = {
+    operationName: 'sendEventInvite',
+    variables: { eventId, emailGroups },
+    query: `  mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+      sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(sendEventInviteMutation));
+};
+Cypress.Commands.add('sendEventInvite', sendEventInvite);
+
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
@@ -673,6 +690,7 @@ declare global {
       createSponsor: typeof createSponsor;
       deleteEvent: typeof deleteEvent;
       deleteVenue: typeof deleteVenue;
+      sendEventInvite: typeof endEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;

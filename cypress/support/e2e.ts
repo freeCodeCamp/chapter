@@ -55,6 +55,13 @@ declare global {
       updateEvent(eventId: number, data): Chainable<any>;
 
       /**
+       * Delete rsvp of user with userId for the event with eventId
+       * @param eventId Id of the event
+       * @param emailGroups groups to send email
+       */
+      sendEventInvite(eventId: number, emailGroups: [string]): Chainable<any>;
+
+      /**
        * Rsvp to event with eventId and chapterId
        * @param eventId Id of the event
        * @param chapterId Id of the chapter

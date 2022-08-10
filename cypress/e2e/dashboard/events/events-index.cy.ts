@@ -1,7 +1,7 @@
 import { expectToBeRejected } from '../../../support/util';
 
 const eventData = {
-  name: 'Homer Simpson3',
+  name: 'Homer Simpson',
   description: 'i will show you damn!',
   url: 'http://wooden-swing.com',
   streaming_url: null,
@@ -16,6 +16,7 @@ const eventData = {
   sponsor_ids: [],
   chapter_id: 1,
 };
+
 describe('events dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
@@ -331,6 +332,17 @@ describe('events dashboard', () => {
     cy.login('admin@of.chapter.one');
 
     cy.deleteEvent(eventId).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
+  });
+
+  it('chapter admin should be allowed to send email to attendees', () => {
+    const eventId = 1;
+
+    // admin of chapter 1
+    cy.login('admin@of.chapter.one');
+
+    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
   });

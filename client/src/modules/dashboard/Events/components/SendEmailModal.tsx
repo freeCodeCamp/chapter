@@ -99,10 +99,15 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="teal" mr={3} onClick={onClose}>
+          <Button mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button type="submit" variant="solid" form="sendemail">
+          <Button
+            type="submit"
+            colorScheme={'green'}
+            variant="solid"
+            form="sendemail"
+          >
             Send Email
           </Button>
         </ModalFooter>

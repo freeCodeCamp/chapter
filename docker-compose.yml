@@ -1,25 +1,12 @@
 version: "3.7"
 services:
-  db:
-    image: postgres:14
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "54320:5432"
   app:
     env_file: .env
-    depends_on:
-      - db
     platform: "linux/amd64"
     build:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
-    environment:
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
-      - EMAIL_HOST=mailhog
     ports:
       - "5000:5000"
     image: chapter-app

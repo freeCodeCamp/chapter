@@ -40,7 +40,12 @@ export type Chapter = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  tag: Scalars['String'];
+  tags: Array<ChapterTag>;
+};
+
+export type ChapterTag = {
+  __typename?: 'ChapterTag';
+  tag: Tag;
 };
 
 export type ChapterPermission = {
@@ -86,7 +91,7 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  tag: Scalars['String'];
+  tags: Array<ChapterTag>;
   user_bans: Array<UserBan>;
 };
 
@@ -99,7 +104,7 @@ export type CreateChapterInputs = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  tag: Scalars['String'];
+  tags: Array<ChapterTag>;
 };
 
 export type CreateEventInputs = {
@@ -549,7 +554,7 @@ export type UpdateChapterInputs = {
   imageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
-  tag?: InputMaybe<Scalars['String']>;
+  tags?: Array<Scalars['String']>;
 };
 
 export type UpdateEventInputs = {
@@ -743,7 +748,10 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    tag: string;
+    tags: Array<{
+      __typename?: 'ChapterTag';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
     imageUrl: string;
     chatUrl?: string | null;
     events: Array<{
@@ -1770,7 +1778,12 @@ export const ChapterDocument = gql`
       city
       region
       country
-      tag
+      tags {
+        tag {
+          id
+          name
+        }
+      }
       imageUrl
       chatUrl
       events {

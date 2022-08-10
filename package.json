@@ -11,7 +11,7 @@
     "npm": "^8.11.0"
   },
   "scripts": {
-    "dev:client": "npm -w=client run dev",
+    "dev:client": "dotenv -- npm -w=client run dev",
     "dev:server": "npm -w=server run dev",
     "db:init": "npm run build:server && node server/prisma/generator/init.js --execute",
     "db:seed": "npm run prisma -- db seed",

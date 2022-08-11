@@ -11,7 +11,15 @@ export class VenueResolver {
   @Query(() => [Venue])
   venues(): Promise<Venue[]> {
     return prisma.venues.findMany({
-      include: { chapter: true },
+      include: {
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
+      },
       orderBy: { name: 'asc' },
     });
   }

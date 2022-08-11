@@ -3,14 +3,20 @@ WORKDIR /usr/chapter/
 
 FROM development as build
 
-ARG NEXT_PUBLIC_SERVER_URL='http://localhost:5000'
+ARG NEXT_PUBLIC_ENVIRONMENT=production
+ARG NEXT_PUBLIC_USE_AUTH0=true
+ARG NEXT_PUBLIC_AUTH0_DOMAIN
+ARG NEXT_PUBLIC_AUTH0_CLIENT_ID
+ARG NEXT_PUBLIC_AUTH0_AUDIENCE
+ARG NEXT_PUBLIC_SERVER_URL
+ARG NEXT_PUBLIC_CLIENT_URL
 
 COPY client ./client
 COPY common ./common
 COPY package*.json ./
 
 RUN npm ci -w=client --ignore-scripts
-RUN npm run build:client
+RUN npm -w=client run build
 
 FROM development as production
 

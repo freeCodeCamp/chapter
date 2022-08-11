@@ -11,9 +11,6 @@ services:
       - "5000:5000"
     image: chapter-app
   client:
-    # This *only* affects the environment of the client, not the build environment.
-    # TODO: reinstate once Auth0 is in.
-    # env_file: client/.env.local
     depends_on:
       - app
     build:
@@ -24,6 +21,12 @@ services:
         # environment) needs to include the remote address. e.g.
         # https://example.com:5000
         NEXT_PUBLIC_SERVER_URL:
+        NEXT_PUBLIC_ENVIRONMENT:
+        NEXT_PUBLIC_USE_AUTH0:
+        NEXT_PUBLIC_AUTH0_DOMAIN:
+        NEXT_PUBLIC_AUTH0_CLIENT_ID:
+        NEXT_PUBLIC_AUTH0_AUDIENCE:
+        NEXT_PUBLIC_CLIENT_URL:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client

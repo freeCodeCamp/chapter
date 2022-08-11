@@ -104,6 +104,9 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
         />
+        {process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT === 'staging' && (
+          <meta name="robots" content="noindex" />
+        )}
       </Head>
       <ApolloProvider client={client}>
         <ChakraProvider>

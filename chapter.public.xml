@@ -254,8 +254,8 @@
             <parent column="id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
             <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
+            <parent column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="events_pkey" unique="true">

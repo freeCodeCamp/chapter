@@ -35,7 +35,6 @@ function setup() {
     console.error(e);
   }
 
-  // Copy .env.example to .env
   if (!existsSync('.env')) {
     console.log("You don't have a .env\nCopying .env.example to .env");
 

@@ -9,7 +9,7 @@ COPY common ./common
 COPY package*.json ./
 
 RUN npm ci -w=server --ignore-scripts --include-workspace-root
-RUN npm run build:server
+RUN npm -w=server run build
 
 FROM node:16-alpine as production
 WORKDIR /usr/chapter/

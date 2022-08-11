@@ -24,7 +24,9 @@ describe('event page', () => {
       .and('have.attr', 'alt', '');
   });
 
-  it('ask the user to login before they can RSVP', () => {
+  // TODO: we need to rework how we register users before this test can be used.
+  // Currently it's automatic, but gives them a placeholder name.
+  it.skip('ask the user to login before they can RSVP', () => {
     const fix = { email: 'test@user.org', firstName: 'Test', lastName: 'User' };
 
     cy.findByRole('button', { name: 'RSVP' }).click();
@@ -62,6 +64,8 @@ describe('event page', () => {
         // when emails encode long strings they split them into multiple lines,
         // so the extra =\r\n need to be removed
         const token = href.match(/token=3D([\s\S]*)/)[1].replace(/=\s\s/g, '');
+        // @ts-expect-error we don't use email to login, so this will need to be
+        // updated
         cy.login(token);
         // NOTE: we can't cy.get('@login-submit').should('not.exist') here
         // because that dom element is no longer in the DOM, resolves to
@@ -72,9 +76,7 @@ describe('event page', () => {
   });
 
   it('should be possible to RSVP and cancel', () => {
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
+    cy.login('test@user.org');
 
     cy.get('[data-cy="rsvps-heading"]')
       .next()
@@ -100,9 +102,7 @@ describe('event page', () => {
   });
 
   it('should be possible to change event subscription', () => {
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
+    cy.login('test@user.org');
 
     // RSVPing is required for managing event subscription
     cy.findByRole('button', { name: 'RSVP' }).click();
@@ -125,9 +125,6 @@ describe('event page', () => {
     const rsvpVariables = { eventId: 1, chapterId: 1 };
     const subscriptionVariables = { eventId: 1 };
     // logged out user
-    cy.logout();
-    cy.reload();
-
     cy.rsvpToEvent(rsvpVariables, { withAuth: false }).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables, { withAuth: false }).then(
       expectToBeRejected,
@@ -137,17 +134,14 @@ describe('event page', () => {
     );
 
     // newly registered user (without a chapter_users record)
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
+    cy.login('test@user.org');
 
     cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
     cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
 
     // banned user
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
-    cy.reload();
+    cy.login('banned@chapter.admin');
 
     cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
@@ -155,9 +149,7 @@ describe('event page', () => {
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {
-    cy.register('Test', 'User', 'test@user.org');
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
+    cy.login('test@user.org');
 
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();

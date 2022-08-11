@@ -281,7 +281,7 @@ export type Mutation = {
   joinChapter: ChapterUser;
   login: LoginType;
   register: User;
-  rsvpEvent?: Maybe<EventUser>;
+  rsvpEvent: EventUser;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
@@ -1317,7 +1317,7 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent?: { __typename?: 'EventUser'; updated_at: any } | null;
+  rsvpEvent: { __typename?: 'EventUser'; updated_at: any };
 };
 
 export type CancelRsvpMutationVariables = Exact<{

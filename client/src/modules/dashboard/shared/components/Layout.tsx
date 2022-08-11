@@ -20,15 +20,17 @@ const links = [
 
 export const Layout = ({
   children,
+  dataCy,
   ...rest
 }: {
   children: React.ReactNode;
+  dataCy?: string;
   [prop: string]: unknown;
 }) => {
   const router = useRouter();
   return (
-    <>
-      <HStack {...rest} as="nav" my="2">
+    <div data-cy={dataCy}>
+      <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
         {links
           .filter(
             ({ requiredPermission }) =>
@@ -47,6 +49,6 @@ export const Layout = ({
           ))}
       </HStack>
       {children}
-    </>
+    </div>
   );
 };

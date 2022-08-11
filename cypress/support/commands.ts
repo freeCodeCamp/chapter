@@ -46,37 +46,33 @@ const registerViaUI = (firstName: string, lastName: string, email: string) => {
 Cypress.Commands.add('registerViaUI', registerViaUI);
 
 /**
- * Authenticate with JWT token
- * @param token JWT token for authorization. If not provided, Cypress.env.JWT token is used.
+ * Create new user session
+ * @param email Email of the new user
  */
-const login = (token?: string) => {
-  const authData = {
-    operationName: 'authenticate',
-    variables: {
-      token: token ?? Cypress.env('JWT'),
-    },
-    query: `mutation authenticate($token: String!) {
-        authenticate(token: $token) {
-          token
-          user {
-            id
-            first_name
-            last_name
-          }
-        }
-      }`,
-  };
-  cy.request(gqlOptions(authData)).then((response) => {
-    expect(response.body.data.authenticate).to.have.property('token');
-    // TODO: change this to set a cookie when Token.tsx is updated.
-    window.localStorage.setItem('token', response.body.data.authenticate.token);
-    expect(response.status).to.eq(200);
-  });
+const login = (email?: string) => {
+  // Currently changing users modifies the current-user.json file and that file
+  // needs _not_ to be watched by node-dev. If we change how we store dev users
+  // that can be watched again.
+  email
+    ? cy.exec(`npm run change-user -- ${email} `)
+    : cy.exec('npm run change-user:owner');
+  return cy
+    .request({
+      url: Cypress.env('SERVER_URL') + '/login',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer dummy-token`,
+      },
+    })
+    .then(() => cy.reload());
 };
 Cypress.Commands.add('login', login);
 
 const logout = () => {
-  window.localStorage.removeItem('token');
+  cy.request({
+    url: Cypress.env('SERVER_URL') + '/logout',
+    method: 'DELETE',
+  }).then(() => cy.reload());
 };
 Cypress.Commands.add('logout', logout);
 

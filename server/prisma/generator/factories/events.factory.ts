@@ -107,9 +107,9 @@ const createEvents = async (
       'Ruby',
       'Rust',
     ];
-    const randomNum = Math.round((Math.random() * tagNames.length) / 5);
+    const tagsAmount = Math.round((Math.random() * tagNames.length) / 5);
 
-    const tags = randomItems(tagNames, randomNum, true);
+    const tags = randomItems(tagNames, tagsAmount, true);
     const connectOrCreateTags = tags.map((tag) => ({
       tag: {
         connectOrCreate: {

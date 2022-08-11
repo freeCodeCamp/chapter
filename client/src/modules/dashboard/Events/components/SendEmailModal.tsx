@@ -104,7 +104,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
           </Button>
           <Button
             type="submit"
-            colorScheme={'green'}
+            colorScheme={'accent'}
             variant="solid"
             form="sendemail"
           >

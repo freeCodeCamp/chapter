@@ -91,7 +91,7 @@ export type ChapterWithRelations = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  tags: Array<ChapterTag>;
+  tags?: Array<ChapterTag>;
   user_bans: Array<UserBan>;
 };
 

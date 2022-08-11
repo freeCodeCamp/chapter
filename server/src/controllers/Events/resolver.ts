@@ -176,7 +176,13 @@ export class EventResolver {
         ...(!showAll && { start_at: { gt: new Date() } }),
       },
       include: {
-        chapter: true,
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
         tags: { include: { tag: true } },
         venue: true,
         event_users: {
@@ -207,7 +213,13 @@ export class EventResolver {
     const total = await prisma.events.count();
     const events = await prisma.events.findMany({
       include: {
-        chapter: true,
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
         tags: { include: { tag: true } },
       },
       orderBy: {
@@ -226,7 +238,13 @@ export class EventResolver {
   ): Promise<EventWithChapter[]> {
     return await prisma.events.findMany({
       include: {
-        chapter: true,
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
         tags: { include: { tag: true } },
       },
       orderBy: {
@@ -244,7 +262,11 @@ export class EventResolver {
     return await prisma.events.findUnique({
       where: { id: eventId },
       include: {
-        chapter: true,
+        chapter: {
+          include: {
+            tags: { include: { tag: true } },
+          },
+        },
         tags: { include: { tag: true } },
         venue: true,
         event_users: {
@@ -435,7 +457,20 @@ export class EventResolver {
     if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
     const eventUser = await prisma.event_users.findUniqueOrThrow({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: { include: { chapter: true } }, user: true },
+      include: {
+        event: {
+          include: {
+            chapter: {
+              include: {
+                tags: {
+                  include: { tag: true },
+                },
+              },
+            },
+          },
+        },
+        user: true,
+      },
     });
 
     const unsubscribeOptions = getUnsubscribeOptions({

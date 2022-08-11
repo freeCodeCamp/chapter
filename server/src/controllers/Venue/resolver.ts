@@ -38,7 +38,15 @@ export class VenueResolver {
   venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: { chapter: true },
+      include: {
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -54,7 +62,17 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
-      include: { chapter: true },
+      include: {
+        chapter: {
+          include: {
+            tags: {
+              include: {
+                tag: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 

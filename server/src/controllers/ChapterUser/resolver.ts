@@ -200,7 +200,16 @@ export class ChapterUserResolver {
         chapter: { connect: { id: chapterId } },
         user: { connect: { id: userId } },
       },
-      include: { chapter: true, user: true },
+      include: {
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
+        user: true,
+      },
     });
   }
 
@@ -222,7 +231,16 @@ export class ChapterUserResolver {
 
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
-      include: { chapter: true, user: true },
+      include: {
+        chapter: {
+          include: {
+            tags: {
+              include: { tag: true },
+            },
+          },
+        },
+        user: true,
+      },
     });
   }
 

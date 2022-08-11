@@ -137,7 +137,7 @@ describe('venues dashboard', () => {
 
   describe('adding venue with chapter selected in form', () => {
     it('only admined chapters can be selected', () => {
-      cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+      cy.login('admin@of.chapter.one');
       cy.visit('/dashboard/venues/new');
       cy.findByRole('combobox', { name: 'Chapter' })
         .find('option')
@@ -145,15 +145,12 @@ describe('venues dashboard', () => {
           expect(options).to.have.length(1);
         });
 
-      cy.register();
-      cy.login(Cypress.env('JWT_TEST_USER'));
-      cy.reload();
+      cy.login('test@user.org');
       cy.findByRole('combobox', { name: 'Chapter' })
         .find('option')
         .should('not.exist');
 
       cy.login();
-      cy.reload();
       cy.findByRole('combobox', { name: 'Chapter' })
         .find('option')
         .then((options) => {

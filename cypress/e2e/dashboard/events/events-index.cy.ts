@@ -338,7 +338,14 @@ describe('events dashboard', () => {
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
+    cy.login('test@user.org');
 
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+
+    // banned admin should be rejected
+    cy.login('banned@chapter.admin');
+
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
     // admin of chapter 1
     cy.login('admin@of.chapter.one');
 

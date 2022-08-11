@@ -670,7 +670,7 @@ const sendEventInvite = (eventId: number, emailGroups: [string]) => {
   const sendEventInviteMutation = {
     operationName: 'sendEventInvite',
     variables: { eventId, emailGroups },
-    query: `  mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+    query: `mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
       sendEventInvite(id: $eventId, emailGroups: $emailGroups)
     }`,
   };
@@ -690,7 +690,7 @@ declare global {
       createSponsor: typeof createSponsor;
       deleteEvent: typeof deleteEvent;
       deleteVenue: typeof deleteVenue;
-      sendEventInvite: typeof endEventInvite;
+      sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;

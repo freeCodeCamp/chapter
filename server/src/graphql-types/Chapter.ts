@@ -25,8 +25,8 @@ export class Chapter extends BaseObject {
   @Field(() => String)
   country: string;
 
-  @Field(() => String)
-  tag: string;
+  @Field(() => [String])
+  tag: string[];
 
   @Field(() => String)
   imageUrl!: string;

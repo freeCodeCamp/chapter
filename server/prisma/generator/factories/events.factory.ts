@@ -109,12 +109,12 @@ const createEvents = async (
     ];
     const tagsAmount = Math.round((Math.random() * tagNames.length) / 5);
 
-    const tagNames = randomItems(tagNames, tagsAmount, true);
-    const connectOrCreateTags = tagNames.map((name) => ({
+    const tags = randomItems(tagNames, tagsAmount, true);
+    const connectOrCreateTags = tags.map((tag) => ({
       tag: {
         connectOrCreate: {
-          where: { name },
-          create: { name },
+          where: { name: tag },
+          create: { name: tag },
         },
       },
     }));

@@ -15,4 +15,6 @@ jobs:
           key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
-          script: docker compose -f docker-compose.seed.yml run seed npm run db:reset
+          script: |
+            cd chapter 
+            docker compose -f docker-compose.seed.yml run seed npm run db:reset

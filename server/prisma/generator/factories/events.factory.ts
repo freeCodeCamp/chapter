@@ -107,19 +107,23 @@ const createEvents = async (
       'Ruby',
       'Rust',
     ];
-    const randomTag = Math.floor(Math.random() * tagNames.length);
+    const randomNum = Math.round((Math.random() * tagNames.length) / 5);
+
+    const tags = randomItems(tagNames, randomNum, true);
+    const connectOrCreateTags = tags.map((tag) => ({
+      tag: {
+        connectOrCreate: {
+          where: { name: tag },
+          create: { name: tag },
+        },
+      },
+    }));
+
     await prisma.events.update({
       where: { id: event.id },
       data: {
         tags: {
-          create: {
-            tag: {
-              connectOrCreate: {
-                create: { name: tagNames[randomTag] },
-                where: { name: tagNames[randomTag] },
-              },
-            },
-          },
+          create: connectOrCreateTags,
         },
       },
     });

@@ -16,10 +16,10 @@ jobs:
         with:
           node-version: '16.x'
       - name: Set Chapter Environment Variables
-        run: cp .env.example .env
+        run: |
+          cp .env.example .env
+          printf "\nNEXT_PUBLIC_SERVER_URL=${{ secrets.CHAPTER_SERVER_URL }}" >> .env
       - name: Build Images
-        env:
-          NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
         run: |
           npm run build
           docker compose -f docker-compose.seed.yml build

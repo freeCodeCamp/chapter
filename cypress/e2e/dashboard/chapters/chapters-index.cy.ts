@@ -6,7 +6,7 @@ const chapterData = {
   city: 'City it is based in',
   region: 'Location in the world',
   country: 'Home country',
-  tag: 'Chapter Tag',
+  tags: 'Chapter Tag',
   category: 'Type of chapter',
   imageUrl: 'https://example.com/image.jpg',
 };
@@ -48,7 +48,7 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Tag Name' }).type(chapterData.tag);
+    cy.findByRole('textbox', { name: 'Tag Name' }).type(chapterData.tags);
     cy.findByRole('textbox', { name: 'Image Url' }).type(chapterData.imageUrl);
 
     cy.findByRole('form', { name: 'Add chapter' })

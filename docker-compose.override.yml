@@ -1,12 +1,25 @@
 # Dev specific configuration
 version: "3.7"
 services:
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "54320:5432"
   app:
+    depends_on:
+      - db
     build:
       target: development
     command: sh -c './wait-for db:5432 -- npm run dev'
     volumes:
       - ./:/usr/chapter/
+    environment:
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - EMAIL_HOST=mailhog
 
   client:
     build:

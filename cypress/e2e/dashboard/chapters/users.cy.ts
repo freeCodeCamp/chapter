@@ -60,7 +60,7 @@ describe('Chapter Users dashboard', () => {
   });
 
   it('rejects chapter admin from changing chapter user role', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.login('admin@of.chapter.one');
 
     cy.getChapterMembers(chapterId).then((chapterUsers) => {
       const userId = chapterUsers.find(
@@ -141,7 +141,7 @@ describe('Chapter Users dashboard', () => {
   }
 
   it('an admin cannot ban themselves', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.login('admin@of.chapter.one');
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
@@ -158,7 +158,7 @@ describe('Chapter Users dashboard', () => {
   });
 
   it('an admin cannot unban themselves', () => {
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
+    cy.login('banned@chapter.admin');
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();

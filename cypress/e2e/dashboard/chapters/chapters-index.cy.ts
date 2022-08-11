@@ -14,17 +14,20 @@ const chapterData = {
 describe('chapters dashboard', () => {
   before(() => {
     cy.exec('npm run db:seed');
+    cy.login();
   });
 
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[aria-current="page"]').should('not.exist');
     cy.get('a[href="/dashboard/chapters"]').click();
-    cy.get('a[aria-current="page"]').should('have.text', 'Chapters');
+    cy.get('[data-cy="chapter-dash-heading"]').should('be.visible');
+    cy.get('[data-cy="dashboard-tabs"]')
+      .find('a[aria-current="page"]')
+      .should('have.text', 'Chapters');
   });
 
   it('should have a table with links to view, create and edit chapters', () => {
-    cy.login();
     cy.visit('/dashboard/chapters');
     cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
@@ -35,7 +38,6 @@ describe('chapters dashboard', () => {
   });
 
   it('lets an instance owner create a chapter', () => {
-    cy.login();
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').click();
     cy.findByRole('textbox', { name: 'Chapter name' }).type(chapterData.name);
@@ -65,7 +67,7 @@ describe('chapters dashboard', () => {
   });
 
   it('only allows owners to create chapters', () => {
-    cy.login(Cypress.env('JWT_CHAPTER_1_ADMIN_USER'));
+    cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');
@@ -74,7 +76,6 @@ describe('chapters dashboard', () => {
 
     // switch to owner account and try to create a chapter
     cy.login();
-    cy.reload();
 
     cy.createChapter(chapterData).then((response) => {
       expect(response.status).to.eq(200);

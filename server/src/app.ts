@@ -35,7 +35,16 @@ import { fetchUserInfo } from './util/auth0';
 const PORT = process.env.PORT || 5000;
 
 export const main = async (app: Express) => {
-  app.use(cors({ credentials: true, origin: process.env.CLIENT_LOCATION }));
+  // TODO: put env validation in a separate function
+  const clientLocation = process.env.CLIENT_LOCATION;
+
+  if (!clientLocation) {
+    throw new Error('CLIENT_LOCATION env var is required');
+  }
+  const allowedOrigins = isDev()
+    ? [clientLocation, 'https://studio.apollographql.com']
+    : clientLocation;
+  app.use(cors({ credentials: true, origin: allowedOrigins }));
   app.use(
     cookieSession({
       secret: process.env.SESSION_SECRET,

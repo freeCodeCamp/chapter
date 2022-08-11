@@ -18,7 +18,7 @@ jobs:
       - name: Build Images
         env: 
           NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
-        run: npm run build:docker
+        run: npm run build
       - name: Save Images
         run: |
           docker save -o app.tar chapter-app

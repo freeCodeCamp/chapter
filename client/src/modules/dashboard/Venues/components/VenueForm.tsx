@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { useChapterQuery } from '../../../../generated/graphql';
@@ -129,6 +129,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     formState: { isDirty },
     handleSubmit,
     register,
+    resetField,
   } = useForm<VenueFormData>({
     defaultValues,
   });
@@ -142,6 +143,10 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     const { user } = useAuth();
     adminedChapters = user?.admined_chapters ?? [];
   }
+
+  useEffect(() => {
+    resetField('chapter_id', { defaultValue: adminedChapters[0]?.id ?? -1 });
+  }, [adminedChapters]);
 
   return (
     <>
@@ -167,10 +172,6 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
                   required: true,
                   valueAsNumber: true,
                 })}
-                defaultValue={
-                  chapterId ??
-                  (adminedChapters?.length ? adminedChapters[0].id : undefined)
-                }
                 isDisabled={loading}
               >
                 {adminedChapters?.length &&

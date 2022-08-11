@@ -30,7 +30,7 @@ export const EditVenuePage: NextPage = () => {
   const onSubmit = async (data: VenueFormData) => {
     setLoadingUpdate(true);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { chapter_id: _, ...updateData } = data;
+    const { chapter_id, ...updateData } = data;
     try {
       const latitude = parseFloat(String(data.latitude));
       const longitude = parseFloat(String(data.longitude));

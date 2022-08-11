@@ -127,10 +127,8 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   };
   const {
     formState: { isDirty },
-    getValues,
     handleSubmit,
     register,
-    setValue,
   } = useForm<VenueFormData>({
     defaultValues,
   });
@@ -143,9 +141,6 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   if (isChaptersDropdownNeeded) {
     const { user } = useAuth();
     adminedChapters = user?.admined_chapters ?? [];
-    if (adminedChapters.length) {
-      setValue('chapter_id', adminedChapters[0].id);
-    }
   }
 
   return (
@@ -173,7 +168,8 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
                   valueAsNumber: true,
                 })}
                 defaultValue={
-                  adminedChapters?.length ? getValues('chapter_id') : undefined
+                  chapterId ??
+                  (adminedChapters?.length ? adminedChapters[0].id : undefined)
                 }
                 isDisabled={loading}
               >

@@ -16,7 +16,7 @@ COPY common ./common
 COPY package*.json ./
 
 RUN npm ci -w=client --ignore-scripts
-RUN npm run build:client
+RUN npm -w=client run build
 
 FROM development as production
 

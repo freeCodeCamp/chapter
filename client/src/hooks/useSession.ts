@@ -38,7 +38,7 @@ export const useDevSession = (): {
 };
 
 const login = (token: string) =>
-  fetch(`${serverUrl}/login`, {
+  fetch(new URL('/login', serverUrl).href, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,

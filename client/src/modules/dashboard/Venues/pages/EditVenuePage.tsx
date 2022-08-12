@@ -29,6 +29,8 @@ export const EditVenuePage: NextPage = () => {
 
   const onSubmit = async (data: VenueFormData) => {
     setLoadingUpdate(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { chapter_id, ...updateData } = data;
     try {
       const latitude = parseFloat(String(data.latitude));
       const longitude = parseFloat(String(data.longitude));
@@ -37,7 +39,7 @@ export const EditVenuePage: NextPage = () => {
         variables: {
           venueId,
           chapterId,
-          data: { ...data, latitude, longitude },
+          data: { ...updateData, latitude, longitude },
         },
       });
       await router.push('/dashboard/venues');
@@ -64,7 +66,7 @@ export const EditVenuePage: NextPage = () => {
         loading={loadingUpdate}
         onSubmit={onSubmit}
         submitText={'Save Venue Changes'}
-        chapter={data.venue.chapter}
+        chapterId={chapterId}
         loadingText={'Saving Venue Changes'}
       />
     </Layout>

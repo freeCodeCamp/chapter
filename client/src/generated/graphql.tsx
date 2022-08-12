@@ -600,6 +600,7 @@ export type UserBan = {
 
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
+  admined_chapters: Array<Chapter>;
   email: Scalars['String'];
   first_name: Scalars['String'];
   id: Scalars['Int'];
@@ -674,6 +675,11 @@ export type AuthenticateMutation = {
           };
         }>;
       };
+      admined_chapters: Array<{
+        __typename?: 'Chapter';
+        id: number;
+        name: string;
+      }>;
     };
   };
 };
@@ -697,6 +703,11 @@ export type MeQuery = {
         };
       }>;
     };
+    admined_chapters: Array<{
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+    }>;
   } | null;
 };
 
@@ -1558,6 +1569,10 @@ export const AuthenticateDocument = gql`
             }
           }
         }
+        admined_chapters {
+          id
+          name
+        }
       }
     }
   }
@@ -1617,6 +1632,10 @@ export const MeDocument = gql`
             name
           }
         }
+      }
+      admined_chapters {
+        id
+        name
       }
     }
   }

@@ -134,4 +134,28 @@ describe('venues dashboard', () => {
     );
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
   });
+
+  describe('adding venue with chapter selected in form', () => {
+    it('only admined chapters can be selected', () => {
+      cy.login('admin@of.chapter.one');
+      cy.visit('/dashboard/venues/new');
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .then((options) => {
+          expect(options).to.have.length(1);
+        });
+
+      cy.login('test@user.org');
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .should('not.exist');
+
+      cy.login();
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .then((options) => {
+          expect(options).to.have.length(4);
+        });
+    });
+  });
 });

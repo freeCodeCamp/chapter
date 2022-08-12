@@ -13,6 +13,10 @@ export const meQuery = gql`
           }
         }
       }
+      admined_chapters {
+        id
+        name
+      }
     }
   }
 `;

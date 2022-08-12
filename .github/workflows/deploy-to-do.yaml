@@ -60,6 +60,7 @@ jobs:
           # TODO: drop the .mailhog file when we want to deploy to staging or production.
           # Its only purpose is to make mailhog available.
           script: |
+            docker image prune -f
             docker load -i images/app.tar
             docker load -i images/client.tar
             docker load -i images/seed.tar

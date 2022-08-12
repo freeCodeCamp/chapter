@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="chapter" schema="public" type="PostgreSQL - 13.7 (Debian 13.7-1.pgdg110+1)">
+<database name="chapter" schema="public" type="PostgreSQL - 13.8 (Debian 13.8-1.pgdg110+1)">
    <sequences>
       <sequence increment="1" name="chapter_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="chapter_roles_id_seq" startValue="1"/>
@@ -254,8 +254,8 @@
             <parent column="id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
             <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
+            <parent column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="events_pkey" unique="true">

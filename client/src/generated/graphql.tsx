@@ -81,6 +81,7 @@ export type ChapterWithRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  event?: Event;
   id: Scalars['Int'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];

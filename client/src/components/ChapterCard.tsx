@@ -1,17 +1,42 @@
-import { Heading, Grid, Image, Text, Tag, GridItem } from '@chakra-ui/react';
+import { LockIcon } from '@chakra-ui/icons';
+import {
+  Heading,
+  Grid,
+  Spacer,
+  Text,
+  Tag,
+  GridItem,
+  Flex,
+} from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
-import { Chapter } from 'generated/graphql';
+import { Chapter, Event } from 'generated/graphql';
 
 type ChapterCardProps = {
   chapter: Pick<
     Chapter,
     'id' | 'name' | 'description' | 'category' | 'imageUrl'
-  >;
+  > & {
+    event: Pick<Event, 'id' | 'name' | 'start_at' | 'canceled' | 'invite_only'>;
+  };
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
+  const metaTag = (
+    <>
+      {chapter.event.canceled && (
+        <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
+          Canceled
+        </Tag>
+      )}
+      {chapter.event.invite_only && (
+        <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
+          <LockIcon />
+        </Tag>
+      )}
+    </>
+  );
   return (
     <Grid
       data-cy="chapter-card"
@@ -19,69 +44,56 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       borderRadius="lg"
       overflow="hidden"
     >
-      <Link href={`/chapters/${chapter.id}`} _hover={{}}>
-        <Grid
-          gridGap={1}
-          w={'100vw'}
-          maxW={'35em'}
-          templateRows="repeat(2, 5em)"
-          templateColumns="repeat(5, 5em)"
+      <Grid
+        w={'100vw'}
+        maxW={'35em'}
+        templateRows="repeat(2, 5em)"
+        templateColumns="repeat(5, 5em)"
+      >
+        <GridItem colSpan={6} rowEnd={1} padding={'.5em'}>
+          <Link href={`/chapters/${chapter.id}`} _hover={{}}>
+            <Flex align="center">
+              <Heading
+                data-cy="chapter-heading"
+                fontSize={'xl'}
+                fontWeight={700}
+                fontFamily={'body'}
+                marginBlock="2"
+                as="h3"
+              >
+                {chapter.name}
+              </Heading>
+              <Spacer />
+              {/* <Text fontWeight="semibold" as="h4">{chapter.category}</Text> */}
+              <Text color={'darkcyan'} fontWeight="bold" as="h4">
+                In-Person
+              </Text>
+            </Flex>
+          </Link>
+        </GridItem>
+        <GridItem
+          rowSpan={2}
+          colSpan={2}
+          rowStart={1}
+          colStart={1}
+          marginLeft={'0.5em'}
         >
-          <GridItem colSpan={4} marginLeft={'0.5em'}>
-            <Heading
-              data-cy="chapter-heading"
-              fontSize={'xl'}
-              fontWeight={700}
-              fontFamily={'body'}
-              marginBlock="2"
-              as="h3"
-            >
-              {chapter.name}
-            </Heading>
-            {/* <Text fontWeight="semibold" as="h4">{chapter.category}</Text> */}
-            <Text color={'darkcyan'} fontWeight="bold" as="h4">
-              In-Person
-            </Text>
-          </GridItem>
-
-          <GridItem colSpan={2} rowStart={1} rowSpan={3} colStart={5}>
-            <Image
-              width={'100%'}
-              height={'100%'}
-              src={chapter.imageUrl}
-              objectFit={'cover'}
-              display="block"
-            />
-          </GridItem>
-          <GridItem
-            rowSpan={2}
-            colSpan={2}
-            rowStart={2}
-            colStart={1}
-            marginLeft={'0.5em'}
-          >
-            <Text mt="2" as="p">
-              {chapter.description}
-            </Text>
-          </GridItem>
-          <GridItem colSpan={3} colStart={1} rowStart={3}>
-            <Tag
-              marginInline={'.5rem'}
-              marginBottom={'.5rem'}
-              colorScheme={'messenger'}
-            >
-              Frontend Tag
-            </Tag>
-            <Tag
-              marginInline={'.5rem'}
-              marginBottom={'.5rem'}
-              colorScheme={'messenger'}
-            >
-              Backend Tag
-            </Tag>
-          </GridItem>
-        </Grid>
-      </Link>
+          <Text mt="2" as="p">
+            {chapter.description}
+          </Text>
+        </GridItem>
+        <GridItem colSpan={3} colStart={1} rowStart={3}>
+          <Link href={`/events/${chapter.event.id}`} _hover={{}}>
+            <Flex>
+              <Text mt="2">{chapter.event.name}</Text>
+              <Spacer />
+              <Text mt="2">{chapter.event.start_at}</Text>
+              <Spacer />
+              {metaTag}
+            </Flex>
+          </Link>
+        </GridItem>
+      </Grid>
     </Grid>
   );
 };

@@ -40,7 +40,7 @@ export type Chapter = {
   imageUrl: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-  event?: Event;
+  events: Array<Event>;
 };
 
 export type ChapterPermission = {
@@ -82,7 +82,6 @@ export type ChapterWithRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
-  event?: Event;
   id: Scalars['Int'];
   imageUrl: Scalars['String'];
   name: Scalars['String'];
@@ -447,7 +446,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<ChapterWithRelations>;
+  chapters: Array<Chapter>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;

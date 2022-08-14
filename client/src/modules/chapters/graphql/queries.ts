@@ -17,6 +17,8 @@ export const CHAPTER = gql`
         name
         description
         start_at
+        invite_only
+        canceled
         image_url
         tags {
           tag {
@@ -83,6 +85,15 @@ export const CHAPTERS = gql`
         name
         description
         start_at
+        invite_only
+        canceled
+        image_url
+        tags {
+          tag {
+            id
+            name
+          }
+        }
         invite_only
         canceled
       }

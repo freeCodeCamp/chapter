@@ -18,8 +18,15 @@ import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 @Resolver()
 export class ChapterResolver {
   @Query(() => [Chapter])
-  async chapters(): Promise<Chapter[]> {
-    return await prisma.chapters.findMany();
+  async chapters(
+    @Arg('limit', () => Int, { nullable: true }) _limit?: number,
+    @Arg('showAll', { nullable: true }) _showAll?: boolean,
+  ): Promise<Chapter[]> {
+    return await prisma.chapters
+      .findMany
+      // include: {
+      // }
+      ();
   }
 
   @Query(() => ChapterWithRelations, { nullable: true })

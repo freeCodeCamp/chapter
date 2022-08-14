@@ -1,7 +1,18 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Button, Grid, GridItem, Image } from '@chakra-ui/react';
+import {
+  Avatar,
+  Button,
+  Flex,
+  Image,
+  Menu,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  IconButton,
+} from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -38,12 +49,16 @@ const DevLoginButton = () => {
 
 const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
-    <GridItem
-      display="flex"
+    <Flex
       justifyContent="center"
       alignItems="center"
       ref={ref}
       {...props}
+      w="full"
+      as="header"
+      px={[2, 4, 8]}
+      py={[2, 4]}
+      className={styles.header}
     />
   );
 });
@@ -74,48 +89,72 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <Grid
-        w="full"
-        as="header"
-        templateColumns="repeat(3, 1fr)"
-        px="8"
-        py="4"
-        className={styles.header}
-      >
-        <Item justifyContent="flex-start">
-          <Link href="/">
-            <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />
-          </Link>
-        </Item>
-        <Item>
-          <Input noLabel color="white" placeholder="Search..." />
-        </Item>
-        <Item justifyContent="flex-end">
-          <HStack as="nav">
-            <Link color="white" href="/chapters">
-              Chapters
-            </Link>
-            <Link color="white" href="/events">
-              Events feed
-            </Link>
-            {user ? (
-              <>
-                <Link color="white" href="/dashboard/chapters">
-                  Dashboard
-                </Link>
-                <Button data-cy="logout-button" onClick={logout}>
-                  Logout
-                </Button>
-                <Avatar name={`${user.first_name} ${user.last_name}`} />
-              </>
-            ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
-              <DevLoginButton />
-            ) : (
-              <LoginButton />
-            )}
-          </HStack>
-        </Item>
-      </Grid>
+      <Item>
+        <Link href="/">
+          <Image
+            src="/freecodecamp-logo.svg"
+            alt="The freeCodeCamp logo"
+            display="block"
+          />
+        </Link>
+        <Input
+          background="hsl(239, 100%, 97%)"
+          color="hsl(239, 100%, 13%)"
+          noLabel
+          placeholder="Search..."
+        />
+        <HStack as="nav">
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<HamburgerIcon />}
+              variant="outline"
+              background="hsl(239, 100%, 93%)"
+            >
+              Menu
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <Link href="/chapters">Chapters</Link>
+              </MenuItem>
+              <MenuItem>
+                <Link href="/events">Events feed</Link>
+              </MenuItem>
+              {user ? (
+                <>
+                  <MenuItem>
+                    <Link color="white" href="/dashboard/chapters">
+                      Dashboard
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Button data-cy="logout-button" onClick={logout}>
+                      Logout
+                    </Button>
+                  </MenuItem>
+                </>
+              ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+                <MenuItem>
+                  <DevLoginButton />
+                </MenuItem>
+              ) : (
+                <MenuItem>
+                  <LoginButton />
+                </MenuItem>
+              )}
+            </MenuList>
+          </Menu>
+
+          {user ? (
+            <>
+              <Avatar name={`${user.first_name} ${user.last_name}`} />
+            </>
+          ) : (
+            <></>
+          )}
+        </HStack>
+      </Item>
     </>
   );
 };

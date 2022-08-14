@@ -17,11 +17,25 @@ import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
 export class ChapterResolver {
-  @Query(() => [Chapter])
-  async chapters(): Promise<Chapter[]> {
+  @Query(() => [ChapterWithRelations])
+  async chapters(): Promise<ChapterWithRelations[]> {
     return await prisma.chapters.findMany({
       include: {
         events: { include: { tags: { include: { tag: true } } } },
+        chapter_users: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+          orderBy: { user: { first_name: 'asc' } },
+        },
+        user_bans: { include: { user: true, chapter: true } },
       },
     });
   }

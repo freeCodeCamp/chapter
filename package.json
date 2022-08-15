@@ -61,7 +61,7 @@
     "@cypress/code-coverage": "3.10.0",
     "@faker-js/faker": "6.3.1",
     "@testing-library/cypress": "8.0.3",
-    "@types/jest": "28.1.6",
+    "@types/jest": "28.1.7",
     "@types/node-fetch": "2.6.2",
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "5.33.0",
@@ -90,7 +90,7 @@
     "lodash": "4.17.21",
     "prettier": "2.7.1",
     "shx": "0.3.4",
-    "ts-jest": "28.0.7",
+    "ts-jest": "28.0.8",
     "typescript": "4.7.4"
   },
   "nyc": {

@@ -295,23 +295,28 @@ describe('events dashboard', () => {
 
     cy.mhDeleteAll();
   });
+});
+
+describe('events endpoints', () => {
+  beforeEach(() => {
+    cy.exec('npm run db:seed');
+    cy.login('admin@of.chapter.one');
+    cy.mhDeleteAll();
+    cy.interceptGQL('events');
+  });
 
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
-    // admin of chapter 1
-    cy.login('admin@of.chapter.one');
 
     cy.updateEvent(eventId, eventData).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
     // newly registered user (without a chapter_users record)
     cy.login('test@user.org');
-
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
-
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
   });
 
@@ -320,17 +325,13 @@ describe('events dashboard', () => {
 
     // newly registered user (without a chapter_users record)
     cy.login('test@user.org');
-
     cy.deleteEvent(eventId).then(expectToBeRejected);
-
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
-
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // admin of chapter 1
     cy.login('admin@of.chapter.one');
-
     cy.deleteEvent(eventId).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
@@ -338,19 +339,15 @@ describe('events dashboard', () => {
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.login('test@user.org');
+    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
 
+    cy.login('test@user.org');
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
-
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
-    // admin of chapter 1
-    cy.login('admin@of.chapter.one');
-
-    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
   });
 });

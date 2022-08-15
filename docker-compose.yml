@@ -11,6 +11,7 @@ services:
       - "5000:5000"
     image: chapter-app
   client:
+    env_file: .env
     depends_on:
       - app
     build:

@@ -17,8 +17,8 @@ export const EditVenuePage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const venueId = useParam('venueId');
-  const chapterId = useParam('id');
+  const { param: venueId } = useParam('venueId');
+  const { param: chapterId } = useParam('id');
 
   const { loading, error, data } = useVenueQuery({
     variables: { id: venueId },

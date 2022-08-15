@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useCreateVenueMutation } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
@@ -9,16 +9,9 @@ import { VENUES } from '../graphql/queries';
 import { useParam } from 'hooks/useParam';
 
 export const NewVenuePage: NextPage = () => {
-  const chapterId = useParam('id');
+  const { param: chapterId, isReady } = useParam('id');
   const [loading, setLoading] = useState(false);
-  const [isReady, setReady] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    if (router.isReady) {
-      setReady(true);
-    }
-  }, [router.isReady]);
 
   const [createVenue] = useCreateVenueMutation({
     refetchQueries: [{ query: VENUES }],

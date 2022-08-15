@@ -15,11 +15,14 @@ jobs:
         uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16.x'
-      - name: Set Chapter Environment Variables
-        run: |
-          cp .env.example .env
-          printf "\nNEXT_PUBLIC_SERVER_URL=${{ secrets.CHAPTER_SERVER_URL }}" >> .env
+      # Due to a quirk of Actions, the .env file overwrites the env: values you
+      # set in the YAML. We create this empty file so that the build does not
+      # fail, but pass the values in via env:
+      - name: Create Dummy .env
+        run: touch .env 
       - name: Build Images
+        env: 
+          NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
         run: |
           npm run build
           docker compose -f docker-compose.seed.yml build

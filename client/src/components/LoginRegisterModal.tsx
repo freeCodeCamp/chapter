@@ -26,8 +26,7 @@ interface LoginData {
 }
 
 interface RegisterData extends LoginData {
-  first_name: string;
-  last_name: string;
+  name: string;
 }
 
 export const LoginRegisterModal: React.FC<{
@@ -50,7 +49,7 @@ export const LoginRegisterModal: React.FC<{
 
   const onSubmit = async (data: LoginData | RegisterData) => {
     if (isRegister) {
-      if ('last_name' in data) {
+      if ('name' in data) {
         try {
           await registerMutation({ variables: { ...data } });
           toast({ title: 'User registered', status: 'success' });
@@ -135,18 +134,7 @@ export const LoginRegisterModal: React.FC<{
             />
 
             {isRegister && (
-              <>
-                <Input
-                  label="First name"
-                  {...register('first_name')}
-                  isRequired
-                />
-                <Input
-                  label="Last name"
-                  {...register('last_name')}
-                  isRequired
-                />
-              </>
+              <Input label="Name" {...register('name')} isRequired />
             )}
 
             <Text fontSize="md">

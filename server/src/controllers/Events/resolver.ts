@@ -106,7 +106,7 @@ const sendRsvpInvitation = async (
   await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
-    htmlEmail: `Hi ${user.first_name},</br>
+    htmlEmail: `Hi ${user.name},</br>
 To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${google(linkDetails)}>Google</a>
@@ -141,7 +141,7 @@ const rsvpNotifyAdministrators = async (
   eventName: string,
 ) => {
   const subject = `New RSVP for ${eventName}`;
-  const body = `User ${rsvpingUser.first_name} ${rsvpingUser.last_name} has RSVP'd.`;
+  const body = `User ${rsvpingUser.name} has RSVP'd.`;
 
   await batchSender(function* () {
     for (const { chapter_id, user } of chapterAdministrators) {
@@ -257,7 +257,7 @@ export class EventResolver {
               },
             },
           },
-          orderBy: { user: { first_name: 'asc' } },
+          orderBy: { user: { name: 'asc' } },
         },
         sponsors: { include: { sponsor: true } },
       },

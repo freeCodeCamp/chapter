@@ -8,7 +8,7 @@ describe('registration', () => {
 
   it('should redirect to login after successful registration', () => {
     cy.interceptGQL('register');
-    cy.registerViaUI('An', 'User', 'an@user.com');
+    cy.registerViaUI('An User', 'an@user.com');
     cy.wait('@GQLregister')
       .its('response')
       .then((response) => {
@@ -20,10 +20,10 @@ describe('registration', () => {
   });
 
   it('should not allow registation, when using the same email twice', () => {
-    cy.register('An', 'User', 'an@user.com');
+    cy.register('An User', 'an@user.com');
 
     cy.interceptGQL('register');
-    cy.registerViaUI('An', 'User', 'an@user.com');
+    cy.registerViaUI('An User', 'an@user.com');
     cy.wait('@GQLregister')
       .its('response')
       .then((response) => {

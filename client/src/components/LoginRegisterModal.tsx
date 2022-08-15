@@ -134,9 +134,7 @@ export const LoginRegisterModal: React.FC<{
             />
 
             {isRegister && (
-              <>
-                <Input label="Name" {...register('name')} isRequired />
-              </>
+              <Input label="Name" {...register('name')} isRequired />
             )}
 
             <Text fontSize="md">

@@ -8,7 +8,6 @@ import {
   MenuList,
   MenuItem,
   MenuButton,
-  IconButton,
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
@@ -106,7 +105,7 @@ export const Header: React.FC = () => {
         <HStack as="nav">
           <Menu>
             <MenuButton
-              as={IconButton}
+              as={Button}
               aria-label="Options"
               icon={<HamburgerIcon />}
               variant="outline"

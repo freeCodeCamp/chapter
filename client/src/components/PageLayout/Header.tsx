@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -94,6 +93,7 @@ export const Header: React.FC = () => {
             src="/freecodecamp-logo.svg"
             alt="The freeCodeCamp logo"
             display="block"
+            width="100%"
           />
         </Link>
         <Input
@@ -107,7 +107,6 @@ export const Header: React.FC = () => {
             <MenuButton
               as={Button}
               aria-label="Options"
-              icon={<HamburgerIcon />}
               variant="outline"
               background="hsl(239, 100%, 93%)"
             >

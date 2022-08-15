@@ -6,8 +6,8 @@ const eventData = {
   url: 'http://wooden-swing.com',
   streaming_url: null,
   capacity: 149,
-  start_at: '2022-08-03T18:45:00.000Z',
-  ends_at: '2022-08-03T18:45:00.000Z',
+  start_at: new Date(),
+  ends_at: new Date(),
   venue_type: 'Physical',
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',
@@ -17,7 +17,9 @@ const eventData = {
   chapter_id: 1,
 };
 
-describe('events dashboard', () => {
+// TODO: Move these specs into the other describe block, once we can make sure
+// that Cypress is operating on an event from chapter 1.
+describe('spec needing owner', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
     cy.login();
@@ -297,7 +299,7 @@ describe('events dashboard', () => {
   });
 });
 
-describe('events endpoints', () => {
+describe('events dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
     cy.login('admin@of.chapter.one');

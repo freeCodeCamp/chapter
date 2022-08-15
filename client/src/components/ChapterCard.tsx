@@ -11,26 +11,55 @@ import {
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
-import { Chapter, Event } from 'generated/graphql';
+import { ChapterWithRelations, Event, EventTag } from 'generated/graphql';
 
 type ChapterCardProps = {
-  chapter: Pick<
-    Chapter,
-    'id' | 'name' | 'description' | 'category' | 'imageUrl'
-  > & {
-    event: Pick<Event, 'id' | 'name' | 'start_at' | 'canceled' | 'invite_only'>;
-  };
+  chapter:
+    | (Pick<
+        ChapterWithRelations,
+        'id' | 'name' | 'description' | 'category' | 'imageUrl'
+      > & {
+        events: Pick<
+          Event,
+          | 'id'
+          | 'name'
+          | 'description'
+          | 'image_url'
+          | 'start_at'
+          | 'canceled'
+          | 'invite_only'
+        >;
+        tags?: EventTag[] | null;
+      })
+    | undefined;
 };
+
+// export type ChapterWithRelations = {
+//   __typename?: 'ChapterWithRelations';
+//   category: Scalars['String'];
+//   chapter_users: Array<ChapterUser>;
+//   chatUrl?: Maybe<Scalars['String']>;
+//   city: Scalars['String'];
+//   country: Scalars['String'];
+//   creator_id: Scalars['Int'];
+//   description: Scalars['String'];
+//   events: Array<Event>;
+//   id: Scalars['Int'];
+//   imageUrl: Scalars['String'];
+//   name: Scalars['String'];
+//   region: Scalars['String'];
+//   user_bans: Array<UserBan>;
+// };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   const metaTag = (
     <>
-      {chapter.event.canceled && (
+      {chapter?.events.canceled && (
         <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
           Canceled
         </Tag>
       )}
-      {chapter.event.invite_only && (
+      {chapter?.events.invite_only && (
         <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
           <LockIcon />
         </Tag>
@@ -51,7 +80,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         templateColumns="repeat(5, 5em)"
       >
         <GridItem colSpan={6} rowEnd={1} padding={'.5em'}>
-          <Link href={`/chapters/${chapter.id}`} _hover={{}}>
+          <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
             <Flex align="center">
               <Heading
                 data-cy="chapter-heading"
@@ -61,10 +90,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 marginBlock="2"
                 as="h3"
               >
-                {chapter.name}
+                {chapter?.name}
               </Heading>
               <Spacer />
-              {/* <Text fontWeight="semibold" as="h4">{chapter.category}</Text> */}
+              {/* <Text fontWeight="semibold" as="h4">{chapter?.category}</Text> */}
               <Text color={'darkcyan'} fontWeight="bold" as="h4">
                 In-Person
               </Text>
@@ -79,15 +108,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginLeft={'0.5em'}
         >
           <Text mt="2" as="p">
-            {chapter.description}
+            {chapter?.description}
           </Text>
         </GridItem>
         <GridItem colSpan={3} colStart={1} rowStart={3}>
-          <Link href={`/events/${chapter.event.id}`} _hover={{}}>
+          <Link href={`/events/${chapter?.events.id}`} _hover={{}}>
             <Flex>
-              <Text mt="2">{chapter.event.name}</Text>
+              <Text mt="2">{chapter?.events.name}</Text>
               <Spacer />
-              <Text mt="2">{chapter.event.start_at}</Text>
+              <Text mt="2">{chapter?.events.start_at}</Text>
               <Spacer />
               {metaTag}
             </Flex>

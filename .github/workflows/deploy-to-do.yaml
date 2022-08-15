@@ -19,10 +19,15 @@ jobs:
       # set in the YAML. We create this empty file so that the build does not
       # fail, but pass the values in via env:
       - name: Create Dummy .env
-        run: touch .env 
+        run: touch .env
       - name: Build Images
-        env: 
+        env:
           NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          NEXT_PUBLIC_CLIENT_URL: ${{ secrets.CHAPTER_CLIENT_URL }}
         run: |
           npm run build
           docker compose -f docker-compose.seed.yml build

@@ -29,8 +29,7 @@
     "incremental": true
   },
   "exclude": [
-    "node_modules",
-    "./src/styles/themes.ts"    
+    "node_modules"
   ],
   "include": [
     "**/*.ts",

@@ -7,8 +7,8 @@
     "doc": "docs"
   },
   "engines": {
-    "node": "^16.16.0",
-    "npm": "^8.11.0"
+    "node": "16.16.0",
+    "npm": "8.17.0"
   },
   "scripts": {
     "dev:client": "dotenv -- npm -w=client run dev",
@@ -62,7 +62,7 @@
     "@faker-js/faker": "6.3.1",
     "@testing-library/cypress": "8.0.3",
     "@types/jest": "28.1.6",
-    "@types/node-fetch": "^2.6.2",
+    "@types/node-fetch": "2.6.2",
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "5.33.0",
     "@typescript-eslint/parser": "5.33.0",

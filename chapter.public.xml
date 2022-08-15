@@ -254,8 +254,8 @@
             <parent column="id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
             <parent column="chapter_id" foreignKey="events_venue_id_chapter_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="venues"/>
+            <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="events_pkey" unique="true">
@@ -392,10 +392,9 @@
             <child column="user_id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="sessions"/>
             <child column="user_id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="first_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="last_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="email" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="instance_role_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="email" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="instance_role_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="users_instance_role_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="instance_roles"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>

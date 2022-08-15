@@ -18,6 +18,7 @@ import React from 'react';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
+import { chapterTheme } from '../styles/themes';
 
 const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
@@ -109,7 +110,7 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
         )}
       </Head>
       <ApolloProvider client={client}>
-        <ChakraProvider>
+        <ChakraProvider theme={chapterTheme}>
           <ConditionalWrap
             wrapper={
               process.env.NEXT_PUBLIC_USE_AUTH0 === 'true' && Auth0Wrapper

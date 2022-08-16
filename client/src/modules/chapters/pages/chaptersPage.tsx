@@ -1,8 +1,16 @@
 import { Heading, VStack, Stack, Flex, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+} from '@chakra-ui/react';
 
-import { ChapterCard } from 'components/ChapterCard';
 import { useChaptersQuery } from 'generated/graphql';
 
 export const ChaptersPage: NextPage = () => {
@@ -20,10 +28,9 @@ export const ChaptersPage: NextPage = () => {
       </div>
     );
   }
-
   return (
     <VStack>
-      <Stack spacing={3} mt={10} mb={5}>
+      <Stack w="40%" mt={10} mb={5}>
         <Flex justify="start">
           <Heading>Chapters: </Heading>
         </Flex>
@@ -32,12 +39,49 @@ export const ChaptersPage: NextPage = () => {
             {' '}
             Chapters allow you to organize events based on your preferences.
           </Text>
-          <Flex wrap="wrap" justify="space-evenly">
-            {data.chapters.map((chapter) => (
-              <Heading size="md" key={chapter.id} mt={10} mr={10}>
-                <ChapterCard key={chapter.id} chapter={chapter} />
-              </Heading>
-            ))}
+          <Flex justify="space-between" mt="5%">
+            <Flex direction="column" align="start">
+              <TableContainer>
+                <Table colorScheme="facebook" borderRadius="md" borderWidth={2}>
+                  <Thead>
+                    <Tr bg="blue.200">
+                      <Th borderWidth={2}>Chapter</Th>
+                      <Th borderWidth={2}>Description</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {data.chapters.map((chapter) => (
+                      <Tr key={chapter.id}>
+                        <Td borderWidth={2}>{chapter.name}</Td>
+                        <Td borderWidth={2}>{chapter.description}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Flex>
+
+            <Flex direction="column" align="start">
+              <TableContainer>
+                <Table colorScheme="facebook" borderRadius="md" borderWidth={2}>
+                  <Thead>
+                    <Tr bg="blue.200">
+                      <Th borderWidth={2}>Chapter</Th>
+                      <Th borderWidth={2}>Description</Th>
+                    </Tr>
+                  </Thead>
+
+                  <Tbody>
+                    {data.chapters.map((chapter) => (
+                      <Tr key={chapter.id}>
+                        <Td borderWidth={2}>{chapter.name}</Td>
+                        <Td borderWidth={2}>{chapter.description}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Flex>
           </Flex>
         </Flex>
       </Stack>

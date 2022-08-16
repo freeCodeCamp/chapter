@@ -9,7 +9,7 @@ import { VENUES } from '../graphql/queries';
 import { useParam } from 'hooks/useParam';
 
 export const NewVenuePage: NextPage = () => {
-  const chapterId = useParam('id');
+  const { param: chapterId, isReady } = useParam('id');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -42,13 +42,15 @@ export const NewVenuePage: NextPage = () => {
 
   return (
     <Layout>
-      <VenueForm
-        loading={loading}
-        onSubmit={onSubmit}
-        submitText={'Add venue'}
-        chapterId={chapterId}
-        loadingText={'Adding venue'}
-      />
+      {isReady && (
+        <VenueForm
+          loading={loading}
+          onSubmit={onSubmit}
+          submitText={'Add venue'}
+          chapterId={chapterId}
+          loadingText={'Adding venue'}
+        />
+      )}
     </Layout>
   );
 };

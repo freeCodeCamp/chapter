@@ -11,14 +11,14 @@ tasks:
   # both .bashrc and nvm settings get wiped when a workspace is restarted, so
   # they need setting here
   - before: |
-      echo NEXT_PUBLIC_SERVER_URL=$(gp url 5000) > client/.env.development.local &&
-      export CLIENT_LOCATION=$(gp url 3000) &&
-      export COOKIE_DOMAIN=gitpod.io &&
+      export NEXT_PUBLIC_SERVER_URL=$(gp url 5000)
+      export CLIENT_LOCATION=$(gp url 3000)
+      export COOKIE_DOMAIN=gitpod.io
       nvm install lts/gallium && nvm alias default lts/gallium
     # the rest, get persisted, so we can save time and use init:
     init: npm ci
     command: |
-      npm run db:reset &&
+      npm run db:reset
       npm run both
 github:
   prebuilds:

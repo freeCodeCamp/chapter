@@ -64,7 +64,7 @@ export const Header: React.FC = () => {
     // TODO: inject the auth functions (logout) into the Header so we can switch
     // strategies easily.
     if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'development') logoutAuth0();
-    fetch(`${serverUrl}/logout`, {
+    fetch(new URL('/logout', serverUrl).href, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -106,7 +106,7 @@ export const Header: React.FC = () => {
                 <Button data-cy="logout-button" onClick={logout}>
                   Logout
                 </Button>
-                <Avatar name={`${user.first_name} ${user.last_name}`} />
+                <Avatar name={user.name} />
               </>
             ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
               <DevLoginButton />

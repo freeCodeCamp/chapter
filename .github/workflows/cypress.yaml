@@ -13,21 +13,6 @@ jobs:
       matrix:
         browsers: [chrome, firefox]
         node-version: [16.x]
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: chapter
-        ports:
-          - 5432:5432
-      # We need mailhog to catch any emails the api tries to send.
-      mailhog:
-        image: mailhog/mailhog
-        ports:
-          - 1025:1025
-          - 8025:8025
-
     steps:
       - name: Set Action Environment Variables
         run: |
@@ -43,23 +28,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Set Chapter Environment Variables
-        run: printf "\nDB_PORT=5432" >> .env
-
-      - name: Build client and server
-        run: npm run build
-
-      - name: Seed Database
-        run: npm run db:reset
+        run: cp .env.example .env 
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          start: npm start
+          build: npm run build
+          start: npm run start:ci
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           browser: ${{ matrix.browsers }}
 

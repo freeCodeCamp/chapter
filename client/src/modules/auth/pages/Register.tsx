@@ -10,8 +10,7 @@ import { Input } from '../../../components/Form/Input';
 import { useRegisterMutation } from '../../../generated/graphql';
 
 interface RegisterFormData {
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
 }
 
@@ -50,8 +49,7 @@ export const RegisterPage: NextPage = () => {
         <VStack>
           <Heading>Register</Heading>
 
-          <Input label="First name" {...register('first_name')} isRequired />
-          <Input label="Last name" {...register('last_name')} isRequired />
+          <Input label="Name" {...register('name')} isRequired />
           <Input
             label="Email"
             {...register('email')}

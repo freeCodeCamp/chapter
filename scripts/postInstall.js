@@ -47,20 +47,6 @@ function setup() {
     }
   }
 
-  if (!existsSync('./client/.env.local')) {
-    console.log(
-      "You don't have a .env.local\nCopying .env.local.example to .env.local",
-    );
-
-    try {
-      copyFileSync('./client/.env.local.example', './client/.env.local');
-      console.log('Copied!');
-    } catch (e) {
-      IS_ERROR = true;
-      console.error(`${e} occurred while copying .env.local file`);
-    }
-  }
-
   if (!IS_ERROR) {
     console.log(
       '\nCongratulations, its almost done 🙌🏼. Run `npm run both` to start the development server.',

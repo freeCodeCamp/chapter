@@ -471,9 +471,9 @@ You are a champion :).
 
 <details><summary>How do I enable CodeSee?</summary>
 
-Copy the `client/.example.env.local` to `client/.env.local`. 
+Uncomment the `CODESEE` variable in .env and restart.
 
-[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter, after creating `.env.local`, you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
+[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
 
 To learn more, take a look at their [docs](https://docs.codesee.io/projects/recordings/en/latest/use/quick-start/) or just click the button and find out.
 
@@ -516,13 +516,9 @@ This configuration pattern is based on the [dotenv package](https://www.npmjs.co
 
 The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
 
-#### Client Configuration
-
-The above also applies to .env.local in the client directory. The only difference is the location. This file has to be separate from the root .env, since it needs to be in a location that NextJS can access.
-
 ### Running Remotely
 
-When not running locally, the client needs to be passed the server's location by changing your [_/client/.env.local_](#env-configuration-file) file to include `NEXT_PUBLIC_SERVER_URL=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
+When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_SERVER_URL=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 ## Database
 

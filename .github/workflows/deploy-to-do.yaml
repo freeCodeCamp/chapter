@@ -1,7 +1,9 @@
+# TODO: get rid of the seed stuff when we have a less hacky way to do this
 name: Build and Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 jobs:
   build:
     name: Build and Upload Images
@@ -13,51 +15,61 @@ jobs:
         uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16.x'
-      - name: Set Chapter Environment Variables
-        run: | 
-          cp .env.example .env
-      # reinstate once Auth0 is in.
-      # cp client/.env.local.example client/.env.local
+      # Due to a quirk of Actions, the .env file overwrites the env: values you
+      # set in the YAML. We create this empty file so that the build does not
+      # fail, but pass the values in via env:
+      - name: Create Dummy .env
+        run: touch .env
       - name: Build Images
-        env: 
+        env:
           NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
-        run: npm run build:docker
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          NEXT_PUBLIC_CLIENT_URL: ${{ secrets.CHAPTER_CLIENT_URL }}
+        run: |
+          npm run build
+          docker compose -f docker-compose.seed.yml build
       - name: Save Images
         run: |
           docker save -o app.tar chapter-app
           docker save -o client.tar chapter-client
+          docker save -o seed.tar chapter-seed
       # TODO: upload to repository once this has been shown to work.
       - name: Upload Images
-        uses: appleboy/scp-action@v0.1.3
+        uses: appleboy/scp-action@6d1fc191a822daa12faa45f3a985413f995ff5c5 # tag=v0.1.3
         with:
           host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
           username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}
           key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
-          source: 'app.tar,client.tar'
+          source: 'app.tar,client.tar,seed.tar'
           target: images
       - name: Upload Compose Files
-        uses: appleboy/scp-action@v0.1.3
+        uses: appleboy/scp-action@6d1fc191a822daa12faa45f3a985413f995ff5c5 # tag=v0.1.3
         with:
           host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
           username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}
           key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
-          source: 'docker-compose.yml,docker-compose.mailhog.yml'
+          source: 'docker-compose.yml,docker-compose.mailhog.yml,docker-compose.seed.yml'
           target: chapter
       - name: Unpack Images
-        uses: appleboy/ssh-action@v0.1.5
+        uses: appleboy/ssh-action@f9010ff7f1bbd7db1a0b4bab661437550cea20c0 # tag=v0.1.5
         with:
           host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
           username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}
           key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
-          # TODO: drop the .ci file when we want to deploy to staging or production.
+          # TODO: drop the .mailhog file when we want to deploy to staging or production.
           # Its only purpose is to make mailhog available.
           script: |
+            docker image prune -f
             docker load -i images/app.tar
             docker load -i images/client.tar
+            docker load -i images/seed.tar
             cd chapter && docker compose -f docker-compose.yml -f docker-compose.mailhog.yml up -d

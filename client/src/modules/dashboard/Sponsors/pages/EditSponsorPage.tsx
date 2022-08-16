@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { getId } from '../../../../util/getId';
+import { useParam } from '../../../../hooks/useParam';
 import { Sponsors } from '../../Events/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
@@ -10,19 +10,17 @@ import { useSponsorQuery, useUpdateSponsorMutation } from 'generated/graphql';
 const EditSponsorPage: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const id = getId(router.query) || -1;
+  const { param: sponsorId } = useParam('id');
   const {
     loading: sponsorLoading,
     error,
     data,
   } = useSponsorQuery({
-    variables: {
-      sponsorId: id,
-    },
+    variables: { sponsorId },
   });
   const [updateSponsor] = useUpdateSponsorMutation({
     refetchQueries: [
-      { query: SPONSOR, variables: { id } },
+      { query: SPONSOR, variables: { id: sponsorId } },
       { query: Sponsors },
     ],
   });
@@ -32,7 +30,7 @@ const EditSponsorPage: NextPage = () => {
       updateSponsor({
         variables: {
           data,
-          updateSponsorId: id,
+          updateSponsorId: sponsorId,
         },
       });
       router.replace('/dashboard/sponsors');

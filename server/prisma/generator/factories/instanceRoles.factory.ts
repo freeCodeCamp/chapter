@@ -20,6 +20,7 @@ const roles: InstanceRole[] = [
     permissions: [
       InstancePermission.ChapterJoin,
       InstancePermission.ChapterSubscriptionsManage,
+      InstancePermission.ChapterBanUser,
     ],
   },
 ];

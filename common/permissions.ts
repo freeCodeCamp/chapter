@@ -20,6 +20,7 @@ export enum InstancePermission {
   ChapterUserRoleChange = 'chapter-user-role-change',
   SponsorsManage = 'sponsors-manage',
   UserInstanceRoleChange = 'user-instance-role-change',
+  ChapterBanUser = 'ban-user',
   UsersView = 'users-view',
 }
 

@@ -1,13 +1,13 @@
 import { expectToBeRejected } from '../../../support/util';
 
 const eventData = {
-  name: 'Homer Simpson3',
+  name: 'Homer Simpson',
   description: 'i will show you damn!',
   url: 'http://wooden-swing.com',
   streaming_url: null,
   capacity: 149,
-  start_at: '2022-08-03T18:45:00.000Z',
-  ends_at: '2022-08-03T18:45:00.000Z',
+  start_at: new Date(),
+  ends_at: new Date(),
   venue_type: 'Physical',
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',
@@ -16,7 +16,10 @@ const eventData = {
   sponsor_ids: [],
   chapter_id: 1,
 };
-describe('events dashboard', () => {
+
+// TODO: Move these specs into the other describe block, once we can make sure
+// that Cypress is operating on an event from chapter 1.
+describe('spec needing owner', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
     cy.login();
@@ -294,23 +297,28 @@ describe('events dashboard', () => {
 
     cy.mhDeleteAll();
   });
+});
+
+describe('events dashboard', () => {
+  beforeEach(() => {
+    cy.exec('npm run db:seed');
+    cy.login('admin@of.chapter.one');
+    cy.mhDeleteAll();
+    cy.interceptGQL('events');
+  });
 
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
-    // admin of chapter 1
-    cy.login('admin@of.chapter.one');
 
     cy.updateEvent(eventId, eventData).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
     // newly registered user (without a chapter_users record)
     cy.login('test@user.org');
-
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
-
     cy.updateEvent(eventId, eventData).then(expectToBeRejected);
   });
 
@@ -319,19 +327,29 @@ describe('events dashboard', () => {
 
     // newly registered user (without a chapter_users record)
     cy.login('test@user.org');
-
     cy.deleteEvent(eventId).then(expectToBeRejected);
-
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
-
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // admin of chapter 1
     cy.login('admin@of.chapter.one');
-
     cy.deleteEvent(eventId).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
+  });
+
+  it('chapter admin should be allowed to send email to attendees', () => {
+    const eventId = 1;
+    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
+
+    cy.login('test@user.org');
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+
+    // banned admin should be rejected
+    cy.login('banned@chapter.admin');
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
   });
 });

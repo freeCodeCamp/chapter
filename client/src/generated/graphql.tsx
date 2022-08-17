@@ -505,8 +505,7 @@ export type QueryVenueArgs = {
 
 export type RegisterInput = {
   email: Scalars['String'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type Rsvp = {
@@ -586,9 +585,7 @@ export type UpdateVenueInputs = {
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
-  first_name: Scalars['String'];
   id: Scalars['Int'];
-  last_name: Scalars['String'];
   name: Scalars['String'];
 };
 
@@ -602,10 +599,8 @@ export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
   email: Scalars['String'];
-  first_name: Scalars['String'];
   id: Scalars['Int'];
   instance_role: InstanceRole;
-  last_name: Scalars['String'];
   name: Scalars['String'];
 };
 
@@ -642,8 +637,7 @@ export type LoginMutation = {
 
 export type RegisterMutationVariables = Exact<{
   email: Scalars['String'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
+  name: Scalars['String'];
 }>;
 
 export type RegisterMutation = {
@@ -663,8 +657,7 @@ export type AuthenticateMutation = {
     user: {
       __typename?: 'UserWithInstanceRole';
       id: number;
-      first_name: string;
-      last_name: string;
+      name: string;
       instance_role: {
         __typename?: 'InstanceRole';
         instance_role_permissions: Array<{
@@ -691,8 +684,7 @@ export type MeQuery = {
   me?: {
     __typename?: 'UserWithInstanceRole';
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
     instance_role: {
       __typename?: 'InstanceRole';
       instance_role_permissions: Array<{
@@ -1500,14 +1492,8 @@ export type LoginMutationOptions = Apollo.BaseMutationOptions<
   LoginMutationVariables
 >;
 export const RegisterDocument = gql`
-  mutation register(
-    $email: String!
-    $first_name: String!
-    $last_name: String!
-  ) {
-    register(
-      data: { email: $email, first_name: $first_name, last_name: $last_name }
-    ) {
+  mutation register($email: String!, $name: String!) {
+    register(data: { email: $email, name: $name }) {
       id
     }
   }
@@ -1531,8 +1517,7 @@ export type RegisterMutationFn = Apollo.MutationFunction<
  * const [registerMutation, { data, loading, error }] = useRegisterMutation({
  *   variables: {
  *      email: // value for 'email'
- *      first_name: // value for 'first_name'
- *      last_name: // value for 'last_name'
+ *      name: // value for 'name'
  *   },
  * });
  */
@@ -1560,8 +1545,7 @@ export const AuthenticateDocument = gql`
       token
       user {
         id
-        first_name
-        last_name
+        name
         instance_role {
           instance_role_permissions {
             instance_permission {
@@ -1624,8 +1608,7 @@ export const MeDocument = gql`
   query me {
     me {
       id
-      first_name
-      last_name
+      name
       instance_role {
         instance_role_permissions {
           instance_permission {

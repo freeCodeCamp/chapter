@@ -9,6 +9,8 @@ import {
   Th,
   Td,
   TableContainer,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 
 import { useChaptersQuery } from 'generated/graphql';
@@ -39,8 +41,8 @@ export const ChaptersPage: NextPage = () => {
             {' '}
             Chapters allow you to organize events based on your preferences.
           </Text>
-          <Flex justify="space-between" mt="5%">
-            <Flex direction="column" align="start">
+          <Grid mt="5%" templateColumns="repeat(2, 1fr)" columnGap="5%">
+            <GridItem>
               <TableContainer>
                 <Table colorScheme="facebook" borderRadius="md" borderWidth={2}>
                   <Thead>
@@ -59,9 +61,9 @@ export const ChaptersPage: NextPage = () => {
                   </Tbody>
                 </Table>
               </TableContainer>
-            </Flex>
+            </GridItem>
 
-            <Flex direction="column" align="start">
+            <GridItem>
               <TableContainer>
                 <Table colorScheme="facebook" borderRadius="md" borderWidth={2}>
                   <Thead>
@@ -70,7 +72,6 @@ export const ChaptersPage: NextPage = () => {
                       <Th borderWidth={2}>Description</Th>
                     </Tr>
                   </Thead>
-
                   <Tbody>
                     {data.chapters.map((chapter) => (
                       <Tr key={chapter.id}>
@@ -81,8 +82,8 @@ export const ChaptersPage: NextPage = () => {
                   </Tbody>
                 </Table>
               </TableContainer>
-            </Flex>
-          </Flex>
+            </GridItem>
+          </Grid>
         </Flex>
       </Stack>
     </VStack>

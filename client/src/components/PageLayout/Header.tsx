@@ -56,7 +56,7 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
       as="header"
       px={[2, 4, 8]}
       py={[2, 4]}
-      background={'#1b1b32'}
+      background={'gray.85'}
       className={styles.header}
     />
   );
@@ -98,8 +98,8 @@ export const Header: React.FC = () => {
           />
         </Link>
         <Input
-          background="hsl(239, 100%, 97%)"
-          color="hsl(239, 100%, 13%)"
+          background={'gray.15'}
+          color={'gray.85'}
           noLabel
           placeholder="Search..."
         />
@@ -109,7 +109,7 @@ export const Header: React.FC = () => {
               as={Button}
               aria-label="Options"
               variant="outline"
-              background="hsl(239, 100%, 93%)"
+              background={'gray.10'}
               px={[2, 4]}
               py={[1, 2]}
             >

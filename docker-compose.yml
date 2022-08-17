@@ -1,6 +1,7 @@
 version: "3.7"
 services:
   app:
+    restart: unless-stopped
     env_file: .env
     platform: "linux/amd64"
     build:
@@ -11,6 +12,7 @@ services:
       - "5000:5000"
     image: chapter-app
   client:
+    restart: unless-stopped
     env_file: .env
     depends_on:
       - app

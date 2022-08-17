@@ -10,6 +10,7 @@ services:
     ports:
       - "54320:5432"
   app:
+    restart: "no"
     depends_on:
       - db
     build:
@@ -22,6 +23,7 @@ services:
       - EMAIL_HOST=mailhog
 
   client:
+    restart: "no"
     build:
       target: development
     command: npm run dev

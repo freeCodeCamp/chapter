@@ -6,7 +6,6 @@ import {
   Image,
   Menu,
   MenuList,
-  MenuItem,
   MenuButton,
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
@@ -45,7 +44,7 @@ const DevLoginButton = () => {
   );
 };
 
-const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
+const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <Flex
       justifyContent="center"
@@ -56,6 +55,7 @@ const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
       as="header"
       px={[2, 4, 8]}
       py={[2, 4]}
+      background={'#1b1b32'}
       className={styles.header}
     />
   );
@@ -87,7 +87,7 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <Item>
+      <HeaderItem>
         <Link href="/">
           <Image
             src="/freecodecamp-logo.svg"
@@ -109,38 +109,37 @@ export const Header: React.FC = () => {
               aria-label="Options"
               variant="outline"
               background="hsl(239, 100%, 93%)"
+              px={[2, 4]}
+              py={[1, 2]}
             >
               Menu
             </MenuButton>
             <MenuList>
-              <MenuItem>
-                <Link href="/chapters">Chapters</Link>
-              </MenuItem>
-              <MenuItem>
-                <Link href="/events">Events feed</Link>
-              </MenuItem>
-              {user ? (
-                <>
-                  <MenuItem>
-                    <Link color="white" href="/dashboard/chapters">
+              <Flex className={styles.header} flexDirection={'column'}>
+                <Link href="/chapters" paddingInline={'1em'}>
+                  Chapters
+                </Link>
+
+                <Link href="/events" paddingInline={'1em'}>
+                  Events feed
+                </Link>
+
+                {user ? (
+                  <>
+                    <Link href="/dashboard/chapters" paddingInline={'1em'}>
                       Dashboard
                     </Link>
-                  </MenuItem>
-                  <MenuItem>
+
                     <Button data-cy="logout-button" onClick={logout}>
                       Logout
                     </Button>
-                  </MenuItem>
-                </>
-              ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
-                <MenuItem>
+                  </>
+                ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
                   <DevLoginButton />
-                </MenuItem>
-              ) : (
-                <MenuItem>
+                ) : (
                   <LoginButton />
-                </MenuItem>
-              )}
+                )}
+              </Flex>
             </MenuList>
           </Menu>
 
@@ -152,7 +151,7 @@ export const Header: React.FC = () => {
             <></>
           )}
         </HStack>
-      </Item>
+      </HeaderItem>
     </>
   );
 };

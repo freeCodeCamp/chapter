@@ -6,6 +6,7 @@ import {
   Image,
   Menu,
   MenuList,
+  MenuItem,
   MenuButton,
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
@@ -30,17 +31,17 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
-  return <Button onClick={() => loginWithRedirect()}>Log In</Button>;
+  return <MenuItem onClick={() => loginWithRedirect()}>Log In</MenuItem>;
 };
 
 const DevLoginButton = () => {
   const { createSession } = useSession();
   return (
-    <Button
+    <MenuItem
       onClick={() => createSession().then(() => window.location.reload())}
     >
       Log In
-    </Button>
+    </MenuItem>
   );
 };
 
@@ -130,9 +131,9 @@ export const Header: React.FC = () => {
                       Dashboard
                     </Link>
 
-                    <Button data-cy="logout-button" onClick={logout}>
+                    <MenuItem data-cy="logout-button" onClick={logout}>
                       Logout
-                    </Button>
+                    </MenuItem>
                   </>
                 ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
                   <DevLoginButton />
@@ -145,7 +146,7 @@ export const Header: React.FC = () => {
 
           {user ? (
             <>
-              <Avatar name={`${user.first_name} ${user.last_name}`} />
+              <Avatar name={`${user.name}`} />
             </>
           ) : (
             <></>

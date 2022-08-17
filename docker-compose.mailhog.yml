@@ -2,6 +2,7 @@
 version: "3.7"
 services:
   mailhog:
+    restart: unless-stopped
     image: mailhog/mailhog
     ports:
       - "1025:1025"

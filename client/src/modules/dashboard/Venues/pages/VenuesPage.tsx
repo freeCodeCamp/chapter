@@ -7,18 +7,24 @@ import React from 'react';
 import { useVenuesQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
 import getLocationString from '../../../../util/getLocationString';
+import { useAuth } from '../../../auth/store';
 
 export const VenuesPage: NextPage = () => {
   const { loading, error, data } = useVenuesQuery();
+
+  const { user } = useAuth();
+  const adminedChapters = user?.admined_chapters ?? [];
 
   return (
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Venues</Heading>
-          <LinkButton data-cy="new-venue" href="/dashboard/venues/new">
-            Add new
-          </LinkButton>
+          {adminedChapters.length > 0 && (
+            <LinkButton data-cy="new-venue" href="/dashboard/venues/new">
+              Add new
+            </LinkButton>
+          )}
         </Flex>
         {loading ? (
           <Heading>Loading...</Heading>

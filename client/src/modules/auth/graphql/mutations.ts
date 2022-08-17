@@ -9,14 +9,8 @@ export const loginMutation = gql`
 `;
 
 export const registerMutation = gql`
-  mutation register(
-    $email: String!
-    $first_name: String!
-    $last_name: String!
-  ) {
-    register(
-      data: { email: $email, first_name: $first_name, last_name: $last_name }
-    ) {
+  mutation register($email: String!, $name: String!) {
+    register(data: { email: $email, name: $name }) {
       id
     }
   }
@@ -28,8 +22,7 @@ export const authenticateMutation = gql`
       token
       user {
         id
-        first_name
-        last_name
+        name
         instance_role {
           instance_role_permissions {
             instance_permission {

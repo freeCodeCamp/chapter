@@ -6,17 +6,17 @@ import {
   useChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 
 export const EditChapterPage: NextPage = () => {
+  const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-  const router = useRouter();
-  const chapterId = getId(router.query) || -1;
+  const { param: chapterId } = useParam('id');
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },

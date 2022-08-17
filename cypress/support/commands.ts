@@ -34,11 +34,10 @@ import { gqlOptions } from './util';
 /**
  * Register user using page UI
  */
-const registerViaUI = (firstName: string, lastName: string, email: string) => {
+const registerViaUI = (name: string, email: string) => {
   cy.visit('/auth/register');
 
-  cy.get('input[name="first_name"]').type(firstName);
-  cy.get('input[name="last_name"]').type(lastName);
+  cy.get('input[name="name"]').type(name);
   cy.get('input[name="email"]').type(email);
   cy.get('[data-cy="submit-button"]').click();
 };
@@ -79,16 +78,19 @@ Cypress.Commands.add('logout', logout);
 /**
  * Register user using GQL query
  */
-const register = (firstName?: string, lastName?: string, email?: string) => {
+const register = (name?: string, email?: string) => {
   const user = {
     operationName: 'register',
     variables: {
-      first_name: firstName ?? 'Test',
-      last_name: lastName ?? 'User',
+      name: name ?? 'Test User',
       email: email ?? 'test@user.org',
     },
-    query:
-      'mutation register($email: String!, $first_name: String!, $last_name: String!) {\n  register(data: {email: $email, first_name: $first_name, last_name: $last_name}) {\n    id\n    __typename\n  }\n}\n',
+    query: `mutation register($email: String!, $name: String!) {
+      register(data: {email: $email, name: $name}) {
+        id
+        __typename
+      }
+    }`,
   };
 
   cy.request(gqlOptions(user)).then((response) => {
@@ -661,6 +663,23 @@ const getChapterRoles = () => {
 };
 Cypress.Commands.add('getChapterRoles', getChapterRoles);
 
+/**
+ * sends event invites for attendees
+ * @param eventId event id
+ * @param emailGroups Chapter id
+ */
+const sendEventInvite = (eventId: number, emailGroups: [string]) => {
+  const sendEventInviteMutation = {
+    operationName: 'sendEventInvite',
+    variables: { eventId, emailGroups },
+    query: `mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+      sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(sendEventInviteMutation));
+};
+Cypress.Commands.add('sendEventInvite', sendEventInvite);
+
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
@@ -673,6 +692,7 @@ declare global {
       createSponsor: typeof createSponsor;
       deleteEvent: typeof deleteEvent;
       deleteVenue: typeof deleteVenue;
+      sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;

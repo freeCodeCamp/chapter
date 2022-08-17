@@ -27,7 +27,7 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
-  const chapterId = useParam('chapterId');
+  const { param: chapterId } = useParam('chapterId');
   const { user } = useAuth();
 
   const { loading, error, data } = useChapterQuery({

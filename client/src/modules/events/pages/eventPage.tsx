@@ -33,7 +33,7 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
-  const eventId = useParam('eventId');
+  const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
 

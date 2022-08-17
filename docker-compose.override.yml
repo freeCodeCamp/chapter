@@ -22,7 +22,6 @@ services:
       - EMAIL_HOST=mailhog
 
   client:
-    env_file: .env
     build:
       target: development
     command: npm run dev

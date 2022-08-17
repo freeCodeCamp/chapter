@@ -44,6 +44,8 @@ export const main = async (app: Express) => {
   const allowedOrigins = isDev()
     ? [clientLocation, 'https://studio.apollographql.com']
     : clientLocation;
+
+  app.set('trust proxy', 'uniquelocal');
   app.use(cors({ credentials: true, origin: allowedOrigins }));
   app.use(
     cookieSession({
@@ -105,8 +107,7 @@ export const main = async (app: Express) => {
   async function createUser(email: string) {
     return prisma.users.create({
       data: {
-        first_name: 'place',
-        last_name: 'holder',
+        name: 'place holder',
         email,
         instance_role: {
           connect: {

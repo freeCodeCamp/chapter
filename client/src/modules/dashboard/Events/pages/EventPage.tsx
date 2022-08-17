@@ -12,7 +12,7 @@ import {
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
@@ -26,7 +26,7 @@ const args = (eventId: number) => ({
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
-  const eventId = getId(router.query) || -1;
+  const { param: eventId } = useParam('id');
   const { loading, error, data } = useEventQuery({
     variables: { eventId },
   });

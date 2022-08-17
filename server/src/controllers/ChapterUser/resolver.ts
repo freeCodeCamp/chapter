@@ -181,7 +181,7 @@ export class ChapterUserResolver {
       },
     });
   }
-
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async banUser(
     @Arg('chapterId', () => Int) chapterId: number,
@@ -204,6 +204,7 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
@@ -227,6 +228,7 @@ export class ChapterUserResolver {
   }
 
   // TODO: control this with an Authorization decorator
+  @Authorized(Permission.ChapterBanUser)
   @FieldResolver()
   canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
     if (!ctx.user) {

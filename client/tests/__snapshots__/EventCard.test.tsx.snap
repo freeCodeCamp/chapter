@@ -3,28 +3,28 @@
 exports[`EventCard should render 1`] = `
 <div>
   <div
-    class="css-8l4ckd"
+    class="css-0"
   >
     <img
-      class="chakra-image css-teya6a"
+      class="chakra-image css-0"
       src="http://example.com/image.png"
     />
     <div
-      class="css-1fuobds"
+      class="css-0"
       data-cy="event-card"
     >
       <h4
-        class="css-1vbua13"
+        class="css-0"
       >
         Thu, Jan 1 @ 00:00
         <div
-          class="css-17xejub"
+          class="css-0"
         />
         <span
-          class="css-ba69m4"
+          class="css-0"
         >
           <svg
-            class="chakra-icon css-onkibi"
+            class="chakra-icon css-0"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -69,28 +69,28 @@ exports[`EventCard should render 1`] = `
 exports[`EventCard should render with tags 1`] = `
 <div>
   <div
-    class="css-8l4ckd"
+    class="css-0"
   >
     <img
-      class="chakra-image css-teya6a"
+      class="chakra-image css-0"
       src="http://example.com/image.png"
     />
     <div
-      class="css-1fuobds"
+      class="css-0"
       data-cy="event-card"
     >
       <h4
-        class="css-1vbua13"
+        class="css-0"
       >
         Thu, Jan 1 @ 00:00
         <div
-          class="css-17xejub"
+          class="css-0"
         />
         <span
-          class="css-ba69m4"
+          class="css-0"
         >
           <svg
-            class="chakra-icon css-onkibi"
+            class="chakra-icon css-0"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -128,20 +128,20 @@ exports[`EventCard should render with tags 1`] = `
         </a>
       </div>
       <div
-        class="css-vctkmi"
+        class="css-0"
       >
         <span
-          class="css-12ci4mr"
+          class="css-0"
         >
           notfoo
         </span>
         <span
-          class="css-12ci4mr"
+          class="css-0"
         >
           notbar
         </span>
         <span
-          class="css-12ci4mr"
+          class="css-0"
         >
           notbaz
         </span>

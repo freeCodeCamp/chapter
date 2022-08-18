@@ -99,7 +99,7 @@ export const Header: React.FC = () => {
           />
         </Link>
         <Input
-          background={'gray.15'}
+          background={'gray.10'}
           color={'gray.85'}
           noLabel
           placeholder="Search..."

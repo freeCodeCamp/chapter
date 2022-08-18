@@ -19,7 +19,7 @@
     "chakra-confirm": "1.2.16",
     "chakra-data-table": "1.4.0",
     "chakra-next-link": "1.0.10",
-    "date-fns": "2.29.1",
+    "date-fns": "2.29.2",
     "graphql": "15.8.0",
     "next": "12.2.5",
     "react": "18.2.0",
@@ -28,8 +28,8 @@
     "react-hook-form": "7.34.2"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.349.0",
-    "@codesee/tracker": "0.349.0",
+    "@codesee/babel-plugin-instrument": "0.350.0",
+    "@codesee/tracker": "0.350.0",
     "@graphql-codegen/cli": "2.11.6",
     "@graphql-codegen/fragment-matcher": "3.3.1",
     "@graphql-codegen/introspection": "2.2.1",

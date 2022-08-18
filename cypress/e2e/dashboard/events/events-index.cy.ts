@@ -29,7 +29,6 @@ describe('spec needing owner', () => {
 
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
-    cy.get('button[aria-label="Options"]').click();
     cy.get('a[href="/dashboard/events"]').click();
     cy.get('a[aria-current="page"]').should('have.text', 'Events');
   });
@@ -197,6 +196,7 @@ describe('spec needing owner', () => {
 
   it('editing event updates cached events on home page', () => {
     cy.visit('');
+    cy.get('button[aria-label="Options"]').click();
     cy.get('a[href*="/events/"').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
@@ -236,6 +236,7 @@ describe('spec needing owner', () => {
 
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
+    cy.get('button[aria-label="Options"]').click();
     cy.get('a[href*="/events/"').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 

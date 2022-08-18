@@ -85,3 +85,7 @@ cypress-coverage/
 /common/**/*.js
 /common/**/*.map
 tsconfig.tsbuildinfo
+
+# Keys
+
+server/keys/oauth2.keys.json

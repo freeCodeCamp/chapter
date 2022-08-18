@@ -14,6 +14,7 @@ import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
@@ -117,19 +118,19 @@ export const Header: React.FC = () => {
             </MenuButton>
             <MenuList>
               <Flex className={styles.header} flexDirection={'column'}>
-                <Link href="/chapters" paddingInline={'1em'}>
-                  Chapters
-                </Link>
+                <NextLink passHref href="/chapters">
+                  <MenuItem as="a">Chapter</MenuItem>
+                </NextLink>
 
-                <Link href="/events" paddingInline={'1em'}>
-                  Events feed
-                </Link>
+                <NextLink passHref href="/events">
+                  <MenuItem as="a">Events feed</MenuItem>
+                </NextLink>
 
                 {user ? (
                   <>
-                    <Link href="/dashboard/chapters" paddingInline={'1em'}>
-                      Dashboard
-                    </Link>
+                    <NextLink passHref href="/dashboard/chapters">
+                      <MenuItem as="a">Dashboard</MenuItem>
+                    </NextLink>
 
                     <MenuItem data-cy="logout-button" onClick={logout}>
                       Logout

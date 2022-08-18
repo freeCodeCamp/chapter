@@ -38,7 +38,7 @@
     "class-validator": "0.13.2",
     "cookie-session": "2.0.0",
     "cors": "2.8.5",
-    "date-fns": "2.29.1",
+    "date-fns": "2.29.2",
     "dotenv": "16.0.1",
     "dotenv-expand": "8.0.3",
     "express": "4.18.1",

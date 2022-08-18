@@ -13,6 +13,11 @@ const chapterStyleVaribles = {
       '85': '#1b1b32',
       '90': '#0a0a23',
     },
+    yellow: {
+      gold: '#ffbf00',
+      light: '#ffc300',
+      'dark:': '#4d3800',
+    },
   },
 };
 

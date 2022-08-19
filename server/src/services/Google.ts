@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { OAuth2Client } from 'google-auth-library';
 import { isDev } from '../config';
+import { prisma } from '../prisma';
 
 function init() {
   let oauth2Client = null;
@@ -47,14 +48,38 @@ export function getGoogleAuthUrl(state: string) {
   });
 }
 
-export async function getGoogleTokens(code: string) {
+// TODO: skip calling this if the user already has a valid, non-expired token
+export async function storeGoogleTokens(code: string, userId: number) {
   if (!oauth2Client) throw new Error('oauth2Client is not initialized');
 
+  let tokens;
   try {
-    const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client?.setCredentials(tokens);
-  } catch (err) {
-    throw 'Unable to get google auth tokens';
+    const tokenRes = await oauth2Client.getToken(code);
+    tokens = tokenRes.tokens;
+  } catch {
+    throw new Error('Failed to get tokens');
   }
-  // TODO: store this in the DB and use it on subsequent requests
+
+  // TODO: handle the case where the user rejects some or all of the scopes
+  const { access_token, refresh_token, expiry_date } = tokens;
+
+  if (!access_token || !expiry_date) throw new Error('Tokens invalid');
+
+  if (refresh_token) {
+    const update = { access_token, refresh_token, expiry_date };
+    await prisma.google_tokens.upsert({
+      where: { user_id: userId },
+      update: { ...update },
+      create: { user_id: userId, ...update },
+    });
+  } else {
+    const update = { access_token, expiry_date };
+    // TODO: Handle the case where the refresh token is not sent *and* the
+    // record doesn't exist. We can make refresh_token nullable and that may be
+    // the best solution.
+    await prisma.google_tokens.update({
+      where: { user_id: userId },
+      data: { ...update },
+    });
+  }
 }

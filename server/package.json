@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "8.5.8",
-    "@types/lodash": "4.14.183",
+    "@types/lodash": "4.14.184",
     "@types/nodemailer": "6.4.5",
     "concurrently": "7.3.0",
     "dotenv-cli": "5.1.0",

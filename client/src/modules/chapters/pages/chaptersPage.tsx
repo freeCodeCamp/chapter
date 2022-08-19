@@ -1,4 +1,4 @@
-import { Heading, VStack, Stack, Flex, Text } from '@chakra-ui/layout';
+import { Heading, VStack, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
 import {

@@ -47,5 +47,14 @@ export function getGoogleAuthUrl(state: string) {
   });
 }
 
-// TODO: expose functions not the full client
-export { oauth2Client };
+export async function getGoogleTokens(code: string) {
+  if (!oauth2Client) throw new Error('oauth2Client is not initialized');
+
+  try {
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client?.setCredentials(tokens);
+  } catch (err) {
+    throw 'Unable to get google auth tokens';
+  }
+  // TODO: store this in the DB and use it on subsequent requests
+}

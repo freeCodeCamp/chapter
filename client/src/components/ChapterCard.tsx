@@ -8,6 +8,22 @@ type ChapterCardProps = {
   chapter: ChaptersQuery['chapters'][number];
 };
 
+const EventList: React.FC<ChapterCardProps> = ({ chapter }) => {
+  return (
+    <>
+      {chapter.events.forEach((_, index: number) => (
+        <Link href={`/events/${chapter?.events[index].id}`} _hover={{}}>
+          <Flex>
+            <Text mt="2">{chapter?.events[index].name}</Text>
+            <Spacer />
+            <Text mt="2">{chapter?.events[index].start_at}</Text>
+          </Flex>
+        </Link>
+      ))}
+    </>
+  );
+};
+
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
     <Grid
@@ -55,19 +71,19 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           </Text>
         </GridItem>
 
-        {chapter.events && (
-          <GridItem colSpan={3} colStart={1} rowStart={2}>
-            {chapter.events.forEach((_, index) => (
-              <Link href={`/events/${chapter?.events[index].id}`} _hover={{}}>
-                <Flex>
-                  <Text mt="2">{chapter?.events[index].name}</Text>
-                  <Spacer />
-                  <Text mt="2">{chapter?.events[index].start_at}</Text>
-                </Flex>
-              </Link>
-            ))}
-          </GridItem>
-        )}
+        <GridItem>
+          <EventList
+            chapter={{
+              __typename: undefined,
+              id: 0,
+              name: '',
+              description: '',
+              category: '',
+              imageUrl: '',
+              events: [],
+            }}
+          />
+        </GridItem>
       </Grid>
     </Grid>
   );

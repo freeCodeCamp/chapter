@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
-import express, { Express, Response } from 'express';
+import express, { Express, NextFunction, Response } from 'express';
 import cookies from 'cookie-parser';
 
 // import isDocker from 'is-docker';
@@ -60,7 +60,7 @@ export const main = async (app: Express) => {
       domain: process.env.COOKIE_DOMAIN,
       // One week:
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: !isDev(),
     }),
   );
@@ -158,7 +158,15 @@ export const main = async (app: Express) => {
   // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
   // app.use(handleAuthenticationError);
 
-  app.post('/authenticate-with-google', (_req, res) => {
+  function isLoggedIn(req: Request, _res: Response, next: NextFunction) {
+    if (req.session && req.session.id) {
+      next();
+    } else {
+      next('This is a protected route, please login before accessing it');
+    }
+  }
+
+  app.post('/authenticate-with-google', isLoggedIn, (_req, res) => {
     const state = crypto.randomUUID();
     // TODO: is it possible to use sameSite: 'strict' here? My understanding is
     // that Brave is the compliant browser, since the request is *not* initiated
@@ -174,7 +182,7 @@ export const main = async (app: Express) => {
     res.redirect(authUrl);
   });
 
-  app.get('/google-oauth2callback', (req, res, next) => {
+  app.get('/google-oauth2callback', isLoggedIn, (req, res, next) => {
     if (req.query.state !== req.cookies.state) {
       return next('Client cookie and OAuth2 state do not match');
     }

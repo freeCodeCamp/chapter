@@ -1,11 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-// TODO: only install and use the required libraries (calendar and auth)
-import { google } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library';
 import { isDev } from '../config';
 
 function init() {
-  let oauth2Client;
+  let oauth2Client = null;
   try {
     const keyPath = path.join(__dirname, '../../keys/oauth2.keys.json');
     const keys: {
@@ -14,7 +13,7 @@ function init() {
       redirect_uris: string[];
     } = JSON.parse(fs.readFileSync(keyPath, 'utf8')).web;
 
-    oauth2Client = new google.auth.OAuth2(
+    oauth2Client = new OAuth2Client(
       keys.client_id,
       keys.client_secret,
       keys.redirect_uris[0],
@@ -40,6 +39,7 @@ const scopes = [
 ];
 
 export function getGoogleAuthUrl(state: string) {
+  if (!oauth2Client) throw new Error('oauth2Client is not initialized');
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes.join(' '),

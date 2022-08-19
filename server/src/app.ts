@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'reflect-metadata';
+import crypto from 'crypto';
+
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 import express, { Express, Response } from 'express';
+import cookies from 'cookie-parser';
 
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
@@ -21,6 +24,7 @@ import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
+import { getGoogleAuthUrl, oauth2Client } from './services/Google';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -44,7 +48,10 @@ export const main = async (app: Express) => {
   const allowedOrigins = isDev()
     ? [clientLocation, 'https://studio.apollographql.com']
     : clientLocation;
-
+  // TODO: does it matter where this is? (before or after cookieSession?)
+  // TODO: do we need the same or different secrets for both if we want
+  // to sign them? Do we *need* to sign them? Probably not.
+  app.use(cookies());
   app.set('trust proxy', 'uniquelocal');
   app.use(cors({ credentials: true, origin: allowedOrigins }));
   app.use(
@@ -150,6 +157,41 @@ export const main = async (app: Express) => {
   app.use(events);
   // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
   // app.use(handleAuthenticationError);
+
+  app.post('/authenticate-with-google', (_req, res) => {
+    const state = crypto.randomUUID();
+    // TODO: is it possible to use sameSite: 'strict' here? My understanding is
+    // that Brave is the compliant browser, since the request is *not* initiated
+    // by the user - the user is just being redirected. So, should we accept
+    // that Brave is correct and use 'lax' or can we use 'strict' if, say, it's
+    // over https?
+    res.cookie('state', state, {
+      httpOnly: true,
+      secure: !isDev(),
+      sameSite: 'lax',
+    });
+    const authUrl = getGoogleAuthUrl(state);
+    res.redirect(authUrl);
+  });
+
+  app.get('/google-oauth2callback', (req, res, next) => {
+    if (req.query.state !== req.cookies.state) {
+      return next('Client cookie and OAuth2 state do not match');
+    }
+    const code = req.query.code;
+    if (!code || typeof code !== 'string') return next('Invalid Google code');
+
+    oauth2Client
+      .getToken(code)
+      .then(async ({ tokens }) => {
+        // TODO: store this in the DB and use it on subsequent requests
+        oauth2Client.setCredentials(tokens);
+        res.send('Tokens set!');
+      })
+      .catch(() => {
+        next('Unable to get google auth tokens');
+      });
+  });
 
   const schema = await buildSchema({
     resolvers,

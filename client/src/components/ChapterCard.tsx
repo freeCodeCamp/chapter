@@ -62,19 +62,22 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             {chapter?.description}
           </Text>
         </GridItem>
-        <Box>
-          {chapter.events.forEach((_, index) => (
-            <GridItem colSpan={3} colStart={1} rowStart={2}>
-              <Link href={`/events/${chapter?.events[index].id}`} _hover={{}}>
-                <Flex>
-                  <Text mt="2">{chapter?.events[index].name}</Text>
-                  <Spacer />
-                  <Text mt="2">{chapter?.events[index].start_at}</Text>
-                </Flex>
-              </Link>
-            </GridItem>
-          ))}
-        </Box>
+
+        {chapter.events && (
+          <Box>
+            {chapter.events.forEach((_, index) => (
+              <GridItem colSpan={3} colStart={1} rowStart={2}>
+                <Link href={`/events/${chapter?.events[index].id}`} _hover={{}}>
+                  <Flex>
+                    <Text mt="2">{chapter?.events[index].name}</Text>
+                    <Spacer />
+                    <Text mt="2">{chapter?.events[index].start_at}</Text>
+                  </Flex>
+                </Link>
+              </GridItem>
+            ))}
+          </Box>
+        )}
       </Grid>
     </Grid>
   );

@@ -48,9 +48,6 @@ export const main = async (app: Express) => {
   const allowedOrigins = isDev()
     ? [clientLocation, 'https://studio.apollographql.com']
     : clientLocation;
-  // TODO: does it matter where this is? (before or after cookieSession?)
-  // TODO: do we need the same or different secrets for both if we want
-  // to sign them? Do we *need* to sign them? Probably not.
   app.use(cookies());
   app.set('trust proxy', 'uniquelocal');
   app.use(cors({ credentials: true, origin: allowedOrigins }));
@@ -168,11 +165,6 @@ export const main = async (app: Express) => {
 
   app.post('/authenticate-with-google', isLoggedIn, (_req, res) => {
     const state = crypto.randomUUID();
-    // TODO: is it possible to use sameSite: 'strict' here? My understanding is
-    // that Brave is the compliant browser, since the request is *not* initiated
-    // by the user - the user is just being redirected. So, should we accept
-    // that Brave is correct and use 'lax' or can we use 'strict' if, say, it's
-    // over https?
     res.cookie('state', state, {
       httpOnly: true,
       secure: !isDev(),

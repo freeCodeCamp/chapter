@@ -1,4 +1,4 @@
-import { Heading, Grid, Spacer, Text, GridItem, Flex } from '@chakra-ui/react';
+import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
@@ -6,22 +6,6 @@ import { ChaptersQuery } from 'generated/graphql';
 
 type ChapterCardProps = {
   chapter: ChaptersQuery['chapters'][number];
-};
-
-const EventList: React.FC<ChapterCardProps> = ({ chapter }) => {
-  return (
-    <>
-      {chapter.events.forEach((_, index: number) => (
-        <Link href={`/events/${chapter?.events[index].id}`} _hover={{}}>
-          <Flex>
-            <Text mt="2">{chapter?.events[index].name}</Text>
-            <Spacer />
-            <Text mt="2">{chapter?.events[index].start_at}</Text>
-          </Flex>
-        </Link>
-      ))}
-    </>
-  );
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
@@ -32,57 +16,34 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       borderRadius="lg"
       overflow="hidden"
     >
-      <Grid
-        w={'100vw'}
-        maxW={'35em'}
-        templateRows="repeat(2, 5em)"
-        templateColumns="repeat(5, 5em)"
-      >
-        <GridItem colSpan={6} rowEnd={1} padding={'.5em'}>
+      <Grid minW={'25em'} maxW={'35em'} templateColumns="repeat(2, 1fr)">
+        <GridItem colSpan={3} paddingInline={'1em'} paddingBlock={'.5em'}>
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
-            <Flex align="center">
+            <Flex justifyContent={'space-between'}>
               <Heading
                 data-cy="chapter-heading"
                 fontSize={'xl'}
                 fontWeight={700}
                 fontFamily={'body'}
-                marginBlock="2"
                 as="h3"
               >
                 {chapter?.name}
               </Heading>
-              <Spacer />
-              {/* <Text fontWeight="semibold" as="h4">{chapter?.category}</Text> */}
               <Text color={'darkcyan'} fontWeight="bold" as="h4">
-                In-Person
+                {chapter?.category}
               </Text>
             </Flex>
           </Link>
         </GridItem>
         <GridItem
-          rowSpan={2}
-          colSpan={2}
-          rowStart={1}
           colStart={1}
-          marginLeft={'0.5em'}
+          colSpan={2}
+          marginInline={'1em'}
+          marginBlock={'.5em'}
         >
-          <Text mt="2" as="p">
+          <Text mt="2" as="p" fontWeight={400} fontSize={'md'}>
             {chapter?.description}
           </Text>
-        </GridItem>
-
-        <GridItem>
-          <EventList
-            chapter={{
-              __typename: undefined,
-              id: 0,
-              name: '',
-              description: '',
-              category: '',
-              imageUrl: '',
-              events: [],
-            }}
-          />
         </GridItem>
       </Grid>
     </Grid>

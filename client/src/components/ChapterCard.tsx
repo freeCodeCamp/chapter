@@ -11,45 +11,11 @@ import {
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
-import { ChapterWithRelations, Event, EventTag } from 'generated/graphql';
+import { ChaptersQuery } from 'generated/graphql';
 
 type ChapterCardProps = {
-  chapter:
-    | (Pick<
-        ChapterWithRelations,
-        'id' | 'name' | 'description' | 'category' | 'imageUrl'
-      > & {
-        events: Pick<
-          Event,
-          | 'id'
-          | 'name'
-          | 'description'
-          | 'image_url'
-          | 'start_at'
-          | 'canceled'
-          | 'invite_only'
-        >;
-        tags?: EventTag[] | null;
-      })
-    | undefined;
+  chapter: ChaptersQuery['chapters'][number];
 };
-
-// export type ChapterWithRelations = {
-//   __typename?: 'ChapterWithRelations';
-//   category: Scalars['String'];
-//   chapter_users: Array<ChapterUser>;
-//   chatUrl?: Maybe<Scalars['String']>;
-//   city: Scalars['String'];
-//   country: Scalars['String'];
-//   creator_id: Scalars['Int'];
-//   description: Scalars['String'];
-//   events: Array<Event>;
-//   id: Scalars['Int'];
-//   imageUrl: Scalars['String'];
-//   name: Scalars['String'];
-//   region: Scalars['String'];
-//   user_bans: Array<UserBan>;
-// };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   const metaTag = (

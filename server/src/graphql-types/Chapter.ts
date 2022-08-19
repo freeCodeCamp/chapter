@@ -43,3 +43,9 @@ export class ChapterWithRelations extends Chapter {
   @Field(() => [UserBan])
   user_bans: UserBan[];
 }
+
+@ObjectType()
+export class ChapterWithEvents extends Chapter {
+  @Field(() => [Event])
+  events: Event[];
+}

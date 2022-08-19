@@ -11,31 +11,21 @@ import {
 import { Permission } from '../../../../common/permissions';
 
 import { ResolverCtx } from '../../common-types/gql';
-import { Chapter, ChapterWithRelations } from '../../graphql-types';
+import {
+  Chapter,
+  ChapterWithRelations,
+  ChapterWithEvents,
+} from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
 export class ChapterResolver {
-  @Query(() => [ChapterWithRelations])
-  async chapters(): Promise<ChapterWithRelations[]> {
+  @Query(() => [ChapterWithEvents])
+  async chapters(): Promise<ChapterWithEvents[]> {
     return await prisma.chapters.findMany({
       include: {
         events: { include: { tags: { include: { tag: true } } } },
-        chapter_users: {
-          include: {
-            chapter_role: {
-              include: {
-                chapter_role_permissions: {
-                  include: { chapter_permission: true },
-                },
-              },
-            },
-            user: true,
-          },
-          orderBy: { user: { name: 'asc' } },
-        },
-        user_bans: { include: { user: true, chapter: true } },
       },
     });
   }

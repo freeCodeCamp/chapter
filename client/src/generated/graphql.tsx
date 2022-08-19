@@ -71,6 +71,21 @@ export type ChapterUser = {
   user_id: Scalars['Int'];
 };
 
+export type ChapterWithEvents = {
+  __typename?: 'ChapterWithEvents';
+  category: Scalars['String'];
+  chatUrl?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  creator_id: Scalars['Int'];
+  description: Scalars['String'];
+  events: Array<Event>;
+  id: Scalars['Int'];
+  imageUrl: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   category: Scalars['String'];
@@ -445,7 +460,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<ChapterWithRelations>;
+  chapters: Array<ChapterWithEvents>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -802,7 +817,7 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 export type ChaptersQuery = {
   __typename?: 'Query';
   chapters: Array<{
-    __typename?: 'ChapterWithRelations';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
@@ -1440,12 +1455,26 @@ export type HomeQuery = {
     };
   }>;
   chapters: Array<{
-    __typename?: 'ChapterWithRelations';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
     imageUrl: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      description: string;
+      start_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+      image_url: string;
+      tags: Array<{
+        __typename?: 'EventTag';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
+    }>;
   }>;
 };
 
@@ -4138,6 +4167,23 @@ export const HomeDocument = gql`
       description
       category
       imageUrl
+      events {
+        id
+        name
+        description
+        start_at
+        invite_only
+        canceled
+        image_url
+        tags {
+          tag {
+            id
+            name
+          }
+        }
+        invite_only
+        canceled
+      }
     }
   }
 `;

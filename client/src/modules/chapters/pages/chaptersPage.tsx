@@ -1,17 +1,7 @@
 import { Heading, VStack, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Grid,
-  GridItem,
-} from '@chakra-ui/react';
+import { Grid, GridItem } from '@chakra-ui/react';
 
 import { useChaptersQuery } from 'generated/graphql';
 

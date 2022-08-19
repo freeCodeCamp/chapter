@@ -36,6 +36,14 @@ model sessions {
   user    users @relation(fields: [user_id], references: [id])
 }
 
+model google_tokens {
+  user_id       Int    @id
+  access_token  String
+  refresh_token String
+  expiry_date   Int
+  user          users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
 model chapter_users {
   created_at      DateTime      @default(now())
   updated_at      DateTime      @updatedAt
@@ -262,6 +270,7 @@ model users {
   instance_role    instance_roles  @relation(fields: [instance_role_id], references: [id])
   user_events      event_users[]
   session          sessions?
+  google_tokens    google_tokens?
 }
 
 model venues {

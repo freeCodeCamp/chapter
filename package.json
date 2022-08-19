@@ -31,6 +31,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:coverage:report": "npx nyc report",
+    "cypress:install-build-tools": "sh ./cypress-install.sh",
     "test": "npx jest --coverage --verbose",
     "test:watch": "npx jest --watchAll",
     "postinstall": "node scripts/postInstall.js && npm run change-user:owner",

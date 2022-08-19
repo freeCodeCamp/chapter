@@ -156,7 +156,7 @@ export const main = async (app: Express) => {
   // app.use(handleAuthenticationError);
 
   function isLoggedIn(req: Request, _res: Response, next: NextFunction) {
-    if (req.session && req.session.id) {
+    if (req.user) {
       next();
     } else {
       next('This is a protected route, please login before accessing it');

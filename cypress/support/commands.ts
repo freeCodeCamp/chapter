@@ -34,11 +34,10 @@ import { gqlOptions } from './util';
 /**
  * Register user using page UI
  */
-const registerViaUI = (firstName: string, lastName: string, email: string) => {
+const registerViaUI = (name: string, email: string) => {
   cy.visit('/auth/register');
 
-  cy.get('input[name="first_name"]').type(firstName);
-  cy.get('input[name="last_name"]').type(lastName);
+  cy.get('input[name="name"]').type(name);
   cy.get('input[name="email"]').type(email);
   cy.get('[data-cy="submit-button"]').click();
 };
@@ -46,53 +45,52 @@ const registerViaUI = (firstName: string, lastName: string, email: string) => {
 Cypress.Commands.add('registerViaUI', registerViaUI);
 
 /**
- * Authenticate with JWT token
- * @param token JWT token for authorization. If not provided, Cypress.env.JWT token is used.
+ * Create new user session
+ * @param email Email of the new user
  */
-const login = (token?: string) => {
-  const authData = {
-    operationName: 'authenticate',
-    variables: {
-      token: token ?? Cypress.env('JWT'),
-    },
-    query: `mutation authenticate($token: String!) {
-        authenticate(token: $token) {
-          token
-          user {
-            id
-            first_name
-            last_name
-          }
-        }
-      }`,
-  };
-  cy.request(gqlOptions(authData)).then((response) => {
-    expect(response.body.data.authenticate).to.have.property('token');
-    // TODO: change this to set a cookie when Token.tsx is updated.
-    window.localStorage.setItem('token', response.body.data.authenticate.token);
-    expect(response.status).to.eq(200);
-  });
+const login = (email?: string) => {
+  // Currently changing users modifies the current-user.json file and that file
+  // needs _not_ to be watched by node-dev. If we change how we store dev users
+  // that can be watched again.
+  email
+    ? cy.exec(`npm run change-user -- ${email} `)
+    : cy.exec('npm run change-user:owner');
+  return cy
+    .request({
+      url: Cypress.env('SERVER_URL') + '/login',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer dummy-token`,
+      },
+    })
+    .then(() => cy.reload());
 };
 Cypress.Commands.add('login', login);
 
 const logout = () => {
-  window.localStorage.removeItem('token');
+  cy.request({
+    url: Cypress.env('SERVER_URL') + '/logout',
+    method: 'DELETE',
+  }).then(() => cy.reload());
 };
 Cypress.Commands.add('logout', logout);
 
 /**
  * Register user using GQL query
  */
-const register = (firstName?: string, lastName?: string, email?: string) => {
+const register = (name?: string, email?: string) => {
   const user = {
     operationName: 'register',
     variables: {
-      first_name: firstName ?? 'Test',
-      last_name: lastName ?? 'User',
+      name: name ?? 'Test User',
       email: email ?? 'test@user.org',
     },
-    query:
-      'mutation register($email: String!, $first_name: String!, $last_name: String!) {\n  register(data: {email: $email, first_name: $first_name, last_name: $last_name}) {\n    id\n    __typename\n  }\n}\n',
+    query: `mutation register($email: String!, $name: String!) {
+      register(data: {email: $email, name: $name}) {
+        id
+        __typename
+      }
+    }`,
   };
 
   cy.request(gqlOptions(user)).then((response) => {
@@ -665,6 +663,23 @@ const getChapterRoles = () => {
 };
 Cypress.Commands.add('getChapterRoles', getChapterRoles);
 
+/**
+ * sends event invites for attendees
+ * @param eventId event id
+ * @param emailGroups Chapter id
+ */
+const sendEventInvite = (eventId: number, emailGroups: [string]) => {
+  const sendEventInviteMutation = {
+    operationName: 'sendEventInvite',
+    variables: { eventId, emailGroups },
+    query: `mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+      sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(sendEventInviteMutation));
+};
+Cypress.Commands.add('sendEventInvite', sendEventInvite);
+
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
@@ -677,6 +692,7 @@ declare global {
       createSponsor: typeof createSponsor;
       deleteEvent: typeof deleteEvent;
       deleteVenue: typeof deleteVenue;
+      sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;

@@ -4,7 +4,6 @@ jobs:
   build:
     name: build and test
     runs-on: ubuntu-20.04
-    # npm start:server tries to connect to the db, so we need the service
     services:
       postgres:
         image: postgres:14
@@ -28,23 +27,19 @@ jobs:
         run: npm ci
       - name: Run linter
         run: npm run lint
-      - name: Build client
-        run: npm run build:client
-      - name: Build server
-        run: npm run build:server
       - name: Run local tests
         run: npm t
       - name:
           Check code generation
           # 1) try to generate code, 2) clean up, 3) check if the correct code has been committed
         run: |
-          npm run start:server & ./server/wait-for localhost:5000 -- npm run gen
+          npm run dev:server & ./server/wait-for localhost:5000 -- npm run gen
           killall node
           ./scripts/check-generated-code.sh
-      - name: Start Docker service
+      - name: Start Docker Development Environment
         env:
           DB_PORT: 54320
-        run: DOCKER_BUILDKIT=1 docker-compose up -d
+        run: docker compose up -d
       - name: Seed the Docker db
         env:
           DB_PORT: 54320

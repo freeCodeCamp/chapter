@@ -1,38 +1,37 @@
 version: "3.7"
 services:
-  db:
-    image: postgres:14
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "54320:5432"
   app:
+    restart: unless-stopped
     env_file: .env
-    depends_on:
-      - db
     platform: "linux/amd64"
-    build: 
+    build:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
-    environment:
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
-      - EMAIL_HOST=mailhog
     ports:
       - "5000:5000"
+    image: chapter-app
   client:
+    restart: unless-stopped
+    env_file: .env
     depends_on:
       - app
     build:
       context: .
       dockerfile: client.Dockerfile
+      args:
+        # on remote environments, NEXT_PUBLIC_SERVER_URL in .env (or shell
+        # environment) needs to include the remote address. e.g.
+        # https://example.com:5000
+        NEXT_PUBLIC_SERVER_URL:
+        NEXT_PUBLIC_ENVIRONMENT:
+        NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT:
+        NEXT_PUBLIC_USE_AUTH0:
+        NEXT_PUBLIC_AUTH0_DOMAIN:
+        NEXT_PUBLIC_AUTH0_CLIENT_ID:
+        NEXT_PUBLIC_AUTH0_AUDIENCE:
+        NEXT_PUBLIC_CLIENT_URL:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client
-    # on remote environments, NEXT_PUBLIC_APOLLO_SERVER in .env needs to include the
-    # remote address. e.g. https://example.com:5000
-    environment: 
-      NEXT_PUBLIC_APOLLO_SERVER:
-
+    image: chapter-client

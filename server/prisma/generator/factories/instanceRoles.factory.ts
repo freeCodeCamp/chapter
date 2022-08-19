@@ -1,10 +1,6 @@
 import { prisma } from '../../../src/prisma';
 
-import {
-  ChapterPermission,
-  InstancePermission,
-  Permission,
-} from '../../../../common/permissions';
+import { InstancePermission, Permission } from '../../../../common/permissions';
 
 const allPermissions = Object.values(Permission);
 
@@ -24,7 +20,6 @@ const roles: InstanceRole[] = [
     permissions: [
       InstancePermission.ChapterJoin,
       InstancePermission.ChapterSubscriptionsManage,
-      ChapterPermission.ChapterBanUser,
     ],
   },
 ];

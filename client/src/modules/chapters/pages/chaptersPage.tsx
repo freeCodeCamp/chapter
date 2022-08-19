@@ -32,59 +32,18 @@ export const ChaptersPage: NextPage = () => {
   }
   return (
     <VStack>
-      <Stack w="40%" mt={10} mb={5}>
-        <Flex justify="start">
+      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={3} mt={10} mb={5}>
           <Heading>Chapters: </Heading>
-        </Flex>
-        <Flex direction="column">
-          <Text fontSize="2xl">
-            {' '}
-            Chapters allow you to organize events based on your preferences.
-          </Text>
           <Grid mt="5%" templateColumns="repeat(2, 1fr)" columnGap="5%">
+          {data.chapters.map((chapter) => (
             <GridItem>
-              <TableContainer>
-                <Table colorScheme="facebook" borderRadius="md" borderWidth={2}>
-                  <Thead>
-                    <Tr bg="blue.200">
-                      <Th borderWidth={2}>Chapter</Th>
-                      <Th borderWidth={2}>Description</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {data.chapters.map((chapter) => (
-                      <Tr key={chapter.id}>
-                        <Td borderWidth={2}>{chapter.name}</Td>
-                        <Td borderWidth={2}>{chapter.description}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+            <Heading size="md" key={chapter.id}>
+              <ChapterCard key={chapter.id} chapter={chapter} />
+            </Heading>
             </GridItem>
-
-            <GridItem>
-              <TableContainer>
-                <Table colorScheme="facebook" borderRadius="md" borderWidth={2}>
-                  <Thead>
-                    <Tr bg="blue.200">
-                      <Th borderWidth={2}>Chapter</Th>
-                      <Th borderWidth={2}>Description</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {data.chapters.map((chapter) => (
-                      <Tr key={chapter.id}>
-                        <Td borderWidth={2}>{chapter.name}</Td>
-                        <Td borderWidth={2}>{chapter.description}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </GridItem>
+          ))}   
           </Grid>
-        </Flex>
+      </Stack>
       </Stack>
     </VStack>
   );

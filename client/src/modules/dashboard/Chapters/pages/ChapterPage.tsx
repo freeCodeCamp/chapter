@@ -3,7 +3,6 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import { Button } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';

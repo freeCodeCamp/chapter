@@ -24,7 +24,7 @@ import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
-import { getGoogleAuthUrl, oauth2Client } from './services/Google';
+import { getGoogleAuthUrl, getGoogleTokens } from './services/Google';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -175,26 +175,18 @@ export const main = async (app: Express) => {
   });
 
   app.get('/google-oauth2callback', isLoggedIn, (req, res, next) => {
-    if (oauth2Client === null) return next('oauth2Client is undefined');
-
     if (req.query.state !== req.cookies.state) {
       return next('Client cookie and OAuth2 state do not match');
     }
     const code = req.query.code;
     if (!code || typeof code !== 'string') return next('Invalid Google code');
 
-    // NOTE: oauth2Client will be initialized at this point, but TS doesn't
-    // believe that
-    // TODO:  move this into a separate function).
-    oauth2Client
-      ?.getToken(code)
-      .then(async ({ tokens }) => {
-        // TODO: store this in the DB and use it on subsequent requests
-        oauth2Client?.setCredentials(tokens);
-        res.send('Tokens set!');
+    getGoogleTokens(code)
+      .then(() => {
+        res.send('Authentication successful');
       })
-      .catch(() => {
-        next('Unable to get google auth tokens');
+      .catch((err) => {
+        next(err);
       });
   });
 

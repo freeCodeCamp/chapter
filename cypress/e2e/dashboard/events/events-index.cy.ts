@@ -197,7 +197,6 @@ describe('spec needing owner', () => {
   it('editing event updates cached events on home page', () => {
     cy.visit('');
     cy.get('button[aria-label="Options"]')
-      .click()
       .type('a[href*="/events/"')
       .first()
       .as('eventToEdit');
@@ -240,8 +239,7 @@ describe('spec needing owner', () => {
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
     cy.get('button[aria-label="Options"]')
-      .click()
-      .type('a[href*="/events/"')
+      .contains('a[href*="/events/"')
       .first()
       .as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');

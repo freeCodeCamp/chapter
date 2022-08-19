@@ -1,10 +1,20 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Button, Grid, GridItem, Image } from '@chakra-ui/react';
+import {
+  Avatar,
+  Button,
+  Flex,
+  Image,
+  Menu,
+  MenuList,
+  MenuItem,
+  MenuButton,
+} from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
@@ -22,28 +32,33 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
-  return <Button onClick={() => loginWithRedirect()}>Log In</Button>;
+  return <MenuItem onClick={() => loginWithRedirect()}>Log In</MenuItem>;
 };
 
 const DevLoginButton = () => {
   const { createSession } = useSession();
   return (
-    <Button
+    <MenuItem
       onClick={() => createSession().then(() => window.location.reload())}
     >
       Log In
-    </Button>
+    </MenuItem>
   );
 };
 
-const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
+const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
-    <GridItem
-      display="flex"
+    <Flex
       justifyContent="center"
       alignItems="center"
       ref={ref}
       {...props}
+      w="full"
+      as="header"
+      px={[2, 4, 8]}
+      py={[2, 4]}
+      background={'gray.85'}
+      className={styles.header}
     />
   );
 });
@@ -74,48 +89,71 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <Grid
-        w="full"
-        as="header"
-        templateColumns="repeat(3, 1fr)"
-        px="8"
-        py="4"
-        className={styles.header}
-      >
-        <Item justifyContent="flex-start">
-          <Link href="/">
-            <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />
-          </Link>
-        </Item>
-        <Item>
-          <Input noLabel color="white" placeholder="Search..." />
-        </Item>
-        <Item justifyContent="flex-end">
-          <HStack as="nav">
-            <Link color="white" href="/chapters">
-              Chapters
-            </Link>
-            <Link color="white" href="/events">
-              Events feed
-            </Link>
-            {user ? (
-              <>
-                <Link color="white" href="/dashboard/chapters">
-                  Dashboard
-                </Link>
-                <Button data-cy="logout-button" onClick={logout}>
-                  Logout
-                </Button>
-                <Avatar name={user.name} />
-              </>
-            ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
-              <DevLoginButton />
-            ) : (
-              <LoginButton />
-            )}
-          </HStack>
-        </Item>
-      </Grid>
+      <HeaderItem>
+        <Link href="/">
+          <Image
+            src="/freecodecamp-logo.svg"
+            alt="The freeCodeCamp logo"
+            display="block"
+            width="100%"
+          />
+        </Link>
+        <Input
+          background={'gray.10'}
+          color={'gray.85'}
+          noLabel
+          placeholder="Search..."
+        />
+        <HStack as="nav">
+          <Menu>
+            <MenuButton
+              as={Button}
+              aria-label="Options"
+              variant="outline"
+              background={'gray.10'}
+              px={[2, 4]}
+              py={[1, 2]}
+            >
+              Menu
+            </MenuButton>
+            <MenuList>
+              <Flex className={styles.header} flexDirection={'column'}>
+                <NextLink passHref href="/chapters">
+                  <MenuItem as="a">Chapter</MenuItem>
+                </NextLink>
+
+                <NextLink passHref href="/events">
+                  <MenuItem as="a">Events feed</MenuItem>
+                </NextLink>
+
+                {user ? (
+                  <>
+                    <NextLink passHref href="/dashboard/chapters">
+                      <MenuItem as="a">Dashboard</MenuItem>
+                    </NextLink>
+
+                    <MenuItem data-cy="logout-button" onClick={logout}>
+                      Logout
+                    </MenuItem>
+                  </>
+                ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+                  <DevLoginButton />
+                ) : (
+                  <LoginButton />
+                )}
+              </Flex>
+            </MenuList>
+          </Menu>
+
+          {user ? (
+            <>
+              <Avatar name={`${user.name}`} />
+            </>
+          ) : (
+            <></>
+          )}
+        </HStack>
+      </HeaderItem>
     </>
   );
 };

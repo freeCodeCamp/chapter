@@ -1,12 +1,11 @@
-import { LockIcon } from '@chakra-ui/icons';
 import {
   Heading,
   Grid,
   Spacer,
   Text,
-  Tag,
   GridItem,
   Flex,
+  Box,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
@@ -18,20 +17,6 @@ type ChapterCardProps = {
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
-  const metaTag = (
-    <>
-      {chapter?.events.canceled && (
-        <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
-          Canceled
-        </Tag>
-      )}
-      {chapter?.events.invite_only && (
-        <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
-          <LockIcon />
-        </Tag>
-      )}
-    </>
-  );
   return (
     <Grid
       data-cy="chapter-card"
@@ -77,17 +62,19 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             {chapter?.description}
           </Text>
         </GridItem>
-        <GridItem colSpan={3} colStart={1} rowStart={3}>
-          <Link href={`/events/${chapter?.events.id}`} _hover={{}}>
-            <Flex>
-              <Text mt="2">{chapter?.events.name}</Text>
-              <Spacer />
-              <Text mt="2">{chapter?.events.start_at}</Text>
-              <Spacer />
-              {metaTag}
-            </Flex>
-          </Link>
-        </GridItem>
+        <Box>
+          {chapter.events.forEach((_, index) => (
+            <GridItem colSpan={3} colStart={1} rowStart={2}>
+              <Link href={`/events/${chapter?.events[index].id}`} _hover={{}}>
+                <Flex>
+                  <Text mt="2">{chapter?.events[index].name}</Text>
+                  <Spacer />
+                  <Text mt="2">{chapter?.events[index].start_at}</Text>
+                </Flex>
+              </Link>
+            </GridItem>
+          ))}
+        </Box>
       </Grid>
     </Grid>
   );

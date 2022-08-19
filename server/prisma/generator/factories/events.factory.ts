@@ -84,19 +84,46 @@ const createEvents = async (
       }),
     );
 
-    const tagNames = Array.from(new Array(1 + random(3)), () => lorem.word());
+    const tagNames = [
+      'GraphQl',
+      'NodeJs',
+      'JavaScript',
+      'TypeScript',
+      'HTML',
+      'CSS',
+      'Cypress',
+      'Tailwind',
+      'Sass',
+      'BootStrap',
+      'React',
+      'Vue',
+      'NextJs',
+      'NuxtJs',
+      'Angular',
+      'Svelete',
+      'SveleteKit',
+      'Vite',
+      'Prisma',
+      'Ruby',
+      'Rust',
+    ];
+    const tagsCount = Math.round((Math.random() * tagNames.length) / 5);
+
+    const selectedTags = randomItems(tagNames, tagsCount, true);
+    const connectOrCreateTags = selectedTags.map((name) => ({
+      tag: {
+        connectOrCreate: {
+          where: { name },
+          create: { name },
+        },
+      },
+    }));
+
     await prisma.events.update({
       where: { id: event.id },
       data: {
         tags: {
-          create: [...new Set(tagNames)].map((tagName) => ({
-            tag: {
-              connectOrCreate: {
-                create: { name: tagName },
-                where: { name: tagName },
-              },
-            },
-          })),
+          create: connectOrCreateTags,
         },
       },
     });

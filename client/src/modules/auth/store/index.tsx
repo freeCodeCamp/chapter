@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+
 import { useMeQuery, MeQuery } from '../../../generated/graphql';
+import { useSession } from 'hooks/useSession';
 
 interface AuthContextType {
   user?: MeQuery['me'];
@@ -23,15 +25,29 @@ export const AuthContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [data, setData] = useState<AuthContextType>({});
-  const meQuery = useMeQuery();
+  const [loginAttempted, setLoginAttempted] = useState(false);
+  const { loading, error, data: meData, refetch } = useMeQuery();
+  const { isAuthenticated, createSession } = useSession();
+
+  const tryToCreateSession = async () => {
+    if (isAuthenticated) {
+      setLoginAttempted(true);
+      await createSession();
+      refetch();
+    }
+  };
 
   useEffect(() => {
-    if (!meQuery.loading && !meQuery.error) {
-      if (meQuery.data?.me) {
-        setData({ user: meQuery.data?.me });
+    if (!loading && !error) {
+      if (meData?.me) {
+        setData({ user: meData.me });
+      } else if (!loginAttempted) {
+        // TODO: figure out if we need this guard. Can we get away with only
+        // using isAuthenticated?
+        tryToCreateSession();
       }
     }
-  }, [meQuery.loading, meQuery.error, meQuery.data]);
+  }, [loading, error, meData, loginAttempted, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ data, setData }}>

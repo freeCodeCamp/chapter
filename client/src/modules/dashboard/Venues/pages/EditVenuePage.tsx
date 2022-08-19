@@ -17,8 +17,8 @@ export const EditVenuePage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const venueId = useParam('venueId');
-  const chapterId = useParam('id');
+  const { param: venueId } = useParam('venueId');
+  const { param: chapterId } = useParam('id');
 
   const { loading, error, data } = useVenueQuery({
     variables: { id: venueId },
@@ -29,6 +29,8 @@ export const EditVenuePage: NextPage = () => {
 
   const onSubmit = async (data: VenueFormData) => {
     setLoadingUpdate(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { chapter_id, ...updateData } = data;
     try {
       const latitude = parseFloat(String(data.latitude));
       const longitude = parseFloat(String(data.longitude));
@@ -37,7 +39,7 @@ export const EditVenuePage: NextPage = () => {
         variables: {
           venueId,
           chapterId,
-          data: { ...data, latitude, longitude },
+          data: { ...updateData, latitude, longitude },
         },
       });
       await router.push('/dashboard/venues');
@@ -58,13 +60,14 @@ export const EditVenuePage: NextPage = () => {
   }
 
   return (
-    <Layout data-cy="edit-venue-page">
+    <Layout dataCy="edit-venue-page">
       <VenueForm
         data={data}
         loading={loadingUpdate}
         onSubmit={onSubmit}
         submitText={'Save Venue Changes'}
-        chapter={data.venue.chapter}
+        chapterId={chapterId}
+        loadingText={'Saving Venue Changes'}
       />
     </Layout>
   );

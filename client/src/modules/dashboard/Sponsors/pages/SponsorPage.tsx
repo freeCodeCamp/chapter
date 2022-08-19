@@ -1,19 +1,17 @@
 import { Flex, Heading, Link, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useSponsorQuery } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const SponsorPage: NextPage = () => {
-  const router = useRouter();
-  const id = getId(router.query) || -1;
+  const { param: sponsorId } = useParam('id');
   const { loading, error, data } = useSponsorQuery({
-    variables: { sponsorId: id },
+    variables: { sponsorId },
   });
 
   if (loading) {

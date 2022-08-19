@@ -34,6 +34,7 @@ export const NewChapterPage: NextPage = () => {
       <ChapterForm
         loading={loading}
         onSubmit={onSubmit}
+        loadingText={'Adding Chapter'}
         submitText={'Add chapter'}
       />
     </Layout>

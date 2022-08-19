@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
@@ -27,13 +26,11 @@ import {
   RoleChangeModal,
   RoleChangeModalData,
 } from '../../../shared/components/RoleChangeModal';
-import { getId } from '../../../../../util/getId';
+import { useParam } from '../../../../../hooks/useParam';
 import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 
 export const ChapterUsersPage: NextPage = () => {
-  const router = useRouter();
-
-  const chapterId = getId(router.query) || -1;
+  const { param: chapterId } = useParam('id');
 
   const { loading, error, data } = useChapterUsersQuery({
     variables: { chapterId },

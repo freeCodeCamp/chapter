@@ -170,6 +170,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
   <tr>
     <td align="center"><a href="https://www.siruxsolutions.com"><img src="https://avatars.githubusercontent.com/u/52594844?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sirasit Thitirattanakorn</b></sub></a><br /><a href="#design-hisnameispum" title="Design">🎨</a></td>
     <td align="center"><a href="https://github.com/Awais753"><img src="https://avatars.githubusercontent.com/u/22499873?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Awais Ahmed</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Awais753" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.linkedin.com/in/nitya-pasrija"><img src="https://avatars.githubusercontent.com/u/97171261?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nitya Pasrija</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Nitya-Pasrija" title="Code">💻</a></td>
   </tr>
 </table>
 

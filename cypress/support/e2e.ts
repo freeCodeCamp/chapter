@@ -48,6 +48,13 @@ declare global {
       deleteRsvp(eventId: number, userId: number): Chainable<any>;
 
       /**
+       * Delete rsvp of user with userId for the event with eventId
+       * @param eventId Id of the event
+       * @param data data object of the event
+       */
+      updateEvent(eventId: number, data): Chainable<any>;
+
+      /**
        * Rsvp to event with eventId and chapterId
        * @param eventId Id of the event
        * @param chapterId Id of the chapter

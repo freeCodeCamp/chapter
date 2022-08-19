@@ -10,13 +10,12 @@ import { Card } from '../../../../components/Card';
 import { SettingAlertDialog } from '../../../../components/SettingAlert';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterQuery } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
-  const router = useRouter();
-  const chapterId = getId(router.query) || -1;
+  const { param: chapterId } = useParam('id');
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },

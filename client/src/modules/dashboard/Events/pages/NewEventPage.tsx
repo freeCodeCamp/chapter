@@ -14,7 +14,7 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 
 export const NewEventPage: NextPage = () => {
-  const chapterId = useParam('id');
+  const { param: chapterId } = useParam('id');
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -74,6 +74,7 @@ export const NewEventPage: NextPage = () => {
         loading={loading}
         onSubmit={onSubmit}
         submitText={'Add event'}
+        loadingText={'Adding Event'}
         chapterId={chapterId}
       />
     </Layout>

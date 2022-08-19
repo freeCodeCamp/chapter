@@ -397,7 +397,7 @@ Note, MailHog is not started automatically in manual mode.  The easiest way to d
 The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses:
 
 - `foo@bar.com` (an _owner_ with full permissions)
-- `admin@of.a.chapter` (an _administrator_ of chapter 1)
+- `admin@of.chapter.one` (an _administrator_ of chapter 1)
 - The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`
 
 In development the login link will appear in the server logs and the email that Mailhog intercepts.
@@ -471,9 +471,9 @@ You are a champion :).
 
 <details><summary>How do I enable CodeSee?</summary>
 
-Copy the `client/.example.env.local` to `client/.env.local`. 
+Uncomment the `CODESEE` variable in .env and restart.
 
-[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter, after creating `.env.local`, you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
+[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
 
 To learn more, take a look at their [docs](https://docs.codesee.io/projects/recordings/en/latest/use/quick-start/) or just click the button and find out.
 
@@ -518,7 +518,7 @@ The initial values of the _.env_ will be copied from the _.env.example_ file. Ho
 
 ### Running Remotely
 
-When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
+When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_SERVER_URL=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 ## Database
 

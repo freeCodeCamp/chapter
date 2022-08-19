@@ -11,7 +11,7 @@ export class UsersResolver {
   @Query(() => [UserWithInstanceRole])
   async users(): Promise<UserWithInstanceRole[]> {
     return await prisma.users.findMany({
-      orderBy: { first_name: 'asc' },
+      orderBy: { name: 'asc' },
       include: {
         instance_role: {
           include: {

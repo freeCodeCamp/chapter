@@ -5,10 +5,7 @@ import { UserWithInstanceRole } from '../../graphql-types';
 @InputType()
 export class RegisterInput {
   @Field(() => String)
-  first_name: string;
-
-  @Field(() => String)
-  last_name: string;
+  name: string;
 
   @Field(() => String)
   email: string;

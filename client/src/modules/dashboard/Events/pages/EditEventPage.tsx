@@ -7,7 +7,7 @@ import {
   useEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+import { useParam } from '../../../../hooks/useParam';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
@@ -18,7 +18,7 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const eventId = getId(router.query) || -1;
+  const { param: eventId } = useParam();
 
   const {
     loading: eventLoading,
@@ -113,6 +113,7 @@ export const EditEventPage: NextPage = () => {
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}
+        loadingText={'Saving Event Changes'}
         submitText={'Save Event Changes'}
         chapterId={data.event.chapter.id}
       />

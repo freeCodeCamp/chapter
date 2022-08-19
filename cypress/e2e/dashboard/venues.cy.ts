@@ -14,6 +14,7 @@ const venueData = {
 describe('venues dashboard', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
+    cy.login();
   });
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
@@ -53,7 +54,7 @@ describe('venues dashboard', () => {
       longitude: '35',
     };
 
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/chapters/1/');
     cy.get('[data-cy=create-venue]').click();
@@ -95,7 +96,6 @@ describe('venues dashboard', () => {
 
     // logged out user
     cy.logout();
-    cy.reload();
 
     cy.createVenue(venueCreateVariables, venueData, { withAuth: false }).then(
       expectToBeRejected,
@@ -108,9 +108,7 @@ describe('venues dashboard', () => {
     );
 
     // newly registered user (without a chapter_users record)
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
-    cy.reload();
+    cy.login('test@user.org');
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
@@ -119,8 +117,7 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // banned user
-    cy.login(Cypress.env('JWT_BANNED_ADMIN_USER'));
-    cy.reload();
+    cy.login('banned@chapter.admin');
 
     cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
     cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
@@ -129,18 +126,36 @@ describe('venues dashboard', () => {
     cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
 
     // Admin of different chapter
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
-    cy.reload();
+    cy.login('admin@of.chapter.two');
 
-    cy.createVenue({ ...venueCreateVariables, chapterId: 2 }, venueData).then(
+    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
+    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
       expectToBeRejected,
     );
-    cy.updateVenue(
-      { ...venueUpdateDeleteVariables, chapterId: 2 },
-      venueData,
-    ).then(expectToBeRejected);
-    cy.deleteVenue({ ...venueUpdateDeleteVariables, chapterId: 2 }).then(
-      expectToBeRejected,
-    );
+    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
+  });
+
+  describe('adding venue with chapter selected in form', () => {
+    it('only admined chapters can be selected', () => {
+      cy.login('admin@of.chapter.one');
+      cy.visit('/dashboard/venues/new');
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .then((options) => {
+          expect(options).to.have.length(1);
+        });
+
+      cy.login('test@user.org');
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .should('not.exist');
+
+      cy.login();
+      cy.findByRole('combobox', { name: 'Chapter' })
+        .find('option')
+        .then((options) => {
+          expect(options).to.have.length(4);
+        });
+    });
   });
 });

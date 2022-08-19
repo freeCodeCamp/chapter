@@ -17,6 +17,7 @@ interface SponsorFormProps {
   onSubmit: (data: SponsorFormData) => Promise<void>;
   data?: SponsorQuery;
   submitText: string;
+  loadingText: string;
 }
 export interface FormField {
   key: keyof Omit<SponsorFormData, '__typename'>;
@@ -45,7 +46,7 @@ const fields: FormField[] = [
   },
 ];
 const SponsorForm: React.FC<SponsorFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText } = props;
+  const { loading, onSubmit, data, submitText, loadingText } = props;
   const sponsor = data?.sponsor;
   const defaultValues: SponsorFormData = {
     name: sponsor?.name ?? '',
@@ -54,7 +55,11 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
     type: sponsor?.type ?? 'FOOD',
   };
 
-  const { handleSubmit, register } = useForm({
+  const {
+    handleSubmit,
+    register,
+    formState: { isDirty },
+  } = useForm({
     defaultValues,
   });
   return (
@@ -66,6 +71,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
             label={field.label}
             placeholder={field.placeholder}
             isRequired={field.isRequired}
+            isDisabled={loading}
             {...register(field.key)}
           />
         );
@@ -73,7 +79,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
 
       <FormControl mt="20px">
         <FormLabel>Sponsor Type</FormLabel>
-        <Select {...register('type')}>
+        <Select {...register('type')} isDisabled={loading}>
           <option value="FOOD">Food</option>
           <option value="VENUE">Venue</option>
           <option value="OTHER">Other</option>
@@ -84,7 +90,9 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
         variant="solid"
         colorScheme="blue"
         type="submit"
-        disabled={loading}
+        isLoading={loading}
+        loadingText={loadingText}
+        isDisabled={!isDirty || loading}
       >
         {submitText}
       </Button>

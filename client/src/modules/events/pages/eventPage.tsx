@@ -23,16 +23,17 @@ import { useAuth } from '../../auth/store';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
+  useCancelRsvpMutation,
   useEventQuery,
+  useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
-  useInitUserInterestForChapterMutation,
 } from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
-  const eventId = useParam('eventId');
+  const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
 
@@ -41,7 +42,8 @@ export const EventPage: NextPage = () => {
   };
 
   const [rsvpToEvent] = useRsvpToEventMutation(refetch);
-  const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
+  const [cancelRsvp] = useCancelRsvpMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
   // TODO: check if we need to default to -1 here
@@ -65,7 +67,7 @@ export const EventPage: NextPage = () => {
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
-    if (allDataLoaded && canCheckRsvp) checkOnRsvp(true);
+    if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
   if (loading) {
@@ -122,34 +124,20 @@ export const EventPage: NextPage = () => {
     }
   };
 
-  const onRsvp = async (add: boolean) => {
-    const ok = await confirm(
-      add
-        ? { title: 'You want to join this?' }
-        : { title: 'Are you sure you want to cancel your RSVP' },
-    );
+  const onRsvp = async () => {
+    const ok = await confirm({ title: 'You want to join this?' });
 
     if (ok) {
       try {
-        // this has to happen before trying to RSVP, since the user needs to be
-        // added to the chapter first.
-        if (add) {
-          await initUserInterestForChapter({
-            variables: { eventId },
-          });
-        }
+        await joinChapter({ variables: { chapterId } });
         await rsvpToEvent({
           variables: { eventId, chapterId },
         });
 
-        toast(
-          add
-            ? {
-                title: 'You successfully RSVPed to this event',
-                status: 'success',
-              }
-            : { title: 'You canceled your RSVP 👋', status: 'error' },
-        );
+        toast({
+          title: 'You successfully RSVPed to this event',
+          status: 'success',
+        });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -157,12 +145,28 @@ export const EventPage: NextPage = () => {
     }
   };
 
-  const checkOnRsvp = async (add: boolean) => {
-    if (!user) {
-      return handleLoginUserFirst();
-    }
+  const onCancelRsvp = async () => {
+    const ok = await confirm({
+      title: 'Are you sure you want to cancel your RSVP',
+    });
 
-    await onRsvp(add);
+    if (ok) {
+      try {
+        await cancelRsvp({
+          variables: { eventId },
+        });
+
+        toast({ title: 'You canceled your RSVP 👋', status: 'info' });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const checkOnRsvp = async () => {
+    if (!user) return handleLoginUserFirst();
+    await onRsvp();
   };
 
   const rsvps = data.event.event_users.filter(
@@ -175,7 +179,7 @@ export const EventPage: NextPage = () => {
   return (
     <VStack align="flex-start">
       <LoginRegisterModal
-        onRsvp={onRsvp}
+        action={(notRsvped) => (notRsvped ? onRsvp() : onCancelRsvp())}
         userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
         modalProps={modalProps}
       />
@@ -205,7 +209,7 @@ export const EventPage: NextPage = () => {
       {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
+          <Button colorScheme="red" onClick={onCancelRsvp}>
             Cancel
           </Button>
         </HStack>
@@ -216,16 +220,12 @@ export const EventPage: NextPage = () => {
           ) : (
             <Heading>You&lsquo;re on waitlist for this event</Heading>
           )}
-          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
+          <Button colorScheme="red" onClick={onCancelRsvp}>
             Cancel
           </Button>
         </HStack>
       ) : (
-        <Button
-          data-cy="rsvp-button"
-          colorScheme="blue"
-          onClick={() => checkOnRsvp(true)}
-        >
+        <Button data-cy="rsvp-button" colorScheme="blue" onClick={checkOnRsvp}>
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}

@@ -26,15 +26,14 @@ interface LoginData {
 }
 
 interface RegisterData extends LoginData {
-  first_name: string;
-  last_name: string;
+  name: string;
 }
 
 export const LoginRegisterModal: React.FC<{
   modalProps: UseDisclosureReturn;
-  onRsvp: (add: boolean) => void;
+  action: (condition: boolean) => void;
   userIds: number[];
-}> = ({ modalProps, onRsvp, userIds }) => {
+}> = ({ modalProps, action, userIds }) => {
   const client = useApolloClient();
   const [login] = useLoginMutation();
   const [registerMutation] = useRegisterMutation();
@@ -50,7 +49,7 @@ export const LoginRegisterModal: React.FC<{
 
   const onSubmit = async (data: LoginData | RegisterData) => {
     if (isRegister) {
-      if ('last_name' in data) {
+      if ('name' in data) {
         try {
           await registerMutation({ variables: { ...data } });
           toast({ title: 'User registered', status: 'success' });
@@ -80,7 +79,7 @@ export const LoginRegisterModal: React.FC<{
             if (me) {
               clearInterval(interval);
               modalProps.onClose();
-              onRsvp(!userIds.includes(me.id));
+              action(!userIds.includes(me.id));
             }
           })
           .catch((err) => {
@@ -135,18 +134,7 @@ export const LoginRegisterModal: React.FC<{
             />
 
             {isRegister && (
-              <>
-                <Input
-                  label="First name"
-                  {...register('first_name')}
-                  isRequired
-                />
-                <Input
-                  label="Last name"
-                  {...register('last_name')}
-                  isRequired
-                />
-              </>
+              <Input label="Name" {...register('name')} isRequired />
             )}
 
             <Text fontSize="md">

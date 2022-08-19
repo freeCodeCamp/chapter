@@ -1,4 +1,25 @@
-describe('events dashboard', () => {
+import { expectToBeRejected } from '../../../support/util';
+
+const eventData = {
+  name: 'Homer Simpson',
+  description: 'i will show you damn!',
+  url: 'http://wooden-swing.com',
+  streaming_url: null,
+  capacity: 149,
+  start_at: new Date(),
+  ends_at: new Date(),
+  venue_type: 'Physical',
+  venue_id: 2,
+  image_url: 'http://loremflickr.com/640/480/nature?79359',
+  invite_only: false,
+  tags: ['aut'],
+  sponsor_ids: [],
+  chapter_id: 1,
+};
+
+// TODO: Move these specs into the other describe block, once we can make sure
+// that Cypress is operating on an event from chapter 1.
+describe('spec needing owner', () => {
   beforeEach(() => {
     cy.exec('npm run db:seed');
     cy.login();
@@ -175,11 +196,14 @@ describe('events dashboard', () => {
 
   it('editing event updates cached events on home page', () => {
     cy.visit('');
+    cy.get('button[aria-label="Options"]').click();
+    cy.findByRole('menuitem', { name: 'Events feed' }).click();
     cy.get('a[href*="/events/"').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
-    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.get('button[aria-label="Options"]').click();
+    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
 
     cy.findByRole('link', { name: 'Events' }).click();
     cy.wait('@GQLevents');
@@ -217,7 +241,8 @@ describe('events dashboard', () => {
     cy.get('a[href*="/events/"').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
-    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.get('button[aria-label="Options"]').click();
+    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
     cy.wait('@GQLevents');
     cy.get('#page-heading').contains('Events');
@@ -275,5 +300,60 @@ describe('events dashboard', () => {
     });
 
     cy.mhDeleteAll();
+  });
+});
+
+describe('events dashboard', () => {
+  beforeEach(() => {
+    cy.exec('npm run db:seed');
+    cy.login('admin@of.chapter.one');
+    cy.mhDeleteAll();
+    cy.interceptGQL('events');
+  });
+
+  it('chapter admin should be allowed to edit event, but nobody else', () => {
+    const eventId = 1;
+
+    cy.updateEvent(eventId, eventData).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
+    // newly registered user (without a chapter_users record)
+    cy.login('test@user.org');
+    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+
+    // banned admin should be rejected
+    cy.login('banned@chapter.admin');
+    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+  });
+
+  it('chapter admin should be allowed to delete event, but nobody else', () => {
+    const eventId = 1;
+
+    // newly registered user (without a chapter_users record)
+    cy.login('test@user.org');
+    cy.deleteEvent(eventId).then(expectToBeRejected);
+    // banned admin should be rejected
+    cy.login('banned@chapter.admin');
+    cy.deleteEvent(eventId).then(expectToBeRejected);
+
+    // admin of chapter 1
+    cy.login('admin@of.chapter.one');
+    cy.deleteEvent(eventId).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
+  });
+
+  it('chapter admin should be allowed to send email to attendees', () => {
+    const eventId = 1;
+    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
+      expect(response.body.errors).not.to.exist;
+    });
+
+    cy.login('test@user.org');
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+
+    // banned admin should be rejected
+    cy.login('banned@chapter.admin');
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
   });
 });

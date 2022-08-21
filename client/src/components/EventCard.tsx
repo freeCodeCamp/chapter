@@ -1,4 +1,12 @@
-import { Heading, Tag, Box, Flex, Image, Grid } from '@chakra-ui/react';
+import {
+  Heading,
+  Tag,
+  Box,
+  Flex,
+  Image,
+  Grid,
+  GridItem,
+} from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 import { Chapter, Event, EventTag } from '../generated/graphql';
@@ -62,24 +70,41 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         objectFit={'cover'}
       />
       <Box p="3" py={3} width="full" data-cy="event-card">
-        <Grid mb="2" as="h4" lineHeight="tight">
-          <Box>
+        <Grid
+          mb="2"
+          as="h4"
+          lineHeight="tight"
+          gridTemplateColumns={'repeat(3, 1fr)'}
+          templateAreas={[
+            `"eventname eventname eventname"
+          "chaptername chaptername chaptername"
+          "eventstart eventstart eventstart"
+          "metatag metatag metatag"`,
+            `"eventname eventname metatag"
+          "chaptername chaptername chaptername"
+          "eventstart eventstart eventstart"`,
+          ]}
+        >
+          <GridItem area={'eventname'}>
             <Link data-cy="event-link" href={`/events/${event.id}`}>
               <Heading size="sm">{event.name}</Heading>
             </Link>
-          </Box>
-          <Box>{metaTag}</Box>
-          <Box>
-            <Link
-              href={`/chapters/${event.chapter.id}`}
-              fontSize={'xl'}
-              fontWeight={700}
-              fontFamily={'body'}
-            >
+          </GridItem>
+          <GridItem area={'metatag'}>{metaTag}</GridItem>
+          <GridItem
+            fontSize={'xl'}
+            fontWeight={700}
+            fontFamily={'body'}
+            area={'chaptername'}
+            marginBlock={'2'}
+          >
+            <Link href={`/chapters/${event.chapter.id}`}>
               {event.chapter.name}
             </Link>
-          </Box>
-          <Box>{formatDate(event.start_at)}</Box>
+          </GridItem>
+          <GridItem opacity={'.8'} area={'eventstart'}>
+            {formatDate(event.start_at)}
+          </GridItem>
         </Grid>
       </Box>
     </Flex>

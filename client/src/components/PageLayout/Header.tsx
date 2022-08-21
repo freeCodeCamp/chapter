@@ -18,7 +18,6 @@ import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
-import { Input } from '../Form/Input';
 import { useSession } from 'hooks/useSession';
 
 interface Props {
@@ -98,12 +97,6 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <Input
-          background={'gray.10'}
-          color={'gray.85'}
-          noLabel
-          placeholder="Search..."
-        />
         <HStack as="nav">
           <Menu>
             <MenuButton

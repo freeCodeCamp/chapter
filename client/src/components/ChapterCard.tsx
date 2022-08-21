@@ -1,4 +1,4 @@
-import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
+import { Heading, Grid, Text, GridItem, Flex, Box } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
@@ -48,21 +48,22 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       </Grid>
       <GridItem colSpan={3}>
         {chapter.events.map(({ id, name, start_at }) => (
-          <Flex
-            key={id}
-            paddingInline={'1em'}
-            paddingBlock={'.5em'}
-            justifyContent={'space-between'}
-          >
+          <Box key={id}>
             <Link href={`/events/${id}`} _hover={{}}>
-              <Text mt="2" fontWeight={600} fontSize={'md'} maxW={'10em'}>
-                {name}
-              </Text>
-              <Text mt="2" fontWeight={600} fontSize={'md'}>
-                {start_at}
-              </Text>
+              <Flex
+                paddingInline={'1em'}
+                paddingBlock={'.5em'}
+                justifyContent={'space-between'}
+              >
+                <Text mt="2" fontWeight={600} fontSize={'md'} maxW={'10em'}>
+                  {name}
+                </Text>
+                <Text mt="2" fontWeight={600} fontSize={'md'}>
+                  {start_at}
+                </Text>
+              </Flex>
             </Link>
-          </Flex>
+          </Box>
         ))}
       </GridItem>
     </Grid>

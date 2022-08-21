@@ -16,7 +16,6 @@ export const ChapterPage: NextPage = () => {
     variables: { chapterId },
   });
 
-  console.log(chapterId);
   if (loading || error || !data?.chapter) {
     return (
       <Layout>

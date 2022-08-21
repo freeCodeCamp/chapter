@@ -7,16 +7,24 @@ import React from 'react';
 import { formatDate } from '../../../../util/date';
 import { Layout } from '../../shared/components/Layout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import { useAuth } from '../../../auth/store';
 import { useEventsQuery } from 'generated/graphql';
 
 export const EventsPage: NextPage = () => {
   const { error, loading, data } = useEventsQuery();
+
+  const { user } = useAuth();
 
   return (
     <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Events</Heading>
+          {!!user?.admined_chapters.length && (
+            <LinkButton data-cy="new-event" href="/dashboard/events/new">
+              Add new
+            </LinkButton>
+          )}
         </Flex>
 
         {loading ? (

@@ -50,11 +50,11 @@ export const ChapterPage: NextPage = () => {
           <HStack mt={'2'}>
             <LinkButton
               background={'gray.85'}
+              color={'gray.05'}
               _hover={{
                 background: 'gray.45',
                 color: 'gray.85',
               }}
-              color={'gray.05'}
               size="sm"
               href={`${chapterId}/new-event`}
             >

@@ -1,5 +1,4 @@
-import { LockIcon } from '@chakra-ui/icons';
-import { Heading, Tag, Box, Flex, Image, Spacer } from '@chakra-ui/react';
+import { Heading, Tag, Box, Flex, Image, Grid } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 import { Chapter, Event, EventTag } from '../generated/graphql';
@@ -25,13 +24,29 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const metaTag = (
     <>
       {event.canceled && (
-        <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
+        <Tag
+          borderRadius="md"
+          marginRight={'3'}
+          pl="2"
+          px="2"
+          colorScheme="gray"
+          fontSize={['small', 'md']}
+          maxWidth={'8em'}
+          maxH={'2em'}
+        >
           Canceled
         </Tag>
       )}
       {event.invite_only && (
-        <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
-          <LockIcon />
+        <Tag
+          borderRadius="md"
+          pl="2"
+          px="2"
+          colorScheme="gray"
+          fontSize={['small', 'md']}
+          maxWidth={'8em'}
+          maxH={'2em'}
+        >
           Invite Only
         </Tag>
       )}
@@ -39,23 +54,33 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   );
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
-      <Image h={'auto'} w={'200px'} src={event.image_url} objectFit={'cover'} />
+      <Image
+        display={['none', 'block']}
+        h={'auto'}
+        w={'200px'}
+        src={event.image_url}
+        objectFit={'cover'}
+      />
       <Box p="3" py={3} width="full" data-cy="event-card">
-        <Flex mb="2" fontWeight="semibold" as="h4" lineHeight="tight">
-          {formatDate(event.start_at)}
-          <Spacer />
-          {metaTag}
-        </Flex>
-        <Box>
-          <Link data-cy="event-link" href={`/events/${event.id}`}>
-            <Heading size="sm">{event.name}</Heading>
-          </Link>
-        </Box>
-        <Box>
-          <Link href={`/chapters/${event.chapter.id}`}>
-            {event.chapter.name}
-          </Link>
-        </Box>
+        <Grid mb="2" as="h4" lineHeight="tight">
+          <Box>
+            <Link data-cy="event-link" href={`/events/${event.id}`}>
+              <Heading size="sm">{event.name}</Heading>
+            </Link>
+          </Box>
+          <Box>{metaTag}</Box>
+          <Box>
+            <Link
+              href={`/chapters/${event.chapter.id}`}
+              fontSize={'xl'}
+              fontWeight={700}
+              fontFamily={'body'}
+            >
+              {event.chapter.name}
+            </Link>
+          </Box>
+          <Box>{formatDate(event.start_at)}</Box>
+        </Grid>
       </Box>
     </Flex>
   );

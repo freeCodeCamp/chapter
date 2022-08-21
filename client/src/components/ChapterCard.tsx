@@ -27,10 +27,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 fontFamily={'body'}
                 as="h3"
               >
-                {chapter?.name}
+                {chapter.name}
               </Heading>
               <Text color={'darkcyan'} fontWeight="bold" as="h4">
-                {chapter?.category}
+                {chapter.category}
               </Text>
             </Flex>
           </Link>
@@ -42,7 +42,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginBlock={'.5em'}
         >
           <Text mt="2" as="p" fontWeight={400} fontSize={'md'}>
-            {chapter?.description}
+            {chapter.description}
           </Text>
         </GridItem>
       </Grid>

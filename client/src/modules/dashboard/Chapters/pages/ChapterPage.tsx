@@ -30,19 +30,43 @@ export const ChapterPage: NextPage = () => {
     <Layout>
       <Card className={styles.card}>
         <ProgressCardContent loading={loading}>
-          <Heading fontSize={'md'} as="h1" fontWeight="semibold">
+          <Heading
+            fontSize={'md'}
+            as="h1"
+            fontWeight="semibold"
+            marginBlock={'2'}
+          >
             {data.chapter.name}
           </Heading>
           <Box>
-            <Link href={`${chapterId}/users`} target="_blank">
-              Chapter User
+            <Link
+              href={`${chapterId}/users`}
+              target="_blank"
+              paddingBlock={'2'}
+            >
+              Chapter Users
             </Link>
           </Box>
-          <HStack>
-            <LinkButton size="sm" href={`${chapterId}/new-event`}>
+          <HStack mt={'2'}>
+            <LinkButton
+              background={'gray.85'}
+              _hover={{
+                background: 'gray.45',
+                color: 'gray.85',
+              }}
+              color={'gray.05'}
+              size="sm"
+              href={`${chapterId}/new-event`}
+            >
               Add new event
             </LinkButton>
             <LinkButton
+              background={'gray.85'}
+              color={'gray.05'}
+              _hover={{
+                background: 'gray.45',
+                color: 'gray.85',
+              }}
               data-cy="create-venue"
               size="sm"
               href={`${chapterId}/new-venue`}

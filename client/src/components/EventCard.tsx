@@ -56,21 +56,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             {event.chapter.name}
           </Link>
         </Box>
-        {event.tags && (
-          <Box display="flex" alignItems="baseline" pt={3}>
-            {event.tags.map(({ tag }) => (
-              <Tag
-                pl="2"
-                px="2"
-                colorScheme={'messenger'}
-                key={tag.name}
-                mr="2"
-              >
-                {tag.name}
-              </Tag>
-            ))}
-          </Box>
-        )}
       </Box>
     </Flex>
   );

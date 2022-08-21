@@ -138,7 +138,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   useEffect(() => {
     resetField('venue_id', {
-      defaultValue: dataVenues?.chapterVenues[0]?.id ?? -1,
+      defaultValue:
+        defaultValues.venue_id ?? dataVenues?.chapterVenues[0]?.id ?? -1,
     });
   }, [dataVenues]);
 

@@ -5,7 +5,6 @@ import { isDev } from '../config';
 import { prisma } from '../prisma';
 
 function init() {
-  let oauth2Client = null;
   try {
     const keyPath = path.join(__dirname, '../../keys/oauth2.keys.json');
     const keys: {
@@ -14,20 +13,16 @@ function init() {
       redirect_uris: string[];
     } = JSON.parse(fs.readFileSync(keyPath, 'utf8')).web;
 
-    oauth2Client = new OAuth2Client(
-      keys.client_id,
-      keys.client_secret,
-      keys.redirect_uris[0],
-    );
+    return { keys };
   } catch {
     if (!isDev())
       throw new Error('OAuth2 keys file missing, cannot start server');
   }
 
-  return { oauth2Client };
+  return {};
 }
 
-const { oauth2Client } = init();
+const { keys } = init();
 
 // TODO: Audit scopes. Are there any we can remove?
 const scopes = [
@@ -40,7 +35,8 @@ const scopes = [
 ];
 
 export function getGoogleAuthUrl(state: string) {
-  if (!oauth2Client) throw new Error('oauth2Client is not initialized');
+  const oauth2Client = createOAuth2Client();
+
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes.join(' '),
@@ -50,7 +46,7 @@ export function getGoogleAuthUrl(state: string) {
 
 // TODO: skip calling this if the user already has a valid, non-expired token
 export async function storeGoogleTokens(code: string, userId: number) {
-  if (!oauth2Client) throw new Error('oauth2Client is not initialized');
+  const oauth2Client = createOAuth2Client();
 
   let tokens;
   try {
@@ -82,4 +78,15 @@ export async function storeGoogleTokens(code: string, userId: number) {
       data: { ...update },
     });
   }
+}
+
+// The client *must* be created afresh for each request. Otherwise, concurrent
+// requests could end up sharing tokens.
+function createOAuth2Client() {
+  if (!keys) throw new Error('OAuth2 keys file missing');
+  return new OAuth2Client(
+    keys.client_id,
+    keys.client_secret,
+    keys.redirect_uris[0],
+  );
 }

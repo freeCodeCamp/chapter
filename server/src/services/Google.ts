@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { OAuth2Client } from 'google-auth-library';
+import { calendar } from '@googleapis/calendar';
 import { isDev } from '../config';
 import { prisma } from '../prisma';
 
@@ -80,8 +81,6 @@ export async function storeGoogleTokens(code: string, userId: number) {
   }
 }
 
-// The client *must* be created afresh for each request. Otherwise, concurrent
-// requests could end up sharing tokens.
 function createOAuth2Client() {
   if (!keys) throw new Error('OAuth2 keys file missing');
   return new OAuth2Client(
@@ -93,10 +92,30 @@ function createOAuth2Client() {
 
 // TODO: use refresh tokens to get a new access token if the existing one is
 // expired or about to expire.
-export async function getAndSetCredentials(userId: number) {
+async function createCredentialedClient(userId: number) {
   const oauth2Client = createOAuth2Client();
   const { access_token } = await prisma.google_tokens.findUniqueOrThrow({
     where: { user_id: userId },
   });
   oauth2Client.setCredentials({ access_token });
+  return oauth2Client;
+}
+
+export async function createCalendar(
+  userId: number,
+  { summary, description }: { summary: string; description: string },
+) {
+  // The client *must* be created afresh for each request. Otherwise, concurrent
+  // requests could end up sharing tokens.
+  const auth = await createCredentialedClient(userId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  const { data } = await googleCalendar.calendars.insert({
+    requestBody: {
+      summary,
+      description,
+    },
+  });
+
+  return data;
 }

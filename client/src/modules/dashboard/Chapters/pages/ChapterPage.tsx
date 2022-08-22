@@ -3,7 +3,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
-import React, { useRef } from 'react';
+import React from 'react';
 import { Button } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import { SettingAlertDialog } from '../../../../components/SettingAlert';
@@ -66,7 +66,6 @@ export const ChapterPage: NextPage = () => {
               <SettingAlertDialog
                 title="Transfer Ownership"
                 DialogBody="PLease Type Chapter name to transfer its ownership"
-                refFunction={useRef}
                 inputPlaceholder="Chapter_Name"
               >
                 <Button colorScheme="red">Transfer</Button>
@@ -75,10 +74,9 @@ export const ChapterPage: NextPage = () => {
               <SettingAlertDialog
                 title="Delete Chapter"
                 DialogBody="For Deleting Chapter, Please type its name"
-                refFunction={useRef}
                 inputPlaceholder="Chapter_Name"
               >
-                <Button>Delete</Button>
+                <Button colorScheme="red">Delete</Button>
               </SettingAlertDialog>
             </TabPanel>
           </TabPanels>

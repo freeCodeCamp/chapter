@@ -1,12 +1,9 @@
 import {
-  AlertDialog,
   AlertDialogBody,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  Button,
-  useDisclosure,
   Input,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -16,51 +13,33 @@ interface SettingAlertProps {
   DialogBody?: string;
   children?: React.ReactNode;
   inputPlaceholder?: string;
-  refFunction(): React.RefObject<HTMLButtonElement>;
 }
 
 export const SettingAlertDialog = (props: SettingAlertProps) => {
-  const { title, DialogBody, children, inputPlaceholder, refFunction } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = refFunction();
+  const { title, DialogBody, children, inputPlaceholder } = props;
 
   return (
     <>
-      <Button colorScheme="red" onClick={onOpen}>
-        {title}
-      </Button>
+      <AlertDialogOverlay>
+        <AlertDialogContent>
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            {title}
+          </AlertDialogHeader>
 
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {title}
-            </AlertDialogHeader>
+          <AlertDialogBody>
+            {DialogBody}
+            <Input
+              variant="outline"
+              errorBorderColor="crimson"
+              size="md"
+              placeholder={inputPlaceholder}
+              isRequired
+            />
+          </AlertDialogBody>
 
-            <AlertDialogBody>
-              {DialogBody}
-              <Input
-                variant="outline"
-                errorBorderColor="crimson"
-                size="md"
-                placeholder={inputPlaceholder}
-                isRequired
-              />
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose} mr={3}>
-                Cancel
-              </Button>
-              {children}
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+          <AlertDialogFooter>{children}</AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogOverlay>
     </>
   );
 };

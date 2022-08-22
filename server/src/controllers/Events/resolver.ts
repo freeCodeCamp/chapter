@@ -281,6 +281,7 @@ export class EventResolver {
       },
     });
 
+    // TODO: find by permission, not role.
     const chapterAdministrators = await prisma.chapter_users.findMany({
       where: {
         chapter_id: chapterId,
@@ -290,9 +291,10 @@ export class EventResolver {
       ...chapterUserInclude,
     });
 
-    const userChapter = ctx.user.user_chapters.find(
-      (user_chapter) => user_chapter.chapter_id === chapterId,
-    );
+    const isSubscribedToChapter =
+      ctx.user.user_chapters.find(
+        (user_chapter) => user_chapter.chapter_id === chapterId,
+      )?.subscribed ?? true;
 
     const oldEventUser = await prisma.event_users.findUnique({
       include: { rsvp: true },
@@ -304,19 +306,16 @@ export class EventResolver {
       },
     });
 
+    const newRsvpName = getNameForNewRsvp(event);
+
+    let eventUser: EventUser;
     if (oldEventUser) {
       if (['yes', 'waitlist'].includes(oldEventUser.rsvp.name)) {
         throw Error('Already Rsvped');
       }
 
-      await sendRsvpInvitation(ctx.user, event);
-      await rsvpNotifyAdministrators(
-        ctx.user,
-        chapterAdministrators,
-        event.name,
-      );
-      return await prisma.event_users.update({
-        data: { rsvp: { connect: { name: getNameForNewRsvp(event) } } },
+      eventUser = await prisma.event_users.update({
+        data: { rsvp: { connect: { name: newRsvpName } } },
         include: eventUserIncludes,
         where: {
           user_id_event_id: {
@@ -325,24 +324,21 @@ export class EventResolver {
           },
         },
       });
+    } else {
+      const eventUserData: Prisma.event_usersCreateInput = {
+        user: { connect: { id: ctx.user.id } },
+        event: { connect: { id: eventId } },
+        rsvp: { connect: { name: newRsvpName } },
+        event_role: { connect: { name: 'member' } },
+        subscribed: isSubscribedToChapter,
+      };
+      eventUser = await prisma.event_users.create({
+        data: eventUserData,
+        include: eventUserIncludes,
+      });
     }
 
-    const rsvpName = getNameForNewRsvp(event);
-    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
-
-    const eventUserData: Prisma.event_usersCreateInput = {
-      user: { connect: { id: ctx.user.id } },
-      event: { connect: { id: eventId } },
-      rsvp: { connect: { name: rsvpName } },
-      event_role: { connect: { name: 'member' } },
-      subscribed: isSubscribedToEvent,
-    };
-
-    const eventUser = await prisma.event_users.create({
-      data: eventUserData,
-      include: eventUserIncludes,
-    });
-    if (rsvpName !== 'waitlist' && eventUserData.subscribed) {
+    if (!oldEventUser && newRsvpName !== 'waitlist' && isSubscribedToChapter) {
       await createReminder({
         eventId: eventId,
         remindAt: sub(event.start_at, { days: 1 }),

@@ -14,7 +14,7 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 
 export const NewEventPage: NextPage = () => {
-  const { param: chapterId } = useParam('id');
+  const { param: chapterId, isReady } = useParam('id');
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -27,11 +27,11 @@ export const NewEventPage: NextPage = () => {
 
   const [publish] = useSendEventInviteMutation();
 
-  const onSubmit = async (data: EventFormData, chapterId: number) => {
+  const onSubmit = async (data: EventFormData) => {
     setLoading(true);
 
     try {
-      const { sponsors, tags, ...rest } = data;
+      const { chapter_id, sponsors, tags, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
       const tagsArray = tags
         .split(',')
@@ -51,7 +51,7 @@ export const NewEventPage: NextPage = () => {
         sponsor_ids: sponsorArray,
       };
       const event = await createEvent({
-        variables: { chapterId, data: { ...eventData } },
+        variables: { chapterId: chapter_id, data: { ...eventData } },
       });
 
       if (event.data) {
@@ -70,13 +70,15 @@ export const NewEventPage: NextPage = () => {
 
   return (
     <Layout>
-      <EventForm
-        loading={loading}
-        onSubmit={onSubmit}
-        submitText={'Add event'}
-        loadingText={'Adding Event'}
-        chapterId={chapterId}
-      />
+      {isReady && (
+        <EventForm
+          loading={loading}
+          onSubmit={onSubmit}
+          submitText={'Add event'}
+          loadingText={'Adding Event'}
+          chapterId={chapterId}
+        />
+      )}
     </Layout>
   );
 };

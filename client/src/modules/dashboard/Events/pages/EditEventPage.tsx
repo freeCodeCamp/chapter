@@ -40,7 +40,7 @@ export const EditEventPage: NextPage = () => {
     ],
   });
 
-  const onSubmit = async (data: EventFormData, chapterId: number) => {
+  const onSubmit = async (data: EventFormData) => {
     setLoadingUpdate(true);
 
     try {
@@ -62,7 +62,6 @@ export const EditEventPage: NextPage = () => {
         streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
         tags: tagsArray,
         sponsor_ids: sponsorArray,
-        chapter_id: chapterId,
       };
 
       const event = await updateEvent({

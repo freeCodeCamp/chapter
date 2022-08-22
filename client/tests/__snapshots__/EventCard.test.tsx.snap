@@ -127,25 +127,6 @@ exports[`EventCard should render with tags 1`] = `
           foo
         </a>
       </div>
-      <div
-        class="css-0"
-      >
-        <span
-          class="css-0"
-        >
-          notfoo
-        </span>
-        <span
-          class="css-0"
-        >
-          notbar
-        </span>
-        <span
-          class="css-0"
-        >
-          notbaz
-        </span>
-      </div>
     </div>
   </div>
 </div>

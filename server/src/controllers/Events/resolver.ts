@@ -41,6 +41,7 @@ import {
   generateToken,
   UnsubscribeType,
 } from '../../services/UnsubscribeToken';
+import { createCalendarEvent } from '../../services/Google';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -500,6 +501,8 @@ ${unsubscribeOptions}`,
 
     const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 
+    // TODO: add an option to allow event creators NOT to rsvp. If doing that
+    // make sure stop adding them to the calendar event.
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
@@ -543,10 +546,23 @@ ${unsubscribeOptions}`,
       },
     };
 
-    return await prisma.events.create({
+    const event = await prisma.events.create({
       data: eventData,
       include: { tags: { include: { tag: true } } },
     });
+
+    // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
+    if (chapter.calendar_id) {
+      // TODO: handle errors
+      await createCalendarEvent(ctx.user.id, chapter.calendar_id, {
+        start: event.start_at,
+        end: event.ends_at,
+        summary: event.name,
+        attendeeEmails: [ctx.user.email],
+      });
+    }
+
+    return event;
   }
 
   @Authorized(Permission.EventEdit)

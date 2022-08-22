@@ -90,3 +90,13 @@ function createOAuth2Client() {
     keys.redirect_uris[0],
   );
 }
+
+// TODO: use refresh tokens to get a new access token if the existing one is
+// expired or about to expire.
+export async function getAndSetCredentials(userId: number) {
+  const oauth2Client = createOAuth2Client();
+  const { access_token } = await prisma.google_tokens.findUniqueOrThrow({
+    where: { user_id: userId },
+  });
+  oauth2Client.setCredentials({ access_token });
+}

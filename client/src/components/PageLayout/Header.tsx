@@ -48,7 +48,7 @@ const DevLoginButton = () => {
 const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <Flex
-      justifyContent="center"
+      justifyContent="space-between"
       alignItems="center"
       ref={ref}
       {...props}

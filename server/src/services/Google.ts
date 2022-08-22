@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { OAuth2Client } from 'google-auth-library';
 import { calendar } from '@googleapis/calendar';
-import { isDev } from '../config';
+import { isDev, isProd } from '../config';
 import { prisma } from '../prisma';
 
 function init() {
@@ -118,4 +118,38 @@ export async function createCalendar(
   });
 
   return data;
+}
+
+export async function createCalendarEvent(
+  userId: number,
+  calendarId: string,
+  {
+    start,
+    end,
+    summary,
+    attendeeEmails,
+  }: {
+    start: Date;
+    end: Date;
+    summary: string;
+    attendeeEmails: string[];
+  },
+) {
+  const auth = await createCredentialedClient(userId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+  // Since this Goggle will send emails to these addresses, we don't want to
+  // accidentally send emails in testing.
+  const attendees = isProd()
+    ? attendeeEmails.map((email: string) => ({ email }))
+    : [];
+  await googleCalendar.events.insert({
+    calendarId,
+    sendUpdates: 'all',
+    requestBody: {
+      start: { dateTime: start.toISOString() },
+      end: { dateTime: end.toISOString() },
+      summary,
+      attendees,
+    },
+  });
 }

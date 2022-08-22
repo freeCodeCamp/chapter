@@ -44,14 +44,21 @@ import {
 import 'react-datepicker/dist/react-datepicker.css';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
-  const { onSubmit, data, loading, submitText, chapterId, loadingText } = props;
-  const isChaptersDropdownNeeded = chapterId === -1;
+  const {
+    onSubmit,
+    data,
+    loading,
+    submitText,
+    chapterId: initialChapterId,
+    loadingText,
+  } = props;
+  const isChaptersDropdownNeeded = initialChapterId === -1;
   const {
     loading: loadingChapter,
     error: errorChapter,
     data: dataChapter,
   } = useChapterQuery({
-    variables: { chapterId },
+    variables: { chapterId: initialChapterId },
   });
 
   interface Chapter {
@@ -77,7 +84,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         start_at: new Date(),
         ends_at: new Date(),
         venue_type: VenueType.PhysicalAndOnline,
-        chapter_id: chapterId,
+        chapter_id: initialChapterId,
       };
     }
     return {
@@ -94,7 +101,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       venue_id: data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      chapter_id: chapterId,
+      chapter_id: initialChapterId,
     };
   }, []);
 
@@ -124,13 +131,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const watchSponsorsArray = watch('sponsors');
   const inviteOnly = watch('invite_only');
   const venueType = watch('venue_type');
-  const chapter = watch('chapter_id');
+  const chapterId = watch('chapter_id');
 
   const {
     loading: loadingVenues,
     error: errorVenues,
     data: dataVenues,
-  } = useChapterVenuesQuery({ variables: { chapterId: chapter } });
+  } = useChapterVenuesQuery({ variables: { chapterId } });
 
   useEffect(() => {
     resetField('chapter_id', { defaultValue: adminedChapters[0]?.id ?? -1 });
@@ -187,12 +194,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               })}
               isDisabled={loading}
             >
-              {adminedChapters?.length &&
-                adminedChapters.map(({ id, name }) => (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                ))}
+              {adminedChapters.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
             </Select>
           </FormControl>
         )}

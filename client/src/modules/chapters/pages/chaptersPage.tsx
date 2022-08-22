@@ -2,7 +2,7 @@ import { Heading, VStack, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
-
+import { ChapterCard } from 'components/ChapterCard';
 import { useChaptersQuery } from 'generated/graphql';
 
 export const ChaptersPage: NextPage = () => {
@@ -23,17 +23,16 @@ export const ChaptersPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={3} mt={10} mb={5}>
-          <Heading>Chapters: </Heading>
-          <Grid mt="5%" templateColumns="repeat(2, 1fr)" columnGap="5%">
+        <Heading>Chapters: </Heading>
+        <Grid mt="5%" templateColumns="repeat(2, 1fr)" columnGap="5%">
           {data.chapters.map((chapter) => (
-            <GridItem>
-            <Heading size="md" key={chapter.id}>
-              <ChapterCard key={chapter.id} chapter={chapter} />
-            </Heading>
+            <GridItem key={chapter.id}>
+              <Heading size="md">
+                <ChapterCard chapter={chapter} />
+              </Heading>
             </GridItem>
-          ))}   
-          </Grid>
-      </Stack>
+          ))}
+        </Grid>
       </Stack>
     </VStack>
   );

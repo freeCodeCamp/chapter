@@ -55,19 +55,24 @@ export const EventsPage: NextPage = () => {
             mapper={{
               status: (event) =>
                 event.canceled ? (
-                  <Text color="red.400">canceled</Text>
+                  <Text
+                    color="red.500"
+                    fontSize={['md', 'lg']}
+                    fontWeight={'semibold'}
+                  >
+                    canceled
+                  </Text>
                 ) : new Date(event.start_at) < new Date() ? (
-                  'passed'
+                  <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                    passed
+                  </Text>
                 ) : (
-                  'upcoming'
+                  <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                    upcoming
+                  </Text>
                 ),
               name: (event) => (
                 <VStack align="flex-start">
-                  {event.canceled && (
-                    <Heading size="sm" color="red.400">
-                      Canceled
-                    </Heading>
-                  )}
                   <LinkButton
                     colorScheme={event.canceled ? undefined : 'blue'}
                     href={`/dashboard/events/${event.id}`}

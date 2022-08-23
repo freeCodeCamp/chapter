@@ -36,7 +36,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
     formState: { errors },
   } = useForm<FormInputs>({ defaultValues: { confirmed: true } });
 
-  const atLeastOneChecked = () => {
+  const atLeastOneChecked: () => boolean = () => {
     return (
       getValues('confirmed') ||
       getValues('on_waitlist') ||

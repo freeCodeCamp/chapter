@@ -18,6 +18,12 @@ export const ChapterPage: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alertDialogFocusElement = useRef(null);
 
+  // const [deleteChapter] = useDeleteChapterMutation({
+  //   refetchQueries: [
+  //     { query: useChapterQuery, variables: { chapterId } },
+  //   ],
+  // });
+
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });

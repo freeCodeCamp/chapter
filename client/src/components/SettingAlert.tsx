@@ -30,9 +30,10 @@ export const SettingAlertDialog = (props: SettingAlertProps) => {
             {DialogBody}
             <Input
               variant="outline"
-              errorBorderColor="crimson"
+              errorBorderColor="red.300"
               size="md"
               placeholder={inputPlaceholder}
+              pattern={inputPlaceholder}
               isRequired
             />
           </AlertDialogBody>

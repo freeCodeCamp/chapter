@@ -103,13 +103,18 @@ async function createCredentialedClient(userId: number) {
   return oauth2Client;
 }
 
+interface CalendarData {
+  summary: string;
+  description: string;
+}
+
 export async function createCalendar(
-  userId: number,
-  { summary, description }: { summary: string; description: string },
+  currentUserId: number,
+  { summary, description }: CalendarData,
 ) {
   // The client *must* be created afresh for each request. Otherwise, concurrent
   // requests could end up sharing tokens.
-  const auth = await createCredentialedClient(userId);
+  const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
 
   const { data } = await googleCalendar.calendars.insert({
@@ -122,23 +127,21 @@ export async function createCalendar(
   return data;
 }
 
+interface EventData {
+  calendarId: string;
+  start: Date;
+  end: Date;
+  summary: string;
+  attendeeEmails: string[];
+}
+
 export async function createCalendarEvent(
-  userId: number,
-  calendarId: string,
-  {
-    start,
-    end,
-    summary,
-    attendeeEmails,
-  }: {
-    start: Date;
-    end: Date;
-    summary: string;
-    attendeeEmails: string[];
-  },
+  currentUserId: number,
+  { calendarId, start, end, summary, attendeeEmails }: EventData,
 ) {
-  const auth = await createCredentialedClient(userId);
+  const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
+
   // Since this Goggle will send emails to these addresses, we don't want to
   // accidentally send emails in testing.
   const attendees = isProd()
@@ -156,19 +159,20 @@ export async function createCalendarEvent(
   });
 }
 
-interface AccessArgs {
-  currentUserId: number;
+interface ChapterData {
   chapterId: number;
   targetUserId: number;
+}
+
+interface AccessData {
   calendarId: string;
 }
 
-export async function grantCalendarAccess({
-  currentUserId,
-  chapterId,
-  targetUserId,
-  calendarId,
-}: AccessArgs) {
+export async function grantCalendarAccess(
+  currentUserId: number,
+  { chapterId, targetUserId }: ChapterData,
+  { calendarId }: AccessData,
+) {
   const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
 
@@ -200,12 +204,11 @@ export async function grantCalendarAccess({
   });
 }
 
-export async function revokeCalendarAccess({
-  currentUserId,
-  chapterId,
-  targetUserId,
-  calendarId,
-}: AccessArgs) {
+export async function revokeCalendarAccess(
+  currentUserId: number,
+  { chapterId, targetUserId }: ChapterData,
+  { calendarId }: AccessData,
+) {
   const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
 

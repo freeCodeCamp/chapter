@@ -554,12 +554,17 @@ ${unsubscribeOptions}`,
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
       // TODO: handle errors
-      await createCalendarEvent(ctx.user.id, chapter.calendar_id, {
-        start: event.start_at,
-        end: event.ends_at,
-        summary: event.name,
-        attendeeEmails: [ctx.user.email],
-      });
+      await createCalendarEvent(
+        ctx.user.id,
+        { eventId: event.id },
+        {
+          calendarId: chapter.calendar_id,
+          start: event.start_at,
+          end: event.ends_at,
+          summary: event.name,
+          attendeeEmails: [ctx.user.email],
+        },
+      );
     }
 
     return event;

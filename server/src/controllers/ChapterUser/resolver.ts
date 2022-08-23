@@ -271,13 +271,14 @@ async function updateGoogleCalendarEventAccess(
   });
   if (!calendarId) throw Error('Chapter has no calendar id');
 
-  const accessArgs = {
-    currentUserId,
+  const chapterData = {
     targetUserId,
     chapterId,
+  };
+  const calendarData = {
     calendarId,
   };
   return userCanCreateEvents
-    ? await grantCalendarAccess(accessArgs)
-    : await revokeCalendarAccess(accessArgs);
+    ? await grantCalendarAccess(currentUserId, chapterData, calendarData)
+    : await revokeCalendarAccess(currentUserId, chapterData, calendarData);
 }

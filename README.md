@@ -44,7 +44,7 @@ We are using the following tools:
   - [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
   - Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 - [Jest](https://jestjs.io/) - for writing unit tests.
-- [Cypress](https://www.cypress.io/) - to check if specific actions are possible to preform in certain scenarios.
+- [Cypress](https://www.cypress.io/) - to check if specific actions are possible to perform in certain scenarios.
 
 For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
 

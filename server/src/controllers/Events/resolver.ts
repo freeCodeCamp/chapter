@@ -325,6 +325,14 @@ export class EventResolver {
         },
       });
     } else {
+      if (newRsvpName !== 'waitlist' && isSubscribedToChapter) {
+        await createReminder({
+          eventId,
+          remindAt: sub(event.start_at, { days: 1 }),
+          userId: ctx.user.id,
+        });
+      }
+
       const eventUserData: Prisma.event_usersCreateInput = {
         user: { connect: { id: ctx.user.id } },
         event: { connect: { id: eventId } },
@@ -335,14 +343,6 @@ export class EventResolver {
       eventUser = await prisma.event_users.create({
         data: eventUserData,
         include: eventUserIncludes,
-      });
-    }
-
-    if (!oldEventUser && newRsvpName !== 'waitlist' && isSubscribedToChapter) {
-      await createReminder({
-        eventId: eventId,
-        remindAt: sub(event.start_at, { days: 1 }),
-        userId: ctx.user.id,
       });
     }
 

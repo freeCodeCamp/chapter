@@ -25,8 +25,10 @@ function init() {
 
 const { keys } = init();
 
-// TODO: Audit scopes. Are there any we can remove?
+// TODO: Audit scopes. Are there any we can remove? Once the audit is complete
+// ensure the project provides only these scopes.
 const scopes = [
+  'https://www.googleapis.com/auth/calendar.acls',
   'https://www.googleapis.com/auth/calendar.app.created',
   'https://www.googleapis.com/auth/calendar.readonly',
   'https://www.googleapis.com/auth/calendar.events',
@@ -152,4 +154,86 @@ export async function createCalendarEvent(
       attendees,
     },
   });
+}
+
+interface AccessArgs {
+  currentUserId: number;
+  chapterId: number;
+  targetUserId: number;
+  calendarId: string;
+}
+
+export async function grantCalendarAccess({
+  currentUserId,
+  chapterId,
+  targetUserId,
+  calendarId,
+}: AccessArgs) {
+  const auth = await createCredentialedClient(currentUserId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  const targetUser = await prisma.users.findUniqueOrThrow({
+    where: { id: targetUserId },
+    select: { email: true },
+  });
+
+  const { data } = await googleCalendar.acl
+    .insert({
+      calendarId,
+      requestBody: {
+        role: 'writer',
+        scope: {
+          type: 'user',
+          value: targetUser.email,
+        },
+      },
+    })
+    .catch(() => {
+      throw new Error('Failed to grant calendar access');
+    });
+
+  await prisma.chapter_users.update({
+    where: {
+      user_id_chapter_id: { user_id: targetUserId, chapter_id: chapterId },
+    },
+    data: { calendar_acl_id: data.id },
+  });
+}
+
+export async function revokeCalendarAccess({
+  currentUserId,
+  chapterId,
+  targetUserId,
+  calendarId,
+}: AccessArgs) {
+  const auth = await createCredentialedClient(currentUserId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  // TODO: if possible, it would be nice to update and get the previous value in
+  // one query.
+  const { calendar_acl_id } = await prisma.chapter_users.findUniqueOrThrow({
+    where: {
+      user_id_chapter_id: { user_id: targetUserId, chapter_id: chapterId },
+    },
+    select: { calendar_acl_id: true },
+  });
+
+  // TODO: warn if the ACL id doesn't exist?
+  if (calendar_acl_id === null) return;
+
+  await prisma.chapter_users.update({
+    where: {
+      user_id_chapter_id: { user_id: targetUserId, chapter_id: chapterId },
+    },
+    data: { calendar_acl_id: null },
+  });
+
+  try {
+    await googleCalendar.acl.delete({
+      calendarId,
+      ruleId: calendar_acl_id,
+    });
+  } catch (err) {
+    throw new Error('Failed to revoke calendar access');
+  }
 }

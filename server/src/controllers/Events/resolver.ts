@@ -325,14 +325,6 @@ export class EventResolver {
         },
       });
     } else {
-      if (newRsvpName !== 'waitlist' && isSubscribedToChapter) {
-        await createReminder({
-          eventId,
-          remindAt: sub(event.start_at, { days: 1 }),
-          userId: ctx.user.id,
-        });
-      }
-
       const eventUserData: Prisma.event_usersCreateInput = {
         user: { connect: { id: ctx.user.id } },
         event: { connect: { id: eventId } },
@@ -344,6 +336,16 @@ export class EventResolver {
         data: eventUserData,
         include: eventUserIncludes,
       });
+
+      // NOTE: this relies on there being an event_user record, so must follow
+      // that.
+      if (newRsvpName !== 'waitlist' && isSubscribedToChapter) {
+        await createReminder({
+          eventId,
+          remindAt: sub(event.start_at, { days: 1 }),
+          userId: ctx.user.id,
+        });
+      }
     }
 
     await sendRsvpInvitation(ctx.user, event);

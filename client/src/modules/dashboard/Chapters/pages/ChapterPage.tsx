@@ -16,6 +16,7 @@ import { Layout } from '../../shared/components/Layout';
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('id');
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const alertDialogFocusElement = useRef(null);
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
@@ -64,16 +65,23 @@ export const ChapterPage: NextPage = () => {
               </ProgressCardContent>
             </TabPanel>
             <TabPanel>
-              <Button colorScheme="red" onClick={onOpen}>
+              <Heading as="h2" mb="4" fontSize={['lg', '2xl']}>
+                Chapter Setting
+              </Heading>
+              <Button colorScheme="red" onClick={onOpen} marginRight={'2em'}>
                 Transfer Ownership
               </Button>
-              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef}>
+              <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={alertDialogFocusElement}
+                onClose={onClose}
+              >
                 <SettingAlertDialog
                   title="Transfer Ownership"
                   DialogBody="PLease Type Chapter name to transfer its ownership"
-                  inputPlaceholder="Chapter_Name"
+                  inputPlaceholder={data.chapter.name}
                 >
-                  <Button ref={useRef} onClick={onClose} mr={3}>
+                  <Button onClick={onClose} mr={3}>
                     Cancel
                   </Button>
                   <Button colorScheme="red">Transfer</Button>
@@ -83,13 +91,17 @@ export const ChapterPage: NextPage = () => {
               <Button colorScheme="red" onClick={onOpen}>
                 Delete Chapter
               </Button>
-              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef}>
+              <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={alertDialogFocusElement}
+                onClose={onClose}
+              >
                 <SettingAlertDialog
                   title="Delete Chapter"
                   DialogBody="For Deleting Chapter, Please type its name"
-                  inputPlaceholder="Chapter_Name"
+                  inputPlaceholder={data.chapter.name}
                 >
-                  <Button ref={useRef} onClick={onClose} mr={3}>
+                  <Button onClick={onClose} marginInline={'2em'}>
                     Cancel
                   </Button>
                   <Button colorScheme="red">Delete</Button>

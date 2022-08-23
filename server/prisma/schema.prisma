@@ -112,28 +112,28 @@ model event_tags {
 }
 
 model events {
-  created_at    DateTime               @default(now())
-  updated_at    DateTime               @updatedAt
-  id            Int                    @id @default(autoincrement())
-  name          String
-  description   String
-  url           String?
-  streaming_url String?
-  venue_type    events_venue_type_enum @default(Physical)
-  start_at      DateTime
-  ends_at       DateTime
-  canceled      Boolean                @default(false)
-  capacity      Int
-  invite_only   Boolean                @default(false)
-  image_url     String
-  // TODO: none of these should be optional
-  venue_id      Int?
-  chapter_id    Int
-  chapter       chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  venue         venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  sponsors      event_sponsors[]
-  tags          event_tags[]
-  event_users   event_users[]
+  created_at        DateTime               @default(now())
+  updated_at        DateTime               @updatedAt
+  id                Int                    @id @default(autoincrement())
+  name              String
+  description       String
+  url               String?
+  streaming_url     String?
+  venue_type        events_venue_type_enum @default(Physical)
+  start_at          DateTime
+  ends_at           DateTime
+  canceled          Boolean                @default(false)
+  capacity          Int
+  invite_only       Boolean                @default(false)
+  image_url         String
+  venue_id          Int?
+  chapter_id        Int
+  calendar_event_id String?
+  chapter           chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  venue             venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sponsors          event_sponsors[]
+  tags              event_tags[]
+  event_users       event_users[]
 }
 
 model event_roles {

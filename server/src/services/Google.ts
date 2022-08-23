@@ -137,6 +137,7 @@ interface EventData {
 
 export async function createCalendarEvent(
   currentUserId: number,
+  { eventId }: { eventId: number },
   { calendarId, start, end, summary, attendeeEmails }: EventData,
 ) {
   const auth = await createCredentialedClient(currentUserId);
@@ -147,7 +148,7 @@ export async function createCalendarEvent(
   const attendees = isProd()
     ? attendeeEmails.map((email: string) => ({ email }))
     : [];
-  await googleCalendar.events.insert({
+  const { data } = await googleCalendar.events.insert({
     calendarId,
     sendUpdates: 'all',
     requestBody: {
@@ -155,6 +156,15 @@ export async function createCalendarEvent(
       end: { dateTime: end.toISOString() },
       summary,
       attendees,
+    },
+  });
+
+  await prisma.events.update({
+    where: {
+      id: eventId,
+    },
+    data: {
+      calendar_event_id: data.id,
     },
   });
 }

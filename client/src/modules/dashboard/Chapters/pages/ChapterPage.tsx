@@ -3,7 +3,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, useDisclosure, AlertDialog } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import { SettingAlertDialog } from '../../../../components/SettingAlert';
@@ -16,9 +16,13 @@ import { Layout } from '../../shared/components/Layout';
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('id');
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const buttonInput = useRef(null);
+
   const refFunction = () => {
-    // create ref function
+    buttonInput.current?.focus();
   };
+
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });

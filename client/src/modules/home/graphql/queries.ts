@@ -31,19 +31,7 @@ export const HOME_PAGE_QUERY = gql`
       events {
         id
         name
-        description
         start_at
-        invite_only
-        canceled
-        image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
-        invite_only
-        canceled
       }
     }
   }

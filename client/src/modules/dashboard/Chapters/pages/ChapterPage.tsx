@@ -67,13 +67,13 @@ export const ChapterPage: NextPage = () => {
               <Button colorScheme="red" onClick={onOpen}>
                 Transfer Ownership
               </Button>
-              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef()}>
+              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef}>
                 <SettingAlertDialog
                   title="Transfer Ownership"
                   DialogBody="PLease Type Chapter name to transfer its ownership"
                   inputPlaceholder="Chapter_Name"
                 >
-                  <Button ref={useRef()} onClick={onClose} mr={3}>
+                  <Button refFunction={useRef} onClick={onClose} mr={3}>
                     Cancel
                   </Button>
                   <Button colorScheme="red">Transfer</Button>
@@ -83,12 +83,15 @@ export const ChapterPage: NextPage = () => {
               <Button colorScheme="red" onClick={onOpen}>
                 Delete Chapter
               </Button>
-              <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef}>
+              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef}>
                 <SettingAlertDialog
                   title="Delete Chapter"
                   DialogBody="For Deleting Chapter, Please type its name"
                   inputPlaceholder="Chapter_Name"
                 >
+                  <Button refFunction={useRef} onClick={onClose} mr={3}>
+                    Cancel
+                  </Button>
                   <Button colorScheme="red">Delete</Button>
                 </SettingAlertDialog>
               </AlertDialog>

@@ -1,4 +1,4 @@
-import { Heading, Link, Box, HStack } from '@chakra-ui/layout';
+import { Heading, Link, Box, HStack, Flex, Text } from '@chakra-ui/layout';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 
 import { LinkButton } from 'chakra-next-link';
@@ -48,19 +48,43 @@ export const ChapterPage: NextPage = () => {
           <TabPanels>
             <TabPanel>
               <ProgressCardContent loading={loading}>
-                <Heading as="h5" fontWeight="normal">
+                <Heading
+                  fontSize={'md'}
+                  as="h1"
+                  fontWeight="semibold"
+                  marginBlock={'2'}
+                >
                   {data.chapter.name}
                 </Heading>
                 <Box>
-                  <Link href={`${chapterId}/users`} target="_blank">
+                  <Link
+                    href={`${chapterId}/users`}
+                    target="_blank"
+                    paddingBlock={'2'}
+                  >
                     Chapter Users
                   </Link>
                 </Box>
-                <HStack>
-                  <LinkButton size="sm" href={`${chapterId}/new-event`}>
+                <HStack mt={'2'}>
+                  <LinkButton
+                    background={'gray.85'}
+                    color={'gray.05'}
+                    _hover={{
+                      background: 'gray.45',
+                      color: 'gray.85',
+                    }}
+                    size="sm"
+                    href={`${chapterId}/new-event`}
+                  >
                     Add new event
                   </LinkButton>
                   <LinkButton
+                    background={'gray.85'}
+                    color={'gray.05'}
+                    _hover={{
+                      background: 'gray.45',
+                      color: 'gray.85',
+                    }}
                     data-cy="create-venue"
                     size="sm"
                     href={`${chapterId}/new-venue`}
@@ -98,7 +122,29 @@ export const ChapterPage: NextPage = () => {
           </TabPanels>
         </Tabs>
       </Card>
-      <h3>Placeholder for events...</h3>
+      {data.chapter.events.map(({ id, name, start_at }) => (
+        <Link key={id} href={`/events/${id}`} _hover={{}}>
+          <Flex
+            paddingInline={'1em'}
+            paddingBlock={'.5em'}
+            justifyContent={'space-between'}
+            flexDirection={['column', 'row']}
+          >
+            <Text
+              as={'h2'}
+              mt="2"
+              fontWeight={600}
+              fontSize={'md'}
+              maxW={'10em'}
+            >
+              {name}
+            </Text>
+            <Text mt="2" fontWeight={400} fontSize={'md'} opacity={'.8'}>
+              {start_at}
+            </Text>
+          </Flex>
+        </Link>
+      ))}
     </Layout>
   );
 };

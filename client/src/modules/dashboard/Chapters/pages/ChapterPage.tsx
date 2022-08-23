@@ -64,30 +64,11 @@ export const ChapterPage: NextPage = () => {
                 </HStack>
               </ProgressCardContent>
             </TabPanel>
+
             <TabPanel>
               <Heading as="h2" mb="4" fontSize={['lg', '2xl']}>
                 Chapter Setting
               </Heading>
-              <Button colorScheme="red" onClick={onOpen} marginRight={'2em'}>
-                Transfer Ownership
-              </Button>
-              <AlertDialog
-                isOpen={isOpen}
-                leastDestructiveRef={alertDialogFocusElement}
-                onClose={onClose}
-              >
-                <SettingAlertDialog
-                  title="Transfer Ownership"
-                  DialogBody="PLease Type Chapter name to transfer its ownership"
-                  inputPlaceholder={data.chapter.name}
-                >
-                  <Button onClick={onClose} mr={3}>
-                    Cancel
-                  </Button>
-                  <Button colorScheme="red">Transfer</Button>
-                </SettingAlertDialog>
-              </AlertDialog>
-
               <Button colorScheme="red" onClick={onOpen}>
                 Delete Chapter
               </Button>

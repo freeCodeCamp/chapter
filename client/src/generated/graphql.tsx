@@ -827,15 +827,7 @@ export type ChaptersQuery = {
       __typename?: 'Event';
       id: number;
       name: string;
-      description: string;
       start_at: any;
-      invite_only: boolean;
-      canceled: boolean;
-      image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
     }>;
   }>;
 };
@@ -1465,15 +1457,7 @@ export type HomeQuery = {
       __typename?: 'Event';
       id: number;
       name: string;
-      description: string;
       start_at: any;
-      invite_only: boolean;
-      canceled: boolean;
-      image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
     }>;
   }>;
 };
@@ -2024,19 +2008,7 @@ export const ChaptersDocument = gql`
       events {
         id
         name
-        description
         start_at
-        invite_only
-        canceled
-        image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
-        invite_only
-        canceled
       }
     }
   }
@@ -4170,19 +4142,7 @@ export const HomeDocument = gql`
       events {
         id
         name
-        description
         start_at
-        invite_only
-        canceled
-        image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
-        invite_only
-        canceled
       }
     }
   }

@@ -3,7 +3,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
-import React, { useRef } from 'react';
+import React from 'react';
 import { Button, useDisclosure, AlertDialog } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import { SettingAlertDialog } from '../../../../components/SettingAlert';
@@ -16,7 +16,9 @@ import { Layout } from '../../shared/components/Layout';
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('id');
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const refFunction = () => {
+    // create ref function
+  };
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });
@@ -67,13 +69,13 @@ export const ChapterPage: NextPage = () => {
               <Button colorScheme="red" onClick={onOpen}>
                 Transfer Ownership
               </Button>
-              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef}>
+              <AlertDialog isOpen={isOpen} leastDestructiveRef={refFunction}>
                 <SettingAlertDialog
                   title="Transfer Ownership"
                   DialogBody="PLease Type Chapter name to transfer its ownership"
                   inputPlaceholder="Chapter_Name"
                 >
-                  <Button refFunction={useRef} onClick={onClose} mr={3}>
+                  <Button ref={refFunction} onClick={onClose} mr={3}>
                     Cancel
                   </Button>
                   <Button colorScheme="red">Transfer</Button>
@@ -83,13 +85,13 @@ export const ChapterPage: NextPage = () => {
               <Button colorScheme="red" onClick={onOpen}>
                 Delete Chapter
               </Button>
-              <AlertDialog isOpen={isOpen} leastDestructiveRef={useRef}>
+              <AlertDialog isOpen={isOpen} leastDestructiveRef={refFunction}>
                 <SettingAlertDialog
                   title="Delete Chapter"
                   DialogBody="For Deleting Chapter, Please type its name"
                   inputPlaceholder="Chapter_Name"
                 >
-                  <Button refFunction={useRef} onClick={onClose} mr={3}>
+                  <Button ref={refFunction} onClick={onClose} mr={3}>
                     Cancel
                   </Button>
                   <Button colorScheme="red">Delete</Button>

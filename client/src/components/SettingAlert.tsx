@@ -9,8 +9,8 @@ import {
 import React from 'react';
 
 interface SettingAlertProps {
-  title?: string;
-  DialogBody?: string;
+  title: string;
+  DialogBody: string;
   children?: React.ReactNode;
   inputPlaceholder?: string;
 }

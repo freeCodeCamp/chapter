@@ -83,7 +83,7 @@
             "deprecationReason": null
           },
           {
-            "name": "chatUrl",
+            "name": "chat_url",
             "description": null,
             "args": [],
             "type": {
@@ -175,7 +175,7 @@
             "deprecationReason": null
           },
           {
-            "name": "imageUrl",
+            "name": "image_url",
             "description": null,
             "args": [],
             "type": {
@@ -510,7 +510,7 @@
             "deprecationReason": null
           },
           {
-            "name": "chatUrl",
+            "name": "chat_url",
             "description": null,
             "args": [],
             "type": {
@@ -626,7 +626,7 @@
             "deprecationReason": null
           },
           {
-            "name": "imageUrl",
+            "name": "image_url",
             "description": null,
             "args": [],
             "type": {
@@ -725,7 +725,7 @@
             "deprecationReason": null
           },
           {
-            "name": "chatUrl",
+            "name": "chat_url",
             "description": null,
             "args": [],
             "type": {
@@ -841,7 +841,7 @@
             "deprecationReason": null
           },
           {
-            "name": "imageUrl",
+            "name": "image_url",
             "description": null,
             "args": [],
             "type": {
@@ -941,7 +941,7 @@
             "deprecationReason": null
           },
           {
-            "name": "chatUrl",
+            "name": "chat_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -1001,7 +1001,7 @@
             "deprecationReason": null
           },
           {
-            "name": "imageUrl",
+            "name": "image_url",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -5022,7 +5022,7 @@
             "deprecationReason": null
           },
           {
-            "name": "chatUrl",
+            "name": "chat_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -5070,7 +5070,7 @@
             "deprecationReason": null
           },
           {
-            "name": "imageUrl",
+            "name": "image_url",
             "description": null,
             "type": {
               "kind": "SCALAR",

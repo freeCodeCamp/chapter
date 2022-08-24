@@ -163,13 +163,14 @@ export const main = async (app: Express) => {
     }
   }
 
-  app.post('/authenticate-with-google', isLoggedIn, (_req, res) => {
+  app.get('/authenticate-with-google', isLoggedIn, (_req, res) => {
     const state = crypto.randomUUID();
     res.cookie('state', state, {
       httpOnly: true,
       secure: !isDev(),
       sameSite: 'lax',
     });
+
     const authUrl = getGoogleAuthUrl(state);
     res.redirect(authUrl);
   });

@@ -127,6 +127,15 @@ export const Header: React.FC = () => {
                         <MenuItem as="a">Dashboard</MenuItem>
                       </NextLink>
 
+                      <MenuItem
+                        as="a"
+                        href={
+                          new URL('/authenticate-with-google', serverUrl).href
+                        }
+                      >
+                        Authenticate with Google
+                      </MenuItem>
+
                       <MenuItem data-cy="logout-button" onClick={logout}>
                         Logout
                       </MenuItem>

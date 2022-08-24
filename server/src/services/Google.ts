@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { OAuth2Client } from 'google-auth-library';
 import { calendar } from '@googleapis/calendar';
-import { isDev, isProd } from '../config';
+import { isProd } from '../config';
 import { prisma } from '../prisma';
 
 function init() {
@@ -16,7 +16,7 @@ function init() {
 
     return { keys };
   } catch {
-    if (!isDev())
+    if (isProd())
       throw new Error('OAuth2 keys file missing, cannot start server');
   }
 

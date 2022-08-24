@@ -135,6 +135,10 @@ interface EventData {
   attendeeEmails: string[];
 }
 
+interface EventUpdateData extends EventData {
+  calendarEventId: string;
+}
+
 export async function createCalendarEvent(
   currentUserId: number,
   { eventId }: { eventId: number },
@@ -146,7 +150,7 @@ export async function createCalendarEvent(
   // Since this Goggle will send emails to these addresses, we don't want to
   // accidentally send emails in testing.
   const attendees = isProd()
-    ? attendeeEmails.map((email: string) => ({ email }))
+    ? (attendeeEmails ?? []).map((email: string) => ({ email }))
     : [];
   const { data } = await googleCalendar.events.insert({
     calendarId,
@@ -165,6 +169,39 @@ export async function createCalendarEvent(
     },
     data: {
       calendar_event_id: data.id,
+    },
+  });
+}
+
+export async function updateCalendarEvent(
+  currentUserId: number,
+  {
+    calendarId,
+    calendarEventId,
+    start,
+    end,
+    summary,
+    attendeeEmails,
+  }: EventUpdateData,
+) {
+  const auth = await createCredentialedClient(currentUserId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  // Since this Goggle will send emails to these addresses, we don't want to
+  // accidentally send emails in testing.
+  const attendees = isProd()
+    ? attendeeEmails.map((email: string) => ({ email }))
+    : [];
+
+  await googleCalendar.events.update({
+    calendarId,
+    eventId: calendarEventId,
+    sendUpdates: 'all',
+    requestBody: {
+      start: { dateTime: start.toISOString() },
+      end: { dateTime: end.toISOString() },
+      summary,
+      attendees,
     },
   });
 }

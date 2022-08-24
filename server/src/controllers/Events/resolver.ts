@@ -41,7 +41,10 @@ import {
   generateToken,
   UnsubscribeType,
 } from '../../services/UnsubscribeToken';
-import { createCalendarEvent } from '../../services/Google';
+import {
+  createCalendarEvent,
+  updateCalendarEvent,
+} from '../../services/Google';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -553,18 +556,22 @@ ${unsubscribeOptions}`,
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      // TODO: handle errors
-      await createCalendarEvent(
-        ctx.user.id,
-        { eventId: event.id },
-        {
-          calendarId: chapter.calendar_id,
-          start: event.start_at,
-          end: event.ends_at,
-          summary: event.name,
-          attendeeEmails: [ctx.user.email],
-        },
-      );
+      try {
+        await createCalendarEvent(
+          ctx.user.id,
+          { eventId: event.id },
+          {
+            calendarId: chapter.calendar_id,
+            start: event.start_at,
+            end: event.ends_at,
+            summary: event.name,
+            attendeeEmails: [ctx.user.email],
+          },
+        );
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to create calendar event');
+      }
     }
 
     return event;
@@ -575,6 +582,7 @@ ${unsubscribeOptions}`,
   async updateEvent(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id },
@@ -705,11 +713,34 @@ ${venueDetails}`;
       });
     }
 
-    return await prisma.events.update({
+    const newEvent = await prisma.events.update({
       where: { id },
       data: update,
-      include: { tags: { include: { tag: true } } },
+      include: {
+        tags: { include: { tag: true } },
+        chapter: { select: { calendar_id: true } },
+        event_users: { include: { user: { select: { email: true } } } },
+      },
     });
+
+    // TODO: warn the user if the any calendar ids are missing
+    if (newEvent.chapter.calendar_id && newEvent.calendar_event_id) {
+      try {
+        await updateCalendarEvent(ctx.user.id, {
+          calendarId: newEvent.chapter.calendar_id,
+          calendarEventId: newEvent.calendar_event_id,
+          summary: newEvent.name,
+          start: newEvent.start_at,
+          end: newEvent.ends_at,
+          attendeeEmails: newEvent.event_users.map(({ user }) => user.email),
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to update calendar event');
+      }
+    }
+
+    return newEvent;
   }
 
   @Authorized(Permission.EventEdit)

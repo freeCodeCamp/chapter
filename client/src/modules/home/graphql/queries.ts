@@ -28,6 +28,11 @@ export const HOME_PAGE_QUERY = gql`
       description
       category
       imageUrl
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;

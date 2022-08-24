@@ -71,6 +71,21 @@ export type ChapterUser = {
   user_id: Scalars['Int'];
 };
 
+export type ChapterWithEvents = {
+  __typename?: 'ChapterWithEvents';
+  category: Scalars['String'];
+  chatUrl?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  creator_id: Scalars['Int'];
+  description: Scalars['String'];
+  events: Array<Event>;
+  id: Scalars['Int'];
+  imageUrl: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   category: Scalars['String'];
@@ -445,7 +460,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<Chapter>;
+  chapters: Array<ChapterWithEvents>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -802,12 +817,18 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 export type ChaptersQuery = {
   __typename?: 'Query';
   chapters: Array<{
-    __typename?: 'Chapter';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
     imageUrl: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      start_at: any;
+    }>;
   }>;
 };
 
@@ -1426,12 +1447,18 @@ export type HomeQuery = {
     };
   }>;
   chapters: Array<{
-    __typename?: 'Chapter';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
     imageUrl: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      start_at: any;
+    }>;
   }>;
 };
 
@@ -1978,6 +2005,11 @@ export const ChaptersDocument = gql`
       description
       category
       imageUrl
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;
@@ -4107,6 +4139,11 @@ export const HomeDocument = gql`
       description
       category
       imageUrl
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;

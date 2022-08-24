@@ -80,6 +80,11 @@ export const CHAPTERS = gql`
       description
       category
       imageUrl
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;

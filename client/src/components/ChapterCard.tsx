@@ -1,59 +1,69 @@
-import {
-  Stack,
-  Heading,
-  Box,
-  Center,
-  Image,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
-import { Chapter } from 'generated/graphql';
+import { ChaptersQuery } from 'generated/graphql';
 
 type ChapterCardProps = {
-  chapter: Pick<
-    Chapter,
-    'id' | 'name' | 'description' | 'category' | 'imageUrl'
-  >;
+  chapter: ChaptersQuery['chapters'][number];
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
-    <Center m={2} data-cy="chapter-card">
-      <Link href={`/chapters/${chapter.id}`} _hover={{}}>
-        <Box
-          w={'full'}
-          bg={useColorModeValue('white', 'gray.800')}
-          rounded={'md'}
-          overflow={'hidden'}
-        >
-          <Image
-            h={'168px'}
-            w={'full'}
-            src={chapter.imageUrl}
-            objectFit={'cover'}
-          />
-          <Box>
-            <Stack spacing={0} align={'center'} mb={5} mt={-20}>
+    <Grid
+      data-cy="chapter-card"
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+    >
+      <Grid minW={'25em'} maxW={'35em'} templateColumns="repeat(2, 1fr)">
+        <GridItem colSpan={3} paddingInline={'1em'} paddingBlock={'.5em'}>
+          <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
+            <Flex justifyContent={'space-between'}>
               <Heading
                 data-cy="chapter-heading"
                 fontSize={'xl'}
-                fontWeight={500}
+                fontWeight={700}
                 fontFamily={'body'}
-                color={'white'}
-                textShadow={'1px 1px #000'}
+                as="h3"
               >
                 {chapter.name}
               </Heading>
-              <Text color={'white'} textShadow={'1px 1px #000'}>
+              <Text color={'darkcyan'} fontWeight="bold" as="h4">
                 {chapter.category}
               </Text>
-            </Stack>
-          </Box>
-        </Box>
-      </Link>
-    </Center>
+            </Flex>
+          </Link>
+        </GridItem>
+        <GridItem
+          colStart={1}
+          colSpan={2}
+          marginInline={'1em'}
+          marginBlock={'.5em'}
+        >
+          <Text mt="2" as="p" fontWeight={400} fontSize={'md'}>
+            {chapter.description}
+          </Text>
+        </GridItem>
+      </Grid>
+      <GridItem colSpan={3}>
+        {chapter.events.map(({ id, name, start_at }) => (
+          <Link key={id} href={`/events/${id}`} _hover={{}}>
+            <Flex
+              paddingInline={'1em'}
+              paddingBlock={'.5em'}
+              justifyContent={'space-between'}
+            >
+              <Text mt="2" fontWeight={600} fontSize={'md'} maxW={'10em'}>
+                {name}
+              </Text>
+              <Text mt="2" fontWeight={600} fontSize={'md'}>
+                {start_at}
+              </Text>
+            </Flex>
+          </Link>
+        ))}
+      </GridItem>
+    </Grid>
   );
 };

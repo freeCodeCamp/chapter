@@ -33,29 +33,31 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     <>
       {event.canceled && (
         <Tag
-          borderRadius="md"
+          borderRadius="lg"
           marginRight={'3'}
-          pl="2"
-          px="2"
-          colorScheme="gray"
+          paddingInline="[1 , 2]"
+          paddingBlock="[.5, 1]"
           fontSize={['small', 'md']}
           maxWidth={'8em'}
+          mt="1"
           maxH={'2em'}
+          colorScheme={'red'}
         >
           Canceled
         </Tag>
       )}
       {event.invite_only && (
         <Tag
-          borderRadius="md"
-          pl="2"
-          px="2"
-          colorScheme="gray"
+          borderRadius="lg"
+          mt="1"
+          paddingInline="[1 , 2]"
+          paddingBlock="[.5, 1]"
+          colorScheme={'blue'}
           fontSize={['small', 'md']}
           maxWidth={'8em'}
           maxH={'2em'}
         >
-          Invite Only
+          Invite only
         </Tag>
       )}
     </>
@@ -87,7 +89,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         >
           <GridItem area={'eventname'}>
             <Link data-cy="event-link" href={`/events/${event.id}`}>
-              <Heading size="sm">{event.name}</Heading>
+              <Heading mt={1} size="sm">
+                {event.name}
+              </Heading>
             </Link>
           </GridItem>
           <GridItem area={'metatag'}>{metaTag}</GridItem>
@@ -102,7 +106,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               {event.chapter.name}
             </Link>
           </GridItem>
-          <GridItem opacity={'.8'} area={'eventstart'}>
+          <GridItem
+            opacity={'.8'}
+            area={'eventstart'}
+            marginBottom={['1', '2']}
+          >
             {formatDate(event.start_at)}
           </GridItem>
         </Grid>

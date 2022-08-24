@@ -206,6 +206,42 @@ export async function updateCalendarEvent(
   });
 }
 
+export async function cancelCalendarEvent(
+  currentUserId: number,
+  {
+    calendarId,
+    calendarEventId,
+    start,
+    end,
+    summary,
+    attendeeEmails,
+  }: EventUpdateData,
+) {
+  const auth = await createCredentialedClient(currentUserId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  // Since this Goggle will send emails to these addresses, we don't want to
+  // accidentally send emails in testing.
+  const attendees = isProd()
+    ? attendeeEmails.map((email: string) => ({ email }))
+    : [];
+
+  // TODO: Since requestBody is basically the same for all requests, it could
+  // help to have a function to construct if from the other parameters.
+  await googleCalendar.events.update({
+    calendarId,
+    eventId: calendarEventId,
+    sendUpdates: 'all',
+    requestBody: {
+      start: { dateTime: start.toISOString() },
+      end: { dateTime: end.toISOString() },
+      summary,
+      attendees,
+      status: 'cancelled',
+    },
+  });
+}
+
 interface ChapterData {
   chapterId: number;
   targetUserId: number;

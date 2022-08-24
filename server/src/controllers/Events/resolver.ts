@@ -42,6 +42,7 @@ import {
   UnsubscribeType,
 } from '../../services/UnsubscribeToken';
 import {
+  cancelCalendarEvent,
   createCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
@@ -745,12 +746,16 @@ ${venueDetails}`;
 
   @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
-  async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
+  async cancelEvent(
+    @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<Event | null> {
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
       include: {
         tags: { include: { tag: true } },
+        chapter: { select: { calendar_id: true } },
         event_users: {
           include: { user: true },
           where: {
@@ -774,6 +779,26 @@ ${venueDetails}`;
         subject: subject,
         htmlEmail: body,
       }).sendEmail();
+    }
+
+    if (event.chapter.calendar_id && event.calendar_event_id) {
+      try {
+        // TODO: consider not awaiting. Ideally the user would see the app
+        // respond immediately, but be informed of any failures later.
+        // Client-side this could be handled by something like redux-saga, but
+        // I'm not sure how to approach that server-side.
+        await cancelCalendarEvent(ctx.user.id, {
+          calendarId: event.chapter.calendar_id,
+          calendarEventId: event.calendar_event_id,
+          summary: event.name,
+          start: event.start_at,
+          end: event.ends_at,
+          attendeeEmails: event.event_users.map(({ user }) => user.email),
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to cancel calendar event');
+      }
     }
 
     return event;

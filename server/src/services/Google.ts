@@ -142,25 +142,16 @@ interface EventUpdateData extends EventData {
 export async function createCalendarEvent(
   currentUserId: number,
   { eventId }: { eventId: number },
-  { calendarId, start, end, summary, attendeeEmails }: EventData,
+  eventData: EventData,
 ) {
   const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
 
-  // Since this Goggle will send emails to these addresses, we don't want to
-  // accidentally send emails in testing.
-  const attendees = isProd()
-    ? (attendeeEmails ?? []).map((email: string) => ({ email }))
-    : [];
+  const { calendarId } = eventData;
   const { data } = await googleCalendar.events.insert({
     calendarId,
     sendUpdates: 'all',
-    requestBody: {
-      start: { dateTime: start.toISOString() },
-      end: { dateTime: end.toISOString() },
-      summary,
-      attendees,
-    },
+    requestBody: getStandardRequestBody(eventData),
   });
 
   await prisma.events.update({
@@ -175,71 +166,56 @@ export async function createCalendarEvent(
 
 export async function updateCalendarEvent(
   currentUserId: number,
-  {
-    calendarId,
-    calendarEventId,
-    start,
-    end,
-    summary,
-    attendeeEmails,
-  }: EventUpdateData,
+  eventUpdateData: EventUpdateData,
 ) {
   const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
 
-  // Since this Goggle will send emails to these addresses, we don't want to
-  // accidentally send emails in testing.
-  const attendees = isProd()
-    ? attendeeEmails.map((email: string) => ({ email }))
-    : [];
-
+  const { calendarId, calendarEventId } = eventUpdateData;
   await googleCalendar.events.update({
     calendarId,
     eventId: calendarEventId,
     sendUpdates: 'all',
-    requestBody: {
-      start: { dateTime: start.toISOString() },
-      end: { dateTime: end.toISOString() },
-      summary,
-      attendees,
-    },
+    requestBody: getStandardRequestBody(eventUpdateData),
   });
 }
 
 export async function cancelCalendarEvent(
   currentUserId: number,
-  {
-    calendarId,
-    calendarEventId,
-    start,
-    end,
-    summary,
-    attendeeEmails,
-  }: EventUpdateData,
+  eventUpdateData: EventUpdateData,
 ) {
   const auth = await createCredentialedClient(currentUserId);
   const googleCalendar = calendar({ version: 'v3', auth });
 
-  // Since this Goggle will send emails to these addresses, we don't want to
-  // accidentally send emails in testing.
-  const attendees = isProd()
-    ? attendeeEmails.map((email: string) => ({ email }))
-    : [];
-
-  // TODO: Since requestBody is basically the same for all requests, it could
-  // help to have a function to construct if from the other parameters.
+  const { calendarId, calendarEventId } = eventUpdateData;
   await googleCalendar.events.update({
     calendarId,
     eventId: calendarEventId,
     sendUpdates: 'all',
     requestBody: {
-      start: { dateTime: start.toISOString() },
-      end: { dateTime: end.toISOString() },
-      summary,
-      attendees,
+      ...getStandardRequestBody(eventUpdateData),
       status: 'cancelled',
     },
   });
+}
+
+function getStandardRequestBody({
+  attendeeEmails,
+  start,
+  end,
+  summary,
+}: EventData) {
+  // Since this Goggle will send emails to these addresses, we don't want to
+  // accidentally send emails in testing.
+  const attendees = isProd()
+    ? attendeeEmails.map((email: string) => ({ email }))
+    : [];
+  return {
+    start: { dateTime: start.toISOString() },
+    end: { dateTime: end.toISOString() },
+    summary,
+    attendees,
+  };
 }
 
 export async function deleteCalendarEvent(

@@ -120,7 +120,7 @@ model events {
   venue_id      Int?
   chapter_id    Int
   chapter       chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  venue         venues?                @relation(fields: [venue_id, chapter_id], references: [id, chapter_id], onDelete: NoAction, onUpdate: NoAction)
+  venue         venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sponsors      event_sponsors[]
   tags          event_tags[]
   event_users   event_users[]
@@ -277,10 +277,8 @@ model venues {
   latitude       Float?
   longitude      Float?
   events         events[]
-  chapter        chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   chapter_id     Int
-
-  @@unique([id, chapter_id])
+  chapter        chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 enum events_venue_type_enum {

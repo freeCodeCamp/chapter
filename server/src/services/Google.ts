@@ -242,6 +242,23 @@ export async function cancelCalendarEvent(
   });
 }
 
+export async function deleteCalendarEvent(
+  currentUserId: number,
+  {
+    calendarId,
+    calendarEventId,
+  }: { calendarId: string; calendarEventId: string },
+) {
+  const auth = await createCredentialedClient(currentUserId);
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  await googleCalendar.events.delete({
+    calendarId,
+    eventId: calendarEventId,
+    sendUpdates: 'all',
+  });
+}
+
 interface ChapterData {
   chapterId: number;
   targetUserId: number;

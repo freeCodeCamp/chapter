@@ -44,6 +44,7 @@ import {
 import {
   cancelCalendarEvent,
   createCalendarEvent,
+  deleteCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
@@ -806,11 +807,34 @@ ${venueDetails}`;
 
   @Authorized(Permission.EventDelete)
   @Mutation(() => Event)
-  async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
-    return await prisma.events.delete({
+  async deleteEvent(
+    @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<Event> {
+    const event = await prisma.events.delete({
       where: { id },
-      include: { tags: { include: { tag: true } } },
+      include: {
+        tags: { include: { tag: true } },
+        chapter: { select: { calendar_id: true } },
+      },
     });
+
+    if (event.chapter.calendar_id && event.calendar_event_id) {
+      try {
+        // TODO: consider not awaiting. Ideally the user would see the app
+        // respond immediately, but be informed of any failures later.
+        // Client-side this could be handled by something like redux-saga, but
+        // I'm not sure how to approach that server-side.
+        await deleteCalendarEvent(ctx.user.id, {
+          calendarId: event.chapter.calendar_id,
+          calendarEventId: event.calendar_event_id,
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to delete calendar event');
+      }
+    }
+    return event;
   }
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return

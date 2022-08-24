@@ -37,7 +37,7 @@ exports[`EventCard should render 1`] = `
           <span
             class="css-0"
           >
-            Invite Only
+            Invite only
           </span>
         </div>
         <div
@@ -98,7 +98,7 @@ exports[`EventCard should render with tags 1`] = `
           <span
             class="css-0"
           >
-            Invite Only
+            Invite only
           </span>
         </div>
         <div

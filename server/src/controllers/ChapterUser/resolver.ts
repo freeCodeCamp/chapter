@@ -170,9 +170,14 @@ export class ChapterUserResolver {
   ): Promise<ChapterUser> {
     const userCanCreateEvents = await roleCanCreateEvents(roleId);
 
-    await updateGoogleCalendarEventAccess(ctx.user.id, userId, chapterId, {
-      userCanCreateEvents,
-    });
+    try {
+      await updateGoogleCalendarEventAccess(ctx.user.id, userId, chapterId, {
+        userCanCreateEvents,
+      });
+    } catch {
+      // TODO: log more details without leaking tokens and user info.
+      console.error('Unable to update calendar access');
+    }
 
     return await prisma.chapter_users.update({
       data: { chapter_role: { connect: { id: roleId } } },

@@ -64,15 +64,20 @@ export class ChapterResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
     // TODO: handle errors from the calendar integration
-    const calendarData = await createCalendar(ctx.user.id, {
-      summary: data.name,
-      description: `Events for ${data.name}`,
-    });
-
+    let calendarData;
+    try {
+      calendarData = await createCalendar(ctx.user.id, {
+        summary: data.name,
+        description: `Events for ${data.name}`,
+      });
+    } catch {
+      // TODO: log more details without leaking tokens and user info.
+      console.log('Unable to create calendar');
+    }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,
       creator_id: ctx.user.id,
-      calendar_id: calendarData.id,
+      calendar_id: calendarData?.id,
     };
 
     return prisma.chapters.create({ data: chapterData });

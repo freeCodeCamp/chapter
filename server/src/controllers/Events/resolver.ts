@@ -354,6 +354,46 @@ export class EventResolver {
       }
     }
 
+    // TODO: find by permission, not role. Fold into event query? TODO: this is
+    // a bit convoluted. Also, we don't know if the admin user *has* a token!
+    // Ideally we want the first admin that has definitely got a live token.
+
+    // We need the chapter for calendar_id and one of the chapter admins so we
+    // can use their token to authenticate with Google.
+    const chapter = await prisma.chapters.findUniqueOrThrow({
+      where: { id: chapterId },
+      select: {
+        calendar_id: true,
+        chapter_users: {
+          where: { chapter_role: { name: { equals: 'administrator' } } },
+          take: 1,
+        },
+      },
+    });
+
+    const oldAttendeeEmails = event.event_users
+      .filter(
+        (eventUser) =>
+          eventUser.rsvp.name === 'yes' || eventUser.rsvp.name === 'waitlist',
+      )
+      .map((eventUser) => eventUser.user.email);
+
+    if (chapter.calendar_id && event.calendar_event_id) {
+      try {
+        await updateCalendarEvent(chapter.chapter_users[0].user_id, {
+          calendarId: chapter.calendar_id,
+          calendarEventId: event.calendar_event_id,
+          summary: event.name,
+          end: event.ends_at,
+          start: event.start_at,
+          attendeeEmails: [...oldAttendeeEmails, ctx.user.email],
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to add attendee to calendar event');
+      }
+    }
+
     await sendRsvpInvitation(ctx.user, event);
     await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
     return eventUser;

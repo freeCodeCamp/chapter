@@ -215,6 +215,8 @@ function getStandardRequestBody({
     end: { dateTime: end.toISOString() },
     summary,
     attendees,
+    guestsCanSeeOtherGuests: false,
+    guestsCanInviteOthers: false,
   };
 }
 

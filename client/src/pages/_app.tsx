@@ -15,6 +15,7 @@ import { ConfirmContextProvider } from 'chakra-confirm';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
+import cookies from 'browser-cookies';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
@@ -25,6 +26,10 @@ const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 const httpLink = createHttpLink({
   uri: new URL('/graphql', serverUri).href,
   credentials: 'include',
+  headers: {
+    'CSRF-Token':
+      (typeof window !== 'undefined' && cookies.get('csrf_token')) ?? '',
+  },
 });
 
 const errorLink = onError(({ networkError }) => {

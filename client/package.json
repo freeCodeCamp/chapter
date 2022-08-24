@@ -16,6 +16,7 @@
     "@chakra-ui/react": "2.2.8",
     "@emotion/react": "11.10.0",
     "@emotion/styled": "11.10.0",
+    "browser-cookies": "1.2.0",
     "chakra-confirm": "1.2.16",
     "chakra-data-table": "1.4.0",
     "chakra-next-link": "1.0.10",

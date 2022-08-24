@@ -11,7 +11,7 @@ export class Chapter extends BaseObject {
   description: string;
 
   @Field(() => String, { nullable: true })
-  chatUrl?: string | null;
+  chat_url?: string | null;
 
   @Field(() => String)
   category: string;
@@ -26,7 +26,7 @@ export class Chapter extends BaseObject {
   country: string;
 
   @Field(() => String)
-  imageUrl!: string;
+  image_url!: string;
 
   @Field(() => Int)
   creator_id: number;

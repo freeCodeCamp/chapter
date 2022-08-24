@@ -72,14 +72,14 @@ const fields: Fields[] = [
     type: 'text',
   },
   {
-    key: 'imageUrl',
+    key: 'image_url',
     label: 'Image Url',
     placeholder: 'https://www.freecodecamp.org',
     required: true,
     type: 'url',
   },
   {
-    key: 'chatUrl',
+    key: 'chat_url',
     label: 'Chat link',
     placeholder: 'https://discord.gg/KVUmVXA',
     required: false,
@@ -98,8 +98,8 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
-    imageUrl: chapter?.imageUrl ?? '',
-    chatUrl: chapter?.chatUrl ?? '',
+    image_url: chapter?.image_url ?? '',
+    chat_url: chapter?.chat_url ?? '',
   };
   const {
     handleSubmit,

@@ -27,7 +27,7 @@ export const HOME_PAGE_QUERY = gql`
       name
       description
       category
-      imageUrl
+      image_url
       events {
         id
         name

@@ -110,7 +110,7 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.imageUrl}
+          src={data.chapter.image_url}
           alt=""
           borderRadius="md"
           objectFit="cover"
@@ -162,12 +162,12 @@ export const ChapterPage: NextPage = () => {
               Join chapter
             </Button>
           ))}
-        {data.chapter.chatUrl && (
+        {data.chapter.chat_url && (
           <div>
             <Heading size="md" color={'gray.700'}>
               Chat Link:
             </Heading>
-            <Link>{data.chapter.chatUrl}</Link>
+            <Link>{data.chapter.chat_url}</Link>
           </div>
         )}
         <Heading size="md" color={'gray.700'}>

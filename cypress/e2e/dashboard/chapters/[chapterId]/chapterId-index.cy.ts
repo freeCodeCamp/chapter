@@ -10,7 +10,7 @@ const testEvent = {
   startAt: '2022-01-01T00:01',
   endAt: '2022-01-02T00:02',
   venueId: '1',
-  imageUrl: 'https://test.event.org/image',
+  image_url: 'https://test.event.org/image',
 };
 
 // TODO: Consolidate fixtures.
@@ -116,7 +116,7 @@ describe('chapter dashboard', () => {
       testEvent.description,
     );
     cy.findByRole('textbox', { name: 'Event Image Url' }).type(
-      testEvent.imageUrl,
+      testEvent.image_url,
     );
     cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);

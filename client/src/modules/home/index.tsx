@@ -40,7 +40,7 @@ const Home = () => {
   return (
     <>
       <Grid>
-        <GridItem width={'100%'} height={'50%'} margin={2}>
+        <GridItem width={'100%'} height={'50%'}>
           <Grid
             templateColumns={['1fr', '1fr', '1fr 2fr']}
             gap={'2'}
@@ -50,6 +50,7 @@ const Home = () => {
             minH={'30vh'}
             height={'fit-content'}
             maxH={'60vh'}
+            padding={2}
           >
             <GridItem marginInline={3}>
               <Heading as="h1" fontWeight={800}>

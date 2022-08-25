@@ -17,7 +17,6 @@ import { useHomeQuery } from 'generated/graphql';
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 2;
-  const [hasMore] = useState(true);
   const { loading, error, data } = useHomeQuery({
     variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
   });
@@ -100,7 +99,7 @@ const Home = () => {
                     )}
                   </Flex>
                 </GridItem>
-                {hasMore ? (
+                {data ? (
                   <Pagination
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}

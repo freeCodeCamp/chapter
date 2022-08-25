@@ -38,8 +38,8 @@ const Home = () => {
   };
 
   return (
-    <Grid templateColumns="repeat(3, 1fr)" columnGap={10} mt="5">
-      <GridItem colSpan={{ base: 3, md: 2 }}>
+    <Grid templateColumns="repeat(2, 1fr)" gap={10} mt="5">
+      <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Upcoming events</Heading>
           {loading ? (
@@ -64,7 +64,7 @@ const Home = () => {
           )}
         </VStack>
       </GridItem>
-      <GridItem colSpan={{ base: 3, md: 1 }}>
+      <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Chapters</Heading>
           {loading ? (

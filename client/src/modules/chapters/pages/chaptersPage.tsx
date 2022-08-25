@@ -1,4 +1,4 @@
-import { Heading, VStack, Stack } from '@chakra-ui/layout';
+import { Heading, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
@@ -21,19 +21,17 @@ export const ChaptersPage: NextPage = () => {
     );
   }
   return (
-    <VStack>
-      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={3} mt={10} mb={5}>
-        <Heading>Chapters: </Heading>
-        <Grid mt="5%" templateColumns="repeat(2, 1fr)" columnGap="5%">
-          {data.chapters.map((chapter) => (
-            <GridItem key={chapter.id}>
-              <Heading size="md">
-                <ChapterCard chapter={chapter} />
-              </Heading>
-            </GridItem>
-          ))}
-        </Grid>
-      </Stack>
-    </VStack>
+    <Stack mt={10} mb={5} display={'block'}>
+      <Heading>Chapters: </Heading>
+      <Grid templateColumns="[repeat(2, 1fr), none]" gap="1em">
+        {data.chapters.map((chapter) => (
+          <GridItem key={chapter.id}>
+            <Heading size="md">
+              <ChapterCard chapter={chapter} />
+            </Heading>
+          </GridItem>
+        ))}
+      </Grid>
+    </Stack>
   );
 };

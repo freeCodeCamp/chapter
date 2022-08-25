@@ -135,18 +135,21 @@ export const ChapterPage: NextPage = () => {
             <Spinner />
           ) : dataChapterUser ? (
             <HStack>
-              <CheckIcon />
-              <Text>
-                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
-              </Text>
               {dataChapterUser.chapterUser.subscribed ? (
-                <Button
-                  colorScheme="orange"
-                  onClick={() => chapterSubscribe(false)}
-                  size="md"
-                >
-                  Unsubscribe
-                </Button>
+                <HStack>
+                  <CheckIcon />
+                  <Text>
+                    {dataChapterUser.chapterUser.chapter_role.name} of the
+                    chapter
+                  </Text>
+                  <Button
+                    colorScheme="orange"
+                    onClick={() => chapterSubscribe(false)}
+                    size="md"
+                  >
+                    Unsubscribe
+                  </Button>
+                </HStack>
               ) : (
                 <Button
                   colorScheme="green"

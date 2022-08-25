@@ -3,6 +3,7 @@ import {
   Spinner,
   VStack,
   Text,
+  Flex,
   Grid,
   GridItem,
   Button,
@@ -93,29 +94,34 @@ const Home = () => {
             width={'100vw'}
           >
             <GridItem marginLeft={2}>
-              <VStack align="flex-start">
-                <Heading>Upcoming events</Heading>
-                {loading ? (
-                  <Spinner />
-                ) : error || !data ? (
-                  <>
-                    <Heading size="md" color="red.400">
-                      😕 Something went wrong
-                    </Heading>
-                    <Text>{error?.message}</Text>
-                  </>
-                ) : (
-                  data.paginatedEvents.map((event) => (
-                    <EventCard key={event.id} event={event} />
-                  ))
-                )}
-
+              <Grid alignItems="flex-start">
+                <GridItem>
+                  <Heading>Upcoming events</Heading>
+                </GridItem>
+                <GridItem>
+                  <Flex>
+                    {loading ? (
+                      <Spinner />
+                    ) : error || !data ? (
+                      <>
+                        <Heading size="md" color="red.400">
+                          😕 Something went wrong
+                        </Heading>
+                        <Text>{error?.message}</Text>
+                      </>
+                    ) : (
+                      data.paginatedEvents.map((event) => (
+                        <EventCard key={event.id} event={event} />
+                      ))
+                    )}
+                  </Flex>
+                </GridItem>
                 {hasMore ? (
                   <Button onClick={onLoadMore}>Click for more</Button>
                 ) : (
                   <Heading size="md">No more</Heading>
                 )}
-              </VStack>
+              </Grid>
             </GridItem>
             <GridItem marginLeft={2}>
               <VStack align="flex-start">

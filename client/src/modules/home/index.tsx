@@ -6,37 +6,21 @@ import {
   Flex,
   Grid,
   GridItem,
-  Button,
-  useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
 import { ChapterCard } from 'components/ChapterCard';
 import { EventCard } from 'components/EventCard';
+import { Pagination } from 'modules/events/pages/eventsPage';
 import { useHomeQuery } from 'generated/graphql';
 
 const Home = () => {
-  const [hasMore, setHasMore] = useState(true);
-  const { loading, error, data, fetchMore } = useHomeQuery({
-    variables: { offset: 0, limit: 2 },
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 2;
+  const [hasMore] = useState(true);
+  const { loading, error, data } = useHomeQuery({
+    variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
   });
-
-  const toast = useToast();
-  const onLoadMore = async () => {
-    try {
-      const res = await fetchMore({
-        variables: { offset: data?.paginatedEvents.length },
-      });
-      setHasMore(res.data.paginatedEvents.length > 0);
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({ title: err.message || err.name });
-      } else {
-        toast({ title: 'An unexpected error occurred' });
-        console.log(err);
-      }
-    }
-  };
 
   return (
     <>
@@ -117,7 +101,12 @@ const Home = () => {
                   </Flex>
                 </GridItem>
                 {hasMore ? (
-                  <Button onClick={onLoadMore}>Click for more</Button>
+                  <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    pageSize={pageSize}
+                    records={data.paginatedEvents.length}
+                  />
                 ) : (
                   <Heading size="md">No more</Heading>
                 )}

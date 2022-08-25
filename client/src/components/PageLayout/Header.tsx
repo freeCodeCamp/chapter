@@ -112,11 +112,11 @@ export const Header: React.FC = () => {
             <MenuList>
               <Flex className={styles.header} flexDirection={'column'}>
                 <NextLink passHref href="/chapters">
-                  <MenuItem as="a">Chapter</MenuItem>
+                  <MenuItem as="a">Chapters</MenuItem>
                 </NextLink>
 
                 <NextLink passHref href="/events">
-                  <MenuItem as="a">Events feed</MenuItem>
+                  <MenuItem as="a">Events</MenuItem>
                 </NextLink>
 
                 {user ? (

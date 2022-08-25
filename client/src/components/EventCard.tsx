@@ -107,7 +107,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             as={'p'}
           >
             <Link href={`/chapters/${event.chapter.id}`}>
-              Organizers: {event.chapter.name}
+              Chapter: {event.chapter.name}
             </Link>
           </GridItem>
           <GridItem

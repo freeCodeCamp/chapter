@@ -11,6 +11,7 @@ import {
   ListItem,
   Avatar,
   useDisclosure,
+  Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
@@ -192,40 +193,72 @@ export const EventPage: NextPage = () => {
         borderRadius="md"
         objectFit="cover"
       />
-
-      <Heading as="h1">
-        {data.event.invite_only && <LockIcon />}
-        {data.event.name}
-      </Heading>
-      <Heading size="md">
+      <Flex alignItems={'center'}>
+        {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+        <Heading as="h1">{data.event.name}</Heading>
+      </Flex>
+      <Heading size="md" as={'h2'}>
         Chapter:{' '}
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
-      <VStack align="start">
-        {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}
-        {waitlist && <Heading>Waitlist:{waitlist.length}</Heading>}
-      </VStack>
+      <HStack align="start">
+        {rsvps && (
+          <Heading
+            as={'h3'}
+            fontSize={'md'}
+            fontWeight={'500'}
+            marginRight={'2'}
+          >
+            RSVPs: {rsvps.length}
+          </Heading>
+        )}
+        {waitlist && (
+          <Heading as={'h3'} fontSize={'md'} fontWeight={'500'}>
+            Waitlist: {waitlist.length}
+          </Heading>
+        )}
+      </HStack>
       {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button colorScheme="red" onClick={onCancelRsvp}>
+          <Button
+            colorScheme="red"
+            onClick={onCancelRsvp}
+            paddingInline={'2'}
+            paddingBlock={'1'}
+          >
             Cancel
           </Button>
         </HStack>
       ) : userRsvped === 'waitlist' ? (
         <HStack>
           {data.event.invite_only ? (
-            <Heading>Event owner will soon confirm your request</Heading>
+            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              Event owner will soon confirm your request
+            </Heading>
           ) : (
-            <Heading>You&lsquo;re on waitlist for this event</Heading>
+            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              You&lsquo;re on waitlist for this event
+            </Heading>
           )}
-          <Button colorScheme="red" onClick={onCancelRsvp}>
+          <Button
+            colorScheme="red"
+            onClick={onCancelRsvp}
+            paddingInline={'2'}
+            paddingBlock={'1'}
+          >
             Cancel
           </Button>
         </HStack>
       ) : (
-        <Button data-cy="rsvp-button" colorScheme="blue" onClick={checkOnRsvp}>
+        <Button
+          data-cy="rsvp-button"
+          colorScheme="blue"
+          onClick={checkOnRsvp}
+          paddingInline={'2'}
+          paddingBlock={'1'}
+        >
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}
@@ -233,15 +266,29 @@ export const EventPage: NextPage = () => {
         <HStack>
           {eventUser.subscribed ? (
             <>
-              <Heading>You are subscribed</Heading>
-              <Button colorScheme="orange" onClick={onUnsubscribeFromEvent}>
+              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+                You are subscribed
+              </Heading>
+              <Button
+                colorScheme="orange"
+                onClick={onUnsubscribeFromEvent}
+                paddingInline={'2'}
+                paddingBlock={'1'}
+              >
                 Unsubscribe
               </Button>
             </>
           ) : (
             <>
-              <Heading>Not subscribed</Heading>
-              <Button colorScheme="blue" onClick={onSubscribeToEvent}>
+              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+                Not subscribed
+              </Heading>
+              <Button
+                colorScheme="blue"
+                onClick={onSubscribeToEvent}
+                paddingInline={'2'}
+                paddingBlock={'1'}
+              >
                 Subscribe
               </Button>
             </>
@@ -254,7 +301,13 @@ export const EventPage: NextPage = () => {
       ) : (
         false
       )}
-      <Heading data-cy="rsvps-heading" size="md">
+      <Heading
+        data-cy="rsvps-heading"
+        size="md"
+        as={'h5'}
+        fontSize={'md'}
+        fontWeight={'400'}
+      >
         RSVPs:
       </Heading>
       <List>
@@ -270,7 +323,13 @@ export const EventPage: NextPage = () => {
 
       {!data.event.invite_only && (
         <>
-          <Heading data-cy="waitlist-heading" size="md">
+          <Heading
+            data-cy="waitlist-heading"
+            size="md"
+            as={'h5'}
+            fontSize={'md'}
+            fontWeight={'400'}
+          >
             Waitlist:
           </Heading>
           <List>

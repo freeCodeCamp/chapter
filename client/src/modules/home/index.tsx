@@ -38,52 +38,67 @@ const Home = () => {
   };
 
   return (
-    <Grid templateColumns="repeat(2, 1fr)" gap={10} mt="5">
-      <GridItem colSpan={{ base: 2, xl: 1 }}>
-        <VStack align="flex-start">
-          <Heading>Upcoming events</Heading>
-          {loading ? (
-            <Spinner />
-          ) : error || !data ? (
-            <>
-              <Heading size="md" color="red.400">
-                😕 Something went wrong
-              </Heading>
-              <Text>{error?.message}</Text>
-            </>
-          ) : (
-            data.paginatedEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))
-          )}
+    <>
+      <Grid width={'100%'} height={'50%'} margin={2}>
+        <Heading as="h1">
+          A self-hosting event management tool for non-profits
+        </Heading>
+      </Grid>
 
-          {hasMore ? (
-            <Button onClick={onLoadMore}>Click for more</Button>
-          ) : (
-            <Heading size="md">No more</Heading>
-          )}
-        </VStack>
-      </GridItem>
-      <GridItem colSpan={{ base: 2, xl: 1 }}>
-        <VStack align="flex-start">
-          <Heading>Chapters</Heading>
-          {loading ? (
-            <Spinner />
-          ) : error || !data ? (
-            <>
-              <Heading size="md" color="red.400">
-                😕 Something went wrong
-              </Heading>
-              <Text>{error?.message}</Text>
-            </>
-          ) : (
-            data.chapters.map((chapter) => (
-              <ChapterCard key={chapter.id} chapter={chapter} />
-            ))
-          )}
-        </VStack>
-      </GridItem>
-    </Grid>
+      <Grid
+        templateColumns="repeat(2, 1fr)"
+        gap={10}
+        mt="5"
+        background={'gray.85'}
+        color={'gray.00'}
+        width={'100vw'}
+      >
+        <GridItem colSpan={{ base: 2, xl: 1 }}>
+          <VStack align="flex-start">
+            <Heading>Upcoming events</Heading>
+            {loading ? (
+              <Spinner />
+            ) : error || !data ? (
+              <>
+                <Heading size="md" color="red.400">
+                  😕 Something went wrong
+                </Heading>
+                <Text>{error?.message}</Text>
+              </>
+            ) : (
+              data.paginatedEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))
+            )}
+
+            {hasMore ? (
+              <Button onClick={onLoadMore}>Click for more</Button>
+            ) : (
+              <Heading size="md">No more</Heading>
+            )}
+          </VStack>
+        </GridItem>
+        <GridItem colSpan={{ base: 2, xl: 1 }}>
+          <VStack align="flex-start">
+            <Heading>Chapters</Heading>
+            {loading ? (
+              <Spinner />
+            ) : error || !data ? (
+              <>
+                <Heading size="md" color="red.400">
+                  😕 Something went wrong
+                </Heading>
+                <Text>{error?.message}</Text>
+              </>
+            ) : (
+              data.chapters.map((chapter) => (
+                <ChapterCard key={chapter.id} chapter={chapter} />
+              ))
+            )}
+          </VStack>
+        </GridItem>
+      </Grid>
+    </>
   );
 };
 

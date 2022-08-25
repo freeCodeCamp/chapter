@@ -24,11 +24,11 @@ exports[`EventCard should render 1`] = `
             data-cy="event-link"
             href="/events/1"
           >
-            <h2
+            <h3
               class="chakra-heading css-0"
             >
               bar
-            </h2>
+            </h3>
           </a>
         </div>
         <div
@@ -40,19 +40,21 @@ exports[`EventCard should render 1`] = `
             Invite only
           </span>
         </div>
-        <div
+        <p
           class="css-0"
         >
           <a
             class="chakra-link css-0"
             href="/chapters/1"
           >
+            Chapter: 
             foo
           </a>
-        </div>
+        </p>
         <div
           class="css-0"
         >
+          Starting: 
           Thu, Jan 1 @ 00:00
         </div>
       </h4>
@@ -85,11 +87,11 @@ exports[`EventCard should render with tags 1`] = `
             data-cy="event-link"
             href="/events/1"
           >
-            <h2
+            <h3
               class="chakra-heading css-0"
             >
               bar
-            </h2>
+            </h3>
           </a>
         </div>
         <div
@@ -101,19 +103,21 @@ exports[`EventCard should render with tags 1`] = `
             Invite only
           </span>
         </div>
-        <div
+        <p
           class="css-0"
         >
           <a
             class="chakra-link css-0"
             href="/chapters/1"
           >
+            Chapter: 
             foo
           </a>
-        </div>
+        </p>
         <div
           class="css-0"
         >
+          Starting: 
           Thu, Jan 1 @ 00:00
         </div>
       </h4>

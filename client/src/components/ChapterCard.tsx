@@ -15,9 +15,12 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
+      width={'full'}
+      minW={'20em'}
+      gap={'2'}
     >
-      <Grid minW={'25em'} maxW={'35em'} templateColumns="repeat(2, 1fr)">
-        <GridItem colSpan={3} paddingInline={'1em'} paddingBlock={'.5em'}>
+      <Grid templateColumns="repeat(2, 1fr)" gap={'3'} marginRight={'1em'}>
+        <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
             <Flex justifyContent={'space-between'}>
               <Heading
@@ -41,29 +44,40 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginInline={'1em'}
           marginBlock={'.5em'}
         >
-          <Text mt="2" as="p" fontWeight={400} fontSize={'md'}>
+          <Text mt="2" as="p" fontWeight={400} fontSize={['sm', 'md', 'lg']}>
             {chapter.description}
           </Text>
         </GridItem>
+        <GridItem colSpan={3}>
+          {chapter.events.map(({ id, name, start_at }) => (
+            <Link key={id} href={`/events/${id}`} _hover={{}}>
+              <Flex
+                direction={['column', 'column', 'row']}
+                paddingInline={'1em'}
+                paddingBlock={'.5em'}
+                justifyContent={'space-between'}
+              >
+                <Text
+                  mt="2"
+                  fontWeight={600}
+                  fontSize={['sm', 'md', 'lg']}
+                  width={['10em', '15em']}
+                >
+                  {name}
+                </Text>
+                <Text
+                  mt="2"
+                  fontWeight={400}
+                  fontSize={['sm', 'md', 'lg']}
+                  opacity={'.8'}
+                >
+                  {start_at}
+                </Text>
+              </Flex>
+            </Link>
+          ))}
+        </GridItem>
       </Grid>
-      <GridItem colSpan={3}>
-        {chapter.events.map(({ id, name, start_at }) => (
-          <Link key={id} href={`/events/${id}`} _hover={{}}>
-            <Flex
-              paddingInline={'1em'}
-              paddingBlock={'.5em'}
-              justifyContent={'space-between'}
-            >
-              <Text mt="2" fontWeight={600} fontSize={'md'} maxW={'10em'}>
-                {name}
-              </Text>
-              <Text mt="2" fontWeight={600} fontSize={'md'}>
-                {start_at}
-              </Text>
-            </Flex>
-          </Link>
-        ))}
-      </GridItem>
     </Grid>
   );
 };

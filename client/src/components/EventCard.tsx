@@ -77,15 +77,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           as="h4"
           lineHeight="tight"
           gridTemplateColumns={'repeat(3, 1fr)'}
-          templateAreas={[
-            `"eventname eventname eventname"
+          templateAreas={`
+          "eventname eventname eventname"
           "chaptername chaptername chaptername"
           "eventstart eventstart eventstart"
-          "metatag metatag metatag"`,
-            `"eventname eventname metatag"
-          "chaptername chaptername chaptername"
-          "eventstart eventstart eventstart"`,
-          ]}
+          "metatag metatag metatag"
+          `}
         >
           <GridItem area={'eventname'}>
             <Link data-cy="event-link" href={`/events/${event.id}`}>

@@ -21,11 +21,4 @@ const chapterStyleVaribles = {
   },
 };
 
-const breakpoints = {
-  sm: '20em',
-  md: '35em',
-  lg: '45em',
-  xl: '62em',
-};
-
-export const chapterTheme = extendTheme(chapterStyleVaribles, { breakpoints });
+export const chapterTheme = extendTheme(chapterStyleVaribles);

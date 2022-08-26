@@ -24,48 +24,49 @@ const Home = () => {
   return (
     <>
       <Grid>
-        <GridItem width={'100%'} height={'50%'}>
-          <Grid
-            templateColumns={['1fr', '1fr', '1fr 2fr']}
-            gap={'2'}
-            background={'gray.05'}
-            color={'gray.90'}
-            placeItems="center"
-            minH={'30vh'}
-            height={'fit-content'}
-            maxH={'60vh'}
-            padding={2}
+        <Flex
+          gap={'2'}
+          minH={'15vh'}
+          maxH={'60vh'}
+          width={'100%'}
+          background={'gray.05'}
+          color={'gray.90'}
+          padding={2}
+          direction={'column'}
+          alignItems={'center'}
+        >
+          <Heading
+            as="h1"
+            fontWeight={800}
+            marginBlock={'3'}
+            width={{ base: '80vw', lg: '60vw', xl: '40vw' }}
           >
-            <GridItem marginInline={3}>
-              <Heading as="h1" fontWeight={800}>
-                A self-hosting event management tool for non-profits
-              </Heading>
-            </GridItem>
-            <GridItem fontWeight="500">
-              <Text
-                marginInline={3}
-                fontSize={['md', 'lg', 'xl']}
-                letterSpacing={'wide'}
-                as="p"
-              >
-                After several years of being dissatisfied with existing group
-                event tools (Meetup, Facebook events) we decided to build our
-                own.
-              </Text>
-              <Text
-                mt={3}
-                marginInline={3}
-                letterSpacing={'wide'}
-                fontSize={['md', 'lg', 'xl']}
-                as="p"
-              >
-                This will be a self-hosted Docker container deployed to the
-                cloud with a one-click and then configured by the <i>owner</i>.
-                No coding required.
-              </Text>
-            </GridItem>
-          </Grid>
-        </GridItem>
+            A self-hosting event management tool for non-profits
+          </Heading>
+          <Text
+            width={{ base: '80vw', lg: '60vw', xl: '40vw' }}
+            marginInline={3}
+            fontSize={['md', 'lg', 'xl']}
+            letterSpacing={'wide'}
+            as="p"
+          >
+            After several years of being dissatisfied with existing group event
+            tools we decided to build our own.
+          </Text>
+          <Text
+            width={{ base: '80vw', lg: '60vw', xl: '40vw' }}
+            mt={3}
+            marginInline={3}
+            letterSpacing={'wide'}
+            fontSize={['md', 'lg', 'xl']}
+            paddingBlock={3}
+            as="p"
+          >
+            This will be a self-hosted Docker container deployed to the cloud
+            with a one-click and then configured by the <i>owner</i>. No coding
+            required.
+          </Text>
+        </Flex>
 
         <GridItem>
           <Grid

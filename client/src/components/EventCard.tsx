@@ -86,21 +86,28 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         >
           <GridItem area={'eventname'}>
             <Link data-cy="event-link" href={`/events/${event.id}`}>
-              <Heading mt={1} size="sm">
+              <Heading
+                mt={1}
+                size="sm"
+                as={'h3'}
+                fontSize={'xl'}
+                fontWeight={700}
+              >
                 {event.name}
               </Heading>
             </Link>
           </GridItem>
           <GridItem area={'metatag'}>{metaTag}</GridItem>
           <GridItem
-            fontSize={'xl'}
-            fontWeight={700}
+            fontSize={'md'}
+            fontWeight={500}
             fontFamily={'body'}
             area={'chaptername'}
             marginBlock={'2'}
+            as={'p'}
           >
             <Link href={`/chapters/${event.chapter.id}`}>
-              {event.chapter.name}
+              Chapter: {event.chapter.name}
             </Link>
           </GridItem>
           <GridItem
@@ -108,7 +115,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             area={'eventstart'}
             marginBottom={['1', '2']}
           >
-            {formatDate(event.start_at)}
+            Starting: {formatDate(event.start_at)}
           </GridItem>
         </Grid>
       </Box>

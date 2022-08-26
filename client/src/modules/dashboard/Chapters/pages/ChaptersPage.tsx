@@ -44,7 +44,7 @@ export const ChaptersPage: NextPage = () => {
           </>
         ) : (
           <>
-            <Box display={{ base: 'none', lg: 'block' }}>
+            <Box display={{ base: 'none', lg: 'block' }} width="100%">
               <DataTable
                 data={chapterData.chapters}
                 keys={['name', 'actions'] as const}
@@ -58,7 +58,7 @@ export const ChaptersPage: NextPage = () => {
                   actions: (chapter) => (
                     <HStack>
                       <LinkButton
-                        colorScheme="green"
+                        colorScheme="blue"
                         size="xs"
                         href={`/dashboard/chapters/${chapter.id}/edit`}
                       >
@@ -83,48 +83,70 @@ export const ChaptersPage: NextPage = () => {
             </Box>
             <Box display={{ base: 'block', lg: 'none' }}>
               <Box>
-                {chapterData.chapters.map(({ id }, index) => (
+                {chapterData.chapters.map(({ id, name }, index) => (
                   <Flex key={id}>
                     <DataTable
-                      data={chapterData.chapters[index]}
-                      keys={['name', 'actions'] as const}
+                      data={[chapterData.chapters[index]]}
+                      keys={['type', 'values'] as const}
                       tableProps={{
                         table: { 'aria-labelledby': 'page-heading' },
                       }}
                       mapper={{
-                        name: () => (
-                          <LinkButton
-                            href={`/dashboard/chapters/${id}`}
-                          ></LinkButton>
+                        type: () => (
+                          <>
+                            <Heading
+                              as="h4"
+                              fontSize={'md'}
+                              marginBlock={'2em'}
+                            >
+                              Name
+                            </Heading>
+                            <Heading
+                              as="h4"
+                              fontSize={'md'}
+                              marginBlock={'1.5em'}
+                            >
+                              Action
+                            </Heading>
+                          </>
                         ),
-                        actions: () => (
-                          <HStack>
+                        values: () => (
+                          <VStack>
                             <LinkButton
-                              colorScheme="green"
-                              size="xs"
-                              href={`/dashboard/chapters/${id}/edit`}
+                              href={`/dashboard/chapters/${id}`}
+                              marginBottom={'.5em'}
+                              marginLeft={'-1em'}
+                              width="100%"
                             >
-                              Edit
+                              {name}
                             </LinkButton>
-                            <LinkButton
-                              size="xs"
-                              href={`/dashboard/chapters/${id}/new-event`}
-                            >
-                              Add Event
-                            </LinkButton>
-                            <LinkButton
-                              size="xs"
-                              href={`/dashboard/chapters/${id}/new-venue`}
-                            >
-                              Add Venue
-                            </LinkButton>
-                          </HStack>
+                            <HStack spacing={1} marginLeft={'-1em'}>
+                              <LinkButton
+                                size="xs"
+                                href={`/dashboard/chapters/${id}/new-event`}
+                              >
+                                Add Event
+                              </LinkButton>
+                              <LinkButton
+                                size="xs"
+                                href={`/dashboard/chapters/${id}/new-venue`}
+                              >
+                                Add Venue
+                              </LinkButton>
+                              <LinkButton
+                                colorScheme="blue"
+                                size="xs"
+                                href={`/dashboard/chapters/${id}/edit`}
+                              >
+                                Edit
+                              </LinkButton>
+                            </HStack>
+                          </VStack>
                         ),
                       }}
                     />
                   </Flex>
                 ))}
-                )
               </Box>
             </Box>
           </>

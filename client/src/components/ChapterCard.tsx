@@ -72,7 +72,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 justifyContent={'space-between'}
               >
                 <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                  {index + 1}. Event: {name}
+                  {index + 1}. {name}
                 </Text>
               </Flex>
             </Link>

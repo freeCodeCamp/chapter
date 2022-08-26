@@ -33,7 +33,7 @@
     "@prisma/client": "4.2.1",
     "@sendgrid/mail": "7.7.0",
     "@types/cookie-session": "2.0.44",
-    "apollo-server-express": "3.10.1",
+    "apollo-server-express": "3.10.2",
     "calendar-link": "2.2.0",
     "class-validator": "0.13.2",
     "cookie-session": "2.0.0",

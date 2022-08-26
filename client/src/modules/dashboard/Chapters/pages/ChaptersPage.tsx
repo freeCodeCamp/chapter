@@ -83,15 +83,43 @@ export const ChaptersPage: NextPage = () => {
             </Box>
             <Box display={{ base: 'block', lg: 'none' }}>
               <Box>
-                {chapterData.chapters.map((singleChapter) => (
-                  <Flex key={singleChapter}>
+                {chapterData.chapters.map(({ id }, index) => (
+                  <Flex key={id}>
                     <DataTable
-                      data={singleChapter}
-                      keys={
-                        ['singleChapter.name', 'singleChapter.actions'] as const
-                      }
+                      data={chapterData.chapters[index]}
+                      keys={['name', 'actions'] as const}
                       tableProps={{
                         table: { 'aria-labelledby': 'page-heading' },
+                      }}
+                      mapper={{
+                        name: () => (
+                          <LinkButton
+                            href={`/dashboard/chapters/${id}`}
+                          ></LinkButton>
+                        ),
+                        actions: () => (
+                          <HStack>
+                            <LinkButton
+                              colorScheme="green"
+                              size="xs"
+                              href={`/dashboard/chapters/${id}/edit`}
+                            >
+                              Edit
+                            </LinkButton>
+                            <LinkButton
+                              size="xs"
+                              href={`/dashboard/chapters/${id}/new-event`}
+                            >
+                              Add Event
+                            </LinkButton>
+                            <LinkButton
+                              size="xs"
+                              href={`/dashboard/chapters/${id}/new-venue`}
+                            >
+                              Add Venue
+                            </LinkButton>
+                          </HStack>
+                        ),
                       }}
                     />
                   </Flex>

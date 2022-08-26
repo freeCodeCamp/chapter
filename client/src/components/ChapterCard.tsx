@@ -19,7 +19,12 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       minW={'20em'}
       gap={'2'}
     >
-      <Grid templateColumns="repeat(2, 1fr)" gap={'3'} marginRight={'1em'}>
+      <Grid
+        templateColumns="repeat(2, 1fr)"
+        gap={'3'}
+        marginRight={'1em'}
+        marginBlock={'.5em'}
+      >
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
             <Flex justifyContent={'space-between'}>
@@ -48,8 +53,17 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             {chapter.description}
           </Text>
         </GridItem>
-        <GridItem colSpan={3}>
-          {chapter.events.map(({ id, name, start_at }) => (
+        <GridItem colSpan={2}>
+          <Heading
+            as="h3"
+            fontSize={'md'}
+            fontWeight={'500'}
+            paddingInline={'1em'}
+            paddingBlock={'.5em'}
+          >
+            Organized Events
+          </Heading>
+          {chapter.events.map(({ id, name }, index) => (
             <Link key={id} href={`/events/${id}`} _hover={{}}>
               <Flex
                 direction={['column', 'column', 'row']}
@@ -57,21 +71,8 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 paddingBlock={'.5em'}
                 justifyContent={'space-between'}
               >
-                <Text
-                  mt="2"
-                  fontWeight={600}
-                  fontSize={['sm', 'md', 'lg']}
-                  width={['10em', '15em']}
-                >
-                  {name}
-                </Text>
-                <Text
-                  mt="2"
-                  fontWeight={400}
-                  fontSize={['sm', 'md', 'lg']}
-                  opacity={'.8'}
-                >
-                  {start_at}
+                <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                  {index + 1}. Event: {name}
                 </Text>
               </Flex>
             </Link>

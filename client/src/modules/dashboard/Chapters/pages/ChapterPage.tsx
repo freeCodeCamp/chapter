@@ -28,7 +28,7 @@ export const ChapterPage: NextPage = () => {
   });
 
   const clickDelete = () => {
-    deleteChapter(data?.chapter);
+    deleteChapter({ variables: { chapterId } });
   };
 
   if (loading || error || !data?.chapter) {

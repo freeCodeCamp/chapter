@@ -28,6 +28,14 @@ export const updateChapter = gql`
   }
 `;
 
+export const deleteChapter = gql`
+  mutation deleteChapter($chapterId: Int!) {
+    deleteChapter(id: $chapterId) {
+      id
+    }
+  }
+`;
+
 export const banUser = gql`
   mutation banUser($chapterId: Int!, $userId: Int!) {
     banUser(chapterId: $chapterId, userId: $userId) {

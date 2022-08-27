@@ -4,7 +4,6 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import React from 'react';
 
-import { useRouter } from 'next/router';
 import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
@@ -21,10 +20,8 @@ export const ChaptersPage: NextPage = () => {
     Permission.ChapterCreate,
   );
 
-  const router = useRouter;
-
   return (
-    <Layout key={router.asPath}>
+    <Layout>
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading data-cy="chapter-dash-heading" id="page-heading">

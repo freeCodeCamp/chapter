@@ -29,6 +29,7 @@ export const ChapterPage: NextPage = () => {
 
   const clickDelete = () => {
     deleteChapter({ variables: { chapterId } });
+    window.location.href = '/dashboard/chapters';
   };
 
   if (loading || error || !data?.chapter) {

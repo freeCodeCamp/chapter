@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Button,
   Flex,
   Heading,
@@ -145,65 +146,90 @@ export const ChapterUsersPage: NextPage = () => {
             </Text>
           </>
         ) : (
-          <DataTable
-            data={data.chapter.chapter_users}
-            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            keys={['name', 'email', 'role', 'ops'] as const}
-            mapper={{
-              name: ({ user }) => (
-                <HStack>
-                  <Text>{user.name}</Text>
-                  {bans.has(user.id) && (
-                    <Badge data-cy="isBanned" colorScheme="red">
-                      Banned
-                    </Badge>
+          <>
+            <Box display={{ base: 'none', lg: 'block' }}>
+              <DataTable
+                data={data.chapter.chapter_users}
+                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                keys={['name', 'email', 'role', 'ops'] as const}
+                mapper={{
+                  name: ({ user }) => (
+                    <HStack>
+                      <Text>{user.name}</Text>
+                      {bans.has(user.id) && (
+                        <Badge data-cy="isBanned" colorScheme="red">
+                          Banned
+                        </Badge>
+                      )}
+                    </HStack>
+                  ),
+                  email: ({ user }) => user.email,
+                  ops: ({ canBeBanned, user, chapter_role }) => (
+                    <HStack>
+                      <Button
+                        data-cy="changeRole"
+                        colorScheme="blue"
+                        size="xs"
+                        onClick={() =>
+                          changeRole({
+                            roleId: chapter_role.id,
+                            userId: user.id,
+                            userName: user.name,
+                          })
+                        }
+                      >
+                        Change
+                      </Button>
+                      {canBeBanned &&
+                        (bans.has(user.id) ? (
+                          <Button
+                            data-cy="unbanUser"
+                            colorScheme="purple"
+                            size="xs"
+                            onClick={() => onUnban(user)}
+                          >
+                            Unban
+                          </Button>
+                        ) : (
+                          <Button
+                            data-cy="banUser"
+                            colorScheme="red"
+                            size="xs"
+                            onClick={() => onBan(user)}
+                          >
+                            Ban
+                          </Button>
+                        ))}
+                    </HStack>
+                  ),
+                  role: ({ chapter_role: { name } }) => (
+                    <Text data-cy="role">{name}</Text>
+                  ),
+                }}
+              />
+            </Box>
+            <Box display={{ base: 'block', lg: 'none' }}>
+              {data.chapter.chapter_users.map((_, index) => (
+                <Flex key={index}>
+                  {data.chapter ? (
+                    <DataTable
+                      data={[data.chapter.chapter_users[index]]}
+                      keys={['type', 'values'] as const}
+                      tableProps={{
+                        table: { 'aria-labelledby': 'page-heading' },
+                      }}
+                      mapper={{
+                        type: () => <></>,
+                        values: () => <VStack></VStack>,
+                      }}
+                    />
+                  ) : (
+                    <Text></Text>
                   )}
-                </HStack>
-              ),
-              email: ({ user }) => user.email,
-              ops: ({ canBeBanned, user, chapter_role }) => (
-                <HStack>
-                  <Button
-                    data-cy="changeRole"
-                    colorScheme="blue"
-                    size="xs"
-                    onClick={() =>
-                      changeRole({
-                        roleId: chapter_role.id,
-                        userId: user.id,
-                        userName: user.name,
-                      })
-                    }
-                  >
-                    Change
-                  </Button>
-                  {canBeBanned &&
-                    (bans.has(user.id) ? (
-                      <Button
-                        data-cy="unbanUser"
-                        colorScheme="purple"
-                        size="xs"
-                        onClick={() => onUnban(user)}
-                      >
-                        Unban
-                      </Button>
-                    ) : (
-                      <Button
-                        data-cy="banUser"
-                        colorScheme="red"
-                        size="xs"
-                        onClick={() => onBan(user)}
-                      >
-                        Ban
-                      </Button>
-                    ))}
-                </HStack>
-              ),
-              role: ({ chapter_role: { name } }) => (
-                <Text data-cy="role">{name}</Text>
-              ),
-            }}
-          />
+                </Flex>
+              ))}
+            </Box>
+          </>
         )}
       </VStack>
     </Layout>

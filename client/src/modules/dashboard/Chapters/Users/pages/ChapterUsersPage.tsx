@@ -208,26 +208,68 @@ export const ChapterUsersPage: NextPage = () => {
                 }}
               />
             </Box>
+            {console.log(data.chapter.chapter_users)}
             <Box display={{ base: 'block', lg: 'none' }}>
-              {data.chapter.chapter_users.map((_, index) => (
-                <Flex key={index}>
-                  {data.chapter ? (
-                    <DataTable
-                      data={[data.chapter.chapter_users[index]]}
-                      keys={['type', 'values'] as const}
-                      tableProps={{
-                        table: { 'aria-labelledby': 'page-heading' },
-                      }}
-                      mapper={{
-                        type: () => <></>,
-                        values: () => <VStack></VStack>,
-                      }}
-                    />
-                  ) : (
-                    <Text></Text>
-                  )}
-                </Flex>
-              ))}
+              {data.chapter.chapter_users.map(
+                ({ canBeBanned, user, chapter_role }, index) => (
+                  <Flex key={index}>
+                    {data.chapter ? (
+                      <DataTable
+                        data={[data.chapter.chapter_users[index]]}
+                        keys={['type', 'values'] as const}
+                        tableProps={{
+                          table: { 'aria-labelledby': 'page-heading' },
+                        }}
+                        mapper={{
+                          type: () => (
+                            <>
+                              <Text>Name</Text>
+                              <Text>Email</Text>
+                              <Text>Ops</Text>
+                              <Text>Role</Text>
+                            </>
+                          ),
+                          values: () => (
+                            <VStack>
+                              <VStack>
+                                <Text>{user.name}</Text>
+                                {bans.has(user.id) && (
+                                  <Badge data-cy="isBanned" colorScheme="red">
+                                    Banned
+                                  </Badge>
+                                )}
+                                {canBeBanned &&
+                                  (bans.has(user.id) ? (
+                                    <Button
+                                      data-cy="unbanUser"
+                                      colorScheme="purple"
+                                      size="xs"
+                                      onClick={() => onUnban(user)}
+                                    >
+                                      Unban
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      data-cy="banUser"
+                                      colorScheme="red"
+                                      size="xs"
+                                      onClick={() => onBan(user)}
+                                    >
+                                      Ban
+                                    </Button>
+                                  ))}
+                                <Text data-cy="role">{chapter_role.name}</Text>
+                              </VStack>
+                            </VStack>
+                          ),
+                        }}
+                      />
+                    ) : (
+                      <Text></Text>
+                    )}
+                  </Flex>
+                ),
+              )}
             </Box>
           </>
         )}

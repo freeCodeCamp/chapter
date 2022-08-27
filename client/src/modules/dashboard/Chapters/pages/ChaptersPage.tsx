@@ -117,12 +117,14 @@ export const ChaptersPage: NextPage = () => {
                           </LinkButton>
                           <HStack spacing={1} marginLeft={'-1em'}>
                             <LinkButton
+                              colorScheme="blue"
                               size="xs"
                               href={`/dashboard/chapters/${id}/new-event`}
                             >
                               Add Event
                             </LinkButton>
                             <LinkButton
+                              colorScheme="blue"
                               size="xs"
                               href={`/dashboard/chapters/${id}/new-venue`}
                             >

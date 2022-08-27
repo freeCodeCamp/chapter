@@ -212,7 +212,7 @@ export const ChapterUsersPage: NextPage = () => {
             <Box display={{ base: 'block', lg: 'none' }}>
               {data.chapter.chapter_users.map(
                 ({ canBeBanned, user, chapter_role }, index) => (
-                  <Flex key={index}>
+                  <Flex key={index} marginBlock={'2em'}>
                     {data.chapter ? (
                       <DataTable
                         data={[data.chapter.chapter_users[index]]}
@@ -222,22 +222,39 @@ export const ChapterUsersPage: NextPage = () => {
                         }}
                         mapper={{
                           type: () => (
-                            <>
+                            <VStack spacing={3} fontWeight={500}>
                               <Text>Name</Text>
                               <Text>Email</Text>
                               <Text>Ops</Text>
                               <Text>Role</Text>
-                            </>
+                            </VStack>
                           ),
                           values: () => (
-                            <VStack>
-                              <VStack>
+                            <VStack spacing={3}>
+                              <HStack>
                                 <Text>{user.name}</Text>
                                 {bans.has(user.id) && (
                                   <Badge data-cy="isBanned" colorScheme="red">
                                     Banned
                                   </Badge>
                                 )}
+                              </HStack>
+                              <Text>{user.email}</Text>
+                              <HStack>
+                                <Button
+                                  data-cy="changeRole"
+                                  colorScheme="blue"
+                                  size="xs"
+                                  onClick={() =>
+                                    changeRole({
+                                      roleId: chapter_role.id,
+                                      userId: user.id,
+                                      userName: user.name,
+                                    })
+                                  }
+                                >
+                                  Change
+                                </Button>
                                 {canBeBanned &&
                                   (bans.has(user.id) ? (
                                     <Button
@@ -258,14 +275,14 @@ export const ChapterUsersPage: NextPage = () => {
                                       Ban
                                     </Button>
                                   ))}
-                                <Text data-cy="role">{chapter_role.name}</Text>
-                              </VStack>
+                              </HStack>
+                              <Text data-cy="role">{chapter_role.name}</Text>
                             </VStack>
                           ),
                         }}
                       />
                     ) : (
-                      <Text></Text>
+                      <Text>PlaceHolder for inviting users</Text>
                     )}
                   </Flex>
                 ),

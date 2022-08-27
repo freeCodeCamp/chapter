@@ -8,7 +8,10 @@ import { Button, useDisclosure, AlertDialog } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import { SettingAlertDialog } from '../../../../components/SettingAlert';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useChapterQuery } from '../../../../generated/graphql';
+import {
+  useChapterQuery,
+  useDeleteChapterMutation,
+} from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
@@ -18,15 +21,15 @@ export const ChapterPage: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alertDialogFocusElement = useRef(null);
 
-  // const [deleteChapter] = useDeleteChapterMutation({
-  //   refetchQueries: [
-  //     { query: useChapterQuery, variables: { chapterId } },
-  //   ],
-  // });
+  const [deleteChapter] = useDeleteChapterMutation();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });
+
+  const clickDelete = () => {
+    deleteChapter(data?.chapter);
+  };
 
   if (loading || error || !data?.chapter) {
     return (
@@ -115,7 +118,9 @@ export const ChapterPage: NextPage = () => {
                   <Button onClick={onClose} marginInline={'2em'}>
                     Cancel
                   </Button>
-                  <Button colorScheme="red">Delete</Button>
+                  <Button colorScheme="red" onClick={clickDelete}>
+                    Delete
+                  </Button>
                 </SettingAlertDialog>
               </AlertDialog>
             </TabPanel>

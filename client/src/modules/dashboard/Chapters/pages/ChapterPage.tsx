@@ -3,6 +3,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import { Button, useDisclosure, AlertDialog } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
@@ -20,6 +21,7 @@ export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('id');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alertDialogFocusElement = useRef(null);
+  const router = useRouter();
 
   const [deleteChapter] = useDeleteChapterMutation();
 
@@ -29,7 +31,7 @@ export const ChapterPage: NextPage = () => {
 
   const clickDelete = () => {
     deleteChapter({ variables: { chapterId } });
-    window.location.href = '/dashboard/chapters';
+    router.push('/dashboard/chapters');
   };
 
   if (loading || error || !data?.chapter) {

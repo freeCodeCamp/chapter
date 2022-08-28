@@ -78,7 +78,7 @@ export const UsersPage: NextPage = () => {
           </>
         ) : (
           <Box width={'100%'}>
-            <Box>
+            <Box display={{ base: 'none', lg: 'block' }}>
               <DataTable
                 data={data.users}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
@@ -108,7 +108,7 @@ export const UsersPage: NextPage = () => {
               />
             </Box>
 
-            <Box>
+            <Box display={{ base: 'block', lg: 'none' }}>
               {data.users.map(({ name, id, instance_role }, index) => (
                 <DataTable
                   key={id}
@@ -117,7 +117,7 @@ export const UsersPage: NextPage = () => {
                   keys={['types', 'values'] as const}
                   mapper={{
                     types: () => (
-                      <VStack>
+                      <VStack fontWeight={'500'}>
                         <Text>Name</Text>
                         <Text>Role</Text>
                         <Text>Action</Text>

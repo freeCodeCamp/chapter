@@ -139,35 +139,42 @@ export const EventPage: NextPage = () => {
             : [];
           return (
             <Box key={title.toLowerCase()} data-cy={title.toLowerCase()}>
-              <DataTable
-                title={`${title}: ${users.length}`}
-                data={users}
-                keys={['user', 'role', 'ops'] as const}
-                emptyText="No users"
-                mapper={{
-                  user: ({ user }) => (
-                    <Text data-cy="username">{user.name}</Text>
-                  ),
-                  ops: ({ user }) => (
-                    <HStack>
-                      {ops.map(({ title, onClick, colorScheme }) => (
-                        <Button
-                          key={title.toLowerCase()}
-                          data-cy={title.toLowerCase()}
-                          size="xs"
-                          colorScheme={colorScheme}
-                          onClick={onClick({ eventId, userId: user.id })}
-                        >
-                          {title}
-                        </Button>
-                      ))}
-                    </HStack>
-                  ),
-                  role: ({ event_role }) => (
-                    <Text data-cy="role">{event_role.name}</Text>
-                  ),
-                }}
-              />
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <DataTable
+                  title={`${title}: ${users.length}`}
+                  data={users}
+                  keys={['user', 'role', 'ops'] as const}
+                  emptyText="No users"
+                  mapper={{
+                    user: ({ user }) => (
+                      <Text data-cy="username">{user.name}</Text>
+                    ),
+                    ops: ({ user }) => (
+                      <HStack>
+                        {ops.map(({ title, onClick, colorScheme }) => (
+                          <Button
+                            key={title.toLowerCase()}
+                            data-cy={title.toLowerCase()}
+                            size="xs"
+                            colorScheme={colorScheme}
+                            onClick={onClick({ eventId, userId: user.id })}
+                          >
+                            {title}
+                          </Button>
+                        ))}
+                      </HStack>
+                    ),
+                    role: ({ event_role }) => (
+                      <Text data-cy="role">{event_role.name}</Text>
+                    ),
+                  }}
+                />
+              </Box>
+              <Box display={{ base: 'block', lg: 'none' }}>
+                {users.map((_, index) => (
+                  <HStack key={index}>hello</HStack>
+                ))}
+              </Box>
             </Box>
           );
         })}

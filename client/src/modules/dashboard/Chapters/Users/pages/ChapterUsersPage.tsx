@@ -208,7 +208,6 @@ export const ChapterUsersPage: NextPage = () => {
                 }}
               />
             </Box>
-            {console.log(data.chapter.chapter_users)}
             <Box display={{ base: 'block', lg: 'none' }}>
               {data.chapter.chapter_users.map(
                 ({ canBeBanned, user, chapter_role }, index) => (

@@ -65,12 +65,14 @@ export const ChaptersPage: NextPage = () => {
                         Edit
                       </LinkButton>
                       <LinkButton
+                        colorScheme="blue"
                         size="xs"
                         href={`/dashboard/chapters/${chapter.id}/new-event`}
                       >
                         Add Event
                       </LinkButton>
                       <LinkButton
+                        colorScheme="blue"
                         size="xs"
                         href={`/dashboard/chapters/${chapter.id}/new-venue`}
                       >

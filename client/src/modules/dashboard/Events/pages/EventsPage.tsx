@@ -131,7 +131,7 @@ export const EventsPage: NextPage = () => {
                   index,
                 ) => (
                   <DataTable
-                    key={index}
+                    key={id}
                     tableProps={{
                       table: { 'aria-labelledby': 'page-heading' },
                     }}

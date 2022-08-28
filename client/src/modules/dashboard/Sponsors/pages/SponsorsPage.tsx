@@ -1,4 +1,4 @@
-import { VStack, Flex, Heading, Text } from '@chakra-ui/react';
+import { VStack, Flex, Heading, Text, Box } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -31,29 +31,72 @@ export const SponsorsPage: NextPage = () => {
               </Text>
             </>
           ) : (
-            <DataTable
-              tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-              data={data.sponsors}
-              keys={['name', 'type', 'website', 'actions'] as const}
-              mapper={{
-                name: (sponsor) => (
-                  <LinkButton href={`/dashboard/sponsors/${sponsor.id}`}>
-                    {sponsor.name}
-                  </LinkButton>
-                ),
-                type: (sponsor) => sponsor.type,
-                website: (sponsor) => sponsor.website,
-                actions: (sponsor) => (
-                  <LinkButton
-                    colorScheme="green"
-                    size="xs"
-                    href={`/dashboard/sponsors/${sponsor.id}/edit`}
-                  >
-                    Edit
-                  </LinkButton>
-                ),
-              }}
-            />
+            <Box width={'100%'}>
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <DataTable
+                  tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                  data={data.sponsors}
+                  keys={['name', 'type', 'website', 'actions'] as const}
+                  mapper={{
+                    name: (sponsor) => (
+                      <LinkButton href={`/dashboard/sponsors/${sponsor.id}`}>
+                        {sponsor.name}
+                      </LinkButton>
+                    ),
+                    type: (sponsor) => sponsor.type,
+                    website: (sponsor) => sponsor.website,
+                    actions: (sponsor) => (
+                      <LinkButton
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/sponsors/${sponsor.id}/edit`}
+                      >
+                        Edit
+                      </LinkButton>
+                    ),
+                  }}
+                />
+              </Box>
+
+              <Box display={{ base: 'block', lg: 'none' }}>
+                {data.sponsors.map(({ name, type, website, id }, index) => (
+                  <DataTable
+                    key={id}
+                    tableProps={{
+                      table: { 'aria-labelledby': 'page-heading' },
+                    }}
+                    data={[data.sponsors[index]]}
+                    keys={['types', 'value'] as const}
+                    mapper={{
+                      types: () => (
+                        <VStack>
+                          <Text>Name</Text>
+                          <Text>Type</Text>
+                          <Text>Website</Text>
+                          <Text>Action</Text>
+                        </VStack>
+                      ),
+                      value: () => (
+                        <VStack>
+                          <LinkButton href={`/dashboard/sponsers/${id}`}>
+                            {name}
+                          </LinkButton>
+                          <Text>{type}</Text>
+                          <Text>{website}</Text>
+                          <LinkButton
+                            colorScheme="blue"
+                            size="xs"
+                            href={`/dashboard/sponsers/${id}/edit`}
+                          >
+                            Edit
+                          </LinkButton>
+                        </VStack>
+                      ),
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
           )}
         </VStack>
       </Layout>

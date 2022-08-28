@@ -221,7 +221,11 @@ export const ChapterUsersPage: NextPage = () => {
                         }}
                         mapper={{
                           type: () => (
-                            <VStack spacing={3} fontWeight={500}>
+                            <VStack
+                              spacing={3}
+                              fontWeight={500}
+                              align={'flex-start'}
+                            >
                               <Text>Name</Text>
                               <Text>Email</Text>
                               <Text>Ops</Text>
@@ -229,7 +233,7 @@ export const ChapterUsersPage: NextPage = () => {
                             </VStack>
                           ),
                           values: () => (
-                            <VStack spacing={3}>
+                            <VStack spacing={3} align={'flex-start'}>
                               <HStack>
                                 <Text>{user.name}</Text>
                                 {bans.has(user.id) && (

@@ -1,4 +1,12 @@
-import { Button, Box, Heading, HStack, Link, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Heading,
+  HStack,
+  Link,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -75,7 +83,7 @@ export const EventPage: NextPage = () => {
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'green' }],
+      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
   ];
 
@@ -170,9 +178,46 @@ export const EventPage: NextPage = () => {
                   }}
                 />
               </Box>
-              <Box display={{ base: 'block', lg: 'none' }}>
-                {users.map((_, index) => (
-                  <HStack key={index}>hello</HStack>
+              <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
+                {users.map(({ event_role, user }, index) => (
+                  <HStack key={index}>
+                    <DataTable
+                      title={`${title}`}
+                      data={[users[index]]}
+                      keys={['type', 'value'] as const}
+                      emptyText="No users"
+                      mapper={{
+                        type: () => (
+                          <VStack
+                            align={'flex-start'}
+                            fontWeight={500}
+                            spacing={'3'}
+                          >
+                            <Text>User</Text>
+                            <Text>Role</Text>
+                            <Text>Ops</Text>
+                          </VStack>
+                        ),
+                        value: () => (
+                          <VStack align={'flex-start'} spacing={'3'}>
+                            <Text data-cy="username">{user.name}</Text>
+                            {ops.map(({ title, onClick, colorScheme }) => (
+                              <Button
+                                key={title.toLowerCase()}
+                                data-cy={title.toLowerCase()}
+                                size="xs"
+                                colorScheme={colorScheme}
+                                onClick={onClick({ eventId, userId: user.id })}
+                              >
+                                {title}
+                              </Button>
+                            ))}
+                            <Text data-cy="role">{event_role.name}</Text>
+                          </VStack>
+                        ),
+                      }}
+                    />
+                  </HStack>
                 ))}
               </Box>
             </Box>

@@ -83,7 +83,7 @@ export const ChaptersPage: NextPage = () => {
                 }}
               />
             </Box>
-            <Box display={{ base: 'block', lg: 'none' }}>
+            <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
               {chapterData.chapters.map(({ id, name }, index) => (
                 <Flex key={id}>
                   <DataTable
@@ -94,25 +94,20 @@ export const ChaptersPage: NextPage = () => {
                     }}
                     mapper={{
                       type: () => (
-                        <>
-                          <Heading as="h4" fontSize={'md'} marginBlock={'2em'}>
+                        <VStack align={'flex-start'} spacing={'5'}>
+                          <Heading as="h4" fontSize={'md'} marginBlock={'2'}>
                             Name
                           </Heading>
-                          <Heading
-                            as="h4"
-                            fontSize={'md'}
-                            marginBlock={'1.5em'}
-                          >
+                          <Heading as="h4" fontSize={'md'}>
                             Action
                           </Heading>
-                        </>
+                        </VStack>
                       ),
                       values: () => (
-                        <VStack>
+                        <VStack align={'flex-start'}>
                           <LinkButton
                             href={`/dashboard/chapters/${id}`}
                             marginBottom={'.5em'}
-                            marginLeft={'-1em'}
                             width="100%"
                           >
                             {name}

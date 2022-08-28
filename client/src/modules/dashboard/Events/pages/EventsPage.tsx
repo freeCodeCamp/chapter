@@ -107,56 +107,66 @@ export const EventsPage: NextPage = () => {
               />
             </HStack>
             <HStack display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-              <DataTable
-                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                data={data.events}
-                keys={['type', 'value'] as const}
-                mapper={{
-                  type: (event) => (
-                    <HStack>
-                      {event.canceled ? (
-                        <Text
-                          color="red.500"
-                          fontSize={['md', 'lg']}
-                          fontWeight={'semibold'}
-                        >
-                          canceled
-                        </Text>
-                      ) : new Date(event.start_at) < new Date() ? (
-                        <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                          passed
-                        </Text>
-                      ) : (
-                        <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                          upcoming
-                        </Text>
-                      )}
-                    </HStack>
-                  ),
-                  value: (event) => (
-                    <HStack>
-                      <VStack align="flex-start">
+              {data.events.map(({ canceled, name, id, start_at }, index) => (
+                <DataTable
+                  key={index}
+                  tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                  data={[data.events[index]]}
+                  keys={['type', 'value'] as const}
+                  mapper={{
+                    type: () => (
+                      <HStack>
+                        <Text></Text>
+                      </HStack>
+                    ),
+                    value: () => (
+                      <VStack>
+                        <HStack>
+                          {canceled ? (
+                            <Text
+                              color="red.500"
+                              fontSize={['md', 'lg']}
+                              fontWeight={'semibold'}
+                            >
+                              canceled
+                            </Text>
+                          ) : new Date(start_at) < new Date() ? (
+                            <Text
+                              fontSize={['md', 'lg']}
+                              fontWeight={'semibold'}
+                            >
+                              passed
+                            </Text>
+                          ) : (
+                            <Text
+                              fontSize={['md', 'lg']}
+                              fontWeight={'semibold'}
+                            >
+                              upcoming
+                            </Text>
+                          )}
+                        </HStack>
+                        <VStack align="flex-start">
+                          <LinkButton
+                            colorScheme={canceled ? 'red' : undefined}
+                            href={`/dashboard/events/${id}`}
+                          >
+                            {name}
+                          </LinkButton>
+                        </VStack>
+                        <Box>formatDate(start_at)</Box>
                         <LinkButton
-                          colorScheme={event.canceled ? 'red' : undefined}
-                          href={`/dashboard/events/${event.id}`}
+                          colorScheme="blue"
+                          size="sm"
+                          href={`/dashboard/events/${id}/edit`}
                         >
-                          {event.name}
+                          Edit
                         </LinkButton>
                       </VStack>
-                      <Box></Box>,<Box></Box>
-                      <Box></Box>
-                      <Box>formatDate(event.start_at)</Box>
-                      <LinkButton
-                        colorScheme="blue"
-                        size="sm"
-                        href={`/dashboard/events/${event.id}/edit`}
-                      >
-                        Edit
-                      </LinkButton>
-                    </HStack>
-                  ),
-                }}
-              />
+                    ),
+                  }}
+                />
+              ))}
             </HStack>
           </Box>
         )}

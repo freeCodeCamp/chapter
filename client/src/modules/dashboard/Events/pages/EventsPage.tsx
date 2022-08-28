@@ -1,12 +1,4 @@
-import {
-  Heading,
-  VStack,
-  Text,
-  Flex,
-  HStack,
-  Box,
-  Spacer,
-} from '@chakra-ui/react';
+import { Heading, VStack, Text, Flex, HStack, Box } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -141,12 +133,12 @@ export const EventsPage: NextPage = () => {
                       type: () => (
                         <VStack
                           fontWeight={'500'}
-                          spacing={2}
+                          spacing={2.5}
                           align={'flex-start'}
+                          fontSize={['sm', 'md']}
                         >
                           <Text>STATUS</Text>
                           <Text>NAME</Text>
-                          <Spacer></Spacer>
                           <Text>INVITE ONLY</Text>
                           <Text>VENUE</Text>
                           <Text>CAPACITY</Text>
@@ -156,7 +148,7 @@ export const EventsPage: NextPage = () => {
                         </VStack>
                       ),
                       value: () => (
-                        <VStack align={'flex-start'}>
+                        <VStack align={'flex-start'} spacing={2}>
                           <HStack>
                             {canceled ? (
                               <Text
@@ -184,6 +176,8 @@ export const EventsPage: NextPage = () => {
                           </HStack>
                           <VStack align="flex-start">
                             <LinkButton
+                              fontSize={'sm'}
+                              height={'2em'}
                               colorScheme={canceled ? 'red' : undefined}
                               href={`/dashboard/events/${id}`}
                             >
@@ -205,6 +199,8 @@ export const EventsPage: NextPage = () => {
                           <Text>{formatDate(start_at)}</Text>
                           <LinkButton
                             colorScheme="blue"
+                            fontSize={'sm'}
+                            height={'2em'}
                             size="sm"
                             href={`/dashboard/events/${id}/edit`}
                           >

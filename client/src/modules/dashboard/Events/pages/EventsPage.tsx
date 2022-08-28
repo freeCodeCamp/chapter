@@ -1,4 +1,12 @@
-import { Heading, VStack, Text, Flex, HStack, Box } from '@chakra-ui/react';
+import {
+  Heading,
+  VStack,
+  Text,
+  Flex,
+  HStack,
+  Box,
+  Spacer,
+} from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -62,15 +70,15 @@ export const EventsPage: NextPage = () => {
                         fontSize={['md', 'lg']}
                         fontWeight={'semibold'}
                       >
-                        canceled
+                        Canceled
                       </Text>
                     ) : new Date(event.start_at) < new Date() ? (
                       <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                        passed
+                        Passed
                       </Text>
                     ) : (
                       <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                        upcoming
+                        Upcoming
                       </Text>
                     ),
                   name: (event) => (
@@ -107,66 +115,107 @@ export const EventsPage: NextPage = () => {
               />
             </HStack>
             <HStack display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-              {data.events.map(({ canceled, name, id, start_at }, index) => (
-                <DataTable
-                  key={index}
-                  tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                  data={[data.events[index]]}
-                  keys={['type', 'value'] as const}
-                  mapper={{
-                    type: () => (
-                      <HStack>
-                        <Text></Text>
-                      </HStack>
-                    ),
-                    value: () => (
-                      <VStack>
-                        <HStack>
-                          {canceled ? (
-                            <Text
-                              color="red.500"
-                              fontSize={['md', 'lg']}
-                              fontWeight={'semibold'}
+              {data.events.map(
+                (
+                  {
+                    canceled,
+                    name,
+                    id,
+                    start_at,
+                    invite_only,
+                    venue,
+                    venue_type,
+                    streaming_url,
+                    capacity,
+                  },
+                  index,
+                ) => (
+                  <DataTable
+                    key={index}
+                    tableProps={{
+                      table: { 'aria-labelledby': 'page-heading' },
+                    }}
+                    data={[data.events[index]]}
+                    keys={['type', 'value'] as const}
+                    mapper={{
+                      type: () => (
+                        <VStack
+                          fontWeight={'500'}
+                          spacing={2}
+                          align={'flex-start'}
+                        >
+                          <Text>STATUS</Text>
+                          <Text>NAME</Text>
+                          <Spacer></Spacer>
+                          <Text>INVITE ONLY</Text>
+                          <Text>VENUE</Text>
+                          <Text>CAPACITY</Text>
+                          <Text>STREAMING URL</Text>
+                          <Text>DATE</Text>
+                          <Text>ACTIONS</Text>
+                        </VStack>
+                      ),
+                      value: () => (
+                        <VStack align={'flex-start'}>
+                          <HStack>
+                            {canceled ? (
+                              <Text
+                                color="red.500"
+                                fontSize={['md', 'lg']}
+                                fontWeight={'semibold'}
+                              >
+                                Canceled
+                              </Text>
+                            ) : new Date(start_at) < new Date() ? (
+                              <Text
+                                fontSize={['md', 'lg']}
+                                fontWeight={'semibold'}
+                              >
+                                Passed
+                              </Text>
+                            ) : (
+                              <Text
+                                fontSize={['md', 'lg']}
+                                fontWeight={'semibold'}
+                              >
+                                Upcoming
+                              </Text>
+                            )}
+                          </HStack>
+                          <VStack align="flex-start">
+                            <LinkButton
+                              colorScheme={canceled ? 'red' : undefined}
+                              href={`/dashboard/events/${id}`}
                             >
-                              canceled
-                            </Text>
-                          ) : new Date(start_at) < new Date() ? (
-                            <Text
-                              fontSize={['md', 'lg']}
-                              fontWeight={'semibold'}
-                            >
-                              passed
-                            </Text>
-                          ) : (
-                            <Text
-                              fontSize={['md', 'lg']}
-                              fontWeight={'semibold'}
-                            >
-                              upcoming
-                            </Text>
-                          )}
-                        </HStack>
-                        <VStack align="flex-start">
+                              {name}
+                            </LinkButton>
+                          </VStack>
+                          <Text>{invite_only ? 'Yes' : 'No'}</Text>
+                          <Text>
+                            {isPhysical(venue_type)
+                              ? venue?.name || ''
+                              : 'Online only'}
+                          </Text>
+                          <Text>{capacity}</Text>
+                          <Text>
+                            {isOnline(venue_type)
+                              ? streaming_url
+                              : 'In-person only'}
+                          </Text>
+                          <Text>{formatDate(start_at)}</Text>
                           <LinkButton
-                            colorScheme={canceled ? 'red' : undefined}
-                            href={`/dashboard/events/${id}`}
+                            colorScheme="blue"
+                            size="sm"
+                            href={`/dashboard/events/${id}/edit`}
                           >
-                            {name}
+                            Edit
                           </LinkButton>
                         </VStack>
-                        <Box>formatDate(start_at)</Box>
-                        <LinkButton
-                          colorScheme="blue"
-                          size="sm"
-                          href={`/dashboard/events/${id}/edit`}
-                        >
-                          Edit
-                        </LinkButton>
-                      </VStack>
-                    ),
-                  }}
-                />
-              ))}
+                      ),
+                    }}
+                  />
+                ),
+              )}
             </HStack>
           </Box>
         )}

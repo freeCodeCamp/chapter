@@ -117,14 +117,14 @@ export const UsersPage: NextPage = () => {
                   keys={['types', 'values'] as const}
                   mapper={{
                     types: () => (
-                      <VStack fontWeight={'500'}>
+                      <VStack fontWeight={'500'} align={'flex-start'}>
                         <Text>Name</Text>
                         <Text>Role</Text>
                         <Text>Action</Text>
                       </VStack>
                     ),
                     values: () => (
-                      <VStack>
+                      <VStack align={'flex-start'}>
                         <Text data-cy="name">{name}</Text>
                         <Text data-cy="role">{instance_role.name}</Text>
                         <Button

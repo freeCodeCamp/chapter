@@ -77,24 +77,14 @@ export const ChapterPage: NextPage = () => {
                 </Box>
                 <HStack mt={'2'}>
                   <LinkButton
-                    background={'gray.85'}
-                    color={'gray.05'}
-                    _hover={{
-                      background: 'gray.45',
-                      color: 'gray.85',
-                    }}
+                    colorScheme={'blue'}
                     size="sm"
                     href={`${chapterId}/new-event`}
                   >
                     Add new event
                   </LinkButton>
                   <LinkButton
-                    background={'gray.85'}
-                    color={'gray.05'}
-                    _hover={{
-                      background: 'gray.45',
-                      color: 'gray.85',
-                    }}
+                    colorScheme={'blue'}
                     data-cy="create-venue"
                     size="sm"
                     href={`${chapterId}/new-venue`}
@@ -134,7 +124,10 @@ export const ChapterPage: NextPage = () => {
           </TabPanels>
         </Tabs>
       </Card>
-      {data.chapter.events.map(({ id, name, start_at }) => (
+      <Heading as="h3" fontSize={'xl'} fontWeight={400} margin={2}>
+        Organized Events:
+      </Heading>
+      {data.chapter.events.map(({ id, name }) => (
         <Link key={id} href={`/events/${id}`} _hover={{}}>
           <Flex
             paddingInline={'1em'}
@@ -150,9 +143,6 @@ export const ChapterPage: NextPage = () => {
               maxW={'10em'}
             >
               {name}
-            </Text>
-            <Text mt="2" fontWeight={400} fontSize={'md'} opacity={'.8'}>
-              {start_at}
             </Text>
           </Flex>
         </Link>

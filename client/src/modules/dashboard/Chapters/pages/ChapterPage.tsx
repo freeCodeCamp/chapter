@@ -1,5 +1,6 @@
-import { Heading, Link, Box, HStack, Flex, Text } from '@chakra-ui/layout';
+import { Heading, Link, Box, HStack, Text } from '@chakra-ui/layout';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
+import { useConfirmDelete } from 'chakra-confirm';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -22,6 +23,7 @@ export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('id');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alertDialogFocusElement = useRef(null);
+  const confirmDelete = useConfirmDelete();
 
   const [deleteChapter] = useDeleteChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
@@ -33,7 +35,9 @@ export const ChapterPage: NextPage = () => {
 
   const router = useRouter();
 
-  const clickDelete = () => {
+  const clickDelete = async () => {
+    const ok = await confirmDelete();
+    if (!ok) return;
     deleteChapter({ variables: { chapterId } });
     router.push('/dashboard/chapters');
   };
@@ -115,7 +119,11 @@ export const ChapterPage: NextPage = () => {
                   <Button onClick={onClose} marginInline={'2em'}>
                     Cancel
                   </Button>
-                  <Button colorScheme="red" onClick={clickDelete}>
+                  <Button
+                    colorScheme="red"
+                    onClick={clickDelete}
+                    type={'submit'}
+                  >
                     Delete
                   </Button>
                 </SettingAlertDialog>
@@ -124,29 +132,9 @@ export const ChapterPage: NextPage = () => {
           </TabPanels>
         </Tabs>
       </Card>
-      <Heading as="h3" fontSize={'xl'} fontWeight={400} margin={2}>
-        Organized Events:
-      </Heading>
-      {data.chapter.events.map(({ id, name }) => (
-        <Link key={id} href={`/events/${id}`} _hover={{}}>
-          <Flex
-            paddingInline={'1em'}
-            paddingBlock={'.5em'}
-            justifyContent={'space-between'}
-            flexDirection={['column', 'row']}
-          >
-            <Text
-              as={'h2'}
-              mt="2"
-              fontWeight={600}
-              fontSize={'md'}
-              maxW={'10em'}
-            >
-              {name}
-            </Text>
-          </Flex>
-        </Link>
-      ))}
+      <Text fontWeight={400} margin={2}>
+        PlaceHolder for Events...
+      </Text>
     </Layout>
   );
 };

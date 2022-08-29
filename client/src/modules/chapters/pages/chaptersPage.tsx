@@ -22,13 +22,11 @@ export const ChaptersPage: NextPage = () => {
   }
   return (
     <Stack mt={10} mb={5} display={'block'}>
-      <Heading>Chapters: </Heading>
-      <Grid templateColumns="[repeat(2, 1fr), none]" gap="1em">
+      <Heading marginBlock={'1em'}>Chapters: </Heading>
+      <Grid gap="1em" width={'80vw'} marginBlock={0}>
         {data.chapters.map((chapter) => (
           <GridItem key={chapter.id}>
-            <Heading size="md">
-              <ChapterCard chapter={chapter} />
-            </Heading>
+            <ChapterCard chapter={chapter} />
           </GridItem>
         ))}
       </Grid>

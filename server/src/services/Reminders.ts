@@ -1,9 +1,5 @@
 import { prisma } from '../prisma';
 
-export type Reminder = Awaited<
-  ReturnType<typeof getRemindersOlderThanDate>
->[number];
-
 export interface ReminderData {
   eventId: number;
   remindAt: Date;
@@ -43,6 +39,7 @@ const reminderIncludes = {
   event_user: {
     include: {
       user: true,
+      rsvp: true,
       event: {
         include: {
           venue: true,
@@ -66,6 +63,20 @@ export const updateRemindAt = async ({
   });
 
 export const getRemindersOlderThanDate = async (date: Date) =>
+  await prisma.event_reminders.findMany({
+    include: reminderIncludes,
+    where: {
+      remind_at: {
+        lte: date,
+      },
+      notifying: false,
+    },
+    orderBy: {
+      remind_at: 'asc',
+    },
+  });
+
+export const getRemindersNewerThanDate = async (date: Date) =>
   await prisma.event_reminders.findMany({
     include: reminderIncludes,
     where: {
@@ -113,3 +124,11 @@ export const lockForRetry = async (reminder: Reminder) => {
   });
   return { hasLock: lock.count !== 0 };
 };
+
+export type Reminder = Awaited<
+  ReturnType<typeof getRemindersOlderThanDate>
+>[number];
+
+export type SquentReminder = Awaited<
+  ReturnType<typeof getRemindersNewerThanDate>
+>[number];

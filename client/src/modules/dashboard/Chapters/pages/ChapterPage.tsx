@@ -1,5 +1,4 @@
 import { Heading, Link, Box, HStack, Text } from '@chakra-ui/layout';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
 import { useConfirmDelete } from 'chakra-confirm';
 
 import { LinkButton } from 'chakra-next-link';
@@ -13,6 +12,7 @@ import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
   useChapterQuery,
   useDeleteChapterMutation,
+  useMeQuery,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
@@ -33,10 +33,13 @@ export const ChapterPage: NextPage = () => {
     variables: { chapterId },
   });
 
+  const { data: instanceRoles } = useMeQuery();
+
+  console.log(instanceRoles);
   const router = useRouter();
 
   const clickDelete = async () => {
-    const ok = await confirmDelete();
+    const ok = await confirmDelete({ doubleConfirm: true });
     if (!ok) return;
     deleteChapter({ variables: { chapterId } });
     router.push('/dashboard/chapters');
@@ -54,83 +57,63 @@ export const ChapterPage: NextPage = () => {
   return (
     <Layout>
       <Card className={styles.card}>
-        <Tabs>
-          <TabList>
-            <Tab>General</Tab>
-            <Tab>Setting</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <ProgressCardContent loading={loading}>
-                <Heading
-                  fontSize={'md'}
-                  as="h1"
-                  fontWeight="semibold"
-                  marginBlock={'2'}
-                >
-                  {data.chapter.name}
-                </Heading>
-                <Box>
-                  <Link
-                    href={`${chapterId}/users`}
-                    target="_blank"
-                    paddingBlock={'2'}
-                  >
-                    Chapter Users
-                  </Link>
-                </Box>
-                <HStack mt={'2'}>
-                  <LinkButton
-                    colorScheme={'blue'}
-                    size="sm"
-                    href={`${chapterId}/new-event`}
-                  >
-                    Add new event
-                  </LinkButton>
-                  <LinkButton
-                    colorScheme={'blue'}
-                    data-cy="create-venue"
-                    size="sm"
-                    href={`${chapterId}/new-venue`}
-                  >
-                    Add new venue
-                  </LinkButton>
-                </HStack>
-              </ProgressCardContent>
-            </TabPanel>
-
-            <TabPanel>
-              <Heading as="h2" mb="4" fontSize={['lg', '2xl']}>
-                Chapter Setting
-              </Heading>
-              <Button colorScheme="red" onClick={onOpen}>
-                Delete Chapter
-              </Button>
-              <AlertDialog
-                isOpen={isOpen}
-                leastDestructiveRef={alertDialogFocusElement}
-                onClose={onClose}
-              >
-                <SettingAlertDialog
-                  title="Delete Chapter"
-                  DialogBody="For Deleting Chapter, Please type its name"
-                  inputPlaceholder={data.chapter.name}
-                >
-                  <Button onClick={onClose} marginInline={'2em'}>
-                    Cancel
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={clickDelete}
-                    type={'submit'}
-                  >
-                    Delete
-                  </Button>
-                </SettingAlertDialog>
-              </AlertDialog>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <ProgressCardContent loading={loading}>
+          <Heading
+            fontSize={'md'}
+            as="h1"
+            fontWeight="semibold"
+            marginBlock={'2'}
+          >
+            {data.chapter.name}
+          </Heading>
+          <Box>
+            <Link
+              href={`${chapterId}/users`}
+              target="_blank"
+              paddingBlock={'2'}
+            >
+              Chapter Users
+            </Link>
+          </Box>
+          <HStack mt={'2'}>
+            <LinkButton
+              colorScheme={'blue'}
+              size="sm"
+              href={`${chapterId}/new-event`}
+            >
+              Add new event
+            </LinkButton>
+            <LinkButton
+              colorScheme={'blue'}
+              data-cy="create-venue"
+              size="sm"
+              href={`${chapterId}/new-venue`}
+            >
+              Add new venue
+            </LinkButton>
+            <Button colorScheme="red" size={'sm'} onClick={onOpen}>
+              Delete Chapter
+            </Button>
+          </HStack>
+        </ProgressCardContent>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={alertDialogFocusElement}
+          onClose={onClose}
+        >
+          <SettingAlertDialog
+            title="Delete Chapter"
+            DialogBody="For Deleting Chapter, Please type its name"
+            inputPlaceholder={data.chapter.name}
+          >
+            <Button onClick={onClose} marginInline={'2em'}>
+              Cancel
+            </Button>
+            <Button colorScheme="red" onClick={clickDelete} type={'submit'}>
+              Delete
+            </Button>
+          </SettingAlertDialog>
+        </AlertDialog>
       </Card>
       <Text fontWeight={400} margin={2}>
         PlaceHolder for Events...

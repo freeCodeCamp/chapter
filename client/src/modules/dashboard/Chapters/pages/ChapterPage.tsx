@@ -4,10 +4,9 @@ import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useRef } from 'react';
-import { Button, useDisclosure, AlertDialog } from '@chakra-ui/react';
+import React from 'react';
+import { Button } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
-import { SettingAlertDialog } from '../../../../components/SettingAlert';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
   useChapterQuery,
@@ -20,8 +19,6 @@ import { CHAPTERS } from '../../../chapters/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('id');
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const alertDialogFocusElement = useRef(null);
   const confirmDelete = useConfirmDelete();
 
   const [deleteChapter] = useDeleteChapterMutation({
@@ -87,28 +84,11 @@ export const ChapterPage: NextPage = () => {
             >
               Add new venue
             </LinkButton>
-            <Button colorScheme="red" size={'sm'} onClick={onOpen}>
+            <Button colorScheme="red" size={'sm'} onClick={clickDelete}>
               Delete Chapter
             </Button>
           </HStack>
         </ProgressCardContent>
-        <AlertDialog
-          isOpen={isOpen}
-          leastDestructiveRef={alertDialogFocusElement}
-          onClose={onClose}
-        >
-          <SettingAlertDialog
-            title="Delete Chapter"
-            DialogBody="For Deleting Chapter, Please type its name"
-          >
-            <Button onClick={onClose} marginInline={'2em'}>
-              Cancel
-            </Button>
-            <Button colorScheme="red" onClick={clickDelete} type={'submit'}>
-              Delete
-            </Button>
-          </SettingAlertDialog>
-        </AlertDialog>
       </Card>
       <Text fontWeight={400} margin={2}>
         PlaceHolder for Events...

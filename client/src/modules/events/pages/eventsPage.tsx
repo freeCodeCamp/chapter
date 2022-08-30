@@ -54,17 +54,20 @@ function Pagination({
 const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [visitedPages, setVisitedPages] = useState(new Set());
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
   });
 
   useEffect(() => {
+    if (visitedPages.has(currentPage)) return;
     fetchMore({
       variables: {
         offset: data?.paginatedEventsWithTotal.events.length || 0,
         limit: pageSize,
       },
     });
+    setVisitedPages(new Set(visitedPages).add(currentPage));
   }, [currentPage]);
   if (loading) {
     return <h1>Loading...</h1>;

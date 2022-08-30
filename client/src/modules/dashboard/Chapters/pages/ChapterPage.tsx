@@ -12,7 +12,6 @@ import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
   useChapterQuery,
   useDeleteChapterMutation,
-  useMeQuery,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
@@ -33,9 +32,6 @@ export const ChapterPage: NextPage = () => {
     variables: { chapterId },
   });
 
-  const { data: instanceRoles } = useMeQuery();
-
-  console.log(instanceRoles);
   const router = useRouter();
 
   const clickDelete = async () => {
@@ -104,7 +100,6 @@ export const ChapterPage: NextPage = () => {
           <SettingAlertDialog
             title="Delete Chapter"
             DialogBody="For Deleting Chapter, Please type its name"
-            inputPlaceholder={data.chapter.name}
           >
             <Button onClick={onClose} marginInline={'2em'}>
               Cancel

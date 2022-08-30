@@ -4,7 +4,6 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  Input,
 } from '@chakra-ui/react';
 import React from 'react';
 
@@ -12,11 +11,10 @@ interface SettingAlertProps {
   title: string;
   DialogBody: string;
   children?: React.ReactNode;
-  inputPlaceholder?: string;
 }
 
 export const SettingAlertDialog = (props: SettingAlertProps) => {
-  const { title, DialogBody, children, inputPlaceholder } = props;
+  const { title, DialogBody, children } = props;
 
   return (
     <>
@@ -26,17 +24,7 @@ export const SettingAlertDialog = (props: SettingAlertProps) => {
             {title}
           </AlertDialogHeader>
 
-          <AlertDialogBody>
-            {DialogBody}
-            <Input
-              variant="outline"
-              errorBorderColor="red.300"
-              size="md"
-              placeholder={inputPlaceholder}
-              pattern={inputPlaceholder}
-              isRequired
-            />
-          </AlertDialogBody>
+          <AlertDialogBody>{DialogBody}</AlertDialogBody>
 
           <AlertDialogFooter>{children}</AlertDialogFooter>
         </AlertDialogContent>

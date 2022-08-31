@@ -10,16 +10,16 @@ import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
-  const { param: venueId } = useParam('id');
+  const { param: venueId, isReady } = useParam('id');
 
   const { loading, error, data } = useVenueQuery({
     variables: { id: venueId },
   });
 
-  if (loading || error || !data?.venue) {
+  if (loading || !isReady || error || !data?.venue) {
     return (
       <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );

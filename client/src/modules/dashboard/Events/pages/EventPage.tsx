@@ -26,7 +26,7 @@ const args = (eventId: number) => ({
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
-  const { param: eventId } = useParam('id');
+  const { param: eventId, isReady } = useParam('id');
   const { loading, error, data } = useEventQuery({
     variables: { eventId },
   });
@@ -51,11 +51,15 @@ export const EventPage: NextPage = () => {
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
-  if (loading || error || !data || !data.event) {
+  if (loading || !isReady || error || !data || !data.event) {
     return (
       <Layout>
         <h1>
-          {loading ? 'Loading...' : !error ? "Can't find event :(" : 'Error...'}
+          {loading || !isReady
+            ? 'Loading...'
+            : !error
+            ? "Can't find event :("
+            : 'Error...'}
         </h1>
       </Layout>
     );

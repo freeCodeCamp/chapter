@@ -30,7 +30,7 @@ import { useParam } from '../../../../../hooks/useParam';
 import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 
 export const ChapterUsersPage: NextPage = () => {
-  const { param: chapterId } = useParam('id');
+  const { param: chapterId, isReady } = useParam('id');
 
   const { loading, error, data } = useChapterUsersQuery({
     variables: { chapterId },
@@ -135,7 +135,7 @@ export const ChapterUsersPage: NextPage = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>
         </Flex>
-        {loading ? (
+        {loading || !isReady ? (
           <Heading>Loading...</Heading>
         ) : error || !data?.chapter?.chapter_users ? (
           <>

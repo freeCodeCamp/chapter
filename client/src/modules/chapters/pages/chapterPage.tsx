@@ -27,7 +27,7 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId } = useParam('chapterId');
+  const { param: chapterId, isReady } = useParam('chapterId');
   const { user } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
@@ -91,7 +91,7 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  if (loading) {
+  if (loading || !isReady) {
     return <Spinner />;
   }
 

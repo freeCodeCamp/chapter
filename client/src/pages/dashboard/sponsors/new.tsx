@@ -1,2 +1,2 @@
-import { NewSponsorPage } from '../../../modules/dashboard/Sponsors/pages/NewSponsorPage';
+import { NewSponsorPage } from '../../../modules/dashboard/Sponsors';
 export default NewSponsorPage;

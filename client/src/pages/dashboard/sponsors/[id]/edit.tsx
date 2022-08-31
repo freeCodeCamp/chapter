@@ -1,3 +1,3 @@
-import { EditSponsorPage } from '../../../../modules/dashboard/Sponsors/pages/EditSponsorPage';
+import { EditSponsorPage } from '../../../../modules/dashboard/Sponsors';
 
 export default EditSponsorPage;

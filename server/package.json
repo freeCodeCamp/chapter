@@ -39,7 +39,7 @@
     "cookie-session": "2.0.0",
     "cors": "2.8.5",
     "date-fns": "2.29.2",
-    "dotenv": "16.0.1",
+    "dotenv": "16.0.2",
     "dotenv-expand": "8.0.3",
     "express": "4.18.1",
     "express-oauth2-jwt-bearer": "1.1.0",

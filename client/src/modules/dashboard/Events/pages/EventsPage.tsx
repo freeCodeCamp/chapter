@@ -178,6 +178,7 @@ export const EventsPage: NextPage = () => {
                             <LinkButton
                               fontSize={'sm'}
                               height={'2em'}
+                              size={'sm'}
                               colorScheme={canceled ? 'red' : undefined}
                               href={`/dashboard/events/${id}`}
                             >

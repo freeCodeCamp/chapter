@@ -99,7 +99,7 @@ export const VenuesPage: NextPage = () => {
                       types: () => (
                         <VStack
                           fontWeight={500}
-                          spacing={6}
+                          spacing={5}
                           align={'flex-start'}
                         >
                           <Text>Venue</Text>
@@ -113,12 +113,14 @@ export const VenuesPage: NextPage = () => {
                           <LinkButton
                             data-cy="view-venue-button"
                             href={`/dashboard/venues/${id}`}
+                            size={'sm'}
                           >
                             {name}
                           </LinkButton>
                           <LinkButton
                             data-cy="view-chapter-button"
                             href={`/dashboard/chapters/${chapter.id}`}
+                            size={'sm'}
                           >
                             {chapter.name}
                           </LinkButton>

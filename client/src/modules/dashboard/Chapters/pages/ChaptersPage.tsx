@@ -94,7 +94,7 @@ export const ChaptersPage: NextPage = () => {
                     }}
                     mapper={{
                       type: () => (
-                        <VStack align={'flex-start'} spacing={'5'}>
+                        <VStack align={'flex-start'} spacing={'4'}>
                           <Heading as="h4" fontSize={'md'} marginBlock={'2'}>
                             Name
                           </Heading>
@@ -109,6 +109,7 @@ export const ChaptersPage: NextPage = () => {
                             href={`/dashboard/chapters/${id}`}
                             marginBottom={'.5em'}
                             width="100%"
+                            size={'sm'}
                           >
                             {name}
                           </LinkButton>

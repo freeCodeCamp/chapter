@@ -4,6 +4,7 @@ import {
   Heading,
   VStack,
   Text,
+  Box,
   useDisclosure,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
@@ -76,33 +77,77 @@ export const UsersPage: NextPage = () => {
             </Text>
           </>
         ) : (
-          <DataTable
-            data={data.users}
-            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            keys={['name', 'role', 'ops'] as const}
-            mapper={{
-              name: ({ name }) => <Text data-cy="name">{name}</Text>,
-              ops: ({ id, instance_role, name }) => (
-                <Button
-                  data-cy="changeRole"
-                  colorScheme="blue"
-                  size="xs"
-                  onClick={() =>
-                    changeRole({
-                      roleId: instance_role.id,
-                      userId: id,
-                      userName: name,
-                    })
-                  }
-                >
-                  Change role
-                </Button>
-              ),
-              role: ({ instance_role: { name } }) => (
-                <Text data-cy="role">{name}</Text>
-              ),
-            }}
-          />
+          <Box width={'100%'}>
+            <Box display={{ base: 'none', lg: 'block' }}>
+              <DataTable
+                data={data.users}
+                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                keys={['name', 'role', 'ops'] as const}
+                mapper={{
+                  name: ({ name }) => <Text data-cy="name">{name}</Text>,
+                  ops: ({ id, instance_role, name }) => (
+                    <Button
+                      data-cy="changeRole"
+                      colorScheme="blue"
+                      size="xs"
+                      onClick={() =>
+                        changeRole({
+                          roleId: instance_role.id,
+                          userId: id,
+                          userName: name,
+                        })
+                      }
+                    >
+                      Change role
+                    </Button>
+                  ),
+                  role: ({ instance_role: { name } }) => (
+                    <Text data-cy="role">{name}</Text>
+                  ),
+                }}
+              />
+            </Box>
+
+            <Box display={{ base: 'block', lg: 'none' }}>
+              {data.users.map(({ name, id, instance_role }, index) => (
+                <DataTable
+                  key={id}
+                  data={[data.users[index]]}
+                  tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                  keys={['types', 'values'] as const}
+                  mapper={{
+                    types: () => (
+                      <VStack fontWeight={'500'} align={'flex-start'}>
+                        <Text>Name</Text>
+                        <Text>Role</Text>
+                        <Text>Action</Text>
+                      </VStack>
+                    ),
+                    values: () => (
+                      <VStack align={'flex-start'}>
+                        <Text data-cy="name">{name}</Text>
+                        <Text data-cy="role">{instance_role.name}</Text>
+                        <Button
+                          data-cy="changeRole"
+                          colorScheme="blue"
+                          size="xs"
+                          onClick={() =>
+                            changeRole({
+                              roleId: instance_role.id,
+                              userId: id,
+                              userName: name,
+                            })
+                          }
+                        >
+                          Change role
+                        </Button>
+                      </VStack>
+                    ),
+                  }}
+                />
+              ))}
+            </Box>
+          </Box>
         )}
       </VStack>
     </Layout>

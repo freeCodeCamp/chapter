@@ -1,4 +1,4 @@
-import { Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -43,41 +43,107 @@ export const ChaptersPage: NextPage = () => {
             </Text>
           </>
         ) : (
-          <DataTable
-            data={chapterData.chapters}
-            keys={['name', 'actions'] as const}
-            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            mapper={{
-              name: (chapter) => (
-                <LinkButton href={`/dashboard/chapters/${chapter.id}`}>
-                  {chapter.name}
-                </LinkButton>
-              ),
-              actions: (chapter) => (
-                <HStack>
-                  <LinkButton
-                    colorScheme="green"
-                    size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/edit`}
-                  >
-                    Edit
-                  </LinkButton>
-                  <LinkButton
-                    size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/new-event`}
-                  >
-                    Add Event
-                  </LinkButton>
-                  <LinkButton
-                    size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/new-venue`}
-                  >
-                    Add Venue
-                  </LinkButton>
-                </HStack>
-              ),
-            }}
-          />
+          <>
+            <Box display={{ base: 'none', lg: 'block' }} width="100%">
+              <DataTable
+                data={chapterData.chapters}
+                keys={['name', 'actions'] as const}
+                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                mapper={{
+                  name: (chapter) => (
+                    <LinkButton href={`/dashboard/chapters/${chapter.id}`}>
+                      {chapter.name}
+                    </LinkButton>
+                  ),
+                  actions: (chapter) => (
+                    <HStack>
+                      <LinkButton
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/chapters/${chapter.id}/edit`}
+                      >
+                        Edit
+                      </LinkButton>
+                      <LinkButton
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/chapters/${chapter.id}/new-event`}
+                      >
+                        Add Event
+                      </LinkButton>
+                      <LinkButton
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/chapters/${chapter.id}/new-venue`}
+                      >
+                        Add Venue
+                      </LinkButton>
+                    </HStack>
+                  ),
+                }}
+              />
+            </Box>
+            <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
+              {chapterData.chapters.map(({ id, name }, index) => (
+                <Flex key={id}>
+                  <DataTable
+                    data={[chapterData.chapters[index]]}
+                    keys={['type', 'values'] as const}
+                    tableProps={{
+                      table: { 'aria-labelledby': 'page-heading' },
+                    }}
+                    mapper={{
+                      type: () => (
+                        <VStack align={'flex-start'} spacing={'4'}>
+                          <Heading as="h4" fontSize={'md'} marginBlock={'2'}>
+                            Name
+                          </Heading>
+                          <Heading as="h4" fontSize={'md'}>
+                            Action
+                          </Heading>
+                        </VStack>
+                      ),
+                      values: () => (
+                        <VStack align={'flex-start'}>
+                          <LinkButton
+                            href={`/dashboard/chapters/${id}`}
+                            marginBottom={'.5em'}
+                            width="100%"
+                            size={'sm'}
+                          >
+                            {name}
+                          </LinkButton>
+                          <HStack spacing={1} marginLeft={'-1em'}>
+                            <LinkButton
+                              colorScheme="blue"
+                              size="xs"
+                              href={`/dashboard/chapters/${id}/new-event`}
+                            >
+                              Add Event
+                            </LinkButton>
+                            <LinkButton
+                              colorScheme="blue"
+                              size="xs"
+                              href={`/dashboard/chapters/${id}/new-venue`}
+                            >
+                              Add Venue
+                            </LinkButton>
+                            <LinkButton
+                              colorScheme="blue"
+                              size="xs"
+                              href={`/dashboard/chapters/${id}/edit`}
+                            >
+                              Edit
+                            </LinkButton>
+                          </HStack>
+                        </VStack>
+                      ),
+                    }}
+                  />
+                </Flex>
+              ))}
+            </Box>
+          </>
         )}
       </VStack>
     </Layout>

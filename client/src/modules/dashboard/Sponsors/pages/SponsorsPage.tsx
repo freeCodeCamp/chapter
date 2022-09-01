@@ -1,6 +1,6 @@
 import { VStack, Flex, Heading, Text, Box } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { Link, LinkButton } from 'chakra-next-link';
+import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
@@ -89,9 +89,7 @@ export const SponsorsPage: NextPage = () => {
                             {name}
                           </LinkButton>
                           <Text>{type}</Text>
-                          <Link size={'sm'} href={''}>
-                            {website}
-                          </Link>
+                          <Text size={'sm'}>{website}</Text>
                           <LinkButton
                             colorScheme="blue"
                             size="xs"

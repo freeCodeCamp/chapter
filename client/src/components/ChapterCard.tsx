@@ -2,20 +2,13 @@ import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
-import { useParam } from '../hooks/useParam';
-import { ChaptersQuery, useChapterUsersQuery } from 'generated/graphql';
+import { ChaptersQuery } from 'generated/graphql';
 
 type ChapterCardProps = {
   chapter: ChaptersQuery['chapters'][number];
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
-  const { param: chapterId } = useParam(chapter.name);
-
-  const { data } = useChapterUsersQuery({
-    variables: { chapterId },
-  });
-
   return (
     <Grid
       data-cy="chapter-card"
@@ -58,7 +51,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginBlock={'.5em'}
         >
           <Text mt="2" as="p" fontWeight={400} fontSize={['sm', 'md', 'lg']}>
-            Number of attendees: {data?.chapter?.chapter_users.length}
+            Number of attendees:
           </Text>
         </GridItem>
         <GridItem colSpan={2}>

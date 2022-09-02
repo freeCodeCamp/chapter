@@ -1,16 +1,34 @@
 import { prisma } from '../prisma';
 
-export interface ReminderData {
+export interface SubReminderData {
   eventId: number;
   remindAt: Date;
   userId: number;
 }
 
-export const createReminder = async ({
+export type SquentReminder = Awaited<
+  ReturnType<typeof getSubRemindersNewerThanDate>
+>[number];
+
+const subReminderIncludes = {
+  event_user: {
+    include: {
+      user: true,
+      event: {
+        include: {
+          venue: true,
+          chapter: true,
+        },
+      },
+    },
+  },
+};
+
+export const createSubReminder = async ({
   eventId,
   remindAt,
   userId,
-}: ReminderData) =>
+}: SubReminderData) =>
   await prisma.event_reminders.create({
     data: {
       event_user: {
@@ -22,39 +40,11 @@ export const createReminder = async ({
     },
   });
 
-export const deleteReminder = async (reminder: SquentReminder) =>
-  await prisma.event_reminders.delete({
-    where: {
-      user_id_event_id: {
-        user_id: reminder.user_id,
-        event_id: reminder.event_id,
-      },
-    },
-  });
-
-export const deleteEventReminders = async (eventId: number) =>
-  await prisma.event_reminders.deleteMany({ where: { event_id: eventId } });
-
-const reminderIncludes = {
-  event_user: {
-    include: {
-      user: true,
-      rsvp: true,
-      event: {
-        include: {
-          venue: true,
-          chapter: true,
-        },
-      },
-    },
-  },
-};
-
 export const updateRemindAt = async ({
   eventId,
   remindAt,
   userId,
-}: ReminderData) =>
+}: SubReminderData) =>
   await prisma.event_reminders.update({
     data: { remind_at: remindAt },
     where: {
@@ -62,23 +52,9 @@ export const updateRemindAt = async ({
     },
   });
 
-export const getRemindersOlderThanDate = async (date: Date) =>
+export const getSubRemindersNewerThanDate = async (date: Date) =>
   await prisma.event_reminders.findMany({
-    include: reminderIncludes,
-    where: {
-      remind_at: {
-        lte: date,
-      },
-      notifying: false,
-    },
-    orderBy: {
-      remind_at: 'asc',
-    },
-  });
-
-export const getRemindersNewerThanDate = async (date: Date) =>
-  await prisma.event_reminders.findMany({
-    include: reminderIncludes,
+    include: subReminderIncludes,
     where: {
       remind_at: {
         lte: date,
@@ -113,7 +89,3 @@ export const lockForRetry = async (reminder: SquentReminder) => {
   });
   return { hasLock: lock.count !== 0 };
 };
-
-export type SquentReminder = Awaited<
-  ReturnType<typeof getRemindersNewerThanDate>
->[number];

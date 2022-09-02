@@ -22,7 +22,7 @@ export const createReminder = async ({
     },
   });
 
-export const deleteReminder = async (reminder: Reminder) =>
+export const deleteReminder = async (reminder: SquentReminder) =>
   await prisma.event_reminders.delete({
     where: {
       user_id_event_id: {
@@ -90,18 +90,7 @@ export const getRemindersNewerThanDate = async (date: Date) =>
     },
   });
 
-export const getOldReminders = async (date: Date) =>
-  await prisma.event_reminders.findMany({
-    include: reminderIncludes,
-    where: {
-      notifying: true,
-      updated_at: {
-        lte: date,
-      },
-    },
-  });
-
-export const lockForNotifying = async (reminder: Reminder) => {
+export const lockForNotifying = async (reminder: SquentReminder) => {
   const lock = await prisma.event_reminders.updateMany({
     data: { notifying: true },
     where: {
@@ -113,7 +102,7 @@ export const lockForNotifying = async (reminder: Reminder) => {
   return { hasLock: lock.count !== 0 };
 };
 
-export const lockForRetry = async (reminder: Reminder) => {
+export const lockForRetry = async (reminder: SquentReminder) => {
   const lock = await prisma.event_reminders.updateMany({
     data: { updated_at: new Date() },
     where: {
@@ -125,6 +114,6 @@ export const lockForRetry = async (reminder: Reminder) => {
   return { hasLock: lock.count !== 0 };
 };
 
-export type Reminder = Awaited<
-  ReturnType<typeof getRemindersOlderThanDate>
+export type SquentReminder = Awaited<
+  ReturnType<typeof getRemindersNewerThanDate>
 >[number];

@@ -40,7 +40,8 @@
     "pretty": "prettier --write client/**/*.ts* server/**/*.ts",
     "prepare": "is-docker || husky install",
     "prisma": "npx -w=server dotenv -e ../.env -- prisma",
-    "reminders:send": "npm -w=server run reminders:send"
+    "reminders:send": "npm -w=server run reminders:send",
+    "subreminders:send": "npm -w=server run subreminders:send"
   },
   "repository": {
     "type": "git",

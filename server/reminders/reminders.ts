@@ -41,6 +41,19 @@ const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
     }),
   );
 
+const processCreateEventReminder = async (
+  reminder: Reminder,
+  lock: LockCheck,
+) =>
+  await new Promise(() => {
+    const { hasLock } = lock(reminder);
+    if (!hasLock) {
+      return;
+    }
+    sendEmailForReminder(reminder);
+    deleteReminder(reminder);
+  });
+
 interface ReminderMessageData {
   event: Reminder['event_user']['event'];
   user: Reminder['event_user']['user'];
@@ -131,13 +144,12 @@ const sendEmailForReminder = async (reminder: Reminder) => {
   const date = new Date();
   const reminders = await getRemindersOlderThanDate(date);
   const createReminder = await getRemindersAtEventCreation(date);
-  console.log(createReminder);
   console.log(
     `Reminders older than ${date.toUTCString()}: ${reminders.length}`,
   );
   console.log();
   await processReminders(reminders, lockForNotifying);
-
+  await processCreateEventReminder(createReminder, lockForNotifying);
   const updateDate = new Date();
   updateDate.setMinutes(updateDate.getMinutes() - processingLimitInMinutes);
   const oldReminders = await getOldReminders(updateDate);

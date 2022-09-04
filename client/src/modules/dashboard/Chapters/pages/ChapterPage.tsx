@@ -20,7 +20,22 @@ export const ChapterPage: NextPage = () => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
+        {error && process.env.NODE_ENV === 'production' ? (
+          <div>
+            <h1>Error...</h1>
+            <p>
+              We are currently facing an issue or our developers didn&apost get
+              enough coffee, we are trying our best to fix this issue and not
+              trying to finish our coffee
+            </p>
+            <h2>
+              if the error is persisting please contact{' '}
+              <a href="">freecodecamp support</a>
+            </h2>
+          </div>
+        ) : error && process.env.NODE_ENV !== 'production' ? (
+          <div className={styles.error}>{error.message}</div>
+        ) : null}
       </Layout>
     );
   }

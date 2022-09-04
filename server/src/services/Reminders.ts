@@ -79,6 +79,20 @@ export const getRemindersOlderThanDate = async (date: Date) =>
     },
   });
 
+export const getRemindersAtEventCreation = async (date: Date) =>
+  await prisma.event_reminders.findFirst({
+    include: reminderIncludes,
+    where: {
+      remind_at: {
+        lte: date,
+      },
+      notifying: false,
+    },
+    orderBy: {
+      created_at: 'asc',
+    },
+  });
+
 export const getOldReminders = async (date: Date) =>
   await prisma.event_reminders.findMany({
     include: reminderIncludes,

@@ -2,6 +2,7 @@ import MailerService from '../src/services/MailerService';
 import {
   deleteReminder,
   getRemindersOlderThanDate,
+  getRemindersAtEventCreation,
   getOldReminders,
   lockForNotifying,
   lockForRetry,
@@ -129,6 +130,8 @@ const sendEmailForReminder = async (reminder: Reminder) => {
 (async () => {
   const date = new Date();
   const reminders = await getRemindersOlderThanDate(date);
+  const createReminder = await getRemindersAtEventCreation(date);
+  console.log(createReminder);
   console.log(
     `Reminders older than ${date.toUTCString()}: ${reminders.length}`,
   );

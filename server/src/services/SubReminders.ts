@@ -6,7 +6,7 @@ export interface SubReminderData {
   userId: number;
 }
 
-export type SquentReminder = Awaited<
+export type SubReminder = Awaited<
   ReturnType<typeof getSubRemindersNewerThanDate>
 >[number];
 
@@ -66,7 +66,7 @@ export const getSubRemindersNewerThanDate = async (date: Date) =>
     },
   });
 
-export const lockForNotifying = async (reminder: SquentReminder) => {
+export const lockForNotifying = async (reminder: SubReminder) => {
   const lock = await prisma.event_reminders.updateMany({
     data: { notifying: true },
     where: {
@@ -78,7 +78,7 @@ export const lockForNotifying = async (reminder: SquentReminder) => {
   return { hasLock: lock.count !== 0 };
 };
 
-export const lockForRetry = async (reminder: SquentReminder) => {
+export const lockForRetry = async (reminder: SubReminder) => {
   const lock = await prisma.event_reminders.updateMany({
     data: { updated_at: new Date() },
     where: {

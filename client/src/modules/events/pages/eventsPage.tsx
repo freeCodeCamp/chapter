@@ -54,7 +54,7 @@ function Pagination({
 const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [visitedPages, setVisitedPages] = useState(new Set());
+  const [visitedPages, setVisitedPages] = useState(new Set([1]));
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
   });

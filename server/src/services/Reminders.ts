@@ -49,6 +49,7 @@ const reminderIncludes = {
           chapter: true,
         },
       },
+      rsvp: true,
     },
   },
 };

@@ -1,3 +1,4 @@
+import { rsvp } from '@prisma/client';
 import MailerService from '../src/services/MailerService';
 import {
   deleteReminder,
@@ -48,6 +49,7 @@ interface ReminderMessageData {
   end_time: string;
   chapterUnsubscribeToken: string;
   eventUnsubscribeToken: string;
+  rsvp: rsvp;
 }
 
 const reminderMessage = ({
@@ -58,10 +60,11 @@ const reminderMessage = ({
   end_time,
   chapterUnsubscribeToken,
   eventUnsubscribeToken,
+  rsvp,
 }: ReminderMessageData) => {
-  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}]) organized by ${event.chapter.name} is happening soon.</br>
+  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}) organized by ${event.chapter.name} is happening soon.</br>
 </br>
-Your RSVP Status: {rsvps.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
+Your RSVP Status: ${rsvp.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
 </br>
 When: ${date} from ${start_time} to ${end_time} (GMT)</br>
 </br>
@@ -112,6 +115,7 @@ const getEmailData = (reminder: Reminder) => {
     end_time: end_time,
     chapterUnsubscribeToken: chapterUnsubscribeToken,
     eventUnsubscribeToken: eventUnsubscribeToken,
+    rsvp: reminder.event_user.rsvp,
   });
   const subject = `Upcoming Event Reminder for ${reminder.event_user.event.name}`;
   return { email: email, subject: subject };

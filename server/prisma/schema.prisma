@@ -260,7 +260,7 @@ model users {
   user_chapters    chapter_users[]
   instance_role_id Int
   instance_role    instance_roles  @relation(fields: [instance_role_id], references: [id])
-  user_events      event_users[]
+  event_users      event_users[]
   session          sessions?
 }
 

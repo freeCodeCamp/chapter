@@ -10,16 +10,16 @@ import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId } = useParam('id');
+  const { param: chapterId, isReady } = useParam('id');
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });
 
-  if (loading || error || !data?.chapter) {
+  if (loading || !isReady || error || !data?.chapter) {
     return (
       <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );

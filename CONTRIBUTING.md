@@ -402,6 +402,11 @@ The database is seeded with several types of user.  To experiment with different
 
 In development the login link will appear in the server logs and the email that Mailhog intercepts.
 
+To experiment with different roles using the terminal, you can run these commands into your terminal:
+
+- `npm run change-user foo@bar.com` (an _owner_ with full permissions)
+- `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
+
 </details>
 
 # Adding a New Feature

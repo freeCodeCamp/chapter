@@ -34,7 +34,7 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
-  const { param: eventId } = useParam('eventId');
+  const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
 
@@ -71,7 +71,7 @@ export const EventPage: NextPage = () => {
     if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
-  if (loading) {
+  if (loading || !isReady) {
     return <h1>Loading...</h1>;
   }
 

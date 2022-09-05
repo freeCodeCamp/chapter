@@ -10,7 +10,7 @@ import { useSponsorQuery, useUpdateSponsorMutation } from 'generated/graphql';
 const EditSponsorPage: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { param: sponsorId } = useParam('id');
+  const { param: sponsorId, isReady } = useParam('id');
   const {
     loading: sponsorLoading,
     error,
@@ -41,10 +41,10 @@ const EditSponsorPage: NextPage = () => {
     }
   };
 
-  if (sponsorLoading || error || !data?.sponsor) {
+  if (sponsorLoading || !isReady || error || !data?.sponsor) {
     return (
       <Layout>
-        <h1>{sponsorLoading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{sponsorLoading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div>{error.message}</div>}
       </Layout>
     );

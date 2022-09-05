@@ -163,6 +163,10 @@ export const main = async (app: Express) => {
     }
   }
 
+  // TODO: prevent non-owners from accessing this route
+  // TODO: make sure that only one user's tokens can be stored. This is
+  // necessary because the calendars are all associated with the original
+  // creator. They're just allowing access via the tokens.
   app.get('/authenticate-with-google', isLoggedIn, (_req, res) => {
     const state = crypto.randomUUID();
     res.cookie('state', state, {
@@ -183,7 +187,7 @@ export const main = async (app: Express) => {
     if (!code || typeof code !== 'string') return next('Invalid Google code');
 
     // req.user must exist at this point
-    storeGoogleTokens(code, req.user!.id)
+    storeGoogleTokens(code)
       .then(() => {
         res.send('Authentication successful');
       })

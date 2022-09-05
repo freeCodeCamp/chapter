@@ -66,7 +66,7 @@ export class ChapterResolver {
     // TODO: handle errors from the calendar integration
     let calendarData;
     try {
-      calendarData = await createCalendar(ctx.user.id, {
+      calendarData = await createCalendar({
         summary: data.name,
         description: `Events for ${data.name}`,
       });

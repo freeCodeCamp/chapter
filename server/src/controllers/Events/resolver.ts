@@ -380,7 +380,7 @@ export class EventResolver {
 
     if (chapter.calendar_id && event.calendar_event_id) {
       try {
-        await updateCalendarEvent(chapter.chapter_users[0].user_id, {
+        await updateCalendarEvent({
           calendarId: chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
           summary: event.name,
@@ -600,7 +600,6 @@ ${unsubscribeOptions}`,
     if (chapter.calendar_id) {
       try {
         await createCalendarEvent(
-          ctx.user.id,
           { eventId: event.id },
           {
             calendarId: chapter.calendar_id,
@@ -624,7 +623,6 @@ ${unsubscribeOptions}`,
   async updateEvent(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateEventInputs,
-    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id },
@@ -768,7 +766,7 @@ ${venueDetails}`;
     // TODO: warn the user if the any calendar ids are missing
     if (newEvent.chapter.calendar_id && newEvent.calendar_event_id) {
       try {
-        await updateCalendarEvent(ctx.user.id, {
+        await updateCalendarEvent({
           calendarId: newEvent.chapter.calendar_id,
           calendarEventId: newEvent.calendar_event_id,
           summary: newEvent.name,
@@ -787,10 +785,7 @@ ${venueDetails}`;
 
   @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
-  async cancelEvent(
-    @Arg('id', () => Int) id: number,
-    @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<Event | null> {
+  async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
@@ -828,7 +823,7 @@ ${venueDetails}`;
         // respond immediately, but be informed of any failures later.
         // Client-side this could be handled by something like redux-saga, but
         // I'm not sure how to approach that server-side.
-        await cancelCalendarEvent(ctx.user.id, {
+        await cancelCalendarEvent({
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
           summary: event.name,
@@ -847,10 +842,7 @@ ${venueDetails}`;
 
   @Authorized(Permission.EventDelete)
   @Mutation(() => Event)
-  async deleteEvent(
-    @Arg('id', () => Int) id: number,
-    @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<Event> {
+  async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
     const event = await prisma.events.delete({
       where: { id },
       include: {
@@ -865,7 +857,7 @@ ${venueDetails}`;
         // respond immediately, but be informed of any failures later.
         // Client-side this could be handled by something like redux-saga, but
         // I'm not sure how to approach that server-side.
-        await deleteCalendarEvent(ctx.user.id, {
+        await deleteCalendarEvent({
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
         });

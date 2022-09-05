@@ -38,11 +38,10 @@ model sessions {
 }
 
 model google_tokens {
-  user_id       Int    @id
+  id            Int     @id @default(autoincrement())
   access_token  String
   refresh_token String
   expiry_date   Int
-  user          users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model chapter_users {
@@ -272,7 +271,6 @@ model users {
   instance_role    instance_roles  @relation(fields: [instance_role_id], references: [id])
   user_events      event_users[]
   session          sessions?
-  google_tokens    google_tokens?
 }
 
 model venues {

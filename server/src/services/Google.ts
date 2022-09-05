@@ -5,6 +5,10 @@ import { calendar } from '@googleapis/calendar';
 import { isProd } from '../config';
 import { prisma } from '../prisma';
 
+// We need a single set of tokens for the server and Prisma needs a unique id
+// to update the tokens. This is it.
+const TOKENS_ID = 1;
+
 function init() {
   try {
     const keyPath = path.join(__dirname, '../../keys/oauth2.keys.json');
@@ -48,7 +52,7 @@ export function getGoogleAuthUrl(state: string) {
 }
 
 // TODO: skip calling this if the user already has a valid, non-expired token
-export async function storeGoogleTokens(code: string, userId: number) {
+export async function storeGoogleTokens(code: string) {
   const oauth2Client = createOAuth2Client();
 
   let tokens;
@@ -67,9 +71,9 @@ export async function storeGoogleTokens(code: string, userId: number) {
   if (refresh_token) {
     const update = { access_token, refresh_token, expiry_date };
     await prisma.google_tokens.upsert({
-      where: { user_id: userId },
+      where: { id: TOKENS_ID },
       update: { ...update },
-      create: { user_id: userId, ...update },
+      create: { id: TOKENS_ID, ...update },
     });
   } else {
     const update = { access_token, expiry_date };
@@ -77,7 +81,7 @@ export async function storeGoogleTokens(code: string, userId: number) {
     // record doesn't exist. We can make refresh_token nullable and that may be
     // the best solution.
     await prisma.google_tokens.update({
-      where: { user_id: userId },
+      where: { id: TOKENS_ID },
       data: { ...update },
     });
   }
@@ -94,11 +98,9 @@ function createOAuth2Client() {
 
 // TODO: use refresh tokens to get a new access token if the existing one is
 // expired or about to expire.
-async function createCredentialedClient(userId: number) {
+async function createCredentialedClient() {
   const oauth2Client = createOAuth2Client();
-  const { access_token } = await prisma.google_tokens.findUniqueOrThrow({
-    where: { user_id: userId },
-  });
+  const { access_token } = await prisma.google_tokens.findFirstOrThrow();
   oauth2Client.setCredentials({ access_token });
   return oauth2Client;
 }
@@ -108,13 +110,10 @@ interface CalendarData {
   description: string;
 }
 
-export async function createCalendar(
-  currentUserId: number,
-  { summary, description }: CalendarData,
-) {
+export async function createCalendar({ summary, description }: CalendarData) {
   // The client *must* be created afresh for each request. Otherwise, concurrent
   // requests could end up sharing tokens.
-  const auth = await createCredentialedClient(currentUserId);
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   const { data } = await googleCalendar.calendars.insert({
@@ -140,11 +139,10 @@ interface EventUpdateData extends EventData {
 }
 
 export async function createCalendarEvent(
-  currentUserId: number,
   { eventId }: { eventId: number },
   eventData: EventData,
 ) {
-  const auth = await createCredentialedClient(currentUserId);
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   const { calendarId } = eventData;
@@ -164,11 +162,8 @@ export async function createCalendarEvent(
   });
 }
 
-export async function updateCalendarEvent(
-  currentUserId: number,
-  eventUpdateData: EventUpdateData,
-) {
-  const auth = await createCredentialedClient(currentUserId);
+export async function updateCalendarEvent(eventUpdateData: EventUpdateData) {
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   const { calendarId, calendarEventId } = eventUpdateData;
@@ -180,11 +175,8 @@ export async function updateCalendarEvent(
   });
 }
 
-export async function cancelCalendarEvent(
-  currentUserId: number,
-  eventUpdateData: EventUpdateData,
-) {
-  const auth = await createCredentialedClient(currentUserId);
+export async function cancelCalendarEvent(eventUpdateData: EventUpdateData) {
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   const { calendarId, calendarEventId } = eventUpdateData;
@@ -220,14 +212,14 @@ function getStandardRequestBody({
   };
 }
 
-export async function deleteCalendarEvent(
-  currentUserId: number,
-  {
-    calendarId,
-    calendarEventId,
-  }: { calendarId: string; calendarEventId: string },
-) {
-  const auth = await createCredentialedClient(currentUserId);
+export async function deleteCalendarEvent({
+  calendarId,
+  calendarEventId,
+}: {
+  calendarId: string;
+  calendarEventId: string;
+}) {
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   await googleCalendar.events.delete({
@@ -247,11 +239,10 @@ interface AccessData {
 }
 
 export async function grantCalendarAccess(
-  currentUserId: number,
   { chapterId, targetUserId }: ChapterData,
   { calendarId }: AccessData,
 ) {
-  const auth = await createCredentialedClient(currentUserId);
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   const targetUser = await prisma.users.findUniqueOrThrow({
@@ -283,11 +274,10 @@ export async function grantCalendarAccess(
 }
 
 export async function revokeCalendarAccess(
-  currentUserId: number,
   { chapterId, targetUserId }: ChapterData,
   { calendarId }: AccessData,
 ) {
-  const auth = await createCredentialedClient(currentUserId);
+  const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
 
   // TODO: if possible, it would be nice to update and get the previous value in

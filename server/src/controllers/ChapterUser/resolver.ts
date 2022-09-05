@@ -166,12 +166,11 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('roleId', () => Int) roleId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
     const userCanCreateEvents = await roleCanCreateEvents(roleId);
 
     try {
-      await updateGoogleCalendarEventAccess(ctx.user.id, userId, chapterId, {
+      await updateGoogleCalendarEventAccess(userId, chapterId, {
         userCanCreateEvents,
       });
     } catch {
@@ -266,7 +265,6 @@ async function roleCanCreateEvents(roleId: number): Promise<boolean> {
 }
 
 async function updateGoogleCalendarEventAccess(
-  currentUserId: number,
   targetUserId: number,
   chapterId: number,
   { userCanCreateEvents }: { userCanCreateEvents: boolean },
@@ -284,6 +282,6 @@ async function updateGoogleCalendarEventAccess(
     calendarId,
   };
   return userCanCreateEvents
-    ? await grantCalendarAccess(currentUserId, chapterData, calendarData)
-    : await revokeCalendarAccess(currentUserId, chapterData, calendarData);
+    ? await grantCalendarAccess(chapterData, calendarData)
+    : await revokeCalendarAccess(chapterData, calendarData);
 }

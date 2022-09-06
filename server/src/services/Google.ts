@@ -71,11 +71,21 @@ export async function storeGoogleTokens(code: string) {
 
   if (!access_token || !expiry_date) throw new Error('Tokens invalid');
 
-  // Technically we don't *need* the email, but it might be useful to have in
-  // case the owner needs to check which account is connected.
   const { email } = userInfo;
 
   if (!email) throw new Error('User email not found');
+
+  const existingGoogleTokens = await prisma.google_tokens.findUnique({
+    where: { id: TOKENS_ID },
+  });
+
+  const existingEmail = existingGoogleTokens?.email;
+
+  if (existingEmail && existingEmail !== email) {
+    throw new Error(
+      'You must authenticate with the Google account used when setting up',
+    );
+  }
 
   if (refresh_token) {
     const update = { access_token, refresh_token, expiry_date, email };

@@ -1,6 +1,7 @@
 import { HStack } from '@chakra-ui/layout';
 import {
   Avatar,
+  Box,
   Button,
   Flex,
   Image,
@@ -98,45 +99,47 @@ export const Header: React.FC = () => {
           />
         </Link>
         <HStack as="nav">
-          <Menu>
-            <MenuButton
-              as={Button}
-              aria-label="Options"
-              variant="outline"
-              background={'gray.10'}
-              px={[2, 4]}
-              py={[1, 2]}
-            >
-              Menu
-            </MenuButton>
-            <MenuList>
-              <Flex className={styles.header} flexDirection={'column'}>
-                <NextLink passHref href="/chapters">
-                  <MenuItem as="a">Chapters</MenuItem>
-                </NextLink>
+          <Box>
+            <Menu>
+              <MenuButton
+                as={Button}
+                aria-label="Options"
+                variant="outline"
+                background={'gray.10'}
+                px={[2, 4]}
+                py={[1, 2]}
+              >
+                Menu
+              </MenuButton>
+              <MenuList>
+                <Flex className={styles.header} flexDirection={'column'}>
+                  <NextLink passHref href="/chapters">
+                    <MenuItem as="a">Chapters</MenuItem>
+                  </NextLink>
 
-                <NextLink passHref href="/events">
-                  <MenuItem as="a">Events</MenuItem>
-                </NextLink>
+                  <NextLink passHref href="/events">
+                    <MenuItem as="a">Events</MenuItem>
+                  </NextLink>
 
-                {user ? (
-                  <>
-                    <NextLink passHref href="/dashboard/chapters">
-                      <MenuItem as="a">Dashboard</MenuItem>
-                    </NextLink>
+                  {user ? (
+                    <>
+                      <NextLink passHref href="/dashboard/chapters">
+                        <MenuItem as="a">Dashboard</MenuItem>
+                      </NextLink>
 
-                    <MenuItem data-cy="logout-button" onClick={logout}>
-                      Logout
-                    </MenuItem>
-                  </>
-                ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
-                  <DevLoginButton />
-                ) : (
-                  <LoginButton />
-                )}
-              </Flex>
-            </MenuList>
-          </Menu>
+                      <MenuItem data-cy="logout-button" onClick={logout}>
+                        Logout
+                      </MenuItem>
+                    </>
+                  ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+                    <DevLoginButton />
+                  ) : (
+                    <LoginButton />
+                  )}
+                </Flex>
+              </MenuList>
+            </Menu>
+          </Box>
 
           {user ? (
             <>

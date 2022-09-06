@@ -832,7 +832,7 @@ ${venueDetails}`;
     You received this email because you follow this ${
       event.chapter.name
     } chapter.<br />
-    <br>
+    <br />
     See the options above to change your notifications.
     `;
 

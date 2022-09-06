@@ -807,20 +807,34 @@ ${venueDetails}`;
       url: eventURL,
     });
 
-    const body = `When: ${event.start_at} to ${event.ends_at}<br>
-${event.venue ? `Where: ${event.venue.name}<br>` : ''}
-${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
-Event Details: <a href="${eventURL}">${eventURL}</a><br>
-    <br>
-    - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
+    const body = `New Upcoming Event for ${event.chapter.name}
+    <br />
+    When: ${event.start_at} to ${event.ends_at}
+    <br />
+   ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
+   ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+    View All of Upcoming Events for ${
+      event.chapter.name
+    }: <a href='https://chapter.freecodecamp.dev/chapters/${
+      event.chapter.id
+    }'>${event.chapter.name} chapter.</a><br />
+    RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
+    Event Details: <br />
+    <br />
+    - Stop receiving upcoming event notifications for ${
+      event.chapter.name
+    }. you can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
     - More about ${
       event.chapter.name
-    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
+    <br />
+    ----------------------------<br />
+    You received this email because you follow this ${
+      event.chapter.name
+    } chapter.<br />
     <br>
-    ----------------------------<br>
-    You received this email because you follow this chapter.<br>
-    <br>
-    See the options above to change your notifications.`;
+    See the options above to change your notifications.
+    `;
 
     const iCalEvent = calendar.toString();
 

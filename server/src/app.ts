@@ -11,6 +11,7 @@ import cookies from 'cookie-parser';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 
+import { Permission } from '../../common/permissions';
 import { isDev } from './config';
 import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
@@ -155,16 +156,28 @@ export const main = async (app: Express) => {
   // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
   // app.use(handleAuthenticationError);
 
-  function isLoggedIn(req: Request, _res: Response, next: NextFunction) {
-    if (req.user) {
-      next();
-    } else {
-      next('This is a protected route, please login before accessing it');
+  function canAuthWithGoogle(req: Request, _res: Response, next: NextFunction) {
+    if (!req.user) {
+      return next(
+        'This is a protected route, please login before accessing it',
+      );
     }
+    // TODO: use isAllowedByInstanceRole instead
+    const canAuthenticate =
+      req.user.instance_role.instance_role_permissions.some(
+        ({ instance_permission }) =>
+          instance_permission.name === Permission.GoogleAuthenticate,
+      );
+    if (!canAuthenticate) {
+      return next(
+        'This only users with the GoogleAuthenticate permission can access this route',
+      );
+    }
+    next();
   }
 
   // TODO: prevent non-owners from accessing this route
-  app.get('/authenticate-with-google', isLoggedIn, (_req, res) => {
+  app.get('/authenticate-with-google', canAuthWithGoogle, (_req, res) => {
     const state = crypto.randomUUID();
     res.cookie('state', state, {
       httpOnly: true,
@@ -176,7 +189,7 @@ export const main = async (app: Express) => {
     res.redirect(authUrl);
   });
 
-  app.get('/google-oauth2callback', isLoggedIn, (req, res, next) => {
+  app.get('/google-oauth2callback', canAuthWithGoogle, (req, res, next) => {
     if (req.query.state !== req.cookies.state) {
       return next('Client cookie and OAuth2 state do not match');
     }

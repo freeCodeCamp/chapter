@@ -38,6 +38,7 @@ const scopes = [
   'https://www.googleapis.com/auth/calendar.events',
   'https://www.googleapis.com/auth/contacts.readonly',
   'https://www.googleapis.com/auth/user.emails.read',
+  'https://www.googleapis.com/auth/userinfo.email',
   'profile',
 ];
 
@@ -55,10 +56,12 @@ export function getGoogleAuthUrl(state: string) {
 export async function storeGoogleTokens(code: string) {
   const oauth2Client = createOAuth2Client();
 
-  let tokens;
+  let tokens, userInfo;
   try {
     const tokenRes = await oauth2Client.getToken(code);
     tokens = tokenRes.tokens;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    userInfo = await oauth2Client.getTokenInfo(tokens.access_token!);
   } catch {
     throw new Error('Failed to get tokens');
   }
@@ -68,11 +71,17 @@ export async function storeGoogleTokens(code: string) {
 
   if (!access_token || !expiry_date) throw new Error('Tokens invalid');
 
+  // Technically we don't *need* the email, but it might be useful to have in
+  // case the owner needs to check which account is connected.
+  const { email } = userInfo;
+
+  if (!email) throw new Error('User email not found');
+
   if (refresh_token) {
-    const update = { access_token, refresh_token, expiry_date };
+    const update = { access_token, refresh_token, expiry_date, email };
     await prisma.google_tokens.upsert({
       where: { id: TOKENS_ID },
-      update: { ...update },
+      update,
       create: { id: TOKENS_ID, ...update },
     });
   } else {

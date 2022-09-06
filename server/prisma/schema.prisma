@@ -38,7 +38,8 @@ model sessions {
 }
 
 model google_tokens {
-  id            Int     @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
+  email         String @unique
   access_token  String
   refresh_token String
   expiry_date   Int

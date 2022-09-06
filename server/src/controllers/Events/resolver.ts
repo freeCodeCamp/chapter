@@ -807,18 +807,21 @@ ${venueDetails}`;
       url: eventURL,
     });
 
-    const body = `New Upcoming Event for ${event.chapter.name}
+    const body = `New Upcoming Event for ${event.chapter.name}<br />
     <br />
     When: ${event.start_at} to ${event.ends_at}
     <br />
    ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
    ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+   <br />
     View All of Upcoming Events for ${
       event.chapter.name
     }: <a href='https://chapter.freecodecamp.dev/chapters/${
       event.chapter.id
     }'>${event.chapter.name} chapter.</a><br />
     RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
+    -----------------------<br />
+    <br />
     Event Details: <br />
     <br />
     - Stop receiving upcoming event notifications for ${

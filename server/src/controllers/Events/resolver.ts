@@ -381,6 +381,8 @@ export class EventResolver {
 
     if (chapter.calendar_id && event.calendar_event_id) {
       try {
+        // Patch is necessary here, since an update with unchanged start and end
+        // will remove attendees' yes/no/maybe response without notifying them.
         await patchCalendarEvent({
           calendarId: chapter.calendar_id,
           calendarEventId: event.calendar_event_id,

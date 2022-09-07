@@ -818,9 +818,7 @@ ${venueDetails}`;
    <br />
     View All of Upcoming Events for ${
       event.chapter.name
-    }: <a href='https://chapter.freecodecamp.dev/chapters/${
-      event.chapter.id
-    }'>${event.chapter.name} chapter.</a><br />
+    }: <a href='${chapterURL}'>${event.chapter.name} chapter.</a><br />
     RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
     -----------------------<br />
     <br />

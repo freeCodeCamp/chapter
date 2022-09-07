@@ -832,14 +832,13 @@ ${venueDetails}`;
     } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
     <br />
     ----------------------------<br />
-    You received this email because you follow this ${
+    You received this email because you follow ${
       event.chapter.name
     } chapter.<br />
     <br />
     See the options above to change your notifications.
     `;
 
-    console.log(subsequentEventEmail);
     const iCalEvent = calendar.toString();
 
     await batchSender(function* () {

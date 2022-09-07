@@ -28,7 +28,11 @@ export const ChaptersPage: NextPage = () => {
             Chapters
           </Heading>
           {hasPermissionToCreateChapter && (
-            <LinkButton data-cy="new-chapter" href="/dashboard/chapters/new">
+            <LinkButton
+              data-cy="new-chapter"
+              href="/dashboard/chapters/new"
+              colorScheme={'blue'}
+            >
               Add new
             </LinkButton>
           )}
@@ -94,17 +98,25 @@ export const ChaptersPage: NextPage = () => {
                     }}
                     mapper={{
                       ' ': () => (
-                        <VStack align={'flex-start'} spacing={'4'}>
-                          <Heading as="h4" fontSize={'md'} marginBlock={'2'}>
+                        <VStack
+                          align={'flex-start'}
+                          spacing={'4'}
+                          fontSize={['sm', 'md']}
+                        >
+                          <Heading
+                            as="h3"
+                            fontSize={['sm', 'md']}
+                            marginBlock={'2'}
+                          >
                             Name
                           </Heading>
-                          <Heading as="h4" fontSize={'md'}>
+                          <Heading as="h3" fontSize={['sm', 'md']}>
                             Ops
                           </Heading>
                         </VStack>
                       ),
                       _: () => (
-                        <VStack align={'flex-start'}>
+                        <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                           <LinkButton
                             href={`/dashboard/chapters/${id}`}
                             marginBottom={'.5em'}

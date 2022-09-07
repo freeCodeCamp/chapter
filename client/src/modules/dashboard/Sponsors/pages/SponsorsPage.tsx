@@ -19,7 +19,9 @@ export const SponsorsPage: NextPage = () => {
         <VStack>
           <Flex w="full" justify="space-between">
             <Heading id="page-heading">Sponsors</Heading>
-            <LinkButton href="/dashboard/sponsors/new">Add new</LinkButton>
+            <LinkButton href="/dashboard/sponsors/new" colorScheme={'blue'}>
+              Add new
+            </LinkButton>
           </Flex>
           {loading ? (
             <Heading> Loading Sponsors...</Heading>
@@ -66,22 +68,27 @@ export const SponsorsPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.sponsors[index]]}
-                    keys={['types', 'value'] as const}
+                    keys={[' ', '_'] as const}
                     mapper={{
-                      types: () => (
+                      ' ': () => (
                         <VStack
-                          fontWeight={500}
+                          fontWeight={700}
                           align={'flex-start'}
+                          fontSize={['sm', 'md']}
                           spacing={4}
                         >
                           <Text>Name</Text>
                           <Text>Type</Text>
                           <Text>Website</Text>
-                          <Text>Action</Text>
+                          <Text>Ops</Text>
                         </VStack>
                       ),
-                      value: () => (
-                        <VStack align={'flex-start'}>
+                      _: () => (
+                        <VStack
+                          align={'flex-start'}
+                          spacing={2.5}
+                          fontSize={['sm', 'md']}
+                        >
                           <LinkButton
                             href={`/dashboard/sponsers/${id}`}
                             size={'sm'}

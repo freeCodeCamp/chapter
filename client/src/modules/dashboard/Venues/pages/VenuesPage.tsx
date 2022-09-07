@@ -21,7 +21,11 @@ export const VenuesPage: NextPage = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Venues</Heading>
           {adminedChapters.length > 0 && (
-            <LinkButton data-cy="new-venue" href="/dashboard/venues/new">
+            <LinkButton
+              data-cy="new-venue"
+              href="/dashboard/venues/new"
+              colorScheme={'blue'}
+            >
               Add new
             </LinkButton>
           )}
@@ -94,13 +98,14 @@ export const VenuesPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.venues[index]]}
-                    keys={['types', 'values'] as const}
+                    keys={[' ', '_'] as const}
                     mapper={{
-                      types: () => (
+                      ' ': () => (
                         <VStack
-                          fontWeight={500}
+                          fontWeight={700}
                           spacing={5}
                           align={'flex-start'}
+                          fontSize={['sm', 'md']}
                         >
                           <Text>Venue</Text>
                           <Text>Chapter</Text>
@@ -108,8 +113,12 @@ export const VenuesPage: NextPage = () => {
                           <Text>Action</Text>
                         </VStack>
                       ),
-                      values: () => (
-                        <VStack align={'flex-start'} spacing={3}>
+                      _: () => (
+                        <VStack
+                          align={'flex-start'}
+                          spacing={3}
+                          fontSize={['sm', 'md']}
+                        >
                           <LinkButton
                             data-cy="view-venue-button"
                             href={`/dashboard/venues/${id}`}

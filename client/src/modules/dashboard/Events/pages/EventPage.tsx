@@ -194,6 +194,7 @@ export const EventPage: NextPage = () => {
                         ' ': () => (
                           <VStack
                             align={'flex-start'}
+                            fontSize={['sm', 'md']}
                             fontWeight={700}
                             spacing={'2'}
                             marginBottom={4}
@@ -206,6 +207,7 @@ export const EventPage: NextPage = () => {
                         _: () => (
                           <VStack
                             align={'flex-start'}
+                            fontSize={['sm', 'md']}
                             spacing={'2'}
                             marginBottom={4}
                           >

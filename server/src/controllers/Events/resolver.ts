@@ -852,8 +852,8 @@ ${venueDetails}`;
           eventId: event.id,
           userId: user.id,
         });
-        const emailContent = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
-        yield { email, subject, emailContent, options: { iCalEvent } };
+        const text = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
+        yield { email, subject, text, options: { iCalEvent } };
       }
     });
 

@@ -183,27 +183,32 @@ export const EventPage: NextPage = () => {
                 />
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-                {users.map(({ event_role, user }, index) => (
-                  <HStack key={index}>
+                {users.map(({ event_role, user, rsvp }, index) => (
+                  <HStack key={rsvp.name}>
                     <DataTable
-                      title={`${title}`}
+                      title={'RSVP: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}
-                      keys={['type', 'value'] as const}
+                      keys={[' ', '_'] as const}
                       emptyText="No users"
                       mapper={{
-                        type: () => (
+                        ' ': () => (
                           <VStack
                             align={'flex-start'}
-                            fontWeight={500}
-                            spacing={'3'}
+                            fontWeight={700}
+                            spacing={'2'}
+                            marginBottom={4}
                           >
                             <Text>User</Text>
                             <Text>Role</Text>
                             <Text>Ops</Text>
                           </VStack>
                         ),
-                        value: () => (
-                          <VStack align={'flex-start'} spacing={'3'}>
+                        _: () => (
+                          <VStack
+                            align={'flex-start'}
+                            spacing={'2'}
+                            marginBottom={4}
+                          >
                             <Text data-cy="username">{user.name}</Text>
                             {ops.map(({ title, onClick, colorScheme }) => (
                               <Button

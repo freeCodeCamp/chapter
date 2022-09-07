@@ -19,7 +19,9 @@ import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
+import { Permission } from '../../../../common/permissions';
 import { useSession } from 'hooks/useSession';
+import { useCheckPermission } from 'hooks/useCheckPermission';
 
 interface Props {
   children: React.ReactNode;
@@ -71,6 +73,10 @@ export const Header: React.FC = () => {
   } = useAuthStore();
 
   const { logout: logoutAuth0 } = useAuth0();
+
+  const canAuthenticateWithGoogle = useCheckPermission(
+    Permission.GoogleAuthenticate,
+  );
 
   const logout = () => {
     setData({ user: undefined });
@@ -127,14 +133,16 @@ export const Header: React.FC = () => {
                         <MenuItem as="a">Dashboard</MenuItem>
                       </NextLink>
 
-                      <MenuItem
-                        as="a"
-                        href={
-                          new URL('/authenticate-with-google', serverUrl).href
-                        }
-                      >
-                        Authenticate with Google
-                      </MenuItem>
+                      {canAuthenticateWithGoogle && (
+                        <MenuItem
+                          as="a"
+                          href={
+                            new URL('/authenticate-with-google', serverUrl).href
+                          }
+                        >
+                          Authenticate with Google
+                        </MenuItem>
+                      )}
 
                       <MenuItem data-cy="logout-button" onClick={logout}>
                         Logout

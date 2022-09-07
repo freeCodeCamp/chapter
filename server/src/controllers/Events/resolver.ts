@@ -809,7 +809,7 @@ ${venueDetails}`;
 
     const subsequentEventEmail = `New Upcoming Event for ${
       event.chapter.name
-    }<br />
+    }.<br />
     <br />
     When: ${event.start_at} to ${event.ends_at}
     <br />
@@ -818,11 +818,9 @@ ${venueDetails}`;
    <br />
     View All of Upcoming Events for ${
       event.chapter.name
-    }: <a href='${chapterURL}'>${event.chapter.name} chapter.</a><br />
+    }: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
     RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
-    -----------------------<br />
-    <br />
-    Event Details: <br />
+    ----------------------------<br />
     <br />
     - Stop receiving upcoming event notifications for ${
       event.chapter.name

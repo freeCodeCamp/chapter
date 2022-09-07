@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { OAuth2Client } from 'google-auth-library';
-import { calendar } from '@googleapis/calendar';
+import { calendar, calendar_v3 } from '@googleapis/calendar';
 import { isProd } from '../config';
 import { prisma } from '../prisma';
 
@@ -181,6 +181,8 @@ export async function createCalendarEvent(
   });
 }
 
+// TODO: create a patchCalendarEvent for updating specific fields (most useful
+// for RSVPs which only modify the attendees list)
 export async function updateCalendarEvent(eventUpdateData: EventUpdateData) {
   const auth = await createCredentialedClient();
   const googleCalendar = calendar({ version: 'v3', auth });
@@ -191,6 +193,22 @@ export async function updateCalendarEvent(eventUpdateData: EventUpdateData) {
     eventId: calendarEventId,
     sendUpdates: 'all',
     requestBody: getStandardRequestBody(eventUpdateData),
+  });
+}
+
+export async function patchCalendarEvent(
+  eventUpdateData: Partial<EventUpdateData>,
+) {
+  const auth = await createCredentialedClient();
+  const googleCalendar = calendar({ version: 'v3', auth });
+
+  const { calendarId, calendarEventId } = eventUpdateData;
+
+  await googleCalendar.events.patch({
+    calendarId,
+    eventId: calendarEventId,
+    sendUpdates: 'all',
+    requestBody: getStandardPatchBody(eventUpdateData),
   });
 }
 
@@ -210,6 +228,7 @@ export async function cancelCalendarEvent(eventUpdateData: EventUpdateData) {
   });
 }
 
+// TODO: DRY this and getStandardPatchBody
 function getStandardRequestBody({
   attendeeEmails,
   start,
@@ -221,7 +240,7 @@ function getStandardRequestBody({
   const attendees = isProd()
     ? attendeeEmails.map((email: string) => ({ email }))
     : [];
-  return {
+  const body: calendar_v3.Schema$Event = {
     start: { dateTime: start.toISOString() },
     end: { dateTime: end.toISOString() },
     summary,
@@ -229,6 +248,24 @@ function getStandardRequestBody({
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
   };
+  return body;
+}
+
+function getStandardPatchBody({
+  attendeeEmails,
+  start,
+  end,
+  summary,
+}: Partial<EventData>): calendar_v3.Schema$Event {
+  const body: calendar_v3.Schema$Event = {};
+  if (start) body.start = { dateTime: start.toISOString() };
+  if (end) body.end = { dateTime: end.toISOString() };
+  if (summary) body.summary = summary;
+  if (attendeeEmails)
+    body.attendees = isProd()
+      ? attendeeEmails.map((email: string) => ({ email }))
+      : [];
+  return body;
 }
 
 export async function deleteCalendarEvent({

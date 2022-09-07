@@ -45,6 +45,7 @@ import {
   cancelCalendarEvent,
   createCalendarEvent,
   deleteCalendarEvent,
+  patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
@@ -380,12 +381,9 @@ export class EventResolver {
 
     if (chapter.calendar_id && event.calendar_event_id) {
       try {
-        await updateCalendarEvent({
+        await patchCalendarEvent({
           calendarId: chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
-          summary: event.name,
-          end: event.ends_at,
-          start: event.start_at,
           attendeeEmails: [...oldAttendeeEmails, ctx.user.email],
         });
       } catch {

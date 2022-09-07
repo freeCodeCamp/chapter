@@ -158,10 +158,10 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     (key: string) => {
       return (date: Date | null) => {
         if (key === 'start_at' && date) {
-          setValue('start_at', date);
+          setValue('start_at', date, { shouldDirty: true });
           setStartDate(date);
         } else if (key === 'ends_at' && date) {
-          setValue('ends_at', date);
+          setValue('ends_at', date, { shouldDirty: true });
           setEndDate(date);
         }
       };
@@ -253,7 +253,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           data-cy="invite-only-checkbox"
           isChecked={inviteOnly}
           disabled={loading}
-          onChange={(e) => setValue('invite_only', e.target.checked)}
+          {...register('invite_only')}
         >
           Invite only
         </Checkbox>

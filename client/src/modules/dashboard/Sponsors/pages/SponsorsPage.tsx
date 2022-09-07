@@ -68,27 +68,24 @@ export const SponsorsPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.sponsors[index]]}
-                    keys={[' ', '_'] as const}
+                    keys={['type', 'action'] as const}
+                    showHeader={false}
                     mapper={{
-                      ' ': () => (
+                      type: () => (
                         <VStack
                           fontWeight={700}
                           align={'flex-start'}
                           fontSize={['sm', 'md']}
-                          spacing={4}
+                          marginBlock={'1.5em'}
                         >
-                          <Text>Name</Text>
+                          <Text marginBlock={'.54em'}>Name</Text>
                           <Text>Type</Text>
-                          <Text>Website</Text>
                           <Text>Ops</Text>
+                          <Text>Website</Text>
                         </VStack>
                       ),
-                      _: () => (
-                        <VStack
-                          align={'flex-start'}
-                          spacing={2.5}
-                          fontSize={['sm', 'md']}
-                        >
+                      action: () => (
+                        <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                           <LinkButton
                             href={`/dashboard/sponsers/${id}`}
                             size={'sm'}
@@ -96,7 +93,6 @@ export const SponsorsPage: NextPage = () => {
                             {name}
                           </LinkButton>
                           <Text>{type}</Text>
-                          <Text size={'sm'}>{website}</Text>
                           <LinkButton
                             colorScheme="blue"
                             size="xs"
@@ -104,6 +100,10 @@ export const SponsorsPage: NextPage = () => {
                           >
                             Edit
                           </LinkButton>
+                          {/* the slice is here to stop the overflow, ToDo not use slice */}
+                          <Text size={'sm'} wordBreak={'keep-all'}>
+                            {website.slice(7, -4)}
+                          </Text>
                         </VStack>
                       ),
                     }}

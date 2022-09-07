@@ -92,21 +92,23 @@ export const ChaptersPage: NextPage = () => {
                 <Flex key={id}>
                   <DataTable
                     data={[chapterData.chapters[index]]}
-                    keys={[' ', '_'] as const}
+                    keys={['type', 'action'] as const}
+                    showHeader={false}
                     tableProps={{
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     mapper={{
-                      ' ': () => (
+                      type: () => (
                         <VStack
                           align={'flex-start'}
                           spacing={'4'}
                           fontSize={['sm', 'md']}
+                          marginBlock={'1.5em'}
                         >
                           <Heading
                             as="h3"
                             fontSize={['sm', 'md']}
-                            marginBlock={'2'}
+                            marginBlock={'1'}
                           >
                             Name
                           </Heading>
@@ -115,7 +117,7 @@ export const ChaptersPage: NextPage = () => {
                           </Heading>
                         </VStack>
                       ),
-                      _: () => (
+                      action: () => (
                         <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                           <LinkButton
                             href={`/dashboard/chapters/${id}`}

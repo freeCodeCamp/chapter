@@ -188,10 +188,11 @@ export const EventPage: NextPage = () => {
                     <DataTable
                       title={'RSVP: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}
-                      keys={[' ', '_'] as const}
+                      keys={['type', 'action'] as const}
+                      showHeader={false}
                       emptyText="No users"
                       mapper={{
-                        ' ': () => (
+                        type: () => (
                           <VStack
                             align={'flex-start'}
                             fontSize={['sm', 'md']}
@@ -204,7 +205,7 @@ export const EventPage: NextPage = () => {
                             <Text>Ops</Text>
                           </VStack>
                         ),
-                        _: () => (
+                        action: () => (
                           <VStack
                             align={'flex-start'}
                             fontSize={['sm', 'md']}

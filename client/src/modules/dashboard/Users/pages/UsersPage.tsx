@@ -114,20 +114,22 @@ export const UsersPage: NextPage = () => {
                   key={id}
                   data={[data.users[index]]}
                   tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                  keys={[' ', '_'] as const}
+                  keys={['type', 'action'] as const}
+                  showHeader={false}
                   mapper={{
-                    ' ': () => (
+                    type: () => (
                       <VStack
                         fontWeight={'700'}
                         fontSize={['sm', 'md']}
                         align={'flex-start'}
+                        marginBlock={'.5em'}
                       >
                         <Text>Name</Text>
                         <Text>Role</Text>
                         <Text>Action</Text>
                       </VStack>
                     ),
-                    _: () => (
+                    action: () => (
                       <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                         <Text data-cy="name">{name}</Text>
                         <Text data-cy="role">{instance_role.name}</Text>

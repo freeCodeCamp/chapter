@@ -132,16 +132,19 @@ export const EventsPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.events[index]]}
-                    keys={[' ', '_'] as const}
+                    keys={['type', 'action'] as const}
+                    showHeader={false}
                     mapper={{
-                      ' ': () => (
+                      type: () => (
                         <VStack
                           fontWeight={'700'}
-                          spacing={2.5}
+                          spacing={3}
                           align={'flex-start'}
                           fontSize={['sm', 'md']}
                           minW={'7em'}
+                          marginBlock={'1.5em'}
                         >
+                          {/* todo fix spacing between elements */}
                           <Text>Status</Text>
                           <Text>Name</Text>
                           <Text>Invite only</Text>
@@ -152,7 +155,7 @@ export const EventsPage: NextPage = () => {
                           <Text>Ops</Text>
                         </VStack>
                       ),
-                      _: () => (
+                      action: () => (
                         <VStack align={'flex-start'} spacing={2} width="10em">
                           <HStack>
                             {canceled ? (

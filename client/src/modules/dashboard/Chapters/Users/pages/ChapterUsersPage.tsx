@@ -215,20 +215,25 @@ export const ChapterUsersPage: NextPage = () => {
                     {data.chapter ? (
                       <DataTable
                         data={[data.chapter.chapter_users[index]]}
-                        keys={[' ', '_'] as const}
+                        keys={['type', 'action'] as const}
+                        showHeader={false}
                         tableProps={{
                           table: { 'aria-labelledby': 'page-heading' },
                         }}
                         mapper={{
-                          ' ': () => (
-                            <VStack spacing={3} align={'flex-start'}>
+                          type: () => (
+                            <VStack
+                              spacing={3}
+                              align={'flex-start'}
+                              marginBlock={'1em'}
+                            >
                               <Text fontWeight={700}>Name</Text>
                               <Text fontWeight={700}>Email</Text>
                               <Text fontWeight={700}>Ops</Text>
                               <Text fontWeight={700}>Role</Text>
                             </VStack>
                           ),
-                          _: () => (
+                          action: () => (
                             <VStack spacing={3} align={'flex-start'}>
                               <HStack>
                                 <Text>{user.name}</Text>

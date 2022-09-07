@@ -98,14 +98,16 @@ export const VenuesPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.venues[index]]}
-                    keys={[' ', '_'] as const}
+                    showHeader={false}
+                    keys={['type', 'action'] as const}
                     mapper={{
-                      ' ': () => (
+                      type: () => (
                         <VStack
                           fontWeight={700}
                           spacing={5}
                           align={'flex-start'}
                           fontSize={['sm', 'md']}
+                          marginBlock={'1em'}
                         >
                           <Text>Venue</Text>
                           <Text>Chapter</Text>
@@ -113,7 +115,7 @@ export const VenuesPage: NextPage = () => {
                           <Text>Action</Text>
                         </VStack>
                       ),
-                      _: () => (
+                      action: () => (
                         <VStack
                           align={'flex-start'}
                           spacing={3}

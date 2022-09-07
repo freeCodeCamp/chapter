@@ -93,8 +93,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       url: data.url,
       streaming_url: data.streaming_url,
       capacity: data.capacity,
-      start_at: data.start_at,
-      ends_at: data.ends_at,
+      start_at: new Date(data.start_at),
+      ends_at: new Date(data.ends_at),
       sponsors: data.sponsors,
       tags: (data.tags || []).map(({ tag }) => tag.name).join(', '),
       venue_type: data.venue_type,
@@ -157,10 +157,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const onDatePickerChange = useCallback(
     (key: string) => {
       return (date: Date | null) => {
-        if (key === 'start_at' && date) {
+        if (!date) return;
+        if (key === 'start_at' || date < getValues('start_at')) {
           setValue('start_at', date, { shouldDirty: true });
           setStartDate(date);
-        } else if (key === 'ends_at' && date) {
+        }
+        if (key === 'ends_at' || date > getValues('ends_at')) {
           setValue('ends_at', date, { shouldDirty: true });
           setEndDate(date);
         }

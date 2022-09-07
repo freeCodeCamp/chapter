@@ -807,7 +807,9 @@ ${venueDetails}`;
       url: eventURL,
     });
 
-    const body = `New Upcoming Event for ${event.chapter.name}<br />
+    const subsequentEventEmail = `New Upcoming Event for ${
+      event.chapter.name
+    }<br />
     <br />
     When: ${event.start_at} to ${event.ends_at}
     <br />
@@ -839,6 +841,7 @@ ${venueDetails}`;
     See the options above to change your notifications.
     `;
 
+    console.log(subsequentEventEmail);
     const iCalEvent = calendar.toString();
 
     await batchSender(function* () {
@@ -849,8 +852,8 @@ ${venueDetails}`;
           eventId: event.id,
           userId: user.id,
         });
-        const text = `${body}<br>${unsubScribeOptions}`;
-        yield { email, subject, text, options: { iCalEvent } };
+        const emailContent = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
+        yield { email, subject, emailContent, options: { iCalEvent } };
       }
     });
 

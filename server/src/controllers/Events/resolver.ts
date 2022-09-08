@@ -171,6 +171,39 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
 };
 
+const updateCalendarEventAttendees = async ({
+  eventId,
+  calendarId,
+  calendarEventId,
+}: {
+  eventId: number;
+  calendarId: string | null;
+  calendarEventId: string | null;
+}) => {
+  const attendees = await prisma.event_users.findMany({
+    where: {
+      event_id: eventId,
+      rsvp: { name: 'yes' },
+    },
+    select: { user: { select: { email: true } } },
+  });
+
+  if (calendarId && calendarEventId) {
+    try {
+      // Patch is necessary here, since an update with unchanged start and end
+      // will remove attendees' yes/no/maybe response without notifying them.
+      await patchCalendarEvent({
+        calendarId,
+        calendarEventId,
+        attendeeEmails: attendees.map(({ user }) => user.email),
+      });
+    } catch {
+      // TODO: log more details without leaking tokens and user info.
+      throw 'Unable to update calendar event attendees';
+    }
+  }
+};
+
 @Resolver()
 export class EventResolver {
   @Query(() => [EventWithRelations])
@@ -285,6 +318,11 @@ export class EventResolver {
           include: eventUserIncludes,
         },
         venue: true,
+        chapter: {
+          select: {
+            calendar_id: true,
+          },
+        },
       },
     });
 
@@ -355,44 +393,11 @@ export class EventResolver {
       }
     }
 
-    // TODO: find by permission, not role. Fold into event query? TODO: this is
-    // a bit convoluted. Also, we don't know if the admin user *has* a token!
-    // Ideally we want the first admin that has definitely got a live token.
-
-    // We need the chapter for calendar_id and one of the chapter admins so we
-    // can use their token to authenticate with Google.
-    const chapter = await prisma.chapters.findUniqueOrThrow({
-      where: { id: chapterId },
-      select: {
-        calendar_id: true,
-        chapter_users: {
-          where: { chapter_role: { name: { equals: 'administrator' } } },
-          take: 1,
-        },
-      },
+    await updateCalendarEventAttendees({
+      calendarEventId: event.calendar_event_id,
+      calendarId: event.chapter.calendar_id,
+      eventId,
     });
-
-    const oldAttendeeEmails = event.event_users
-      .filter(
-        (eventUser) =>
-          eventUser.rsvp.name === 'yes' || eventUser.rsvp.name === 'waitlist',
-      )
-      .map((eventUser) => eventUser.user.email);
-
-    if (chapter.calendar_id && event.calendar_event_id) {
-      try {
-        // Patch is necessary here, since an update with unchanged start and end
-        // will remove attendees' yes/no/maybe response without notifying them.
-        await patchCalendarEvent({
-          calendarId: chapter.calendar_id,
-          calendarEventId: event.calendar_event_id,
-          attendeeEmails: [...oldAttendeeEmails, ctx.user.email],
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to add attendee to calendar event');
-      }
-    }
 
     await sendRsvpInvitation(ctx.user, event);
     await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
@@ -458,30 +463,7 @@ export class EventResolver {
       }
     }
 
-    const oldAttendeeEmails = event.event_users.map(
-      (eventUser) => eventUser.user.email,
-    );
-
-    const remainingAttendeeEmails = oldAttendeeEmails.filter(
-      (email) => email !== ctx.user.email,
-    );
-
-    if (event.chapter.calendar_id && event.calendar_event_id) {
-      try {
-        // Patch is necessary here, since an update with unchanged start and end
-        // will remove attendees' yes/no/maybe response without notifying them.
-        await patchCalendarEvent({
-          calendarId: event.chapter.calendar_id,
-          calendarEventId: event.calendar_event_id,
-          attendeeEmails: remainingAttendeeEmails,
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to remove attendee from calendar event');
-      }
-    }
-
-    return await prisma.event_users.update({
+    const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },
       include: eventUserIncludes,
       where: {
@@ -491,6 +473,13 @@ export class EventResolver {
         },
       },
     });
+
+    await updateCalendarEventAttendees({
+      calendarEventId: event.calendar_event_id,
+      calendarId: event.chapter.calendar_id,
+      eventId,
+    });
+    return updatedEventUser;
   }
 
   @Authorized(Permission.RsvpConfirm)
@@ -531,32 +520,11 @@ ${unsubscribeOptions}`,
       include: eventUserIncludes,
     });
 
-    const calendarId = eventUser.event.chapter.calendar_id;
-    const calendarEventId = eventUser.event.calendar_event_id;
-
-    const attendees = await prisma.event_users.findMany({
-      where: {
-        event_id: eventUser.event_id,
-        rsvp: { name: 'yes' },
-      },
-      select: { user: { select: { email: true } } },
+    await updateCalendarEventAttendees({
+      calendarEventId: eventUser.event.calendar_event_id,
+      calendarId: eventUser.event.chapter.calendar_id,
+      eventId,
     });
-
-    if (calendarId && calendarEventId) {
-      try {
-        // Patch is necessary here, since an update with unchanged start and end
-        // will remove attendees' yes/no/maybe response without notifying them.
-        await patchCalendarEvent({
-          calendarId,
-          calendarEventId,
-          attendeeEmails: attendees.map(({ user }) => user.email),
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to add confirmed attendee to calendar event');
-      }
-    }
-
     return updatedUser;
   }
 
@@ -566,7 +534,7 @@ ${unsubscribeOptions}`,
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    const deletedRsvp = await prisma.event_users.delete({
+    const { event } = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       select: {
         event: {
@@ -580,32 +548,11 @@ ${unsubscribeOptions}`,
       },
     });
 
-    const {
-      chapter: { calendar_id: calendarId },
-      calendar_event_id: calendarEventId,
-    } = deletedRsvp.event;
-
-    const attendingEventUsers = await prisma.event_users.findMany({
-      where: {
-        event_id: eventId,
-      },
-      select: { user: { select: { email: true } } },
+    await updateCalendarEventAttendees({
+      calendarEventId: event.calendar_event_id,
+      calendarId: event.chapter.calendar_id,
+      eventId,
     });
-
-    if (calendarId && calendarEventId) {
-      try {
-        // Patch is necessary here, since an update with unchanged start and end
-        // will remove attendees' yes/no/maybe response without notifying them.
-        await patchCalendarEvent({
-          calendarId,
-          calendarEventId,
-          attendeeEmails: attendingEventUsers.map(({ user }) => user.email),
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to remove attendee from calendar event');
-      }
-    }
 
     return true;
   }

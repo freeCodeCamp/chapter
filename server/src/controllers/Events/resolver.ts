@@ -519,7 +519,8 @@ export class EventResolver {
 ${unsubscribeOptions}`,
     }).sendEmail();
 
-    return await prisma.event_users.update({
+    // TODO: use one update call rather than a find and then a separate update.
+    const updatedUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'yes' } } },
       where: {
         user_id_event_id: {
@@ -529,6 +530,34 @@ ${unsubscribeOptions}`,
       },
       include: eventUserIncludes,
     });
+
+    const calendarId = eventUser.event.chapter.calendar_id;
+    const calendarEventId = eventUser.event.calendar_event_id;
+
+    const attendees = await prisma.event_users.findMany({
+      where: {
+        event_id: eventUser.event_id,
+        rsvp: { name: 'yes' },
+      },
+      select: { user: { select: { email: true } } },
+    });
+
+    if (calendarId && calendarEventId) {
+      try {
+        // Patch is necessary here, since an update with unchanged start and end
+        // will remove attendees' yes/no/maybe response without notifying them.
+        await patchCalendarEvent({
+          calendarId,
+          calendarEventId,
+          attendeeEmails: attendees.map(({ user }) => user.email),
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to add confirmed attendee to calendar event');
+      }
+    }
+
+    return updatedUser;
   }
 
   @Authorized(Permission.RsvpDelete)

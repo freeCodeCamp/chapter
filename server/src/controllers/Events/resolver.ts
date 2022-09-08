@@ -393,6 +393,8 @@ export class EventResolver {
       }
     }
 
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
     await updateCalendarEventAttendees({
       calendarEventId: event.calendar_event_id,
       calendarId: event.chapter.calendar_id,
@@ -474,6 +476,8 @@ export class EventResolver {
       },
     });
 
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
     await updateCalendarEventAttendees({
       calendarEventId: event.calendar_event_id,
       calendarId: event.chapter.calendar_id,
@@ -520,6 +524,8 @@ ${unsubscribeOptions}`,
       include: eventUserIncludes,
     });
 
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
     await updateCalendarEventAttendees({
       calendarEventId: eventUser.event.calendar_event_id,
       calendarId: eventUser.event.chapter.calendar_id,
@@ -548,6 +554,8 @@ ${unsubscribeOptions}`,
       },
     });
 
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
     await updateCalendarEventAttendees({
       calendarEventId: event.calendar_event_id,
       calendarId: event.chapter.calendar_id,

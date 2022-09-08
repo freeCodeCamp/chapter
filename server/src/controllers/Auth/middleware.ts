@@ -143,3 +143,19 @@ export function handleAuthenticationError(
     });
   }
 }
+
+export function handleError(
+  err: any,
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  if (res.headersSent) {
+    return next(err);
+  }
+  if (err) {
+    return res.status(401).send({
+      message: 'Something went Wrong',
+    });
+  }
+}

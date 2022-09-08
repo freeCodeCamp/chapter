@@ -537,9 +537,46 @@ ${unsubscribeOptions}`,
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    await prisma.event_users.delete({
+    const deletedRsvp = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+      select: {
+        event: {
+          select: {
+            calendar_event_id: true,
+            chapter: {
+              select: { calendar_id: true },
+            },
+          },
+        },
+      },
     });
+
+    const {
+      chapter: { calendar_id: calendarId },
+      calendar_event_id: calendarEventId,
+    } = deletedRsvp.event;
+
+    const attendingEventUsers = await prisma.event_users.findMany({
+      where: {
+        event_id: eventId,
+      },
+      select: { user: { select: { email: true } } },
+    });
+
+    if (calendarId && calendarEventId) {
+      try {
+        // Patch is necessary here, since an update with unchanged start and end
+        // will remove attendees' yes/no/maybe response without notifying them.
+        await patchCalendarEvent({
+          calendarId,
+          calendarEventId,
+          attendeeEmails: attendingEventUsers.map(({ user }) => user.email),
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to remove attendee from calendar event');
+      }
+    }
 
     return true;
   }

@@ -425,6 +425,7 @@ export class EventResolver {
           include: eventUserIncludes,
         },
         venue: true,
+        chapter: { select: { calendar_id: true } },
       },
     });
 
@@ -454,6 +455,29 @@ export class EventResolver {
           });
           // TODO add email about being off waitlist?
         }
+      }
+    }
+
+    const oldAttendeeEmails = event.event_users.map(
+      (eventUser) => eventUser.user.email,
+    );
+
+    const remainingAttendeeEmails = oldAttendeeEmails.filter(
+      (email) => email !== ctx.user.email,
+    );
+
+    if (event.chapter.calendar_id && event.calendar_event_id) {
+      try {
+        // Patch is necessary here, since an update with unchanged start and end
+        // will remove attendees' yes/no/maybe response without notifying them.
+        await patchCalendarEvent({
+          calendarId: event.chapter.calendar_id,
+          calendarEventId: event.calendar_event_id,
+          attendeeEmails: remainingAttendeeEmails,
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to remove attendee from calendar event');
       }
     }
 

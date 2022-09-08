@@ -1,5 +1,9 @@
 import { NextFunction, Response } from 'express';
-import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
+import {
+  TokenExpiredError,
+  JsonWebTokenError,
+  NotBeforeError,
+} from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { Request } from '../../common-types/gql';
@@ -123,6 +127,10 @@ export function handleAuthenticationError(
   } else if (err instanceof JsonWebTokenError) {
     return res.status(401).send({
       message: 'Token invalid',
+    });
+  } else if (err instanceof NotBeforeError) {
+    return res.status(401).send({
+      message: 'Token Not Active',
     });
   } else {
     return res.status(401).send({

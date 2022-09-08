@@ -58,6 +58,7 @@ export const EventsPage: NextPage = () => {
                   status: (event) =>
                     event.canceled ? (
                       <Text
+                        data-cy="event-canceled"
                         color="red.500"
                         fontSize={['md', 'lg']}
                         fontWeight={'semibold'}

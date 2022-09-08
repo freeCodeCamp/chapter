@@ -1,12 +1,7 @@
 import { NextFunction, Response } from 'express';
-import {
-  TokenExpiredError,
-  JsonWebTokenError,
-  NotBeforeError,
-} from 'jsonwebtoken';
+import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
-import { UnauthorizedError } from 'express-oauth2-jwt-bearer';
 import { Request } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 
@@ -128,14 +123,6 @@ export function handleAuthenticationError(
   } else if (err instanceof JsonWebTokenError) {
     return res.status(401).send({
       message: 'Token invalid',
-    });
-  } else if (err instanceof NotBeforeError) {
-    return res.status(401).send({
-      message: 'Token Not Active',
-    });
-  } else if (err instanceof UnauthorizedError) {
-    return res.status(401).send({
-      message: 'User Not Authorized',
     });
   } else {
     return res.status(401).send({

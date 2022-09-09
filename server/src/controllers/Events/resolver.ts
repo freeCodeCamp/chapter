@@ -718,7 +718,7 @@ ${venueDetails}`;
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} is canceled`;
-      const cancelEventEmail = `The Upcoming Event for ${event.name} is canceled.<br />
+      const cancelEventEmail = `The Upcoming Event ${event.name} is canceled.<br />
       <br />
       View Upcoming Events for ${event.chapter.name}: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
       ----------------------------<br />

@@ -10,8 +10,8 @@ export const CHAPTER = gql`
       city
       region
       country
-      imageUrl
-      chatUrl
+      image_url
+      chat_url
       events {
         id
         name
@@ -79,7 +79,12 @@ export const CHAPTERS = gql`
       name
       description
       category
-      imageUrl
+      image_url
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;

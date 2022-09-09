@@ -7,7 +7,7 @@ const chapterData = {
   region: 'New Region',
   country: 'New Country',
   category: 'New Category',
-  imageUrl: 'https://example.com/new-image.jpg',
+  image_url: 'https://example.com/new-image.jpg',
 };
 
 describe('chapter edit dashboard', () => {
@@ -36,7 +36,7 @@ describe('chapter edit dashboard', () => {
       .type(chapterData.category);
     cy.findByRole('textbox', { name: 'Image Url' })
       .clear()
-      .type(chapterData.imageUrl);
+      .type(chapterData.image_url);
 
     cy.findByRole('form', { name: 'Save Chapter Changes' })
       .findByRole('button', { name: 'Save Chapter Changes' })

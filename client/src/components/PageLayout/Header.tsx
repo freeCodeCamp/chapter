@@ -1,6 +1,7 @@
 import { HStack } from '@chakra-ui/layout';
 import {
   Avatar,
+  Box,
   Button,
   Flex,
   Image,
@@ -18,7 +19,6 @@ import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
-import { Input } from '../Form/Input';
 import { useSession } from 'hooks/useSession';
 
 interface Props {
@@ -49,7 +49,7 @@ const DevLoginButton = () => {
 const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <Flex
-      justifyContent="center"
+      justifyContent="space-between"
       alignItems="center"
       ref={ref}
       {...props}
@@ -98,52 +98,48 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <Input
-          background={'gray.10'}
-          color={'gray.85'}
-          noLabel
-          placeholder="Search..."
-        />
         <HStack as="nav">
-          <Menu>
-            <MenuButton
-              as={Button}
-              aria-label="Options"
-              variant="outline"
-              background={'gray.10'}
-              px={[2, 4]}
-              py={[1, 2]}
-            >
-              Menu
-            </MenuButton>
-            <MenuList>
-              <Flex className={styles.header} flexDirection={'column'}>
-                <NextLink passHref href="/chapters">
-                  <MenuItem as="a">Chapter</MenuItem>
-                </NextLink>
+          <Box>
+            <Menu>
+              <MenuButton
+                as={Button}
+                aria-label="Options"
+                variant="outline"
+                background={'gray.10'}
+                px={[2, 4]}
+                py={[1, 2]}
+              >
+                Menu
+              </MenuButton>
+              <MenuList>
+                <Flex className={styles.header} flexDirection={'column'}>
+                  <NextLink passHref href="/chapters">
+                    <MenuItem as="a">Chapters</MenuItem>
+                  </NextLink>
 
-                <NextLink passHref href="/events">
-                  <MenuItem as="a">Events feed</MenuItem>
-                </NextLink>
+                  <NextLink passHref href="/events">
+                    <MenuItem as="a">Events</MenuItem>
+                  </NextLink>
 
-                {user ? (
-                  <>
-                    <NextLink passHref href="/dashboard/chapters">
-                      <MenuItem as="a">Dashboard</MenuItem>
-                    </NextLink>
+                  {user ? (
+                    <>
+                      <NextLink passHref href="/dashboard/chapters">
+                        <MenuItem as="a">Dashboard</MenuItem>
+                      </NextLink>
 
-                    <MenuItem data-cy="logout-button" onClick={logout}>
-                      Logout
-                    </MenuItem>
-                  </>
-                ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
-                  <DevLoginButton />
-                ) : (
-                  <LoginButton />
-                )}
-              </Flex>
-            </MenuList>
-          </Menu>
+                      <MenuItem data-cy="logout-button" onClick={logout}>
+                        Logout
+                      </MenuItem>
+                    </>
+                  ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+                    <DevLoginButton />
+                  ) : (
+                    <LoginButton />
+                  )}
+                </Flex>
+              </MenuList>
+            </Menu>
+          </Box>
 
           {user ? (
             <>

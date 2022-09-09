@@ -1,4 +1,4 @@
-import { VStack, Flex, Text, Heading } from '@chakra-ui/react';
+import { VStack, Flex, Text, Heading, Box } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
@@ -36,40 +36,114 @@ export const VenuesPage: NextPage = () => {
             </Text>
           </>
         ) : (
-          <DataTable
-            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            data={data.venues}
-            keys={['name', 'location', 'chapter', 'actions'] as const}
-            mapper={{
-              name: (venue) => (
-                <LinkButton
-                  data-cy="view-venue-button"
-                  href={`/dashboard/venues/${venue.id}`}
-                >
-                  {venue.name}
-                </LinkButton>
-              ),
-              location: (venue) => getLocationString(venue),
-              chapter: ({ chapter }) => (
-                <LinkButton
-                  data-cy="view-chapter-button"
-                  href={`/dashboard/chapters/${chapter.id}`}
-                >
-                  {chapter.name}
-                </LinkButton>
-              ),
-              actions: (venue) => (
-                <LinkButton
-                  data-cy="edit-venue-button"
-                  colorScheme="green"
-                  size="xs"
-                  href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
-                >
-                  Edit
-                </LinkButton>
-              ),
-            }}
-          />
+          <Box width={'100%'}>
+            <Box display={{ base: 'none', lg: 'block' }}>
+              <DataTable
+                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                data={data.venues}
+                keys={['name', 'location', 'chapter', 'actions'] as const}
+                mapper={{
+                  name: (venue) => (
+                    <LinkButton
+                      data-cy="view-venue-button"
+                      href={`/dashboard/venues/${venue.id}`}
+                    >
+                      {venue.name}
+                    </LinkButton>
+                  ),
+                  location: (venue) => getLocationString(venue),
+                  chapter: ({ chapter }) => (
+                    <LinkButton
+                      data-cy="view-chapter-button"
+                      href={`/dashboard/chapters/${chapter.id}`}
+                    >
+                      {chapter.name}
+                    </LinkButton>
+                  ),
+                  actions: (venue) => (
+                    <LinkButton
+                      data-cy="edit-venue-button"
+                      colorScheme="blue"
+                      size="xs"
+                      href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
+                    >
+                      Edit
+                    </LinkButton>
+                  ),
+                }}
+              />
+            </Box>
+
+            <Box display={{ base: 'block', lg: 'none' }}>
+              {data.venues.map(
+                (
+                  {
+                    id,
+                    name,
+                    chapter,
+                    chapter_id,
+                    region,
+                    postal_code,
+                    country,
+                  },
+                  index,
+                ) => (
+                  <DataTable
+                    key={id}
+                    tableProps={{
+                      table: { 'aria-labelledby': 'page-heading' },
+                    }}
+                    data={[data.venues[index]]}
+                    keys={['types', 'values'] as const}
+                    mapper={{
+                      types: () => (
+                        <VStack
+                          fontWeight={500}
+                          spacing={5}
+                          align={'flex-start'}
+                        >
+                          <Text>Venue</Text>
+                          <Text>Chapter</Text>
+                          <Text>Location</Text>
+                          <Text>Action</Text>
+                        </VStack>
+                      ),
+                      values: () => (
+                        <VStack align={'flex-start'} spacing={3}>
+                          <LinkButton
+                            data-cy="view-venue-button"
+                            href={`/dashboard/venues/${id}`}
+                            size={'sm'}
+                          >
+                            {name}
+                          </LinkButton>
+                          <LinkButton
+                            data-cy="view-chapter-button"
+                            href={`/dashboard/chapters/${chapter.id}`}
+                            size={'sm'}
+                          >
+                            {chapter.name}
+                          </LinkButton>
+                          <Text>
+                            {' '}
+                            {region}, {country}, {postal_code}
+                          </Text>
+                          <LinkButton
+                            data-cy="edit-venue-button"
+                            colorScheme="blue"
+                            size="xs"
+                            href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
+                          >
+                            Edit
+                          </LinkButton>
+                        </VStack>
+                      ),
+                    }}
+                  />
+                ),
+              )}
+            </Box>
+          </Box>
         )}
       </VStack>
     </Layout>

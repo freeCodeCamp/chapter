@@ -394,13 +394,15 @@ Note, MailHog is not started automatically in manual mode.  The easiest way to d
 
 <details><summary><b>Step 5</b> - Log In As Different Users</summary>
 
-The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses:
+The database is seeded with several types of user.  To experiment with different roles, you can run these commands in your terminal:
 
-- `foo@bar.com` (an _owner_ with full permissions)
-- `admin@of.chapter.one` (an _administrator_ of chapter 1)
-- The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`
+- `npm run change-user foo@bar.com` (an _owner_ with full permissions)
+- `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
 
-In development the login link will appear in the server logs and the email that Mailhog intercepts.
+To experiment with different roles using the terminal, you can run these commands into your terminal:
+
+- `npm run change-user foo@bar.com` (an _owner_ with full permissions)
+- `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
 
 </details>
 
@@ -425,7 +427,7 @@ After you have added new feature, to make sure it stays working, we recommend us
 * The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
 * To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
 * Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
-* Cypress test coverage spec files should go in _/cypress/integration_, roughly mirroring the client pages pattern
+* Cypress test coverage spec files should go in _/cypress/e2e_, roughly mirroring the client pages pattern
 
 ## Where to Find the Issues
 

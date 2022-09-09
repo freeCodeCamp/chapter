@@ -1,4 +1,12 @@
-import { Button, Box, Heading, HStack, Link, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Heading,
+  HStack,
+  Link,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -26,7 +34,7 @@ const args = (eventId: number) => ({
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
-  const { param: eventId } = useParam('id');
+  const { param: eventId, isReady } = useParam('id');
   const { loading, error, data } = useEventQuery({
     variables: { eventId },
   });
@@ -51,11 +59,15 @@ export const EventPage: NextPage = () => {
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
-  if (loading || error || !data || !data.event) {
+  if (loading || !isReady || error || !data || !data.event) {
     return (
       <Layout>
         <h1>
-          {loading ? 'Loading...' : !error ? "Can't find event :(" : 'Error...'}
+          {loading || !isReady
+            ? 'Loading...'
+            : !error
+            ? "Can't find event :("
+            : 'Error...'}
         </h1>
       </Layout>
     );
@@ -75,7 +87,7 @@ export const EventPage: NextPage = () => {
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'green' }],
+      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
   ];
 
@@ -139,35 +151,79 @@ export const EventPage: NextPage = () => {
             : [];
           return (
             <Box key={title.toLowerCase()} data-cy={title.toLowerCase()}>
-              <DataTable
-                title={`${title}: ${users.length}`}
-                data={users}
-                keys={['user', 'role', 'ops'] as const}
-                emptyText="No users"
-                mapper={{
-                  user: ({ user }) => (
-                    <Text data-cy="username">{user.name}</Text>
-                  ),
-                  ops: ({ user }) => (
-                    <HStack>
-                      {ops.map(({ title, onClick, colorScheme }) => (
-                        <Button
-                          key={title.toLowerCase()}
-                          data-cy={title.toLowerCase()}
-                          size="xs"
-                          colorScheme={colorScheme}
-                          onClick={onClick({ eventId, userId: user.id })}
-                        >
-                          {title}
-                        </Button>
-                      ))}
-                    </HStack>
-                  ),
-                  role: ({ event_role }) => (
-                    <Text data-cy="role">{event_role.name}</Text>
-                  ),
-                }}
-              />
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <DataTable
+                  title={`${title}: ${users.length}`}
+                  data={users}
+                  keys={['user', 'role', 'ops'] as const}
+                  emptyText="No users"
+                  mapper={{
+                    user: ({ user }) => (
+                      <Text data-cy="username">{user.name}</Text>
+                    ),
+                    ops: ({ user }) => (
+                      <HStack>
+                        {ops.map(({ title, onClick, colorScheme }) => (
+                          <Button
+                            key={title.toLowerCase()}
+                            data-cy={title.toLowerCase()}
+                            size="xs"
+                            colorScheme={colorScheme}
+                            onClick={onClick({ eventId, userId: user.id })}
+                          >
+                            {title}
+                          </Button>
+                        ))}
+                      </HStack>
+                    ),
+                    role: ({ event_role }) => (
+                      <Text data-cy="role">{event_role.name}</Text>
+                    ),
+                  }}
+                />
+              </Box>
+              <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
+                {users.map(({ event_role, user }, index) => (
+                  <HStack key={index}>
+                    <DataTable
+                      title={`${title}`}
+                      data={[users[index]]}
+                      keys={['type', 'value'] as const}
+                      emptyText="No users"
+                      mapper={{
+                        type: () => (
+                          <VStack
+                            align={'flex-start'}
+                            fontWeight={500}
+                            spacing={'3'}
+                          >
+                            <Text>User</Text>
+                            <Text>Role</Text>
+                            <Text>Ops</Text>
+                          </VStack>
+                        ),
+                        value: () => (
+                          <VStack align={'flex-start'} spacing={'3'}>
+                            <Text data-cy="username">{user.name}</Text>
+                            {ops.map(({ title, onClick, colorScheme }) => (
+                              <Button
+                                key={title.toLowerCase()}
+                                data-cy={title.toLowerCase()}
+                                size="xs"
+                                colorScheme={colorScheme}
+                                onClick={onClick({ eventId, userId: user.id })}
+                              >
+                                {title}
+                              </Button>
+                            ))}
+                            <Text data-cy="role">{event_role.name}</Text>
+                          </VStack>
+                        ),
+                      }}
+                    />
+                  </HStack>
+                ))}
+              </Box>
             </Box>
           );
         })}

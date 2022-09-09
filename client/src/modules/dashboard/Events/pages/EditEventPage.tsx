@@ -18,7 +18,7 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const { param: eventId } = useParam();
+  const { param: eventId, isReady } = useParam();
 
   const {
     loading: eventLoading,
@@ -40,7 +40,7 @@ export const EditEventPage: NextPage = () => {
     ],
   });
 
-  const onSubmit = async (data: EventFormData, chapterId: number) => {
+  const onSubmit = async (data: EventFormData) => {
     setLoadingUpdate(true);
 
     try {
@@ -62,7 +62,6 @@ export const EditEventPage: NextPage = () => {
         streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
         tags: tagsArray,
         sponsor_ids: sponsorArray,
-        chapter_id: chapterId,
       };
 
       const event = await updateEvent({
@@ -87,10 +86,10 @@ export const EditEventPage: NextPage = () => {
     }
   };
 
-  if (eventLoading || error || !data?.event) {
+  if (eventLoading || !isReady || error || !data?.event) {
     return (
       <Layout>
-        <h1>{eventLoading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{eventLoading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div>{error.message}</div>}
       </Layout>
     );

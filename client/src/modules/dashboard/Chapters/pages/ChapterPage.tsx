@@ -18,12 +18,14 @@ import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId } = useParam('id');
+
+  const { param: chapterId, isReady } = useParam('id');
   const confirmDelete = useConfirmDelete();
 
   const [deleteChapter] = useDeleteChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
   });
+
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
@@ -38,10 +40,10 @@ export const ChapterPage: NextPage = () => {
     router.push('/dashboard/chapters');
   };
 
-  if (loading || error || !data?.chapter) {
+  if (loading || !isReady || error || !data?.chapter) {
     return (
       <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );

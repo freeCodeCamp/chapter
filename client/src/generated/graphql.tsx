@@ -31,13 +31,13 @@ export type AuthenticateType = {
 export type Chapter = {
   __typename?: 'Chapter';
   category: Scalars['String'];
-  chatUrl?: Maybe<Scalars['String']>;
+  chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  imageUrl: Scalars['String'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -71,18 +71,33 @@ export type ChapterUser = {
   user_id: Scalars['Int'];
 };
 
-export type ChapterWithRelations = {
-  __typename?: 'ChapterWithRelations';
+export type ChapterWithEvents = {
+  __typename?: 'ChapterWithEvents';
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
-  chatUrl?: Maybe<Scalars['String']>;
+  chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  imageUrl: Scalars['String'];
+  image_url: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
+export type ChapterWithRelations = {
+  __typename?: 'ChapterWithRelations';
+  category: Scalars['String'];
+  chapter_users: Array<ChapterUser>;
+  chat_url?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  creator_id: Scalars['Int'];
+  description: Scalars['String'];
+  events: Array<Event>;
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
@@ -90,11 +105,11 @@ export type ChapterWithRelations = {
 
 export type CreateChapterInputs = {
   category: Scalars['String'];
-  chatUrl?: InputMaybe<Scalars['String']>;
+  chat_url?: InputMaybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  imageUrl: Scalars['String'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -445,7 +460,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<Chapter>;
+  chapters: Array<ChapterWithEvents>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -538,11 +553,11 @@ export type Tag = {
 
 export type UpdateChapterInputs = {
   category?: InputMaybe<Scalars['String']>;
-  chatUrl?: InputMaybe<Scalars['String']>;
+  chat_url?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  imageUrl?: InputMaybe<Scalars['String']>;
+  image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -742,8 +757,8 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    imageUrl: string;
-    chatUrl?: string | null;
+    image_url: string;
+    chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -802,12 +817,18 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 export type ChaptersQuery = {
   __typename?: 'Query';
   chapters: Array<{
-    __typename?: 'Chapter';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
-    imageUrl: string;
+    image_url: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      start_at: any;
+    }>;
   }>;
 };
 
@@ -825,7 +846,7 @@ export type CreateChapterMutation = {
     city: string;
     region: string;
     country: string;
-    chatUrl?: string | null;
+    chat_url?: string | null;
   };
 };
 
@@ -844,7 +865,7 @@ export type UpdateChapterMutation = {
     city: string;
     region: string;
     country: string;
-    chatUrl?: string | null;
+    chat_url?: string | null;
   };
 };
 
@@ -1435,12 +1456,18 @@ export type HomeQuery = {
     };
   }>;
   chapters: Array<{
-    __typename?: 'Chapter';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
-    imageUrl: string;
+    image_url: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      start_at: any;
+    }>;
   }>;
 };
 
@@ -1776,8 +1803,8 @@ export const ChapterDocument = gql`
       city
       region
       country
-      imageUrl
-      chatUrl
+      image_url
+      chat_url
       events {
         id
         name
@@ -1986,7 +2013,12 @@ export const ChaptersDocument = gql`
       name
       description
       category
-      imageUrl
+      image_url
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;
@@ -2044,7 +2076,7 @@ export const CreateChapterDocument = gql`
       city
       region
       country
-      chatUrl
+      chat_url
     }
   }
 `;
@@ -2100,7 +2132,7 @@ export const UpdateChapterDocument = gql`
       city
       region
       country
-      chatUrl
+      chat_url
     }
   }
 `;
@@ -4165,7 +4197,12 @@ export const HomeDocument = gql`
       name
       description
       category
-      imageUrl
+      image_url
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;

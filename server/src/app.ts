@@ -149,9 +149,9 @@ export const main = async (app: Express) => {
   // them.
   app.use(user);
   app.use(events);
-  // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
-  // app.use(handleAuthenticationError);
-  app.use(handleError);
+  if (process.env.NODE_ENV !== 'development') {
+    app.use(handleError);
+  }
 
   const schema = await buildSchema({
     resolvers,

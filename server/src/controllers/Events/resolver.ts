@@ -699,6 +699,7 @@ ${venueDetails}`;
       data: { canceled: true },
       include: {
         tags: { include: { tag: true } },
+        chapter: true,
         event_users: {
           include: { user: true },
           where: {
@@ -710,17 +711,31 @@ ${venueDetails}`;
     });
     await deleteEventReminders(id);
 
+    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
     const notCanceledRsvps = event.event_users;
 
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);
-      const subject = `Event ${event.name} canceled`;
-      const body = `The event ${event.name} was canceled`;
+      const subject = `Event ${event.name} is canceled`;
+      const cancelEventEmail = `The Upcoming Event for ${event.name} is canceled.<br />
+      <br />
+      View Upcoming Events for ${event.chapter.name}: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
+      ----------------------------<br />
+      <br />
+      - Stop receiving upcoming event notifications for ${event.chapter.name}. you can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
+      - More about ${event.chapter.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
+      <br />
+      ----------------------------<br />
+      You received this email because you subscribed to ${event.name} Event.<br />
+      <br />
+      See the options above to change your notifications.
+      `;
 
       new MailerService({
         emailList: emailList,
         subject: subject,
-        htmlEmail: body,
+        htmlEmail: cancelEventEmail,
       }).sendEmail();
     }
 

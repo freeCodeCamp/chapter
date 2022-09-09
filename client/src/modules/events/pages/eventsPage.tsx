@@ -55,17 +55,15 @@ const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
+  const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
+    variables: { offset, limit: pageSize },
   });
 
   useEffect(() => {
     if (visitedPages.has(currentPage)) return;
     fetchMore({
-      variables: {
-        offset: data?.paginatedEventsWithTotal.events.length || 0,
-        limit: pageSize,
-      },
+      variables: { offset, limit: pageSize },
     });
     setVisitedPages(new Set(visitedPages).add(currentPage));
   }, [currentPage]);

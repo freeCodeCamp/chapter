@@ -141,7 +141,7 @@ export function handleError(
     return next(err);
   }
   if (err) {
-    return res.status(401).send({
+    return res.status(500).send({
       message: 'Something went Wrong',
     });
   }

@@ -20,12 +20,12 @@ import { CHAPTERS } from '../../../chapters/graphql/queries';
 export const ChapterPage: NextPage = () => {
 
   const { param: chapterId, isReady } = useParam('id');
+
   const confirmDelete = useConfirmDelete();
 
   const [deleteChapter] = useDeleteChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
   });
-
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },

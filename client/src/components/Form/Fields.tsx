@@ -1,8 +1,8 @@
 import { Input, FormLabel, FormControl } from '@chakra-ui/react';
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues } from 'react-hook-form';
 
-interface InputFieldProps<T> {
+interface InputFieldProps<T extends FieldValues> {
   name: string;
   placeholder?: string;
   label?: string;
@@ -11,7 +11,7 @@ interface InputFieldProps<T> {
   required?: boolean;
 }
 
-interface BaseProps<T> extends InputFieldProps<T> {
+interface BaseProps<T extends FieldValues> extends InputFieldProps<T> {
   type: string;
 }
 

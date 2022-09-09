@@ -18,7 +18,6 @@ import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
-
   const { param: chapterId, isReady } = useParam('id');
 
   const confirmDelete = useConfirmDelete();

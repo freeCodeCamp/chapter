@@ -176,7 +176,6 @@ export const main = async (app: Express) => {
     next();
   }
 
-  // TODO: prevent non-owners from accessing this route
   app.get('/authenticate-with-google', canAuthWithGoogle, (_req, res) => {
     const state = crypto.randomUUID();
     res.cookie('state', state, {
@@ -196,7 +195,6 @@ export const main = async (app: Express) => {
     const code = req.query.code;
     if (!code || typeof code !== 'string') return next('Invalid Google code');
 
-    // req.user must exist at this point
     storeGoogleTokens(code)
       .then(() => {
         res.send('Authentication successful');

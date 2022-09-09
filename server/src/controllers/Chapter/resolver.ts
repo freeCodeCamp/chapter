@@ -63,7 +63,6 @@ export class ChapterResolver {
     @Arg('data') data: CreateChapterInputs,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
-    // TODO: handle errors from the calendar integration
     let calendarData;
     try {
       calendarData = await createCalendar({

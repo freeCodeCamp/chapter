@@ -10,10 +10,6 @@ import {
 } from 'type-graphql';
 import { Prisma } from '@prisma/client';
 
-import {
-  grantCalendarAccess,
-  revokeCalendarAccess,
-} from '../../services/Google';
 import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
@@ -167,17 +163,6 @@ export class ChapterUserResolver {
     @Arg('roleId', () => Int) roleId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<ChapterUser> {
-    const userCanCreateEvents = await roleCanCreateEvents(roleId);
-
-    try {
-      await updateGoogleCalendarEventAccess(userId, chapterId, {
-        userCanCreateEvents,
-      });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
-      console.error('Unable to update calendar access');
-    }
-
     return await prisma.chapter_users.update({
       data: { chapter_role: { connect: { id: roleId } } },
       where: {
@@ -249,39 +234,4 @@ export class ChapterUserResolver {
     }
     return true;
   }
-}
-
-// TODO: include all relevant Permissions in the query.
-async function roleCanCreateEvents(roleId: number): Promise<boolean> {
-  const permissions = await prisma.chapter_role_permissions.findMany({
-    where: { chapter_role_id: roleId },
-    select: { chapter_permission: true },
-  });
-
-  const index = permissions.findIndex(
-    (perm) => perm.chapter_permission.name === Permission.EventCreate,
-  );
-  return index !== -1;
-}
-
-async function updateGoogleCalendarEventAccess(
-  targetUserId: number,
-  chapterId: number,
-  { userCanCreateEvents }: { userCanCreateEvents: boolean },
-) {
-  const { calendar_id: calendarId } = await prisma.chapters.findUniqueOrThrow({
-    where: { id: chapterId },
-  });
-  if (!calendarId) throw Error('Chapter has no calendar id');
-
-  const chapterData = {
-    targetUserId,
-    chapterId,
-  };
-  const calendarData = {
-    calendarId,
-  };
-  return userCanCreateEvents
-    ? await grantCalendarAccess(chapterData, calendarData)
-    : await revokeCalendarAccess(chapterData, calendarData);
 }

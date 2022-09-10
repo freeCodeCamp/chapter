@@ -824,7 +824,7 @@ ${venueDetails}`;
     <br />
     - Stop receiving upcoming event notifications for ${
       event.chapter.name
-    }. you can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
+    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
     - More about ${
       event.chapter.name
     } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />

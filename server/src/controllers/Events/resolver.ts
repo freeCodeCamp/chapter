@@ -718,16 +718,19 @@ ${venueDetails}`;
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} is canceled`;
+
+      // ToDo: change "subscribed to event" to "join event" when join and leave function is on
+
       const cancelEventEmail = `The Upcoming Event ${event.name} is canceled.<br />
       <br />
       View Upcoming Events for ${event.chapter.name}: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
       ----------------------------<br />
       <br />
-      - Stop receiving upcoming event notifications for ${event.chapter.name}. you can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
+      - Stop receiving event notifications for ${event.name}. you can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
       - More about ${event.chapter.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
       <br />
       ----------------------------<br />
-      You received this email because you subscribed to ${event.name} Event.<br />
+      You received this email because you Subscribed to ${event.name} Event.<br />
       <br />
       See the options above to change your notifications.
       `;

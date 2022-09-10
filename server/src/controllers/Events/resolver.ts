@@ -726,7 +726,7 @@ ${venueDetails}`;
       View Upcoming Events for ${event.chapter.name}: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
       ----------------------------<br />
       <br />
-      - Stop receiving event notifications for ${event.name}. you can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
+      - Stop receiving event notifications for ${event.name}. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
       - More about ${event.chapter.name} or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
       <br />
       ----------------------------<br />

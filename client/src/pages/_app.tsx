@@ -81,9 +81,10 @@ const Auth0Wrapper = (children: React.ReactNode) => {
   const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
   const clientURL = process.env.NEXT_PUBLIC_CLIENT_URL as string;
-  // ToDo change replace value with policy route
-  const onPrivacyRedirect = () => {
-    router.replace('/privacy-policy');
+
+  // ToDo make the function work
+  const onRedirectCallback = () => {
+    router.replace('/policy');
   };
   {
     /* TODO: Can we conditionally use window.location.origin for the redirectUri if
@@ -94,7 +95,7 @@ const Auth0Wrapper = (children: React.ReactNode) => {
       domain={domain}
       clientId={clientId}
       redirectUri={clientURL}
-      onRedirectCallback={onPrivacyRedirect}
+      onRedirectCallback={onRedirectCallback}
       audience={audience}
     >
       {children}

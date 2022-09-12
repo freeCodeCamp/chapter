@@ -12,11 +12,7 @@ import { isDev } from './config';
 import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
-import {
-  user,
-  events,
-  handleError,
-} from './controllers/Auth/middleware';
+import { user, events, handleError } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
 import { getBearerToken } from './util/sessions';

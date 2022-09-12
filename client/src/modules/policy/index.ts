@@ -1,3 +1,1 @@
-import { PolicyPage } from './pages/Policy';
-
-export default PolicyPage;
+export { PolicyPage } from './pages/policyPage';

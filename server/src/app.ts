@@ -16,7 +16,6 @@ import {
   user,
   events,
   handleError,
-  // handleAuthenticationError,
 } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';

@@ -52,50 +52,6 @@ export const PolicyPage = () => {
         to private, or delete them at any time.
       </p>
 
-      {/* commeted these because we don&apost have way to do them, yet.
-<h2>You said I have full control over my data. What does that mean, exactly?</h2>
-<p>It means that at any time, you can download all of your data in a convenient format.</p> 
-
-<p>You can control which data shows up on your organizer portfolio.</p>
-
-<p>You can delete any of your personal data, or even delete your entire account.</p>
-
-<p>For your convenience, we give you the option to sign in using GitHub or Google, if you don&apost want to use your email address to sign in. If you choose to use one of these sign in options, some of your Chapter data will be shared with these companies. You can read the privacy policy for GitHub and for Google.</p>
-
-<h2>I have questions about my privacy on Chapter.</h2>
-<p>We&aposre happy to answer them. Email us at email.</p>
-
-<h2>How can I find out about changes?</h2>
-<p>This version of Chapter’s privacy questions and answers took effect Date</p>
-
-<p>Chapter will announce the next version by email. In the meantime, Chapter may update its contact information in these questions and answers by updating this page (). Chapter may change how it announces changes in a future version of these questions and answers.</p>
-
-<p>We use Amazon Web Services, Azure, and mLab for our servers and databases. You can read the privacy policy for Amazon Web Services, Microsoft Azure, and mLab.</p>
-
-<p>We use Stripe and PayPal to process donations. You can read the privacy policy for Stripe and for PayPal.</p>
-
-<p>We use the CloudFlare and Netlify Content Delivery Networks so that Chapter is fast in all parts of the world. You can read the privacy policy for CloudFlare and Netlify online.</p>
-
-<h2>When I delete my personal data from Chapter, is it really deleted from Chapter&aposs servers?</h2>
-<p>Yes. When you delete personal data from Chapter, we immediately delete it from our servers.</p>
-
-<p>We make emergency backups of our database every day, and we delete each of these backups after a few days. So within a few days, your personal data won&apost even exist in our backups.</p>
-
-<h2>Does Chapter meet Europe&aposs GDPR privacy regulations?</h2>
-<p>Yes. Chapter respects the privacy rights covered by Regulation (EU) 2016/679 - the European Union&aposs General Data Protection Regulation (GDPR). Our legal team has studied the GDPR, and we&aposve built new features to comply with all of its rules.</p>
-
-<p>Even though GDPR only protects European citizens, Chapter is extending these protections to everyone all over the world.</p>
-
-<p>Chapter has organized all the information that GDPR requires us to give you into this easy-to-read question-and-answer format. Our goal is to inform you of your specific rights to access data, erase it, port it, rectify it, and object to automated decision-making.</p>
-
-<h2>Who has access to my personal data?</h2>
-<p>Even though Chapter has thousands of volunteers, none of those people have access to your private data.</p>
-
-<p>Chapter has a few full-time staff, some of whom work directly on our databases. They have the ability to view your private data, but only do so when providing you with technical support.</p>
-
-<p>As for the personal data that you choose to share on your developer portfolio, anyone on the internet can see it by navigating to your developer portfolio&aposs public URL. Again, we&aposve given you full control over what parts of your developer profile are public.</p>
-*/}
-
       <h2>What is Chapter&aposs Donor Privacy Policy?</h2>
       <p>
         Chapter will not share our donors&apos names or personal information

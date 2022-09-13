@@ -161,10 +161,7 @@ interface EventUpdateData extends EventData {
   calendarEventId: string;
 }
 
-export async function createCalendarEvent(
-  { eventId }: { eventId: number },
-  eventData: EventData,
-) {
+export async function createCalendarEvent(eventData: EventData) {
   const calendarApi = await createCalendarApi();
 
   const { calendarId } = eventData;
@@ -174,14 +171,7 @@ export async function createCalendarEvent(
     requestBody: getStandardRequestBody(eventData),
   });
 
-  await prisma.events.update({
-    where: {
-      id: eventId,
-    },
-    data: {
-      calendar_event_id: data.id,
-    },
-  });
+  return { calendarEventId: data.id };
 }
 
 // TODO: create a patchCalendarEvent for updating specific fields (most useful

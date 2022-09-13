@@ -644,16 +644,22 @@ ${unsubscribeOptions}`,
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
       try {
-        await createCalendarEvent(
-          { eventId: event.id },
-          {
-            calendarId: chapter.calendar_id,
-            start: event.start_at,
-            end: event.ends_at,
-            summary: event.name,
-            attendeeEmails: [ctx.user.email],
+        const { calendarEventId } = await createCalendarEvent({
+          calendarId: chapter.calendar_id,
+          start: event.start_at,
+          end: event.ends_at,
+          summary: event.name,
+          attendeeEmails: [ctx.user.email],
+        });
+
+        await prisma.events.update({
+          where: {
+            id: event.id,
           },
-        );
+          data: {
+            calendar_event_id: calendarEventId,
+          },
+        });
       } catch {
         // TODO: log more details without leaking tokens and user info.
         console.error('Unable to create calendar event');

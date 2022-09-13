@@ -36,10 +36,8 @@
     "apollo-server-express": "3.10.1",
     "calendar-link": "2.2.0",
     "class-validator": "0.13.2",
-    "cookie-parser": "1.4.6",
     "cookie-session": "2.0.0",
     "cors": "2.8.5",
-    "csurf": "1.11.0",
     "date-fns": "2.29.2",
     "dotenv": "16.0.1",
     "dotenv-expand": "8.0.3",
@@ -57,8 +55,6 @@
     "type-graphql": "1.1.1"
   },
   "devDependencies": {
-    "@types/cookie-parser": "1.4.3",
-    "@types/csurf": "1.11.2",
     "@types/jsonwebtoken": "8.5.8",
     "@types/lodash": "4.14.184",
     "@types/nodemailer": "6.4.5",

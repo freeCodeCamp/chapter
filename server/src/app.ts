@@ -2,10 +2,8 @@
 import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
-import csurf from 'csurf';
-import express, { Express, Response, ErrorRequestHandler } from 'express';
+import express, { Express, Response } from 'express';
 
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
@@ -59,7 +57,6 @@ export const main = async (app: Express) => {
       secure: !isDev(),
     }),
   );
-  app.use(cookieParser());
 
   app.post('/login', checkJwt, (req, res, next) => {
     const token = getBearerToken(req);
@@ -153,28 +150,6 @@ export const main = async (app: Express) => {
   app.use(events);
   // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
   // app.use(handleAuthenticationError);
-
-  const csrfOptions: csurf.CookieOptions = {
-    sameSite: 'strict',
-    secure: !isDev(),
-    domain: process.env.COOKIE_DOMAIN || 'localhost',
-  };
-
-  app.use(csurf({ cookie: { ...csrfOptions, httpOnly: true } }));
-  app.use((req, res, next) => {
-    if (req.csrfToken && !req.cookies['csrf_token']) {
-      res.cookie('csrf_token', req.csrfToken, csrfOptions);
-    }
-    next();
-  });
-
-  const csrfErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    if (err.code === 'EBADCSRFTOKEN' && req.csrfToken) {
-      res.cookie('csrf_token', req.csrfToken(), csrfOptions);
-    }
-    next(err);
-  };
-  app.use(csrfErrorHandler);
 
   const schema = await buildSchema({
     resolvers,

@@ -57,7 +57,7 @@
   "devDependencies": {
     "@types/jsonwebtoken": "8.5.9",
     "@types/lodash": "4.14.185",
-    "@types/nodemailer": "6.4.5",
+    "@types/nodemailer": "6.4.6",
     "concurrently": "7.4.0",
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",

@@ -84,7 +84,7 @@ export const Header: React.FC = () => {
     // module as logging in.
     // TODO: inject the auth functions (logout) into the Header so we can switch
     // strategies easily.
-    if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'development') logoutAuth0();
+    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') logoutAuth0();
     fetch(new URL('/logout', serverUrl).href, {
       method: 'DELETE',
       credentials: 'include',
@@ -148,7 +148,7 @@ export const Header: React.FC = () => {
                         Logout
                       </MenuItem>
                     </>
-                  ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+                  ) : process.env.NEXT_PUBLIC_USE_AUTH0 === 'false' ? (
                     <DevLoginButton />
                   ) : (
                     <LoginButton />

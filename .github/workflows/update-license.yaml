@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
           fetch-depth: 0
-      - uses: FantasticFiasco/action-update-license-year@771ff9afdc55b09e1fb649cf03e312d0cf86b4a6 # tag=v2
+      - uses: FantasticFiasco/action-update-license-year@f3d1911d2a05b8a69fee1de4033b2847c347d911 # tag=v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: |

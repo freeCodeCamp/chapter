@@ -16,11 +16,7 @@ import { isDev } from './config';
 import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
-import {
-  user,
-  events,
-  // handleAuthenticationError,
-} from './controllers/Auth/middleware';
+import { user, events, handleError } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
 import { getBearerToken } from './util/sessions';
@@ -49,9 +45,10 @@ export const main = async (app: Express) => {
   const allowedOrigins = isDev()
     ? [clientLocation, 'https://studio.apollographql.com']
     : clientLocation;
+  const corsOptions = { credentials: true, origin: allowedOrigins };
   app.use(cookies());
   app.set('trust proxy', 'uniquelocal');
-  app.use(cors({ credentials: true, origin: allowedOrigins }));
+  app.use(cors(corsOptions));
   app.use(
     cookieSession({
       secret: process.env.SESSION_SECRET,
@@ -153,8 +150,9 @@ export const main = async (app: Express) => {
   // them.
   app.use(user);
   app.use(events);
-  // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
-  // app.use(handleAuthenticationError);
+  if (process.env.NODE_ENV !== 'development') {
+    app.use(handleError);
+  }
 
   function canAuthWithGoogle(req: Request, _res: Response, next: NextFunction) {
     if (!req.user) {
@@ -216,11 +214,12 @@ export const main = async (app: Express) => {
       user: req.user,
       events: req.events,
     }),
+    csrfPrevention: true,
   });
 
   await server.start();
 
-  server.applyMiddleware({ app, cors: false, path: '/graphql' });
+  server.applyMiddleware({ app, cors: corsOptions, path: '/graphql' });
 };
 
 if (require.main === module) {

@@ -40,9 +40,10 @@ export const main = async (app: Express) => {
   const allowedOrigins = isDev()
     ? [clientLocation, 'https://studio.apollographql.com']
     : clientLocation;
+  const corsOptions = { credentials: true, origin: allowedOrigins };
 
   app.set('trust proxy', 'uniquelocal');
-  app.use(cors({ credentials: true, origin: allowedOrigins }));
+  app.use(cors(corsOptions));
   app.use(
     cookieSession({
       secret: process.env.SESSION_SECRET,
@@ -160,11 +161,12 @@ export const main = async (app: Express) => {
       user: req.user,
       events: req.events,
     }),
+    csrfPrevention: true,
   });
 
   await server.start();
 
-  server.applyMiddleware({ app, cors: false, path: '/graphql' });
+  server.applyMiddleware({ app, cors: corsOptions, path: '/graphql' });
 };
 
 if (require.main === module) {

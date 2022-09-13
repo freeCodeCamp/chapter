@@ -804,7 +804,7 @@ ${venueDetails}`;
       });
     }
 
-    const newEvent = await prisma.events.update({
+    const updatedEvent = await prisma.events.update({
       where: { id },
       data: update,
       include: {
@@ -815,15 +815,17 @@ ${venueDetails}`;
     });
 
     // TODO: warn the user if the any calendar ids are missing
-    if (newEvent.chapter.calendar_id && newEvent.calendar_event_id) {
+    if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
       try {
         await updateCalendarEvent({
-          calendarId: newEvent.chapter.calendar_id,
-          calendarEventId: newEvent.calendar_event_id,
-          summary: newEvent.name,
-          start: newEvent.start_at,
-          end: newEvent.ends_at,
-          attendeeEmails: newEvent.event_users.map(({ user }) => user.email),
+          calendarId: updatedEvent.chapter.calendar_id,
+          calendarEventId: updatedEvent.calendar_event_id,
+          summary: updatedEvent.name,
+          start: updatedEvent.start_at,
+          end: updatedEvent.ends_at,
+          attendeeEmails: updatedEvent.event_users.map(
+            ({ user }) => user.email,
+          ),
         });
       } catch {
         // TODO: log more details without leaking tokens and user info.
@@ -831,7 +833,7 @@ ${venueDetails}`;
       }
     }
 
-    return newEvent;
+    return updatedEvent;
   }
 
   @Authorized(Permission.EventEdit)

@@ -170,7 +170,7 @@ export const main = async (app: Express) => {
       );
     if (!canAuthenticate) {
       return next(
-        'This only users with the GoogleAuthenticate permission can access this route',
+        'Only users with the GoogleAuthenticate permission can access this route',
       );
     }
     next();

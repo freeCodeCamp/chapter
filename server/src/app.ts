@@ -164,6 +164,7 @@ export const main = async (app: Express) => {
       user: req.user,
       events: req.events,
     }),
+    csrfPrevention: true,
   });
 
   await server.start();

@@ -81,8 +81,6 @@ const Auth0Wrapper = (children: React.ReactNode) => {
   const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
   const clientURL = process.env.NEXT_PUBLIC_CLIENT_URL as string;
-
-  // ToDo make the function work
   const onRedirectCallback = () => {
     router.replace('/policy');
   };

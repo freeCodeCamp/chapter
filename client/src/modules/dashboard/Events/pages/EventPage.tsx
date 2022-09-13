@@ -202,7 +202,7 @@ export const EventPage: NextPage = () => {
                           >
                             <Text>User</Text>
                             <Text>Role</Text>
-                            <Text>Ops</Text>
+                            <Text>Actions</Text>
                           </VStack>
                         ),
                         action: () => (

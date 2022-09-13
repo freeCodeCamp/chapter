@@ -113,7 +113,7 @@ export const ChaptersPage: NextPage = () => {
                             Name
                           </Heading>
                           <Heading as="h3" fontSize={['sm', 'md']}>
-                            Ops
+                            Actions
                           </Heading>
                         </VStack>
                       ),

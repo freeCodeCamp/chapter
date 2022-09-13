@@ -152,7 +152,7 @@ export const EventsPage: NextPage = () => {
                           <Text>Capacity</Text>
                           <Text>Streaming url</Text>
                           <Text>Date</Text>
-                          <Text>Ops</Text>
+                          <Text>Actions</Text>
                         </VStack>
                       ),
                       action: () => (

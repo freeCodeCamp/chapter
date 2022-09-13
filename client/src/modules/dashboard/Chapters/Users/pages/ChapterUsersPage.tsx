@@ -151,7 +151,7 @@ export const ChapterUsersPage: NextPage = () => {
               <DataTable
                 data={data.chapter.chapter_users}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                keys={['name', 'email', 'role', 'ops'] as const}
+                keys={['name', 'email', 'role', 'action'] as const}
                 mapper={{
                   name: ({ user }) => (
                     <HStack>
@@ -164,7 +164,7 @@ export const ChapterUsersPage: NextPage = () => {
                     </HStack>
                   ),
                   email: ({ user }) => user.email,
-                  ops: ({ canBeBanned, user, chapter_role }) => (
+                  action: ({ canBeBanned, user, chapter_role }) => (
                     <HStack>
                       <Button
                         data-cy="changeRole"

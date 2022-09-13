@@ -51,7 +51,7 @@ export const ChaptersPage: NextPage = () => {
             <Box display={{ base: 'none', lg: 'block' }} width="100%">
               <DataTable
                 data={chapterData.chapters}
-                keys={['name', 'actions'] as const}
+                keys={['name', 'action'] as const}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
                 mapper={{
                   name: (chapter) => (
@@ -59,7 +59,7 @@ export const ChaptersPage: NextPage = () => {
                       {chapter.name}
                     </LinkButton>
                   ),
-                  actions: (chapter) => (
+                  action: (chapter) => (
                     <HStack>
                       <LinkButton
                         colorScheme="blue"

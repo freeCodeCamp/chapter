@@ -55,7 +55,7 @@ export const EventsPage: NextPage = () => {
                     'capacity',
                     'streaming_url',
                     'date',
-                    'actions',
+                    'action',
                   ] as const
                 }
                 mapper={{
@@ -98,7 +98,7 @@ export const EventsPage: NextPage = () => {
                       ? event.streaming_url
                       : 'In-person only',
                   date: (event) => formatDate(event.start_at),
-                  actions: (event) => (
+                  action: (event) => (
                     <LinkButton
                       colorScheme="blue"
                       size="sm"

@@ -38,7 +38,7 @@ export const SponsorsPage: NextPage = () => {
                 <DataTable
                   tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
                   data={data.sponsors}
-                  keys={['name', 'type', 'website', 'actions'] as const}
+                  keys={['name', 'type', 'website', 'action'] as const}
                   mapper={{
                     name: (sponsor) => (
                       <LinkButton href={`/dashboard/sponsors/${sponsor.id}`}>
@@ -47,7 +47,7 @@ export const SponsorsPage: NextPage = () => {
                     ),
                     type: (sponsor) => sponsor.type,
                     website: (sponsor) => sponsor.website,
-                    actions: (sponsor) => (
+                    action: (sponsor) => (
                       <LinkButton
                         colorScheme="blue"
                         size="xs"

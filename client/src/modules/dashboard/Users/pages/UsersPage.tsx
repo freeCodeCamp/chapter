@@ -82,10 +82,10 @@ export const UsersPage: NextPage = () => {
               <DataTable
                 data={data.users}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                keys={['name', 'role', 'ops'] as const}
+                keys={['name', 'role', 'action'] as const}
                 mapper={{
                   name: ({ name }) => <Text data-cy="name">{name}</Text>,
-                  ops: ({ id, instance_role, name }) => (
+                  action: ({ id, instance_role, name }) => (
                     <Button
                       data-cy="changeRole"
                       colorScheme="blue"

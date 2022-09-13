@@ -45,7 +45,7 @@ export const VenuesPage: NextPage = () => {
               <DataTable
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
                 data={data.venues}
-                keys={['name', 'location', 'chapter', 'actions'] as const}
+                keys={['name', 'location', 'chapter', 'action'] as const}
                 mapper={{
                   name: (venue) => (
                     <LinkButton
@@ -64,7 +64,7 @@ export const VenuesPage: NextPage = () => {
                       {chapter.name}
                     </LinkButton>
                   ),
-                  actions: (venue) => (
+                  action: (venue) => (
                     <LinkButton
                       data-cy="edit-venue-button"
                       colorScheme="blue"

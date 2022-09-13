@@ -124,18 +124,22 @@ async function createCredentialedClient() {
   return oauth2Client;
 }
 
+// The client *must* be created afresh for each request. Otherwise, concurrent
+// requests could end up sharing tokens.
+async function createCalendarApi() {
+  const auth = await createCredentialedClient();
+  return calendar({ version: 'v3', auth });
+}
+
 interface CalendarData {
   summary: string;
   description: string;
 }
 
 export async function createCalendar({ summary, description }: CalendarData) {
-  // The client *must* be created afresh for each request. Otherwise, concurrent
-  // requests could end up sharing tokens.
-  const auth = await createCredentialedClient();
-  const googleCalendar = calendar({ version: 'v3', auth });
+  const calendarApi = await createCalendarApi();
 
-  const { data } = await googleCalendar.calendars.insert({
+  const { data } = await calendarApi.calendars.insert({
     requestBody: {
       summary,
       description,
@@ -161,11 +165,10 @@ export async function createCalendarEvent(
   { eventId }: { eventId: number },
   eventData: EventData,
 ) {
-  const auth = await createCredentialedClient();
-  const googleCalendar = calendar({ version: 'v3', auth });
+  const calendarApi = await createCalendarApi();
 
   const { calendarId } = eventData;
-  const { data } = await googleCalendar.events.insert({
+  const { data } = await calendarApi.events.insert({
     calendarId,
     sendUpdates: 'all',
     requestBody: getStandardRequestBody(eventData),
@@ -184,11 +187,10 @@ export async function createCalendarEvent(
 // TODO: create a patchCalendarEvent for updating specific fields (most useful
 // for RSVPs which only modify the attendees list)
 export async function updateCalendarEvent(eventUpdateData: EventUpdateData) {
-  const auth = await createCredentialedClient();
-  const googleCalendar = calendar({ version: 'v3', auth });
+  const calendarApi = await createCalendarApi();
 
   const { calendarId, calendarEventId } = eventUpdateData;
-  await googleCalendar.events.update({
+  await calendarApi.events.update({
     calendarId,
     eventId: calendarEventId,
     sendUpdates: 'all',
@@ -199,12 +201,11 @@ export async function updateCalendarEvent(eventUpdateData: EventUpdateData) {
 export async function patchCalendarEvent(
   eventUpdateData: Partial<EventUpdateData>,
 ) {
-  const auth = await createCredentialedClient();
-  const googleCalendar = calendar({ version: 'v3', auth });
+  const calendarApi = await createCalendarApi();
 
   const { calendarId, calendarEventId } = eventUpdateData;
 
-  await googleCalendar.events.patch({
+  await calendarApi.events.patch({
     calendarId,
     eventId: calendarEventId,
     sendUpdates: 'all',
@@ -213,11 +214,9 @@ export async function patchCalendarEvent(
 }
 
 export async function cancelCalendarEvent(eventUpdateData: EventUpdateData) {
-  const auth = await createCredentialedClient();
-  const googleCalendar = calendar({ version: 'v3', auth });
-
+  const calendarApi = await createCalendarApi();
   const { calendarId, calendarEventId } = eventUpdateData;
-  await googleCalendar.events.update({
+  await calendarApi.events.update({
     calendarId,
     eventId: calendarEventId,
     sendUpdates: 'all',
@@ -275,10 +274,9 @@ export async function deleteCalendarEvent({
   calendarId: string;
   calendarEventId: string;
 }) {
-  const auth = await createCredentialedClient();
-  const googleCalendar = calendar({ version: 'v3', auth });
+  const calendarApi = await createCalendarApi();
 
-  await googleCalendar.events.delete({
+  await calendarApi.events.delete({
     calendarId,
     eventId: calendarEventId,
     sendUpdates: 'all',

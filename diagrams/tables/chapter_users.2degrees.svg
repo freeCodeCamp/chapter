@@ -133,34 +133,34 @@
 <g id="node4" class="node">
 <title>chapters</title>
 <g id="a_node4"><a xlink:href="../../tables/chapters.html" xlink:title="chapters" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="184,-82.2 184,-165.2 272,-165.2 272,-82.2 184,-82.2"/>
-<polygon fill="#f5f5f5" stroke="transparent" points="184,-141.7 184,-164.7 272,-164.7 272,-141.7 184,-141.7"/>
-<polygon fill="none" stroke="#000000" points="184,-141.7 184,-164.7 272,-164.7 272,-141.7 184,-141.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="183.5,-82.2 183.5,-165.2 272.5,-165.2 272.5,-82.2 183.5,-82.2"/>
+<polygon fill="#f5f5f5" stroke="transparent" points="184,-141.7 184,-164.7 273,-164.7 273,-141.7 184,-141.7"/>
+<polygon fill="none" stroke="#000000" points="184,-141.7 184,-164.7 273,-164.7 273,-141.7 184,-141.7"/>
 <text text-anchor="start" x="189" y="-150.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">chapters</text>
-<text text-anchor="start" x="237.0437" y="-149.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
-<polygon fill="none" stroke="#000000" points="184,-119.7 184,-141.7 272,-141.7 272,-119.7 184,-119.7"/>
+<text text-anchor="start" x="238.0437" y="-149.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
+<polygon fill="none" stroke="#000000" points="184,-119.7 184,-141.7 273,-141.7 273,-119.7 184,-119.7"/>
 <image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="189" y="-136.7"/>
 <text text-anchor="start" x="204" y="-126.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">id</text>
-<polygon fill="none" stroke="#000000" points="184,-100.7 184,-119.7 272,-119.7 272,-100.7 184,-100.7"/>
+<polygon fill="none" stroke="#000000" points="184,-100.7 184,-119.7 273,-119.7 273,-100.7 184,-100.7"/>
 <text text-anchor="start" x="187" y="-106.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="184,-81.7 184,-100.7 204,-100.7 204,-81.7 184,-81.7"/>
-<polygon fill="none" stroke="#000000" points="184,-81.7 184,-100.7 204,-100.7 204,-81.7 184,-81.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="184,-81.7 184,-100.7 205,-100.7 205,-81.7 184,-81.7"/>
+<polygon fill="none" stroke="#000000" points="184,-81.7 184,-100.7 205,-100.7 205,-81.7 184,-81.7"/>
 <text text-anchor="start" x="187" y="-87.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
-<polygon fill="#ffffff" stroke="transparent" points="204,-81.7 204,-100.7 246,-100.7 246,-81.7 204,-81.7"/>
-<polygon fill="none" stroke="#000000" points="204,-81.7 204,-100.7 246,-100.7 246,-81.7 204,-81.7"/>
-<text text-anchor="start" x="210.6105" y="-87.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="246,-81.7 246,-100.7 272,-100.7 272,-81.7 246,-81.7"/>
-<polygon fill="none" stroke="#000000" points="246,-81.7 246,-100.7 272,-100.7 272,-81.7 246,-81.7"/>
-<text text-anchor="start" x="253.4053" y="-87.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">4 &gt;</text>
+<polygon fill="#ffffff" stroke="transparent" points="205,-81.7 205,-100.7 247,-100.7 247,-81.7 205,-81.7"/>
+<polygon fill="none" stroke="#000000" points="205,-81.7 205,-100.7 247,-100.7 247,-81.7 205,-81.7"/>
+<text text-anchor="start" x="211.6105" y="-87.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="247,-81.7 247,-100.7 273,-100.7 273,-81.7 247,-81.7"/>
+<polygon fill="none" stroke="#000000" points="247,-81.7 247,-100.7 273,-100.7 273,-81.7 247,-81.7"/>
+<text text-anchor="start" x="254.4053" y="-87.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">4 &gt;</text>
 </a>
 </g>
 </g>
 <!-- chapter_users&#45;&gt;chapters -->
 <g id="edge2" class="edge">
 <title>chapter_users:w&#45;&gt;chapters:e</title>
-<path fill="none" stroke="#000000" d="M323.4515,-411.2422C281.6673,-371.7027 331.8298,-130.7 272,-130.7"/>
-<polygon fill="#000000" stroke="#000000" points="329.5795,-413.7107 335.6548,-420.0392 333.2897,-415.2054 337,-416.7 337,-416.7 337,-416.7 333.2897,-415.2054 338.3452,-413.3608 329.5795,-413.7107 329.5795,-413.7107"/>
-<ellipse fill="none" stroke="#000000" cx="326.6112" cy="-412.515" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M323.4798,-411.2422C281.8584,-371.7027 332.7849,-130.7 273,-130.7"/>
+<polygon fill="#000000" stroke="#000000" points="329.5816,-413.7053 335.6524,-420.0383 333.2908,-415.2027 337,-416.7 337,-416.7 337,-416.7 333.2908,-415.2027 338.3476,-413.3617 329.5816,-413.7053 329.5816,-413.7053"/>
+<ellipse fill="none" stroke="#000000" cx="326.6143" cy="-412.5074" rx="3.2" ry="3.2"/>
 </g>
 <!-- users -->
 <g id="node5" class="node">
@@ -294,8 +294,8 @@
 <!-- events&#45;&gt;chapters -->
 <g id="edge7" class="edge">
 <title>events:w&#45;&gt;chapters:e</title>
-<path fill="none" stroke="#000000" d="M569.3629,-123.7268C442.6624,-124.1967 405.6899,-130.7 272,-130.7"/>
-<polygon fill="#000000" stroke="#000000" points="576,-123.7147 584.0066,-127.3 580,-123.7073 584,-123.7 584,-123.7 584,-123.7 580,-123.7073 583.9934,-120.1 576,-123.7147 576,-123.7147"/>
+<path fill="none" stroke="#000000" d="M569.4098,-123.7268C443.1152,-124.1967 406.2616,-130.7 273,-130.7"/>
+<polygon fill="#000000" stroke="#000000" points="576,-123.7147 584.0066,-127.3 580,-123.7074 584,-123.7 584,-123.7 584,-123.7 580,-123.7074 583.9934,-120.1 576,-123.7147 576,-123.7147"/>
 <ellipse fill="none" stroke="#000000" cx="572.8" cy="-123.7206" rx="3.2" ry="3.2"/>
 </g>
 <!-- venues -->
@@ -331,9 +331,9 @@
 <!-- venues&#45;&gt;chapters -->
 <g id="edge13" class="edge">
 <title>venues:w&#45;&gt;chapters:e</title>
-<path fill="none" stroke="#000000" d="M380.3645,-67.0576C332.8216,-76.3918 328.517,-130.7 272,-130.7"/>
-<polygon fill="#000000" stroke="#000000" points="387.0342,-66.439 395.3325,-69.2846 391.0171,-66.0695 395,-65.7 395,-65.7 395,-65.7 391.0171,-66.0695 394.6675,-62.1154 387.0342,-66.439 387.0342,-66.439"/>
-<ellipse fill="none" stroke="#000000" cx="383.8479" cy="-66.7346" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M380.462,-67.0576C333.2524,-76.3918 329.1581,-130.7 273,-130.7"/>
+<polygon fill="#000000" stroke="#000000" points="387.0347,-66.4439 395.3347,-69.2844 391.0173,-66.0719 395,-65.7 395,-65.7 395,-65.7 391.0173,-66.0719 394.6653,-62.1156 387.0347,-66.4439 387.0347,-66.4439"/>
+<ellipse fill="none" stroke="#000000" cx="383.8485" cy="-66.7414" rx="3.2" ry="3.2"/>
 </g>
 <!-- sessions -->
 <g id="node9" class="node">
@@ -392,9 +392,9 @@
 <!-- user_bans&#45;&gt;chapters -->
 <g id="edge10" class="edge">
 <title>user_bans:w&#45;&gt;chapters:e</title>
-<path fill="none" stroke="#000000" d="M373.4067,-174.5424C331.21,-167.4989 322.0067,-130.7 272,-130.7"/>
-<polygon fill="#000000" stroke="#000000" points="380.0251,-175.0674 387.7153,-179.2887 384.0125,-175.3837 388,-175.7 388,-175.7 388,-175.7 384.0125,-175.3837 388.2847,-172.1113 380.0251,-175.0674 380.0251,-175.0674"/>
-<ellipse fill="none" stroke="#000000" cx="376.8351" cy="-174.8143" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M373.5194,-174.5424C331.6593,-167.4989 322.6322,-130.7 273,-130.7"/>
+<polygon fill="#000000" stroke="#000000" points="380.0254,-175.0625 387.7131,-179.2886 384.0127,-175.3812 388,-175.7 388,-175.7 388,-175.7 384.0127,-175.3812 388.2869,-172.1114 380.0254,-175.0625 380.0254,-175.0625"/>
+<ellipse fill="none" stroke="#000000" cx="376.8356" cy="-174.8074" rx="3.2" ry="3.2"/>
 </g>
 <!-- user_bans&#45;&gt;users -->
 <g id="edge11" class="edge">

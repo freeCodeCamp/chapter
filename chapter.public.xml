@@ -7,6 +7,7 @@
       <sequence increment="1" name="event_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="event_roles_id_seq" startValue="1"/>
       <sequence increment="1" name="events_id_seq" startValue="1"/>
+      <sequence increment="1" name="google_tokens_id_seq" startValue="1"/>
       <sequence increment="1" name="instance_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="instance_roles_id_seq" startValue="1"/>
       <sequence increment="1" name="rsvp_id_seq" startValue="1"/>
@@ -101,8 +102,9 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="region" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="country" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="image_url" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="chat_url" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="creator_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="calendar_id" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="chat_url" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="creator_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="chapters_pkey" unique="true">
             <column ascending="true" name="id"/>
@@ -256,9 +258,24 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
          </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="calendar_event_id" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="events_pkey" unique="true">
             <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="google_tokens" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('google_tokens_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="email" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="access_token" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="refresh_token" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="expiry_date" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="google_tokens_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="google_tokens_email_key" unique="true">
+            <column ascending="true" name="email"/>
          </index>
       </table>
       <table name="instance_permissions" numRows="0" remarks="" schema="public" type="TABLE">

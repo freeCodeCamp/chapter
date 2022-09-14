@@ -21,3 +21,4 @@ event_tags
 instance_role_permissions
 user_bans
 chapter_users
+google_tokens

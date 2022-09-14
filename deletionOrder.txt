@@ -1,3 +1,4 @@
+google_tokens
 chapter_users
 user_bans
 instance_role_permissions

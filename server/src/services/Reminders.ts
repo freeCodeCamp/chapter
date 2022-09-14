@@ -47,9 +47,9 @@ const reminderIncludes = {
         include: {
           venue: true,
           chapter: true,
+          rsvp: true,
         },
       },
-      rsvp: true,
     },
   },
 };

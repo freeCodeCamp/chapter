@@ -1,4 +1,3 @@
-import { rsvp } from '@prisma/client';
 import MailerService from '../src/services/MailerService';
 import {
   deleteReminder,
@@ -49,8 +48,11 @@ interface ReminderMessageData {
   end_time: string;
   chapterUnsubscribeToken: string;
   eventUnsubscribeToken: string;
-  rsvp: rsvp;
 }
+
+const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/`;
+const eventURL = `${process.env.CLIENT_LOCATION}/events/`; //${event.id}?emaillink=true`;
+const unsubscribeUrl = `${process.env.CLIENT_LOCATION}/unsubscribe?token=`; //token
 
 const reminderMessage = ({
   event,
@@ -60,11 +62,10 @@ const reminderMessage = ({
   end_time,
   chapterUnsubscribeToken,
   eventUnsubscribeToken,
-  rsvp,
 }: ReminderMessageData) => {
-  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}) organized by ${event.chapter.name} is happening soon.</br>
+  return `[${event.name}](Link to the event page, like ${eventURL}/chapters/${event.chapter.id}) organized by ${event.chapter.name} is happening soon.</br>
 </br>
-Your RSVP Status: ${rsvp.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
+Your RSVP Status: ${event.rsvp} | [Need to change your RSVP?](link to the chapter page, like ${chapterURL}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
 </br>
 When: ${date} from ${start_time} to ${end_time} (GMT)</br>
 </br>
@@ -77,8 +78,8 @@ Copyright © {current year in YYYY format} {Organization}. All rights reserved.<
 
 
 Unsubscribe Options
-- [Attend this event, but only turn off future notifications for this event](${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken})
-- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
+- [Attend this event, but only turn off future notifications for this event](${unsubscribeUrl}${eventUnsubscribeToken})
+- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](${unsubscribeUrl}${chapterUnsubscribeToken})
 
 [Privacy Policy](link to privacy page)`;
 };
@@ -87,14 +88,6 @@ const getEmailData = (reminder: Reminder) => {
   const date = dateFormatter.format(reminder.event_user.event.start_at);
   const start_time = timeFormatter.format(reminder.event_user.event.start_at);
   const end_time = timeFormatter.format(reminder.event_user.event.ends_at);
-  console.log(`Event: ${reminder.event_user.event.name}`);
-  console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
-  console.log(
-    `Remind at ${reminder.remind_at.toUTCString()} to ${
-      reminder.event_user.user.email
-    }`,
-  );
-  console.log();
 
   const chapterUnsubscribeToken = generateToken(
     UnsubscribeType.Chapter,
@@ -115,7 +108,6 @@ const getEmailData = (reminder: Reminder) => {
     end_time: end_time,
     chapterUnsubscribeToken: chapterUnsubscribeToken,
     eventUnsubscribeToken: eventUnsubscribeToken,
-    rsvp: reminder.event_user.rsvp,
   });
   const subject = `Upcoming Event Reminder for ${reminder.event_user.event.name}`;
   return { email: email, subject: subject };
@@ -133,19 +125,11 @@ const sendEmailForReminder = async (reminder: Reminder) => {
 (async () => {
   const date = new Date();
   const reminders = await getRemindersOlderThanDate(date);
-  console.log(
-    `Reminders older than ${date.toUTCString()}: ${reminders.length}`,
-  );
-  console.log();
+
   await processReminders(reminders, lockForNotifying);
 
   const updateDate = new Date();
   updateDate.setMinutes(updateDate.getMinutes() - processingLimitInMinutes);
   const oldReminders = await getOldReminders(updateDate);
-  console.log(
-    `Old reminders updated before ${updateDate.toUTCString()}: ${
-      oldReminders.length
-    }`,
-  );
   await processReminders(oldReminders, lockForRetry);
 })();

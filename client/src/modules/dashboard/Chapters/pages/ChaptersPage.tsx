@@ -51,7 +51,7 @@ export const ChaptersPage: NextPage = () => {
             <Box display={{ base: 'none', lg: 'block' }} width="100%">
               <DataTable
                 data={chapterData.chapters}
-                keys={['name', 'action'] as const}
+                keys={['name', 'actions'] as const}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
                 mapper={{
                   name: (chapter) => (
@@ -59,7 +59,7 @@ export const ChaptersPage: NextPage = () => {
                       {chapter.name}
                     </LinkButton>
                   ),
-                  action: (chapter) => (
+                  actions: (chapter) => (
                     <HStack>
                       <LinkButton
                         colorScheme="blue"
@@ -92,7 +92,7 @@ export const ChaptersPage: NextPage = () => {
                 <Flex key={id}>
                   <DataTable
                     data={[chapterData.chapters[index]]}
-                    keys={['type', 'action'] as const}
+                    keys={['type', 'actions'] as const}
                     showHeader={false}
                     tableProps={{
                       table: { 'aria-labelledby': 'page-heading' },
@@ -117,7 +117,7 @@ export const ChaptersPage: NextPage = () => {
                           </Heading>
                         </VStack>
                       ),
-                      action: () => (
+                      actions: () => (
                         <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                           <LinkButton
                             href={`/dashboard/chapters/${id}`}

@@ -229,7 +229,7 @@ export const ChapterUsersPage: NextPage = () => {
                             >
                               <Text fontWeight={700}>Name</Text>
                               <Text fontWeight={700}>Email</Text>
-                              <Text fontWeight={700}>Actions</Text>
+                              <Text fontWeight={700}>Action</Text>
                               <Text fontWeight={700}>Role</Text>
                             </VStack>
                           ),

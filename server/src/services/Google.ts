@@ -242,7 +242,7 @@ function getStandardPatchBody({
     ...(end && { end: { dateTime: end.toISOString() } }),
     ...(summary && { summary }),
     ...(attendeeEmails && {
-      // Since Goggle will send emails to these addresses, we don't want to
+      // Since Google will send emails to these addresses, we don't want to
       // accidentally send emails in testing.
       attendees: isProd()
         ? attendeeEmails.map((email: string) => ({ email }))

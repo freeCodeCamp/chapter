@@ -217,23 +217,14 @@ export async function cancelCalendarEvent(eventUpdateData: EventUpdateData) {
   });
 }
 
-// TODO: DRY this and getStandardPatchBody
 function getStandardRequestBody({
   attendeeEmails,
   start,
   end,
   summary,
 }: EventData) {
-  // Since this Goggle will send emails to these addresses, we don't want to
-  // accidentally send emails in testing.
-  const attendees = isProd()
-    ? attendeeEmails.map((email: string) => ({ email }))
-    : [];
   const body: calendar_v3.Schema$Event = {
-    start: { dateTime: start.toISOString() },
-    end: { dateTime: end.toISOString() },
-    summary,
-    attendees,
+    ...getStandardPatchBody({ attendeeEmails, start, end, summary }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
   };
@@ -246,15 +237,18 @@ function getStandardPatchBody({
   end,
   summary,
 }: Partial<EventData>): calendar_v3.Schema$Event {
-  const body: calendar_v3.Schema$Event = {};
-  if (start) body.start = { dateTime: start.toISOString() };
-  if (end) body.end = { dateTime: end.toISOString() };
-  if (summary) body.summary = summary;
-  if (attendeeEmails)
-    body.attendees = isProd()
-      ? attendeeEmails.map((email: string) => ({ email }))
-      : [];
-  return body;
+  return {
+    ...(start && { start: { dateTime: start.toISOString() } }),
+    ...(end && { end: { dateTime: end.toISOString() } }),
+    ...(summary && { summary }),
+    ...(attendeeEmails && {
+      // Since Goggle will send emails to these addresses, we don't want to
+      // accidentally send emails in testing.
+      attendees: isProd()
+        ? attendeeEmails.map((email: string) => ({ email }))
+        : [],
+    }),
+  };
 }
 
 export async function deleteCalendarEvent({

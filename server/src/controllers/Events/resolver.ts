@@ -491,44 +491,31 @@ export class EventResolver {
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
   ): Promise<EventUser> {
-    if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
-    const eventUser = await prisma.event_users.findUniqueOrThrow({
+    const updatedUser = await prisma.event_users.update({
+      data: { rsvp: { connect: { name: 'yes' } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: { include: { chapter: true } }, user: true },
+      include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
     const unsubscribeOptions = getUnsubscribeOptions({
-      chapterId: eventUser.event.chapter_id,
-      eventId: eventUser.event_id,
+      chapterId: updatedUser.event.chapter_id,
+      eventId: updatedUser.event_id,
       userId,
     });
 
     await new MailerService({
-      emailList: [eventUser.user.email],
+      emailList: [updatedUser.user.email],
       subject: 'Your RSVP is confirmed',
-      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}
+      htmlEmail: `Your reservation is confirmed. You can attend the event ${updatedUser.event.name}
 ${unsubscribeOptions}`,
     }).sendEmail();
-
-    // TODO: use one update call rather than a find and then a separate update.
-    const updatedUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'yes' } } },
-      where: {
-        user_id_event_id: {
-          user_id: eventUser.user_id,
-          event_id: eventUser.event_id,
-        },
-      },
-      include: eventUserIncludes,
-    });
 
     // The calendar must be updated after event_users, so it can use the updated
     // email list
     await updateCalendarEventAttendees({
-      calendarEventId: eventUser.event.calendar_event_id,
-      calendarId: eventUser.event.chapter.calendar_id,
+      calendarEventId: updatedUser.event.calendar_event_id,
+      calendarId: updatedUser.event.chapter.calendar_id,
       eventId,
     });
     return updatedUser;

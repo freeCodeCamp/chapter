@@ -155,6 +155,7 @@ describe('Chapter Users dashboard', () => {
       .findByRole('button', { name: 'Ban' })
       .click();
     cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.findByRole('status').contains('access denied', { matchCase: false });
   });
 
   it('an admin cannot ban themselves', () => {

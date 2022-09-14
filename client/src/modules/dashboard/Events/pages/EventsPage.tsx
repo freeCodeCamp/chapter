@@ -21,7 +21,11 @@ export const EventsPage: NextPage = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Events</Heading>
           {!!user?.admined_chapters.length && (
-            <LinkButton data-cy="new-event" href="/dashboard/events/new">
+            <LinkButton
+              data-cy="new-event"
+              href="/dashboard/events/new"
+              colorScheme={'blue'}
+            >
               Add new
             </LinkButton>
           )}
@@ -51,7 +55,7 @@ export const EventsPage: NextPage = () => {
                     'capacity',
                     'streaming_url',
                     'date',
-                    'actions',
+                    'action',
                   ] as const
                 }
                 mapper={{
@@ -95,7 +99,7 @@ export const EventsPage: NextPage = () => {
                       ? event.streaming_url
                       : 'In-person only',
                   date: (event) => formatDate(event.start_at),
-                  actions: (event) => (
+                  action: (event) => (
                     <LinkButton
                       colorScheme="blue"
                       size="sm"
@@ -129,27 +133,31 @@ export const EventsPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.events[index]]}
-                    keys={['type', 'value'] as const}
+                    keys={['type', 'action'] as const}
+                    showHeader={false}
                     mapper={{
                       type: () => (
                         <VStack
-                          fontWeight={'500'}
-                          spacing={2.5}
+                          fontWeight={'700'}
+                          spacing={3}
                           align={'flex-start'}
                           fontSize={['sm', 'md']}
+                          minW={'7em'}
+                          marginBlock={'1.5em'}
                         >
-                          <Text>STATUS</Text>
-                          <Text>NAME</Text>
-                          <Text>INVITE ONLY</Text>
-                          <Text>VENUE</Text>
-                          <Text>CAPACITY</Text>
-                          <Text>STREAMING URL</Text>
-                          <Text>DATE</Text>
-                          <Text>ACTIONS</Text>
+                          {/* todo fix spacing between elements */}
+                          <Text>Status</Text>
+                          <Text>Name</Text>
+                          <Text>Invite only</Text>
+                          <Text>Venue</Text>
+                          <Text>Capacity</Text>
+                          <Text>Streaming url</Text>
+                          <Text>Date</Text>
+                          <Text>Actions</Text>
                         </VStack>
                       ),
-                      value: () => (
-                        <VStack align={'flex-start'} spacing={2}>
+                      action: () => (
+                        <VStack align={'flex-start'} spacing={2} width="10em">
                           <HStack>
                             {canceled ? (
                               <Text

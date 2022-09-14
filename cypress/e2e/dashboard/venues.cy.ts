@@ -27,7 +27,7 @@ describe('venues dashboard', () => {
     cy.visit('/dashboard/venues');
     cy.findByRole('table', { name: 'Venues' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
-    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'action' }).should('be.visible');
 
     cy.get('[data-cy="view-venue-button"]')
       .should('be.visible')

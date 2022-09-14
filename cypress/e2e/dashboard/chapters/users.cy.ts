@@ -17,6 +17,7 @@ describe('Chapter Users dashboard', () => {
     cy.findByRole('table', { name: 'Chapter Users' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'email' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
   });
 
   it('should not be possible to create users', () => {

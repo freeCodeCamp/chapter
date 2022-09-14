@@ -77,17 +77,17 @@ export const EventPage: NextPage = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
     },
     {
       title: 'Canceled',
       rsvpFilter: 'no',
-      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
+      action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
   ];
 
@@ -143,7 +143,7 @@ export const EventPage: NextPage = () => {
         false
       )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        {userLists.map(({ title, rsvpFilter, ops }) => {
+        {userLists.map(({ title, rsvpFilter, action }) => {
           const users = data.event
             ? data.event.event_users.filter(
                 ({ rsvp }) => rsvp.name === rsvpFilter,
@@ -155,15 +155,15 @@ export const EventPage: NextPage = () => {
                 <DataTable
                   title={`${title}: ${users.length}`}
                   data={users}
-                  keys={['user', 'role', 'ops'] as const}
+                  keys={['user', 'role', 'action'] as const}
                   emptyText="No users"
                   mapper={{
                     user: ({ user }) => (
                       <Text data-cy="username">{user.name}</Text>
                     ),
-                    ops: ({ user }) => (
+                    action: ({ user }) => (
                       <HStack>
-                        {ops.map(({ title, onClick, colorScheme }) => (
+                        {action.map(({ title, onClick, colorScheme }) => (
                           <Button
                             key={title.toLowerCase()}
                             data-cy={title.toLowerCase()}
@@ -183,29 +183,37 @@ export const EventPage: NextPage = () => {
                 />
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-                {users.map(({ event_role, user }, index) => (
-                  <HStack key={index}>
+                {users.map(({ event_role, user, rsvp }, index) => (
+                  <HStack key={rsvp.name}>
                     <DataTable
-                      title={`${title}`}
+                      title={'RSVP: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}
-                      keys={['type', 'value'] as const}
+                      keys={['type', 'action'] as const}
+                      showHeader={false}
                       emptyText="No users"
                       mapper={{
                         type: () => (
                           <VStack
                             align={'flex-start'}
-                            fontWeight={500}
-                            spacing={'3'}
+                            fontSize={['sm', 'md']}
+                            fontWeight={700}
+                            spacing={'2'}
+                            marginBottom={4}
                           >
                             <Text>User</Text>
                             <Text>Role</Text>
-                            <Text>Ops</Text>
+                            <Text>Actions</Text>
                           </VStack>
                         ),
-                        value: () => (
-                          <VStack align={'flex-start'} spacing={'3'}>
+                        action: () => (
+                          <VStack
+                            align={'flex-start'}
+                            fontSize={['sm', 'md']}
+                            spacing={'2'}
+                            marginBottom={4}
+                          >
                             <Text data-cy="username">{user.name}</Text>
-                            {ops.map(({ title, onClick, colorScheme }) => (
+                            {action.map(({ title, onClick, colorScheme }) => (
                               <Button
                                 key={title.toLowerCase()}
                                 data-cy={title.toLowerCase()}

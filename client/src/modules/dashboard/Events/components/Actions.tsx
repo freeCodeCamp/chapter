@@ -51,7 +51,7 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
       </Button>
       <LinkButton
         size="sm"
-        colorScheme="green"
+        colorScheme="blue"
         href={`/dashboard/events/${event.id}/edit`}
       >
         Edit

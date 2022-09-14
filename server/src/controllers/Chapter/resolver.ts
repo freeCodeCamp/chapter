@@ -17,6 +17,7 @@ import {
   ChapterWithEvents,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
+import { createCalendar } from '../../services/Google';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -62,11 +63,20 @@ export class ChapterResolver {
     @Arg('data') data: CreateChapterInputs,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
-    // An instance owner may not want or need to join a chapter they've created
-    // so they are not made a member by default.
+    let calendarData;
+    try {
+      calendarData = await createCalendar({
+        summary: data.name,
+        description: `Events for ${data.name}`,
+      });
+    } catch {
+      // TODO: log more details without leaking tokens and user info.
+      console.log('Unable to create calendar');
+    }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,
       creator_id: ctx.user.id,
+      calendar_id: calendarData?.id,
     };
 
     return prisma.chapters.create({ data: chapterData });

@@ -141,7 +141,6 @@ describe('Chapter Users dashboard', () => {
   }
 
   it('someone whos NOT an admin of a chapter, should NOT be able to ban a chapter users', () => {
-    cy.logout();
     cy.login('admin@of.chapter.one');
     cy.visit(`/dashboard/chapters/2/users`);
 

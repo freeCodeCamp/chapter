@@ -8,6 +8,8 @@ services:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
+    volumes:
+      - ./server/keys/:/usr/chapter/server/keys/
     ports:
       - "5000:5000"
     image: chapter-app

@@ -82,10 +82,10 @@ export const UsersPage: NextPage = () => {
               <DataTable
                 data={data.users}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                keys={['name', 'role', 'ops'] as const}
+                keys={['name', 'role', 'action'] as const}
                 mapper={{
                   name: ({ name }) => <Text data-cy="name">{name}</Text>,
-                  ops: ({ id, instance_role, name }) => (
+                  action: ({ id, instance_role, name }) => (
                     <Button
                       data-cy="changeRole"
                       colorScheme="blue"
@@ -114,17 +114,23 @@ export const UsersPage: NextPage = () => {
                   key={id}
                   data={[data.users[index]]}
                   tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                  keys={['types', 'values'] as const}
+                  keys={['type', 'action'] as const}
+                  showHeader={false}
                   mapper={{
-                    types: () => (
-                      <VStack fontWeight={'500'} align={'flex-start'}>
+                    type: () => (
+                      <VStack
+                        fontWeight={'700'}
+                        fontSize={['sm', 'md']}
+                        align={'flex-start'}
+                        marginBlock={'.5em'}
+                      >
                         <Text>Name</Text>
                         <Text>Role</Text>
                         <Text>Action</Text>
                       </VStack>
                     ),
-                    values: () => (
-                      <VStack align={'flex-start'}>
+                    action: () => (
+                      <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                         <Text data-cy="name">{name}</Text>
                         <Text data-cy="role">{instance_role.name}</Text>
                         <Button

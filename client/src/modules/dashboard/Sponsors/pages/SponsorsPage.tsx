@@ -19,7 +19,9 @@ export const SponsorsPage: NextPage = () => {
         <VStack>
           <Flex w="full" justify="space-between">
             <Heading id="page-heading">Sponsors</Heading>
-            <LinkButton href="/dashboard/sponsors/new">Add new</LinkButton>
+            <LinkButton href="/dashboard/sponsors/new" colorScheme={'blue'}>
+              Add new
+            </LinkButton>
           </Flex>
           {loading ? (
             <Heading> Loading Sponsors...</Heading>
@@ -36,7 +38,7 @@ export const SponsorsPage: NextPage = () => {
                 <DataTable
                   tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
                   data={data.sponsors}
-                  keys={['name', 'type', 'website', 'actions'] as const}
+                  keys={['name', 'type', 'website', 'action'] as const}
                   mapper={{
                     name: (sponsor) => (
                       <LinkButton href={`/dashboard/sponsors/${sponsor.id}`}>
@@ -45,7 +47,7 @@ export const SponsorsPage: NextPage = () => {
                     ),
                     type: (sponsor) => sponsor.type,
                     website: (sponsor) => sponsor.website,
-                    actions: (sponsor) => (
+                    action: (sponsor) => (
                       <LinkButton
                         colorScheme="blue"
                         size="xs"
@@ -66,22 +68,24 @@ export const SponsorsPage: NextPage = () => {
                       table: { 'aria-labelledby': 'page-heading' },
                     }}
                     data={[data.sponsors[index]]}
-                    keys={['types', 'value'] as const}
+                    keys={['type', 'action'] as const}
+                    showHeader={false}
                     mapper={{
-                      types: () => (
+                      type: () => (
                         <VStack
-                          fontWeight={500}
+                          fontWeight={700}
                           align={'flex-start'}
-                          spacing={4}
+                          fontSize={['sm', 'md']}
+                          marginBlock={'1.5em'}
                         >
-                          <Text>Name</Text>
+                          <Text marginBlock={'.54em'}>Name</Text>
                           <Text>Type</Text>
+                          <Text>Ops</Text>
                           <Text>Website</Text>
-                          <Text>Action</Text>
                         </VStack>
                       ),
-                      value: () => (
-                        <VStack align={'flex-start'}>
+                      action: () => (
+                        <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                           <LinkButton
                             href={`/dashboard/sponsers/${id}`}
                             size={'sm'}
@@ -89,7 +93,6 @@ export const SponsorsPage: NextPage = () => {
                             {name}
                           </LinkButton>
                           <Text>{type}</Text>
-                          <Text size={'sm'}>{website}</Text>
                           <LinkButton
                             colorScheme="blue"
                             size="xs"
@@ -97,6 +100,10 @@ export const SponsorsPage: NextPage = () => {
                           >
                             Edit
                           </LinkButton>
+                          {/* the slice is here to stop the overflow, ToDo not use slice */}
+                          <Text size={'sm'} wordBreak={'keep-all'}>
+                            {website.slice(7, -4)}
+                          </Text>
                         </VStack>
                       ),
                     }}

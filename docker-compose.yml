@@ -8,6 +8,8 @@ services:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
+    volumes:
+      - ./server/keys/:/usr/chapter/server/keys/
     ports:
       - "5000:5000"
     image: chapter-app
@@ -24,7 +26,6 @@ services:
         # environment) needs to include the remote address. e.g.
         # https://example.com:5000
         NEXT_PUBLIC_SERVER_URL:
-        NEXT_PUBLIC_ENVIRONMENT:
         NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT:
         NEXT_PUBLIC_USE_AUTH0:
         NEXT_PUBLIC_AUTH0_DOMAIN:

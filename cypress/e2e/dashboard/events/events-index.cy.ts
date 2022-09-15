@@ -37,7 +37,7 @@ describe('spec needing owner', () => {
     cy.visit('/dashboard/events');
     cy.findByRole('table', { name: 'Events' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
-    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'action' }).should('be.visible');
     cy.get('a[href="/dashboard/events/1"]').should('be.visible');
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });

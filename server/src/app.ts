@@ -1,26 +1,27 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'reflect-metadata';
+import crypto from 'crypto';
+
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
-import express, { Express, Response } from 'express';
+import express, { Express, NextFunction, Response } from 'express';
+import cookies from 'cookie-parser';
 
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 
+import { Permission } from '../../common/permissions';
 import { isDev } from './config';
 import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
-import {
-  user,
-  events,
-  // handleAuthenticationError,
-} from './controllers/Auth/middleware';
+import { user, events, handleError } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
+import { getGoogleAuthUrl, storeGoogleTokens } from './services/Google';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -44,16 +45,17 @@ export const main = async (app: Express) => {
   const allowedOrigins = isDev()
     ? [clientLocation, 'https://studio.apollographql.com']
     : clientLocation;
-
+  const corsOptions = { credentials: true, origin: allowedOrigins };
+  app.use(cookies());
   app.set('trust proxy', 'uniquelocal');
-  app.use(cors({ credentials: true, origin: allowedOrigins }));
+  app.use(cors(corsOptions));
   app.use(
     cookieSession({
       secret: process.env.SESSION_SECRET,
       domain: process.env.COOKIE_DOMAIN,
       // One week:
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: !isDev(),
     }),
   );
@@ -148,8 +150,57 @@ export const main = async (app: Express) => {
   // them.
   app.use(user);
   app.use(events);
-  // TODO: figure out if any extra handlers are needed or we can rely on checkJwt
-  // app.use(handleAuthenticationError);
+  if (process.env.NODE_ENV !== 'development') {
+    app.use(handleError);
+  }
+
+  function canAuthWithGoogle(req: Request, _res: Response, next: NextFunction) {
+    if (!req.user) {
+      return next(
+        'This is a protected route, please login before accessing it',
+      );
+    }
+    // TODO: use isAllowedByInstanceRole instead
+    const canAuthenticate =
+      req.user.instance_role.instance_role_permissions.some(
+        ({ instance_permission }) =>
+          instance_permission.name === Permission.GoogleAuthenticate,
+      );
+    if (!canAuthenticate) {
+      return next(
+        'Only users with the GoogleAuthenticate permission can access this route',
+      );
+    }
+    next();
+  }
+
+  app.get('/authenticate-with-google', canAuthWithGoogle, (_req, res) => {
+    const state = crypto.randomUUID();
+    res.cookie('state', state, {
+      httpOnly: true,
+      secure: !isDev(),
+      sameSite: 'lax',
+    });
+
+    const authUrl = getGoogleAuthUrl(state);
+    res.redirect(authUrl);
+  });
+
+  app.get('/google-oauth2callback', canAuthWithGoogle, (req, res, next) => {
+    if (req.query.state !== req.cookies.state) {
+      return next('Client cookie and OAuth2 state do not match');
+    }
+    const code = req.query.code;
+    if (!code || typeof code !== 'string') return next('Invalid Google code');
+
+    storeGoogleTokens(code)
+      .then(() => {
+        res.send('Authentication successful');
+      })
+      .catch((err) => {
+        next(err);
+      });
+  });
 
   const schema = await buildSchema({
     resolvers,
@@ -163,11 +214,12 @@ export const main = async (app: Express) => {
       user: req.user,
       events: req.events,
     }),
+    csrfPrevention: true,
   });
 
   await server.start();
 
-  server.applyMiddleware({ app, cors: false, path: '/graphql' });
+  server.applyMiddleware({ app, cors: corsOptions, path: '/graphql' });
 };
 
 if (require.main === module) {

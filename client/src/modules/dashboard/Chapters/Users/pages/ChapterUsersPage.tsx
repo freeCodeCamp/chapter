@@ -151,7 +151,7 @@ export const ChapterUsersPage: NextPage = () => {
               <DataTable
                 data={data.chapter.chapter_users}
                 tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                keys={['name', 'email', 'role', 'ops'] as const}
+                keys={['name', 'email', 'role', 'actions'] as const}
                 mapper={{
                   name: ({ user }) => (
                     <HStack>
@@ -164,7 +164,7 @@ export const ChapterUsersPage: NextPage = () => {
                     </HStack>
                   ),
                   email: ({ user }) => user.email,
-                  ops: ({ canBeBanned, user, chapter_role }) => (
+                  actions: ({ canBeBanned, user, chapter_role }) => (
                     <HStack>
                       <Button
                         data-cy="changeRole"
@@ -215,7 +215,8 @@ export const ChapterUsersPage: NextPage = () => {
                     {data.chapter ? (
                       <DataTable
                         data={[data.chapter.chapter_users[index]]}
-                        keys={['type', 'values'] as const}
+                        keys={['type', 'actions'] as const}
+                        showHeader={false}
                         tableProps={{
                           table: { 'aria-labelledby': 'page-heading' },
                         }}
@@ -223,16 +224,16 @@ export const ChapterUsersPage: NextPage = () => {
                           type: () => (
                             <VStack
                               spacing={3}
-                              fontWeight={500}
                               align={'flex-start'}
+                              marginBlock={'1em'}
                             >
-                              <Text>Name</Text>
-                              <Text>Email</Text>
-                              <Text>Ops</Text>
-                              <Text>Role</Text>
+                              <Text fontWeight={700}>Name</Text>
+                              <Text fontWeight={700}>Email</Text>
+                              <Text fontWeight={700}>Actions</Text>
+                              <Text fontWeight={700}>Role</Text>
                             </VStack>
                           ),
-                          values: () => (
+                          actions: () => (
                             <VStack spacing={3} align={'flex-start'}>
                               <HStack>
                                 <Text>{user.name}</Text>

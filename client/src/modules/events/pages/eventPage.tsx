@@ -10,7 +10,6 @@ import {
   HStack,
   ListItem,
   Avatar,
-  useDisclosure,
   Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
@@ -19,7 +18,6 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
@@ -54,7 +52,6 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
-  const modalProps = useDisclosure();
 
   const eventUser = useMemo(() => {
     const eUser = data?.event?.event_users.find(
@@ -85,10 +82,6 @@ export const EventPage: NextPage = () => {
   }
 
   const chapterId = data.event.chapter.id;
-
-  const handleLoginUserFirst = () => {
-    modalProps.onOpen();
-  };
 
   const onSubscribeToEvent = async () => {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
@@ -165,8 +158,9 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  // TODO: reimplment this the login modal with Auth0
   const checkOnRsvp = async () => {
-    if (!user) return handleLoginUserFirst();
+    if (!user) throw new Error('User not logged in');
     await onRsvp();
   };
 
@@ -179,11 +173,6 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <LoginRegisterModal
-        action={(notRsvped) => (notRsvped ? onRsvp() : onCancelRsvp())}
-        userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
-        modalProps={modalProps}
-      />
       <Image
         data-cy="event-image"
         boxSize="100%"

@@ -11,25 +11,26 @@
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
-    "@auth0/auth0-react": "1.10.2",
+    "@auth0/auth0-react": "1.11.0",
+    "@chakra-ui/hooks": "2.0.9",
     "@chakra-ui/icons": "2.0.9",
-    "@chakra-ui/react": "2.2.9",
+    "@chakra-ui/react": "2.3.2",
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
     "chakra-confirm": "1.2.17",
     "chakra-data-table": "1.4.0",
     "chakra-next-link": "1.0.10",
-    "date-fns": "2.29.2",
+    "date-fns": "2.29.3",
     "graphql": "15.8.0",
     "next": "12.3.0",
     "react": "18.2.0",
     "react-datepicker": "4.8.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "7.34.2"
+    "react-hook-form": "7.35.0"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.364.0",
-    "@codesee/tracker": "0.364.0",
+    "@codesee/babel-plugin-instrument": "0.368.0",
+    "@codesee/tracker": "0.368.0",
     "@graphql-codegen/cli": "2.12.0",
     "@graphql-codegen/fragment-matcher": "3.3.1",
     "@graphql-codegen/introspection": "2.2.1",
@@ -40,12 +41,12 @@
     "@graphql-codegen/typescript-react-apollo": "3.3.3",
     "@testing-library/dom": "8.17.1",
     "@testing-library/react": "13.4.0",
-    "@types/react": "18.0.18",
+    "@types/react": "18.0.20",
     "@types/react-datepicker": "4.4.2",
     "@types/react-dom": "18.0.6",
     "babel-plugin-istanbul": "6.1.1",
     "prettier": "2.7.1",
-    "typescript": "4.7.4"
+    "typescript": "4.8.3"
   },
   "license": "MIT"
 }

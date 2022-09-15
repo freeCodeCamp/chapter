@@ -41,6 +41,13 @@ import {
   generateToken,
   UnsubscribeType,
 } from '../../services/UnsubscribeToken';
+import {
+  cancelCalendarEvent,
+  createCalendarEvent,
+  deleteCalendarEvent,
+  patchCalendarEvent,
+  updateCalendarEvent,
+} from '../../services/Google';
 import { CreateEventInputs, UpdateEventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -164,6 +171,39 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
 };
 
+const updateCalendarEventAttendees = async ({
+  eventId,
+  calendarId,
+  calendarEventId,
+}: {
+  eventId: number;
+  calendarId: string | null;
+  calendarEventId: string | null;
+}) => {
+  const attendees = await prisma.event_users.findMany({
+    where: {
+      event_id: eventId,
+      rsvp: { name: 'yes' },
+    },
+    select: { user: { select: { email: true } } },
+  });
+
+  if (calendarId && calendarEventId) {
+    try {
+      // Patch is necessary here, since an update with unchanged start and end
+      // will remove attendees' yes/no/maybe response without notifying them.
+      await patchCalendarEvent({
+        calendarId,
+        calendarEventId,
+        attendeeEmails: attendees.map(({ user }) => user.email),
+      });
+    } catch {
+      // TODO: log more details without leaking tokens and user info.
+      throw 'Unable to update calendar event attendees';
+    }
+  }
+};
+
 @Resolver()
 export class EventResolver {
   @Query(() => [EventWithRelations])
@@ -278,6 +318,11 @@ export class EventResolver {
           include: eventUserIncludes,
         },
         venue: true,
+        chapter: {
+          select: {
+            calendar_id: true,
+          },
+        },
       },
     });
 
@@ -348,6 +393,14 @@ export class EventResolver {
       }
     }
 
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
+    await updateCalendarEventAttendees({
+      calendarEventId: event.calendar_event_id,
+      calendarId: event.chapter.calendar_id,
+      eventId,
+    });
+
     await sendRsvpInvitation(ctx.user, event);
     await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
     return eventUser;
@@ -379,6 +432,7 @@ export class EventResolver {
           include: eventUserIncludes,
         },
         venue: true,
+        chapter: { select: { calendar_id: true } },
       },
     });
 
@@ -411,7 +465,7 @@ export class EventResolver {
       }
     }
 
-    return await prisma.event_users.update({
+    const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },
       include: eventUserIncludes,
       where: {
@@ -421,6 +475,15 @@ export class EventResolver {
         },
       },
     });
+
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
+    await updateCalendarEventAttendees({
+      calendarEventId: event.calendar_event_id,
+      calendarId: event.chapter.calendar_id,
+      eventId,
+    });
+    return updatedEventUser;
   }
 
   @Authorized(Permission.RsvpConfirm)
@@ -449,7 +512,8 @@ export class EventResolver {
 ${unsubscribeOptions}`,
     }).sendEmail();
 
-    return await prisma.event_users.update({
+    // TODO: use one update call rather than a find and then a separate update.
+    const updatedUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'yes' } } },
       where: {
         user_id_event_id: {
@@ -459,6 +523,15 @@ ${unsubscribeOptions}`,
       },
       include: eventUserIncludes,
     });
+
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
+    await updateCalendarEventAttendees({
+      calendarEventId: eventUser.event.calendar_event_id,
+      calendarId: eventUser.event.chapter.calendar_id,
+      eventId,
+    });
+    return updatedUser;
   }
 
   @Authorized(Permission.RsvpDelete)
@@ -467,8 +540,26 @@ ${unsubscribeOptions}`,
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    await prisma.event_users.delete({
+    const { event } = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+      select: {
+        event: {
+          select: {
+            calendar_event_id: true,
+            chapter: {
+              select: { calendar_id: true },
+            },
+          },
+        },
+      },
+    });
+
+    // The calendar must be updated after event_users, so it can use the updated
+    // email list
+    await updateCalendarEventAttendees({
+      calendarEventId: event.calendar_event_id,
+      calendarId: event.chapter.calendar_id,
+      eventId,
     });
 
     return true;
@@ -500,6 +591,8 @@ ${unsubscribeOptions}`,
 
     const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 
+    // TODO: add an option to allow event creators NOT to rsvp. If doing that
+    // make sure stop adding them to the calendar event.
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
@@ -543,10 +636,37 @@ ${unsubscribeOptions}`,
       },
     };
 
-    return await prisma.events.create({
+    const event = await prisma.events.create({
       data: eventData,
       include: { tags: { include: { tag: true } } },
     });
+
+    // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
+    if (chapter.calendar_id) {
+      try {
+        const { calendarEventId } = await createCalendarEvent({
+          calendarId: chapter.calendar_id,
+          start: event.start_at,
+          end: event.ends_at,
+          summary: event.name,
+          attendeeEmails: [ctx.user.email],
+        });
+
+        await prisma.events.update({
+          where: {
+            id: event.id,
+          },
+          data: {
+            calendar_event_id: calendarEventId,
+          },
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to create calendar event');
+      }
+    }
+
+    return event;
   }
 
   @Authorized(Permission.EventEdit)
@@ -684,11 +804,36 @@ ${venueDetails}`;
       });
     }
 
-    return await prisma.events.update({
+    const updatedEvent = await prisma.events.update({
       where: { id },
       data: update,
-      include: { tags: { include: { tag: true } } },
+      include: {
+        tags: { include: { tag: true } },
+        chapter: { select: { calendar_id: true } },
+        event_users: { include: { user: { select: { email: true } } } },
+      },
     });
+
+    // TODO: warn the user if the any calendar ids are missing
+    if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
+      try {
+        await updateCalendarEvent({
+          calendarId: updatedEvent.chapter.calendar_id,
+          calendarEventId: updatedEvent.calendar_event_id,
+          summary: updatedEvent.name,
+          start: updatedEvent.start_at,
+          end: updatedEvent.ends_at,
+          attendeeEmails: updatedEvent.event_users.map(
+            ({ user }) => user.email,
+          ),
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to update calendar event');
+      }
+    }
+
+    return updatedEvent;
   }
 
   @Authorized(Permission.EventEdit)
@@ -699,7 +844,7 @@ ${venueDetails}`;
       data: { canceled: true },
       include: {
         tags: { include: { tag: true } },
-        chapter: true,
+        chapter: { select: { calendar_id: true } },
         event_users: {
           include: { user: true },
           where: {
@@ -742,16 +887,56 @@ ${venueDetails}`;
       }).sendEmail();
     }
 
+    if (event.chapter.calendar_id && event.calendar_event_id) {
+      try {
+        // TODO: consider not awaiting. Ideally the user would see the app
+        // respond immediately, but be informed of any failures later.
+        // Client-side this could be handled by something like redux-saga, but
+        // I'm not sure how to approach that server-side.
+        await cancelCalendarEvent({
+          calendarId: event.chapter.calendar_id,
+          calendarEventId: event.calendar_event_id,
+          summary: event.name,
+          start: event.start_at,
+          end: event.ends_at,
+          attendeeEmails: event.event_users.map(({ user }) => user.email),
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to cancel calendar event');
+      }
+    }
+
     return event;
   }
 
   @Authorized(Permission.EventDelete)
   @Mutation(() => Event)
   async deleteEvent(@Arg('id', () => Int) id: number): Promise<Event> {
-    return await prisma.events.delete({
+    const event = await prisma.events.delete({
       where: { id },
-      include: { tags: { include: { tag: true } } },
+      include: {
+        tags: { include: { tag: true } },
+        chapter: { select: { calendar_id: true } },
+      },
     });
+
+    if (event.chapter.calendar_id && event.calendar_event_id) {
+      try {
+        // TODO: consider not awaiting. Ideally the user would see the app
+        // respond immediately, but be informed of any failures later.
+        // Client-side this could be handled by something like redux-saga, but
+        // I'm not sure how to approach that server-side.
+        await deleteCalendarEvent({
+          calendarId: event.chapter.calendar_id,
+          calendarEventId: event.calendar_event_id,
+        });
+      } catch {
+        // TODO: log more details without leaking tokens and user info.
+        console.error('Unable to delete calendar event');
+      }
+    }
+    return event;
   }
 
   // TODO: This will need a real GraphQL return type (AFAIK you have to return

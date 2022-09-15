@@ -104,6 +104,15 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
+        <Link
+          href="#main-content"
+          className={styles.skip}
+          background={'gray.10'}
+          color={'gray.85'}
+          _focus={{ translateY: 0 }}
+        >
+          Skip Navigation
+        </Link>
         <HStack as="nav">
           <Box>
             <Menu>

@@ -7,7 +7,9 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <Box px={[4, 4, 8, 16]}>{children}</Box>
+      <Box px={[4, 4, 8, 16]} id="main-content">
+        {children}
+      </Box>
     </>
   );
 };

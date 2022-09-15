@@ -115,17 +115,27 @@ function createOAuth2Client() {
   );
 }
 
-// TODO: use refresh tokens to get a new access token if the existing one is
-// expired or about to expire.
 async function createCredentialedClient() {
   const oauth2Client = createOAuth2Client();
-  const { access_token } = await prisma.google_tokens.findFirstOrThrow();
-  oauth2Client.setCredentials({ access_token });
+
+  const tokenInfo = await prisma.google_tokens.findFirstOrThrow();
+  const tokens = {
+    access_token: tokenInfo.access_token,
+    refresh_token: tokenInfo.refresh_token,
+    // Awkwardly, Prisma is setting the type to bigint, but it's really an 8 byte
+    // integer in the database.
+    expiry_date: tokenInfo.expiry_date as unknown as number,
+  };
+  // We need to set all the credentials on the client, not just the access
+  // token. That way the client will use the access token if it's available and
+  // not about to expire, but will refresh otherwise.
+  oauth2Client.setCredentials(tokens);
   return oauth2Client;
 }
 
-// The client *must* be created afresh for each request. Otherwise, concurrent
-// requests could end up sharing tokens.
+// It's not necessary to recreate the client for each request, but it is safer.
+// If multiple tokens end up being used, it will be important to use the
+// appropriate one for that request.
 async function createCalendarApi() {
   const auth = await createCredentialedClient();
   return calendar({ version: 'v3', auth });

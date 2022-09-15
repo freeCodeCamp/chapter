@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { OAuth2Client } from 'google-auth-library';
+import { Credentials, OAuth2Client } from 'google-auth-library';
 import { calendar, calendar_v3 } from '@googleapis/calendar';
 import { isProd } from '../config';
 import { prisma } from '../prisma';
@@ -53,7 +53,7 @@ export function getGoogleAuthUrl(state: string) {
 }
 
 export async function requestTokens(code: string) {
-  const oauth2Client = createOAuth2Client();
+  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
 
   try {
     await oauth2Client.getToken(code);
@@ -64,69 +64,68 @@ export async function requestTokens(code: string) {
 
 function createOAuth2Client() {
   if (!keys) throw new Error('OAuth2 keys file missing');
-  const oauth2Client = new OAuth2Client(
+  return new OAuth2Client(
     keys.client_id,
     keys.client_secret,
     keys.redirect_uris[0],
   );
+}
 
-  // TODO: Communicate these errors to the user. As of now, if the user
-  // authenticates, and an error is thrown here, they will still see
-  // Authentication successful in the browser.
-  oauth2Client.on('tokens', async (tokens) => {
-    // TODO: handle the case where the user rejects some or all of the scopes
-    const { access_token, refresh_token, expiry_date } = tokens;
+// TODO: Communicate these errors to the user. As of now, if the user
+// authenticates, and an error is thrown here, they will still see
+// Authentication successful in the browser.
+async function onTokens(tokens: Credentials) {
+  // TODO: handle the case where the user rejects some or all of the scopes
+  const { access_token, refresh_token, expiry_date } = tokens;
 
-    if (!access_token || !expiry_date) throw new Error('Tokens invalid');
+  if (!access_token || !expiry_date) throw new Error('Tokens invalid');
 
-    let userInfo;
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      userInfo = await oauth2Client.getTokenInfo(tokens.access_token!);
-    } catch {
-      throw new Error('Failed to get user info');
-    }
+  let userInfo;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    userInfo = await createOAuth2Client().getTokenInfo(tokens.access_token!);
+  } catch {
+    throw new Error('Failed to get user info');
+  }
 
-    const { email } = userInfo;
+  const { email } = userInfo;
 
-    if (!email) throw new Error('User email not found');
+  if (!email) throw new Error('User email not found');
 
-    const existingGoogleTokens = await prisma.google_tokens.findUnique({
-      where: { id: TOKENS_ID },
-    });
-
-    const existingEmail = existingGoogleTokens?.email;
-
-    if (existingEmail && existingEmail !== email) {
-      throw new Error(
-        'You must authenticate with the Google account used when setting up',
-      );
-    }
-
-    if (refresh_token) {
-      const update = { access_token, refresh_token, expiry_date, email };
-      await prisma.google_tokens.upsert({
-        where: { id: TOKENS_ID },
-        update,
-        create: { id: TOKENS_ID, ...update },
-      });
-    } else {
-      const update = { access_token, expiry_date };
-      // TODO: Handle the case where the refresh token is not sent *and* the
-      // record doesn't exist. If this happens, we need to redirect them to a
-      // new auth url, but with prompt: 'consent', so that Google will provide
-      // a new refresh token.
-      await prisma.google_tokens.update({
-        where: { id: TOKENS_ID },
-        data: { ...update },
-      });
-    }
+  const existingGoogleTokens = await prisma.google_tokens.findUnique({
+    where: { id: TOKENS_ID },
   });
-  return oauth2Client;
+
+  const existingEmail = existingGoogleTokens?.email;
+
+  if (existingEmail && existingEmail !== email) {
+    throw new Error(
+      'You must authenticate with the Google account used when setting up',
+    );
+  }
+
+  if (refresh_token) {
+    const update = { access_token, refresh_token, expiry_date, email };
+    await prisma.google_tokens.upsert({
+      where: { id: TOKENS_ID },
+      update,
+      create: { id: TOKENS_ID, ...update },
+    });
+  } else {
+    const update = { access_token, expiry_date };
+    // TODO: Handle the case where the refresh token is not sent *and* the
+    // record doesn't exist. If this happens, we need to redirect them to a
+    // new auth url, but with prompt: 'consent', so that Google will provide
+    // a new refresh token.
+    await prisma.google_tokens.update({
+      where: { id: TOKENS_ID },
+      data: { ...update },
+    });
+  }
 }
 
 async function createCredentialedClient() {
-  const oauth2Client = createOAuth2Client();
+  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
 
   const tokenInfo = await prisma.google_tokens.findFirstOrThrow();
   const tokens = {

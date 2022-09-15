@@ -79,7 +79,6 @@ export const main = async (app: Express) => {
             res.send({
               message: 'created session',
             });
-            next();
           } catch (err) {
             res.status(500).send({
               message: 'error creating session',
@@ -133,7 +132,6 @@ export const main = async (app: Express) => {
         res.send({
           message: 'destroyed session',
         });
-        next();
       })
       .catch((err) => {
         // TODO: what to do when the request to delete the session fails? This

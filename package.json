@@ -87,7 +87,6 @@
     "jest": "28.1.3",
     "jest-environment-jsdom": "28.1.3",
     "lint-staged": "13.0.3",
-    "lodash": "4.17.21",
     "prettier": "2.7.1",
     "shx": "0.3.4",
     "ts-jest": "28.0.8",

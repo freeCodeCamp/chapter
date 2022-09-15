@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { SkipNavLink } from '@chakra-ui/skip-nav';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -104,15 +105,9 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <Link
-          href="#main-content"
-          className={styles.skip}
-          background={'gray.10'}
-          color={'gray.85'}
-          _focus={{ translateY: 0 }}
-        >
+        <SkipNavLink background={'gray.10'} color={'gray.85'}>
           Skip Navigation
-        </Link>
+        </SkipNavLink>
         <HStack as="nav">
           <Box>
             <Menu>

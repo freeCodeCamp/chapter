@@ -1,7 +1,8 @@
 import React from 'react';
+import { NextPage } from 'next';
 import { Flex, Heading, Text } from '@chakra-ui/react';
 
-export const PolicyPage = () => {
+export const PolicyPage: NextPage = () => {
   return (
     <Flex flexDirection={'column'} gap={'1em'}>
       <Heading as={'h1'}>

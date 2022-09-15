@@ -42,7 +42,7 @@ model google_tokens {
   email         String @unique
   access_token  String
   refresh_token String
-  expiry_date   Int
+  expiry_date   BigInt
 }
 
 model chapter_users {

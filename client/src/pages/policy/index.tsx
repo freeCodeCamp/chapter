@@ -1,3 +1,3 @@
-import { PolicyPage } from 'modules/policy';
+import { PolicyPage } from '../../modules/policy';
 
 export default PolicyPage;

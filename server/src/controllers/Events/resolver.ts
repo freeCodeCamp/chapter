@@ -844,7 +844,7 @@ ${venueDetails}`;
       data: { canceled: true },
       include: {
         tags: { include: { tag: true } },
-        chapter: { select: { calendar_id: true } },
+        chapter: { select: { id: true, name: true, calendar_id: true } },
         event_users: {
           include: { user: true },
           where: {

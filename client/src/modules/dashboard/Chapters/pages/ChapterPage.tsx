@@ -27,8 +27,8 @@ export const ChapterPage: NextPage = () => {
   const [deleteChapter] = useDeleteChapterMutation({
     refetchQueries: [
       { query: CHAPTERS },
-      { query: DATA_PAGINATED_EVENTS_TOTAL_QUERY },
-      { query: HOME_PAGE_QUERY },
+      { query: DATA_PAGINATED_EVENTS_TOTAL_QUERY, variables: { chapterId } },
+      { query: HOME_PAGE_QUERY, variables: { chapterId } },
     ],
   });
 

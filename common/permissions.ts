@@ -1,6 +1,6 @@
 export enum ChapterPermission {
-  ChapterBanUser = 'ban-user',
   ChapterEdit = 'chapter-edit',
+  ChapterBanUser = 'ban-user',
   EventCreate = 'event-create',
   EventEdit = 'event-edit',
   EventDelete = 'event-delete',

@@ -1376,6 +1376,18 @@ export type HomeQuery = {
   }>;
 };
 
+export type CurrentUserProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CurrentUserProfileQuery = {
+  __typename?: 'Query';
+  events: Array<{
+    __typename?: 'EventWithRelations';
+    id: number;
+    name: string;
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
+  }>;
+};
+
 export type UnsubscribeMutationVariables = Exact<{
   token: Scalars['String'];
 }>;
@@ -3937,6 +3949,68 @@ export function useHomeLazyQuery(
 export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
 export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
+export const CurrentUserProfileDocument = gql`
+  query CurrentUserProfile {
+    events {
+      id
+      name
+      chapter {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useCurrentUserProfileQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    CurrentUserProfileQuery,
+    CurrentUserProfileQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    CurrentUserProfileQuery,
+    CurrentUserProfileQueryVariables
+  >(CurrentUserProfileDocument, options);
+}
+export function useCurrentUserProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CurrentUserProfileQuery,
+    CurrentUserProfileQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    CurrentUserProfileQuery,
+    CurrentUserProfileQueryVariables
+  >(CurrentUserProfileDocument, options);
+}
+export type CurrentUserProfileQueryHookResult = ReturnType<
+  typeof useCurrentUserProfileQuery
+>;
+export type CurrentUserProfileLazyQueryHookResult = ReturnType<
+  typeof useCurrentUserProfileLazyQuery
+>;
+export type CurrentUserProfileQueryResult = Apollo.QueryResult<
+  CurrentUserProfileQuery,
+  CurrentUserProfileQueryVariables
+>;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {
     unsubscribe(token: $token)

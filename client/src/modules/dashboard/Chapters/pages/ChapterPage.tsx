@@ -16,7 +16,7 @@ import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
-import { VENUE } from '../../Venues/graphql/queries';
+import { VENUES } from '../../Venues/graphql/queries';
 import { EVENTS } from '../../Events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
@@ -35,7 +35,7 @@ export const ChapterPage: NextPage = () => {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
         variables: { offset: 0, limit: 5 },
       },
-      { query: VENUE },
+      { query: VENUES },
     ],
   });
 

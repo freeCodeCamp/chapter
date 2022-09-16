@@ -269,7 +269,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="email" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="access_token" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="refresh_token" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="expiry_date" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="expiry_date" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="google_tokens_pkey" unique="true">
             <column ascending="true" name="id"/>

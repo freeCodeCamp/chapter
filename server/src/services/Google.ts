@@ -82,8 +82,7 @@ async function onTokens(tokens: Credentials) {
 
   let userInfo;
   try {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    userInfo = await createOAuth2Client().getTokenInfo(tokens.access_token!);
+    userInfo = await createOAuth2Client().getTokenInfo(access_token);
   } catch {
     throw new Error('Failed to get user info');
   }

@@ -21,6 +21,7 @@
     "@chakra-ui/modal": "2.1.7",
     "@chakra-ui/react": "2.3.2",
     "@chakra-ui/select": "2.0.10",
+    "@chakra-ui/skip-nav": "2.0.9",
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
     "chakra-confirm": "1.2.17",

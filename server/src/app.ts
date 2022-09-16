@@ -21,7 +21,7 @@ import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
-import { getGoogleAuthUrl, storeGoogleTokens } from './services/Google';
+import { getGoogleAuthUrl, requestTokens } from './services/Google';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -191,7 +191,7 @@ export const main = async (app: Express) => {
     const code = req.query.code;
     if (!code || typeof code !== 'string') return next('Invalid Google code');
 
-    storeGoogleTokens(code)
+    requestTokens(code)
       .then(() => {
         res.send('Authentication successful');
       })

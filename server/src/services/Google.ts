@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { OAuth2Client } from 'google-auth-library';
+import { Credentials, OAuth2Client } from 'google-auth-library';
 import { calendar, calendar_v3 } from '@googleapis/calendar';
 import { isProd } from '../config';
 import { prisma } from '../prisma';
@@ -52,24 +52,40 @@ export function getGoogleAuthUrl(state: string) {
   });
 }
 
-// TODO: skip calling this if the user already has a valid, non-expired token
-export async function storeGoogleTokens(code: string) {
-  const oauth2Client = createOAuth2Client();
+export async function requestTokens(code: string) {
+  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
 
-  let tokens, userInfo;
   try {
-    const tokenRes = await oauth2Client.getToken(code);
-    tokens = tokenRes.tokens;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    userInfo = await oauth2Client.getTokenInfo(tokens.access_token!);
+    await oauth2Client.getToken(code);
   } catch {
     throw new Error('Failed to get tokens');
   }
+}
 
+function createOAuth2Client() {
+  if (!keys) throw new Error('OAuth2 keys file missing');
+  return new OAuth2Client(
+    keys.client_id,
+    keys.client_secret,
+    keys.redirect_uris[0],
+  );
+}
+
+// TODO: Communicate these errors to the user. As of now, if the user
+// authenticates, and an error is thrown here, they will still see
+// Authentication successful in the browser.
+async function onTokens(tokens: Credentials) {
   // TODO: handle the case where the user rejects some or all of the scopes
   const { access_token, refresh_token, expiry_date } = tokens;
 
   if (!access_token || !expiry_date) throw new Error('Tokens invalid');
+
+  let userInfo;
+  try {
+    userInfo = await createOAuth2Client().getTokenInfo(access_token);
+  } catch {
+    throw new Error('Failed to get user info');
+  }
 
   const { email } = userInfo;
 
@@ -97,8 +113,9 @@ export async function storeGoogleTokens(code: string) {
   } else {
     const update = { access_token, expiry_date };
     // TODO: Handle the case where the refresh token is not sent *and* the
-    // record doesn't exist. We can make refresh_token nullable and that may be
-    // the best solution.
+    // record doesn't exist. If this happens, we need to redirect them to a
+    // new auth url, but with prompt: 'consent', so that Google will provide
+    // a new refresh token.
     await prisma.google_tokens.update({
       where: { id: TOKENS_ID },
       data: { ...update },
@@ -106,26 +123,27 @@ export async function storeGoogleTokens(code: string) {
   }
 }
 
-function createOAuth2Client() {
-  if (!keys) throw new Error('OAuth2 keys file missing');
-  return new OAuth2Client(
-    keys.client_id,
-    keys.client_secret,
-    keys.redirect_uris[0],
-  );
-}
-
-// TODO: use refresh tokens to get a new access token if the existing one is
-// expired or about to expire.
 async function createCredentialedClient() {
-  const oauth2Client = createOAuth2Client();
-  const { access_token } = await prisma.google_tokens.findFirstOrThrow();
-  oauth2Client.setCredentials({ access_token });
+  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
+
+  const tokenInfo = await prisma.google_tokens.findFirstOrThrow();
+  const tokens = {
+    access_token: tokenInfo.access_token,
+    refresh_token: tokenInfo.refresh_token,
+    // Awkwardly, Prisma is setting the type to bigint, but it's really an 8 byte
+    // integer in the database.
+    expiry_date: tokenInfo.expiry_date as unknown as number,
+  };
+  // We need to set all the credentials on the client, not just the access
+  // token. That way the client will use the access token if it's available and
+  // not about to expire, but will refresh otherwise.
+  oauth2Client.setCredentials(tokens);
   return oauth2Client;
 }
 
-// The client *must* be created afresh for each request. Otherwise, concurrent
-// requests could end up sharing tokens.
+// It's not necessary to recreate the client for each request, but it is safer.
+// If multiple tokens end up being used, it will be important to use the
+// appropriate one for that request.
 async function createCalendarApi() {
   const auth = await createCredentialedClient();
   return calendar({ version: 'v3', auth });

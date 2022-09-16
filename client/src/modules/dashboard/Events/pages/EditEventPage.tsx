@@ -1,10 +1,10 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useEventQuery,
+  useEventLazyQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -20,13 +20,13 @@ export const EditEventPage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { param: eventId, isReady } = useParam();
 
-  const {
-    loading: eventLoading,
-    error,
-    data,
-  } = useEventQuery({
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId: eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const toast = useToast();
 
@@ -86,10 +86,10 @@ export const EditEventPage: NextPage = () => {
     }
   };
 
-  if (eventLoading || !isReady || error || !data?.event) {
+  if (loading || !isReady || error || !data?.event) {
     return (
       <Layout>
-        <h1>{eventLoading || !isReady ? 'Loading...' : 'Error...'}</h1>
+        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div>{error.message}</div>}
       </Layout>
     );

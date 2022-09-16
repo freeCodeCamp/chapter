@@ -1,9 +1,9 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
-  useVenueQuery,
+  useVenueLazyQuery,
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
 
@@ -22,9 +22,14 @@ export const EditVenuePage: NextPage = () => {
 
   const isReady = isVenueIdReady && isChapterIdReady;
 
-  const { loading, error, data } = useVenueQuery({
+  const [getVenue, { loading, error, data }] = useVenueLazyQuery({
     variables: { id: venueId },
   });
+
+  useEffect(() => {
+    if (isReady) getVenue();
+  }, [isReady]);
+
   const [updateVenue] = useUpdateVenueMutation({
     refetchQueries: [{ query: VENUES }],
   });

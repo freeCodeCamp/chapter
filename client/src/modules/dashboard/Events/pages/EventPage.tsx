@@ -11,12 +11,12 @@ import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
-  useEventQuery,
+  useEventLazyQuery,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
@@ -35,9 +35,14 @@ const args = (eventId: number) => ({
 export const EventPage: NextPage = () => {
   const router = useRouter();
   const { param: eventId, isReady } = useParam('id');
-  const { loading, error, data } = useEventQuery({
+
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
   const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));

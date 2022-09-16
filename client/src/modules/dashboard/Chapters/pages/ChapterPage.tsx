@@ -1,10 +1,10 @@
 import { Heading, Link, Box, HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useChapterQuery } from '../../../../generated/graphql';
+import { useChapterLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
@@ -12,9 +12,13 @@ import { Layout } from '../../shared/components/Layout';
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('id');
 
-  const { loading, error, data } = useChapterQuery({
+  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
   });
+
+  useEffect(() => {
+    if (isReady) getChapter();
+  }, [isReady]);
 
   if (loading || !isReady || error || !data?.chapter) {
     return (

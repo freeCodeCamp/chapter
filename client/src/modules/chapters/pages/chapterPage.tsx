@@ -12,15 +12,15 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
 import { useAuth } from '../../auth/store';
 import { EventCard } from 'components/EventCard';
 import {
-  useChapterQuery,
-  useChapterUserQuery,
+  useChapterLazyQuery,
+  useChapterUserLazyQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
 } from 'generated/graphql';
@@ -30,17 +30,26 @@ export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
   const { user } = useAuth();
 
-  const { loading, error, data } = useChapterQuery({
+  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
   });
 
   const confirm = useConfirm();
   const toast = useToast();
 
-  const { loading: loadingChapterUser, data: dataChapterUser } =
-    useChapterUserQuery({
-      variables: { chapterId },
-    });
+  const [
+    getChapterUsers,
+    { loading: loadingChapterUser, data: dataChapterUser },
+  ] = useChapterUserLazyQuery({
+    variables: { chapterId },
+  });
+
+  useEffect(() => {
+    if (isReady) {
+      getChapter();
+      getChapterUsers();
+    }
+  }, [isReady]);
 
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],

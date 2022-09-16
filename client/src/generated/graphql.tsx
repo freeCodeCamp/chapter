@@ -1376,6 +1376,24 @@ export type HomeQuery = {
   }>;
 };
 
+export type Users_ProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type Users_ProfileQuery = {
+  __typename?: 'Query';
+  users: Array<{
+    __typename?: 'UserWithInstanceRole';
+    id: number;
+    name: string;
+    email: string;
+    instance_role: { __typename?: 'InstanceRole'; id: number; name: string };
+    admined_chapters: Array<{
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+    }>;
+  }>;
+};
+
 export type UnsubscribeMutationVariables = Exact<{
   token: Scalars['String'];
 }>;
@@ -3937,6 +3955,73 @@ export function useHomeLazyQuery(
 export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
 export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
+export const Users_ProfileDocument = gql`
+  query users_profile {
+    users {
+      id
+      name
+      email
+      instance_role {
+        id
+        name
+      }
+      admined_chapters {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useUsers_ProfileQuery__
+ *
+ * To run a query within a React component, call `useUsers_ProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsers_ProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsers_ProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsers_ProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    Users_ProfileQuery,
+    Users_ProfileQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<Users_ProfileQuery, Users_ProfileQueryVariables>(
+    Users_ProfileDocument,
+    options,
+  );
+}
+export function useUsers_ProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Users_ProfileQuery,
+    Users_ProfileQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<Users_ProfileQuery, Users_ProfileQueryVariables>(
+    Users_ProfileDocument,
+    options,
+  );
+}
+export type Users_ProfileQueryHookResult = ReturnType<
+  typeof useUsers_ProfileQuery
+>;
+export type Users_ProfileLazyQueryHookResult = ReturnType<
+  typeof useUsers_ProfileLazyQuery
+>;
+export type Users_ProfileQueryResult = Apollo.QueryResult<
+  Users_ProfileQuery,
+  Users_ProfileQueryVariables
+>;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {
     unsubscribe(token: $token)

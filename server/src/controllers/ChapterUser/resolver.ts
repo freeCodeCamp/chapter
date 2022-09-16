@@ -228,11 +228,16 @@ export class ChapterUserResolver {
     });
   }
 
-  // TODO: control this with an Authorization decorator
   @Authorized(Permission.ChapterBanUser)
   @FieldResolver()
-  canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
+  canBeBanned(
+    @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: ResolverCtx,
+  ): boolean {
     if (!ctx.user) {
+      return false;
+    }
+    if (ctx.user.id === userId) {
       return false;
     }
     return true;

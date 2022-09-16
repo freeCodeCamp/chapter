@@ -23,7 +23,7 @@ import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
-  useEventQuery,
+  useEventLazyQuery,
   useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
@@ -45,10 +45,14 @@ export const EventPage: NextPage = () => {
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
-  // TODO: check if we need to default to -1 here
-  const { loading, error, data } = useEventQuery({
+
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const toast = useToast();
   const confirm = useConfirm();

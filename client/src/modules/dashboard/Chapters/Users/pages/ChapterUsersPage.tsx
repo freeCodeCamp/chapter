@@ -12,12 +12,12 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import {
   useBanUserMutation,
-  useChapterUsersQuery,
+  useChapterUsersLazyQuery,
   useChapterRolesQuery,
   useChangeChapterUserRoleMutation,
   useUnbanUserMutation,
@@ -33,9 +33,14 @@ import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 export const ChapterUsersPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('id');
 
-  const { loading, error, data } = useChapterUsersQuery({
+  const [getChapterUsers, { loading, error, data }] = useChapterUsersLazyQuery({
     variables: { chapterId },
   });
+
+  useEffect(() => {
+    if (isReady) getChapterUsers();
+  }, [isReady]);
+
   const { data: chapterRoles } = useChapterRolesQuery();
   const modalProps = useDisclosure();
 

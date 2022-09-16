@@ -22,7 +22,7 @@ import {
   useChangeChapterUserRoleMutation,
   useUnbanUserMutation,
 } from '../../../../../generated/graphql';
-import { Loading } from '../../../shared/components/Loading';
+import { DashboardLoading } from '../../../shared/components/DashboardLoading';
 import { Layout } from '../../../shared/components/Layout';
 import {
   RoleChangeModal,
@@ -125,7 +125,8 @@ export const ChapterUsersPage: NextPage = () => {
   );
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
   // TODO: render something nicer if this happens. A 404 page?
 
   if (!data.chapter) return <div> Chapter not found</div>;

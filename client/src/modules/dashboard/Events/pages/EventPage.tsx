@@ -23,7 +23,7 @@ import {
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
@@ -66,7 +66,8 @@ export const EventPage: NextPage = () => {
     };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   // TODO: render something nicer if this happens. A 404 page?
   if (!data.event) return <div> Event not found</div>;

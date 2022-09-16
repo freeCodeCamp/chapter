@@ -7,7 +7,7 @@ import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useChapterLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
@@ -22,7 +22,8 @@ export const ChapterPage: NextPage = () => {
   }, [isReady]);
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   // TODO: render something nicer if this happens. A 404 page?
   if (!data.chapter) return <div> Chapter not found</div>;

@@ -8,7 +8,7 @@ import {
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 
@@ -45,7 +45,8 @@ export const EditChapterPage: NextPage = () => {
   };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout>

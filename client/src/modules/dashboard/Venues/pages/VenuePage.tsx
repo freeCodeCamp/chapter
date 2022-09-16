@@ -7,7 +7,7 @@ import { useVenueLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
@@ -22,7 +22,8 @@ export const VenuePage: NextPage = () => {
   }, [isReady]);
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   // TODO: render something nicer if this happens. A 404 page?
   if (!data.venue) return <div> Venue not found</div>;

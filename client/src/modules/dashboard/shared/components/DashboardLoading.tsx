@@ -8,7 +8,7 @@ type Props = {
   error?: Error;
 };
 
-export const Loading = ({ loading, error }: Props) => {
+export const DashboardLoading = ({ loading, error }: Props) => {
   if (loading || error) {
     return (
       <Layout>

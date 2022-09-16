@@ -6,7 +6,7 @@ import { Sponsors } from '../../Events/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { SPONSOR } from '../graphql/queries';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { useSponsorQuery, useUpdateSponsorMutation } from 'generated/graphql';
 
 const EditSponsorPage: NextPage = () => {
@@ -44,7 +44,8 @@ const EditSponsorPage: NextPage = () => {
   };
 
   const isLoading = sponsorLoading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout>

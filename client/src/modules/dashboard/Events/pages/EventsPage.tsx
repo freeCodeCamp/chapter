@@ -5,7 +5,7 @@ import { NextPage } from 'next';
 import React from 'react';
 
 import { formatDate } from '../../../../util/date';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useAuth } from '../../../auth/store';
@@ -17,7 +17,8 @@ export const EventsPage: NextPage = () => {
   const { user } = useAuth();
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout>

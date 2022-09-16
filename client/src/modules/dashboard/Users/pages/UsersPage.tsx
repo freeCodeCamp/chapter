@@ -18,7 +18,7 @@ import {
 } from '../../../../generated/graphql';
 
 import { Layout } from '../../shared/components/Layout';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Users } from '../graphql/queries';
 import {
   RoleChangeModal,
@@ -51,7 +51,8 @@ export const UsersPage: NextPage = () => {
   };
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout>

@@ -7,7 +7,7 @@ import { useSponsorLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 
 export const SponsorPage: NextPage = () => {
   const { param: sponsorId, isReady } = useParam('id');
@@ -22,7 +22,8 @@ export const SponsorPage: NextPage = () => {
   }, [isReady]);
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout>

@@ -14,7 +14,7 @@ import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
 import { EVENTS, EVENT } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
-import { Loading } from 'modules/dashboard/shared/components/Loading';
+import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
@@ -88,7 +88,7 @@ export const EditEventPage: NextPage = () => {
   };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading) return <Loading loading={loading} error={error} />;
+  if (isLoading) return <DashboardLoading loading={loading} error={error} />;
   // TODO: render something nicer if this happens. A 404 page?
   if (!data.event) return <div> Event not found</div>;
 

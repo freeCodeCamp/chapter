@@ -6,7 +6,7 @@ import React from 'react';
 
 import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 import { useChaptersQuery } from '../../../../generated/graphql';
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { Permission } from '../../../../../../common/permissions';
 
@@ -18,7 +18,8 @@ export const ChaptersPage: NextPage = () => {
   );
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   // TODO: render something nicer if this happens. A 404 page?
   if (!data.chapters) return <div> No Chapters found</div>;

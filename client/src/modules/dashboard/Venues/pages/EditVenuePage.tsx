@@ -7,7 +7,7 @@ import {
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
 
-import { Loading } from '../../shared/components/Loading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
@@ -58,7 +58,8 @@ export const EditVenuePage: NextPage = () => {
   };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout dataCy="edit-venue-page">

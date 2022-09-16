@@ -17,7 +17,9 @@ import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { VENUE } from '../../Venues/graphql/queries';
-import { EVENT } from '../../Events/graphql/queries';
+import { EVENTS } from '../../Events/graphql/queries';
+import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('id');
@@ -25,7 +27,16 @@ export const ChapterPage: NextPage = () => {
   const confirmDelete = useConfirmDelete();
 
   const [deleteChapter] = useDeleteChapterMutation({
-    refetchQueries: [{ query: CHAPTERS }, { query: EVENT }, { query: VENUE }],
+    refetchQueries: [
+      { query: CHAPTERS },
+      { query: EVENTS },
+      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 5 },
+      },
+      { query: VENUE },
+    ],
   });
 
   const { loading, error, data } = useChapterQuery({

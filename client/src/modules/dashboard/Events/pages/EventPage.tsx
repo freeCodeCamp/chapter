@@ -23,6 +23,7 @@ import {
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import { Loading } from '../../shared/components/Loading';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
@@ -64,19 +65,11 @@ export const EventPage: NextPage = () => {
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
-  if (loading || !isReady || error || !data || !data.event) {
-    return (
-      <Layout>
-        <h1>
-          {loading || !isReady
-            ? 'Loading...'
-            : !error
-            ? "Can't find event :("
-            : 'Error...'}
-        </h1>
-      </Layout>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.event) return <div> Event not found</div>;
 
   const userLists = [
     {

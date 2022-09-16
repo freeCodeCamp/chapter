@@ -10,7 +10,7 @@ import {
   HStack,
   ListItem,
   Avatar,
-  useDisclosure,
+  Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
@@ -18,7 +18,6 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
 import { useAuth } from '../../auth/store';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
@@ -33,7 +32,7 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const EventPage: NextPage = () => {
-  const { param: eventId } = useParam('eventId');
+  const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
 
@@ -53,7 +52,6 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
-  const modalProps = useDisclosure();
 
   const eventUser = useMemo(() => {
     const eUser = data?.event?.event_users.find(
@@ -70,7 +68,7 @@ export const EventPage: NextPage = () => {
     if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
-  if (loading) {
+  if (loading || !isReady) {
     return <h1>Loading...</h1>;
   }
 
@@ -84,10 +82,6 @@ export const EventPage: NextPage = () => {
   }
 
   const chapterId = data.event.chapter.id;
-
-  const handleLoginUserFirst = () => {
-    modalProps.onOpen();
-  };
 
   const onSubscribeToEvent = async () => {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
@@ -164,8 +158,9 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  // TODO: reimplment this the login modal with Auth0
   const checkOnRsvp = async () => {
-    if (!user) return handleLoginUserFirst();
+    if (!user) throw new Error('User not logged in');
     await onRsvp();
   };
 
@@ -178,11 +173,6 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <LoginRegisterModal
-        action={(notRsvped) => (notRsvped ? onRsvp() : onCancelRsvp())}
-        userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
-        modalProps={modalProps}
-      />
       <Image
         data-cy="event-image"
         boxSize="100%"
@@ -192,40 +182,72 @@ export const EventPage: NextPage = () => {
         borderRadius="md"
         objectFit="cover"
       />
-
-      <Heading as="h1">
-        {data.event.invite_only && <LockIcon />}
-        {data.event.name}
-      </Heading>
-      <Heading size="md">
+      <Flex alignItems={'center'}>
+        {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+        <Heading as="h1">{data.event.name}</Heading>
+      </Flex>
+      <Heading size="md" as={'h2'}>
         Chapter:{' '}
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
-      <VStack align="start">
-        {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}
-        {waitlist && <Heading>Waitlist:{waitlist.length}</Heading>}
-      </VStack>
+      <HStack align="start">
+        {rsvps && (
+          <Heading
+            as={'h3'}
+            fontSize={'md'}
+            fontWeight={'500'}
+            marginRight={'2'}
+          >
+            RSVPs: {rsvps.length}
+          </Heading>
+        )}
+        {waitlist && (
+          <Heading as={'h3'} fontSize={'md'} fontWeight={'500'}>
+            Waitlist: {waitlist.length}
+          </Heading>
+        )}
+      </HStack>
       {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button colorScheme="red" onClick={onCancelRsvp}>
+          <Button
+            colorScheme="red"
+            onClick={onCancelRsvp}
+            paddingInline={'2'}
+            paddingBlock={'1'}
+          >
             Cancel
           </Button>
         </HStack>
       ) : userRsvped === 'waitlist' ? (
         <HStack>
           {data.event.invite_only ? (
-            <Heading>Event owner will soon confirm your request</Heading>
+            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              Event owner will soon confirm your request
+            </Heading>
           ) : (
-            <Heading>You&lsquo;re on waitlist for this event</Heading>
+            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              You&lsquo;re on waitlist for this event
+            </Heading>
           )}
-          <Button colorScheme="red" onClick={onCancelRsvp}>
+          <Button
+            colorScheme="red"
+            onClick={onCancelRsvp}
+            paddingInline={'2'}
+            paddingBlock={'1'}
+          >
             Cancel
           </Button>
         </HStack>
       ) : (
-        <Button data-cy="rsvp-button" colorScheme="blue" onClick={checkOnRsvp}>
+        <Button
+          data-cy="rsvp-button"
+          colorScheme="blue"
+          onClick={checkOnRsvp}
+          paddingInline={'2'}
+          paddingBlock={'1'}
+        >
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
       )}
@@ -233,15 +255,29 @@ export const EventPage: NextPage = () => {
         <HStack>
           {eventUser.subscribed ? (
             <>
-              <Heading>You are subscribed</Heading>
-              <Button colorScheme="orange" onClick={onUnsubscribeFromEvent}>
+              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+                You are subscribed
+              </Heading>
+              <Button
+                colorScheme="orange"
+                onClick={onUnsubscribeFromEvent}
+                paddingInline={'2'}
+                paddingBlock={'1'}
+              >
                 Unsubscribe
               </Button>
             </>
           ) : (
             <>
-              <Heading>Not subscribed</Heading>
-              <Button colorScheme="blue" onClick={onSubscribeToEvent}>
+              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+                Not subscribed
+              </Heading>
+              <Button
+                colorScheme="blue"
+                onClick={onSubscribeToEvent}
+                paddingInline={'2'}
+                paddingBlock={'1'}
+              >
                 Subscribe
               </Button>
             </>
@@ -254,7 +290,13 @@ export const EventPage: NextPage = () => {
       ) : (
         false
       )}
-      <Heading data-cy="rsvps-heading" size="md">
+      <Heading
+        data-cy="rsvps-heading"
+        size="md"
+        as={'h5'}
+        fontSize={'md'}
+        fontWeight={'400'}
+      >
         RSVPs:
       </Heading>
       <List>
@@ -270,7 +312,13 @@ export const EventPage: NextPage = () => {
 
       {!data.event.invite_only && (
         <>
-          <Heading data-cy="waitlist-heading" size="md">
+          <Heading
+            data-cy="waitlist-heading"
+            size="md"
+            as={'h5'}
+            fontSize={'md'}
+            fontWeight={'400'}
+          >
             Waitlist:
           </Heading>
           <List>

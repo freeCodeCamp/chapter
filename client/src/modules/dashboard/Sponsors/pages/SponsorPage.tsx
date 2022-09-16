@@ -9,12 +9,12 @@ import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 
 export const SponsorPage: NextPage = () => {
-  const { param: sponsorId } = useParam('id');
+  const { param: sponsorId, isReady } = useParam('id');
   const { loading, error, data } = useSponsorQuery({
     variables: { sponsorId },
   });
 
-  if (loading) {
+  if (loading || !isReady) {
     return <h1>Loading the sponsor details</h1>;
   }
 

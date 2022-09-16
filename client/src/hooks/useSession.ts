@@ -5,7 +5,7 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 // TODO: figure out how to create a proper separation between auth0 and the dev
 // login.  How about creating two providers and conditionally wrapping the rest
 // of the site in one or the other?
-const isDev = process.env.NEXT_PUBLIC_ENVIRONMENT === 'development';
+const needsDevLogin = process.env.NEXT_PUBLIC_USE_AUTH0 === 'false';
 
 const useAuth0Session = (): {
   isAuthenticated: boolean;
@@ -49,4 +49,4 @@ const login = (token: string) =>
 export const useSession: () => {
   isAuthenticated: boolean;
   createSession: () => Promise<void>;
-} = isDev ? useDevSession : useAuth0Session;
+} = needsDevLogin ? useDevSession : useAuth0Session;

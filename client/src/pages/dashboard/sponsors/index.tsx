@@ -1,3 +1,3 @@
-import { SponsorsPage } from '../../../modules/dashboard/Sponsors/index';
+import { SponsorsPage } from '../../../modules/dashboard/Sponsors';
 
 export default SponsorsPage;

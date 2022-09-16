@@ -22,22 +22,16 @@ export type Scalars = {
   DateTime: any;
 };
 
-export type AuthenticateType = {
-  __typename?: 'AuthenticateType';
-  token: Scalars['String'];
-  user: UserWithInstanceRole;
-};
-
 export type Chapter = {
   __typename?: 'Chapter';
   category: Scalars['String'];
-  chatUrl?: Maybe<Scalars['String']>;
+  chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  imageUrl: Scalars['String'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -71,18 +65,33 @@ export type ChapterUser = {
   user_id: Scalars['Int'];
 };
 
-export type ChapterWithRelations = {
-  __typename?: 'ChapterWithRelations';
+export type ChapterWithEvents = {
+  __typename?: 'ChapterWithEvents';
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
-  chatUrl?: Maybe<Scalars['String']>;
+  chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  imageUrl: Scalars['String'];
+  image_url: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
+export type ChapterWithRelations = {
+  __typename?: 'ChapterWithRelations';
+  category: Scalars['String'];
+  chapter_users: Array<ChapterUser>;
+  chat_url?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  creator_id: Scalars['Int'];
+  description: Scalars['String'];
+  events: Array<Event>;
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
@@ -90,11 +99,11 @@ export type ChapterWithRelations = {
 
 export type CreateChapterInputs = {
   category: Scalars['String'];
-  chatUrl?: InputMaybe<Scalars['String']>;
+  chat_url?: InputMaybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  imageUrl: Scalars['String'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -252,18 +261,8 @@ export type InstanceRolePermission = {
   instance_permission: InstancePermission;
 };
 
-export type LoginInput = {
-  email: Scalars['String'];
-};
-
-export type LoginType = {
-  __typename?: 'LoginType';
-  code: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  authenticate: AuthenticateType;
   banUser: UserBan;
   cancelEvent: Event;
   cancelRsvp?: Maybe<EventUser>;
@@ -279,8 +278,6 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUser;
-  login: LoginType;
-  register: User;
   rsvpEvent: EventUser;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
@@ -293,10 +290,6 @@ export type Mutation = {
   updateEvent: Event;
   updateSponsor: Sponsor;
   updateVenue: Venue;
-};
-
-export type MutationAuthenticateArgs = {
-  token: Scalars['String'];
 };
 
 export type MutationBanUserArgs = {
@@ -368,14 +361,6 @@ export type MutationJoinChapterArgs = {
   chapterId: Scalars['Int'];
 };
 
-export type MutationLoginArgs = {
-  data: LoginInput;
-};
-
-export type MutationRegisterArgs = {
-  data: RegisterInput;
-};
-
 export type MutationRsvpEventArgs = {
   chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
@@ -445,7 +430,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<Chapter>;
+  chapters: Array<ChapterWithEvents>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -503,11 +488,6 @@ export type QueryVenueArgs = {
   id: Scalars['Int'];
 };
 
-export type RegisterInput = {
-  email: Scalars['String'];
-  name: Scalars['String'];
-};
-
 export type Rsvp = {
   __typename?: 'Rsvp';
   id: Scalars['Int'];
@@ -538,11 +518,11 @@ export type Tag = {
 
 export type UpdateChapterInputs = {
   category?: InputMaybe<Scalars['String']>;
-  chatUrl?: InputMaybe<Scalars['String']>;
+  chat_url?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  imageUrl?: InputMaybe<Scalars['String']>;
+  image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -626,57 +606,6 @@ export enum VenueType {
   PhysicalAndOnline = 'PhysicalAndOnline',
 }
 
-export type LoginMutationVariables = Exact<{
-  email: Scalars['String'];
-}>;
-
-export type LoginMutation = {
-  __typename?: 'Mutation';
-  login: { __typename?: 'LoginType'; code: string };
-};
-
-export type RegisterMutationVariables = Exact<{
-  email: Scalars['String'];
-  name: Scalars['String'];
-}>;
-
-export type RegisterMutation = {
-  __typename?: 'Mutation';
-  register: { __typename?: 'User'; id: number };
-};
-
-export type AuthenticateMutationVariables = Exact<{
-  token: Scalars['String'];
-}>;
-
-export type AuthenticateMutation = {
-  __typename?: 'Mutation';
-  authenticate: {
-    __typename?: 'AuthenticateType';
-    token: string;
-    user: {
-      __typename?: 'UserWithInstanceRole';
-      id: number;
-      name: string;
-      instance_role: {
-        __typename?: 'InstanceRole';
-        instance_role_permissions: Array<{
-          __typename?: 'InstanceRolePermission';
-          instance_permission: {
-            __typename?: 'InstancePermission';
-            name: string;
-          };
-        }>;
-      };
-      admined_chapters: Array<{
-        __typename?: 'Chapter';
-        id: number;
-        name: string;
-      }>;
-    };
-  };
-};
-
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
@@ -742,8 +671,8 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    imageUrl: string;
-    chatUrl?: string | null;
+    image_url: string;
+    chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -802,12 +731,18 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 export type ChaptersQuery = {
   __typename?: 'Query';
   chapters: Array<{
-    __typename?: 'Chapter';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
-    imageUrl: string;
+    image_url: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      start_at: any;
+    }>;
   }>;
 };
 
@@ -825,7 +760,7 @@ export type CreateChapterMutation = {
     city: string;
     region: string;
     country: string;
-    chatUrl?: string | null;
+    chat_url?: string | null;
   };
 };
 
@@ -844,7 +779,7 @@ export type UpdateChapterMutation = {
     city: string;
     region: string;
     country: string;
-    chatUrl?: string | null;
+    chat_url?: string | null;
   };
 };
 
@@ -1426,12 +1361,18 @@ export type HomeQuery = {
     };
   }>;
   chapters: Array<{
-    __typename?: 'Chapter';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
     category: string;
-    imageUrl: string;
+    image_url: string;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      start_at: any;
+    }>;
   }>;
 };
 
@@ -1444,166 +1385,6 @@ export type UnsubscribeMutation = {
   unsubscribe: boolean;
 };
 
-export const LoginDocument = gql`
-  mutation login($email: String!) {
-    login(data: { email: $email }) {
-      code
-    }
-  }
-`;
-export type LoginMutationFn = Apollo.MutationFunction<
-  LoginMutation,
-  LoginMutationVariables
->;
-
-/**
- * __useLoginMutation__
- *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
- *   variables: {
- *      email: // value for 'email'
- *   },
- * });
- */
-export function useLoginMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    LoginMutation,
-    LoginMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
-    LoginDocument,
-    options,
-  );
-}
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<
-  LoginMutation,
-  LoginMutationVariables
->;
-export const RegisterDocument = gql`
-  mutation register($email: String!, $name: String!) {
-    register(data: { email: $email, name: $name }) {
-      id
-    }
-  }
-`;
-export type RegisterMutationFn = Apollo.MutationFunction<
-  RegisterMutation,
-  RegisterMutationVariables
->;
-
-/**
- * __useRegisterMutation__
- *
- * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRegisterMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [registerMutation, { data, loading, error }] = useRegisterMutation({
- *   variables: {
- *      email: // value for 'email'
- *      name: // value for 'name'
- *   },
- * });
- */
-export function useRegisterMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    RegisterMutation,
-    RegisterMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(
-    RegisterDocument,
-    options,
-  );
-}
-export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
-export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
-export type RegisterMutationOptions = Apollo.BaseMutationOptions<
-  RegisterMutation,
-  RegisterMutationVariables
->;
-export const AuthenticateDocument = gql`
-  mutation authenticate($token: String!) {
-    authenticate(token: $token) {
-      token
-      user {
-        id
-        name
-        instance_role {
-          instance_role_permissions {
-            instance_permission {
-              name
-            }
-          }
-        }
-        admined_chapters {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-export type AuthenticateMutationFn = Apollo.MutationFunction<
-  AuthenticateMutation,
-  AuthenticateMutationVariables
->;
-
-/**
- * __useAuthenticateMutation__
- *
- * To run a mutation, you first call `useAuthenticateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAuthenticateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [authenticateMutation, { data, loading, error }] = useAuthenticateMutation({
- *   variables: {
- *      token: // value for 'token'
- *   },
- * });
- */
-export function useAuthenticateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    AuthenticateMutation,
-    AuthenticateMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    AuthenticateMutation,
-    AuthenticateMutationVariables
-  >(AuthenticateDocument, options);
-}
-export type AuthenticateMutationHookResult = ReturnType<
-  typeof useAuthenticateMutation
->;
-export type AuthenticateMutationResult =
-  Apollo.MutationResult<AuthenticateMutation>;
-export type AuthenticateMutationOptions = Apollo.BaseMutationOptions<
-  AuthenticateMutation,
-  AuthenticateMutationVariables
->;
 export const MeDocument = gql`
   query me {
     me {
@@ -1767,8 +1548,8 @@ export const ChapterDocument = gql`
       city
       region
       country
-      imageUrl
-      chatUrl
+      image_url
+      chat_url
       events {
         id
         name
@@ -1977,7 +1758,12 @@ export const ChaptersDocument = gql`
       name
       description
       category
-      imageUrl
+      image_url
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;
@@ -2035,7 +1821,7 @@ export const CreateChapterDocument = gql`
       city
       region
       country
-      chatUrl
+      chat_url
     }
   }
 `;
@@ -2091,7 +1877,7 @@ export const UpdateChapterDocument = gql`
       city
       region
       country
-      chatUrl
+      chat_url
     }
   }
 `;
@@ -4106,7 +3892,12 @@ export const HomeDocument = gql`
       name
       description
       category
-      imageUrl
+      image_url
+      events {
+        id
+        name
+        start_at
+      }
     }
   }
 `;

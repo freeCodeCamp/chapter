@@ -234,7 +234,7 @@ const createChapter = (data) => {
         city
         region
         country
-        chatUrl
+        chat_url
       }
     }
   `,

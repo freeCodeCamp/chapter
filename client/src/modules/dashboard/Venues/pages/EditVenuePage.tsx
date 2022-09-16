@@ -17,8 +17,10 @@ export const EditVenuePage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const { param: venueId } = useParam('venueId');
-  const { param: chapterId } = useParam('id');
+  const { param: venueId, isReady: isVenueIdReady } = useParam('venueId');
+  const { param: chapterId, isReady: isChapterIdReady } = useParam('id');
+
+  const isReady = isVenueIdReady && isChapterIdReady;
 
   const { loading, error, data } = useVenueQuery({
     variables: { id: venueId },
@@ -50,10 +52,10 @@ export const EditVenuePage: NextPage = () => {
     }
   };
 
-  if (loading || error || !data?.venue) {
+  if (loading || !isReady || error || !data?.venue) {
     return (
       <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
         {error && <div className={styles.error}>{error.message}</div>}
       </Layout>
     );

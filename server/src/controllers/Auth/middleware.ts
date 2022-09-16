@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { Request } from '../../common-types/gql';
@@ -105,8 +104,7 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
     });
 };
 
-// TODO: is this necessary now everything is handled by Auth0 and cookie-session?
-export function handleAuthenticationError(
+export function handleError(
   err: any,
   _req: Request,
   res: Response,
@@ -115,18 +113,9 @@ export function handleAuthenticationError(
   if (res.headersSent) {
     return next(err);
   }
-
-  if (err instanceof TokenExpiredError) {
-    return res.status(401).send({
-      message: 'Token expired',
-    });
-  } else if (err instanceof JsonWebTokenError) {
-    return res.status(401).send({
-      message: 'Token invalid',
-    });
-  } else {
-    return res.status(401).send({
-      message: 'User not found',
+  if (err) {
+    return res.status(500).send({
+      message: 'Something went Wrong',
     });
   }
 }

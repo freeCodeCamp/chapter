@@ -181,6 +181,7 @@ export class ChapterUserResolver {
       },
     });
   }
+
   @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async banUser(

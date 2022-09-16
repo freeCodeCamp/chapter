@@ -37,7 +37,7 @@ describe('spec needing owner', () => {
     cy.visit('/dashboard/events');
     cy.findByRole('table', { name: 'Events' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
-    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'action' }).should('be.visible');
     cy.get('a[href="/dashboard/events/1"]').should('be.visible');
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
@@ -196,11 +196,14 @@ describe('spec needing owner', () => {
 
   it('editing event updates cached events on home page', () => {
     cy.visit('');
+    cy.get('button[aria-label="Options"]').click();
+    cy.findByRole('menuitem', { name: 'Events' }).click();
     cy.get('a[href*="/events/"').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
-    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.get('button[aria-label="Options"]').click();
+    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
 
     cy.findByRole('link', { name: 'Events' }).click();
     cy.wait('@GQLevents');
@@ -238,7 +241,8 @@ describe('spec needing owner', () => {
     cy.get('a[href*="/events/"').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
-    cy.findByRole('link', { name: 'Dashboard' }).click();
+    cy.get('button[aria-label="Options"]').click();
+    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
     cy.wait('@GQLevents');
     cy.get('#page-heading').contains('Events');
@@ -262,7 +266,7 @@ describe('spec needing owner', () => {
   it('emails not canceled rsvps when event is canceled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')
-      .not(':contains("canceled")')
+      .not(':has([data-cy=event-canceled])')
       .find('a')
       .first()
       .click()

@@ -1,4 +1,12 @@
-import { Button, Box, Heading, HStack, Link, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Heading,
+  HStack,
+  Link,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
@@ -26,7 +34,7 @@ const args = (eventId: number) => ({
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
-  const { param: eventId } = useParam('id');
+  const { param: eventId, isReady } = useParam('id');
   const { loading, error, data } = useEventQuery({
     variables: { eventId },
   });
@@ -51,11 +59,15 @@ export const EventPage: NextPage = () => {
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
-  if (loading || error || !data || !data.event) {
+  if (loading || !isReady || error || !data || !data.event) {
     return (
       <Layout>
         <h1>
-          {loading ? 'Loading...' : !error ? "Can't find event :(" : 'Error...'}
+          {loading || !isReady
+            ? 'Loading...'
+            : !error
+            ? "Can't find event :("
+            : 'Error...'}
         </h1>
       </Layout>
     );
@@ -65,17 +77,17 @@ export const EventPage: NextPage = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
     },
     {
       title: 'Canceled',
       rsvpFilter: 'no',
-      ops: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      ops: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'green' }],
+      action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
   ];
 
@@ -131,7 +143,7 @@ export const EventPage: NextPage = () => {
         false
       )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        {userLists.map(({ title, rsvpFilter, ops }) => {
+        {userLists.map(({ title, rsvpFilter, action }) => {
           const users = data.event
             ? data.event.event_users.filter(
                 ({ rsvp }) => rsvp.name === rsvpFilter,
@@ -139,35 +151,87 @@ export const EventPage: NextPage = () => {
             : [];
           return (
             <Box key={title.toLowerCase()} data-cy={title.toLowerCase()}>
-              <DataTable
-                title={`${title}: ${users.length}`}
-                data={users}
-                keys={['user', 'role', 'ops'] as const}
-                emptyText="No users"
-                mapper={{
-                  user: ({ user }) => (
-                    <Text data-cy="username">{user.name}</Text>
-                  ),
-                  ops: ({ user }) => (
-                    <HStack>
-                      {ops.map(({ title, onClick, colorScheme }) => (
-                        <Button
-                          key={title.toLowerCase()}
-                          data-cy={title.toLowerCase()}
-                          size="xs"
-                          colorScheme={colorScheme}
-                          onClick={onClick({ eventId, userId: user.id })}
-                        >
-                          {title}
-                        </Button>
-                      ))}
-                    </HStack>
-                  ),
-                  role: ({ event_role }) => (
-                    <Text data-cy="role">{event_role.name}</Text>
-                  ),
-                }}
-              />
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <DataTable
+                  title={`${title}: ${users.length}`}
+                  data={users}
+                  keys={['user', 'role', 'action'] as const}
+                  emptyText="No users"
+                  mapper={{
+                    user: ({ user }) => (
+                      <Text data-cy="username">{user.name}</Text>
+                    ),
+                    action: ({ user }) => (
+                      <HStack>
+                        {action.map(({ title, onClick, colorScheme }) => (
+                          <Button
+                            key={title.toLowerCase()}
+                            data-cy={title.toLowerCase()}
+                            size="xs"
+                            colorScheme={colorScheme}
+                            onClick={onClick({ eventId, userId: user.id })}
+                          >
+                            {title}
+                          </Button>
+                        ))}
+                      </HStack>
+                    ),
+                    role: ({ event_role }) => (
+                      <Text data-cy="role">{event_role.name}</Text>
+                    ),
+                  }}
+                />
+              </Box>
+              <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
+                {users.map(({ event_role, user, rsvp }, index) => (
+                  <HStack key={rsvp.name}>
+                    <DataTable
+                      title={'RSVP: ' + rsvp.name.toUpperCase()}
+                      data={[users[index]]}
+                      keys={['type', 'action'] as const}
+                      showHeader={false}
+                      emptyText="No users"
+                      mapper={{
+                        type: () => (
+                          <VStack
+                            align={'flex-start'}
+                            fontSize={['sm', 'md']}
+                            fontWeight={700}
+                            spacing={'2'}
+                            marginBottom={4}
+                          >
+                            <Text>User</Text>
+                            <Text>Role</Text>
+                            <Text>Actions</Text>
+                          </VStack>
+                        ),
+                        action: () => (
+                          <VStack
+                            align={'flex-start'}
+                            fontSize={['sm', 'md']}
+                            spacing={'2'}
+                            marginBottom={4}
+                          >
+                            <Text data-cy="username">{user.name}</Text>
+                            {action.map(({ title, onClick, colorScheme }) => (
+                              <Button
+                                key={title.toLowerCase()}
+                                data-cy={title.toLowerCase()}
+                                size="xs"
+                                colorScheme={colorScheme}
+                                onClick={onClick({ eventId, userId: user.id })}
+                              >
+                                {title}
+                              </Button>
+                            ))}
+                            <Text data-cy="role">{event_role.name}</Text>
+                          </VStack>
+                        ),
+                      }}
+                    />
+                  </HStack>
+                ))}
+              </Box>
             </Box>
           );
         })}

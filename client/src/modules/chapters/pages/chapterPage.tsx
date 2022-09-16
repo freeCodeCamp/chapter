@@ -27,7 +27,7 @@ import {
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId } = useParam('chapterId');
+  const { param: chapterId, isReady } = useParam('chapterId');
   const { user } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
@@ -91,7 +91,7 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  if (loading) {
+  if (loading || !isReady) {
     return <Spinner />;
   }
 
@@ -110,7 +110,7 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.imageUrl}
+          src={data.chapter.image_url}
           alt=""
           borderRadius="md"
           objectFit="cover"
@@ -135,18 +135,21 @@ export const ChapterPage: NextPage = () => {
             <Spinner />
           ) : dataChapterUser ? (
             <HStack>
-              <CheckIcon />
-              <Text>
-                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
-              </Text>
               {dataChapterUser.chapterUser.subscribed ? (
-                <Button
-                  colorScheme="orange"
-                  onClick={() => chapterSubscribe(false)}
-                  size="md"
-                >
-                  Unsubscribe
-                </Button>
+                <HStack>
+                  <CheckIcon />
+                  <Text>
+                    {dataChapterUser.chapterUser.chapter_role.name} of the
+                    chapter
+                  </Text>
+                  <Button
+                    colorScheme="orange"
+                    onClick={() => chapterSubscribe(false)}
+                    size="md"
+                  >
+                    Unsubscribe
+                  </Button>
+                </HStack>
               ) : (
                 <Button
                   colorScheme="green"
@@ -162,12 +165,12 @@ export const ChapterPage: NextPage = () => {
               Join chapter
             </Button>
           ))}
-        {data.chapter.chatUrl && (
+        {data.chapter.chat_url && (
           <div>
             <Heading size="md" color={'gray.700'}>
               Chat Link:
             </Heading>
-            <Link>{data.chapter.chatUrl}</Link>
+            <Link>{data.chapter.chat_url}</Link>
           </div>
         )}
         <Heading size="md" color={'gray.700'}>

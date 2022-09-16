@@ -54,12 +54,12 @@ export class VenueResolver {
   @Mutation(() => Venue)
   updateVenue(
     @Arg('venueId', () => Int) id: number,
-    @Arg('chapterId', () => Int) chapter_id: number,
+    @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
     @Arg('data') data: UpdateVenueInputs,
   ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
     return prisma.venues.update({
-      where: { id_chapter_id: { id, chapter_id } },
+      where: { id },
       data: venueData,
     });
   }
@@ -68,11 +68,11 @@ export class VenueResolver {
   @Mutation(() => Venue)
   async deleteVenue(
     @Arg('venueId', () => Int) id: number,
-    @Arg('chapterId', () => Int) chapter_id: number,
+    @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
     return await prisma.venues.delete({
-      where: { id_chapter_id: { id, chapter_id } },
+      where: { id },
     });
   }
 }

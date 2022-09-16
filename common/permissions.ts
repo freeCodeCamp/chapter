@@ -1,6 +1,7 @@
 export enum ChapterPermission {
   ChapterBanUser = 'ban-user',
   ChapterEdit = 'chapter-edit',
+  ChapterBanUser = 'ban-user',
   EventCreate = 'event-create',
   EventEdit = 'event-edit',
   EventDelete = 'event-delete',
@@ -22,6 +23,7 @@ export enum InstancePermission {
   SponsorsManage = 'sponsors-manage',
   UserInstanceRoleChange = 'user-instance-role-change',
   UsersView = 'users-view',
+  GoogleAuthenticate = 'google-authenticate',
 }
 
 // Ideally this would be a new enum, but TS does not (to my knowledge) support

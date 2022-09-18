@@ -153,7 +153,14 @@ describe('spec needing owner', () => {
     cy.createEvent(1, eventData).then((response) => {
       const eventId = response.body.data.createEvent.id;
       cy.visit(`/dashboard/events/${eventId}/edit`);
-      cy.findByRole('combobox', { name: 'Venue' })
+      cy.findByRole('combobox', { name: 'Venue' }).as('venuesSelect');
+
+      cy.get('@venuesSelect')
+        .find(':selected')
+        .invoke('val')
+        .should('equal', eventData.venue_id.toString());
+
+      cy.get('@venuesSelect')
         .select(newVenueId)
         .find(':checked')
         .invoke('text')
@@ -163,6 +170,7 @@ describe('spec needing owner', () => {
         .findByRole('button', {
           name: 'Save Event Changes',
         })
+        .should('be.enabled')
         .click();
 
       cy.location('pathname').should('match', /^\/dashboard\/events$/);

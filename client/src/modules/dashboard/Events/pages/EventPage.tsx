@@ -189,7 +189,7 @@ export const EventPage: NextPage = () => {
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
                 {users.map(({ event_role, user, rsvp }, index) => (
-                  <HStack key={rsvp.name}>
+                  <HStack key={index}>
                     <DataTable
                       title={'RSVP: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}

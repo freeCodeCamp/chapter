@@ -100,9 +100,13 @@ export const SponsorsPage: NextPage = () => {
                           >
                             Edit
                           </LinkButton>
-                          {/* the slice is here to stop the overflow, ToDo not use slice */}
-                          <Text size={'sm'} wordBreak={'keep-all'}>
-                            {website.slice(7, -4)}
+                          <Text
+                            size={'sm'}
+                            wordBreak="break-all"
+                            maxWidth="sm"
+                            noOfLines={1}
+                          >
+                            {website}
                           </Text>
                         </VStack>
                       ),

@@ -29,6 +29,12 @@ export const CHAPTER = gql`
         invite_only
         canceled
       }
+      venues {
+        id
+        name
+        region
+        street_address
+      }
     }
   }
 `;

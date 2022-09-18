@@ -95,6 +95,7 @@ export type ChapterWithRelations = {
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
+  venues: Array<Venue>;
 };
 
 export type CreateChapterInputs = {
@@ -686,6 +687,12 @@ export type ChapterQuery = {
         __typename?: 'EventTag';
         tag: { __typename?: 'Tag'; id: number; name: string };
       }>;
+    }>;
+    venues: Array<{
+      __typename?: 'Venue';
+      id: number;
+      region: string;
+      street_address?: string | null;
     }>;
   } | null;
 };
@@ -1566,6 +1573,11 @@ export const ChapterDocument = gql`
         }
         invite_only
         canceled
+      }
+      venues {
+        id
+        region
+        street_address
       }
     }
   }

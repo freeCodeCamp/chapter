@@ -39,6 +39,7 @@ export class ChapterResolver {
       where: { id },
       include: {
         events: { include: { tags: { include: { tag: true } } } },
+        venues: true,
         chapter_users: {
           include: {
             chapter_role: {

@@ -47,21 +47,21 @@ const fields: Fields[] = [
     key: 'city',
     label: 'City',
     placeholder: 'San Francisco',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
     key: 'region',
     label: 'Region',
     placeholder: 'California',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
     key: 'country',
     label: 'Country',
     placeholder: 'United States of America',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
@@ -75,7 +75,7 @@ const fields: Fields[] = [
     key: 'image_url',
     label: 'Image Url',
     placeholder: 'https://www.freecodecamp.org',
-    required: true,
+    required: false,
     type: 'url',
   },
   {

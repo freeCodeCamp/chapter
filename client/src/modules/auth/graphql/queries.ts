@@ -19,3 +19,21 @@ export const meQuery = gql`
     }
   }
 `;
+
+export const MyEventSubscription = gql`
+  query myEventSubscription {
+    myEventSubscription {
+      id
+      name
+    }
+  }
+`;
+
+export const MyChapterSubscription = gql`
+  query myChapterSubscription {
+    myChapterSubscription {
+      id
+      name
+    }
+  }
+`;

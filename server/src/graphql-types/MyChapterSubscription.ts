@@ -1,7 +1,7 @@
 import { ObjectType, Field } from 'type-graphql';
 
 @ObjectType()
-export class UserEventSubscription {
+export class MyChapterSubscription {
   @Field(() => Number)
   id: number;
 

@@ -82,7 +82,7 @@ export const SponsorsPage: NextPage = () => {
                     action: () => (
                       <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                         <LinkButton
-                          href={`/dashboard/sponsers/${id}`}
+                          href={`/dashboard/sponsors/${id}`}
                           size={'sm'}
                         >
                           {name}
@@ -91,13 +91,17 @@ export const SponsorsPage: NextPage = () => {
                         <LinkButton
                           colorScheme="blue"
                           size="xs"
-                          href={`/dashboard/sponsers/${id}/edit`}
+                          href={`/dashboard/sponsors/${id}/edit`}
                         >
                           Edit
                         </LinkButton>
-                        {/* the slice is here to stop the overflow, ToDo not use slice */}
-                        <Text size={'sm'} wordBreak={'keep-all'}>
-                          {website.slice(7, -4)}
+                        <Text
+                          size={'sm'}
+                          wordBreak="break-all"
+                          maxWidth="sm"
+                          noOfLines={1}
+                        >
+                          {website}
                         </Text>
                       </VStack>
                     ),

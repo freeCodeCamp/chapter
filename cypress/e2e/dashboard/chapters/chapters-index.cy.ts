@@ -13,6 +13,8 @@ const chapterData = {
 describe('chapters dashboard', () => {
   before(() => {
     cy.exec('npm run db:seed');
+  });
+  beforeEach(() => {
     cy.login();
   });
 

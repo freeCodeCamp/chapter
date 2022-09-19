@@ -9,6 +9,24 @@ export const InstanceRoles = gql`
   }
 `;
 
+export const UserEventSubscription = gql`
+  query userEventSubscription {
+    userEventSubscription {
+      id
+      name
+    }
+  }
+`;
+
+export const UserChapterSubscription = gql`
+  query userChapterSubscription {
+    userChapterSubscription {
+      id
+      name
+    }
+  }
+`;
+
 export const Users = gql`
   query users {
     users {

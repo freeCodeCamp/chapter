@@ -183,7 +183,9 @@ export const EventPage: NextPage = () => {
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
                 {users.map(({ event_role, user, rsvp }, index) => (
-                  <HStack key={index}>
+                  // For a single event, each user can only have one event_user
+                  // entry, so we can use the user id as the key.
+                  <HStack key={user.id}>
                     <DataTable
                       title={'RSVP: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}

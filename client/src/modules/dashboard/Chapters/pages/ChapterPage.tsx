@@ -40,10 +40,10 @@ export const ChapterPage: NextPage = () => {
     ],
   });
 
-  const { loading, error, data } = useChapterLazyQuery({
+  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
   });
-  
+
   useEffect(() => {
     if (isReady) getChapter();
   }, [isReady]);

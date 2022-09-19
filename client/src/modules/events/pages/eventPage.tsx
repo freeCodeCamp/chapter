@@ -19,6 +19,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
 import { useAuth } from '../../auth/store';
+import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
@@ -72,18 +73,11 @@ export const EventPage: NextPage = () => {
     if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
-  if (loading || !isReady) {
-    return <h1>Loading...</h1>;
-  }
+  const isLoading = loading || !isReady || !data;
 
-  if (error || !data?.event) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.event) return <div> Event not found</div>;
 
   const chapterId = data.event.chapter.id;
 

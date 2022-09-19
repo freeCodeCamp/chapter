@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { useCreateVenueMutation } from '../../../../generated/graphql';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
@@ -40,17 +41,18 @@ export const NewVenuePage: NextPage = () => {
     }
   };
 
+  const isLoading = loading || !isReady;
+  if (isLoading) return <DashboardLoading loading={isLoading} />;
+
   return (
     <Layout>
-      {isReady && (
-        <VenueForm
-          loading={loading}
-          onSubmit={onSubmit}
-          submitText={'Add venue'}
-          chapterId={chapterId}
-          loadingText={'Adding venue'}
-        />
-      )}
+      <VenueForm
+        loading={loading}
+        onSubmit={onSubmit}
+        submitText={'Add venue'}
+        chapterId={chapterId}
+        loadingText={'Adding venue'}
+      />
     </Layout>
   );
 };

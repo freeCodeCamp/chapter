@@ -7,8 +7,8 @@ import {
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import styles from '../../../../styles/Page.module.css';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
 
@@ -44,14 +44,9 @@ export const EditChapterPage: NextPage = () => {
     }
   };
 
-  if (loading || !isReady || error || !data?.chapter) {
-    return (
-      <Layout>
-        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
     <Layout>

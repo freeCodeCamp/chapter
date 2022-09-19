@@ -783,6 +783,15 @@ export type UpdateChapterMutation = {
   };
 };
 
+export type DeleteChapterMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type DeleteChapterMutation = {
+  __typename?: 'Mutation';
+  deleteChapter: { __typename?: 'Chapter'; id: number };
+};
+
 export type BanUserMutationVariables = Exact<{
   chapterId: Scalars['Int'];
   userId: Scalars['Int'];
@@ -1924,6 +1933,56 @@ export type UpdateChapterMutationResult =
 export type UpdateChapterMutationOptions = Apollo.BaseMutationOptions<
   UpdateChapterMutation,
   UpdateChapterMutationVariables
+>;
+export const DeleteChapterDocument = gql`
+  mutation deleteChapter($chapterId: Int!) {
+    deleteChapter(id: $chapterId) {
+      id
+    }
+  }
+`;
+export type DeleteChapterMutationFn = Apollo.MutationFunction<
+  DeleteChapterMutation,
+  DeleteChapterMutationVariables
+>;
+
+/**
+ * __useDeleteChapterMutation__
+ *
+ * To run a mutation, you first call `useDeleteChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteChapterMutation, { data, loading, error }] = useDeleteChapterMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDeleteChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteChapterMutation,
+    DeleteChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteChapterMutation,
+    DeleteChapterMutationVariables
+  >(DeleteChapterDocument, options);
+}
+export type DeleteChapterMutationHookResult = ReturnType<
+  typeof useDeleteChapterMutation
+>;
+export type DeleteChapterMutationResult =
+  Apollo.MutationResult<DeleteChapterMutation>;
+export type DeleteChapterMutationOptions = Apollo.BaseMutationOptions<
+  DeleteChapterMutation,
+  DeleteChapterMutationVariables
 >;
 export const BanUserDocument = gql`
   mutation banUser($chapterId: Int!, $userId: Int!) {

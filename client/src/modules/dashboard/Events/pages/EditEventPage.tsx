@@ -1,10 +1,10 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useEventQuery,
+  useEventLazyQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -14,19 +14,20 @@ import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
 import { EVENTS, EVENT } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { param: eventId, isReady } = useParam();
 
-  const {
-    loading: eventLoading,
-    error,
-    data,
-  } = useEventQuery({
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId: eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const toast = useToast();
 
@@ -86,14 +87,11 @@ export const EditEventPage: NextPage = () => {
     }
   };
 
-  if (eventLoading || !isReady || error || !data?.event) {
-    return (
-      <Layout>
-        <h1>{eventLoading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading) return <DashboardLoading loading={loading} error={error} />;
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.event) return <div> Event not found</div>;
+
   const { sponsors, ...rest } = data.event;
   const sponsorData = sponsors?.map((s) => {
     return {

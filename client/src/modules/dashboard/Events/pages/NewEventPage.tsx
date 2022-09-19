@@ -6,6 +6,7 @@ import {
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
@@ -67,6 +68,8 @@ export const NewEventPage: NextPage = () => {
       setLoading(false);
     }
   };
+
+  if (!isReady) return <DashboardLoading loading={isReady} />;
 
   return (
     <Layout>

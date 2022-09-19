@@ -1,29 +1,32 @@
 import { Heading, Link, Box, HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useChapterQuery } from '../../../../generated/graphql';
+import { useChapterLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('id');
 
-  const { loading, error, data } = useChapterQuery({
+  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
   });
 
-  if (loading || !isReady || error || !data?.chapter) {
-    return (
-      <Layout>
-        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    if (isReady) getChapter();
+  }, [isReady]);
+
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
+
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.chapter) return <div> Chapter not found</div>;
 
   return (
     <Layout>

@@ -19,11 +19,12 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
 import { useAuth } from '../../auth/store';
+import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
-  useEventQuery,
+  useEventLazyQuery,
   useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
@@ -45,10 +46,14 @@ export const EventPage: NextPage = () => {
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
-  // TODO: check if we need to default to -1 here
-  const { loading, error, data } = useEventQuery({
+
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const toast = useToast();
   const confirm = useConfirm();
@@ -68,18 +73,11 @@ export const EventPage: NextPage = () => {
     if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
-  if (loading || !isReady) {
-    return <h1>Loading...</h1>;
-  }
+  const isLoading = loading || !isReady || !data;
 
-  if (error || !data?.event) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.event) return <div> Event not found</div>;
 
   const chapterId = data.event.chapter.id;
 

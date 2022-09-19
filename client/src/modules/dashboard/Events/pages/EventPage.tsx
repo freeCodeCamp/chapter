@@ -11,18 +11,19 @@ import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {
   useConfirmRsvpMutation,
   useDeleteRsvpMutation,
-  useEventQuery,
+  useEventLazyQuery,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
@@ -35,9 +36,14 @@ const args = (eventId: number) => ({
 export const EventPage: NextPage = () => {
   const router = useRouter();
   const { param: eventId, isReady } = useParam('id');
-  const { loading, error, data } = useEventQuery({
+
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
   const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
@@ -59,19 +65,12 @@ export const EventPage: NextPage = () => {
       if (ok) kickRsvpFn({ variables: { eventId, userId } });
     };
 
-  if (loading || !isReady || error || !data || !data.event) {
-    return (
-      <Layout>
-        <h1>
-          {loading || !isReady
-            ? 'Loading...'
-            : !error
-            ? "Can't find event :("
-            : 'Error...'}
-        </h1>
-      </Layout>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
+
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.event) return <div> Event not found</div>;
 
   const userLists = [
     {
@@ -184,7 +183,9 @@ export const EventPage: NextPage = () => {
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
                 {users.map(({ event_role, user, rsvp }, index) => (
-                  <HStack key={rsvp.name}>
+                  // For a single event, each user can only have one event_user
+                  // entry, so we can use the user id as the key.
+                  <HStack key={user.id}>
                     <DataTable
                       title={'RSVP: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}

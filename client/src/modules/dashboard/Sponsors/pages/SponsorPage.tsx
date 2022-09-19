@@ -1,26 +1,30 @@
 import { Flex, Heading, Link, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useSponsorQuery } from '../../../../generated/graphql';
+import { useSponsorLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 
 export const SponsorPage: NextPage = () => {
   const { param: sponsorId, isReady } = useParam('id');
-  const { loading, error, data } = useSponsorQuery({
+  const [getSponsor, { loading, error, data }] = useSponsorLazyQuery({
     variables: { sponsorId },
   });
 
-  if (loading || !isReady) {
-    return <h1>Loading the sponsor details</h1>;
-  }
+  useEffect(() => {
+    if (isReady) {
+      getSponsor();
+    }
+  }, [isReady]);
 
-  if (error) {
-    return <h1>Error loading the sponsor details</h1>;
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
+
   return (
     <Layout>
       <Card className={styles.card}>

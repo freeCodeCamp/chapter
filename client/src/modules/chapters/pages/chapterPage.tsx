@@ -12,15 +12,16 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
 import { useAuth } from '../../auth/store';
+import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
-  useChapterQuery,
-  useChapterUserQuery,
+  useChapterLazyQuery,
+  useChapterUserLazyQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
 } from 'generated/graphql';
@@ -30,17 +31,26 @@ export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
   const { user } = useAuth();
 
-  const { loading, error, data } = useChapterQuery({
+  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
   });
 
   const confirm = useConfirm();
   const toast = useToast();
 
-  const { loading: loadingChapterUser, data: dataChapterUser } =
-    useChapterUserQuery({
-      variables: { chapterId },
-    });
+  const [
+    getChapterUsers,
+    { loading: loadingChapterUser, data: dataChapterUser },
+  ] = useChapterUserLazyQuery({
+    variables: { chapterId },
+  });
+
+  useEffect(() => {
+    if (isReady) {
+      getChapter();
+      getChapterUsers();
+    }
+  }, [isReady]);
 
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
@@ -91,18 +101,10 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  if (loading || !isReady) {
-    return <Spinner />;
-  }
-
-  if (error || !data?.chapter) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.chapter) return <div> Chapter not found</div>;
 
   return (
     <VStack>

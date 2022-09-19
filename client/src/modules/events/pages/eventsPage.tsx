@@ -2,6 +2,7 @@ import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
+import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
 
@@ -67,18 +68,9 @@ export const EventsPage: NextPage = () => {
     });
     setVisitedPages(new Set(visitedPages).add(currentPage));
   }, [currentPage]);
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
 
-  if (error || !data?.paginatedEventsWithTotal.events.length) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  const isLoading = loading || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
   return (
     <VStack>

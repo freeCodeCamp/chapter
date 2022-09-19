@@ -21,6 +21,7 @@
     "@chakra-ui/modal": "2.1.7",
     "@chakra-ui/react": "2.3.2",
     "@chakra-ui/select": "2.0.10",
+    "@chakra-ui/skip-nav": "2.0.9",
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
     "chakra-confirm": "1.2.17",
@@ -35,8 +36,8 @@
     "react-hook-form": "7.35.0"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.370.0",
-    "@codesee/tracker": "0.370.0",
+    "@codesee/babel-plugin-instrument": "0.372.0",
+    "@codesee/tracker": "0.372.0",
     "@graphql-codegen/cli": "2.12.0",
     "@graphql-codegen/fragment-matcher": "3.3.1",
     "@graphql-codegen/introspection": "2.2.1",

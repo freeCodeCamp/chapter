@@ -1,5 +1,4 @@
 import {
-  VStack,
   HStack,
   Checkbox,
   Button,
@@ -177,7 +176,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       onSubmit={handleSubmit(onSubmit)}
       className={styles.form}
     >
-      <VStack align="flex-start">
+      <Flex
+        flexDirection={'column'}
+        align="flex-start"
+        gap={4}
+        marginBlock={'1em'}
+      >
         {!isChaptersDropdownNeeded || data ? (
           loadingChapter ? (
             <Text>Loading Chapter</Text>
@@ -220,6 +224,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                     name={`${field.key}`}
                     label={field.label}
                     isDisabled={loading}
+                    isRequired={field.isRequired}
                     value={
                       field.key === 'start_at'
                         ? startDate.toDateString()
@@ -260,7 +265,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           Invite only
         </Checkbox>
 
-        <FormControl isRequired>
+        <FormControl marginBlock={'1em'}>
           <FormLabel>Venue Type</FormLabel>
           <RadioGroup defaultValue={venueType}>
             <HStack>
@@ -283,7 +288,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             <h1>Error loading venues</h1>
           ) : (
             isPhysical(getValues('venue_type')) && (
-              <FormControl isRequired>
+              <FormControl marginBlock={'1em'}>
                 <FormLabel>Venue</FormLabel>
                 <Select {...register('venue_id')} isDisabled={loading}>
                   {dataVenues.chapterVenues.map((v) => (
@@ -296,20 +301,21 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             )
           )}
 
-          {isOnline(getValues('venue_type')) && (
-            <Input
-              key="streaming url"
-              type="url"
-              label="Streaming URL"
-              placeholder=""
-              isDisabled={loading}
-              isRequired
-              {...register('streaming_url')}
-            />
-          )}
+          <Box marginTop={'1em'}>
+            {isOnline(getValues('venue_type')) && (
+              <Input
+                key="streaming url"
+                type="url"
+                label="Streaming URL"
+                placeholder=""
+                isDisabled={loading}
+                {...register('streaming_url')}
+              />
+            )}
+          </Box>
         </FormControl>
 
-        <FormControl id="first-name" isRequired>
+        <FormControl id="first-name" marginBottom={'1em'}>
           <Box display="flex" alignItems="end" m="1">
             <FormLabel> Sponsors</FormLabel>
             <Spacer />
@@ -343,7 +349,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             const registeredSponsor = register(
               `sponsors.${sponsorFieldId}.type` as const,
               {
-                required: true,
+                required: false,
               },
             );
 
@@ -406,7 +412,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                           `sponsors.${sponsorFieldId}.id`,
                         )}
                         {...register(`sponsors.${sponsorFieldId}.id` as const, {
-                          required: true,
+                          required: false,
                           valueAsNumber: true,
                         })}
                         isDisabled={loading}
@@ -451,7 +457,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             />
           )}
         </HStack>
-      </VStack>
+      </Flex>
     </form>
   );
 };

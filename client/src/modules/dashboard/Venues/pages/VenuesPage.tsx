@@ -108,7 +108,7 @@ export const VenuesPage: NextPage = () => {
                         align={'flex-start'}
                         spacing={3}
                         fontSize={['sm', 'md']}
-                        minWidth={'15em'}
+                        minWidth={'17em'}
                       >
                         <LinkButton
                           data-cy="view-venue-button"

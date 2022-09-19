@@ -79,6 +79,7 @@ describe('spec needing owner', () => {
   function sendAndCheckEmails(filterCallback, users) {
     cy.mhDeleteAll();
     cy.findByRole('button', { name: 'Send Email' }).click();
+    cy.contains('Email sent');
 
     cy.waitUntilMail('allMail');
 

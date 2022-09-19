@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { SkipNavLink } from '@chakra-ui/skip-nav';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -19,7 +20,9 @@ import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
+import { Permission } from '../../../../common/permissions';
 import { useSession } from 'hooks/useSession';
+import { useCheckPermission } from 'hooks/useCheckPermission';
 
 interface Props {
   children: React.ReactNode;
@@ -72,13 +75,17 @@ export const Header: React.FC = () => {
 
   const { logout: logoutAuth0 } = useAuth0();
 
+  const canAuthenticateWithGoogle = useCheckPermission(
+    Permission.GoogleAuthenticate,
+  );
+
   const logout = () => {
     setData({ user: undefined });
     // TODO: logging out of auth0 and the server should be handled by the same
     // module as logging in.
     // TODO: inject the auth functions (logout) into the Header so we can switch
     // strategies easily.
-    if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'development') logoutAuth0();
+    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') logoutAuth0();
     fetch(new URL('/logout', serverUrl).href, {
       method: 'DELETE',
       credentials: 'include',
@@ -98,6 +105,9 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
+        <SkipNavLink background={'gray.10'} color={'gray.85'}>
+          Skip Navigation
+        </SkipNavLink>
         <HStack as="nav">
           <Box>
             <Menu>
@@ -127,11 +137,22 @@ export const Header: React.FC = () => {
                         <MenuItem as="a">Dashboard</MenuItem>
                       </NextLink>
 
+                      {canAuthenticateWithGoogle && (
+                        <MenuItem
+                          as="a"
+                          href={
+                            new URL('/authenticate-with-google', serverUrl).href
+                          }
+                        >
+                          Authenticate with Google
+                        </MenuItem>
+                      )}
+
                       <MenuItem data-cy="logout-button" onClick={logout}>
                         Logout
                       </MenuItem>
                     </>
-                  ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
+                  ) : process.env.NEXT_PUBLIC_USE_AUTH0 === 'false' ? (
                     <DevLoginButton />
                   ) : (
                     <LoginButton />

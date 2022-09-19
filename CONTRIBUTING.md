@@ -583,11 +583,6 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
 <details>
  <summary>Application Troubleshooting</summary>
 
-* **Problem:** The application shows
-   > _JsonWebTokenError: invalid signature._ </br>
-
-  **Solution:** Clear the browser cookies for the localhost domain, or use an incognito browser window to open the site.
-
 * **Problem:**  Where do application registration and other emails go? </br>
   **Solution:** All email are captured and saved by Mailhog. Simply open [http://localhost:8025/](http://localhost:8025/) to see captured emails. For account registration, the email validation link can be opened in the browser to complete the registration process.
 

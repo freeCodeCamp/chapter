@@ -17,6 +17,7 @@ describe('Chapter Users dashboard', () => {
     cy.findByRole('table', { name: 'Chapter Users' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'email' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
   });
 
   it('should not be possible to create users', () => {
@@ -139,6 +140,23 @@ describe('Chapter Users dashboard', () => {
       .first()
       .as('firstUnbannedMember');
   }
+
+  it('someone whos NOT an admin of a chapter, should NOT be able to ban a chapter users', () => {
+    cy.login('admin@of.chapter.one');
+    cy.visit(`/dashboard/chapters/2/users`);
+
+    initializeBanVariables();
+
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=isBanned]')
+      .should('not.exist');
+
+    cy.get('@firstUnbannedMember')
+      .findByRole('button', { name: 'Ban' })
+      .click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.findByRole('status').contains('access denied', { matchCase: false });
+  });
 
   it('an admin cannot ban themselves', () => {
     cy.login('admin@of.chapter.one');

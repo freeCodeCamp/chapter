@@ -1,5 +1,4 @@
 import React from 'react';
-import { NextPage } from 'next';
 import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
@@ -7,9 +6,16 @@ import { Button } from '@chakra-ui/button';
 import { useDeleteMeMutation } from 'generated/graphql';
 import { useAuth } from 'modules/auth/store';
 
-export const UserProfilePage: NextPage = () => {
+export const UserProfilePage = () => {
   const { user } = useAuth();
   const router = useRouter();
+
+  let userId: number;
+
+  const checkUserId = () => {
+    if (user) return (userId = user.id);
+  };
+  checkUserId();
 
   const confirmDelete = useConfirmDelete();
   const [deleteMe] = useDeleteMeMutation();

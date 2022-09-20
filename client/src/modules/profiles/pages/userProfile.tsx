@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { useDeleteMeMutation } from 'generated/graphql';
 import { useAuth } from 'modules/auth/store';
+import { Users } from 'modules/dashboard/Users/graphql/queries';
 
 export const UserProfilePage = () => {
   const { user } = useAuth();
@@ -16,7 +17,9 @@ export const UserProfilePage = () => {
   }
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
-  const [deleteMe] = useDeleteMeMutation();
+  const [deleteMe] = useDeleteMeMutation({
+    refetchQueries: [{ query: Users }],
+  });
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;

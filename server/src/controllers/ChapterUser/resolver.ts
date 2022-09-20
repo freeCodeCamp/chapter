@@ -187,11 +187,8 @@ export class ChapterUserResolver {
   async banUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged to ban');
-    }
     if (ctx.user.id === userId) {
       throw Error('You cannot ban yourself');
     }
@@ -210,18 +207,7 @@ export class ChapterUserResolver {
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to unban');
-    }
-
-    // TODO: this should not be necessary, since a ban would prevent them from
-    // accessing this resolver. However, we need a Cypress test first.
-    if (ctx.user.id === userId) {
-      throw Error('You cannot unban yourself');
-    }
-
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
       include: { chapter: true, user: true },

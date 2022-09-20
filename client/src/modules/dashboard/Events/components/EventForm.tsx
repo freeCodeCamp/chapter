@@ -265,7 +265,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           Invite only
         </Checkbox>
 
-        <FormControl marginBlock={'1em'}>
+        <FormControl isRequired marginBlock={'1em'}>
           <FormLabel>Venue Type</FormLabel>
           <RadioGroup defaultValue={venueType}>
             <HStack>
@@ -288,7 +288,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             <h1>Error loading venues</h1>
           ) : (
             isPhysical(getValues('venue_type')) && (
-              <FormControl marginBlock={'1em'}>
+              <FormControl isRequired marginBlock={'1em'}>
                 <FormLabel>Venue</FormLabel>
                 <Select {...register('venue_id')} isDisabled={loading}>
                   {dataVenues.chapterVenues.map((v) => (

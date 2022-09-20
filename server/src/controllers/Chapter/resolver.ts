@@ -31,6 +31,7 @@ export class ChapterResolver {
     });
   }
 
+  @Authorized(Permission.ChapterEdit)
   @Query(() => ChapterWithRelations, { nullable: true })
   async chapter(
     @Arg('id', () => Int) id: number,

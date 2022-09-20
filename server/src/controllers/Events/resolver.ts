@@ -277,6 +277,7 @@ export class EventResolver {
     });
   }
 
+  @Authorized(Permission.EventEdit)
   @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('eventId', () => Int) eventId: number,

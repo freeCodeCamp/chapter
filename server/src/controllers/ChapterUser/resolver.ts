@@ -214,7 +214,6 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterBanUser)
   // TODO: it would be nice if this was a field on the ChapterUser type and we
   // could guarantee type safety of this resolver.
   @FieldResolver()

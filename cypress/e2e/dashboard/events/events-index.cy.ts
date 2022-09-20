@@ -149,11 +149,14 @@ describe('spec needing owner', () => {
       ends_at: '2022-01-02T00:02',
       tags: 'Test, Event, Tag',
     };
-    const newVenueId = 2;
+    // It needs to be string to select by the value. When passing integer
+    // to the .select method, it will select option by the index.
+    const newVenueId = '2';
 
     cy.createEvent(1, eventData).then((response) => {
       const eventId = response.body.data.createEvent.id;
       cy.visit(`/dashboard/events/${eventId}/edit`);
+
       cy.findByRole('combobox', { name: 'Venue' })
         .select(newVenueId)
         .find(':checked')
@@ -164,6 +167,7 @@ describe('spec needing owner', () => {
         .findByRole('button', {
           name: 'Save Event Changes',
         })
+        .should('be.enabled')
         .click();
 
       cy.location('pathname').should('match', /^\/dashboard\/events$/);

@@ -36,13 +36,13 @@ const fields: FormField[] = [
     key: 'website',
     placeholder: 'www.freecodecamp.com',
     label: 'Website Url',
-    isRequired: true,
+    isRequired: false,
   },
   {
     key: 'logo_path',
     placeholder: 'www.freecodecamp.com',
     label: 'Logo Path',
-    isRequired: true,
+    isRequired: false,
   },
 ];
 const SponsorForm: React.FC<SponsorFormProps> = (props) => {

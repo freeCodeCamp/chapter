@@ -47,7 +47,7 @@ export const CHAPTER_USERS = gql`
           name
         }
         subscribed
-        canBeBanned
+        is_bannable
       }
       user_bans {
         user {

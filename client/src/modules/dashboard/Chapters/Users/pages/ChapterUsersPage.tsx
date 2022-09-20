@@ -166,7 +166,7 @@ export const ChapterUsersPage: NextPage = () => {
                 </HStack>
               ),
               email: ({ user }) => user.email,
-              actions: ({ canBeBanned, user, chapter_role }) => (
+              actions: ({ is_bannable, user, chapter_role }) => (
                 <HStack>
                   <Button
                     data-cy="changeRole"
@@ -182,7 +182,7 @@ export const ChapterUsersPage: NextPage = () => {
                   >
                     Change
                   </Button>
-                  {canBeBanned &&
+                  {is_bannable &&
                     (bans.has(user.id) ? (
                       <Button
                         data-cy="unbanUser"
@@ -212,7 +212,7 @@ export const ChapterUsersPage: NextPage = () => {
         </Box>
         <Box display={{ base: 'block', lg: 'none' }}>
           {data.chapter.chapter_users.map(
-            ({ canBeBanned, user, chapter_role }, index) => (
+            ({ is_bannable, user, chapter_role }, index) => (
               <Flex key={index} marginBlock={'2em'}>
                 {data.chapter ? (
                   <DataTable
@@ -261,7 +261,7 @@ export const ChapterUsersPage: NextPage = () => {
                             >
                               Change
                             </Button>
-                            {canBeBanned &&
+                            {is_bannable &&
                               (bans.has(user.id) ? (
                                 <Button
                                   data-cy="unbanUser"

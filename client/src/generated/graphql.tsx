@@ -56,9 +56,9 @@ export type ChapterRolePermission = {
 
 export type ChapterUser = {
   __typename?: 'ChapterUser';
-  canBeBanned: Scalars['Boolean'];
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
+  is_bannable: Scalars['Boolean'];
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
@@ -727,7 +727,7 @@ export type ChapterUsersQuery = {
     chapter_users: Array<{
       __typename?: 'ChapterUser';
       subscribed: boolean;
-      canBeBanned: boolean;
+      is_bannable: boolean;
       user: { __typename?: 'User'; id: number; name: string; email: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
@@ -1769,7 +1769,7 @@ export const ChapterUsersDocument = gql`
           name
         }
         subscribed
-        canBeBanned
+        is_bannable
       }
       user_bans {
         user {

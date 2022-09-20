@@ -1,15 +1,12 @@
 import React from 'react';
 import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
 import { useConfirmDelete } from 'chakra-confirm';
-import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { useDeleteMeMutation } from 'generated/graphql';
 import { useAuth } from 'modules/auth/store';
-import { Users } from 'modules/dashboard/Users/graphql/queries';
 
 export const UserProfilePage = () => {
   const { user } = useAuth();
-  const router = useRouter();
 
   let userId: number;
   if (user) {
@@ -17,14 +14,12 @@ export const UserProfilePage = () => {
   }
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
-  const [deleteMe] = useDeleteMeMutation({
-    refetchQueries: [{ query: Users }],
-  });
+  const [deleteMe] = useDeleteMeMutation();
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
     deleteMe({ variables: { userId } });
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (

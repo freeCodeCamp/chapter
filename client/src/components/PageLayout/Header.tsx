@@ -164,7 +164,9 @@ export const Header: React.FC = () => {
 
           {user ? (
             <>
-              <Avatar name={`${user.name}`} />
+              <NextLink passHref href="/profile">
+                <Avatar cursor={'pointer'} name={`${user.name}`} />
+              </NextLink>
             </>
           ) : (
             <></>

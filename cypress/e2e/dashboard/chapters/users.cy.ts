@@ -4,8 +4,13 @@ const chapterId = 1;
 const knownEmails = [
   'foo@bar.com',
   'admin@of.chapter.one',
+  'admin@of.chapter.two',
   'banned@chapter.admin',
 ];
+
+// TODO: this is very brittle, since it depends on precisely how we seed the
+// database. Can make this always be the id of banned@chapter.admin?
+const bannedUserId = 4;
 
 describe('Chapter Users dashboard', () => {
   beforeEach(() => {
@@ -60,6 +65,7 @@ describe('Chapter Users dashboard', () => {
     });
   });
 
+  // Currently only instance users can change chapter roles
   it('rejects chapter admin from changing chapter user role', () => {
     cy.login('admin@of.chapter.one');
 
@@ -176,18 +182,7 @@ describe('Chapter Users dashboard', () => {
 
   it('an admin cannot unban themselves', () => {
     cy.login('banned@chapter.admin');
-    cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
-    initializeBanVariables();
-
-    cy.get('@administrators')
-      .filter(':contains("banned@chapter.admin")')
-      .as('adminToUnban')
-      .should('have.length', 1);
-
-    cy.get('@adminToUnban').findByRole('button', { name: 'Unban' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('You cannot unban yourself', { matchCase: false });
-    cy.get('@adminToUnban').find('[data-cy=isBanned]').should('be.visible');
+    cy.unbanUser({ chapterId, userId: bannedUserId }).then(expectToBeRejected);
   });
 });

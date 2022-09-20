@@ -275,6 +275,7 @@ export type Mutation = {
   createVenue: Venue;
   deleteChapter: Chapter;
   deleteEvent: Event;
+  deleteMe: User;
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUser;
@@ -344,6 +345,10 @@ export type MutationDeleteChapterArgs = {
 };
 
 export type MutationDeleteEventArgs = {
+  id: Scalars['Int'];
+};
+
+export type MutationDeleteMeArgs = {
   id: Scalars['Int'];
 };
 
@@ -605,6 +610,15 @@ export enum VenueType {
   Physical = 'Physical',
   PhysicalAndOnline = 'PhysicalAndOnline',
 }
+
+export type DeleteMeMutationVariables = Exact<{
+  userId: Scalars['Int'];
+}>;
+
+export type DeleteMeMutation = {
+  __typename?: 'Mutation';
+  deleteMe: { __typename?: 'User'; id: number };
+};
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -1394,6 +1408,53 @@ export type UnsubscribeMutation = {
   unsubscribe: boolean;
 };
 
+export const DeleteMeDocument = gql`
+  mutation deleteMe($userId: Int!) {
+    deleteMe(id: $userId) {
+      id
+    }
+  }
+`;
+export type DeleteMeMutationFn = Apollo.MutationFunction<
+  DeleteMeMutation,
+  DeleteMeMutationVariables
+>;
+
+/**
+ * __useDeleteMeMutation__
+ *
+ * To run a mutation, you first call `useDeleteMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMeMutation, { data, loading, error }] = useDeleteMeMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useDeleteMeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteMeMutation,
+    DeleteMeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteMeMutation, DeleteMeMutationVariables>(
+    DeleteMeDocument,
+    options,
+  );
+}
+export type DeleteMeMutationHookResult = ReturnType<typeof useDeleteMeMutation>;
+export type DeleteMeMutationResult = Apollo.MutationResult<DeleteMeMutation>;
+export type DeleteMeMutationOptions = Apollo.BaseMutationOptions<
+  DeleteMeMutation,
+  DeleteMeMutationVariables
+>;
 export const MeDocument = gql`
   query me {
     me {

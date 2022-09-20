@@ -13,7 +13,11 @@ export const DashboardLoading = ({ loading, error }: Props) => {
     return (
       <Layout>
         <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
+        {error && (
+          <div className={styles.error} data-cy="loading-error">
+            {error.message}
+          </div>
+        )}
       </Layout>
     );
   } else {

@@ -4,8 +4,13 @@ const chapterId = 1;
 const knownEmails = [
   'foo@bar.com',
   'admin@of.chapter.one',
+  'admin@of.chapter.two',
   'banned@chapter.admin',
 ];
+
+// TODO: this is very brittle, since it depends on precisely how we seed the
+// database. Can make this always be the id of banned@chapter.admin?
+const bannedUserId = 4;
 
 describe('Chapter Users dashboard', () => {
   beforeEach(() => {
@@ -60,6 +65,7 @@ describe('Chapter Users dashboard', () => {
     });
   });
 
+  // Currently only instance users can change chapter roles
   it('rejects chapter admin from changing chapter user role', () => {
     cy.login('admin@of.chapter.one');
 
@@ -141,21 +147,20 @@ describe('Chapter Users dashboard', () => {
       .as('firstUnbannedMember');
   }
 
-  it('someone whos NOT an admin of a chapter, should NOT be able to ban a chapter users', () => {
-    cy.login('admin@of.chapter.one');
-    cy.visit(`/dashboard/chapters/2/users`);
+  it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
+    cy.login('admin@of.chapter.two');
 
-    initializeBanVariables();
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
+    cy.get('[data-cy=loading-error]').should('be.visible');
 
-    cy.get('@firstUnbannedMember')
-      .find('[data-cy=isBanned]')
-      .should('not.exist');
-
-    cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Ban' })
-      .click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.findByRole('status').contains('access denied', { matchCase: false });
+    cy.getChapterMembers(chapterId).each((member: any) => {
+      cy.banUser({ chapterId, userId: member.user.id }).then(
+        expectToBeRejected,
+      );
+      cy.unbanUser({ chapterId, userId: member.user.id }).then(
+        expectToBeRejected,
+      );
+    });
   });
 
   it('an admin cannot ban themselves', () => {
@@ -177,18 +182,7 @@ describe('Chapter Users dashboard', () => {
 
   it('an admin cannot unban themselves', () => {
     cy.login('banned@chapter.admin');
-    cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
-    initializeBanVariables();
-
-    cy.get('@administrators')
-      .filter(':contains("banned@chapter.admin")')
-      .as('adminToUnban')
-      .should('have.length', 1);
-
-    cy.get('@adminToUnban').findByRole('button', { name: 'Unban' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('You cannot unban yourself', { matchCase: false });
-    cy.get('@adminToUnban').find('[data-cy=isBanned]').should('be.visible');
+    cy.unbanUser({ chapterId, userId: bannedUserId }).then(expectToBeRejected);
   });
 });

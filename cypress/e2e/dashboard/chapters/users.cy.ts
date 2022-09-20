@@ -141,21 +141,20 @@ describe('Chapter Users dashboard', () => {
       .as('firstUnbannedMember');
   }
 
-  it('someone whos NOT an admin of a chapter, should NOT be able to ban a chapter users', () => {
-    cy.login('admin@of.chapter.one');
-    cy.visit(`/dashboard/chapters/2/users`);
+  it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
+    cy.login('admin@of.chapter.two');
 
-    initializeBanVariables();
+    cy.visit(`/dashboard/chapters/${chapterId}/users`);
+    cy.get('[data-cy=loading-error]').should('be.visible');
 
-    cy.get('@firstUnbannedMember')
-      .find('[data-cy=isBanned]')
-      .should('not.exist');
-
-    cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Ban' })
-      .click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.findByRole('status').contains('access denied', { matchCase: false });
+    cy.getChapterMembers(chapterId).each((member: any) => {
+      cy.banUser({ chapterId, userId: member.user.id }).then(
+        expectToBeRejected,
+      );
+      cy.unbanUser({ chapterId, userId: member.user.id }).then(
+        expectToBeRejected,
+      );
+    });
   });
 
   it('an admin cannot ban themselves', () => {

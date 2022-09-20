@@ -645,6 +645,62 @@ const changeChapterUserRole = (
 Cypress.Commands.add('changeChapterUserRole', changeChapterUserRole);
 
 /**
+ * Ban user using GQL mutation
+ * @param data.chapterId Chapter id
+ * @param data.userId User id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const banUser = (
+  { chapterId, userId }: { chapterId: number; userId: number },
+  options = { withAuth: true },
+) => {
+  const banUserMutation = {
+    operationName: 'banUser',
+    variables: { chapterId, userId },
+    query: `mutation banUser($chapterId: Int!, $userId: Int!) {
+      banUser(chapterId: $chapterId, userId: $userId) {
+        user {
+          name
+        }
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(banUserMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('banUser', banUser);
+
+/**
+ * Unban user using GQL mutation
+ * @param data.chapterId Chapter id
+ * @param data.userId User id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const unbanUser = (
+  { chapterId, userId }: { chapterId: number; userId: number },
+  options = { withAuth: true },
+) => {
+  const unbanUserMutation = {
+    operationName: 'unbanUser',
+    variables: { chapterId, userId },
+    query: `mutation unbanUser($chapterId: Int!, $userId: Int!) {
+      unbanUser(chapterId: $chapterId, userId: $userId) {
+        user {
+          name
+        }
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(unbanUserMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('unbanUser', unbanUser);
+
+/**
  * Get chapter roles using GQL query
  */
 const getChapterRoles = () => {
@@ -686,6 +742,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       authedRequest: typeof authedRequest;
+      banUser: typeof banUser;
       changeChapterUserRole: typeof changeChapterUserRole;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
@@ -704,6 +761,7 @@ declare global {
       register: typeof register;
       registerViaUI: typeof registerViaUI;
       toggleChapterSubscription: typeof toggleChapterSubscription;
+      unbanUser: typeof unbanUser;
       updateSponsor: typeof updateSponsor;
       waitUntilMail: typeof waitUntilMail;
     }

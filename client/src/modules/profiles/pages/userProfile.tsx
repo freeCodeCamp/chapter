@@ -1,10 +1,24 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
+import { useConfirmDelete } from 'chakra-confirm';
+import { useRouter } from 'next/router';
+import { Button } from '@chakra-ui/button';
+import { useDeleteMeMutation } from 'generated/graphql';
 import { useAuth } from 'modules/auth/store';
 
 export const UserProfilePage: NextPage = () => {
   const { user } = useAuth();
+  const router = useRouter();
+
+  const confirmDelete = useConfirmDelete();
+  const [deleteMe] = useDeleteMeMutation();
+  const clickDelete = async () => {
+    const ok = await confirmDelete({ doubleConfirm: true });
+    if (!ok) return;
+    deleteMe({ variables: { userId } });
+    router.push('/');
+  };
 
   return (
     <div>
@@ -34,6 +48,8 @@ export const UserProfilePage: NextPage = () => {
           ) : (
             ''
           )}
+
+          <Button onClick={clickDelete}>Delete My Data</Button>
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

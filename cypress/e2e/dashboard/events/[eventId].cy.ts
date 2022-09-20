@@ -17,8 +17,7 @@ describe('event dashboard', () => {
         .findByRole('button', { name: 'Confirm' })
         .click();
 
-      cy.waitUntilMail('allMail');
-      cy.get('@allMail').mhFirst().as('email');
+      cy.waitUntilMail().mhFirst().as('email');
 
       cy.get<string>('@userName').then((userName) => {
         cy.get('@waitlist').not(`:contains(${userName})`);

@@ -6,6 +6,7 @@ const bannedVenue = 1;
 
 describe('all dashboards', () => {
   it('they should be forbidden to the admin banned from that chapter', () => {
+    cy.login('banned@chapter.admin');
     cy.visit(`/dashboard/chapters/${bannedChapter}`);
     cy.get('[data-cy=loading-error]').should('be.visible');
     cy.contains(deniedText);

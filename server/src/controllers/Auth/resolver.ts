@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Ctx, Int, Arg } from 'type-graphql';
 import { prisma } from '../../prisma';
 
 import { ResolverCtx } from '../../common-types/gql';
-import { User, UserWithInstanceRole } from '../../graphql-types';
+import { UserWithInstanceRole } from '../../graphql-types';
 
 @Resolver()
 export class AuthResolver {
@@ -11,8 +11,10 @@ export class AuthResolver {
     return ctx.user ?? null;
   }
 
-  @Mutation(() => User)
-  async deleteMe(@Arg('id', () => Int) id: number): Promise<User> {
+  @Mutation(() => UserWithInstanceRole)
+  async deleteMe(
+    @Arg('id', () => Int) id: number,
+  ): Promise<UserWithInstanceRole> {
     return await prisma.users.delete({ where: { id } });
   }
 }

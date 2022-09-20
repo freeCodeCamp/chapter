@@ -11,16 +11,14 @@ export const UserProfilePage = () => {
   const router = useRouter();
 
   let userId: number;
+  if (user) {
+    userId = user.id;
+  }
 
-  const checkUserId = () => {
-    if (user) return (userId = user.id);
-  };
-  checkUserId();
-
-  const confirmDelete = useConfirmDelete();
+  const confirmDelete = useConfirmDelete({ doubleConfirm: true });
   const [deleteMe] = useDeleteMeMutation();
   const clickDelete = async () => {
-    const ok = await confirmDelete({ doubleConfirm: true });
+    const ok = await confirmDelete();
     if (!ok) return;
     deleteMe({ variables: { userId } });
     router.push('/');

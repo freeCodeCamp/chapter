@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { useDeleteMeMutation } from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
-import { Users } from '../../dashboard/Users/graphql/queries';
 
 export const UserProfilePage = () => {
   const {

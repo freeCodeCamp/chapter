@@ -3,9 +3,9 @@ import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
-import { useDeleteMeMutation } from 'generated/graphql';
-import { useAuthStore } from 'modules/auth/store';
-import { Users } from 'modules/dashboard/Users/graphql/queries';
+import { useDeleteMeMutation } from '../../../generated/graphql';
+import { useAuthStore } from '../../auth/store';
+import { Users } from '../../dashboard/Users/graphql/queries';
 
 export const UserProfilePage = () => {
   const {

@@ -36,6 +36,22 @@ export type Chapter = {
   region: Scalars['String'];
 };
 
+export type ChapterCardsRelations = {
+  __typename?: 'ChapterCardsRelations';
+  category: Scalars['String'];
+  chat_url?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  creator_id: Scalars['Int'];
+  description: Scalars['String'];
+  events: Array<Event>;
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+  venues: Array<Venue>;
+};
+
 export type ChapterPermission = {
   __typename?: 'ChapterPermission';
   id: Scalars['Int'];
@@ -63,21 +79,6 @@ export type ChapterUser = {
   subscribed: Scalars['Boolean'];
   user: User;
   user_id: Scalars['Int'];
-};
-
-export type ChapterWithEvents = {
-  __typename?: 'ChapterWithEvents';
-  category: Scalars['String'];
-  chat_url?: Maybe<Scalars['String']>;
-  city: Scalars['String'];
-  country: Scalars['String'];
-  creator_id: Scalars['Int'];
-  description: Scalars['String'];
-  events: Array<Event>;
-  id: Scalars['Int'];
-  image_url: Scalars['String'];
-  name: Scalars['String'];
-  region: Scalars['String'];
 };
 
 export type ChapterWithRelations = {
@@ -431,7 +432,7 @@ export type Query = {
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<ChapterWithEvents>;
+  chapters: Array<ChapterCardsRelations>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -691,6 +692,7 @@ export type ChapterQuery = {
     venues: Array<{
       __typename?: 'Venue';
       id: number;
+      name: string;
       region: string;
       street_address?: string | null;
     }>;
@@ -738,17 +740,29 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 export type ChaptersQuery = {
   __typename?: 'Query';
   chapters: Array<{
-    __typename?: 'ChapterWithEvents';
+    __typename?: 'ChapterCardsRelations';
     id: number;
     name: string;
     description: string;
     category: string;
     image_url: string;
+    city: string;
+    region: string;
+    country: string;
     events: Array<{
       __typename?: 'Event';
       id: number;
       name: string;
       start_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+    }>;
+    venues: Array<{
+      __typename?: 'Venue';
+      id: number;
+      name: string;
+      region: string;
+      street_address?: string | null;
     }>;
   }>;
 };
@@ -1377,7 +1391,7 @@ export type HomeQuery = {
     };
   }>;
   chapters: Array<{
-    __typename?: 'ChapterWithEvents';
+    __typename?: 'ChapterCardsRelations';
     id: number;
     name: string;
     description: string;
@@ -1585,6 +1599,7 @@ export const ChapterDocument = gql`
       }
       venues {
         id
+        name
         region
         street_address
       }
@@ -1780,10 +1795,21 @@ export const ChaptersDocument = gql`
       description
       category
       image_url
+      city
+      region
+      country
       events {
         id
         name
         start_at
+        invite_only
+        canceled
+      }
+      venues {
+        id
+        name
+        region
+        street_address
       }
     }
   }

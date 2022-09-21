@@ -27,9 +27,9 @@ export const EVENTS = gql`
   }
 `;
 
-export const EVENT = gql`
-  query event($eventId: Int!) {
-    event(eventId: $eventId) {
+export const DASHBOARD_EVENT = gql`
+  query dashboardEvent($eventId: Int!) {
+    dashboardEvent(eventId: $eventId) {
       id
       name
       description

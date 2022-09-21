@@ -155,7 +155,7 @@ const getEventUsers = (eventId: number) => {
       eventId,
     },
     query: `query eventUsers($eventId: Int!) {
-      event(eventId: $eventId) {
+      dashboardEvent(eventId: $eventId) {
         event_users {
           rsvp {
             name

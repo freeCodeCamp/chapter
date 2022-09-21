@@ -4,7 +4,8 @@ import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo } from 'react';
 import { CHAPTER } from '../../../chapters/graphql/queries';
-import { EVENT, EVENTS } from '../graphql/queries';
+import { DASHBOARD_EVENT, EVENTS } from '../graphql/queries';
+import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import EventCancelButton from './EventCancelButton';
 import SendEmailModal from './SendEmailModal';
@@ -32,6 +33,7 @@ const Actions: React.FC<ActionsProps> = ({
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter_id } },
         { query: EVENT, variables: { eventId: event.id } },
+        { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
         { query: EVENTS },
         { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],

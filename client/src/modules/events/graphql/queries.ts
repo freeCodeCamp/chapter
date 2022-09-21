@@ -26,3 +26,69 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
     }
   }
 `;
+
+export const EVENT = gql`
+  query event($eventId: Int!) {
+    event(eventId: $eventId) {
+      id
+      name
+      description
+      url
+      invite_only
+      streaming_url
+      canceled
+      capacity
+      start_at
+      ends_at
+      image_url
+      chapter {
+        id
+        name
+      }
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+      sponsors {
+        sponsor {
+          name
+          website
+          logo_path
+          type
+          id
+        }
+      }
+      venue_type
+      venue {
+        id
+        name
+        street_address
+        city
+        postal_code
+        region
+        country
+      }
+      event_users {
+        rsvp {
+          name
+        }
+        user {
+          id
+          name
+        }
+        event_role {
+          id
+          name
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
+        subscribed
+      }
+    }
+  }
+`;

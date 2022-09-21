@@ -431,12 +431,13 @@ export type PaginatedEventsWithTotal = {
 
 export type Query = {
   __typename?: 'Query';
-  chapter?: Maybe<ChapterWithRelations>;
+  chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
   chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
+  dashboardChapter: ChapterWithRelations;
   dashboardEvent?: Maybe<EventWithRelations>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
@@ -466,6 +467,10 @@ export type QueryChapterUsersArgs = {
 
 export type QueryChapterVenuesArgs = {
   chapterId: Scalars['Int'];
+};
+
+export type QueryDashboardChapterArgs = {
+  id: Scalars['Int'];
 };
 
 export type QueryDashboardEventArgs = {
@@ -693,7 +698,7 @@ export type ChapterQueryVariables = Exact<{
 
 export type ChapterQuery = {
   __typename?: 'Query';
-  chapter?: {
+  chapter: {
     __typename?: 'ChapterWithRelations';
     id: number;
     name: string;
@@ -718,7 +723,7 @@ export type ChapterQuery = {
         tag: { __typename?: 'Tag'; id: number; name: string };
       }>;
     }>;
-  } | null;
+  };
 };
 
 export type ChapterUsersQueryVariables = Exact<{
@@ -727,7 +732,7 @@ export type ChapterUsersQueryVariables = Exact<{
 
 export type ChapterUsersQuery = {
   __typename?: 'Query';
-  chapter?: {
+  chapter: {
     __typename?: 'ChapterWithRelations';
     chapter_users: Array<{
       __typename?: 'ChapterUser';
@@ -740,7 +745,7 @@ export type ChapterUsersQuery = {
       __typename?: 'UserBan';
       user: { __typename?: 'User'; id: number };
     }>;
-  } | null;
+  };
 };
 
 export type ChapterUserQueryVariables = Exact<{
@@ -868,6 +873,40 @@ export type ChapterRolesQueryVariables = Exact<{ [key: string]: never }>;
 export type ChapterRolesQuery = {
   __typename?: 'Query';
   chapterRoles: Array<{ __typename?: 'ChapterRole'; id: number; name: string }>;
+};
+
+export type DashboardChapterQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type DashboardChapterQuery = {
+  __typename?: 'Query';
+  dashboardChapter: {
+    __typename?: 'ChapterWithRelations';
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+    city: string;
+    region: string;
+    country: string;
+    image_url: string;
+    chat_url?: string | null;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      description: string;
+      start_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+      image_url: string;
+      tags: Array<{
+        __typename?: 'EventTag';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
+    }>;
+  };
 };
 
 export type CreateEventMutationVariables = Exact<{
@@ -2348,6 +2387,89 @@ export type ChapterRolesLazyQueryHookResult = ReturnType<
 export type ChapterRolesQueryResult = Apollo.QueryResult<
   ChapterRolesQuery,
   ChapterRolesQueryVariables
+>;
+export const DashboardChapterDocument = gql`
+  query dashboardChapter($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
+      id
+      name
+      description
+      category
+      city
+      region
+      country
+      image_url
+      chat_url
+      events {
+        id
+        name
+        description
+        start_at
+        invite_only
+        canceled
+        image_url
+        tags {
+          tag {
+            id
+            name
+          }
+        }
+        invite_only
+        canceled
+      }
+    }
+  }
+`;
+
+/**
+ * __useDashboardChapterQuery__
+ *
+ * To run a query within a React component, call `useDashboardChapterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardChapterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardChapterQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDashboardChapterQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardChapterQuery,
+    DashboardChapterQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<DashboardChapterQuery, DashboardChapterQueryVariables>(
+    DashboardChapterDocument,
+    options,
+  );
+}
+export function useDashboardChapterLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardChapterQuery,
+    DashboardChapterQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardChapterQuery,
+    DashboardChapterQueryVariables
+  >(DashboardChapterDocument, options);
+}
+export type DashboardChapterQueryHookResult = ReturnType<
+  typeof useDashboardChapterQuery
+>;
+export type DashboardChapterLazyQueryHookResult = ReturnType<
+  typeof useDashboardChapterLazyQuery
+>;
+export type DashboardChapterQueryResult = Apollo.QueryResult<
+  DashboardChapterQuery,
+  DashboardChapterQueryVariables
 >;
 export const CreateEventDocument = gql`
   mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {

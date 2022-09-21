@@ -30,5 +30,9 @@ describe('all dashboards', () => {
     cy.visit(`/dashboard/chapters/${bannedChapter}/venues/${bannedVenue}/edit`);
     cy.get('[data-cy=loading-error]').should('be.visible');
     cy.contains(deniedText);
+
+    cy.visit(`/dashboard/chapters/${bannedChapter}/users`);
+    cy.get('[data-cy=loading-error]').should('be.visible');
+    cy.contains(deniedText);
   });
 });

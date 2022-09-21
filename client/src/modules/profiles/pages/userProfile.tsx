@@ -4,11 +4,14 @@ import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { useDeleteMeMutation } from 'generated/graphql';
-import { useAuth } from 'modules/auth/store';
+import { useAuthStore } from 'modules/auth/store';
 import { Users } from 'modules/dashboard/Users/graphql/queries';
 
 export const UserProfilePage = () => {
-  const { user } = useAuth();
+  const {
+    data: { user },
+    setData,
+  } = useAuthStore();
   const router = useRouter();
 
   let userId: number;
@@ -24,6 +27,7 @@ export const UserProfilePage = () => {
     const ok = await confirmDelete();
     if (!ok) return;
     deleteMe({ variables: { userId } });
+    setData({});
     router.push('/');
   };
 

@@ -1051,31 +1051,6 @@ export type EventQuery = {
   } | null;
 };
 
-export type EventVenuesQueryVariables = Exact<{
-  eventId: Scalars['Int'];
-}>;
-
-export type EventVenuesQuery = {
-  __typename?: 'Query';
-  event?: {
-    __typename?: 'EventWithRelations';
-    id: number;
-    name: string;
-    description: string;
-    url?: string | null;
-    streaming_url?: string | null;
-    capacity: number;
-    start_at: any;
-    ends_at: any;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
-    venue?: { __typename?: 'Venue'; id: number } | null;
-  } | null;
-  venues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
-};
-
 export type SponsorsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SponsorsQuery = {
@@ -1088,13 +1063,6 @@ export type SponsorsQuery = {
     logo_path: string;
     type: string;
   }>;
-};
-
-export type EventRolesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type EventRolesQuery = {
-  __typename?: 'Query';
-  eventRoles: Array<{ __typename?: 'EventRole'; id: number; name: string }>;
 };
 
 export type ChapterVenuesQueryVariables = Exact<{
@@ -1352,32 +1320,6 @@ export type PaginatedEventsWithTotalQuery = {
       };
     }>;
   };
-};
-
-export type MinEventsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type MinEventsQuery = {
-  __typename?: 'Query';
-  events: Array<{
-    __typename?: 'EventWithRelations';
-    id: number;
-    name: string;
-    description: string;
-    start_at: any;
-    invite_only: boolean;
-    canceled: boolean;
-    image_url: string;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
-    chapter: {
-      __typename?: 'Chapter';
-      id: number;
-      name: string;
-      category: string;
-    };
-  }>;
 };
 
 export type HomeQueryVariables = Exact<{
@@ -2890,82 +2832,6 @@ export type EventQueryResult = Apollo.QueryResult<
   EventQuery,
   EventQueryVariables
 >;
-export const EventVenuesDocument = gql`
-  query eventVenues($eventId: Int!) {
-    event(eventId: $eventId) {
-      id
-      name
-      description
-      url
-      streaming_url
-      capacity
-      start_at
-      ends_at
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      venue {
-        id
-      }
-    }
-    venues {
-      id
-      name
-    }
-  }
-`;
-
-/**
- * __useEventVenuesQuery__
- *
- * To run a query within a React component, call `useEventVenuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventVenuesQuery({
- *   variables: {
- *      eventId: // value for 'eventId'
- *   },
- * });
- */
-export function useEventVenuesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    EventVenuesQuery,
-    EventVenuesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<EventVenuesQuery, EventVenuesQueryVariables>(
-    EventVenuesDocument,
-    options,
-  );
-}
-export function useEventVenuesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    EventVenuesQuery,
-    EventVenuesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<EventVenuesQuery, EventVenuesQueryVariables>(
-    EventVenuesDocument,
-    options,
-  );
-}
-export type EventVenuesQueryHookResult = ReturnType<typeof useEventVenuesQuery>;
-export type EventVenuesLazyQueryHookResult = ReturnType<
-  typeof useEventVenuesLazyQuery
->;
-export type EventVenuesQueryResult = Apollo.QueryResult<
-  EventVenuesQuery,
-  EventVenuesQueryVariables
->;
 export const SponsorsDocument = gql`
   query sponsors {
     sponsors {
@@ -3021,62 +2887,6 @@ export type SponsorsLazyQueryHookResult = ReturnType<
 export type SponsorsQueryResult = Apollo.QueryResult<
   SponsorsQuery,
   SponsorsQueryVariables
->;
-export const EventRolesDocument = gql`
-  query eventRoles {
-    eventRoles {
-      id
-      name
-    }
-  }
-`;
-
-/**
- * __useEventRolesQuery__
- *
- * To run a query within a React component, call `useEventRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventRolesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useEventRolesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    EventRolesQuery,
-    EventRolesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<EventRolesQuery, EventRolesQueryVariables>(
-    EventRolesDocument,
-    options,
-  );
-}
-export function useEventRolesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    EventRolesQuery,
-    EventRolesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<EventRolesQuery, EventRolesQueryVariables>(
-    EventRolesDocument,
-    options,
-  );
-}
-export type EventRolesQueryHookResult = ReturnType<typeof useEventRolesQuery>;
-export type EventRolesLazyQueryHookResult = ReturnType<
-  typeof useEventRolesLazyQuery
->;
-export type EventRolesQueryResult = Apollo.QueryResult<
-  EventRolesQuery,
-  EventRolesQueryVariables
 >;
 export const ChapterVenuesDocument = gql`
   query chapterVenues($chapterId: Int!) {
@@ -3990,78 +3800,6 @@ export type PaginatedEventsWithTotalLazyQueryHookResult = ReturnType<
 export type PaginatedEventsWithTotalQueryResult = Apollo.QueryResult<
   PaginatedEventsWithTotalQuery,
   PaginatedEventsWithTotalQueryVariables
->;
-export const MinEventsDocument = gql`
-  query minEvents {
-    events {
-      id
-      name
-      description
-      start_at
-      invite_only
-      canceled
-      image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      chapter {
-        id
-        name
-        category
-      }
-    }
-  }
-`;
-
-/**
- * __useMinEventsQuery__
- *
- * To run a query within a React component, call `useMinEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMinEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMinEventsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMinEventsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    MinEventsQuery,
-    MinEventsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<MinEventsQuery, MinEventsQueryVariables>(
-    MinEventsDocument,
-    options,
-  );
-}
-export function useMinEventsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    MinEventsQuery,
-    MinEventsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<MinEventsQuery, MinEventsQueryVariables>(
-    MinEventsDocument,
-    options,
-  );
-}
-export type MinEventsQueryHookResult = ReturnType<typeof useMinEventsQuery>;
-export type MinEventsLazyQueryHookResult = ReturnType<
-  typeof useMinEventsLazyQuery
->;
-export type MinEventsQueryResult = Apollo.QueryResult<
-  MinEventsQuery,
-  MinEventsQueryVariables
 >;
 export const HomeDocument = gql`
   query home($limit: Int, $offset: Int) {

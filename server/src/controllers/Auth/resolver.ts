@@ -12,7 +12,10 @@ export class AuthResolver {
   }
 
   @Mutation(() => User)
-  async deleteMe(@Arg('id', () => Int) id: number): Promise<User> {
-    return await prisma.users.delete({ where: { id } });
+  async deleteMe(
+    @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<User | undefined> {
+    if (id === ctx.user.id) return await prisma.users.delete({ where: { id } });
   }
 }

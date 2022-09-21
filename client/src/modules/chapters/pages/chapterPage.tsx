@@ -17,6 +17,7 @@ import React, { useEffect } from 'react';
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
 import { useAuth } from '../../auth/store';
+import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
   useChapterLazyQuery,
@@ -100,18 +101,10 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  if (loading || !isReady) {
-    return <Spinner />;
-  }
-
-  if (error || !data?.chapter) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.chapter) return <div> Chapter not found</div>;
 
   return (
     <VStack>

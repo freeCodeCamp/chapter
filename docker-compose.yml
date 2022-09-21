@@ -3,7 +3,6 @@ services:
   app:
     restart: unless-stopped
     env_file: .env
-    platform: "linux/amd64"
     build:
       context: .
       dockerfile: server.Dockerfile

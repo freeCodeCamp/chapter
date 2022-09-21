@@ -1,16 +1,44 @@
-import { Heading, Link, Box, HStack } from '@chakra-ui/layout';
+import { Heading, Link, Box, HStack, Text } from '@chakra-ui/layout';
+import { useConfirmDelete } from 'chakra-confirm';
+
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import { Button } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useChapterLazyQuery } from '../../../../generated/graphql';
+import {
+  useChapterLazyQuery,
+  useDeleteChapterMutation,
+} from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
+import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { VENUES } from '../../Venues/graphql/queries';
+import { EVENTS } from '../../Events/graphql/queries';
+import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('id');
+
+  const confirmDelete = useConfirmDelete();
+
+  const [deleteChapter] = useDeleteChapterMutation({
+    refetchQueries: [
+      { query: CHAPTERS },
+      { query: EVENTS },
+      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 5 },
+      },
+      { query: VENUES },
+    ],
+  });
 
   const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
@@ -20,42 +48,68 @@ export const ChapterPage: NextPage = () => {
     if (isReady) getChapter();
   }, [isReady]);
 
-  if (loading || !isReady || error || !data?.chapter) {
-    return (
-      <Layout>
-        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const router = useRouter();
+
+  const clickDelete = async () => {
+    const ok = await confirmDelete({ doubleConfirm: true });
+    if (!ok) return;
+    deleteChapter({ variables: { chapterId } });
+    router.push('/dashboard/chapters');
+  };
+
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
+
+  // TODO: render something nicer if this happens. A 404 page?
+  if (!data.chapter) return <div> Chapter not found</div>;
 
   return (
     <Layout>
       <Card className={styles.card}>
         <ProgressCardContent loading={loading}>
-          <Heading as="h5" fontWeight="normal">
+          <Heading
+            fontSize={'md'}
+            as="h1"
+            fontWeight="semibold"
+            marginBlock={'2'}
+          >
             {data.chapter.name}
           </Heading>
           <Box>
-            <Link href={`${chapterId}/users`} target="_blank">
+            <Link
+              href={`${chapterId}/users`}
+              target="_blank"
+              paddingBlock={'2'}
+            >
               Chapter Users
             </Link>
           </Box>
-          <HStack>
-            <LinkButton size="sm" href={`${chapterId}/new-event`}>
+          <HStack mt={'2'}>
+            <LinkButton
+              colorScheme={'blue'}
+              size="sm"
+              href={`${chapterId}/new-event`}
+            >
               Add new event
             </LinkButton>
             <LinkButton
+              colorScheme={'blue'}
               data-cy="create-venue"
               size="sm"
               href={`${chapterId}/new-venue`}
             >
               Add new venue
             </LinkButton>
+            <Button colorScheme="red" size={'sm'} onClick={clickDelete}>
+              Delete Chapter
+            </Button>
           </HStack>
         </ProgressCardContent>
       </Card>
-      <h3>Placeholder for events...</h3>
+      <Text fontWeight={400} margin={2}>
+        PlaceHolder for Events...
+      </Text>
     </Layout>
   );
 };

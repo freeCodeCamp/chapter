@@ -89,50 +89,66 @@ describe('venues dashboard', () => {
     const venueCreateVariables = {
       chapterId: 1,
     };
-    const venueUpdateDeleteVariables = {
+    const venueUpdateVariables = {
       chapterId: 1,
       venueId: 1,
     };
 
-    // logged out user
-    cy.logout();
+    // Create new venue, which is not used in any event
+    cy.createVenue(venueCreateVariables, venueData, { withAuth: true }).then(
+      (response) => {
+        const venueDeleteVariables = {
+          chapterId: 1,
+          venueId: response.body.data.createVenue.id,
+        };
 
-    cy.createVenue(venueCreateVariables, venueData, { withAuth: false }).then(
-      expectToBeRejected,
+        // logged out user
+        cy.logout();
+
+        cy.createVenue(venueCreateVariables, venueData, {
+          withAuth: false,
+        }).then(expectToBeRejected);
+        cy.updateVenue(venueUpdateVariables, venueData, {
+          withAuth: false,
+        }).then(expectToBeRejected);
+        cy.deleteVenue(venueDeleteVariables, { withAuth: false }).then(
+          expectToBeRejected,
+        );
+
+        // newly registered user (without a chapter_users record)
+        cy.login('test@user.org');
+
+        cy.createVenue(venueCreateVariables, venueData).then(
+          expectToBeRejected,
+        );
+        cy.updateVenue(venueUpdateVariables, venueData).then(
+          expectToBeRejected,
+        );
+        cy.deleteVenue(venueDeleteVariables).then(expectToBeRejected);
+
+        // banned user
+        cy.login('banned@chapter.admin');
+
+        cy.createVenue(venueCreateVariables, venueData).then(
+          expectToBeRejected,
+        );
+        cy.updateVenue(venueUpdateVariables, venueData).then(
+          expectToBeRejected,
+        );
+        cy.deleteVenue(venueDeleteVariables).then(expectToBeRejected);
+
+        // Admin of different chapter
+        cy.login('admin@of.chapter.two');
+
+        cy.createVenue(venueCreateVariables, venueData).then(
+          expectToBeRejected,
+        );
+        cy.updateVenue(venueUpdateVariables, venueData).then(
+          expectToBeRejected,
+        );
+        cy.deleteVenue(venueDeleteVariables).then(expectToBeRejected);
+      },
     );
-    cy.updateVenue(venueUpdateDeleteVariables, venueData, {
-      withAuth: false,
-    }).then(expectToBeRejected);
-    cy.deleteVenue(venueUpdateDeleteVariables, { withAuth: false }).then(
-      expectToBeRejected,
-    );
-
-    // newly registered user (without a chapter_users record)
-    cy.login('test@user.org');
-
-    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
-    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
-      expectToBeRejected,
-    );
-    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
-
-    // banned user
-    cy.login('banned@chapter.admin');
-
-    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
-    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
-      expectToBeRejected,
-    );
-    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
-
-    // Admin of different chapter
-    cy.login('admin@of.chapter.two');
-
-    cy.createVenue(venueCreateVariables, venueData).then(expectToBeRejected);
-    cy.updateVenue(venueUpdateDeleteVariables, venueData).then(
-      expectToBeRejected,
-    );
-    cy.deleteVenue(venueUpdateDeleteVariables).then(expectToBeRejected);
   });
 
   describe('adding venue with chapter selected in form', () => {

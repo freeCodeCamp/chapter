@@ -4555,7 +4555,7 @@
             "description": null,
             "args": [
               {
-                "name": "id",
+                "name": "venueId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

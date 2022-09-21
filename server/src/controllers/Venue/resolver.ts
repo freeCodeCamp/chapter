@@ -44,7 +44,7 @@ export class VenueResolver {
 
   @Authorized(Permission.VenueEdit)
   @Query(() => Venue, { nullable: true })
-  venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
+  venue(@Arg('venueId', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({
       where: { id },
       include: venueIncludes,

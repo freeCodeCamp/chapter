@@ -501,7 +501,7 @@ export type QuerySponsorArgs = {
 };
 
 export type QueryVenueArgs = {
-  id: Scalars['Int'];
+  venueId: Scalars['Int'];
 };
 
 export type Rsvp = {
@@ -1265,7 +1265,7 @@ export type VenuesQuery = {
 };
 
 export type VenueQueryVariables = Exact<{
-  id: Scalars['Int'];
+  venueId: Scalars['Int'];
 }>;
 
 export type VenueQuery = {
@@ -3657,8 +3657,8 @@ export type VenuesQueryResult = Apollo.QueryResult<
   VenuesQueryVariables
 >;
 export const VenueDocument = gql`
-  query venue($id: Int!) {
-    venue(id: $id) {
+  query venue($venueId: Int!) {
+    venue(venueId: $venueId) {
       id
       name
       street_address
@@ -3694,7 +3694,7 @@ export const VenueDocument = gql`
  * @example
  * const { data, loading, error } = useVenueQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      venueId: // value for 'venueId'
  *   },
  * });
  */

@@ -60,7 +60,9 @@ export const UserProfilePage = () => {
             ''
           )}
 
-          <Button onClick={clickDelete}>Delete My Data</Button>
+          <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
+            Delete My Data
+          </Button>
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

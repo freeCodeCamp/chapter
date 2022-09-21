@@ -136,6 +136,9 @@ export const Header: React.FC = () => {
                       <NextLink passHref href="/dashboard/chapters">
                         <MenuItem as="a">Dashboard</MenuItem>
                       </NextLink>
+                      <NextLink passHref href="/profile">
+                        <MenuItem as="a">Profile</MenuItem>
+                      </NextLink>
 
                       {canAuthenticateWithGoogle && (
                         <MenuItem

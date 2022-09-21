@@ -14,11 +14,6 @@ export const UserProfilePage = () => {
   } = useAuthStore();
   const router = useRouter();
 
-  let userId: number;
-  if (user) {
-    userId = user.id;
-  }
-
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
   const [deleteMe] = useDeleteMeMutation({
     refetchQueries: [{ query: Users }],
@@ -26,7 +21,7 @@ export const UserProfilePage = () => {
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
-    deleteMe({ variables: { userId } });
+    deleteMe();
     setData({});
     router.push('/');
   };

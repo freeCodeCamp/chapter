@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Ctx, Int, Arg } from 'type-graphql';
+import { Resolver, Query, Mutation, Ctx } from 'type-graphql';
 import { prisma } from '../../prisma';
 
 import { ResolverCtx } from '../../common-types/gql';
@@ -12,9 +12,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => User)
-  async deleteMe(
-    @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<User | undefined> {
+  async deleteMe(@Ctx() ctx: Required<ResolverCtx>): Promise<User | undefined> {
     return await prisma.users.delete({ where: { id: ctx.user.id } });
   }
 }

@@ -348,10 +348,6 @@ export type MutationDeleteEventArgs = {
   id: Scalars['Int'];
 };
 
-export type MutationDeleteMeArgs = {
-  id: Scalars['Int'];
-};
-
 export type MutationDeleteRsvpArgs = {
   eventId: Scalars['Int'];
   userId: Scalars['Int'];
@@ -611,9 +607,7 @@ export enum VenueType {
   PhysicalAndOnline = 'PhysicalAndOnline',
 }
 
-export type DeleteMeMutationVariables = Exact<{
-  userId: Scalars['Int'];
-}>;
+export type DeleteMeMutationVariables = Exact<{ [key: string]: never }>;
 
 export type DeleteMeMutation = {
   __typename?: 'Mutation';
@@ -1409,8 +1403,8 @@ export type UnsubscribeMutation = {
 };
 
 export const DeleteMeDocument = gql`
-  mutation deleteMe($userId: Int!) {
-    deleteMe(id: $userId) {
+  mutation deleteMe {
+    deleteMe {
       id
     }
   }
@@ -1433,7 +1427,6 @@ export type DeleteMeMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteMeMutation, { data, loading, error }] = useDeleteMeMutation({
  *   variables: {
- *      userId: // value for 'userId'
  *   },
  * });
  */

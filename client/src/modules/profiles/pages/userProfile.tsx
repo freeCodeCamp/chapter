@@ -15,9 +15,7 @@ export const UserProfilePage = () => {
   const router = useRouter();
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
-  const [deleteMe] = useDeleteMeMutation({
-    refetchQueries: [{ query: Users }],
-  });
+  const [deleteMe] = useDeleteMeMutation();
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
@@ -36,23 +34,19 @@ export const UserProfilePage = () => {
           <Heading as="h2" size={'lg'}>
             Welcome {user.name}
           </Heading>
-          {user.admined_chapters.length > 0 ? (
+          {user.admined_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">
                 You are administering these Chapters
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
                 {user.admined_chapters.map(({ name, id }) => (
-                  <>
-                    <Link key={id}>
-                      <Text>{name}</Text>
-                    </Link>
-                  </>
+                  <Link key={id}>
+                    <Text>{name}</Text>
+                  </Link>
                 ))}
               </Flex>
             </>
-          ) : (
-            ''
           )}
 
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>

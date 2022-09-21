@@ -181,16 +181,20 @@ Cypress.Commands.add('getEventUsers', getEventUsers);
  * Wait until emails are received by mailhog
  * @param alias Name of the alias to reference emails by
  */
-const waitUntilMail = (alias?: string) => {
-  cy.waitUntil(() =>
+
+function waitUntilMail(args?: {
+  alias?: string;
+  expectedNumberOfEmails: number;
+}) {
+  const { alias, expectedNumberOfEmails = 1 } = args ?? {};
+  const checkMail = (mails: mailhog.Item[]) =>
+    mails?.length >= expectedNumberOfEmails ? mails : false;
+  return cy.waitUntil(() =>
     alias
-      ? cy
-          .mhGetAllMails()
-          .as(alias)
-          .then((mails) => mails?.length > 0)
-      : cy.mhGetAllMails().then((mails) => mails?.length > 0),
+      ? cy.mhGetAllMails().as(alias).then(checkMail)
+      : cy.mhGetAllMails().then(checkMail),
   );
-};
+}
 
 Cypress.Commands.add('waitUntilMail', waitUntilMail);
 

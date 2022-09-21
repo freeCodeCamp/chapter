@@ -61,16 +61,17 @@ describe('chapter dashboard', () => {
       cy.contains(venueTitle);
     });
 
-    // check that the subscribed users have been emailed
-    cy.waitUntilMail('allMail');
-
     // TODO: select chapter during event creation and use that here (much like @venueTitle
     // ) i.e. remove the hardcoding.
     cy.getChapterMembers(1).then((members) => {
       const subscriberEmails = members
         .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
-      cy.get('@allMail').should('have.length', subscriberEmails.length);
+
+      // check that the subscribed users have been emailed
+      cy.waitUntilMail({
+        expectedNumberOfEmails: subscriberEmails.length,
+      });
       subscriberEmails.forEach((subscriberEmail) => {
         cy.mhGetMailsByRecipient(subscriberEmail).as('currentRecipient');
         cy.get('@currentRecipient').should('have.length', 1);

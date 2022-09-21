@@ -81,12 +81,10 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Send Email' }).click();
     cy.contains('Email sent');
 
-    cy.waitUntilMail('allMail');
-
     const recipientEmails = users
       .filter(filterCallback)
       .map(({ user: { email } }) => email);
-    cy.get('@allMail').should('have.length', recipientEmails.length);
+    cy.waitUntilMail().should('have.length', recipientEmails.length);
     recipientEmails.forEach((recipientEmail) => {
       cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
       cy.get('@currentRecipient').should('have.length', 1);
@@ -115,8 +113,7 @@ describe('spec needing owner', () => {
       's',
     );
 
-    cy.waitUntilMail('email');
-    cy.get('@email')
+    cy.waitUntilMail()
       .mhFirst()
       .then((mail) => {
         const MIME = mail.MIME as {
@@ -172,9 +169,7 @@ describe('spec needing owner', () => {
 
       cy.location('pathname').should('match', /^\/dashboard\/events$/);
 
-      cy.waitUntilMail('allMail');
-
-      cy.get('@allMail').mhFirst().as('venueMail');
+      cy.waitUntilMail().mhFirst().as('venueMail');
 
       cy.get('@newVenueTitle').then((venueTitle) => {
         cy.get('@venueMail')
@@ -281,8 +276,7 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Cancel' }).click();
     cy.findByRole('alertdialog').findByText('Confirm').click();
 
-    cy.waitUntilMail('allMail');
-    cy.get('@allMail').mhFirst().as('emails');
+    cy.waitUntilMail().mhFirst().as('emails');
 
     cy.url()
       .then((url) => parseInt(url.match(/\d+$/)[0], 10))

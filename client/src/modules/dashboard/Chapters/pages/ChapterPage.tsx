@@ -1,11 +1,20 @@
-import { Heading, Link, Box, HStack, Text } from '@chakra-ui/layout';
+import {
+  Heading,
+  Link,
+  Box,
+  HStack,
+  Text,
+  Grid,
+  GridItem,
+  Flex,
+} from '@chakra-ui/layout';
 import { useConfirmDelete } from 'chakra-confirm';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { Button } from '@chakra-ui/react';
+import { Button, Tag } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
@@ -108,7 +117,49 @@ export const ChapterPage: NextPage = () => {
         </ProgressCardContent>
       </Card>
       <Text fontWeight={400} margin={2}>
-        PlaceHolder for Events...
+        <Heading as="h2" marginBlock={3}>
+          Organized Events
+        </Heading>
+        <Grid gap={'2em'}>
+          {data.chapter.events.map(({ name, canceled, invite_only, id }) => (
+            <GridItem key={id}>
+              <Flex justifyContent={'space-between'}>
+                <LinkButton href={`/events/${id}`}>{name}</LinkButton>
+                <Flex>
+                  {canceled && (
+                    <Tag
+                      borderRadius="lg"
+                      marginRight={'3'}
+                      paddingInline="[1 , 2]"
+                      paddingBlock="[.5, 1]"
+                      fontSize={['small', 'md']}
+                      maxWidth={'8em'}
+                      mt="1"
+                      maxH={'2em'}
+                      colorScheme={'red'}
+                    >
+                      Canceled
+                    </Tag>
+                  )}
+                  {invite_only && (
+                    <Tag
+                      borderRadius="lg"
+                      mt="1"
+                      paddingInline="[1 , 2]"
+                      paddingBlock="[.5, 1]"
+                      colorScheme={'blue'}
+                      fontSize={['small', 'md']}
+                      maxWidth={'8em'}
+                      maxH={'2em'}
+                    >
+                      Invite only
+                    </Tag>
+                  )}
+                </Flex>
+              </Flex>
+            </GridItem>
+          ))}
+        </Grid>
       </Text>
     </Layout>
   );

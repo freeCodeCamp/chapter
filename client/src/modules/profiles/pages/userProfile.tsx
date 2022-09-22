@@ -36,7 +36,7 @@ export const UserProfilePage = () => {
           {user.admined_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">
-                You are administering these Chapters
+                You are an administrator for these Chapters:
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
                 {user.admined_chapters.map(({ name, id }) => (

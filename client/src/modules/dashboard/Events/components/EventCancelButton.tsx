@@ -43,7 +43,6 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
     <Button
       {...rest}
       width={isFullWidth ? 'full' : 'auto'}
-      colorScheme="orange"
       onClick={clickCancel}
       isDisabled={isDisabled}
     >

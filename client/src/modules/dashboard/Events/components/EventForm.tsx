@@ -176,12 +176,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       onSubmit={handleSubmit(onSubmit)}
       className={styles.form}
     >
-      <Flex
-        flexDirection={'column'}
-        align="flex-start"
-        gap={4}
-        marginBlock={'1em'}
-      >
+      <Flex flexDirection={'column'} align="flex-start" gap={4}>
         {!isChaptersDropdownNeeded || data ? (
           loadingChapter ? (
             <Text>Loading Chapter</Text>

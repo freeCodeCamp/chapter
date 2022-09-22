@@ -115,7 +115,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       onSubmit={handleSubmit(onSubmit)}
       className={styles.form}
     >
-      <VStack>
+      <VStack gap={4}>
         {fields.map(({ key, label, placeholder, required, type }) =>
           type == 'textarea' ? (
             <TextArea

@@ -29,8 +29,8 @@ export default class MailerService {
   emailHost?: string;
   sendgridKey: string;
   sendgridEmail: string;
-  usesSendgrid = false;
   iCalEvent?: string;
+  private _sendEmail: () => Promise<SentMessageInfo>;
 
   constructor(data: MailerData) {
     this.emailList = data.emailList;
@@ -48,11 +48,12 @@ export default class MailerService {
 
     if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
       this.createTransporter();
+      this._sendEmail = this.sendViaNodemailer;
     } else {
       this.sendgridKey = process.env.SENDGRID_KEY;
       this.sendgridEmail = process.env.SENDGRID_EMAIL;
-      this.usesSendgrid = true;
       sendgrid.setApiKey(this.sendgridKey);
+      this._sendEmail = this.sendViaSendgrid;
     }
   }
 
@@ -83,11 +84,7 @@ export default class MailerService {
 
   public async sendEmail(): Promise<SentMessageInfo> {
     try {
-      if (this.usesSendgrid) {
-        this.sendViaSendgrid();
-      } else {
-        this.sendViaNodemailer();
-      }
+      return await this._sendEmail();
     } catch (e) {
       // We need to inspect, since mail error objects are often quite deep.
       console.log('Email failed to send. ', inspect(e, false, null));

@@ -116,50 +116,49 @@ export const ChapterPage: NextPage = () => {
           </HStack>
         </ProgressCardContent>
       </Card>
-      <Text fontWeight={400} margin={2}>
-        <Heading as="h2" marginBlock={3} fontSize={'lg'}>
-          Organized Events
-        </Heading>
-        <Grid gap={'2em'}>
-          {data.chapter.events.map(({ name, canceled, invite_only, id }) => (
-            <GridItem key={id}>
-              <Flex justifyContent={'space-between'}>
-                <LinkButton href={`/events/${id}`}>{name}</LinkButton>
-                <Flex>
-                  {canceled && (
-                    <Tag
-                      borderRadius="lg"
-                      marginRight={'3'}
-                      paddingInline="[1 , 2]"
-                      paddingBlock="[.5, 1]"
-                      fontSize={['small', 'md']}
-                      maxWidth={'8em'}
-                      mt="1"
-                      maxH={'2em'}
-                      colorScheme={'red'}
-                    >
-                      Canceled
-                    </Tag>
-                  )}
-                  {invite_only && (
-                    <Tag
-                      borderRadius="lg"
-                      mt="1"
-                      paddingInline="[1 , 2]"
-                      paddingBlock="[.5, 1]"
-                      colorScheme={'blue'}
-                      fontSize={['small', 'md']}
-                      maxWidth={'8em'}
-                      maxH={'2em'}
-                    >
-                      Invite only
-                    </Tag>
-                  )}
-                </Flex>
+      <Heading as="h2" marginBlock={3} fontSize={'lg'}>
+        Organized Events
+      </Heading>
+      <Grid gap={'2em'}>
+        {data.chapter.events.map(({ name, canceled, invite_only, id }) => (
+          <GridItem key={id}>
+            <Flex justifyContent={'space-between'}>
+              <LinkButton href={`/events/${id}`}>{name}</LinkButton>
+              <Flex>
+                {canceled && (
+                  <Tag
+                    borderRadius="lg"
+                    marginRight={'3'}
+                    paddingInline="[1 , 2]"
+                    paddingBlock="[.5, 1]"
+                    fontSize={['small', 'md']}
+                    maxWidth={'8em'}
+                    mt="1"
+                    maxH={'2em'}
+                    colorScheme={'red'}
+                  >
+                    Canceled
+                  </Tag>
+                )}
+                {invite_only && (
+                  <Tag
+                    borderRadius="lg"
+                    mt="1"
+                    paddingInline="[1 , 2]"
+                    paddingBlock="[.5, 1]"
+                    colorScheme={'blue'}
+                    fontSize={['small', 'md']}
+                    maxWidth={'8em'}
+                    maxH={'2em'}
+                  >
+                    Invite only
+                  </Tag>
+                )}
               </Flex>
-            </GridItem>
-          ))}
-        </Grid>
+            </Flex>
+          </GridItem>
+        ))}
+      </Grid>
       </Text>
     </Layout>
   );

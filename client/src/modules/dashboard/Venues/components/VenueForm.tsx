@@ -48,7 +48,7 @@ const fields: Fields[] = [
     key: 'street_address',
     label: 'Street address',
     placeholder: 'Street address',
-    isRequired: false,
+    isRequired: true,
     type: 'text',
   },
   {
@@ -155,7 +155,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         onSubmit={handleSubmit(onSubmit)}
         className={styles.form}
       >
-        <VStack gap={'1em'}>
+        <VStack>
           {!isChaptersDropdownNeeded ? (
             loadingChapter ? (
               <Text>Loading Chapter</Text>

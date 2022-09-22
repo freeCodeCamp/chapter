@@ -343,7 +343,7 @@
       <table name="sessions" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="true" defaultValue="nextval('sessions_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+            <parent column="id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="users"/>
          </column>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="sessions_pkey" unique="true">
@@ -387,7 +387,7 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+            <parent column="id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="users"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="user_bans_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
@@ -405,8 +405,8 @@
          <column autoUpdated="true" defaultValue="nextval('users_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
             <child column="user_id" foreignKey="chapter_users_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapter_users"/>
             <child column="user_id" foreignKey="event_users_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_users"/>
-            <child column="user_id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="sessions"/>
-            <child column="user_id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_bans"/>
+            <child column="user_id" foreignKey="sessions_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="sessions"/>
+            <child column="user_id" foreignKey="user_bans_user_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="user_bans"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="email" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>

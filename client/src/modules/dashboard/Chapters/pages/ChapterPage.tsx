@@ -117,7 +117,7 @@ export const ChapterPage: NextPage = () => {
         </ProgressCardContent>
       </Card>
       <Text fontWeight={400} margin={2}>
-        <Heading as="h2" marginBlock={3}>
+        <Heading as="h2" marginBlock={3} fontSize={'lg'}>
           Organized Events
         </Heading>
         <Grid gap={'2em'}>

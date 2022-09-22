@@ -5475,7 +5475,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Chapter",
+                "name": "ChapterWithEvents",
                 "ofType": null
               }
             },

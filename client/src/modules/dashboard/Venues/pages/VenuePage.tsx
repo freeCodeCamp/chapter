@@ -1,6 +1,8 @@
-import { Heading, Text } from '@chakra-ui/layout';
+import { Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect } from 'react';
+import { LinkButton } from 'chakra-next-link';
+import { Tag } from '@chakra-ui/react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useVenueLazyQuery } from '../../../../generated/graphql';
@@ -32,7 +34,7 @@ export const VenuePage: NextPage = () => {
     <Layout dataCy="view-venue-page">
       <Card className={styles.card}>
         <ProgressCardContent>
-          <Heading as="h2" fontWeight="normal" mb="2">
+          <Heading as="h1" fontWeight="normal" mb="2">
             {data.venue.name}
           </Heading>
 
@@ -40,7 +42,51 @@ export const VenuePage: NextPage = () => {
           <Text>{data.venue.chapter.name}</Text>
         </ProgressCardContent>
       </Card>
-      <h3>Placeholder for events...</h3>
+      <Heading as={'h2'} marginBlock={'1em'} fontSize={'lg'}>
+        Hosted Events
+      </Heading>
+      <Grid gap={'2em'}>
+        {data.venue.chapter.events.map(
+          ({ name, canceled, invite_only, id }) => (
+            <GridItem key={id}>
+              <Flex justifyContent={'space-between'}>
+                <LinkButton href={`/events/${id}`}>{name}</LinkButton>
+                <Flex>
+                  {canceled && (
+                    <Tag
+                      borderRadius="lg"
+                      marginRight={'3'}
+                      paddingInline="[1 , 2]"
+                      paddingBlock="[.5, 1]"
+                      fontSize={['small', 'md']}
+                      maxWidth={'8em'}
+                      mt="1"
+                      maxH={'2em'}
+                      colorScheme={'red'}
+                    >
+                      Canceled
+                    </Tag>
+                  )}
+                  {invite_only && (
+                    <Tag
+                      borderRadius="lg"
+                      mt="1"
+                      paddingInline="[1 , 2]"
+                      paddingBlock="[.5, 1]"
+                      colorScheme={'blue'}
+                      fontSize={['small', 'md']}
+                      maxWidth={'8em'}
+                      maxH={'2em'}
+                    >
+                      Invite only
+                    </Tag>
+                  )}
+                </Flex>
+              </Flex>
+            </GridItem>
+          ),
+        )}
+      </Grid>
     </Layout>
   );
 };

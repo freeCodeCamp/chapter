@@ -11,7 +11,9 @@ export class VenueResolver {
   @Query(() => [Venue])
   venues(): Promise<Venue[]> {
     return prisma.venues.findMany({
-      include: { chapter: true },
+      include: {
+        chapter: { include: { events: { include: { tags: true } } } },
+      },
       orderBy: { name: 'asc' },
     });
   }
@@ -30,7 +32,9 @@ export class VenueResolver {
   venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: { chapter: true },
+      include: {
+        chapter: { include: { events: { include: { tags: true } } } },
+      },
     });
   }
 
@@ -46,7 +50,9 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
-      include: { chapter: true },
+      include: {
+        chapter: { include: { events: { include: { tags: true } } } },
+      },
     });
   }
 

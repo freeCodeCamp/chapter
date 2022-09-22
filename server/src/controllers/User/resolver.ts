@@ -1,8 +1,9 @@
-import { FieldResolver, Resolver, Root } from 'type-graphql';
-import { Chapter, UserWithInstanceRole } from '../../graphql-types';
+import { FieldResolver, Resolver, Mutation, Ctx, Root } from 'type-graphql';
+import { User, Chapter, UserWithInstanceRole } from '../../graphql-types';
 import { prisma } from '../../prisma';
 
 import { Permission } from '../../../../common/permissions';
+import { ResolverCtx } from '../../common-types/gql';
 
 @Resolver(() => UserWithInstanceRole)
 export class UserWithInstanceRoleResolver {
@@ -38,5 +39,10 @@ export class UserWithInstanceRoleResolver {
         },
       },
     });
+  }
+
+  @Mutation(() => User)
+  async deleteMe(@Ctx() ctx: Required<ResolverCtx>): Promise<User | undefined> {
+    return await prisma.users.delete({ where: { id: ctx.user.id } });
   }
 }

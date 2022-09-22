@@ -3,7 +3,6 @@ import {
   Link,
   Box,
   HStack,
-  Text,
   Grid,
   GridItem,
   Flex,

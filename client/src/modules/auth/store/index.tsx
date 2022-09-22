@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { useMeQuery, MeQuery } from '../../../generated/graphql';
+import { MeQuery, useMeQuery } from '../../../generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 interface AuthContextType {
@@ -10,10 +10,13 @@ interface AuthContextType {
 export const AuthContext = createContext<{
   data: AuthContextType;
   setData: React.Dispatch<React.SetStateAction<AuthContextType>>;
+  refetchData: () => void;
 }>({
   data: {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setData: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  refetchData: () => {},
 });
 
 export const useAuthStore = () => useContext(AuthContext);
@@ -26,7 +29,14 @@ export const AuthContextProvider = ({
 }) => {
   const [data, setData] = useState<AuthContextType>({});
   const [loginAttempted, setLoginAttempted] = useState(false);
-  const { loading, error, data: meData, refetch } = useMeQuery();
+  const {
+    loading,
+    error,
+    data: meData,
+    refetch,
+  } = useMeQuery({
+    nextFetchPolicy: 'network-only',
+  });
   const { isAuthenticated, createSession } = useSession();
 
   const tryToCreateSession = async () => {
@@ -50,7 +60,13 @@ export const AuthContextProvider = ({
   }, [loading, error, meData, loginAttempted, isAuthenticated]);
 
   return (
-    <AuthContext.Provider value={{ data, setData }}>
+    <AuthContext.Provider
+      value={{
+        data,
+        setData,
+        refetchData: refetch,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

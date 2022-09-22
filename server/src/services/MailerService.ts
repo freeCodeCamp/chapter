@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import sendgrid from '@sendgrid/mail';
+import sendgrid, { MailDataRequired } from '@sendgrid/mail';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
@@ -95,8 +95,17 @@ export default class MailerService {
   }
 
   private async sendViaSendgrid() {
+    const attachment = this.iCalEvent
+      ? {
+          filename: 'calendar.ics',
+          name: 'calendar.ics',
+          content: this.iCalEvent,
+          disposition: 'attachment',
+          type: 'text/calendar; method=REQUEST',
+        }
+      : null;
     for (const email of this.emailList) {
-      const opts = {
+      const baseOpts: MailDataRequired = {
         to: email,
         from: this.sendgridEmail,
         subject: this.subject,
@@ -114,16 +123,11 @@ export default class MailerService {
           },
         },
       };
-      if (this.iCalEvent) {
-        const attachment = {
-          filename: 'calendar.ics',
-          name: 'calendar.ics',
-          content: this.iCalEvent,
-          disposition: 'attachment',
-          type: 'text/calendar; method=REQUEST',
-        };
-        Object.assign(opts, { attachments: [attachment] });
-      }
+
+      const opts: MailDataRequired = {
+        ...baseOpts,
+        ...(attachment && { attachments: [attachment] }),
+      };
       await sendgrid.send(opts);
     }
   }

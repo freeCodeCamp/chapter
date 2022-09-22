@@ -159,7 +159,6 @@ export const ChapterPage: NextPage = () => {
           </GridItem>
         ))}
       </Grid>
-      </Text>
     </Layout>
   );
 };

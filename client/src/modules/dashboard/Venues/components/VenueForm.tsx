@@ -155,7 +155,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         onSubmit={handleSubmit(onSubmit)}
         className={styles.form}
       >
-        <VStack gap={'1em'}>
+        <VStack gap={4}>
           {!isChaptersDropdownNeeded ? (
             loadingChapter ? (
               <Text>Loading Chapter</Text>

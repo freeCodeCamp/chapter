@@ -3,7 +3,7 @@ generator client {
   // since we support Docker as well as 'manual' we need to add additional
   // targets
   // TODO: specify single target via env()
-  binaryTargets = ["native", "linux-musl"]
+  binaryTargets = ["native", "linux-musl", "debian-openssl-1.1.x"]
 }
 
 datasource db {

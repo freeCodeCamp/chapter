@@ -1,5 +1,7 @@
-FROM node:16-alpine as development
+FROM node:16 as development
 WORKDIR /usr/chapter/
+
+RUN apt-get update && apt-get install netcat -y
 
 FROM development as build
 

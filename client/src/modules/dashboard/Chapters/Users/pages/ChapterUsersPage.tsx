@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
@@ -127,9 +128,8 @@ export const ChapterUsersPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  // TODO: render something nicer if this happens. A 404 page?
-
-  if (!data.chapter) return <div> Chapter not found</div>;
+  if (!data.chapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
     <Layout>

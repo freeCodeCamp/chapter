@@ -3,6 +3,7 @@ import { useConfirmDelete } from 'chakra-confirm';
 
 import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { Button } from '@chakra-ui/react';
@@ -60,9 +61,8 @@ export const ChapterPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-
-  // TODO: render something nicer if this happens. A 404 page?
-  if (!data.chapter) return <div> Chapter not found</div>;
+  if (!data.chapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
     <Layout>

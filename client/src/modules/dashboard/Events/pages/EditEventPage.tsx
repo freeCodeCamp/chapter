@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
@@ -89,8 +90,8 @@ export const EditEventPage: NextPage = () => {
 
   const isLoading = loading || !isReady || !data;
   if (isLoading) return <DashboardLoading loading={loading} error={error} />;
-  // TODO: render something nicer if this happens. A 404 page?
-  if (!data.event) return <div> Event not found</div>;
+  if (!data.event)
+    return <NextError statusCode={404} title="Event not found" />;
 
   const { sponsors, ...rest } = data.event;
   const sponsorData = sponsors?.map((s) => {

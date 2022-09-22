@@ -15,6 +15,7 @@ import {
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
@@ -76,8 +77,8 @@ export const EventPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
 
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
-  // TODO: render something nicer if this happens. A 404 page?
-  if (!data.event) return <div> Event not found</div>;
+  if (!data.event)
+    return <NextError statusCode={404} title="Event not found" />;
 
   const chapterId = data.event.chapter.id;
 

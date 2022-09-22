@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useParam } from '../../../../hooks/useParam';
@@ -46,6 +47,8 @@ const EditSponsorPage: NextPage = () => {
   const isLoading = sponsorLoading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
+  if (!data.sponsor)
+    return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
     <Layout>

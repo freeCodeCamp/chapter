@@ -10,7 +10,9 @@ import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';
 export class SponsorResolver {
   @Query(() => [Sponsor])
   sponsors(): Promise<Sponsor[]> {
-    return prisma.sponsors.findMany();
+    return prisma.sponsors.findMany({
+      include: { events: { include: { tags: true } } },
+    });
   }
   @Query(() => Sponsor, { nullable: true })
   sponsor(@Arg('id', () => Int) id: number): Promise<Sponsor | null> {

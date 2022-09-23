@@ -4,7 +4,10 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
 import { TextArea } from '../../../components/Form/TextArea';
 import { Form } from '../../../components/Form/Form';
-import { UpdateMeMutationVariables } from '../../../generated/graphql';
+import {
+  UpdateMeMutationVariables,
+  UpdateUserInputs,
+} from '../../../generated/graphql';
 
 interface ProfileFormProps {
   loading: boolean;
@@ -15,7 +18,7 @@ interface ProfileFormProps {
 }
 
 type Fields = {
-  key: keyof UpdateMeMutationVariables;
+  key: keyof UpdateUserInputs;
   placeholder: string;
   label: string;
   required: boolean;
@@ -24,7 +27,7 @@ type Fields = {
 
 const fields: Fields[] = [
   {
-    key: 'data',
+    key: 'name',
     label: 'New name',
     placeholder: 'Please type your new name here',
     required: true,
@@ -52,7 +55,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
             key={key}
             label={label}
             placeholder={placeholder}
-            {...register(key)}
+            {...register(data.name)}
             isRequired={required}
             isDisabled={loading}
           />
@@ -61,7 +64,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
             key={key}
             label={label}
             placeholder={placeholder}
-            {...register(key)}
+            {...register(data.name)}
             type={type}
             isRequired={required}
             isDisabled={loading}

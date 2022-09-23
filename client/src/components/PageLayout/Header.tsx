@@ -21,7 +21,6 @@ import NextLink from 'next/link';
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
-import { useSession } from 'hooks/useSession';
 import { useCheckPermission } from 'hooks/useCheckPermission';
 
 interface Props {
@@ -33,20 +32,8 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
 const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();
-
-  return <MenuItem onClick={() => loginWithRedirect()}>Log In</MenuItem>;
-};
-
-const DevLoginButton = () => {
-  const { createSession } = useSession();
-  return (
-    <MenuItem
-      onClick={() => createSession().then(() => window.location.reload())}
-    >
-      Log In
-    </MenuItem>
-  );
+  const { login } = useAuthStore();
+  return <MenuItem onClick={() => login()}>Log In</MenuItem>;
 };
 
 const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -154,8 +141,6 @@ export const Header: React.FC = () => {
                         Logout
                       </MenuItem>
                     </>
-                  ) : process.env.NEXT_PUBLIC_USE_AUTH0 === 'false' ? (
-                    <DevLoginButton />
                   ) : (
                     <LoginButton />
                   )}

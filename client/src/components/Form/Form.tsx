@@ -15,7 +15,9 @@ export const Form = ({ children, submitLabel, FormHandling }: FormProps) => {
       onSubmit={FormHandling}
       className={styles.form}
     >
-      <VStack gap={4}>{children}</VStack>
+      <VStack gap={4} alignItems={'flex-start'}>
+        {children}
+      </VStack>
     </form>
   );
 };

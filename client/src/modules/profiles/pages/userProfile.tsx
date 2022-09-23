@@ -9,6 +9,7 @@ import {
   useUpdateMeMutation,
 } from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
+// import { ProfileForm } from '../componenets/ProfileForm';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
@@ -72,6 +73,13 @@ export const UserProfilePage = () => {
           )}
 
           <Button isLoading={loadingUpdate} onClick={submitUpdateMe}></Button>
+          {/* <ProfileForm
+            loading={loadingUpdate}
+            onSubmit={submitUpdateMe}
+            data={user}
+            loadingText={'Saving Chapter Changes'}
+            submitText={'Save Chapter Changes'}
+          /> */}
 
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data

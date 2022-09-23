@@ -4,12 +4,12 @@ import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import {
-  MeQuery,
   useDeleteMeMutation,
   useUpdateMeMutation,
+  UpdateUserInputs,
 } from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
-// import { ProfileForm } from '../componenets/ProfileForm';
+import { ProfileForm } from '../component/ProfileForm';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
@@ -19,17 +19,15 @@ export const UserProfilePage = () => {
   } = useAuthStore();
   const router = useRouter();
 
-  type UserFormData = Omit<MeQuery, 'id' | 'name'>;
-
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation();
 
-  const submitUpdateMe = async (data: UserFormData) => {
+  const submitUpdateMe = async (data: UpdateUserInputs) => {
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { user: data },
+        variables: data,
       });
       await router.push('/profile');
     } catch (err) {
@@ -72,14 +70,13 @@ export const UserProfilePage = () => {
             </>
           )}
 
-          <Button isLoading={loadingUpdate} onClick={submitUpdateMe}></Button>
-          {/* <ProfileForm
+          <ProfileForm
             loading={loadingUpdate}
             onSubmit={submitUpdateMe}
             data={user}
             loadingText={'Saving Chapter Changes'}
             submitText={'Save Chapter Changes'}
-          /> */}
+          />
 
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data

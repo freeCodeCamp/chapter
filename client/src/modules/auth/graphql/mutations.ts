@@ -9,8 +9,8 @@ export const deleteMe = gql`
 `;
 
 export const updateMe = gql`
-  mutation updateMe($data: UpdateUserInputs) {
-    updateMe($data: data) {
+  mutation updateMe($data: UpdateUserInputs!) {
+    updateMe(data: $data) {
       id
       name
     }

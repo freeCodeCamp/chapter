@@ -558,7 +558,6 @@ export type UpdateSponsorInputs = {
 };
 
 export type UpdateUserInputs = {
-  email?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
 };
 

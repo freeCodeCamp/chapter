@@ -210,12 +210,7 @@ export const EventPage: NextPage = () => {
       {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button
-            colorScheme="red"
-            onClick={onCancelRsvp}
-            paddingInline={'2'}
-            paddingBlock={'1'}
-          >
+          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
@@ -230,12 +225,7 @@ export const EventPage: NextPage = () => {
               You&lsquo;re on waitlist for this event
             </Heading>
           )}
-          <Button
-            colorScheme="red"
-            onClick={onCancelRsvp}
-            paddingInline={'2'}
-            paddingBlock={'1'}
-          >
+          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
@@ -258,7 +248,6 @@ export const EventPage: NextPage = () => {
                 You are subscribed
               </Heading>
               <Button
-                colorScheme="orange"
                 onClick={onUnsubscribeFromEvent}
                 paddingInline={'2'}
                 paddingBlock={'1'}

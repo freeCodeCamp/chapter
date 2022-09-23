@@ -1,10 +1,10 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
+import { Form } from '../../../../components/Form/Form';
 import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
-import styles from '../../../../styles/Form.module.css';
 
 export type ChapterFormData = Omit<
   Chapter,
@@ -110,50 +110,44 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   });
 
   return (
-    <form
-      aria-label={submitText}
-      onSubmit={handleSubmit(onSubmit)}
-      className={styles.form}
-    >
-      <VStack>
-        {fields.map(({ key, label, placeholder, required, type }) =>
-          type == 'textarea' ? (
-            <TextArea
-              key={key}
-              label={label}
-              placeholder={placeholder}
-              {...register(key)}
-              isRequired={required}
-              defaultValue={defaultValues[key] ?? undefined}
-              isDisabled={loading}
-            />
-          ) : (
-            <Input
-              key={key}
-              label={label}
-              placeholder={placeholder}
-              {...register(key)}
-              type={type}
-              isRequired={required}
-              defaultValue={defaultValues[key] ?? undefined}
-              isDisabled={loading}
-            />
-          ),
-        )}
-        <Button
-          mt="6"
-          width="100%"
-          variant="solid"
-          colorScheme="blue"
-          type="submit"
-          isDisabled={!isDirty || loading}
-          isLoading={loading}
-          loadingText={loadingText}
-        >
-          {submitText}
-        </Button>
-      </VStack>
-    </form>
+    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+      {fields.map(({ key, label, placeholder, required, type }) =>
+        type == 'textarea' ? (
+          <TextArea
+            key={key}
+            label={label}
+            placeholder={placeholder}
+            {...register(key)}
+            isRequired={required}
+            defaultValue={defaultValues[key] ?? undefined}
+            isDisabled={loading}
+          />
+        ) : (
+          <Input
+            key={key}
+            label={label}
+            placeholder={placeholder}
+            {...register(key)}
+            type={type}
+            isRequired={required}
+            defaultValue={defaultValues[key] ?? undefined}
+            isDisabled={loading}
+          />
+        ),
+      )}
+      <Button
+        mt="6"
+        width="100%"
+        variant="solid"
+        colorScheme="blue"
+        type="submit"
+        isDisabled={!isDirty || loading}
+        isLoading={loading}
+        loadingText={loadingText}
+      >
+        {submitText}
+      </Button>
+    </Form>
   );
 };
 

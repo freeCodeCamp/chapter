@@ -5,14 +5,13 @@ import {
   Heading,
   Select,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { useChapterQuery } from '../../../../generated/graphql';
 import type { Venue, VenueQuery } from '../../../../generated/graphql';
-import styles from '../../../../styles/Form.module.css';
+import { Form } from '../../../../components/Form/Form';
 import { useAuth } from 'modules/auth/store';
 
 export type VenueFormData = Omit<Venue, 'id' | 'events' | 'chapter'>;
@@ -149,68 +148,60 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   }, [adminedChapters]);
 
   return (
-    <>
-      <form
-        aria-label={submitText}
-        onSubmit={handleSubmit(onSubmit)}
-        className={styles.form}
-      >
-        <VStack gap={4}>
-          {!isChaptersDropdownNeeded ? (
-            loadingChapter ? (
-              <Text>Loading Chapter</Text>
-            ) : errorChapter || !dataChapter?.chapter ? (
-              <Text>Error loading chapter</Text>
-            ) : (
-              <Heading>{dataChapter.chapter.name}</Heading>
-            )
-          ) : (
-            <FormControl isRequired>
-              <FormLabel>Chapter</FormLabel>
-              <Select
-                {...register('chapter_id' as const, {
-                  required: true,
-                  valueAsNumber: true,
-                })}
-                isDisabled={loading}
-              >
-                {adminedChapters?.length &&
-                  adminedChapters.map(({ id, name }) => (
-                    <option key={id} value={id}>
-                      {name}
-                    </option>
-                  ))}
-              </Select>
-            </FormControl>
-          )}
-          {fields.map(({ key, isRequired, label, type, step, max, min }) => (
-            <Input
-              key={key}
-              label={label}
-              {...register(key)}
-              type={type}
-              isRequired={isRequired}
-              step={step ? step : undefined}
-              max={max ? max : undefined}
-              min={min ? min : undefined}
-              isDisabled={loading}
-            />
-          ))}
-          <Button
-            mt="30px"
-            width="100%"
-            variant="solid"
-            colorScheme="blue"
-            type="submit"
-            isDisabled={!isDirty || loading}
-            isLoading={loading}
-            loadingText={loadingText}
+    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+      {!isChaptersDropdownNeeded ? (
+        loadingChapter ? (
+          <Text>Loading Chapter</Text>
+        ) : errorChapter || !dataChapter?.chapter ? (
+          <Text>Error loading chapter</Text>
+        ) : (
+          <Heading>{dataChapter.chapter.name}</Heading>
+        )
+      ) : (
+        <FormControl isRequired>
+          <FormLabel>Chapter</FormLabel>
+          <Select
+            {...register('chapter_id' as const, {
+              required: true,
+              valueAsNumber: true,
+            })}
+            isDisabled={loading}
           >
-            {submitText}
-          </Button>
-        </VStack>
-      </form>
-    </>
+            {adminedChapters?.length &&
+              adminedChapters.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+          </Select>
+        </FormControl>
+      )}
+      {fields.map(({ key, isRequired, label, type, step, max, min }) => (
+        <Input
+          key={key}
+          label={label}
+          {...register(key)}
+          type={type}
+          isRequired={isRequired}
+          step={step ? step : undefined}
+          max={max ? max : undefined}
+          min={min ? min : undefined}
+          isDisabled={loading}
+        />
+      ))}
+      <Button
+        mt="30px"
+        width="100%"
+        variant="solid"
+        colorScheme="blue"
+        type="submit"
+        isDisabled={!isDirty || loading}
+        isLoading={loading}
+        loadingText={loadingText}
+      >
+        {submitText}
+      </Button>
+    </Form>
   );
 };
 

@@ -3,17 +3,15 @@ import { VStack } from '@chakra-ui/layout';
 import styles from '../../styles/Form.module.css';
 
 interface FormProps {
-  (
-    children: ReactNode,
-    submitText: string,
-    FormHandling: () => unknown,
-  ): ReactNode;
+  children: ReactNode;
+  submitLabel: string;
+  FormHandling: () => unknown;
 }
 
-export const From: FormProps = (children, submitText, FormHandling) => {
+export const Form = ({ children, submitLabel, FormHandling }: FormProps) => {
   return (
     <form
-      aria-label={submitText}
+      aria-label={submitLabel}
       onSubmit={FormHandling}
       className={styles.form}
     >

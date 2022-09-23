@@ -265,6 +265,7 @@ model users {
   id               Int             @id @default(autoincrement())
   name             String
   email            String          @unique
+  auto_subscribe   Boolean         @default(true)
   user_bans        user_bans[]
   user_chapters    chapter_users[]
   instance_role_id Int

@@ -9,6 +9,9 @@ export class User extends BaseObject {
 
   @Field(() => String)
   email: string;
+
+  @Field(() => Boolean)
+  auto_subscribe: boolean;
 }
 
 @ObjectType()

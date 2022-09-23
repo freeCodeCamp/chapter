@@ -4,15 +4,12 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
 import { TextArea } from '../../../components/Form/TextArea';
 import { Form } from '../../../components/Form/Form';
-import {
-  UpdateMeMutationVariables,
-  UpdateUserInputs,
-} from '../../../generated/graphql';
+import { MeQuery, UpdateUserInputs } from '../../../generated/graphql';
 
 interface ProfileFormProps {
   loading: boolean;
-  onSubmit: (data: UpdateMeMutationVariables) => Promise<void>;
-  data: UpdateMeMutationVariables;
+  onSubmit: (data: UpdateUserInputs) => Promise<void>;
+  data: MeQuery;
   submitText: string;
   loadingText: string;
 }
@@ -38,12 +35,15 @@ const fields: Fields[] = [
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
 
-  const defaultValues: UpdateMeMutationVariables = data;
+  const me = data?.me;
+  const defaultValues: UpdateUserInputs = {
+    name: me?.name || '',
+  };
   const {
     handleSubmit,
     register,
     formState: { isDirty },
-  } = useForm<UpdateMeMutationVariables>({
+  } = useForm<UpdateUserInputs>({
     defaultValues,
   });
 
@@ -55,7 +55,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
             key={key}
             label={label}
             placeholder={placeholder}
-            {...register(data.name)}
+            {...register(key)}
             isRequired={required}
             isDisabled={loading}
           />
@@ -64,7 +64,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
             key={key}
             label={label}
             placeholder={placeholder}
-            {...register(data.name)}
+            {...register(key)}
             type={type}
             isRequired={required}
             isDisabled={loading}

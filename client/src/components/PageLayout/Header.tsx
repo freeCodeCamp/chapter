@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
   const router = useRouter();
   const {
     data: { user },
-    setData,
+    refetchData,
   } = useAuthStore();
 
   const { logout: logoutAuth0 } = useAuth0();
@@ -80,7 +80,6 @@ export const Header: React.FC = () => {
   );
 
   const logout = () => {
-    setData({ user: undefined });
     // TODO: logging out of auth0 and the server should be handled by the same
     // module as logging in.
     // TODO: inject the auth functions (logout) into the Header so we can switch
@@ -89,7 +88,7 @@ export const Header: React.FC = () => {
     fetch(new URL('/logout', serverUrl).href, {
       method: 'DELETE',
       credentials: 'include',
-    });
+    }).then(refetchData);
 
     router.push('/');
   };

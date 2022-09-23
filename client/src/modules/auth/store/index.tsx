@@ -9,12 +9,9 @@ interface AuthContextType {
 
 export const AuthContext = createContext<{
   data: AuthContextType;
-  setData: React.Dispatch<React.SetStateAction<AuthContextType>>;
   refetchData: () => void;
 }>({
   data: {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setData: () => {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   refetchData: () => {},
 });
@@ -29,14 +26,7 @@ export const AuthContextProvider = ({
 }) => {
   const [data, setData] = useState<AuthContextType>({});
   const [loginAttempted, setLoginAttempted] = useState(false);
-  const {
-    loading,
-    error,
-    data: meData,
-    refetch,
-  } = useMeQuery({
-    nextFetchPolicy: 'network-only',
-  });
+  const { loading, error, data: meData, refetch } = useMeQuery();
   const { isAuthenticated, createSession } = useSession();
 
   const tryToCreateSession = async () => {
@@ -49,7 +39,7 @@ export const AuthContextProvider = ({
 
   useEffect(() => {
     if (!loading && !error) {
-      if (meData?.me) {
+      if (meData) {
         setData({ user: meData.me });
       } else if (!loginAttempted) {
         // TODO: figure out if we need this guard. Can we get away with only
@@ -63,7 +53,6 @@ export const AuthContextProvider = ({
     <AuthContext.Provider
       value={{
         data,
-        setData,
         refetchData: refetch,
       }}
     >

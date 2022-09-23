@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
 import { TextArea } from '../../../components/Form/TextArea';
 import { Form } from '../../../components/Form/Form';
-import { MeQuery, UpdateUserInputs } from '../../../generated/graphql';
+import { UpdateUserInputs } from '../../../generated/graphql';
 
 interface ProfileFormProps {
   loading: boolean;
   onSubmit: (data: UpdateUserInputs) => Promise<void>;
-  data: MeQuery;
+  data: string;
   submitText: string;
   loadingText: string;
 }
@@ -35,10 +35,8 @@ const fields: Fields[] = [
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
 
-  const me = data?.me;
-  const defaultValues: UpdateUserInputs = {
-    name: me?.name || '',
-  };
+  const me = data;
+  const defaultValues: UpdateUserInputs = { name: me };
   const {
     handleSubmit,
     register,

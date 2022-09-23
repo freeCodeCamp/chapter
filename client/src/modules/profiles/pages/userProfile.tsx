@@ -10,6 +10,7 @@ import {
 } from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
+import { meQuery } from 'modules/auth/graphql/queries';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
@@ -21,13 +22,15 @@ export const UserProfilePage = () => {
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
   const [deleteMe] = useDeleteMeMutation();
-  const [updateMe] = useUpdateMeMutation();
+  const [updateMe] = useUpdateMeMutation({
+    refetchQueries: [{ query: meQuery }],
+  });
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: data,
+        variables: { data },
       });
       await router.push('/profile');
     } catch (err) {
@@ -73,7 +76,7 @@ export const UserProfilePage = () => {
           <ProfileForm
             loading={loadingUpdate}
             onSubmit={submitUpdateMe}
-            data={user}
+            data={user.name}
             loadingText={'Saving Chapter Changes'}
             submitText={'Save Chapter Changes'}
           />

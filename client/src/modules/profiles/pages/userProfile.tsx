@@ -9,7 +9,7 @@ import { useAuthStore } from '../../auth/store';
 export const UserProfilePage = () => {
   const {
     data: { user },
-    setData,
+    refetchData,
   } = useAuthStore();
   const router = useRouter();
 
@@ -18,8 +18,8 @@ export const UserProfilePage = () => {
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
-    deleteMe();
-    setData({});
+    await deleteMe();
+    refetchData();
     router.push('/');
   };
 

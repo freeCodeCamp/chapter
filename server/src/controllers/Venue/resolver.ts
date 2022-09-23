@@ -12,7 +12,11 @@ export class VenueResolver {
   venues(): Promise<Venue[]> {
     return prisma.venues.findMany({
       include: {
-        chapter: { include: { events: { include: { tags: true } } } },
+        chapter: {
+          include: {
+            events: { include: { tags: { include: { tag: true } } } },
+          },
+        },
       },
       orderBy: { name: 'asc' },
     });
@@ -33,7 +37,19 @@ export class VenueResolver {
     return prisma.venues.findUnique({
       where: { id },
       include: {
-        chapter: { include: { events: { include: { tags: true } } } },
+        chapter: {
+          include: {
+            events: {
+              include: {
+                tags: {
+                  include: {
+                    tag: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -51,7 +67,19 @@ export class VenueResolver {
     return prisma.venues.create({
       data: venueData,
       include: {
-        chapter: { include: { events: { include: { tags: true } } } },
+        chapter: {
+          include: {
+            events: {
+              include: {
+                tags: {
+                  include: {
+                    tag: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   }

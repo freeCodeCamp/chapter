@@ -9,28 +9,27 @@ const needsDevLogin = process.env.NEXT_PUBLIC_USE_AUTH0 === 'false';
 
 const useAuth0Session = (): {
   isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
+  createSession: () => Promise<void>;
 } => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const createSession = async () => {
     const token = await getAccessTokenSilently();
-    return requestSession(token);
+    await login(token);
   };
 
   return {
     isAuthenticated,
     createSession,
-    destroySession,
   };
 };
 
 export const useDevSession = (): {
   isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
+  createSession: () => Promise<void>;
 } => {
-  const createSession = async () => await requestSession('fake-token');
+  const createSession = async () => {
+    await login('fake-token');
+  };
 
   // Unlike the Auth0 login, the dev login creates the session immediately when
   // you click the login button. Since `isAuthenticated` communicates that a
@@ -39,11 +38,10 @@ export const useDevSession = (): {
   return {
     isAuthenticated: false,
     createSession,
-    destroySession,
   };
 };
 
-const requestSession = (token: string) =>
+const login = (token: string) =>
   fetch(new URL('/login', serverUrl).href, {
     method: 'POST',
     headers: {
@@ -52,14 +50,7 @@ const requestSession = (token: string) =>
     credentials: 'include',
   });
 
-const destroySession = () =>
-  fetch(new URL('/logout', serverUrl).href, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
-
 export const useSession: () => {
   isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
+  createSession: () => Promise<void>;
 } = needsDevLogin ? useDevSession : useAuth0Session;

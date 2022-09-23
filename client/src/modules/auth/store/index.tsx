@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { MeQuery, useMeQuery } from '../../../generated/graphql';
+import { useMeQuery, MeQuery } from '../../../generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 interface AuthContextType {
@@ -9,8 +9,11 @@ interface AuthContextType {
 
 export const AuthContext = createContext<{
   data: AuthContextType;
+  setData: React.Dispatch<React.SetStateAction<AuthContextType>>;
 }>({
   data: {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setData: () => {},
 });
 
 export const useAuthStore = () => useContext(AuthContext);
@@ -36,7 +39,7 @@ export const AuthContextProvider = ({
 
   useEffect(() => {
     if (!loading && !error) {
-      if (meData) {
+      if (meData?.me) {
         setData({ user: meData.me });
       } else if (!loginAttempted) {
         // TODO: figure out if we need this guard. Can we get away with only
@@ -47,11 +50,7 @@ export const AuthContextProvider = ({
   }, [loading, error, meData, loginAttempted, isAuthenticated]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        data,
-      }}
-    >
+    <AuthContext.Provider value={{ data, setData }}>
       {children}
     </AuthContext.Provider>
   );

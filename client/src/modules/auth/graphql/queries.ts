@@ -16,6 +16,7 @@ export const meQuery = gql`
         id
         name
       }
+      auto_subscribe
     }
   }
 `;

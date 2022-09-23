@@ -32,17 +32,15 @@ import {
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
-import { useSession } from 'hooks/useSession';
+import { useLogin } from 'hooks/useAuth';
 
 export const EventPage: NextPage = () => {
   const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
   const {
     data: { user },
-    refetchData,
   } = useAuthStore();
-
-  const { createSession } = useSession();
+  const login = useLogin();
 
   const refetch = {
     refetchQueries: [{ query: EVENT, variables: { eventId } }],
@@ -165,8 +163,7 @@ export const EventPage: NextPage = () => {
 
   // TODO: reimplment this the login modal with Auth0
   const checkOnRsvp = async () => {
-    if (!user) await createSession();
-    await refetchData();
+    if (!user) await login();
     await onRsvp();
   };
 

@@ -5,12 +5,13 @@ import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { useDeleteMeMutation } from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
+import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
   const {
     data: { user },
-    refetchData,
   } = useAuthStore();
+  const logout = useLogout();
   const router = useRouter();
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
@@ -19,7 +20,7 @@ export const UserProfilePage = () => {
     const ok = await confirmDelete();
     if (!ok) return;
     await deleteMe();
-    refetchData();
+    await logout();
     router.push('/');
   };
 

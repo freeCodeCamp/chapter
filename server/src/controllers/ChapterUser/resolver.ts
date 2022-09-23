@@ -65,7 +65,7 @@ export class ChapterUserResolver {
           user: { connect: { id: ctx.user.id } },
           chapter: { connect: { id: chapterId } },
           chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO add user setting option override
+          subscribed: ctx.user.auto_subscribe,
           joined_date: new Date(),
         },
         include: includes,

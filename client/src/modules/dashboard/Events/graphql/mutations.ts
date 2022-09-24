@@ -36,6 +36,7 @@ export const updateEvent = gql`
           name
         }
       }
+      invite_only
     }
   }
 `;

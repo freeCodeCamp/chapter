@@ -11,3 +11,22 @@ export const SPONSOR = gql`
     }
   }
 `;
+
+export const SPONSOR_EVENTS = gql`
+query sponsor($sponsorId: Int!) {
+  sponsor(id: $sponsorId) {
+    id
+    name
+    website
+    logo_path
+    type
+    event_sponsors {
+      event {
+        id
+        name
+        invite_only
+        canceled
+      }
+    }
+}
+`;

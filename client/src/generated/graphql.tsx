@@ -1110,22 +1110,6 @@ export type UpdateSponsorMutation = {
   };
 };
 
-export type SponsorQueryVariables = Exact<{
-  sponsorId: Scalars['Int'];
-}>;
-
-export type SponsorQuery = {
-  __typename?: 'Query';
-  sponsor?: {
-    __typename?: 'Sponsor';
-    id: number;
-    name: string;
-    website: string;
-    logo_path: string;
-    type: string;
-  } | null;
-};
-
 export type ChangeInstanceUserRoleMutationVariables = Exact<{
   roleId: Scalars['Int'];
   userId: Scalars['Int'];
@@ -3110,61 +3094,6 @@ export type UpdateSponsorMutationResult =
 export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
   UpdateSponsorMutation,
   UpdateSponsorMutationVariables
->;
-export const SponsorDocument = gql`
-  query sponsor($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
-      id
-      name
-      website
-      logo_path
-      type
-    }
-  }
-`;
-
-/**
- * __useSponsorQuery__
- *
- * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
- * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSponsorQuery({
- *   variables: {
- *      sponsorId: // value for 'sponsorId'
- *   },
- * });
- */
-export function useSponsorQuery(
-  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export function useSponsorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SponsorQuery,
-    SponsorQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
-export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
-export type SponsorQueryResult = Apollo.QueryResult<
-  SponsorQuery,
-  SponsorQueryVariables
 >;
 export const ChangeInstanceUserRoleDocument = gql`
   mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {

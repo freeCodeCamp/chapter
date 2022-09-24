@@ -8,12 +8,6 @@ export const SPONSOR = gql`
       website
       logo_path
       type
-      event_sponsors {
-        id
-        name
-        invite_only
-        canceled
-      }
     }
   }
 `;

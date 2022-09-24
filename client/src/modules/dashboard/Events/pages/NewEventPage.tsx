@@ -10,6 +10,7 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
+import { CHAPTER } from '../../../chapters/graphql/queries';
 import { EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
@@ -19,12 +20,7 @@ export const NewEventPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [createEvent] = useCreateEventMutation({
-    refetchQueries: [
-      { query: EVENTS },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
-    ],
-  });
+  const [createEvent] = useCreateEventMutation();
 
   const [publish] = useSendEventInviteMutation();
 
@@ -53,6 +49,11 @@ export const NewEventPage: NextPage = () => {
       };
       const event = await createEvent({
         variables: { chapterId: chapter_id, data: { ...eventData } },
+        refetchQueries: [
+          { query: CHAPTER, variables: { chapterId: chapter_id } },
+          { query: EVENTS },
+          { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+        ],
       });
 
       if (event.data) {

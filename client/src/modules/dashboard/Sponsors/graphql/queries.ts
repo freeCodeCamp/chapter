@@ -28,5 +28,6 @@ query sponsorEvents($sponsorId: Int!) {
         canceled
       }
     }
+  }
 }
 `;

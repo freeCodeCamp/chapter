@@ -503,7 +503,6 @@ export type SendEmailInputs = {
 
 export type Sponsor = {
   __typename?: 'Sponsor';
-  events: Array<Event>;
   id: Scalars['Int'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
@@ -1124,13 +1123,6 @@ export type SponsorQuery = {
     website: string;
     logo_path: string;
     type: string;
-    events: Array<{
-      __typename?: 'Event';
-      id: number;
-      name: string;
-      canceled: boolean;
-      invite_only: boolean;
-    }>;
   } | null;
 };
 
@@ -3127,12 +3119,6 @@ export const SponsorDocument = gql`
       website
       logo_path
       type
-      events {
-        id
-        name
-        canceled
-        invite_only
-      }
     }
   }
 `;

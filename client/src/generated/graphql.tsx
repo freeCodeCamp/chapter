@@ -504,7 +504,6 @@ export type SendEmailInputs = {
 
 export type Sponsor = {
   __typename?: 'Sponsor';
-  event_sponsors: Array<SponsoredEvent>;
   id: Scalars['Int'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
@@ -1143,14 +1142,12 @@ export type SponsorQuery = {
   } | null;
 };
 
-export type SponsorEventsQueryVariables = Exact<{
-  sponsorId: Scalars['Int'];
-}>;
+export type SponsorEventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SponsorEventsQuery = {
   __typename?: 'Query';
-  sponsor?: {
-    __typename?: 'Sponsor';
+  sponsorEvents: Array<{
+    __typename?: 'SponsorEvents';
     id: number;
     name: string;
     website: string;
@@ -1166,7 +1163,7 @@ export type SponsorEventsQuery = {
         canceled: boolean;
       }>;
     }>;
-  } | null;
+  }>;
 };
 
 export type ChangeInstanceUserRoleMutationVariables = Exact<{
@@ -3210,8 +3207,8 @@ export type SponsorQueryResult = Apollo.QueryResult<
   SponsorQueryVariables
 >;
 export const SponsorEventsDocument = gql`
-  query sponsorEvents($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
+  query sponsorEvents {
+    sponsorEvents {
       id
       name
       website
@@ -3241,12 +3238,11 @@ export const SponsorEventsDocument = gql`
  * @example
  * const { data, loading, error } = useSponsorEventsQuery({
  *   variables: {
- *      sponsorId: // value for 'sponsorId'
  *   },
  * });
  */
 export function useSponsorEventsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SponsorEventsQuery,
     SponsorEventsQueryVariables
   >,

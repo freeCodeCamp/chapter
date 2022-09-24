@@ -439,6 +439,7 @@ export type Query = {
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsor?: Maybe<Sponsor>;
+  sponsorEvents: Array<SponsorEvents>;
   sponsors: Array<Sponsor>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
@@ -508,6 +509,21 @@ export type Sponsor = {
   name: Scalars['String'];
   type: Scalars['String'];
   website: Scalars['String'];
+};
+
+export type SponsorEvents = {
+  __typename?: 'SponsorEvents';
+  event_sponsors: Array<SponsoredEvent>;
+  id: Scalars['Int'];
+  logo_path: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  website: Scalars['String'];
+};
+
+export type SponsoredEvent = {
+  __typename?: 'SponsoredEvent';
+  events: Array<Event>;
 };
 
 export type Tag = {

@@ -13,7 +13,7 @@ export const SPONSOR = gql`
 `;
 
 export const SPONSOR_EVENTS = gql`
-query sponsor($sponsorId: Int!) {
+query sponsorEvents($sponsorId: Int!) {
   sponsor(id: $sponsorId) {
     id
     name

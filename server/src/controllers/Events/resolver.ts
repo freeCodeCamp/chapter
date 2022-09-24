@@ -230,7 +230,9 @@ export class EventResolver {
             },
           },
         },
-        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
+        sponsors: {
+          include: { sponsor: { include: { event_sponsors: true } } },
+        }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
       },
       take: limit,
       orderBy: {
@@ -299,7 +301,13 @@ export class EventResolver {
           },
           orderBy: { user: { name: 'asc' } },
         },
-        sponsors: { include: { sponsor: true } },
+        sponsors: {
+          include: {
+            sponsor: {
+              include: { event_sponsors: { where: { event_id: eventId } } },
+            },
+          },
+        },
       },
     });
   }

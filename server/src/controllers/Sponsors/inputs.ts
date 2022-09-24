@@ -13,6 +13,9 @@ export class CreateSponsorInputs {
 
   @Field(() => String)
   type: string;
+
+  @Field(() => [Event])
+  event: Event[];
 }
 
 @InputType()
@@ -28,4 +31,7 @@ export class UpdateSponsorInputs {
 
   @Field(() => String)
   type: string;
+
+  @Field(() => [Event])
+  event: Event[];
 }

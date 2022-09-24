@@ -3,6 +3,7 @@ import { Button, HStack } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo } from 'react';
+import { CHAPTER } from '../../../chapters/graphql/queries';
 import { EVENT, EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import EventCancelButton from './EventCancelButton';
@@ -13,9 +14,15 @@ interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled'>;
   onDelete?: () => any;
   hideCancel?: boolean;
+  chapter_id: number;
 }
 
-const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
+const Actions: React.FC<ActionsProps> = ({
+  event,
+  onDelete,
+  hideCancel,
+  chapter_id,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [remove] = useDeleteEventMutation();
 
@@ -23,6 +30,7 @@ const Actions: React.FC<ActionsProps> = ({ event, onDelete, hideCancel }) => {
     () => ({
       variables: { eventId: event.id },
       refetchQueries: [
+        { query: CHAPTER, variables: { chapterId: chapter_id } },
         { query: EVENT, variables: { eventId: event.id } },
         { query: EVENTS },
         { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },

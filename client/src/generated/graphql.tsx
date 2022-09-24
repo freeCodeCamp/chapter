@@ -904,6 +904,7 @@ export type UpdateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    invite_only: boolean;
     tags: Array<{
       __typename?: 'EventTag';
       tag: { __typename?: 'Tag'; id: number; name: string };
@@ -2405,6 +2406,7 @@ export const UpdateEventDocument = gql`
           name
         }
       }
+      invite_only
     }
   }
 `;

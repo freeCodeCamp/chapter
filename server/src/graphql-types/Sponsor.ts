@@ -15,6 +15,9 @@ export class Sponsor extends BaseObject {
 
   @Field(() => String)
   type: string;
+
+  @Field(() => [SponsoredEvent])
+  event_sponsors: SponsoredEvent[];
 }
 
 @ObjectType()

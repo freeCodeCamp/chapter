@@ -504,6 +504,7 @@ export type SendEmailInputs = {
 
 export type Sponsor = {
   __typename?: 'Sponsor';
+  event_sponsors: Array<SponsoredEvent>;
   id: Scalars['Int'];
   logo_path: Scalars['String'];
   name: Scalars['String'];
@@ -1124,6 +1125,48 @@ export type UpdateSponsorMutation = {
     logo_path: string;
     type: string;
   };
+};
+
+export type SponsorQueryVariables = Exact<{
+  sponsorId: Scalars['Int'];
+}>;
+
+export type SponsorQuery = {
+  __typename?: 'Query';
+  sponsor?: {
+    __typename?: 'Sponsor';
+    id: number;
+    name: string;
+    website: string;
+    logo_path: string;
+    type: string;
+  } | null;
+};
+
+export type SponsorEventsQueryVariables = Exact<{
+  sponsorId: Scalars['Int'];
+}>;
+
+export type SponsorEventsQuery = {
+  __typename?: 'Query';
+  sponsor?: {
+    __typename?: 'Sponsor';
+    id: number;
+    name: string;
+    website: string;
+    logo_path: string;
+    type: string;
+    event_sponsors: Array<{
+      __typename?: 'SponsoredEvent';
+      events: Array<{
+        __typename?: 'Event';
+        id: number;
+        name: string;
+        invite_only: boolean;
+        canceled: boolean;
+      }>;
+    }>;
+  } | null;
 };
 
 export type ChangeInstanceUserRoleMutationVariables = Exact<{
@@ -3110,6 +3153,131 @@ export type UpdateSponsorMutationResult =
 export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
   UpdateSponsorMutation,
   UpdateSponsorMutationVariables
+>;
+export const SponsorDocument = gql`
+  query sponsor($sponsorId: Int!) {
+    sponsor(id: $sponsorId) {
+      id
+      name
+      website
+      logo_path
+      type
+    }
+  }
+`;
+
+/**
+ * __useSponsorQuery__
+ *
+ * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSponsorQuery({
+ *   variables: {
+ *      sponsorId: // value for 'sponsorId'
+ *   },
+ * });
+ */
+export function useSponsorQuery(
+  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
+    SponsorDocument,
+    options,
+  );
+}
+export function useSponsorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SponsorQuery,
+    SponsorQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
+    SponsorDocument,
+    options,
+  );
+}
+export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
+export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
+export type SponsorQueryResult = Apollo.QueryResult<
+  SponsorQuery,
+  SponsorQueryVariables
+>;
+export const SponsorEventsDocument = gql`
+  query sponsorEvents($sponsorId: Int!) {
+    sponsor(id: $sponsorId) {
+      id
+      name
+      website
+      logo_path
+      type
+      event_sponsors {
+        events {
+          id
+          name
+          invite_only
+          canceled
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSponsorEventsQuery__
+ *
+ * To run a query within a React component, call `useSponsorEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSponsorEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSponsorEventsQuery({
+ *   variables: {
+ *      sponsorId: // value for 'sponsorId'
+ *   },
+ * });
+ */
+export function useSponsorEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SponsorEventsQuery,
+    SponsorEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SponsorEventsQuery, SponsorEventsQueryVariables>(
+    SponsorEventsDocument,
+    options,
+  );
+}
+export function useSponsorEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SponsorEventsQuery,
+    SponsorEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SponsorEventsQuery, SponsorEventsQueryVariables>(
+    SponsorEventsDocument,
+    options,
+  );
+}
+export type SponsorEventsQueryHookResult = ReturnType<
+  typeof useSponsorEventsQuery
+>;
+export type SponsorEventsLazyQueryHookResult = ReturnType<
+  typeof useSponsorEventsLazyQuery
+>;
+export type SponsorEventsQueryResult = Apollo.QueryResult<
+  SponsorEventsQuery,
+  SponsorEventsQueryVariables
 >;
 export const ChangeInstanceUserRoleDocument = gql`
   mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {

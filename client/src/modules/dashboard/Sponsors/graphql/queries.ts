@@ -21,7 +21,7 @@ export const SPONSOR_EVENTS = gql`
       logo_path
       type
       event_sponsors {
-        event {
+        events {
           id
           name
           invite_only

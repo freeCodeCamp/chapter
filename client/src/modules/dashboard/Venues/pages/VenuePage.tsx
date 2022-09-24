@@ -43,7 +43,7 @@ export const VenuePage: NextPage = () => {
         </ProgressCardContent>
       </Card>
       <Heading as={'h2'} marginBlock={'1em'} fontSize={'lg'}>
-        Organized By The Venue's Chapter
+        Organized By The Venue&apos;s Chapter
       </Heading>
       <Grid gap={'2em'}>
         {data.venue.chapter.events.map(

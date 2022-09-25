@@ -85,7 +85,7 @@ export const fields: Field[] = [
     type: 'url',
     label: 'Url',
     placeholder: 'https://www.example.com',
-    isRequired: false,
+    isRequired: true,
   },
   {
     key: 'capacity',

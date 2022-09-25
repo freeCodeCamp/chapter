@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
 import { TextArea } from '../../../components/Form/TextArea';
@@ -40,10 +40,15 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { isDirty },
   } = useForm<UpdateUserInputs>({
     defaultValues,
   });
+
+  useEffect(() => {
+    reset({ name: me });
+  }, [me]);
 
   return (
     <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>

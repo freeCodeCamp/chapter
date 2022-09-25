@@ -77,8 +77,8 @@ export const UserProfilePage = () => {
             loading={loadingUpdate}
             onSubmit={submitUpdateMe}
             data={user.name}
-            loadingText={'Saving Chapter Changes'}
-            submitText={'Save Chapter Changes'}
+            loadingText={'Saving Profile Changes'}
+            submitText={'Save Profile Changes'}
           />
 
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>

@@ -73,7 +73,7 @@ export type ChapterWithEvents = {
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
-  events: Array<Event>;
+  events: Array<EventWithRelations>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
   name: Scalars['String'];
@@ -763,11 +763,21 @@ export type ChaptersQuery = {
     description: string;
     category: string;
     image_url: string;
+    city: string;
+    region: string;
+    country: string;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithRelations';
       id: number;
       name: string;
       start_at: any;
+      venue?: {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        region: string;
+        street_address?: string | null;
+      } | null;
     }>;
   }>;
 };
@@ -1404,7 +1414,7 @@ export type HomeQuery = {
     category: string;
     image_url: string;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithRelations';
       id: number;
       name: string;
       start_at: any;
@@ -1889,10 +1899,19 @@ export const ChaptersDocument = gql`
       description
       category
       image_url
+      city
+      region
+      country
       events {
         id
         name
         start_at
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }

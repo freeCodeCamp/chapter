@@ -64,7 +64,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           >
             Organized Events
           </Heading>
-          {chapter.events.map(({ id, name }, index) => (
+          {chapter.events.map(({ id, name, venue }, index) => (
             <Link key={id} href={`/events/${id}`} _hover={{}}>
               <Flex
                 direction={['column', 'column', 'row']}
@@ -75,6 +75,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
                   {index + 1}. {name}
                 </Text>
+                {venue && <Text>{venue.name}</Text>}
               </Flex>
             </Link>
           ))}

@@ -557,7 +557,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Event",
+                    "name": "EventWithRelations",
                     "ofType": null
                   }
                 }

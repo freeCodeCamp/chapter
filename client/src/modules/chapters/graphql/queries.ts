@@ -80,10 +80,19 @@ export const CHAPTERS = gql`
       description
       category
       image_url
+      city
+      region
+      country
       events {
         id
         name
         start_at
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }

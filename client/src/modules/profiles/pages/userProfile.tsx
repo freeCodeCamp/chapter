@@ -75,7 +75,7 @@ export const UserProfilePage = () => {
           <ProfileForm
             loading={loadingUpdate}
             onSubmit={submitUpdateMe}
-            data={data}
+            data={user}
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />

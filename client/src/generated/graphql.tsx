@@ -2414,8 +2414,6 @@ export const DashboardChapterDocument = gql`
             name
           }
         }
-        invite_only
-        canceled
       }
     }
   }

@@ -339,7 +339,7 @@ export class EventResolver {
     const isSubscribedToChapter =
       ctx.user.user_chapters.find(
         (user_chapter) => user_chapter.chapter_id === chapterId,
-      )?.subscribed ?? ctx.user.auto_subscribe;
+      )?.subscribed || ctx.user.auto_subscribe;
 
     const oldEventUser = await prisma.event_users.findUnique({
       include: { rsvp: true },
@@ -577,7 +577,7 @@ ${unsubscribeOptions}`,
       }));
 
     const isSubscribedToEvent =
-      userChapter?.subscribed ?? ctx.user.auto_subscribe;
+      userChapter?.subscribed || ctx.user.auto_subscribe;
 
     // TODO: add an option to allow event creators NOT to rsvp. If doing that
     // make sure stop adding them to the calendar event.

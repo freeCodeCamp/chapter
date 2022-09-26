@@ -56,7 +56,7 @@ export const SponsorPage: NextPage = () => {
           </Text>
         </Flex>
       </Card>
-      {eventsList.data && (
+      {eventsList.data?.sponsorEvents && (
         <EventsList
           title={'Sponser'}
           events={eventsList.data.sponsorEvents.event_sponsors.events}

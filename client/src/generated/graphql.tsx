@@ -596,7 +596,7 @@ export type UserWithInstanceRole = {
 
 export type Venue = {
   __typename?: 'Venue';
-  chapter: Chapter;
+  chapter: ChapterWithEvents;
   chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
@@ -904,6 +904,7 @@ export type UpdateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    invite_only: boolean;
     tags: Array<{
       __typename?: 'EventTag';
       tag: { __typename?: 'Tag'; id: number; name: string };
@@ -1247,7 +1248,7 @@ export type VenuesQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
-    chapter: { __typename?: 'Chapter'; id: number; name: string };
+    chapter: { __typename?: 'ChapterWithEvents'; id: number; name: string };
   }>;
 };
 
@@ -1268,7 +1269,18 @@ export type VenueQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
-    chapter: { __typename?: 'Chapter'; id: number; name: string };
+    chapter: {
+      __typename?: 'ChapterWithEvents';
+      id: number;
+      name: string;
+      events: Array<{
+        __typename?: 'Event';
+        id: number;
+        name: string;
+        canceled: boolean;
+        invite_only: boolean;
+      }>;
+    };
   } | null;
 };
 
@@ -2405,6 +2417,7 @@ export const UpdateEventDocument = gql`
           name
         }
       }
+      invite_only
     }
   }
 `;
@@ -3647,6 +3660,12 @@ export const VenueDocument = gql`
       chapter {
         id
         name
+        events {
+          id
+          name
+          canceled
+          invite_only
+        }
       }
     }
   }

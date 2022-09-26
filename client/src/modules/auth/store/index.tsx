@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { useMeQuery, MeQuery } from '../../../generated/graphql';
+import { MeQuery, useMeQuery } from '../../../generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 interface AuthContextType {
@@ -9,11 +9,8 @@ interface AuthContextType {
 
 export const AuthContext = createContext<{
   data: AuthContextType;
-  setData: React.Dispatch<React.SetStateAction<AuthContextType>>;
 }>({
   data: {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setData: () => {},
 });
 
 export const useAuthStore = () => useContext(AuthContext);
@@ -25,32 +22,32 @@ export const AuthContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [data, setData] = useState<AuthContextType>({});
-  const [loginAttempted, setLoginAttempted] = useState(false);
   const { loading, error, data: meData, refetch } = useMeQuery();
   const { isAuthenticated, createSession } = useSession();
 
   const tryToCreateSession = async () => {
     if (isAuthenticated) {
-      setLoginAttempted(true);
-      await createSession();
-      refetch();
+      const { status } = await createSession();
+      if (status === 200) refetch();
     }
   };
 
   useEffect(() => {
     if (!loading && !error) {
-      if (meData?.me) {
-        setData({ user: meData.me });
-      } else if (!loginAttempted) {
-        // TODO: figure out if we need this guard. Can we get away with only
-        // using isAuthenticated?
-        tryToCreateSession();
-      }
+      if (meData) setData({ user: meData.me });
+      // If there is no user data, either the user doesn't have a session or
+      // they don't exist. Since we can't tell the difference, we have to try to
+      // create a session.
+      if (!meData?.me) tryToCreateSession();
     }
-  }, [loading, error, meData, loginAttempted, isAuthenticated]);
+  }, [loading, error, meData, isAuthenticated]);
 
   return (
-    <AuthContext.Provider value={{ data, setData }}>
+    <AuthContext.Provider
+      value={{
+        data,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

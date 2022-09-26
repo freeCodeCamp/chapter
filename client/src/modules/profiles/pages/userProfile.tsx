@@ -11,13 +11,14 @@ import {
 import { useAuthStore } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
 import { meQuery } from 'modules/auth/graphql/queries';
+import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const {
     data: { user },
-    setData,
   } = useAuthStore();
+  const logout = useLogout();
   const router = useRouter();
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
@@ -42,8 +43,8 @@ export const UserProfilePage = () => {
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
-    deleteMe();
-    setData({});
+    await deleteMe();
+    await logout();
     router.push('/');
   };
 

@@ -22,12 +22,12 @@ describe('profile page', () => {
       );
 
       cy.toggleChapterSubscription(chapterIdToJoin);
-      cy.getChapterMembers(chapterIdToJoin).then((chapter_users) =>
-        checkSubscription(chapter_users, false),
+      cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
+        checkSubscription(chapterUsers, false),
       );
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
-      cy.getEventUsers(eventIdToJoin).then((event_users) =>
-        checkSubscription(event_users, true),
+      cy.getEventUsers(eventIdToJoin).then((eventUsers) =>
+        checkSubscription(eventUsers, true),
       );
     });
 
@@ -43,8 +43,8 @@ describe('profile page', () => {
         checkSubscription(chapterUsers, false),
       );
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
-      cy.getEventUsers(eventIdToJoin).then((event_users) =>
-        checkSubscription(event_users, false),
+      cy.getEventUsers(eventIdToJoin).then((eventUsers) =>
+        checkSubscription(eventUsers, false),
       );
     });
 

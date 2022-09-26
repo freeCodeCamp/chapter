@@ -172,7 +172,7 @@ const getEventUsers = (eventId: number) => {
   };
   return cy
     .request(gqlOptions(eventQuery))
-    .then((response) => response.body.data.event.event_users);
+    .then((response) => response.body.data.dashboardEvent.event_users);
 };
 
 Cypress.Commands.add('getEventUsers', getEventUsers);

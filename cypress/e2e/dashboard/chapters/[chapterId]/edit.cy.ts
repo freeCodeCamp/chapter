@@ -74,27 +74,18 @@ describe('chapter edit dashboard', () => {
     });
   });
 
-  it('deny admins to delete a chapter', () => {
+  it('only accepts chapter deletion requests from owners', () => {
     const chapterId = 1;
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login('admin@of.chapter.one);
 
-    cy.updateChapter(chapterId, chapterData).then((response) => {
+    cy.deleteChapter(chapterId).then((response) => {
       expectToBeRejected(response);
-
-      cy.visit(`/dashboard/chapters/${chapterId}`);
-      cy.findByRole('button', { name: 'Delete Chapter' })
-        .click()
-        .findByRole('button', { name: 'Are you sure?' })
-        .click()
-        .findByRole('button', { name: 'Delete' })
-        .click();
     });
 
-    cy.updateChapter(chapterId, chapterData).then((response) => {
+    cy.login();
+    cy.deleteChapter(chapterId).then((response) => {
       expect(response.status).to.eq(200);
-
-      cy.visit(`/dashboard/chapters/${chapterId}`);
-      cy.contains(chapterData.name);
+      expect(response.body.errors).not.to.exist;
     });
   });
 });

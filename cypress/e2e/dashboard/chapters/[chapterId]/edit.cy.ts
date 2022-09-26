@@ -75,7 +75,7 @@ describe('chapter edit dashboard', () => {
   });
 
   it('only accepts chapter deletion requests from owners', () => {
-    cy.login('admin@of.chapter.one);
+    cy.login('admin@of.chapter.one');
 
     cy.deleteChapter(chapterId).then((response) => {
       expectToBeRejected(response);

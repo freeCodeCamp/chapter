@@ -38,6 +38,8 @@ describe('profile page', () => {
       );
       cy.get('@switch').uncheck({ force: true });
       cy.get('@switch').should('not.be.checked');
+      cy.get('@switch').should('be.enabled');
+
       cy.joinChapter(chapterIdToJoin);
       cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
         checkSubscription(chapterUsers, false),
@@ -60,6 +62,7 @@ describe('profile page', () => {
       );
       cy.get('@switch').uncheck({ force: true });
       cy.get('@switch').should('not.be.checked');
+      cy.get('@switch').should('be.enabled');
 
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
       cy.getEventUsers(eventIdToJoin).then((eventUsers) =>

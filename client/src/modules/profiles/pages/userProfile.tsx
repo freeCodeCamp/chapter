@@ -28,10 +28,11 @@ export const UserProfilePage = () => {
   });
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
+    const name = data.name?.trim();
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { data },
+        variables: { data: { name } },
       });
     } catch (err) {
       console.error(err);

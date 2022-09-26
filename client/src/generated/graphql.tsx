@@ -1427,6 +1427,7 @@ export type HomeQuery = {
   chapters: Array<{
     __typename?: 'ChapterWithEvents';
     id: number;
+    name: string;
     description: string;
     category: string;
     image_url: string;

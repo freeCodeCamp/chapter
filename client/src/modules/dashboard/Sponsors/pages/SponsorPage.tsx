@@ -4,15 +4,22 @@ import NextError from 'next/error';
 import React, { useEffect } from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useSponsorLazyQuery } from '../../../../generated/graphql';
+import {
+  useSponsorLazyQuery,
+  useSponsorEventsQuery,
+} from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { EventsList } from 'modules/dashboard/shared/components/EventsList';
 
 export const SponsorPage: NextPage = () => {
   const { param: sponsorId, isReady } = useParam('id');
   const [getSponsor, { loading, error, data }] = useSponsorLazyQuery({
+    variables: { sponsorId },
+  });
+  const eventsList = useSponsorEventsQuery({
     variables: { sponsorId },
   });
 
@@ -49,8 +56,12 @@ export const SponsorPage: NextPage = () => {
           </Text>
         </Flex>
       </Card>
-
-      <h3>Placeholder for events ....</h3>
+      {eventsList.data && (
+        <EventsList
+          title={'Sponser'}
+          events={eventsList.data.sponsorEvents.event_sponsors.events}
+        />
+      )}
     </Layout>
   );
 };

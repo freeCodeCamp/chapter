@@ -6,7 +6,7 @@ import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
 
-const VenuesData = {
+const venueIncludes = {
   chapter: {
     include: {
       events: {
@@ -52,7 +52,7 @@ export class VenueResolver {
   venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: VenuesData,
+      include: venueIncludes,
     });
   }
 
@@ -68,7 +68,7 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
-      include: VenuesData,
+      include: venueIncludes,
     });
   }
 

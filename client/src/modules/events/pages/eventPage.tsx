@@ -19,7 +19,7 @@ import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import { useAuth } from '../../auth/store';
+import { useAuthStore } from '../../auth/store';
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../../dashboard/Events/graphql/queries';
@@ -32,11 +32,15 @@ import {
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
+import { useLogin } from 'hooks/useAuth';
 
 export const EventPage: NextPage = () => {
   const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
-  const { user } = useAuth();
+  const {
+    data: { user },
+  } = useAuthStore();
+  const login = useLogin();
 
   const refetch = {
     refetchQueries: [{ query: EVENT, variables: { eventId } }],
@@ -159,7 +163,7 @@ export const EventPage: NextPage = () => {
 
   // TODO: reimplment this the login modal with Auth0
   const checkOnRsvp = async () => {
-    if (!user) throw new Error('User not logged in');
+    if (!user) await login();
     await onRsvp();
   };
 

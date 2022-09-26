@@ -1,9 +1,8 @@
-import { Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/layout';
+import { Heading, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import React, { useEffect } from 'react';
-import { LinkButton } from 'chakra-next-link';
-import { Tag } from '@chakra-ui/react';
+
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useVenueLazyQuery } from '../../../../generated/graphql';
@@ -11,6 +10,7 @@ import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { EventsList } from '../../shared/components/EventsList';
 import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
@@ -42,51 +42,10 @@ export const VenuePage: NextPage = () => {
           <Text>{data.venue.chapter.name}</Text>
         </ProgressCardContent>
       </Card>
-      <Heading as={'h2'} marginBlock={'1em'} fontSize={'lg'}>
-        Organized By The Venue&apos;s Chapter
-      </Heading>
-      <Grid gap={'2em'}>
-        {data.venue.chapter.events.map(
-          ({ name, canceled, invite_only, id }) => (
-            <GridItem key={id}>
-              <Flex justifyContent={'space-between'}>
-                <LinkButton href={`/events/${id}`}>{name}</LinkButton>
-                <Flex>
-                  {canceled && (
-                    <Tag
-                      borderRadius="lg"
-                      marginRight={'3'}
-                      paddingInline="[1 , 2]"
-                      paddingBlock="[.5, 1]"
-                      fontSize={['small', 'md']}
-                      maxWidth={'8em'}
-                      mt="1"
-                      maxH={'2em'}
-                      colorScheme={'red'}
-                    >
-                      Canceled
-                    </Tag>
-                  )}
-                  {invite_only && (
-                    <Tag
-                      borderRadius="lg"
-                      mt="1"
-                      paddingInline="[1 , 2]"
-                      paddingBlock="[.5, 1]"
-                      colorScheme={'blue'}
-                      fontSize={['small', 'md']}
-                      maxWidth={'8em'}
-                      maxH={'2em'}
-                    >
-                      Invite only
-                    </Tag>
-                  )}
-                </Flex>
-              </Flex>
-            </GridItem>
-          ),
-        )}
-      </Grid>
+      <EventsList
+        title="Organized By The Venue's Chapter"
+        events={data.venue.chapter.events}
+      />
     </Layout>
   );
 };

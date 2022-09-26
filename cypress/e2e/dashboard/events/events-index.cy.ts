@@ -84,7 +84,10 @@ describe('spec needing owner', () => {
     const recipientEmails = users
       .filter(filterCallback)
       .map(({ user: { email } }) => email);
-    cy.waitUntilMail().should('have.length', recipientEmails.length);
+    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length }).should(
+      'have.length',
+      recipientEmails.length,
+    );
     recipientEmails.forEach((recipientEmail) => {
       cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
       cy.get('@currentRecipient').should('have.length', 1);

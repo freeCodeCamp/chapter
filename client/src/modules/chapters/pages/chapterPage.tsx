@@ -145,17 +145,13 @@ export const ChapterPage: NextPage = () => {
                     {dataChapterUser.chapterUser.chapter_role.name} of the
                     chapter
                   </Text>
-                  <Button
-                    colorScheme="orange"
-                    onClick={() => chapterSubscribe(false)}
-                    size="md"
-                  >
+                  <Button onClick={() => chapterSubscribe(false)} size="md">
                     Unsubscribe
                   </Button>
                 </HStack>
               ) : (
                 <Button
-                  colorScheme="green"
+                  colorScheme="blue"
                   onClick={() => chapterSubscribe(true)}
                   size="md"
                 >

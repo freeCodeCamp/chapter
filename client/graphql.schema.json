@@ -3795,6 +3795,39 @@
             "deprecationReason": null
           },
           {
+            "name": "updateMe",
+            "description": null,
+            "args": [
+              {
+                "name": "data",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "UpdateUserInputs",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updateSponsor",
             "description": null,
             "args": [
@@ -5187,6 +5220,29 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "UpdateUserInputs",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "name",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "UpdateVenueInputs",
         "description": null,
         "fields": null,
@@ -5539,7 +5595,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Chapter",
+                "name": "ChapterWithEvents",
                 "ofType": null
               }
             },

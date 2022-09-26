@@ -1,4 +1,4 @@
-import { IsUrl } from 'class-validator';
+import { IsOptional, IsUrl } from 'class-validator';
 import { InputType, Field, Int } from 'type-graphql';
 
 import { events_venue_type_enum } from '../../graphql-types';
@@ -13,6 +13,7 @@ export class CreateEventInputs {
 
   @Field(() => String, { nullable: true })
   @IsUrl()
+  @IsOptional()
   url?: string;
 
   @Field(() => String, { nullable: true })

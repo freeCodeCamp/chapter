@@ -263,6 +263,25 @@ Cypress.Commands.add('updateChapter', (chapterId, data) => {
   return cy.authedRequest(gqlOptions(chapterMutation));
 });
 /**
+ * Delete chapter using GQL mutation
+ * @param chapterId Id of the chapter for deletion
+ */
+const deleteChapter = (chapterId: number) => {
+  const chapterMutation = {
+    operationName: 'deleteChapter',
+    variables: {
+      chapterId,
+    },
+    query: `mutation deleteChapter($chapterId: Int!) {
+      deleteChapter(id: $chapterId) {
+        id
+      }
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(chapterMutation));
+};
+Cypress.Commands.add('deleteChapter', deleteChapter);
+/**
  * Update event using GQL mutation
  * @param eventId Id of the event
  * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
@@ -751,6 +770,7 @@ declare global {
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
       createSponsor: typeof createSponsor;
+      deleteChapter: typeof deleteChapter;
       deleteEvent: typeof deleteEvent;
       deleteVenue: typeof deleteVenue;
       sendEventInvite: typeof sendEventInvite;

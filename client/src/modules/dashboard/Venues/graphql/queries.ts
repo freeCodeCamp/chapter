@@ -36,6 +36,12 @@ export const VENUE = gql`
       chapter {
         id
         name
+        events {
+          id
+          name
+          canceled
+          invite_only
+        }
       }
     }
   }

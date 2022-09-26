@@ -290,6 +290,7 @@ export type Mutation = {
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
   updateEvent: Event;
+  updateMe: User;
   updateSponsor: Sponsor;
   updateVenue: Venue;
 };
@@ -406,6 +407,10 @@ export type MutationUpdateChapterArgs = {
 export type MutationUpdateEventArgs = {
   data: UpdateEventInputs;
   id: Scalars['Int'];
+};
+
+export type MutationUpdateMeArgs = {
+  data: UpdateUserInputs;
 };
 
 export type MutationUpdateSponsorArgs = {
@@ -553,6 +558,10 @@ export type UpdateSponsorInputs = {
   website: Scalars['String'];
 };
 
+export type UpdateUserInputs = {
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateVenueInputs = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
@@ -590,7 +599,7 @@ export type UserWithInstanceRole = {
 
 export type Venue = {
   __typename?: 'Venue';
-  chapter: Chapter;
+  chapter: ChapterWithEvents;
   chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
@@ -615,6 +624,15 @@ export type DeleteMeMutationVariables = Exact<{ [key: string]: never }>;
 export type DeleteMeMutation = {
   __typename?: 'Mutation';
   deleteMe: { __typename?: 'User'; id: number };
+};
+
+export type UpdateMeMutationVariables = Exact<{
+  data: UpdateUserInputs;
+}>;
+
+export type UpdateMeMutation = {
+  __typename?: 'Mutation';
+  updateMe: { __typename?: 'User'; id: number; name: string };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -890,6 +908,7 @@ export type UpdateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    invite_only: boolean;
     tags: Array<{
       __typename?: 'EventTag';
       tag: { __typename?: 'Tag'; id: number; name: string };
@@ -1233,7 +1252,7 @@ export type VenuesQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
-    chapter: { __typename?: 'Chapter'; id: number; name: string };
+    chapter: { __typename?: 'ChapterWithEvents'; id: number; name: string };
   }>;
 };
 
@@ -1254,7 +1273,18 @@ export type VenueQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
-    chapter: { __typename?: 'Chapter'; id: number; name: string };
+    chapter: {
+      __typename?: 'ChapterWithEvents';
+      id: number;
+      name: string;
+      events: Array<{
+        __typename?: 'Event';
+        id: number;
+        name: string;
+        canceled: boolean;
+        invite_only: boolean;
+      }>;
+    };
   } | null;
 };
 
@@ -1460,6 +1490,54 @@ export type DeleteMeMutationResult = Apollo.MutationResult<DeleteMeMutation>;
 export type DeleteMeMutationOptions = Apollo.BaseMutationOptions<
   DeleteMeMutation,
   DeleteMeMutationVariables
+>;
+export const UpdateMeDocument = gql`
+  mutation updateMe($data: UpdateUserInputs!) {
+    updateMe(data: $data) {
+      id
+      name
+    }
+  }
+`;
+export type UpdateMeMutationFn = Apollo.MutationFunction<
+  UpdateMeMutation,
+  UpdateMeMutationVariables
+>;
+
+/**
+ * __useUpdateMeMutation__
+ *
+ * To run a mutation, you first call `useUpdateMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMeMutation, { data, loading, error }] = useUpdateMeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateMeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateMeMutation,
+    UpdateMeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateMeMutation, UpdateMeMutationVariables>(
+    UpdateMeDocument,
+    options,
+  );
+}
+export type UpdateMeMutationHookResult = ReturnType<typeof useUpdateMeMutation>;
+export type UpdateMeMutationResult = Apollo.MutationResult<UpdateMeMutation>;
+export type UpdateMeMutationOptions = Apollo.BaseMutationOptions<
+  UpdateMeMutation,
+  UpdateMeMutationVariables
 >;
 export const MeDocument = gql`
   query me {
@@ -2353,6 +2431,7 @@ export const UpdateEventDocument = gql`
           name
         }
       }
+      invite_only
     }
   }
 `;
@@ -3595,6 +3674,12 @@ export const VenueDocument = gql`
       chapter {
         id
         name
+        events {
+          id
+          name
+          canceled
+          invite_only
+        }
       }
     }
   }

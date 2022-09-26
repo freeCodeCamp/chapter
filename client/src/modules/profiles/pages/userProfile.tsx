@@ -16,15 +16,20 @@ import { Button } from '@chakra-ui/button';
 import {
   useDeleteMeMutation,
   useToggleAutoSubscribeMutation,
+  useUpdateMeMutation,
+  UpdateUserInputs,
 } from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
 import { meQuery } from '../../auth/graphql/queries';
+import { ProfileForm } from '../component/ProfileForm';
+import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const {
     data: { user },
-    setData,
   } = useAuthStore();
+  const logout = useLogout();
   const router = useRouter();
   const [autoSubscribe, setAutoSubscribe] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -38,11 +43,29 @@ export const UserProfilePage = () => {
   const [toggleAutoSubscribe] = useToggleAutoSubscribeMutation({
     refetchQueries: [{ query: meQuery }],
   });
+  const [updateMe] = useUpdateMeMutation({
+    refetchQueries: [{ query: meQuery }],
+  });
+
+  const submitUpdateMe = async (data: UpdateUserInputs) => {
+    const name = data.name?.trim();
+    setLoadingUpdate(true);
+    try {
+      await updateMe({
+        variables: { data: { name } },
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingUpdate(false);
+    }
+  };
+
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
-    deleteMe();
-    setData({});
+    await deleteMe();
+    await logout();
     router.push('/');
   };
   const onSwitch = async () => {
@@ -94,6 +117,15 @@ export const UserProfilePage = () => {
               </Flex>
             </>
           )}
+
+          <ProfileForm
+            loading={loadingUpdate}
+            onSubmit={submitUpdateMe}
+            data={user}
+            loadingText={'Saving Profile Changes'}
+            submitText={'Save Profile Changes'}
+          />
+
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data
           </Button>

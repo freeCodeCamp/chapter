@@ -124,7 +124,7 @@ export const EventPage: NextPage = () => {
 
         <Actions
           event={data.dashboardEvent}
-          chapter_id={data.event.chapter.id}
+          chapter_id={data.dashboardEvent.chapter.id}
           onDelete={() => router.replace('/dashboard/events')}
         />
         {isPhysical(data.dashboardEvent.venue_type) &&

@@ -485,6 +485,10 @@ export type QuerySponsorArgs = {
   id: Scalars['Int'];
 };
 
+export type QuerySponsorEventsArgs = {
+  sponsorId: Scalars['Int'];
+};
+
 export type QueryVenueArgs = {
   id: Scalars['Int'];
 };
@@ -1142,7 +1146,9 @@ export type SponsorQuery = {
   } | null;
 };
 
-export type SponsorEventsQueryVariables = Exact<{ [key: string]: never }>;
+export type SponsorEventsQueryVariables = Exact<{
+  sponsorId: Scalars['Int'];
+}>;
 
 export type SponsorEventsQuery = {
   __typename?: 'Query';
@@ -3207,8 +3213,8 @@ export type SponsorQueryResult = Apollo.QueryResult<
   SponsorQueryVariables
 >;
 export const SponsorEventsDocument = gql`
-  query sponsorEvents {
-    sponsorEvents {
+  query sponsorEvents($sponsorId: Int!) {
+    sponsorEvents(sponsorId: $sponsorId) {
       id
       name
       website
@@ -3238,11 +3244,12 @@ export const SponsorEventsDocument = gql`
  * @example
  * const { data, loading, error } = useSponsorEventsQuery({
  *   variables: {
+ *      sponsorId: // value for 'sponsorId'
  *   },
  * });
  */
 export function useSponsorEventsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SponsorEventsQuery,
     SponsorEventsQueryVariables
   >,

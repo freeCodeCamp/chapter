@@ -49,7 +49,7 @@ describe('spec needing owner', () => {
     cy.findByLabelText('Confirmed').should('be.checked');
     cy.findByLabelText('Waitlist').should('not.be.checked');
     cy.findByLabelText('Canceled').should('not.be.checked');
-    cy.getEventUsers(1).then((results) => {
+    cy.getDashboardEventUsers(1).then((results) => {
       const eventUsers = results.filter(({ subscribed }) => subscribed);
       const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
       sendAndCheckEmails(isRsvpConfirmed, eventUsers);

@@ -35,8 +35,6 @@ export const DASHBOARD_CHAPTER = gql`
             name
           }
         }
-        invite_only
-        canceled
       }
     }
   }

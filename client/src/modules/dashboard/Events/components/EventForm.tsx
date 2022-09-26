@@ -299,7 +299,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               label="Streaming URL"
               placeholder=""
               isDisabled={loading}
-              isRequired
               {...register('streaming_url')}
             />
           )}

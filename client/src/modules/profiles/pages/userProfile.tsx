@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
-import { useDeleteMeMutation } from '../../../generated/graphql';
+import {
+  useDeleteMeMutation,
+  useUpdateMeMutation,
+  UpdateUserInputs,
+} from '../../../generated/graphql';
 import { useAuthStore } from '../../auth/store';
+import { ProfileForm } from '../component/ProfileForm';
+import { meQuery } from 'modules/auth/graphql/queries';
 import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const {
     data: { user },
   } = useAuthStore();
@@ -16,6 +23,24 @@ export const UserProfilePage = () => {
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
   const [deleteMe] = useDeleteMeMutation();
+  const [updateMe] = useUpdateMeMutation({
+    refetchQueries: [{ query: meQuery }],
+  });
+
+  const submitUpdateMe = async (data: UpdateUserInputs) => {
+    const name = data.name?.trim();
+    setLoadingUpdate(true);
+    try {
+      await updateMe({
+        variables: { data: { name } },
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingUpdate(false);
+    }
+  };
+
   const clickDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
@@ -48,6 +73,14 @@ export const UserProfilePage = () => {
               </Flex>
             </>
           )}
+
+          <ProfileForm
+            loading={loadingUpdate}
+            onSubmit={submitUpdateMe}
+            data={user}
+            loadingText={'Saving Profile Changes'}
+            submitText={'Save Profile Changes'}
+          />
 
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data

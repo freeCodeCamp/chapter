@@ -280,6 +280,7 @@ const deleteChapter = (chapterId: number) => {
   };
   return cy.authedRequest(gqlOptions(chapterMutation));
 };
+Cypress.Commands.add('deleteChapter', deleteChapter);
 /**
  * Update event using GQL mutation
  * @param eventId Id of the event

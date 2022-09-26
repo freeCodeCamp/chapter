@@ -28,11 +28,8 @@ export class ChapterResolver {
       include: {
         events: {
           include: {
-            tags: { include: { tag: true } },
-            sponsors: true,
             venue: true,
-            event_users: true,
-            chapter: true,
+            tags: { include: { tag: true } },
           },
         },
       },

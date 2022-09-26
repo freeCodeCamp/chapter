@@ -82,9 +82,12 @@ describe('chapter edit dashboard', () => {
       expectToBeRejected(response);
 
       cy.visit(`/dashboard/chapters/${chapterId}`);
-      cy.findByRole('button', { name: 'Delete Chapter' }).click();
-      cy.findByRole('button', { name: 'Are you sure?' }).click();
-      cy.findByRole('button', { name: 'Delete' }).click();
+      cy.findByRole('button', { name: 'Delete Chapter' })
+        .click()
+        .findByRole('button', { name: 'Are you sure?' })
+        .click()
+        .findByRole('button', { name: 'Delete' })
+        .click();
     });
 
     cy.updateChapter(chapterId, chapterData).then((response) => {

@@ -32,7 +32,6 @@ export const UserProfilePage = () => {
       await updateMe({
         variables: { data },
       });
-      await router.push('/profile');
     } catch (err) {
       console.error(err);
     } finally {
@@ -76,7 +75,7 @@ export const UserProfilePage = () => {
           <ProfileForm
             loading={loadingUpdate}
             onSubmit={submitUpdateMe}
-            data={user.name.trim()}
+            data={user}
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />

@@ -1,5 +1,6 @@
 import { Flex, Heading, Link, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import React, { useEffect } from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
@@ -24,6 +25,8 @@ export const SponsorPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
+  if (!data.sponsor)
+    return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
     <Layout>

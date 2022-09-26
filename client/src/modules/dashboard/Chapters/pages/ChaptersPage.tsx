@@ -21,9 +21,6 @@ export const ChaptersPage: NextPage = () => {
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
 
-  // TODO: render something nicer if this happens. A 404 page?
-  if (!data.chapters) return <div> No Chapters found</div>;
-
   return (
     <Layout>
       <VStack>

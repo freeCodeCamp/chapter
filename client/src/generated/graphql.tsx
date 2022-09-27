@@ -533,7 +533,7 @@ export type SponsorWithEvents = {
 
 export type SponsoredEvent = {
   __typename?: 'SponsoredEvent';
-  events: Array<Event>;
+  events: Event;
 };
 
 export type Tag = {
@@ -1188,13 +1188,13 @@ export type SponsorWithEventsQuery = {
     type: string;
     event_sponsors: Array<{
       __typename?: 'SponsoredEvent';
-      events: Array<{
+      events: {
         __typename?: 'Event';
         id: number;
         name: string;
         invite_only: boolean;
         canceled: boolean;
-      }>;
+      };
     }>;
   };
 };

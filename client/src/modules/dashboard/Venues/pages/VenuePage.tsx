@@ -2,6 +2,7 @@ import { Heading, Text } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import React, { useEffect } from 'react';
+
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useVenueLazyQuery } from '../../../../generated/graphql';
@@ -9,6 +10,7 @@ import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { EventsList } from '../../shared/components/EventsList';
 import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
@@ -32,7 +34,7 @@ export const VenuePage: NextPage = () => {
     <Layout dataCy="view-venue-page">
       <Card className={styles.card}>
         <ProgressCardContent>
-          <Heading as="h2" fontWeight="normal" mb="2">
+          <Heading as="h1" fontWeight="normal" mb="2">
             {data.venue.name}
           </Heading>
 
@@ -40,7 +42,10 @@ export const VenuePage: NextPage = () => {
           <Text>{data.venue.chapter.name}</Text>
         </ProgressCardContent>
       </Card>
-      <h3>Placeholder for events...</h3>
+      <EventsList
+        title="Organized By The Venue's Chapter"
+        events={data.venue.chapter.events}
+      />
     </Layout>
   );
 };

@@ -4437,7 +4437,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sponsorEvents",
+            "name": "sponsorWithEvents",
             "description": null,
             "args": [
               {
@@ -4461,17 +4461,9 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "SponsorEvents",
-                    "ofType": null
-                  }
-                }
+                "kind": "OBJECT",
+                "name": "SponsorWithEvents",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -4803,7 +4795,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "SponsorEvents",
+        "name": "SponsorWithEvents",
         "description": null,
         "fields": [
           {

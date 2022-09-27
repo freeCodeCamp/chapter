@@ -4,10 +4,7 @@ import NextError from 'next/error';
 import React, { useEffect } from 'react';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import {
-  useSponsorLazyQuery,
-  useSponsorEventsQuery,
-} from '../../../../generated/graphql';
+import { useSponsorWithEventsLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
@@ -16,10 +13,7 @@ import { EventsList } from 'modules/dashboard/shared/components/EventsList';
 
 export const SponsorPage: NextPage = () => {
   const { param: sponsorId, isReady } = useParam('id');
-  const [getSponsor, { loading, error, data }] = useSponsorLazyQuery({
-    variables: { sponsorId },
-  });
-  const eventsList = useSponsorEventsQuery({
+  const [getSponsor, { loading, error, data }] = useSponsorWithEventsLazyQuery({
     variables: { sponsorId },
   });
 
@@ -32,7 +26,7 @@ export const SponsorPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  if (!data.sponsor)
+  if (!data.sponsorWithEvents)
     return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
@@ -40,7 +34,7 @@ export const SponsorPage: NextPage = () => {
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading data-cy="name" as="h2" fontWeight="normal" mb="2">
-            {data?.sponsor?.name}
+            {data?.sponsorWithEvents.name}
           </Heading>
         </ProgressCardContent>
       </Card>
@@ -50,16 +44,16 @@ export const SponsorPage: NextPage = () => {
           Details{' '}
         </Heading>
         <Flex mt="2" justifyContent="space-between">
-          <Text data-cy="type">Type: {data?.sponsor?.type}</Text>
+          <Text data-cy="type">Type: {data?.sponsorWithEvents.type}</Text>
           <Text data-cy="website">
-            Website: <Link>{data?.sponsor?.website}</Link>
+            Website: <Link>{data?.sponsorWithEvents.website}</Link>
           </Text>
         </Flex>
       </Card>
-      {eventsList.data?.sponsorEvents && (
+      {data.sponsorWithEvents && (
         <EventsList
           title={'Sponser'}
-          events={eventsList.data.sponsorEvents.event_sponsors.events}
+          events={data.sponsorWithEvents.event_sponsors.events}
         />
       )}
     </Layout>

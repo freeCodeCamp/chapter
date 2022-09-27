@@ -17,7 +17,7 @@ export class SponsorResolver {
     return prisma.sponsors.findUnique({ where: { id } });
   }
   @Query(() => SponsorWithEvents)
-  async SponsorWithEvents(
+  async sponsorWithEvents(
     @Arg('sponsorId', () => Int) id: number,
   ): Promise<SponsorWithEvents> {
     return await prisma.sponsors.findUniqueOrThrow({

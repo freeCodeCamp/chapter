@@ -68,8 +68,8 @@ export class EventWithRelations extends Event {
   @Field(() => Chapter)
   chapter: Chapter;
 
-  @Field(() => [EventSponsor])
-  sponsors: EventSponsor[];
+  @Field(() => EventSponsor)
+  sponsors: EventSponsor;
 
   @Field(() => Venue, { nullable: true })
   venue?: Venue | null;

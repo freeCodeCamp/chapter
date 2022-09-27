@@ -3,6 +3,6 @@ import { Event } from './Event';
 
 @ObjectType()
 export class SponsoredEvent {
-  @Field(() => Event)
-  events: Event;
+  @Field(() => [Event])
+  events: Event[];
 }

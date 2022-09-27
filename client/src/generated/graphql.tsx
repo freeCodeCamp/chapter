@@ -779,16 +779,13 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    category: string;
     image_url: string;
     city: string;
-    region: string;
-    country: string;
     events: Array<{
       __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      start_at: any;
+      capacity: number;
       venue?: {
         __typename?: 'Venue';
         id: number;
@@ -1440,16 +1437,13 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    category: string;
     image_url: string;
     city: string;
-    region: string;
-    country: string;
     events: Array<{
       __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      start_at: any;
+      capacity: number;
       venue?: {
         __typename?: 'Venue';
         id: number;
@@ -1936,15 +1930,12 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      category
       image_url
       city
-      region
-      country
       events {
         id
         name
-        start_at
+        capacity
         venue {
           id
           name
@@ -4136,15 +4127,12 @@ export const HomeDocument = gql`
       id
       name
       description
-      category
       image_url
       city
-      region
-      country
       events {
         id
         name
-        start_at
+        capacity
         venue {
           id
           name

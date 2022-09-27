@@ -53,7 +53,12 @@ export type User = Merge<Prisma.usersGetPayload<typeof userInclude>>;
 export type Events = Merge<
   Prisma.eventsGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
+export type Venues = Merge<
+  Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
+>;
 
+// TODO: get events in user middleware and only get those that the user is an
+// event_user for
 export const events = (req: Request, _res: Response, next: NextFunction) => {
   const id = req.session?.id;
 
@@ -71,6 +76,29 @@ export const events = (req: Request, _res: Response, next: NextFunction) => {
     })
     .then((events) => {
       req.events = events;
+      next();
+    });
+};
+
+// TODO: get venues in user middleware and only get those that the user is an
+// chapter_user for
+export const venues = (req: Request, _res: Response, next: NextFunction) => {
+  const id = req.session?.id;
+
+  // user is not logged in, so we don't need to do anything here
+  if (!id) {
+    return next();
+  }
+
+  prisma.venues
+    .findMany({
+      select: {
+        id: true,
+        chapter_id: true,
+      },
+    })
+    .then((venues) => {
+      req.venues = venues;
       next();
     });
 };

@@ -18,7 +18,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useConfirm } from 'chakra-confirm';
 import {
   useBanUserMutation,
-  useChapterUsersLazyQuery,
+  useDashboardChapterUsersLazyQuery,
   useChapterRolesQuery,
   useChangeChapterUserRoleMutation,
   useUnbanUserMutation,
@@ -30,14 +30,15 @@ import {
   RoleChangeModalData,
 } from '../../../shared/components/RoleChangeModal';
 import { useParam } from '../../../../../hooks/useParam';
-import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 
 export const ChapterUsersPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('id');
 
-  const [getChapterUsers, { loading, error, data }] = useChapterUsersLazyQuery({
-    variables: { chapterId },
-  });
+  const [getChapterUsers, { loading, error, data }] =
+    useDashboardChapterUsersLazyQuery({
+      variables: { chapterId },
+    });
 
   useEffect(() => {
     if (isReady) getChapterUsers();
@@ -49,7 +50,9 @@ export const ChapterUsersPage: NextPage = () => {
   const [chapterUser, setChapterUser] = useState<RoleChangeModalData>();
 
   const refetch = {
-    refetchQueries: [{ query: CHAPTER_USERS, variables: { chapterId } }],
+    refetchQueries: [
+      { query: DASHBOARD_CHAPTER_USERS, variables: { chapterId } },
+    ],
   };
 
   const [changeRoleMutation] = useChangeChapterUserRoleMutation(refetch);
@@ -121,14 +124,14 @@ export const ChapterUsersPage: NextPage = () => {
   };
 
   const bans = useMemo(
-    () => new Set(data?.chapter?.user_bans.map((ban) => ban.user.id)),
-    [data?.chapter?.chapter_users, data?.chapter?.user_bans],
+    () => new Set(data?.dashboardChapter?.user_bans.map((ban) => ban.user.id)),
+    [data?.dashboardChapter?.chapter_users, data?.dashboardChapter?.user_bans],
   );
 
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  if (!data.chapter)
+  if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
@@ -151,7 +154,7 @@ export const ChapterUsersPage: NextPage = () => {
         </Flex>
         <Box display={{ base: 'none', lg: 'block' }}>
           <DataTable
-            data={data.chapter.chapter_users}
+            data={data.dashboardChapter.chapter_users}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
             keys={['name', 'email', 'role', 'actions'] as const}
             mapper={{
@@ -166,7 +169,7 @@ export const ChapterUsersPage: NextPage = () => {
                 </HStack>
               ),
               email: ({ user }) => user.email,
-              actions: ({ canBeBanned, user, chapter_role }) => (
+              actions: ({ is_bannable, user, chapter_role }) => (
                 <HStack>
                   <Button
                     data-cy="changeRole"
@@ -182,7 +185,7 @@ export const ChapterUsersPage: NextPage = () => {
                   >
                     Change
                   </Button>
-                  {canBeBanned &&
+                  {is_bannable &&
                     (bans.has(user.id) ? (
                       <Button
                         data-cy="unbanUser"
@@ -211,12 +214,12 @@ export const ChapterUsersPage: NextPage = () => {
           />
         </Box>
         <Box display={{ base: 'block', lg: 'none' }}>
-          {data.chapter.chapter_users.map(
-            ({ canBeBanned, user, chapter_role }, index) => (
+          {data.dashboardChapter.chapter_users.map(
+            ({ is_bannable, user, chapter_role }, index) => (
               <Flex key={index} marginBlock={'2em'}>
-                {data.chapter ? (
+                {data.dashboardChapter ? (
                   <DataTable
-                    data={[data.chapter.chapter_users[index]]}
+                    data={[data.dashboardChapter.chapter_users[index]]}
                     keys={['type', 'actions'] as const}
                     showHeader={false}
                     tableProps={{
@@ -261,7 +264,7 @@ export const ChapterUsersPage: NextPage = () => {
                             >
                               Change
                             </Button>
-                            {canBeBanned &&
+                            {is_bannable &&
                               (bans.has(user.id) ? (
                                 <Button
                                   data-cy="unbanUser"

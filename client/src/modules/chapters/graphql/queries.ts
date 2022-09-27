@@ -33,9 +33,9 @@ export const CHAPTER = gql`
   }
 `;
 
-export const CHAPTER_USERS = gql`
-  query chapterUsers($chapterId: Int!) {
-    chapter(id: $chapterId) {
+export const DASHBOARD_CHAPTER_USERS = gql`
+  query dashboardChapterUsers($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
       chapter_users {
         user {
           id
@@ -47,7 +47,7 @@ export const CHAPTER_USERS = gql`
           name
         }
         subscribed
-        canBeBanned
+        is_bannable
       }
       user_bans {
         user {

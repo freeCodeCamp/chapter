@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import {
-  useChapterLazyQuery,
+  useDashboardChapterLazyQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -18,7 +18,7 @@ export const EditChapterPage: NextPage = () => {
 
   const { param: chapterId, isReady } = useParam('id');
 
-  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
+  const [getChapter, { loading, error, data }] = useDashboardChapterLazyQuery({
     variables: { chapterId },
   });
 

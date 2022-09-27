@@ -4,7 +4,10 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
-import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
+import type {
+  Chapter,
+  DashboardChapterQuery,
+} from '../../../../generated/graphql';
 
 export type ChapterFormData = Omit<
   Chapter,
@@ -14,7 +17,7 @@ export type ChapterFormData = Omit<
 interface ChapterFormProps {
   loading: boolean;
   onSubmit: (data: ChapterFormData) => Promise<void>;
-  data?: ChapterQuery;
+  data?: DashboardChapterQuery;
   submitText: string;
   loadingText: string;
 }
@@ -89,7 +92,7 @@ const fields: Fields[] = [
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
-  const chapter = data?.chapter;
+  const chapter = data?.dashboardChapter;
 
   const defaultValues: ChapterFormData = {
     name: chapter?.name ?? '',

@@ -27,9 +27,9 @@ export const EVENTS = gql`
   }
 `;
 
-export const EVENT = gql`
-  query event($eventId: Int!) {
-    event(eventId: $eventId) {
+export const DASHBOARD_EVENT = gql`
+  query dashboardEvent($eventId: Int!) {
+    dashboardEvent(eventId: $eventId) {
       id
       name
       description
@@ -93,34 +93,6 @@ export const EVENT = gql`
   }
 `;
 
-export const EVENT_WITH_VENU = gql`
-  query eventVenues($eventId: Int!) {
-    event(eventId: $eventId) {
-      id
-      name
-      description
-      url
-      streaming_url
-      capacity
-      start_at
-      ends_at
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      venue {
-        id
-      }
-    }
-    venues {
-      id
-      name
-    }
-  }
-`;
-
 export const Sponsors = gql`
   query sponsors {
     sponsors {
@@ -129,15 +101,6 @@ export const Sponsors = gql`
       website
       logo_path
       type
-    }
-  }
-`;
-
-export const EventRoles = gql`
-  query eventRoles {
-    eventRoles {
-      id
-      name
     }
   }
 `;

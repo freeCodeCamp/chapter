@@ -214,9 +214,13 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterBanUser)
+  // TODO: it would be nice if this was a field on the ChapterUser type and we
+  // could guarantee type safety of this resolver.
   @FieldResolver()
-  canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
+  is_bannable(@Ctx() ctx: ResolverCtx): boolean {
+    // TODO: reimplement the logic of
+    // https://github.com/freeCodeCamp/chapter/commit/a71e570b22e8bad042438369b1162000dcee3f47,
+    // updated with the current roles and permissions
     if (!ctx.user) {
       return false;
     }

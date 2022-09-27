@@ -277,6 +277,36 @@ export class EventResolver {
     });
   }
 
+  // TODO: Check we need all the returned data
+  @Authorized(Permission.EventEdit)
+  @Query(() => EventWithRelations, { nullable: true })
+  async dashboardEvent(
+    @Arg('eventId', () => Int) eventId: number,
+  ): Promise<EventWithRelations | null> {
+    return await prisma.events.findUnique({
+      where: { id: eventId },
+      include: {
+        chapter: true,
+        tags: { include: { tag: true } },
+        venue: true,
+        event_users: {
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: { include: { event_permission: true } },
+              },
+            },
+          },
+          orderBy: { user: { name: 'asc' } },
+        },
+        sponsors: { include: { sponsor: true } },
+      },
+    });
+  }
+
+  // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('eventId', () => Int) eventId: number,

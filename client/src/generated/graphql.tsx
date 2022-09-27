@@ -1302,7 +1302,7 @@ export type VenueQuery = {
       id: number;
       name: string;
       events: Array<{
-        __typename?: 'Event';
+        __typename?: 'EventWithVenue';
         id: number;
         name: string;
         canceled: boolean;

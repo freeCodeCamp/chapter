@@ -53,9 +53,9 @@ export const SponsorPage: NextPage = () => {
       {data.sponsorWithEvents && (
         <EventsList
           title={'Sponser'}
-          events={data.sponsorWithEvents.event_sponsors
-            .map((e) => e.events)
-            .flat()}
+          events={data.sponsorWithEvents.event_sponsors.map(({ events }) => ({
+            ...events,
+          }))}
         />
       )}
     </Layout>

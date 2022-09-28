@@ -9,7 +9,7 @@ import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { EventsList } from 'modules/dashboard/shared/components/EventsList';
+import { EventList } from 'modules/dashboard/shared/components/EventList';
 
 export const SponsorPage: NextPage = () => {
   const { param: sponsorId, isReady } = useParam('id');
@@ -50,14 +50,12 @@ export const SponsorPage: NextPage = () => {
           </Text>
         </Flex>
       </Card>
-      {data.sponsorWithEvents && (
-        <EventsList
-          title={'Sponser'}
-          events={data.sponsorWithEvents.event_sponsors.map(({ event }) => ({
-            ...event,
-          }))}
-        />
-      )}
+      <EventList
+        title={'Sponsored Events'}
+        events={data.sponsorWithEvents.event_sponsors.map(({ event }) => ({
+          ...event,
+        }))}
+      />
     </Layout>
   );
 };

@@ -16,7 +16,7 @@ import {
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { EventsList } from '../../shared/components/EventsList';
+import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { VENUES } from '../../Venues/graphql/queries';
@@ -108,7 +108,7 @@ export const ChapterPage: NextPage = () => {
           </HStack>
         </ProgressCardContent>
       </Card>
-      <EventsList title="Organized Events" events={data.chapter.events} />
+      <EventList title="Organized Events" events={data.chapter.events} />
     </Layout>
   );
 };

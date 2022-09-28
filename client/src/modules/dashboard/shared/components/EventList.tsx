@@ -10,12 +10,12 @@ interface EventInList {
   name: string;
 }
 
-interface EventsListProps {
+interface EventListProps {
   events: EventInList[];
   title: string;
 }
 
-export const EventsList = ({ events, title }: EventsListProps) => {
+export const EventList = ({ events, title }: EventListProps) => {
   return (
     <>
       <Heading as="h2" marginBlock="1em" fontSize="lg">

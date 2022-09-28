@@ -571,7 +571,7 @@ ${unsubscribeOptions}`,
       ({ chapter_id }) => chapter_id === chapterId,
     );
 
-    const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =
+    const eventSponsorsData: Prisma.event_sponsorsCreateManyEventInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
       }));

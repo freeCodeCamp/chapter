@@ -25,7 +25,7 @@ export class SponsorResolver {
       include: {
         event_sponsors: {
           include: {
-            events: { include: { tags: { include: { tag: true } } } },
+            event: { include: { tags: { include: { tag: true } } } },
           },
         },
       },

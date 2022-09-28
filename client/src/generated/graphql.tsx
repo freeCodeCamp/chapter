@@ -533,7 +533,7 @@ export type SponsorWithEvents = {
 
 export type SponsoredEvent = {
   __typename?: 'SponsoredEvent';
-  events: Event;
+  event: Event;
 };
 
 export type Tag = {
@@ -1188,7 +1188,7 @@ export type SponsorWithEventsQuery = {
     type: string;
     event_sponsors: Array<{
       __typename?: 'SponsoredEvent';
-      events: {
+      event: {
         __typename?: 'Event';
         id: number;
         name: string;
@@ -3354,7 +3354,7 @@ export const SponsorWithEventsDocument = gql`
       logo_path
       type
       event_sponsors {
-        events {
+        event {
           id
           name
           invite_only

@@ -4914,7 +4914,7 @@
         "description": null,
         "fields": [
           {
-            "name": "events",
+            "name": "event",
             "description": null,
             "args": [],
             "type": {

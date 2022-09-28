@@ -1,4 +1,4 @@
-import { Box, Button, Heading, HStack, Link } from '@chakra-ui/react';
+import { Box, Button, Heading, HStack } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
@@ -78,13 +78,9 @@ export const ChapterPage: NextPage = () => {
             {data.dashboardChapter.name}
           </Heading>
           <Box>
-            <Link
-              href={`${chapterId}/users`}
-              target="_blank"
-              paddingBlock={'2'}
-            >
+            <LinkButton href={`${chapterId}/users`} paddingBlock={'2'}>
               Chapter Users
-            </Link>
+            </LinkButton>
           </Box>
           <HStack mt={'2'}>
             <LinkButton

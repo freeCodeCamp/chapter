@@ -29,13 +29,15 @@ interface Props {
 }
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
-// TODO: distinguish between logging into the app and logging into Auth0. Maybe
-// use sign-in for the app?
-const LoginButton = () => {
-  const login = useLogin();
+interface CallToActionButtonProps {
+  text: string;
+  action: any;
+}
+
+const CallToActionButton = ({ text, action }: CallToActionButtonProps) => {
   return (
     <MenuItem
-      onClick={login}
+      onClick={action}
       fontWeight="600"
       background={'gray.85'}
       color={'gray.10'}
@@ -43,9 +45,15 @@ const LoginButton = () => {
       borderRadius={'5px'}
       _hover={{ color: 'gray.85' }}
     >
-      Log In
+      {text}
     </MenuItem>
   );
+};
+// TODO: distinguish between logging into the app and logging into Auth0. Maybe
+// use sign-in for the app?
+const LoginButton = () => {
+  const login = useLogin();
+  return <CallToActionButton onClick={login} text="log in" />;
 };
 
 const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {

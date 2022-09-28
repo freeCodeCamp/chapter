@@ -447,6 +447,7 @@ export type Query = {
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsor?: Maybe<Sponsor>;
+  sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
@@ -500,6 +501,10 @@ export type QuerySponsorArgs = {
   id: Scalars['Int'];
 };
 
+export type QuerySponsorWithEventsArgs = {
+  sponsorId: Scalars['Int'];
+};
+
 export type QueryVenueArgs = {
   venueId: Scalars['Int'];
 };
@@ -524,6 +529,21 @@ export type Sponsor = {
   name: Scalars['String'];
   type: Scalars['String'];
   website: Scalars['String'];
+};
+
+export type SponsorWithEvents = {
+  __typename?: 'SponsorWithEvents';
+  event_sponsors: Array<SponsoredEvent>;
+  id: Scalars['Int'];
+  logo_path: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  website: Scalars['String'];
+};
+
+export type SponsoredEvent = {
+  __typename?: 'SponsoredEvent';
+  event: Event;
 };
 
 export type Tag = {
@@ -1163,6 +1183,32 @@ export type SponsorQuery = {
     logo_path: string;
     type: string;
   } | null;
+};
+
+export type SponsorWithEventsQueryVariables = Exact<{
+  sponsorId: Scalars['Int'];
+}>;
+
+export type SponsorWithEventsQuery = {
+  __typename?: 'Query';
+  sponsorWithEvents: {
+    __typename?: 'SponsorWithEvents';
+    id: number;
+    name: string;
+    website: string;
+    logo_path: string;
+    type: string;
+    event_sponsors: Array<{
+      __typename?: 'SponsoredEvent';
+      event: {
+        __typename?: 'Event';
+        id: number;
+        name: string;
+        invite_only: boolean;
+        canceled: boolean;
+      };
+    }>;
+  };
 };
 
 export type ChangeInstanceUserRoleMutationVariables = Exact<{
@@ -3307,6 +3353,76 @@ export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
 export type SponsorQueryResult = Apollo.QueryResult<
   SponsorQuery,
   SponsorQueryVariables
+>;
+export const SponsorWithEventsDocument = gql`
+  query sponsorWithEvents($sponsorId: Int!) {
+    sponsorWithEvents(sponsorId: $sponsorId) {
+      id
+      name
+      website
+      logo_path
+      type
+      event_sponsors {
+        event {
+          id
+          name
+          invite_only
+          canceled
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSponsorWithEventsQuery__
+ *
+ * To run a query within a React component, call `useSponsorWithEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSponsorWithEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSponsorWithEventsQuery({
+ *   variables: {
+ *      sponsorId: // value for 'sponsorId'
+ *   },
+ * });
+ */
+export function useSponsorWithEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SponsorWithEventsQuery,
+    SponsorWithEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SponsorWithEventsQuery,
+    SponsorWithEventsQueryVariables
+  >(SponsorWithEventsDocument, options);
+}
+export function useSponsorWithEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SponsorWithEventsQuery,
+    SponsorWithEventsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SponsorWithEventsQuery,
+    SponsorWithEventsQueryVariables
+  >(SponsorWithEventsDocument, options);
+}
+export type SponsorWithEventsQueryHookResult = ReturnType<
+  typeof useSponsorWithEventsQuery
+>;
+export type SponsorWithEventsLazyQueryHookResult = ReturnType<
+  typeof useSponsorWithEventsLazyQuery
+>;
+export type SponsorWithEventsQueryResult = Apollo.QueryResult<
+  SponsorWithEventsQuery,
+  SponsorWithEventsQueryVariables
 >;
 export const ChangeInstanceUserRoleDocument = gql`
   mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {

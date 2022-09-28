@@ -604,7 +604,6 @@ export type UpdateVenueInputs = {
 
 export type User = {
   __typename?: 'User';
-  email: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
 };
@@ -618,7 +617,6 @@ export type UserBan = {
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
-  email: Scalars['String'];
   id: Scalars['Int'];
   instance_role: InstanceRole;
   name: Scalars['String'];
@@ -758,7 +756,7 @@ export type DashboardChapterUsersQuery = {
       __typename?: 'ChapterUser';
       subscribed: boolean;
       is_bannable: boolean;
-      user: { __typename?: 'User'; id: number; name: string; email: string };
+      user: { __typename?: 'User'; id: number; name: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
     user_bans: Array<{
@@ -1858,7 +1856,6 @@ export const DashboardChapterUsersDocument = gql`
         user {
           id
           name
-          email
         }
         chapter_role {
           id

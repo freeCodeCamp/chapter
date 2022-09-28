@@ -21,7 +21,6 @@ describe('Chapter Users dashboard', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
     cy.findByRole('table', { name: 'Chapter Users' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
-    cy.findByRole('columnheader', { name: 'email' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
   });
 

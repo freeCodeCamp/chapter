@@ -40,7 +40,6 @@ export const DASHBOARD_CHAPTER_USERS = gql`
         user {
           id
           name
-          email
         }
         chapter_role {
           id

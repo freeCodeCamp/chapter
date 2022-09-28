@@ -8,6 +8,7 @@ import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';
 
 @Resolver()
 export class SponsorResolver {
+  @Authorized(Permission.SponsorView)
   @Query(() => [Sponsor])
   sponsors(): Promise<Sponsor[]> {
     return prisma.sponsors.findMany();

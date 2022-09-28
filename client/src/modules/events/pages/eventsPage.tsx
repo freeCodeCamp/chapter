@@ -2,6 +2,7 @@ import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
+import { LinkButton } from 'chakra-next-link';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
@@ -75,7 +76,12 @@ export const EventsPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
-        <Heading>Events: </Heading>
+        <Flex justifyContent={'space-between'} alignItems={'center'}>
+          <Heading>Events: </Heading>
+          <LinkButton href="/dashboard/events" colorScheme={'blue'}>
+            Events Dashboard
+          </LinkButton>
+        </Flex>
         {data?.paginatedEventsWithTotal.events.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}

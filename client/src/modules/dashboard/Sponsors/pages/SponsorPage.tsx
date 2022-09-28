@@ -16,6 +16,7 @@ export const SponsorPage: NextPage = () => {
   const [getSponsor, { loading, error, data }] = useSponsorWithEventsLazyQuery({
     variables: { sponsorId },
   });
+  const { sponsorWithEvents: sponsor } = data ?? {};
 
   useEffect(() => {
     if (isReady) {
@@ -26,15 +27,14 @@ export const SponsorPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  if (!data.sponsorWithEvents)
-    return <NextError statusCode={404} title="Sponsor not found" />;
+  if (!sponsor) return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
     <Layout>
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading data-cy="name" as="h2" fontWeight="normal" mb="2">
-            {data?.sponsorWithEvents.name}
+            {sponsor.name}
           </Heading>
         </ProgressCardContent>
       </Card>
@@ -44,17 +44,15 @@ export const SponsorPage: NextPage = () => {
           Details{' '}
         </Heading>
         <Flex mt="2" justifyContent="space-between">
-          <Text data-cy="type">Type: {data?.sponsorWithEvents.type}</Text>
+          <Text data-cy="type">Type: {sponsor.type}</Text>
           <Text data-cy="website">
-            Website: <Link>{data?.sponsorWithEvents.website}</Link>
+            Website: <Link>{sponsor.website}</Link>
           </Text>
         </Flex>
       </Card>
       <EventList
         title={'Sponsored Events'}
-        events={data.sponsorWithEvents.event_sponsors.map(({ event }) => ({
-          ...event,
-        }))}
+        events={sponsor.event_sponsors.map(({ event }) => ({ ...event }))}
       />
     </Layout>
   );

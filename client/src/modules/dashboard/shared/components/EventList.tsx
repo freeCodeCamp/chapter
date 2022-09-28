@@ -3,19 +3,19 @@ import React from 'react';
 
 import { LinkButton } from 'chakra-next-link';
 
-interface EventInList {
+interface Event {
   canceled: boolean;
   id: number;
   invite_only: boolean;
   name: string;
 }
 
-interface EventListProps {
-  events: EventInList[];
+interface Props {
+  events: Event[];
   title: string;
 }
 
-export const EventList = ({ events, title }: EventListProps) => {
+export const EventList = ({ events, title }: Props) => {
   return (
     <>
       <Heading as="h2" marginBlock="1em" fontSize="lg">

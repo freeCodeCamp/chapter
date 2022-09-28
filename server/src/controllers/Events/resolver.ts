@@ -93,7 +93,7 @@ Unsubscribe Options</br>
 };
 
 const sendRsvpInvitation = async (
-  user: User,
+  user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
   const linkDetails: CalendarEvent = {

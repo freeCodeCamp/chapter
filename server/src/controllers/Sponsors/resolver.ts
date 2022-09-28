@@ -32,14 +32,14 @@ export class SponsorResolver {
     });
   }
 
-  @Authorized(Permission.SponsorsManage)
+  @Authorized(Permission.SponsorManage)
   @Mutation(() => Sponsor)
   createSponsor(@Arg('data') data: CreateSponsorInputs): Promise<Sponsor> {
     const sponsorData: Prisma.sponsorsCreateInput = data;
     return prisma.sponsors.create({ data: sponsorData });
   }
 
-  @Authorized(Permission.SponsorsManage)
+  @Authorized(Permission.SponsorManage)
   @Mutation(() => Sponsor)
   updateSponsor(
     @Arg('id', () => Int) id: number,

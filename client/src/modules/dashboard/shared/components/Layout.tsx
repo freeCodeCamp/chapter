@@ -13,7 +13,7 @@ const links = [
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
-    requiredPermission: Permission.SponsorsManage,
+    requiredPermission: Permission.SponsorManage,
   },
   { text: 'Users', link: '/dashboard/users' },
 ];

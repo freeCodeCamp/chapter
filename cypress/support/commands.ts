@@ -131,7 +131,6 @@ const getChapterMembers = (chapterId: number) => {
                 user {
                   id
                   name
-                  email
                 }
                 subscribed
               }

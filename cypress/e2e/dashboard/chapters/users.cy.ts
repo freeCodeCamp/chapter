@@ -1,11 +1,11 @@
 import { expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
-const knownEmails = [
-  'foo@bar.com',
-  'admin@of.chapter.one',
-  'admin@of.chapter.two',
-  'banned@chapter.admin',
+const knownNames = [
+  'The Owner',
+  'Chapter One Admin',
+  'Chapter Two Admin',
+  'Banned Chapter Admin',
 ];
 
 // TODO: this is very brittle, since it depends on precisely how we seed the
@@ -70,10 +70,10 @@ describe('Chapter Users dashboard', () => {
 
     cy.getChapterMembers(chapterId).then((chapterUsers) => {
       const userId = chapterUsers.find(
-        ({ user: { email } }) => knownEmails.indexOf(email) === -1,
+        ({ user: { name } }) => knownNames.indexOf(name) === -1,
       ).user.id;
       const selfUserId = chapterUsers.find(
-        ({ user: { email } }) => email === 'admin@of.chapter.one',
+        ({ user: { name } }) => name === 'Chapter One Admin',
       ).user.id;
       cy.getChapterRoles().then((roles) => {
         const roleIds = roles.map(({ id }) => id);
@@ -136,7 +136,7 @@ describe('Chapter Users dashboard', () => {
 
   function initializeBanVariables() {
     // We don't want to interact with the instance owner here
-    cy.findAllByRole('row').not(':contains("foo@bar.com")').as('rows');
+    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
     cy.get('@rows').filter(':contains("member")').as('members');
     cy.get('@rows').filter(':contains("administrator")').as('administrators');
     cy.get('@members')
@@ -166,7 +166,7 @@ describe('Chapter Users dashboard', () => {
     initializeBanVariables();
 
     cy.get('@administrators')
-      .filter(':contains("admin@of.chapter.one")')
+      .filter(':contains("Chapter One Admin")')
       .as('adminToBan')
       .should('have.length', 1);
 

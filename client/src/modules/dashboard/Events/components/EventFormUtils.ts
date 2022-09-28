@@ -81,13 +81,6 @@ export const fields: Field[] = [
     isRequired: false,
   },
   {
-    key: 'url',
-    type: 'url',
-    label: 'Url',
-    placeholder: 'https://www.example.com',
-    isRequired: false,
-  },
-  {
     key: 'capacity',
     type: 'number',
     label: 'Capacity',
@@ -118,7 +111,6 @@ export const fields: Field[] = [
 export interface EventFormData {
   name: string;
   description: string;
-  url?: string | null;
   image_url: string;
   streaming_url?: string | null;
   capacity: number;

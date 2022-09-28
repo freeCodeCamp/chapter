@@ -13,6 +13,7 @@ export class SponsorResolver {
   sponsors(): Promise<Sponsor[]> {
     return prisma.sponsors.findMany();
   }
+  @Authorized(Permission.SponsorView)
   @Query(() => Sponsor, { nullable: true })
   sponsor(@Arg('id', () => Int) id: number): Promise<Sponsor | null> {
     return prisma.sponsors.findUnique({ where: { id } });

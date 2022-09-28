@@ -9,10 +9,9 @@ import {
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { EventFormData } from '../components/EventFormUtils';
+import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
@@ -48,29 +47,8 @@ export const EditEventPage: NextPage = () => {
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, tags, ...rest } = data;
-      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-
-      const eventData = {
-        ...rest,
-        capacity: parseInt(String(data.capacity)),
-        start_at: data.start_at,
-        ends_at: data.ends_at,
-        url: data.url?.trim() || null,
-        venue_id: isPhysical(data.venue_type)
-          ? parseInt(String(data.venue_id))
-          : null,
-        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
-        sponsor_ids: sponsorArray,
-      };
-
       const event = await updateEvent({
-        variables: { eventId, data: { ...eventData } },
+        variables: { eventId, data: parseEventData(data) },
       });
 
       if (event.data) {

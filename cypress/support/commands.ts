@@ -139,7 +139,7 @@ Cypress.Commands.add('waitUntilMail', waitUntilMail);
 /**
  * Create event using GQL mutation
  * @param chapterId Id of the chapter
- * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ * @param data Data of the event. Equivalent of EventInputs for the Events resolver.
  */
 const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
   const eventMutation = {
@@ -148,7 +148,7 @@ const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
       chapterId,
       data,
     },
-    query: `mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!) {
       createEvent(chapterId: $chapterId, data: $data) {
         id
       }
@@ -222,7 +222,7 @@ Cypress.Commands.add('deleteChapter', deleteChapter);
 /**
  * Update event using GQL mutation
  * @param eventId Id of the event
- * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ * @param data Data of the event. Equivalent of EventInputs for the Events resolver.
  */
 const updateEvent = (eventId, data) => {
   const eventMutation = {
@@ -231,7 +231,7 @@ const updateEvent = (eventId, data) => {
       eventId,
       data,
     },
-    query: `mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+    query: `mutation updateEvent($eventId: Int!, $data: EventInputs!) {
       updateEvent(id: $eventId, data: $data) {
         id
       }

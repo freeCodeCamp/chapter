@@ -18,6 +18,8 @@ export class SponsorResolver {
   sponsor(@Arg('id', () => Int) id: number): Promise<Sponsor | null> {
     return prisma.sponsors.findUnique({ where: { id } });
   }
+
+  @Authorized(Permission.SponsorView)
   @Query(() => SponsorWithEvents)
   async sponsorWithEvents(
     @Arg('sponsorId', () => Int) id: number,

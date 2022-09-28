@@ -21,6 +21,7 @@ export enum InstancePermission {
   ChapterSubscriptionManage = 'chapter-subscription-manage',
   ChapterUserRoleChange = 'chapter-user-role-change',
   SponsorManage = 'sponsor-manage',
+  SponsorView = 'sponsor-view',
   UserInstanceRoleChange = 'user-instance-role-change',
   UsersView = 'users-view',
   GoogleAuthenticate = 'google-authenticate',

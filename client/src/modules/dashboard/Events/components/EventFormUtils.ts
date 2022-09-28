@@ -62,8 +62,8 @@ export const fields: Field[] = [
   {
     key: 'name',
     type: 'text',
-    label: 'Event title',
-    placeholder: 'Foo and the Bars',
+    label: 'Event Title (Required)',
+    placeholder: 'Please put a descriptive title',
     isRequired: true,
   },
   {
@@ -83,27 +83,26 @@ export const fields: Field[] = [
   {
     key: 'capacity',
     type: 'number',
-    label: 'Capacity',
-    placeholder: '50',
+    label: 'Capacity (Required)',
     isRequired: true,
   },
   {
     key: 'tags',
     type: 'text',
-    label: 'Tags (separated by a comma)',
-    placeholder: 'Foo, bar',
+    label: 'Tags (Separated by a comma)',
+    placeholder: 'tags that distinguish the event',
     isRequired: false,
   },
   {
     key: 'start_at',
     type: 'datetime',
-    label: 'Start at',
+    label: 'Start at (Required)',
     isRequired: true,
   },
   {
     key: 'ends_at',
     type: 'datetime',
-    label: 'End at',
+    label: 'End at (Required)',
     isRequired: true,
   },
 ];

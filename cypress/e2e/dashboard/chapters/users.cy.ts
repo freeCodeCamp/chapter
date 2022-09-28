@@ -150,9 +150,6 @@ describe('Chapter Users dashboard', () => {
   it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
     cy.login('admin@of.chapter.two');
 
-    cy.visit(`/dashboard/chapters/${chapterId}/users`);
-    cy.get('[data-cy=loading-error]').should('be.visible');
-
     cy.getChapterMembers(chapterId).each((member: any) => {
       cy.banUser({ chapterId, userId: member.user.id }).then(
         expectToBeRejected,

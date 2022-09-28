@@ -1,6 +1,6 @@
 export enum ChapterPermission {
   ChapterEdit = 'chapter-edit',
-  ChapterBanUser = 'ban-user',
+  ChapterBanUser = 'chapter-ban-user',
   EventCreate = 'event-create',
   EventEdit = 'event-edit',
   EventDelete = 'event-delete',
@@ -17,6 +17,7 @@ export enum ChapterPermission {
 export enum InstancePermission {
   ChapterCreate = 'chapter-create',
   ChapterJoin = 'chapter-join',
+  ChapterDelete = 'chapter-delete',
   ChapterSubscriptionsManage = 'chapter-subscriptions-manage',
   ChapterUserRoleChange = 'chapter-user-role-change',
   SponsorsManage = 'sponsors-manage',

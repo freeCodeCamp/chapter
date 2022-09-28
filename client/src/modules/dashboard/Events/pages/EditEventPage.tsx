@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useEventLazyQuery,
+  useDashboardEventLazyQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -13,7 +13,8 @@ import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData } from '../components/EventFormUtils';
-import { EVENTS, EVENT } from '../graphql/queries';
+import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
+import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
 
@@ -22,7 +23,7 @@ export const EditEventPage: NextPage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { param: eventId, isReady } = useParam();
 
-  const [getEvent, { loading, error, data }] = useEventLazyQuery({
+  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
     variables: { eventId: eventId },
   });
 
@@ -38,6 +39,7 @@ export const EditEventPage: NextPage = () => {
     refetchQueries: [
       { query: EVENTS },
       { query: EVENT, variables: { eventId } },
+      { query: DASHBOARD_EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
@@ -58,6 +60,7 @@ export const EditEventPage: NextPage = () => {
         capacity: parseInt(String(data.capacity)),
         start_at: data.start_at,
         ends_at: data.ends_at,
+        url: data.url?.trim() || null,
         venue_id: isPhysical(data.venue_type)
           ? parseInt(String(data.venue_id))
           : null,
@@ -90,10 +93,10 @@ export const EditEventPage: NextPage = () => {
 
   const isLoading = loading || !isReady || !data;
   if (isLoading) return <DashboardLoading loading={loading} error={error} />;
-  if (!data.event)
+  if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
 
-  const { sponsors, ...rest } = data.event;
+  const { sponsors, ...rest } = data.dashboardEvent;
   const sponsorData = sponsors?.map((s) => {
     return {
       id: s.sponsor.id,
@@ -106,14 +109,14 @@ export const EditEventPage: NextPage = () => {
         data={{
           ...rest,
           sponsors: sponsorData || [],
-          venue_id: data.event?.venue?.id,
-          tags: data.event.tags || [],
+          venue_id: data.dashboardEvent?.venue?.id,
+          tags: data.dashboardEvent.tags || [],
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}
         loadingText={'Saving Event Changes'}
         submitText={'Save Event Changes'}
-        chapterId={data.event.chapter.id}
+        chapterId={data.dashboardEvent.chapter.id}
       />
     </Layout>
   );

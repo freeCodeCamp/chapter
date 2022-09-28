@@ -10,7 +10,7 @@ import { LinkButton } from 'chakra-next-link';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
-  useChapterLazyQuery,
+  useDashboardChapterLazyQuery,
   useDeleteChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -42,7 +42,7 @@ export const ChapterPage: NextPage = () => {
     ],
   });
 
-  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
+  const [getChapter, { loading, error, data }] = useDashboardChapterLazyQuery({
     variables: { chapterId },
   });
 
@@ -62,7 +62,7 @@ export const ChapterPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  if (!data.chapter)
+  if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
@@ -75,7 +75,7 @@ export const ChapterPage: NextPage = () => {
             fontWeight="semibold"
             marginBlock={'2'}
           >
-            {data.chapter.name}
+            {data.dashboardChapter.name}
           </Heading>
           <Box>
             <Link
@@ -108,7 +108,10 @@ export const ChapterPage: NextPage = () => {
           </HStack>
         </ProgressCardContent>
       </Card>
-      <EventList title="Organized Events" events={data.chapter.events} />
+      <EventList
+        title="Organized Events"
+        events={data.dashboardChapter.events}
+      />
     </Layout>
   );
 };

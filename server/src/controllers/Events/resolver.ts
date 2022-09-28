@@ -277,6 +277,36 @@ export class EventResolver {
     });
   }
 
+  // TODO: Check we need all the returned data
+  @Authorized(Permission.EventEdit)
+  @Query(() => EventWithRelations, { nullable: true })
+  async dashboardEvent(
+    @Arg('eventId', () => Int) eventId: number,
+  ): Promise<EventWithRelations | null> {
+    return await prisma.events.findUnique({
+      where: { id: eventId },
+      include: {
+        chapter: true,
+        tags: { include: { tag: true } },
+        venue: true,
+        event_users: {
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: { include: { event_permission: true } },
+              },
+            },
+          },
+          orderBy: { user: { name: 'asc' } },
+        },
+        sponsors: { include: { sponsor: true } },
+      },
+    });
+  }
+
+  // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('eventId', () => Int) eventId: number,
@@ -600,7 +630,7 @@ ${unsubscribeOptions}`,
       invite_only: data.invite_only,
       streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
       venue_type: data.venue_type,
-      url: data.url,
+      url: data.url ?? null,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},
@@ -726,7 +756,7 @@ ${unsubscribeOptions}`,
       invite_only: data.invite_only ?? event.invite_only,
       name: data.name ?? event.name,
       description: data.description ?? event.description,
-      url: data.url ?? event.url,
+      url: data.url, // allows url deletion
       start_at: start_at,
       ends_at: new Date(data.ends_at) ?? event.ends_at,
       capacity: data.capacity ?? event.capacity,

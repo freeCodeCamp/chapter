@@ -17,7 +17,7 @@ export const VenuePage: NextPage = () => {
   const { param: venueId, isReady } = useParam('id');
 
   const [getVenue, { loading, error, data }] = useVenueLazyQuery({
-    variables: { id: venueId },
+    variables: { venueId },
   });
 
   useEffect(() => {

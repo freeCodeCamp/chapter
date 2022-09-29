@@ -6,9 +6,6 @@ import { Chapter, ChapterUser, EventUser, InstanceRole, UserBan } from '.';
 export class User extends BaseObject {
   @Field(() => String)
   name: string;
-
-  @Field(() => String)
-  email: string;
 }
 
 @ObjectType()

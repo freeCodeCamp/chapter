@@ -1,5 +1,6 @@
 import { expectToBeRejected } from '../../../../support/util';
 import type { ChapterMembers } from '../../../../../cypress.config';
+import { VenueType } from '../../../../../client/src/generated/graphql';
 
 // no url string to confirm that it is not required
 const testEvent = {
@@ -14,13 +15,15 @@ const testEvent = {
   image_url: 'https://test.event.org/image',
 };
 
-// TODO: Consolidate fixtures.
 const eventData = {
   ...testEvent,
+  capacity: 10,
+  venue_id: 1,
+  tags: ['Test', 'Event', 'Tag'],
   sponsor_ids: [],
   name: 'Other Event',
   url: 'https://test.event.org',
-  venue_type: 'PhysicalAndOnline',
+  venue_type: VenueType.PhysicalAndOnline,
   invite_only: false,
 };
 

@@ -30,6 +30,7 @@ import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
 import { gqlOptions } from './util';
+import { EventInputs } from './../../client/src/generated/graphql';
 
 /**
  * Register user using page UI
@@ -139,9 +140,9 @@ Cypress.Commands.add('waitUntilMail', waitUntilMail);
 /**
  * Create event using GQL mutation
  * @param chapterId Id of the chapter
- * @param data Data of the event. Equivalent of EventInputs for the Events resolver.
+ * @param data Data of the event. Defined by the GraphQL input type EventInputs.
  */
-const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
+const createEvent = (chapterId: number, data: EventInputs) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {

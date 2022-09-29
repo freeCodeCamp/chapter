@@ -22,6 +22,14 @@ const getEventUsers = (eventId: number) =>
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
 
+const promoteToOwner = async ({ email }: { email: string }) => {
+  const name: InstanceRole['name'] = 'owner';
+  return await prisma.users.update({
+    where: { email },
+    data: { instance_role: { connect: { name } } },
+  });
+};
+
 const seedDb = () => execSync('node server/prisma/generator/seed.js');
 
 config();
@@ -50,7 +58,7 @@ export default defineConfig({
         execSync('npm run db:reset');
       });
 
-      on('task', { getChapterMembers, getEventUsers, seedDb });
+      on('task', { getChapterMembers, getEventUsers, seedDb, promoteToOwner });
       coverage(on, config);
       return config;
     },

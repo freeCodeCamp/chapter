@@ -4,6 +4,16 @@ import { defineConfig } from 'cypress';
 import { config } from 'dotenv';
 import coverage from '@cypress/code-coverage/task';
 
+import { prisma } from './server/src/prisma';
+
+const getChapterMembers = (chapterId: number) =>
+  prisma.chapter_users.findMany({
+    where: { chapter_id: chapterId },
+    include: { user: true },
+  });
+
+export type ChapterMembers = Awaited<ReturnType<typeof getChapterMembers>>;
+
 config();
 
 export default defineConfig({
@@ -29,6 +39,8 @@ export default defineConfig({
       on('before:run', () => {
         execSync('npm run db:reset');
       });
+
+      on('task', { getChapterMembers });
       coverage(on, config);
       return config;
     },

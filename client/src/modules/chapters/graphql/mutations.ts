@@ -10,6 +10,16 @@ export const joinChapter = gql`
   }
 `;
 
+export const ToggleChapterMembership = gql`
+  mutation ToggleChapterMembership($chapterId: Int!) {
+    ToggleChapterMembership(chapterId: $chapterId) {
+      chapter_role {
+        name
+      }
+    }
+  }
+`;
+
 export const chapterSubscribe = gql`
   mutation toggleChapterSubscription($chapterId: Int!) {
     toggleChapterSubscription(chapterId: $chapterId) {

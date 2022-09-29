@@ -17,6 +17,17 @@ import { Permission } from '../../../../common/permissions';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
+const chapterIncludes = {
+  user: true,
+  chapter_role: {
+    include: {
+      chapter_role_permissions: {
+        include: { chapter_permission: true },
+      },
+    },
+  },
+};
+
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
   @Query(() => ChapterUser)
@@ -49,16 +60,6 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    const includes = {
-      user: true,
-      chapter_role: {
-        include: {
-          chapter_role_permissions: {
-            include: { chapter_permission: true },
-          },
-        },
-      },
-    };
     try {
       return await prisma.chapter_users.create({
         data: {
@@ -68,7 +69,7 @@ export class ChapterUserResolver {
           subscribed: true, // TODO add user setting option override
           joined_date: new Date(),
         },
-        include: includes,
+        include: chapterIncludes,
       });
     } catch (e) {
       if (
@@ -83,8 +84,78 @@ export class ChapterUserResolver {
       where: {
         user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
       },
-      include: includes,
+      include: chapterIncludes,
     });
+  }
+
+  @Authorized(Permission.ChapterJoin)
+  @Mutation(() => ChapterUser)
+  async ToggleChapterMembership(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<ChapterUser> {
+    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
+      where: {
+        user_id_chapter_id: {
+          chapter_id: chapterId,
+          user_id: ctx.user.id,
+        },
+      },
+      include: { chapter: { include: { events: true } } },
+    });
+
+    if (chapterUser.chapter_role_id === null) {
+      try {
+        return await prisma.chapter_users.create({
+          data: {
+            user: { connect: { id: ctx.user.id } },
+            chapter: { connect: { id: chapterId } },
+            chapter_role: { connect: { name: 'member' } },
+            subscribed: true, // TODO add user setting option override
+            joined_date: new Date(),
+          },
+          include: chapterIncludes,
+        });
+      } catch (e) {
+        if (
+          !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+          e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+        ) {
+          throw e;
+        }
+      }
+
+      return await prisma.chapter_users.findUniqueOrThrow({
+        where: {
+          user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
+        },
+        include: chapterIncludes,
+      });
+    } else {
+      try {
+        return await prisma.chapter_users.findUniqueOrThrow({
+          where: {
+            user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
+          },
+          include: chapterIncludes,
+        });
+      } catch (e) {
+        if (
+          !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+          e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+        ) {
+          throw e;
+        }
+      }
+      return await prisma.chapter_roles.delete({
+        where: {
+          user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
+        },
+        include: {
+          chapter_users: { include: { chapter: true } },
+        },
+      });
+    }
   }
 
   @Authorized(Permission.ChapterSubscriptionsManage)

@@ -162,7 +162,6 @@ const getEventUsers = (eventId: number) => {
           user {
             id
             name
-            email
           }
           subscribed
         }
@@ -196,7 +195,6 @@ const getDashboardEventUsers = (eventId: number) => {
          user {
            id
            name
-           email
          }
          subscribed
        }

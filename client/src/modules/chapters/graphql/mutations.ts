@@ -10,9 +10,9 @@ export const joinChapter = gql`
   }
 `;
 
-export const ToggleChapterMembership = gql`
-  mutation ToggleChapterMembership($chapterId: Int!) {
-    ToggleChapterMembership(chapterId: $chapterId) {
+export const leaveChapter = gql`
+  mutation leaveChapter($chapterId: Int!) {
+    leaveChapter(chapterId: $chapterId) {
       chapter_role {
         name
       }

@@ -9,7 +9,7 @@ const testEvent = {
   capacity: '10',
   tags: 'Test, Event, Tag',
   start_at: '2022-01-01T00:01',
-  end_at: '2022-01-02T00:02',
+  ends_at: '2022-01-02T00:02',
   venue_id: '1',
   image_url: 'https://test.event.org/image',
 };
@@ -43,7 +43,7 @@ describe('chapter dashboard', () => {
     Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
-      if (!['tags', 'start_at', 'end_at', 'venue_id'].includes(key)) {
+      if (!['tags', 'start_at', 'ends_at', 'venue_id'].includes(key)) {
         cy.contains(value);
       }
     });
@@ -125,7 +125,7 @@ describe('chapter dashboard', () => {
       .type('{esc}');
     cy.findByLabelText(/^End at/)
       .clear()
-      .type(testEvent.end_at)
+      .type(testEvent.ends_at)
       .type('{esc}');
 
     // TODO: figure out why cypress thinks this is covered.

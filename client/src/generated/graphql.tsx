@@ -279,6 +279,7 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUser;
+  leaveChapter: ChapterUser;
   rsvpEvent: EventUser;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
@@ -360,6 +361,10 @@ export type MutationDeleteVenueArgs = {
 };
 
 export type MutationJoinChapterArgs = {
+  chapterId: Scalars['Int'];
+};
+
+export type MutationLeaveChapterArgs = {
   chapterId: Scalars['Int'];
 };
 
@@ -695,6 +700,18 @@ export type JoinChapterMutationVariables = Exact<{
 export type JoinChapterMutation = {
   __typename?: 'Mutation';
   joinChapter: {
+    __typename?: 'ChapterUser';
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
+  };
+};
+
+export type LeaveChapterMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type LeaveChapterMutation = {
+  __typename?: 'Mutation';
+  leaveChapter: {
     __typename?: 'ChapterUser';
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
@@ -1723,6 +1740,58 @@ export type JoinChapterMutationResult =
 export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
   JoinChapterMutation,
   JoinChapterMutationVariables
+>;
+export const LeaveChapterDocument = gql`
+  mutation leaveChapter($chapterId: Int!) {
+    leaveChapter(chapterId: $chapterId) {
+      chapter_role {
+        name
+      }
+    }
+  }
+`;
+export type LeaveChapterMutationFn = Apollo.MutationFunction<
+  LeaveChapterMutation,
+  LeaveChapterMutationVariables
+>;
+
+/**
+ * __useLeaveChapterMutation__
+ *
+ * To run a mutation, you first call `useLeaveChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveChapterMutation, { data, loading, error }] = useLeaveChapterMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useLeaveChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LeaveChapterMutation,
+    LeaveChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    LeaveChapterMutation,
+    LeaveChapterMutationVariables
+  >(LeaveChapterDocument, options);
+}
+export type LeaveChapterMutationHookResult = ReturnType<
+  typeof useLeaveChapterMutation
+>;
+export type LeaveChapterMutationResult =
+  Apollo.MutationResult<LeaveChapterMutation>;
+export type LeaveChapterMutationOptions = Apollo.BaseMutationOptions<
+  LeaveChapterMutation,
+  LeaveChapterMutationVariables
 >;
 export const ToggleChapterSubscriptionDocument = gql`
   mutation toggleChapterSubscription($chapterId: Int!) {

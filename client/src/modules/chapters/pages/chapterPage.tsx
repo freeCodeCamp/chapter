@@ -24,6 +24,7 @@ import {
   useChapterLazyQuery,
   useChapterUserLazyQuery,
   useJoinChapterMutation,
+  useLeaveChapterMutation,
   useToggleChapterSubscriptionMutation,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
@@ -57,6 +58,7 @@ export const ChapterPage: NextPage = () => {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
   const [joinChapterFn] = useJoinChapterMutation(refetch);
+  const [leaveChapterFn] = useLeaveChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
   const joinChapter = async () => {
@@ -64,6 +66,19 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
+        toast({ title: 'You successfully joined chapter', status: 'success' });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const leaveChapter = async () => {
+    const ok = await confirm();
+    if (ok) {
+      try {
+        await leaveChapterFn({ variables: { chapterId } });
         toast({ title: 'You successfully joined chapter', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
@@ -136,34 +151,50 @@ export const ChapterPage: NextPage = () => {
         {user &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : dataChapterUser ? (
-            <HStack>
-              {dataChapterUser.chapterUser.subscribed ? (
-                <HStack>
-                  <CheckIcon />
-                  <Text>
-                    {dataChapterUser.chapterUser.chapter_role.name} of the
-                    chapter
-                  </Text>
-                  <Button onClick={() => chapterSubscribe(false)} size="md">
-                    Unsubscribe
+          ) : (
+            dataChapterUser?.chapterUser.subscribed && (
+              <HStack>
+                {dataChapterUser.chapterUser.subscribed ? (
+                  <HStack>
+                    <CheckIcon />
+                    <Text>
+                      {dataChapterUser.chapterUser.chapter_role.name} of the
+                      chapter
+                    </Text>
+                    <Button onClick={() => chapterSubscribe(false)} size="md">
+                      Unsubscribe
+                    </Button>
+                  </HStack>
+                ) : (
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => chapterSubscribe(true)}
+                    size="md"
+                  >
+                    Subscribe
                   </Button>
-                </HStack>
-              ) : (
-                <Button
-                  colorScheme="blue"
-                  onClick={() => chapterSubscribe(true)}
-                  size="md"
-                >
-                  Subscribe
-                </Button>
-              )}
+                )}
+              </HStack>
+            )
+          ))}
+
+        {user &&
+          (loadingChapterUser ? (
+            <Spinner />
+          ) : dataChapterUser?.chapterUser.chapter_role ? (
+            <HStack>
+              <Button colorScheme="blue" onClick={joinChapter}>
+                Join chapter
+              </Button>
             </HStack>
           ) : (
-            <Button colorScheme="blue" onClick={joinChapter}>
-              Join chapter
-            </Button>
+            <HStack>
+              <Button colorScheme="blue" onClick={leaveChapter}>
+                Leave chapter
+              </Button>
+            </HStack>
           ))}
+
         {data.chapter.chat_url && (
           <div>
             <Heading size="md" color={'gray.700'}>

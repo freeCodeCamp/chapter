@@ -101,6 +101,7 @@ export class ChapterUserResolver {
           user_id: ctx.user.id,
         },
       },
+      select: { chapter_id: true },
     });
   }
 

@@ -120,7 +120,6 @@ export const EventPage: NextPage = () => {
           </Text>
         )}
         <Text>Capacity: {data.dashboardEvent.capacity}</Text>
-        {/* <Tags tags={data.dashboardEvent.tags} /> */}
 
         <Actions
           event={data.dashboardEvent}

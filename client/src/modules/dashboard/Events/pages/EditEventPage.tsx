@@ -48,12 +48,8 @@ export const EditEventPage: NextPage = () => {
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, tags, ...rest } = data;
+      const { sponsors, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
 
       const eventData = {
         ...rest,
@@ -65,7 +61,6 @@ export const EditEventPage: NextPage = () => {
           ? parseInt(String(data.venue_id))
           : null,
         streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
         sponsor_ids: sponsorArray,
       };
 
@@ -110,7 +105,6 @@ export const EditEventPage: NextPage = () => {
           ...rest,
           sponsors: sponsorData || [],
           venue_id: data.dashboardEvent?.venue?.id,
-          tags: data.dashboardEvent.tags || [],
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}

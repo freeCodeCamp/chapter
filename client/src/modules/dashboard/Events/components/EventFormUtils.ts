@@ -1,6 +1,5 @@
 import {
   Event,
-  EventTag,
   SponsorsQuery,
   Venue,
   VenueType,
@@ -95,13 +94,6 @@ export const fields: Field[] = [
     isRequired: true,
   },
   {
-    key: 'tags',
-    type: 'text',
-    label: 'Tags (separated by a comma)',
-    placeholder: 'Foo, bar',
-    isRequired: false,
-  },
-  {
     key: 'start_at',
     type: 'datetime',
     label: 'Start at',
@@ -122,7 +114,6 @@ export interface EventFormData {
   image_url: string;
   streaming_url?: string | null;
   capacity: number;
-  tags: string;
   start_at: Date;
   ends_at: Date;
   venue_type: VenueType;
@@ -135,11 +126,9 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'chapter_id'>
-  | 'id'
+  keyof Omit<EventFormData, 'venue_id' | 'sponsors' | 'chapter_id'> | 'id'
 > & {
   venue_id?: number;
-  tags: EventTag[];
   venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
   sponsors: EventSponsorInput[];
 };

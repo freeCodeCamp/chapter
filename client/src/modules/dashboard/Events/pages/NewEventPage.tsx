@@ -28,12 +28,8 @@ export const NewEventPage: NextPage = () => {
     setLoading(true);
 
     try {
-      const { chapter_id, sponsors, tags, ...rest } = data;
+      const { chapter_id, sponsors, ...rest } = data;
       const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
 
       const eventData = {
         ...rest,
@@ -44,7 +40,6 @@ export const NewEventPage: NextPage = () => {
           ? parseInt(String(data.venue_id))
           : null,
         streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
         sponsor_ids: sponsorArray,
       };
       const event = await createEvent({

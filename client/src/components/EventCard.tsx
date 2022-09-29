@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
-import { Chapter, Event, EventTag } from '../generated/graphql';
+import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
 
 type EventCardProps = {
@@ -24,7 +24,6 @@ type EventCardProps = {
     | 'canceled'
   > & {
     chapter: Pick<Chapter, 'id' | 'name'>;
-    tags?: EventTag[] | null;
   };
 };
 

@@ -20,12 +20,7 @@ export const CHAPTER = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
+
         invite_only
         canceled
       }

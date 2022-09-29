@@ -10,11 +10,6 @@ export const createEvent = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
       }
     }
   }
@@ -30,12 +25,6 @@ export const updateEvent = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       invite_only
     }
   }

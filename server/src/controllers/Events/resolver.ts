@@ -59,9 +59,6 @@ const eventUserIncludes = {
     },
   },
 };
-const getUniqueTags = (tags: string[]) => [
-  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
-];
 const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
@@ -217,7 +214,6 @@ export class EventResolver {
       },
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
         venue: true,
         event_users: {
           include: {
@@ -248,7 +244,6 @@ export class EventResolver {
     const events = await prisma.events.findMany({
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
       },
       orderBy: {
         start_at: 'asc',
@@ -267,7 +262,6 @@ export class EventResolver {
     return await prisma.events.findMany({
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
       },
       orderBy: {
         start_at: 'asc',
@@ -287,7 +281,6 @@ export class EventResolver {
       where: { id: eventId },
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
         venue: true,
         event_users: {
           include: {
@@ -315,7 +308,6 @@ export class EventResolver {
       where: { id: eventId },
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
         venue: true,
         event_users: {
           include: {
@@ -641,21 +633,10 @@ ${unsubscribeOptions}`,
       event_users: {
         create: eventUserData,
       },
-      tags: {
-        create: getUniqueTags(data.tags).map((tagName) => ({
-          tag: {
-            connectOrCreate: {
-              create: { name: tagName },
-              where: { name: tagName },
-            },
-          },
-        })),
-      },
     };
 
     const event = await prisma.events.create({
       data: eventData,
-      include: { tags: { include: { tag: true } } },
     });
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
@@ -719,22 +700,11 @@ ${unsubscribeOptions}`,
     await prisma.$transaction([
       prisma.events.update({
         where: { id },
-        data: { tags: { deleteMany: {} } },
+        data: {},
       }),
       prisma.events.update({
         where: { id },
-        data: {
-          tags: {
-            create: getUniqueTags(data.tags).map((tagName) => ({
-              tag: {
-                connectOrCreate: {
-                  create: { name: tagName },
-                  where: { name: tagName },
-                },
-              },
-            })),
-          },
-        },
+        data: {},
       }),
     ]);
 
@@ -825,7 +795,6 @@ ${venueDetails}`;
       where: { id },
       data: update,
       include: {
-        tags: { include: { tag: true } },
         chapter: { select: { calendar_id: true } },
         event_users: { include: { user: { select: { email: true } } } },
       },
@@ -860,7 +829,6 @@ ${venueDetails}`;
       where: { id },
       data: { canceled: true },
       include: {
-        tags: { include: { tag: true } },
         chapter: { select: { calendar_id: true } },
         event_users: {
           include: { user: true },
@@ -916,7 +884,6 @@ ${venueDetails}`;
     const event = await prisma.events.delete({
       where: { id },
       include: {
-        tags: { include: { tag: true } },
         chapter: { select: { calendar_id: true } },
       },
     });

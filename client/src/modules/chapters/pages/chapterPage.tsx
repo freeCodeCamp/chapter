@@ -28,6 +28,7 @@ import {
   useToggleChapterSubscriptionMutation,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
+import { meQuery } from 'modules/auth/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
@@ -58,7 +59,9 @@ export const ChapterPage: NextPage = () => {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
   const [joinChapterFn] = useJoinChapterMutation(refetch);
-  const [leaveChapterFn] = useLeaveChapterMutation(refetch);
+  const [leaveChapterFn] = useLeaveChapterMutation({
+    refetchQueries: [{ query: meQuery }],
+  });
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
   const joinChapter = async () => {
@@ -155,11 +158,9 @@ export const ChapterPage: NextPage = () => {
             dataChapterUser?.chapterUser.subscribed && (
               <HStack>
                 {dataChapterUser.chapterUser.subscribed ? (
-                  <HStack>
-                    <CheckIcon />
-                    <Text>
-                      {dataChapterUser.chapterUser.chapter_role.name} of the
-                      chapter
+                  <HStack justifyContent={'space-between'} width={'100%'}>
+                    <Text fontWeight={500}>
+                      Unfollow upcoming chapter&apos;s events
                     </Text>
                     <Button onClick={() => chapterSubscribe(false)} size="md">
                       Unsubscribe
@@ -182,15 +183,17 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : dataChapterUser?.chapterUser.chapter_role ? (
-            <HStack>
-              <Button colorScheme="blue" onClick={joinChapter}>
-                Join chapter
-              </Button>
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={500}>
+                <CheckIcon marginRight={1} />
+                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
+              </Text>
+              <Button onClick={leaveChapter}>Leave chapter</Button>
             </HStack>
           ) : (
             <HStack>
-              <Button colorScheme="blue" onClick={leaveChapter}>
-                Leave chapter
+              <Button colorScheme="blue" onClick={joinChapter}>
+                Join chapter
               </Button>
             </HStack>
           ))}

@@ -14,6 +14,14 @@ const getChapterMembers = (chapterId: number) =>
 
 export type ChapterMembers = Awaited<ReturnType<typeof getChapterMembers>>;
 
+const getEventUsers = (eventId: number) =>
+  prisma.event_users.findMany({
+    where: { event_id: eventId },
+    include: { user: true, rsvp: true },
+  });
+
+export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
+
 config();
 
 export default defineConfig({
@@ -40,7 +48,7 @@ export default defineConfig({
         execSync('npm run db:reset');
       });
 
-      on('task', { getChapterMembers });
+      on('task', { getChapterMembers, getEventUsers });
       coverage(on, config);
       return config;
     },

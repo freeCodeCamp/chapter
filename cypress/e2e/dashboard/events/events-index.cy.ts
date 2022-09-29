@@ -1,3 +1,4 @@
+import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const eventData = {
@@ -280,7 +281,7 @@ describe('spec needing owner', () => {
 
     cy.url()
       .then((url) => parseInt(url.match(/\d+$/)[0], 10))
-      .then((eventId) => cy.getEventUsers(eventId))
+      .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
           .filter(({ rsvp }) => rsvp.name !== 'no')

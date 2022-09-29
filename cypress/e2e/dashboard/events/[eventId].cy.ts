@@ -1,3 +1,4 @@
+import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 describe('event dashboard', () => {
@@ -93,7 +94,7 @@ describe('event dashboard', () => {
       const eventId = 1;
 
       // Starting as the instance owner to ensure we can find the RSVPs
-      cy.getEventUsers(eventId).then((eventUsers) => {
+      cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
           ({ rsvp: { name } }) => name === 'yes',
         ).user;

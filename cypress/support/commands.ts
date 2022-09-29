@@ -116,66 +116,6 @@ const interceptGQL = (operationName: string) => {
 Cypress.Commands.add('interceptGQL', interceptGQL);
 
 /**
- * Get users of the chapter using GQL query
- * @param chapterId Id of the chapter
- */
-const getChapterMembers = (chapterId: number) => {
-  const chapterQuery = {
-    operationName: 'chapterUsers',
-    variables: {
-      chapterId,
-    },
-    query: `query chapterUsers($chapterId: Int!) {
-            chapter(id: $chapterId) {
-              chapter_users {
-                user {
-                  id
-                  name
-                }
-                subscribed
-              }
-            }
-          }`,
-  };
-  return cy
-    .request(gqlOptions(chapterQuery))
-    .then((response) => response.body.data.chapter.chapter_users);
-};
-Cypress.Commands.add('getChapterMembers', getChapterMembers);
-
-/**
- * Get event users for event with eventId using GQL query
- * @param eventId Id of the event
- */
-const getEventUsers = (eventId: number) => {
-  const eventQuery = {
-    operationName: 'eventUsers',
-    variables: {
-      eventId,
-    },
-    query: `query eventUsers($eventId: Int!) {
-      event(eventId: $eventId) {
-        event_users {
-          rsvp {
-            name
-          }
-          user {
-            id
-            name
-          }
-          subscribed
-        }
-      }
-    }`,
-  };
-  return cy
-    .request(gqlOptions(eventQuery))
-    .then((response) => response.body.data.event.event_users);
-};
-
-Cypress.Commands.add('getEventUsers', getEventUsers);
-
-/**
  * (Dashboard only) Get event users for event with eventId using GQL query
  * @param eventId Id of the event
  */
@@ -806,10 +746,8 @@ declare global {
       deleteVenue: typeof deleteVenue;
       sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
-      getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;
       getDashboardEventUsers: typeof getDashboardEventUsers;
-      getEventUsers: typeof getEventUsers;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
       login: typeof login;

@@ -1,3 +1,4 @@
+import { ChapterMembers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
@@ -68,27 +69,29 @@ describe('Chapter Users dashboard', () => {
   it('rejects chapter admin from changing chapter user role', () => {
     cy.login('admin@of.chapter.one');
 
-    cy.getChapterMembers(chapterId).then((chapterUsers) => {
-      const userId = chapterUsers.find(
-        ({ user: { name } }) => knownNames.indexOf(name) === -1,
-      ).user.id;
-      const selfUserId = chapterUsers.find(
-        ({ user: { name } }) => name === 'Chapter One Admin',
-      ).user.id;
-      cy.getChapterRoles().then((roles) => {
-        const roleIds = roles.map(({ id }) => id);
-        roleIds.forEach((roleId) => {
-          cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
-            expectToBeRejected,
-          );
-          cy.changeChapterUserRole({
-            chapterId,
-            roleId,
-            userId: selfUserId,
-          }).then(expectToBeRejected);
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
+      (chapterUsers) => {
+        const userId = chapterUsers.find(
+          ({ user: { name } }) => knownNames.indexOf(name) === -1,
+        ).user.id;
+        const selfUserId = chapterUsers.find(
+          ({ user: { name } }) => name === 'Chapter One Admin',
+        ).user.id;
+        cy.getChapterRoles().then((roles) => {
+          const roleIds = roles.map(({ id }) => id);
+          roleIds.forEach((roleId) => {
+            cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
+              expectToBeRejected,
+            );
+            cy.changeChapterUserRole({
+              chapterId,
+              roleId,
+              userId: selfUserId,
+            }).then(expectToBeRejected);
+          });
         });
-      });
-    });
+      },
+    );
   });
 
   it('administrator can ban user from chapter', () => {
@@ -149,14 +152,16 @@ describe('Chapter Users dashboard', () => {
   it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
     cy.login('admin@of.chapter.two');
 
-    cy.getChapterMembers(chapterId).each((member: any) => {
-      cy.banUser({ chapterId, userId: member.user.id }).then(
-        expectToBeRejected,
-      );
-      cy.unbanUser({ chapterId, userId: member.user.id }).then(
-        expectToBeRejected,
-      );
-    });
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).each(
+      (member: any) => {
+        cy.banUser({ chapterId, userId: member.user.id }).then(
+          expectToBeRejected,
+        );
+        cy.unbanUser({ chapterId, userId: member.user.id }).then(
+          expectToBeRejected,
+        );
+      },
+    );
   });
 
   it('an admin cannot ban themselves', () => {

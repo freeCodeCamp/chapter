@@ -31,7 +31,7 @@ describe('event dashboard', () => {
       cy.get('@email')
         .mhGetBody()
         .should('include', 'reservation is confirmed');
-      cy.getDashboardEventUsers(1).then((eventUsers) => {
+      cy.task<EventUsers>('getEventUsers', 1).then((eventUsers) => {
         cy.get<string>('@userName').then((userName) => {
           const userEmail = eventUsers
             .filter(({ user: { name } }) => name === userName)

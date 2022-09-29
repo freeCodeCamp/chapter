@@ -116,39 +116,6 @@ const interceptGQL = (operationName: string) => {
 Cypress.Commands.add('interceptGQL', interceptGQL);
 
 /**
- * (Dashboard only) Get event users for event with eventId using GQL query
- * @param eventId Id of the event
- */
-
-const getDashboardEventUsers = (eventId: number) => {
-  const eventQuery = {
-    operationName: 'dashboardEventUsers',
-    variables: {
-      eventId,
-    },
-    query: `query dashboardEventUsers($eventId: Int!) {
-     dashboardEvent(eventId: $eventId) {
-       event_users {
-         rsvp {
-           name
-         }
-         user {
-           id
-           name
-         }
-         subscribed
-       }
-     }
-   }`,
-  };
-  return cy
-    .request(gqlOptions(eventQuery))
-    .then((response) => response.body.data.dashboardEvent.event_users);
-};
-
-Cypress.Commands.add('getDashboardEventUsers', getDashboardEventUsers);
-
-/**
  * Wait until emails are received by mailhog
  * @param alias Name of the alias to reference emails by
  */
@@ -747,7 +714,6 @@ declare global {
       sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterRoles: typeof getChapterRoles;
-      getDashboardEventUsers: typeof getDashboardEventUsers;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
       login: typeof login;

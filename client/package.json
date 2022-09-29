@@ -10,7 +10,7 @@
     "gen:dev": "npm run gen -- --watch"
   },
   "dependencies": {
-    "@apollo/client": "3.6.9",
+    "@apollo/client": "3.6.10",
     "@auth0/auth0-react": "1.11.0",
     "@chakra-ui/button": "2.0.10",
     "@chakra-ui/checkbox": "2.2.0",

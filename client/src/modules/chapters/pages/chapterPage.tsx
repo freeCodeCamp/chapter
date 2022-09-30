@@ -22,7 +22,7 @@ import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
   useChapterLazyQuery,
-  useChapterUserLazyQuery,
+  useMyChapterUserLazyQuery,
   useJoinChapterMutation,
   useLeaveChapterMutation,
   useToggleChapterSubscriptionMutation,
@@ -44,7 +44,7 @@ export const ChapterPage: NextPage = () => {
   const [
     getChapterUsers,
     { loading: loadingChapterUser, data: dataChapterUser },
-  ] = useChapterUserLazyQuery({
+  ] = useMyChapterUserLazyQuery({
     variables: { chapterId },
   });
 
@@ -155,9 +155,9 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : (
-            dataChapterUser?.chapterUser.subscribed && (
+            dataChapterUser?.myChapterUser?.subscribed && (
               <HStack>
-                {dataChapterUser.chapterUser.subscribed ? (
+                {dataChapterUser.myChapterUser.subscribed ? (
                   <HStack justifyContent={'space-between'} width={'100%'}>
                     <Text fontWeight={500}>
                       Unfollow upcoming chapter&apos;s events
@@ -182,11 +182,12 @@ export const ChapterPage: NextPage = () => {
         {user &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : dataChapterUser?.chapterUser.chapter_role ? (
+          ) : dataChapterUser?.myChapterUser?.chapter_role ? (
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={500}>
                 <CheckIcon marginRight={1} />
-                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
+                {dataChapterUser.myChapterUser?.chapter_role.name} of the
+                chapter
               </Text>
               <Button onClick={leaveChapter}>Leave chapter</Button>
             </HStack>

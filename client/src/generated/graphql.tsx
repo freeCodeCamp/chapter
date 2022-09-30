@@ -438,7 +438,6 @@ export type Query = {
   __typename?: 'Query';
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
@@ -449,6 +448,7 @@ export type Query = {
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
   me?: Maybe<UserWithInstanceRole>;
+  myChapterUser?: Maybe<ChapterUser>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsor?: Maybe<Sponsor>;
@@ -461,10 +461,6 @@ export type Query = {
 
 export type QueryChapterArgs = {
   id: Scalars['Int'];
-};
-
-export type QueryChapterUserArgs = {
-  chapterId: Scalars['Int'];
 };
 
 export type QueryChapterUsersArgs = {
@@ -490,6 +486,10 @@ export type QueryEventArgs = {
 export type QueryEventsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   showAll?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type QueryMyChapterUserArgs = {
+  chapterId: Scalars['Int'];
 };
 
 export type QueryPaginatedEventsArgs = {
@@ -785,18 +785,18 @@ export type DashboardChapterUsersQuery = {
   };
 };
 
-export type ChapterUserQueryVariables = Exact<{
+export type MyChapterUserQueryVariables = Exact<{
   chapterId: Scalars['Int'];
 }>;
 
-export type ChapterUserQuery = {
+export type MyChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser: {
+  myChapterUser?: {
     __typename?: 'ChapterUser';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  } | null;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -1995,9 +1995,9 @@ export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
   DashboardChapterUsersQuery,
   DashboardChapterUsersQueryVariables
 >;
-export const ChapterUserDocument = gql`
-  query chapterUser($chapterId: Int!) {
-    chapterUser(chapterId: $chapterId) {
+export const MyChapterUserDocument = gql`
+  query myChapterUser($chapterId: Int!) {
+    myChapterUser(chapterId: $chapterId) {
       user {
         name
       }
@@ -2010,52 +2010,54 @@ export const ChapterUserDocument = gql`
 `;
 
 /**
- * __useChapterUserQuery__
+ * __useMyChapterUserQuery__
  *
- * To run a query within a React component, call `useChapterUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useChapterUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMyChapterUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyChapterUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChapterUserQuery({
+ * const { data, loading, error } = useMyChapterUserQuery({
  *   variables: {
  *      chapterId: // value for 'chapterId'
  *   },
  * });
  */
-export function useChapterUserQuery(
+export function useMyChapterUserQuery(
   baseOptions: Apollo.QueryHookOptions<
-    ChapterUserQuery,
-    ChapterUserQueryVariables
+    MyChapterUserQuery,
+    MyChapterUserQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<ChapterUserQuery, ChapterUserQueryVariables>(
-    ChapterUserDocument,
+  return Apollo.useQuery<MyChapterUserQuery, MyChapterUserQueryVariables>(
+    MyChapterUserDocument,
     options,
   );
 }
-export function useChapterUserLazyQuery(
+export function useMyChapterUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    ChapterUserQuery,
-    ChapterUserQueryVariables
+    MyChapterUserQuery,
+    MyChapterUserQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<ChapterUserQuery, ChapterUserQueryVariables>(
-    ChapterUserDocument,
+  return Apollo.useLazyQuery<MyChapterUserQuery, MyChapterUserQueryVariables>(
+    MyChapterUserDocument,
     options,
   );
 }
-export type ChapterUserQueryHookResult = ReturnType<typeof useChapterUserQuery>;
-export type ChapterUserLazyQueryHookResult = ReturnType<
-  typeof useChapterUserLazyQuery
+export type MyChapterUserQueryHookResult = ReturnType<
+  typeof useMyChapterUserQuery
 >;
-export type ChapterUserQueryResult = Apollo.QueryResult<
-  ChapterUserQuery,
-  ChapterUserQueryVariables
+export type MyChapterUserLazyQueryHookResult = ReturnType<
+  typeof useMyChapterUserLazyQuery
+>;
+export type MyChapterUserQueryResult = Apollo.QueryResult<
+  MyChapterUserQuery,
+  MyChapterUserQueryVariables
 >;
 export const ChaptersDocument = gql`
   query chapters {

@@ -97,10 +97,13 @@ function getUserPermissionsForInstance(user: User): string[] {
   );
 }
 
-function getUserPermissionsForChapter(user: User, chapterId: number): string[] {
+function getUserPermissionsForChapter(
+  user: User,
+  chapterId: number,
+): string[] | undefined {
   const role = user.user_chapters.find((role) => role.chapter_id === chapterId);
   return role
-    ? role.chapter_role.chapter_role_permissions.map(
+    ? role.chapter_role?.chapter_role_permissions.map(
         (x) => x.chapter_permission.name,
       )
     : [];

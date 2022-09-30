@@ -30,8 +30,8 @@ const chapterIncludes = {
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUser)
-  async chapterUser(
+  @Query(() => ChapterUser, { nullable: true })
+  async myChapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
   ): Promise<ChapterUser | null> {
@@ -93,25 +93,12 @@ export class ChapterUserResolver {
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser | null> {
+  ) {
     return await prisma.chapter_users.delete({
       where: {
         user_id_chapter_id: {
           chapter_id: chapterId,
           user_id: ctx.user.id,
-        },
-      },
-      select: {
-        chapter_id: true,
-        user_id: true,
-        joined_date: true,
-        subscribed: true,
-        user: true,
-        chapter_role_id: true,
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
-          },
         },
       },
     });
@@ -123,7 +110,7 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
+    const myChapterUser = await prisma.chapter_users.findUniqueOrThrow({
       where: {
         user_id_chapter_id: {
           chapter_id: chapterId,
@@ -132,9 +119,9 @@ export class ChapterUserResolver {
       },
       include: { chapter: { include: { events: true } } },
     });
-    const chapter = chapterUser.chapter;
+    const chapter = myChapterUser.chapter;
 
-    if (chapterUser.subscribed) {
+    if (myChapterUser.subscribed) {
       const onlyUserEventsFromChapter = {
         AND: [
           { user_id: ctx.user.id },
@@ -152,7 +139,7 @@ export class ChapterUserResolver {
     }
     return await prisma.chapter_users.update({
       data: {
-        subscribed: !chapterUser?.subscribed,
+        subscribed: !myChapterUser?.subscribed,
       },
       where: {
         user_id_chapter_id: {

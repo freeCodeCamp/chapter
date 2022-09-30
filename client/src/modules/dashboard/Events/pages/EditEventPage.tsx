@@ -60,7 +60,6 @@ export const EditEventPage: NextPage = () => {
         capacity: parseInt(String(data.capacity)),
         start_at: data.start_at,
         ends_at: data.ends_at,
-        url: data.url?.trim() || null,
         venue_id: isPhysical(data.venue_type)
           ? parseInt(String(data.venue_id))
           : null,

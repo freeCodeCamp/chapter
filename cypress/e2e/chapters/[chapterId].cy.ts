@@ -11,24 +11,17 @@ describe('chapter page', () => {
     cy.login('test@user.org');
     cy.visit(`/chapters/${chapterId}`);
 
-    cy.findByRole('button', { name: 'Join chapter' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.joinChapter(chapterId, { withAuth: true }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+    });
 
-    cy.contains(/joined chapter/);
-    cy.contains(/Join chapter/).should('not.exist');
-    cy.contains(/Unsubscribe/);
-
-    cy.findByRole('button', { name: 'Unsubscribe' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-
-    // TODO Check if user event_reminders were cleared and user event_users unsubscribed for events in this chapter. And other chapters were not affected.
-    cy.contains(/unsubscribed/);
-    cy.contains(/Subscribe/);
-
-    cy.findByRole('button', { name: 'Subscribe' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-
-    cy.contains(/subscribed/);
+    cy.toggleChapterSubscription(chapterId, { withAuth: true }).then(
+      (response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.errors).not.to.exist;
+      },
+    );
 
     cy.getChapterMembers(chapterId).then((chapter_users) => {
       expect(
@@ -45,5 +38,19 @@ describe('chapter page', () => {
     cy.toggleChapterSubscription(chapterId, { withAuth: false }).then(
       expectToBeRejected,
     );
+  });
+
+  it('user can leave chapter', () => {
+    cy.login('test@user.org');
+    cy.visit(`/chapters/${chapterId}`);
+
+    cy.leaveChapter(chapterId, { withAuth: true }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+    });
+  });
+
+  it('should reject leaving chapter from non-members', () => {
+    cy.joinChapter(chapterId, { withAuth: false }).then(expectToBeRejected);
   });
 });

@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 
 import { Permission } from '../../../../common/permissions';
-import { Sponsor } from '../../graphql-types/Sponsor';
+import { Sponsor, SponsorWithEvents } from '../../graphql-types/Sponsor';
 import { prisma } from '../../prisma';
 import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';
 
@@ -15,6 +15,21 @@ export class SponsorResolver {
   @Query(() => Sponsor, { nullable: true })
   sponsor(@Arg('id', () => Int) id: number): Promise<Sponsor | null> {
     return prisma.sponsors.findUnique({ where: { id } });
+  }
+  @Query(() => SponsorWithEvents)
+  async sponsorWithEvents(
+    @Arg('sponsorId', () => Int) id: number,
+  ): Promise<SponsorWithEvents> {
+    return await prisma.sponsors.findUniqueOrThrow({
+      where: { id },
+      include: {
+        event_sponsors: {
+          include: {
+            event: { include: { tags: { include: { tag: true } } } },
+          },
+        },
+      },
+    });
   }
 
   @Authorized(Permission.SponsorsManage)

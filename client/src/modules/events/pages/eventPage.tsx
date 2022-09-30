@@ -22,7 +22,8 @@ import React, { useEffect, useMemo } from 'react';
 import { useAuthStore } from '../../auth/store';
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
-import { EVENT } from '../../dashboard/Events/graphql/queries';
+import { EVENT } from '../graphql/queries';
+import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
   useEventLazyQuery,
@@ -43,7 +44,10 @@ export const EventPage: NextPage = () => {
   const login = useLogin();
 
   const refetch = {
-    refetchQueries: [{ query: EVENT, variables: { eventId } }],
+    refetchQueries: [
+      { query: EVENT, variables: { eventId } },
+      { query: DASHBOARD_EVENT, variables: { eventId } },
+    ],
   };
 
   const [rsvpToEvent] = useRsvpToEventMutation(refetch);

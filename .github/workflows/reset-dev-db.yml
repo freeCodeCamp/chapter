@@ -17,4 +17,4 @@ jobs:
           port: 22
           script: |
             cd chapter 
-            docker compose -f docker-compose.seed.yml run seed npm run db:reset
+            docker compose -f docker-compose.seed.yml run seed sh -c "npm run db:sync && npm run db:init"

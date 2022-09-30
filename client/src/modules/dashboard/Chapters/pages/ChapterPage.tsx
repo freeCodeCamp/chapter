@@ -1,4 +1,4 @@
-import { Box, Button, Heading, HStack, Link } from '@chakra-ui/react';
+import { Box, Button, Heading, HStack } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
@@ -10,13 +10,13 @@ import { LinkButton } from 'chakra-next-link';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
-  useChapterLazyQuery,
+  useDashboardChapterLazyQuery,
   useDeleteChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { EventsList } from '../../shared/components/EventsList';
+import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { VENUES } from '../../Venues/graphql/queries';
@@ -42,7 +42,7 @@ export const ChapterPage: NextPage = () => {
     ],
   });
 
-  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
+  const [getChapter, { loading, error, data }] = useDashboardChapterLazyQuery({
     variables: { chapterId },
   });
 
@@ -62,7 +62,7 @@ export const ChapterPage: NextPage = () => {
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  if (!data.chapter)
+  if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
@@ -75,16 +75,12 @@ export const ChapterPage: NextPage = () => {
             fontWeight="semibold"
             marginBlock={'2'}
           >
-            {data.chapter.name}
+            {data.dashboardChapter.name}
           </Heading>
           <Box>
-            <Link
-              href={`${chapterId}/users`}
-              target="_blank"
-              paddingBlock={'2'}
-            >
+            <LinkButton href={`${chapterId}/users`} paddingBlock={'2'}>
               Chapter Users
-            </Link>
+            </LinkButton>
           </Box>
           <HStack mt={'2'}>
             <LinkButton
@@ -108,7 +104,10 @@ export const ChapterPage: NextPage = () => {
           </HStack>
         </ProgressCardContent>
       </Card>
-      <EventsList title="Organized Events" events={data.chapter.events} />
+      <EventList
+        title="Organized Events"
+        events={data.dashboardChapter.events}
+      />
     </Layout>
   );
 };

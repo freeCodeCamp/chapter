@@ -23,7 +23,7 @@ export const EditVenuePage: NextPage = () => {
   const isReady = isVenueIdReady && isChapterIdReady;
 
   const [getVenue, { loading, error, data }] = useVenueLazyQuery({
-    variables: { id: venueId },
+    variables: { venueId },
   });
 
   useEffect(() => {

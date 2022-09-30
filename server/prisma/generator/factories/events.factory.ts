@@ -77,7 +77,7 @@ const createEvents = async (
     await Promise.all(
       randomItems(sponsorIds, 2).map(async (sponsor) => {
         const eventSponsorData: Prisma.event_sponsorsCreateInput = {
-          events: { connect: { id: event.id } },
+          event: { connect: { id: event.id } },
           sponsor: { connect: { id: sponsor } },
         };
         return prisma.event_sponsors.create({ data: eventSponsorData });

@@ -93,7 +93,7 @@ model event_sponsors {
   updated_at DateTime @updatedAt
   sponsor_id Int
   event_id   Int
-  events     events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event      events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([sponsor_id, event_id])

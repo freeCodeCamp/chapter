@@ -1,11 +1,12 @@
+import { ChapterMembers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
-const knownEmails = [
-  'foo@bar.com',
-  'admin@of.chapter.one',
-  'admin@of.chapter.two',
-  'banned@chapter.admin',
+const knownNames = [
+  'The Owner',
+  'Chapter One Admin',
+  'Chapter Two Admin',
+  'Banned Chapter Admin',
 ];
 
 // TODO: this is very brittle, since it depends on precisely how we seed the
@@ -21,7 +22,6 @@ describe('Chapter Users dashboard', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
     cy.findByRole('table', { name: 'Chapter Users' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
-    cy.findByRole('columnheader', { name: 'email' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
   });
 
@@ -69,27 +69,29 @@ describe('Chapter Users dashboard', () => {
   it('rejects chapter admin from changing chapter user role', () => {
     cy.login('admin@of.chapter.one');
 
-    cy.getChapterMembers(chapterId).then((chapterUsers) => {
-      const userId = chapterUsers.find(
-        ({ user: { email } }) => knownEmails.indexOf(email) === -1,
-      ).user.id;
-      const selfUserId = chapterUsers.find(
-        ({ user: { email } }) => email === 'admin@of.chapter.one',
-      ).user.id;
-      cy.getChapterRoles().then((roles) => {
-        const roleIds = roles.map(({ id }) => id);
-        roleIds.forEach((roleId) => {
-          cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
-            expectToBeRejected,
-          );
-          cy.changeChapterUserRole({
-            chapterId,
-            roleId,
-            userId: selfUserId,
-          }).then(expectToBeRejected);
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
+      (chapterUsers) => {
+        const userId = chapterUsers.find(
+          ({ user: { name } }) => knownNames.indexOf(name) === -1,
+        ).user.id;
+        const selfUserId = chapterUsers.find(
+          ({ user: { name } }) => name === 'Chapter One Admin',
+        ).user.id;
+        cy.getChapterRoles().then((roles) => {
+          const roleIds = roles.map(({ id }) => id);
+          roleIds.forEach((roleId) => {
+            cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
+              expectToBeRejected,
+            );
+            cy.changeChapterUserRole({
+              chapterId,
+              roleId,
+              userId: selfUserId,
+            }).then(expectToBeRejected);
+          });
         });
-      });
-    });
+      },
+    );
   });
 
   it('administrator can ban user from chapter', () => {
@@ -137,7 +139,7 @@ describe('Chapter Users dashboard', () => {
 
   function initializeBanVariables() {
     // We don't want to interact with the instance owner here
-    cy.findAllByRole('row').not(':contains("foo@bar.com")').as('rows');
+    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
     cy.get('@rows').filter(':contains("member")').as('members');
     cy.get('@rows').filter(':contains("administrator")').as('administrators');
     cy.get('@members')
@@ -150,17 +152,16 @@ describe('Chapter Users dashboard', () => {
   it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
     cy.login('admin@of.chapter.two');
 
-    cy.visit(`/dashboard/chapters/${chapterId}/users`);
-    cy.get('[data-cy=loading-error]').should('be.visible');
-
-    cy.getChapterMembers(chapterId).each((member: any) => {
-      cy.banUser({ chapterId, userId: member.user.id }).then(
-        expectToBeRejected,
-      );
-      cy.unbanUser({ chapterId, userId: member.user.id }).then(
-        expectToBeRejected,
-      );
-    });
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).each(
+      (member: any) => {
+        cy.banUser({ chapterId, userId: member.user.id }).then(
+          expectToBeRejected,
+        );
+        cy.unbanUser({ chapterId, userId: member.user.id }).then(
+          expectToBeRejected,
+        );
+      },
+    );
   });
 
   it('an admin cannot ban themselves', () => {
@@ -170,7 +171,7 @@ describe('Chapter Users dashboard', () => {
     initializeBanVariables();
 
     cy.get('@administrators')
-      .filter(':contains("admin@of.chapter.one")')
+      .filter(':contains("Chapter One Admin")')
       .as('adminToBan')
       .should('have.length', 1);
 

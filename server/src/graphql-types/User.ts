@@ -7,9 +7,6 @@ export class User extends BaseObject {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  email: string;
-
   @Field(() => Boolean)
   auto_subscribe: boolean;
 }

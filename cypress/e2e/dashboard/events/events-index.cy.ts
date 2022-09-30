@@ -1,3 +1,4 @@
+import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const eventData = {
@@ -49,7 +50,7 @@ describe('spec needing owner', () => {
     cy.findByLabelText('Confirmed').should('be.checked');
     cy.findByLabelText('Waitlist').should('not.be.checked');
     cy.findByLabelText('Canceled').should('not.be.checked');
-    cy.getEventUsers(1).then((results) => {
+    cy.task<EventUsers>('getEventUsers', 1).then((results) => {
       const eventUsers = results.filter(({ subscribed }) => subscribed);
       const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
       sendAndCheckEmails(isRsvpConfirmed, eventUsers);
@@ -84,7 +85,7 @@ describe('spec needing owner', () => {
     const recipientEmails = users
       .filter(filterCallback)
       .map(({ user: { email } }) => email);
-    cy.waitUntilMail().should('have.length', recipientEmails.length);
+    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
     recipientEmails.forEach((recipientEmail) => {
       cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
       cy.get('@currentRecipient').should('have.length', 1);
@@ -280,7 +281,7 @@ describe('spec needing owner', () => {
 
     cy.url()
       .then((url) => parseInt(url.match(/\d+$/)[0], 10))
-      .then((eventId) => cy.getEventUsers(eventId))
+      .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
           .filter(({ rsvp }) => rsvp.name !== 'no')

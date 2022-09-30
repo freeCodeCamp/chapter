@@ -10,14 +10,14 @@ import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { EventsList } from '../../shared/components/EventsList';
+import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
 
 export const VenuePage: NextPage = () => {
   const { param: venueId, isReady } = useParam('id');
 
   const [getVenue, { loading, error, data }] = useVenueLazyQuery({
-    variables: { id: venueId },
+    variables: { venueId },
   });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export const VenuePage: NextPage = () => {
           <Text>{data.venue.chapter.name}</Text>
         </ProgressCardContent>
       </Card>
-      <EventsList
+      <EventList
         title="Organized By The Venue's Chapter"
         events={data.venue.chapter.events}
       />

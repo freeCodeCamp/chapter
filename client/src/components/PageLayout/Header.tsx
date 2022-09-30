@@ -33,7 +33,19 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 // use sign-in for the app?
 const LoginButton = () => {
   const login = useLogin();
-  return <MenuItem onClick={login}>Log In</MenuItem>;
+  return (
+    <MenuItem
+      onClick={login}
+      fontWeight="600"
+      background={'gray.85'}
+      color={'gray.10'}
+      height={'100%'}
+      borderRadius={'5px'}
+      _hover={{ color: 'gray.85' }}
+    >
+      Log In
+    </MenuItem>
+  );
 };
 
 const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -69,6 +81,9 @@ export const Header: React.FC = () => {
   return (
     <>
       <HeaderItem>
+        <SkipNavLink background={'gray.10'} color={'gray.85'}>
+          Skip Navigation
+        </SkipNavLink>
         <Link href="/">
           <Image
             src="/freecodecamp-logo.svg"
@@ -77,9 +92,6 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <SkipNavLink background={'gray.10'} color={'gray.85'}>
-          Skip Navigation
-        </SkipNavLink>
         <HStack as="nav">
           <Box>
             <Menu>
@@ -93,8 +105,13 @@ export const Header: React.FC = () => {
               >
                 Menu
               </MenuButton>
-              <MenuList>
-                <Flex className={styles.header} flexDirection={'column'}>
+              <MenuList paddingBlock={0}>
+                <Flex
+                  className={styles.header}
+                  flexDirection={'column'}
+                  fontWeight="600"
+                  borderRadius={'5px'}
+                >
                   <NextLink passHref href="/chapters">
                     <MenuItem as="a">Chapters</MenuItem>
                   </NextLink>
@@ -118,6 +135,12 @@ export const Header: React.FC = () => {
                           href={
                             new URL('/authenticate-with-google', serverUrl).href
                           }
+                          fontWeight="600"
+                          background={'gray.85'}
+                          color={'gray.10'}
+                          height={'100%'}
+                          borderRadius={'5px'}
+                          _hover={{ color: 'gray.85' }}
                         >
                           Authenticate with Google
                         </MenuItem>
@@ -126,6 +149,7 @@ export const Header: React.FC = () => {
                       <MenuItem
                         data-cy="logout-button"
                         onClick={() => logout().then(goHome)}
+                        fontWeight="600"
                       >
                         Logout
                       </MenuItem>

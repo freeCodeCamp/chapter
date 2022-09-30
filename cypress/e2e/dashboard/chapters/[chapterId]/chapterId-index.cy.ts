@@ -1,4 +1,5 @@
 import { expectToBeRejected } from '../../../../support/util';
+import type { ChapterMembers } from '../../../../../cypress.config';
 
 const testEvent = {
   title: 'Test Event',
@@ -32,7 +33,7 @@ const eventData = {
 
 describe('chapter dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login('admin@of.chapter.one');
     cy.mhDeleteAll();
   });
@@ -63,7 +64,7 @@ describe('chapter dashboard', () => {
 
     // TODO: select chapter during event creation and use that here (much like @venueTitle
     // ) i.e. remove the hardcoding.
-    cy.getChapterMembers(1).then((members) => {
+    cy.task<ChapterMembers>('getChapterMembers', 1).then((members) => {
       const subscriberEmails = members
         .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);

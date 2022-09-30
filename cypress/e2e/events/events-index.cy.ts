@@ -1,6 +1,6 @@
 describe('events page', () => {
   before(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
 
   it('should contain a list of event cards', () => {

@@ -1,10 +1,11 @@
+import { ChapterMembers } from '../../../cypress.config';
 import { expectToBeRejected } from '../../support/util';
 
 const chapterId = 1;
 
 describe('chapter page', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
 
   it('user can join chapter and change subscription status', () => {

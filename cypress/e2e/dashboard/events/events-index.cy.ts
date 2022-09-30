@@ -1,3 +1,4 @@
+import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const eventData = {
@@ -21,7 +22,7 @@ const eventData = {
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
     cy.mhDeleteAll();
     cy.interceptGQL('events');
@@ -49,7 +50,7 @@ describe('spec needing owner', () => {
     cy.findByLabelText('Confirmed').should('be.checked');
     cy.findByLabelText('Waitlist').should('not.be.checked');
     cy.findByLabelText('Canceled').should('not.be.checked');
-    cy.getDashboardEventUsers(1).then((results) => {
+    cy.task<EventUsers>('getEventUsers', 1).then((results) => {
       const eventUsers = results.filter(({ subscribed }) => subscribed);
       const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
       sendAndCheckEmails(isRsvpConfirmed, eventUsers);
@@ -280,7 +281,7 @@ describe('spec needing owner', () => {
 
     cy.url()
       .then((url) => parseInt(url.match(/\d+$/)[0], 10))
-      .then((eventId) => cy.getEventUsers(eventId))
+      .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
           .filter(({ rsvp }) => rsvp.name !== 'no')
@@ -304,7 +305,7 @@ describe('spec needing owner', () => {
 
 describe('events dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login('admin@of.chapter.one');
     cy.mhDeleteAll();
     cy.interceptGQL('events');

@@ -1,4 +1,3 @@
-import { ChapterMembers } from '../../../cypress.config';
 import { expectToBeRejected } from '../../support/util';
 
 const chapterId = 1;

@@ -4,7 +4,7 @@
 // first part
 describe.skip('login', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.register('An User', 'an@user.com');
     cy.mhDeleteAll();
   });

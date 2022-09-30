@@ -9,7 +9,7 @@ const eventIdToJoin = 1;
 
 describe('profile page', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
   describe('automatic subscription', () => {
     beforeEach(() => {

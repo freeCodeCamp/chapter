@@ -59,8 +59,8 @@ export const DASHBOARD_CHAPTER_USERS = gql`
 `;
 
 export const CHAPTER_USER = gql`
-  query myChapterUser($chapterId: Int!) {
-    myChapterUser(chapterId: $chapterId) {
+  query chapterUser($chapterId: Int!) {
+    chapterUser(chapterId: $chapterId) {
       user {
         name
       }

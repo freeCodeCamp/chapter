@@ -93,15 +93,27 @@ export class ChapterUserResolver {
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ) {
-    await prisma.chapter_users.delete({
+  ): Promise<ChapterUser | null> {
+    return await prisma.chapter_users.delete({
       where: {
         user_id_chapter_id: {
           chapter_id: chapterId,
           user_id: ctx.user.id,
         },
       },
-      select: { chapter_id: true },
+      select: {
+        chapter_id: true,
+        user_id: true,
+        joined_date: true,
+        subscribed: true,
+        user: true,
+        chapter_role_id: true,
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+      },
     });
   }
 

@@ -13,9 +13,14 @@ describe('profile page', () => {
     });
     it('when enabled, should automatically subscribe when joining chapter or RSVPing event', () => {
       cy.visit(profilePage);
-      cy.findByRole('checkbox', { name: 'Automatic subscription' }).should(
-        'be.checked',
+      cy.findByRole('checkbox', { name: 'Automatic subscription' }).as(
+        'switch',
       );
+
+      cy.get('@switch').check({ force: true });
+      cy.get('@switch').should('be.checked');
+      cy.get('@switch').should('be.enabled');
+
       cy.joinChapter(chapterIdToJoin);
       cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
         checkSubscription(chapterUsers, true),
@@ -33,12 +38,9 @@ describe('profile page', () => {
 
     it('when disabled, should not automatically subscribe when joining chapter or RSVPing event', () => {
       cy.visit(profilePage);
-      cy.findByRole('checkbox', { name: 'Automatic subscription' }).as(
-        'switch',
+      cy.findByRole('checkbox', { name: 'Automatic subscription' }).should(
+        'not.be.checked',
       );
-      cy.get('@switch').uncheck({ force: true });
-      cy.get('@switch').should('not.be.checked');
-      cy.get('@switch').should('be.enabled');
 
       cy.joinChapter(chapterIdToJoin);
       cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
@@ -52,17 +54,15 @@ describe('profile page', () => {
 
     it('when disabled, RSVPing to event from subscribed chapter will subscribe to event', () => {
       cy.joinChapter(chapterIdToJoin);
+      cy.toggleChapterSubscription(chapterIdToJoin);
       cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
         checkSubscription(chapterUsers, true),
       );
 
       cy.visit(profilePage);
-      cy.findByRole('checkbox', { name: 'Automatic subscription' }).as(
-        'switch',
+      cy.findByRole('checkbox', { name: 'Automatic subscription' }).should(
+        'not.be.checked',
       );
-      cy.get('@switch').uncheck({ force: true });
-      cy.get('@switch').should('not.be.checked');
-      cy.get('@switch').should('be.enabled');
 
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
       cy.getEventUsers(eventIdToJoin).then((eventUsers) =>

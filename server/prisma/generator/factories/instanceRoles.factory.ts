@@ -51,7 +51,7 @@ const createRole = async ({
   });
   const role: RoleMap = {};
   role[name] = createdRole;
-  return role as RoleMap;
+  return role;
 };
 
 const createInstanceRoles = async (): Promise<Required<RoleMap>> => {

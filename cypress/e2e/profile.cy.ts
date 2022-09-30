@@ -23,7 +23,7 @@ describe('profile page', () => {
 
       cy.get('@switch').check({ force: true });
       cy.get('@switch').should('be.checked');
-      cy.get('@switch').should('be.enabled');
+      cy.findByRole('button', { name: 'Save Profile Changes' }).click();
 
       cy.joinChapter(chapterIdToJoin);
       cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(

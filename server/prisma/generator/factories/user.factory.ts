@@ -17,28 +17,28 @@ const createUsers = async (
 }> => {
   const ownerData: Prisma.usersCreateInput = {
     email: 'foo@bar.com',
-    name: `${name.firstName()} ${name.lastName()}`,
+    name: 'The Owner',
     instance_role: { connect: { id: instanceRoles.owner.id } },
   };
   const owner = await prisma.users.create({ data: ownerData });
 
   const chapter1AdminData: Prisma.usersCreateInput = {
     email: 'admin@of.chapter.one',
-    name: `${name.firstName()} ${name.lastName()}`,
+    name: 'Chapter One Admin',
     instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
   };
   const chapter1Admin = await prisma.users.create({ data: chapter1AdminData });
 
   const chapter2AdminData: Prisma.usersCreateInput = {
     email: 'admin@of.chapter.two',
-    name: `${name.firstName()} ${name.lastName()}`,
+    name: 'Chapter Two Admin',
     instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
   };
   const chapter2Admin = await prisma.users.create({ data: chapter2AdminData });
 
   const bannedAdminData: Prisma.usersCreateInput = {
     email: 'banned@chapter.admin',
-    name: `${name.firstName()} ${name.lastName()}`,
+    name: 'Banned Chapter Admin',
     instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
   };
 

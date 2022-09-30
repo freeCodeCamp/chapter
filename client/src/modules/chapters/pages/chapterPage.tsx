@@ -28,7 +28,6 @@ import {
   useToggleChapterSubscriptionMutation,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
-import { meQuery } from 'modules/auth/graphql/queries';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
@@ -59,9 +58,7 @@ export const ChapterPage: NextPage = () => {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
   const [joinChapterFn] = useJoinChapterMutation(refetch);
-  const [leaveChapterFn] = useLeaveChapterMutation({
-    refetchQueries: [{ query: meQuery }],
-  });
+  const [leaveChapterFn] = useLeaveChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
   const joinChapter = async () => {
@@ -155,7 +152,7 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : (
-            dataChapterUser?.chapterUser.subscribed && (
+            dataChapterUser?.chapterUser?.subscribed && (
               <HStack>
                 {dataChapterUser.chapterUser.subscribed ? (
                   <HStack justifyContent={'space-between'} width={'100%'}>
@@ -182,7 +179,7 @@ export const ChapterPage: NextPage = () => {
         {user &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : dataChapterUser?.chapterUser.chapter_role ? (
+          ) : dataChapterUser?.chapterUser?.chapter_role ? (
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={500}>
                 <CheckIcon marginRight={1} />

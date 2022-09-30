@@ -30,7 +30,7 @@ const chapterIncludes = {
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUser)
+  @Query(() => ChapterUser, { nullable: true })
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,

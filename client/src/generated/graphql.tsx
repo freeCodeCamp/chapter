@@ -607,6 +607,7 @@ export type UpdateSponsorInputs = {
 };
 
 export type UpdateUserInputs = {
+  auto_subscribe: Scalars['Boolean'];
   name?: InputMaybe<Scalars['String']>;
 };
 

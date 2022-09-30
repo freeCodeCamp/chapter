@@ -1,21 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Link,
-  Spinner,
-  Switch,
-  Text,
-} from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import {
   useDeleteMeMutation,
-  useToggleAutoSubscribeMutation,
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
@@ -31,18 +20,9 @@ export const UserProfilePage = () => {
   } = useAuthStore();
   const logout = useLogout();
   const router = useRouter();
-  const [autoSubscribe, setAutoSubscribe] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) setAutoSubscribe(user?.auto_subscribe);
-  }, [user]);
 
   const confirmDelete = useConfirmDelete({ doubleConfirm: true });
   const [deleteMe] = useDeleteMeMutation();
-  const [toggleAutoSubscribe] = useToggleAutoSubscribeMutation({
-    refetchQueries: [{ query: meQuery }],
-  });
   const [updateMe] = useUpdateMeMutation({
     refetchQueries: [{ query: meQuery }],
   });
@@ -52,7 +32,7 @@ export const UserProfilePage = () => {
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { data: { name } },
+        variables: { data: { name, auto_subscribe: data.auto_subscribe } },
       });
     } catch (err) {
       console.error(err);
@@ -68,12 +48,6 @@ export const UserProfilePage = () => {
     await logout();
     router.push('/');
   };
-  const onSwitch = async () => {
-    setLoading(true);
-    setAutoSubscribe(!autoSubscribe);
-    await toggleAutoSubscribe();
-    setLoading(false);
-  };
 
   return (
     <div>
@@ -85,24 +59,6 @@ export const UserProfilePage = () => {
           <Heading as="h2" size={'lg'}>
             Welcome {user.name}
           </Heading>
-          <FormControl>
-            <Flex>
-              <FormLabel htmlFor="subscription">
-                Automatic subscription
-              </FormLabel>
-              <Switch
-                id="subscription"
-                isChecked={autoSubscribe}
-                onChange={onSwitch}
-                isDisabled={isLoading}
-              />
-              {isLoading && <Spinner size="sm" />}
-            </Flex>
-            <FormHelperText>
-              Subscribe automatically to chapters that you join and RSVPed
-              events.
-            </FormHelperText>
-          </FormControl>
           {user.admined_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">

@@ -7,4 +7,7 @@ export class UpdateUserInputs
 {
   @Field(() => String, { nullable: true })
   name: string;
+
+  @Field(() => Boolean)
+  auto_subscribe: boolean;
 }

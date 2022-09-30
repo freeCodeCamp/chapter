@@ -1,4 +1,11 @@
-import { Button } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Switch,
+} from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
@@ -35,7 +42,9 @@ const fields: Fields[] = [
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
 
-  const defaultValues: UpdateUserInputs = { name: data.name };
+  const defaultValues: UpdateUserInputs = {
+    ...data,
+  };
   const {
     handleSubmit,
     register,
@@ -46,7 +55,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   });
 
   useEffect(() => {
-    reset({ name: data.name });
+    reset(defaultValues);
   }, [data]);
 
   return (
@@ -73,6 +82,19 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
           />
         ),
       )}
+      <FormControl>
+        <Flex>
+          <FormLabel htmlFor="auto_subscribe">Automatic subscription</FormLabel>
+          <Switch
+            id="auto_subscribe"
+            {...register('auto_subscribe')}
+            isDisabled={loading}
+          />
+        </Flex>
+        <FormHelperText>
+          Subscribe automatically to chapters that you join and RSVPed events.
+        </FormHelperText>
+      </FormControl>
       <Button
         mt="6"
         width="100%"

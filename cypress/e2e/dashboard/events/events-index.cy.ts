@@ -22,7 +22,7 @@ const eventData = {
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
     cy.mhDeleteAll();
     cy.interceptGQL('events');
@@ -305,7 +305,7 @@ describe('spec needing owner', () => {
 
 describe('events dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login('admin@of.chapter.one');
     cy.mhDeleteAll();
     cy.interceptGQL('events');

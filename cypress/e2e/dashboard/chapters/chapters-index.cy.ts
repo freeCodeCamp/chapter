@@ -12,7 +12,7 @@ const chapterData = {
 
 describe('chapters dashboard', () => {
   before(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
   beforeEach(() => {
     cy.login();

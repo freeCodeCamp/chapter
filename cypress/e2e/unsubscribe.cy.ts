@@ -2,7 +2,7 @@ import { ChapterMembers, EventUsers } from '../../cypress.config';
 
 describe('unsubscribe link', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.mhDeleteAll();
   });
 

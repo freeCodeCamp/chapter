@@ -3,7 +3,7 @@ import { expectToBeRejected } from '../../../support/util';
 
 describe('event dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
   });
 

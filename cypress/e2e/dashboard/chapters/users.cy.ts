@@ -15,7 +15,7 @@ const bannedUserId = 4;
 
 describe('Chapter Users dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
   });
   it('should have a table of users', () => {

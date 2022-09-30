@@ -73,7 +73,7 @@ export type ChapterWithEvents = {
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
-  events: Array<Event>;
+  events: Array<EventWithVenue>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
   name: Scalars['String'];
@@ -236,6 +236,24 @@ export type EventWithRelations = {
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
   sponsors: Array<EventSponsor>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  tags: Array<EventTag>;
+  url?: Maybe<Scalars['String']>;
+  venue?: Maybe<Venue>;
+  venue_type: VenueType;
+};
+
+export type EventWithVenue = {
+  __typename?: 'EventWithVenue';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags: Array<EventTag>;
@@ -789,13 +807,20 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    category: string;
     image_url: string;
+    city: string;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      start_at: any;
+      capacity: number;
+      venue?: {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        region: string;
+        street_address?: string | null;
+      } | null;
     }>;
   }>;
 };
@@ -1330,7 +1355,7 @@ export type VenueQuery = {
       id: number;
       name: string;
       events: Array<{
-        __typename?: 'Event';
+        __typename?: 'EventWithVenue';
         id: number;
         name: string;
         canceled: boolean;
@@ -1506,13 +1531,20 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    category: string;
     image_url: string;
+    city: string;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      start_at: any;
+      capacity: number;
+      venue?: {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        region: string;
+        street_address?: string | null;
+      } | null;
     }>;
   }>;
 };
@@ -1991,12 +2023,18 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      category
       image_url
+      city
       events {
         id
         name
-        start_at
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }
@@ -4245,12 +4283,18 @@ export const HomeDocument = gql`
       id
       name
       description
-      category
       image_url
+      city
       events {
         id
         name
-        start_at
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }

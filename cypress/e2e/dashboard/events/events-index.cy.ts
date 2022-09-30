@@ -1,7 +1,7 @@
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
-const eventData = {
+const eventOneData = {
   name: 'Homer Simpson',
   description: 'i will show you damn!',
   url: 'http://wooden-swing.com',
@@ -15,7 +15,21 @@ const eventData = {
   invite_only: false,
   tags: ['aut'],
   sponsor_ids: [],
-  chapter_id: 1,
+};
+
+const eventTwoData = {
+  venue_id: 1,
+  sponsor_ids: [],
+  name: 'Event Venue change test',
+  description: 'Test Description',
+  url: 'https://test.event.org',
+  venue_type: 'PhysicalAndOnline',
+  capacity: 10,
+  image_url: 'https://test.event.org/image',
+  streaming_url: 'https://test.event.org/video',
+  start_at: '2022-01-01T00:01',
+  ends_at: '2022-01-02T00:02',
+  tags: 'Test, Event, Tag',
 };
 
 // TODO: Move these specs into the other describe block, once we can make sure
@@ -133,25 +147,11 @@ describe('spec needing owner', () => {
   });
 
   it("emails the users when an event's venue is changed", () => {
-    const eventData = {
-      venue_id: 1,
-      sponsor_ids: [],
-      name: 'Event Venue change test',
-      description: 'Test Description',
-      url: 'https://test.event.org',
-      venue_type: 'PhysicalAndOnline',
-      capacity: 10,
-      image_url: 'https://test.event.org/image',
-      streaming_url: 'https://test.event.org/video',
-      start_at: '2022-01-01T00:01',
-      ends_at: '2022-01-02T00:02',
-      tags: 'Test, Event, Tag',
-    };
     // It needs to be string to select by the value. When passing integer
     // to the .select method, it will select option by the index.
     const newVenueId = '2';
 
-    cy.createEvent(1, eventData).then((response) => {
+    cy.createEvent(1, eventTwoData).then((response) => {
       const eventId = response.body.data.createEvent.id;
       cy.visit(`/dashboard/events/${eventId}/edit`);
 
@@ -175,15 +175,15 @@ describe('spec needing owner', () => {
       cy.get('@newVenueTitle').then((venueTitle) => {
         cy.get('@venueMail')
           .mhGetSubject()
-          .should('eq', `Venue changed for event ${eventData['name']}`);
+          .should('eq', `Venue changed for event ${eventTwoData['name']}`);
         cy.get('@venueMail')
           .mhGetBody()
           .should('include', 'We have had to change the location')
-          .and('include', eventData['name'])
+          .and('include', eventTwoData['name'])
           .and('include', venueTitle);
 
         cy.findAllByRole('row')
-          .filter(`:contains(${eventData['name']})`)
+          .filter(`:contains(${eventTwoData['name']})`)
           .should('contain.text', venueTitle);
       });
 
@@ -314,16 +314,16 @@ describe('events dashboard', () => {
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
 
-    cy.updateEvent(eventId, eventData).then((response) => {
+    cy.updateEvent(eventId, eventOneData).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
     // newly registered user (without a chapter_users record)
     cy.login('test@user.org');
-    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+    cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
-    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+    cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
   });
 
   it('chapter admin should be allowed to delete event, but nobody else', () => {

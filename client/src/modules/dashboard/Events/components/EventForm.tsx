@@ -332,7 +332,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 : true
             }
           >
-            Add
+            Add Sponsor
           </Button>
         </Box>
         {sponsorFields.map((sponsorField, sponsorFieldId) => {

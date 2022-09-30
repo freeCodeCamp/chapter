@@ -146,6 +146,7 @@ describe('chapter dashboard', () => {
     cy.findByRole('textbox', { name: 'Streaming URL' }).type(
       testEvent.streaming_url,
     );
+    cy.findByRole('button', { name: 'Add Sponsor' }).click();
 
     cy.findByRole('form', { name: 'Add event' })
       .findByRole('button', {

@@ -22,6 +22,8 @@ const getEventUsers = (eventId: number) =>
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
 
+const seedDb = () => execSync('node server/prisma/generator/seed.js');
+
 config();
 
 export default defineConfig({
@@ -48,7 +50,7 @@ export default defineConfig({
         execSync('npm run db:reset');
       });
 
-      on('task', { getChapterMembers, getEventUsers });
+      on('task', { getChapterMembers, getEventUsers, seedDb });
       coverage(on, config);
       return config;
     },

@@ -1,5 +1,9 @@
+import { ChapterMembers, EventUsers } from '../../cypress.config';
 const profilePage = '/profile';
-const testUserEmail = 'test@user.org';
+const testUser = {
+  email: 'test@user.org',
+  name: 'Test User',
+};
 const chapterIdToJoin = 1;
 const eventIdToJoin = 1;
 
@@ -9,7 +13,7 @@ describe('profile page', () => {
   });
   describe('automatic subscription', () => {
     beforeEach(() => {
-      cy.login(testUserEmail);
+      cy.login(testUser.email);
     });
     it('when enabled, should automatically subscribe when joining chapter or RSVPing event', () => {
       cy.visit(profilePage);
@@ -22,16 +26,16 @@ describe('profile page', () => {
       cy.get('@switch').should('be.enabled');
 
       cy.joinChapter(chapterIdToJoin);
-      cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
-        checkSubscription(chapterUsers, true),
+      cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
+        (chapterUsers) => checkSubscription(chapterUsers, true),
       );
 
       cy.toggleChapterSubscription(chapterIdToJoin);
-      cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
-        checkSubscription(chapterUsers, false),
+      cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
+        (chapterUsers) => checkSubscription(chapterUsers, false),
       );
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
-      cy.getEventUsers(eventIdToJoin).then((eventUsers) =>
+      cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) =>
         checkSubscription(eventUsers, true),
       );
     });
@@ -43,11 +47,11 @@ describe('profile page', () => {
       );
 
       cy.joinChapter(chapterIdToJoin);
-      cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
-        checkSubscription(chapterUsers, false),
+      cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
+        (chapterUsers) => checkSubscription(chapterUsers, false),
       );
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
-      cy.getEventUsers(eventIdToJoin).then((eventUsers) =>
+      cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) =>
         checkSubscription(eventUsers, false),
       );
     });
@@ -55,8 +59,8 @@ describe('profile page', () => {
     it('when disabled, RSVPing to event from subscribed chapter will subscribe to event', () => {
       cy.joinChapter(chapterIdToJoin);
       cy.toggleChapterSubscription(chapterIdToJoin);
-      cy.getChapterMembers(chapterIdToJoin).then((chapterUsers) =>
-        checkSubscription(chapterUsers, true),
+      cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
+        (chapterUsers) => checkSubscription(chapterUsers, true),
       );
 
       cy.visit(profilePage);
@@ -65,15 +69,13 @@ describe('profile page', () => {
       );
 
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
-      cy.getEventUsers(eventIdToJoin).then((eventUsers) =>
+      cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) =>
         checkSubscription(eventUsers, true),
       );
     });
 
     function checkSubscription(users, status: boolean) {
-      const user = users.filter(
-        ({ user: { email } }) => email === testUserEmail,
-      );
+      const user = users.filter(({ user: { name } }) => name === testUser.name);
       expect(user.length).to.eq(1);
       expect(user[0].subscribed).to.eq(status);
     }

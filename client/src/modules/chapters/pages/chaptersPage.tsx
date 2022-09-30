@@ -6,18 +6,23 @@ import { LinkButton } from 'chakra-next-link';
 import { Loading } from 'components/Loading';
 import { ChapterCard } from 'components/ChapterCard';
 import { useChaptersQuery } from 'generated/graphql';
+import { useAuth } from 'modules/auth/store';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
-
+  const { user } = useAuth();
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
   return (
     <Stack mt={10} mb={5} display={'block'}>
-      <Flex alignContent={'center'}>
+      <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Heading marginBlock={'1em'}>Chapters: </Heading>
-        <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
+        <LinkButton
+          href="/dashboard/chapters"
+          colorScheme={'blue'}
+          isDisabled={user?.id === undefined}
+        >
           Chapter Dashboard
         </LinkButton>
       </Flex>

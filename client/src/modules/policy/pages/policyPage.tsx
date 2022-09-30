@@ -2,12 +2,16 @@ import React, { forwardRef } from 'react';
 import { NextPage } from 'next';
 import { Flex, Grid, Heading, Text, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
+import { useAuth } from 'modules/auth/store';
+
+interface Props {
+  link: string;
+  text: string;
+}
 
 export const PolicyPage: NextPage = () => {
-  interface Props {
-    link: string;
-    text: string;
-  }
+  const { user } = useAuth();
+
   const HeaderItem = forwardRef<HTMLDivElement, Props>(({ link, text }) => {
     return (
       <LinkButton
@@ -15,6 +19,7 @@ export const PolicyPage: NextPage = () => {
         href={link}
         colorScheme={'blue'}
         margin={'1em'}
+        isDisabled={user?.id === undefined}
       >
         {text}
       </LinkButton>

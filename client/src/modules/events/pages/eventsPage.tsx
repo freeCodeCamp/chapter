@@ -6,6 +6,7 @@ import { LinkButton } from 'chakra-next-link';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
+import { useAuth } from 'modules/auth/store';
 
 function Pagination({
   currentPage = 1,
@@ -61,6 +62,7 @@ export const EventsPage: NextPage = () => {
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
   });
+  const { user } = useAuth();
 
   useEffect(() => {
     if (visitedPages.has(currentPage)) return;
@@ -78,7 +80,11 @@ export const EventsPage: NextPage = () => {
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading>Events: </Heading>
-          <LinkButton href="/dashboard/events" colorScheme={'blue'}>
+          <LinkButton
+            href="/dashboard/events"
+            colorScheme={'blue'}
+            isDisabled={user?.id === undefined}
+          >
             Events Dashboard
           </LinkButton>
         </Flex>

@@ -456,7 +456,7 @@ export type Query = {
   __typename?: 'Query';
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser: ChapterUser;
+  chapterUser?: Maybe<ChapterUser>;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
@@ -807,12 +807,12 @@ export type ChapterUserQueryVariables = Exact<{
 
 export type ChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser: {
+  chapterUser?: {
     __typename?: 'ChapterUser';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  } | null;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;

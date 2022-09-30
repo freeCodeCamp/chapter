@@ -77,3 +77,9 @@ export class EventWithRelations extends Event {
   @Field(() => [EventUser])
   event_users: EventUser[];
 }
+
+@ObjectType()
+export class EventWithVenue extends Event {
+  @Field(() => Venue, { nullable: true })
+  venue?: Venue | null;
+}

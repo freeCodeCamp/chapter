@@ -1,6 +1,8 @@
+import { ChapterMembers, EventUsers } from '../../cypress.config';
+
 describe('unsubscribe link', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.mhDeleteAll();
   });
 
@@ -39,12 +41,14 @@ describe('unsubscribe link', () => {
           cy.findByRole('button', { name: 'Submit' }).click();
 
           cy.contains('Unsubscribed');
-          cy.getEventUsers(eventIdToUnsubscribe).then((eventUsers) => {
-            const unsubscribedUser = eventUsers.find(
-              ({ user: { email } }) => email === emailAddress,
-            );
-            expect(unsubscribedUser.subscribed).to.be.false;
-          });
+          cy.task<EventUsers>('getEventUsers', eventIdToUnsubscribe).then(
+            (eventUsers) => {
+              const unsubscribedUser = eventUsers.find(
+                ({ user: { email } }) => email === emailAddress,
+              );
+              expect(unsubscribedUser.subscribed).to.be.false;
+            },
+          );
 
           cy.visit(`/unsubscribe?token=${unsubscribeChapterToken}`);
           cy.contains('Unsubscribing');
@@ -52,16 +56,18 @@ describe('unsubscribe link', () => {
           cy.findByRole('button', { name: 'Submit' }).click();
 
           cy.contains('Unsubscribed');
-          cy.getChapterMembers(chapterId).then((chapter_users) => {
-            expect(
-              chapter_users.find(
-                ({ user: { email } }) => email === emailAddress,
-              ).subscribed,
-            ).to.eq(false);
-          });
+          cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
+            (chapter_users) => {
+              expect(
+                chapter_users.find(
+                  ({ user: { email } }) => email === emailAddress,
+                ).subscribed,
+              ).to.eq(false);
+            },
+          );
 
           otherChapterEventIds.forEach((eventId) => {
-            cy.getEventUsers(eventId).then((eventUsers) => {
+            cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
               const unsubscribedUser = eventUsers.find(
                 ({ user: { email } }) => email === emailAddress,
               );

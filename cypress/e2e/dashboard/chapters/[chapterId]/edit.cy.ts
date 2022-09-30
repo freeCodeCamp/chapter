@@ -13,7 +13,7 @@ const chapterId = 1;
 
 describe('chapter edit dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
   it('allows admins to edit a chapter', () => {
     cy.login('admin@of.chapter.one');

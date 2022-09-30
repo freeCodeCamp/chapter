@@ -30,6 +30,7 @@ import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
 import { gqlOptions } from './util';
+import { EventInputs } from './../../client/src/generated/graphql';
 
 /**
  * Register user using page UI
@@ -116,102 +117,6 @@ const interceptGQL = (operationName: string) => {
 Cypress.Commands.add('interceptGQL', interceptGQL);
 
 /**
- * Get users of the chapter using GQL query
- * @param chapterId Id of the chapter
- */
-const getChapterMembers = (chapterId: number) => {
-  const chapterQuery = {
-    operationName: 'chapterUsers',
-    variables: {
-      chapterId,
-    },
-    query: `query chapterUsers($chapterId: Int!) {
-            chapter(id: $chapterId) {
-              chapter_users {
-                user {
-                  id
-                  name
-                  email
-                }
-                subscribed
-              }
-            }
-          }`,
-  };
-  return cy
-    .request(gqlOptions(chapterQuery))
-    .then((response) => response.body.data.chapter.chapter_users);
-};
-Cypress.Commands.add('getChapterMembers', getChapterMembers);
-
-/**
- * Get event users for event with eventId using GQL query
- * @param eventId Id of the event
- */
-const getEventUsers = (eventId: number) => {
-  const eventQuery = {
-    operationName: 'eventUsers',
-    variables: {
-      eventId,
-    },
-    query: `query eventUsers($eventId: Int!) {
-      event(eventId: $eventId) {
-        event_users {
-          rsvp {
-            name
-          }
-          user {
-            id
-            name
-            email
-          }
-          subscribed
-        }
-      }
-    }`,
-  };
-  return cy
-    .request(gqlOptions(eventQuery))
-    .then((response) => response.body.data.event.event_users);
-};
-
-Cypress.Commands.add('getEventUsers', getEventUsers);
-
-/**
- * (Dashboard only) Get event users for event with eventId using GQL query
- * @param eventId Id of the event
- */
-
-const getDashboardEventUsers = (eventId: number) => {
-  const eventQuery = {
-    operationName: 'dashboardEventUsers',
-    variables: {
-      eventId,
-    },
-    query: `query dashboardEventUsers($eventId: Int!) {
-     dashboardEvent(eventId: $eventId) {
-       event_users {
-         rsvp {
-           name
-         }
-         user {
-           id
-           name
-           email
-         }
-         subscribed
-       }
-     }
-   }`,
-  };
-  return cy
-    .request(gqlOptions(eventQuery))
-    .then((response) => response.body.data.dashboardEvent.event_users);
-};
-
-Cypress.Commands.add('getDashboardEventUsers', getDashboardEventUsers);
-
-/**
  * Wait until emails are received by mailhog
  * @param alias Name of the alias to reference emails by
  */
@@ -235,16 +140,16 @@ Cypress.Commands.add('waitUntilMail', waitUntilMail);
 /**
  * Create event using GQL mutation
  * @param chapterId Id of the chapter
- * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ * @param data Data of the event. Defined by the GraphQL input type EventInputs.
  */
-const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
+const createEvent = (chapterId: number, data: EventInputs) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
       chapterId,
       data,
     },
-    query: `mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!) {
       createEvent(chapterId: $chapterId, data: $data) {
         id
       }
@@ -318,7 +223,7 @@ Cypress.Commands.add('deleteChapter', deleteChapter);
 /**
  * Update event using GQL mutation
  * @param eventId Id of the event
- * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ * @param data Data of the event. Equivalent of EventInputs for the Events resolver.
  */
 const updateEvent = (eventId, data) => {
   const eventMutation = {
@@ -327,7 +232,7 @@ const updateEvent = (eventId, data) => {
       eventId,
       data,
     },
-    query: `mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+    query: `mutation updateEvent($eventId: Int!, $data: EventInputs!) {
       updateEvent(id: $eventId, data: $data) {
         id
       }
@@ -809,10 +714,7 @@ declare global {
       deleteVenue: typeof deleteVenue;
       sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
-      getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;
-      getDashboardEventUsers: typeof getDashboardEventUsers;
-      getEventUsers: typeof getEventUsers;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
       login: typeof login;

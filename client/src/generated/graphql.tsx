@@ -73,7 +73,7 @@ export type ChapterWithEvents = {
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
-  events: Array<Event>;
+  events: Array<EventWithVenue>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
   name: Scalars['String'];
@@ -106,22 +106,6 @@ export type CreateChapterInputs = {
   image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-};
-
-export type CreateEventInputs = {
-  capacity: Scalars['Float'];
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  image_url: Scalars['String'];
-  invite_only?: InputMaybe<Scalars['Boolean']>;
-  name: Scalars['String'];
-  sponsor_ids: Array<Scalars['Int']>;
-  start_at: Scalars['DateTime'];
-  streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
-  url?: InputMaybe<Scalars['String']>;
-  venue_id?: InputMaybe<Scalars['Int']>;
-  venue_type?: InputMaybe<VenueType>;
 };
 
 export type CreateSponsorInputs = {
@@ -166,6 +150,22 @@ export type Event = {
   tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
+};
+
+export type EventInputs = {
+  capacity: Scalars['Float'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  image_url: Scalars['String'];
+  invite_only?: InputMaybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  sponsor_ids: Array<Scalars['Int']>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
+  url?: InputMaybe<Scalars['String']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
+  venue_type?: InputMaybe<VenueType>;
 };
 
 export type EventPermission = {
@@ -236,6 +236,24 @@ export type EventWithRelations = {
   invite_only: Scalars['Boolean'];
   name: Scalars['String'];
   sponsors: Array<EventSponsor>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  tags: Array<EventTag>;
+  url?: Maybe<Scalars['String']>;
+  venue?: Maybe<Venue>;
+  venue_type: VenueType;
+};
+
+export type EventWithVenue = {
+  __typename?: 'EventWithVenue';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
   tags: Array<EventTag>;
@@ -329,7 +347,7 @@ export type MutationCreateChapterArgs = {
 
 export type MutationCreateEventArgs = {
   chapterId: Scalars['Int'];
-  data: CreateEventInputs;
+  data: EventInputs;
 };
 
 export type MutationCreateSponsorArgs = {
@@ -404,7 +422,7 @@ export type MutationUpdateChapterArgs = {
 };
 
 export type MutationUpdateEventArgs = {
-  data: UpdateEventInputs;
+  data: EventInputs;
   id: Scalars['Int'];
 };
 
@@ -563,23 +581,6 @@ export type UpdateChapterInputs = {
   region?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateEventInputs = {
-  capacity?: InputMaybe<Scalars['Float']>;
-  chapter_id: Scalars['Int'];
-  description?: InputMaybe<Scalars['String']>;
-  ends_at?: InputMaybe<Scalars['DateTime']>;
-  image_url?: InputMaybe<Scalars['String']>;
-  invite_only?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  sponsor_ids: Array<Scalars['Int']>;
-  start_at?: InputMaybe<Scalars['DateTime']>;
-  streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
-  url?: InputMaybe<Scalars['String']>;
-  venue_id?: InputMaybe<Scalars['Int']>;
-  venue_type?: InputMaybe<VenueType>;
-};
-
 export type UpdateSponsorInputs = {
   logo_path: Scalars['String'];
   name: Scalars['String'];
@@ -604,7 +605,6 @@ export type UpdateVenueInputs = {
 
 export type User = {
   __typename?: 'User';
-  email: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
 };
@@ -618,7 +618,6 @@ export type UserBan = {
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
-  email: Scalars['String'];
   id: Scalars['Int'];
   instance_role: InstanceRole;
   name: Scalars['String'];
@@ -758,7 +757,7 @@ export type DashboardChapterUsersQuery = {
       __typename?: 'ChapterUser';
       subscribed: boolean;
       is_bannable: boolean;
-      user: { __typename?: 'User'; id: number; name: string; email: string };
+      user: { __typename?: 'User'; id: number; name: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
     user_bans: Array<{
@@ -791,13 +790,20 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    category: string;
     image_url: string;
+    city: string;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      start_at: any;
+      capacity: number;
+      venue?: {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        region: string;
+        street_address?: string | null;
+      } | null;
     }>;
   }>;
 };
@@ -931,7 +937,7 @@ export type DashboardChapterQuery = {
 
 export type CreateEventMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: CreateEventInputs;
+  data: EventInputs;
 }>;
 
 export type CreateEventMutation = {
@@ -954,7 +960,7 @@ export type CreateEventMutation = {
 
 export type UpdateEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
-  data: UpdateEventInputs;
+  data: EventInputs;
 }>;
 
 export type UpdateEventMutation = {
@@ -1332,7 +1338,7 @@ export type VenueQuery = {
       id: number;
       name: string;
       events: Array<{
-        __typename?: 'Event';
+        __typename?: 'EventWithVenue';
         id: number;
         name: string;
         canceled: boolean;
@@ -1508,13 +1514,20 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    category: string;
     image_url: string;
+    city: string;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      start_at: any;
+      capacity: number;
+      venue?: {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        region: string;
+        street_address?: string | null;
+      } | null;
     }>;
   }>;
 };
@@ -1858,7 +1871,6 @@ export const DashboardChapterUsersDocument = gql`
         user {
           id
           name
-          email
         }
         chapter_role {
           id
@@ -1994,12 +2006,18 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      category
       image_url
+      city
       events {
         id
         name
-        start_at
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }
@@ -2516,7 +2534,7 @@ export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQueryVariables
 >;
 export const CreateEventDocument = gql`
-  mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+  mutation createEvent($chapterId: Int!, $data: EventInputs!) {
     createEvent(chapterId: $chapterId, data: $data) {
       id
       name
@@ -2579,7 +2597,7 @@ export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutationVariables
 >;
 export const UpdateEventDocument = gql`
-  mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+  mutation updateEvent($eventId: Int!, $data: EventInputs!) {
     updateEvent(id: $eventId, data: $data) {
       id
       name
@@ -4248,12 +4266,18 @@ export const HomeDocument = gql`
       id
       name
       description
-      category
       image_url
+      city
       events {
         id
         name
-        start_at
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }

@@ -185,7 +185,7 @@ export const ChapterPage: NextPage = () => {
                 <CheckIcon marginRight={1} />
                 {dataChapterUser.chapterUser.chapter_role.name} of the chapter
               </Text>
-              <Button onClick={leaveChapter}>Leave chapter</Button>
+              <Button onClick={leaveChapter}>Leave</Button>
             </HStack>
           ) : (
             <HStack>

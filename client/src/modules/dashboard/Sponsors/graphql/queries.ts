@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const SPONSOR = gql`
-  query sponsor($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
+export const DASHBOARD_SPONSOR = gql`
+  query dashboardSponsor($sponsorId: Int!) {
+    dashboardSponsor(id: $sponsorId) {
       id
       name
       website

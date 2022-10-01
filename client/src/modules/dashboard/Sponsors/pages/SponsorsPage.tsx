@@ -4,8 +4,11 @@ import { LinkButton } from 'chakra-next-link';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
+
+import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { Permission } from '../../../../../../common/permissions';
 import { useSponsorsQuery } from 'generated/graphql';
 
 export const SponsorsPage: NextPage = () => {
@@ -24,9 +27,11 @@ export const SponsorsPage: NextPage = () => {
         <VStack>
           <Flex w="full" justify="space-between">
             <Heading id="page-heading">Sponsors</Heading>
-            <LinkButton href="/dashboard/sponsors/new" colorScheme={'blue'}>
-              Add new
-            </LinkButton>
+            {useCheckPermission(Permission.SponsorManage) && (
+              <LinkButton href="/dashboard/sponsors/new" colorScheme="blue">
+                Add new
+              </LinkButton>
+            )}
           </Flex>
           <Box width={'100%'}>
             <Box display={{ base: 'none', lg: 'block' }}>
@@ -42,15 +47,16 @@ export const SponsorsPage: NextPage = () => {
                   ),
                   type: (sponsor) => sponsor.type,
                   website: (sponsor) => sponsor.website,
-                  action: (sponsor) => (
-                    <LinkButton
-                      colorScheme="blue"
-                      size="xs"
-                      href={`/dashboard/sponsors/${sponsor.id}/edit`}
-                    >
-                      Edit
-                    </LinkButton>
-                  ),
+                  action: (sponsor) =>
+                    useCheckPermission(Permission.SponsorManage) && (
+                      <LinkButton
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/sponsors/${sponsor.id}/edit`}
+                      >
+                        Edit
+                      </LinkButton>
+                    ),
                 }}
               />
             </Box>

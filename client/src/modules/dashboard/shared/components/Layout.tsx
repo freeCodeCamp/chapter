@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import { Permission } from '../../../../../../common/permissions';
-import { useCheckPermission } from 'hooks/useCheckPermission';
+import { useCheckPermission } from '../../../../hooks/useCheckPermission';
 
 const links = [
   { text: 'Chapters', link: '/dashboard/chapters' },
@@ -13,7 +13,7 @@ const links = [
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
-    requiredPermission: Permission.SponsorManage,
+    requiredPermission: Permission.SponsorView,
   },
   { text: 'Users', link: '/dashboard/users' },
 ];

@@ -14,6 +14,10 @@ import { useSponsorsQuery } from 'generated/graphql';
 export const SponsorsPage: NextPage = () => {
   const { loading, error, data } = useSponsorsQuery();
 
+  const hasSponsorManagePermission = useCheckPermission(
+    Permission.SponsorManage,
+  );
+
   const isLoading = loading || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
@@ -27,7 +31,7 @@ export const SponsorsPage: NextPage = () => {
         <VStack>
           <Flex w="full" justify="space-between">
             <Heading id="page-heading">Sponsors</Heading>
-            {useCheckPermission(Permission.SponsorManage) && (
+            {hasSponsorManagePermission && (
               <LinkButton href="/dashboard/sponsors/new" colorScheme="blue">
                 Add new
               </LinkButton>
@@ -48,7 +52,7 @@ export const SponsorsPage: NextPage = () => {
                   type: (sponsor) => sponsor.type,
                   website: (sponsor) => sponsor.website,
                   action: (sponsor) =>
-                    useCheckPermission(Permission.SponsorManage) && (
+                    hasSponsorManagePermission && (
                       <LinkButton
                         colorScheme="blue"
                         size="xs"
@@ -81,7 +85,7 @@ export const SponsorsPage: NextPage = () => {
                       >
                         <Text marginBlock={'.54em'}>Name</Text>
                         <Text>Type</Text>
-                        <Text>Ops</Text>
+                        {hasSponsorManagePermission && <Text>Ops</Text>}
                         <Text>Website</Text>
                       </VStack>
                     ),
@@ -94,13 +98,15 @@ export const SponsorsPage: NextPage = () => {
                           {name}
                         </LinkButton>
                         <Text>{type}</Text>
-                        <LinkButton
-                          colorScheme="blue"
-                          size="xs"
-                          href={`/dashboard/sponsors/${id}/edit`}
-                        >
-                          Edit
-                        </LinkButton>
+                        {hasSponsorManagePermission && (
+                          <LinkButton
+                            colorScheme="blue"
+                            size="xs"
+                            href={`/dashboard/sponsors/${id}/edit`}
+                          >
+                            Edit
+                          </LinkButton>
+                        )}
                         <Text
                           size={'sm'}
                           wordBreak="break-all"

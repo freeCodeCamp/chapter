@@ -120,6 +120,7 @@ export const main = async (app: Express) => {
             name: 'member',
           },
         },
+        image_url: '',
       },
     });
   }

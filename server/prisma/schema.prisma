@@ -264,6 +264,7 @@ model users {
   updated_at       DateTime        @updatedAt
   id               Int             @id @default(autoincrement())
   name             String
+  image_url     String
   email            String          @unique
   user_bans        user_bans[]
   user_chapters    chapter_users[]

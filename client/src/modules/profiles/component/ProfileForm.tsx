@@ -30,6 +30,13 @@ const fields: Fields[] = [
     required: true,
     type: 'text',
   },
+  {
+    key: 'image_url',
+    label: 'Profile Picture',
+    placeholder: 'Please link your new profile picture here',
+    required: false,
+    type: 'text',
+  },
 ];
 
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {

@@ -5,4 +5,7 @@ import { User } from '../../graphql-types';
 export class UpdateUserInputs implements Omit<User, 'id' | 'email'> {
   @Field(() => String, { nullable: true })
   name: string;
+
+  @Field(() => String, { nullable: true })
+  image_url: string;
 }

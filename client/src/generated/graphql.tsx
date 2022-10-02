@@ -589,6 +589,7 @@ export type UpdateSponsorInputs = {
 };
 
 export type UpdateUserInputs = {
+  image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
 };
 

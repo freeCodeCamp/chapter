@@ -164,13 +164,18 @@ export const ChapterPage: NextPage = () => {
                     </Button>
                   </HStack>
                 ) : (
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => chapterSubscribe(true)}
-                    size="md"
-                  >
-                    Subscribe
-                  </Button>
+                  <HStack justifyContent={'space-between'} width={'100%'}>
+                    <Text fontWeight={500}>
+                      Follow upcoming chapter&apos;s events
+                    </Text>
+                    <Button
+                      colorScheme="blue"
+                      onClick={() => chapterSubscribe(true)}
+                      size="md"
+                    >
+                      Subscribe
+                    </Button>
+                  </HStack>
                 )}
               </HStack>
             )
@@ -189,8 +194,9 @@ export const ChapterPage: NextPage = () => {
             </HStack>
           ) : (
             <HStack>
+              <Text fontWeight={500}>Become member of the chapter</Text>
               <Button colorScheme="blue" onClick={joinChapter}>
-                Join chapter
+                Join
               </Button>
             </HStack>
           ))}

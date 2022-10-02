@@ -27,22 +27,25 @@ const fields: Fields[] = [
     key: 'name',
     label: 'New name',
     placeholder: 'Please type your new name here',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
     key: 'image_url',
     label: 'Profile Picture',
-    placeholder: 'Please link your new profile picture here',
+    placeholder: 'Link your new profile picture here',
     required: false,
-    type: 'text',
+    type: 'url',
   },
 ];
 
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
 
-  const defaultValues: UpdateUserInputs = { name: data.name };
+  const defaultValues: UpdateUserInputs = {
+    name: data.name,
+    image_url: data.image_url,
+  };
   const {
     handleSubmit,
     register,
@@ -53,7 +56,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   });
 
   useEffect(() => {
-    reset({ name: data.name });
+    reset({ name: data.name, image_url: data.image_url });
   }, [data]);
 
   return (

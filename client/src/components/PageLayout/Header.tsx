@@ -78,6 +78,7 @@ export const Header: React.FC = () => {
 
   const goHome = () => router.push('/');
 
+  console.log(user?.image_url);
   return (
     <>
       <HeaderItem>
@@ -165,7 +166,11 @@ export const Header: React.FC = () => {
           {user ? (
             <>
               <NextLink passHref href="/profile">
-                <Avatar cursor={'pointer'} name={`${user.name}`} />
+                <Avatar
+                  cursor={'pointer'}
+                  name={`${user.name}`}
+                  src={`${user.image_url}`}
+                />
               </NextLink>
             </>
           ) : (

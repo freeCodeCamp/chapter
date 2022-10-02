@@ -1,26 +1,11 @@
-import {
-  Button,
-  Box,
-  Heading,
-  HStack,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useConfirm, useConfirmDelete } from 'chakra-confirm';
+import { Box, Heading, HStack, Link, Text, VStack } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-import {
-  useConfirmRsvpMutation,
-  useDashboardEventLazyQuery,
-  useDeleteRsvpMutation,
-  MutationConfirmRsvpArgs,
-  MutationDeleteRsvpArgs,
-} from '../../../../generated/graphql';
+import { useDashboardEventLazyQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
@@ -28,15 +13,6 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
-import { DASHBOARD_EVENT } from '../graphql/queries';
-import { EVENT } from '../../../events/graphql/queries';
-
-const args = (eventId: number) => ({
-  refetchQueries: [
-    { query: EVENT, variables: { eventId } },
-    { query: DASHBOARD_EVENT, variables: { eventId } },
-  ],
-});
 
 export const EventPage: NextPage = () => {
   const router = useRouter();
@@ -50,26 +26,6 @@ export const EventPage: NextPage = () => {
     if (isReady) getEvent();
   }, [isReady]);
 
-  const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
-  const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
-
-  const confirm = useConfirm();
-  const confirmDelete = useConfirmDelete();
-
-  const confirmRSVP =
-    ({ eventId, userId }: MutationConfirmRsvpArgs) =>
-    async () => {
-      const ok = await confirm();
-      if (ok) confirmRsvpFn({ variables: { eventId, userId } });
-    };
-
-  const kick =
-    ({ eventId, userId }: MutationDeleteRsvpArgs) =>
-    async () => {
-      const ok = await confirmDelete();
-      if (ok) kickRsvpFn({ variables: { eventId, userId } });
-    };
-
   const isLoading = loading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
@@ -80,17 +36,14 @@ export const EventPage: NextPage = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
     },
     {
       title: 'Canceled',
       rsvpFilter: 'no',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
   ];
 
@@ -151,7 +104,7 @@ export const EventPage: NextPage = () => {
         false
       )}
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        {userLists.map(({ title, rsvpFilter, action }) => {
+        {userLists.map(({ title, rsvpFilter }) => {
           const users = data.dashboardEvent
             ? data.dashboardEvent.event_users.filter(
                 ({ rsvp }) => rsvp.name === rsvpFilter,
@@ -163,26 +116,11 @@ export const EventPage: NextPage = () => {
                 <DataTable
                   title={`${title}: ${users.length}`}
                   data={users}
-                  keys={['user', 'role', 'action'] as const}
+                  keys={['user', 'role'] as const}
                   emptyText="No users"
                   mapper={{
                     user: ({ user }) => (
                       <Text data-cy="username">{user.name}</Text>
-                    ),
-                    action: ({ user }) => (
-                      <HStack>
-                        {action.map(({ title, onClick, colorScheme }) => (
-                          <Button
-                            key={title.toLowerCase()}
-                            data-cy={title.toLowerCase()}
-                            size="xs"
-                            colorScheme={colorScheme}
-                            onClick={onClick({ eventId, userId: user.id })}
-                          >
-                            {title}
-                          </Button>
-                        ))}
-                      </HStack>
                     ),
                     role: ({ event_role }) => (
                       <Text data-cy="role">{event_role.name}</Text>
@@ -223,17 +161,6 @@ export const EventPage: NextPage = () => {
                             marginBottom={4}
                           >
                             <Text data-cy="username">{user.name}</Text>
-                            {action.map(({ title, onClick, colorScheme }) => (
-                              <Button
-                                key={title.toLowerCase()}
-                                data-cy={title.toLowerCase()}
-                                size="xs"
-                                colorScheme={colorScheme}
-                                onClick={onClick({ eventId, userId: user.id })}
-                              >
-                                {title}
-                              </Button>
-                            ))}
                             <Text data-cy="role">{event_role.name}</Text>
                           </VStack>
                         ),

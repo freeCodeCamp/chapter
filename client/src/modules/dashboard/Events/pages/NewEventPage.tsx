@@ -1,6 +1,6 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
+
 import {
   useCreateEventMutation,
   useSendEventInviteMutation,
@@ -13,8 +13,9 @@ import { CHAPTER } from '../../../chapters/graphql/queries';
 import { EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const NewEventPage: NextPage = () => {
+export const NewEventPage: NextPageWithLayout = () => {
   const { param: chapterId, isReady } = useParam('id');
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,7 +55,7 @@ export const NewEventPage: NextPage = () => {
   if (!isReady) return <DashboardLoading loading={isReady} />;
 
   return (
-    <Layout>
+    <>
       {isReady && (
         <EventForm
           loading={loading}
@@ -64,6 +65,10 @@ export const NewEventPage: NextPage = () => {
           chapterId={chapterId}
         />
       )}
-    </Layout>
+    </>
   );
+};
+
+NewEventPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

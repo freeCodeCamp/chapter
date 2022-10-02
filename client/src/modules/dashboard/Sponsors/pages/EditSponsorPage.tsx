@@ -1,16 +1,19 @@
-import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useParam } from '../../../../hooks/useParam';
 import { Sponsors } from '../../Events/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { SPONSOR } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { useSponsorQuery, useUpdateSponsorMutation } from 'generated/graphql';
+import {
+  useSponsorQuery,
+  useUpdateSponsorMutation,
+} from '../../../../generated/graphql';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-const EditSponsorPage: NextPage = () => {
+const EditSponsorPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { param: sponsorId, isReady } = useParam('id');
@@ -51,16 +54,18 @@ const EditSponsorPage: NextPage = () => {
     return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
-    <Layout>
-      <SponsorForm
-        loading={loading}
-        onSubmit={onSubmit}
-        data={data}
-        submitText="Save Sponsor Changes"
-        loadingText="Saving Sponsor Changes"
-      />
-    </Layout>
+    <SponsorForm
+      loading={loading}
+      onSubmit={onSubmit}
+      data={data}
+      submitText="Save Sponsor Changes"
+      loadingText="Saving Sponsor Changes"
+    />
   );
 };
 
 export { EditSponsorPage };
+
+EditSponsorPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};

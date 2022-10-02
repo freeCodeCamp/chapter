@@ -606,6 +606,7 @@ export type UpdateVenueInputs = {
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
+  image_url: Scalars['String'];
   name: Scalars['String'];
 };
 
@@ -619,6 +620,7 @@ export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
   id: Scalars['Int'];
+  image_url: Scalars['String'];
   instance_role: InstanceRole;
   name: Scalars['String'];
 };
@@ -658,7 +660,12 @@ export type UpdateMeMutationVariables = Exact<{
 
 export type UpdateMeMutation = {
   __typename?: 'Mutation';
-  updateMe: { __typename?: 'User'; id: number; name: string };
+  updateMe: {
+    __typename?: 'User';
+    id: number;
+    name: string;
+    image_url: string;
+  };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -669,6 +676,7 @@ export type MeQuery = {
     __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
+    image_url: string;
     instance_role: {
       __typename?: 'InstanceRole';
       instance_role_permissions: Array<{
@@ -1592,6 +1600,7 @@ export const UpdateMeDocument = gql`
     updateMe(data: $data) {
       id
       name
+      image_url
     }
   }
 `;
@@ -1651,6 +1660,7 @@ export const MeDocument = gql`
         id
         name
       }
+      image_url
     }
   }
 `;

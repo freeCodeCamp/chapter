@@ -58,7 +58,7 @@ describe('chapters dashboard', () => {
       .click();
     cy.location('pathname').should(
       'match',
-      /^\/dashboard\/chapters\/{\d}\/new-venue$/,
+      /^\/dashboard\/chapters\/\d\/new-venue$/,
     );
     cy.contains(chapterData.name);
   });

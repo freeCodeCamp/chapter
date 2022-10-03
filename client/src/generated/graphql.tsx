@@ -2102,7 +2102,6 @@ export type CreateChapterMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-
 export function useCreateChapterMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateChapterMutation,
@@ -2115,7 +2114,6 @@ export function useCreateChapterMutation(
     CreateChapterMutationVariables
   >(CreateChapterDocument, options);
 }
-
 export type CreateChapterMutationHookResult = ReturnType<
   typeof useCreateChapterMutation
 >;

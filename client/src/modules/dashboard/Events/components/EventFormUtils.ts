@@ -216,9 +216,8 @@ export const parseEventData = (data: EventFormData) => {
     .split(',')
     .map((tag) => tag.trim())
     .filter(Boolean);
-  // Both url and streaming_url are optional. However, null will be accepted,
+  // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.
-  const url = data.url?.trim() || null;
   const streaming_url = data.streaming_url?.trim() || null;
 
   return {
@@ -226,7 +225,6 @@ export const parseEventData = (data: EventFormData) => {
     capacity: parseInt(String(data.capacity)),
     start_at: data.start_at,
     ends_at: data.ends_at,
-    url,
     venue_id: isPhysical(data.venue_type)
       ? parseInt(String(data.venue_id))
       : null,

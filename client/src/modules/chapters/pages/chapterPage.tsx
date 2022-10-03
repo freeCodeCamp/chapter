@@ -152,7 +152,7 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : (
-            dataChapterUser?.chapterUser?.subscribed && (
+            dataChapterUser?.chapterUser && (
               <HStack>
                 {dataChapterUser.chapterUser.subscribed ? (
                   <HStack justifyContent={'space-between'} width={'100%'}>
@@ -193,7 +193,7 @@ export const ChapterPage: NextPage = () => {
               <Button onClick={leaveChapter}>Leave</Button>
             </HStack>
           ) : (
-            <HStack>
+            <HStack justifyContent="space-between">
               <Text fontWeight={500}>Become member of the chapter</Text>
               <Button colorScheme="blue" onClick={joinChapter}>
                 Join

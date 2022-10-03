@@ -54,9 +54,9 @@ export const ChaptersPage: NextPage = () => {
                   <LinkButton
                     colorScheme="blue"
                     size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/edit`}
+                    href={`/dashboard/chapters/${chapter.id}/new-venue`}
                   >
-                    Edit
+                    Add Venue
                   </LinkButton>
                   <LinkButton
                     colorScheme="blue"
@@ -68,9 +68,9 @@ export const ChaptersPage: NextPage = () => {
                   <LinkButton
                     colorScheme="blue"
                     size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/new-venue`}
+                    href={`/dashboard/chapters/${chapter.id}/edit`}
                   >
-                    Add Venue
+                    Edit
                   </LinkButton>
                 </HStack>
               ),
@@ -121,16 +121,16 @@ export const ChaptersPage: NextPage = () => {
                         <LinkButton
                           colorScheme="blue"
                           size="xs"
-                          href={`/dashboard/chapters/${id}/new-event`}
+                          href={`/dashboard/chapters/${id}/new-venue`}
                         >
-                          Add Event
+                          Add Venue
                         </LinkButton>
                         <LinkButton
                           colorScheme="blue"
                           size="xs"
-                          href={`/dashboard/chapters/${id}/new-venue`}
+                          href={`/dashboard/chapters/${id}/new-event`}
                         >
-                          Add Venue
+                          Add Event
                         </LinkButton>
                         <LinkButton
                           colorScheme="blue"

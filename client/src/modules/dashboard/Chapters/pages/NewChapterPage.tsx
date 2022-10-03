@@ -21,7 +21,7 @@ export const NewChapterPage: NextPage = () => {
       await createChapter({
         variables: { data: { ...data } },
       });
-      router.replace('/dashboard/chapters');
+      router.replace(`/dashboard/chapters/${data.id}/new-venue`);
     } catch (err) {
       console.error(err);
     } finally {

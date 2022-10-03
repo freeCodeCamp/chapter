@@ -7,10 +7,11 @@ const testEvent = {
   name: 'Test Event',
   description: 'Test Description',
   streaming_url: 'https://test.event.org/video',
-  capacity: '10',
+  capacity: 10,
+  tags: ['Test, Event, Tag'],
   start_at: '2022-01-01T00:01',
   ends_at: '2022-01-02T00:02',
-  venue_id: '1',
+  venue_id: 1,
   image_url: 'https://test.event.org/image',
 };
 

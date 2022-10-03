@@ -1,3 +1,4 @@
+import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
@@ -12,6 +13,7 @@ const eventOneData = {
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',
   invite_only: false,
+  tags: ['aut'],
   sponsor_ids: [],
 };
 
@@ -20,7 +22,7 @@ const eventTwoData = {
   sponsor_ids: [],
   name: 'Event Venue change test',
   description: 'Test Description',
-  venue_type: 'PhysicalAndOnline',
+  venue_type: VenueType.PhysicalAndOnline,
   capacity: 10,
   image_url: 'https://test.event.org/image',
   streaming_url: 'https://test.event.org/video',

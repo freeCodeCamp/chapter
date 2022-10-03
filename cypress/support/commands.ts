@@ -546,7 +546,7 @@ const joinChapter = (chapterId: number, options = { withAuth: true }) => {
 };
 Cypress.Commands.add('joinChapter', joinChapter);
 /**
- * Join chapter using GQL mutation
+ * Leave chapter using GQL mutation
  * @param chapterId Chapter id
  * @param {object} [options={ withAuth: boolean }] Optional options object.
  */

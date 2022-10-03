@@ -2,6 +2,7 @@ import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
+import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
 
@@ -54,30 +55,22 @@ function Pagination({
 const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [visitedPages, setVisitedPages] = useState(new Set([1]));
+  const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset: (currentPage - 1) * pageSize, limit: pageSize },
+    variables: { offset, limit: pageSize },
   });
 
   useEffect(() => {
+    if (visitedPages.has(currentPage)) return;
     fetchMore({
-      variables: {
-        offset: data?.paginatedEventsWithTotal.events.length || 0,
-        limit: pageSize,
-      },
+      variables: { offset, limit: pageSize },
     });
+    setVisitedPages(new Set(visitedPages).add(currentPage));
   }, [currentPage]);
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
 
-  if (error || !data?.paginatedEventsWithTotal.events.length) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  const isLoading = loading || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
   return (
     <VStack>

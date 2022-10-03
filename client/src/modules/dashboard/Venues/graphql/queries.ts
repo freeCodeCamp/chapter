@@ -22,8 +22,8 @@ export const VENUES = gql`
 `;
 
 export const VENUE = gql`
-  query venue($id: Int!) {
-    venue(id: $id) {
+  query venue($venueId: Int!) {
+    venue(venueId: $venueId) {
       id
       name
       street_address
@@ -36,6 +36,12 @@ export const VENUE = gql`
       chapter {
         id
         name
+        events {
+          id
+          name
+          canceled
+          invite_only
+        }
       }
     }
   }

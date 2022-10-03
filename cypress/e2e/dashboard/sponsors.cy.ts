@@ -9,7 +9,7 @@ const testSponsor = {
 
 describe('sponsors dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
   });
 
@@ -26,6 +26,7 @@ describe('sponsors dashboard', () => {
 
     cy.findByRole('heading', { name: 'Sponsors' });
     cy.findByRole('link', { name: testSponsor.name }).click();
+    cy.contains('Loading...');
     cy.get('[data-cy=name]').contains(testSponsor.name);
     cy.get('[data-cy=website]').contains(testSponsor.website);
     cy.get('[data-cy=type]').contains(testSponsor.type);

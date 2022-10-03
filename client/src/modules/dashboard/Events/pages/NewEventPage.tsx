@@ -5,10 +5,11 @@ import {
   useCreateEventMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
-import { isOnline, isPhysical } from '../../../../util/venueType';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { EventFormData } from '../components/EventFormUtils';
+import { EventFormData, parseEventData } from '../components/EventFormUtils';
+import { CHAPTER } from '../../../chapters/graphql/queries';
 import { EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
@@ -18,12 +19,7 @@ export const NewEventPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [createEvent] = useCreateEventMutation({
-    refetchQueries: [
-      { query: EVENTS },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
-    ],
-  });
+  const [createEvent] = useCreateEventMutation();
 
   const [publish] = useSendEventInviteMutation();
 
@@ -31,27 +27,14 @@ export const NewEventPage: NextPage = () => {
     setLoading(true);
 
     try {
-      const { chapter_id, sponsors, tags, ...rest } = data;
-      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-
-      const eventData = {
-        ...rest,
-        capacity: parseInt(String(data.capacity)),
-        start_at: data.start_at,
-        ends_at: data.ends_at,
-        venue_id: isPhysical(data.venue_type)
-          ? parseInt(String(data.venue_id))
-          : null,
-        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
-        sponsor_ids: sponsorArray,
-      };
+      const { chapter_id } = data;
       const event = await createEvent({
-        variables: { chapterId: chapter_id, data: { ...eventData } },
+        variables: { chapterId: chapter_id, data: parseEventData(data) },
+        refetchQueries: [
+          { query: CHAPTER, variables: { chapterId: chapter_id } },
+          { query: EVENTS },
+          { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+        ],
       });
 
       if (event.data) {
@@ -67,6 +50,8 @@ export const NewEventPage: NextPage = () => {
       setLoading(false);
     }
   };
+
+  if (!isReady) return <DashboardLoading loading={isReady} />;
 
   return (
     <Layout>

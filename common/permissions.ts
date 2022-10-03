@@ -1,10 +1,11 @@
 export enum ChapterPermission {
   ChapterEdit = 'chapter-edit',
+  ChapterBanUser = 'chapter-ban-user',
   EventCreate = 'event-create',
   EventEdit = 'event-edit',
   EventDelete = 'event-delete',
   EventSendInvite = 'event-send-invite',
-  EventSubscriptionsManage = 'event-subscriptions-manage',
+  EventSubscriptionManage = 'event-subscription-manage',
   Rsvp = 'rsvp',
   RsvpDelete = 'rsvp-delete',
   RsvpConfirm = 'rsvp-confirm',
@@ -16,11 +17,14 @@ export enum ChapterPermission {
 export enum InstancePermission {
   ChapterCreate = 'chapter-create',
   ChapterJoin = 'chapter-join',
-  ChapterSubscriptionsManage = 'chapter-subscriptions-manage',
+  ChapterDelete = 'chapter-delete',
+  ChapterSubscriptionManage = 'chapter-subscription-manage',
   ChapterUserRoleChange = 'chapter-user-role-change',
-  SponsorsManage = 'sponsors-manage',
+  SponsorManage = 'sponsor-manage',
+  SponsorView = 'sponsor-view',
   UserInstanceRoleChange = 'user-instance-role-change',
   UsersView = 'users-view',
+  GoogleAuthenticate = 'google-authenticate',
 }
 
 // Ideally this would be a new enum, but TS does not (to my knowledge) support

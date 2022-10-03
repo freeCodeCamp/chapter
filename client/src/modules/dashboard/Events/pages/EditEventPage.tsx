@@ -1,32 +1,34 @@
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useEventQuery,
+  useDashboardEventLazyQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { EventFormData } from '../components/EventFormUtils';
-import { EVENTS, EVENT } from '../graphql/queries';
+import { EventFormData, parseEventData } from '../components/EventFormUtils';
+import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
+import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
 
 export const EditEventPage: NextPage = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { param: eventId, isReady } = useParam();
 
-  const {
-    loading: eventLoading,
-    error,
-    data,
-  } = useEventQuery({
+  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
     variables: { eventId: eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
 
   const toast = useToast();
 
@@ -36,6 +38,7 @@ export const EditEventPage: NextPage = () => {
     refetchQueries: [
       { query: EVENTS },
       { query: EVENT, variables: { eventId } },
+      { query: DASHBOARD_EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
@@ -44,28 +47,8 @@ export const EditEventPage: NextPage = () => {
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, tags, ...rest } = data;
-      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-
-      const eventData = {
-        ...rest,
-        capacity: parseInt(String(data.capacity)),
-        start_at: data.start_at,
-        ends_at: data.ends_at,
-        venue_id: isPhysical(data.venue_type)
-          ? parseInt(String(data.venue_id))
-          : null,
-        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
-        sponsor_ids: sponsorArray,
-      };
-
       const event = await updateEvent({
-        variables: { eventId, data: { ...eventData } },
+        variables: { eventId, data: parseEventData(data) },
       });
 
       if (event.data) {
@@ -86,15 +69,12 @@ export const EditEventPage: NextPage = () => {
     }
   };
 
-  if (eventLoading || !isReady || error || !data?.event) {
-    return (
-      <Layout>
-        <h1>{eventLoading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error.message}</div>}
-      </Layout>
-    );
-  }
-  const { sponsors, ...rest } = data.event;
+  const isLoading = loading || !isReady || !data;
+  if (isLoading) return <DashboardLoading loading={loading} error={error} />;
+  if (!data.dashboardEvent)
+    return <NextError statusCode={404} title="Event not found" />;
+
+  const { sponsors, ...rest } = data.dashboardEvent;
   const sponsorData = sponsors?.map((s) => {
     return {
       id: s.sponsor.id,
@@ -107,14 +87,14 @@ export const EditEventPage: NextPage = () => {
         data={{
           ...rest,
           sponsors: sponsorData || [],
-          venue_id: data.event?.venue?.id,
-          tags: data.event.tags || [],
+          venue_id: data.dashboardEvent?.venue?.id,
+          tags: data.dashboardEvent.tags || [],
         }}
         loading={loadingUpdate}
         onSubmit={onSubmit}
         loadingText={'Saving Event Changes'}
         submitText={'Save Event Changes'}
-        chapterId={data.event.chapter.id}
+        chapterId={data.dashboardEvent.chapter.id}
       />
     </Layout>
   );

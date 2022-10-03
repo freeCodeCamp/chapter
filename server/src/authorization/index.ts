@@ -2,7 +2,7 @@ import { GraphQLResolveInfo } from 'graphql';
 import { AuthChecker } from 'type-graphql';
 
 import { ResolverCtx } from '../common-types/gql';
-import type { Events, User } from '../controllers/Auth/middleware';
+import type { Events, User, Venues } from '../controllers/Auth/middleware';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
@@ -15,7 +15,7 @@ type VariableValues = GraphQLResolveInfo['variableValues'];
 export const authorizationChecker: AuthChecker<
   ResolverCtx | Required<ResolverCtx>
 > = ({ context, info: { variableValues } }, requiredPermissions): boolean => {
-  if (!hasUserAndEvents(context)) return false;
+  if (!hasUserEventsAndVenues(context)) return false;
 
   if (requiredPermissions.length !== 1) return false;
   const requiredPermission = requiredPermissions[0];
@@ -30,18 +30,22 @@ export const authorizationChecker: AuthChecker<
   return false;
 };
 
-function hasUserAndEvents(
+function hasUserEventsAndVenues(
   ctx: ResolverCtx | Required<ResolverCtx>,
 ): ctx is Required<ResolverCtx> {
-  return typeof ctx.user !== 'undefined' && typeof ctx.events !== 'undefined';
+  return (
+    typeof ctx.user !== 'undefined' &&
+    typeof ctx.events !== 'undefined' &&
+    typeof ctx.venues !== 'undefined'
+  );
 }
 
 function isAllowedByChapterRole(
-  { user, events }: Required<ResolverCtx>,
+  { user, events, venues }: Required<ResolverCtx>,
   requiredPermission: string,
   variableValues: VariableValues,
 ): boolean {
-  const chapterId = getRelatedChapterId(events, variableValues);
+  const chapterId = getRelatedChapterId({ events, venues }, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
   return hasNecessaryPermission(requiredPermission, userChapterPermissions);
@@ -58,16 +62,21 @@ function isAllowedByInstanceRole(
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
 function getRelatedChapterId(
-  events: Events,
+  { events, venues }: { events: Events; venues: Venues },
   variableValues: VariableValues,
 ): number | null {
-  const { chapterId, eventId } = variableValues;
+  const { chapterId, eventId, venueId } = variableValues;
 
   if (chapterId) return chapterId;
 
   if (eventId) {
     const event = events.find(({ id }) => id === eventId);
     if (event) return event.chapter_id;
+  }
+
+  if (venueId) {
+    const venue = venues.find(({ id }) => id === venueId);
+    if (venue) return venue.chapter_id;
   }
 
   return null;
@@ -110,10 +119,10 @@ function getUserPermissionsForEvent(
 }
 
 function isBannedFromChapter(
-  { user, events }: Required<ResolverCtx>,
+  { user, events, venues }: Required<ResolverCtx>,
   variableValues: VariableValues,
 ): boolean {
-  const chapterId = getRelatedChapterId(events, variableValues);
+  const chapterId = getRelatedChapterId({ events, venues }, variableValues);
   if (chapterId === null) return false;
 
   const bannedFromChapter = user.user_bans?.some(

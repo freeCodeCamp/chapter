@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useParam } from '../../../../hooks/useParam';
@@ -6,7 +7,9 @@ import { Sponsors } from '../../Events/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { SPONSOR } from '../graphql/queries';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { useSponsorQuery, useUpdateSponsorMutation } from 'generated/graphql';
+
 const EditSponsorPage: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -41,14 +44,12 @@ const EditSponsorPage: NextPage = () => {
     }
   };
 
-  if (sponsorLoading || !isReady || error || !data?.sponsor) {
-    return (
-      <Layout>
-        <h1>{sponsorLoading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const isLoading = sponsorLoading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
+  if (!data.sponsor)
+    return <NextError statusCode={404} title="Sponsor not found" />;
+
   return (
     <Layout>
       <SponsorForm

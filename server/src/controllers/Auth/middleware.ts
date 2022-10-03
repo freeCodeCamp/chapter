@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { Request } from '../../common-types/gql';
@@ -54,7 +53,12 @@ export type User = Merge<Prisma.usersGetPayload<typeof userInclude>>;
 export type Events = Merge<
   Prisma.eventsGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
+export type Venues = Merge<
+  Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
+>;
 
+// TODO: get events in user middleware and only get those that the user is an
+// event_user for
 export const events = (req: Request, _res: Response, next: NextFunction) => {
   const id = req.session?.id;
 
@@ -72,6 +76,29 @@ export const events = (req: Request, _res: Response, next: NextFunction) => {
     })
     .then((events) => {
       req.events = events;
+      next();
+    });
+};
+
+// TODO: get venues in user middleware and only get those that the user is an
+// chapter_user for
+export const venues = (req: Request, _res: Response, next: NextFunction) => {
+  const id = req.session?.id;
+
+  // user is not logged in, so we don't need to do anything here
+  if (!id) {
+    return next();
+  }
+
+  prisma.venues
+    .findMany({
+      select: {
+        id: true,
+        chapter_id: true,
+      },
+    })
+    .then((venues) => {
+      req.venues = venues;
       next();
     });
 };
@@ -105,8 +132,7 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
     });
 };
 
-// TODO: is this necessary now everything is handled by Auth0 and cookie-session?
-export function handleAuthenticationError(
+export function handleError(
   err: any,
   _req: Request,
   res: Response,
@@ -115,18 +141,9 @@ export function handleAuthenticationError(
   if (res.headersSent) {
     return next(err);
   }
-
-  if (err instanceof TokenExpiredError) {
-    return res.status(401).send({
-      message: 'Token expired',
-    });
-  } else if (err instanceof JsonWebTokenError) {
-    return res.status(401).send({
-      message: 'Token invalid',
-    });
-  } else {
-    return res.status(401).send({
-      message: 'User not found',
+  if (err) {
+    return res.status(500).send({
+      message: 'Something went Wrong',
     });
   }
 }

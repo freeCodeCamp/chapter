@@ -87,7 +87,7 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterSubscriptionsManage)
+  @Authorized(Permission.ChapterSubscriptionManage)
   @Mutation(() => ChapterUser)
   async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,
@@ -182,15 +182,13 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async banUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged to ban');
-    }
     if (ctx.user.id === userId) {
       throw Error('You cannot ban yourself');
     }
@@ -204,31 +202,25 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to unban');
-    }
-
-    // TODO: this should not be necessary, since a ban would prevent them from
-    // accessing this resolver. However, we need a Cypress test first.
-    if (ctx.user.id === userId) {
-      throw Error('You cannot unban yourself');
-    }
-
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
       include: { chapter: true, user: true },
     });
   }
 
-  // TODO: control this with an Authorization decorator
+  // TODO: it would be nice if this was a field on the ChapterUser type and we
+  // could guarantee type safety of this resolver.
   @FieldResolver()
-  canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
+  is_bannable(@Ctx() ctx: ResolverCtx): boolean {
+    // TODO: reimplement the logic of
+    // https://github.com/freeCodeCamp/chapter/commit/a71e570b22e8bad042438369b1162000dcee3f47,
+    // updated with the current roles and permissions
     if (!ctx.user) {
       return false;
     }

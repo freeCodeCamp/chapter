@@ -1,38 +1,35 @@
 import { expectToBeRejected } from '../../../../support/util';
+import type { ChapterMembers } from '../../../../../cypress.config';
+import { VenueType } from '../../../../../client/src/generated/graphql';
 
+// no url string to confirm that it is not required
 const testEvent = {
-  title: 'Test Event',
+  name: 'Test Event',
   description: 'Test Description',
-  url: 'https://test.event.org',
-  streamingUrl: 'https://test.event.org/video',
+  streaming_url: 'https://test.event.org/video',
   capacity: '10',
   tags: 'Test, Event, Tag',
-  startAt: '2022-01-01T00:01',
-  endAt: '2022-01-02T00:02',
-  venueId: '1',
+  start_at: '2022-01-01T00:01',
+  ends_at: '2022-01-02T00:02',
+  venue_id: '1',
   image_url: 'https://test.event.org/image',
 };
 
-// TODO: Consolidate fixtures.
 const eventData = {
+  ...testEvent,
+  capacity: 10,
   venue_id: 1,
+  tags: ['Test', 'Event', 'Tag'],
   sponsor_ids: [],
   name: 'Other Event',
-  description: 'Test Description',
   url: 'https://test.event.org',
-  venue_type: 'PhysicalAndOnline',
-  capacity: 10,
-  image_url: 'https://test.event.org/image',
-  streaming_url: 'https://test.event.org/video',
-  start_at: '2022-01-01T00:01',
-  ends_at: '2022-01-02T00:02',
-  tags: 'Test, Event, Tag',
+  venue_type: VenueType.PhysicalAndOnline,
   invite_only: false,
 };
 
 describe('chapter dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login('admin@of.chapter.one');
     cy.mhDeleteAll();
   });
@@ -49,7 +46,7 @@ describe('chapter dashboard', () => {
     Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
-      if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
+      if (!['tags', 'start_at', 'ends_at', 'venue_id'].includes(key)) {
         cy.contains(value);
       }
     });
@@ -61,16 +58,17 @@ describe('chapter dashboard', () => {
       cy.contains(venueTitle);
     });
 
-    // check that the subscribed users have been emailed
-    cy.waitUntilMail('allMail');
-
     // TODO: select chapter during event creation and use that here (much like @venueTitle
     // ) i.e. remove the hardcoding.
-    cy.getChapterMembers(1).then((members) => {
+    cy.task<ChapterMembers>('getChapterMembers', 1).then((members) => {
       const subscriberEmails = members
         .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
-      cy.get('@allMail').should('have.length', subscriberEmails.length);
+
+      // check that the subscribed users have been emailed
+      cy.waitUntilMail({
+        expectedNumberOfEmails: subscriberEmails.length,
+      });
       subscriberEmails.forEach((subscriberEmail) => {
         cy.mhGetMailsByRecipient(subscriberEmail).as('currentRecipient');
         cy.get('@currentRecipient').should('have.length', 1);
@@ -111,14 +109,14 @@ describe('chapter dashboard', () => {
   function createEventViaUI(chapterId) {
     cy.visit(`/dashboard/chapters/${chapterId}`);
     cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
-    cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.title);
+    cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.name);
     cy.findByRole('textbox', { name: 'Description' }).type(
       testEvent.description,
     );
     cy.findByRole('textbox', { name: 'Event Image Url' }).type(
       testEvent.image_url,
     );
-    cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
+    // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
     cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
       'Test, Event, Tag',
@@ -126,11 +124,11 @@ describe('chapter dashboard', () => {
 
     cy.findByLabelText(/^Start at/)
       .clear()
-      .type(testEvent.startAt)
+      .type(testEvent.start_at)
       .type('{esc}');
     cy.findByLabelText(/^End at/)
       .clear()
-      .type(testEvent.endAt)
+      .type(testEvent.ends_at)
       .type('{esc}');
 
     // TODO: figure out why cypress thinks this is covered.
@@ -140,14 +138,15 @@ describe('chapter dashboard', () => {
     // combobox?
     cy.findByRole('combobox', { name: 'Venue' })
       .as('venueSelect')
-      .select(testEvent.venueId);
+      .select(testEvent.venue_id);
     cy.get('@venueSelect')
-      .find(`option[value=${testEvent.venueId}]`)
+      .find(`option[value=${testEvent.venue_id}]`)
       .invoke('text')
       .as('venueTitle');
     cy.findByRole('textbox', { name: 'Streaming URL' }).type(
-      testEvent.streamingUrl,
+      testEvent.streaming_url,
     );
+    cy.findByRole('button', { name: 'Add Sponsor' }).click();
 
     cy.findByRole('form', { name: 'Add event' })
       .findByRole('button', {

@@ -10,36 +10,44 @@ import {
   HStack,
   ListItem,
   Avatar,
-  useDisclosure,
   Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
-import { useAuth } from '../../auth/store';
+import { useAuthStore } from '../../auth/store';
+import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
-import { EVENT } from '../../dashboard/Events/graphql/queries';
+import { EVENT } from '../graphql/queries';
+import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
-  useEventQuery,
+  useEventLazyQuery,
   useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
+import { useLogin } from 'hooks/useAuth';
 
 export const EventPage: NextPage = () => {
   const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
-  const { user } = useAuth();
+  const {
+    data: { user },
+  } = useAuthStore();
+  const login = useLogin();
 
   const refetch = {
-    refetchQueries: [{ query: EVENT, variables: { eventId } }],
+    refetchQueries: [
+      { query: EVENT, variables: { eventId } },
+      { query: DASHBOARD_EVENT, variables: { eventId } },
+    ],
   };
 
   const [rsvpToEvent] = useRsvpToEventMutation(refetch);
@@ -47,14 +55,17 @@ export const EventPage: NextPage = () => {
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
-  // TODO: check if we need to default to -1 here
-  const { loading, error, data } = useEventQuery({
+
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId },
   });
 
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
+
   const toast = useToast();
   const confirm = useConfirm();
-  const modalProps = useDisclosure();
 
   const eventUser = useMemo(() => {
     const eUser = data?.event?.event_users.find(
@@ -71,24 +82,13 @@ export const EventPage: NextPage = () => {
     if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
-  if (loading || !isReady) {
-    return <h1>Loading...</h1>;
-  }
+  const isLoading = loading || !isReady || !data;
 
-  if (error || !data?.event) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (!data.event)
+    return <NextError statusCode={404} title="Event not found" />;
 
   const chapterId = data.event.chapter.id;
-
-  const handleLoginUserFirst = () => {
-    modalProps.onOpen();
-  };
 
   const onSubscribeToEvent = async () => {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
@@ -165,8 +165,9 @@ export const EventPage: NextPage = () => {
     }
   };
 
+  // TODO: reimplment this the login modal with Auth0
   const checkOnRsvp = async () => {
-    if (!user) return handleLoginUserFirst();
+    if (!user) await login();
     await onRsvp();
   };
 
@@ -179,11 +180,6 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <LoginRegisterModal
-        action={(notRsvped) => (notRsvped ? onRsvp() : onCancelRsvp())}
-        userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
-        modalProps={modalProps}
-      />
       <Image
         data-cy="event-image"
         boxSize="100%"
@@ -222,12 +218,7 @@ export const EventPage: NextPage = () => {
       {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button
-            colorScheme="red"
-            onClick={onCancelRsvp}
-            paddingInline={'2'}
-            paddingBlock={'1'}
-          >
+          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
@@ -242,12 +233,7 @@ export const EventPage: NextPage = () => {
               You&lsquo;re on waitlist for this event
             </Heading>
           )}
-          <Button
-            colorScheme="red"
-            onClick={onCancelRsvp}
-            paddingInline={'2'}
-            paddingBlock={'1'}
-          >
+          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
@@ -270,7 +256,6 @@ export const EventPage: NextPage = () => {
                 You are subscribed
               </Heading>
               <Button
-                colorScheme="orange"
                 onClick={onUnsubscribeFromEvent}
                 paddingInline={'2'}
                 paddingBlock={'1'}

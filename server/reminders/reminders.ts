@@ -88,6 +88,10 @@ const getEmailData = (reminder: Reminder) => {
   const date = dateFormatter.format(reminder.event_user.event.start_at);
   const start_time = timeFormatter.format(reminder.event_user.event.start_at);
   const end_time = timeFormatter.format(reminder.event_user.event.ends_at);
+  console.log(`Event: ${reminder.event_user.event.name}`);
+  console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
+  console.log(`Remind at ${reminder.remind_at.toUTCString()}`);
+  console.log();
 
   const chapterUnsubscribeToken = generateToken(
     UnsubscribeType.Chapter,

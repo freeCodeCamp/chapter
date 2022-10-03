@@ -4,7 +4,6 @@ import { expectToBeRejected } from '../../../support/util';
 const eventOneData = {
   name: 'Homer Simpson',
   description: 'i will show you damn!',
-  url: 'http://wooden-swing.com',
   streaming_url: null,
   capacity: 149,
   start_at: new Date(),
@@ -21,14 +20,13 @@ const eventTwoData = {
   sponsor_ids: [],
   name: 'Event Venue change test',
   description: 'Test Description',
-  url: 'https://test.event.org',
   venue_type: 'PhysicalAndOnline',
   capacity: 10,
   image_url: 'https://test.event.org/image',
   streaming_url: 'https://test.event.org/video',
   start_at: '2022-01-01T00:01',
   ends_at: '2022-01-02T00:02',
-  tags: 'Test, Event, Tag',
+  tags: ['Test, Event, Tag'],
 };
 
 // TODO: Move these specs into the other describe block, once we can make sure

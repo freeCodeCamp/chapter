@@ -2,10 +2,13 @@ import { NextPage } from 'next';
 
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { useCreateChapterMutation } from '../../../../generated/graphql';
+import {
+  CreateChapterInputs,
+  useCreateChapterMutation,
+} from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
-import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import ChapterForm from '../components/ChapterForm';
 
 export const NewChapterPage: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -15,7 +18,7 @@ export const NewChapterPage: NextPage = () => {
     refetchQueries: [{ query: CHAPTERS }],
   });
 
-  const onSubmit = async (data: ChapterFormData) => {
+  const onSubmit = async (data: CreateChapterInputs) => {
     setLoading(true);
     try {
       await createChapter({

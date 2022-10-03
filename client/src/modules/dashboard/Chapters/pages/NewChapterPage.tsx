@@ -18,13 +18,14 @@ export const NewChapterPage: NextPage = () => {
     refetchQueries: [{ query: CHAPTERS }],
   });
 
-  const onSubmit = async (data: CreateChapterInputs) => {
+  const onSubmit = async (inputData: CreateChapterInputs) => {
     setLoading(true);
     try {
-      await createChapter({
-        variables: { data: { ...data } },
+      // ToDo: handle empty data differently
+      const { data } = await createChapter({
+        variables: { data: { ...inputData } },
       });
-      router.replace(`/dashboard/chapters/${data.id}/new-venue`);
+      router.replace(`/dashboard/chapters/${data?.createChapter.id}/new-venue`);
     } catch (err) {
       console.error(err);
     } finally {

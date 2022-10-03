@@ -78,7 +78,6 @@ export const Header: React.FC = () => {
 
   const goHome = () => router.push('/');
 
-  console.log(user?.image_url);
   return (
     <>
       <HeaderItem>

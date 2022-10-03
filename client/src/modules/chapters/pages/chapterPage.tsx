@@ -79,7 +79,7 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await leaveChapterFn({ variables: { chapterId } });
-        toast({ title: 'You successfully joined chapter', status: 'success' });
+        toast({ title: 'You successfully left chapter', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);

@@ -7,16 +7,19 @@ const testEvent = {
   name: 'Test Event',
   description: 'Test Description',
   streaming_url: 'https://test.event.org/video',
-  capacity: 10,
-  tags: ['Test, Event, Tag'],
+  capacity: '10',
+  tags: 'Test, Event, Tag',
   start_at: '2022-01-01T00:01',
   ends_at: '2022-01-02T00:02',
-  venue_id: 1,
+  venue_id: '1',
   image_url: 'https://test.event.org/image',
 };
 
 const eventData = {
   ...testEvent,
+  capacity: 10,
+  venue_id: 1,
+  tags: ['Test', 'Event', 'Tag'],
   sponsor_ids: [],
   name: 'Other Event',
   url: 'https://test.event.org',
@@ -43,7 +46,7 @@ describe('chapter dashboard', () => {
     Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
-      if (!['startAt', 'endAt', 'venueId'].includes(key)) {
+      if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
         cy.contains(value);
       }
     });
@@ -115,6 +118,9 @@ describe('chapter dashboard', () => {
     );
     // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
     cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
+    cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
+      'Test, Event, Tag',
+    );
 
     cy.findByLabelText(/^Start at/)
       .clear()

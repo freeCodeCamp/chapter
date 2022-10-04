@@ -56,8 +56,9 @@ const Actions: React.FC<ActionsProps> = ({
   };
   return (
     <HStack spacing="1">
-      <Button size="sm" colorScheme="red" onClick={clickDelete}>
-        Delete
+      <SendEmailModal onClose={onClose} isOpen={isOpen} eventId={event.id} />
+      <Button size="sm" colorScheme="blue" onClick={clickEmailAttendees}>
+        Email Attendees
       </Button>
       <LinkButton
         size="sm"
@@ -69,10 +70,9 @@ const Actions: React.FC<ActionsProps> = ({
       {!hideCancel && !event.canceled && (
         <EventCancelButton size="sm" event={event} buttonText="Cancel" />
       )}
-      <Button size="sm" colorScheme="blue" onClick={clickEmailAttendees}>
-        Email Attendees
+      <Button size="sm" colorScheme="red" onClick={clickDelete}>
+        Delete
       </Button>
-      <SendEmailModal onClose={onClose} isOpen={isOpen} eventId={event.id} />
     </HStack>
   );
 };

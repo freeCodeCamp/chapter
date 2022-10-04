@@ -83,21 +83,21 @@ export const EventPage: NextPage = () => {
       action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
     },
     {
-      title: 'Canceled',
-      rsvpFilter: 'no',
-      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
-    },
-    {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
       action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
+    },
+    {
+      title: 'Canceled',
+      rsvpFilter: 'no',
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
     },
   ];
 
   return (
     <Layout>
       <Box p="2" borderWidth="1px" borderRadius="lg">
-        <Heading>{data.dashboardEvent.name}</Heading>
+        <Heading as="h1">{data.dashboardEvent.name}</Heading>
 
         {data.dashboardEvent.canceled && (
           <Heading color="red.500">Canceled</Heading>

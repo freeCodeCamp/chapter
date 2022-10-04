@@ -46,7 +46,7 @@ describe('chapter dashboard', () => {
     Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
-      if (!['tags', 'startAt', 'endAt', 'venueId'].includes(key)) {
+      if (!['tags', 'start_at', 'ends_at', 'venue_id'].includes(key)) {
         cy.contains(value);
       }
     });

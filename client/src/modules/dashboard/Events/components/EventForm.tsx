@@ -17,6 +17,7 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
+import add from 'date-fns/add';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -162,8 +163,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           setStartDate(date);
         }
         if (key === 'ends_at' || date > getValues('ends_at')) {
-          setValue('ends_at', date, { shouldDirty: true });
-          setEndDate(date);
+          const newEndAt = add(date, { minutes: 30 });
+          setValue('ends_at', newEndAt, { shouldDirty: true });
+          setEndDate(newEndAt);
         }
       };
     },

@@ -184,23 +184,25 @@ export const ChapterPage: NextPage = () => {
         {user &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : dataChapterUser?.chapterUser?.chapter_role ? (
-            <HStack justifyContent={'space-between'}>
-              <Text fontWeight={500}>
-                <CheckIcon marginRight={1} />
-                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
-              </Text>
-              <Button onClick={leaveChapter}>Leave</Button>
-            </HStack>
           ) : (
-            <HStack justifyContent="space-between">
-              <Text fontWeight={500}>Become member of the chapter</Text>
-              <Button colorScheme="blue" onClick={joinChapter}>
-                Join
-              </Button>
-            </HStack>
+            dataChapterUser?.chapterUser &&
+            (dataChapterUser.chapterUser.chapter_role ? (
+              <HStack justifyContent={'space-between'}>
+                <Text fontWeight={500}>
+                  <CheckIcon marginRight={1} />
+                  {dataChapterUser.chapterUser.chapter_role.name} of the chapter
+                </Text>
+                <Button onClick={leaveChapter}>Leave</Button>
+              </HStack>
+            ) : (
+              <HStack justifyContent="space-between">
+                <Text fontWeight={500}>Become member of the chapter</Text>
+                <Button colorScheme="blue" onClick={joinChapter}>
+                  Join
+                </Button>
+              </HStack>
+            ))
           ))}
-
         {data.chapter.chat_url && (
           <div>
             <Heading size="md" color={'gray.700'}>

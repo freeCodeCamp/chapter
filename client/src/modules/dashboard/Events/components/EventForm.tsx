@@ -18,6 +18,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import add from 'date-fns/add';
+import { addHours } from 'date-fns';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -209,6 +210,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               onChange={onDatePickerChange(field.key)}
               disabled={loading}
               dateFormat="MMMM d, yyyy h:mm aa"
+              minDate={new Date()}
+              maxDate={addHours(startDate, 3)}
               customInput={
                 <Input
                   id={`${field.key}_trigger`}

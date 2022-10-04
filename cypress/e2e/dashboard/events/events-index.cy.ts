@@ -218,7 +218,10 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event title' }).type(titleAddon);
+    // ToDo: textbox shouldn't use component's text to indicate if it can find the component.
+    cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
+      titleAddon,
+    );
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',

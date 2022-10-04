@@ -51,7 +51,7 @@ export const EventPage: NextPage = () => {
   }, [isReady]);
 
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
-  const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
+  const [removeRsvpFn] = useDeleteRsvpMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
@@ -63,11 +63,11 @@ export const EventPage: NextPage = () => {
       if (ok) confirmRsvpFn({ variables: { eventId, userId } });
     };
 
-  const kick =
+  const remove =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
     async () => {
       const ok = await confirmDelete();
-      if (ok) kickRsvpFn({ variables: { eventId, userId } });
+      if (ok) removeRsvpFn({ variables: { eventId, userId } });
     };
 
   const isLoading = loading || !isReady || !data;
@@ -80,12 +80,12 @@ export const EventPage: NextPage = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
     },
     {
       title: 'Canceled',
       rsvpFilter: 'no',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',

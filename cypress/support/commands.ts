@@ -341,7 +341,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
-  const kickMutation = {
+  const removeMutation = {
     operationName: 'deleteRsvp',
     variables: {
       eventId,
@@ -351,7 +351,7 @@ Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
       deleteRsvp(eventId: $eventId, userId: $userId)
     }`,
   };
-  return cy.authedRequest(gqlOptions(kickMutation));
+  return cy.authedRequest(gqlOptions(removeMutation));
 });
 
 Cypress.Commands.add('confirmRsvp', (eventId, userId) => {

@@ -41,12 +41,12 @@ describe('event dashboard', () => {
       });
     });
 
-    it('kicking user should remove user from event', () => {
+    it('removing user should remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=rsvps]').as('rsvps');
       setUsernameAlias('@rsvps');
 
-      cy.get('@rsvps').find('[data-cy=kick]').first().click();
+      cy.get('@rsvps').find('[data-cy=remove]').first().click();
       cy.findByRole('button', { name: 'Delete' }).click();
 
       cy.get<string>('@userName').then((userName) => {
@@ -73,12 +73,12 @@ describe('event dashboard', () => {
       });
     });
 
-    it('canceling kicking user should not remove user from event', () => {
+    it('canceling removing user should not remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=rsvps]').as('rsvps');
       setUsernameAlias('@rsvps');
 
-      cy.get('@rsvps').find('[data-cy=kick]').first().click();
+      cy.get('@rsvps').find('[data-cy=remove]').first().click();
       cy.intercept('/graphql', cy.spy().as('request'));
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Cancel' })
@@ -90,7 +90,7 @@ describe('event dashboard', () => {
       });
     });
 
-    it('prevents members from confirming or kicking users', () => {
+    it('prevents members from confirming or removing users', () => {
       const eventId = 1;
 
       // Starting as the instance owner to ensure we can find the RSVPs
@@ -102,7 +102,7 @@ describe('event dashboard', () => {
           ({ rsvp: { name } }) => name === 'waitlist',
         ).user;
 
-        // Switch to new member before trying to confirm and kick
+        // Switch to new member before trying to confirm and remove
         cy.login('test@user.org');
 
         cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);

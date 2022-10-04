@@ -82,7 +82,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     if (!data) {
       return {
         start_at: new Date(),
-        ends_at: new Date(),
+        ends_at: add(new Date(), { minutes: 30 }),
         venue_type: VenueType.PhysicalAndOnline,
         chapter_id: initialChapterId,
       };
@@ -163,9 +163,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           setStartDate(date);
         }
         if (key === 'ends_at' || date > getValues('ends_at')) {
-          const newEndAt = add(date, { minutes: 30 });
-          setValue('ends_at', newEndAt, { shouldDirty: true });
-          setEndDate(newEndAt);
+          setValue('ends_at', date, { shouldDirty: true });
+          setEndDate(date);
         }
       };
     },

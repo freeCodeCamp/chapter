@@ -31,13 +31,13 @@ describe('chapter page', () => {
     });
   });
 
-  it('Owner can not join and leave chapter', () => {
+  it('Owner can not join chapter', () => {
     cy.login();
 
     cy.joinChapter(chapterId, { withAuth: true }).then(expectToBeRejected);
   });
 
-  it('Owner can not join and leave chapter', () => {
+  it('Owner can not leave chapter', () => {
     cy.login();
 
     cy.leaveChapter(chapterId, { withAuth: true }).then(expectToBeRejected);

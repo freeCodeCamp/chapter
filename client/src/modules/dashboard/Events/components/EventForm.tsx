@@ -210,8 +210,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               onChange={onDatePickerChange(field.key)}
               disabled={loading}
               dateFormat="MMMM d, yyyy h:mm aa"
-              minDate={new Date()}
-              maxDate={addHours(startDate, 3)}
+              minDate={field.key === 'start_at' ? new Date() : startDate}
+              maxDate={field.key === 'ends_at' ? addHours(startDate, 3) : null}
               customInput={
                 <Input
                   id={`${field.key}_trigger`}

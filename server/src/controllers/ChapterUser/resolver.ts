@@ -88,7 +88,7 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterJoin)
+  @Authorized(Permission.ChapterLeave)
   @Mutation(() => ChapterUser)
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,

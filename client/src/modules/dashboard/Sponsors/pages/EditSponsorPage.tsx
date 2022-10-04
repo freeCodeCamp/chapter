@@ -1,14 +1,15 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+
 import { useParam } from '../../../../hooks/useParam';
 import { Sponsors } from '../../Events/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
-import { SPONSOR } from '../graphql/queries';
+import { DASHBOARD_SPONSOR } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import {
-  useSponsorQuery,
+  useDashboardSponsorLazyQuery,
   useUpdateSponsorMutation,
 } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -17,19 +18,23 @@ const EditSponsorPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { param: sponsorId, isReady } = useParam('id');
-  const {
-    loading: sponsorLoading,
-    error,
-    data,
-  } = useSponsorQuery({
-    variables: { sponsorId },
-  });
+  const [getSponsor, { loading: sponsorLoading, error, data }] =
+    useDashboardSponsorLazyQuery({
+      variables: { sponsorId },
+    });
   const [updateSponsor] = useUpdateSponsorMutation({
     refetchQueries: [
-      { query: SPONSOR, variables: { id: sponsorId } },
+      { query: DASHBOARD_SPONSOR, variables: { id: sponsorId } },
       { query: Sponsors },
     ],
   });
+
+  useEffect(() => {
+    if (isReady) {
+      getSponsor();
+    }
+  }, [isReady]);
+
   const onSubmit = async (data: SponsorFormData) => {
     setLoading(true);
     try {
@@ -50,7 +55,7 @@ const EditSponsorPage: NextPageWithLayout = () => {
   const isLoading = sponsorLoading || !isReady || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
-  if (!data.sponsor)
+  if (!data.dashboardSponsor)
     return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (

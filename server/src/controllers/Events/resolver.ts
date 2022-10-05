@@ -822,9 +822,12 @@ ${venueDetails}`;
     RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
     ----------------------------<br />
     <br />
+    About the event: <br />
+    ${event.description}<br />
+    <br />
     - Stop receiving upcoming event notifications for ${
       event.chapter.name
-    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
+    }. You can do it here: <a href="${chapterURL}">${chapterURL}</a>.<br />
     - More about ${
       event.chapter.name
     } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />

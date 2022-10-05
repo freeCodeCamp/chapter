@@ -16,7 +16,7 @@ const roles: Array<{
     name: 'member',
     permissions: [
       ChapterPermission.Rsvp,
-      ChapterPermission.EventSubscriptionsManage,
+      ChapterPermission.EventSubscriptionManage,
     ],
   },
 ];

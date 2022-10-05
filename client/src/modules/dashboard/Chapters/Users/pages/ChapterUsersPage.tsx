@@ -11,9 +11,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
 import NextError from 'next/error';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import {
@@ -31,8 +30,9 @@ import {
 } from '../../../shared/components/RoleChangeModal';
 import { useParam } from '../../../../../hooks/useParam';
 import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { NextPageWithLayout } from '../../../../../pages/_app';
 
-export const ChapterUsersPage: NextPage = () => {
+export const ChapterUsersPage: NextPageWithLayout = () => {
   const { param: chapterId, isReady } = useParam('id');
 
   const [getChapterUsers, { loading, error, data }] =
@@ -135,7 +135,7 @@ export const ChapterUsersPage: NextPage = () => {
     return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
-    <Layout>
+    <>
       {chapterRoles && chapterUser && (
         <RoleChangeModal
           modalProps={modalProps}
@@ -156,7 +156,7 @@ export const ChapterUsersPage: NextPage = () => {
           <DataTable
             data={data.dashboardChapter.chapter_users}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            keys={['name', 'email', 'role', 'actions'] as const}
+            keys={['name', 'role', 'actions'] as const}
             mapper={{
               name: ({ user }) => (
                 <HStack>
@@ -168,7 +168,6 @@ export const ChapterUsersPage: NextPage = () => {
                   )}
                 </HStack>
               ),
-              email: ({ user }) => user.email,
               actions: ({ is_bannable, user, chapter_role }) => (
                 <HStack>
                   <Button
@@ -233,7 +232,6 @@ export const ChapterUsersPage: NextPage = () => {
                           marginBlock={'1em'}
                         >
                           <Text fontWeight={700}>Name</Text>
-                          <Text fontWeight={700}>Email</Text>
                           <Text fontWeight={700}>Actions</Text>
                           <Text fontWeight={700}>Role</Text>
                         </VStack>
@@ -248,7 +246,6 @@ export const ChapterUsersPage: NextPage = () => {
                               </Badge>
                             )}
                           </HStack>
-                          <Text>{user.email}</Text>
                           <HStack>
                             <Button
                               data-cy="changeRole"
@@ -298,6 +295,10 @@ export const ChapterUsersPage: NextPage = () => {
           )}
         </Box>
       </VStack>
-    </Layout>
+    </>
   );
+};
+
+ChapterUsersPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

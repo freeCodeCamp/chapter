@@ -9,7 +9,7 @@ const testSponsor = {
 
 describe('sponsors dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
   });
 

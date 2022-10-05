@@ -5,6 +5,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 
+import { isOnline, isPhysical } from '../../../../util/venueType';
 export interface Field {
   key: keyof EventFormData;
   label: string;
@@ -201,4 +202,34 @@ const isSponsorSelectedElsewhere = (
     selectedFieldId !== -1 &&
     (sponsorFieldId === undefined || selectedFieldId !== sponsorFieldId)
   );
+};
+
+export const parseEventData = (data: EventFormData) => {
+  // It's ugly, but we can't rely on TS to check that chapter_id is absent, so
+  // we have to remove it in case it's present:
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { chapter_id, sponsors, tags, ...rest } = data;
+  const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
+  const tagsArray = tags
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+  // Both url and streaming_url are optional. However, null will be accepted,
+  // while empty strings will be rejected.
+  const url = data.url?.trim() || null;
+  const streaming_url = data.streaming_url?.trim() || null;
+
+  return {
+    ...rest,
+    capacity: parseInt(String(data.capacity)),
+    start_at: data.start_at,
+    ends_at: data.ends_at,
+    url,
+    venue_id: isPhysical(data.venue_type)
+      ? parseInt(String(data.venue_id))
+      : null,
+    streaming_url: isOnline(data.venue_type) ? streaming_url : null,
+    tags: tagsArray,
+    sponsor_ids: sponsorArray,
+  };
 };

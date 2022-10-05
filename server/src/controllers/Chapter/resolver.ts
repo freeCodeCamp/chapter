@@ -26,7 +26,11 @@ export class ChapterResolver {
   async chapters(): Promise<ChapterWithEvents[]> {
     return await prisma.chapters.findMany({
       include: {
-        events: true,
+        events: {
+          include: {
+            venue: true,
+          },
+        },
       },
     });
   }

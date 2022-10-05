@@ -48,7 +48,7 @@ import {
   patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
-import { CreateEventInputs, UpdateEventInputs } from './inputs';
+import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
   user: true,
@@ -90,7 +90,7 @@ Unsubscribe Options</br>
 };
 
 const sendRsvpInvitation = async (
-  user: User,
+  user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
   const linkDetails: CalendarEvent = {
@@ -578,7 +578,7 @@ ${unsubscribeOptions}`,
   @Mutation(() => Event)
   async createEvent(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Arg('data') data: CreateEventInputs,
+    @Arg('data') data: EventInputs,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
     let venue;
@@ -671,7 +671,7 @@ ${unsubscribeOptions}`,
   @Mutation(() => Event)
   async updateEvent(
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdateEventInputs,
+    @Arg('data') data: EventInputs,
   ): Promise<Event | null> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id },

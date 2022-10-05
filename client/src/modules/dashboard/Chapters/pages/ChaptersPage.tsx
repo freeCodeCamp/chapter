@@ -53,57 +53,47 @@ export const ChaptersPage: NextPageWithLayout = () => {
                 <LinkButton
                   colorScheme="blue"
                   size="xs"
+                  href={`/dashboard/chapters/${chapter.id}/new-venue`}
+                >
+                  Add Venue
+                </LinkButton>
+                <LinkButton
+                  colorScheme="blue"
+                  size="xs"
+                  href={`/dashboard/chapters/${chapter.id}/new-event`}
+                >
+                  Add Event
+                </LinkButton>
+                <LinkButton
+                  colorScheme="blue"
+                  size="xs"
                   href={`/dashboard/chapters/${chapter.id}/edit`}
                 >
                   Edit
                 </LinkButton>
-              ),
-              actions: (chapter) => (
-                <HStack>
-                  <LinkButton
-                    colorScheme="blue"
-                    size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/new-venue`}
+              </HStack>
+            ),
+          }}
+        />
+      </Box>
+      <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
+        {data.chapters.map(({ id, name }, index) => (
+          <Flex key={id}>
+            <DataTable
+              data={[data.chapters[index]]}
+              keys={['type', 'actions'] as const}
+              showHeader={false}
+              tableProps={{
+                table: { 'aria-labelledby': 'page-heading' },
+              }}
+              mapper={{
+                type: () => (
+                  <VStack
+                    align={'flex-start'}
+                    spacing={'4'}
+                    fontSize={['sm', 'md']}
+                    marginBlock={'1.5em'}
                   >
-                    Add Venue
-                  </LinkButton>
-                  <LinkButton
-                    colorScheme="blue"
-                    size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/new-event`}
-                  >
-                    Add Event
-                  </LinkButton>
-                  <LinkButton
-                    colorScheme="blue"
-                    size="xs"
-                    href={`/dashboard/chapters/${chapter.id}/edit`}
-                  >
-                    Edit
-                  </LinkButton>
-                </HStack>
-              ),
-            }}
-          />
-        </Box>
-        <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-          {data.chapters.map(({ id, name }, index) => (
-            <Flex key={id}>
-              <DataTable
-                data={[data.chapters[index]]}
-                keys={['type', 'actions'] as const}
-                showHeader={false}
-                tableProps={{
-                  table: { 'aria-labelledby': 'page-heading' },
-                }}
-                mapper={{
-                  type: () => (
-                    <VStack
-                      align={'flex-start'}
-                      spacing={'4'}
-                      fontSize={['sm', 'md']}
-                      marginBlock={'1.5em'}
-                    >
                     <Heading as="h3" fontSize={['sm', 'md']} marginBlock={'1'}>
                       Name
                     </Heading>
@@ -126,6 +116,13 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       <LinkButton
                         colorScheme="blue"
                         size="xs"
+                        href={`/dashboard/chapters/${id}/new-venue`}
+                      >
+                        Add Venue
+                      </LinkButton>
+                      <LinkButton
+                        colorScheme="blue"
+                        size="xs"
                         href={`/dashboard/chapters/${id}/new-event`}
                       >
                         Add Event
@@ -133,41 +130,19 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       <LinkButton
                         colorScheme="blue"
                         size="xs"
-                        href={`/dashboard/chapters/${id}/new-venue`}
+                        href={`/dashboard/chapters/${id}/edit`}
                       >
-                        Add Venue
+                        Edit
                       </LinkButton>
-                      <HStack spacing={1} marginLeft={'-1em'}>
-                        <LinkButton
-                          colorScheme="blue"
-                          size="xs"
-                          href={`/dashboard/chapters/${id}/new-venue`}
-                        >
-                          Add Venue
-                        </LinkButton>
-                        <LinkButton
-                          colorScheme="blue"
-                          size="xs"
-                          href={`/dashboard/chapters/${id}/new-event`}
-                        >
-                          Add Event
-                        </LinkButton>
-                        <LinkButton
-                          colorScheme="blue"
-                          size="xs"
-                          href={`/dashboard/chapters/${id}/edit`}
-                        >
-                          Edit
-                        </LinkButton>
-                      </HStack>
-                    </VStack>
-                  ),
-                }}
-              />
-            </Flex>
-          ))}
-        </Box>
-      </VStack>
+                    </HStack>
+                  </VStack>
+                ),
+              }}
+            />
+          </Flex>
+        ))}
+      </Box>
+    </VStack>
   );
 };
 

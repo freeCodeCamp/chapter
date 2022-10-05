@@ -161,7 +161,6 @@ export type EventInputs = {
   sponsor_ids: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -248,7 +247,6 @@ export type EventWithVenue = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -909,10 +907,6 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
     }>;
   };
 };
@@ -933,10 +927,6 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   };
 };
 
@@ -957,11 +947,58 @@ export type UpdateEventMutation = {
     streaming_url?: string | null;
     capacity: number;
     invite_only: boolean;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   };
+};
+
+export type CancelEventMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
+
+export type CancelEventMutation = {
+  __typename?: 'Mutation';
+  cancelEvent: { __typename?: 'Event'; id: number; canceled: boolean };
+};
+
+export type DeleteEventMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
+
+export type DeleteEventMutation = {
+  __typename?: 'Mutation';
+  deleteEvent: { __typename?: 'Event'; id: number };
+};
+
+export type ConfirmRsvpMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type ConfirmRsvpMutation = {
+  __typename?: 'Mutation';
+  confirmRsvp: {
+    __typename?: 'EventUser';
+    rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+  };
+};
+
+export type DeleteRsvpMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type DeleteRsvpMutation = {
+  __typename?: 'Mutation';
+  deleteRsvp: boolean;
+};
+
+export type SendEventInviteMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  emailGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+export type SendEventInviteMutation = {
+  __typename?: 'Mutation';
+  sendEventInvite: boolean;
 };
 
 export type EventsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2432,7 +2469,6 @@ export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQuery,
   DashboardChapterQueryVariables
 >;
-
 export const CreateEventDocument = gql`
   mutation createEvent($chapterId: Int!, $data: EventInputs!) {
     createEvent(chapterId: $chapterId, data: $data) {
@@ -2443,12 +2479,6 @@ export const CreateEventDocument = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
@@ -2506,12 +2536,6 @@ export const UpdateEventDocument = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       invite_only
     }
   }

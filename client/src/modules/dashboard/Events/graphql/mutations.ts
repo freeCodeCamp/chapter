@@ -10,7 +10,6 @@ export const createEvent = gql`
       url
       streaming_url
       capacity
-      }
     }
   }
 `;

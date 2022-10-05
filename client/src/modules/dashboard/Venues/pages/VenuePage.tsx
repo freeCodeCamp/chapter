@@ -1,7 +1,6 @@
 import { Heading, Text } from '@chakra-ui/layout';
-import { NextPage } from 'next';
 import NextError from 'next/error';
-import React, { useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
@@ -12,8 +11,9 @@ import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const VenuePage: NextPage = () => {
+export const VenuePage: NextPageWithLayout = () => {
   const { param: venueId, isReady } = useParam('id');
 
   const [getVenue, { loading, error, data }] = useVenueLazyQuery({
@@ -31,7 +31,7 @@ export const VenuePage: NextPage = () => {
     return <NextError statusCode={404} title="Venue not found" />;
 
   return (
-    <Layout dataCy="view-venue-page">
+    <>
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading as="h1" fontWeight="normal" mb="2">
@@ -46,6 +46,10 @@ export const VenuePage: NextPage = () => {
         title="Organized By The Venue's Chapter"
         events={data.venue.chapter.events}
       />
-    </Layout>
+    </>
   );
+};
+
+VenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout dataCy="view-venue-page">{page}</Layout>;
 };

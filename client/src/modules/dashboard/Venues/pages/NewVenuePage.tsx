@@ -1,15 +1,15 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import { useCreateVenueMutation } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
-import { useParam } from 'hooks/useParam';
+import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const NewVenuePage: NextPage = () => {
+export const NewVenuePage: NextPageWithLayout = () => {
   const { param: chapterId, isReady } = useParam('id');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -45,14 +45,16 @@ export const NewVenuePage: NextPage = () => {
   if (isLoading) return <DashboardLoading loading={isLoading} />;
 
   return (
-    <Layout>
-      <VenueForm
-        loading={loading}
-        onSubmit={onSubmit}
-        submitText={'Add venue'}
-        chapterId={chapterId}
-        loadingText={'Adding venue'}
-      />
-    </Layout>
+    <VenueForm
+      loading={loading}
+      onSubmit={onSubmit}
+      submitText={'Add venue'}
+      chapterId={chapterId}
+      loadingText={'Adding venue'}
+    />
   );
+};
+
+NewVenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

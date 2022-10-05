@@ -457,6 +457,7 @@ export type Query = {
   chapters: Array<ChapterWithEvents>;
   dashboardChapter: ChapterWithRelations;
   dashboardEvent?: Maybe<EventWithRelations>;
+  dashboardSponsor: Sponsor;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -464,7 +465,6 @@ export type Query = {
   me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
-  sponsor?: Maybe<Sponsor>;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   users: Array<UserWithInstanceRole>;
@@ -496,6 +496,10 @@ export type QueryDashboardEventArgs = {
   eventId: Scalars['Int'];
 };
 
+export type QueryDashboardSponsorArgs = {
+  id: Scalars['Int'];
+};
+
 export type QueryEventArgs = {
   eventId: Scalars['Int'];
 };
@@ -513,10 +517,6 @@ export type QueryPaginatedEventsArgs = {
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-};
-
-export type QuerySponsorArgs = {
-  id: Scalars['Int'];
 };
 
 export type QuerySponsorWithEventsArgs = {
@@ -1175,20 +1175,20 @@ export type UpdateSponsorMutation = {
   };
 };
 
-export type SponsorQueryVariables = Exact<{
+export type DashboardSponsorQueryVariables = Exact<{
   sponsorId: Scalars['Int'];
 }>;
 
-export type SponsorQuery = {
+export type DashboardSponsorQuery = {
   __typename?: 'Query';
-  sponsor?: {
+  dashboardSponsor: {
     __typename?: 'Sponsor';
     id: number;
     name: string;
     website: string;
     logo_path: string;
     type: string;
-  } | null;
+  };
 };
 
 export type SponsorWithEventsQueryVariables = Exact<{
@@ -3317,9 +3317,9 @@ export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
   UpdateSponsorMutation,
   UpdateSponsorMutationVariables
 >;
-export const SponsorDocument = gql`
-  query sponsor($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
+export const DashboardSponsorDocument = gql`
+  query dashboardSponsor($sponsorId: Int!) {
+    dashboardSponsor(id: $sponsorId) {
       id
       name
       website
@@ -3330,47 +3330,54 @@ export const SponsorDocument = gql`
 `;
 
 /**
- * __useSponsorQuery__
+ * __useDashboardSponsorQuery__
  *
- * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
- * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDashboardSponsorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSponsorQuery({
+ * const { data, loading, error } = useDashboardSponsorQuery({
  *   variables: {
  *      sponsorId: // value for 'sponsorId'
  *   },
  * });
  */
-export function useSponsorQuery(
-  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export function useSponsorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SponsorQuery,
-    SponsorQueryVariables
+export function useDashboardSponsorQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
+  return Apollo.useQuery<DashboardSponsorQuery, DashboardSponsorQueryVariables>(
+    DashboardSponsorDocument,
     options,
   );
 }
-export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
-export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
-export type SponsorQueryResult = Apollo.QueryResult<
-  SponsorQuery,
-  SponsorQueryVariables
+export function useDashboardSponsorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
+  >(DashboardSponsorDocument, options);
+}
+export type DashboardSponsorQueryHookResult = ReturnType<
+  typeof useDashboardSponsorQuery
+>;
+export type DashboardSponsorLazyQueryHookResult = ReturnType<
+  typeof useDashboardSponsorLazyQuery
+>;
+export type DashboardSponsorQueryResult = Apollo.QueryResult<
+  DashboardSponsorQuery,
+  DashboardSponsorQueryVariables
 >;
 export const SponsorWithEventsDocument = gql`
   query sponsorWithEvents($sponsorId: Int!) {

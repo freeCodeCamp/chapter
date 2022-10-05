@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import add from 'date-fns/add';
-import { addHours } from 'date-fns';
+import { intervalToDuration } from 'date-fns';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -167,6 +167,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           setValue('ends_at', date, { shouldDirty: true });
           setEndDate(date);
         }
+        if (
+          intervalToDuration({
+            start: startDate,
+            end: endDate,
+          }) < { minutes: 10 }
+        )
+          add(endDate, { minutes: 10 });
       };
     },
     [setValue, setStartDate],
@@ -210,8 +217,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               onChange={onDatePickerChange(field.key)}
               disabled={loading}
               dateFormat="MMMM d, yyyy h:mm aa"
-              minDate={field.key === 'start_at' ? new Date() : startDate}
-              maxDate={field.key === 'ends_at' ? addHours(startDate, 3) : null}
               customInput={
                 <Input
                   id={`${field.key}_trigger`}

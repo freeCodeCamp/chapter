@@ -54,8 +54,12 @@ exports[`EventCard should render 1`] = `
         <div
           class="css-0"
         >
-          Starting: 
-          Thu, Jan 1 @ 00:00
+          <p
+            class="chakra-text css-0"
+          >
+            Passed: 
+            Thu, Jan 1 @ 00:00
+          </p>
         </div>
       </h4>
     </div>
@@ -117,8 +121,12 @@ exports[`EventCard should render with tags 1`] = `
         <div
           class="css-0"
         >
-          Starting: 
-          Thu, Jan 1 @ 00:00
+          <p
+            class="chakra-text css-0"
+          >
+            Passed: 
+            Thu, Jan 1 @ 00:00
+          </p>
         </div>
       </h4>
     </div>

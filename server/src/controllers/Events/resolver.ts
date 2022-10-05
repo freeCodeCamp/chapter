@@ -697,17 +697,6 @@ ${unsubscribeOptions}`,
       data: eventSponsorInput,
     });
 
-    await prisma.$transaction([
-      prisma.events.update({
-        where: { id },
-        data: {},
-      }),
-      prisma.events.update({
-        where: { id },
-        data: {},
-      }),
-    ]);
-
     const venueType = data.venue_type ?? event.venue_type;
     const eventOnline = isOnline(venueType);
     const eventPhysical = isPhysical(venueType);

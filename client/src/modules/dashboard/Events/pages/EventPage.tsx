@@ -176,13 +176,13 @@ export const EventPage: NextPageWithLayout = () => {
           onDelete={() => router.replace('/dashboard/events')}
         />
       </Flex>
-      (
+
       {data.dashboardEvent.sponsors.length ? (
         <SponsorsCard sponsors={data.dashboardEvent.sponsors} />
       ) : (
         false
       )}
-      )
+
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
         {userLists.map(({ title, rsvpFilter, action }) => {
           const users = data.dashboardEvent

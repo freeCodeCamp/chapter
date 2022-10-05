@@ -2,7 +2,9 @@ import React, { forwardRef } from 'react';
 import { NextPage } from 'next';
 import { Flex, Grid, Heading, Text, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
-import { useAuth } from 'modules/auth/store';
+import { useAuth } from '../../../modules/auth/store';
+import { useCheckPermission } from '../../../hooks/useCheckPermission';
+import { Permission } from '../../../../../common/permissions';
 
 interface Props {
   link: string;
@@ -11,6 +13,10 @@ interface Props {
 
 export const PolicyPage: NextPage = () => {
   const { user } = useAuth();
+
+  const canAuthenticateWithGoogle = useCheckPermission(
+    Permission.GoogleAuthenticate,
+  );
 
   const HeaderItem = forwardRef<HTMLDivElement, Props>(({ link, text }) => {
     return (
@@ -118,11 +124,13 @@ export const PolicyPage: NextPage = () => {
           there!
         </Text>
       </Flex>
-      <GridItem margin={'1em'}>
-        <HeaderItem link="/profile" text="Edit Your Profile" />
-        <HeaderItem link="/chapters" text="View More Chapters" />
-        <HeaderItem link="/events" text="View All Events" />
-      </GridItem>
+      {canAuthenticateWithGoogle && (
+        <GridItem margin={'1em'}>
+          <HeaderItem link="/profile" text="Edit Your Profile" />
+          <HeaderItem link="/chapters" text="View More Chapters" />
+          <HeaderItem link="/events" text="View All Events" />
+        </GridItem>
+      )}
     </Grid>
   );
 };

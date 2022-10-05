@@ -3,10 +3,12 @@ import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
-import { Loading } from 'components/Loading';
-import { EventCard } from 'components/EventCard';
-import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
-import { useAuth } from 'modules/auth/store';
+import { Loading } from '../../../components/Loading';
+import { EventCard } from '../../../components/EventCard';
+import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
+import { useAuth } from '../../../modules/auth/store';
+import { useCheckPermission } from '../../../hooks/useCheckPermission';
+import { Permission } from '../../../../../common/permissions';
 
 function Pagination({
   currentPage = 1,
@@ -74,19 +76,24 @@ export const EventsPage: NextPage = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  const canAuthenticateWithGoogle = useCheckPermission(
+    Permission.GoogleAuthenticate,
+  );
 
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading>Events: </Heading>
-          <LinkButton
-            href="/dashboard/events"
-            colorScheme={'blue'}
-            isDisabled={user?.id === undefined}
-          >
-            Events Dashboard
-          </LinkButton>
+          {canAuthenticateWithGoogle && (
+            <LinkButton
+              href="/dashboard/events"
+              colorScheme={'blue'}
+              isDisabled={user?.id === undefined}
+            >
+              Events Dashboard
+            </LinkButton>
+          )}
         </Flex>
         {data?.paginatedEventsWithTotal.events.map((event) => (
           <EventCard key={event.id} event={event} />

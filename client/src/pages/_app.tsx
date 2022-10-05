@@ -12,10 +12,11 @@ import { offsetLimitPagination } from '@apollo/client/utilities';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
+import { NextPage } from 'next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
@@ -101,7 +102,22 @@ const Auth0Wrapper = (children: React.ReactNode) => {
   );
 };
 
-const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
+export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
+  P,
+  IP
+> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+const CustomApp: React.FC<AppProps> = ({
+  pageProps,
+  Component,
+}: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <>
       <Head>
@@ -125,7 +141,7 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
             <AuthContextProvider>
               <ConfirmContextProvider>
                 <PageLayout>
-                  <Component {...pageProps} />
+                  {getLayout(<Component {...pageProps} />)}
                 </PageLayout>
               </ConfirmContextProvider>
             </AuthContextProvider>

@@ -11,9 +11,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
 import NextError from 'next/error';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import {
@@ -31,8 +30,9 @@ import {
 } from '../../../shared/components/RoleChangeModal';
 import { useParam } from '../../../../../hooks/useParam';
 import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { NextPageWithLayout } from '../../../../../pages/_app';
 
-export const ChapterUsersPage: NextPage = () => {
+export const ChapterUsersPage: NextPageWithLayout = () => {
   const { param: chapterId, isReady } = useParam('id');
 
   const [getChapterUsers, { loading, error, data }] =
@@ -135,7 +135,7 @@ export const ChapterUsersPage: NextPage = () => {
     return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
-    <Layout>
+    <>
       {chapterRoles && chapterUser && (
         <RoleChangeModal
           modalProps={modalProps}
@@ -295,6 +295,10 @@ export const ChapterUsersPage: NextPage = () => {
           )}
         </Box>
       </VStack>
-    </Layout>
+    </>
   );
+};
+
+ChapterUsersPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

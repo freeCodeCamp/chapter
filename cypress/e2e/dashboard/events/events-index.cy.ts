@@ -1,3 +1,4 @@
+import add from 'date-fns/add';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
@@ -8,7 +9,7 @@ const eventOneData = {
   streaming_url: null,
   capacity: 149,
   start_at: new Date(),
-  ends_at: new Date(),
+  ends_at: add(new Date(), { minutes: 30 }),
   venue_type: 'Physical',
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',

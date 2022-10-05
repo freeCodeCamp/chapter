@@ -1,13 +1,13 @@
-import { NextPage } from 'next';
-
+import React, { ReactElement, useState } from 'react';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+
 import { useCreateChapterMutation } from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const NewChapterPage: NextPage = () => {
+export const NewChapterPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -30,13 +30,15 @@ export const NewChapterPage: NextPage = () => {
   };
 
   return (
-    <Layout>
-      <ChapterForm
-        loading={loading}
-        onSubmit={onSubmit}
-        loadingText={'Adding Chapter'}
-        submitText={'Add chapter'}
-      />
-    </Layout>
+    <ChapterForm
+      loading={loading}
+      onSubmit={onSubmit}
+      loadingText={'Adding Chapter'}
+      submitText={'Add chapter'}
+    />
   );
+};
+
+NewChapterPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

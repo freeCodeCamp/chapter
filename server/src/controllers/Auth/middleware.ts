@@ -119,12 +119,12 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
       ...userInclude,
     })
     .then((user) => {
-      if (!user) {
+      if (user) {
+        req.user = user;
+      } else {
         // if the session user does not exist in the db, the session is invalid
         req.session = null;
-        return next('User not found');
       }
-      req.user = user;
       next();
     })
     .catch((err) => {

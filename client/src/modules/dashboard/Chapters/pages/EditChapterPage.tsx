@@ -1,6 +1,5 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import {
   useDashboardChapterLazyQuery,
@@ -11,8 +10,9 @@ import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditChapterPage: NextPage = () => {
+export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
@@ -49,14 +49,16 @@ export const EditChapterPage: NextPage = () => {
     return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
-    <Layout>
-      <ChapterForm
-        data={data}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        loadingText={'Saving Chapter Changes'}
-        submitText={'Save Chapter Changes'}
-      />
-    </Layout>
+    <ChapterForm
+      data={data}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      loadingText={'Saving Chapter Changes'}
+      submitText={'Save Chapter Changes'}
+    />
   );
+};
+
+EditChapterPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

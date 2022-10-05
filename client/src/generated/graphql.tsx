@@ -108,22 +108,6 @@ export type CreateChapterInputs = {
   region: Scalars['String'];
 };
 
-export type CreateEventInputs = {
-  capacity: Scalars['Float'];
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  image_url: Scalars['String'];
-  invite_only?: InputMaybe<Scalars['Boolean']>;
-  name: Scalars['String'];
-  sponsor_ids: Array<Scalars['Int']>;
-  start_at: Scalars['DateTime'];
-  streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
-  url?: InputMaybe<Scalars['String']>;
-  venue_id?: InputMaybe<Scalars['Int']>;
-  venue_type?: InputMaybe<VenueType>;
-};
-
 export type CreateSponsorInputs = {
   logo_path: Scalars['String'];
   name: Scalars['String'];
@@ -166,6 +150,22 @@ export type Event = {
   tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
+};
+
+export type EventInputs = {
+  capacity: Scalars['Float'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  image_url: Scalars['String'];
+  invite_only?: InputMaybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  sponsor_ids: Array<Scalars['Int']>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
+  url?: InputMaybe<Scalars['String']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
+  venue_type?: InputMaybe<VenueType>;
 };
 
 export type EventPermission = {
@@ -348,7 +348,7 @@ export type MutationCreateChapterArgs = {
 
 export type MutationCreateEventArgs = {
   chapterId: Scalars['Int'];
-  data: CreateEventInputs;
+  data: EventInputs;
 };
 
 export type MutationCreateSponsorArgs = {
@@ -427,7 +427,7 @@ export type MutationUpdateChapterArgs = {
 };
 
 export type MutationUpdateEventArgs = {
-  data: UpdateEventInputs;
+  data: EventInputs;
   id: Scalars['Int'];
 };
 
@@ -462,6 +462,7 @@ export type Query = {
   chapters: Array<ChapterWithEvents>;
   dashboardChapter: ChapterWithRelations;
   dashboardEvent?: Maybe<EventWithRelations>;
+  dashboardSponsor: Sponsor;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -469,7 +470,6 @@ export type Query = {
   me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
-  sponsor?: Maybe<Sponsor>;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   users: Array<UserWithInstanceRole>;
@@ -501,6 +501,10 @@ export type QueryDashboardEventArgs = {
   eventId: Scalars['Int'];
 };
 
+export type QueryDashboardSponsorArgs = {
+  id: Scalars['Int'];
+};
+
 export type QueryEventArgs = {
   eventId: Scalars['Int'];
 };
@@ -518,10 +522,6 @@ export type QueryPaginatedEventsArgs = {
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-};
-
-export type QuerySponsorArgs = {
-  id: Scalars['Int'];
 };
 
 export type QuerySponsorWithEventsArgs = {
@@ -584,23 +584,6 @@ export type UpdateChapterInputs = {
   image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateEventInputs = {
-  capacity?: InputMaybe<Scalars['Float']>;
-  chapter_id: Scalars['Int'];
-  description?: InputMaybe<Scalars['String']>;
-  ends_at?: InputMaybe<Scalars['DateTime']>;
-  image_url?: InputMaybe<Scalars['String']>;
-  invite_only?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  sponsor_ids: Array<Scalars['Int']>;
-  start_at?: InputMaybe<Scalars['DateTime']>;
-  streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
-  url?: InputMaybe<Scalars['String']>;
-  venue_id?: InputMaybe<Scalars['Int']>;
-  venue_type?: InputMaybe<VenueType>;
 };
 
 export type UpdateSponsorInputs = {
@@ -971,7 +954,7 @@ export type DashboardChapterQuery = {
 
 export type CreateEventMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: CreateEventInputs;
+  data: EventInputs;
 }>;
 
 export type CreateEventMutation = {
@@ -994,7 +977,7 @@ export type CreateEventMutation = {
 
 export type UpdateEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
-  data: UpdateEventInputs;
+  data: EventInputs;
 }>;
 
 export type UpdateEventMutation = {
@@ -1209,20 +1192,20 @@ export type UpdateSponsorMutation = {
   };
 };
 
-export type SponsorQueryVariables = Exact<{
+export type DashboardSponsorQueryVariables = Exact<{
   sponsorId: Scalars['Int'];
 }>;
 
-export type SponsorQuery = {
+export type DashboardSponsorQuery = {
   __typename?: 'Query';
-  sponsor?: {
+  dashboardSponsor: {
     __typename?: 'Sponsor';
     id: number;
     name: string;
     website: string;
     logo_path: string;
     type: string;
-  } | null;
+  };
 };
 
 export type SponsorWithEventsQueryVariables = Exact<{
@@ -2620,7 +2603,7 @@ export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQueryVariables
 >;
 export const CreateEventDocument = gql`
-  mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+  mutation createEvent($chapterId: Int!, $data: EventInputs!) {
     createEvent(chapterId: $chapterId, data: $data) {
       id
       name
@@ -2683,7 +2666,7 @@ export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutationVariables
 >;
 export const UpdateEventDocument = gql`
-  mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+  mutation updateEvent($eventId: Int!, $data: EventInputs!) {
     updateEvent(id: $eventId, data: $data) {
       id
       name
@@ -3403,9 +3386,9 @@ export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
   UpdateSponsorMutation,
   UpdateSponsorMutationVariables
 >;
-export const SponsorDocument = gql`
-  query sponsor($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
+export const DashboardSponsorDocument = gql`
+  query dashboardSponsor($sponsorId: Int!) {
+    dashboardSponsor(id: $sponsorId) {
       id
       name
       website
@@ -3416,47 +3399,54 @@ export const SponsorDocument = gql`
 `;
 
 /**
- * __useSponsorQuery__
+ * __useDashboardSponsorQuery__
  *
- * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
- * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDashboardSponsorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSponsorQuery({
+ * const { data, loading, error } = useDashboardSponsorQuery({
  *   variables: {
  *      sponsorId: // value for 'sponsorId'
  *   },
  * });
  */
-export function useSponsorQuery(
-  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export function useSponsorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SponsorQuery,
-    SponsorQueryVariables
+export function useDashboardSponsorQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
+  return Apollo.useQuery<DashboardSponsorQuery, DashboardSponsorQueryVariables>(
+    DashboardSponsorDocument,
     options,
   );
 }
-export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
-export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
-export type SponsorQueryResult = Apollo.QueryResult<
-  SponsorQuery,
-  SponsorQueryVariables
+export function useDashboardSponsorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
+  >(DashboardSponsorDocument, options);
+}
+export type DashboardSponsorQueryHookResult = ReturnType<
+  typeof useDashboardSponsorQuery
+>;
+export type DashboardSponsorLazyQueryHookResult = ReturnType<
+  typeof useDashboardSponsorLazyQuery
+>;
+export type DashboardSponsorQueryResult = Apollo.QueryResult<
+  DashboardSponsorQuery,
+  DashboardSponsorQueryVariables
 >;
 export const SponsorWithEventsDocument = gql`
   query sponsorWithEvents($sponsorId: Int!) {

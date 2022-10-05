@@ -10,7 +10,7 @@ import { Permission } from '../../../../common/permissions';
 
 @Resolver()
 export class EventUserResolver {
-  @Authorized(Permission.EventSubscriptionsManage)
+  @Authorized(Permission.EventSubscriptionManage)
   @Mutation(() => EventUser)
   async subscribeToEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -49,7 +49,7 @@ export class EventUserResolver {
     });
   }
 
-  @Authorized(Permission.EventSubscriptionsManage)
+  @Authorized(Permission.EventSubscriptionManage)
   @Mutation(() => EventUser)
   async unsubscribeFromEvent(
     @Arg('eventId', () => Int) eventId: number,

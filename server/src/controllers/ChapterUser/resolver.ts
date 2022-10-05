@@ -117,7 +117,7 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterSubscriptionsManage)
+  @Authorized(Permission.ChapterSubscriptionManage)
   @Mutation(() => ChapterUser)
   async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,

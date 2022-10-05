@@ -1,6 +1,5 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import {
   useVenueLazyQuery,
@@ -11,9 +10,10 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
-import { useParam } from 'hooks/useParam';
+import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditVenuePage: NextPage = () => {
+export const EditVenuePage: NextPageWithLayout = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
@@ -62,15 +62,17 @@ export const EditVenuePage: NextPage = () => {
     return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
-    <Layout dataCy="edit-venue-page">
-      <VenueForm
-        data={data}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        submitText={'Save Venue Changes'}
-        chapterId={chapterId}
-        loadingText={'Saving Venue Changes'}
-      />
-    </Layout>
+    <VenueForm
+      data={data}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      submitText={'Save Venue Changes'}
+      chapterId={chapterId}
+      loadingText={'Saving Venue Changes'}
+    />
   );
+};
+
+EditVenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout dataCy="edit-venue-page">{page}</Layout>;
 };

@@ -169,6 +169,7 @@ export const Header: React.FC = () => {
                   cursor={'pointer'}
                   name={`${user.name}`}
                   src={`${user.image_url}`}
+                  backgroundColor={user.image_url && 'transparent'}
                 />
               </NextLink>
             </>

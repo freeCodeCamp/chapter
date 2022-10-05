@@ -2,7 +2,7 @@ import { expectToBeRejected } from '../../support/util';
 
 describe('event page', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.visit('/events/1');
     cy.mhDeleteAll();
   });

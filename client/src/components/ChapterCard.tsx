@@ -39,7 +39,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 {chapter.name}
               </Heading>
               <Text color={'darkcyan'} fontWeight="bold" as="h4">
-                {chapter.category}
+                {chapter.city}
               </Text>
             </Flex>
           </Link>
@@ -64,17 +64,39 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           >
             Organized Events
           </Heading>
-          {chapter.events.map(({ id, name }, index) => (
+          {chapter.events.map(({ id, name, venue, capacity }, index) => (
             <Link key={id} href={`/events/${id}`} _hover={{}}>
               <Flex
-                direction={['column', 'column', 'row']}
-                paddingInline={'1em'}
+                direction={'column'}
+                paddingLeft={'1em'}
                 paddingBlock={'.5em'}
                 justifyContent={'space-between'}
               >
-                <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                  {index + 1}. {name}
-                </Text>
+                <Flex justifyContent={'space-between'}>
+                  <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                    {index + 1}. {name}
+                  </Text>
+                  <Text
+                    mt="2"
+                    fontWeight={600}
+                    fontSize={['sm', 'md', 'lg']}
+                    color={'darkcyan'}
+                  >
+                    Capacity:{capacity}
+                  </Text>
+                </Flex>
+                {venue && (
+                  <Flex
+                    fontWeight={'400'}
+                    marginTop={'.25em'}
+                    opacity=".9"
+                    fontSize={['smaller', 'sm', 'md']}
+                    justifyContent="space-between"
+                  >
+                    <Text>Hosted at: {venue.name}</Text>
+                    <Text> {venue.region}</Text>
+                  </Flex>
+                )}
               </Flex>
             </Link>
           ))}

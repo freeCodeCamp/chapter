@@ -40,7 +40,6 @@ export const DASHBOARD_CHAPTER_USERS = gql`
         user {
           id
           name
-          email
         }
         chapter_role {
           id
@@ -78,12 +77,18 @@ export const CHAPTERS = gql`
       id
       name
       description
-      category
       image_url
+      city
       events {
         id
         name
-        start_at
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }

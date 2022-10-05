@@ -10,9 +10,37 @@ const chapterData = {
   image_url: 'https://example.com/image.jpg',
 };
 
+// TODO: move this and other fixtures to a common file
+const venueData = {
+  name: 'Test Venue',
+  street_address: '123 Main St',
+  city: 'New York',
+  postal_code: '10001',
+  region: 'NY',
+  country: 'US',
+  latitude: 40.7128,
+  longitude: -74.006,
+};
+
+const eventData = {
+  venue_id: 1,
+  sponsor_ids: [],
+  name: 'Other Event',
+  description: 'Test Description',
+  url: 'https://test.event.org',
+  venue_type: 'PhysicalAndOnline',
+  capacity: 10,
+  image_url: 'https://test.event.org/image',
+  streaming_url: 'https://test.event.org/video',
+  start_at: '2022-01-01T00:01',
+  ends_at: '2022-01-02T00:02',
+  tags: 'Test, Event, Tag',
+  invite_only: false,
+};
+
 describe('chapters dashboard', () => {
   before(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
   beforeEach(() => {
     cy.login();
@@ -66,7 +94,38 @@ describe('chapters dashboard', () => {
     cy.contains(chapterData.name);
   });
 
+  it('lets a user create a chapter and an event in a fresh instance', () => {
+    cy.exec('npm run db:init');
+    const userEmail = 'fresh@start';
+    cy.login(userEmail);
+    cy.task('promoteToOwner', { email: userEmail });
+    const chapterId = 1;
+
+    cy.createChapter(chapterData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+
+      cy.visit(`/dashboard/chapters/${chapterId}`);
+      cy.contains(chapterData.name);
+    });
+    cy.createVenue({ chapterId }, venueData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+
+      cy.visit(`/dashboard/venues/`);
+      cy.contains(venueData.name);
+    });
+    cy.createEvent(chapterId, eventData).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
+
+      cy.visit(`/dashboard/events/`);
+      cy.contains(eventData.name);
+    });
+  });
+
   it('only allows owners to create chapters', () => {
+    cy.task('seedDb');
     cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/chapters');

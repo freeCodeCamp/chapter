@@ -1,8 +1,7 @@
-import { Box, Button, Heading, HStack, Link } from '@chakra-ui/react';
-import { NextPage } from 'next';
+import { Box, Button, Heading, HStack } from '@chakra-ui/react';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 
 import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
@@ -23,8 +22,9 @@ import { VENUES } from '../../Venues/graphql/queries';
 import { EVENTS } from '../../Events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const ChapterPage: NextPage = () => {
+export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId, isReady } = useParam('id');
 
   const confirmDelete = useConfirmDelete();
@@ -66,7 +66,7 @@ export const ChapterPage: NextPage = () => {
     return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
-    <Layout>
+    <>
       <Card className={styles.card}>
         <ProgressCardContent loading={loading}>
           <Heading
@@ -78,13 +78,9 @@ export const ChapterPage: NextPage = () => {
             {data.dashboardChapter.name}
           </Heading>
           <Box>
-            <Link
-              href={`${chapterId}/users`}
-              target="_blank"
-              paddingBlock={'2'}
-            >
+            <LinkButton href={`${chapterId}/users`} paddingBlock={'2'}>
               Chapter Users
-            </Link>
+            </LinkButton>
           </Box>
           <HStack mt={'2'}>
             <LinkButton
@@ -112,6 +108,10 @@ export const ChapterPage: NextPage = () => {
         title="Organized Events"
         events={data.dashboardChapter.events}
       />
-    </Layout>
+    </>
   );
+};
+
+ChapterPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

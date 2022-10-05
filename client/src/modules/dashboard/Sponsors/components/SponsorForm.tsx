@@ -4,9 +4,10 @@ import { Select } from '@chakra-ui/select';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { VStack } from '@chakra-ui/layout';
+
 import { Input } from '../../../../components/Form/Input';
 import styles from '../../../../styles/Form.module.css';
-import { Sponsor, SponsorQuery } from 'generated/graphql';
+import { DashboardSponsorQuery, Sponsor } from '../../../../generated/graphql';
 
 export type SponsorFormData = Omit<
   Sponsor,
@@ -16,7 +17,7 @@ export type SponsorFormData = Omit<
 interface SponsorFormProps {
   loading: boolean;
   onSubmit: (data: SponsorFormData) => Promise<void>;
-  data?: SponsorQuery;
+  data?: DashboardSponsorQuery;
   submitText: string;
   loadingText: string;
 }
@@ -48,7 +49,7 @@ const fields: FormField[] = [
 ];
 const SponsorForm: React.FC<SponsorFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
-  const sponsor = data?.sponsor;
+  const sponsor = data?.dashboardSponsor;
   const defaultValues: SponsorFormData = {
     name: sponsor?.name ?? '',
     website: sponsor?.website ?? '',

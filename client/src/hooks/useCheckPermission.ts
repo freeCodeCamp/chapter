@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { useAuth } from '../modules/auth/store';
 import {
   InstancePermission,
@@ -7,9 +9,22 @@ import {
 export const useCheckPermission = (
   permission: InstancePermission | ChapterPermission,
 ) => {
+  const [loading, setLoading] = useState(true);
+  const [hasPermission, setHasPermission] = useState(false);
   const { user } = useAuth();
 
-  return user?.instance_role.instance_role_permissions.find(
-    (x) => x.instance_permission.name === permission,
-  );
+  useEffect(() => {
+    if (user) {
+      setHasPermission(
+        user.instance_role.instance_role_permissions.some(
+          (x) => x.instance_permission.name === permission,
+        ),
+      );
+      setLoading(false);
+    } else if (user === null) {
+      setLoading(false);
+    }
+  }, [user]);
+
+  return [loading, hasPermission];
 };

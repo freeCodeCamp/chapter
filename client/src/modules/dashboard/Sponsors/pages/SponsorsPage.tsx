@@ -14,11 +14,11 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 export const SponsorsPage: NextPageWithLayout = () => {
   const { loading, error, data } = useSponsorsQuery();
 
-  const hasSponsorManagePermission = useCheckPermission(
+  const [loadingPermission, hasPermissionToManageSponsor] = useCheckPermission(
     Permission.SponsorManage,
   );
 
-  const isLoading = loading || !data;
+  const isLoading = loading || loadingPermission || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
 
@@ -30,7 +30,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Sponsors</Heading>
-          {hasSponsorManagePermission && (
+          {hasPermissionToManageSponsor && (
             <LinkButton href="/dashboard/sponsors/new" colorScheme="blue">
               Add new
             </LinkButton>
@@ -51,7 +51,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                 type: (sponsor) => sponsor.type,
                 website: (sponsor) => sponsor.website,
                 action: (sponsor) =>
-                  hasSponsorManagePermission && (
+                  hasPermissionToManageSponsor && (
                     <LinkButton
                       colorScheme="blue"
                       size="xs"
@@ -84,7 +84,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                     >
                       <Text marginBlock={'.54em'}>Name</Text>
                       <Text>Type</Text>
-                      {hasSponsorManagePermission && <Text>Ops</Text>}
+                      {hasPermissionToManageSponsor && <Text>Ops</Text>}
                       <Text>Website</Text>
                     </VStack>
                   ),
@@ -97,7 +97,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                         {name}
                       </LinkButton>
                       <Text>{type}</Text>
-                      {hasSponsorManagePermission && (
+                      {hasPermissionToManageSponsor && (
                         <LinkButton
                           colorScheme="blue"
                           size="xs"

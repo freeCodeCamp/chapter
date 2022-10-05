@@ -13,11 +13,11 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useChaptersQuery();
 
-  const hasPermissionToCreateChapter = useCheckPermission(
+  const [loadingPermission, hasPermissionToCreateChapter] = useCheckPermission(
     Permission.ChapterCreate,
   );
 
-  const isLoading = loading || !data;
+  const isLoading = loading || !data || loadingPermission;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
 

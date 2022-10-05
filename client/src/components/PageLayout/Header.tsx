@@ -9,6 +9,7 @@ import {
   MenuList,
   MenuItem,
   MenuButton,
+  Spinner,
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
@@ -72,7 +73,7 @@ export const Header: React.FC = () => {
   } = useAuthStore();
   const logout = useLogout();
 
-  const canAuthenticateWithGoogle = useCheckPermission(
+  const [loadingPermission, canAuthenticateWithGoogle] = useCheckPermission(
     Permission.GoogleAuthenticate,
   );
 
@@ -92,86 +93,86 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <HStack as="nav">
-          <Box>
-            <Menu>
-              <MenuButton
-                as={Button}
-                aria-label="Options"
-                variant="outline"
-                background={'gray.10'}
-                px={[2, 4]}
-                py={[1, 2]}
-              >
-                Menu
-              </MenuButton>
-              <MenuList paddingBlock={0}>
-                <Flex
-                  className={styles.header}
-                  flexDirection={'column'}
-                  fontWeight="600"
-                  borderRadius={'5px'}
+        {loadingPermission ? (
+          <Spinner color="white" size="xl" />
+        ) : (
+          <HStack as="nav">
+            <Box>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  aria-label="Options"
+                  variant="outline"
+                  background="gray.10"
+                  px={[2, 4]}
+                  py={[1, 2]}
                 >
-                  <NextLink passHref href="/chapters">
-                    <MenuItem as="a">Chapters</MenuItem>
-                  </NextLink>
+                  Menu
+                </MenuButton>
+                <MenuList paddingBlock={0}>
+                  <Flex
+                    className={styles.header}
+                    flexDirection="column"
+                    fontWeight="600"
+                    borderRadius="5px"
+                  >
+                    <NextLink passHref href="/chapters">
+                      <MenuItem as="a">Chapters</MenuItem>
+                    </NextLink>
 
-                  <NextLink passHref href="/events">
-                    <MenuItem as="a">Events</MenuItem>
-                  </NextLink>
+                    <NextLink passHref href="/events">
+                      <MenuItem as="a">Events</MenuItem>
+                    </NextLink>
 
-                  {user ? (
-                    <>
-                      <NextLink passHref href="/dashboard/chapters">
-                        <MenuItem as="a">Dashboard</MenuItem>
-                      </NextLink>
-                      <NextLink passHref href="/profile">
-                        <MenuItem as="a">Profile</MenuItem>
-                      </NextLink>
+                    {user ? (
+                      <>
+                        <NextLink passHref href="/dashboard/chapters">
+                          <MenuItem as="a">Dashboard</MenuItem>
+                        </NextLink>
+                        <NextLink passHref href="/profile">
+                          <MenuItem as="a">Profile</MenuItem>
+                        </NextLink>
 
-                      {canAuthenticateWithGoogle && (
+                        {canAuthenticateWithGoogle && (
+                          <MenuItem
+                            as="a"
+                            href={
+                              new URL('/authenticate-with-google', serverUrl)
+                                .href
+                            }
+                            fontWeight="600"
+                            background="gray.85"
+                            color="gray.10"
+                            height="100%"
+                            borderRadius="5px"
+                            _hover={{ color: 'gray.85' }}
+                          >
+                            Authenticate with Google
+                          </MenuItem>
+                        )}
+
                         <MenuItem
-                          as="a"
-                          href={
-                            new URL('/authenticate-with-google', serverUrl).href
-                          }
+                          data-cy="logout-button"
+                          onClick={() => logout().then(goHome)}
                           fontWeight="600"
-                          background={'gray.85'}
-                          color={'gray.10'}
-                          height={'100%'}
-                          borderRadius={'5px'}
-                          _hover={{ color: 'gray.85' }}
                         >
-                          Authenticate with Google
+                          Logout
                         </MenuItem>
-                      )}
-
-                      <MenuItem
-                        data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
-                        fontWeight="600"
-                      >
-                        Logout
-                      </MenuItem>
-                    </>
-                  ) : (
-                    <LoginButton />
-                  )}
-                </Flex>
-              </MenuList>
-            </Menu>
-          </Box>
-
-          {user ? (
-            <>
+                      </>
+                    ) : (
+                      <LoginButton />
+                    )}
+                  </Flex>
+                </MenuList>
+              </Menu>
+            </Box>
+            {user && (
               <NextLink passHref href="/profile">
-                <Avatar cursor={'pointer'} name={`${user.name}`} />
+                <Avatar cursor="pointer" name={`${user.name}`} />
               </NextLink>
-            </>
-          ) : (
-            <></>
-          )}
-        </HStack>
+            )}
+          </HStack>
+        )}
       </HeaderItem>
     </>
   );

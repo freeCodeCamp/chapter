@@ -11,7 +11,6 @@ interface Props {
 }
 
 export const PolicyPage: NextPage = () => {
-
   const canAuthenticateWithGoogle = useCheckPermission(
     Permission.GoogleAuthenticate,
   );

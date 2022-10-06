@@ -59,6 +59,9 @@ const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
+  const canAuthenticateWithGoogle = useCheckPermission(
+    Permission.GoogleAuthenticate,
+  );
   const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
@@ -74,9 +77,6 @@ export const EventsPage: NextPage = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
-  const canAuthenticateWithGoogle = useCheckPermission(
-    Permission.GoogleAuthenticate,
-  );
 
   return (
     <VStack>
@@ -84,10 +84,7 @@ export const EventsPage: NextPage = () => {
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading>Events: </Heading>
           {canAuthenticateWithGoogle && (
-            <LinkButton
-              href="/dashboard/events"
-              colorScheme={'blue'}
-            >
+            <LinkButton href="/dashboard/events" colorScheme={'blue'}>
               Events Dashboard
             </LinkButton>
           )}

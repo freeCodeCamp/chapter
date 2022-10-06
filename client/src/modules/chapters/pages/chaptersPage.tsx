@@ -11,21 +11,18 @@ import { Loading } from 'components/Loading';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
-  const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
-
   const canAuthenticateWithGoogle = useCheckPermission(
     Permission.GoogleAuthenticate,
   );
+  const isLoading = loading || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+
   return (
     <Stack mt={10} mb={5} display={'block'}>
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Heading marginBlock={'1em'}>Chapters: </Heading>
         {canAuthenticateWithGoogle && (
-          <LinkButton
-            href="/dashboard/chapters"
-            colorScheme={'blue'}
-          >
+          <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
             Chapter Dashboard
           </LinkButton>
         )}

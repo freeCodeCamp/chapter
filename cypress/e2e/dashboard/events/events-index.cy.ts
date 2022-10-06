@@ -57,25 +57,6 @@ describe('spec needing owner', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-  // function sendAndCheckEmails(filterCallback, users) {
-  //   cy.mhDeleteAll();
-  //   cy.findByRole('button', { name: 'Send Email' }).click();
-  //   cy.contains('Email sent');
-
-  //   const recipientEmails = users
-  //     .filter(filterCallback)
-  //     .map(({ user: { email } }) => email);
-  //   cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
-  //   recipientEmails.forEach((recipientEmail) => {
-  //     cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
-  //     cy.get('@currentRecipient').should('have.length', 1);
-  //     cy.get('@currentRecipient')
-  //       .mhFirst()
-  //       .then((mail) => {
-  //         cy.checkBcc(mail).should('eq', true);
-  //       });
-  //   });
-  // }
 
   it("emails the users when an event's venue is changed", () => {
     // It needs to be string to select by the value. When passing integer

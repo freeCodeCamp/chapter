@@ -2,7 +2,6 @@ import React, { forwardRef } from 'react';
 import { NextPage } from 'next';
 import { Flex, Grid, Heading, Text, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
-import { useAuth } from '../../../modules/auth/store';
 import { useCheckPermission } from '../../../hooks/useCheckPermission';
 import { Permission } from '../../../../../common/permissions';
 
@@ -12,7 +11,6 @@ interface Props {
 }
 
 export const PolicyPage: NextPage = () => {
-  const { user } = useAuth();
 
   const canAuthenticateWithGoogle = useCheckPermission(
     Permission.GoogleAuthenticate,
@@ -25,7 +23,6 @@ export const PolicyPage: NextPage = () => {
         href={link}
         colorScheme={'blue'}
         margin={'1em'}
-        isDisabled={user?.id === undefined}
       >
         {text}
       </LinkButton>

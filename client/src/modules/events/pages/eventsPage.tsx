@@ -6,7 +6,6 @@ import { LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
-import { useAuth } from '../../../modules/auth/store';
 import { useCheckPermission } from '../../../hooks/useCheckPermission';
 import { Permission } from '../../../../../common/permissions';
 
@@ -64,7 +63,6 @@ export const EventsPage: NextPage = () => {
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
   });
-  const { user } = useAuth();
 
   useEffect(() => {
     if (visitedPages.has(currentPage)) return;
@@ -89,7 +87,6 @@ export const EventsPage: NextPage = () => {
             <LinkButton
               href="/dashboard/events"
               colorScheme={'blue'}
-              isDisabled={user?.id === undefined}
             >
               Events Dashboard
             </LinkButton>

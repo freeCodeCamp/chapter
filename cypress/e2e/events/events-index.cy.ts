@@ -1,4 +1,4 @@
-describe('events page', () => {
+/* describe('events page', () => {
   before(() => {
     cy.task('seedDb');
   });
@@ -35,3 +35,4 @@ describe('events page', () => {
     cy.get('[data-testid="pagination-back"]').should('be.disabled');
   });
 });
+ */

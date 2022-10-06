@@ -55,7 +55,6 @@ describe('spec needing owner', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-
   it("emails the users when an event's venue is changed", () => {
     // It needs to be string to select by the value. When passing integer
     // to the .select method, it will select option by the index.

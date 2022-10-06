@@ -34,17 +34,18 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 const LoginButton = () => {
   const login = useLogin();
   return (
-    <MenuItem
+    <Button
       onClick={login}
+      background={'gray.10'}
+      paddingBlock={'.65em'}
+      paddingInline={'1em'}
+      fontSize={'md'}
       fontWeight="600"
-      background={'gray.85'}
-      color={'gray.10'}
       height={'100%'}
       borderRadius={'5px'}
-      _hover={{ color: 'gray.85' }}
     >
       Log In
-    </MenuItem>
+    </Button>
   );
 };
 
@@ -94,42 +95,51 @@ export const Header: React.FC = () => {
         </Link>
         <HStack as="nav">
           <Box>
-            <Menu>
-              <MenuButton
-                as={Button}
-                aria-label="Options"
-                variant="outline"
-                background={'gray.10'}
-                px={[2, 4]}
-                py={[1, 2]}
-              >
-                Menu
-              </MenuButton>
-              <MenuList paddingBlock={0}>
-                <Flex
-                  className={styles.header}
-                  flexDirection={'column'}
-                  fontWeight="600"
-                  borderRadius={'5px'}
-                >
-                  <NextLink passHref href="/chapters">
-                    <MenuItem as="a">Chapters</MenuItem>
-                  </NextLink>
-
-                  <NextLink passHref href="/events">
-                    <MenuItem as="a">Events</MenuItem>
-                  </NextLink>
-
-                  {user ? (
-                    <>
+            {!user ? (
+              <LoginButton />
+            ) : (
+              <Flex gap={'2'} alignItems={'center'}>
+                <NextLink passHref href="/profile">
+                  <Avatar cursor={'pointer'} name={`${user.name}`} />
+                </NextLink>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    aria-label="Options"
+                    variant="outline"
+                    background={'gray.10'}
+                    px={[2, 4]}
+                    py={[1, 2]}
+                  >
+                    Menu
+                  </MenuButton>
+                  <MenuList paddingBlock={0}>
+                    <Flex
+                      className={styles.header}
+                      flexDirection={'column'}
+                      fontWeight="600"
+                      borderRadius={'5px'}
+                    >
                       <NextLink passHref href="/dashboard/chapters">
                         <MenuItem as="a">Dashboard</MenuItem>
                       </NextLink>
-                      <NextLink passHref href="/profile">
-                        <MenuItem as="a">Profile</MenuItem>
-                      </NextLink>
 
-                      {canAuthenticateWithGoogle && (
+                      {!canAuthenticateWithGoogle ? (
+                        <NextLink passHref href="/profile">
+                          <MenuItem
+                            as="a"
+                            background={'gray.85'}
+                            color={'gray.10'}
+                            fontWeight="600"
+                            height={'100%'}
+                            borderRadius={'5px'}
+                            width="100%"
+                            _hover={{ color: 'gray.85' }}
+                          >
+                            Profile
+                          </MenuItem>
+                        </NextLink>
+                      ) : (
                         <MenuItem
                           as="a"
                           href={
@@ -153,24 +163,12 @@ export const Header: React.FC = () => {
                       >
                         Logout
                       </MenuItem>
-                    </>
-                  ) : (
-                    <LoginButton />
-                  )}
-                </Flex>
-              </MenuList>
-            </Menu>
+                    </Flex>
+                  </MenuList>
+                </Menu>
+              </Flex>
+            )}
           </Box>
-
-          {user ? (
-            <>
-              <NextLink passHref href="/profile">
-                <Avatar cursor={'pointer'} name={`${user.name}`} />
-              </NextLink>
-            </>
-          ) : (
-            <></>
-          )}
         </HStack>
       </HeaderItem>
     </>

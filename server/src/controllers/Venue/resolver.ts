@@ -9,15 +9,7 @@ import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
 const venueIncludes = {
   chapter: {
     include: {
-      events: {
-        include: {
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
-        },
-      },
+      events: true,
     },
   },
 };

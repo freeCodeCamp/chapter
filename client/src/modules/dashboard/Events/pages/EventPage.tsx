@@ -133,7 +133,7 @@ export const EventPage: NextPageWithLayout = () => {
           </Text>
         )}
         <Text opacity={'.9'}>
-          Capacity:{' '}
+          Capacity: 
           <Text as={'span'} fontWeight={500}>
             {data.dashboardEvent.capacity}
           </Text>
@@ -168,7 +168,6 @@ export const EventPage: NextPageWithLayout = () => {
               </Link>
             </Text>
           )}
-        {/* <Tags tags={data.dashboardEvent.tags} /> */}
 
         <Actions
           event={data.dashboardEvent}

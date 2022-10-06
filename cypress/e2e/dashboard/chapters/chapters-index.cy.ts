@@ -34,7 +34,6 @@ const eventData = {
   streaming_url: 'https://test.event.org/video',
   start_at: '2022-01-01T00:01',
   ends_at: '2022-01-02T00:02',
-  tags: 'Test, Event, Tag',
   invite_only: false,
 };
 

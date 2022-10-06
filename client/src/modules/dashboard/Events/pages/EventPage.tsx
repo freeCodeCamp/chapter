@@ -9,10 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 
 import {
   useConfirmRsvpMutation,
@@ -30,6 +29,7 @@ import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
 const args = (eventId: number) => ({
   refetchQueries: [
@@ -38,7 +38,7 @@ const args = (eventId: number) => ({
   ],
 });
 
-export const EventPage: NextPage = () => {
+export const EventPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { param: eventId, isReady } = useParam('id');
 
@@ -95,7 +95,7 @@ export const EventPage: NextPage = () => {
   ];
 
   return (
-    <Layout>
+    <>
       <Box p="2" borderWidth="1px" borderRadius="lg">
         <Heading>{data.dashboardEvent.name}</Heading>
 
@@ -120,7 +120,6 @@ export const EventPage: NextPage = () => {
           </Text>
         )}
         <Text>Capacity: {data.dashboardEvent.capacity}</Text>
-        {/* <Tags tags={data.dashboardEvent.tags} /> */}
 
         <Actions
           event={data.dashboardEvent}
@@ -246,6 +245,10 @@ export const EventPage: NextPage = () => {
           );
         })}
       </Box>
-    </Layout>
+    </>
   );
+};
+
+EventPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

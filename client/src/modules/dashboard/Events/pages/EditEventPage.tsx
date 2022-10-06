@@ -1,7 +1,6 @@
-import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
@@ -15,9 +14,10 @@ import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
-import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditEventPage: NextPage = () => {
+export const EditEventPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { param: eventId, isReady } = useParam();
@@ -82,20 +82,21 @@ export const EditEventPage: NextPage = () => {
     };
   });
   return (
-    <Layout>
-      <EventForm
-        data={{
-          ...rest,
-          sponsors: sponsorData || [],
-          venue_id: data.dashboardEvent?.venue?.id,
-          tags: data.dashboardEvent.tags || [],
-        }}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        loadingText={'Saving Event Changes'}
-        submitText={'Save Event Changes'}
-        chapterId={data.dashboardEvent.chapter.id}
-      />
-    </Layout>
+    <EventForm
+      data={{
+        ...rest,
+        sponsors: sponsorData || [],
+        venue_id: data.dashboardEvent?.venue?.id,
+      }}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      loadingText={'Saving Event Changes'}
+      submitText={'Save Event Changes'}
+      chapterId={data.dashboardEvent.chapter.id}
+    />
   );
+};
+
+EditEventPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

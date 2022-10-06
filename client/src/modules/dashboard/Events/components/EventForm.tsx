@@ -94,7 +94,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       sponsors: data.sponsors,
-      tags: (data.tags || []).map(({ tag }) => tag.name).join(', '),
       venue_type: data.venue_type,
       venue_id: data.venue_id,
       image_url: data.image_url,
@@ -331,7 +330,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 : true
             }
           >
-            Add
+            Add Sponsor
           </Button>
         </Box>
         {sponsorFields.map((sponsorField, sponsorFieldId) => {

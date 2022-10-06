@@ -1,7 +1,7 @@
 import { Flex, Heading, Link, Text } from '@chakra-ui/layout';
-import { NextPage } from 'next';
 import NextError from 'next/error';
-import React, { useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
+
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useSponsorWithEventsLazyQuery } from '../../../../generated/graphql';
@@ -9,9 +9,10 @@ import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { EventList } from 'modules/dashboard/shared/components/EventList';
+import { EventList } from '../../shared/components/EventList';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const SponsorPage: NextPage = () => {
+export const SponsorPage: NextPageWithLayout = () => {
   const { param: sponsorId, isReady } = useParam('id');
   const [getSponsor, { loading, error, data }] = useSponsorWithEventsLazyQuery({
     variables: { sponsorId },
@@ -30,7 +31,7 @@ export const SponsorPage: NextPage = () => {
   if (!sponsor) return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (
-    <Layout>
+    <>
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading data-cy="name" as="h2" fontWeight="normal" mb="2">
@@ -54,6 +55,10 @@ export const SponsorPage: NextPage = () => {
         title={'Sponsored Events'}
         events={sponsor.event_sponsors.map(({ event }) => ({ ...event }))}
       />
-    </Layout>
+    </>
   );
+};
+
+SponsorPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

@@ -13,7 +13,6 @@ const eventOneData = {
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',
   invite_only: false,
-  tags: ['aut'],
   sponsor_ids: [],
 };
 
@@ -28,7 +27,6 @@ const eventTwoData = {
   streaming_url: 'https://test.event.org/video',
   start_at: '2022-01-01T00:01',
   ends_at: '2022-01-02T00:02',
-  tags: ['Test, Event, Tag'],
 };
 
 // TODO: Move these specs into the other describe block, once we can make sure

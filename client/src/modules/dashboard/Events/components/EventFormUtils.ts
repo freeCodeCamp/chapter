@@ -1,6 +1,5 @@
 import {
   Event,
-  EventTag,
   SponsorsQuery,
   Venue,
   VenueType,
@@ -88,13 +87,6 @@ export const fields: Field[] = [
     isRequired: true,
   },
   {
-    key: 'tags',
-    type: 'text',
-    label: 'Tags (Separated by a comma)',
-    placeholder: 'tags that distinguish the event',
-    isRequired: false,
-  },
-  {
     key: 'start_at',
     type: 'datetime',
     label: 'Start at (Required)',
@@ -114,7 +106,6 @@ export interface EventFormData {
   image_url: string;
   streaming_url?: string | null;
   capacity: number;
-  tags: string;
   start_at: Date;
   ends_at: Date;
   venue_type: VenueType;
@@ -127,11 +118,9 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'chapter_id'>
-  | 'id'
+  keyof Omit<EventFormData, 'venue_id' | 'sponsors' | 'chapter_id'> | 'id'
 > & {
   venue_id?: number;
-  tags: EventTag[];
   venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
   sponsors: EventSponsorInput[];
 };
@@ -210,12 +199,8 @@ export const parseEventData = (data: EventFormData) => {
   // It's ugly, but we can't rely on TS to check that chapter_id is absent, so
   // we have to remove it in case it's present:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { chapter_id, sponsors, tags, ...rest } = data;
+  const { chapter_id, sponsors, ...rest } = data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-  const tagsArray = tags
-    .split(',')
-    .map((tag) => tag.trim())
-    .filter(Boolean);
   // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.
   const streaming_url = data.streaming_url?.trim() || null;
@@ -229,7 +214,6 @@ export const parseEventData = (data: EventFormData) => {
       ? parseInt(String(data.venue_id))
       : null,
     streaming_url: isOnline(data.venue_type) ? streaming_url : null,
-    tags: tagsArray,
     sponsor_ids: sponsorArray,
   };
 };

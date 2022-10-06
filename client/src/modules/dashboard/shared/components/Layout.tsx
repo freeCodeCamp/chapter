@@ -1,7 +1,7 @@
 import { HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { Permission } from '../../../../../../common/permissions';
 import { checkPermission } from '../../../../util/check-permission';
@@ -34,25 +34,15 @@ export const Layout = ({
   [prop: string]: unknown;
 }) => {
   const router = useRouter();
-  const [isLoading, setLoading] = useState(true);
   const { user, loadingUser } = useAuth();
 
   const linksWithPermissions = links.map((link) => {
     if (!link.requiredPermission) return link;
     const hasPermission = checkPermission(user, link.requiredPermission);
-    return { ...link, loading: loadingUser, hasPermission };
+    return { ...link, hasPermission };
   });
 
-  useEffect(() => {
-    if (
-      linksWithPermissions.every(
-        (link) => !link.requiredPermission || !link.loading,
-      )
-    ) {
-      setLoading(false);
-    }
-  }, [linksWithPermissions]);
-  if (isLoading) return <Loading loading={isLoading} />;
+  if (loadingUser) return <Loading loading={loadingUser} />;
 
   return (
     <div data-cy={dataCy}>

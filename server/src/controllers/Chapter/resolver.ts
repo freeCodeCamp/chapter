@@ -29,7 +29,6 @@ export class ChapterResolver {
         events: {
           include: {
             venue: true,
-            tags: { include: { tag: true } },
           },
         },
       },
@@ -44,7 +43,7 @@ export class ChapterResolver {
     return await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: true,
         chapter_users: {
           include: {
             chapter_role: {
@@ -70,7 +69,7 @@ export class ChapterResolver {
     return await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: true,
         chapter_users: {
           include: {
             chapter_role: {

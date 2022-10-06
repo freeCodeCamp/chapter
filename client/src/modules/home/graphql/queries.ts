@@ -10,12 +10,6 @@ export const HOME_PAGE_QUERY = gql`
       canceled
       start_at
       image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       chapter {
         id
         name

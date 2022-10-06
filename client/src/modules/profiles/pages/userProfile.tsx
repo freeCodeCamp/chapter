@@ -3,6 +3,7 @@ import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
+import { LinkButton } from 'chakra-next-link';
 import {
   useDeleteMeMutation,
   useUpdateMeMutation,
@@ -15,6 +16,8 @@ import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
   const {
     data: { user },
   } = useAuthStore();
@@ -85,6 +88,20 @@ export const UserProfilePage = () => {
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data
           </Button>
+          <LinkButton
+            as="a"
+            href={new URL('/authenticate-with-google', serverUrl).href}
+            fontWeight="600"
+            background={'gray.85'}
+            color={'gray.10'}
+            height={'100%'}
+            marginLeft={'1em'}
+            borderRadius={'5px'}
+            paddingBlock={'.65em'}
+            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          >
+            Authenticate with Google
+          </LinkButton>
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

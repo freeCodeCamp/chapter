@@ -19,15 +19,12 @@ import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
-import { Permission } from '../../../../common/permissions';
-import { useCheckPermission } from 'hooks/useCheckPermission';
 import { useLogin, useLogout } from 'hooks/useAuth';
 
 interface Props {
   children: React.ReactNode;
   justifyContent?: GridItemProps['justifyContent'];
 }
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
@@ -72,10 +69,6 @@ export const Header: React.FC = () => {
     data: { user },
   } = useAuthStore();
   const logout = useLogout();
-
-  const canAuthenticateWithGoogle = useCheckPermission(
-    Permission.GoogleAuthenticate,
-  );
 
   const goHome = () => router.push('/');
 
@@ -124,37 +117,20 @@ export const Header: React.FC = () => {
                         <MenuItem as="a">Dashboard</MenuItem>
                       </NextLink>
 
-                      {!canAuthenticateWithGoogle ? (
-                        <NextLink passHref href="/profile">
-                          <MenuItem
-                            as="a"
-                            background={'gray.85'}
-                            color={'gray.10'}
-                            fontWeight="600"
-                            height={'100%'}
-                            borderRadius={'5px'}
-                            width="100%"
-                            _hover={{ color: 'gray.85' }}
-                          >
-                            Profile
-                          </MenuItem>
-                        </NextLink>
-                      ) : (
+                      <NextLink passHref href="/profile">
                         <MenuItem
                           as="a"
-                          href={
-                            new URL('/authenticate-with-google', serverUrl).href
-                          }
-                          fontWeight="600"
                           background={'gray.85'}
                           color={'gray.10'}
+                          fontWeight="600"
                           height={'100%'}
                           borderRadius={'5px'}
+                          width="100%"
                           _hover={{ color: 'gray.85' }}
                         >
-                          Authenticate with Google
+                          Profile
                         </MenuItem>
-                      )}
+                      </NextLink>
 
                       <MenuItem
                         data-cy="logout-button"

@@ -44,6 +44,7 @@ const Home = () => {
       <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Upcoming events</Heading>
+          {/* add a link to events page here: learn more about events */}
           {data.paginatedEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
@@ -57,6 +58,7 @@ const Home = () => {
       <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Chapters</Heading>
+          {/* add a link to chapters page here: learn more about chapters */}
           {data.chapters.map((chapter) => (
             <ChapterCard key={chapter.id} chapter={chapter} />
           ))}

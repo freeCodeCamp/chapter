@@ -87,7 +87,6 @@ export const EditEventPage: NextPageWithLayout = () => {
         ...rest,
         sponsors: sponsorData || [],
         venue_id: data.dashboardEvent?.venue?.id,
-        tags: data.dashboardEvent.tags || [],
       }}
       loading={loadingUpdate}
       onSubmit={onSubmit}

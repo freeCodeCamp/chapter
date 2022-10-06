@@ -83,7 +83,6 @@ const createEvents = async (
         return prisma.event_sponsors.create({ data: eventSponsorData });
       }),
     );
-
     const tagNames = [
       'GraphQl',
       'NodeJs',

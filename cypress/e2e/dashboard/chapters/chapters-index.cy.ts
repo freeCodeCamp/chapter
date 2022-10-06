@@ -34,7 +34,6 @@ const eventData = {
   streaming_url: 'https://test.event.org/video',
   start_at: '2022-01-01T00:01',
   ends_at: '2022-01-02T00:02',
-  tags: 'Test, Event, Tag',
   invite_only: false,
 };
 
@@ -84,13 +83,10 @@ describe('chapters dashboard', () => {
         name: 'Add chapter',
       })
       .click();
-    // TODO: this should mirror events. i.e. either both should go to the list
-    // or both should go to the newly created page
-    cy.location('pathname').should('match', /^\/dashboard\/chapters$/);
-    // TODO: if go to /dashboard/chapters/<n>/edit, look for the rest of the
-    // data
-
-    // confirm that the test data appears in the new chapter
+    cy.location('pathname').should(
+      'match',
+      /^\/dashboard\/chapters\/\d\/new-venue$/,
+    );
     cy.contains(chapterData.name);
   });
 

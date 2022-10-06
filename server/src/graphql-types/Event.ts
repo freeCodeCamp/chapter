@@ -1,7 +1,7 @@
 import { events_venue_type_enum } from '@prisma/client';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { Chapter, EventTag, EventSponsor, EventUser, Venue } from '.';
+import { Chapter, EventSponsor, EventUser, Venue } from '.';
 
 export { events_venue_type_enum };
 

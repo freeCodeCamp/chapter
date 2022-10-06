@@ -109,7 +109,6 @@ describe('chapter dashboard', () => {
   function createEventViaUI(chapterId) {
     cy.visit(`/dashboard/chapters/${chapterId}`);
     cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
-    // ToDo: textbox shouldn't use component's text to indicate if it can find the component.
     cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
       testEvent.name,
     );
@@ -119,7 +118,6 @@ describe('chapter dashboard', () => {
     cy.findByRole('textbox', { name: 'Event Image Url' }).type(
       testEvent.image_url,
     );
-    // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
     cy.findByRole('spinbutton', { name: 'Capacity (Required)' }).type(
       testEvent.capacity,
     );

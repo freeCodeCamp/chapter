@@ -1,11 +1,11 @@
 import {
   Event,
-  EventTag,
   SponsorsQuery,
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
 
+import { isOnline, isPhysical } from '../../../../util/venueType';
 export interface Field {
   key: keyof EventFormData;
   label: string;
@@ -71,21 +71,21 @@ export const fields: Field[] = [
     type: 'textarea',
     label: 'Description',
     placeholder: '',
-    isRequired: true,
+    isRequired: false,
   },
   {
     key: 'image_url',
     type: 'text',
     label: 'Event Image Url',
     placeholder: 'https://www.example.image/url',
-    isRequired: true,
+    isRequired: false,
   },
   {
     key: 'url',
     type: 'url',
     label: 'Url',
     placeholder: 'https://www.example.com',
-    isRequired: true,
+    isRequired: false,
   },
   {
     key: 'capacity',
@@ -93,13 +93,6 @@ export const fields: Field[] = [
     label: 'Capacity',
     placeholder: '50',
     isRequired: true,
-  },
-  {
-    key: 'tags',
-    type: 'text',
-    label: 'Tags (separated by a comma)',
-    placeholder: 'Foo, bar',
-    isRequired: false,
   },
   {
     key: 'start_at',
@@ -122,7 +115,6 @@ export interface EventFormData {
   image_url: string;
   streaming_url?: string | null;
   capacity: number;
-  tags: string;
   start_at: Date;
   ends_at: Date;
   venue_type: VenueType;
@@ -135,11 +127,9 @@ export interface EventFormData {
 
 export type IEventData = Pick<
   Event,
-  | keyof Omit<EventFormData, 'venue_id' | 'tags' | 'sponsors' | 'chapter_id'>
-  | 'id'
+  keyof Omit<EventFormData, 'venue_id' | 'sponsors' | 'chapter_id'> | 'id'
 > & {
   venue_id?: number;
-  tags: EventTag[];
   venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
   sponsors: EventSponsorInput[];
 };
@@ -212,4 +202,29 @@ const isSponsorSelectedElsewhere = (
     selectedFieldId !== -1 &&
     (sponsorFieldId === undefined || selectedFieldId !== sponsorFieldId)
   );
+};
+
+export const parseEventData = (data: EventFormData) => {
+  // It's ugly, but we can't rely on TS to check that chapter_id is absent, so
+  // we have to remove it in case it's present:
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { chapter_id, sponsors, ...rest } = data;
+  const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
+  // Both url and streaming_url are optional. However, null will be accepted,
+  // while empty strings will be rejected.
+  const url = data.url?.trim() || null;
+  const streaming_url = data.streaming_url?.trim() || null;
+
+  return {
+    ...rest,
+    capacity: parseInt(String(data.capacity)),
+    start_at: data.start_at,
+    ends_at: data.ends_at,
+    url,
+    venue_id: isPhysical(data.venue_type)
+      ? parseInt(String(data.venue_id))
+      : null,
+    streaming_url: isOnline(data.venue_type) ? streaming_url : null,
+    sponsor_ids: sponsorArray,
+  };
 };

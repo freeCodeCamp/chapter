@@ -6,12 +6,20 @@ import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
 
+const venueIncludes = {
+  chapter: {
+    include: {
+      events: true,
+    },
+  },
+};
+
 @Resolver()
 export class VenueResolver {
   @Query(() => [Venue])
   venues(): Promise<Venue[]> {
     return prisma.venues.findMany({
-      include: { chapter: true },
+      include: venueIncludes,
       orderBy: { name: 'asc' },
     });
   }
@@ -26,11 +34,12 @@ export class VenueResolver {
     });
   }
 
+  @Authorized(Permission.VenueEdit)
   @Query(() => Venue, { nullable: true })
-  venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
+  venue(@Arg('venueId', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: { chapter: true },
+      include: venueIncludes,
     });
   }
 
@@ -46,7 +55,7 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
-      include: { chapter: true },
+      include: venueIncludes,
     });
   }
 

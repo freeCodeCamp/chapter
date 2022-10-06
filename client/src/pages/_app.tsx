@@ -12,9 +12,11 @@ import { offsetLimitPagination } from '@apollo/client/utilities';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
+import { NextPage } from 'next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { ReactElement, ReactNode } from 'react';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
@@ -75,10 +77,14 @@ export const ConditionalWrap = (props: ConditionalWrapProps) => {
 
 const Auth0Wrapper = (children: React.ReactNode) => {
   // TODO: create a module to handle environment variables
+  const router = useRouter();
   const domain = process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string;
   const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
   const clientURL = process.env.NEXT_PUBLIC_CLIENT_URL as string;
+  const onRedirectCallback = () => {
+    router.replace('/policy');
+  };
   {
     /* TODO: Can we conditionally use window.location.origin for the redirectUri if
            we're in the browser? Or should we require site maintainers to supply it? */
@@ -88,6 +94,7 @@ const Auth0Wrapper = (children: React.ReactNode) => {
       domain={domain}
       clientId={clientId}
       redirectUri={clientURL}
+      onRedirectCallback={onRedirectCallback}
       audience={audience}
     >
       {children}
@@ -95,7 +102,22 @@ const Auth0Wrapper = (children: React.ReactNode) => {
   );
 };
 
-const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
+export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
+  P,
+  IP
+> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+const CustomApp: React.FC<AppProps> = ({
+  pageProps,
+  Component,
+}: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <>
       <Head>
@@ -119,7 +141,7 @@ const CustomApp: React.FC<AppProps> = ({ pageProps, Component }) => {
             <AuthContextProvider>
               <ConfirmContextProvider>
                 <PageLayout>
-                  <Component {...pageProps} />
+                  {getLayout(<Component {...pageProps} />)}
                 </PageLayout>
               </ConfirmContextProvider>
             </AuthContextProvider>

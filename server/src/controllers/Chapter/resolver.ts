@@ -17,6 +17,7 @@ import {
   ChapterWithEvents,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
+import { createCalendar } from '../../services/Google';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -25,19 +26,50 @@ export class ChapterResolver {
   async chapters(): Promise<ChapterWithEvents[]> {
     return await prisma.chapters.findMany({
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: {
+          include: {
+            venue: true,
+          },
+        },
       },
     });
   }
 
-  @Query(() => ChapterWithRelations, { nullable: true })
-  async chapter(
+  @Authorized(Permission.ChapterEdit)
+  @Query(() => ChapterWithRelations)
+  async dashboardChapter(
     @Arg('id', () => Int) id: number,
-  ): Promise<ChapterWithRelations | null> {
-    return await prisma.chapters.findUnique({
+  ): Promise<ChapterWithRelations> {
+    return await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: true,
+        chapter_users: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+          orderBy: { user: { name: 'asc' } },
+        },
+        user_bans: { include: { user: true, chapter: true } },
+      },
+    });
+  }
+
+  @Query(() => ChapterWithRelations)
+  async chapter(
+    @Arg('id', () => Int) id: number,
+  ): Promise<ChapterWithRelations> {
+    return await prisma.chapters.findUniqueOrThrow({
+      where: { id },
+      include: {
+        events: true,
         chapter_users: {
           include: {
             chapter_role: {
@@ -62,11 +94,20 @@ export class ChapterResolver {
     @Arg('data') data: CreateChapterInputs,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
-    // An instance owner may not want or need to join a chapter they've created
-    // so they are not made a member by default.
+    let calendarData;
+    try {
+      calendarData = await createCalendar({
+        summary: data.name,
+        description: `Events for ${data.name}`,
+      });
+    } catch {
+      // TODO: log more details without leaking tokens and user info.
+      console.log('Unable to create calendar');
+    }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,
       creator_id: ctx.user.id,
+      calendar_id: calendarData?.id,
     };
 
     return prisma.chapters.create({ data: chapterData });
@@ -82,6 +123,7 @@ export class ChapterResolver {
     return prisma.chapters.update({ where: { id }, data: chapterData });
   }
 
+  @Authorized(Permission.ChapterDelete)
   @Mutation(() => Chapter)
   async deleteChapter(@Arg('id', () => Int) id: number): Promise<Chapter> {
     return await prisma.chapters.delete({ where: { id } });

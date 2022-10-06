@@ -10,12 +10,6 @@ export const HOME_PAGE_QUERY = gql`
       canceled
       start_at
       image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       chapter {
         id
         name
@@ -26,12 +20,18 @@ export const HOME_PAGE_QUERY = gql`
       id
       name
       description
-      category
       image_url
+      city
       events {
         id
         name
-        start_at
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
       }
     }
   }

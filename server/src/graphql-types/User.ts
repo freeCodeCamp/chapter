@@ -8,7 +8,7 @@ export class User extends BaseObject {
   name: string;
 
   @Field(() => String)
-  image_url: string;
+  image_url?: string | null;
 }
 
 @ObjectType()

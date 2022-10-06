@@ -7,5 +7,5 @@ export class UpdateUserInputs implements Omit<User, 'id' | 'email'> {
   name: string;
 
   @Field(() => String, { nullable: true })
-  image_url: string;
+  image_url?: string | null;
 }

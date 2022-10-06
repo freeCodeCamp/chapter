@@ -7,9 +7,10 @@ import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { useCreateSponsorMutation } from '../../../../generated/graphql';
-import { useCheckPermission } from '../../../../hooks/useCheckPermission';
+import { checkPermission } from '../../../../hooks/useCheckPermission';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
+import { useAuth } from 'modules/auth/store';
 
 const NewSponsorPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
@@ -17,8 +18,10 @@ const NewSponsorPage: NextPageWithLayout = () => {
   const [createSponsor] = useCreateSponsorMutation({
     refetchQueries: [{ query: Sponsors }],
   });
+  const { user, loadingUser } = useAuth();
 
-  const [loadingPermission, hasPermissionToCreateSponsor] = useCheckPermission(
+  const hasPermissionToCreateSponsor = checkPermission(
+    user,
     Permission.SponsorManage,
   );
   const onSubmit = async (data: SponsorFormData) => {
@@ -37,8 +40,7 @@ const NewSponsorPage: NextPageWithLayout = () => {
     }
   };
 
-  if (loadingPermission)
-    return <DashboardLoading loading={loadingPermission} />;
+  if (loadingUser) return <DashboardLoading loading={loadingUser} />;
   if (!hasPermissionToCreateSponsor)
     return <NextError statusCode={403} title="Access denied" />;
 

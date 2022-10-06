@@ -4,8 +4,9 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import { Permission } from '../../../../../../common/permissions';
-import { useCheckPermission } from '../../../../hooks/useCheckPermission';
+import { checkPermission } from '../../../../hooks/useCheckPermission';
 import { Loading } from '../../../../components/Loading';
+import { useAuth } from 'modules/auth/store';
 
 const links = [
   { text: 'Chapters', link: '/dashboard/chapters' },
@@ -34,13 +35,12 @@ export const Layout = ({
 }) => {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
+  const { user, loadingUser } = useAuth();
 
   const linksWithPermissions = links.map((link) => {
     if (!link.requiredPermission) return link;
-    const [loading, hasPermission] = useCheckPermission(
-      link.requiredPermission,
-    );
-    return { ...link, loading, hasPermission };
+    const hasPermission = checkPermission(user, link.requiredPermission);
+    return { ...link, loading: loadingUser, hasPermission };
   });
 
   useEffect(() => {

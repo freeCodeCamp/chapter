@@ -3,21 +3,24 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
-import { useCheckPermission } from '../../../../hooks/useCheckPermission';
+import { checkPermission } from '../../../../hooks/useCheckPermission';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { Permission } from '../../../../../../common/permissions';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { useAuth } from 'modules/auth/store';
 
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useChaptersQuery();
+  const { user, loadingUser } = useAuth();
 
-  const [loadingPermission, hasPermissionToCreateChapter] = useCheckPermission(
+  const hasPermissionToCreateChapter = checkPermission(
+    user,
     Permission.ChapterCreate,
   );
 
-  const isLoading = loading || !data || loadingPermission;
+  const isLoading = loading || loadingUser || !data;
   if (isLoading || error)
     return <DashboardLoading loading={isLoading} error={error} />;
 

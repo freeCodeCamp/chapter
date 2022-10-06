@@ -1,30 +1,18 @@
-import { useEffect, useState } from 'react';
-
-import { useAuth } from '../modules/auth/store';
+import type { AuthContextType } from '../modules/auth/store';
 import {
   InstancePermission,
   ChapterPermission,
 } from '../../../common/permissions';
 
-export const useCheckPermission = (
+export const checkPermission = (
+  user: AuthContextType['user'],
   permission: InstancePermission | ChapterPermission,
 ) => {
-  const [loading, setLoading] = useState(true);
-  const [hasPermission, setHasPermission] = useState(false);
-  const { user } = useAuth();
+  const hasPermission = user
+    ? user.instance_role.instance_role_permissions.some(
+        (x) => x.instance_permission.name === permission,
+      )
+    : false;
 
-  useEffect(() => {
-    if (user) {
-      setHasPermission(
-        user.instance_role.instance_role_permissions.some(
-          (x) => x.instance_permission.name === permission,
-        ),
-      );
-      setLoading(false);
-    } else if (user === null) {
-      setLoading(false);
-    }
-  }, [user]);
-
-  return [loading, hasPermission];
+  return hasPermission;
 };

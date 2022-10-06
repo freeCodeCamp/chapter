@@ -21,7 +21,7 @@ import NextLink from 'next/link';
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
-import { useCheckPermission } from 'hooks/useCheckPermission';
+import { checkPermission } from 'hooks/useCheckPermission';
 import { useLogin, useLogout } from 'hooks/useAuth';
 
 interface Props {
@@ -69,11 +69,12 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
 export const Header: React.FC = () => {
   const router = useRouter();
   const {
-    data: { user },
+    data: { user, loadingUser },
   } = useAuthStore();
   const logout = useLogout();
 
-  const [loadingPermission, canAuthenticateWithGoogle] = useCheckPermission(
+  const canAuthenticateWithGoogle = checkPermission(
+    user,
     Permission.GoogleAuthenticate,
   );
 
@@ -93,7 +94,7 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        {loadingPermission ? (
+        {loadingUser ? (
           <Spinner color="white" size="xl" />
         ) : (
           <HStack as="nav">

@@ -147,7 +147,6 @@ export type Event = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -162,7 +161,6 @@ export type EventInputs = {
   sponsor_ids: Array<Scalars['Int']>;
   start_at: Scalars['DateTime'];
   streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
   venue_id?: InputMaybe<Scalars['Int']>;
   venue_type?: InputMaybe<VenueType>;
@@ -191,11 +189,6 @@ export type EventSponsor = {
   sponsor: Sponsor;
 };
 
-export type EventTag = {
-  __typename?: 'EventTag';
-  tag: Tag;
-};
-
 export type EventUser = {
   __typename?: 'EventUser';
   event_role: EventRole;
@@ -218,7 +211,6 @@ export type EventWithChapter = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -238,7 +230,6 @@ export type EventWithRelations = {
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -256,7 +247,6 @@ export type EventWithVenue = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -564,12 +554,6 @@ export type SponsoredEvent = {
   event: Event;
 };
 
-export type Tag = {
-  __typename?: 'Tag';
-  id: Scalars['Int'];
-  name: Scalars['String'];
-};
-
 export type UpdateChapterInputs = {
   category?: InputMaybe<Scalars['String']>;
   chat_url?: InputMaybe<Scalars['String']>;
@@ -746,10 +730,6 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
     }>;
   };
 };
@@ -936,10 +916,6 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
     }>;
   };
 };
@@ -960,10 +936,6 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   };
 };
 
@@ -984,10 +956,6 @@ export type UpdateEventMutation = {
     streaming_url?: string | null;
     capacity: number;
     invite_only: boolean;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   };
 };
 
@@ -1059,10 +1027,6 @@ export type EventsQuery = {
     capacity: number;
     venue_type: VenueType;
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   }>;
 };
 
@@ -1087,10 +1051,6 @@ export type DashboardEventQuery = {
     image_url: string;
     venue_type: VenueType;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
     sponsors: Array<{
       __typename?: 'EventSponsor';
       sponsor: {
@@ -1413,10 +1373,6 @@ export type PaginatedEventsWithTotalQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
       chapter: {
         __typename?: 'Chapter';
         id: number;
@@ -1448,10 +1404,6 @@ export type EventQuery = {
     image_url: string;
     venue_type: VenueType;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
     sponsors: Array<{
       __typename?: 'EventSponsor';
       sponsor: {
@@ -1507,10 +1459,6 @@ export type HomeQuery = {
     canceled: boolean;
     start_at: any;
     image_url: string;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -1819,12 +1767,6 @@ export const ChapterDocument = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         invite_only
         canceled
       }
@@ -2483,12 +2425,6 @@ export const DashboardChapterDocument = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
       }
     }
   }
@@ -2554,12 +2490,6 @@ export const CreateEventDocument = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
@@ -2617,12 +2547,6 @@ export const UpdateEventDocument = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       invite_only
     }
   }
@@ -2941,12 +2865,6 @@ export const EventsDocument = gql`
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
@@ -3007,12 +2925,6 @@ export const DashboardEventDocument = gql`
       chapter {
         id
         name
-      }
-      tags {
-        tag {
-          id
-          name
-        }
       }
       sponsors {
         sponsor {
@@ -4085,12 +3997,6 @@ export const PaginatedEventsWithTotalDocument = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         chapter {
           id
           name
@@ -4169,12 +4075,6 @@ export const EventDocument = gql`
       chapter {
         id
         name
-      }
-      tags {
-        tag {
-          id
-          name
-        }
       }
       sponsors {
         sponsor {
@@ -4268,12 +4168,6 @@ export const HomeDocument = gql`
       canceled
       start_at
       image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       chapter {
         id
         name

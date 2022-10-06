@@ -30,7 +30,7 @@ export class SponsorResolver {
       include: {
         event_sponsors: {
           include: {
-            event: { include: { tags: { include: { tag: true } } } },
+            event: true,
           },
         },
       },

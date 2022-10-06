@@ -47,12 +47,6 @@ export class Event extends BaseObject {
 }
 
 @ObjectType()
-export class EventWithTag extends Event {
-  @Field(() => [EventTag])
-  tags: EventTag[];
-}
-
-@ObjectType()
 export class EventWithChapter extends Event {
   @Field(() => Chapter)
   chapter: Chapter;

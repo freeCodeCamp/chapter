@@ -21,7 +21,7 @@ import NextLink from 'next/link';
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
-import { checkPermission } from 'hooks/useCheckPermission';
+import { checkPermission } from '../../util/check-permission';
 import { useLogin, useLogout } from 'hooks/useAuth';
 
 interface Props {

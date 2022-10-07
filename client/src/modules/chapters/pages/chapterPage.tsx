@@ -31,7 +31,7 @@ import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
-  const { user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
@@ -134,7 +134,7 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {user &&
+        {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
           ) : dataChapterUser ? (
@@ -156,8 +156,7 @@ export const ChapterPage: NextPage = () => {
             key={event.id}
             event={{
               ...event,
-              // Fix this | undefined
-              chapter: { id: chapterId, name: data.chapter?.name || '' },
+              chapter: { id: chapterId, name: data.chapter.name },
             }}
           />
         ))}

@@ -1,9 +1,13 @@
 import React from 'react';
 import { NextPage } from 'next';
-import { Flex, Heading, Text } from '@chakra-ui/react';
+import { Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
+import { useAuthStore } from 'modules/auth/store';
 
 export const PolicyPage: NextPage = () => {
+  const {
+    data: { loadingUser },
+  } = useAuthStore();
   const serverUrl =
     process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
@@ -14,30 +18,40 @@ export const PolicyPage: NextPage = () => {
         data.
       </Heading>
 
-      <Flex
-        gap={'1'}
-        justifyContent={'space-between'}
-        alignItems={'center'}
-        flexDirection={['column', 'row']}
-      >
-        <Text as={'p'} maxW={['100%', '50%']} fontWeight={'500'} fontSize="lg">
-          You can link your Account to Google calander but before you do please
-          finish reading the policy, you can always do it later in your Profile
-        </Text>
-        <LinkButton
-          as="a"
-          href={new URL('/authenticate-with-google', serverUrl).href}
-          fontWeight="600"
-          background={'gray.85'}
-          color={'gray.10'}
-          height={'100%'}
-          borderRadius={'5px'}
-          paddingBlock={'.65em'}
-          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+      {loadingUser ? (
+        <Spinner color="white" size="xl" />
+      ) : (
+        <Flex
+          gap={'1'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+          flexDirection={['column', 'row']}
         >
-          Authenticate with Google
-        </LinkButton>
-      </Flex>
+          <Text
+            as={'p'}
+            maxW={['100%', '50%']}
+            fontWeight={'500'}
+            fontSize="lg"
+          >
+            You can link your Account to Google calander but before you do
+            please finish reading the policy, you can always do it later in your
+            Profile
+          </Text>
+          <LinkButton
+            as="a"
+            href={new URL('/authenticate-with-google', serverUrl).href}
+            fontWeight="600"
+            background={'gray.85'}
+            color={'gray.10'}
+            height={'100%'}
+            borderRadius={'5px'}
+            paddingBlock={'.65em'}
+            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          >
+            Authenticate with Google
+          </LinkButton>
+        </Flex>
+      )}
 
       <Heading as={'h2'}>Does Chapter collect anonymous data?</Heading>
       <Text>

@@ -34,7 +34,7 @@ export const PolicyPage: NextPage = () => {
           >
             You can link your Account to Google calander but before you do
             please finish reading the policy, you can always do it later in your
-            Profile
+            profile.
           </Text>
           <Button
             as="a"

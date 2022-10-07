@@ -59,6 +59,18 @@ const eventUserIncludes = {
     },
   },
 };
+
+type EventWithUsers = Prisma.eventsGetPayload<{
+  include: {
+    venue: true;
+    sponsors: true;
+    event_users: {
+      include: { user: true; event_reminder: true };
+      where: { subscribed: true };
+    };
+  };
+}>;
+
 const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
@@ -121,6 +133,26 @@ ${unsubscribeOptions}
       `,
   }).sendEmail();
 };
+
+const updateReminders = (event: EventWithUsers, startAt: Date) => {
+  // This is asychronous, but we don't use the result, so we don't wait for it
+  if (!isEqual(startAt, event.start_at)) {
+    event.event_users.forEach(({ event_reminder }) => {
+      if (event_reminder) {
+        updateRemindAt({
+          eventId: event_reminder.event_id,
+          remindAt: sub(startAt, { days: 1 }),
+          userId: event_reminder.user_id,
+        });
+      }
+    });
+  }
+};
+
+const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+  data.venue_type !== event.venue_type ||
+  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
+  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
 
 const chapterUserInclude = {
   include: {
@@ -724,25 +756,9 @@ ${unsubscribeOptions}`,
       ...venueData,
     };
 
-    // This is asychronous, but we don't use the result, so we don't wait for it
-    if (!isEqual(start_at, event.start_at)) {
-      event.event_users.forEach(({ event_reminder }) => {
-        if (event_reminder) {
-          updateRemindAt({
-            eventId: event_reminder.event_id,
-            remindAt: sub(start_at, { days: 1 }),
-            userId: event_reminder.user_id,
-          });
-        }
-      });
-    }
+    updateReminders(event, start_at);
 
-    const isVenueChanged =
-      data.venue_type !== event.venue_type ||
-      (eventOnline && data.streaming_url !== event.streaming_url) ||
-      (eventPhysical && data.venue_id !== event.venue_id);
-
-    if (isVenueChanged) {
+    if (hasVenueChanged(data, event)) {
       const subject = `Venue changed for event ${event.name}`;
       let venueDetails = '';
 

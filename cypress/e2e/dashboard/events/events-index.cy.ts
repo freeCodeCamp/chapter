@@ -1,3 +1,4 @@
+import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
@@ -22,7 +23,7 @@ const eventTwoData = {
   name: 'Event Venue change test',
   description: 'Test Description',
   url: 'https://test.event.org',
-  venue_type: 'PhysicalAndOnline',
+  venue_type: VenueType.PhysicalAndOnline,
   capacity: 10,
   image_url: 'https://test.event.org/image',
   streaming_url: 'https://test.event.org/video',
@@ -194,9 +195,10 @@ describe('spec needing owner', () => {
   });
 
   it('editing event updates cached events on home page', () => {
-    cy.visit('');
+    cy.login('').visit('');
+
     cy.get('button[aria-label="Options"]').click();
-    cy.findByRole('menuitem', { name: 'Events' }).click();
+    cy.findByRole('a[href="/events/"]').click();
     cy.get('a[href*="/events/"').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
@@ -236,7 +238,7 @@ describe('spec needing owner', () => {
   });
 
   it('deleting event updates cached events on home page', () => {
-    cy.visit('');
+    cy.login('').visit('');
     cy.get('a[href*="/events/"').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 

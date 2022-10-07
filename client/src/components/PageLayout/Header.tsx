@@ -89,68 +89,67 @@ export const Header: React.FC = () => {
         {loadingUser ? (
           <Spinner color="white" size="xl" />
         ) : (
-        <HStack as="nav">
-          <Box>
-            {!user ? (
-              <LoginButton />
-            ) : (
-              <Flex gap={'2'} alignItems={'center'}>
-                <NextLink passHref href="/profile">
-                  <Avatar cursor="pointer" name={`${user.name}`} />
-                </NextLink>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    aria-label="Options"
-                    variant="outline"
-                    background={'gray.10'}
-                    px={[2, 4]}
-                    py={[1, 2]}
-                  >
-                    Menu
-                  </MenuButton>
-                  <MenuList paddingBlock={0}>
-                    <Flex
-                      className={styles.header}
-                      flexDirection={'column'}
-                      fontWeight="600"
-                      borderRadius={'5px'}
+          <HStack as="nav">
+            <Box>
+              {!user ? (
+                <LoginButton />
+              ) : (
+                <Flex gap={'2'} alignItems={'center'}>
+                  <NextLink passHref href="/profile">
+                    <Avatar cursor="pointer" name={`${user.name}`} />
+                  </NextLink>
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      aria-label="Options"
+                      variant="outline"
+                      background={'gray.10'}
+                      px={[2, 4]}
+                      py={[1, 2]}
                     >
-                      <NextLink passHref href="/dashboard/chapters">
-                        <MenuItem as="a">Dashboard</MenuItem>
-                      </NextLink>
-
-                      <NextLink passHref href="/profile">
-                        <MenuItem
-                          as="a"
-                          background={'gray.85'}
-                          color={'gray.10'}
-                          fontWeight="600"
-                          height={'100%'}
-                          borderRadius={'5px'}
-                          width="100%"
-                          _hover={{ color: 'gray.85' }}
-                        >
-                          Profile
-                        </MenuItem>
-                      </NextLink>
-
-                      <MenuItem
-                        data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
+                      Menu
+                    </MenuButton>
+                    <MenuList paddingBlock={0}>
+                      <Flex
+                        className={styles.header}
+                        flexDirection={'column'}
                         fontWeight="600"
+                        borderRadius={'5px'}
                       >
-                        Logout
-                      </MenuItem>
-                    </Flex>
-                  </MenuList>
-                </Menu>
-              </Flex>
-            )}
-          </Box>
-        </HStack>
-        )
-       )}
+                        <NextLink passHref href="/dashboard/chapters">
+                          <MenuItem as="a">Dashboard</MenuItem>
+                        </NextLink>
+
+                        <NextLink passHref href="/profile">
+                          <MenuItem
+                            as="a"
+                            background={'gray.85'}
+                            color={'gray.10'}
+                            fontWeight="600"
+                            height={'100%'}
+                            borderRadius={'5px'}
+                            width="100%"
+                            _hover={{ color: 'gray.85' }}
+                          >
+                            Profile
+                          </MenuItem>
+                        </NextLink>
+
+                        <MenuItem
+                          data-cy="logout-button"
+                          onClick={() => logout().then(goHome)}
+                          fontWeight="600"
+                        >
+                          Logout
+                        </MenuItem>
+                      </Flex>
+                    </MenuList>
+                  </Menu>
+                </Flex>
+              )}
+            </Box>
+          </HStack>
+        )}
       </HeaderItem>
     </>
   );

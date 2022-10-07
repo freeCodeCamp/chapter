@@ -184,25 +184,17 @@ const SubscriptionWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
 }) => {
-  return (
+  return chapterUser.subscribed ? (
     <HStack>
-      {chapterUser.subscribed ? (
-        <HStack>
-          <CheckIcon />
-          <Text>{chapterUser.chapter_role.name} of the chapter</Text>
-          <Button onClick={() => chapterSubscribe(false)} size="md">
-            Unsubscribe
-          </Button>
-        </HStack>
-      ) : (
-        <Button
-          colorScheme="blue"
-          onClick={() => chapterSubscribe(true)}
-          size="md"
-        >
-          Subscribe
-        </Button>
-      )}
+      <CheckIcon />
+      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
     </HStack>
+  ) : (
+    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
+      Subscribe
+    </Button>
   );
 };

@@ -47,6 +47,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       )}
     </>
   );
+  const eventStatus = event.canceled
+    ? 'Canceled'
+    : new Date(event.start_at) < new Date()
+    ? 'Passed'
+    : 'Upcoming';
+  const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
       <Image

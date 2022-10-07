@@ -100,24 +100,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             area={'eventstart'}
             marginBottom={['1', '2']}
           >
-            {event.canceled ? (
-              <Text
-                data-cy="event-canceled"
-                color="red.500"
-                fontSize={['smaller', 'sm']}
-                fontWeight={'semibold'}
-              >
-                Canceled: {formatDate(event.start_at)}
-              </Text>
-            ) : new Date(event.start_at) < new Date() ? (
-              <Text fontSize={['smaller', 'sm']} fontWeight={'semibold'}>
-                Passed: {formatDate(event.start_at)}
-              </Text>
-            ) : (
-              <Text fontSize={['smaller', 'sm']} fontWeight={'semibold'}>
-                Upcoming: {formatDate(event.start_at)}
-              </Text>
-            )}
+            <Text
+              {...(event.canceled && canceledStyle)}
+              fontSize={['smaller', 'sm']}
+              fontWeight={'semibold'}
+            >
+              {eventStatus}: {formatDate(event.start_at)}
+            </Text>
           </GridItem>
         </Grid>
       </Box>

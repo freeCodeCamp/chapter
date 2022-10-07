@@ -14,8 +14,13 @@ export const PolicyPage: NextPage = () => {
         data.
       </Heading>
 
-      <Flex gap={'1'} justifyContent={'space-between'}>
-        <Text as={'p'} maxW={'50%'} fontWeight={'500'} fontSize="lg">
+      <Flex
+        gap={'1'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
+        flexDirection={['column', 'row']}
+      >
+        <Text as={'p'} maxW={['100%', '50%']} fontWeight={'500'} fontSize="lg">
           You can link your Account to Google calander but before you do please
           finish reading the policy, you can always do it later in your Profile
         </Text>

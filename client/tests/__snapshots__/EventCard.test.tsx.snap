@@ -57,7 +57,8 @@ exports[`EventCard should render 1`] = `
           <p
             class="chakra-text css-0"
           >
-            Passed: 
+            Passed
+            : 
             Thu, Jan 1 @ 00:00
           </p>
         </div>

@@ -154,6 +154,61 @@ const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
   (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
   (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
 
+const buildEmailForUpdatedEvent = async (
+  data: EventInputs,
+  event: EventWithUsers,
+) => {
+  const subject = `Venue changed for event ${event.name}`;
+  let venueDetails = '';
+
+  if (isPhysical(event.venue_type)) {
+    const venue = await prisma.venues.findUniqueOrThrow({
+      where: { id: data.venue_id },
+    });
+    // TODO: include a link back to the venue page
+    venueDetails += `The event is now being held at <br>
+${venue.name} <br>
+${venue.street_address ? venue.street_address + '<br>' : ''}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+`;
+  }
+
+  if (isOnline(event.venue_type)) {
+    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+  }
+  // TODO: include a link back to the venue page
+  const body = `We have had to change the location of ${event.name}.<br>
+${venueDetails}`;
+  return { subject, body };
+};
+
+const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
+  const update = {
+    invite_only: data.invite_only ?? event.invite_only,
+    name: data.name ?? event.name,
+    description: data.description ?? event.description,
+    url: data.url, // allows url deletion
+    start_at: new Date(data.start_at) ?? event.start_at,
+    ends_at: new Date(data.ends_at) ?? event.ends_at,
+    capacity: data.capacity ?? event.capacity,
+    image_url: data.image_url ?? event.image_url,
+    venue_type: data.venue_type ?? event.venue_type,
+    ...getVenueData(data, event),
+  };
+  return update;
+};
+
+const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
+  streaming_url: isOnline(event.venue_type)
+    ? data.streaming_url ?? event.streaming_url
+    : null,
+  venue: isPhysical(event.venue_type)
+    ? { connect: { id: data.venue_id } }
+    : { disconnect: true },
+});
+
 const chapterUserInclude = {
   include: {
     chapter_role: true,
@@ -729,59 +784,12 @@ ${unsubscribeOptions}`,
       data: eventSponsorInput,
     });
 
-    const venueType = data.venue_type ?? event.venue_type;
-    const eventOnline = isOnline(venueType);
-    const eventPhysical = isPhysical(venueType);
-    const venueData = {
-      streaming_url: eventOnline
-        ? data.streaming_url ?? event.streaming_url
-        : null,
-      venue: eventPhysical
-        ? { connect: { id: data.venue_id } }
-        : { disconnect: true },
-    };
+    const update = getUpdateData(data, event);
 
-    // TODO: Handle tags
-    const start_at = new Date(data.start_at) ?? event.start_at;
-    const update: Prisma.eventsUpdateInput = {
-      invite_only: data.invite_only ?? event.invite_only,
-      name: data.name ?? event.name,
-      description: data.description ?? event.description,
-      url: data.url, // allows url deletion
-      start_at: start_at,
-      ends_at: new Date(data.ends_at) ?? event.ends_at,
-      capacity: data.capacity ?? event.capacity,
-      image_url: data.image_url ?? event.image_url,
-      venue_type: venueType,
-      ...venueData,
-    };
-
-    updateReminders(event, start_at);
+    updateReminders(event, update.start_at);
 
     if (hasVenueChanged(data, event)) {
-      const subject = `Venue changed for event ${event.name}`;
-      let venueDetails = '';
-
-      if (eventPhysical) {
-        const venue = await prisma.venues.findUniqueOrThrow({
-          where: { id: data.venue_id },
-        });
-        // TODO: include a link back to the venue page
-        venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
-      }
-
-      if (eventOnline) {
-        venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-      }
-      // TODO: include a link back to the venue page
-      const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}`;
+      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
       batchSender(function* () {
         for (const { user } of event.event_users) {
           const email = user.email;

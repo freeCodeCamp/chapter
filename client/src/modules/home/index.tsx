@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
+import { Link } from 'chakra-next-link';
 import { Loading } from 'components/Loading';
 import { ChapterCard } from 'components/ChapterCard';
 import { EventCard } from 'components/EventCard';
@@ -44,7 +45,13 @@ const Home = () => {
       <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Upcoming events</Heading>
-          {/* add a link to events page here: learn more about events */}
+          <Link
+            href={`/events/`}
+            _hover={{ color: 'blue' }}
+            textDecoration={'underline'}
+          >
+            View events list
+          </Link>
           {data.paginatedEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
@@ -58,7 +65,13 @@ const Home = () => {
       <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Chapters</Heading>
-          {/* add a link to chapters page here: learn more about chapters */}
+          <Link
+            href={`/chapters/`}
+            _hover={{ color: 'blue' }}
+            textDecoration={'underline'}
+          >
+            View chapters list
+          </Link>
           {data.chapters.map((chapter) => (
             <ChapterCard key={chapter.id} chapter={chapter} />
           ))}

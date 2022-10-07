@@ -94,6 +94,12 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser | null> {
+    await prisma.event_users.deleteMany({
+      where: {
+        event: { chapter_id: chapterId },
+        user_id: ctx.user.id,
+      },
+    });
     return await prisma.chapter_users.delete({
       where: {
         user_id_chapter_id: {

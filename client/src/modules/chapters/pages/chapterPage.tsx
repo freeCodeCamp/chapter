@@ -26,12 +26,13 @@ import {
   useJoinChapterMutation,
   useLeaveChapterMutation,
   useToggleChapterSubscriptionMutation,
+  ChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
-  const { user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
@@ -148,10 +149,15 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {user &&
+        {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : (
+          ) : dataChapterUser ? (
+            <SubscriptionWidget
+              chapterUser={dataChapterUser.chapterUser}
+              chapterSubscribe={chapterSubscribe}
+            />
+           ) : (
             dataChapterUser?.chapterUser && (
               <HStack>
                 {dataChapterUser.chapterUser.subscribed ? (
@@ -203,14 +209,7 @@ export const ChapterPage: NextPage = () => {
               </HStack>
             ))
           ))}
-        {data.chapter.chat_url && (
-          <div>
-            <Heading size="md" color={'gray.700'}>
-              Chat Link:
-            </Heading>
-            <Link>{data.chapter.chat_url}</Link>
-          </div>
-        )}
+        <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading size="md" color={'gray.700'}>
           Events:
         </Heading>
@@ -219,12 +218,44 @@ export const ChapterPage: NextPage = () => {
             key={event.id}
             event={{
               ...event,
-              // Fix this | undefined
-              chapter: { id: chapterId, name: data.chapter?.name || '' },
+              chapter: { id: chapterId, name: data.chapter.name },
             }}
           />
         ))}
       </Stack>
     </VStack>
+  );
+};
+
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <div>
+      <Heading size="md" color={'gray.700'}>
+        Chat Link:
+      </Heading>
+      <Link>{chatUrl}</Link>
+    </div>
+  ) : null;
+};
+
+const SubscriptionWidget = ({
+  chapterUser,
+  chapterSubscribe,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+}) => {
+  return chapterUser.subscribed ? (
+    <HStack>
+      <CheckIcon />
+      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
+    </HStack>
+  ) : (
+    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
+      Subscribe
+    </Button>
   );
 };

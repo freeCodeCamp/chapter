@@ -44,7 +44,4 @@ export class EventInputs {
 
   @Field(() => [Int])
   sponsor_ids: number[];
-
-  @Field(() => [String])
-  tags: string[];
 }

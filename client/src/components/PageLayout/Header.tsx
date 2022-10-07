@@ -9,6 +9,7 @@ import {
   MenuList,
   MenuItem,
   MenuButton,
+  Spinner,
 } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
@@ -66,10 +67,9 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
 export const Header: React.FC = () => {
   const router = useRouter();
   const {
-    data: { user },
+    data: { user, loadingUser },
   } = useAuthStore();
   const logout = useLogout();
-
   const goHome = () => router.push('/');
 
   return (
@@ -86,6 +86,9 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
+        {loadingUser ? (
+          <Spinner color="white" size="xl" />
+        ) : (
         <HStack as="nav">
           <Box>
             {!user ? (
@@ -93,7 +96,7 @@ export const Header: React.FC = () => {
             ) : (
               <Flex gap={'2'} alignItems={'center'}>
                 <NextLink passHref href="/profile">
-                  <Avatar cursor={'pointer'} name={`${user.name}`} />
+                  <Avatar cursor="pointer" name={`${user.name}`} />
                 </NextLink>
                 <Menu>
                   <MenuButton
@@ -146,6 +149,8 @@ export const Header: React.FC = () => {
             )}
           </Box>
         </HStack>
+        )
+       )}
       </HeaderItem>
     </>
   );

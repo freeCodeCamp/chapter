@@ -4,7 +4,9 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import { Permission } from '../../../../../../common/permissions';
-import { useCheckPermission } from '../../../../hooks/useCheckPermission';
+import { checkPermission } from '../../../../util/check-permission';
+import { Loading } from '../../../../components/Loading';
+import { useAuth } from 'modules/auth/store';
 
 const links = [
   { text: 'Chapters', link: '/dashboard/chapters' },
@@ -15,7 +17,11 @@ const links = [
     link: '/dashboard/sponsors',
     requiredPermission: Permission.SponsorView,
   },
-  { text: 'Users', link: '/dashboard/users' },
+  {
+    text: 'Users',
+    link: '/dashboard/users',
+    requiredPermission: Permission.UsersView,
+  },
 ];
 
 export const Layout = ({
@@ -28,14 +34,21 @@ export const Layout = ({
   [prop: string]: unknown;
 }) => {
   const router = useRouter();
+  const { user, loadingUser } = useAuth();
+
+  const linksWithPermissions = links.map((link) => {
+    if (!link.requiredPermission) return link;
+    const hasPermission = checkPermission(user, link.requiredPermission);
+    return { ...link, hasPermission };
+  });
+
+  if (loadingUser) return <Loading loading={loadingUser} />;
+
   return (
     <div data-cy={dataCy}>
       <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
-        {links
-          .filter(
-            ({ requiredPermission }) =>
-              !requiredPermission || useCheckPermission(requiredPermission),
-          )
+        {linksWithPermissions
+          .filter((link) => !link.requiredPermission || link.hasPermission)
           .map((item) => (
             <LinkButton
               key={item.link}

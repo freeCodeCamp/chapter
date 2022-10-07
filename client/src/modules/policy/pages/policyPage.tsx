@@ -1,7 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
-import { Flex, Heading, Spinner, Text } from '@chakra-ui/react';
-import { LinkButton } from 'chakra-next-link';
+import { Button, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useAuthStore } from 'modules/auth/store';
 
 export const PolicyPage: NextPage = () => {
@@ -37,7 +36,7 @@ export const PolicyPage: NextPage = () => {
             please finish reading the policy, you can always do it later in your
             Profile
           </Text>
-          <LinkButton
+          <Button
             as="a"
             href={new URL('/authenticate-with-google', serverUrl).href}
             fontWeight="600"
@@ -49,7 +48,7 @@ export const PolicyPage: NextPage = () => {
             _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
           >
             Authenticate with Google
-          </LinkButton>
+          </Button>
         </Flex>
       )}
 

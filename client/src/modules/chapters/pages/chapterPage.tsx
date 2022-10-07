@@ -63,7 +63,10 @@ export const ChapterPage: NextPage = () => {
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
   const joinChapter = async () => {
-    const ok = await confirm();
+    const ok = await confirm({
+      title: 'Join chaper?',
+      body: 'Joining chapter will add you as a member to chapter.',
+    });
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
@@ -76,7 +79,10 @@ export const ChapterPage: NextPage = () => {
   };
 
   const leaveChapter = async () => {
-    const ok = await confirm();
+    const ok = await confirm({
+      title: 'Leave chaper?',
+      body: 'Leaving chapter will remove RSVPs of all subscribed events of the chapter.',
+    });
     if (ok) {
       try {
         await leaveChapterFn({ variables: { chapterId } });
@@ -109,7 +115,7 @@ export const ChapterPage: NextPage = () => {
               }
             : {
                 title: 'You have unsubscribed from this chapter',
-                status: 'info',
+                status: 'success',
               },
         );
       } catch (err) {
@@ -153,20 +159,8 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : (
-            dataChapterUser && (
-              <SubscriptionWidget
-                chapterUser={dataChapterUser.chapterUser}
-                chapterSubscribe={chapterSubscribe}
-              />
-            )
-          ))}
-
-        {isLoggedIn &&
-          (loadingChapterUser ? (
-            <Spinner />
-          ) : (
-            dataChapterUser?.chapterUser &&
-            (dataChapterUser.chapterUser.chapter_role ? (
+            dataChapterUser &&
+            (dataChapterUser.chapterUser?.chapter_role ? (
               <HStack justifyContent={'space-between'}>
                 <Text fontWeight={500}>
                   <CheckIcon marginRight={1} />
@@ -183,6 +177,18 @@ export const ChapterPage: NextPage = () => {
               </HStack>
             ))
           ))}
+        {isLoggedIn &&
+          (loadingChapterUser ? (
+            <Spinner />
+          ) : (
+            dataChapterUser?.chapterUser && (
+              <SubscriptionWidget
+                chapterUser={dataChapterUser.chapterUser}
+                chapterSubscribe={chapterSubscribe}
+              />
+            )
+          ))}
+
         <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading size="md" color={'gray.700'}>
           Events:

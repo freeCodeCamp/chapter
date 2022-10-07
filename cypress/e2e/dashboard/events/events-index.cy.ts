@@ -197,8 +197,6 @@ describe('spec needing owner', () => {
   it('editing event updates cached events on home page', () => {
     cy.login('').visit('');
 
-    cy.get('button[aria-label="Options"]').click();
-    cy.findByRole('a[href="/events/"]').click();
     cy.get('a[href*="/events/"').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');

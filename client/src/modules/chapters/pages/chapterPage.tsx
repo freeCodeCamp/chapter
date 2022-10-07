@@ -152,42 +152,16 @@ export const ChapterPage: NextPage = () => {
         {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : dataChapterUser ? (
-            <SubscriptionWidget
-              chapterUser={dataChapterUser.chapterUser}
-              chapterSubscribe={chapterSubscribe}
-            />
-           ) : (
-            dataChapterUser?.chapterUser && (
-              <HStack>
-                {dataChapterUser.chapterUser.subscribed ? (
-                  <HStack justifyContent={'space-between'} width={'100%'}>
-                    <Text fontWeight={500}>
-                      Unfollow upcoming chapter&apos;s events
-                    </Text>
-                    <Button onClick={() => chapterSubscribe(false)} size="md">
-                      Unsubscribe
-                    </Button>
-                  </HStack>
-                ) : (
-                  <HStack justifyContent={'space-between'} width={'100%'}>
-                    <Text fontWeight={500}>
-                      Follow upcoming chapter&apos;s events
-                    </Text>
-                    <Button
-                      colorScheme="blue"
-                      onClick={() => chapterSubscribe(true)}
-                      size="md"
-                    >
-                      Subscribe
-                    </Button>
-                  </HStack>
-                )}
-              </HStack>
+          ) : (
+            dataChapterUser && (
+              <SubscriptionWidget
+                chapterUser={dataChapterUser.chapterUser}
+                chapterSubscribe={chapterSubscribe}
+              />
             )
           ))}
 
-        {user &&
+        {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
           ) : (
@@ -245,17 +219,23 @@ const SubscriptionWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
 }) => {
-  return chapterUser.subscribed ? (
-    <HStack>
-      <CheckIcon />
-      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+  return chapterUser?.subscribed ? (
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
         Unsubscribe
       </Button>
     </HStack>
   ) : (
-    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
-      Subscribe
-    </Button>
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
+      <Button
+        colorScheme="blue"
+        onClick={() => chapterSubscribe(true)}
+        size="md"
+      >
+        Subscribe
+      </Button>
+    </HStack>
   );
 };

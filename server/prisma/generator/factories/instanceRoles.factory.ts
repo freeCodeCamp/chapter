@@ -13,10 +13,7 @@ export type RoleMap = {
   [key in InstanceRole['name']]?: { name: string; id: number };
 };
 
-const memberPermissions = [
-  InstancePermission.ChapterJoin,
-  InstancePermission.ChapterSubscriptionManage,
-];
+const memberPermissions = [InstancePermission.ChapterSubscriptionManage];
 
 const roles: InstanceRole[] = [
   {

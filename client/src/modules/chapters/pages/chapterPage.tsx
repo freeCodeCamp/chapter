@@ -159,23 +159,13 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : (
-            dataChapterUser &&
-            (dataChapterUser.chapterUser?.chapter_role ? (
-              <HStack justifyContent={'space-between'}>
-                <Text fontWeight={500}>
-                  <CheckIcon marginRight={1} />
-                  {dataChapterUser.chapterUser.chapter_role.name} of the chapter
-                </Text>
-                <Button onClick={leaveChapter}>Leave</Button>
-              </HStack>
-            ) : (
-              <HStack justifyContent="space-between">
-                <Text fontWeight={500}>Become member of the chapter</Text>
-                <Button colorScheme="blue" onClick={joinChapter}>
-                  Join
-                </Button>
-              </HStack>
-            ))
+            dataChapterUser && (
+              <ChapterUserRoleWidget
+                JoinChapter={joinChapter}
+                LeaveChapter={leaveChapter}
+                chapterUser={dataChapterUser.chapterUser}
+              />
+            )
           ))}
         {isLoggedIn &&
           (loadingChapterUser ? (
@@ -241,6 +231,33 @@ const SubscriptionWidget = ({
         size="md"
       >
         Subscribe
+      </Button>
+    </HStack>
+  );
+};
+
+const ChapterUserRoleWidget = ({
+  chapterUser,
+  LeaveChapter,
+  JoinChapter,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  LeaveChapter: () => Promise<void>;
+  JoinChapter: () => Promise<void>;
+}) => {
+  return chapterUser?.chapter_role ? (
+    <HStack justifyContent={'space-between'}>
+      <Text fontWeight={500}>
+        <CheckIcon marginRight={1} />
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
+      <Button onClick={LeaveChapter}>Leave</Button>
+    </HStack>
+  ) : (
+    <HStack justifyContent="space-between">
+      <Text fontWeight={500}>Become member of the chapter</Text>
+      <Button colorScheme="blue" onClick={JoinChapter}>
+        Join
       </Button>
     </HStack>
   );

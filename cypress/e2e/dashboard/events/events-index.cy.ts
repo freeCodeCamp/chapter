@@ -195,7 +195,7 @@ describe('spec needing owner', () => {
   });
 
   it('editing event updates cached events on home page', () => {
-    cy.login('').visit('');
+    cy.visit('');
 
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
@@ -205,7 +205,7 @@ describe('spec needing owner', () => {
 
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-    cy.get('a[href*="/events/"').click();
+    cy.get('a[href*="/dashboard/events"]').click();
     cy.wait('@GQLevents');
     cy.url().should('include', '/events');
     cy.get('#page-heading').contains('Events');
@@ -237,7 +237,7 @@ describe('spec needing owner', () => {
   });
 
   it('deleting event updates cached events on home page', () => {
-    cy.login('').visit('');
+    cy.visit('');
     cy.get('a[href*="/events/"').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 

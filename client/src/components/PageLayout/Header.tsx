@@ -1,16 +1,5 @@
 import { HStack } from '@chakra-ui/layout';
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  Image,
-  Menu,
-  MenuList,
-  MenuItem,
-  MenuButton,
-  Spinner,
-} from '@chakra-ui/react';
+import { Avatar, Box, Flex, Image, Spinner } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -22,32 +11,13 @@ import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
 import { checkPermission } from '../../util/check-permission';
-import { useLogin, useLogout } from 'hooks/useAuth';
+import HeaderMenu from './HeaderMenu';
+import { useLogout } from 'hooks/useAuth';
 
 interface Props {
   children: React.ReactNode;
   justifyContent?: GridItemProps['justifyContent'];
 }
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
-
-// TODO: distinguish between logging into the app and logging into Auth0. Maybe
-// use sign-in for the app?
-const LoginButton = () => {
-  const login = useLogin();
-  return (
-    <MenuItem
-      onClick={login}
-      fontWeight="600"
-      background={'gray.85'}
-      color={'gray.10'}
-      height={'100%'}
-      borderRadius={'5px'}
-      _hover={{ color: 'gray.85' }}
-    >
-      Log In
-    </MenuItem>
-  );
-};
 
 const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
@@ -99,73 +69,12 @@ export const Header: React.FC = () => {
         ) : (
           <HStack as="nav">
             <Box>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  aria-label="Options"
-                  variant="outline"
-                  background="gray.10"
-                  px={[2, 4]}
-                  py={[1, 2]}
-                >
-                  Menu
-                </MenuButton>
-                <MenuList paddingBlock={0}>
-                  <Flex
-                    className={styles.header}
-                    flexDirection="column"
-                    fontWeight="600"
-                    borderRadius="5px"
-                  >
-                    <NextLink passHref href="/chapters">
-                      <MenuItem as="a">Chapters</MenuItem>
-                    </NextLink>
-
-                    <NextLink passHref href="/events">
-                      <MenuItem as="a">Events</MenuItem>
-                    </NextLink>
-
-                    {user ? (
-                      <>
-                        <NextLink passHref href="/dashboard/chapters">
-                          <MenuItem as="a">Dashboard</MenuItem>
-                        </NextLink>
-                        <NextLink passHref href="/profile">
-                          <MenuItem as="a">Profile</MenuItem>
-                        </NextLink>
-
-                        {canAuthenticateWithGoogle && (
-                          <MenuItem
-                            as="a"
-                            href={
-                              new URL('/authenticate-with-google', serverUrl)
-                                .href
-                            }
-                            fontWeight="600"
-                            background="gray.85"
-                            color="gray.10"
-                            height="100%"
-                            borderRadius="5px"
-                            _hover={{ color: 'gray.85' }}
-                          >
-                            Authenticate with Google
-                          </MenuItem>
-                        )}
-
-                        <MenuItem
-                          data-cy="logout-button"
-                          onClick={() => logout().then(goHome)}
-                          fontWeight="600"
-                        >
-                          Logout
-                        </MenuItem>
-                      </>
-                    ) : (
-                      <LoginButton />
-                    )}
-                  </Flex>
-                </MenuList>
-              </Menu>
+              <HeaderMenu
+                logout={logout}
+                goHome={goHome}
+                canAuthenticateWithGoogle={canAuthenticateWithGoogle}
+                user={user}
+              />
             </Box>
             {user && (
               <NextLink passHref href="/profile">

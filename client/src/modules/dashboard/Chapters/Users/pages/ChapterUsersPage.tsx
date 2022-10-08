@@ -61,11 +61,14 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     setChapterUser(data);
     modalProps.onOpen();
   };
-  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = async (data: {
+    newRoleName: string;
+    userId: number;
+  }) => {
     changeRoleMutation({
       variables: {
         chapterId: chapterId,
-        roleId: data.newRoleId,
+        roleName: data.newRoleName,
         userId: data.userId,
       },
     });
@@ -176,7 +179,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     size="xs"
                     onClick={() =>
                       changeRole({
-                        roleId: chapter_role.id,
+                        roleName: chapter_role.name,
                         userId: user.id,
                         userName: user.name,
                       })
@@ -253,7 +256,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               size="xs"
                               onClick={() =>
                                 changeRole({
-                                  roleId: chapter_role.id,
+                                  roleName: chapter_role.name,
                                   userId: user.id,
                                   userName: user.name,
                                 })

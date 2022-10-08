@@ -12,6 +12,7 @@ export class InstanceRoleResolver {
       include: {
         instance_role_permissions: { include: { instance_permission: true } },
       },
+      where: { name: { not: 'chapter_administrator' } },
     });
   }
 }

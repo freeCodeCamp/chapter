@@ -16,6 +16,15 @@ import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
+const instanceRoles = {
+  MEMBER: 'member',
+  CHAPTER_ADMINISTRATOR: 'chapter_administrator',
+  OWNER: 'owner',
+};
+const chapterRoles = {
+  MEMBER: 'member',
+  ADMINISTRATOR: 'administrator',
+};
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
@@ -160,17 +169,30 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUser)
   async changeChapterUserRole(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Arg('roleId', () => Int) roleId: number,
+    @Arg('roleName', () => String) roleName: string,
     @Arg('userId', () => Int) userId: number,
   ): Promise<ChapterUser> {
-    return await prisma.chapter_users.update({
-      data: { chapter_role: { connect: { id: roleId } } },
-      where: {
-        user_id_chapter_id: {
-          chapter_id: chapterId,
-          user_id: userId,
+    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
+      include: {
+        chapter_role: {
+          include: {
+            chapter_role_permissions: { include: { chapter_permission: true } },
+          },
+        },
+        user: {
+          include: {
+            instance_role: true,
+            user_chapters: { include: { chapter_role: true } },
+          },
         },
       },
+      where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
+    });
+
+    if (chapterUser.chapter_role.name === roleName) return chapterUser;
+
+    const updated = await prisma.chapter_users.update({
+      data: { chapter_role: { connect: { name: roleName } } },
       include: {
         chapter_role: {
           include: {
@@ -179,7 +201,47 @@ export class ChapterUserResolver {
         },
         user: true,
       },
+      where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
+
+    const previousInstanceRole = chapterUser.user.instance_role.name;
+    if (updated.chapter_role.name === chapterRoles.ADMINISTRATOR) {
+      if (
+        previousInstanceRole !== instanceRoles.OWNER &&
+        previousInstanceRole !== instanceRoles.CHAPTER_ADMINISTRATOR
+      ) {
+        await prisma.users.update({
+          data: {
+            instance_role: {
+              connect: { name: instanceRoles.CHAPTER_ADMINISTRATOR },
+            },
+          },
+          where: { id: userId },
+        });
+      }
+    } else if (chapterUser.chapter_role.name === chapterRoles.ADMINISTRATOR) {
+      if (previousInstanceRole !== instanceRoles.OWNER) {
+        const isStillAdmin = chapterUser.user.user_chapters.some(
+          (chapter_user) => {
+            return (
+              chapter_user.chapter_id !== chapterId &&
+              chapter_user.chapter_role.name === chapterRoles.ADMINISTRATOR
+            );
+          },
+        );
+
+        if (!isStillAdmin) {
+          await prisma.users.update({
+            data: {
+              instance_role: { connect: { name: instanceRoles.MEMBER } },
+            },
+            where: { id: userId },
+          });
+        }
+      }
+    }
+
+    return updated;
   }
 
   @Authorized(Permission.ChapterBanUser)

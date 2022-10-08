@@ -576,25 +576,25 @@ Cypress.Commands.add('toggleChapterSubscription', toggleChapterSubscription);
  * Change chapter user role using GQL mutation
  * @param data Data about change
  * @param data.chapterId Chapter id
- * @param data.roleId Role id
+ * @param data.roleName Role name
  * @param data.userId User id
  * @param {object} [options={ withAuth: boolean }] Optional options object.
  */
 const changeChapterUserRole = (
   {
     chapterId,
-    roleId,
+    roleName,
     userId,
-  }: { chapterId: number; roleId: number; userId: number },
+  }: { chapterId: number; roleName: string; userId: number },
   options = { withAuth: true },
 ) => {
   const chapterUserRoleMutation = {
     operationName: 'changeChapterUserRole',
-    variables: { chapterId, roleId, userId },
-    query: `mutation changeChapterUserRole($chapterId: Int!, $roleId: Int!, $userId: Int!) {
-      changeChapterUserRole(chapterId: $chapterId, roleId: $roleId, userId: $userId) {
+    variables: { chapterId, roleName, userId },
+    query: `mutation changeChapterUserRole($chapterId: Int!, $roleName: String!, $userId: Int!) {
+      changeChapterUserRole(chapterId: $chapterId, roleName: $roleName, userId: $userId) {
         chapter_role {
-          id
+          name
         }
       }
     }`,

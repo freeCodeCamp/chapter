@@ -65,7 +65,7 @@ describe('Chapter Users dashboard', () => {
     });
   });
 
-  // Currently only instance users can change chapter roles
+  // Currently only instance owners can change chapter roles
   it('rejects chapter admin from changing chapter user role', () => {
     cy.login('admin@of.chapter.one');
 
@@ -78,14 +78,14 @@ describe('Chapter Users dashboard', () => {
           ({ user: { name } }) => name === 'Chapter One Admin',
         ).user.id;
         cy.getChapterRoles().then((roles) => {
-          const roleIds = roles.map(({ id }) => id);
-          roleIds.forEach((roleId) => {
-            cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
+          const roleNames = roles.map(({ name }) => name);
+          roleNames.forEach((roleName) => {
+            cy.changeChapterUserRole({ chapterId, roleName, userId }).then(
               expectToBeRejected,
             );
             cy.changeChapterUserRole({
               chapterId,
-              roleId,
+              roleName,
               userId: selfUserId,
             }).then(expectToBeRejected);
           });

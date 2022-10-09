@@ -607,6 +607,35 @@ const changeChapterUserRole = (
 Cypress.Commands.add('changeChapterUserRole', changeChapterUserRole);
 
 /**
+ * Change user instance role using GQL mutation
+ * @param data Data about change
+ * @param data.roleName Role name
+ * @param data.userId User id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const changeInstanceUserRole = (
+  { roleName, userId }: { roleName: string; userId: number },
+  options = { withAuth: true },
+) => {
+  const instanceUserRoleMutation = {
+    operationName: 'changeInstanceUserRole',
+    variables: { roleName, userId },
+    query: `mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
+      changeInstanceUserRole(roleName: $roleName, userId: $userId) {
+        instance_role {
+          name
+        }
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(instanceUserRoleMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('changeInstanceUserRole', changeInstanceUserRole);
+
+/**
  * Ban user using GQL mutation
  * @param data.chapterId Chapter id
  * @param data.userId User id
@@ -706,6 +735,7 @@ declare global {
       authedRequest: typeof authedRequest;
       banUser: typeof banUser;
       changeChapterUserRole: typeof changeChapterUserRole;
+      changeInstanceUserRole: typeof changeInstanceUserRole;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
       createSponsor: typeof createSponsor;

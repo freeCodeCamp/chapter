@@ -4,7 +4,7 @@ import { InstancePermission, Permission } from '../../../../common/permissions';
 
 const allPermissions = Object.values(Permission);
 
-interface InstanceRole {
+export interface InstanceRole {
   name: 'owner' | 'chapter_administrator' | 'member';
   permissions: typeof allPermissions;
 }

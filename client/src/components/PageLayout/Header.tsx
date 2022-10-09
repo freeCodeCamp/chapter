@@ -29,7 +29,7 @@ interface Props {
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
-const LoginButton = (login: any, text: string) => {
+const LoginButton = ({ login, text }: { login: any; text: string }) => {
   return (
     <Button
       onClick={login}
@@ -69,8 +69,11 @@ export const Header: React.FC = () => {
   const {
     data: { user, loadingUser },
   } = useAuthStore();
-  const logout = useLogout();
   const goHome = () => router.push('/');
+  const logout = useLogout();
+  const logoutGoHome = () => {
+    logout().then(goHome);
+  };
 
   return (
     <>
@@ -92,7 +95,7 @@ export const Header: React.FC = () => {
           <HStack as="nav">
             <Box>
               {!user ? (
-                <LoginButton login={login()} text="Log in" />
+                <LoginButton login={login} text="Log in" />
               ) : (
                 <Flex gap={'2'} alignItems={'center'}>
                   <Menu>
@@ -136,7 +139,7 @@ export const Header: React.FC = () => {
                       </Flex>
                     </MenuList>
                   </Menu>
-                  <LoginButton login={logout().then(goHome)} text="Log out" />
+                  <LoginButton login={logoutGoHome} text="Log out" />
                 </Flex>
               )}
             </Box>

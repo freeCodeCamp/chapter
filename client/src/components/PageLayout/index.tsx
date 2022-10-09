@@ -3,6 +3,7 @@ import React from 'react';
 import { SkipNavContent } from '@chakra-ui/skip-nav';
 
 import { Header } from './Header';
+import { Footer } from './Footer';
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -12,6 +13,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
       <Box px={[4, 4, 8, 16]} id="main-content">
         {children}
       </Box>
+      <Footer />
     </>
   );
 };

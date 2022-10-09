@@ -1,0 +1,16 @@
+.footer {
+    padding-inline: 1em;
+    padding-block: 2.5em;
+    gap: max(1em, 5%);
+    font-weight: 400;
+    align-content: center;
+}
+
+.text{
+    padding-inline: .5em;
+}
+
+.link {
+    padding-inline: .5em;
+    font-weight: 500;
+}

@@ -50,11 +50,6 @@ describe('Chapter Administrator', () => {
           sequenceChangeChapterUserRole(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           ]);
-          cy.changeChapterUserRole({
-            chapterId: firstChapterId,
-            roleName: chapterRoles.ADMINISTRATOR,
-            userId: id,
-          }).then(expectNoErrors);
         },
       );
       confirmInstanceRole(users.owner.email, instanceRoles.OWNER);

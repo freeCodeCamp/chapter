@@ -200,8 +200,7 @@ describe('spec needing owner', () => {
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.get('a[href*="/events/"]').first().as('eventToEdit');
-    cy.findByRole('menuitem', { name: 'Events' }).click();
-   
+
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
@@ -209,7 +208,7 @@ describe('spec needing owner', () => {
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.get('a[href*="/dashboard/events"]').click();
     cy.contains('Loading...');
-    
+
     cy.wait('@GQLevents');
     cy.url().should('include', '/events');
     cy.get('#page-heading').contains('Events');

@@ -29,7 +29,8 @@ interface Props {
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
-const LoginButton = (login: any, text: string) => {
+const LoginButton = () => {
+  const login = useLogin();
   return (
     <Button
       onClick={login}
@@ -41,7 +42,7 @@ const LoginButton = (login: any, text: string) => {
       height={'100%'}
       borderRadius={'5px'}
     >
-      {text}
+      Log In
     </Button>
   );
 };
@@ -65,7 +66,6 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
 
 export const Header: React.FC = () => {
   const router = useRouter();
-  const login = useLogin();
   const {
     data: { user, loadingUser },
   } = useAuthStore();
@@ -92,21 +92,22 @@ export const Header: React.FC = () => {
           <HStack as="nav">
             <Box>
               {!user ? (
-                <LoginButton login={login()} text="Log in" />
+                <LoginButton />
               ) : (
                 <Flex gap={'2'} alignItems={'center'}>
+                  <NextLink passHref href="/profile">
+                    <Avatar cursor="pointer" name={`${user.name}`} />
+                  </NextLink>
                   <Menu>
                     <MenuButton
                       as={Button}
                       aria-label="Options"
                       variant="outline"
                       background={'gray.10'}
-                      p={0}
-                      backgroundColor={'transparent'}
-                      border={'none'}
-                      _hover={{ backgroundColor: 'transparent' }}
+                      px={[2, 4]}
+                      py={[1, 2]}
                     >
-                      <Avatar cursor="pointer" name={`${user.name}`} />
+                      Menu
                     </MenuButton>
                     <MenuList paddingBlock={0}>
                       <Flex
@@ -133,10 +134,17 @@ export const Header: React.FC = () => {
                             Profile
                           </MenuItem>
                         </NextLink>
+
+                        <MenuItem
+                          data-cy="logout-button"
+                          onClick={() => logout().then(goHome)}
+                          fontWeight="600"
+                        >
+                          Logout
+                        </MenuItem>
                       </Flex>
                     </MenuList>
                   </Menu>
-                  <LoginButton login={logout().then(goHome)} text="Log out" />
                 </Flex>
               )}
             </Box>

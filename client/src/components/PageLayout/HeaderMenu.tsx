@@ -10,6 +10,7 @@ import React from 'react';
 import NextLink from 'next/link';
 import styles from '../../styles/Header.module.css';
 import { useLogin } from 'hooks/useAuth';
+import { MeQuery } from 'generated/graphql';
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
@@ -40,7 +41,7 @@ export const HeaderMenu = ({
   logout: () => any;
   goHome: () => any;
   canAuthenticateWithGoogle: boolean;
-  user: any;
+  user: MeQuery;
 }) => {
   return (
     <Menu>

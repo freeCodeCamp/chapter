@@ -163,6 +163,53 @@ describe('Chapter Administrator', () => {
       );
     });
 
+    it('should be kept when changing chapter_administrator instance role to member for administrator of chapter', () => {
+      cy.login();
+      cy.task<User>('getUser', users.testUser.email).then(
+        ({ id, instance_role }) => {
+          expect(instance_role.name).to.eq(instanceRoles.MEMBER);
+          sequenceChangeChapterUserRole(id, [
+            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+          ]);
+          confirmInstanceRole(
+            users.testUser.email,
+            instanceRoles.CHAPTER_ADMINISTRATOR,
+          );
+
+          cy.changeInstanceUserRole({
+            roleName: instanceRoles.MEMBER,
+            userId: id,
+          }).then(expectNoErrors);
+        },
+      );
+      confirmInstanceRole(
+        users.testUser.email,
+        instanceRoles.CHAPTER_ADMINISTRATOR,
+      );
+    });
+
+    it('should be changed to owner when changing instance role to owner, for administrator of chapter', () => {
+      cy.login();
+      cy.task<User>('getUser', users.testUser.email).then(
+        ({ id, instance_role }) => {
+          expect(instance_role.name).to.eq(instanceRoles.MEMBER);
+          sequenceChangeChapterUserRole(id, [
+            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+          ]);
+          confirmInstanceRole(
+            users.testUser.email,
+            instanceRoles.CHAPTER_ADMINISTRATOR,
+          );
+
+          cy.changeInstanceUserRole({
+            roleName: instanceRoles.OWNER,
+            userId: id,
+          }).then(expectNoErrors);
+        },
+      );
+      confirmInstanceRole(users.testUser.email, instanceRoles.OWNER);
+    });
+
     it('should not be visible on users list', () => {
       cy.login();
       cy.visit('/dashboard/users');

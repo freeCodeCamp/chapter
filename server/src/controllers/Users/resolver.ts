@@ -56,7 +56,11 @@ export class UsersResolver {
 
     if (user.instance_role.name === roleName) return user;
 
-    if (user.instance_role.name === 'owner') {
+    if (
+      user.instance_role.name === 'owner' ||
+      (roleName !== 'owner' &&
+        user.instance_role.name === 'chapter_administrator')
+    ) {
       const isAdmin = user.user_chapters.some(
         (chapter_user) =>
           chapter_user.chapter_role.name === chapterRoles.ADMINISTRATOR,

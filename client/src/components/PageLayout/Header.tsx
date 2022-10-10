@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Box, Flex, Image, Spinner } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Image, Spinner, MenuItem } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -12,7 +12,8 @@ import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
 import { checkPermission } from '../../util/check-permission';
 import HeaderMenu from './HeaderMenu';
-import { useLogout } from 'hooks/useAuth';
+import { useLogout, useLogin } from 'hooks/useAuth';
+import { MeQuery } from 'generated/graphql';
 
 interface Props {
   children: React.ReactNode;
@@ -35,6 +36,25 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
     />
   );
 });
+
+// TODO: distinguish between logging into the app and logging into Auth0. Maybe
+// use sign-in for the app?
+const LoginButton = () => {
+  const login = useLogin();
+  return (
+    <MenuItem
+      onClick={login}
+      fontWeight="600"
+      background={'gray.85'}
+      color={'gray.10'}
+      height={'100%'}
+      borderRadius={'5px'}
+      _hover={{ color: 'gray.85' }}
+    >
+      Log In
+    </MenuItem>
+  );
+};
 
 export const Header: React.FC = () => {
   const router = useRouter();
@@ -73,7 +93,8 @@ export const Header: React.FC = () => {
                 logout={logout}
                 goHome={goHome}
                 canAuthenticateWithGoogle={canAuthenticateWithGoogle}
-                user={user}
+                user={user as MeQuery}
+                LoginButton={LoginButton}
               />
             </Box>
             {user && (

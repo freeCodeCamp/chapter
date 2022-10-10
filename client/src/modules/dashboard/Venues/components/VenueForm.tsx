@@ -10,11 +10,11 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { useChapterQuery } from '../../../../generated/graphql';
-import type { Venue, VenueQuery } from '../../../../generated/graphql';
+import type { VenueQuery, VenueInputs } from '../../../../generated/graphql';
 import { Form } from '../../../../components/Form/Form';
 import { useAuth } from 'modules/auth/store';
 
-export type VenueFormData = Omit<Venue, 'id' | 'events' | 'chapter'>;
+export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
 interface VenueFormProps {
   loading: boolean;
@@ -26,11 +26,11 @@ interface VenueFormProps {
 }
 
 type Fields = {
-  key: keyof VenueFormData;
+  key: keyof VenueInputs;
   label: string;
   placeholder: string;
   isRequired: boolean;
-  type: string;
+  type: 'text' | 'number';
   max?: number;
   min?: number;
   step?: number;
@@ -100,6 +100,20 @@ const fields: Fields[] = [
   },
 ];
 
+// We could loop over the fields array to generate this, but we'd lose type
+// safety by doing so.
+const getDefaultValues = (chapterId: number, venue?: VenueQuery['venue']) => ({
+  chapter_id: chapterId,
+  name: venue?.name ?? '',
+  street_address: venue?.street_address ?? null,
+  city: venue?.city ?? '',
+  postal_code: venue?.postal_code ?? '',
+  region: venue?.region ?? '',
+  country: venue?.country ?? '',
+  latitude: venue?.latitude ?? null,
+  longitude: venue?.longitude ?? null,
+});
+
 const VenueForm: React.FC<VenueFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, chapterId, loadingText } = props;
   const venue = data?.venue;
@@ -113,17 +127,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     variables: { chapterId },
   });
 
-  const defaultValues: VenueFormData = {
-    name: venue?.name ?? '',
-    street_address: venue?.street_address ?? undefined,
-    city: venue?.city ?? '',
-    postal_code: venue?.postal_code ?? '',
-    region: venue?.region ?? '',
-    country: venue?.country ?? '',
-    latitude: venue?.latitude ?? undefined,
-    longitude: venue?.longitude ?? undefined,
-    chapter_id: chapterId,
-  };
+  const defaultValues: VenueFormData = getDefaultValues(chapterId, venue);
   const {
     formState: { isDirty },
     handleSubmit,
@@ -183,9 +187,9 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           {...register(key)}
           type={type}
           isRequired={isRequired}
-          step={step ? step : undefined}
-          max={max ? max : undefined}
-          min={min ? min : undefined}
+          step={step}
+          max={max}
+          min={min}
           isDisabled={loading}
         />
       ))}
@@ -195,7 +199,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         variant="solid"
         colorScheme="blue"
         type="submit"
-        isDisabled={!isDirty || loading}
+        isDisabled={!isDirty}
         isLoading={loading}
         loadingText={loadingText}
       >

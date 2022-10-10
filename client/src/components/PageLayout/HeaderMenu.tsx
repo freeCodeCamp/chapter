@@ -92,4 +92,3 @@ export const HeaderMenu = ({
     </Menu>
   );
 };
-export default HeaderMenu;

@@ -4,8 +4,14 @@ import { InstancePermission, Permission } from '../../../../common/permissions';
 
 const allPermissions = Object.values(Permission);
 
+export enum InstanceRoles {
+  chapter_administrator = 'chapter_administrator',
+  member = 'member',
+  owner = 'owner',
+}
+
 export interface InstanceRole {
-  name: 'owner' | 'chapter_administrator' | 'member';
+  name: keyof typeof InstanceRoles;
   permissions: typeof allPermissions;
 }
 

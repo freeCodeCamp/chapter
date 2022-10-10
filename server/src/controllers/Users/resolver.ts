@@ -4,10 +4,8 @@ import { prisma } from '../../prisma';
 
 import { UserWithInstanceRole } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-
-const chapterRoles = {
-  ADMINISTRATOR: 'administrator',
-};
+import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
+import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
 
 const instanceRoleInclude = {
   instance_role: {
@@ -30,11 +28,11 @@ export class UsersResolver {
     });
 
     const usersWithReplacedAdministrator = users.map((user) => {
-      if (user.instance_role.name !== 'chapter_administrator') {
+      if (user.instance_role.name !== InstanceRoles.chapter_administrator) {
         return user;
       }
       const userWithReplacedRoleName = { ...user };
-      userWithReplacedRoleName.instance_role.name = 'member';
+      userWithReplacedRoleName.instance_role.name = InstanceRoles.member;
       return userWithReplacedRoleName;
     });
     return usersWithReplacedAdministrator;
@@ -57,17 +55,17 @@ export class UsersResolver {
     if (user.instance_role.name === roleName) return user;
 
     if (
-      user.instance_role.name === 'owner' ||
-      (roleName !== 'owner' &&
-        user.instance_role.name === 'chapter_administrator')
+      user.instance_role.name === InstanceRoles.owner ||
+      (roleName !== InstanceRoles.owner &&
+        user.instance_role.name === InstanceRoles.chapter_administrator)
     ) {
       const isAdmin = user.user_chapters.some(
         (chapter_user) =>
-          chapter_user.chapter_role.name === chapterRoles.ADMINISTRATOR,
+          chapter_user.chapter_role.name === ChapterRoles.administrator,
       );
 
       if (isAdmin) {
-        roleName = 'chapter_administrator';
+        roleName = InstanceRoles.chapter_administrator;
       }
     }
 

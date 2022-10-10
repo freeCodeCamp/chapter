@@ -21,14 +21,12 @@ export const EditVenuePage: NextPageWithLayout = () => {
   const { param: venueId, isReady: isVenueIdReady } = useParam('venueId');
   const { param: chapterId, isReady: isChapterIdReady } = useParam('id');
 
-  const [
-    getChapter,
-    { loading: loadingChapter, data: chapterData, error: errorChapter },
-  ] = useChapterLazyQuery({
-    variables: { chapterId },
-  });
+  const [getChapter, { data: chapterData, error: chapterError }] =
+    useChapterLazyQuery({
+      variables: { chapterId },
+    });
 
-  const [getVenue, { loading, error, data }] = useVenueLazyQuery({
+  const [getVenue, { data: venueData, error: venueError }] = useVenueLazyQuery({
     variables: { venueId },
   });
 
@@ -67,15 +65,16 @@ export const EditVenuePage: NextPageWithLayout = () => {
     }
   };
 
-  const isLoading = loading || loadingChapter || !isReady;
+  const hasLoaded = !!venueData && !!chapterData;
   const errors: Error[] = [];
-  if (error) errors.push(error);
-  if (errorChapter) errors.push(errorChapter);
-  if (isLoading || errors.length) return <DashboardLoading errors={errors} />;
+  if (venueError) errors.push(venueError);
+  if (chapterError) errors.push(chapterError);
+
+  if (!hasLoaded || errors.length) return <DashboardLoading errors={errors} />;
 
   return (
     <VenueForm
-      data={data}
+      data={venueData}
       chapterData={chapterData}
       loading={loadingUpdate}
       onSubmit={onSubmit}

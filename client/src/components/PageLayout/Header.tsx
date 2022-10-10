@@ -37,16 +37,11 @@ const LogoutButton = () => {
   const goHome = () => router.push('/');
   return (
     <Button
+      background={'transparent'}
+      justifyContent={'flex-start'}
       onClick={() => logout().then(goHome)}
-      background={'gray.10'}
-      paddingBlock={'.65em'}
-      paddingInline={'1em'}
-      fontSize={'md'}
-      fontWeight="600"
-      height={'100%'}
-      borderRadius={'5px'}
     >
-      Log In
+      Log out
     </Button>
   );
 };

@@ -31,7 +31,9 @@ export const HeaderMenu = ({ LogoutButton }: { LogoutButton: React.FC }) => {
           borderRadius={'5px'}
         >
           <NextLink passHref href="/dashboard/chapters">
-            <MenuItem as="a">Dashboard</MenuItem>
+            <MenuItem marginTop={'.25em'} as="a">
+              Dashboard
+            </MenuItem>
           </NextLink>
 
           <NextLink passHref href="/profile">
@@ -47,8 +49,8 @@ export const HeaderMenu = ({ LogoutButton }: { LogoutButton: React.FC }) => {
             >
               Profile
             </MenuItem>
-            <LogoutButton />
           </NextLink>
+          <LogoutButton />
         </Flex>
       </MenuList>
     </Menu>

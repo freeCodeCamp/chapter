@@ -25,19 +25,19 @@ type UserWithUserChapters = Prisma.usersGetPayload<{
 }>;
 
 interface ChangeRoleNameData {
-  prevRole: string;
+  oldRole: string;
   newRole: string;
   user: UserWithUserChapters;
 }
 
-const getRoleName = ({ prevRole, newRole, user }: ChangeRoleNameData) => {
+const getRoleName = ({ oldRole, newRole, user }: ChangeRoleNameData) => {
   if (
-    prevRole === InstanceRoles.chapter_administrator &&
+    oldRole === InstanceRoles.chapter_administrator &&
     newRole === InstanceRoles.member
   )
     return InstanceRoles.chapter_administrator;
 
-  if (prevRole === InstanceRoles.owner) {
+  if (oldRole === InstanceRoles.owner) {
     const isAdmin = user.user_chapters.some(
       (chapter_user) =>
         chapter_user.chapter_role.name === ChapterRoles.administrator,
@@ -83,17 +83,15 @@ export class UsersResolver {
       },
     });
 
-    if (user.instance_role.name === roleName) return user;
+    const oldRole = user.instance_role.name;
+    const newRole = roleName;
+    if (oldRole === newRole) return user;
 
     return await prisma.users.update({
       data: {
         instance_role: {
           connect: {
-            name: getRoleName({
-              prevRole: user.instance_role.name,
-              newRole: roleName,
-              user,
-            }),
+            name: getRoleName({ oldRole, newRole, user }),
           },
         },
       },

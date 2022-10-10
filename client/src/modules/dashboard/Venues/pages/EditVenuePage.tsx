@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement, useEffect, useState } from 'react';
+import NextError from 'next/error';
 
 import {
   useVenueLazyQuery,
@@ -71,6 +72,8 @@ export const EditVenuePage: NextPageWithLayout = () => {
   if (chapterError) errors.push(chapterError);
 
   if (!hasLoaded || errors.length) return <DashboardLoading errors={errors} />;
+  if (!venueData.venue || !chapterData.chapter)
+    return <NextError statusCode={404} title={'Page not found'} />;
 
   return (
     <VenueForm

@@ -24,8 +24,7 @@ export const NewVenuePage: NextPageWithLayout = () => {
     refetchQueries: [{ query: VENUES }],
   });
 
-  const [getChapter, { loading: loadingChapter, data, error }] =
-    useChapterLazyQuery();
+  const [getChapter, { data, error }] = useChapterLazyQuery();
 
   useEffect(() => {
     if (isReady && chapterId !== -1) {
@@ -56,7 +55,7 @@ export const NewVenuePage: NextPageWithLayout = () => {
     }
   };
 
-  const isLoading = loading || loadingChapter || !isReady;
+  const isLoading = loading || !data || !isReady;
 
   if (!user) return <NextError statusCode={403} title="Log in required" />;
   if (isLoading || error) return <DashboardLoading error={error} />;

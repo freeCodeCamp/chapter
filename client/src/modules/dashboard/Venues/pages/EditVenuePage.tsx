@@ -71,8 +71,7 @@ export const EditVenuePage: NextPageWithLayout = () => {
   const errors: Error[] = [];
   if (error) errors.push(error);
   if (errorChapter) errors.push(errorChapter);
-  if (isLoading || errors.length)
-    return <DashboardLoading loading={isLoading} errors={errors} />;
+  if (isLoading || errors.length) return <DashboardLoading errors={errors} />;
 
   return (
     <VenueForm

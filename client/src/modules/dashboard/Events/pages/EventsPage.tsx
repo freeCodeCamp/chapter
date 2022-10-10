@@ -17,8 +17,7 @@ export const EventsPage: NextPageWithLayout = () => {
   const { user } = useAuth();
 
   const isLoading = loading || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <VStack>

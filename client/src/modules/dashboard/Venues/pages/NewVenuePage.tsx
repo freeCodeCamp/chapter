@@ -59,8 +59,7 @@ export const NewVenuePage: NextPageWithLayout = () => {
   const isLoading = loading || loadingChapter || !isReady;
 
   if (!user) return <NextError statusCode={403} title="Log in required" />;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <VenueForm

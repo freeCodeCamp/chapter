@@ -1,5 +1,6 @@
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma';
 
 import { UserWithInstanceRole } from '../../graphql-types';
@@ -15,6 +16,36 @@ const instanceRoleInclude = {
       },
     },
   },
+};
+
+type UserWithUserChapters = Prisma.usersGetPayload<{
+  include: {
+    user_chapters: { include: { chapter_role: true } };
+  };
+}>;
+
+interface ChangeRoleNameData {
+  prevRole: string;
+  newRole: string;
+  user: UserWithUserChapters;
+}
+
+const getRoleName = ({ prevRole, newRole, user }: ChangeRoleNameData) => {
+  if (
+    prevRole === InstanceRoles.chapter_administrator &&
+    newRole === InstanceRoles.member
+  )
+    return InstanceRoles.chapter_administrator;
+
+  if (prevRole === InstanceRoles.owner) {
+    const isAdmin = user.user_chapters.some(
+      (chapter_user) =>
+        chapter_user.chapter_role.name === ChapterRoles.administrator,
+    );
+
+    if (isAdmin) return InstanceRoles.chapter_administrator;
+  }
+  return newRole;
 };
 
 @Resolver()
@@ -54,27 +85,20 @@ export class UsersResolver {
 
     if (user.instance_role.name === roleName) return user;
 
-    if (
-      user.instance_role.name === InstanceRoles.owner ||
-      (roleName !== InstanceRoles.owner &&
-        user.instance_role.name === InstanceRoles.chapter_administrator)
-    ) {
-      const isAdmin = user.user_chapters.some(
-        (chapter_user) =>
-          chapter_user.chapter_role.name === ChapterRoles.administrator,
-      );
-
-      if (isAdmin) {
-        roleName = InstanceRoles.chapter_administrator;
-      }
-    }
-
-    const updated = await prisma.users.update({
-      data: { instance_role: { connect: { name: roleName } } },
+    return await prisma.users.update({
+      data: {
+        instance_role: {
+          connect: {
+            name: getRoleName({
+              prevRole: user.instance_role.name,
+              newRole: roleName,
+              user,
+            }),
+          },
+        },
+      },
       where: { id: userId },
       include: instanceRoleInclude,
     });
-
-    return updated;
   }
 }

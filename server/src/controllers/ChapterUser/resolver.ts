@@ -55,7 +55,7 @@ const getInstanceRoleName = ({
   newChapterRole,
   oldInstanceRole,
 }: ChangeInstanceRoleData) => {
-  if (oldInstanceRole === InstanceRoles.owner) return;
+  if (oldInstanceRole === InstanceRoles.owner) return oldInstanceRole;
 
   if (
     newChapterRole === ChapterRoles.administrator &&
@@ -76,7 +76,7 @@ const getInstanceRoleName = ({
 
     if (!isStillAdmin) return InstanceRoles.member;
   }
-  return;
+  return oldInstanceRole;
 };
 
 @Resolver(() => ChapterUser)
@@ -224,7 +224,7 @@ export class ChapterUserResolver {
       newChapterRole,
       oldInstanceRole,
     });
-    if (newInstanceRole) {
+    if (newInstanceRole !== oldInstanceRole) {
       await prisma.users.update({
         data: {
           instance_role: { connect: { name: newInstanceRole } },

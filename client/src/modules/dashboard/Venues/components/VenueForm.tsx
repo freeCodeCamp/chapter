@@ -4,15 +4,16 @@ import {
   FormLabel,
   Heading,
   Select,
-  Text,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
-import { useChapterQuery } from '../../../../generated/graphql';
-import type { VenueQuery, VenueInputs } from '../../../../generated/graphql';
+import type {
+  VenueQuery,
+  VenueInputs,
+  ChapterQuery,
+} from '../../../../generated/graphql';
 import { Form } from '../../../../components/Form/Form';
-import { useAuth } from 'modules/auth/store';
 
 export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
@@ -20,6 +21,8 @@ interface VenueFormProps {
   loading: boolean;
   onSubmit: (data: VenueFormData) => Promise<void>;
   data?: VenueQuery;
+  chapterData?: ChapterQuery;
+  adminedChapters?: { name: string; id: number }[];
   submitText: string;
   chapterId: number;
   loadingText: string;
@@ -115,52 +118,35 @@ const getDefaultValues = (chapterId: number, venue?: VenueQuery['venue']) => ({
 });
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, chapterId, loadingText } = props;
-  const venue = data?.venue;
-  const isChaptersDropdownNeeded = chapterId === -1;
-
   const {
-    loading: loadingChapter,
-    data: dataChapter,
-    error: errorChapter,
-  } = useChapterQuery({
-    variables: { chapterId },
-  });
+    loading,
+    onSubmit,
+    data,
+    submitText,
+    chapterId,
+    loadingText,
+    chapterData,
+    adminedChapters = [],
+  } = props;
+  const venue = data?.venue;
 
-  const defaultValues: VenueFormData = getDefaultValues(chapterId, venue);
+  const defaultChapterId = adminedChapters[0]?.id ?? chapterId;
+  const defaultValues: VenueFormData = getDefaultValues(
+    defaultChapterId,
+    venue,
+  );
   const {
     formState: { isDirty },
     handleSubmit,
     register,
-    resetField,
   } = useForm<VenueFormData>({
     defaultValues,
   });
 
-  interface Chapter {
-    id: number;
-    name: string;
-  }
-  let adminedChapters: Chapter[] = [];
-  if (isChaptersDropdownNeeded) {
-    const { user } = useAuth();
-    adminedChapters = user?.admined_chapters ?? [];
-  }
-
-  useEffect(() => {
-    resetField('chapter_id', { defaultValue: adminedChapters[0]?.id ?? -1 });
-  }, [adminedChapters]);
-
   return (
     <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
-      {!isChaptersDropdownNeeded ? (
-        loadingChapter ? (
-          <Text>Loading Chapter</Text>
-        ) : errorChapter || !dataChapter?.chapter ? (
-          <Text>Error loading chapter</Text>
-        ) : (
-          <Heading>{dataChapter.chapter.name}</Heading>
-        )
+      {chapterData ? (
+        <Heading>{chapterData.chapter.name}</Heading>
       ) : (
         <FormControl isRequired>
           <FormLabel>Chapter</FormLabel>

@@ -4,6 +4,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import {
   useVenueLazyQuery,
   useUpdateVenueMutation,
+  useChapterLazyQuery,
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -20,14 +21,24 @@ export const EditVenuePage: NextPageWithLayout = () => {
   const { param: venueId, isReady: isVenueIdReady } = useParam('venueId');
   const { param: chapterId, isReady: isChapterIdReady } = useParam('id');
 
-  const isReady = isVenueIdReady && isChapterIdReady;
+  const [
+    getChapter,
+    { loading: loadingChapter, data: chapterData, error: errorChapter },
+  ] = useChapterLazyQuery({
+    variables: { chapterId },
+  });
 
   const [getVenue, { loading, error, data }] = useVenueLazyQuery({
     variables: { venueId },
   });
 
+  const isReady = isVenueIdReady && isChapterIdReady;
+
   useEffect(() => {
-    if (isReady) getVenue();
+    if (isReady) {
+      getVenue();
+      getChapter();
+    }
   }, [isReady]);
 
   const [updateVenue] = useUpdateVenueMutation({
@@ -56,13 +67,17 @@ export const EditVenuePage: NextPageWithLayout = () => {
     }
   };
 
-  const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  const isLoading = loading || loadingChapter || !isReady;
+  const errors: Error[] = [];
+  if (error) errors.push(error);
+  if (errorChapter) errors.push(errorChapter);
+  if (isLoading || errors.length)
+    return <DashboardLoading loading={isLoading} errors={errors} />;
 
   return (
     <VenueForm
       data={data}
+      chapterData={chapterData}
       loading={loadingUpdate}
       onSubmit={onSubmit}
       submitText={'Save Venue Changes'}

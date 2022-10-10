@@ -1,16 +1,5 @@
 import { HStack } from '@chakra-ui/layout';
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  Image,
-  Menu,
-  MenuList,
-  MenuItem,
-  MenuButton,
-  Spinner,
-} from '@chakra-ui/react';
+import { Avatar, Box, Flex, Image, Spinner, MenuItem } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -21,11 +10,30 @@ import NextLink from 'next/link';
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { useLogin, useLogout } from 'hooks/useAuth';
+import { HeaderMenu } from './HeaderMenu';
+import { MeQuery } from 'generated/graphql';
 
 interface Props {
   children: React.ReactNode;
   justifyContent?: GridItemProps['justifyContent'];
 }
+
+const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
+  return (
+    <Flex
+      justifyContent="space-between"
+      alignItems="center"
+      ref={ref}
+      {...props}
+      w="full"
+      as="header"
+      px={[2, 4, 8]}
+      py={[2, 4]}
+      background={'gray.85'}
+      className={styles.header}
+    />
+  );
+});
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
@@ -46,23 +54,6 @@ const LoginButton = () => {
     </Button>
   );
 };
-
-const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  return (
-    <Flex
-      justifyContent="space-between"
-      alignItems="center"
-      ref={ref}
-      {...props}
-      w="full"
-      as="header"
-      px={[2, 4, 8]}
-      py={[2, 4]}
-      background={'gray.85'}
-      className={styles.header}
-    />
-  );
-});
 
 export const Header: React.FC = () => {
   const router = useRouter();

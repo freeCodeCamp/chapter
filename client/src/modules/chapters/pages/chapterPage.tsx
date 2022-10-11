@@ -12,35 +12,47 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
-import React from 'react';
+import NextError from 'next/error';
+import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
 import { useAuth } from '../../auth/store';
+import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
-  useChapterQuery,
-  useChapterUserQuery,
+  useChapterLazyQuery,
+  useChapterUserLazyQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
+  ChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
 export const ChapterPage: NextPage = () => {
-  const chapterId = useParam('chapterId');
-  const { user } = useAuth();
+  const { param: chapterId, isReady } = useParam('chapterId');
+  const { isLoggedIn } = useAuth();
 
-  const { loading, error, data } = useChapterQuery({
+  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
   });
 
   const confirm = useConfirm();
   const toast = useToast();
 
-  const { loading: loadingChapterUser, data: dataChapterUser } =
-    useChapterUserQuery({
-      variables: { chapterId },
-    });
+  const [
+    getChapterUsers,
+    { loading: loadingChapterUser, data: dataChapterUser },
+  ] = useChapterUserLazyQuery({
+    variables: { chapterId },
+  });
+
+  useEffect(() => {
+    if (isReady) {
+      getChapter();
+      getChapterUsers();
+    }
+  }, [isReady]);
 
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
@@ -91,18 +103,10 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data?.chapter) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (!data.chapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
     <VStack>
@@ -110,7 +114,7 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.imageUrl}
+          src={data.chapter.image_url}
           alt=""
           borderRadius="md"
           objectFit="cover"
@@ -130,46 +134,20 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {user &&
+        {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
           ) : dataChapterUser ? (
-            <HStack>
-              <CheckIcon />
-              <Text>
-                {dataChapterUser.chapterUser.chapter_role.name} of the chapter
-              </Text>
-              {dataChapterUser.chapterUser.subscribed ? (
-                <Button
-                  colorScheme="orange"
-                  onClick={() => chapterSubscribe(false)}
-                  size="md"
-                >
-                  Unsubscribe
-                </Button>
-              ) : (
-                <Button
-                  colorScheme="green"
-                  onClick={() => chapterSubscribe(true)}
-                  size="md"
-                >
-                  Subscribe
-                </Button>
-              )}
-            </HStack>
+            <SubscriptionWidget
+              chapterUser={dataChapterUser.chapterUser}
+              chapterSubscribe={chapterSubscribe}
+            />
           ) : (
             <Button colorScheme="blue" onClick={joinChapter}>
               Join chapter
             </Button>
           ))}
-        {data.chapter.chatUrl && (
-          <div>
-            <Heading size="md" color={'gray.700'}>
-              Chat Link:
-            </Heading>
-            <Link>{data.chapter.chatUrl}</Link>
-          </div>
-        )}
+        <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading size="md" color={'gray.700'}>
           Events:
         </Heading>
@@ -178,12 +156,44 @@ export const ChapterPage: NextPage = () => {
             key={event.id}
             event={{
               ...event,
-              // Fix this | undefined
-              chapter: { id: chapterId, name: data.chapter?.name || '' },
+              chapter: { id: chapterId, name: data.chapter.name },
             }}
           />
         ))}
       </Stack>
     </VStack>
+  );
+};
+
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <div>
+      <Heading size="md" color={'gray.700'}>
+        Chat Link:
+      </Heading>
+      <Link>{chatUrl}</Link>
+    </div>
+  ) : null;
+};
+
+const SubscriptionWidget = ({
+  chapterUser,
+  chapterSubscribe,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+}) => {
+  return chapterUser.subscribed ? (
+    <HStack>
+      <CheckIcon />
+      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
+    </HStack>
+  ) : (
+    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
+      Subscribe
+    </Button>
   );
 };

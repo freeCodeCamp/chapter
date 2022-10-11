@@ -1,9 +1,7 @@
 import { NextFunction, Response } from 'express';
-import { TokenExpiredError, JsonWebTokenError, verify } from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { Request } from '../../common-types/gql';
-import { getConfig } from '../../config';
 import { prisma } from '../../prisma';
 
 const userInclude = {
@@ -55,15 +53,19 @@ export type User = Merge<Prisma.usersGetPayload<typeof userInclude>>;
 export type Events = Merge<
   Prisma.eventsGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
+export type Venues = Merge<
+  Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
+>;
 
+// TODO: get events in user middleware and only get those that the user is an
+// event_user for
 export const events = (req: Request, _res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
-  if (!authorization) {
+  const id = req.session?.id;
+
+  // user is not logged in, so we don't need to do anything here
+  if (!id) {
     return next();
   }
-
-  const { error } = verifyToken(authorization);
-  if (error) return next(error);
 
   prisma.events
     .findMany({
@@ -78,25 +80,51 @@ export const events = (req: Request, _res: Response, next: NextFunction) => {
     });
 };
 
-export const user = (req: Request, _res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
-  if (!authorization) {
+// TODO: get venues in user middleware and only get those that the user is an
+// chapter_user for
+export const venues = (req: Request, _res: Response, next: NextFunction) => {
+  const id = req.session?.id;
+
+  // user is not logged in, so we don't need to do anything here
+  if (!id) {
     return next();
   }
 
-  const { error, id } = verifyToken(authorization);
-  if (error) return next(error);
+  prisma.venues
+    .findMany({
+      select: {
+        id: true,
+        chapter_id: true,
+      },
+    })
+    .then((venues) => {
+      req.venues = venues;
+      next();
+    });
+};
 
+export const user = (req: Request, _res: Response, next: NextFunction) => {
+  const id = req.session?.id;
+
+  // user is not logged in, so we will not be adding user to the request and can
+  // move on
+  if (!id) return next();
+
+  // While we can't make a findUnique call here (sessions.id is not in users),
+  // there is a 1-1 relationship between user and session. So, if a session
+  // exists, there can only be one user with that session.
   prisma.users
-    .findUnique({
-      where: { id },
+    .findFirst({
+      where: { session: { id } },
       ...userInclude,
     })
     .then((user) => {
-      if (!user) {
-        return next('User not found');
+      if (user) {
+        req.user = user;
+      } else {
+        // if the session user does not exist in the db, the session is invalid
+        req.session = null;
       }
-      req.user = user;
       next();
     })
     .catch((err) => {
@@ -104,23 +132,7 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
     });
 };
 
-function verifyToken(authorization: string) {
-  // We don't, currently, handle different JsonWebTokenError messages
-  // differently but we do need to add messages to the error object.
-  const raw = authorization.split(' ');
-  if (raw.length != 2 || raw[0] != 'Bearer') {
-    return { error: new JsonWebTokenError('Invalid auth header') };
-  }
-
-  const value = verify(raw[1], getConfig('JWT_SECRET')) as { id: number };
-  if (!value.id) {
-    return { error: new JsonWebTokenError('Missing contents') };
-  }
-
-  return { id: value.id };
-}
-
-export function handleAuthenticationError(
+export function handleError(
   err: any,
   _req: Request,
   res: Response,
@@ -129,18 +141,9 @@ export function handleAuthenticationError(
   if (res.headersSent) {
     return next(err);
   }
-
-  if (err instanceof TokenExpiredError) {
-    return res.status(401).send({
-      message: 'Token expired',
-    });
-  } else if (err instanceof JsonWebTokenError) {
-    return res.status(401).send({
-      message: 'Token invalid',
-    });
-  } else {
-    return res.status(401).send({
-      message: 'User not found',
+  if (err) {
+    return res.status(500).send({
+      message: 'Something went Wrong',
     });
   }
 }

@@ -1,35 +1,40 @@
 import { Heading, Text } from '@chakra-ui/layout';
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import React from 'react';
+import NextError from 'next/error';
+import React, { ReactElement, useEffect } from 'react';
+
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useVenueQuery } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
+import { useVenueLazyQuery } from '../../../../generated/graphql';
+import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const VenuePage: NextPage = () => {
-  const router = useRouter();
-  const id = getId(router.query) || -1;
+export const VenuePage: NextPageWithLayout = () => {
+  const { param: venueId, isReady } = useParam('id');
 
-  const { loading, error, data } = useVenueQuery({ variables: { id } });
+  const [getVenue, { loading, error, data }] = useVenueLazyQuery({
+    variables: { venueId },
+  });
 
-  if (loading || error || !data?.venue) {
-    return (
-      <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    if (isReady) getVenue();
+  }, [isReady]);
+
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
+  if (!data.venue)
+    return <NextError statusCode={404} title="Venue not found" />;
 
   return (
-    <Layout data-cy="view-venue-page">
+    <>
       <Card className={styles.card}>
         <ProgressCardContent>
-          <Heading as="h2" fontWeight="normal" mb="2">
+          <Heading as="h1" fontWeight="normal" mb="2">
             {data.venue.name}
           </Heading>
 
@@ -37,7 +42,14 @@ export const VenuePage: NextPage = () => {
           <Text>{data.venue.chapter.name}</Text>
         </ProgressCardContent>
       </Card>
-      <h3>Placeholder for events...</h3>
-    </Layout>
+      <EventList
+        title="Organized By The Venue's Chapter"
+        events={data.venue.chapter.events}
+      />
+    </>
   );
+};
+
+VenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout dataCy="view-venue-page">{page}</Layout>;
 };

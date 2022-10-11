@@ -21,13 +21,28 @@ model chapters {
   city          String
   region        String
   country       String
-  imageUrl      String
-  chatUrl       String?
+  image_url     String
+  calendar_id   String?
+  chat_url      String?
   creator_id    Int
   events        events[]
   user_bans     user_bans[]
   chapter_users chapter_users[]
   venues        venues[]
+}
+
+model sessions {
+  id      Int   @id @default(autoincrement())
+  user_id Int   @unique
+  user    users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model google_tokens {
+  id            Int    @id @default(autoincrement())
+  email         String @unique
+  access_token  String
+  refresh_token String
+  expiry_date   BigInt
 }
 
 model chapter_users {
@@ -78,7 +93,7 @@ model event_sponsors {
   updated_at DateTime @updatedAt
   sponsor_id Int
   event_id   Int
-  events     events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  event      events   @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   sponsor    sponsors @relation(fields: [sponsor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([sponsor_id, event_id])
@@ -96,28 +111,28 @@ model event_tags {
 }
 
 model events {
-  created_at    DateTime               @default(now())
-  updated_at    DateTime               @updatedAt
-  id            Int                    @id @default(autoincrement())
-  name          String
-  description   String
-  url           String?
-  streaming_url String?
-  venue_type    events_venue_type_enum @default(Physical)
-  start_at      DateTime
-  ends_at       DateTime
-  canceled      Boolean                @default(false)
-  capacity      Int
-  invite_only   Boolean                @default(false)
-  image_url     String
-  // TODO: none of these should be optional
-  venue_id      Int?
-  chapter_id    Int
-  chapter       chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  venue         venues?                @relation(fields: [venue_id, chapter_id], references: [id, chapter_id], onDelete: NoAction, onUpdate: NoAction)
-  sponsors      event_sponsors[]
-  tags          event_tags[]
-  event_users   event_users[]
+  created_at        DateTime               @default(now())
+  updated_at        DateTime               @updatedAt
+  id                Int                    @id @default(autoincrement())
+  name              String
+  description       String
+  url               String?
+  streaming_url     String?
+  venue_type        events_venue_type_enum @default(Physical)
+  start_at          DateTime
+  ends_at           DateTime
+  canceled          Boolean                @default(false)
+  capacity          Int
+  invite_only       Boolean                @default(false)
+  image_url         String
+  venue_id          Int?
+  chapter_id        Int
+  calendar_event_id String?
+  chapter           chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  venue             venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sponsors          event_sponsors[]
+  tags              event_tags[]
+  event_users       event_users[]
 }
 
 model event_roles {
@@ -211,7 +226,7 @@ model user_bans {
   user_id    Int
   chapter_id Int
   chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user       users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([user_id, chapter_id])
 }
@@ -248,14 +263,14 @@ model users {
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
   id               Int             @id @default(autoincrement())
-  first_name       String
-  last_name        String
+  name             String
   email            String          @unique
   user_bans        user_bans[]
   user_chapters    chapter_users[]
   instance_role_id Int
   instance_role    instance_roles  @relation(fields: [instance_role_id], references: [id])
   user_events      event_users[]
+  session          sessions?
 }
 
 model venues {
@@ -271,10 +286,8 @@ model venues {
   latitude       Float?
   longitude      Float?
   events         events[]
-  chapter        chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   chapter_id     Int
-
-  @@unique([id, chapter_id])
+  chapter        chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 enum events_venue_type_enum {

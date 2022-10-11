@@ -9,11 +9,11 @@ const testSponsor = {
 
 describe('sponsors dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
+    cy.login();
   });
 
   it('lets an instance owner create sponsors', () => {
-    cy.login();
     cy.visit('/dashboard/sponsors/new');
 
     cy.findByRole('textbox', { name: 'Sponsor Name' }).type(testSponsor.name);
@@ -26,14 +26,13 @@ describe('sponsors dashboard', () => {
 
     cy.findByRole('heading', { name: 'Sponsors' });
     cy.findByRole('link', { name: testSponsor.name }).click();
+    cy.contains('Loading...');
     cy.get('[data-cy=name]').contains(testSponsor.name);
     cy.get('[data-cy=website]').contains(testSponsor.website);
     cy.get('[data-cy=type]').contains(testSponsor.type);
   });
 
   it('lets an instance owner edit sponsors', () => {
-    cy.login();
-
     cy.visit('/dashboard/sponsors/1/edit');
     cy.findByRole('textbox', { name: 'Sponsor Name' })
       .clear()
@@ -57,8 +56,7 @@ describe('sponsors dashboard', () => {
   });
 
   it('prevents chapter admins from managing sponsors', () => {
-    cy.register();
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
+    cy.login('admin@of.chapter.one');
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');

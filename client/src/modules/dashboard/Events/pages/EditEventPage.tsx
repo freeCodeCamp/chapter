@@ -1,31 +1,36 @@
-import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { useToast } from '@chakra-ui/react';
 
 import {
-  useEventQuery,
+  useDashboardEventLazyQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
-import { getId } from '../../../../util/getId';
-import { isOnline, isPhysical } from '../../../../util/venueType';
+import { useParam } from '../../../../hooks/useParam';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { EventFormData } from '../components/EventFormUtils';
-import { EVENTS, EVENT } from '../graphql/queries';
+import { EventFormData, parseEventData } from '../components/EventFormUtils';
+import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
+import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditEventPage: NextPage = () => {
+export const EditEventPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const eventId = getId(router.query) || -1;
+  const { param: eventId, isReady } = useParam();
 
-  const {
-    loading: eventLoading,
-    error,
-    data,
-  } = useEventQuery({
+  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
     variables: { eventId: eventId },
   });
+
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
+
+  const toast = useToast();
 
   // TODO: update the cache directly:
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
@@ -33,58 +38,43 @@ export const EditEventPage: NextPage = () => {
     refetchQueries: [
       { query: EVENTS },
       { query: EVENT, variables: { eventId } },
+      { query: DASHBOARD_EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
 
-  const onSubmit = async (data: EventFormData, chapterId: number) => {
+  const onSubmit = async (data: EventFormData) => {
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, tags, ...rest } = data;
-      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-
-      const eventData = {
-        ...rest,
-        capacity: parseInt(String(data.capacity)),
-        start_at: data.start_at,
-        ends_at: data.ends_at,
-        venue_id: isPhysical(data.venue_type)
-          ? parseInt(String(data.venue_id))
-          : null,
-        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
-        sponsor_ids: sponsorArray,
-        chapter_id: chapterId,
-      };
-
       const event = await updateEvent({
-        variables: { eventId, data: { ...eventData } },
+        variables: { eventId, data: parseEventData(data) },
       });
 
       if (event.data) {
         await router.push('/dashboard/events');
+        toast({
+          title: `Event "${event.data.updateEvent.name}" updated successfuly!`,
+          status: 'success',
+        });
       }
     } catch (err) {
+      toast({
+        title: 'Something went wrong.',
+        status: 'error',
+      });
       console.error(err);
     } finally {
       setLoadingUpdate(false);
     }
   };
 
-  if (eventLoading || error || !data?.event) {
-    return (
-      <Layout>
-        <h1>{loadingUpdate ? 'Loading...' : 'Error...'}</h1>
-        {error && <div>{error.message}</div>}
-      </Layout>
-    );
-  }
-  const { sponsors, ...rest } = data.event;
+  const isLoading = loading || !isReady || !data;
+  if (isLoading) return <DashboardLoading loading={loading} error={error} />;
+  if (!data.dashboardEvent)
+    return <NextError statusCode={404} title="Event not found" />;
+
+  const { sponsors, ...rest } = data.dashboardEvent;
   const sponsorData = sponsors?.map((s) => {
     return {
       id: s.sponsor.id,
@@ -92,19 +82,21 @@ export const EditEventPage: NextPage = () => {
     };
   });
   return (
-    <Layout>
-      <EventForm
-        data={{
-          ...rest,
-          sponsors: sponsorData || [],
-          venue_id: data.event?.venue?.id,
-          tags: data.event.tags || [],
-        }}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        submitText={'Save Event Changes'}
-        chapterId={data.event.chapter.id}
-      />
-    </Layout>
+    <EventForm
+      data={{
+        ...rest,
+        sponsors: sponsorData || [],
+        venue_id: data.dashboardEvent?.venue?.id,
+      }}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      loadingText={'Saving Event Changes'}
+      submitText={'Save Event Changes'}
+      chapterId={data.dashboardEvent.chapter.id}
+    />
   );
+};
+
+EditEventPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

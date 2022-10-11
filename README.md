@@ -44,7 +44,7 @@ We are using the following tools:
   - [Chakra UI](https://chakra-ui.com/) - simple, modular & accessible UI components for React
   - Functional Components with [Hooks](https://reactjs.org/docs/hooks-intro.html)
 - [Jest](https://jestjs.io/) - for writing unit tests.
-- [Cypress](https://www.cypress.io/) - to check if specific actions are possible to preform in certain scenarios.
+- [Cypress](https://www.cypress.io/) - to check if specific actions are possible to perform in certain scenarios.
 
 For more information and a guide to working on features, go to the [contributing docs](/CONTRIBUTING.md#adding-a-new-feature).
 
@@ -169,6 +169,8 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
   </tr>
   <tr>
     <td align="center"><a href="https://www.siruxsolutions.com"><img src="https://avatars.githubusercontent.com/u/52594844?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sirasit Thitirattanakorn</b></sub></a><br /><a href="#design-hisnameispum" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/Awais753"><img src="https://avatars.githubusercontent.com/u/22499873?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Awais Ahmed</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Awais753" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.linkedin.com/in/nitya-pasrija"><img src="https://avatars.githubusercontent.com/u/97171261?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nitya Pasrija</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=Nitya-Pasrija" title="Code">💻</a></td>
   </tr>
 </table>
 

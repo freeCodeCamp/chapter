@@ -1,34 +1,43 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import {
-  useVenueQuery,
+  useVenueLazyQuery,
   useUpdateVenueMutation,
 } from '../../../../generated/graphql';
 
-import styles from '../../../../styles/Page.module.css';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
-import { useParam } from 'hooks/useParam';
+import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditVenuePage: NextPage = () => {
+export const EditVenuePage: NextPageWithLayout = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const router = useRouter();
-  const venueId = useParam('venueId');
-  const chapterId = useParam('id');
+  const { param: venueId, isReady: isVenueIdReady } = useParam('venueId');
+  const { param: chapterId, isReady: isChapterIdReady } = useParam('id');
 
-  const { loading, error, data } = useVenueQuery({
-    variables: { id: venueId },
+  const isReady = isVenueIdReady && isChapterIdReady;
+
+  const [getVenue, { loading, error, data }] = useVenueLazyQuery({
+    variables: { venueId },
   });
+
+  useEffect(() => {
+    if (isReady) getVenue();
+  }, [isReady]);
+
   const [updateVenue] = useUpdateVenueMutation({
     refetchQueries: [{ query: VENUES }],
   });
 
   const onSubmit = async (data: VenueFormData) => {
     setLoadingUpdate(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { chapter_id, ...updateData } = data;
     try {
       const latitude = parseFloat(String(data.latitude));
       const longitude = parseFloat(String(data.longitude));
@@ -37,7 +46,7 @@ export const EditVenuePage: NextPage = () => {
         variables: {
           venueId,
           chapterId,
-          data: { ...data, latitude, longitude },
+          data: { ...updateData, latitude, longitude },
         },
       });
       await router.push('/dashboard/venues');
@@ -48,24 +57,22 @@ export const EditVenuePage: NextPage = () => {
     }
   };
 
-  if (loading || error || !data?.venue) {
-    return (
-      <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const isLoading = loading || !isReady || !data;
+  if (isLoading || error)
+    return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
-    <Layout data-cy="edit-venue-page">
-      <VenueForm
-        data={data}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        submitText={'Save Venue Changes'}
-        chapter={data.venue.chapter}
-      />
-    </Layout>
+    <VenueForm
+      data={data}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      submitText={'Save Venue Changes'}
+      chapterId={chapterId}
+      loadingText={'Saving Venue Changes'}
+    />
   );
+};
+
+EditVenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout dataCy="edit-venue-page">{page}</Layout>;
 };

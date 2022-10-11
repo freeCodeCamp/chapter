@@ -1,90 +1,110 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Button, Grid, GridItem, Image } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Image, Spinner, MenuItem } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { SkipNavLink } from '@chakra-ui/skip-nav';
 import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
+import NextLink from 'next/link';
 
 import { useAuthStore } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
-import { Input } from '../Form/Input';
+import { Permission } from '../../../../common/permissions';
+import { checkPermission } from '../../util/check-permission';
+import { HeaderMenu } from './HeaderMenu';
+import { useLogout, useLogin } from 'hooks/useAuth';
+import { MeQuery } from 'generated/graphql';
 
 interface Props {
   children: React.ReactNode;
   justifyContent?: GridItemProps['justifyContent'];
 }
 
-const Item = forwardRef<HTMLDivElement, Props>((props, ref) => {
+const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
-    <GridItem
-      display="flex"
-      justifyContent="center"
+    <Flex
+      justifyContent="space-between"
       alignItems="center"
       ref={ref}
       {...props}
+      w="full"
+      as="header"
+      px={[2, 4, 8]}
+      py={[2, 4]}
+      background={'gray.85'}
+      className={styles.header}
     />
   );
 });
 
+// TODO: distinguish between logging into the app and logging into Auth0. Maybe
+// use sign-in for the app?
+const LoginButton = () => {
+  const login = useLogin();
+  return (
+    <MenuItem
+      onClick={login}
+      fontWeight="600"
+      background={'gray.85'}
+      color={'gray.10'}
+      height={'100%'}
+      borderRadius={'5px'}
+      _hover={{ color: 'gray.85' }}
+    >
+      Log In
+    </MenuItem>
+  );
+};
+
 export const Header: React.FC = () => {
   const router = useRouter();
   const {
-    data: { user },
-    setData,
+    data: { user, loadingUser },
   } = useAuthStore();
+  const logout = useLogout();
 
-  const logout = () => {
-    setData({ user: undefined });
-    localStorage.removeItem('token');
+  const canAuthenticateWithGoogle = checkPermission(
+    user,
+    Permission.GoogleAuthenticate,
+  );
 
-    router.push('/');
-  };
+  const goHome = () => router.push('/');
 
   return (
     <>
-      <Grid
-        w="full"
-        as="header"
-        templateColumns="repeat(3, 1fr)"
-        px="8"
-        py="4"
-        className={styles.header}
-      >
-        <Item justifyContent="flex-start">
-          <Link href="/">
-            <Image src="/freecodecamp-logo.svg" alt="The freeCodeCamp logo" />
-          </Link>
-        </Item>
-        <Item>
-          <Input noLabel color="white" placeholder="Search..." />
-        </Item>
-        <Item justifyContent="flex-end">
+      <HeaderItem>
+        <SkipNavLink background={'gray.10'} color={'gray.85'}>
+          Skip Navigation
+        </SkipNavLink>
+        <Link href="/">
+          <Image
+            src="/freecodecamp-logo.svg"
+            alt="The freeCodeCamp logo"
+            display="block"
+            width="100%"
+          />
+        </Link>
+        {loadingUser ? (
+          <Spinner color="white" size="xl" />
+        ) : (
           <HStack as="nav">
-            <Link color="white" href="/chapters">
-              Chapters
-            </Link>
-            <Link color="white" href="/events">
-              Events feed
-            </Link>
-
-            {user ? (
-              <>
-                <Link color="white" href="/dashboard/chapters">
-                  Dashboard
-                </Link>
-                <Button data-cy="logout-button" onClick={logout}>
-                  Logout
-                </Button>
-                <Avatar name={`${user.first_name} ${user.last_name}`} />
-              </>
-            ) : (
-              <Link color="white" href="/auth/login">
-                Login / Register
-              </Link>
+            <Box>
+              <HeaderMenu
+                logout={logout}
+                goHome={goHome}
+                canAuthenticateWithGoogle={canAuthenticateWithGoogle}
+                user={user as MeQuery}
+                LoginButton={LoginButton}
+              />
+            </Box>
+            {user && (
+              <NextLink passHref href="/profile">
+                <Avatar cursor="pointer" name={`${user.name}`} />
+              </NextLink>
             )}
           </HStack>
-        </Item>
-      </Grid>
+        )}
+      </HeaderItem>
     </>
   );
 };

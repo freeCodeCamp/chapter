@@ -6,12 +6,20 @@ import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
 
+const venueIncludes = {
+  chapter: {
+    include: {
+      events: true,
+    },
+  },
+};
+
 @Resolver()
 export class VenueResolver {
   @Query(() => [Venue])
   venues(): Promise<Venue[]> {
     return prisma.venues.findMany({
-      include: { chapter: true },
+      include: venueIncludes,
       orderBy: { name: 'asc' },
     });
   }
@@ -26,11 +34,12 @@ export class VenueResolver {
     });
   }
 
+  @Authorized(Permission.VenueEdit)
   @Query(() => Venue, { nullable: true })
-  venue(@Arg('id', () => Int) id: number): Promise<Venue | null> {
+  venue(@Arg('venueId', () => Int) id: number): Promise<Venue | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: { chapter: true },
+      include: venueIncludes,
     });
   }
 
@@ -46,7 +55,7 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
-      include: { chapter: true },
+      include: venueIncludes,
     });
   }
 
@@ -54,12 +63,12 @@ export class VenueResolver {
   @Mutation(() => Venue)
   updateVenue(
     @Arg('venueId', () => Int) id: number,
-    @Arg('chapterId', () => Int) chapter_id: number,
+    @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
     @Arg('data') data: UpdateVenueInputs,
   ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
     return prisma.venues.update({
-      where: { id_chapter_id: { id, chapter_id } },
+      where: { id },
       data: venueData,
     });
   }
@@ -68,11 +77,11 @@ export class VenueResolver {
   @Mutation(() => Venue)
   async deleteVenue(
     @Arg('venueId', () => Int) id: number,
-    @Arg('chapterId', () => Int) chapter_id: number,
+    @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
     return await prisma.venues.delete({
-      where: { id_chapter_id: { id, chapter_id } },
+      where: { id },
     });
   }
 }

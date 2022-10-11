@@ -1,4 +1,6 @@
-import sendgrid from '@sendgrid/mail';
+import { inspect } from 'util';
+
+import sendgrid, { MailDataRequired } from '@sendgrid/mail';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
@@ -25,9 +27,10 @@ export default class MailerService {
   emailPassword?: string;
   emailService?: string;
   emailHost?: string;
-  sendgridKey?: string;
-  sendgridEmail?: string;
+  sendgridKey: string;
+  sendgridEmail: string;
   iCalEvent?: string;
+  private _sendEmail: () => Promise<SentMessageInfo>;
 
   constructor(data: MailerData) {
     this.emailList = data.emailList;
@@ -43,11 +46,14 @@ export default class MailerService {
     this.emailService = process.env.EMAIL_SERVICE;
     this.emailHost = process.env.EMAIL_HOST || 'localhost';
 
-    this.sendgridKey = process.env.SENDGRID_KEY;
-    this.sendgridEmail = process.env.SENDGRID_EMAIL;
-
-    if (process.env.NODE_ENV !== 'production') {
+    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
       this.createTransporter();
+      this._sendEmail = this.sendViaNodemailer;
+    } else {
+      this.sendgridKey = process.env.SENDGRID_KEY;
+      this.sendgridEmail = process.env.SENDGRID_EMAIL;
+      sendgrid.setApiKey(this.sendgridKey);
+      this._sendEmail = this.sendViaSendgrid;
     }
   }
 
@@ -78,66 +84,68 @@ export default class MailerService {
 
   public async sendEmail(): Promise<SentMessageInfo> {
     try {
-      if (process.env.NODE_ENV !== 'production') {
-        const calendarEvent = this.iCalEvent
-          ? {
-              icalEvent: {
-                filename: 'calendar.ics',
-                content: this.iCalEvent,
-              },
-            }
-          : {};
-        return await this.transporter.sendMail({
-          from: this.ourEmail,
-          bcc: this.emailList,
-          subject: this.subject,
-          text: this.backupText,
-          html: this.htmlEmail,
-          ...calendarEvent,
-        });
-      } else {
-        if (!this.sendgridKey || !this.sendgridEmail) {
-          throw new Error(
-            'Missing Sendgrid variables and environment is set to production.',
-          );
-        }
-        sendgrid.setApiKey(this.sendgridKey);
-        for (const email of this.emailList) {
-          const opts = {
-            to: email,
-            from: this.sendgridEmail,
-            subject: this.subject,
-            html: this.htmlEmail,
-            text: this.backupText,
-            trackingSettings: {
-              clickTracking: {
-                enable: false,
-                enableText: false,
-              },
-              openTracking: {
-                enable: false,
-              },
-              subscriptionTracking: {
-                enable: false,
-              },
-            },
-          };
-          if (this.iCalEvent) {
-            const attachment = {
-              filename: 'calendar.ics',
-              name: 'calendar.ics',
-              content: this.iCalEvent,
-              disposition: 'attachment',
-              type: 'text/calendar; method=REQUEST',
-            };
-            Object.assign(opts, { attachments: [attachment] });
-          }
-          await sendgrid.send(opts);
-        }
-      }
+      return await this._sendEmail();
     } catch (e) {
-      console.log('Email failed to send. ', e);
+      // We need to inspect, since mail error objects are often quite deep.
+      console.log('Email failed to send. ', inspect(e, false, null));
     }
+  }
+
+  private async sendViaSendgrid() {
+    const attachment = this.iCalEvent
+      ? {
+          filename: 'calendar.ics',
+          name: 'calendar.ics',
+          content: this.iCalEvent,
+          disposition: 'attachment',
+          type: 'text/calendar; method=REQUEST',
+        }
+      : null;
+    for (const email of this.emailList) {
+      const baseOpts: MailDataRequired = {
+        to: email,
+        from: this.sendgridEmail,
+        subject: this.subject,
+        html: this.htmlEmail || this.backupText,
+        trackingSettings: {
+          clickTracking: {
+            enable: false,
+            enableText: false,
+          },
+          openTracking: {
+            enable: false,
+          },
+          subscriptionTracking: {
+            enable: false,
+          },
+        },
+      };
+
+      const opts: MailDataRequired = {
+        ...baseOpts,
+        ...(attachment && { attachments: [attachment] }),
+      };
+      await sendgrid.send(opts);
+    }
+  }
+
+  private async sendViaNodemailer() {
+    const calendarEvent = this.iCalEvent
+      ? {
+          icalEvent: {
+            filename: 'calendar.ics',
+            content: this.iCalEvent,
+          },
+        }
+      : null;
+    return await this.transporter.sendMail({
+      from: this.ourEmail,
+      bcc: this.emailList,
+      subject: this.subject,
+      text: this.backupText,
+      html: this.htmlEmail,
+      ...calendarEvent,
+    });
   }
 }
 

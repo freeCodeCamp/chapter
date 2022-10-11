@@ -30,15 +30,15 @@ import 'cypress-mailhog';
 import '@testing-library/cypress/add-commands';
 
 import { gqlOptions } from './util';
+import { EventInputs } from './../../client/src/generated/graphql';
 
 /**
  * Register user using page UI
  */
-const registerViaUI = (firstName: string, lastName: string, email: string) => {
+const registerViaUI = (name: string, email: string) => {
   cy.visit('/auth/register');
 
-  cy.get('input[name="first_name"]').type(firstName);
-  cy.get('input[name="last_name"]').type(lastName);
+  cy.get('input[name="name"]').type(name);
   cy.get('input[name="email"]').type(email);
   cy.get('[data-cy="submit-button"]').click();
 };
@@ -46,53 +46,52 @@ const registerViaUI = (firstName: string, lastName: string, email: string) => {
 Cypress.Commands.add('registerViaUI', registerViaUI);
 
 /**
- * Authenticate with JWT token
- * @param token JWT token for authorization. If not provided, Cypress.env.JWT token is used.
+ * Create new user session
+ * @param email Email of the new user
  */
-const login = (token?: string) => {
-  const authData = {
-    operationName: 'authenticate',
-    variables: {
-      token: token ?? Cypress.env('JWT'),
-    },
-    query: `mutation authenticate($token: String!) {
-        authenticate(token: $token) {
-          token
-          user {
-            id
-            first_name
-            last_name
-          }
-        }
-      }`,
-  };
-  cy.request(gqlOptions(authData)).then((response) => {
-    expect(response.body.data.authenticate).to.have.property('token');
-    // TODO: change this to set a cookie when Token.tsx is updated.
-    window.localStorage.setItem('token', response.body.data.authenticate.token);
-    expect(response.status).to.eq(200);
-  });
+const login = (email?: string) => {
+  // Currently changing users modifies the current-user.json file and that file
+  // needs _not_ to be watched by node-dev. If we change how we store dev users
+  // that can be watched again.
+  email
+    ? cy.exec(`npm run change-user -- ${email} `)
+    : cy.exec('npm run change-user:owner');
+  return cy
+    .request({
+      url: Cypress.env('SERVER_URL') + '/login',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer dummy-token`,
+      },
+    })
+    .then(() => cy.reload());
 };
 Cypress.Commands.add('login', login);
 
 const logout = () => {
-  window.localStorage.removeItem('token');
+  cy.request({
+    url: Cypress.env('SERVER_URL') + '/logout',
+    method: 'DELETE',
+  }).then(() => cy.reload());
 };
 Cypress.Commands.add('logout', logout);
 
 /**
  * Register user using GQL query
  */
-const register = (firstName?: string, lastName?: string, email?: string) => {
+const register = (name?: string, email?: string) => {
   const user = {
     operationName: 'register',
     variables: {
-      first_name: firstName ?? 'Test',
-      last_name: lastName ?? 'User',
+      name: name ?? 'Test User',
       email: email ?? 'test@user.org',
     },
-    query:
-      'mutation register($email: String!, $first_name: String!, $last_name: String!) {\n  register(data: {email: $email, first_name: $first_name, last_name: $last_name}) {\n    id\n    __typename\n  }\n}\n',
+    query: `mutation register($email: String!, $name: String!) {
+      register(data: {email: $email, name: $name}) {
+        id
+        __typename
+      }
+    }`,
   };
 
   cy.request(gqlOptions(user)).then((response) => {
@@ -118,97 +117,39 @@ const interceptGQL = (operationName: string) => {
 Cypress.Commands.add('interceptGQL', interceptGQL);
 
 /**
- * Get users of the chapter using GQL query
- * @param chapterId Id of the chapter
- */
-const getChapterMembers = (chapterId: number) => {
-  const chapterQuery = {
-    operationName: 'chapterUsers',
-    variables: {
-      chapterId,
-    },
-    query: `query chapterUsers($chapterId: Int!) {
-            chapter(id: $chapterId) {
-              chapter_users {
-                user {
-                  id
-                  name
-                  email
-                }
-                subscribed
-              }
-            }
-          }`,
-  };
-  return cy
-    .request(gqlOptions(chapterQuery))
-    .then((response) => response.body.data.chapter.chapter_users);
-};
-Cypress.Commands.add('getChapterMembers', getChapterMembers);
-
-/**
- * Get event users for event with eventId using GQL query
- * @param eventId Id of the event
- */
-const getEventUsers = (eventId: number) => {
-  const eventQuery = {
-    operationName: 'eventUsers',
-    variables: {
-      eventId,
-    },
-    query: `query eventUsers($eventId: Int!) {
-      event(eventId: $eventId) {
-        event_users {
-          rsvp {
-            name
-          }
-          user {
-            id
-            name
-            email
-          }
-          subscribed
-        }
-      }
-    }`,
-  };
-  return cy
-    .request(gqlOptions(eventQuery))
-    .then((response) => response.body.data.event.event_users);
-};
-
-Cypress.Commands.add('getEventUsers', getEventUsers);
-
-/**
  * Wait until emails are received by mailhog
  * @param alias Name of the alias to reference emails by
  */
-const waitUntilMail = (alias?: string) => {
-  cy.waitUntil(() =>
+
+function waitUntilMail(args?: {
+  alias?: string;
+  expectedNumberOfEmails: number;
+}) {
+  const { alias, expectedNumberOfEmails = 1 } = args ?? {};
+  const checkMail = (mails: mailhog.Item[]) =>
+    mails?.length >= expectedNumberOfEmails ? mails : false;
+  return cy.waitUntil(() =>
     alias
-      ? cy
-          .mhGetAllMails()
-          .as(alias)
-          .then((mails) => mails?.length > 0)
-      : cy.mhGetAllMails().then((mails) => mails?.length > 0),
+      ? cy.mhGetAllMails().as(alias).then(checkMail)
+      : cy.mhGetAllMails().then(checkMail),
   );
-};
+}
 
 Cypress.Commands.add('waitUntilMail', waitUntilMail);
 
 /**
  * Create event using GQL mutation
  * @param chapterId Id of the chapter
- * @param data Data of the event. Equivalent of CreateEventInputs for the Events resolver.
+ * @param data Data of the event. Defined by the GraphQL input type EventInputs.
  */
-const createEvent = (chapterId: number, data: { [index: string]: unknown }) => {
+const createEvent = (chapterId: number, data: EventInputs) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
       chapterId,
       data,
     },
-    query: `mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!) {
       createEvent(chapterId: $chapterId, data: $data) {
         id
       }
@@ -236,7 +177,7 @@ const createChapter = (data) => {
         city
         region
         country
-        chatUrl
+        chat_url
       }
     }
   `,
@@ -260,7 +201,46 @@ Cypress.Commands.add('updateChapter', (chapterId, data) => {
   };
   return cy.authedRequest(gqlOptions(chapterMutation));
 });
-
+/**
+ * Delete chapter using GQL mutation
+ * @param chapterId Id of the chapter for deletion
+ */
+const deleteChapter = (chapterId: number) => {
+  const chapterMutation = {
+    operationName: 'deleteChapter',
+    variables: {
+      chapterId,
+    },
+    query: `mutation deleteChapter($chapterId: Int!) {
+      deleteChapter(id: $chapterId) {
+        id
+      }
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(chapterMutation));
+};
+Cypress.Commands.add('deleteChapter', deleteChapter);
+/**
+ * Update event using GQL mutation
+ * @param eventId Id of the event
+ * @param data Data of the event. Equivalent of EventInputs for the Events resolver.
+ */
+const updateEvent = (eventId, data) => {
+  const eventMutation = {
+    operationName: 'updateEvent',
+    variables: {
+      eventId,
+      data,
+    },
+    query: `mutation updateEvent($eventId: Int!, $data: EventInputs!) {
+      updateEvent(id: $eventId, data: $data) {
+        id
+      }
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(eventMutation));
+};
+Cypress.Commands.add('updateEvent', updateEvent);
 /**
  * Delete event using GQL mutation
  * @param eventId Id of the event for deletion
@@ -277,9 +257,7 @@ const deleteEvent = (eventId: number) => {
       }
     }`,
   };
-  return cy
-    .request(gqlOptions(eventMutation))
-    .then((response) => response.body.data.deleteEvent.id);
+  return cy.authedRequest(gqlOptions(eventMutation));
 };
 Cypress.Commands.add('deleteEvent', deleteEvent);
 
@@ -629,6 +607,62 @@ const changeChapterUserRole = (
 Cypress.Commands.add('changeChapterUserRole', changeChapterUserRole);
 
 /**
+ * Ban user using GQL mutation
+ * @param data.chapterId Chapter id
+ * @param data.userId User id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const banUser = (
+  { chapterId, userId }: { chapterId: number; userId: number },
+  options = { withAuth: true },
+) => {
+  const banUserMutation = {
+    operationName: 'banUser',
+    variables: { chapterId, userId },
+    query: `mutation banUser($chapterId: Int!, $userId: Int!) {
+      banUser(chapterId: $chapterId, userId: $userId) {
+        user {
+          name
+        }
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(banUserMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('banUser', banUser);
+
+/**
+ * Unban user using GQL mutation
+ * @param data.chapterId Chapter id
+ * @param data.userId User id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const unbanUser = (
+  { chapterId, userId }: { chapterId: number; userId: number },
+  options = { withAuth: true },
+) => {
+  const unbanUserMutation = {
+    operationName: 'unbanUser',
+    variables: { chapterId, userId },
+    query: `mutation unbanUser($chapterId: Int!, $userId: Int!) {
+      unbanUser(chapterId: $chapterId, userId: $userId) {
+        user {
+          name
+        }
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(unbanUserMutation);
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('unbanUser', unbanUser);
+
+/**
  * Get chapter roles using GQL query
  */
 const getChapterRoles = () => {
@@ -647,22 +681,40 @@ const getChapterRoles = () => {
 };
 Cypress.Commands.add('getChapterRoles', getChapterRoles);
 
+/**
+ * sends event invites for attendees
+ * @param eventId event id
+ * @param emailGroups Chapter id
+ */
+const sendEventInvite = (eventId: number, emailGroups: [string]) => {
+  const sendEventInviteMutation = {
+    operationName: 'sendEventInvite',
+    variables: { eventId, emailGroups },
+    query: `mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
+      sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(sendEventInviteMutation));
+};
+Cypress.Commands.add('sendEventInvite', sendEventInvite);
+
 // Cypress will add these commands to the Cypress object, correctly, but it
 // cannot infer the types, so we need to add them manually.
 declare global {
   namespace Cypress {
     interface Chainable {
       authedRequest: typeof authedRequest;
+      banUser: typeof banUser;
       changeChapterUserRole: typeof changeChapterUserRole;
       createChapter: typeof createChapter;
       createEvent: typeof createEvent;
       createSponsor: typeof createSponsor;
+      deleteChapter: typeof deleteChapter;
       deleteEvent: typeof deleteEvent;
       deleteVenue: typeof deleteVenue;
+      sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
-      getChapterMembers: typeof getChapterMembers;
       getChapterRoles: typeof getChapterRoles;
-      getEventUsers: typeof getEventUsers;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
       login: typeof login;
@@ -670,6 +722,7 @@ declare global {
       register: typeof register;
       registerViaUI: typeof registerViaUI;
       toggleChapterSubscription: typeof toggleChapterSubscription;
+      unbanUser: typeof unbanUser;
       updateSponsor: typeof updateSponsor;
       waitUntilMail: typeof waitUntilMail;
     }

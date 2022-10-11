@@ -9,7 +9,7 @@ export const createChapter = gql`
       city
       region
       country
-      chatUrl
+      chat_url
     }
   }
 `;
@@ -23,7 +23,15 @@ export const updateChapter = gql`
       city
       region
       country
-      chatUrl
+      chat_url
+    }
+  }
+`;
+
+export const deleteChapter = gql`
+  mutation deleteChapter($chapterId: Int!) {
+    deleteChapter(id: $chapterId) {
+      id
     }
   }
 `;

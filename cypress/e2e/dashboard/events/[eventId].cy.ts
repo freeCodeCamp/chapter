@@ -1,8 +1,9 @@
+import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 describe('event dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
   });
 
@@ -17,8 +18,7 @@ describe('event dashboard', () => {
         .findByRole('button', { name: 'Confirm' })
         .click();
 
-      cy.waitUntilMail('allMail');
-      cy.get('@allMail').mhFirst().as('email');
+      cy.waitUntilMail().mhFirst().as('email');
 
       cy.get<string>('@userName').then((userName) => {
         cy.get('@waitlist').not(`:contains(${userName})`);
@@ -31,7 +31,7 @@ describe('event dashboard', () => {
       cy.get('@email')
         .mhGetBody()
         .should('include', 'reservation is confirmed');
-      cy.getEventUsers(1).then((eventUsers) => {
+      cy.task<EventUsers>('getEventUsers', 1).then((eventUsers) => {
         cy.get<string>('@userName').then((userName) => {
           const userEmail = eventUsers
             .filter(({ user: { name } }) => name === userName)
@@ -94,7 +94,7 @@ describe('event dashboard', () => {
       const eventId = 1;
 
       // Starting as the instance owner to ensure we can find the RSVPs
-      cy.getEventUsers(eventId).then((eventUsers) => {
+      cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
           ({ rsvp: { name } }) => name === 'yes',
         ).user;
@@ -103,8 +103,7 @@ describe('event dashboard', () => {
         ).user;
 
         // Switch to new member before trying to confirm and kick
-        cy.register();
-        cy.login(Cypress.env('JWT_TEST_USER'));
+        cy.login('test@user.org');
 
         cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
         cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);

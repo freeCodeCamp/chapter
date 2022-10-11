@@ -616,6 +616,24 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "Awais753",
+      "name": "Awais Ahmed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22499873?v=4",
+      "profile": "https://github.com/Awais753",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Nitya-Pasrija",
+      "name": "Nitya Pasrija",
+      "avatar_url": "https://avatars.githubusercontent.com/u/97171261?v=4",
+      "profile": "http://www.linkedin.com/in/nitya-pasrija",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

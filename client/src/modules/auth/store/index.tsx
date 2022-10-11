@@ -1,17 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useMeQuery, MeQuery } from '../../../generated/graphql';
 
-interface AuthContextType {
+import { MeQuery, useMeQuery } from '../../../generated/graphql';
+import { useSession } from 'hooks/useSession';
+
+export interface AuthContextType {
   user?: MeQuery['me'];
+  loadingUser: boolean;
+  isLoggedIn: boolean;
 }
 
 export const AuthContext = createContext<{
   data: AuthContextType;
-  setData: React.Dispatch<React.SetStateAction<AuthContextType>>;
 }>({
-  data: {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setData: () => {},
+  data: { loadingUser: true, isLoggedIn: false },
 });
 
 export const useAuthStore = () => useContext(AuthContext);
@@ -22,19 +23,41 @@ export const AuthContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [data, setData] = useState<AuthContextType>({});
-  const meQuery = useMeQuery();
+  const [data, setData] = useState<AuthContextType>({
+    loadingUser: true,
+    isLoggedIn: false,
+  });
+  const { loading: loadingMe, error, data: meData, refetch } = useMeQuery();
+  const { isAuthenticated, createSession } = useSession();
+
+  const tryToCreateSession = async () => {
+    if (isAuthenticated) {
+      const { status } = await createSession();
+      if (status === 200) refetch();
+    }
+  };
 
   useEffect(() => {
-    if (!meQuery.loading && !meQuery.error) {
-      if (meQuery.data?.me) {
-        setData({ user: meQuery.data?.me });
-      }
+    if (!loadingMe && !error) {
+      if (meData)
+        setData({
+          user: meData.me,
+          loadingUser: false,
+          isLoggedIn: !!meData.me,
+        });
+      // If there is no user data, either the user doesn't have a session or
+      // they don't exist. Since we can't tell the difference, we have to try to
+      // create a session.
+      if (!meData?.me) tryToCreateSession();
     }
-  }, [meQuery.loading, meQuery.error, meQuery.data]);
+  }, [loadingMe, error, meData, isAuthenticated]);
 
   return (
-    <AuthContext.Provider value={{ data, setData }}>
+    <AuthContext.Provider
+      value={{
+        data,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

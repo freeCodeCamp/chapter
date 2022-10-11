@@ -1,6 +1,12 @@
-import { Button } from '@chakra-ui/button';
-import { Checkbox } from '@chakra-ui/checkbox';
-import { Stack } from '@chakra-ui/layout';
+import {
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  Button,
+  Checkbox,
+  Stack,
+  useToast,
+} from '@chakra-ui/react';
 import {
   Modal,
   ModalBody,
@@ -10,8 +16,7 @@ import {
   ModalFooter,
   ModalOverlay,
 } from '@chakra-ui/modal';
-import { Alert, AlertIcon, AlertDescription } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSendEventInviteMutation } from 'generated/graphql';
 interface SendEmailModalProps {
@@ -29,6 +34,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
   isOpen,
   eventId,
 }) => {
+  const [isLoading, setLoading] = useState(false);
   const {
     register,
     getValues,
@@ -36,7 +42,7 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
     formState: { errors },
   } = useForm<FormInputs>({ defaultValues: { confirmed: true } });
 
-  const atLeastOneChecked = () => {
+  const atLeastOneChecked: () => boolean = () => {
     return (
       getValues('confirmed') ||
       getValues('on_waitlist') ||
@@ -45,7 +51,9 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
   };
 
   const [publish] = useSendEventInviteMutation();
-  const onSubmit = (data: FormInputs) => {
+  const toast = useToast();
+
+  const onSubmit = async (data: FormInputs) => {
     const emailGroups = [];
     if (data.confirmed) {
       emailGroups.push('confirmed');
@@ -56,7 +64,10 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
     if (data.on_waitlist) {
       emailGroups.push('on_waitlist');
     }
-    publish({ variables: { eventId, emailGroups } });
+    setLoading(true);
+    await publish({ variables: { eventId, emailGroups } });
+    setLoading(false);
+    toast({ title: 'Email sent', status: 'success' });
     onClose();
   };
   return (
@@ -99,10 +110,17 @@ const SendEmailModal: React.FC<SendEmailModalProps> = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="teal" mr={3} onClick={onClose}>
+          <Button mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button type="submit" variant="solid" form="sendemail">
+          <Button
+            type="submit"
+            colorScheme={'blue'}
+            variant="solid"
+            form="sendemail"
+            isLoading={isLoading}
+            loadingText="Sending"
+          >
             Send Email
           </Button>
         </ModalFooter>

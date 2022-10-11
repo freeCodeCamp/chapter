@@ -10,48 +10,62 @@ import {
   HStack,
   ListItem,
   Avatar,
-  useDisclosure,
+  Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import { LoginRegisterModal } from '../../../components/LoginRegisterModal';
-import { useAuth } from '../../auth/store';
+import { useAuthStore } from '../../auth/store';
+import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
-import { EVENT } from '../../dashboard/Events/graphql/queries';
+import { EVENT } from '../graphql/queries';
+import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
-  useEventQuery,
+  useCancelRsvpMutation,
+  useEventLazyQuery,
+  useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
-  useInitUserInterestForChapterMutation,
 } from '../../../generated/graphql';
 import { useParam } from 'hooks/useParam';
+import { useLogin } from 'hooks/useAuth';
 
 export const EventPage: NextPage = () => {
-  const eventId = useParam('eventId');
+  const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
-  const { user } = useAuth();
+  const {
+    data: { user },
+  } = useAuthStore();
+  const login = useLogin();
 
   const refetch = {
-    refetchQueries: [{ query: EVENT, variables: { eventId } }],
+    refetchQueries: [
+      { query: EVENT, variables: { eventId } },
+      { query: DASHBOARD_EVENT, variables: { eventId } },
+    ],
   };
 
   const [rsvpToEvent] = useRsvpToEventMutation(refetch);
-  const [initUserInterestForChapter] = useInitUserInterestForChapterMutation();
+  const [cancelRsvp] = useCancelRsvpMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
-  // TODO: check if we need to default to -1 here
-  const { loading, error, data } = useEventQuery({
+
+  const [getEvent, { loading, error, data }] = useEventLazyQuery({
     variables: { eventId },
   });
 
+  useEffect(() => {
+    if (isReady) getEvent();
+  }, [isReady]);
+
   const toast = useToast();
   const confirm = useConfirm();
-  const modalProps = useDisclosure();
 
   const eventUser = useMemo(() => {
     const eUser = data?.event?.event_users.find(
@@ -65,27 +79,16 @@ export const EventPage: NextPage = () => {
   const allDataLoaded = !loading && user;
   const canCheckRsvp = router.query?.emaillink && !userRsvped;
   useEffect(() => {
-    if (allDataLoaded && canCheckRsvp) checkOnRsvp(true);
+    if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
 
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
+  const isLoading = loading || !isReady || !data;
 
-  if (error || !data?.event) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (!data.event)
+    return <NextError statusCode={404} title="Event not found" />;
 
   const chapterId = data.event.chapter.id;
-
-  const handleLoginUserFirst = () => {
-    modalProps.onOpen();
-  };
 
   const onSubscribeToEvent = async () => {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
@@ -122,34 +125,20 @@ export const EventPage: NextPage = () => {
     }
   };
 
-  const onRsvp = async (add: boolean) => {
-    const ok = await confirm(
-      add
-        ? { title: 'You want to join this?' }
-        : { title: 'Are you sure you want to cancel your RSVP' },
-    );
+  const onRsvp = async () => {
+    const ok = await confirm({ title: 'You want to join this?' });
 
     if (ok) {
       try {
-        // this has to happen before trying to RSVP, since the user needs to be
-        // added to the chapter first.
-        if (add) {
-          await initUserInterestForChapter({
-            variables: { eventId },
-          });
-        }
+        await joinChapter({ variables: { chapterId } });
         await rsvpToEvent({
           variables: { eventId, chapterId },
         });
 
-        toast(
-          add
-            ? {
-                title: 'You successfully RSVPed to this event',
-                status: 'success',
-              }
-            : { title: 'You canceled your RSVP 👋', status: 'error' },
-        );
+        toast({
+          title: 'You successfully RSVPed to this event',
+          status: 'success',
+        });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -157,12 +146,29 @@ export const EventPage: NextPage = () => {
     }
   };
 
-  const checkOnRsvp = async (add: boolean) => {
-    if (!user) {
-      return handleLoginUserFirst();
-    }
+  const onCancelRsvp = async () => {
+    const ok = await confirm({
+      title: 'Are you sure you want to cancel your RSVP',
+    });
 
-    await onRsvp(add);
+    if (ok) {
+      try {
+        await cancelRsvp({
+          variables: { eventId },
+        });
+
+        toast({ title: 'You canceled your RSVP 👋', status: 'info' });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  // TODO: reimplment this the login modal with Auth0
+  const checkOnRsvp = async () => {
+    if (!user) await login();
+    await onRsvp();
   };
 
   const rsvps = data.event.event_users.filter(
@@ -174,11 +180,6 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <LoginRegisterModal
-        onRsvp={onRsvp}
-        userIds={data?.event?.event_users.map(({ user }) => user.id) || []}
-        modalProps={modalProps}
-      />
       <Image
         data-cy="event-image"
         boxSize="100%"
@@ -188,35 +189,51 @@ export const EventPage: NextPage = () => {
         borderRadius="md"
         objectFit="cover"
       />
-
-      <Heading as="h1">
-        {data.event.invite_only && <LockIcon />}
-        {data.event.name}
-      </Heading>
-      <Heading size="md">
+      <Flex alignItems={'center'}>
+        {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+        <Heading as="h1">{data.event.name}</Heading>
+      </Flex>
+      <Heading size="md" as={'h2'}>
         Chapter:{' '}
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
-      <VStack align="start">
-        {rsvps && <Heading>RSVPs:{rsvps.length}</Heading>}
-        {waitlist && <Heading>Waitlist:{waitlist.length}</Heading>}
-      </VStack>
+      <HStack align="start">
+        {rsvps && (
+          <Heading
+            as={'h3'}
+            fontSize={'md'}
+            fontWeight={'500'}
+            marginRight={'2'}
+          >
+            RSVPs: {rsvps.length}
+          </Heading>
+        )}
+        {waitlist && (
+          <Heading as={'h3'} fontSize={'md'} fontWeight={'500'}>
+            Waitlist: {waitlist.length}
+          </Heading>
+        )}
+      </HStack>
       {userRsvped === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
-          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
+          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
       ) : userRsvped === 'waitlist' ? (
         <HStack>
           {data.event.invite_only ? (
-            <Heading>Event owner will soon confirm your request</Heading>
+            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              Event owner will soon confirm your request
+            </Heading>
           ) : (
-            <Heading>You&lsquo;re on waitlist for this event</Heading>
+            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              You&lsquo;re on waitlist for this event
+            </Heading>
           )}
-          <Button colorScheme="red" onClick={() => checkOnRsvp(false)}>
+          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
@@ -224,7 +241,9 @@ export const EventPage: NextPage = () => {
         <Button
           data-cy="rsvp-button"
           colorScheme="blue"
-          onClick={() => checkOnRsvp(true)}
+          onClick={checkOnRsvp}
+          paddingInline={'2'}
+          paddingBlock={'1'}
         >
           {data.event.invite_only ? 'Request' : 'RSVP'}
         </Button>
@@ -233,15 +252,28 @@ export const EventPage: NextPage = () => {
         <HStack>
           {eventUser.subscribed ? (
             <>
-              <Heading>You are subscribed</Heading>
-              <Button colorScheme="orange" onClick={onUnsubscribeFromEvent}>
+              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+                You are subscribed
+              </Heading>
+              <Button
+                onClick={onUnsubscribeFromEvent}
+                paddingInline={'2'}
+                paddingBlock={'1'}
+              >
                 Unsubscribe
               </Button>
             </>
           ) : (
             <>
-              <Heading>Not subscribed</Heading>
-              <Button colorScheme="blue" onClick={onSubscribeToEvent}>
+              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+                Not subscribed
+              </Heading>
+              <Button
+                colorScheme="blue"
+                onClick={onSubscribeToEvent}
+                paddingInline={'2'}
+                paddingBlock={'1'}
+              >
                 Subscribe
               </Button>
             </>
@@ -254,7 +286,13 @@ export const EventPage: NextPage = () => {
       ) : (
         false
       )}
-      <Heading data-cy="rsvps-heading" size="md">
+      <Heading
+        data-cy="rsvps-heading"
+        size="md"
+        as={'h5'}
+        fontSize={'md'}
+        fontWeight={'400'}
+      >
         RSVPs:
       </Heading>
       <List>
@@ -270,7 +308,13 @@ export const EventPage: NextPage = () => {
 
       {!data.event.invite_only && (
         <>
-          <Heading data-cy="waitlist-heading" size="md">
+          <Heading
+            data-cy="waitlist-heading"
+            size="md"
+            as={'h5'}
+            fontSize={'md'}
+            fontWeight={'400'}
+          >
             Waitlist:
           </Heading>
           <List>

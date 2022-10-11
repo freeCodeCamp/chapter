@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import {
   Arg,
   Authorized,
@@ -9,6 +8,7 @@ import {
   Query,
   Resolver,
 } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
@@ -49,26 +49,45 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    return await prisma.chapter_users.create({
-      data: {
-        user: { connect: { id: ctx.user.id } },
-        chapter: { connect: { id: chapterId } },
-        chapter_role: { connect: { name: 'member' } },
-        subscribed: true, // TODO add user setting option override
-        joined_date: new Date(),
-      },
-      include: {
-        user: true,
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
+    const includes = {
+      user: true,
+      chapter_role: {
+        include: {
+          chapter_role_permissions: {
+            include: { chapter_permission: true },
           },
         },
       },
+    };
+    try {
+      return await prisma.chapter_users.create({
+        data: {
+          user: { connect: { id: ctx.user.id } },
+          chapter: { connect: { id: chapterId } },
+          chapter_role: { connect: { name: 'member' } },
+          subscribed: true, // TODO add user setting option override
+          joined_date: new Date(),
+        },
+        include: includes,
+      });
+    } catch (e) {
+      if (
+        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+      ) {
+        throw e;
+      }
+    }
+
+    return await prisma.chapter_users.findUniqueOrThrow({
+      where: {
+        user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
+      },
+      include: includes,
     });
   }
 
-  @Authorized(Permission.ChapterSubscriptionsManage)
+  @Authorized(Permission.ChapterSubscriptionManage)
   @Mutation(() => ChapterUser)
   async toggleChapterSubscription(
     @Arg('chapterId', () => Int) chapterId: number,
@@ -122,44 +141,6 @@ export class ChapterUserResolver {
     });
   }
 
-  @Mutation(() => Boolean)
-  async initUserInterestForChapter(
-    @Arg('id', () => Int) id: number,
-    @Ctx() ctx: ResolverCtx,
-  ): Promise<boolean> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to update role ');
-    }
-    const event = await prisma.events.findUnique({
-      where: { id },
-      include: { chapter: true },
-    });
-    if (!event || !event.chapter) {
-      throw Error('Cannot find the chapter of the event with id ' + id);
-    }
-
-    try {
-      await prisma.chapter_users.create({
-        data: {
-          user: { connect: { id: ctx.user.id } },
-          chapter: { connect: { id: event.chapter.id } },
-          chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO use user specified setting
-          joined_date: new Date(),
-        },
-      });
-    } catch (e) {
-      if (
-        !(e instanceof Prisma.PrismaClientKnownRequestError) ||
-        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
-      ) {
-        throw e;
-      }
-    }
-
-    return true;
-  }
-
   @Query(() => [ChapterUser])
   async chapterUsers(@Arg('id', () => Int) id: number): Promise<ChapterUser[]> {
     return await prisma.chapter_users.findMany({
@@ -201,15 +182,13 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async banUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged to ban');
-    }
     if (ctx.user.id === userId) {
       throw Error('You cannot ban yourself');
     }
@@ -223,31 +202,25 @@ export class ChapterUserResolver {
     });
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to unban');
-    }
-
-    // TODO: this should not be necessary, since a ban would prevent them from
-    // accessing this resolver. However, we need a Cypress test first.
-    if (ctx.user.id === userId) {
-      throw Error('You cannot unban yourself');
-    }
-
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
       include: { chapter: true, user: true },
     });
   }
 
-  // TODO: control this with an Authorization decorator
+  // TODO: it would be nice if this was a field on the ChapterUser type and we
+  // could guarantee type safety of this resolver.
   @FieldResolver()
-  canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
+  is_bannable(@Ctx() ctx: ResolverCtx): boolean {
+    // TODO: reimplement the logic of
+    // https://github.com/freeCodeCamp/chapter/commit/a71e570b22e8bad042438369b1162000dcee3f47,
+    // updated with the current roles and permissions
     if (!ctx.user) {
       return false;
     }

@@ -1,19 +1,16 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { Spinner } from '@chakra-ui/react';
+import React, { ReactElement, useState } from 'react';
 
-import {
-  useChapterQuery,
-  useCreateVenueMutation,
-} from '../../../../generated/graphql';
+import { useCreateVenueMutation } from '../../../../generated/graphql';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { VENUES } from '../graphql/queries';
-import { useParam } from 'hooks/useParam';
+import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const NewVenuePage: NextPage = () => {
-  const chapterId = useParam('id');
+export const NewVenuePage: NextPageWithLayout = () => {
+  const { param: chapterId, isReady } = useParam('id');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -21,18 +18,18 @@ export const NewVenuePage: NextPage = () => {
     refetchQueries: [{ query: VENUES }],
   });
 
-  const { loading: chapterLoading, data: chapterData } = useChapterQuery({
-    variables: { chapterId },
-  });
-
   const onSubmit = async (data: VenueFormData) => {
     setLoading(true);
+    const { chapter_id, ...createData } = data;
     try {
       const latitude = parseFloat(String(data.latitude));
       const longitude = parseFloat(String(data.longitude));
 
       const venue = await createVenue({
-        variables: { chapterId, data: { ...data, latitude, longitude } },
+        variables: {
+          chapterId: chapter_id,
+          data: { ...createData, latitude, longitude },
+        },
       });
       if (venue.data) {
         router.replace(`/dashboard/venues/${venue.data.createVenue.id}`);
@@ -44,20 +41,20 @@ export const NewVenuePage: NextPage = () => {
     }
   };
 
+  const isLoading = loading || !isReady;
+  if (isLoading) return <DashboardLoading loading={isLoading} />;
+
   return (
-    <Layout>
-      {chapterLoading ? (
-        <Spinner />
-      ) : (
-        chapterData?.chapter && (
-          <VenueForm
-            loading={loading}
-            onSubmit={onSubmit}
-            submitText={'Add venue'}
-            chapter={chapterData.chapter}
-          />
-        )
-      )}
-    </Layout>
+    <VenueForm
+      loading={loading}
+      onSubmit={onSubmit}
+      submitText={'Add venue'}
+      chapterId={chapterId}
+      loadingText={'Adding venue'}
+    />
   );
+};
+
+NewVenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

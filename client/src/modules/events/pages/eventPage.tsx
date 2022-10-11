@@ -66,16 +66,14 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
 
   const eventUser = useMemo(() => {
-    const eUser = data?.event?.event_users.find(
+    return data?.event?.event_users.find(
       ({ user: event_user }) => event_user.id === user?.id,
     );
-    if (!eUser) return null;
-    return eUser;
   }, [data?.event]);
-  const userRsvped =
+  const rsvpStatus =
     eventUser?.rsvp.name !== 'no' ? eventUser?.rsvp.name : null;
   const allDataLoaded = !loading && user;
-  const canCheckRsvp = router.query?.emaillink && !userRsvped;
+  const canCheckRsvp = router.query?.emaillink && !rsvpStatus;
   useEffect(() => {
     if (allDataLoaded && canCheckRsvp) checkOnRsvp();
   }, [allDataLoaded, canCheckRsvp]);
@@ -213,14 +211,14 @@ export const EventPage: NextPage = () => {
           </Heading>
         )}
       </HStack>
-      {userRsvped === 'yes' ? (
+      {rsvpStatus === 'yes' ? (
         <HStack>
           <Heading>You&lsquo;ve RSVPed to this event</Heading>
           <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
         </HStack>
-      ) : userRsvped === 'waitlist' ? (
+      ) : rsvpStatus === 'waitlist' ? (
         <HStack>
           {data.event.invite_only ? (
             <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>

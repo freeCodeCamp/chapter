@@ -592,6 +592,9 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
+
+* **Problem:**  I have come back after a long period of time, and chapter isn't working. </br>
+  **Solution:** As we develop Chapter, it is often necessary to change the environment variables we use. In case .env file being outdated, try replacing it with [.env.example](#env-configuration-file).
 </details>
 
 <details>

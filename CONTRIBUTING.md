@@ -8,7 +8,7 @@
   - [Docker Mode](#running-the-application)
   - [Manual Mode](#running-the-application)
 - [Adding a New Feature](#adding-a-new-feature)
-  - [Where to Find the Code](#where-to-find-the-code)
+  - [Where to Find the Code to Change](#where-to-find-the-code-to-change)
   - [Where to Find the Issues](#where-to-find-the-issues)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
@@ -417,43 +417,44 @@ The Chapter client uses the React framework [Next.js](https://nextjs.org/) with 
 After you have added new feature, to make sure it stays working, we recommend using [Cypress](https://www.cypress.io/). It will automatically test different scenarios starting in the client side of the application, communicating with the server, and warning you if something unexpected happens.
 </details>
 
-## Where to Find the Code
+## Where to Find the Code to Change
 
+### Database schema
 * The database schema is defined in _server/prisma/schema.prisma_
+
+<details><summary><b>Making schema changes</b></summary>
+
+* Schema changes require recreating of the database, this is done with `npm run db:reset` command.
+* After making changes to schema it might be needed to change the way sample data is generated in `server/prisma/generator` folder.
+
+</details>
+
+### Server
 * GraphQL object types are defined by files in _server/src/graphql-types_
 * Resolvers for the GraphQL queries are defined in _server/src/controllers_
+
+<details><summary><b>Details</b></summary>
+
+* GrapQL object type define object cooresponding to the table in database.  It can be used by mutations and queries as an input or return type.  More complicated tables can be modelled using multiple GraphQL objects.
+* Resolver contains the logic required for responding to mutation or query requests send from client.
+* New resolver needs to be exported in the `server/src/controllers/index.ts` file.
+
+</details>
+
+### Client
 * The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
 * To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
 * Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
-* Cypress test coverage spec files should go in _/cypress/integration_, roughly mirroring the client pages pattern
 
-## Where to Find the Issues
-
-[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
-
-## Overview of Adding New Feature
-
-This is rough rundown what might be needed to add new feature. Order of the steps allows for natural integration between individual pieces - client, db, and server. It doesn't mean everything needs to be done in this order, but at some point it might be required to follow it
-
-<details><summary>Step 1 - Schema changes</summary>
-
-* After making changes to schema it might be needed to change the way sample data is generated in `server/prisma/generator` folder.
-* Schema changes require recreating of the database, this is done with `npm run db:reset` command.
-</details>
-
-<details><summary>Step 2 - Server</summary>
-
-* Grapql object type define object cooresponding to the table in database. It can be used by mutations and queries as an input or return type. More complicated tables can be modelled using multiple graphql objects.
-* Resolver contains the logic required for responding to mutation or query requests send from client.
-* New resolver needs to be exported in the `server/src/controllers/index.ts` file.
-</details>
-
-<details><summary>Step 3 - Client</summary>
+<details><summary><b>Details</b></summary>
 
 * Client communicates with server using hooks generated from `queries.ts` and `mutations.ts` files in `client/src/modules/**/graphql` folders.
 * They don't need to use all fields returned by server. The other way around - indicating field not returned by server - will end up in error when generating hooks.
 * `npm run gen` command generates client hooks.
 </details>
+
+### Tests
+* Cypress test coverage spec files should go in _/cypress/e2e_, roughly mirroring the client pages pattern
 
 # Frequently Asked Questions
 
@@ -511,6 +512,12 @@ For example, to add a new `express` to the client, run `npm i -w=client express`
 ## Updating dependencies
 
 We rely on renovate to update dependencies automatically.
+
+</details>
+
+<details><summary>Where to find the issues to contribute?</summary>
+
+[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started with beginner friendly issue.
 
 </details>
 

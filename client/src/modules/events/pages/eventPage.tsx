@@ -144,7 +144,7 @@ export const EventPage: NextPage = () => {
 
   const onCancelRsvp = async () => {
     const ok = await confirm({
-      title: 'Are you sure you want to cancel your RSVP',
+      title: 'Are you sure you want to cancel your RSVP?',
     });
 
     if (ok) {

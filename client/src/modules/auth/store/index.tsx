@@ -3,14 +3,16 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { MeQuery, useMeQuery } from '../../../generated/graphql';
 import { useSession } from 'hooks/useSession';
 
-interface AuthContextType {
+export interface AuthContextType {
   user?: MeQuery['me'];
+  loadingUser: boolean;
+  isLoggedIn: boolean;
 }
 
 export const AuthContext = createContext<{
   data: AuthContextType;
 }>({
-  data: {},
+  data: { loadingUser: true, isLoggedIn: false },
 });
 
 export const useAuthStore = () => useContext(AuthContext);
@@ -21,8 +23,11 @@ export const AuthContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [data, setData] = useState<AuthContextType>({});
-  const { loading, error, data: meData, refetch } = useMeQuery();
+  const [data, setData] = useState<AuthContextType>({
+    loadingUser: true,
+    isLoggedIn: false,
+  });
+  const { loading: loadingMe, error, data: meData, refetch } = useMeQuery();
   const { isAuthenticated, createSession } = useSession();
 
   const tryToCreateSession = async () => {
@@ -33,14 +38,19 @@ export const AuthContextProvider = ({
   };
 
   useEffect(() => {
-    if (!loading && !error) {
-      if (meData) setData({ user: meData.me });
+    if (!loadingMe && !error) {
+      if (meData)
+        setData({
+          user: meData.me,
+          loadingUser: false,
+          isLoggedIn: !!meData.me,
+        });
       // If there is no user data, either the user doesn't have a session or
       // they don't exist. Since we can't tell the difference, we have to try to
       // create a session.
       if (!meData?.me) tryToCreateSession();
     }
-  }, [loading, error, meData, isAuthenticated]);
+  }, [loadingMe, error, meData, isAuthenticated]);
 
   return (
     <AuthContext.Provider

@@ -29,12 +29,6 @@ export const DASHBOARD_CHAPTER = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
       }
     }
   }

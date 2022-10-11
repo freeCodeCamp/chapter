@@ -1,10 +1,12 @@
 import React, { ReactElement, useState } from 'react';
 import { useRouter } from 'next/router';
-
-import { useCreateChapterMutation } from '../../../../generated/graphql';
+import {
+  CreateChapterInputs,
+  useCreateChapterMutation,
+} from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { Layout } from '../../shared/components/Layout';
-import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const NewChapterPage: NextPageWithLayout = () => {
@@ -15,13 +17,14 @@ export const NewChapterPage: NextPageWithLayout = () => {
     refetchQueries: [{ query: CHAPTERS }],
   });
 
-  const onSubmit = async (data: ChapterFormData) => {
+  const onSubmit = async (inputData: CreateChapterInputs) => {
     setLoading(true);
     try {
-      await createChapter({
-        variables: { data: { ...data } },
+      // ToDo: handle empty data differently
+      const { data } = await createChapter({
+        variables: { data: { ...inputData } },
       });
-      router.replace('/dashboard/chapters');
+      router.replace(`/dashboard/chapters/${data?.createChapter.id}/new-venue`);
     } catch (err) {
       console.error(err);
     } finally {

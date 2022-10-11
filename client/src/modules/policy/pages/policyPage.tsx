@@ -123,7 +123,7 @@ export const PolicyPage: NextPage = () => {
       {canAuthenticateWithGoogle && (
         <GridItem margin={'1em'}>
           <HeaderItem link="/profile" text="Edit Your Profile" />
-          <HeaderItem link="/chapters" text="View More Chapters" />
+          <HeaderItem link="/chapters" text="View All Chapters" />
           <HeaderItem link="/events" text="View All Events" />
         </GridItem>
       )}

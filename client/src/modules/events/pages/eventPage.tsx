@@ -70,59 +70,25 @@ export const EventPage: NextPage = () => {
       ({ user: event_user }) => event_user.id === user?.id,
     );
   }, [data?.event]);
-  const rsvpStatus =
-    eventUser?.rsvp.name !== 'no' ? eventUser?.rsvp.name : null;
-  const allDataLoaded = !loading && user;
-  const canCheckRsvp = router.query?.emaillink && !rsvpStatus;
-  useEffect(() => {
-    if (allDataLoaded && canCheckRsvp) checkOnRsvp();
-  }, [allDataLoaded, canCheckRsvp]);
+  const rsvpStatus = eventUser?.rsvp.name;
+  const allDataLoaded = !!user && !!data;
+  const fromEmailInviteLink = router.query?.emaillink;
+  const shouldRsvp = !rsvpStatus || rsvpStatus === 'no';
 
-  const isLoading = loading || !isReady || !data;
+  const chapterId = data?.event?.chapter.id;
 
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
-  if (!data.event)
-    return <NextError statusCode={404} title="Event not found" />;
-
-  const chapterId = data.event.chapter.id;
-
-  async function onSubscribeToEvent() {
-    const ok = await confirm({ title: 'Do you want to subscribe?' });
-    if (ok) {
-      try {
-        await subscribeToEvent({ variables: { eventId } });
-        toast({
-          title: 'You successfully subscribed to this event',
-          status: 'success',
-        });
-      } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
-        console.error(err);
-      }
-    }
-  }
-
-  async function onUnsubscribeFromEvent() {
-    const ok = await confirm({
-      title: 'Unsubscribe from event?',
-      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
-    });
-    if (ok) {
-      try {
-        await unsubscribeFromEvent({ variables: { eventId } });
-        toast({
-          title: 'You have unsubscribed from this event',
-          status: 'info',
-        });
-      } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
-        console.error(err);
-      }
-    }
-  }
+  // The useEffect has to be before the early return (rule of hooks), but the
+  // functions rely on chapterId which cannot be guaranteed to be defined here.
+  // It's easy to create bugs by calling arrow functions before they're defined,
+  // or by calling functions that rely on variables that aren't defined yet, so
+  // we define everything before it's used.
 
   async function onRsvp() {
-    const ok = await confirm({ title: 'You want to join this?' });
+    if (!chapterId) {
+      toast({ title: 'Something went wrong', status: 'error' });
+      return;
+    }
+    const ok = await confirm({ title: 'Are you sure you want to join this?' });
 
     if (ok) {
       try {
@@ -165,6 +131,61 @@ export const EventPage: NextPage = () => {
   async function checkOnRsvp() {
     if (!user) await login();
     await onRsvp();
+  }
+
+  // TODO: reimplment this the login modal with Auth0
+  async function checkOnCancelRsvp() {
+    if (!user) await login();
+    await onCancelRsvp();
+  }
+
+  useEffect(() => {
+    if (fromEmailInviteLink && allDataLoaded) {
+      if (shouldRsvp) {
+        checkOnRsvp();
+      } else {
+        checkOnCancelRsvp();
+      }
+    }
+  }, [allDataLoaded, fromEmailInviteLink]);
+
+  if (error || !data) return <Loading loading={loading} error={error} />;
+  if (!data.event)
+    return <NextError statusCode={404} title="Event not found" />;
+
+  async function onSubscribeToEvent() {
+    const ok = await confirm({ title: 'Do you want to subscribe?' });
+    if (ok) {
+      try {
+        await subscribeToEvent({ variables: { eventId } });
+        toast({
+          title: 'You successfully subscribed to this event',
+          status: 'success',
+        });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  }
+
+  async function onUnsubscribeFromEvent() {
+    const ok = await confirm({
+      title: 'Unsubscribe from event?',
+      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
+    });
+    if (ok) {
+      try {
+        await unsubscribeFromEvent({ variables: { eventId } });
+        toast({
+          title: 'You have unsubscribed from this event',
+          status: 'info',
+        });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
   }
 
   const rsvps = data.event.event_users.filter(
@@ -213,7 +234,9 @@ export const EventPage: NextPage = () => {
       </HStack>
       {rsvpStatus === 'yes' ? (
         <HStack>
-          <Heading>You&lsquo;ve RSVPed to this event</Heading>
+          <Heading data-cy="rsvp-success">
+            You&lsquo;ve RSVPed to this event
+          </Heading>
           <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>

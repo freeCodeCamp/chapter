@@ -24,7 +24,7 @@ interface VenueFormProps {
   chapterData?: ChapterQuery;
   adminedChapters?: { name: string; id: number }[];
   submitText: string;
-  chapterId: number;
+  chapterId?: number;
   loadingText: string;
 }
 
@@ -157,7 +157,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
             })}
             isDisabled={loading}
           >
-            {adminedChapters?.length &&
+            {adminedChapters.length &&
               adminedChapters.map(({ id, name }) => (
                 <option key={id} value={id}>
                   {name}

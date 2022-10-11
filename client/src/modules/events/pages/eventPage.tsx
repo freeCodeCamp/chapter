@@ -86,7 +86,7 @@ export const EventPage: NextPage = () => {
 
   const chapterId = data.event.chapter.id;
 
-  const onSubscribeToEvent = async () => {
+  async function onSubscribeToEvent() {
     const ok = await confirm({ title: 'Do you want to subscribe?' });
     if (ok) {
       try {
@@ -100,9 +100,9 @@ export const EventPage: NextPage = () => {
         console.error(err);
       }
     }
-  };
+  }
 
-  const onUnsubscribeFromEvent = async () => {
+  async function onUnsubscribeFromEvent() {
     const ok = await confirm({
       title: 'Unsubscribe from event?',
       body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
@@ -119,9 +119,9 @@ export const EventPage: NextPage = () => {
         console.error(err);
       }
     }
-  };
+  }
 
-  const onRsvp = async () => {
+  async function onRsvp() {
     const ok = await confirm({ title: 'You want to join this?' });
 
     if (ok) {
@@ -140,9 +140,9 @@ export const EventPage: NextPage = () => {
         console.error(err);
       }
     }
-  };
+  }
 
-  const onCancelRsvp = async () => {
+  async function onCancelRsvp() {
     const ok = await confirm({
       title: 'Are you sure you want to cancel your RSVP?',
     });
@@ -159,13 +159,13 @@ export const EventPage: NextPage = () => {
         console.error(err);
       }
     }
-  };
+  }
 
   // TODO: reimplment this the login modal with Auth0
-  const checkOnRsvp = async () => {
+  async function checkOnRsvp() {
     if (!user) await login();
     await onRsvp();
-  };
+  }
 
   const rsvps = data.event.event_users.filter(
     ({ rsvp }) => rsvp.name === 'yes',

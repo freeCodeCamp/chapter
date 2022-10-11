@@ -5,15 +5,12 @@ import { Grid, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 import { ChapterCard } from '../../../components/ChapterCard';
 import { useChaptersQuery } from '../../../generated/graphql';
-import { useCheckPermission } from '../../../hooks/useCheckPermission';
-import { Permission } from '../../../../../common/permissions';
-import { Loading } from 'components/Loading';
+import { Loading } from '../../../components/Loading';
+import { useAuth } from '../../../modules/auth/store';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
-  const canAuthenticateWithGoogle = useCheckPermission(
-    Permission.GoogleAuthenticate,
-  );
+  const { isLoggedIn } = useAuth();
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
@@ -21,7 +18,7 @@ export const ChaptersPage: NextPage = () => {
     <Stack mt={10} mb={5} display={'block'}>
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Heading marginBlock={'1em'}>Chapters: </Heading>
-        {canAuthenticateWithGoogle && (
+        {isLoggedIn && (
           <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
             Chapter Dashboard
           </LinkButton>

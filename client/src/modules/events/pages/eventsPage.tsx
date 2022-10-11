@@ -6,8 +6,7 @@ import { LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
-import { useCheckPermission } from '../../../hooks/useCheckPermission';
-import { Permission } from '../../../../../common/permissions';
+import { useAuth } from '../../../modules/auth/store';
 
 function Pagination({
   currentPage = 1,
@@ -59,9 +58,7 @@ const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
-  const canAuthenticateWithGoogle = useCheckPermission(
-    Permission.GoogleAuthenticate,
-  );
+  const { isLoggedIn } = useAuth();
   const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
@@ -83,7 +80,7 @@ export const EventsPage: NextPage = () => {
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading>Events: </Heading>
-          {canAuthenticateWithGoogle && (
+          {isLoggedIn && (
             <LinkButton href="/dashboard/events" colorScheme={'blue'}>
               Events Dashboard
             </LinkButton>

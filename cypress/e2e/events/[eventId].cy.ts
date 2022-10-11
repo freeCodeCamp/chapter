@@ -92,9 +92,9 @@ describe('event page', () => {
     cy.login('test@user.org');
     cy.visit('/events/1?emaillink=true');
 
-    cy.contains('Are you sure you want join this?');
+    cy.contains('Are you sure you want to join this?');
     cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains("You've RSVPed to this event");
+    cy.get('[data-cy="rsvp-success"]').should('be.visible');
     cy.findByRole('button', { name: 'Cancel' }).should('be.visible');
   });
 

@@ -19,7 +19,7 @@ import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
-import { useAuthStore } from '../../auth/store';
+import { useAuth } from '../../auth/store';
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
 import { EVENT } from '../graphql/queries';
@@ -38,9 +38,7 @@ import { useLogin } from 'hooks/useAuth';
 export const EventPage: NextPage = () => {
   const { param: eventId, isReady } = useParam('eventId');
   const router = useRouter();
-  const {
-    data: { user },
-  } = useAuthStore();
+  const { user } = useAuth();
   const login = useLogin();
 
   const refetch = {

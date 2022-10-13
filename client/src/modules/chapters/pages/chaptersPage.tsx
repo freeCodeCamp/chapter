@@ -1,7 +1,7 @@
-import { Heading, Stack } from '@chakra-ui/layout';
+import { Heading, Grid, Flex, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/button';
 import { Loading } from 'components/Loading';
 import { ChapterCard } from 'components/ChapterCard';
 import { useChaptersQuery } from 'generated/graphql';
@@ -13,15 +13,27 @@ export const ChaptersPage: NextPage = () => {
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
   return (
-    <Stack mt={10} mb={5} display={'block'}>
-      <Heading marginBlock={'1em'}>Chapters: </Heading>
-      <Grid gap="1em" width={'80vw'} marginBlock={0}>
+    <Center>
+      <Grid
+        gap="1em"
+        w={['90%', '90%', '60%']}
+        maxW="37.5em"
+        mt={10}
+        mb={5}
+        placeItems={'center'}
+      >
+        <Flex
+          justifyContent={'space-between'}
+          alignItems={'center'}
+          width={'100%'}
+        >
+          <Heading marginBlock={'1em'}>Chapters: </Heading>
+          <Button>Hello Dashboard</Button>
+        </Flex>
         {data.chapters.map((chapter) => (
-          <GridItem key={chapter.id}>
-            <ChapterCard chapter={chapter} />
-          </GridItem>
+          <ChapterCard key={chapter.id} chapter={chapter} />
         ))}
       </Grid>
-    </Stack>
+    </Center>
   );
 };

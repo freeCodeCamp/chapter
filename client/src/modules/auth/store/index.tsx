@@ -15,7 +15,6 @@ export const AuthContext = createContext<{
   data: { loadingUser: true, isLoggedIn: false },
 });
 
-export const useAuthStore = () => useContext(AuthContext);
 export const useAuth = () => useContext(AuthContext).data;
 
 export const AuthContextProvider = ({

@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import NextLink from 'next/link';
 
-import { useAuthStore } from '../../modules/auth/store';
+import { useAuth } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
 import { checkPermission } from '../../util/check-permission';
@@ -58,9 +58,7 @@ const LoginButton = () => {
 
 export const Header: React.FC = () => {
   const router = useRouter();
-  const {
-    data: { user, loadingUser },
-  } = useAuthStore();
+  const { user, loadingUser } = useAuth();
   const logout = useLogout();
 
   const canAuthenticateWithGoogle = checkPermission(

@@ -16,15 +16,9 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       borderRadius="lg"
       overflow="hidden"
       width="full"
-      isolation={'isolate'}
       gap={'2'}
     >
-      <Grid
-        templateColumns="repeat(2, 1fr)"
-        gap={'3'}
-        marginRight={'1em'}
-        marginBlock={'.5em'}
-      >
+      <Grid templateColumns="repeat(2, 1fr)" gap={'3'} marginRight={'1em'}>
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
             <Flex justifyContent={'space-between'}>

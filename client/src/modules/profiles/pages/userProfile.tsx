@@ -21,7 +21,7 @@ export const UserProfilePage = () => {
   const logout = useLogout();
   const router = useRouter();
 
-  const confirmDelete = useConfirmDelete({ doubleConfirm: true });
+  const confirmDelete = useConfirmDelete({ buttonText: 'Yes, im sure' });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation({
     refetchQueries: [{ query: meQuery }],

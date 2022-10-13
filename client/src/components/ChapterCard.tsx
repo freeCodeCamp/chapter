@@ -17,8 +17,21 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       overflow="hidden"
       width="full"
       gap={'2'}
+      backgroundImage={chapter.image_url}
+      backgroundPosition={'center'}
+      backgroundRepeat={'no-repeat'}
+      backgroundSize={'cover'}
     >
-      <Grid templateColumns="repeat(2, 1fr)" gap={'3'} marginRight={'1em'}>
+      <Grid
+        templateColumns="repeat(2, 1fr)"
+        height={'100%'}
+        width={'100%'}
+        gap={'3'}
+        marginRight={'1em'}
+        paddingBlock={'.5em'}
+        color={'gray.00'}
+        bgGradient="linear(to-b, hsl(240 14% 27% / .4), hsl(240 14% 27% / .7), hsl(240 14% 10%))"
+      >
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
             <Flex justifyContent={'space-between'}>
@@ -31,7 +44,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               >
                 {chapter.name}
               </Heading>
-              <Text color={'darkcyan'} fontWeight="bold" as="h4">
+              <Text color={'gray-00'} fontWeight="bold" as="h4">
                 {chapter.city}
               </Text>
             </Flex>
@@ -73,7 +86,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                     mt="2"
                     fontWeight={600}
                     fontSize={['sm', 'md', 'lg']}
-                    color={'darkcyan'}
+                    color={'gray-00'}
                   >
                     Capacity:{capacity}
                   </Text>

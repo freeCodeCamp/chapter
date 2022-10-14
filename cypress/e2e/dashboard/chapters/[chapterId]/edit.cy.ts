@@ -35,7 +35,7 @@ describe('chapter edit dashboard', () => {
     cy.findByRole('textbox', { name: 'Category' })
       .clear()
       .type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Image Url' })
+    cy.findByRole('textbox', { name: 'Banner Url' })
       .clear()
       .type(chapterData.banner_url);
 

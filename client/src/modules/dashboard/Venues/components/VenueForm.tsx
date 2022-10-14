@@ -5,7 +5,7 @@ import {
   Heading,
   Select,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import type {
@@ -18,7 +18,6 @@ import { Form } from '../../../../components/Form/Form';
 export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
 interface VenueFormProps {
-  loading: boolean;
   onSubmit: (data: VenueFormData) => Promise<void>;
   data?: VenueQuery;
   chapterData?: ChapterQuery;
@@ -119,7 +118,6 @@ const getDefaultValues = (chapterId: number, venue?: VenueQuery['venue']) => ({
 
 const VenueForm: React.FC<VenueFormProps> = (props) => {
   const {
-    loading,
     onSubmit,
     data,
     submitText,
@@ -128,6 +126,8 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     chapterData,
     adminedChapters = [],
   } = props;
+
+  const [loading, setLoading] = useState(false);
   const venue = data?.venue;
 
   const defaultChapterId = adminedChapters[0]?.id ?? chapterId;
@@ -143,8 +143,21 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     defaultValues,
   });
 
+  const disableWhileSubmitting = async (data: VenueFormData) => {
+    setLoading(true);
+    try {
+      await onSubmit(data);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
   return (
-    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
       {chapterData ? (
         <Heading>{chapterData.chapter.name}</Heading>
       ) : (

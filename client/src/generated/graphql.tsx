@@ -32,6 +32,7 @@ export type Chapter = {
   description: Scalars['String'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -76,6 +77,7 @@ export type ChapterWithEvents = {
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -92,6 +94,7 @@ export type ChapterWithRelations = {
   events: Array<Event>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
@@ -104,6 +107,7 @@ export type CreateChapterInputs = {
   country: Scalars['String'];
   description: Scalars['String'];
   image_url: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -561,6 +565,7 @@ export type UpdateChapterInputs = {
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   image_url?: InputMaybe<Scalars['String']>;
+  logo_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -711,6 +716,7 @@ export type ChapterQuery = {
     region: string;
     country: string;
     image_url: string;
+    logo_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -771,6 +777,7 @@ export type ChaptersQuery = {
     name: string;
     description: string;
     image_url: string;
+    logo_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -897,6 +904,7 @@ export type DashboardChapterQuery = {
     region: string;
     country: string;
     image_url: string;
+    logo_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -1747,6 +1755,7 @@ export const ChapterDocument = gql`
       region
       country
       image_url
+      logo_url
       chat_url
       events {
         id
@@ -1949,6 +1958,7 @@ export const ChaptersDocument = gql`
       name
       description
       image_url
+      logo_url
       city
       events {
         id
@@ -2405,6 +2415,7 @@ export const DashboardChapterDocument = gql`
       region
       country
       image_url
+      logo_url
       chat_url
       events {
         id

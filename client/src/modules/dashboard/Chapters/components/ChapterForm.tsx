@@ -77,6 +77,13 @@ const fields: Fields[] = [
     type: 'url',
   },
   {
+    key: 'logo_url',
+    label: 'Logo Url',
+    placeholder: 'https://www.freecodecamplogo.org',
+    required: false,
+    type: 'url',
+  },
+  {
     key: 'chat_url',
     label: 'Chat link',
     placeholder: 'https://discord.gg/KVUmVXA',
@@ -97,6 +104,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
     image_url: chapter?.image_url ?? '',
+    logo_url: chapter?.logo_url ?? '',
     chat_url: chapter?.chat_url ?? '',
   };
   const {

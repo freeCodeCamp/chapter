@@ -28,6 +28,9 @@ export class Chapter extends BaseObject {
   @Field(() => String)
   image_url!: string;
 
+  @Field(() => String)
+  logo_url!: string;
+
   @Field(() => Int)
   creator_id: number;
 }

@@ -8,6 +8,7 @@ const chapterData = {
   country: 'Home country',
   category: 'Type of chapter',
   image_url: 'https://example.com/image.jpg',
+  logo_url: 'https://example.com/image.jpg',
 };
 
 // TODO: move this and other fixtures to a common file
@@ -79,6 +80,7 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
     cy.findByRole('textbox', { name: 'Image Url' }).type(chapterData.image_url);
+    cy.findByRole('textbox', { name: 'logo Url' }).type(chapterData.logo_url);
 
     cy.findByRole('form', { name: 'Add chapter' })
       .findByRole('button', {

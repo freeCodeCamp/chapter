@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import NextError from 'next/error';
 
 import {
@@ -16,8 +16,6 @@ import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EditVenuePage: NextPageWithLayout = () => {
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
-
   const router = useRouter();
   const { param: venueId, isReady: isVenueIdReady } = useParam('venueId');
   const { param: chapterId, isReady: isChapterIdReady } = useParam('id');
@@ -45,25 +43,20 @@ export const EditVenuePage: NextPageWithLayout = () => {
   });
 
   const onSubmit = async (data: VenueFormData) => {
-    setLoadingUpdate(true);
     const { chapter_id, ...updateData } = data;
-    try {
-      const latitude = parseFloat(String(data.latitude));
-      const longitude = parseFloat(String(data.longitude));
 
-      await updateVenue({
-        variables: {
-          venueId,
-          chapterId: chapter_id,
-          data: { ...updateData, latitude, longitude },
-        },
-      });
-      await router.push('/dashboard/venues');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingUpdate(false);
-    }
+    const latitude = parseFloat(String(data.latitude));
+    const longitude = parseFloat(String(data.longitude));
+
+    const { errors } = await updateVenue({
+      variables: {
+        venueId,
+        chapterId: chapter_id,
+        data: { ...updateData, latitude, longitude },
+      },
+    });
+    if (errors) throw errors;
+    await router.push('/dashboard/venues');
   };
 
   const hasLoaded = !!venueData && !!chapterData;
@@ -79,7 +72,6 @@ export const EditVenuePage: NextPageWithLayout = () => {
     <VenueForm
       data={venueData}
       chapterData={chapterData}
-      loading={loadingUpdate}
       onSubmit={onSubmit}
       submitText={'Save Venue Changes'}
       chapterId={chapterId}

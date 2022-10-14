@@ -1471,6 +1471,7 @@ export type HomeQuery = {
     name: string;
     description: string;
     image_url: string;
+    logo_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -4179,6 +4180,7 @@ export const HomeDocument = gql`
       name
       description
       image_url
+      logo_url
       city
       events {
         id

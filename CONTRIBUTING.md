@@ -9,7 +9,6 @@
   - [Manual Mode](#running-the-application)
 - [Adding a New Feature](#adding-a-new-feature)
   - [Where to Find the Code](#where-to-find-the-code)
-  - [Where to Find the Issues](#where-to-find-the-issues)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -429,10 +428,6 @@ After you have added new feature, to make sure it stays working, we recommend us
 * Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
 * Cypress test coverage spec files should go in _/cypress/e2e_, roughly mirroring the client pages pattern
 
-## Where to Find the Issues
-
-[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
-
 # Frequently Asked Questions
 
 <details><summary>What do we need help with right now?</summary>
@@ -489,6 +484,12 @@ For example, to add a new `express` to the client, run `npm i -w=client express`
 ## Updating dependencies
 
 We rely on renovate to update dependencies automatically.
+
+</details>
+
+<details><summary>Where to find the issues to contribute?</summary>
+
+The repository's [contribute page](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started with beginner friendly issue.
 
 </details>
 

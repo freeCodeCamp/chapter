@@ -185,6 +185,15 @@ ${venueDetails}`;
 };
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
+  const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
+    streaming_url: isOnline(event.venue_type)
+      ? data.streaming_url ?? event.streaming_url
+      : null,
+    venue: isPhysical(event.venue_type)
+      ? { connect: { id: data.venue_id } }
+      : { disconnect: true },
+  });
+
   const update = {
     invite_only: data.invite_only ?? event.invite_only,
     name: data.name ?? event.name,
@@ -199,15 +208,6 @@ const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   };
   return update;
 };
-
-const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
-  streaming_url: isOnline(event.venue_type)
-    ? data.streaming_url ?? event.streaming_url
-    : null,
-  venue: isPhysical(event.venue_type)
-    ? { connect: { id: data.venue_id } }
-    : { disconnect: true },
-});
 
 const chapterUserInclude = {
   include: {

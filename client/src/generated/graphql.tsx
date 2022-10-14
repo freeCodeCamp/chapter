@@ -115,17 +115,6 @@ export type CreateSponsorInputs = {
   website: Scalars['String'];
 };
 
-export type CreateVenueInputs = {
-  city: Scalars['String'];
-  country: Scalars['String'];
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  name: Scalars['String'];
-  postal_code: Scalars['String'];
-  region: Scalars['String'];
-  street_address?: InputMaybe<Scalars['String']>;
-};
-
 export type Email = {
   __typename?: 'Email';
   backupText: Scalars['String'];
@@ -346,7 +335,7 @@ export type MutationCreateSponsorArgs = {
 
 export type MutationCreateVenueArgs = {
   chapterId: Scalars['Int'];
-  data: CreateVenueInputs;
+  data: VenueInputs;
 };
 
 export type MutationDeleteChapterArgs = {
@@ -427,7 +416,7 @@ export type MutationUpdateSponsorArgs = {
 
 export type MutationUpdateVenueArgs = {
   chapterId: Scalars['Int'];
-  data: UpdateVenueInputs;
+  data: VenueInputs;
   venueId: Scalars['Int'];
 };
 
@@ -576,17 +565,6 @@ export type UpdateUserInputs = {
   name?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateVenueInputs = {
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  name?: InputMaybe<Scalars['String']>;
-  postal_code?: InputMaybe<Scalars['String']>;
-  region?: InputMaybe<Scalars['String']>;
-  street_address?: InputMaybe<Scalars['String']>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
@@ -620,6 +598,17 @@ export type Venue = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
+};
+
+export type VenueInputs = {
+  city: Scalars['String'];
+  country: Scalars['String'];
+  latitude?: InputMaybe<Scalars['Float']>;
+  longitude?: InputMaybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: InputMaybe<Scalars['String']>;
 };
 
 /** All possible venue types for an event */
@@ -1215,7 +1204,7 @@ export type UsersQuery = {
 
 export type CreateVenueMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: CreateVenueInputs;
+  data: VenueInputs;
 }>;
 
 export type CreateVenueMutation = {
@@ -1237,7 +1226,7 @@ export type CreateVenueMutation = {
 export type UpdateVenueMutationVariables = Exact<{
   venueId: Scalars['Int'];
   chapterId: Scalars['Int'];
-  data: UpdateVenueInputs;
+  data: VenueInputs;
 }>;
 
 export type UpdateVenueMutation = {
@@ -3525,7 +3514,7 @@ export type UsersQueryResult = Apollo.QueryResult<
   UsersQueryVariables
 >;
 export const CreateVenueDocument = gql`
-  mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+  mutation createVenue($chapterId: Int!, $data: VenueInputs!) {
     createVenue(chapterId: $chapterId, data: $data) {
       id
       name
@@ -3584,11 +3573,7 @@ export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutationVariables
 >;
 export const UpdateVenueDocument = gql`
-  mutation updateVenue(
-    $venueId: Int!
-    $chapterId: Int!
-    $data: UpdateVenueInputs!
-  ) {
+  mutation updateVenue($venueId: Int!, $chapterId: Int!, $data: VenueInputs!) {
     updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
       id
       name

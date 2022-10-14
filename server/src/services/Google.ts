@@ -42,6 +42,15 @@ const scopes = [
   'profile',
 ];
 
+function createOAuth2Client() {
+  if (!keys) throw new Error('OAuth2 keys file missing');
+  return new OAuth2Client(
+    keys.client_id,
+    keys.client_secret,
+    keys.redirect_uris[0],
+  );
+}
+
 export function getGoogleAuthUrl(state: string) {
   const oauth2Client = createOAuth2Client();
 
@@ -50,25 +59,6 @@ export function getGoogleAuthUrl(state: string) {
     scope: scopes.join(' '),
     state,
   });
-}
-
-export async function requestTokens(code: string) {
-  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
-
-  try {
-    await oauth2Client.getToken(code);
-  } catch {
-    throw new Error('Failed to get tokens');
-  }
-}
-
-function createOAuth2Client() {
-  if (!keys) throw new Error('OAuth2 keys file missing');
-  return new OAuth2Client(
-    keys.client_id,
-    keys.client_secret,
-    keys.redirect_uris[0],
-  );
 }
 
 // TODO: Communicate these errors to the user. As of now, if the user
@@ -120,6 +110,16 @@ async function onTokens(tokens: Credentials) {
       where: { id: TOKENS_ID },
       data: { ...update },
     });
+  }
+}
+
+export async function requestTokens(code: string) {
+  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
+
+  try {
+    await oauth2Client.getToken(code);
+  } catch {
+    throw new Error('Failed to get tokens');
   }
 }
 
@@ -179,6 +179,40 @@ interface EventUpdateData extends EventData {
   calendarEventId: string;
 }
 
+function getStandardPatchBody({
+  attendeeEmails,
+  start,
+  end,
+  summary,
+}: Partial<EventData>): calendar_v3.Schema$Event {
+  return {
+    ...(start && { start: { dateTime: start.toISOString() } }),
+    ...(end && { end: { dateTime: end.toISOString() } }),
+    ...(summary && { summary }),
+    ...(attendeeEmails && {
+      // Since Google will send emails to these addresses, we don't want to
+      // accidentally send emails in testing.
+      attendees: isProd()
+        ? attendeeEmails.map((email: string) => ({ email }))
+        : [],
+    }),
+  };
+}
+
+function getStandardRequestBody({
+  attendeeEmails,
+  start,
+  end,
+  summary,
+}: EventData) {
+  const body: calendar_v3.Schema$Event = {
+    ...getStandardPatchBody({ attendeeEmails, start, end, summary }),
+    guestsCanSeeOtherGuests: false,
+    guestsCanInviteOthers: false,
+  };
+  return body;
+}
+
 export async function createCalendarEvent(eventData: EventData) {
   const calendarApi = await createCalendarApi();
 
@@ -233,40 +267,6 @@ export async function cancelCalendarEvent(eventUpdateData: EventUpdateData) {
       status: 'cancelled',
     },
   });
-}
-
-function getStandardRequestBody({
-  attendeeEmails,
-  start,
-  end,
-  summary,
-}: EventData) {
-  const body: calendar_v3.Schema$Event = {
-    ...getStandardPatchBody({ attendeeEmails, start, end, summary }),
-    guestsCanSeeOtherGuests: false,
-    guestsCanInviteOthers: false,
-  };
-  return body;
-}
-
-function getStandardPatchBody({
-  attendeeEmails,
-  start,
-  end,
-  summary,
-}: Partial<EventData>): calendar_v3.Schema$Event {
-  return {
-    ...(start && { start: { dateTime: start.toISOString() } }),
-    ...(end && { end: { dateTime: end.toISOString() } }),
-    ...(summary && { summary }),
-    ...(attendeeEmails && {
-      // Since Google will send emails to these addresses, we don't want to
-      // accidentally send emails in testing.
-      attendees: isProd()
-        ? attendeeEmails.map((email: string) => ({ email }))
-        : [],
-    }),
-  };
 }
 
 export async function deleteCalendarEvent({

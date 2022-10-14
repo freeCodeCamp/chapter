@@ -56,6 +56,26 @@ describe('spec needing owner', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
+  function sendAndCheckEmails(filterCallback, users) {
+    cy.mhDeleteAll();
+    cy.findByRole('button', { name: 'Send Email' }).click();
+    cy.contains('Email sent');
+
+    const recipientEmails = users
+      .filter(filterCallback)
+      .map(({ user: { email } }) => email);
+    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
+    recipientEmails.forEach((recipientEmail) => {
+      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
+      cy.get('@currentRecipient').should('have.length', 1);
+      cy.get('@currentRecipient')
+        .mhFirst()
+        .then((mail) => {
+          cy.checkBcc(mail).should('eq', true);
+        });
+    });
+  }
+
   it('has a button to email attendees', () => {
     cy.visit('/dashboard/events/1');
     // sending to confirmed first
@@ -89,26 +109,6 @@ describe('spec needing owner', () => {
       sendAndCheckEmails(() => true, eventUsers);
     });
   });
-
-  function sendAndCheckEmails(filterCallback, users) {
-    cy.mhDeleteAll();
-    cy.findByRole('button', { name: 'Send Email' }).click();
-    cy.contains('Email sent');
-
-    const recipientEmails = users
-      .filter(filterCallback)
-      .map(({ user: { email } }) => email);
-    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
-    recipientEmails.forEach((recipientEmail) => {
-      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
-      cy.get('@currentRecipient').should('have.length', 1);
-      cy.get('@currentRecipient')
-        .mhFirst()
-        .then((mail) => {
-          cy.checkBcc(mail).should('eq', true);
-        });
-    });
-  }
 
   it('invitation email should include calendar file', () => {
     cy.visit('/dashboard/events/1');

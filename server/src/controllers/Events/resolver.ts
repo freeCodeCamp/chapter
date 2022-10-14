@@ -97,8 +97,8 @@ const getUnsubscribeOptions = ({
   );
   return `
 Unsubscribe Options</br>
-- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Turn off notifications for this event</a></br>
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications from this chapter</a>`;
 };
 
 const sendRsvpInvitation = async (
@@ -990,17 +990,18 @@ ${unsubscribeOptions}`,
       url: eventURL,
     });
 
-    const body = `When: ${event.start_at} to ${event.ends_at}<br>
+    const body = `You are invited to ${event.chapter.name}'s new event, ${
+      event.name
+    }<br>When: ${event.start_at} to ${event.ends_at}<br>
 ${event.venue ? `Where: ${event.venue.name}<br>` : ''}
 ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
-Event Details: <a href="${eventURL}">${eventURL}</a><br>
+Go <a href="${eventURL}">here</a> if you would like to attend.<br>
     <br>
-    - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
+    <br>
+    ----------------------------<br>
     - More about ${
       event.chapter.name
     } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
-    <br>
-    ----------------------------<br>
     You received this email because you follow this chapter.<br>
     <br>
     See the options above to change your notifications.`;

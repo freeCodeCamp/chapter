@@ -208,8 +208,7 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
     cy.wait('@GQLevents');
-    cy.url().should('include', '/events');
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -225,7 +224,7 @@ describe('spec needing owner', () => {
       })
       .click();
 
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
     });
@@ -247,7 +246,7 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
     cy.wait('@GQLevents');
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
@@ -255,7 +254,7 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Delete' }).click();
     cy.findByRole('button', { name: 'Delete' }).click();
 
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.contains(eventTitle).should('not.exist');
     });

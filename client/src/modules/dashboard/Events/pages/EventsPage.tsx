@@ -21,7 +21,7 @@ export const EventsPage: NextPageWithLayout = () => {
     return <DashboardLoading loading={isLoading} error={error} />;
 
   return (
-    <VStack>
+    <VStack data-cy="events-dashboard">
       <Flex w="full" justify="space-between">
         <Heading id="page-heading">Events</Heading>
         {!!user?.admined_chapters.length && (

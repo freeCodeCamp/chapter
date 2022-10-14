@@ -71,7 +71,7 @@ const fields: Fields[] = [
   },
   {
     key: 'banner_url',
-    label: 'Image Url',
+    label: 'Banner Url',
     placeholder: 'https://www.freecodecamp.org',
     required: false,
     type: 'url',

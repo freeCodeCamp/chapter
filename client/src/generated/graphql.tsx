@@ -24,6 +24,7 @@ export type Scalars = {
 
 export type Chapter = {
   __typename?: 'Chapter';
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -31,7 +32,6 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -67,6 +67,7 @@ export type ChapterUser = {
 
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -75,13 +76,13 @@ export type ChapterWithEvents = {
   description: Scalars['String'];
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
 
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -91,19 +92,18 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
 };
 
 export type CreateChapterInputs = {
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: InputMaybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -555,12 +555,12 @@ export type SponsoredEvent = {
 };
 
 export type UpdateChapterInputs = {
+  banner_url?: InputMaybe<Scalars['String']>;
   category?: InputMaybe<Scalars['String']>;
   chat_url?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -710,7 +710,7 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    image_url: string;
+    banner_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -770,7 +770,7 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    image_url: string;
+    banner_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -896,7 +896,7 @@ export type DashboardChapterQuery = {
     city: string;
     region: string;
     country: string;
-    image_url: string;
+    banner_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -1462,7 +1462,7 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    image_url: string;
+    banner_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -1746,7 +1746,7 @@ export const ChapterDocument = gql`
       city
       region
       country
-      image_url
+      banner_url
       chat_url
       events {
         id
@@ -1948,7 +1948,7 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      image_url
+      banner_url
       city
       events {
         id
@@ -2404,7 +2404,7 @@ export const DashboardChapterDocument = gql`
       city
       region
       country
-      image_url
+      banner_url
       chat_url
       events {
         id
@@ -4167,7 +4167,7 @@ export const HomeDocument = gql`
       id
       name
       description
-      image_url
+      banner_url
       city
       events {
         id

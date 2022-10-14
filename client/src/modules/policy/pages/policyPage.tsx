@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { NextPage } from 'next';
 import { Flex, Grid, Heading, Text, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
@@ -12,7 +12,7 @@ interface Props {
 export const PolicyPage: NextPage = () => {
   const { isLoggedIn } = useAuth();
 
-  const HeaderItem = forwardRef<HTMLDivElement, Props>(({ link, text }) => {
+  const HeaderItem = ({ link, text }: Props) => {
     return (
       <LinkButton
         width={'18em'}
@@ -23,7 +23,7 @@ export const PolicyPage: NextPage = () => {
         {text}
       </LinkButton>
     );
-  });
+  };
   return (
     <Grid>
       <Flex flexDirection={'column'} gap={'1em'}>

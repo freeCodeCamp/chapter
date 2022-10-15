@@ -1,6 +1,7 @@
 import { HStack } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
+import NextError from 'next/error';
 import React from 'react';
 
 import { Permission } from '../../../../../../common/permissions';
@@ -34,7 +35,7 @@ export const Layout = ({
   [prop: string]: unknown;
 }) => {
   const router = useRouter();
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser, isLoggedIn } = useAuth();
 
   const linksWithPermissions = links.map((link) => {
     if (!link.requiredPermission) return link;
@@ -43,6 +44,8 @@ export const Layout = ({
   });
 
   if (loadingUser) return <Loading loading={loadingUser} />;
+  if (!isLoggedIn)
+    return <NextError statusCode={401} title={'Log in to see this page'} />;
 
   return (
     <div data-cy={dataCy}>

@@ -9,7 +9,7 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
-import { useAuthStore } from '../../auth/store';
+import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
 import { meQuery } from 'modules/auth/graphql/queries';
 import { useLogout } from 'hooks/useAuth';
@@ -18,9 +18,7 @@ export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const serverUrl =
     process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
-  const {
-    data: { user },
-  } = useAuthStore();
+  const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
 

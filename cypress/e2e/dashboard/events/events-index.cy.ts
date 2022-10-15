@@ -1,3 +1,4 @@
+import add from 'date-fns/add';
 import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
@@ -9,7 +10,7 @@ const eventOneData = {
   streaming_url: null,
   capacity: 149,
   start_at: new Date(),
-  ends_at: new Date(),
+  ends_at: add(new Date(), { minutes: 30 }),
   venue_type: 'Physical',
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',
@@ -56,6 +57,26 @@ describe('spec needing owner', () => {
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
+  function sendAndCheckEmails(filterCallback, users) {
+    cy.mhDeleteAll();
+    cy.findByRole('button', { name: 'Send Email' }).click();
+    cy.contains('Email sent');
+
+    const recipientEmails = users
+      .filter(filterCallback)
+      .map(({ user: { email } }) => email);
+    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
+    recipientEmails.forEach((recipientEmail) => {
+      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
+      cy.get('@currentRecipient').should('have.length', 1);
+      cy.get('@currentRecipient')
+        .mhFirst()
+        .then((mail) => {
+          cy.checkBcc(mail).should('eq', true);
+        });
+    });
+  }
+
   it('has a button to email attendees', () => {
     cy.visit('/dashboard/events/1');
     // sending to confirmed first
@@ -89,26 +110,6 @@ describe('spec needing owner', () => {
       sendAndCheckEmails(() => true, eventUsers);
     });
   });
-
-  function sendAndCheckEmails(filterCallback, users) {
-    cy.mhDeleteAll();
-    cy.findByRole('button', { name: 'Send Email' }).click();
-    cy.contains('Email sent');
-
-    const recipientEmails = users
-      .filter(filterCallback)
-      .map(({ user: { email } }) => email);
-    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
-    recipientEmails.forEach((recipientEmail) => {
-      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
-      cy.get('@currentRecipient').should('have.length', 1);
-      cy.get('@currentRecipient')
-        .mhFirst()
-        .then((mail) => {
-          cy.checkBcc(mail).should('eq', true);
-        });
-    });
-  }
 
   it('invitation email should include calendar file', () => {
     cy.visit('/dashboard/events/1');
@@ -210,8 +211,7 @@ describe('spec needing owner', () => {
     cy.contains('Loading...');
 
     cy.wait('@GQLevents');
-    cy.url().should('include', '/events');
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -227,7 +227,7 @@ describe('spec needing owner', () => {
       })
       .click();
 
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
     });
@@ -249,7 +249,7 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
     cy.wait('@GQLevents');
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
@@ -257,7 +257,7 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Delete' }).click();
     cy.findByRole('button', { name: 'Delete' }).click();
 
-    cy.get('#page-heading').contains('Events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.contains(eventTitle).should('not.exist');
     });

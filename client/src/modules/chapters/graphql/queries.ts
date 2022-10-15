@@ -76,7 +76,8 @@ export const CHAPTERS = gql`
       events {
         id
         name
-        capacity
+        canceled
+        start_at
         venue {
           id
           name

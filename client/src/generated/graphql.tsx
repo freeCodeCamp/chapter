@@ -765,7 +765,8 @@ export type ChaptersQuery = {
       __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      capacity: number;
+      canceled: boolean;
+      start_at: any;
       venue?: {
         __typename?: 'Venue';
         id: number;
@@ -1942,7 +1943,8 @@ export const ChaptersDocument = gql`
       events {
         id
         name
-        capacity
+        canceled
+        start_at
         venue {
           id
           name

@@ -9,6 +9,7 @@ type ChapterCardProps = {
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
+  const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
   return (
     <Grid
       data-cy="chapter-card"
@@ -17,7 +18,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       overflow="hidden"
       width="full"
       gap={'2'}
-      backgroundImage={chapter.image_url}
+      backgroundImage={chapter.banner_url}
       backgroundPosition={'center'}
       backgroundRepeat={'no-repeat'}
       backgroundSize={'cover'}
@@ -70,42 +71,48 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           >
             Organized Events
           </Heading>
-          {chapter.events.map(({ id, name, venue, capacity }, index) => (
-            <Link key={id} href={`/events/${id}`} _hover={{}}>
-              <Flex
-                direction={'column'}
-                paddingLeft={'1em'}
-                paddingBlock={'.5em'}
-                justifyContent={'space-between'}
-              >
-                <Flex justifyContent={'space-between'}>
-                  <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                    {index + 1}. {name}
-                  </Text>
-                  <Text
-                    mt="2"
-                    fontWeight={600}
-                    fontSize={['sm', 'md', 'lg']}
-                    color={'gray-00'}
-                  >
-                    Capacity:{capacity}
-                  </Text>
-                </Flex>
-                {venue && (
-                  <Flex
-                    fontWeight={'400'}
-                    marginTop={'.25em'}
-                    opacity=".9"
-                    fontSize={['smaller', 'sm', 'md']}
-                    justifyContent="space-between"
-                  >
-                    <Text>Hosted at: {venue.name}</Text>
-                    <Text> {venue.region}</Text>
+          {chapter.events.map(
+            ({ id, name, venue, canceled, start_at }, index) => (
+              <Link key={id} href={`/events/${id}`} _hover={{}}>
+                <Flex
+                  direction={'column'}
+                  paddingLeft={'1em'}
+                  paddingBlock={'.5em'}
+                  justifyContent={'space-between'}
+                >
+                  <Flex justifyContent={'space-between'}>
+                    <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                      {index + 1}. {name}
+                    </Text>
+                    <Text
+                      mt="2"
+                      fontWeight={600}
+                      fontSize={['sm', 'md', 'lg']}
+                      {...canceledStyle}
+                    >
+                      {canceled
+                        ? 'Canceled'
+                        : new Date(start_at) < new Date()
+                        ? 'Passed'
+                        : 'Upcoming'}
+                    </Text>
                   </Flex>
-                )}
-              </Flex>
-            </Link>
-          ))}
+                  {venue && (
+                    <Flex
+                      fontWeight={'400'}
+                      marginTop={'.25em'}
+                      opacity=".9"
+                      fontSize={['smaller', 'sm', 'md']}
+                      justifyContent="space-between"
+                    >
+                      <Text>Hosted at: {venue.name}</Text>
+                      <Text> {venue.region}</Text>
+                    </Flex>
+                  )}
+                </Flex>
+              </Link>
+            ),
+          )}
         </GridItem>
       </Grid>
     </Grid>

@@ -79,7 +79,7 @@ export const EventsPage: NextPage = () => {
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="37.5em" spacing={6} mt={10} mb={5}>
         <Flex justifyContent={'space-between'} alignItems={'center'}>
-          <Heading as='h1'>Events: </Heading>
+          <Heading as="h1">Events: </Heading>
           {isLoggedIn && (
             <LinkButton href="/dashboard/events" colorScheme={'blue'}>
               Events Dashboard

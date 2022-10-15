@@ -1,13 +1,11 @@
 import { Heading, Grid, Flex, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
-import { Button } from '@chakra-ui/button';
-import { Loading } from 'components/Loading';
-import { ChapterCard } from 'components/ChapterCard';
-import { useChaptersQuery } from 'generated/graphql';
 import { LinkButton } from 'chakra-next-link';
-import { Loading } from '../../../components/Loading';
 import { useAuth } from '../../../modules/auth/store';
+import { Loading } from '../../../components/Loading';
+import { useChaptersQuery } from 'generated/graphql';
+import { ChapterCard } from 'components/ChapterCard';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
@@ -32,10 +30,10 @@ export const ChaptersPage: NextPage = () => {
         >
           <Heading marginBlock={'1em'}>Chapters: </Heading>
           {isLoggedIn && (
-          <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
-            Chapter Dashboard
-          </LinkButton>
-        )}
+            <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
+              Chapter Dashboard
+            </LinkButton>
+          )}
         </Flex>
         {data.chapters.map((chapter) => (
           <ChapterCard key={chapter.id} chapter={chapter} />

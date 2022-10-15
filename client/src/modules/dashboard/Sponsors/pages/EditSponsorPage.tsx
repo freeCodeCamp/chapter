@@ -53,8 +53,7 @@ const EditSponsorPage: NextPageWithLayout = () => {
   };
 
   const isLoading = sponsorLoading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardSponsor)
     return <NextError statusCode={404} title="Sponsor not found" />;
 

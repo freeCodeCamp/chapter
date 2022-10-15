@@ -4,23 +4,25 @@ import { LinkButton } from 'chakra-next-link';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 
-import { useCheckPermission } from '../../../../hooks/useCheckPermission';
+import { checkPermission } from '../../../../util/check-permission';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Permission } from '../../../../../../common/permissions';
 import { useSponsorsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { useAuth } from 'modules/auth/store';
 
 export const SponsorsPage: NextPageWithLayout = () => {
   const { loading, error, data } = useSponsorsQuery();
+  const { user, loadingUser } = useAuth();
 
-  const hasSponsorManagePermission = useCheckPermission(
+  const hasPermissionToManageSponsor = checkPermission(
+    user,
     Permission.SponsorManage,
   );
 
-  const isLoading = loading || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  const isLoading = loading || loadingUser || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <>
@@ -30,7 +32,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
       <VStack>
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Sponsors</Heading>
-          {hasSponsorManagePermission && (
+          {hasPermissionToManageSponsor && (
             <LinkButton href="/dashboard/sponsors/new" colorScheme="blue">
               Add new
             </LinkButton>
@@ -51,7 +53,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                 type: (sponsor) => sponsor.type,
                 website: (sponsor) => sponsor.website,
                 action: (sponsor) =>
-                  hasSponsorManagePermission && (
+                  hasPermissionToManageSponsor && (
                     <LinkButton
                       colorScheme="blue"
                       size="xs"
@@ -84,7 +86,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                     >
                       <Text marginBlock={'.54em'}>Name</Text>
                       <Text>Type</Text>
-                      {hasSponsorManagePermission && <Text>Ops</Text>}
+                      {hasPermissionToManageSponsor && <Text>Ops</Text>}
                       <Text>Website</Text>
                     </VStack>
                   ),
@@ -97,7 +99,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                         {name}
                       </LinkButton>
                       <Text>{type}</Text>
-                      {hasSponsorManagePermission && (
+                      {hasPermissionToManageSponsor && (
                         <LinkButton
                           colorScheme="blue"
                           size="xs"

@@ -3,23 +3,25 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
-import { useCheckPermission } from '../../../../hooks/useCheckPermission';
+import { checkPermission } from '../../../../util/check-permission';
 import { useChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { Permission } from '../../../../../../common/permissions';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { useAuth } from 'modules/auth/store';
 
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useChaptersQuery();
+  const { user, loadingUser } = useAuth();
 
-  const hasPermissionToCreateChapter = useCheckPermission(
+  const hasPermissionToCreateChapter = checkPermission(
+    user,
     Permission.ChapterCreate,
   );
 
-  const isLoading = loading || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  const isLoading = loading || loadingUser || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <VStack>
@@ -53,9 +55,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
                 <LinkButton
                   colorScheme="blue"
                   size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/edit`}
+                  href={`/dashboard/chapters/${chapter.id}/new-venue`}
                 >
-                  Edit
+                  Add Venue
                 </LinkButton>
                 <LinkButton
                   colorScheme="blue"
@@ -67,9 +69,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
                 <LinkButton
                   colorScheme="blue"
                   size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/new-venue`}
+                  href={`/dashboard/chapters/${chapter.id}/edit`}
                 >
-                  Add Venue
+                  Edit
                 </LinkButton>
               </HStack>
             ),
@@ -116,16 +118,16 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       <LinkButton
                         colorScheme="blue"
                         size="xs"
-                        href={`/dashboard/chapters/${id}/new-event`}
+                        href={`/dashboard/chapters/${id}/new-venue`}
                       >
-                        Add Event
+                        Add Venue
                       </LinkButton>
                       <LinkButton
                         colorScheme="blue"
                         size="xs"
-                        href={`/dashboard/chapters/${id}/new-venue`}
+                        href={`/dashboard/chapters/${id}/new-event`}
                       >
-                        Add Venue
+                        Add Event
                       </LinkButton>
                       <LinkButton
                         colorScheme="blue"

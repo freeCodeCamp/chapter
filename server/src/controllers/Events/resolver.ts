@@ -59,6 +59,18 @@ const eventUserIncludes = {
     },
   },
 };
+
+type EventWithUsers = Prisma.eventsGetPayload<{
+  include: {
+    venue: true;
+    sponsors: true;
+    event_users: {
+      include: { user: true; event_reminder: true };
+      where: { subscribed: true };
+    };
+  };
+}>;
+
 const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
@@ -120,6 +132,81 @@ To add this event to your calendar(s) you can use these links:
 ${unsubscribeOptions}
       `,
   }).sendEmail();
+};
+
+const updateReminders = (event: EventWithUsers, startAt: Date) => {
+  // This is asychronous, but we don't use the result, so we don't wait for it
+  if (!isEqual(startAt, event.start_at)) {
+    event.event_users.forEach(({ event_reminder }) => {
+      if (event_reminder) {
+        updateRemindAt({
+          eventId: event_reminder.event_id,
+          remindAt: sub(startAt, { days: 1 }),
+          userId: event_reminder.user_id,
+        });
+      }
+    });
+  }
+};
+
+const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+  data.venue_type !== event.venue_type ||
+  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
+  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+
+const buildEmailForUpdatedEvent = async (
+  data: EventInputs,
+  event: EventWithUsers,
+) => {
+  const subject = `Venue changed for event ${event.name}`;
+  let venueDetails = '';
+
+  if (isPhysical(event.venue_type)) {
+    const venue = await prisma.venues.findUniqueOrThrow({
+      where: { id: data.venue_id },
+    });
+    // TODO: include a link back to the venue page
+    venueDetails += `The event is now being held at <br>
+${venue.name} <br>
+${venue.street_address ? venue.street_address + '<br>' : ''}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+`;
+  }
+
+  if (isOnline(event.venue_type)) {
+    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+  }
+  // TODO: include a link back to the venue page
+  const body = `We have had to change the location of ${event.name}.<br>
+${venueDetails}`;
+  return { subject, body };
+};
+
+const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
+  const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
+    streaming_url: isOnline(event.venue_type)
+      ? data.streaming_url ?? event.streaming_url
+      : null,
+    venue: isPhysical(event.venue_type)
+      ? { connect: { id: data.venue_id } }
+      : { disconnect: true },
+  });
+
+  const update = {
+    invite_only: data.invite_only ?? event.invite_only,
+    name: data.name ?? event.name,
+    description: data.description ?? event.description,
+    url: data.url, // allows url deletion
+    start_at: new Date(data.start_at) ?? event.start_at,
+    ends_at: new Date(data.ends_at) ?? event.ends_at,
+    capacity: data.capacity ?? event.capacity,
+    image_url: data.image_url ?? event.image_url,
+    venue_type: data.venue_type ?? event.venue_type,
+    ...getVenueData(data, event),
+  };
+  return update;
 };
 
 const chapterUserInclude = {
@@ -697,75 +784,12 @@ ${unsubscribeOptions}`,
       data: eventSponsorInput,
     });
 
-    const venueType = data.venue_type ?? event.venue_type;
-    const eventOnline = isOnline(venueType);
-    const eventPhysical = isPhysical(venueType);
-    const venueData = {
-      streaming_url: eventOnline
-        ? data.streaming_url ?? event.streaming_url
-        : null,
-      venue: eventPhysical
-        ? { connect: { id: data.venue_id } }
-        : { disconnect: true },
-    };
+    const update = getUpdateData(data, event);
 
-    // TODO: Handle tags
-    const start_at = new Date(data.start_at) ?? event.start_at;
-    const update: Prisma.eventsUpdateInput = {
-      invite_only: data.invite_only ?? event.invite_only,
-      name: data.name ?? event.name,
-      description: data.description ?? event.description,
-      url: data.url, // allows url deletion
-      start_at: start_at,
-      ends_at: new Date(data.ends_at) ?? event.ends_at,
-      capacity: data.capacity ?? event.capacity,
-      image_url: data.image_url ?? event.image_url,
-      venue_type: venueType,
-      ...venueData,
-    };
+    updateReminders(event, update.start_at);
 
-    // This is asychronous, but we don't use the result, so we don't wait for it
-    if (!isEqual(start_at, event.start_at)) {
-      event.event_users.forEach(({ event_reminder }) => {
-        if (event_reminder) {
-          updateRemindAt({
-            eventId: event_reminder.event_id,
-            remindAt: sub(start_at, { days: 1 }),
-            userId: event_reminder.user_id,
-          });
-        }
-      });
-    }
-
-    const isVenueChanged =
-      data.venue_type !== event.venue_type ||
-      (eventOnline && data.streaming_url !== event.streaming_url) ||
-      (eventPhysical && data.venue_id !== event.venue_id);
-
-    if (isVenueChanged) {
-      const subject = `Venue changed for event ${event.name}`;
-      let venueDetails = '';
-
-      if (eventPhysical) {
-        const venue = await prisma.venues.findUniqueOrThrow({
-          where: { id: data.venue_id },
-        });
-        // TODO: include a link back to the venue page
-        venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
-      }
-
-      if (eventOnline) {
-        venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-      }
-      // TODO: include a link back to the venue page
-      const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}`;
+    if (hasVenueChanged(data, event)) {
+      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
       batchSender(function* () {
         for (const { user } of event.event_users) {
           const email = user.email;
@@ -966,20 +990,38 @@ ${venueDetails}`;
       url: eventURL,
     });
 
-    const body = `When: ${event.start_at} to ${event.ends_at}<br>
-${event.venue ? `Where: ${event.venue.name}<br>` : ''}
-${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
-Event Details: <a href="${eventURL}">${eventURL}</a><br>
-    <br>
-    - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
+    const subsequentEventEmail = `New Upcoming Event for ${
+      event.chapter.name
+    }.<br />
+    <br />
+    When: ${event.start_at} to ${event.ends_at}
+    <br />
+   ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
+   ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+   <br />
+    View All of Upcoming Events for ${
+      event.chapter.name
+    }: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
+    RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
+    ----------------------------<br />
+    <br />
+    About the event: <br />
+    ${event.description}<br />
+    <br />
+    - Stop receiving upcoming event notifications for ${
+      event.chapter.name
+    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
     - More about ${
       event.chapter.name
-    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
-    <br>
-    ----------------------------<br>
-    You received this email because you follow this chapter.<br>
-    <br>
-    See the options above to change your notifications.`;
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
+    <br />
+    ----------------------------<br />
+    You received this email because you follow ${
+      event.chapter.name
+    } chapter.<br />
+    <br />
+    See the options above to change your notifications.
+    `;
 
     const iCalEvent = calendar.toString();
 
@@ -991,7 +1033,7 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
           eventId: event.id,
           userId: user.id,
         });
-        const text = `${body}<br>${unsubScribeOptions}`;
+        const text = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
         yield { email, subject, text, options: { iCalEvent } };
       }
     });

@@ -24,6 +24,7 @@ export type Scalars = {
 
 export type Chapter = {
   __typename?: 'Chapter';
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -31,7 +32,6 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -67,6 +67,7 @@ export type ChapterUser = {
 
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -75,13 +76,13 @@ export type ChapterWithEvents = {
   description: Scalars['String'];
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
 
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -91,19 +92,18 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
 };
 
 export type CreateChapterInputs = {
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: InputMaybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  image_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -113,17 +113,6 @@ export type CreateSponsorInputs = {
   name: Scalars['String'];
   type: Scalars['String'];
   website: Scalars['String'];
-};
-
-export type CreateVenueInputs = {
-  city: Scalars['String'];
-  country: Scalars['String'];
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  name: Scalars['String'];
-  postal_code: Scalars['String'];
-  region: Scalars['String'];
-  street_address?: InputMaybe<Scalars['String']>;
 };
 
 export type Email = {
@@ -346,7 +335,7 @@ export type MutationCreateSponsorArgs = {
 
 export type MutationCreateVenueArgs = {
   chapterId: Scalars['Int'];
-  data: CreateVenueInputs;
+  data: VenueInputs;
 };
 
 export type MutationDeleteChapterArgs = {
@@ -427,7 +416,7 @@ export type MutationUpdateSponsorArgs = {
 
 export type MutationUpdateVenueArgs = {
   chapterId: Scalars['Int'];
-  data: UpdateVenueInputs;
+  data: VenueInputs;
   venueId: Scalars['Int'];
 };
 
@@ -555,12 +544,12 @@ export type SponsoredEvent = {
 };
 
 export type UpdateChapterInputs = {
+  banner_url?: InputMaybe<Scalars['String']>;
   category?: InputMaybe<Scalars['String']>;
   chat_url?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -574,17 +563,6 @@ export type UpdateSponsorInputs = {
 
 export type UpdateUserInputs = {
   name?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateVenueInputs = {
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  name?: InputMaybe<Scalars['String']>;
-  postal_code?: InputMaybe<Scalars['String']>;
-  region?: InputMaybe<Scalars['String']>;
-  street_address?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
@@ -620,6 +598,17 @@ export type Venue = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
+};
+
+export type VenueInputs = {
+  city: Scalars['String'];
+  country: Scalars['String'];
+  latitude?: InputMaybe<Scalars['Float']>;
+  longitude?: InputMaybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: InputMaybe<Scalars['String']>;
 };
 
 /** All possible venue types for an event */
@@ -710,7 +699,7 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    image_url: string;
+    banner_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -770,7 +759,7 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    image_url: string;
+    banner_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -896,7 +885,7 @@ export type DashboardChapterQuery = {
     city: string;
     region: string;
     country: string;
-    image_url: string;
+    banner_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -1215,7 +1204,7 @@ export type UsersQuery = {
 
 export type CreateVenueMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: CreateVenueInputs;
+  data: VenueInputs;
 }>;
 
 export type CreateVenueMutation = {
@@ -1237,7 +1226,7 @@ export type CreateVenueMutation = {
 export type UpdateVenueMutationVariables = Exact<{
   venueId: Scalars['Int'];
   chapterId: Scalars['Int'];
-  data: UpdateVenueInputs;
+  data: VenueInputs;
 }>;
 
 export type UpdateVenueMutation = {
@@ -1462,7 +1451,7 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    image_url: string;
+    banner_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -1746,7 +1735,7 @@ export const ChapterDocument = gql`
       city
       region
       country
-      image_url
+      banner_url
       chat_url
       events {
         id
@@ -1948,7 +1937,7 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      image_url
+      banner_url
       city
       events {
         id
@@ -2404,7 +2393,7 @@ export const DashboardChapterDocument = gql`
       city
       region
       country
-      image_url
+      banner_url
       chat_url
       events {
         id
@@ -3525,7 +3514,7 @@ export type UsersQueryResult = Apollo.QueryResult<
   UsersQueryVariables
 >;
 export const CreateVenueDocument = gql`
-  mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+  mutation createVenue($chapterId: Int!, $data: VenueInputs!) {
     createVenue(chapterId: $chapterId, data: $data) {
       id
       name
@@ -3584,11 +3573,7 @@ export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutationVariables
 >;
 export const UpdateVenueDocument = gql`
-  mutation updateVenue(
-    $venueId: Int!
-    $chapterId: Int!
-    $data: UpdateVenueInputs!
-  ) {
+  mutation updateVenue($venueId: Int!, $chapterId: Int!, $data: VenueInputs!) {
     updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
       id
       name
@@ -4167,7 +4152,7 @@ export const HomeDocument = gql`
       id
       name
       description
-      image_url
+      banner_url
       city
       events {
         id

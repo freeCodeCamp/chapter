@@ -25,6 +25,51 @@ const eventData = {
   invite_only: false,
 };
 
+function createEventViaUI(chapterId) {
+  cy.visit(`/dashboard/chapters/${chapterId}`);
+  cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
+  cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.name);
+  cy.findByRole('textbox', { name: 'Description' }).type(testEvent.description);
+  cy.findByRole('textbox', { name: 'Event Image Url' }).type(
+    testEvent.image_url,
+  );
+  // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
+  cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
+
+  cy.findByLabelText(/^Start at/)
+    .clear()
+    .type(testEvent.start_at)
+    .type('{esc}');
+  cy.findByLabelText(/^End at/)
+    .clear()
+    .type(testEvent.ends_at)
+    .type('{esc}');
+
+  // TODO: figure out why cypress thinks this is covered.
+  // cy.findByRole('checkbox', { name: 'Invite only' }).click();
+  cy.get('[data-cy="invite-only-checkbox"]').click();
+  // TODO: I thought <select> would be a listbox - does it matter that it's a
+  // combobox?
+  cy.findByRole('combobox', { name: 'Venue' })
+    .as('venueSelect')
+    .select(testEvent.venue_id);
+  cy.get('@venueSelect')
+    .find(`option[value=${testEvent.venue_id}]`)
+    .invoke('text')
+    .as('venueTitle');
+  cy.findByRole('textbox', { name: 'Streaming URL' }).type(
+    testEvent.streaming_url,
+  );
+  cy.findByRole('button', { name: 'Add Sponsor' }).click();
+
+  cy.findByRole('form', { name: 'Add event' })
+    .findByRole('button', {
+      name: 'Add event',
+    })
+    .click();
+  cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
+}
+
 describe('chapter dashboard', () => {
   beforeEach(() => {
     cy.task('seedDb');

@@ -32,6 +32,7 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -76,6 +77,7 @@ export type ChapterWithEvents = {
   description: Scalars['String'];
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -92,6 +94,7 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
@@ -104,6 +107,7 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -550,6 +554,7 @@ export type UpdateChapterInputs = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  logo_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -699,6 +704,8 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
+    logo_url: string;
+    banner_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -758,6 +765,8 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
+    logo_url: string;
+    banner_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -882,6 +891,9 @@ export type DashboardChapterQuery = {
     category: string;
     city: string;
     region: string;
+    country: string;
+    logo_url: string;
+    banner_url: string;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -1447,6 +1459,8 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
+    logo_url: string;
+    banner_url: string;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -1730,6 +1744,8 @@ export const ChapterDocument = gql`
       city
       region
       country
+      logo_url
+      banner_url
       chat_url
       events {
         id
@@ -1931,6 +1947,8 @@ export const ChaptersDocument = gql`
       id
       name
       description
+      logo_url
+      banner_url
       city
       events {
         id
@@ -2385,6 +2403,9 @@ export const DashboardChapterDocument = gql`
       category
       city
       region
+      country
+      logo_url
+      banner_url
       chat_url
       events {
         id
@@ -4143,6 +4164,8 @@ export const HomeDocument = gql`
       id
       name
       description
+      logo_url
+      banner_url
       city
       events {
         id

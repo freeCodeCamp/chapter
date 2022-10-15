@@ -119,22 +119,6 @@ export const fields: Field[] = [
   },
 ];
 
-export interface EventFormData {
-  name: string;
-  description: string;
-  image_url: string;
-  streaming_url?: string | null;
-  capacity: number;
-  start_at: Date;
-  ends_at: Date;
-  venue_type: VenueType;
-  venue_id?: number | null;
-  invite_only?: boolean;
-  sponsors: Array<EventSponsorInput>;
-  canceled: boolean;
-  chapter_id: number;
-}
-
 export type IEventData = Pick<
   Event,
   keyof Omit<EventFormData, 'venue_id' | 'sponsors' | 'chapter_id'> | 'id'

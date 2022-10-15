@@ -382,7 +382,7 @@ Cypress.Commands.add(
         chapterId,
         data,
       },
-      query: `mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+      query: `mutation createVenue($chapterId: Int!, $data: VenueInputs!) {
       createVenue(chapterId: $chapterId, data: $data) {
         id
       }
@@ -407,7 +407,7 @@ Cypress.Commands.add(
         venueId,
         data,
       },
-      query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: UpdateVenueInputs!) {
+      query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: VenueInputs!) {
       updateVenue(chapterId: $chapterId, venueId: $venueId, data: $data) {
         id
       }

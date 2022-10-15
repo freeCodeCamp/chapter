@@ -17,6 +17,7 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
+import add from 'date-fns/add';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -81,7 +82,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     if (!data) {
       return {
         start_at: new Date(),
-        ends_at: new Date(),
+        ends_at: add(new Date(), { minutes: 30 }),
         venue_type: VenueType.PhysicalAndOnline,
         chapter_id: initialChapterId,
       };

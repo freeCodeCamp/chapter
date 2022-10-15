@@ -1,6 +1,14 @@
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
+const setUsernameAlias = (usersAlias: string) =>
+  cy
+    .get(usersAlias)
+    .find('[data-cy=username]')
+    .first()
+    .invoke('text')
+    .as('userName');
+
 describe('event dashboard', () => {
   beforeEach(() => {
     cy.task('seedDb');
@@ -111,11 +119,3 @@ describe('event dashboard', () => {
     });
   });
 });
-
-const setUsernameAlias = (usersAlias: string) =>
-  cy
-    .get(usersAlias)
-    .find('[data-cy=username]')
-    .first()
-    .invoke('text')
-    .as('userName');

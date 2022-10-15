@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React, { ReactElement, useEffect, useState } from 'react';
 
 import {
+  CreateChapterInputs,
   useDashboardChapterLazyQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
@@ -9,7 +10,7 @@ import { useParam } from '../../../../hooks/useParam';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
-import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EditChapterPage: NextPageWithLayout = () => {
@@ -30,7 +31,7 @@ export const EditChapterPage: NextPageWithLayout = () => {
     refetchQueries: [{ query: CHAPTERS }],
   });
 
-  const onSubmit = async (data: ChapterFormData) => {
+  const onSubmit = async (data: CreateChapterInputs) => {
     setLoadingUpdate(true);
     try {
       await updateChapter({
@@ -45,8 +46,7 @@ export const EditChapterPage: NextPageWithLayout = () => {
   };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <ChapterForm

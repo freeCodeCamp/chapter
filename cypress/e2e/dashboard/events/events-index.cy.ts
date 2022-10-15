@@ -1,3 +1,4 @@
+import add from 'date-fns/add';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
@@ -8,7 +9,7 @@ const eventOneData = {
   streaming_url: null,
   capacity: 149,
   start_at: new Date(),
-  ends_at: new Date(),
+  ends_at: add(new Date(), { minutes: 30 }),
   venue_type: 'Physical',
   venue_id: 2,
   image_url: 'http://loremflickr.com/640/480/nature?79359',
@@ -108,7 +109,7 @@ describe('spec needing owner', () => {
     cy.visit('');
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Events' }).click();
-    cy.get('a[href*="/events/"').first().as('eventToEdit');
+    cy.get('a[href*="/events/"]').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
@@ -116,10 +117,9 @@ describe('spec needing owner', () => {
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
 
     cy.findByRole('link', { name: 'Events' }).click();
+    cy.contains('Loading...');
     cy.wait('@GQLevents');
-    cy.url().should('include', '/events');
-    cy.get('#page-heading').contains('Events');
-    cy.contains('Loading...').should('not.exist');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -135,6 +135,7 @@ describe('spec needing owner', () => {
       })
       .click();
 
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
     });
@@ -148,15 +149,15 @@ describe('spec needing owner', () => {
 
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
-    cy.get('a[href*="/events/"').first().as('eventToDelete');
+    cy.get('a[href*="/events/"]').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
+    cy.contains('Loading...');
     cy.wait('@GQLevents');
-    cy.get('#page-heading').contains('Events');
-    cy.contains('Loading...').should('not.exist');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
@@ -164,6 +165,7 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Delete' }).click();
     cy.findByRole('button', { name: 'Delete' }).click();
 
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.contains(eventTitle).should('not.exist');
     });

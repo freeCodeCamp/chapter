@@ -9,7 +9,6 @@
   - [Manual Mode](#running-the-application)
 - [Adding a New Feature](#adding-a-new-feature)
   - [Where to Find the Code](#where-to-find-the-code)
-  - [Where to Find the Issues](#where-to-find-the-issues)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -399,11 +398,6 @@ The database is seeded with several types of user.  To experiment with different
 - `npm run change-user foo@bar.com` (an _owner_ with full permissions)
 - `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
 
-To experiment with different roles using the terminal, you can run these commands into your terminal:
-
-- `npm run change-user foo@bar.com` (an _owner_ with full permissions)
-- `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
-
 </details>
 
 # Adding a New Feature
@@ -428,10 +422,6 @@ After you have added new feature, to make sure it stays working, we recommend us
 * To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
 * Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
 * Cypress test coverage spec files should go in _/cypress/e2e_, roughly mirroring the client pages pattern
-
-## Where to Find the Issues
-
-[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
 
 # Frequently Asked Questions
 
@@ -489,6 +479,12 @@ For example, to add a new `express` to the client, run `npm i -w=client express`
 ## Updating dependencies
 
 We rely on renovate to update dependencies automatically.
+
+</details>
+
+<details><summary>Where to find the issues to contribute?</summary>
+
+The repository's [contribute page](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started with beginner friendly issue.
 
 </details>
 
@@ -592,6 +588,9 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
+
+* **Problem:**  I have come back after a long period of time, and chapter isn't working. </br>
+  **Solution:** As we develop Chapter, it is often necessary to change the environment variables we use. In case .env file being outdated, try replacing it with [.env.example](#env-configuration-file).
 </details>
 
 <details>

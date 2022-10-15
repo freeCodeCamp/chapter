@@ -72,8 +72,7 @@ export const EventPage: NextPageWithLayout = () => {
     };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
 

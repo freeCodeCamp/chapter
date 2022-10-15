@@ -6,6 +6,29 @@ import {
 } from '../../../../generated/graphql';
 
 import { isOnline, isPhysical } from '../../../../util/venueType';
+
+export interface EventSponsorInput {
+  id: number;
+  type: string;
+}
+
+export interface EventFormData {
+  name: string;
+  description: string;
+  url?: string | null;
+  image_url: string;
+  streaming_url?: string | null;
+  capacity: number;
+  start_at: Date;
+  ends_at: Date;
+  venue_type: VenueType;
+  venue_id?: number | null;
+  invite_only?: boolean;
+  sponsors: Array<EventSponsorInput>;
+  canceled: boolean;
+  chapter_id: number;
+}
+
 export interface Field {
   key: keyof EventFormData;
   label: string;
@@ -54,10 +77,6 @@ export const venueTypes: VenueTypeInput[] = [
   },
 ];
 
-export interface EventSponsorInput {
-  id: number;
-  type: string;
-}
 export const fields: Field[] = [
   {
     key: 'name',
@@ -108,23 +127,6 @@ export const fields: Field[] = [
   },
 ];
 
-export interface EventFormData {
-  name: string;
-  description: string;
-  url?: string | null;
-  image_url: string;
-  streaming_url?: string | null;
-  capacity: number;
-  start_at: Date;
-  ends_at: Date;
-  venue_type: VenueType;
-  venue_id?: number | null;
-  invite_only?: boolean;
-  sponsors: Array<EventSponsorInput>;
-  canceled: boolean;
-  chapter_id: number;
-}
-
 export type IEventData = Pick<
   Event,
   keyof Omit<EventFormData, 'venue_id' | 'sponsors' | 'chapter_id'> | 'id'
@@ -142,44 +144,6 @@ export interface EventFormProps {
   chapterId: number;
   loadingText: string;
 }
-
-export const getAllowedSponsorTypes = (
-  sponsorData: SponsorsQuery,
-  sponsorTypes: EventSponsorTypeInput[],
-  watchSponsorsArray: EventSponsorInput[],
-  sponsorFieldId: number,
-) =>
-  sponsorTypes.filter(
-    ({ type }) =>
-      getAllowedSponsorsForType(
-        sponsorData,
-        type,
-        watchSponsorsArray,
-        sponsorFieldId,
-      ).length,
-  );
-
-export const getAllowedSponsorsForType = (
-  sponsorData: SponsorsQuery,
-  sponsorType: string,
-  watchSponsorsArray: EventSponsorInput[],
-  sponsorFieldId?: number,
-) =>
-  sponsorData.sponsors.filter(
-    (sponsor) =>
-      sponsor.type === sponsorType &&
-      !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
-  );
-
-export const getAllowedSponsors = (
-  sponsorData: SponsorsQuery,
-  watchSponsorsArray: EventSponsorInput[],
-  sponsorFieldId?: number,
-) =>
-  sponsorData.sponsors.filter(
-    (sponsor) =>
-      !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
-  );
 
 const getSelectedFieldIdForSponsor = (
   sponsor: EventSponsorInput,
@@ -203,6 +167,44 @@ const isSponsorSelectedElsewhere = (
     (sponsorFieldId === undefined || selectedFieldId !== sponsorFieldId)
   );
 };
+
+export const getAllowedSponsorsForType = (
+  sponsorData: SponsorsQuery,
+  sponsorType: string,
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId?: number,
+) =>
+  sponsorData.sponsors.filter(
+    (sponsor) =>
+      sponsor.type === sponsorType &&
+      !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
+  );
+
+export const getAllowedSponsorTypes = (
+  sponsorData: SponsorsQuery,
+  sponsorTypes: EventSponsorTypeInput[],
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId: number,
+) =>
+  sponsorTypes.filter(
+    ({ type }) =>
+      getAllowedSponsorsForType(
+        sponsorData,
+        type,
+        watchSponsorsArray,
+        sponsorFieldId,
+      ).length,
+  );
+
+export const getAllowedSponsors = (
+  sponsorData: SponsorsQuery,
+  watchSponsorsArray: EventSponsorInput[],
+  sponsorFieldId?: number,
+) =>
+  sponsorData.sponsors.filter(
+    (sponsor) =>
+      !isSponsorSelectedElsewhere(sponsor, watchSponsorsArray, sponsorFieldId),
+  );
 
 export const parseEventData = (data: EventFormData) => {
   // It's ugly, but we can't rely on TS to check that chapter_id is absent, so

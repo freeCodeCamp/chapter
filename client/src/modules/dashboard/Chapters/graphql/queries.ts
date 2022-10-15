@@ -19,7 +19,7 @@ export const DASHBOARD_CHAPTER = gql`
       city
       region
       country
-      image_url
+      banner_url
       chat_url
       events {
         id

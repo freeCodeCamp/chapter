@@ -2,24 +2,33 @@ import React from 'react';
 
 import styles from '../../../../styles/Page.module.css';
 
-type Props = {
-  loading: boolean;
-  error?: Error;
-};
+type Props =
+  | {
+      error?: Error;
+      errors?: never;
+    }
+  | {
+      error?: never;
+      errors?: Error[];
+    };
 
-export const DashboardLoading = ({ loading, error }: Props) => {
-  if (loading || error) {
+export const DashboardLoading = ({ error, errors }: Props) => {
+  if (error || errors?.length) {
     return (
       <>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
+        <h1>{'Error...'}</h1>
         {error && (
           <div className={styles.error} data-cy="loading-error">
             {error.message}
           </div>
         )}
+        {errors?.map(({ message }) => (
+          <div key={message} className={styles.error} data-cy="loading-error">
+            {message}
+          </div>
+        ))}
       </>
     );
-  } else {
-    return null;
   }
+  return <h1>{'Loading...'}</h1>;
 };

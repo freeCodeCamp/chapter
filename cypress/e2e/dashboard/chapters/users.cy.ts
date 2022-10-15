@@ -94,6 +94,18 @@ describe('Chapter Users dashboard', () => {
     );
   });
 
+  function initializeBanVariables() {
+    // We don't want to interact with the instance owner here
+    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
+    cy.get('@rows').filter(':contains("member")').as('members');
+    cy.get('@rows').filter(':contains("administrator")').as('administrators');
+    cy.get('@members')
+      .not(':contains("Unban")')
+      .not(':contains("Banned")')
+      .first()
+      .as('firstUnbannedMember');
+  }
+
   it('administrator can ban user from chapter', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
@@ -136,18 +148,6 @@ describe('Chapter Users dashboard', () => {
       .findByRole('button', { name: 'Unban' })
       .should('not.exist');
   });
-
-  function initializeBanVariables() {
-    // We don't want to interact with the instance owner here
-    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
-    cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@rows').filter(':contains("administrator")').as('administrators');
-    cy.get('@members')
-      .not(':contains("Unban")')
-      .not(':contains("Banned")')
-      .first()
-      .as('firstUnbannedMember');
-  }
 
   it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
     cy.login('admin@of.chapter.two');

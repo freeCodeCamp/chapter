@@ -7,7 +7,7 @@ const chapterData = {
   region: 'Location in the world',
   country: 'Home country',
   category: 'Type of chapter',
-  image_url: 'https://example.com/image.jpg',
+  banner_url: 'https://example.com/image.jpg',
 };
 
 // TODO: move this and other fixtures to a common file
@@ -48,7 +48,9 @@ describe('chapters dashboard', () => {
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[aria-current="page"]').should('not.exist');
-    cy.get('a[href="/dashboard/chapters"]').click();
+    cy.get('[data-cy="dashboard-tabs"]')
+      .find('a[href="/dashboard/chapters"]')
+      .click();
     cy.get('[data-cy="chapter-dash-heading"]').should('be.visible');
     cy.get('[data-cy="dashboard-tabs"]')
       .find('a[aria-current="page"]')
@@ -76,20 +78,19 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Image Url' }).type(chapterData.image_url);
+    cy.findByRole('textbox', { name: 'Banner Url' }).type(
+      chapterData.banner_url,
+    );
 
     cy.findByRole('form', { name: 'Add chapter' })
       .findByRole('button', {
         name: 'Add chapter',
       })
       .click();
-    // TODO: this should mirror events. i.e. either both should go to the list
-    // or both should go to the newly created page
-    cy.location('pathname').should('match', /^\/dashboard\/chapters$/);
-    // TODO: if go to /dashboard/chapters/<n>/edit, look for the rest of the
-    // data
-
-    // confirm that the test data appears in the new chapter
+    cy.location('pathname').should(
+      'match',
+      /^\/dashboard\/chapters\/\d\/new-venue$/,
+    );
     cy.contains(chapterData.name);
   });
 

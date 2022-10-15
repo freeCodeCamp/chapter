@@ -1,4 +1,4 @@
-FROM node:16-alpine as development
+FROM node:16 as development
 WORKDIR /usr/chapter/
 
 FROM development as build
@@ -18,7 +18,8 @@ COPY package*.json ./
 RUN npm ci -w=client --ignore-scripts
 RUN npm -w=client run build
 
-FROM development as production
+FROM node:16-alpine as production
+WORKDIR /usr/chapter/
 
 COPY --from=build /usr/chapter/client/.next ./client/.next
 COPY client/public ./client/public

@@ -70,7 +70,7 @@ export const EditEventPage: NextPageWithLayout = () => {
   };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading) return <DashboardLoading loading={loading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
 

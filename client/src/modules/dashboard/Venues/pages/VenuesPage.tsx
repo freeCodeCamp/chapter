@@ -17,8 +17,7 @@ export const VenuesPage: NextPageWithLayout = () => {
   const adminedChapters = user?.admined_chapters ?? [];
 
   const isLoading = loading || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <VStack>

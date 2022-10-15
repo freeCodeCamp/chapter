@@ -22,8 +22,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
   );
 
   const isLoading = loading || loadingUser || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <>

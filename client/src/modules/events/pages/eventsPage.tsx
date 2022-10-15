@@ -2,9 +2,11 @@ import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
-import { Loading } from 'components/Loading';
-import { EventCard } from 'components/EventCard';
-import { usePaginatedEventsWithTotalQuery } from 'generated/graphql';
+import { LinkButton } from 'chakra-next-link';
+import { Loading } from '../../../components/Loading';
+import { EventCard } from '../../../components/EventCard';
+import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
+import { useAuth } from '../../../modules/auth/store';
 
 function Pagination({
   currentPage = 1,
@@ -56,6 +58,7 @@ const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
+  const { isLoggedIn } = useAuth();
   const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
@@ -75,7 +78,14 @@ export const EventsPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
-        <Heading>Events: </Heading>
+        <Flex justifyContent={'space-between'} alignItems={'center'}>
+          <Heading>Events: </Heading>
+          {isLoggedIn && (
+            <LinkButton href="/dashboard/events" colorScheme={'blue'}>
+              Events Dashboard
+            </LinkButton>
+          )}
+        </Flex>
         {data?.paginatedEventsWithTotal.events.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}

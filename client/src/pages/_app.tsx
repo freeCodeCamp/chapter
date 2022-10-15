@@ -29,6 +29,10 @@ const httpLink = createHttpLink({
   credentials: 'include',
 });
 
+function isServerError(err?: NetworkError): err is ServerError {
+  return !(err == null) && 'result' in err && 'statusCode' in err;
+}
+
 const errorLink = onError(({ networkError }) => {
   if (isServerError(networkError)) {
     if (networkError.statusCode === 401) {
@@ -44,10 +48,6 @@ const errorLink = onError(({ networkError }) => {
     }
   }
 });
-
-function isServerError(err?: NetworkError): err is ServerError {
-  return !(err == null) && 'result' in err && 'statusCode' in err;
-}
 
 const client = new ApolloClient({
   link: from([errorLink, httpLink]),

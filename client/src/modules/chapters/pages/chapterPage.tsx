@@ -30,6 +30,39 @@ import {
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <div>
+      <Heading size="md" color={'gray.700'}>
+        Chat Link:
+      </Heading>
+      <Link>{chatUrl}</Link>
+    </div>
+  ) : null;
+};
+
+const SubscriptionWidget = ({
+  chapterUser,
+  chapterSubscribe,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+}) => {
+  return chapterUser.subscribed ? (
+    <HStack>
+      <CheckIcon />
+      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
+    </HStack>
+  ) : (
+    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
+      Subscribe
+    </Button>
+  );
+};
+
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
   const { isLoggedIn } = useAuth();
@@ -135,7 +168,7 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.image_url}
+          src={data.chapter.banner_url}
           alt=""
           borderRadius="md"
           objectFit="cover"

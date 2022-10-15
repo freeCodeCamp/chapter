@@ -40,7 +40,7 @@ const NewSponsorPage: NextPageWithLayout = () => {
     }
   };
 
-  if (loadingUser) return <DashboardLoading loading={loadingUser} />;
+  if (loadingUser) return <DashboardLoading />;
   if (!hasPermissionToCreateSponsor)
     return <NextError statusCode={403} title="Access denied" />;
 

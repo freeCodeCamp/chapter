@@ -16,6 +16,7 @@ export enum ChapterPermission {
 
 export enum InstancePermission {
   ChapterCreate = 'chapter-create',
+  ChapterJoin = 'chapter-join',
   ChapterDelete = 'chapter-delete',
   ChapterSubscriptionManage = 'chapter-subscription-manage',
   ChapterUserRoleChange = 'chapter-user-role-change',

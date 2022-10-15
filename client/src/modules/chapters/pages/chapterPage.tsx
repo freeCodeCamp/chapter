@@ -48,18 +48,51 @@ const SubscriptionWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
 }) => {
-  return chapterUser.subscribed ? (
-    <HStack>
-      <CheckIcon />
-      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+  return chapterUser?.subscribed ? (
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
         Unsubscribe
       </Button>
     </HStack>
   ) : (
-    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
-      Subscribe
-    </Button>
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
+      <Button
+        colorScheme="blue"
+        onClick={() => chapterSubscribe(true)}
+        size="md"
+      >
+        Subscribe
+      </Button>
+    </HStack>
+  );
+};
+
+const ChapterUserRoleWidget = ({
+  chapterUser,
+  LeaveChapter,
+  JoinChapter,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  LeaveChapter: () => Promise<void>;
+  JoinChapter: () => Promise<void>;
+}) => {
+  return chapterUser?.chapter_role ? (
+    <HStack justifyContent={'space-between'}>
+      <Text fontWeight={500}>
+        <CheckIcon marginRight={1} />
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
+      <Button onClick={LeaveChapter}>Leave</Button>
+    </HStack>
+  ) : (
+    <HStack justifyContent="space-between">
+      <Text fontWeight={500}>Become member of the chapter</Text>
+      <Button colorScheme="blue" onClick={JoinChapter}>
+        Join
+      </Button>
+    </HStack>
   );
 };
 
@@ -119,7 +152,10 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await leaveChapterFn({ variables: { chapterId } });
-        toast({ title: 'You successfully left chapter', status: 'success' });
+        toast({
+          title: 'You successfully left the chapter',
+          status: 'success',
+        });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -227,71 +263,5 @@ export const ChapterPage: NextPage = () => {
         ))}
       </Stack>
     </VStack>
-  );
-};
-
-const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
-  return chatUrl ? (
-    <div>
-      <Heading size="md" color={'gray.700'}>
-        Chat Link:
-      </Heading>
-      <Link>{chatUrl}</Link>
-    </div>
-  ) : null;
-};
-
-const SubscriptionWidget = ({
-  chapterUser,
-  chapterSubscribe,
-}: {
-  chapterUser: ChapterUserQuery['chapterUser'];
-  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
-}) => {
-  return chapterUser?.subscribed ? (
-    <HStack justifyContent={'space-between'} width={'100%'}>
-      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
-      <Button onClick={() => chapterSubscribe(false)} size="md">
-        Unsubscribe
-      </Button>
-    </HStack>
-  ) : (
-    <HStack justifyContent={'space-between'} width={'100%'}>
-      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
-      <Button
-        colorScheme="blue"
-        onClick={() => chapterSubscribe(true)}
-        size="md"
-      >
-        Subscribe
-      </Button>
-    </HStack>
-  );
-};
-
-const ChapterUserRoleWidget = ({
-  chapterUser,
-  LeaveChapter,
-  JoinChapter,
-}: {
-  chapterUser: ChapterUserQuery['chapterUser'];
-  LeaveChapter: () => Promise<void>;
-  JoinChapter: () => Promise<void>;
-}) => {
-  return chapterUser?.chapter_role ? (
-    <HStack justifyContent={'space-between'}>
-      <Text fontWeight={500}>
-        <CheckIcon marginRight={1} />
-        {chapterUser.chapter_role.name} of the chapter
-      </Text>
-      <Button onClick={LeaveChapter}>Leave</Button>
-    </HStack>
-  ) : (
-    <HStack justifyContent="space-between">
-      <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" onClick={JoinChapter}>
-        Join
-      </Button>
-    </HStack>
   );
 };

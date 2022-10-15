@@ -19,7 +19,6 @@ const createUsers = async (
     email: 'foo@bar.com',
     name: 'The Owner',
     instance_role: { connect: { id: instanceRoles.owner.id } },
-    image_url: '',
   };
   const owner = await prisma.users.create({ data: ownerData });
 
@@ -27,7 +26,6 @@ const createUsers = async (
     email: 'admin@of.chapter.one',
     name: 'Chapter One Admin',
     instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
-    image_url: '',
   };
   const chapter1Admin = await prisma.users.create({ data: chapter1AdminData });
 
@@ -35,7 +33,6 @@ const createUsers = async (
     email: 'admin@of.chapter.two',
     name: 'Chapter Two Admin',
     instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
-    image_url: '',
   };
   const chapter2Admin = await prisma.users.create({ data: chapter2AdminData });
 
@@ -43,7 +40,6 @@ const createUsers = async (
     email: 'banned@chapter.admin',
     name: 'Banned Chapter Admin',
     instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
-    image_url: '',
   };
 
   const bannedAdmin = await prisma.users.create({ data: bannedAdminData });
@@ -52,7 +48,6 @@ const createUsers = async (
     email: 'test@user.org',
     name: 'Test User',
     instance_role: { connect: { id: instanceRoles.member.id } },
-    image_url: '',
   };
 
   await prisma.users.create({ data: testUserData });
@@ -63,7 +58,6 @@ const createUsers = async (
       email: internet.email(),
       name: `${name.firstName()} ${name.lastName()}`,
       instance_role: { connect: { id: instanceRoles.member.id } },
-      image_url: '',
     }),
   );
   const otherIds = (

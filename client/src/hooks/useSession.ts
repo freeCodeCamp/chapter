@@ -7,6 +7,21 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 // of the site in one or the other?
 const needsDevLogin = process.env.NEXT_PUBLIC_USE_AUTH0 === 'false';
 
+const requestSession = (token: string) =>
+  fetch(new URL('/login', serverUrl).href, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    credentials: 'include',
+  });
+
+const destroySession = () =>
+  fetch(new URL('/logout', serverUrl).href, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
 const useAuth0Session = (): {
   isAuthenticated: boolean;
   createSession: () => Promise<Response>;
@@ -42,21 +57,6 @@ export const useDevSession = (): {
     destroySession,
   };
 };
-
-const requestSession = (token: string) =>
-  fetch(new URL('/login', serverUrl).href, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    credentials: 'include',
-  });
-
-const destroySession = () =>
-  fetch(new URL('/logout', serverUrl).href, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
 
 export const useSession: () => {
   isAuthenticated: boolean;

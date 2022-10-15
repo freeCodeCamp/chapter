@@ -47,7 +47,7 @@
     "express-response-errors": "1.0.5",
     "google-auth-library": "7.14.1",
     "graphql": "15.8.0",
-    "ical-generator": "3.5.2",
+    "ical-generator": "3.6.0",
     "is-docker": "2.2.1",
     "jsonwebtoken": "8.5.1",
     "node-fetch": "2.6.7",

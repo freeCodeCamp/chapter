@@ -8,16 +8,14 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
-import { useAuthStore } from '../../auth/store';
+import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
 import { meQuery } from 'modules/auth/graphql/queries';
 import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const {
-    data: { user },
-  } = useAuthStore();
+  const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
 

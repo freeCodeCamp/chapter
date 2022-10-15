@@ -1,2 +1,2 @@
-import { NewVenuePage } from '../../../../modules/dashboard/Venues';
-export default NewVenuePage;
+import { ChapterNewVenuePage } from '../../../../modules/dashboard/Venues';
+export default ChapterNewVenuePage;

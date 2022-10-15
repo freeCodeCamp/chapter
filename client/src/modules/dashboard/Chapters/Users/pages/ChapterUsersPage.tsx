@@ -129,8 +129,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
   );
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 

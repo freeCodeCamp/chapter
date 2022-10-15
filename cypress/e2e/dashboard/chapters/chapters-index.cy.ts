@@ -7,7 +7,7 @@ const chapterData = {
   region: 'Location in the world',
   country: 'Home country',
   category: 'Type of chapter',
-  image_url: 'https://example.com/image.jpg',
+  banner_url: 'https://example.com/image.jpg',
 };
 
 // TODO: move this and other fixtures to a common file
@@ -78,7 +78,9 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Image Url' }).type(chapterData.image_url);
+    cy.findByRole('textbox', { name: 'Banner Url' }).type(
+      chapterData.banner_url,
+    );
 
     cy.findByRole('form', { name: 'Add chapter' })
       .findByRole('button', {

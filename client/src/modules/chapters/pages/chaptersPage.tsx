@@ -5,10 +5,13 @@ import { Button } from '@chakra-ui/button';
 import { Loading } from 'components/Loading';
 import { ChapterCard } from 'components/ChapterCard';
 import { useChaptersQuery } from 'generated/graphql';
+import { LinkButton } from 'chakra-next-link';
+import { Loading } from '../../../components/Loading';
+import { useAuth } from '../../../modules/auth/store';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
-
+  const { isLoggedIn } = useAuth();
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
@@ -28,7 +31,11 @@ export const ChaptersPage: NextPage = () => {
           width={'100%'}
         >
           <Heading marginBlock={'1em'}>Chapters: </Heading>
-          <Button>Hello Dashboard</Button>
+          {isLoggedIn && (
+          <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
+            Chapter Dashboard
+          </LinkButton>
+        )}
         </Flex>
         {data.chapters.map((chapter) => (
           <ChapterCard key={chapter.id} chapter={chapter} />

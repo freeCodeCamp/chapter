@@ -7,3 +7,7 @@ server/src/**/*.js
 server/reminders/**/*.js
 server/prisma/**/*.js
 server/tests/**/*.js
+
+common/**/*.js
+
+client/src/generated/graphql.tsx

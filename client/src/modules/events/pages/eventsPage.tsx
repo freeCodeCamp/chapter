@@ -2,8 +2,7 @@ import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Flex } from '@chakra-ui/react';
-import { Link } from 'chakra-next-link';
-import { LinkButton } from 'chakra-next-link';
+import { Link, LinkButton } from 'chakra-next-link';
 
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';

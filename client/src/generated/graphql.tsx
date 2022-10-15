@@ -1458,7 +1458,8 @@ export type HomeQuery = {
       __typename?: 'EventWithVenue';
       id: number;
       name: string;
-      capacity: number;
+      canceled: boolean;
+      start_at: any;
       venue?: {
         __typename?: 'Venue';
         id: number;
@@ -4159,7 +4160,8 @@ export const HomeDocument = gql`
       events {
         id
         name
-        capacity
+        canceled
+        start_at
         venue {
           id
           name

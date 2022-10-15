@@ -25,7 +25,8 @@ export const HOME_PAGE_QUERY = gql`
       events {
         id
         name
-        capacity
+        canceled
+        start_at
         venue {
           id
           name

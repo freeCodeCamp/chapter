@@ -79,7 +79,7 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
-    cy.findByRole('textbox', { name: 'logo Url' }).type(chapterData.logo_url);
+    cy.findByRole('textbox', { name: 'Logo Url' }).type(chapterData.logo_url);
     cy.findByRole('textbox', { name: 'Banner Url' }).type(
       chapterData.banner_url,
     );

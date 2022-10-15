@@ -10,8 +10,8 @@ export const CHAPTER = gql`
       city
       region
       country
-      image_url
       logo_url
+      banner_url
       chat_url
       events {
         id
@@ -21,7 +21,6 @@ export const CHAPTER = gql`
         invite_only
         canceled
         image_url
-
         invite_only
         canceled
       }
@@ -73,8 +72,8 @@ export const CHAPTERS = gql`
       id
       name
       description
-      image_url
       logo_url
+      banner_url
       city
       events {
         id

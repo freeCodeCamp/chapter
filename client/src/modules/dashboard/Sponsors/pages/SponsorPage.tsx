@@ -26,8 +26,7 @@ export const SponsorPage: NextPageWithLayout = () => {
   }, [isReady]);
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!sponsor) return <NextError statusCode={404} title="Sponsor not found" />;
 
   return (

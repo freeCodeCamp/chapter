@@ -70,8 +70,8 @@ const fields: Fields[] = [
     type: 'text',
   },
   {
-    key: 'image_url',
-    label: 'Image Url',
+    key: 'banner_url',
+    label: 'Banner Url',
     placeholder: 'https://www.freecodecamp.org',
     required: false,
     type: 'url',
@@ -103,8 +103,8 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
-    image_url: chapter?.image_url ?? '',
     logo_url: chapter?.logo_url ?? '',
+    banner_url: chapter?.banner_url ?? '',
     chat_url: chapter?.chat_url ?? '',
   };
   const {

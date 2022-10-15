@@ -20,8 +20,8 @@ export const HOME_PAGE_QUERY = gql`
       id
       name
       description
-      image_url
       logo_url
+      banner_url
       city
       events {
         id

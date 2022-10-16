@@ -9,6 +9,7 @@ import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import EventCancelButton from './EventCancelButton';
 import SendEmailModal from './SendEmailModal';
+import { ShareEventPop } from './ShareEventPopOver';
 import { Event, useDeleteEventMutation } from 'generated/graphql';
 
 interface ActionsProps {
@@ -72,6 +73,9 @@ const Actions: React.FC<ActionsProps> = ({
       <Button size="sm" colorScheme="blue" onClick={clickEmailAttendees}>
         Email Attendees
       </Button>
+      <ShareEventPop
+        link={`${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`}
+      />
       <SendEmailModal onClose={onClose} isOpen={isOpen} eventId={event.id} />
     </HStack>
   );

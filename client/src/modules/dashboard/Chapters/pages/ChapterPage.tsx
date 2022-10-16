@@ -54,7 +54,7 @@ export const ChapterPage: NextPageWithLayout = () => {
 
   const clickDelete = async () => {
     const ok = await confirmDelete({
-      body: 'Are you sure you want to delete this chapter? chapter deletion cannot be reversed',
+      body: 'Are you sure you want to delete this chapter? All information related to chapter will be deleted, including events and venues from this chapter. Chapter deletion cannot be reversed.',
       buttonText: 'Delete Chapter',
     });
     if (!ok) return;

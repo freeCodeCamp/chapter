@@ -9,14 +9,14 @@ describe('Chapter Administrator', () => {
   let instanceRoles;
   let users;
   before(() => {
-    cy.fixture('chapterRoles').then((r) => {
-      chapterRoles = r;
+    cy.fixture('chapterRoles').then((fixture) => {
+      chapterRoles = fixture;
     });
-    cy.fixture('instanceRoles').then((r) => {
-      instanceRoles = r;
+    cy.fixture('instanceRoles').then((fixture) => {
+      instanceRoles = fixture;
     });
-    cy.fixture('users').then((u) => {
-      users = u;
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
     });
   });
   beforeEach(() => {

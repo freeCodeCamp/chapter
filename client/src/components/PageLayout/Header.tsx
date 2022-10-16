@@ -6,7 +6,7 @@ import React from 'react';
 import NextLink from 'next/link';
 
 import { useRouter } from 'next/router';
-import { useAuthStore } from '../../modules/auth/store';
+import { useAuth } from '../../modules/auth/store';
 import { useLogin, useLogout } from '../../hooks/useAuth';
 import { HeaderMenu } from './components/HeaderMenu';
 import { HeaderContainer } from './components/HeaderContainer';
@@ -47,9 +47,7 @@ const LogoutButton = () => {
 };
 
 export const Header: React.FC = () => {
-  const {
-    data: { user, loadingUser },
-  } = useAuthStore();
+  const { user, isLoggedIn } = useAuth();
 
   return (
     <>
@@ -65,7 +63,7 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        {loadingUser ? (
+        {isLoggedIn ? (
           <Spinner color="white" size="xl" />
         ) : (
           <HStack as="nav">

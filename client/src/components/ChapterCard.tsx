@@ -8,7 +8,7 @@ type ChapterCardProps = {
   chapter: ChaptersQuery['chapters'][number];
 };
 
-export const ChapterCard: Rea.FCct<ChapterCardProps> = ({ chapter }) => {
+export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
     <Grid
       data-cy="chapter-card"

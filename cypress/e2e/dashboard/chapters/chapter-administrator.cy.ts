@@ -25,6 +25,23 @@ describe('Chapter Administrator', () => {
     cy.joinChapter(firstChapterId);
   });
 
+  function confirmInstanceRole(email: string, expectedRole: string) {
+    cy.task<User>('getUser', email).then(({ instance_role: { name } }) => {
+      expect(name).to.eq(expectedRole);
+    });
+  }
+
+  function applyChapterRoleChanges(
+    userId: number,
+    changes: { chapterId: number; roleName: string }[],
+  ) {
+    for (const { chapterId, roleName } of changes) {
+      cy.changeChapterUserRole({ chapterId, userId, roleName }).then(
+        expectNoErrors,
+      );
+    }
+  }
+
   describe('when promoted to administrator of chapter', () => {
     it('instance member should get chapter_administrator instance role', () => {
       cy.login();
@@ -217,21 +234,4 @@ describe('Chapter Administrator', () => {
       cy.contains('chapter_administrator').should('not.exist');
     });
   });
-
-  function confirmInstanceRole(email: string, expectedRole: string) {
-    cy.task<User>('getUser', email).then(({ instance_role: { name } }) => {
-      expect(name).to.eq(expectedRole);
-    });
-  }
-
-  function applyChapterRoleChanges(
-    userId: number,
-    changes: { chapterId: number; roleName: string }[],
-  ) {
-    for (const { chapterId, roleName } of changes) {
-      cy.changeChapterUserRole({ chapterId, userId, roleName }).then(
-        expectNoErrors,
-      );
-    }
-  }
 });

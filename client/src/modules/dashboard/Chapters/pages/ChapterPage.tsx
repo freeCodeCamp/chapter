@@ -53,7 +53,10 @@ export const ChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   const clickDelete = async () => {
-    const ok = await confirmDelete({ doubleConfirm: true });
+    const ok = await confirmDelete({
+      body: 'Are you sure you want to delete this chapter? chapter deletion cannot be reversed',
+      buttonText: 'Delete Chapter',
+    });
     if (!ok) return;
     deleteChapter({ variables: { chapterId } });
     router.push('/dashboard/chapters');

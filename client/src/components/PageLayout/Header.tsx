@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Box, Flex, Image, Spinner, Button } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Image, Button } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
 import React from 'react';
@@ -47,7 +47,7 @@ const LogoutButton = () => {
 };
 
 export const Header: React.FC = () => {
-  const { user, isLoggedIn } = useAuth();
+  const { user } = useAuth();
 
   return (
     <>
@@ -63,26 +63,22 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        {isLoggedIn ? (
-          <Spinner color="white" size="xl" />
-        ) : (
-          <HStack as="nav">
-            <Box>
-              {!user ? (
-                <LoginButton />
-              ) : (
-                <Flex gap={'2'} alignItems={'center'}>
-                  <NextLink passHref href="/profile">
-                    <Avatar cursor="pointer" name={`${user.name}`} />
-                  </NextLink>
-                  <Box>
-                    <HeaderMenu LogoutButton={LogoutButton} />
-                  </Box>
-                </Flex>
-              )}
-            </Box>
-          </HStack>
-        )}
+        <HStack as="nav">
+          <Box>
+            {!user ? (
+              <LoginButton />
+            ) : (
+              <Flex gap={'2'} alignItems={'center'}>
+                <NextLink passHref href="/profile">
+                  <Avatar cursor="pointer" name={`${user.name}`} />
+                </NextLink>
+                <Box>
+                  <HeaderMenu LogoutButton={LogoutButton} />
+                </Box>
+              </Flex>
+            )}
+          </Box>
+        </HStack>
       </HeaderContainer>
     </>
   );

@@ -1,14 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
-import {
-  Button,
-  Flex,
-  Heading,
-  Spinner,
-  Text,
-  Grid,
-  GridItem,
-} from '@chakra-ui/react';
+import { Button, Flex, Heading, Text, Grid, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 
 import { useAuth } from '../../../modules/auth/store';
@@ -39,13 +31,11 @@ export const PolicyPage: NextPage = () => {
           data.
         </Heading>
 
-        {isLoggedIn ? (
-          <Spinner color="white" size="xl" />
-        ) : (
+        {isLoggedIn && (
           <Flex
             gap={'1'}
             justifyContent={'space-between'}
-            alignItems={'center'}
+            alignItems={['flex-start', 'center']}
             flexDirection={['column', 'row']}
           >
             <Text
@@ -64,7 +54,7 @@ export const PolicyPage: NextPage = () => {
               fontWeight="600"
               background={'gray.85'}
               color={'gray.10'}
-              height={'100%'}
+              height={'2.5em'}
               borderRadius={'5px'}
               paddingBlock={'.65em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}

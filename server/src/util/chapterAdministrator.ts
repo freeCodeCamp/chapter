@@ -57,15 +57,19 @@ export const getRoleName = ({
   newRole,
   userChapters,
 }: ChangeRoleNameData) => {
+  // The client should not request this change, but if it does it's ignored.
   if (oldRole === InstanceRoles.owner && newRole === InstanceRoles.owner)
     return oldRole;
 
+  // The client should not request this change, but if it does it's ignored.
   if (
     oldRole === InstanceRoles.chapter_administrator &&
     newRole === InstanceRoles.member
   )
     return InstanceRoles.chapter_administrator;
 
+  // since the former owner may still be an administator, we check if they will
+  // need the chapter_administrator role
   if (oldRole === InstanceRoles.owner) {
     const isAdmin = userChapters.some(
       (userChapter) =>

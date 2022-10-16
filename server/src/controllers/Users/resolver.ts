@@ -27,6 +27,7 @@ export class UsersResolver {
       include: instanceRoleInclude,
     });
 
+    // The chapter_administrator role is internal, so should not be displayed
     const usersWithReplacedAdministrator = users.map((user) => {
       if (user.instance_role.name !== InstanceRoles.chapter_administrator) {
         return user;

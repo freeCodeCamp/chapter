@@ -31,7 +31,7 @@ describe('Chapter Administrator', () => {
       cy.task<User>('getUser', users.testUser.email).then(
         ({ id, instance_role }) => {
           expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          sequenceChangeChapterUserRole(id, [
+          applyChapterRoleChanges(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           ]);
         },
@@ -47,7 +47,7 @@ describe('Chapter Administrator', () => {
       cy.task<User>('getUser', users.owner.email).then(
         ({ id, instance_role }) => {
           expect(instance_role.name).to.eq(instanceRoles.OWNER);
-          sequenceChangeChapterUserRole(id, [
+          applyChapterRoleChanges(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           ]);
         },
@@ -60,7 +60,7 @@ describe('Chapter Administrator', () => {
     it('chapter_administrator should receive member instance role', () => {
       cy.login();
       cy.task<User>('getUser', users.testUser.email).then(({ id }) => {
-        sequenceChangeChapterUserRole(id, [
+        applyChapterRoleChanges(id, [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ]);
         confirmInstanceRole(
@@ -68,7 +68,7 @@ describe('Chapter Administrator', () => {
           instanceRoles.CHAPTER_ADMINISTRATOR,
         );
 
-        sequenceChangeChapterUserRole(id, [
+        applyChapterRoleChanges(id, [
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
         ]);
       });
@@ -80,7 +80,7 @@ describe('Chapter Administrator', () => {
       cy.joinChapter(secondChapterId);
       cy.login();
       cy.task<User>('getUser', users.testUser.email).then(({ id }) => {
-        sequenceChangeChapterUserRole(id, [
+        applyChapterRoleChanges(id, [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ]);
@@ -89,7 +89,7 @@ describe('Chapter Administrator', () => {
           instanceRoles.CHAPTER_ADMINISTRATOR,
         );
 
-        sequenceChangeChapterUserRole(id, [
+        applyChapterRoleChanges(id, [
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
         ]);
       });
@@ -104,7 +104,7 @@ describe('Chapter Administrator', () => {
       cy.joinChapter(secondChapterId);
       cy.login();
       cy.task<User>('getUser', users.testUser.email).then(({ id }) => {
-        sequenceChangeChapterUserRole(id, [
+        applyChapterRoleChanges(id, [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ]);
@@ -113,7 +113,7 @@ describe('Chapter Administrator', () => {
           instanceRoles.CHAPTER_ADMINISTRATOR,
         );
 
-        sequenceChangeChapterUserRole(id, [
+        applyChapterRoleChanges(id, [
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
           { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
         ]);
@@ -126,7 +126,7 @@ describe('Chapter Administrator', () => {
       cy.task<User>('getUser', users.owner.email).then(
         ({ id, instance_role }) => {
           expect(instance_role.name).to.eq(instanceRoles.OWNER);
-          sequenceChangeChapterUserRole(id, [
+          applyChapterRoleChanges(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
             { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
           ]);
@@ -142,7 +142,7 @@ describe('Chapter Administrator', () => {
       cy.task<User>('getUser', users.testUser.email).then(
         ({ id, instance_role }) => {
           expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          sequenceChangeChapterUserRole(id, [
+          applyChapterRoleChanges(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           ]);
           cy.changeInstanceUserRole({
@@ -168,7 +168,7 @@ describe('Chapter Administrator', () => {
       cy.task<User>('getUser', users.testUser.email).then(
         ({ id, instance_role }) => {
           expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          sequenceChangeChapterUserRole(id, [
+          applyChapterRoleChanges(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           ]);
           confirmInstanceRole(
@@ -193,7 +193,7 @@ describe('Chapter Administrator', () => {
       cy.task<User>('getUser', users.testUser.email).then(
         ({ id, instance_role }) => {
           expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          sequenceChangeChapterUserRole(id, [
+          applyChapterRoleChanges(id, [
             { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           ]);
           confirmInstanceRole(
@@ -224,7 +224,7 @@ describe('Chapter Administrator', () => {
     });
   }
 
-  function sequenceChangeChapterUserRole(
+  function applyChapterRoleChanges(
     userId: number,
     changes: { chapterId: number; roleName: string }[],
   ) {

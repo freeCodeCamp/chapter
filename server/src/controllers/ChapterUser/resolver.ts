@@ -14,8 +14,7 @@ import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
-import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { getInstanceRoleName } from '../../util/chapterAdministrator';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
@@ -26,57 +25,6 @@ const chapterUsersInclude = {
     },
   },
   user: true,
-};
-
-type UserWithUserChapters = Prisma.chapter_usersGetPayload<{
-  include: {
-    chapter_role: {
-      include: {
-        chapter_role_permissions: { include: { chapter_permission: true } };
-      };
-    };
-    user: {
-      include: {
-        instance_role: true;
-        user_chapters: { include: { chapter_role: true } };
-      };
-    };
-  };
-}>;
-
-interface ChangeInstanceRoleData {
-  chapterUser: UserWithUserChapters;
-  newChapterRole: string;
-  oldInstanceRole: string;
-}
-
-const getInstanceRoleName = ({
-  chapterUser,
-  newChapterRole,
-  oldInstanceRole,
-}: ChangeInstanceRoleData) => {
-  if (oldInstanceRole === InstanceRoles.owner) return oldInstanceRole;
-
-  if (
-    newChapterRole === ChapterRoles.administrator &&
-    oldInstanceRole !== InstanceRoles.chapter_administrator
-  ) {
-    return InstanceRoles.chapter_administrator;
-  }
-
-  if (
-    newChapterRole === ChapterRoles.member &&
-    oldInstanceRole === InstanceRoles.chapter_administrator
-  ) {
-    const isStillAdmin = chapterUser.user.user_chapters.some(
-      (chapter_user) =>
-        chapter_user.chapter_id !== chapterUser.chapter_id &&
-        chapter_user.chapter_role.name === ChapterRoles.administrator,
-    );
-
-    if (!isStillAdmin) return InstanceRoles.member;
-  }
-  return oldInstanceRole;
 };
 
 @Resolver(() => ChapterUser)
@@ -220,9 +168,10 @@ export class ChapterUserResolver {
     const oldInstanceRole = chapterUser.user.instance_role.name;
 
     const newInstanceRole = getInstanceRoleName({
-      chapterUser,
+      changedChapterId: chapterId,
       newChapterRole,
       oldInstanceRole,
+      userChapters: chapterUser.user.user_chapters,
     });
     if (newInstanceRole !== oldInstanceRole) {
       await prisma.users.update({

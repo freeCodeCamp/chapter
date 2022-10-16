@@ -1,12 +1,11 @@
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 
-import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma';
 
 import { UserWithInstanceRole } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
 import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { getRoleName } from '../../util/chapterAdministrator';
 
 const instanceRoleInclude = {
   instance_role: {
@@ -16,36 +15,6 @@ const instanceRoleInclude = {
       },
     },
   },
-};
-
-type UserWithUserChapters = Prisma.usersGetPayload<{
-  include: {
-    user_chapters: { include: { chapter_role: true } };
-  };
-}>;
-
-interface ChangeRoleNameData {
-  oldRole: string;
-  newRole: string;
-  user: UserWithUserChapters;
-}
-
-const getRoleName = ({ oldRole, newRole, user }: ChangeRoleNameData) => {
-  if (
-    oldRole === InstanceRoles.chapter_administrator &&
-    newRole === InstanceRoles.member
-  )
-    return InstanceRoles.chapter_administrator;
-
-  if (oldRole === InstanceRoles.owner) {
-    const isAdmin = user.user_chapters.some(
-      (chapter_user) =>
-        chapter_user.chapter_role.name === ChapterRoles.administrator,
-    );
-
-    if (isAdmin) return InstanceRoles.chapter_administrator;
-  }
-  return newRole;
 };
 
 @Resolver()
@@ -91,7 +60,11 @@ export class UsersResolver {
       data: {
         instance_role: {
           connect: {
-            name: getRoleName({ oldRole, newRole, user }),
+            name: getRoleName({
+              oldRole,
+              newRole,
+              userChapters: user.user_chapters,
+            }),
           },
         },
       },

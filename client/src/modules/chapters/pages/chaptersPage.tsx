@@ -2,8 +2,7 @@ import { Flex, Heading, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
-import { Link } from 'chakra-next-link';
-import { LinkButton } from 'chakra-next-link';
+import { Link, LinkButton } from 'chakra-next-link';
 
 import { ChapterCard } from '../../../components/ChapterCard';
 import { useChaptersQuery } from '../../../generated/graphql';

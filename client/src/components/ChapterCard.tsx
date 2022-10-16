@@ -88,7 +88,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                       mt="2"
                       fontWeight={600}
                       fontSize={['sm', 'md', 'lg']}
-                      {...canceledStyle}
+                      {...(canceled && canceledStyle)}
                     >
                       {canceled
                         ? 'Canceled'

@@ -45,9 +45,9 @@ import {
   cancelCalendarEvent,
   createCalendarEvent,
   deleteCalendarEvent,
-  patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
+import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -253,39 +253,6 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
   const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
   const waitlist = going.length >= event.capacity;
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
-};
-
-const updateCalendarEventAttendees = async ({
-  eventId,
-  calendarId,
-  calendarEventId,
-}: {
-  eventId: number;
-  calendarId: string | null;
-  calendarEventId: string | null;
-}) => {
-  const attendees = await prisma.event_users.findMany({
-    where: {
-      event_id: eventId,
-      rsvp: { name: 'yes' },
-    },
-    select: { user: { select: { email: true } } },
-  });
-
-  if (calendarId && calendarEventId) {
-    try {
-      // Patch is necessary here, since an update with unchanged start and end
-      // will remove attendees' yes/no/maybe response without notifying them.
-      await patchCalendarEvent({
-        calendarId,
-        calendarEventId,
-        attendeeEmails: attendees.map(({ user }) => user.email),
-      });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
-      throw 'Unable to update calendar event attendees';
-    }
-  }
 };
 
 @Resolver()

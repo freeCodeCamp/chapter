@@ -20,6 +20,27 @@ import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
+const isBannable = ({
+  userId,
+  userChapterRole,
+  userInstanceRole,
+  otherChapterRole,
+  otherUserId,
+}: {
+  userId: number;
+  userChapterRole: string;
+  userInstanceRole: string;
+  otherUserId: number;
+  otherChapterRole: string;
+}) => {
+  if (otherUserId === userId) return false;
+  if (userInstanceRole === 'owner') return true;
+
+  if (otherChapterRole === 'administrator') return false;
+  if (userChapterRole === 'administrator') return true;
+  return false;
+};
+
 @Resolver()
 export class ChapterResolver {
   @Query(() => [ChapterWithEvents])
@@ -39,8 +60,9 @@ export class ChapterResolver {
   @Query(() => ChapterWithRelations)
   async dashboardChapter(
     @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterWithRelations> {
-    return await prisma.chapters.findUniqueOrThrow({
+    const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
         events: true,
@@ -53,13 +75,31 @@ export class ChapterResolver {
                 },
               },
             },
-            user: true,
+            user: { include: { instance_role: true } },
           },
           orderBy: { user: { name: 'asc' } },
         },
         user_bans: { include: { user: true, chapter: true } },
       },
     });
+
+    const userInstanceRole = ctx.user.instance_role.name;
+    const userChapterRole =
+      ctx.user.user_chapters.find(({ chapter_id }) => chapter_id === id)
+        ?.chapter_role.name ?? 'member';
+
+    const usersWithIsBannable = chapter.chapter_users.map((chapterUser) => ({
+      ...chapterUser,
+      is_bannable: isBannable({
+        userId: ctx.user.id,
+        userChapterRole,
+        userInstanceRole,
+        otherUserId: chapterUser.user_id,
+        otherChapterRole: chapterUser.chapter_role.name,
+      }),
+    }));
+
+    return { ...chapter, chapter_users: usersWithIsBannable };
   }
 
   @Query(() => ChapterWithRelations)

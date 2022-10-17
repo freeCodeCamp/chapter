@@ -29,7 +29,7 @@ import {
   RoleChangeModalData,
 } from '../../../shared/components/RoleChangeModal';
 import { useParam } from '../../../../../hooks/useParam';
-import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTER_USERS } from '../../graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
 
 export const ChapterUsersPage: NextPageWithLayout = () => {

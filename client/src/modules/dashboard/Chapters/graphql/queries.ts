@@ -33,3 +33,27 @@ export const DASHBOARD_CHAPTER = gql`
     }
   }
 `;
+
+export const DASHBOARD_CHAPTER_USERS = gql`
+  query dashboardChapterUsers($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
+      chapter_users {
+        user {
+          id
+          name
+        }
+        chapter_role {
+          id
+          name
+        }
+        subscribed
+        is_bannable
+      }
+      user_bans {
+        user {
+          id
+        }
+      }
+    }
+  }
+`;

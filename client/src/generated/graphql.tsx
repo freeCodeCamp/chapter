@@ -714,28 +714,6 @@ export type ChapterQuery = {
   };
 };
 
-export type DashboardChapterUsersQueryVariables = Exact<{
-  chapterId: Scalars['Int'];
-}>;
-
-export type DashboardChapterUsersQuery = {
-  __typename?: 'Query';
-  dashboardChapter: {
-    __typename?: 'ChapterWithRelations';
-    chapter_users: Array<{
-      __typename?: 'ChapterUser';
-      subscribed: boolean;
-      is_bannable: boolean;
-      user: { __typename?: 'User'; id: number; name: string };
-      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
-    }>;
-    user_bans: Array<{
-      __typename?: 'UserBan';
-      user: { __typename?: 'User'; id: number };
-    }>;
-  };
-};
-
 export type ChapterUserQueryVariables = Exact<{
   chapterId: Scalars['Int'];
 }>;
@@ -896,6 +874,28 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
+    }>;
+  };
+};
+
+export type DashboardChapterUsersQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type DashboardChapterUsersQuery = {
+  __typename?: 'Query';
+  dashboardChapter: {
+    __typename?: 'ChapterWithRelations';
+    chapter_users: Array<{
+      __typename?: 'ChapterUser';
+      subscribed: boolean;
+      is_bannable: boolean;
+      user: { __typename?: 'User'; id: number; name: string };
+      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
+    }>;
+    user_bans: Array<{
+      __typename?: 'UserBan';
+      user: { __typename?: 'User'; id: number };
     }>;
   };
 };
@@ -1795,80 +1795,6 @@ export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
 >;
-export const DashboardChapterUsersDocument = gql`
-  query dashboardChapterUsers($chapterId: Int!) {
-    dashboardChapter(id: $chapterId) {
-      chapter_users {
-        user {
-          id
-          name
-        }
-        chapter_role {
-          id
-          name
-        }
-        subscribed
-        is_bannable
-      }
-      user_bans {
-        user {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useDashboardChapterUsersQuery__
- *
- * To run a query within a React component, call `useDashboardChapterUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useDashboardChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDashboardChapterUsersQuery({
- *   variables: {
- *      chapterId: // value for 'chapterId'
- *   },
- * });
- */
-export function useDashboardChapterUsersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >(DashboardChapterUsersDocument, options);
-}
-export function useDashboardChapterUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >(DashboardChapterUsersDocument, options);
-}
-export type DashboardChapterUsersQueryHookResult = ReturnType<
-  typeof useDashboardChapterUsersQuery
->;
-export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
-  typeof useDashboardChapterUsersLazyQuery
->;
-export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
-  DashboardChapterUsersQuery,
-  DashboardChapterUsersQueryVariables
->;
 export const ChapterUserDocument = gql`
   query chapterUser($chapterId: Int!) {
     chapterUser(chapterId: $chapterId) {
@@ -2457,6 +2383,80 @@ export type DashboardChapterLazyQueryHookResult = ReturnType<
 export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQuery,
   DashboardChapterQueryVariables
+>;
+export const DashboardChapterUsersDocument = gql`
+  query dashboardChapterUsers($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
+      chapter_users {
+        user {
+          id
+          name
+        }
+        chapter_role {
+          id
+          name
+        }
+        subscribed
+        is_bannable
+      }
+      user_bans {
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useDashboardChapterUsersQuery__
+ *
+ * To run a query within a React component, call `useDashboardChapterUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardChapterUsersQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDashboardChapterUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >(DashboardChapterUsersDocument, options);
+}
+export function useDashboardChapterUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >(DashboardChapterUsersDocument, options);
+}
+export type DashboardChapterUsersQueryHookResult = ReturnType<
+  typeof useDashboardChapterUsersQuery
+>;
+export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
+  typeof useDashboardChapterUsersLazyQuery
+>;
+export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
+  DashboardChapterUsersQuery,
+  DashboardChapterUsersQueryVariables
 >;
 export const CreateEventDocument = gql`
   mutation createEvent($chapterId: Int!, $data: EventInputs!) {

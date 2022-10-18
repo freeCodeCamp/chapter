@@ -28,7 +28,7 @@ const eventData = {
 function createEventViaUI(chapterId) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
-  cy.findByRole('textbox', { name: 'Event title (Required)' }).type(
+  cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
     testEvent.name,
   );
   cy.findByRole('textbox', { name: 'Description' }).type(testEvent.description);

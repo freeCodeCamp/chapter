@@ -139,7 +139,7 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUser)
   async changeChapterUserRole(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Arg('roleName', () => String) roleName: string,
+    @Arg('roleName', () => String) newChapterRole: string,
     @Arg('userId', () => Int) userId: number,
   ): Promise<ChapterUser> {
     const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
@@ -156,7 +156,6 @@ export class ChapterUserResolver {
     });
 
     const oldChapterRole = chapterUser.chapter_role.name;
-    const newChapterRole = roleName;
     if (oldChapterRole === newChapterRole) return chapterUser;
 
     const updatedChapterUser = await prisma.chapter_users.update({

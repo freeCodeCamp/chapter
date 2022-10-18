@@ -42,7 +42,7 @@ export class UsersResolver {
   @Authorized(Permission.UserInstanceRoleChange)
   @Mutation(() => UserWithInstanceRole)
   async changeInstanceUserRole(
-    @Arg('roleName', () => String) roleName: string,
+    @Arg('roleName', () => String) newRole: string,
     @Arg('userId', () => Int) userId: number,
   ): Promise<UserWithInstanceRole> {
     const user = await prisma.users.findUniqueOrThrow({
@@ -54,7 +54,6 @@ export class UsersResolver {
     });
 
     const oldRole = user.instance_role.name;
-    const newRole = roleName;
     if (oldRole === newRole) return user;
 
     return await prisma.users.update({

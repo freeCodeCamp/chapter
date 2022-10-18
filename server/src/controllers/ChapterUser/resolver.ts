@@ -95,6 +95,16 @@ export class ChapterUserResolver {
   ): Promise<ChapterUser | null> {
     await prisma.event_users.deleteMany({
       where: {
+        user_id: ctx.user.id,
+        event: { chapter_id: chapterId },
+        calendar_event_id: { chapter_id: chapterId },
+        chapter: {
+          select: { calendar_id: true },
+        },
+      },
+    });
+    await prisma.event_users.deleteMany({
+      where: {
         event: { chapter_id: chapterId },
         user_id: ctx.user.id,
       },

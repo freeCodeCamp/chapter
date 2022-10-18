@@ -63,10 +63,12 @@ export const getRoleName = ({
 
   // The client should not request this change, but if it does it's ignored.
   if (
-    oldRole === InstanceRoles.chapter_administrator &&
-    newRole === InstanceRoles.member
+    (oldRole === InstanceRoles.chapter_administrator &&
+      newRole === InstanceRoles.member) ||
+    (oldRole === InstanceRoles.member &&
+      newRole === InstanceRoles.chapter_administrator)
   )
-    return InstanceRoles.chapter_administrator;
+    return oldRole;
 
   // since the former owner may still be an administator, we check if they will
   // need the chapter_administrator role

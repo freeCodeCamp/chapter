@@ -151,6 +151,7 @@ export const ChapterPage: NextPage = () => {
           alt=""
           borderRadius="md"
           objectFit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
         />
         <Heading
           as="h1"

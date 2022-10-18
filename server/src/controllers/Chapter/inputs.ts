@@ -23,7 +23,7 @@ export class CreateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String)
-  image_url: string;
+  banner_url: string;
 
   @Field(() => String, { nullable: true })
   chat_url?: string | null;
@@ -50,7 +50,7 @@ export class UpdateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String, { nullable: true })
-  image_url: string;
+  banner_url: string;
 
   @Field(() => String, { nullable: true })
   chat_url?: string | null;

@@ -147,10 +147,11 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.image_url}
+          src={data.chapter.banner_url}
           alt=""
           borderRadius="md"
           objectFit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
         />
         <Heading
           as="h1"

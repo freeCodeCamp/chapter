@@ -310,6 +310,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <FormLabel> Sponsors</FormLabel>
           <Spacer />
           <Button
+            colorScheme={'blue'}
             onClick={() => {
               if (sponsorData) {
                 const allowedSponsors = getAllowedSponsors(

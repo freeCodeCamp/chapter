@@ -25,8 +25,7 @@ export const VenuePage: NextPageWithLayout = () => {
   }, [isReady]);
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.venue)
     return <NextError statusCode={404} title="Venue not found" />;
 

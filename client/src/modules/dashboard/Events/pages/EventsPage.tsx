@@ -17,11 +17,10 @@ export const EventsPage: NextPageWithLayout = () => {
   const { user } = useAuth();
 
   const isLoading = loading || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <VStack>
+    <VStack data-cy="events-dashboard">
       <Flex w="full" justify="space-between">
         <Heading id="page-heading">Events</Heading>
         {!!user?.admined_chapters.length && (

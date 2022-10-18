@@ -990,20 +990,38 @@ ${unsubscribeOptions}`,
       url: eventURL,
     });
 
-    const body = `When: ${event.start_at} to ${event.ends_at}<br>
-${event.venue ? `Where: ${event.venue.name}<br>` : ''}
-${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
-Event Details: <a href="${eventURL}">${eventURL}</a><br>
-    <br>
-    - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
+    const subsequentEventEmail = `New Upcoming Event for ${
+      event.chapter.name
+    }.<br />
+    <br />
+    When: ${event.start_at} to ${event.ends_at}
+    <br />
+   ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
+   ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+   <br />
+    View All of Upcoming Events for ${
+      event.chapter.name
+    }: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
+    RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
+    ----------------------------<br />
+    <br />
+    About the event: <br />
+    ${event.description}<br />
+    <br />
+    - Stop receiving upcoming event notifications for ${
+      event.chapter.name
+    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
     - More about ${
       event.chapter.name
-    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
-    <br>
-    ----------------------------<br>
-    You received this email because you follow this chapter.<br>
-    <br>
-    See the options above to change your notifications.`;
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
+    <br />
+    ----------------------------<br />
+    You received this email because you follow ${
+      event.chapter.name
+    } chapter.<br />
+    <br />
+    See the options above to change your notifications.
+    `;
 
     const iCalEvent = calendar.toString();
 
@@ -1015,7 +1033,7 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
           eventId: event.id,
           userId: user.id,
         });
-        const text = `${body}<br>${unsubScribeOptions}`;
+        const text = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
         yield { email, subject, text, options: { iCalEvent } };
       }
     });

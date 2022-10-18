@@ -52,7 +52,7 @@ export const NewEventPage: NextPageWithLayout = () => {
     }
   };
 
-  if (!isReady) return <DashboardLoading loading={isReady} />;
+  if (!isReady) return <DashboardLoading />;
 
   return (
     <>

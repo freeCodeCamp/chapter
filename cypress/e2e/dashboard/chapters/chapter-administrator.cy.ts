@@ -25,6 +25,44 @@ describe('Chapter Administrator', () => {
     cy.joinChapter(firstChapterId);
   });
 
+  function changeChapterRole({
+    userEmail,
+    initialInstanceRole,
+    changesToApply,
+    expectedRole,
+  }: {
+    userEmail: string;
+    initialInstanceRole: string;
+    changesToApply: { chapterId: number; roleName: string }[];
+    expectedRole: string;
+  }) {
+    cy.task<User>('getUser', userEmail).then(({ id, instance_role }) => {
+      expect(instance_role.name).to.eq(initialInstanceRole);
+      applyChapterRoleChanges(id, changesToApply);
+      confirmInstanceRole(userEmail, expectedRole);
+    });
+  }
+
+  function changeInstanceRole({
+    userEmail,
+    initialRole,
+    roleToApply,
+    expectedRole,
+  }: {
+    userEmail: string;
+    initialRole: string;
+    roleToApply: string;
+    expectedRole: string;
+  }) {
+    cy.task<User>('getUser', userEmail).then(({ id, instance_role }) => {
+      expect(instance_role.name).to.eq(initialRole);
+      cy.changeInstanceUserRole({ roleName: roleToApply, userId: id }).then(
+        expectNoErrors,
+      );
+      confirmInstanceRole(userEmail, expectedRole);
+    });
+  }
+
   function confirmInstanceRole(email: string, expectedRole: string) {
     cy.task<User>('getUser', email).then(({ instance_role: { name } }) => {
       expect(name).to.eq(expectedRole);
@@ -45,186 +83,168 @@ describe('Chapter Administrator', () => {
   describe('when promoted to administrator of chapter', () => {
     it('instance member should get chapter_administrator instance role', () => {
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(
-        ({ id, instance_role }) => {
-          expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          applyChapterRoleChanges(id, [
-            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-          ]);
-        },
-      );
-      confirmInstanceRole(
-        users.testUser.email,
-        instanceRoles.CHAPTER_ADMINISTRATOR,
-      );
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
     });
 
     it('instance owner should keep instance role', () => {
       cy.login();
-      cy.task<User>('getUser', users.owner.email).then(
-        ({ id, instance_role }) => {
-          expect(instance_role.name).to.eq(instanceRoles.OWNER);
-          applyChapterRoleChanges(id, [
-            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-          ]);
-        },
-      );
-      confirmInstanceRole(users.owner.email, instanceRoles.OWNER);
+      changeChapterRole({
+        userEmail: users.owner.email,
+        initialInstanceRole: instanceRoles.OWNER,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+        ],
+        expectedRole: instanceRoles.OWNER,
+      });
     });
   });
 
   describe('when demoted from administrator of chapter', () => {
     it('chapter_administrator should receive member instance role', () => {
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(({ id }) => {
-        applyChapterRoleChanges(id, [
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-        ]);
-        confirmInstanceRole(
-          users.testUser.email,
-          instanceRoles.CHAPTER_ADMINISTRATOR,
-        );
-
-        applyChapterRoleChanges(id, [
-          { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
-        ]);
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
-
-      confirmInstanceRole(users.testUser.email, instanceRoles.MEMBER);
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
+        ],
+        expectedRole: instanceRoles.MEMBER,
+      });
     });
 
     it('administrator of multiple chapters should keep chapter_administrator instance role, when demoted in one chapter', () => {
       cy.joinChapter(secondChapterId);
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(({ id }) => {
-        applyChapterRoleChanges(id, [
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.ADMINISTRATOR },
-        ]);
-        confirmInstanceRole(
-          users.testUser.email,
-          instanceRoles.CHAPTER_ADMINISTRATOR,
-        );
-
-        applyChapterRoleChanges(id, [
-          { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
-        ]);
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
-
-      confirmInstanceRole(
-        users.testUser.email,
-        instanceRoles.CHAPTER_ADMINISTRATOR,
-      );
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
     });
 
     it('administrator of multiple chapters should receive member instance role when demoted from last administrator role', () => {
       cy.joinChapter(secondChapterId);
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(({ id }) => {
-        applyChapterRoleChanges(id, [
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.ADMINISTRATOR },
-        ]);
-        confirmInstanceRole(
-          users.testUser.email,
-          instanceRoles.CHAPTER_ADMINISTRATOR,
-        );
-
-        applyChapterRoleChanges(id, [
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
           { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
-        ]);
+        ],
+        expectedRole: instanceRoles.MEMBER,
       });
-      confirmInstanceRole(users.testUser.email, instanceRoles.MEMBER);
     });
 
     it('instance owner should keep instance role', () => {
       cy.login();
-      cy.task<User>('getUser', users.owner.email).then(
-        ({ id, instance_role }) => {
-          expect(instance_role.name).to.eq(instanceRoles.OWNER);
-          applyChapterRoleChanges(id, [
-            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-            { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
-          ]);
-        },
-      );
-      confirmInstanceRole(users.owner.email, instanceRoles.OWNER);
+      changeChapterRole({
+        userEmail: users.owner.email,
+        initialInstanceRole: instanceRoles.OWNER,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+          { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
+        ],
+        expectedRole: instanceRoles.OWNER,
+      });
     });
   });
 
   describe('chapter_administrator instance role', () => {
     it('should be instance role again, when administrator of chapter is demoted from instance owner to instance member', () => {
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(
-        ({ id, instance_role }) => {
-          expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          applyChapterRoleChanges(id, [
-            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-          ]);
-          cy.changeInstanceUserRole({
-            roleName: instanceRoles.OWNER,
-            userId: id,
-          }).then(expectNoErrors);
-
-          confirmInstanceRole(users.testUser.email, instanceRoles.OWNER);
-          cy.changeInstanceUserRole({
-            roleName: instanceRoles.MEMBER,
-            userId: id,
-          }).then(expectNoErrors);
-        },
-      );
-      confirmInstanceRole(
-        users.testUser.email,
-        instanceRoles.CHAPTER_ADMINISTRATOR,
-      );
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
+      changeInstanceRole({
+        userEmail: users.testUser.email,
+        initialRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        roleToApply: instanceRoles.OWNER,
+        expectedRole: instanceRoles.OWNER,
+      });
+      changeInstanceRole({
+        userEmail: users.testUser.email,
+        initialRole: instanceRoles.OWNER,
+        roleToApply: instanceRoles.MEMBER,
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
     });
 
     it('should be kept when changing chapter_administrator instance role to member for administrator of chapter', () => {
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(
-        ({ id, instance_role }) => {
-          expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          applyChapterRoleChanges(id, [
-            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-          ]);
-          confirmInstanceRole(
-            users.testUser.email,
-            instanceRoles.CHAPTER_ADMINISTRATOR,
-          );
-
-          cy.changeInstanceUserRole({
-            roleName: instanceRoles.MEMBER,
-            userId: id,
-          }).then(expectNoErrors);
-        },
-      );
-      confirmInstanceRole(
-        users.testUser.email,
-        instanceRoles.CHAPTER_ADMINISTRATOR,
-      );
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
+      changeInstanceRole({
+        userEmail: users.testUser.email,
+        initialRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        roleToApply: instanceRoles.MEMBER,
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
     });
 
     it('should be changed to owner when changing instance role to owner, for administrator of chapter', () => {
       cy.login();
-      cy.task<User>('getUser', users.testUser.email).then(
-        ({ id, instance_role }) => {
-          expect(instance_role.name).to.eq(instanceRoles.MEMBER);
-          applyChapterRoleChanges(id, [
-            { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
-          ]);
-          confirmInstanceRole(
-            users.testUser.email,
-            instanceRoles.CHAPTER_ADMINISTRATOR,
-          );
-
-          cy.changeInstanceUserRole({
-            roleName: instanceRoles.OWNER,
-            userId: id,
-          }).then(expectNoErrors);
-        },
-      );
-      confirmInstanceRole(users.testUser.email, instanceRoles.OWNER);
+      changeChapterRole({
+        userEmail: users.testUser.email,
+        initialInstanceRole: instanceRoles.MEMBER,
+        changesToApply: [
+          { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
+        ],
+        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+      });
+      changeInstanceRole({
+        userEmail: users.testUser.email,
+        initialRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        roleToApply: instanceRoles.OWNER,
+        expectedRole: instanceRoles.OWNER,
+      });
     });
 
     it('should not be visible on users list', () => {

@@ -7,6 +7,7 @@ import {
   useToast,
   List,
   HStack,
+  Image,
   ListItem,
   Avatar,
   Flex,
@@ -31,7 +32,6 @@ import {
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
-import { EventBanner } from '../components/EventBanner';
 import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
@@ -197,7 +197,16 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <EventBanner BannerUrl={data.event.image_url} />
+      <Image
+        data-cy="event-image"
+        boxSize="100%"
+        maxH="300px"
+        src={data.event.image_url}
+        alt=""
+        borderRadius="md"
+        objectFit="cover"
+        fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+      />
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>

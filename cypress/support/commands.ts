@@ -341,7 +341,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
-  const kickMutation = {
+  const removeMutation = {
     operationName: 'deleteRsvp',
     variables: {
       eventId,
@@ -351,7 +351,7 @@ Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
       deleteRsvp(eventId: $eventId, userId: $userId)
     }`,
   };
-  return cy.authedRequest(gqlOptions(kickMutation));
+  return cy.authedRequest(gqlOptions(removeMutation));
 });
 
 Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
@@ -382,7 +382,7 @@ Cypress.Commands.add(
         chapterId,
         data,
       },
-      query: `mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+      query: `mutation createVenue($chapterId: Int!, $data: VenueInputs!) {
       createVenue(chapterId: $chapterId, data: $data) {
         id
       }
@@ -407,7 +407,7 @@ Cypress.Commands.add(
         venueId,
         data,
       },
-      query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: UpdateVenueInputs!) {
+      query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: VenueInputs!) {
       updateVenue(chapterId: $chapterId, venueId: $venueId, data: $data) {
         id
       }

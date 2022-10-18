@@ -9,14 +9,20 @@ import {
 } from '@chakra-ui/popover';
 import { Button } from '@chakra-ui/button';
 
-export const ShareEventPop = ({ link }: { link: string }) => {
+export const SharePopOver = ({
+  link,
+  size,
+}: {
+  link: string;
+  size?: string;
+}) => {
   return (
     <Popover>
       <PopoverTrigger>
         <Button
           onClick={() => navigator.clipboard.writeText(link)}
           colorScheme={'blue'}
-          size="sm"
+          size={size}
         >
           Share
         </Button>

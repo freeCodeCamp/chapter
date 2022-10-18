@@ -6,6 +6,7 @@ import { CHAPTER } from '../../../chapters/graphql/queries';
 import { DASHBOARD_EVENT, EVENTS } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { SharePopOver } from '../../../../components/SharePopOver';
 import EventCancelButton from './EventCancelButton';
 import { Event, useDeleteEventMutation } from 'generated/graphql';
 
@@ -67,7 +68,8 @@ const Actions: React.FC<ActionsProps> = ({
       <Button size={['sm', 'md']} colorScheme="red" onClick={clickDelete}>
         Delete
       </Button>
-      <ShareEventPop
+      <SharePopOver
+        size={'sm'}
         link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?emaillink=true`}
       />
     </HStack>

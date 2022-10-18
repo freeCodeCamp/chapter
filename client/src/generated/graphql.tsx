@@ -306,12 +306,12 @@ export type MutationCancelRsvpArgs = {
 
 export type MutationChangeChapterUserRoleArgs = {
   chapterId: Scalars['Int'];
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 };
 
 export type MutationChangeInstanceUserRoleArgs = {
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 };
 
@@ -851,7 +851,7 @@ export type UnbanUserMutation = {
 
 export type ChangeChapterUserRoleMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 }>;
 
@@ -859,7 +859,7 @@ export type ChangeChapterUserRoleMutation = {
   __typename?: 'Mutation';
   changeChapterUserRole: {
     __typename?: 'ChapterUser';
-    chapter_role: { __typename?: 'ChapterRole'; id: number };
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
 };
 
@@ -1167,7 +1167,7 @@ export type SponsorWithEventsQuery = {
 };
 
 export type ChangeInstanceUserRoleMutationVariables = Exact<{
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 }>;
 
@@ -1175,7 +1175,7 @@ export type ChangeInstanceUserRoleMutation = {
   __typename?: 'Mutation';
   changeInstanceUserRole: {
     __typename?: 'UserWithInstanceRole';
-    instance_role: { __typename?: 'InstanceRole'; id: number };
+    instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
 
@@ -2266,16 +2266,16 @@ export type UnbanUserMutationOptions = Apollo.BaseMutationOptions<
 export const ChangeChapterUserRoleDocument = gql`
   mutation changeChapterUserRole(
     $chapterId: Int!
-    $roleId: Int!
+    $roleName: String!
     $userId: Int!
   ) {
     changeChapterUserRole(
       chapterId: $chapterId
-      roleId: $roleId
+      roleName: $roleName
       userId: $userId
     ) {
       chapter_role {
-        id
+        name
       }
     }
   }
@@ -2299,7 +2299,7 @@ export type ChangeChapterUserRoleMutationFn = Apollo.MutationFunction<
  * const [changeChapterUserRoleMutation, { data, loading, error }] = useChangeChapterUserRoleMutation({
  *   variables: {
  *      chapterId: // value for 'chapterId'
- *      roleId: // value for 'roleId'
+ *      roleName: // value for 'roleName'
  *      userId: // value for 'userId'
  *   },
  * });
@@ -3351,10 +3351,10 @@ export type SponsorWithEventsQueryResult = Apollo.QueryResult<
   SponsorWithEventsQueryVariables
 >;
 export const ChangeInstanceUserRoleDocument = gql`
-  mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {
-    changeInstanceUserRole(roleId: $roleId, userId: $userId) {
+  mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
+    changeInstanceUserRole(roleName: $roleName, userId: $userId) {
       instance_role {
-        id
+        name
       }
     }
   }
@@ -3377,7 +3377,7 @@ export type ChangeInstanceUserRoleMutationFn = Apollo.MutationFunction<
  * @example
  * const [changeInstanceUserRoleMutation, { data, loading, error }] = useChangeInstanceUserRoleMutation({
  *   variables: {
- *      roleId: // value for 'roleId'
+ *      roleName: // value for 'roleName'
  *      userId: // value for 'userId'
  *   },
  * });

@@ -59,16 +59,16 @@ export const unbanUser = gql`
 export const changeChapterUserRole = gql`
   mutation changeChapterUserRole(
     $chapterId: Int!
-    $roleId: Int!
+    $roleName: String!
     $userId: Int!
   ) {
     changeChapterUserRole(
       chapterId: $chapterId
-      roleId: $roleId
+      roleName: $roleName
       userId: $userId
     ) {
       chapter_role {
-        id
+        name
       }
     }
   }

@@ -19,7 +19,10 @@ export const UserProfilePage = () => {
   const logout = useLogout();
   const router = useRouter();
 
-  const confirmDelete = useConfirmDelete({ doubleConfirm: true });
+  const confirmDelete = useConfirmDelete({
+    body: 'Are you sure you want to delete your account? Account deletion cannot be reversed.',
+    buttonText: 'Delete account',
+  });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation({
     refetchQueries: [{ query: meQuery }],

@@ -935,7 +935,12 @@ ${unsubscribeOptions}`,
       where: { id },
       include: {
         venue: true,
-        chapter: { include: { chapter_users: { include: { user: true } } } },
+        chapter: {
+          include: {
+            chapter_users: { include: { user: true } },
+            user_bans: true,
+          },
+        },
         event_users: {
           include: { rsvp: true, user: true },
           where: { subscribed: true },
@@ -948,10 +953,17 @@ ${unsubscribeOptions}`,
       subscribed: boolean;
     }
 
+    const bannedUserIds = new Set(
+      event.chapter.user_bans.map(({ user_id }) => user_id),
+    );
+
     const users: User[] = [];
     if (emailGroups.includes('interested')) {
       const interestedUsers =
-        event.chapter.chapter_users?.filter((user) => user.subscribed) ?? [];
+        event.chapter.chapter_users?.filter(
+          ({ subscribed, user_id }) =>
+            !bannedUserIds.has(user_id) && subscribed,
+        ) ?? [];
 
       users.push(...interestedUsers);
     }

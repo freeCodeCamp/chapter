@@ -6,13 +6,13 @@ import { useForm } from 'react-hook-form';
 import { Modal } from '../../../../components/Modal';
 
 export interface RoleChangeModalData {
-  roleId: number;
+  roleName: string;
   userId: number;
   userName: string;
 }
 
 interface SubmitData {
-  newRoleId: number;
+  newRoleName: string;
   userId: number;
 }
 
@@ -24,10 +24,15 @@ export const RoleChangeModal: React.FC<{
   onSubmit: (submitData: SubmitData) => void;
 }> = ({ modalProps, data, roles, title, onSubmit }) => {
   const { handleSubmit, register, setValue, getValues } = useForm<SubmitData>();
+  const currentRole = data.roleName;
 
   const confirm = useConfirm();
 
   const confirmSubmit = async (data: SubmitData) => {
+    if (data.newRoleName === currentRole) {
+      modalProps.onClose();
+      return;
+    }
     const ok = await confirm({
       body: 'Are you sure you want to change role?',
     });
@@ -37,7 +42,7 @@ export const RoleChangeModal: React.FC<{
   };
 
   setValue('userId', data.userId);
-  setValue('newRoleId', data.roleId);
+  setValue('newRoleName', data.roleName);
 
   return (
     <Modal
@@ -50,11 +55,11 @@ export const RoleChangeModal: React.FC<{
     >
       <Text>Select role for {data.userName}</Text>
       <Select
-        defaultValue={getValues('newRoleId')}
-        {...register('newRoleId', { valueAsNumber: true })}
+        defaultValue={getValues('newRoleName')}
+        {...register('newRoleName')}
       >
         {roles.map(({ id, name }) => (
-          <option key={id} value={id}>
+          <option key={id} value={name}>
             {name}
           </option>
         ))}

@@ -3,7 +3,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
@@ -25,10 +24,9 @@ export const ShareEventPop = ({ link }: { link: string }) => {
       <PopoverContent>
         <PopoverArrow />
         <PopoverCloseButton />
-        <PopoverHeader>
-          You have copied the link below into your clipboard!
-        </PopoverHeader>
-        <PopoverBody>{link}</PopoverBody>
+        <PopoverBody>
+          You have copied a link to the event into your clipboard!
+        </PopoverBody>
       </PopoverContent>
     </Popover>
   );

@@ -21,18 +21,13 @@ export const HOME_PAGE_QUERY = gql`
       name
       description
       banner_url
-      city
       events {
-        id
-        name
         canceled
         start_at
-        venue {
-          id
-          name
-          region
-          street_address
-        }
+        name
+      }
+      chapter_users {
+        subscribed
       }
     }
   }

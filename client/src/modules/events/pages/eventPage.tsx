@@ -2,7 +2,6 @@ import { LockIcon } from '@chakra-ui/icons';
 import {
   Heading,
   VStack,
-  Image,
   Text,
   Button,
   useToast,
@@ -32,6 +31,7 @@ import {
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
+import { EventBanner } from '../components/EventBanner';
 import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
@@ -197,15 +197,7 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <Image
-        data-cy="event-image"
-        boxSize="100%"
-        maxH="300px"
-        src={data.event.image_url}
-        alt=""
-        borderRadius="md"
-        objectFit="cover"
-      />
+      <EventBanner BannerUrl={data.event.image_url} />
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>

@@ -1,0 +1,6 @@
+.event-banner {
+    box-sizing: 100%;
+    max-height: 300px;
+    border-radius: 15px;
+    object-fit: cover;
+}

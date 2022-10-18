@@ -18,6 +18,8 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
+import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
+import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 const isBannable = ({
@@ -34,10 +36,10 @@ const isBannable = ({
   otherChapterRole: string;
 }) => {
   if (otherUserId === userId) return false;
-  if (userInstanceRole === 'owner') return true;
+  if (userInstanceRole === InstanceRoles.owner) return true;
 
-  if (otherChapterRole === 'administrator') return false;
-  if (userChapterRole === 'administrator') return true;
+  if (otherChapterRole === ChapterRoles.administrator) return false;
+  if (userChapterRole === ChapterRoles.administrator) return true;
   return false;
 };
 
@@ -86,7 +88,7 @@ export class ChapterResolver {
     const userInstanceRole = ctx.user.instance_role.name;
     const userChapterRole =
       ctx.user.user_chapters.find(({ chapter_id }) => chapter_id === id)
-        ?.chapter_role.name ?? 'member';
+        ?.chapter_role.name ?? ChapterRoles.member;
 
     const usersWithIsBannable = chapter.chapter_users.map((chapterUser) => ({
       ...chapterUser,

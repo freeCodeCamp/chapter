@@ -74,7 +74,7 @@ const Actions: React.FC<ActionsProps> = ({
         Email Attendees
       </Button>
       <ShareEventPop
-        link={`${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`}
+        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?emaillink=true`}
       />
       <SendEmailModal onClose={onClose} isOpen={isOpen} eventId={event.id} />
     </HStack>

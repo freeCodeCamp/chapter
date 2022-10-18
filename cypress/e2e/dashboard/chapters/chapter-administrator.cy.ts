@@ -29,17 +29,17 @@ describe('Chapter Administrator', () => {
     userEmail,
     initialInstanceRole,
     changesToApply,
-    expectedRole,
+    expectedInstanceRole,
   }: {
     userEmail: string;
     initialInstanceRole: string;
     changesToApply: { chapterId: number; roleName: string }[];
-    expectedRole: string;
+    expectedInstanceRole: string;
   }) {
     cy.task<User>('getUser', userEmail).then(({ id, instance_role }) => {
       expect(instance_role.name).to.eq(initialInstanceRole);
       applyChapterRoleChanges(id, changesToApply);
-      confirmInstanceRole(userEmail, expectedRole);
+      confirmInstanceRole(userEmail, expectedInstanceRole);
     });
   }
 
@@ -89,7 +89,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
     });
 
@@ -101,7 +101,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.OWNER,
+        expectedInstanceRole: instanceRoles.OWNER,
       });
     });
   });
@@ -115,7 +115,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
       changeChapterRole({
         userEmail: users.testUser.email,
@@ -123,7 +123,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
         ],
-        expectedRole: instanceRoles.MEMBER,
+        expectedInstanceRole: instanceRoles.MEMBER,
       });
     });
 
@@ -137,7 +137,7 @@ describe('Chapter Administrator', () => {
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
       changeChapterRole({
         userEmail: users.testUser.email,
@@ -145,7 +145,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
     });
 
@@ -159,7 +159,7 @@ describe('Chapter Administrator', () => {
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
       changeChapterRole({
         userEmail: users.testUser.email,
@@ -168,7 +168,7 @@ describe('Chapter Administrator', () => {
           { chapterId: firstChapterId, roleName: chapterRoles.MEMBER },
           { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
         ],
-        expectedRole: instanceRoles.MEMBER,
+        expectedInstanceRole: instanceRoles.MEMBER,
       });
     });
 
@@ -181,7 +181,7 @@ describe('Chapter Administrator', () => {
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
           { chapterId: secondChapterId, roleName: chapterRoles.MEMBER },
         ],
-        expectedRole: instanceRoles.OWNER,
+        expectedInstanceRole: instanceRoles.OWNER,
       });
     });
   });
@@ -195,7 +195,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
       changeInstanceRole({
         userEmail: users.testUser.email,
@@ -219,7 +219,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
       changeInstanceRole({
         userEmail: users.testUser.email,
@@ -237,7 +237,7 @@ describe('Chapter Administrator', () => {
         changesToApply: [
           { chapterId: firstChapterId, roleName: chapterRoles.ADMINISTRATOR },
         ],
-        expectedRole: instanceRoles.CHAPTER_ADMINISTRATOR,
+        expectedInstanceRole: instanceRoles.CHAPTER_ADMINISTRATOR,
       });
       changeInstanceRole({
         userEmail: users.testUser.email,

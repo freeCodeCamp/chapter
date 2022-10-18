@@ -1,0 +1,22 @@
+{
+  "bannedAdmin": {
+    "email": "banned@chapter.admin",
+    "name": "Banned Chapter Admin"
+  },
+  "chapter1Admin": {
+    "email": "admin@of.chapter.one",
+    "name": "Chapter One Admin"
+  },
+  "chapter2Admin": {
+    "email": "admin@of.chapter.two",
+    "name": "Chapter Two Admin"
+  },
+  "owner": {
+    "email": "foo@bar.com",
+    "name": "The Owner"
+  },
+  "testUser": {
+    "email": "test@user.org",
+    "name": "Test User"
+  }
+}

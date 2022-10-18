@@ -2802,14 +2802,14 @@
                 "deprecationReason": null
               },
               {
-                "name": "roleId",
+                "name": "roleName",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Int",
+                    "name": "String",
                     "ofType": null
                   }
                 },
@@ -2851,14 +2851,14 @@
             "description": null,
             "args": [
               {
-                "name": "roleId",
+                "name": "roleName",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Int",
+                    "name": "String",
                     "ofType": null
                   }
                 },

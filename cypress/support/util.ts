@@ -7,6 +7,11 @@ export function expectToBeRejected(response) {
   );
 }
 
+export function expectNoErrors(response) {
+  expect(response.status).to.eq(200);
+  expect(response.body.errors).not.to.exist;
+}
+
 export function gqlOptions(body: any, additionalOptions?: any) {
   return {
     method: 'POST',

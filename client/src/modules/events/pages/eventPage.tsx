@@ -2,12 +2,12 @@ import { LockIcon } from '@chakra-ui/icons';
 import {
   Heading,
   VStack,
-  Image,
   Text,
   Button,
   useToast,
   List,
   HStack,
+  Image,
   ListItem,
   Avatar,
   Flex,
@@ -205,6 +205,7 @@ export const EventPage: NextPage = () => {
         alt=""
         borderRadius="md"
         objectFit="cover"
+        fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
       />
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}

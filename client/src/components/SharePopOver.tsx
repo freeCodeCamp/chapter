@@ -30,9 +30,7 @@ export const SharePopOver = ({
       <PopoverContent>
         <PopoverArrow />
         <PopoverCloseButton />
-        <PopoverBody>
-          Link copied to clipboard!
-        </PopoverBody>
+        <PopoverBody>Link copied to clipboard!</PopoverBody>
       </PopoverContent>
     </Popover>
   );

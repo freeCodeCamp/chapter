@@ -13,7 +13,8 @@ import {
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
@@ -64,6 +65,7 @@ const SubscriptionWidget = ({
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
+  const router = useRouter();
   const { isLoggedIn } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
@@ -85,7 +87,7 @@ export const ChapterPage: NextPage = () => {
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
   const joinChapter = async () => {
-    const ok = await confirm();
+    const ok = await confirm({ title: 'Join this chapter?' });
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
@@ -128,6 +130,14 @@ export const ChapterPage: NextPage = () => {
   };
 
   const isLoading = loading || !data;
+
+  const askUserToConfirm = router.query?.ask_to_confirm;
+  useEffect(() => {
+    if (askUserToConfirm && isLoggedIn) {
+      if (!dataChapterUser) joinChapter();
+    }
+  }, [askUserToConfirm, dataChapterUser, isLoggedIn]);
+
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;

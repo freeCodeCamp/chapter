@@ -569,7 +569,7 @@ export type UpdateUserInputs = {
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
-  image_url: Scalars['String'];
+  image_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
@@ -583,7 +583,7 @@ export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
+  image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
 };
@@ -638,7 +638,7 @@ export type UpdateMeMutation = {
     __typename?: 'User';
     id: number;
     name: string;
-    image_url: string;
+    image_url?: string | null;
   };
 };
 
@@ -650,7 +650,7 @@ export type MeQuery = {
     __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
-    image_url: string;
+    image_url?: string | null;
     instance_role: {
       __typename?: 'InstanceRole';
       instance_role_permissions: Array<{

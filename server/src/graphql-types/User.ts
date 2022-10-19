@@ -7,7 +7,7 @@ export class User extends BaseObject {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   image_url?: string | null;
 }
 

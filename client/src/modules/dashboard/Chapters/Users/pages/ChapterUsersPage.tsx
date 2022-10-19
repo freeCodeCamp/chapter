@@ -162,7 +162,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
             mapper={{
               name: ({ user }) => (
                 <HStack>
-                  <Text>{user.name}</Text>
+                  <Text data-cy="userName">{user.name}</Text>
                   {bans.has(user.id) && (
                     <Badge data-cy="isBanned" colorScheme="red">
                       Banned

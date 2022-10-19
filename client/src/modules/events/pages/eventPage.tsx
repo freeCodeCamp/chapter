@@ -68,7 +68,7 @@ export const EventPage: NextPage = () => {
   }, [data?.event]);
   const rsvpStatus = eventUser?.rsvp.name;
   const allDataLoaded = !!user && !!data;
-  const fromEmailInviteLink = router.query?.emaillink;
+  const askUserToConfirm = router.query?.ask_to_confirm;
   const shouldRsvp = !rsvpStatus || rsvpStatus === 'no';
 
   const chapterId = data?.event?.chapter.id;
@@ -136,14 +136,14 @@ export const EventPage: NextPage = () => {
   }
 
   useEffect(() => {
-    if (fromEmailInviteLink && allDataLoaded) {
+    if (askUserToConfirm && allDataLoaded) {
       if (shouldRsvp) {
         checkOnRsvp();
       } else {
         checkOnCancelRsvp();
       }
     }
-  }, [allDataLoaded, fromEmailInviteLink]);
+  }, [allDataLoaded, askUserToConfirm]);
 
   if (error || !data) return <Loading loading={loading} error={error} />;
   if (!data.event)

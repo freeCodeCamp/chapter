@@ -48,6 +48,7 @@ import {
   updateCalendarEvent,
 } from '../../services/Google';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
+import { updateEventWaitlist } from '../../util/updateEventWaitlist';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -512,34 +513,7 @@ export class EventResolver {
       },
     });
 
-    if (!event.invite_only && eventUser.rsvp.name !== 'waitlist') {
-      const waitList = event.event_users.filter(
-        ({ rsvp, user_id }) =>
-          user_id !== eventUser.user_id && rsvp.name === 'waitlist',
-      );
-
-      if (waitList.length) {
-        const acceptedRsvp = waitList[0];
-        await prisma.event_users.update({
-          data: { rsvp: { connect: { name: 'yes' } } },
-          where: {
-            user_id_event_id: {
-              user_id: acceptedRsvp.user_id,
-              event_id: acceptedRsvp.event_id,
-            },
-          },
-        });
-
-        if (acceptedRsvp.subscribed) {
-          await createReminder({
-            eventId: acceptedRsvp.event_id,
-            remindAt: sub(event.start_at, { days: 1 }),
-            userId: acceptedRsvp.user_id,
-          });
-          // TODO add email about being off waitlist?
-        }
-      }
-    }
+    await updateEventWaitlist({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },

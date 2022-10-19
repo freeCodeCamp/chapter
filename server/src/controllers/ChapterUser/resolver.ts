@@ -9,15 +9,14 @@ import {
   Resolver,
 } from 'type-graphql';
 import { Prisma } from '@prisma/client';
-import { sub } from 'date-fns';
 
 import { ResolverCtx } from '../../common-types/gql';
 import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-import { createReminder } from '../../services/Reminders';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
+import { updateEventWaitlist } from '../../util/updateEventWaitlist';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
@@ -201,9 +200,7 @@ export class ChapterUserResolver {
     const userEvents = await prisma.event_users.findMany({
       where: {
         user_id: userId,
-        event: {
-          chapter_id: chapterId,
-        },
+        event: { chapter_id: chapterId },
       },
       include: {
         event: {
@@ -215,9 +212,7 @@ export class ChapterUserResolver {
     await prisma.event_users.deleteMany({
       where: {
         user_id: userId,
-        event: {
-          chapter_id: chapterId,
-        },
+        event: { chapter_id: chapterId },
       },
     });
 
@@ -226,41 +221,8 @@ export class ChapterUserResolver {
     );
 
     await Promise.all(
-      attendingEvents.map(
-        async ({ event: { invite_only, capacity, event_users, start_at } }) => {
-          if (!invite_only) return;
-
-          const attending = event_users.filter(
-            ({ user_id, rsvp: { name } }) =>
-              user_id !== userId && name === 'yes',
-          );
-          if (capacity <= attending.length) return;
-
-          const waitlist = event_users.filter(
-            ({ user_id, rsvp: { name } }) =>
-              user_id !== userId && name === 'waitlist',
-          );
-          if (!waitlist.length) return;
-
-          const [userFromWaitlist] = waitlist;
-          await prisma.event_users.update({
-            data: { rsvp: { connect: { name: 'yes' } } },
-            where: {
-              user_id_event_id: {
-                user_id: userFromWaitlist.user_id,
-                event_id: userFromWaitlist.event_id,
-              },
-            },
-          });
-
-          if (userFromWaitlist.subscribed) {
-            await createReminder({
-              eventId: userFromWaitlist.event_id,
-              remindAt: sub(start_at, { days: 1 }),
-              userId: userFromWaitlist.user_id,
-            });
-          }
-        },
+      attendingEvents.map(async ({ event }) =>
+        updateEventWaitlist({ event, userId }),
       ),
     );
 

@@ -378,7 +378,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "indexedColumn",
         "keyTitle": "Indexed",
@@ -469,7 +469,7 @@
         "comments": ""
     },
     {
-        "tableName": "rsvp",
+        "tableName": "instance_role_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -534,7 +534,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -742,7 +742,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -768,13 +768,13 @@
         "comments": ""
     },
     {
-        "tableName": "rsvp",
+        "tableName": "instance_role_permissions",
         "tableType": "Table",
-        "keyClass": "indexedColumn",
-        "keyTitle": "Indexed",
-        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>name",
-        "type": "text",
-        "length": 2147483647,
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>instance_permission_id",
+        "type": "int4",
+        "length": 10,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
@@ -872,7 +872,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_role_permissions",
+        "tableName": "rsvp",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -989,13 +989,13 @@
         "comments": ""
     },
     {
-        "tableName": "instance_role_permissions",
+        "tableName": "rsvp",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>instance_permission_id",
-        "type": "int4",
-        "length": 10,
+        "keyClass": "indexedColumn",
+        "keyTitle": "Indexed",
+        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>name",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
@@ -1223,7 +1223,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "indexedColumn",
         "keyTitle": "Indexed",
@@ -1314,7 +1314,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -1323,7 +1323,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('event_roles_id_seq'::regclass)",
+        "defaultValue": "nextval('instance_permissions_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -1379,7 +1379,7 @@
         "comments": ""
     },
     {
-        "tableName": "rsvp",
+        "tableName": "instance_role_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1392,7 +1392,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -1401,7 +1401,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('instance_permissions_id_seq'::regclass)",
+        "defaultValue": "nextval('event_roles_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -1522,16 +1522,16 @@
         "comments": ""
     },
     {
-        "tableName": "instance_role_permissions",
+        "tableName": "rsvp",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>instance_role_id",
-        "type": "int4",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
+        "type": "serial",
         "length": 10,
         "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
+        "autoUpdated": "√",
+        "defaultValue": "nextval('rsvp_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -1704,7 +1704,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_role_permissions",
+        "tableName": "rsvp",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1795,20 +1795,20 @@
         "comments": ""
     },
     {
-        "tableName": "rsvp",
+        "tableName": "instance_role_permissions",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
-        "type": "serial",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>instance_role_id",
+        "type": "int4",
         "length": 10,
         "nullable": "",
-        "autoUpdated": "√",
-        "defaultValue": "nextval('rsvp_id_seq'::regclass)",
+        "autoUpdated": "",
+        "defaultValue": "null",
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1899,7 +1899,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",

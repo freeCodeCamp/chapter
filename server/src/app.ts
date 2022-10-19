@@ -7,7 +7,10 @@ import cors from 'cors';
 import cookieSession from 'cookie-session';
 import express, { Express, NextFunction, Response } from 'express';
 import cookies from 'cookie-parser';
-
+// coverage is included as production dependency, even though it's just used for
+// testing. This is necessary so that the testing can be kept as close to
+// production-like as possible.
+import coverage from '@cypress/code-coverage/middleware/express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 
@@ -232,6 +235,11 @@ export const main = async (app: Express) => {
 if (require.main === module) {
   (async () => {
     const app = express();
+    // @ts-expect-error this will exist if nyc starts the app
+    if (global.__coverage__) {
+      console.log('Adding coverage middleware for express');
+      coverage(app);
+    }
     await main(app);
 
     app.listen(PORT, () =>

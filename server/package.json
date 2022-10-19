@@ -6,8 +6,10 @@
   "scripts": {
     "build": "prisma generate && tsc",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
+    "dev:coverage": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"nyc --silent node src/app.js\"",
     "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
+    "start:coverage": "npx -y nyc --silent node ./src/app.js",
     "reminders:send": "node ./reminders/reminders.js",
     "reset:users": "node prisma/generator/resetUsers.js"
   },
@@ -30,6 +32,7 @@
     "seed": "node prisma/generator/seed.js"
   },
   "dependencies": {
+    "@cypress/code-coverage": "^3.10.0",
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.5.0",
     "@sendgrid/mail": "7.7.0",
@@ -67,6 +70,7 @@
     "get-port": "6.1.2",
     "lodash": "4.17.21",
     "node-dev": "7.4.3",
+    "nyc": "^15.1.0",
     "prisma": "4.5.0",
     "rimraf": "3.0.2",
     "supertest": "6.3.0",

@@ -43,7 +43,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          build: npm run build
+          build: npm run build:test
           start: npm run start:ci
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           browser: ${{ matrix.browsers }}

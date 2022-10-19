@@ -65,7 +65,7 @@ describe('Chapter Users dashboard', () => {
     });
   });
 
-  // Currently only instance users can change chapter roles
+  // Currently only instance owners can change chapter roles
   it('rejects chapter admin from changing chapter user role', () => {
     cy.login('admin@of.chapter.one');
 
@@ -78,14 +78,14 @@ describe('Chapter Users dashboard', () => {
           ({ user: { name } }) => name === 'Chapter One Admin',
         ).user.id;
         cy.getChapterRoles().then((roles) => {
-          const roleIds = roles.map(({ id }) => id);
-          roleIds.forEach((roleId) => {
-            cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
+          const roleNames = roles.map(({ name }) => name);
+          roleNames.forEach((roleName) => {
+            cy.changeChapterUserRole({ chapterId, roleName, userId }).then(
               expectToBeRejected,
             );
             cy.changeChapterUserRole({
               chapterId,
-              roleId,
+              roleName,
               userId: selfUserId,
             }).then(expectToBeRejected);
           });
@@ -93,6 +93,18 @@ describe('Chapter Users dashboard', () => {
       },
     );
   });
+
+  function initializeBanVariables() {
+    // We don't want to interact with the instance owner here
+    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
+    cy.get('@rows').filter(':contains("member")').as('members');
+    cy.get('@rows').filter(':contains("administrator")').as('administrators');
+    cy.get('@members')
+      .not(':contains("Unban")')
+      .not(':contains("Banned")')
+      .first()
+      .as('firstUnbannedMember');
+  }
 
   it('administrator can ban user from chapter', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
@@ -136,18 +148,6 @@ describe('Chapter Users dashboard', () => {
       .findByRole('button', { name: 'Unban' })
       .should('not.exist');
   });
-
-  function initializeBanVariables() {
-    // We don't want to interact with the instance owner here
-    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
-    cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@rows').filter(':contains("administrator")').as('administrators');
-    cy.get('@members')
-      .not(':contains("Unban")')
-      .not(':contains("Banned")')
-      .first()
-      .as('firstUnbannedMember');
-  }
 
   it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
     cy.login('admin@of.chapter.two');

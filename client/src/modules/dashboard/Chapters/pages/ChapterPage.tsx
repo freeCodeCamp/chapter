@@ -6,6 +6,7 @@ import React, { ReactElement, useEffect } from 'react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 
+import { SharePopOver } from '../../../../components/SharePopOver';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
@@ -53,15 +54,17 @@ export const ChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   const clickDelete = async () => {
-    const ok = await confirmDelete({ doubleConfirm: true });
+    const ok = await confirmDelete({
+      body: 'Are you sure you want to delete this chapter? All information related to chapter will be deleted, including events and venues from this chapter. Chapter deletion cannot be reversed.',
+      buttonText: 'Delete Chapter',
+    });
     if (!ok) return;
     deleteChapter({ variables: { chapterId } });
     router.push('/dashboard/chapters');
   };
 
   const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 
@@ -98,7 +101,12 @@ export const ChapterPage: NextPageWithLayout = () => {
             >
               Add new venue
             </LinkButton>
-            <Button colorScheme="red" size={'sm'} onClick={clickDelete}>
+            <SharePopOver
+              link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?emaillink=true`}
+              size="sm"
+            />
+
+            <Button colorScheme="red" size="sm" onClick={clickDelete}>
               Delete Chapter
             </Button>
           </HStack>

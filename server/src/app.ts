@@ -65,6 +65,30 @@ export const main = async (app: Express) => {
     }),
   );
 
+  async function findUser(email: string) {
+    return await prisma.users.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
+  // TODO: use the register resolver instead? Or just delete it? Probably
+  // delete.
+  async function createUser(email: string) {
+    return prisma.users.create({
+      data: {
+        name: 'place holder',
+        email,
+        instance_role: {
+          connect: {
+            name: 'member',
+          },
+        },
+      },
+    });
+  }
+
   app.post('/login', checkJwt, (req, res, next) => {
     const token = getBearerToken(req);
     if (token) {
@@ -99,30 +123,6 @@ export const main = async (app: Express) => {
       next('no bearer token');
     }
   });
-
-  async function findUser(email: string) {
-    return await prisma.users.findUnique({
-      where: {
-        email,
-      },
-    });
-  }
-
-  // TODO: use the register resolver instead? Or just delete it? Probably
-  // delete.
-  async function createUser(email: string) {
-    return prisma.users.create({
-      data: {
-        name: 'place holder',
-        email,
-        instance_role: {
-          connect: {
-            name: 'member',
-          },
-        },
-      },
-    });
-  }
 
   // no need to check for identity provider's token on logout
   app.delete('/logout', (req, res, next) => {

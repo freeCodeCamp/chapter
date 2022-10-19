@@ -88,7 +88,7 @@ declare global {
       /**
        * Create venue using GQL mutation
        * @param chapterId Id of the chapter
-       * @param data Data of the venue. Equivalent of CreateVenueInputs for the Venue resolver.
+       * @param data Data of the venue. Equivalent of VenueInputs for the Venue resolver.
        * @param {object} [options={ withAuth: true }] Optional options object.
        */
       createVenue(
@@ -101,7 +101,7 @@ declare global {
        * Update venue using GQL mutation
        * @param chapterId Id of the chapter
        * @param venueId Id of the venue
-       * @param data Data of the venue. Equivalent of UpdateVenueInputs for the Venue resolver.
+       * @param data Data of the venue. Equivalent of VenueInputs for the Venue resolver.
        * @param {object} [options={ withAuth: true }] Optional options object.
        */
       updateVenue(

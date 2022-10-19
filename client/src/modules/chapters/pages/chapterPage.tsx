@@ -25,12 +25,46 @@ import {
   useChapterUserLazyQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
+  ChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <div>
+      <Heading size="md" color={'gray.700'}>
+        Chat Link:
+      </Heading>
+      <Link>{chatUrl}</Link>
+    </div>
+  ) : null;
+};
+
+const SubscriptionWidget = ({
+  chapterUser,
+  chapterSubscribe,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+}) => {
+  return chapterUser.subscribed ? (
+    <HStack>
+      <CheckIcon />
+      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
+    </HStack>
+  ) : (
+    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
+      Subscribe
+    </Button>
+  );
+};
+
 export const ChapterPage: NextPage = () => {
   const { param: chapterId, isReady } = useParam('chapterId');
-  const { user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const [getChapter, { loading, error, data }] = useChapterLazyQuery({
     variables: { chapterId },
@@ -113,10 +147,11 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.image_url}
+          src={data.chapter.banner_url}
           alt=""
           borderRadius="md"
           objectFit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
         />
         <Heading
           as="h1"
@@ -133,45 +168,20 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {user &&
+        {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
           ) : dataChapterUser ? (
-            <HStack>
-              {dataChapterUser.chapterUser.subscribed ? (
-                <HStack>
-                  <CheckIcon />
-                  <Text>
-                    {dataChapterUser.chapterUser.chapter_role.name} of the
-                    chapter
-                  </Text>
-                  <Button onClick={() => chapterSubscribe(false)} size="md">
-                    Unsubscribe
-                  </Button>
-                </HStack>
-              ) : (
-                <Button
-                  colorScheme="blue"
-                  onClick={() => chapterSubscribe(true)}
-                  size="md"
-                >
-                  Subscribe
-                </Button>
-              )}
-            </HStack>
+            <SubscriptionWidget
+              chapterUser={dataChapterUser.chapterUser}
+              chapterSubscribe={chapterSubscribe}
+            />
           ) : (
             <Button colorScheme="blue" onClick={joinChapter}>
               Join chapter
             </Button>
           ))}
-        {data.chapter.chat_url && (
-          <div>
-            <Heading size="md" color={'gray.700'}>
-              Chat Link:
-            </Heading>
-            <Link>{data.chapter.chat_url}</Link>
-          </div>
-        )}
+        <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading size="md" color={'gray.700'}>
           Events:
         </Heading>
@@ -180,8 +190,7 @@ export const ChapterPage: NextPage = () => {
             key={event.id}
             event={{
               ...event,
-              // Fix this | undefined
-              chapter: { id: chapterId, name: data.chapter?.name || '' },
+              chapter: { id: chapterId, name: data.chapter.name },
             }}
           />
         ))}

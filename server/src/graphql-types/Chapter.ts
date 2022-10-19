@@ -26,7 +26,7 @@ export class Chapter extends BaseObject {
   country: string;
 
   @Field(() => String)
-  image_url!: string;
+  banner_url!: string;
 
   @Field(() => Int)
   creator_id: number;

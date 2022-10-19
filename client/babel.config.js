@@ -1,6 +1,10 @@
 var config = {
   presets: ['next/babel'],
-  plugins: ['istanbul'],
+  env: {
+    test: {
+      plugins: ['istanbul'],
+    },
+  },
 };
 
 if (process.env.NODE_ENV === 'development' && process.env.CODESEE === 'true') {

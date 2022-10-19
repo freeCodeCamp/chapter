@@ -80,5 +80,8 @@ export default defineConfig({
   },
   env: {
     mailHogUrl: 'http://localhost:8025',
+    codeCoverage: {
+      url: 'http://localhost:5000/__coverage__',
+    },
   },
 });

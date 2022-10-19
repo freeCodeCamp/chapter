@@ -1,38 +1,16 @@
 import add from 'date-fns/add';
-import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
-
-const eventOneData = {
-  name: 'Homer Simpson',
-  description: 'i will show you damn!',
-  streaming_url: null,
-  capacity: 149,
-  start_at: new Date(),
-  ends_at: add(new Date(), { minutes: 30 }),
-  venue_type: 'Physical',
-  venue_id: 2,
-  image_url: 'http://loremflickr.com/640/480/nature?79359',
-  invite_only: false,
-  sponsor_ids: [],
-};
-
-const eventTwoData = {
-  venue_id: 1,
-  sponsor_ids: [],
-  name: 'Event Venue change test',
-  description: 'Test Description',
-  venue_type: VenueType.PhysicalAndOnline,
-  capacity: 10,
-  image_url: 'https://test.event.org/image',
-  streaming_url: 'https://test.event.org/video',
-  start_at: '2022-01-01T00:01',
-  ends_at: '2022-01-02T00:02',
-};
 
 // TODO: Move these specs into the other describe block, once we can make sure
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
+  let eventTwoData;
+  before(() => {
+    cy.fixture('events').then((fixture) => {
+      eventTwoData = fixture.eventTwo;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -216,25 +194,40 @@ describe('spec needing owner', () => {
 });
 
 describe('events dashboard', () => {
+  let event;
+  let users;
+  before(() => {
+    cy.fixture('events').then((fixture) => {
+      event = fixture.eventWithoutDate;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
     cy.mhDeleteAll();
     cy.interceptGQL('events');
   });
 
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
+    const eventOneData = {
+      ...event,
+      start_at: new Date(),
+      ends_at: add(new Date(), { minutes: 30 }),
+    };
 
     cy.updateEvent(eventId, eventOneData).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
     // newly registered user (without a chapter_users record)
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
     cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
   });
 
@@ -242,14 +235,14 @@ describe('events dashboard', () => {
     const eventId = 1;
 
     // newly registered user (without a chapter_users record)
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);
     // banned admin should be rejected
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // admin of chapter 1
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
     cy.deleteEvent(eventId).then((response) => {
       expect(response.body.errors).not.to.exist;
     });
@@ -261,11 +254,11 @@ describe('events dashboard', () => {
       expect(response.body.errors).not.to.exist;
     });
 
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
   });
 });

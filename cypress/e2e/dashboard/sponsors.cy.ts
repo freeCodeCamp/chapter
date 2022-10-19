@@ -8,6 +8,12 @@ const testSponsor = {
 };
 
 describe('sponsors dashboard', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -56,7 +62,7 @@ describe('sponsors dashboard', () => {
   });
 
   it('prevents chapter admins from managing sponsors', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');

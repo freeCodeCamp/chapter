@@ -1,17 +1,16 @@
 import { expectToBeRejected } from '../../support/util';
 
-const venueData = {
-  name: 'Test Venue',
-  street_address: '123 Main St',
-  city: 'New York',
-  postal_code: '10001',
-  region: 'NY',
-  country: 'US',
-  latitude: 40.7128,
-  longitude: -74.006,
-};
-
 describe('venues dashboard', () => {
+  let users;
+  let venues;
+  before(() => {
+    cy.fixture('venues').then((fixture) => {
+      venues = fixture;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -43,31 +42,26 @@ describe('venues dashboard', () => {
   });
 
   it('lets an admin create a venue', () => {
-    const fix = {
-      name: 'Name goes here',
-      streetAddress: '10 Random Path',
-      city: 'City it is based in',
-      postalCode: '2000',
-      region: 'Location in the world',
-      country: 'Some country',
-      latitude: '-45',
-      longitude: '35',
-    };
+    const venueData = venues[1];
 
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
 
     cy.visit('/dashboard/chapters/1/');
     cy.get('[data-cy=create-venue]').click();
-    cy.findByRole('textbox', { name: 'Venue name' }).type(fix.name);
+    cy.findByRole('textbox', { name: 'Venue name' }).type(venueData.name);
     cy.findByRole('textbox', { name: 'Street address' }).type(
-      fix.streetAddress,
+      venueData.street_address,
     );
-    cy.findByRole('textbox', { name: 'City' }).type(fix.city);
-    cy.findByRole('textbox', { name: 'Postal Code' }).type(fix.postalCode);
-    cy.findByRole('textbox', { name: 'Region' }).type(fix.region);
-    cy.findByRole('textbox', { name: 'Country' }).type(fix.country);
-    cy.findByRole('spinbutton', { name: 'Latitude' }).type(fix.latitude);
-    cy.findByRole('spinbutton', { name: 'Longitude' }).type(fix.longitude);
+    cy.findByRole('textbox', { name: 'City' }).type(venueData.city);
+    cy.findByRole('textbox', { name: 'Postal Code' }).type(
+      venueData.postal_code,
+    );
+    cy.findByRole('textbox', { name: 'Region' }).type(venueData.region);
+    cy.findByRole('textbox', { name: 'Country' }).type(venueData.country);
+    cy.findByRole('spinbutton', { name: 'Latitude' }).type(venueData.latitude);
+    cy.findByRole('spinbutton', { name: 'Longitude' }).type(
+      venueData.longitude,
+    );
 
     cy.findByRole('form', { name: 'Add venue' })
       .findByRole('button', {
@@ -78,10 +72,10 @@ describe('venues dashboard', () => {
     cy.location('pathname').should('match', /^\/dashboard\/venues\/\d+$/);
 
     // confirm that the test data appears in the new venue
-    cy.contains(fix.name);
-    cy.contains(fix.city);
-    cy.contains(fix.postalCode);
-    cy.contains(fix.region);
+    cy.contains(venueData.name);
+    cy.contains(venueData.city);
+    cy.contains(venueData.postal_code);
+    cy.contains(venueData.region);
     // TODO: display more details about the venue?
   });
 
@@ -93,6 +87,7 @@ describe('venues dashboard', () => {
       chapterId: 1,
       venueId: 1,
     };
+    const venueData = venues[0];
 
     // Create new venue, which is not used in any event
     cy.createVenue(venueCreateVariables, venueData, { withAuth: true }).then(
@@ -116,7 +111,7 @@ describe('venues dashboard', () => {
         );
 
         // newly registered user (without a chapter_users record)
-        cy.login('test@user.org');
+        cy.login(users.testUser.email);
 
         cy.createVenue(venueCreateVariables, venueData).then(
           expectToBeRejected,
@@ -127,7 +122,7 @@ describe('venues dashboard', () => {
         cy.deleteVenue(venueDeleteVariables).then(expectToBeRejected);
 
         // banned user
-        cy.login('banned@chapter.admin');
+        cy.login(users.bannedAdmin.email);
 
         cy.createVenue(venueCreateVariables, venueData).then(
           expectToBeRejected,
@@ -138,7 +133,7 @@ describe('venues dashboard', () => {
         cy.deleteVenue(venueDeleteVariables).then(expectToBeRejected);
 
         // Admin of different chapter
-        cy.login('admin@of.chapter.two');
+        cy.login(users.chapter2Admin.email);
 
         cy.createVenue(venueCreateVariables, venueData).then(
           expectToBeRejected,
@@ -153,7 +148,7 @@ describe('venues dashboard', () => {
 
   describe('adding venue with chapter selected in form', () => {
     it('only admined chapters can be selected', () => {
-      cy.login('admin@of.chapter.one');
+      cy.login(users.chapter1Admin.email);
       cy.visit('/dashboard/venues/new');
       cy.findByRole('combobox', { name: 'Chapter' })
         .find('option')
@@ -161,7 +156,7 @@ describe('venues dashboard', () => {
           expect(options).to.have.length(1);
         });
 
-      cy.login('test@user.org');
+      cy.login(users.testUser.email);
       cy.findByRole('combobox', { name: 'Chapter' })
         .find('option')
         .should('not.exist');

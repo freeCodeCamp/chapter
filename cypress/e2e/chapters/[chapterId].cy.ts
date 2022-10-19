@@ -4,12 +4,18 @@ import { expectToBeRejected } from '../../support/util';
 const chapterId = 1;
 
 describe('chapter page', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
   });
 
   it('user can join chapter and change subscription status', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.visit(`/chapters/${chapterId}`);
 
     cy.findByRole('button', { name: 'Join chapter' }).click();
@@ -36,7 +42,7 @@ describe('chapter page', () => {
         expect(
           chapter_users.findIndex(
             ({ user: { email }, subscribed }) =>
-              email === 'test@user.org' && subscribed,
+              email === users.testUser.email && subscribed,
           ),
         ).to.not.equal(-1);
       },

@@ -1,45 +1,24 @@
 import { expectToBeRejected } from '../../../support/util';
 
-const chapterData = {
-  name: 'Name goes here',
-  description: 'Summary of the chapter',
-  city: 'City it is based in',
-  region: 'Location in the world',
-  country: 'Home country',
-  category: 'Type of chapter',
-  banner_url: 'https://example.com/image.jpg',
-};
-
-// TODO: move this and other fixtures to a common file
-const venueData = {
-  name: 'Test Venue',
-  street_address: '123 Main St',
-  city: 'New York',
-  postal_code: '10001',
-  region: 'NY',
-  country: 'US',
-  latitude: 40.7128,
-  longitude: -74.006,
-};
-
-const eventData = {
-  venue_id: 1,
-  sponsor_ids: [],
-  name: 'Other Event',
-  description: 'Test Description',
-  url: 'https://test.event.org',
-  venue_type: 'PhysicalAndOnline',
-  capacity: 10,
-  image_url: 'https://test.event.org/image',
-  streaming_url: 'https://test.event.org/video',
-  start_at: '2022-01-01T00:01',
-  ends_at: '2022-01-02T00:02',
-  invite_only: false,
-};
-
 describe('chapters dashboard', () => {
+  let chapterData;
+  let eventData;
+  let users;
+  let venueData;
   before(() => {
     cy.task('seedDb');
+    cy.fixture('chapters').then((fixture) => {
+      chapterData = fixture[0];
+    });
+    cy.fixture('events').then((fixture) => {
+      eventData = fixture.eventThree;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+    cy.fixture('venues').then((fixture) => {
+      venueData = fixture[0];
+    });
   });
   beforeEach(() => {
     cy.login();
@@ -126,7 +105,7 @@ describe('chapters dashboard', () => {
 
   it('only allows owners to create chapters', () => {
     cy.task('seedDb');
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
 
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');

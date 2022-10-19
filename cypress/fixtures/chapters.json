@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Name goes here",
+    "description": "Summary of the chapter",
+    "city": "City it is based in",
+    "region": "Location in the world",
+    "country": "Home country",
+    "category": "Type of chapter",
+    "banner_url": "https://example.com/image.jpg"
+  },
+  {
+    "name": "New Chapter Name",
+    "description": "New Description",
+    "city": "New City",
+    "region": "New Region",
+    "country": "New Country",
+    "category": "New Category",
+    "banner_url": "https://example.com/new-image.jpg"
+  }
+]

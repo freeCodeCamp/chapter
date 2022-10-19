@@ -10,6 +10,12 @@ const setUsernameAlias = (usersAlias: string) =>
     .as('userName');
 
 describe('event dashboard', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -111,7 +117,7 @@ describe('event dashboard', () => {
         ).user;
 
         // Switch to new member before trying to confirm and remove
-        cy.login('test@user.org');
+        cy.login(users.testUser.email);
 
         cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
         cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);

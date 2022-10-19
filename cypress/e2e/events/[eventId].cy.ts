@@ -1,6 +1,12 @@
 import { expectToBeRejected } from '../../support/util';
 
 describe('event page', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.visit('/events/1');
@@ -27,7 +33,7 @@ describe('event page', () => {
   // TODO: we need to rework how we register users before this test can be used.
   // Currently it's automatic, but gives them a placeholder name.
   it.skip('ask the user to login before they can RSVP', () => {
-    const newUser = { email: 'test@user.org', name: 'Test User' };
+    const newUser = users.testUser;
 
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('heading', { name: 'Login' }).should('be.visible');
@@ -75,7 +81,7 @@ describe('event page', () => {
   });
 
   it('is possible to cancel using the email links', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     const chapterId = 1;
     cy.joinChapter(chapterId).then(() => {
       cy.rsvpToEvent({ eventId: 1, chapterId }).then(() => {
@@ -89,7 +95,7 @@ describe('event page', () => {
   });
 
   it('is possible to join using the email links', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.visit('/events/1?emaillink=true');
 
     cy.contains('Are you sure you want to join this?');
@@ -99,33 +105,33 @@ describe('event page', () => {
   });
 
   it('should be possible to RSVP and cancel', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
 
     cy.get('[data-cy="rsvps-heading"]')
       .next()
       .as('rsvp-list')
       .within(() => {
-        cy.findByText('Test User').should('not.exist');
+        cy.findByText(users.testUser.name).should('not.exist');
       });
 
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
     cy.get('@rsvp-list').within(() => {
-      cy.findByText('Test User').should('exist');
+      cy.findByText(users.testUser.name).should('exist');
     });
 
     cy.findByRole('button', { name: 'Cancel' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
     cy.get('@rsvp-list').within(() => {
-      cy.findByText('Test User').should('not.exist');
+      cy.findByText(users.testUser.name).should('not.exist');
     });
     cy.findByRole('button', { name: 'Cancel' }).should('not.exist');
   });
 
   it('should be possible to change event subscription', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
 
     // RSVPing is required for managing event subscription
     cy.findByRole('button', { name: 'RSVP' }).click();
@@ -157,14 +163,14 @@ describe('event page', () => {
     );
 
     // newly registered user (without a chapter_users record)
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
 
     cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
     cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
 
     // banned user
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
 
     cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
@@ -172,19 +178,24 @@ describe('event page', () => {
   });
 
   it('should email the chapter administrator when a user RSVPs', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
 
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
     cy.waitUntilMail();
-    cy.mhGetMailsByRecipient('admin@of.chapter.one').should('have.length', 1);
-    cy.mhGetMailsByRecipient('admin@of.chapter.one').mhFirst().as('rsvp-mail');
+    cy.mhGetMailsByRecipient(users.chapter1Admin.email).should(
+      'have.length',
+      1,
+    );
+    cy.mhGetMailsByRecipient(users.chapter1Admin.email)
+      .mhFirst()
+      .as('rsvp-mail');
     cy.get('@rsvp-mail')
       .mhGetSubject()
       .should('match', /^New RSVP for/);
     cy.get('@rsvp-mail')
       .mhGetBody()
-      .should('include', "User Test User has RSVP'd");
+      .should('include', `User ${users.testUser.name} has RSVP'd`);
   });
 });

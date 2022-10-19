@@ -51,7 +51,9 @@ const SubscriptionWidget = ({
   return chapterUser.subscribed ? (
     <HStack>
       <CheckIcon />
-      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Text data-cy="join-success">
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
         Unsubscribe
       </Button>

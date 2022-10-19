@@ -86,8 +86,16 @@ export const ChapterPage: NextPage = () => {
   const [joinChapterFn] = useJoinChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
-  const joinChapter = async () => {
-    const ok = await confirm({ title: 'Join this chapter?' });
+  const joinChapter = async (options?: { invited?: boolean }) => {
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this chapter',
+          body: 'Would you like to join?',
+        }
+      : {
+          title: 'Join this chapter?',
+        };
+    const ok = await confirm(confirmOptions);
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
@@ -134,7 +142,7 @@ export const ChapterPage: NextPage = () => {
   const askUserToConfirm = router.query?.ask_to_confirm;
   useEffect(() => {
     if (askUserToConfirm && isLoggedIn) {
-      if (!dataChapterUser) joinChapter();
+      if (!dataChapterUser) joinChapter({ invited: true });
     }
   }, [askUserToConfirm, dataChapterUser, isLoggedIn]);
 
@@ -178,7 +186,7 @@ export const ChapterPage: NextPage = () => {
               chapterSubscribe={chapterSubscribe}
             />
           ) : (
-            <Button colorScheme="blue" onClick={joinChapter}>
+            <Button colorScheme="blue" onClick={() => joinChapter()}>
               Join chapter
             </Button>
           ))}

@@ -79,12 +79,21 @@ export const EventPage: NextPage = () => {
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
 
-  async function onRsvp() {
+  async function onRsvp(options?: { invited?: boolean }) {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
       return;
     }
-    const ok = await confirm({ title: 'Are you sure you want to join this?' });
+
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this event',
+          body: 'Would you like to attend?',
+        }
+      : {
+          title: 'Join this event?',
+        };
+    const ok = await confirm(confirmOptions);
 
     if (ok) {
       try {
@@ -124,9 +133,9 @@ export const EventPage: NextPage = () => {
   }
 
   // TODO: reimplment this the login modal with Auth0
-  async function checkOnRsvp() {
+  async function checkOnRsvp(options?: { invited?: boolean }) {
     if (!user) await login();
-    await onRsvp();
+    await onRsvp(options);
   }
 
   // TODO: reimplment this the login modal with Auth0
@@ -138,7 +147,7 @@ export const EventPage: NextPage = () => {
   useEffect(() => {
     if (askUserToConfirm && allDataLoaded) {
       if (shouldRsvp) {
-        checkOnRsvp();
+        checkOnRsvp({ invited: true });
       } else {
         checkOnCancelRsvp();
       }
@@ -257,7 +266,7 @@ export const EventPage: NextPage = () => {
         <Button
           data-cy="rsvp-button"
           colorScheme="blue"
-          onClick={checkOnRsvp}
+          onClick={() => checkOnRsvp()}
           paddingInline={'2'}
           paddingBlock={'1'}
         >

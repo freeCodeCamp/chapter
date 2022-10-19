@@ -1,4 +1,4 @@
-import { ChapterMembers } from '../../../../cypress.config';
+import { ChapterMembers, User } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
@@ -175,9 +175,20 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@adminToBan').findByRole('button', { name: 'Ban' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('You cannot ban yourself', { matchCase: false });
+    cy.get('@adminToBan')
+      .findByRole('button', { name: 'Ban' })
+      .should('not.exist');
+
+    cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
+      cy.banUser({ chapterId, userId: id }).then((response) => {
+        expect(response.status).to.eq(200);
+        const errors = response.body.errors;
+        expect(errors, 'Expected response to contain one error').to.have.length(
+          1,
+        );
+        expect(errors[0].message).to.contain('You cannot ban yourself');
+      });
+    });
     cy.get('@adminToBan').find('[data-cy=isBanned]').should('not.exist');
   });
 

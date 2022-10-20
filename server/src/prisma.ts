@@ -4,3 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import './config';
 
 export const prisma = new PrismaClient();
+
+export const RECORD_MISSING = 'P2025';
+export const UNIQUE_CONSTRAINT_FAILED = 'P2002';

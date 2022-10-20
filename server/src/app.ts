@@ -129,10 +129,9 @@ export const main = async (app: Express) => {
 
   // no need to check for identity provider's token on logout
   app.delete('/logout', (req, res, next) => {
-    if (!req.session) return next('session not found');
-
-    const id = req.session.id;
+    const id = req.session?.id;
     req.session = null;
+    if (!id) return res.end();
 
     prisma.sessions
       .delete({ where: { id } })

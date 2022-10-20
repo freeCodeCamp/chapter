@@ -26,7 +26,7 @@ import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
-  useEventLazyQuery,
+  useEventQuery,
   useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
@@ -36,7 +36,7 @@ import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
 export const EventPage: NextPage = () => {
-  const { param: eventId, isReady } = useParam('eventId');
+  const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
   const login = useLogin();
@@ -54,13 +54,9 @@ export const EventPage: NextPage = () => {
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
 
-  const [getEvent, { loading, error, data }] = useEventLazyQuery({
+  const { loading, error, data } = useEventQuery({
     variables: { eventId },
   });
-
-  useEffect(() => {
-    if (isReady) getEvent();
-  }, [isReady]);
 
   const toast = useToast();
   const confirm = useConfirm();

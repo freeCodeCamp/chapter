@@ -1,7 +1,7 @@
 import { Box, Button, Heading, HStack } from '@chakra-ui/react';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
@@ -10,7 +10,7 @@ import { SharePopOver } from '../../../../components/SharePopOver';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
-  useDashboardChapterLazyQuery,
+  useDashboardChapterQuery,
   useDeleteChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -26,7 +26,7 @@ import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queri
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const ChapterPage: NextPageWithLayout = () => {
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
 
   const confirmDelete = useConfirmDelete();
 
@@ -43,13 +43,9 @@ export const ChapterPage: NextPageWithLayout = () => {
     ],
   });
 
-  const [getChapter, { loading, error, data }] = useDashboardChapterLazyQuery({
+  const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
   });
-
-  useEffect(() => {
-    if (isReady) getChapter();
-  }, [isReady]);
 
   const router = useRouter();
 
@@ -63,7 +59,7 @@ export const ChapterPage: NextPageWithLayout = () => {
     router.push('/dashboard/chapters');
   };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;

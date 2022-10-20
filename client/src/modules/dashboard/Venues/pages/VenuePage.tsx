@@ -1,10 +1,10 @@
 import { Heading, Text } from '@chakra-ui/layout';
 import NextError from 'next/error';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useVenueLazyQuery } from '../../../../generated/graphql';
+import { useVenueQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
@@ -14,17 +14,13 @@ import { Layout } from '../../shared/components/Layout';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const VenuePage: NextPageWithLayout = () => {
-  const { param: venueId, isReady } = useParam('id');
+  const { param: venueId } = useParam('id');
 
-  const [getVenue, { loading, error, data }] = useVenueLazyQuery({
+  const { loading, error, data } = useVenueQuery({
     variables: { venueId },
   });
 
-  useEffect(() => {
-    if (isReady) getVenue();
-  }, [isReady]);
-
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.venue)
     return <NextError statusCode={404} title="Venue not found" />;

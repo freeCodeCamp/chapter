@@ -6,6 +6,7 @@ import {
   Link,
   Text,
   VStack,
+  Flex,
 } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
@@ -51,7 +52,7 @@ export const EventPage: NextPageWithLayout = () => {
   }, [isReady]);
 
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
-  const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
+  const [removeRsvpFn] = useDeleteRsvpMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
@@ -63,11 +64,11 @@ export const EventPage: NextPageWithLayout = () => {
       if (ok) confirmRsvpFn({ variables: { eventId, userId } });
     };
 
-  const kick =
+  const remove =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
     async () => {
       const ok = await confirmDelete();
-      if (ok) kickRsvpFn({ variables: { eventId, userId } });
+      if (ok) removeRsvpFn({ variables: { eventId, userId } });
     };
 
   const isLoading = loading || !isReady || !data;
@@ -79,75 +80,107 @@ export const EventPage: NextPageWithLayout = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
-    },
-    {
-      title: 'Canceled',
-      rsvpFilter: 'no',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
       action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
+    {
+      title: 'Canceled',
+      rsvpFilter: 'no',
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
+    },
   ];
 
   return (
     <>
-      <Box p="2" borderWidth="1px" borderRadius="lg">
-        <Heading>{data.dashboardEvent.name}</Heading>
+      <Flex
+        p="2"
+        borderWidth="1px"
+        borderRadius="lg"
+        gap={'3'}
+        flexDirection="column"
+      >
+        <Heading as="h1">{data.dashboardEvent.name}</Heading>
 
         {data.dashboardEvent.canceled && (
-          <Heading color="red.500">Canceled</Heading>
+          <Text fontWeight={500} fontSize={'md'} color="red.500">
+            Canceled
+          </Text>
         )}
-        <Text>{data.dashboardEvent.description}</Text>
+        <Text fontSize={'md'}>{data.dashboardEvent.description}</Text>
         {data.dashboardEvent.image_url && (
-          <Text>
+          <Text opacity={'.9'}>
             Event Image Url:{' '}
-            <Link href={data.dashboardEvent.image_url} isExternal>
+            <Link
+              fontWeight={500}
+              href={data.dashboardEvent.image_url}
+              isExternal
+            >
               {data.dashboardEvent.image_url}
             </Link>
           </Text>
         )}
         {data.dashboardEvent.url && (
-          <Text>
+          <Text opacity={'.9'}>
             Event Url:{' '}
-            <Link href={data.dashboardEvent.url} isExternal>
+            <Link fontWeight={500} href={data.dashboardEvent.url} isExternal>
               {data.dashboardEvent.url}
             </Link>
           </Text>
         )}
-        <Text>Capacity: {data.dashboardEvent.capacity}</Text>
+        <Text opacity={'.9'}>
+          Capacity:{' '}
+          <Text as={'span'} fontWeight={500}>
+            {data.dashboardEvent.capacity}
+          </Text>
+        </Text>
+        {isPhysical(data.dashboardEvent.venue_type) &&
+          data.dashboardEvent.venue && (
+            <>
+              <Text opacity={'.9'}>
+                Venue:{' '}
+                <Text as={'span'} fontWeight={500}>
+                  {data.dashboardEvent.venue.name}
+                </Text>
+              </Text>
+              <Text opacity={'.9'}>
+                Hosted at:{' '}
+                <Text as={'span'} fontWeight={500}>
+                  {getLocationString(data.dashboardEvent.venue, true)}
+                </Text>
+              </Text>
+            </>
+          )}
+        {isOnline(data.dashboardEvent.venue_type) &&
+          data.dashboardEvent.streaming_url && (
+            <Text opacity={'.9'}>
+              Streaming Url:{' '}
+              <Link
+                fontWeight={500}
+                href={data.dashboardEvent.streaming_url}
+                isExternal
+              >
+                {data.dashboardEvent.streaming_url}
+              </Link>
+            </Text>
+          )}
 
         <Actions
           event={data.dashboardEvent}
           chapter_id={data.dashboardEvent.chapter.id}
           onDelete={() => router.replace('/dashboard/events')}
         />
-        {isPhysical(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.venue && (
-            <>
-              <h2>Venue:</h2>
-              <h3>{data.dashboardEvent.venue.name}</h3>
-              <h4>{getLocationString(data.dashboardEvent.venue, true)}</h4>
-            </>
-          )}
-        {isOnline(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.streaming_url && (
-            <Text>
-              Streaming Url:{' '}
-              <Link href={data.dashboardEvent.streaming_url} isExternal>
-                {data.dashboardEvent.streaming_url}
-              </Link>
-            </Text>
-          )}
-      </Box>
+      </Flex>
+
       {data.dashboardEvent.sponsors.length ? (
         <SponsorsCard sponsors={data.dashboardEvent.sponsors} />
       ) : (
         false
       )}
+
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
         {userLists.map(({ title, rsvpFilter, action }) => {
           const users = data.dashboardEvent

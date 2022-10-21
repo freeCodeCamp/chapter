@@ -40,10 +40,10 @@ export const UsersPage: NextPageWithLayout = () => {
     modalProps.onOpen();
   };
 
-  const onModalSubmit = (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = (data: { newRoleName: string; userId: number }) => {
     changeRoleMutation({
       variables: {
-        roleId: data.newRoleId,
+        roleName: data.newRoleName,
         userId: data.userId,
       },
     });
@@ -87,7 +87,7 @@ export const UsersPage: NextPageWithLayout = () => {
                     size="xs"
                     onClick={() =>
                       changeRole({
-                        roleId: instance_role.id,
+                        roleName: instance_role.name,
                         userId: id,
                         userName: name,
                       })
@@ -134,7 +134,7 @@ export const UsersPage: NextPageWithLayout = () => {
                         size="xs"
                         onClick={() =>
                           changeRole({
-                            roleId: instance_role.id,
+                            roleName: instance_role.name,
                             userId: id,
                             userName: name,
                           })

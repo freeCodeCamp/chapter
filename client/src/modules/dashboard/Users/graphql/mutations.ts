@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client';
 
 export const changeInstanceUserRole = gql`
-  mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {
-    changeInstanceUserRole(roleId: $roleId, userId: $userId) {
+  mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
+    changeInstanceUserRole(roleName: $roleName, userId: $userId) {
       instance_role {
-        id
+        name
       }
     }
   }

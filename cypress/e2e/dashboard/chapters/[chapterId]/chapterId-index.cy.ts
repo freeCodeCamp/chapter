@@ -28,19 +28,23 @@ const eventData = {
 function createEventViaUI(chapterId) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
-  cy.findByRole('textbox', { name: 'Event title' }).type(testEvent.name);
+  cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
+    testEvent.name,
+  );
   cy.findByRole('textbox', { name: 'Description' }).type(testEvent.description);
   cy.findByRole('textbox', { name: 'Event Image Url' }).type(
     testEvent.image_url,
   );
   // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
-  cy.findByRole('spinbutton', { name: 'Capacity' }).type(testEvent.capacity);
+  cy.findByRole('spinbutton', { name: 'Capacity (Required)' }).type(
+    testEvent.capacity,
+  );
 
-  cy.findByLabelText(/^Start at/)
+  cy.findByLabelText(/^Start at \(Required\)/)
     .clear()
     .type(testEvent.start_at)
     .type('{esc}');
-  cy.findByLabelText(/^End at/)
+  cy.findByLabelText(/^End at \(Required\)/)
     .clear()
     .type(testEvent.ends_at)
     .type('{esc}');

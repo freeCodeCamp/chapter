@@ -128,8 +128,6 @@ export const ChapterPage: NextPage = () => {
   };
 
   const isLoading = loading || !data;
-
-  console.log(data, isLoading);
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;

@@ -19,29 +19,8 @@ import {
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
 import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
-import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { isBannable } from '../../util/chapterBans';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
-
-const isBannable = ({
-  userId,
-  userChapterRole,
-  userInstanceRole,
-  otherChapterRole,
-  otherUserId,
-}: {
-  userId: number;
-  userChapterRole: string;
-  userInstanceRole: string;
-  otherUserId: number;
-  otherChapterRole: string;
-}) => {
-  if (otherUserId === userId) return false;
-  if (userInstanceRole === InstanceRoles.owner) return true;
-
-  if (otherChapterRole === ChapterRoles.administrator) return false;
-  if (userChapterRole === ChapterRoles.administrator) return true;
-  return false;
-};
 
 @Resolver()
 export class ChapterResolver {
@@ -98,6 +77,7 @@ export class ChapterResolver {
         userInstanceRole,
         otherUserId: chapterUser.user_id,
         otherChapterRole: chapterUser.chapter_role.name,
+        otherInstanceRole: chapterUser.user.instance_role.name,
       }),
     }));
 

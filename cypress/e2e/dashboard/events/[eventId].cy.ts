@@ -1,8 +1,17 @@
+import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
+
+const setUsernameAlias = (usersAlias: string) =>
+  cy
+    .get(usersAlias)
+    .find('[data-cy=username]')
+    .first()
+    .invoke('text')
+    .as('userName');
 
 describe('event dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
   });
 
@@ -17,8 +26,7 @@ describe('event dashboard', () => {
         .findByRole('button', { name: 'Confirm' })
         .click();
 
-      cy.waitUntilMail('allMail');
-      cy.get('@allMail').mhFirst().as('email');
+      cy.waitUntilMail().mhFirst().as('email');
 
       cy.get<string>('@userName').then((userName) => {
         cy.get('@waitlist').not(`:contains(${userName})`);
@@ -31,7 +39,7 @@ describe('event dashboard', () => {
       cy.get('@email')
         .mhGetBody()
         .should('include', 'reservation is confirmed');
-      cy.getEventUsers(1).then((eventUsers) => {
+      cy.task<EventUsers>('getEventUsers', 1).then((eventUsers) => {
         cy.get<string>('@userName').then((userName) => {
           const userEmail = eventUsers
             .filter(({ user: { name } }) => name === userName)
@@ -41,12 +49,12 @@ describe('event dashboard', () => {
       });
     });
 
-    it('kicking user should remove user from event', () => {
+    it('removing user should remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=rsvps]').as('rsvps');
       setUsernameAlias('@rsvps');
 
-      cy.get('@rsvps').find('[data-cy=kick]').first().click();
+      cy.get('@rsvps').find('[data-cy=remove]').first().click();
       cy.findByRole('button', { name: 'Delete' }).click();
 
       cy.get<string>('@userName').then((userName) => {
@@ -73,12 +81,12 @@ describe('event dashboard', () => {
       });
     });
 
-    it('canceling kicking user should not remove user from event', () => {
+    it('canceling removing user should not remove user from event', () => {
       cy.visit('/dashboard/events/1');
       cy.get('[data-cy=rsvps]').as('rsvps');
       setUsernameAlias('@rsvps');
 
-      cy.get('@rsvps').find('[data-cy=kick]').first().click();
+      cy.get('@rsvps').find('[data-cy=remove]').first().click();
       cy.intercept('/graphql', cy.spy().as('request'));
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Cancel' })
@@ -90,11 +98,11 @@ describe('event dashboard', () => {
       });
     });
 
-    it('prevents members from confirming or kicking users', () => {
+    it('prevents members from confirming or removing users', () => {
       const eventId = 1;
 
       // Starting as the instance owner to ensure we can find the RSVPs
-      cy.getEventUsers(eventId).then((eventUsers) => {
+      cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
           ({ rsvp: { name } }) => name === 'yes',
         ).user;
@@ -102,7 +110,7 @@ describe('event dashboard', () => {
           ({ rsvp: { name } }) => name === 'waitlist',
         ).user;
 
-        // Switch to new member before trying to confirm and kick
+        // Switch to new member before trying to confirm and remove
         cy.login('test@user.org');
 
         cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
@@ -111,11 +119,3 @@ describe('event dashboard', () => {
     });
   });
 });
-
-const setUsernameAlias = (usersAlias: string) =>
-  cy
-    .get(usersAlias)
-    .find('[data-cy=username]')
-    .first()
-    .invoke('text')
-    .as('userName');

@@ -26,19 +26,50 @@ export class ChapterResolver {
   async chapters(): Promise<ChapterWithEvents[]> {
     return await prisma.chapters.findMany({
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: {
+          include: {
+            venue: true,
+          },
+        },
       },
     });
   }
 
-  @Query(() => ChapterWithRelations, { nullable: true })
-  async chapter(
+  @Authorized(Permission.ChapterEdit)
+  @Query(() => ChapterWithRelations)
+  async dashboardChapter(
     @Arg('id', () => Int) id: number,
-  ): Promise<ChapterWithRelations | null> {
-    return await prisma.chapters.findUnique({
+  ): Promise<ChapterWithRelations> {
+    return await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: true,
+        chapter_users: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+          orderBy: { user: { name: 'asc' } },
+        },
+        user_bans: { include: { user: true, chapter: true } },
+      },
+    });
+  }
+
+  @Query(() => ChapterWithRelations)
+  async chapter(
+    @Arg('id', () => Int) id: number,
+  ): Promise<ChapterWithRelations> {
+    return await prisma.chapters.findUniqueOrThrow({
+      where: { id },
+      include: {
+        events: true,
         chapter_users: {
           include: {
             chapter_role: {
@@ -92,6 +123,7 @@ export class ChapterResolver {
     return prisma.chapters.update({ where: { id }, data: chapterData });
   }
 
+  @Authorized(Permission.ChapterDelete)
   @Mutation(() => Chapter)
   async deleteChapter(@Arg('id', () => Int) id: number): Promise<Chapter> {
     return await prisma.chapters.delete({ where: { id } });

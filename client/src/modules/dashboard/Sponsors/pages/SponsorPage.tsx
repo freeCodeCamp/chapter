@@ -1,32 +1,34 @@
 import { Flex, Heading, Link, Text } from '@chakra-ui/layout';
-import { NextPage } from 'next';
-import React from 'react';
+import NextError from 'next/error';
+import React, { ReactElement } from 'react';
+
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useSponsorQuery } from '../../../../generated/graphql';
+import { useSponsorWithEventsQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { Layout } from '../../shared/components/Layout';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { EventList } from '../../shared/components/EventList';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const SponsorPage: NextPage = () => {
-  const { param: sponsorId, isReady } = useParam('id');
-  const { loading, error, data } = useSponsorQuery({
+export const SponsorPage: NextPageWithLayout = () => {
+  const { param: sponsorId } = useParam('id');
+  const { loading, error, data } = useSponsorWithEventsQuery({
     variables: { sponsorId },
   });
+  const { sponsorWithEvents: sponsor } = data ?? {};
 
-  if (loading || !isReady) {
-    return <h1>Loading the sponsor details</h1>;
-  }
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
+  if (!sponsor) return <NextError statusCode={404} title="Sponsor not found" />;
 
-  if (error) {
-    return <h1>Error loading the sponsor details</h1>;
-  }
   return (
-    <Layout>
+    <>
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading data-cy="name" as="h2" fontWeight="normal" mb="2">
-            {data?.sponsor?.name}
+            {sponsor.name}
           </Heading>
         </ProgressCardContent>
       </Card>
@@ -36,14 +38,20 @@ export const SponsorPage: NextPage = () => {
           Details{' '}
         </Heading>
         <Flex mt="2" justifyContent="space-between">
-          <Text data-cy="type">Type: {data?.sponsor?.type}</Text>
+          <Text data-cy="type">Type: {sponsor.type}</Text>
           <Text data-cy="website">
-            Website: <Link>{data?.sponsor?.website}</Link>
+            Website: <Link>{sponsor.website}</Link>
           </Text>
         </Flex>
       </Card>
-
-      <h3>Placeholder for events ....</h3>
-    </Layout>
+      <EventList
+        title={'Sponsored Events'}
+        events={sponsor.event_sponsors.map(({ event }) => ({ ...event }))}
+      />
+    </>
   );
+};
+
+SponsorPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

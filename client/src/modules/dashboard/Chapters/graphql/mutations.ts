@@ -28,6 +28,14 @@ export const updateChapter = gql`
   }
 `;
 
+export const deleteChapter = gql`
+  mutation deleteChapter($chapterId: Int!) {
+    deleteChapter(id: $chapterId) {
+      id
+    }
+  }
+`;
+
 export const banUser = gql`
   mutation banUser($chapterId: Int!, $userId: Int!) {
     banUser(chapterId: $chapterId, userId: $userId) {
@@ -51,16 +59,16 @@ export const unbanUser = gql`
 export const changeChapterUserRole = gql`
   mutation changeChapterUserRole(
     $chapterId: Int!
-    $roleId: Int!
+    $roleName: String!
     $userId: Int!
   ) {
     changeChapterUserRole(
       chapterId: $chapterId
-      roleId: $roleId
+      roleName: $roleName
       userId: $userId
     ) {
       chapter_role {
-        id
+        name
       }
     }
   }

@@ -12,23 +12,63 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
-import React from 'react';
+import NextError from 'next/error';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
 import { useAuth } from '../../auth/store';
+import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
-  useChapterQuery,
-  useChapterUserQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
+  ChapterUserQuery,
+  useChapterQuery,
+  useChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <div>
+      <Heading size="md" color={'gray.700'}>
+        Chat Link:
+      </Heading>
+      <Link>{chatUrl}</Link>
+    </div>
+  ) : null;
+};
+
+const SubscriptionWidget = ({
+  chapterUser,
+  chapterSubscribe,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+}) => {
+  return chapterUser.subscribed ? (
+    <HStack>
+      <CheckIcon />
+      <Text data-cy="join-success">
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
+    </HStack>
+  ) : (
+    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
+      Subscribe
+    </Button>
+  );
+};
+
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId, isReady } = useParam('chapterId');
-  const { user } = useAuth();
+  const { param: chapterId } = useParam('chapterId');
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
@@ -48,8 +88,16 @@ export const ChapterPage: NextPage = () => {
   const [joinChapterFn] = useJoinChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
-  const joinChapter = async () => {
-    const ok = await confirm();
+  const joinChapter = async (options?: { invited?: boolean }) => {
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this chapter',
+          body: 'Would you like to join?',
+        }
+      : {
+          title: 'Join this chapter?',
+        };
+    const ok = await confirm(confirmOptions);
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
@@ -91,18 +139,17 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  if (loading || !isReady) {
-    return <Spinner />;
-  }
+  const isLoading = loading || loadingChapterUser || !data;
 
-  if (error || !data?.chapter) {
-    return (
-      <div>
-        <h1>error...</h1>
-        <h2>{error?.message}</h2>
-      </div>
-    );
-  }
+  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
+  const isNotAlreadyMember = !isLoading && !dataChapterUser;
+  useEffect(() => {
+    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
+  }, [askUserToConfirm, isNotAlreadyMember]);
+
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (!data.chapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
     <VStack>
@@ -110,10 +157,11 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.image_url}
+          src={data.chapter.banner_url}
           alt=""
           borderRadius="md"
           objectFit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
         />
         <Heading
           as="h1"
@@ -130,49 +178,20 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {user &&
+        {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
           ) : dataChapterUser ? (
-            <HStack>
-              {dataChapterUser.chapterUser.subscribed ? (
-                <HStack>
-                  <CheckIcon />
-                  <Text>
-                    {dataChapterUser.chapterUser.chapter_role.name} of the
-                    chapter
-                  </Text>
-                  <Button
-                    colorScheme="orange"
-                    onClick={() => chapterSubscribe(false)}
-                    size="md"
-                  >
-                    Unsubscribe
-                  </Button>
-                </HStack>
-              ) : (
-                <Button
-                  colorScheme="green"
-                  onClick={() => chapterSubscribe(true)}
-                  size="md"
-                >
-                  Subscribe
-                </Button>
-              )}
-            </HStack>
+            <SubscriptionWidget
+              chapterUser={dataChapterUser.chapterUser}
+              chapterSubscribe={chapterSubscribe}
+            />
           ) : (
-            <Button colorScheme="blue" onClick={joinChapter}>
+            <Button colorScheme="blue" onClick={() => joinChapter()}>
               Join chapter
             </Button>
           ))}
-        {data.chapter.chat_url && (
-          <div>
-            <Heading size="md" color={'gray.700'}>
-              Chat Link:
-            </Heading>
-            <Link>{data.chapter.chat_url}</Link>
-          </div>
-        )}
+        <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading size="md" color={'gray.700'}>
           Events:
         </Heading>
@@ -181,8 +200,7 @@ export const ChapterPage: NextPage = () => {
             key={event.id}
             event={{
               ...event,
-              // Fix this | undefined
-              chapter: { id: chapterId, name: data.chapter?.name || '' },
+              chapter: { id: chapterId, name: data.chapter.name },
             }}
           />
         ))}

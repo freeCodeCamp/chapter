@@ -1,10 +1,11 @@
+import { ChapterMembers } from '../../../cypress.config';
 import { expectToBeRejected } from '../../support/util';
 
 const chapterId = 1;
 
 describe('chapter page', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
 
   it('user can join chapter and change subscription status', () => {
@@ -30,14 +31,31 @@ describe('chapter page', () => {
 
     cy.contains(/subscribed/);
 
-    cy.getChapterMembers(chapterId).then((chapter_users) => {
-      expect(
-        chapter_users.findIndex(
-          ({ user: { email }, subscribed }) =>
-            email === 'test@user.org' && subscribed,
-        ),
-      ).to.not.equal(-1);
-    });
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
+      (chapter_users) => {
+        expect(
+          chapter_users.findIndex(
+            ({ user: { email }, subscribed }) =>
+              email === 'test@user.org' && subscribed,
+          ),
+        ).to.not.equal(-1);
+      },
+    );
+  });
+
+  it('is possible to join using the email links', () => {
+    cy.login('test@user.org');
+    cy.visit('/chapters/1?ask_to_confirm=true');
+    cy.contains('member of the chapter').should('not.exist');
+
+    cy.contains('You have been invited to this chapter');
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.get('[data-cy="join-success"]').should('be.visible');
+
+    // After joining, the modal should not trigger on reload.
+    cy.reload();
+    cy.get('[data-cy="join-success"]').should('be.visible');
+    cy.contains('You have been invited to this chapter').should('not.exist');
   });
 
   it('should reject joining and subscribing requests from non-members', () => {

@@ -11,38 +11,43 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
-import React, { useMemo, useState } from 'react';
+import NextError from 'next/error';
+import React, { ReactElement, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import {
   useBanUserMutation,
-  useChapterUsersQuery,
   useChapterRolesQuery,
   useChangeChapterUserRoleMutation,
   useUnbanUserMutation,
+  useDashboardChapterUsersQuery,
 } from '../../../../../generated/graphql';
+import { DashboardLoading } from '../../../shared/components/DashboardLoading';
 import { Layout } from '../../../shared/components/Layout';
 import {
   RoleChangeModal,
   RoleChangeModalData,
 } from '../../../shared/components/RoleChangeModal';
 import { useParam } from '../../../../../hooks/useParam';
-import { CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { NextPageWithLayout } from '../../../../../pages/_app';
 
-export const ChapterUsersPage: NextPage = () => {
-  const { param: chapterId, isReady } = useParam('id');
+export const ChapterUsersPage: NextPageWithLayout = () => {
+  const { param: chapterId } = useParam('id');
 
-  const { loading, error, data } = useChapterUsersQuery({
+  const { loading, error, data } = useDashboardChapterUsersQuery({
     variables: { chapterId },
   });
+
   const { data: chapterRoles } = useChapterRolesQuery();
   const modalProps = useDisclosure();
 
   const [chapterUser, setChapterUser] = useState<RoleChangeModalData>();
 
   const refetch = {
-    refetchQueries: [{ query: CHAPTER_USERS, variables: { chapterId } }],
+    refetchQueries: [
+      { query: DASHBOARD_CHAPTER_USERS, variables: { chapterId } },
+    ],
   };
 
   const [changeRoleMutation] = useChangeChapterUserRoleMutation(refetch);
@@ -51,11 +56,14 @@ export const ChapterUsersPage: NextPage = () => {
     setChapterUser(data);
     modalProps.onOpen();
   };
-  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = async (data: {
+    newRoleName: string;
+    userId: number;
+  }) => {
     changeRoleMutation({
       variables: {
         chapterId: chapterId,
-        roleId: data.newRoleId,
+        roleName: data.newRoleName,
         userId: data.userId,
       },
     });
@@ -114,12 +122,17 @@ export const ChapterUsersPage: NextPage = () => {
   };
 
   const bans = useMemo(
-    () => new Set(data?.chapter?.user_bans.map((ban) => ban.user.id)),
-    [data?.chapter?.chapter_users, data?.chapter?.user_bans],
+    () => new Set(data?.dashboardChapter?.user_bans.map((ban) => ban.user.id)),
+    [data?.dashboardChapter?.chapter_users, data?.dashboardChapter?.user_bans],
   );
 
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
+  if (!data.dashboardChapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
+
   return (
-    <Layout>
+    <>
       {chapterRoles && chapterUser && (
         <RoleChangeModal
           modalProps={modalProps}
@@ -136,165 +149,153 @@ export const ChapterUsersPage: NextPage = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>
         </Flex>
-        {loading || !isReady ? (
-          <Heading>Loading...</Heading>
-        ) : error || !data?.chapter?.chapter_users ? (
-          <>
-            <Heading>Error</Heading>
-            <Text>
-              {error?.name}: {error?.message}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Box display={{ base: 'none', lg: 'block' }}>
-              <DataTable
-                data={data.chapter.chapter_users}
-                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-                keys={['name', 'email', 'role', 'actions'] as const}
-                mapper={{
-                  name: ({ user }) => (
-                    <HStack>
-                      <Text>{user.name}</Text>
-                      {bans.has(user.id) && (
-                        <Badge data-cy="isBanned" colorScheme="red">
-                          Banned
-                        </Badge>
-                      )}
-                    </HStack>
-                  ),
-                  email: ({ user }) => user.email,
-                  actions: ({ canBeBanned, user, chapter_role }) => (
-                    <HStack>
+        <Box display={{ base: 'none', lg: 'block' }}>
+          <DataTable
+            data={data.dashboardChapter.chapter_users}
+            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+            keys={['name', 'role', 'actions'] as const}
+            mapper={{
+              name: ({ user }) => (
+                <HStack>
+                  <Text>{user.name}</Text>
+                  {bans.has(user.id) && (
+                    <Badge data-cy="isBanned" colorScheme="red">
+                      Banned
+                    </Badge>
+                  )}
+                </HStack>
+              ),
+              actions: ({ is_bannable, user, chapter_role }) => (
+                <HStack>
+                  <Button
+                    data-cy="changeRole"
+                    colorScheme="blue"
+                    size="xs"
+                    onClick={() =>
+                      changeRole({
+                        roleName: chapter_role.name,
+                        userId: user.id,
+                        userName: user.name,
+                      })
+                    }
+                  >
+                    Change
+                  </Button>
+                  {is_bannable &&
+                    (bans.has(user.id) ? (
                       <Button
-                        data-cy="changeRole"
-                        colorScheme="blue"
+                        data-cy="unbanUser"
+                        colorScheme="purple"
                         size="xs"
-                        onClick={() =>
-                          changeRole({
-                            roleId: chapter_role.id,
-                            userId: user.id,
-                            userName: user.name,
-                          })
-                        }
+                        onClick={() => onUnban(user)}
                       >
-                        Change
+                        Unban
                       </Button>
-                      {canBeBanned &&
-                        (bans.has(user.id) ? (
-                          <Button
-                            data-cy="unbanUser"
-                            colorScheme="purple"
-                            size="xs"
-                            onClick={() => onUnban(user)}
-                          >
-                            Unban
-                          </Button>
-                        ) : (
-                          <Button
-                            data-cy="banUser"
-                            colorScheme="red"
-                            size="xs"
-                            onClick={() => onBan(user)}
-                          >
-                            Ban
-                          </Button>
-                        ))}
-                    </HStack>
-                  ),
-                  role: ({ chapter_role: { name } }) => (
-                    <Text data-cy="role">{name}</Text>
-                  ),
-                }}
-              />
-            </Box>
-            <Box display={{ base: 'block', lg: 'none' }}>
-              {data.chapter.chapter_users.map(
-                ({ canBeBanned, user, chapter_role }, index) => (
-                  <Flex key={index} marginBlock={'2em'}>
-                    {data.chapter ? (
-                      <DataTable
-                        data={[data.chapter.chapter_users[index]]}
-                        keys={['type', 'actions'] as const}
-                        showHeader={false}
-                        tableProps={{
-                          table: { 'aria-labelledby': 'page-heading' },
-                        }}
-                        mapper={{
-                          type: () => (
-                            <VStack
-                              spacing={3}
-                              align={'flex-start'}
-                              marginBlock={'1em'}
-                            >
-                              <Text fontWeight={700}>Name</Text>
-                              <Text fontWeight={700}>Email</Text>
-                              <Text fontWeight={700}>Actions</Text>
-                              <Text fontWeight={700}>Role</Text>
-                            </VStack>
-                          ),
-                          actions: () => (
-                            <VStack spacing={3} align={'flex-start'}>
-                              <HStack>
-                                <Text>{user.name}</Text>
-                                {bans.has(user.id) && (
-                                  <Badge data-cy="isBanned" colorScheme="red">
-                                    Banned
-                                  </Badge>
-                                )}
-                              </HStack>
-                              <Text>{user.email}</Text>
-                              <HStack>
-                                <Button
-                                  data-cy="changeRole"
-                                  colorScheme="blue"
-                                  size="xs"
-                                  onClick={() =>
-                                    changeRole({
-                                      roleId: chapter_role.id,
-                                      userId: user.id,
-                                      userName: user.name,
-                                    })
-                                  }
-                                >
-                                  Change
-                                </Button>
-                                {canBeBanned &&
-                                  (bans.has(user.id) ? (
-                                    <Button
-                                      data-cy="unbanUser"
-                                      colorScheme="purple"
-                                      size="xs"
-                                      onClick={() => onUnban(user)}
-                                    >
-                                      Unban
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      data-cy="banUser"
-                                      colorScheme="red"
-                                      size="xs"
-                                      onClick={() => onBan(user)}
-                                    >
-                                      Ban
-                                    </Button>
-                                  ))}
-                              </HStack>
-                              <Text data-cy="role">{chapter_role.name}</Text>
-                            </VStack>
-                          ),
-                        }}
-                      />
                     ) : (
-                      <Text>PlaceHolder for inviting users</Text>
-                    )}
-                  </Flex>
-                ),
-              )}
-            </Box>
-          </>
-        )}
+                      <Button
+                        data-cy="banUser"
+                        colorScheme="red"
+                        size="xs"
+                        onClick={() => onBan(user)}
+                      >
+                        Ban
+                      </Button>
+                    ))}
+                </HStack>
+              ),
+              role: ({ chapter_role: { name } }) => (
+                <Text data-cy="role">{name}</Text>
+              ),
+            }}
+          />
+        </Box>
+        <Box display={{ base: 'block', lg: 'none' }}>
+          {data.dashboardChapter.chapter_users.map(
+            ({ is_bannable, user, chapter_role }, index) => (
+              <Flex key={index} marginBlock={'2em'}>
+                {data.dashboardChapter ? (
+                  <DataTable
+                    data={[data.dashboardChapter.chapter_users[index]]}
+                    keys={['type', 'actions'] as const}
+                    showHeader={false}
+                    tableProps={{
+                      table: { 'aria-labelledby': 'page-heading' },
+                    }}
+                    mapper={{
+                      type: () => (
+                        <VStack
+                          spacing={3}
+                          align={'flex-start'}
+                          marginBlock={'1em'}
+                        >
+                          <Text fontWeight={700}>Name</Text>
+                          <Text fontWeight={700}>Actions</Text>
+                          <Text fontWeight={700}>Role</Text>
+                        </VStack>
+                      ),
+                      actions: () => (
+                        <VStack spacing={3} align={'flex-start'}>
+                          <HStack>
+                            <Text>{user.name}</Text>
+                            {bans.has(user.id) && (
+                              <Badge data-cy="isBanned" colorScheme="red">
+                                Banned
+                              </Badge>
+                            )}
+                          </HStack>
+                          <HStack>
+                            <Button
+                              data-cy="changeRole"
+                              colorScheme="blue"
+                              size="xs"
+                              onClick={() =>
+                                changeRole({
+                                  roleName: chapter_role.name,
+                                  userId: user.id,
+                                  userName: user.name,
+                                })
+                              }
+                            >
+                              Change
+                            </Button>
+                            {is_bannable &&
+                              (bans.has(user.id) ? (
+                                <Button
+                                  data-cy="unbanUser"
+                                  colorScheme="purple"
+                                  size="xs"
+                                  onClick={() => onUnban(user)}
+                                >
+                                  Unban
+                                </Button>
+                              ) : (
+                                <Button
+                                  data-cy="banUser"
+                                  colorScheme="red"
+                                  size="xs"
+                                  onClick={() => onBan(user)}
+                                >
+                                  Ban
+                                </Button>
+                              ))}
+                          </HStack>
+                          <Text data-cy="role">{chapter_role.name}</Text>
+                        </VStack>
+                      ),
+                    }}
+                  />
+                ) : (
+                  <Text>PlaceHolder for inviting users</Text>
+                )}
+              </Flex>
+            ),
+          )}
+        </Box>
       </VStack>
-    </Layout>
+    </>
   );
+};
+
+ChapterUsersPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

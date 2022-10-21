@@ -1,31 +1,33 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
-  useChapterQuery,
+  CreateChapterInputs,
+  useDashboardChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import styles from '../../../../styles/Page.module.css';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
-import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import ChapterForm from '../components/ChapterForm';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditChapterPage: NextPage = () => {
+export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
 
-  const { loading, error, data } = useChapterQuery({
+  const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
   });
+
   const [updateChapter] = useUpdateChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
   });
 
-  const onSubmit = async (data: ChapterFormData) => {
+  const onSubmit = async (data: CreateChapterInputs) => {
     setLoadingUpdate(true);
     try {
       await updateChapter({
@@ -39,24 +41,20 @@ export const EditChapterPage: NextPage = () => {
     }
   };
 
-  if (loading || !isReady || error || !data?.chapter) {
-    return (
-      <Layout>
-        <h1>{loading || !isReady ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <Layout>
-      <ChapterForm
-        data={data}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        loadingText={'Saving Chapter Changes'}
-        submitText={'Save Chapter Changes'}
-      />
-    </Layout>
+    <ChapterForm
+      data={data}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      loadingText={'Saving Chapter Changes'}
+      submitText={'Save Chapter Changes'}
+    />
   );
+};
+
+EditChapterPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

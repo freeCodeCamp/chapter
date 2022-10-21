@@ -9,7 +9,6 @@
   - [Manual Mode](#running-the-application)
 - [Adding a New Feature](#adding-a-new-feature)
   - [Where to Find the Code](#where-to-find-the-code)
-  - [Where to Find the Issues](#where-to-find-the-issues)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -399,11 +398,6 @@ The database is seeded with several types of user.  To experiment with different
 - `npm run change-user foo@bar.com` (an _owner_ with full permissions)
 - `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
 
-To experiment with different roles using the terminal, you can run these commands into your terminal:
-
-- `npm run change-user foo@bar.com` (an _owner_ with full permissions)
-- `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
-
 </details>
 
 # Adding a New Feature
@@ -417,6 +411,11 @@ The database we use is [PostgreSQL](https://www.postgresql.org/), which we inter
 The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
 
 After you have added new feature, to make sure it stays working, we recommend using [Cypress](https://www.cypress.io/). It will automatically test different scenarios starting in the client side of the application, communicating with the server, and warning you if something unexpected happens.
+
+To record test coverage locally, run `npm run both:coverage` before starting cypress with `npm run cypress:run`.  This will generate a `cypress-coverage/lcov-report` folder in the root directory.  Open the `index.html` file in your browser to see the coverage report.
+
+To see the coverage of an single spec, you can either run `npm run cypress:run -- --spec cypress/e2e/path_to/your_spec.js` or run `npm run cypress:open` and run the spec through the UI.
+
 </details>
 
 ## Where to Find the Code
@@ -428,10 +427,6 @@ After you have added new feature, to make sure it stays working, we recommend us
 * To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
 * Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
 * Cypress test coverage spec files should go in _/cypress/e2e_, roughly mirroring the client pages pattern
-
-## Where to Find the Issues
-
-[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
 
 # Frequently Asked Questions
 
@@ -489,6 +484,12 @@ For example, to add a new `express` to the client, run `npm i -w=client express`
 ## Updating dependencies
 
 We rely on renovate to update dependencies automatically.
+
+</details>
+
+<details><summary>Where to find the issues to contribute?</summary>
+
+The repository's [contribute page](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started with beginner friendly issue.
 
 </details>
 
@@ -592,6 +593,9 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
+
+* **Problem:**  I have come back after a long period of time, and chapter isn't working. </br>
+  **Solution:** As we develop Chapter, it is often necessary to change the environment variables we use. In case .env file being outdated, try replacing it with [.env.example](#env-configuration-file).
 </details>
 
 <details>

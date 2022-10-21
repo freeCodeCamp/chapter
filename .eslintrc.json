@@ -62,7 +62,8 @@
     "react/prop-types": 0,
     "import/no-unresolved": "error",
     "import/order": "error",
-    "no-only-tests/no-only-tests": "error"
+    "no-only-tests/no-only-tests": "error",
+    "no-use-before-define": "error"
   },
   "settings": {
     "react": {

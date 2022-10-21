@@ -48,7 +48,7 @@ import {
   patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
-import { CreateEventInputs, UpdateEventInputs } from './inputs';
+import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
   user: true,
@@ -59,9 +59,18 @@ const eventUserIncludes = {
     },
   },
 };
-const getUniqueTags = (tags: string[]) => [
-  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
-];
+
+type EventWithUsers = Prisma.eventsGetPayload<{
+  include: {
+    venue: true;
+    sponsors: true;
+    event_users: {
+      include: { user: true; event_reminder: true };
+      where: { subscribed: true };
+    };
+  };
+}>;
+
 const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
@@ -93,7 +102,7 @@ Unsubscribe Options</br>
 };
 
 const sendRsvpInvitation = async (
-  user: User,
+  user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
   const linkDetails: CalendarEvent = {
@@ -123,6 +132,81 @@ To add this event to your calendar(s) you can use these links:
 ${unsubscribeOptions}
       `,
   }).sendEmail();
+};
+
+const updateReminders = (event: EventWithUsers, startAt: Date) => {
+  // This is asychronous, but we don't use the result, so we don't wait for it
+  if (!isEqual(startAt, event.start_at)) {
+    event.event_users.forEach(({ event_reminder }) => {
+      if (event_reminder) {
+        updateRemindAt({
+          eventId: event_reminder.event_id,
+          remindAt: sub(startAt, { days: 1 }),
+          userId: event_reminder.user_id,
+        });
+      }
+    });
+  }
+};
+
+const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+  data.venue_type !== event.venue_type ||
+  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
+  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+
+const buildEmailForUpdatedEvent = async (
+  data: EventInputs,
+  event: EventWithUsers,
+) => {
+  const subject = `Venue changed for event ${event.name}`;
+  let venueDetails = '';
+
+  if (isPhysical(event.venue_type)) {
+    const venue = await prisma.venues.findUniqueOrThrow({
+      where: { id: data.venue_id },
+    });
+    // TODO: include a link back to the venue page
+    venueDetails += `The event is now being held at <br>
+${venue.name} <br>
+${venue.street_address ? venue.street_address + '<br>' : ''}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+`;
+  }
+
+  if (isOnline(event.venue_type)) {
+    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+  }
+  // TODO: include a link back to the venue page
+  const body = `We have had to change the location of ${event.name}.<br>
+${venueDetails}`;
+  return { subject, body };
+};
+
+const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
+  const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
+    streaming_url: isOnline(event.venue_type)
+      ? data.streaming_url ?? event.streaming_url
+      : null,
+    venue: isPhysical(event.venue_type)
+      ? { connect: { id: data.venue_id } }
+      : { disconnect: true },
+  });
+
+  const update = {
+    invite_only: data.invite_only ?? event.invite_only,
+    name: data.name ?? event.name,
+    description: data.description ?? event.description,
+    url: data.url, // allows url deletion
+    start_at: new Date(data.start_at) ?? event.start_at,
+    ends_at: new Date(data.ends_at) ?? event.ends_at,
+    capacity: data.capacity ?? event.capacity,
+    image_url: data.image_url ?? event.image_url,
+    venue_type: data.venue_type ?? event.venue_type,
+    ...getVenueData(data, event),
+  };
+  return update;
 };
 
 const chapterUserInclude = {
@@ -217,7 +301,6 @@ export class EventResolver {
       },
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
         venue: true,
         event_users: {
           include: {
@@ -248,7 +331,6 @@ export class EventResolver {
     const events = await prisma.events.findMany({
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
       },
       orderBy: {
         start_at: 'asc',
@@ -267,7 +349,6 @@ export class EventResolver {
     return await prisma.events.findMany({
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
       },
       orderBy: {
         start_at: 'asc',
@@ -277,6 +358,35 @@ export class EventResolver {
     });
   }
 
+  // TODO: Check we need all the returned data
+  @Authorized(Permission.EventEdit)
+  @Query(() => EventWithRelations, { nullable: true })
+  async dashboardEvent(
+    @Arg('eventId', () => Int) eventId: number,
+  ): Promise<EventWithRelations | null> {
+    return await prisma.events.findUnique({
+      where: { id: eventId },
+      include: {
+        chapter: true,
+        venue: true,
+        event_users: {
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: { include: { event_permission: true } },
+              },
+            },
+          },
+          orderBy: { user: { name: 'asc' } },
+        },
+        sponsors: { include: { sponsor: true } },
+      },
+    });
+  }
+
+  // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
     @Arg('eventId', () => Int) eventId: number,
@@ -285,7 +395,6 @@ export class EventResolver {
       where: { id: eventId },
       include: {
         chapter: true,
-        tags: { include: { tag: true } },
         venue: true,
         event_users: {
           include: {
@@ -491,44 +600,31 @@ export class EventResolver {
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
   ): Promise<EventUser> {
-    if (!ctx.user) throw Error('User must be logged in to confirm RSVPs');
-    const eventUser = await prisma.event_users.findUniqueOrThrow({
+    const updatedUser = await prisma.event_users.update({
+      data: { rsvp: { connect: { name: 'yes' } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: { include: { chapter: true } }, user: true },
+      include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
     const unsubscribeOptions = getUnsubscribeOptions({
-      chapterId: eventUser.event.chapter_id,
-      eventId: eventUser.event_id,
+      chapterId: updatedUser.event.chapter_id,
+      eventId: updatedUser.event_id,
       userId,
     });
 
     await new MailerService({
-      emailList: [eventUser.user.email],
+      emailList: [updatedUser.user.email],
       subject: 'Your RSVP is confirmed',
-      htmlEmail: `Your reservation is confirmed. You can attend the event ${eventUser.event.name}
+      htmlEmail: `Your reservation is confirmed. You can attend the event ${updatedUser.event.name}
 ${unsubscribeOptions}`,
     }).sendEmail();
-
-    // TODO: use one update call rather than a find and then a separate update.
-    const updatedUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'yes' } } },
-      where: {
-        user_id_event_id: {
-          user_id: eventUser.user_id,
-          event_id: eventUser.event_id,
-        },
-      },
-      include: eventUserIncludes,
-    });
 
     // The calendar must be updated after event_users, so it can use the updated
     // email list
     await updateCalendarEventAttendees({
-      calendarEventId: eventUser.event.calendar_event_id,
-      calendarId: eventUser.event.chapter.calendar_id,
+      calendarEventId: updatedUser.event.calendar_event_id,
+      calendarId: updatedUser.event.chapter.calendar_id,
       eventId,
     });
     return updatedUser;
@@ -569,7 +665,7 @@ ${unsubscribeOptions}`,
   @Mutation(() => Event)
   async createEvent(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Arg('data') data: CreateEventInputs,
+    @Arg('data') data: EventInputs,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
     let venue;
@@ -584,7 +680,7 @@ ${unsubscribeOptions}`,
       ({ chapter_id }) => chapter_id === chapterId,
     );
 
-    const eventSponsorsData: Prisma.event_sponsorsCreateManyEventsInput[] =
+    const eventSponsorsData: Prisma.event_sponsorsCreateManyEventInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
       }));
@@ -613,7 +709,7 @@ ${unsubscribeOptions}`,
       invite_only: data.invite_only,
       streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
       venue_type: data.venue_type,
-      url: data.url,
+      url: data.url ?? null,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},
@@ -624,21 +720,10 @@ ${unsubscribeOptions}`,
       event_users: {
         create: eventUserData,
       },
-      tags: {
-        create: getUniqueTags(data.tags).map((tagName) => ({
-          tag: {
-            connectOrCreate: {
-              create: { name: tagName },
-              where: { name: tagName },
-            },
-          },
-        })),
-      },
     };
 
     const event = await prisma.events.create({
       data: eventData,
-      include: { tags: { include: { tag: true } } },
     });
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
@@ -673,7 +758,7 @@ ${unsubscribeOptions}`,
   @Mutation(() => Event)
   async updateEvent(
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdateEventInputs,
+    @Arg('data') data: EventInputs,
   ): Promise<Event | null> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id },
@@ -699,97 +784,12 @@ ${unsubscribeOptions}`,
       data: eventSponsorInput,
     });
 
-    await prisma.$transaction([
-      prisma.events.update({
-        where: { id },
-        data: { tags: { deleteMany: {} } },
-      }),
-      prisma.events.update({
-        where: { id },
-        data: {
-          tags: {
-            create: getUniqueTags(data.tags).map((tagName) => ({
-              tag: {
-                connectOrCreate: {
-                  create: { name: tagName },
-                  where: { name: tagName },
-                },
-              },
-            })),
-          },
-        },
-      }),
-    ]);
+    const update = getUpdateData(data, event);
 
-    const venueType = data.venue_type ?? event.venue_type;
-    const eventOnline = isOnline(venueType);
-    const eventPhysical = isPhysical(venueType);
-    const venueData = {
-      streaming_url: eventOnline
-        ? data.streaming_url ?? event.streaming_url
-        : null,
-      venue: eventPhysical
-        ? { connect: { id: data.venue_id } }
-        : { disconnect: true },
-    };
+    updateReminders(event, update.start_at);
 
-    // TODO: Handle tags
-    const start_at = new Date(data.start_at) ?? event.start_at;
-    const update: Prisma.eventsUpdateInput = {
-      invite_only: data.invite_only ?? event.invite_only,
-      name: data.name ?? event.name,
-      description: data.description ?? event.description,
-      url: data.url ?? event.url,
-      start_at: start_at,
-      ends_at: new Date(data.ends_at) ?? event.ends_at,
-      capacity: data.capacity ?? event.capacity,
-      image_url: data.image_url ?? event.image_url,
-      venue_type: venueType,
-      ...venueData,
-    };
-
-    // This is asychronous, but we don't use the result, so we don't wait for it
-    if (!isEqual(start_at, event.start_at)) {
-      event.event_users.forEach(({ event_reminder }) => {
-        if (event_reminder) {
-          updateRemindAt({
-            eventId: event_reminder.event_id,
-            remindAt: sub(start_at, { days: 1 }),
-            userId: event_reminder.user_id,
-          });
-        }
-      });
-    }
-
-    const isVenueChanged =
-      data.venue_type !== event.venue_type ||
-      (eventOnline && data.streaming_url !== event.streaming_url) ||
-      (eventPhysical && data.venue_id !== event.venue_id);
-
-    if (isVenueChanged) {
-      const subject = `Venue changed for event ${event.name}`;
-      let venueDetails = '';
-
-      if (eventPhysical) {
-        const venue = await prisma.venues.findUniqueOrThrow({
-          where: { id: data.venue_id },
-        });
-        // TODO: include a link back to the venue page
-        venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
-      }
-
-      if (eventOnline) {
-        venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-      }
-      // TODO: include a link back to the venue page
-      const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}`;
+    if (hasVenueChanged(data, event)) {
+      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
       batchSender(function* () {
         for (const { user } of event.event_users) {
           const email = user.email;
@@ -808,7 +808,6 @@ ${venueDetails}`;
       where: { id },
       data: update,
       include: {
-        tags: { include: { tag: true } },
         chapter: { select: { calendar_id: true } },
         event_users: { include: { user: { select: { email: true } } } },
       },
@@ -843,7 +842,6 @@ ${venueDetails}`;
       where: { id },
       data: { canceled: true },
       include: {
-        tags: { include: { tag: true } },
         chapter: { select: { id: true, name: true, calendar_id: true } },
         event_users: {
           include: { user: true },
@@ -916,7 +914,6 @@ ${venueDetails}`;
     const event = await prisma.events.delete({
       where: { id },
       include: {
-        tags: { include: { tag: true } },
         chapter: { select: { calendar_id: true } },
       },
     });
@@ -955,7 +952,12 @@ ${venueDetails}`;
       where: { id },
       include: {
         venue: true,
-        chapter: { include: { chapter_users: { include: { user: true } } } },
+        chapter: {
+          include: {
+            chapter_users: { include: { user: true } },
+            user_bans: true,
+          },
+        },
         event_users: {
           include: { rsvp: true, user: true },
           where: { subscribed: true },
@@ -968,10 +970,17 @@ ${venueDetails}`;
       subscribed: boolean;
     }
 
+    const bannedUserIds = new Set(
+      event.chapter.user_bans.map(({ user_id }) => user_id),
+    );
+
     const users: User[] = [];
     if (emailGroups.includes('interested')) {
       const interestedUsers =
-        event.chapter.chapter_users?.filter((user) => user.subscribed) ?? [];
+        event.chapter.chapter_users?.filter(
+          ({ subscribed, user_id }) =>
+            !bannedUserIds.has(user_id) && subscribed,
+        ) ?? [];
 
       users.push(...interestedUsers);
     }
@@ -1010,20 +1019,38 @@ ${venueDetails}`;
       url: eventURL,
     });
 
-    const body = `When: ${event.start_at} to ${event.ends_at}<br>
-${event.venue ? `Where: ${event.venue.name}<br>` : ''}
-${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br>` : ''}
-Event Details: <a href="${eventURL}">${eventURL}</a><br>
-    <br>
-    - Cancel your RSVP: <a href="${eventURL}">${eventURL}</a><br>
+    const subsequentEventEmail = `New Upcoming Event for ${
+      event.chapter.name
+    }.<br />
+    <br />
+    When: ${event.start_at} to ${event.ends_at}
+    <br />
+   ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
+   ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+   <br />
+    View All of Upcoming Events for ${
+      event.chapter.name
+    }: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
+    RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
+    ----------------------------<br />
+    <br />
+    About the event: <br />
+    ${event.description}<br />
+    <br />
+    - Stop receiving upcoming event notifications for ${
+      event.chapter.name
+    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
     - More about ${
       event.chapter.name
-    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a><br>
-    <br>
-    ----------------------------<br>
-    You received this email because you follow this chapter.<br>
-    <br>
-    See the options above to change your notifications.`;
+    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
+    <br />
+    ----------------------------<br />
+    You received this email because you follow ${
+      event.chapter.name
+    } chapter.<br />
+    <br />
+    See the options above to change your notifications.
+    `;
 
     const iCalEvent = calendar.toString();
 
@@ -1035,7 +1062,7 @@ Event Details: <a href="${eventURL}">${eventURL}</a><br>
           eventId: event.id,
           userId: user.id,
         });
-        const text = `${body}<br>${unsubScribeOptions}`;
+        const text = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
         yield { email, subject, text, options: { iCalEvent } };
       }
     });

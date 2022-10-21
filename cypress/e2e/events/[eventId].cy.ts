@@ -2,7 +2,7 @@ import { expectToBeRejected } from '../../support/util';
 
 describe('event page', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.visit('/events/1');
     cy.mhDeleteAll();
   });
@@ -69,9 +69,33 @@ describe('event page', () => {
         // NOTE: we can't cy.get('@login-submit').should('not.exist') here
         // because that dom element is no longer in the DOM, resolves to
         // undefined and the test fails.
-        cy.contains('You want to join this?');
+        cy.contains('Are you sure you want join this?');
         cy.findByRole('button', { name: 'Confirm' }).should('be.visible');
       });
+  });
+
+  it('is possible to cancel using the email links', () => {
+    cy.login('test@user.org');
+    const chapterId = 1;
+    cy.joinChapter(chapterId).then(() => {
+      cy.rsvpToEvent({ eventId: 1, chapterId }).then(() => {
+        cy.visit('/events/1?ask_to_confirm=true');
+
+        cy.contains('Are you sure you want to cancel your RSVP?');
+        cy.findByRole('button', { name: 'Confirm' }).click();
+        cy.findByRole('button', { name: 'RSVP' }).should('be.visible');
+      });
+    });
+  });
+
+  it('is possible to join using the email links', () => {
+    cy.login('test@user.org');
+    cy.visit('/events/1?ask_to_confirm=true');
+
+    cy.contains('You have been invited to this event');
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.get('[data-cy="rsvp-success"]').should('be.visible');
+    cy.findByRole('button', { name: 'Cancel' }).should('be.visible');
   });
 
   it('should be possible to RSVP and cancel', () => {

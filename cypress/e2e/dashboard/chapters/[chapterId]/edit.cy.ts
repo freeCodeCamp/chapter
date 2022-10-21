@@ -7,16 +7,17 @@ const chapterData = {
   region: 'New Region',
   country: 'New Country',
   category: 'New Category',
-  image_url: 'https://example.com/new-image.jpg',
+  banner_url: 'https://example.com/new-image.jpg',
 };
+const chapterId = 1;
 
 describe('chapter edit dashboard', () => {
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
   it('allows admins to edit a chapter', () => {
     cy.login('admin@of.chapter.one');
-    cy.visit('/dashboard/chapters/1/edit');
+    cy.visit(`/dashboard/chapters/${chapterId}/edit`);
 
     cy.findByRole('textbox', { name: 'Chapter name' })
       .clear()
@@ -34,9 +35,9 @@ describe('chapter edit dashboard', () => {
     cy.findByRole('textbox', { name: 'Category' })
       .clear()
       .type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Image Url' })
+    cy.findByRole('textbox', { name: 'Banner Url' })
       .clear()
-      .type(chapterData.image_url);
+      .type(chapterData.banner_url);
 
     cy.findByRole('form', { name: 'Save Chapter Changes' })
       .findByRole('button', { name: 'Save Chapter Changes' })
@@ -49,7 +50,6 @@ describe('chapter edit dashboard', () => {
   it('rejects requests from members, but allows them from owners', () => {
     // confirm the chapter is ready to be updated (i.e. doesn't not already have
     // the new name)
-    const chapterId = 1;
     cy.visit(`/dashboard/chapters/${chapterId}`);
     cy.contains('loading').should('not.exist');
     cy.contains(chapterData.name).should('not.exist');
@@ -71,6 +71,20 @@ describe('chapter edit dashboard', () => {
 
       cy.visit(`/dashboard/chapters/${chapterId}`);
       cy.contains(chapterData.name);
+    });
+  });
+
+  it('only accepts chapter deletion requests from owners', () => {
+    cy.login('admin@of.chapter.one');
+
+    cy.deleteChapter(chapterId).then((response) => {
+      expectToBeRejected(response);
+    });
+
+    cy.login();
+    cy.deleteChapter(chapterId).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.errors).not.to.exist;
     });
   });
 });

@@ -6,10 +6,11 @@ import {
   Image,
   Grid,
   GridItem,
+  Text,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
-import { Chapter, Event, EventTag } from '../generated/graphql';
+import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
 
 type EventCardProps = {
@@ -24,28 +25,12 @@ type EventCardProps = {
     | 'canceled'
   > & {
     chapter: Pick<Chapter, 'id' | 'name'>;
-    tags?: EventTag[] | null;
   };
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const metaTag = (
     <>
-      {event.canceled && (
-        <Tag
-          borderRadius="lg"
-          marginRight={'3'}
-          paddingInline="[1 , 2]"
-          paddingBlock="[.5, 1]"
-          fontSize={['small', 'md']}
-          maxWidth={'8em'}
-          mt="1"
-          maxH={'2em'}
-          colorScheme={'red'}
-        >
-          Canceled
-        </Tag>
-      )}
       {event.invite_only && (
         <Tag
           borderRadius="lg"
@@ -62,6 +47,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       )}
     </>
   );
+  const eventStatus = event.canceled
+    ? 'Canceled'
+    : new Date(event.start_at) < new Date()
+    ? 'Passed'
+    : 'Upcoming';
+  const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
       <Image
@@ -115,7 +106,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             area={'eventstart'}
             marginBottom={['1', '2']}
           >
-            Starting: {formatDate(event.start_at)}
+            <Text
+              {...(event.canceled && canceledStyle)}
+              fontSize={['smaller', 'sm']}
+              fontWeight={'semibold'}
+            >
+              {eventStatus}: {formatDate(event.start_at)}
+            </Text>
           </GridItem>
         </Grid>
       </Box>

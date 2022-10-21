@@ -7,37 +7,7 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 // of the site in one or the other?
 const needsDevLogin = process.env.NEXT_PUBLIC_USE_AUTH0 === 'false';
 
-const useAuth0Session = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<void>;
-} => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const createSession = async () => {
-    const token = await getAccessTokenSilently();
-    await login(token);
-  };
-
-  return {
-    isAuthenticated,
-    createSession,
-  };
-};
-
-export const useDevSession = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<void>;
-} => {
-  const createSession = async () => {
-    await login('fake-token');
-  };
-
-  return {
-    isAuthenticated: true,
-    createSession,
-  };
-};
-
-const login = (token: string) =>
+const requestSession = (token: string) =>
   fetch(new URL('/login', serverUrl).href, {
     method: 'POST',
     headers: {
@@ -46,7 +16,50 @@ const login = (token: string) =>
     credentials: 'include',
   });
 
+const destroySession = () =>
+  fetch(new URL('/logout', serverUrl).href, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+const useAuth0Session = (): {
+  isAuthenticated: boolean;
+  createSession: () => Promise<Response>;
+  destroySession: () => Promise<Response>;
+} => {
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const createSession = async () => {
+    const token = await getAccessTokenSilently();
+    return requestSession(token);
+  };
+
+  return {
+    isAuthenticated,
+    createSession,
+    destroySession,
+  };
+};
+
+export const useDevSession = (): {
+  isAuthenticated: boolean;
+  createSession: () => Promise<Response>;
+  destroySession: () => Promise<Response>;
+} => {
+  const createSession = async () => await requestSession('fake-token');
+
+  // Unlike the Auth0 login, the dev login creates the session immediately when
+  // you click the login button. Since `isAuthenticated` communicates that a
+  // session can be created, we return false to stop the client from trying to
+  // create a session on every page load.
+  return {
+    isAuthenticated: false,
+    createSession,
+    destroySession,
+  };
+};
+
 export const useSession: () => {
   isAuthenticated: boolean;
-  createSession: () => Promise<void>;
+  createSession: () => Promise<Response>;
+  destroySession: () => Promise<Response>;
 } = needsDevLogin ? useDevSession : useAuth0Session;

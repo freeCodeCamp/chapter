@@ -4,6 +4,43 @@ import { defineConfig } from 'cypress';
 import { config } from 'dotenv';
 import coverage from '@cypress/code-coverage/task';
 
+import { prisma } from './server/src/prisma';
+import { InstanceRole } from './server/prisma/generator/factories/instanceRoles.factory';
+
+const getChapterMembers = (chapterId: number) =>
+  prisma.chapter_users.findMany({
+    where: { chapter_id: chapterId },
+    include: { user: true },
+  });
+
+export type ChapterMembers = Awaited<ReturnType<typeof getChapterMembers>>;
+
+const getEventUsers = (eventId: number) =>
+  prisma.event_users.findMany({
+    where: { event_id: eventId },
+    include: { user: true, rsvp: true },
+  });
+
+export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
+
+const getUser = async (email: string) =>
+  await prisma.users.findUnique({
+    where: { email },
+    include: { instance_role: true },
+  });
+
+export type User = Awaited<ReturnType<typeof getUser>>;
+
+const promoteToOwner = async ({ email }: { email: string }) => {
+  const name: InstanceRole['name'] = 'owner';
+  return await prisma.users.update({
+    where: { email },
+    data: { instance_role: { connect: { name } } },
+  });
+};
+
+const seedDb = () => execSync('node server/prisma/generator/seed.js');
+
 config();
 
 export default defineConfig({
@@ -29,11 +66,22 @@ export default defineConfig({
       on('before:run', () => {
         execSync('npm run db:reset');
       });
+
+      on('task', {
+        getChapterMembers,
+        getEventUsers,
+        getUser,
+        seedDb,
+        promoteToOwner,
+      });
       coverage(on, config);
       return config;
     },
   },
   env: {
     mailHogUrl: 'http://localhost:8025',
+    codeCoverage: {
+      url: 'http://localhost:5000/__coverage__',
+    },
   },
 });

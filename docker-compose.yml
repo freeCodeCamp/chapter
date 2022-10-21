@@ -3,7 +3,6 @@ services:
   app:
     restart: unless-stopped
     env_file: .env
-    platform: "linux/amd64"
     build:
       context: .
       dockerfile: server.Dockerfile
@@ -32,6 +31,7 @@ services:
         NEXT_PUBLIC_AUTH0_CLIENT_ID:
         NEXT_PUBLIC_AUTH0_AUDIENCE:
         NEXT_PUBLIC_CLIENT_URL:
+        NODE_ENV:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client

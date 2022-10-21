@@ -28,18 +28,6 @@ const timeFormatter = new Intl.DateTimeFormat('en-us', {
 
 type LockCheck = (reminder: Reminder) => Promise<{ hasLock: boolean }>;
 
-const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
-  await Promise.all(
-    reminders.map(async (reminder) => {
-      const { hasLock } = await lock(reminder);
-      if (!hasLock) {
-        return;
-      }
-      await sendEmailForReminder(reminder);
-      await deleteReminder(reminder);
-    }),
-  );
-
 interface ReminderMessageData {
   event: Reminder['event_user']['event'];
   user: Reminder['event_user']['user'];
@@ -86,11 +74,7 @@ const getEmailData = (reminder: Reminder) => {
   const end_time = timeFormatter.format(reminder.event_user.event.ends_at);
   console.log(`Event: ${reminder.event_user.event.name}`);
   console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
-  console.log(
-    `Remind at ${reminder.remind_at.toUTCString()} to ${
-      reminder.event_user.user.email
-    }`,
-  );
+  console.log(`Remind at ${reminder.remind_at.toUTCString()}`);
   console.log();
 
   const chapterUnsubscribeToken = generateToken(
@@ -125,6 +109,18 @@ const sendEmailForReminder = async (reminder: Reminder) => {
     htmlEmail: email,
   }).sendEmail();
 };
+
+const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
+  await Promise.all(
+    reminders.map(async (reminder) => {
+      const { hasLock } = await lock(reminder);
+      if (!hasLock) {
+        return;
+      }
+      await sendEmailForReminder(reminder);
+      await deleteReminder(reminder);
+    }),
+  );
 
 (async () => {
   const date = new Date();

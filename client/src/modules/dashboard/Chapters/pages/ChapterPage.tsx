@@ -98,7 +98,7 @@ export const ChapterPage: NextPageWithLayout = () => {
               Add new venue
             </LinkButton>
             <SharePopOver
-              link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?emaillink=true`}
+              link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
               size="sm"
             />
 

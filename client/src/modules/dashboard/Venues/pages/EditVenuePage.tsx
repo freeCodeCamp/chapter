@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 import NextError from 'next/error';
 
 import {
-  useVenueLazyQuery,
+  useVenueQuery,
   useUpdateVenueMutation,
-  useChapterLazyQuery,
+  useChapterQuery,
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -17,26 +17,16 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EditVenuePage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { param: venueId, isReady: isVenueIdReady } = useParam('venueId');
-  const { param: chapterId, isReady: isChapterIdReady } = useParam('id');
+  const { param: venueId } = useParam('venueId');
+  const { param: chapterId } = useParam('id');
 
-  const [getChapter, { data: chapterData, error: chapterError }] =
-    useChapterLazyQuery({
-      variables: { chapterId },
-    });
-
-  const [getVenue, { data: venueData, error: venueError }] = useVenueLazyQuery({
-    variables: { venueId },
+  const { data: chapterData, error: chapterError } = useChapterQuery({
+    variables: { chapterId },
   });
 
-  const isReady = isVenueIdReady && isChapterIdReady;
-
-  useEffect(() => {
-    if (isReady) {
-      getVenue();
-      getChapter();
-    }
-  }, [isReady]);
+  const { data: venueData, error: venueError } = useVenueQuery({
+    variables: { venueId },
+  });
 
   const [updateVenue] = useUpdateVenueMutation({
     refetchQueries: [{ query: VENUES }],

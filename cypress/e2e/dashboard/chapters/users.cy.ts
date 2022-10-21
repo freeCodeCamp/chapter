@@ -192,4 +192,14 @@ describe('Chapter Users dashboard', () => {
 
     cy.unbanUser({ chapterId, userId: bannedUserId }).then(expectToBeRejected);
   });
+
+  it('instance owner cannot ban another instance owner from chapter', () => {
+    cy.task('promoteToOwner', { email: 'admin@of.chapter.one' });
+
+    cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
+      cy.banUser({ chapterId, userId: id }).then(
+        expectError('You cannot ban this user'),
+      );
+    });
+  });
 });

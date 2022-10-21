@@ -1,5 +1,5 @@
 import { ChapterMembers, User } from '../../../../cypress.config';
-import { expectToBeRejected } from '../../../support/util';
+import { expectError, expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
 const knownNames = [
@@ -180,14 +180,9 @@ describe('Chapter Users dashboard', () => {
       .should('not.exist');
 
     cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
-      cy.banUser({ chapterId, userId: id }).then((response) => {
-        expect(response.status).to.eq(200);
-        const errors = response.body.errors;
-        expect(errors, 'Expected response to contain one error').to.have.length(
-          1,
-        );
-        expect(errors[0].message).to.contain('You cannot ban yourself');
-      });
+      cy.banUser({ chapterId, userId: id }).then(
+        expectError('You cannot ban yourself'),
+      );
     });
     cy.get('@adminToBan').find('[data-cy=isBanned]').should('not.exist');
   });

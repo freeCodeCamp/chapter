@@ -31,3 +31,21 @@ export class UserWithRelations extends User {
   @Field(() => [EventUser])
   event_users: EventUser[];
 }
+
+@ObjectType()
+export class UserInformation extends User {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => [UserBan])
+  user_bans: UserBan[];
+
+  @Field(() => [ChapterUser])
+  user_chapters: ChapterUser[];
+
+  @Field(() => InstanceRole)
+  instance_role: InstanceRole;
+
+  @Field(() => [EventUser])
+  user_events: EventUser[];
+}

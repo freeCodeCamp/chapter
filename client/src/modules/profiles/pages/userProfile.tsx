@@ -19,7 +19,10 @@ export const UserProfilePage = () => {
   const logout = useLogout();
   const router = useRouter();
 
-  const confirmDelete = useConfirmDelete({ doubleConfirm: true });
+  const confirmDelete = useConfirmDelete({
+    body: 'Are you sure you want to delete your account? Account deletion cannot be reversed.',
+    buttonText: 'Delete account',
+  });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation({
     refetchQueries: [{ query: meQuery }],
@@ -27,10 +30,11 @@ export const UserProfilePage = () => {
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
+    const image_url = data.image_url;
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { data: { name } },
+        variables: { data: { name, image_url } },
       });
     } catch (err) {
       console.error(err);

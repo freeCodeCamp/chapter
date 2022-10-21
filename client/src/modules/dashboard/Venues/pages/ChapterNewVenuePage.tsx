@@ -1,6 +1,6 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
-import { useChapterLazyQuery } from '../../../../generated/graphql';
+import { useChapterQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm from '../components/VenueForm';
@@ -9,19 +9,15 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 import { useSubmitVenue } from '../utils';
 
 export const ChapterNewVenuePage: NextPageWithLayout = () => {
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
 
-  const [getChapter, { data, error }] = useChapterLazyQuery();
-
-  useEffect(() => {
-    if (isReady) {
-      getChapter({ variables: { chapterId } });
-    }
-  }, [isReady]);
+  const { loading, data, error } = useChapterQuery({
+    variables: { chapterId },
+  });
 
   const onSubmit = useSubmitVenue();
 
-  const isLoading = !data || !isReady;
+  const isLoading = loading || !data;
 
   if (isLoading || error) return <DashboardLoading error={error} />;
 

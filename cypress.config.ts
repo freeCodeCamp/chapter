@@ -23,6 +23,14 @@ const getEventUsers = (eventId: number) =>
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
 
+const getUser = async (email: string) =>
+  await prisma.users.findUnique({
+    where: { email },
+    include: { instance_role: true },
+  });
+
+export type User = Awaited<ReturnType<typeof getUser>>;
+
 const promoteToOwner = async ({ email }: { email: string }) => {
   const name: InstanceRole['name'] = 'owner';
   return await prisma.users.update({
@@ -59,12 +67,21 @@ export default defineConfig({
         execSync('npm run db:reset');
       });
 
-      on('task', { getChapterMembers, getEventUsers, seedDb, promoteToOwner });
+      on('task', {
+        getChapterMembers,
+        getEventUsers,
+        getUser,
+        seedDb,
+        promoteToOwner,
+      });
       coverage(on, config);
       return config;
     },
   },
   env: {
     mailHogUrl: 'http://localhost:8025',
+    codeCoverage: {
+      url: 'http://localhost:5000/__coverage__',
+    },
   },
 });

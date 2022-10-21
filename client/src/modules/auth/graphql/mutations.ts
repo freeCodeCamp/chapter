@@ -13,6 +13,7 @@ export const updateMe = gql`
     updateMe(data: $data) {
       id
       name
+      image_url
     }
   }
 `;

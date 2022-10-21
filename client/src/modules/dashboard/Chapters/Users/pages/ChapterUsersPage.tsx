@@ -12,15 +12,15 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
-import React, { ReactElement, useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import {
   useBanUserMutation,
-  useDashboardChapterUsersLazyQuery,
   useChapterRolesQuery,
   useChangeChapterUserRoleMutation,
   useUnbanUserMutation,
+  useDashboardChapterUsersQuery,
 } from '../../../../../generated/graphql';
 import { DashboardLoading } from '../../../shared/components/DashboardLoading';
 import { Layout } from '../../../shared/components/Layout';
@@ -33,16 +33,11 @@ import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
 
 export const ChapterUsersPage: NextPageWithLayout = () => {
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
 
-  const [getChapterUsers, { loading, error, data }] =
-    useDashboardChapterUsersLazyQuery({
-      variables: { chapterId },
-    });
-
-  useEffect(() => {
-    if (isReady) getChapterUsers();
-  }, [isReady]);
+  const { loading, error, data } = useDashboardChapterUsersQuery({
+    variables: { chapterId },
+  });
 
   const { data: chapterRoles } = useChapterRolesQuery();
   const modalProps = useDisclosure();
@@ -61,11 +56,14 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     setChapterUser(data);
     modalProps.onOpen();
   };
-  const onModalSubmit = async (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = async (data: {
+    newRoleName: string;
+    userId: number;
+  }) => {
     changeRoleMutation({
       variables: {
         chapterId: chapterId,
-        roleId: data.newRoleId,
+        roleName: data.newRoleName,
         userId: data.userId,
       },
     });
@@ -128,7 +126,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     [data?.dashboardChapter?.chapter_users, data?.dashboardChapter?.user_bans],
   );
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
@@ -175,7 +173,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     size="xs"
                     onClick={() =>
                       changeRole({
-                        roleId: chapter_role.id,
+                        roleName: chapter_role.name,
                         userId: user.id,
                         userName: user.name,
                       })
@@ -252,7 +250,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               size="xs"
                               onClick={() =>
                                 changeRole({
-                                  roleId: chapter_role.id,
+                                  roleName: chapter_role.name,
                                   userId: user.id,
                                   userName: user.name,
                                 })

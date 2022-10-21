@@ -14,6 +14,7 @@ import { prisma } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
+import { canBanOther } from '../../util/chapterBans';
 
 const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
@@ -194,6 +195,12 @@ export class ChapterUserResolver {
       throw Error('You cannot ban yourself');
     }
 
+    if (
+      !canBanOther({ chapterId, otherUserId: userId, banningUser: ctx.user })
+    ) {
+      throw Error('You cannot ban this user');
+    }
+
     return await prisma.user_bans.create({
       data: {
         chapter: { connect: { id: chapterId } },
@@ -208,7 +215,14 @@ export class ChapterUserResolver {
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
+    if (
+      !canBanOther({ chapterId, otherUserId: userId, banningUser: ctx.user })
+    ) {
+      throw Error('You cannot unban this user');
+    }
+
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
       include: { chapter: true, user: true },

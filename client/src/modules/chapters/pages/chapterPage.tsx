@@ -13,7 +13,7 @@ import {
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
@@ -21,11 +21,11 @@ import { useAuth } from '../../auth/store';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
-  useChapterLazyQuery,
-  useChapterUserLazyQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
   ChapterUserQuery,
+  useChapterQuery,
+  useChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
@@ -63,29 +63,20 @@ const SubscriptionWidget = ({
 };
 
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId, isReady } = useParam('chapterId');
+  const { param: chapterId } = useParam('chapterId');
   const { isLoggedIn } = useAuth();
 
-  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
+  const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });
 
   const confirm = useConfirm();
   const toast = useToast();
 
-  const [
-    getChapterUsers,
-    { loading: loadingChapterUser, data: dataChapterUser },
-  ] = useChapterUserLazyQuery({
-    variables: { chapterId },
-  });
-
-  useEffect(() => {
-    if (isReady) {
-      getChapter();
-      getChapterUsers();
-    }
-  }, [isReady]);
+  const { loading: loadingChapterUser, data: dataChapterUser } =
+    useChapterUserQuery({
+      variables: { chapterId },
+    });
 
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
@@ -136,7 +127,7 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;

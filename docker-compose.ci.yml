@@ -12,6 +12,7 @@ services:
   app:
     depends_on:
       - db
+    command: ["npm", "run", "start:coverage"]
     # TODO: ugly hack to get the dev login working, remove the volume once there is
     # a less silly dev login
     volumes:

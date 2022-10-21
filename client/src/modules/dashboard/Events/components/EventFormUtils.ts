@@ -81,8 +81,8 @@ export const fields: Field[] = [
   {
     key: 'name',
     type: 'text',
-    label: 'Event title',
-    placeholder: 'Foo and the Bars',
+    label: 'Event Title (Required)',
+    placeholder: 'Please put a descriptive title',
     isRequired: true,
   },
   {
@@ -100,29 +100,21 @@ export const fields: Field[] = [
     isRequired: false,
   },
   {
-    key: 'url',
-    type: 'url',
-    label: 'Url',
-    placeholder: 'https://www.example.com',
-    isRequired: false,
-  },
-  {
     key: 'capacity',
     type: 'number',
-    label: 'Capacity',
-    placeholder: '50',
+    label: 'Capacity (Required)',
     isRequired: true,
   },
   {
     key: 'start_at',
     type: 'datetime',
-    label: 'Start at',
+    label: 'Start at (Required)',
     isRequired: true,
   },
   {
     key: 'ends_at',
     type: 'datetime',
-    label: 'End at',
+    label: 'End at (Required)',
     isRequired: true,
   },
 ];
@@ -212,9 +204,8 @@ export const parseEventData = (data: EventFormData) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { chapter_id, sponsors, ...rest } = data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-  // Both url and streaming_url are optional. However, null will be accepted,
+  // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.
-  const url = data.url?.trim() || null;
   const streaming_url = data.streaming_url?.trim() || null;
 
   return {
@@ -222,7 +213,6 @@ export const parseEventData = (data: EventFormData) => {
     capacity: parseInt(String(data.capacity)),
     start_at: data.start_at,
     ends_at: data.ends_at,
-    url,
     venue_id: isPhysical(data.venue_type)
       ? parseInt(String(data.venue_id))
       : null,

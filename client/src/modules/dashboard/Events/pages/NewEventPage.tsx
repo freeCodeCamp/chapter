@@ -5,7 +5,6 @@ import {
   useCreateEventMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
-import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
@@ -16,7 +15,7 @@ import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const NewEventPage: NextPageWithLayout = () => {
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,20 +51,14 @@ export const NewEventPage: NextPageWithLayout = () => {
     }
   };
 
-  if (!isReady) return <DashboardLoading />;
-
   return (
-    <>
-      {isReady && (
-        <EventForm
-          loading={loading}
-          onSubmit={onSubmit}
-          submitText={'Add event'}
-          loadingText={'Adding Event'}
-          chapterId={chapterId}
-        />
-      )}
-    </>
+    <EventForm
+      loading={loading}
+      onSubmit={onSubmit}
+      submitText={'Add event'}
+      loadingText={'Adding Event'}
+      chapterId={chapterId}
+    />
   );
 };
 

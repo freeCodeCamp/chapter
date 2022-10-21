@@ -2,12 +2,12 @@ import { LockIcon } from '@chakra-ui/icons';
 import {
   Heading,
   VStack,
-  Image,
   Text,
   Button,
   useToast,
   List,
   HStack,
+  Image,
   ListItem,
   Avatar,
   Flex,
@@ -26,7 +26,7 @@ import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
   useCancelRsvpMutation,
-  useEventLazyQuery,
+  useEventQuery,
   useJoinChapterMutation,
   useRsvpToEventMutation,
   useSubscribeToEventMutation,
@@ -36,7 +36,7 @@ import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
 export const EventPage: NextPage = () => {
-  const { param: eventId, isReady } = useParam('eventId');
+  const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user } = useAuth();
   const login = useLogin();
@@ -54,13 +54,9 @@ export const EventPage: NextPage = () => {
   const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
 
-  const [getEvent, { loading, error, data }] = useEventLazyQuery({
+  const { loading, error, data } = useEventQuery({
     variables: { eventId },
   });
-
-  useEffect(() => {
-    if (isReady) getEvent();
-  }, [isReady]);
 
   const toast = useToast();
   const confirm = useConfirm();
@@ -72,7 +68,7 @@ export const EventPage: NextPage = () => {
   }, [data?.event]);
   const rsvpStatus = eventUser?.rsvp.name;
   const allDataLoaded = !!user && !!data;
-  const fromEmailInviteLink = router.query?.emaillink;
+  const askUserToConfirm = router.query?.ask_to_confirm;
   const shouldRsvp = !rsvpStatus || rsvpStatus === 'no';
 
   const chapterId = data?.event?.chapter.id;
@@ -83,12 +79,21 @@ export const EventPage: NextPage = () => {
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
 
-  async function onRsvp() {
+  async function onRsvp(options?: { invited?: boolean }) {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
       return;
     }
-    const ok = await confirm({ title: 'Are you sure you want to join this?' });
+
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this event',
+          body: 'Would you like to attend?',
+        }
+      : {
+          title: 'Join this event?',
+        };
+    const ok = await confirm(confirmOptions);
 
     if (ok) {
       try {
@@ -128,9 +133,9 @@ export const EventPage: NextPage = () => {
   }
 
   // TODO: reimplment this the login modal with Auth0
-  async function checkOnRsvp() {
+  async function checkOnRsvp(options?: { invited?: boolean }) {
     if (!user) await login();
-    await onRsvp();
+    await onRsvp(options);
   }
 
   // TODO: reimplment this the login modal with Auth0
@@ -140,14 +145,14 @@ export const EventPage: NextPage = () => {
   }
 
   useEffect(() => {
-    if (fromEmailInviteLink && allDataLoaded) {
+    if (askUserToConfirm && allDataLoaded) {
       if (shouldRsvp) {
-        checkOnRsvp();
+        checkOnRsvp({ invited: true });
       } else {
         checkOnCancelRsvp();
       }
     }
-  }, [allDataLoaded, fromEmailInviteLink]);
+  }, [allDataLoaded, askUserToConfirm]);
 
   if (error || !data) return <Loading loading={loading} error={error} />;
   if (!data.event)
@@ -205,6 +210,7 @@ export const EventPage: NextPage = () => {
         alt=""
         borderRadius="md"
         objectFit="cover"
+        fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
       />
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
@@ -260,7 +266,7 @@ export const EventPage: NextPage = () => {
         <Button
           data-cy="rsvp-button"
           colorScheme="blue"
-          onClick={checkOnRsvp}
+          onClick={() => checkOnRsvp()}
           paddingInline={'2'}
           paddingBlock={'1'}
         >

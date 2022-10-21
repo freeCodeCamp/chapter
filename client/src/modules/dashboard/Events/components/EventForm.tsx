@@ -90,7 +90,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     return {
       name: data.name,
       description: data.description,
-      url: data.url,
       streaming_url: data.streaming_url,
       capacity: data.capacity,
       start_at: new Date(data.start_at),
@@ -310,6 +309,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <FormLabel> Sponsors</FormLabel>
           <Spacer />
           <Button
+            colorScheme={'blue'}
             onClick={() => {
               if (sponsorData) {
                 const allowedSponsors = getAllowedSponsors(

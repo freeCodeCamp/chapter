@@ -70,7 +70,12 @@ export const Header: React.FC = () => {
             ) : (
               <Flex gap={'2'} alignItems={'center'}>
                 <NextLink passHref href="/profile">
-                  <Avatar cursor="pointer" name={`${user.name}`} />
+                  <Avatar
+                    cursor="pointer"
+                    name={`${user.name}`}
+                    src={`${user.image_url}`}
+                    backgroundColor={user.image_url ? 'transparent' : undefined}
+                  />
                 </NextLink>
                 <Box>
                   <HeaderMenu LogoutButton={LogoutButton} />

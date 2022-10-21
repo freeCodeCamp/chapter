@@ -6,7 +6,6 @@ import { expectToBeRejected } from '../../../support/util';
 const eventOneData = {
   name: 'Homer Simpson',
   description: 'i will show you damn!',
-  url: 'http://wooden-swing.com',
   streaming_url: null,
   capacity: 149,
   start_at: new Date(),
@@ -23,7 +22,6 @@ const eventTwoData = {
   sponsor_ids: [],
   name: 'Event Venue change test',
   description: 'Test Description',
-  url: 'https://test.event.org',
   venue_type: VenueType.PhysicalAndOnline,
   capacity: 10,
   image_url: 'https://test.event.org/image',
@@ -55,95 +53,6 @@ describe('spec needing owner', () => {
     cy.findByRole('columnheader', { name: 'action' }).should('be.visible');
     cy.get('a[href="/dashboard/events/1"]').should('be.visible');
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
-  });
-
-  function sendAndCheckEmails(filterCallback, users) {
-    cy.mhDeleteAll();
-    cy.findByRole('button', { name: 'Send Email' }).click();
-    cy.contains('Email sent');
-
-    const recipientEmails = users
-      .filter(filterCallback)
-      .map(({ user: { email } }) => email);
-    cy.waitUntilMail({ expectedNumberOfEmails: recipientEmails.length });
-    recipientEmails.forEach((recipientEmail) => {
-      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
-      cy.get('@currentRecipient').should('have.length', 1);
-      cy.get('@currentRecipient')
-        .mhFirst()
-        .then((mail) => {
-          cy.checkBcc(mail).should('eq', true);
-        });
-    });
-  }
-
-  it('has a button to email attendees', () => {
-    cy.visit('/dashboard/events/1');
-    // sending to confirmed first
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    cy.findByLabelText('Confirmed').should('be.checked');
-    cy.findByLabelText('Waitlist').should('not.be.checked');
-    cy.findByLabelText('Canceled').should('not.be.checked');
-    cy.task<EventUsers>('getEventUsers', 1).then((results) => {
-      const eventUsers = results.filter(({ subscribed }) => subscribed);
-      const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
-      sendAndCheckEmails(isRsvpConfirmed, eventUsers);
-
-      // sending to waitlist
-      cy.findByRole('button', { name: 'Email Attendees' }).click();
-      cy.findByLabelText('Confirmed').parent().click();
-      cy.findByLabelText('Waitlist').parent().click();
-      const isRsvpOnWaitlist = ({ rsvp }) => rsvp.name === 'waitlist';
-      sendAndCheckEmails(isRsvpOnWaitlist, eventUsers);
-
-      // sending to canceled
-      cy.findByRole('button', { name: 'Email Attendees' }).click();
-      cy.findByLabelText('Waitlist').parent().click();
-      cy.findByLabelText('Canceled').parent().click();
-      const isRSVPCanceled = ({ rsvp }) => rsvp.name === 'no';
-      sendAndCheckEmails(isRSVPCanceled, eventUsers);
-
-      // sending to all
-      cy.findByRole('button', { name: 'Email Attendees' }).click();
-      cy.findByLabelText('Waitlist').parent().click();
-      cy.findByLabelText('Confirmed').parent().click();
-      sendAndCheckEmails(() => true, eventUsers);
-    });
-  });
-
-  it('invitation email should include calendar file', () => {
-    cy.visit('/dashboard/events/1');
-
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-
-    // try to make sure there will be recipient
-    cy.findByLabelText('Waitlist').parent().click();
-    cy.findByLabelText('Canceled').parent().click();
-
-    cy.findByRole('button', { name: 'Send Email' }).click();
-
-    const calendarMIME = 'application/ics; name=calendar.ics';
-    const bodyRegex = new RegExp(
-      /BEGIN:VCALENDAR.*BEGIN:VEVENT.*END:VEVENT.*END:VCALENDAR/,
-      's',
-    );
-
-    cy.waitUntilMail()
-      .mhFirst()
-      .then((mail) => {
-        const MIME = mail.MIME as {
-          Parts: { Headers: unknown; Body: unknown }[];
-        };
-        const hasCalendar = MIME.Parts.some((part) => {
-          const contentType = part.Headers['Content-Type'];
-          if (contentType?.includes(calendarMIME)) {
-            // @ts-expect-error cypress-mailhog is missing types for this
-            const body = Buffer.from(part.Body, 'base64').toString();
-            return bodyRegex.test(body);
-          }
-        });
-        expect(hasCalendar).to.be.true;
-      });
   });
 
   it("emails the users when an event's venue is changed", () => {
@@ -220,7 +129,9 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event title' }).type(titleAddon);
+    cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
+      titleAddon,
+    );
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',

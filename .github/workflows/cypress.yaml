@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@969bd2663942d722d85b6a8626225850c2f7be4b # tag=v3
+        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -43,7 +43,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != 0 }}
-          build: npm run build
+          build: npm run build:coverage
           start: npm run start:ci
           wait-on: 'http://localhost:3000, http://localhost:5000/graphql'
           browser: ${{ matrix.browsers }}

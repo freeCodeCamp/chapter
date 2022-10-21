@@ -13,6 +13,7 @@ import {
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
@@ -21,11 +22,11 @@ import { useAuth } from '../../auth/store';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
-  useChapterLazyQuery,
-  useChapterUserLazyQuery,
   useJoinChapterMutation,
   useToggleChapterSubscriptionMutation,
   ChapterUserQuery,
+  useChapterQuery,
+  useChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
@@ -50,7 +51,9 @@ const SubscriptionWidget = ({
   return chapterUser.subscribed ? (
     <HStack>
       <CheckIcon />
-      <Text>{chapterUser.chapter_role.name} of the chapter</Text>
+      <Text data-cy="join-success">
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
         Unsubscribe
       </Button>
@@ -63,29 +66,21 @@ const SubscriptionWidget = ({
 };
 
 export const ChapterPage: NextPage = () => {
-  const { param: chapterId, isReady } = useParam('chapterId');
+  const { param: chapterId } = useParam('chapterId');
+  const router = useRouter();
   const { isLoggedIn } = useAuth();
 
-  const [getChapter, { loading, error, data }] = useChapterLazyQuery({
+  const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });
 
   const confirm = useConfirm();
   const toast = useToast();
 
-  const [
-    getChapterUsers,
-    { loading: loadingChapterUser, data: dataChapterUser },
-  ] = useChapterUserLazyQuery({
-    variables: { chapterId },
-  });
-
-  useEffect(() => {
-    if (isReady) {
-      getChapter();
-      getChapterUsers();
-    }
-  }, [isReady]);
+  const { loading: loadingChapterUser, data: dataChapterUser } =
+    useChapterUserQuery({
+      variables: { chapterId },
+    });
 
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
@@ -93,8 +88,16 @@ export const ChapterPage: NextPage = () => {
   const [joinChapterFn] = useJoinChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
-  const joinChapter = async () => {
-    const ok = await confirm();
+  const joinChapter = async (options?: { invited?: boolean }) => {
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this chapter',
+          body: 'Would you like to join?',
+        }
+      : {
+          title: 'Join this chapter?',
+        };
+    const ok = await confirm(confirmOptions);
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
@@ -136,7 +139,14 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || loadingChapterUser || !data;
+
+  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
+  const isNotAlreadyMember = !isLoading && !dataChapterUser;
+  useEffect(() => {
+    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
+  }, [askUserToConfirm, isNotAlreadyMember]);
+
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;
@@ -151,6 +161,7 @@ export const ChapterPage: NextPage = () => {
           alt=""
           borderRadius="md"
           objectFit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
         />
         <Heading
           as="h1"
@@ -176,7 +187,7 @@ export const ChapterPage: NextPage = () => {
               chapterSubscribe={chapterSubscribe}
             />
           ) : (
-            <Button colorScheme="blue" onClick={joinChapter}>
+            <Button colorScheme="blue" onClick={() => joinChapter()}>
               Join chapter
             </Button>
           ))}

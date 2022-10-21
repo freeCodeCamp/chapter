@@ -1,15 +1,16 @@
 import { Box, Button, Heading, HStack } from '@chakra-ui/react';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 
+import { SharePopOver } from '../../../../components/SharePopOver';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
-  useDashboardChapterLazyQuery,
+  useDashboardChapterQuery,
   useDeleteChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -25,7 +26,7 @@ import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queri
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const ChapterPage: NextPageWithLayout = () => {
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
 
   const confirmDelete = useConfirmDelete();
 
@@ -42,24 +43,23 @@ export const ChapterPage: NextPageWithLayout = () => {
     ],
   });
 
-  const [getChapter, { loading, error, data }] = useDashboardChapterLazyQuery({
+  const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
   });
-
-  useEffect(() => {
-    if (isReady) getChapter();
-  }, [isReady]);
 
   const router = useRouter();
 
   const clickDelete = async () => {
-    const ok = await confirmDelete({ doubleConfirm: true });
+    const ok = await confirmDelete({
+      body: 'Are you sure you want to delete this chapter? All information related to chapter will be deleted, including events and venues from this chapter. Chapter deletion cannot be reversed.',
+      buttonText: 'Delete Chapter',
+    });
     if (!ok) return;
     deleteChapter({ variables: { chapterId } });
     router.push('/dashboard/chapters');
   };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
@@ -97,7 +97,12 @@ export const ChapterPage: NextPageWithLayout = () => {
             >
               Add new venue
             </LinkButton>
-            <Button colorScheme="red" size={'sm'} onClick={clickDelete}>
+            <SharePopOver
+              link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
+              size="sm"
+            />
+
+            <Button colorScheme="red" size="sm" onClick={clickDelete}>
               Delete Chapter
             </Button>
           </HStack>

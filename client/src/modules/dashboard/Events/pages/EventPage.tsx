@@ -12,11 +12,11 @@ import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import {
   useConfirmRsvpMutation,
-  useDashboardEventLazyQuery,
+  useDashboardEventQuery,
   useDeleteRsvpMutation,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
@@ -41,16 +41,11 @@ const args = (eventId: number) => ({
 
 export const EventPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { param: eventId, isReady } = useParam('id');
+  const { param: eventId } = useParam('id');
 
-  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
+  const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId },
   });
-
-  useEffect(() => {
-    if (isReady) getEvent();
-  }, [isReady]);
-
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
   const [removeRsvpFn] = useDeleteRsvpMutation(args(eventId));
 
@@ -71,7 +66,7 @@ export const EventPage: NextPageWithLayout = () => {
       if (ok) removeRsvpFn({ variables: { eventId, userId } });
     };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;

@@ -26,7 +26,7 @@ import {
   venues,
 } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
-import { prisma } from './prisma';
+import { prisma, RECORD_MISSING } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/Google';
@@ -129,10 +129,9 @@ export const main = async (app: Express) => {
 
   // no need to check for identity provider's token on logout
   app.delete('/logout', (req, res, next) => {
-    if (!req.session) return next('session not found');
-
-    const id = req.session.id;
+    const id = req.session?.id;
     req.session = null;
+    if (!id) return res.end();
 
     prisma.sessions
       .delete({ where: { id } })
@@ -142,12 +141,11 @@ export const main = async (app: Express) => {
         });
       })
       .catch((err) => {
-        // TODO: what to do when the request to delete the session fails? This
-        // should only happen if the session is malformed or doesn't exist.
         res.status(400).send({
           message: 'unable to destroy session',
         });
-        next(err);
+        // Missing sessions can happen and there's no need to log when they do.
+        if (err.code !== RECORD_MISSING) next(err);
       });
   });
 

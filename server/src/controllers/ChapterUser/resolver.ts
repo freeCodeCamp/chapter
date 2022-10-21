@@ -11,12 +11,10 @@ import {
 import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
-import { prisma } from '../../prisma';
+import { prisma, UNIQUE_CONSTRAINT_FAILED } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
-
-const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -66,7 +64,7 @@ export class ChapterUserResolver {
     } catch (e) {
       if (
         !(e instanceof Prisma.PrismaClientKnownRequestError) ||
-        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+        e.code !== UNIQUE_CONSTRAINT_FAILED
       ) {
         throw e;
       }

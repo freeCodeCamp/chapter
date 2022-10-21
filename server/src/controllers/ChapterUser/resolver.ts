@@ -195,9 +195,12 @@ export class ChapterUserResolver {
       throw Error('You cannot ban yourself');
     }
 
-    if (
-      !canBanOther({ chapterId, otherUserId: userId, banningUser: ctx.user })
-    ) {
+    const hasPermissionToBanOtherUser = await canBanOther({
+      chapterId,
+      otherUserId: userId,
+      banningUser: ctx.user,
+    });
+    if (!hasPermissionToBanOtherUser) {
       throw Error('You cannot ban this user');
     }
 
@@ -217,10 +220,13 @@ export class ChapterUserResolver {
     @Arg('userId', () => Int) userId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    if (
-      !canBanOther({ chapterId, otherUserId: userId, banningUser: ctx.user })
-    ) {
-      throw Error('You cannot unban this user');
+    const hasPermissionToBanOtherUser = await canBanOther({
+      chapterId,
+      otherUserId: userId,
+      banningUser: ctx.user,
+    });
+    if (!hasPermissionToBanOtherUser) {
+      throw Error('You cannot ban this user');
     }
 
     return await prisma.user_bans.delete({

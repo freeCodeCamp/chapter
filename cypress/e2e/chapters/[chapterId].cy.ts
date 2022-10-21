@@ -51,6 +51,11 @@ describe('chapter page', () => {
     cy.contains('You have been invited to this chapter');
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.get('[data-cy="join-success"]').should('be.visible');
+
+    // After joining, the modal should not trigger on reload.
+    cy.reload();
+    cy.get('[data-cy="join-success"]').should('be.visible');
+    cy.contains('You have been invited to this chapter').should('not.exist');
   });
 
   it('should reject joining and subscribing requests from non-members', () => {

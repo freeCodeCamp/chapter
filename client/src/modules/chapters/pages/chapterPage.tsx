@@ -139,14 +139,13 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const isLoading = loading || !data;
+  const isLoading = loading || loadingChapterUser || !data;
 
-  const askUserToConfirm = router.query?.ask_to_confirm;
+  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
+  const isNotAlreadyMember = !isLoading && !dataChapterUser;
   useEffect(() => {
-    if (askUserToConfirm && isLoggedIn) {
-      if (!dataChapterUser) joinChapter({ invited: true });
-    }
-  }, [askUserToConfirm, dataChapterUser, isLoggedIn]);
+    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
+  }, [askUserToConfirm, isNotAlreadyMember]);
 
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)

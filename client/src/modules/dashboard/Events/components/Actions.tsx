@@ -70,7 +70,7 @@ const Actions: React.FC<ActionsProps> = ({
       </Button>
       <SharePopOver
         size={'sm'}
-        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?emaillink=true`}
+        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?ask_to_confirm=true`}
       />
     </HStack>
   );

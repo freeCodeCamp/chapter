@@ -13,7 +13,8 @@ import {
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
@@ -48,7 +49,7 @@ const SubscriptionWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
 }) => {
-  return chapterUser?.subscribed ? (
+  return chapterUser.subscribed ? (
     <HStack justifyContent={'space-between'} width={'100%'}>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
@@ -88,7 +89,7 @@ const ChapterUserRoleWidget = ({
     </HStack>
   ) : (
     <HStack justifyContent="space-between">
-      <Text fontWeight={500}>Become member of the chapter</Text>
+      <Text data-cy="join-success" fontWeight={500}>Become member of the chapter</Text>
       <Button colorScheme="blue" onClick={JoinChapter}>
         Join
       </Button>
@@ -98,6 +99,7 @@ const ChapterUserRoleWidget = ({
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
+  const router = useRouter();
   const { isLoggedIn } = useAuth();
 
   const { loading, error, data } = useChapterQuery({
@@ -119,11 +121,17 @@ export const ChapterPage: NextPage = () => {
   const [leaveChapterFn] = useLeaveChapterMutation(refetch);
   const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
 
-  const joinChapter = async () => {
-    const ok = await confirm({
-      title: 'Join chaper?',
-      body: 'Joining chapter will add you as a member to chapter.',
-    });
+  const joinChapter = async (options?: { invited?: boolean }) => {
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this chapter',
+          body: 'Would you like to join?',
+        }
+      : {
+          title: 'Join this chapter?',
+          body: 'Joining chapter will add you as a member to chapter.',
+        };
+    const ok = await confirm(confirmOptions);
     if (ok) {
       try {
         await joinChapterFn({ variables: { chapterId } });
@@ -184,7 +192,14 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const isLoading = loading || !data;
+  const isLoading = loading || loadingChapterUser || !data;
+
+  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
+  const isNotAlreadyMember = !isLoading && !dataChapterUser;
+  useEffect(() => {
+    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
+  }, [askUserToConfirm, isNotAlreadyMember]);
+
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;

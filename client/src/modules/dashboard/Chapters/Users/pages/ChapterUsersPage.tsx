@@ -89,7 +89,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
   const onBan = async ({ id: userId, name: userName }: BanArgs) => {
     const ok = await confirm({
       buttonColor: 'red',
-      body: `Are you sure you want to ban ${userName}? Banning will revoke all chapter permissions and remove user from all events in this chapter.`,
+      body: `Are you sure you want to ban ${userName}? This will revoke their chapter permissions and remove them from all events in this chapter.`,
     });
 
     if (ok) {

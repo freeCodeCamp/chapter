@@ -1,4 +1,4 @@
-import { expectToBeRejected } from '../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../support/util';
 
 const chapterData = {
   name: 'Name goes here',
@@ -102,23 +102,17 @@ describe('chapters dashboard', () => {
     const chapterId = 1;
 
     cy.createChapter(chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${chapterId}`);
       cy.contains(chapterData.name);
     });
     cy.createVenue({ chapterId }, venueData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/venues/`);
       cy.contains(venueData.name);
     });
     cy.createEvent(chapterId, eventData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/events/`);
       cy.contains(eventData.name);
     });
@@ -137,9 +131,7 @@ describe('chapters dashboard', () => {
     cy.login();
 
     cy.createChapter(chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${response.body.data.createChapter.id}`);
       cy.contains(chapterData.name);
     });

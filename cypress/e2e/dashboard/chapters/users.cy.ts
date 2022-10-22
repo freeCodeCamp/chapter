@@ -1,21 +1,21 @@
-import { ChapterMembers } from '../../../../cypress.config';
+import { ChapterMembers, User } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
 
-// TODO: this is very brittle, since it depends on precisely how we seed the
-// database. Can make this always be the id of banned@chapter.admin?
-const bannedUserId = 4;
-
 describe('Chapter Users dashboard', () => {
   let chapterRoles;
   let users;
+  let bannedUserId;
   before(() => {
     cy.fixture('chapterRoles').then((fixture) => {
       chapterRoles = fixture;
     });
     cy.fixture('users').then((fixture) => {
       users = fixture;
+      cy.task<User>('getUser', users.bannedAdmin.email).then(({ id }) => {
+        bannedUserId = id;
+      });
     });
   });
   beforeEach(() => {

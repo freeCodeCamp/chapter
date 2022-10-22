@@ -1,5 +1,8 @@
 import { expectToBeRejected } from '../../support/util';
 
+const chapterId = 1;
+const eventId = 1;
+
 describe('event page', () => {
   let users;
   before(() => {
@@ -9,7 +12,7 @@ describe('event page', () => {
   });
   beforeEach(() => {
     cy.task('seedDb');
-    cy.visit('/events/1');
+    cy.visit(`/events/${eventId}`);
     cy.mhDeleteAll();
   });
   it('should render correctly', () => {
@@ -82,10 +85,9 @@ describe('event page', () => {
 
   it('is possible to cancel using the email links', () => {
     cy.login(users.testUser.email);
-    const chapterId = 1;
     cy.joinChapter(chapterId).then(() => {
-      cy.rsvpToEvent({ eventId: 1, chapterId }).then(() => {
-        cy.visit('/events/1?ask_to_confirm=true');
+      cy.rsvpToEvent({ eventId, chapterId }).then(() => {
+        cy.visit(`/events/${eventId}?ask_to_confirm=true`);
 
         cy.contains('Are you sure you want to cancel your RSVP?');
         cy.findByRole('button', { name: 'Confirm' }).click();
@@ -96,7 +98,7 @@ describe('event page', () => {
 
   it('is possible to join using the email links', () => {
     cy.login(users.testUser.email);
-    cy.visit('/events/1?ask_to_confirm=true');
+    cy.visit(`/events/${eventId}?ask_to_confirm=true`);
 
     cy.contains('You have been invited to this event');
     cy.findByRole('button', { name: 'Confirm' }).click();
@@ -151,8 +153,8 @@ describe('event page', () => {
   });
 
   it('should reject requests from logged out users, non-members and banned users', () => {
-    const rsvpVariables = { eventId: 1, chapterId: 1 };
-    const subscriptionVariables = { eventId: 1 };
+    const rsvpVariables = { eventId, chapterId };
+    const subscriptionVariables = { eventId };
     // logged out user
     cy.rsvpToEvent(rsvpVariables, { withAuth: false }).then(expectToBeRejected);
     cy.subscribeToEvent(subscriptionVariables, { withAuth: false }).then(

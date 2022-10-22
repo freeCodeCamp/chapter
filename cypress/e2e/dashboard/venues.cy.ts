@@ -42,11 +42,12 @@ describe('venues dashboard', () => {
   });
 
   it('lets an admin create a venue', () => {
+    const chapterId = 1;
     const venueData = venues[1];
 
     cy.login(users.chapter1Admin.email);
 
-    cy.visit('/dashboard/chapters/1/');
+    cy.visit(`/dashboard/chapters/${chapterId}/`);
     cy.get('[data-cy=create-venue]').click();
     cy.findByRole('textbox', { name: 'Venue name' }).type(venueData.name);
     cy.findByRole('textbox', { name: 'Street address' }).type(

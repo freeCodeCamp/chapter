@@ -50,8 +50,8 @@ describe('chapter page', () => {
   });
 
   it('is possible to join using the email links', () => {
-    cy.login('test@user.org');
-    cy.visit('/chapters/1?ask_to_confirm=true');
+    cy.login(users.testUser.email);
+    cy.visit(`/chapters/${chapterId}?ask_to_confirm=true`);
     cy.contains('member of the chapter').should('not.exist');
 
     cy.contains('You have been invited to this chapter');

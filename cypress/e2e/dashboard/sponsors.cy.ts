@@ -1,5 +1,6 @@
 import { expectToBeRejected } from '../../support/util';
 
+const sponsorId = 1;
 const testSponsor = {
   name: 'Test Sponsor',
   website: 'http://example.com',
@@ -39,7 +40,7 @@ describe('sponsors dashboard', () => {
   });
 
   it('lets an instance owner edit sponsors', () => {
-    cy.visit('/dashboard/sponsors/1/edit');
+    cy.visit(`/dashboard/sponsors/${sponsorId}/edit`);
     cy.findByRole('textbox', { name: 'Sponsor Name' })
       .clear()
       .type(testSponsor.name);
@@ -68,6 +69,6 @@ describe('sponsors dashboard', () => {
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');
 
     cy.createSponsor(testSponsor).then(expectToBeRejected);
-    cy.updateSponsor(1, testSponsor).then(expectToBeRejected);
+    cy.updateSponsor(sponsorId, testSponsor).then(expectToBeRejected);
   });
 });

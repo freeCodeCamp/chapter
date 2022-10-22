@@ -1,5 +1,7 @@
 import { expectToBeRejected } from '../../../support/util';
 
+const chapterId = 1;
+
 describe('chapters dashboard', () => {
   let chapterData;
   let eventData;
@@ -41,9 +43,11 @@ describe('chapters dashboard', () => {
     cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
-    cy.get('a[href="/dashboard/chapters/1"]').should('be.visible');
+    cy.get(`a[href="/dashboard/chapters/${chapterId}"]`).should('be.visible');
     cy.get('a[href="/dashboard/chapters/new"]').should('be.visible');
-    cy.get('a[href="/dashboard/chapters/1/edit"]').should('be.visible');
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/edit"]`).should(
+      'be.visible',
+    );
   });
 
   it('lets an instance owner create a chapter', () => {

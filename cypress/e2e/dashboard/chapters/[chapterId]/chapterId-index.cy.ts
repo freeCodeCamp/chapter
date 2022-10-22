@@ -1,6 +1,8 @@
 import { expectToBeRejected } from '../../../../support/util';
 import type { ChapterMembers } from '../../../../../cypress.config';
 
+const chapterId = 1;
+
 function createEventViaUI(chapterId, testEvent) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
@@ -68,14 +70,16 @@ describe('chapter dashboard', () => {
   });
 
   it('should have link to add event for chapter', () => {
-    cy.visit('/dashboard/chapters/1');
-    cy.get('a[href="/dashboard/chapters/1/new-event"').should('be.visible');
+    cy.visit(`/dashboard/chapters/${chapterId}`);
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"`).should(
+      'be.visible',
+    );
   });
 
   it('emails interested users when an event is created', () => {
     // confirm url is not required
     const testEvent = events.eventWithoutURL;
-    createEventViaUI(1, testEvent);
+    createEventViaUI(chapterId, testEvent);
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
     Object.entries(testEvent).forEach(([key, value]) => {
@@ -95,7 +99,7 @@ describe('chapter dashboard', () => {
 
     // TODO: select chapter during event creation and use that here (much like @venueTitle
     // ) i.e. remove the hardcoding.
-    cy.task<ChapterMembers>('getChapterMembers', 1).then((members) => {
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).then((members) => {
       const subscriberEmails = members
         .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
@@ -117,21 +121,20 @@ describe('chapter dashboard', () => {
   });
 
   it('prevents members and admins from other chapters from creating events', () => {
-    let chapterId = 2;
+    const otherChapterId = 2;
     const eventData = {
       ...events.eventWithoutURL,
       ...events.partialData,
     };
     // normal member
     cy.login(users.testUser.email);
-    cy.createEvent(chapterId, eventData).then(expectToBeRejected);
+    cy.createEvent(otherChapterId, eventData).then(expectToBeRejected);
 
     // admin of a different chapter
     cy.login(users.chapter1Admin.email);
-    cy.createEvent(2, eventData).then(expectToBeRejected);
+    cy.createEvent(otherChapterId, eventData).then(expectToBeRejected);
 
     // switch the chapterId to match the admin's chapter
-    chapterId = 1;
     cy.createEvent(chapterId, {
       ...eventData,
       name: 'Created by Admin',

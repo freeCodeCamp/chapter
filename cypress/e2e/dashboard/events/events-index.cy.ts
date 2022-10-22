@@ -2,6 +2,9 @@ import add from 'date-fns/add';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
+const chapterId = 1;
+const eventId = 1;
+
 // TODO: Move these specs into the other describe block, once we can make sure
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
@@ -38,9 +41,9 @@ describe('spec needing owner', () => {
     // to the .select method, it will select option by the index.
     const newVenueId = '2';
 
-    cy.createEvent(1, eventTwoData).then((response) => {
-      const eventId = response.body.data.createEvent.id;
-      cy.visit(`/dashboard/events/${eventId}/edit`);
+    cy.createEvent(chapterId, eventTwoData).then((response) => {
+      const newEventId = response.body.data.createEvent.id;
+      cy.visit(`/dashboard/events/${newEventId}/edit`);
 
       cy.findByRole('combobox', { name: 'Venue' })
         .select(newVenueId)
@@ -78,7 +81,7 @@ describe('spec needing owner', () => {
         cy.checkBcc(mail).should('eq', true);
       });
 
-      cy.deleteEvent(eventId);
+      cy.deleteEvent(newEventId);
     });
   });
 
@@ -212,7 +215,6 @@ describe('events dashboard', () => {
   });
 
   it('chapter admin should be allowed to edit event, but nobody else', () => {
-    const eventId = 1;
     const eventOneData = {
       ...event,
       start_at: new Date(),
@@ -232,8 +234,6 @@ describe('events dashboard', () => {
   });
 
   it('chapter admin should be allowed to delete event, but nobody else', () => {
-    const eventId = 1;
-
     // newly registered user (without a chapter_users record)
     cy.login(users.testUser.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);

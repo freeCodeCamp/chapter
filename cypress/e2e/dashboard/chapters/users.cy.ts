@@ -102,8 +102,10 @@ describe('Chapter Users dashboard', () => {
   function initializeBanVariables() {
     // We don't want to interact with the instance owner here
     cy.findAllByRole('row').not(`:contains("${users.owner.name}")`).as('rows');
-    cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@rows').filter(':contains("administrator")').as('administrators');
+    cy.get('@rows').filter(`:contains("${chapterRoles.MEMBER}")`).as('members');
+    cy.get('@rows')
+      .filter(`:contains("${chapterRoles.ADMINISTRATOR}")`)
+      .as('administrators');
     cy.get('@members')
       .not(':contains("Unban")')
       .not(':contains("Banned")')
@@ -117,7 +119,7 @@ describe('Chapter Users dashboard', () => {
     initializeBanVariables();
 
     cy.get('@rows')
-      .filter(':contains("administrator")')
+      .filter(`:contains("${chapterRoles.ADMINISTRATOR}")`)
       .find('[data-cy=isBanned]')
       .should('have.length', 1);
 

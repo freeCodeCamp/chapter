@@ -97,7 +97,12 @@ export const Header: React.FC = () => {
             </Box>
             {user && (
               <NextLink passHref href="/profile">
-                <Avatar cursor="pointer" name={`${user.name}`} />
+                <Avatar
+                  cursor="pointer"
+                  name={`${user.name}`}
+                  src={`${user.image_url}`}
+                  backgroundColor={user.image_url ? 'transparent' : undefined}
+                />
               </NextLink>
             )}
           </HStack>

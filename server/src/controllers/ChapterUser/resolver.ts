@@ -10,13 +10,13 @@ import {
 import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
-import { prisma } from '../../prisma';
+import { prisma, UNIQUE_CONSTRAINT_FAILED } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
+import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
-
-const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
+import { updateEventWaitlist } from '../../util/updateEventWaitlist';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -66,7 +66,7 @@ export class ChapterUserResolver {
     } catch (e) {
       if (
         !(e instanceof Prisma.PrismaClientKnownRequestError) ||
-        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+        e.code !== UNIQUE_CONSTRAINT_FAILED
       ) {
         throw e;
       }
@@ -203,6 +203,58 @@ export class ChapterUserResolver {
     if (!hasPermissionToBanOtherUser) {
       throw Error('You cannot ban this user');
     }
+
+    const userEvents = await prisma.event_users.findMany({
+      where: {
+        user_id: userId,
+        event: { chapter_id: chapterId },
+      },
+      include: {
+        event: {
+          include: { chapter: true, event_users: { include: { rsvp: true } } },
+        },
+        rsvp: true,
+      },
+    });
+    await prisma.event_users.deleteMany({
+      where: {
+        user_id: userId,
+        event: { chapter_id: chapterId },
+      },
+    });
+
+    const attendingEvents = userEvents.filter(
+      ({ rsvp: { name } }) => name === 'yes',
+    );
+
+    await Promise.all(
+      attendingEvents.map(async ({ event }) =>
+        updateEventWaitlist({ event, userId }),
+      ),
+    );
+
+    const eventsWithCalendar = attendingEvents.filter(
+      ({ event: { calendar_event_id } }) => calendar_event_id,
+    );
+
+    const calendarUpdates = eventsWithCalendar.map(
+      async ({
+        event: {
+          calendar_event_id,
+          chapter: { calendar_id },
+          id,
+        },
+      }) => {
+        // The calendar must be updated after event_users, so it can use the updated
+        // email list
+        return await updateCalendarEventAttendees({
+          calendarEventId: calendar_event_id,
+          calendarId: calendar_id,
+          eventId: id,
+        });
+      },
+    );
+    await Promise.all(calendarUpdates);
 
     return await prisma.user_bans.create({
       data: {

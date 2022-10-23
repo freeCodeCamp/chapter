@@ -30,10 +30,11 @@ export const UserProfilePage = () => {
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
+    const image_url = data.image_url;
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { data: { name } },
+        variables: { data: { name, image_url } },
       });
     } catch (err) {
       console.error(err);

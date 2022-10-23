@@ -13,6 +13,10 @@ export interface MailerData {
   iCalEvent?: string;
 }
 
+function btoa(str: string): string {
+  return Buffer.from(str).toString('base64');
+}
+
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
@@ -96,7 +100,7 @@ export default class MailerService {
       ? {
           filename: 'calendar.ics',
           name: 'calendar.ics',
-          content: this.iCalEvent,
+          content: btoa(this.iCalEvent),
           disposition: 'attachment',
           type: 'text/calendar; method=REQUEST',
         }

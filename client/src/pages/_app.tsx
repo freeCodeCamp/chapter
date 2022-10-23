@@ -16,7 +16,7 @@ import { NextPage } from 'next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useEffect } from 'react';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
@@ -117,6 +117,21 @@ const CustomApp: React.FC<AppProps> = ({
   pageProps,
   Component,
 }: AppPropsWithLayout) => {
+  // The isReady/ready shenanigans is used here to make sure the router can be
+  // used immediately on all pages.  Otherwise each page requiring the router
+  // (most of them) either has to use lazy queries to fetch the data or make at
+  // least one invalid request on the renders that happen before isReady.
+
+  // Hopefully, if we rebuild the server in NextJS, we can useStaticProps and
+  // eliminate the need for both lazy queries and isReady.
+  const { isReady } = useRouter();
+  const [ready, setReady] = React.useState(false);
+  useEffect(() => {
+    if (isReady) {
+      setReady(true);
+    }
+  }, [isReady]);
+
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <>
@@ -141,7 +156,7 @@ const CustomApp: React.FC<AppProps> = ({
             <AuthContextProvider>
               <ConfirmContextProvider>
                 <PageLayout>
-                  {getLayout(<Component {...pageProps} />)}
+                  {ready && getLayout(<Component {...pageProps} />)}
                 </PageLayout>
               </ConfirmContextProvider>
             </AuthContextProvider>

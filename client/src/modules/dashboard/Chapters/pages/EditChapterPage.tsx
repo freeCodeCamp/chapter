@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   CreateChapterInputs,
-  useDashboardChapterLazyQuery,
+  useDashboardChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -17,15 +17,11 @@ export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-  const { param: chapterId, isReady } = useParam('id');
+  const { param: chapterId } = useParam('id');
 
-  const [getChapter, { loading, error, data }] = useDashboardChapterLazyQuery({
+  const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
   });
-
-  useEffect(() => {
-    if (isReady) getChapter();
-  }, [isReady]);
 
   const [updateChapter] = useUpdateChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
@@ -45,7 +41,7 @@ export const EditChapterPage: NextPageWithLayout = () => {
     }
   };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (

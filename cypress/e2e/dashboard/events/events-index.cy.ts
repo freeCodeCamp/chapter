@@ -1,11 +1,11 @@
 import add from 'date-fns/add';
+import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const eventOneData = {
   name: 'Homer Simpson',
   description: 'i will show you damn!',
-  url: 'http://wooden-swing.com',
   streaming_url: null,
   capacity: 149,
   start_at: new Date(),
@@ -22,8 +22,7 @@ const eventTwoData = {
   sponsor_ids: [],
   name: 'Event Venue change test',
   description: 'Test Description',
-  url: 'https://test.event.org',
-  venue_type: 'PhysicalAndOnline',
+  venue_type: VenueType.PhysicalAndOnline,
   capacity: 10,
   image_url: 'https://test.event.org/image',
   streaming_url: 'https://test.event.org/video',
@@ -128,7 +127,9 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event title' }).type(titleAddon);
+    cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
+      titleAddon,
+    );
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',

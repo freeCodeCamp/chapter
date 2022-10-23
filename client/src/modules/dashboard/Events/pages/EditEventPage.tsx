@@ -1,10 +1,10 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useDashboardEventLazyQuery,
+  useDashboardEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -20,15 +20,11 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 export const EditEventPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const { param: eventId, isReady } = useParam();
+  const { param: eventId } = useParam();
 
-  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
+  const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId: eventId },
   });
-
-  useEffect(() => {
-    if (isReady) getEvent();
-  }, [isReady]);
 
   const toast = useToast();
 
@@ -69,7 +65,7 @@ export const EditEventPage: NextPageWithLayout = () => {
     }
   };
 
-  const isLoading = loading || !isReady || !data;
+  const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;

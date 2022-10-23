@@ -110,7 +110,7 @@ export class ChapterUserResolver {
 
     await Promise.all(
       attendingEvents.map(async ({ event }) =>
-        updateEventWaitlist({ event, userId : ctx.user.id }),
+        updateEventWaitlist({ event, userId: ctx.user.id }),
       ),
     );
 

@@ -95,7 +95,7 @@ export const EventPage: NextPage = () => {
         }
       : {
           title: 'Join this event?',
-          body: `Note: if you haven't joined event's chapter, you will become member when RSVPing` 
+          body: `Note: if you haven't joined event's chapter, you will become member when RSVPing`,
         };
     const ok = await confirm(confirmOptions);
 

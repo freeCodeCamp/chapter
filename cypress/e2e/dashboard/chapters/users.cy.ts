@@ -1,7 +1,6 @@
 import { ChapterMembers, EventUsers, User } from '../../../../cypress.config';
 import { expectError, expectToBeRejected } from '../../../support/util';
 
-
 const chapterId = 1;
 const knownNames = [
   'The Owner',

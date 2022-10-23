@@ -78,8 +78,8 @@ const ChapterUserRoleWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   LeaveChapter: () => Promise<void>;
   JoinChapter: () => Promise<void>;
-}) => {
-  return chapterUser?.chapter_role ? (
+}) =>
+  chapterUser?.chapter_role ? (
     <HStack justifyContent={'space-between'}>
       <Text fontWeight={500}>
         <CheckIcon marginRight={1} />
@@ -89,15 +89,15 @@ const ChapterUserRoleWidget = ({
     </HStack>
   ) : (
     <HStack justifyContent="space-between">
+      {/* this doesn't open new button, on the call function? */}
       <Text data-cy="join-success" fontWeight={500}>
-        Become member of the chapter
+        Become a member of the chapter
       </Text>
       <Button colorScheme="blue" onClick={JoinChapter}>
         Join
       </Button>
     </HStack>
   );
-};
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');

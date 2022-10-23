@@ -40,8 +40,9 @@ export const updateEventWaitlist = async ({
       },
     },
   });
-  // TODO add email about being off waitlist?
 
+  // TODO add email about being off waitlist?
+  
   if (userFromWaitlist.subscribed) {
     await createReminder({
       eventId: userFromWaitlist.event_id,

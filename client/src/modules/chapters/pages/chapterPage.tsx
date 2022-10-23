@@ -49,7 +49,7 @@ const SubscriptionWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
 }) => {
-  return chapterUser.subscribed ? (
+  return chapterUser?.subscribed ? (
     <HStack justifyContent={'space-between'} width={'100%'}>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
@@ -89,7 +89,9 @@ const ChapterUserRoleWidget = ({
     </HStack>
   ) : (
     <HStack justifyContent="space-between">
-      <Text data-cy="join-success" fontWeight={500}>Become member of the chapter</Text>
+      <Text data-cy="join-success" fontWeight={500}>
+        Become member of the chapter
+      </Text>
       <Button colorScheme="blue" onClick={JoinChapter}>
         Join
       </Button>

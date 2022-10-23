@@ -88,10 +88,14 @@ export const EventPage: NextPage = () => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
-          body: 'Would you like to attend?',
+          body: `
+          Would you like to attend?<br/>
+          Note: if you haven't joined event's chapter, you will become member when RSVPing
+          `,
         }
       : {
           title: 'Join this event?',
+          body: `Note: if you haven't joined event's chapter, you will become member when RSVPing` 
         };
     const ok = await confirm(confirmOptions);
 

@@ -1,3 +1,5 @@
+import { expectToBeRejected } from '../../support/util';
+
 const chapterId = 1;
 
 describe('chapter page', () => {
@@ -22,6 +24,7 @@ describe('chapter page', () => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).not.to.exist;
     });
+  });
 
   it('is possible to join using the email links', () => {
     cy.login('test@user.org');

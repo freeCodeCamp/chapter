@@ -24,7 +24,7 @@ export type Scalars = {
 
 export type Chapter = {
   __typename?: 'Chapter';
-  banner_url: Scalars['String'];
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -32,7 +32,7 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  logo_url: Scalars['String'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -68,7 +68,7 @@ export type ChapterUser = {
 
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
-  banner_url: Scalars['String'];
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -77,14 +77,14 @@ export type ChapterWithEvents = {
   description: Scalars['String'];
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
-  logo_url: Scalars['String'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
 };
 
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
-  banner_url: Scalars['String'];
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -94,7 +94,7 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  logo_url: Scalars['String'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
@@ -704,8 +704,8 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    logo_url: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -765,8 +765,8 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    logo_url: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -892,8 +892,8 @@ export type DashboardChapterQuery = {
     city: string;
     region: string;
     country: string;
-    logo_url: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -1459,8 +1459,8 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    logo_url: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';

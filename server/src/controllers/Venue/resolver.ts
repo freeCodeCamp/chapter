@@ -1,6 +1,15 @@
 import { Prisma } from '@prisma/client';
-import { Resolver, Query, Arg, Int, Mutation, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Resolver,
+  Query,
+} from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
+import { ResolverCtx } from '../../common-types/gql';
 
 import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -31,6 +40,47 @@ export class VenueResolver {
     return prisma.venues.findMany({
       where: { chapter_id: chapterId },
       orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query(() => [Venue])
+  async dashboardVenues(@Ctx() ctx: Required<ResolverCtx>): Promise<Venue[]> {
+    if (
+      ctx.user.instance_role.instance_role_permissions.some(
+        ({ instance_permission }) =>
+          instance_permission.name === Permission.ChapterEdit,
+      )
+    ) {
+      return await prisma.venues.findMany({
+        include: venueIncludes,
+        orderBy: { name: 'asc' },
+      });
+    }
+    return await prisma.venues.findMany({
+      include: venueIncludes,
+      orderBy: { name: 'asc' },
+      where: {
+        chapter: {
+          chapter_users: {
+            some: {
+              AND: [
+                { user_id: ctx.user.id },
+                {
+                  chapter_role: {
+                    chapter_role_permissions: {
+                      some: {
+                        chapter_permission: {
+                          name: Permission.ChapterEdit,
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
     });
   }
 

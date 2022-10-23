@@ -62,6 +62,43 @@ export class ChapterResolver {
     });
   }
 
+  @Query(() => [ChapterWithEvents])
+  async dashboardChapters(
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<ChapterWithEvents[]> {
+    if (
+      ctx.user.instance_role.instance_role_permissions.some(
+        ({ instance_permission }) =>
+          instance_permission.name === Permission.ChapterEdit,
+      )
+    ) {
+      return await prisma.chapters.findMany({
+        include: { events: true },
+      });
+    }
+    return await prisma.chapters.findMany({
+      where: {
+        chapter_users: {
+          some: {
+            AND: [
+              { user_id: ctx.user.id },
+              {
+                chapter_role: {
+                  chapter_role_permissions: {
+                    some: {
+                      chapter_permission: { name: Permission.ChapterEdit },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      include: { events: true },
+    });
+  }
+
   @Query(() => ChapterWithRelations)
   async chapter(
     @Arg('id', () => Int) id: number,

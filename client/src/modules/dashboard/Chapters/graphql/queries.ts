@@ -33,3 +33,26 @@ export const DASHBOARD_CHAPTER = gql`
     }
   }
 `;
+
+export const DASHBOARD_CHAPTERS = gql`
+  query dashboardChapters {
+    dashboardChapters {
+      id
+      name
+      description
+      banner_url
+      city
+      events {
+        id
+        name
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
+      }
+    }
+  }
+`;

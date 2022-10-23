@@ -11,7 +11,7 @@ import {
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
-import { VENUES } from '../graphql/queries';
+import { DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
@@ -29,7 +29,7 @@ export const EditVenuePage: NextPageWithLayout = () => {
   });
 
   const [updateVenue] = useUpdateVenueMutation({
-    refetchQueries: [{ query: VENUES }],
+    refetchQueries: [{ query: DASHBOARD_VENUES }],
   });
 
   const onSubmit = async (data: VenueFormData) => {

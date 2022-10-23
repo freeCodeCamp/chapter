@@ -435,8 +435,11 @@ export type Query = {
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
   dashboardChapter: ChapterWithRelations;
+  dashboardChapters: Array<ChapterWithEvents>;
   dashboardEvent?: Maybe<EventWithRelations>;
+  dashboardEvents: Array<EventWithRelations>;
   dashboardSponsor: Sponsor;
+  dashboardVenues: Array<Venue>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -473,6 +476,11 @@ export type QueryDashboardChapterArgs = {
 
 export type QueryDashboardEventArgs = {
   eventId: Scalars['Int'];
+};
+
+export type QueryDashboardEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  showAll?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryDashboardSponsorArgs = {
@@ -909,6 +917,33 @@ export type DashboardChapterQuery = {
   };
 };
 
+export type DashboardChaptersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type DashboardChaptersQuery = {
+  __typename?: 'Query';
+  dashboardChapters: Array<{
+    __typename?: 'ChapterWithEvents';
+    id: number;
+    name: string;
+    description: string;
+    banner_url: string;
+    city: string;
+    events: Array<{
+      __typename?: 'EventWithVenue';
+      id: number;
+      name: string;
+      capacity: number;
+      venue?: {
+        __typename?: 'Venue';
+        id: number;
+        name: string;
+        region: string;
+        street_address?: string | null;
+      } | null;
+    }>;
+  }>;
+};
+
 export type CreateEventMutationVariables = Exact<{
   chapterId: Scalars['Int'];
   data: EventInputs;
@@ -999,11 +1034,11 @@ export type SendEventInviteMutation = {
   sendEventInvite: boolean;
 };
 
-export type EventsQueryVariables = Exact<{ [key: string]: never }>;
+export type DashboardEventsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EventsQuery = {
+export type DashboardEventsQuery = {
   __typename?: 'Query';
-  events: Array<{
+  dashboardEvents: Array<{
     __typename?: 'EventWithRelations';
     id: number;
     name: string;
@@ -1254,11 +1289,11 @@ export type UpdateVenueMutation = {
   };
 };
 
-export type VenuesQueryVariables = Exact<{ [key: string]: never }>;
+export type DashboardVenuesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type VenuesQuery = {
+export type DashboardVenuesQuery = {
   __typename?: 'Query';
-  venues: Array<{
+  dashboardVenues: Array<{
     __typename?: 'Venue';
     id: number;
     chapter_id: number;
@@ -2469,6 +2504,78 @@ export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQuery,
   DashboardChapterQueryVariables
 >;
+export const DashboardChaptersDocument = gql`
+  query dashboardChapters {
+    dashboardChapters {
+      id
+      name
+      description
+      banner_url
+      city
+      events {
+        id
+        name
+        capacity
+        venue {
+          id
+          name
+          region
+          street_address
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useDashboardChaptersQuery__
+ *
+ * To run a query within a React component, call `useDashboardChaptersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardChaptersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardChaptersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDashboardChaptersQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    DashboardChaptersQuery,
+    DashboardChaptersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    DashboardChaptersQuery,
+    DashboardChaptersQueryVariables
+  >(DashboardChaptersDocument, options);
+}
+export function useDashboardChaptersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardChaptersQuery,
+    DashboardChaptersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardChaptersQuery,
+    DashboardChaptersQueryVariables
+  >(DashboardChaptersDocument, options);
+}
+export type DashboardChaptersQueryHookResult = ReturnType<
+  typeof useDashboardChaptersQuery
+>;
+export type DashboardChaptersLazyQueryHookResult = ReturnType<
+  typeof useDashboardChaptersLazyQuery
+>;
+export type DashboardChaptersQueryResult = Apollo.QueryResult<
+  DashboardChaptersQuery,
+  DashboardChaptersQueryVariables
+>;
 export const CreateEventDocument = gql`
   mutation createEvent($chapterId: Int!, $data: EventInputs!) {
     createEvent(chapterId: $chapterId, data: $data) {
@@ -2837,9 +2944,9 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutation,
   SendEventInviteMutationVariables
 >;
-export const EventsDocument = gql`
-  query events {
-    events(showAll: true) {
+export const DashboardEventsDocument = gql`
+  query dashboardEvents {
+    dashboardEvents(showAll: true) {
       id
       name
       canceled
@@ -2859,43 +2966,53 @@ export const EventsDocument = gql`
 `;
 
 /**
- * __useEventsQuery__
+ * __useDashboardEventsQuery__
  *
- * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDashboardEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEventsQuery({
+ * const { data, loading, error } = useDashboardEventsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useEventsQuery(
-  baseOptions?: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables>,
+export function useDashboardEventsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    DashboardEventsQuery,
+    DashboardEventsQueryVariables
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<EventsQuery, EventsQueryVariables>(
-    EventsDocument,
+  return Apollo.useQuery<DashboardEventsQuery, DashboardEventsQueryVariables>(
+    DashboardEventsDocument,
     options,
   );
 }
-export function useEventsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>,
+export function useDashboardEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardEventsQuery,
+    DashboardEventsQueryVariables
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(
-    EventsDocument,
-    options,
-  );
+  return Apollo.useLazyQuery<
+    DashboardEventsQuery,
+    DashboardEventsQueryVariables
+  >(DashboardEventsDocument, options);
 }
-export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
-export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
-export type EventsQueryResult = Apollo.QueryResult<
-  EventsQuery,
-  EventsQueryVariables
+export type DashboardEventsQueryHookResult = ReturnType<
+  typeof useDashboardEventsQuery
+>;
+export type DashboardEventsLazyQueryHookResult = ReturnType<
+  typeof useDashboardEventsLazyQuery
+>;
+export type DashboardEventsQueryResult = Apollo.QueryResult<
+  DashboardEventsQuery,
+  DashboardEventsQueryVariables
 >;
 export const DashboardEventDocument = gql`
   query dashboardEvent($eventId: Int!) {
@@ -3643,9 +3760,9 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
 >;
-export const VenuesDocument = gql`
-  query venues {
-    venues {
+export const DashboardVenuesDocument = gql`
+  query dashboardVenues {
+    dashboardVenues {
       id
       chapter_id
       name
@@ -3665,43 +3782,53 @@ export const VenuesDocument = gql`
 `;
 
 /**
- * __useVenuesQuery__
+ * __useDashboardVenuesQuery__
  *
- * To run a query within a React component, call `useVenuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDashboardVenuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardVenuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useVenuesQuery({
+ * const { data, loading, error } = useDashboardVenuesQuery({
  *   variables: {
  *   },
  * });
  */
-export function useVenuesQuery(
-  baseOptions?: Apollo.QueryHookOptions<VenuesQuery, VenuesQueryVariables>,
+export function useDashboardVenuesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    DashboardVenuesQuery,
+    DashboardVenuesQueryVariables
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<VenuesQuery, VenuesQueryVariables>(
-    VenuesDocument,
+  return Apollo.useQuery<DashboardVenuesQuery, DashboardVenuesQueryVariables>(
+    DashboardVenuesDocument,
     options,
   );
 }
-export function useVenuesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<VenuesQuery, VenuesQueryVariables>,
+export function useDashboardVenuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardVenuesQuery,
+    DashboardVenuesQueryVariables
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<VenuesQuery, VenuesQueryVariables>(
-    VenuesDocument,
-    options,
-  );
+  return Apollo.useLazyQuery<
+    DashboardVenuesQuery,
+    DashboardVenuesQueryVariables
+  >(DashboardVenuesDocument, options);
 }
-export type VenuesQueryHookResult = ReturnType<typeof useVenuesQuery>;
-export type VenuesLazyQueryHookResult = ReturnType<typeof useVenuesLazyQuery>;
-export type VenuesQueryResult = Apollo.QueryResult<
-  VenuesQuery,
-  VenuesQueryVariables
+export type DashboardVenuesQueryHookResult = ReturnType<
+  typeof useDashboardVenuesQuery
+>;
+export type DashboardVenuesLazyQueryHookResult = ReturnType<
+  typeof useDashboardVenuesLazyQuery
+>;
+export type DashboardVenuesQueryResult = Apollo.QueryResult<
+  DashboardVenuesQuery,
+  DashboardVenuesQueryVariables
 >;
 export const VenueDocument = gql`
   query venue($venueId: Int!) {

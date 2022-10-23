@@ -11,7 +11,7 @@ import { useParam } from '../../../../hooks/useParam';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
-import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
+import { DASHBOARD_EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -32,7 +32,7 @@ export const EditEventPage: NextPageWithLayout = () => {
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [
-      { query: EVENTS },
+      { query: DASHBOARD_EVENTS },
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },

@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import { useCreateVenueMutation } from '../../../generated/graphql';
 import { VenueFormData } from './components/VenueForm';
-import { VENUES } from './graphql/queries';
+import { DASHBOARD_VENUES } from './graphql/queries';
 
 export const useSubmitVenue = () => {
   const [createVenue] = useCreateVenueMutation({
-    refetchQueries: [{ query: VENUES }],
+    refetchQueries: [{ query: DASHBOARD_VENUES }],
   });
   const router = useRouter();
 

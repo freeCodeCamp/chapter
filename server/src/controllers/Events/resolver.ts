@@ -386,6 +386,95 @@ export class EventResolver {
     });
   }
 
+  @Query(() => [EventWithRelations])
+  async dashboardEvents(
+    @Ctx() ctx: Required<ResolverCtx>,
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+    @Arg('showAll', { nullable: true }) showAll?: boolean,
+  ): Promise<EventWithRelations[]> {
+    if (
+      ctx.user.instance_role.instance_role_permissions.some(
+        ({ instance_permission }) =>
+          instance_permission.name === Permission.ChapterEdit,
+      )
+    ) {
+      return await prisma.events.findMany({
+        where: {
+          ...(!showAll && { start_at: { gt: new Date() } }),
+        },
+        include: {
+          chapter: true,
+          venue: true,
+          event_users: {
+            include: {
+              user: true,
+              rsvp: true,
+              event_role: {
+                include: {
+                  event_role_permissions: {
+                    include: { event_permission: true },
+                  },
+                },
+              },
+            },
+          },
+          sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
+        },
+        take: limit,
+        orderBy: {
+          start_at: 'asc',
+        },
+      });
+    }
+    return await prisma.events.findMany({
+      where: {
+        ...(!showAll && { start_at: { gt: new Date() } }),
+        chapter: {
+          chapter_users: {
+            some: {
+              AND: [
+                { user_id: ctx.user.id },
+                {
+                  chapter_role: {
+                    chapter_role_permissions: {
+                      some: {
+                        chapter_permission: {
+                          name: Permission.ChapterEdit,
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+      include: {
+        chapter: { include: { chapter_users: true } },
+        venue: true,
+        event_users: {
+          include: {
+            user: true,
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
+              },
+            },
+          },
+        },
+        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
+      },
+      take: limit,
+      orderBy: {
+        start_at: 'asc',
+      },
+    });
+  }
+
   // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(

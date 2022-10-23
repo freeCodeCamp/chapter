@@ -84,7 +84,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
   const onBan = async ({ id: userId, name: userName }: BanArgs) => {
     const ok = await confirm({
       buttonColor: 'red',
-      body: `Are you sure you want to ban ${userName}?`,
+      body: `Are you sure you want to ban ${userName}? This will revoke their chapter permissions and remove them from all events in this chapter.`,
     });
 
     if (ok) {
@@ -157,7 +157,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
             mapper={{
               name: ({ user }) => (
                 <HStack>
-                  <Text>{user.name}</Text>
+                  <Text data-cy="userName">{user.name}</Text>
                   {bans.has(user.id) && (
                     <Badge data-cy="isBanned" colorScheme="red">
                       Banned

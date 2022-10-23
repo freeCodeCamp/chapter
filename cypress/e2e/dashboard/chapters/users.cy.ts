@@ -1,4 +1,4 @@
-import { ChapterMembers } from '../../../../cypress.config';
+import { ChapterMembers, EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
@@ -104,6 +104,10 @@ describe('Chapter Users dashboard', () => {
       .not(':contains("Banned")')
       .first()
       .as('firstUnbannedMember');
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=userName]')
+      .invoke('text')
+      .as('firstUnbannedName');
   }
 
   it('administrator can ban user from chapter', () => {
@@ -125,6 +129,7 @@ describe('Chapter Users dashboard', () => {
       .click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('was banned', { matchCase: false });
+
     cy.get('@firstUnbannedMember').find('[data-cy=isBanned]').should('exist');
     cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Unban' })
@@ -132,6 +137,19 @@ describe('Chapter Users dashboard', () => {
     cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Ban' })
       .should('not.exist');
+    cy.get<string>('@firstUnbannedName').then((userName) => {
+      cy.getChapterEvents(chapterId).then((events) => {
+        const eventIds = events.map(({ id }) => id);
+        eventIds.forEach((eventId) => {
+          cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
+            const eventUser = eventUsers.find(
+              ({ user: { name } }) => name === userName,
+            );
+            expect(eventUser).to.be.undefined;
+          });
+        });
+      });
+    });
 
     cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Unban' })

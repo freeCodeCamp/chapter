@@ -25,17 +25,6 @@ const chapterUsersInclude = {
   user: true,
 };
 
-const chapterIncludes = {
-  user: true,
-  chapter_role: {
-    include: {
-      chapter_role_permissions: {
-        include: { chapter_permission: true },
-      },
-    },
-  },
-};
-
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
   @Query(() => ChapterUser, { nullable: true })

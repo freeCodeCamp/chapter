@@ -38,16 +38,16 @@ import {
   updateRemindAt,
 } from '../../services/Reminders';
 import {
-  generateToken,
-  UnsubscribeType,
-} from '../../services/UnsubscribeToken';
-import {
   cancelCalendarEvent,
   createCalendarEvent,
   deleteCalendarEvent,
   patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
+import {
+  getUnsubscribeOptions,
+  getChapterUnsubscribeToken,
+} from '../../util/eventEmail';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -75,31 +75,6 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
-
-const getUnsubscribeOptions = ({
-  chapterId,
-  eventId,
-  userId,
-}: {
-  chapterId: number;
-  eventId: number;
-  userId: number;
-}) => {
-  const chapterUnsubscribeToken = generateToken(
-    UnsubscribeType.Chapter,
-    chapterId,
-    userId,
-  );
-  const eventUnsubscribeToken = generateToken(
-    UnsubscribeType.Event,
-    eventId,
-    userId,
-  );
-  return `
-Unsubscribe Options</br>
-- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
-};
 
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
@@ -237,11 +212,10 @@ const rsvpNotifyAdministrators = async (
   await batchSender(function* () {
     for (const { chapter_id, user } of chapterAdministrators) {
       const email = user.email;
-      const chapterUnsubscribeToken = generateToken(
-        UnsubscribeType.Chapter,
-        chapter_id,
-        user.id,
-      );
+      const chapterUnsubscribeToken = getChapterUnsubscribeToken({
+        chapterId: chapter_id,
+        userId: user.id,
+      });
       const text = `${body}<br><a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
       yield { email, subject, text };
     }
@@ -855,9 +829,12 @@ ${unsubscribeOptions}`,
     await deleteEventReminders(id);
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
     const notCanceledRsvps = event.event_users;
-
+    const unsubScribeOptions = getUnsubscribeOptions({
+      chapterId: event.chapter_id,
+      eventId: event.id,
+      userId: user.id,
+    });
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);
       const subject = `Event ${event.name} is canceled`;
@@ -867,7 +844,10 @@ ${unsubscribeOptions}`,
       const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
       <br />
       View upcoming events for ${event.chapter.name}: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
-      ----------------------------<br />
+      ${unsubScribeOptions}
+      You received this email because you Subscribed to ${event.name} Event.<br />
+      <br />
+      See the options above to change your notifications.
       `;
 
       new MailerService({

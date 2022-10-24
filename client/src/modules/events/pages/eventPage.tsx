@@ -38,7 +38,7 @@ import { useLogin } from 'hooks/useAuth';
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser, isLoggedIn } = useAuth();
   const login = useLogin();
 
   const refetch = {
@@ -69,7 +69,8 @@ export const EventPage: NextPage = () => {
   }, [data?.event]);
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
-  const canShowConfirmationModal = router.query?.ask_to_confirm && !isLoading;
+  const canShowConfirmationModal =
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
 
   const chapterId = data?.event?.chapter.id;
 

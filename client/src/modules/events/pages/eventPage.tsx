@@ -38,7 +38,7 @@ import { useLogin } from 'hooks/useAuth';
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser, isLoggedIn } = useAuth();
   const login = useLogin();
 
   const refetch = {
@@ -60,6 +60,7 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
+  const [hasShownModal, setHasShownModal] = React.useState(false);
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
@@ -68,7 +69,8 @@ export const EventPage: NextPage = () => {
   }, [data?.event]);
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
-  const askUserToConfirm = router.query?.ask_to_confirm;
+  const canShowConfirmationModal =
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
 
   const chapterId = data?.event?.chapter.id;
 
@@ -144,14 +146,15 @@ export const EventPage: NextPage = () => {
   }
 
   useEffect(() => {
-    if (askUserToConfirm && !isLoading) {
+    if (canShowConfirmationModal && !hasShownModal) {
       if (!rsvpStatus || rsvpStatus === 'no') {
         checkOnRsvp({ invited: true });
       } else {
         checkOnCancelRsvp();
       }
+      setHasShownModal(true);
     }
-  }, [isLoading, askUserToConfirm, rsvpStatus]);
+  }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
 
   if (error || isLoading) return <Loading loading={isLoading} error={error} />;
   if (!data?.event)

@@ -48,7 +48,7 @@
     "@graphql-codegen/typescript-react-apollo": "3.3.5",
     "@testing-library/dom": "8.19.0",
     "@testing-library/react": "13.4.0",
-    "@types/react": "18.0.21",
+    "@types/react": "18.0.22",
     "@types/react-datepicker": "4.4.2",
     "@types/react-dom": "18.0.6",
     "babel-plugin-istanbul": "6.1.1",

@@ -81,7 +81,7 @@ const ChapterUserRoleWidget = ({
 }) => {
   return chapterUser?.chapter_role ? (
     <HStack justifyContent={'space-between'}>
-      <Text fontWeight={500}>
+      <Text data-cy="join-success" fontWeight={500}>
         <CheckIcon marginRight={1} />
         {chapterUser.chapter_role.name} of the chapter
       </Text>
@@ -89,9 +89,7 @@ const ChapterUserRoleWidget = ({
     </HStack>
   ) : (
     <HStack justifyContent="space-between">
-      <Text data-cy="join-success" fontWeight={500}>
-        Become member of the chapter
-      </Text>
+      <Text fontWeight={500}>Become member of the chapter</Text>
       <Button colorScheme="blue" onClick={JoinChapter}>
         Join
       </Button>
@@ -197,7 +195,8 @@ export const ChapterPage: NextPage = () => {
   const isLoading = loading || loadingChapterUser || !data;
 
   const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
-  const isNotAlreadyMember = !isLoading && !dataChapterUser;
+  const isNotAlreadyMember = !isLoading && !dataChapterUser?.chapterUser;
+
   useEffect(() => {
     if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
   }, [askUserToConfirm, isNotAlreadyMember]);

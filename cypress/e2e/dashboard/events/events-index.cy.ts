@@ -1,7 +1,7 @@
 import add from 'date-fns/add';
 import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
-import { expectToBeRejected } from '../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../support/util';
 
 const eventOneData = {
   name: 'Homer Simpson',
@@ -226,9 +226,7 @@ describe('events dashboard', () => {
   it('chapter admin should be allowed to edit event, but nobody else', () => {
     const eventId = 1;
 
-    cy.updateEvent(eventId, eventOneData).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.updateEvent(eventId, eventOneData).then(expectNoErrors);
     // newly registered user (without a chapter_users record)
     cy.login('test@user.org');
     cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
@@ -250,16 +248,12 @@ describe('events dashboard', () => {
 
     // admin of chapter 1
     cy.login('admin@of.chapter.one');
-    cy.deleteEvent(eventId).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.deleteEvent(eventId).then(expectNoErrors);
   });
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectNoErrors);
 
     cy.login('test@user.org');
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);

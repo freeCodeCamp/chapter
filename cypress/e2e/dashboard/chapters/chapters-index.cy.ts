@@ -1,4 +1,4 @@
-import { expectToBeRejected } from '../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../support/util';
 
 const chapterData = {
   name: 'Name goes here',
@@ -7,6 +7,7 @@ const chapterData = {
   region: 'Location in the world',
   country: 'Home country',
   category: 'Type of chapter',
+  logo_url: 'https://example.com/image.jpg',
   banner_url: 'https://example.com/image.jpg',
 };
 
@@ -78,6 +79,7 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
+    cy.findByRole('textbox', { name: 'Logo Url' }).type(chapterData.logo_url);
     cy.findByRole('textbox', { name: 'Banner Url' }).type(
       chapterData.banner_url,
     );
@@ -102,23 +104,17 @@ describe('chapters dashboard', () => {
     const chapterId = 1;
 
     cy.createChapter(chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${chapterId}`);
       cy.contains(chapterData.name);
     });
     cy.createVenue({ chapterId }, venueData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/venues/`);
       cy.contains(venueData.name);
     });
     cy.createEvent(chapterId, eventData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/events/`);
       cy.contains(eventData.name);
     });
@@ -137,9 +133,7 @@ describe('chapters dashboard', () => {
     cy.login();
 
     cy.createChapter(chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${response.body.data.createChapter.id}`);
       cy.contains(chapterData.name);
     });

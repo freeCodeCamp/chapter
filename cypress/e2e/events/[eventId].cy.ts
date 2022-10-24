@@ -88,12 +88,10 @@ describe('event page', () => {
         // the modal should not reappear, so first we check the cancel modal has
         // gone...
         cy.contains('Are you sure you want to cancel your RSVP?').should(
-          'not.be.visible',
+          'not.exist',
         );
         /// ...then we check the invitation modal has not reappeared.
-        cy.contains('You have been invited to this event').should(
-          'not.be.visible',
-        );
+        cy.contains('You have been invited to this event').should('not.exist');
       });
     });
   });

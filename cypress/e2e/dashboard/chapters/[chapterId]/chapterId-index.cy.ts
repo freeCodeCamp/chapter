@@ -1,4 +1,4 @@
-import { expectToBeRejected } from '../../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 import type { ChapterMembers } from '../../../../../cypress.config';
 import { VenueType } from '../../../../../client/src/generated/graphql';
 
@@ -144,9 +144,7 @@ describe('chapter dashboard', () => {
       ...eventData,
       name: 'Created by Admin',
     }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/events/`);
       cy.contains('Created by Admin');
       cy.contains(eventData.name).should('not.exist');

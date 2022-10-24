@@ -47,7 +47,7 @@ export default defineConfig({
   e2e: {
     projectId: 're65q6',
     baseUrl: 'http://localhost:3000',
-    retries: { runMode: 3, openMode: 3 },
+    retries: { runMode: 3, openMode: 0 },
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config

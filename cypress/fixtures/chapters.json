@@ -6,6 +6,7 @@
     "region": "Location in the world",
     "country": "Home country",
     "category": "Type of chapter",
+    "logo_url": "https://example.com/new-image.jpg",
     "banner_url": "https://example.com/image.jpg"
   },
   {
@@ -15,6 +16,7 @@
     "region": "New Region",
     "country": "New Country",
     "category": "New Category",
+    "logo_url": "https://example.com/new-image.jpg",
     "banner_url": "https://example.com/new-image.jpg"
   }
 ]

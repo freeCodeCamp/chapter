@@ -92,6 +92,14 @@ describe('event page', () => {
         cy.contains('Are you sure you want to cancel your RSVP?');
         cy.findByRole('button', { name: 'Confirm' }).click();
         cy.findByRole('button', { name: 'RSVP' }).should('be.visible');
+
+        // the modal should not reappear, so first we check the cancel modal has
+        // gone...
+        cy.contains('Are you sure you want to cancel your RSVP?').should(
+          'not.exist',
+        );
+        /// ...then we check the invitation modal has not reappeared.
+        cy.contains('You have been invited to this event').should('not.exist');
       });
     });
   });

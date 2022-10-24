@@ -1,6 +1,6 @@
 import add from 'date-fns/add';
 import { EventUsers } from '../../../../cypress.config';
-import { expectToBeRejected } from '../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
 const eventId = 1;
@@ -221,9 +221,7 @@ describe('events dashboard', () => {
       ends_at: add(new Date(), { minutes: 30 }),
     };
 
-    cy.updateEvent(eventId, eventOneData).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.updateEvent(eventId, eventOneData).then(expectNoErrors);
     // newly registered user (without a chapter_users record)
     cy.login(users.testUser.email);
     cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
@@ -243,16 +241,12 @@ describe('events dashboard', () => {
 
     // admin of chapter 1
     cy.login(users.chapter1Admin.email);
-    cy.deleteEvent(eventId).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.deleteEvent(eventId).then(expectNoErrors);
   });
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.sendEventInvite(eventId, ['confirmed']).then(expectNoErrors);
 
     cy.login(users.testUser.email);
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);

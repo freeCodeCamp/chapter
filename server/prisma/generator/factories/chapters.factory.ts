@@ -23,6 +23,7 @@ const createChapters = async (userId: number): Promise<number[]> => {
       country: address.country(),
       city: address.city(),
       region: address.state(),
+      logo_url: image.imageUrl(150, 150, 'tech', true),
       banner_url: image.imageUrl(640, 480, 'tech', true),
     };
 

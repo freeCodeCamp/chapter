@@ -1,4 +1,4 @@
-import { expectToBeRejected } from '../../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 
 const chapterId = 1;
 
@@ -39,6 +39,9 @@ describe('chapter edit dashboard', () => {
     cy.findByRole('textbox', { name: 'Banner Url' })
       .clear()
       .type(chapterData.banner_url);
+    cy.findByRole('textbox', { name: 'Logo Url' })
+      .clear()
+      .type(chapterData.logo_url);
 
     cy.findByRole('form', { name: 'Save Chapter Changes' })
       .findByRole('button', { name: 'Save Chapter Changes' })
@@ -67,9 +70,7 @@ describe('chapter edit dashboard', () => {
     // back to owner
     cy.login();
     cy.updateChapter(chapterId, chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${chapterId}`);
       cy.contains(chapterData.name);
     });
@@ -83,9 +84,6 @@ describe('chapter edit dashboard', () => {
     });
 
     cy.login();
-    cy.deleteChapter(chapterId).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.deleteChapter(chapterId).then(expectNoErrors);
   });
 });

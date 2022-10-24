@@ -155,7 +155,8 @@ export const ChapterPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
-        {data.chapter.banner_url !== '' ? (
+        {data.chapter.banner_url === '' ||
+        data.chapter.banner_url === null ? null : (
           <Box height={'300px'}>
             <Image
               boxSize="100%"
@@ -168,7 +169,7 @@ export const ChapterPage: NextPage = () => {
               fallbackStrategy="onError"
             />
           </Box>
-        ) : null}
+        )}
         <Heading
           as="h1"
           lineHeight={1.1}

@@ -7,6 +7,7 @@ const chapterData = {
   region: 'Location in the world',
   country: 'Home country',
   category: 'Type of chapter',
+  logo_url: 'https://example.com/image.jpg',
   banner_url: 'https://example.com/image.jpg',
 };
 
@@ -78,6 +79,7 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
+    cy.findByRole('textbox', { name: 'Logo Url' }).type(chapterData.logo_url);
     cy.findByRole('textbox', { name: 'Banner Url' }).type(
       chapterData.banner_url,
     );

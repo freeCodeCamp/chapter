@@ -157,7 +157,7 @@ export const ChapterPage: NextPage = () => {
         <Image
           boxSize="100%"
           maxH="300px"
-          src={data.chapter.banner_url}
+          src={data.chapter.banner_url ? data.chapter.banner_url : ''}
           alt=""
           borderRadius="md"
           objectFit="cover"

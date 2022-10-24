@@ -107,6 +107,7 @@ export const ChapterPage: NextPage = () => {
   });
 
   const confirm = useConfirm();
+  const [hasShownModal, setHasShownModal] = React.useState(false);
   const toast = useToast();
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
@@ -145,8 +146,8 @@ export const ChapterPage: NextPage = () => {
 
   const leaveChapter = async () => {
     const ok = await confirm({
-      title: 'Leave chaper?',
-      body: 'Leaving chapter will remove RSVPs of all subscribed events of the chapter.',
+      title: 'Are you sure you want to leave this chapter?',
+      body: "Leaving will cancel your attendance at all of this chapter's events.",
     });
     if (ok) {
       try {
@@ -194,12 +195,20 @@ export const ChapterPage: NextPage = () => {
 
   const isLoading = loading || loadingChapterUser || !data;
 
-  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
-  const isNotAlreadyMember = !isLoading && !dataChapterUser?.chapterUser;
+  const canShowConfirmModal =
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
+  const isAlreadyMember = !!dataChapterUser?.chapterUser;
 
   useEffect(() => {
-    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
-  }, [askUserToConfirm, isNotAlreadyMember]);
+    if (canShowConfirmModal && !hasShownModal) {
+      if (isAlreadyMember) {
+        leaveChapter();
+      } else {
+        joinChapter({ invited: true });
+      }
+      setHasShownModal(true);
+    }
+  }, [canShowConfirmModal, isAlreadyMember, hasShownModal]);
 
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)

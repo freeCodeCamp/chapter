@@ -14,10 +14,11 @@ import {
   Radio,
   Heading,
 } from '@chakra-ui/react';
+import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import add from 'date-fns/add';
+import { add, isPast } from 'date-fns';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -81,8 +82,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const defaultValues = useMemo(() => {
     if (!data) {
       return {
-        start_at: new Date(),
-        ends_at: add(new Date(), { minutes: 30 }),
+        start_at: add(new Date(), { days: 1 }),
+        ends_at: add(new Date(), { days: 1, minutes: 30 }),
         venue_type: VenueType.PhysicalAndOnline,
         chapter_id: initialChapterId,
       };
@@ -222,6 +223,15 @@ const EventForm: React.FC<EventFormProps> = (props) => {
                 />
               }
             />
+            {field.key === 'start_at' && !data && isPast(startDate) && (
+              <HStack>
+                <InfoIcon />
+                <Text>
+                  Chapter members will not be notified about event creation, as
+                  it starts in the past.
+                </Text>
+              </HStack>
+            )}
           </FormControl>
         ) : field.type === 'textarea' ? (
           <TextArea

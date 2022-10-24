@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement, useState } from 'react';
+import { isFuture } from 'date-fns';
 
 import {
   useCreateEventMutation,
@@ -38,7 +39,9 @@ export const NewEventPage: NextPageWithLayout = () => {
       });
 
       if (event.data) {
-        publish({ variables: { eventId: event.data.createEvent.id } });
+        if (!isFuture(data.start_at)) {
+          publish({ variables: { eventId: event.data.createEvent.id } });
+        }
         router.replace(
           `/dashboard/events/[id]`,
           `/dashboard/events/${event.data.createEvent.id}`,

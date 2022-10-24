@@ -1,3 +1,5 @@
+import { add } from 'date-fns';
+
 import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 import type { ChapterMembers } from '../../../../../cypress.config';
 
@@ -78,7 +80,11 @@ describe('chapter dashboard', () => {
 
   it('emails interested users when an event is created', () => {
     // confirm url is not required
-    const testEvent = events.eventWithoutURL;
+    const testEvent = {
+      ...events.eventWithoutURL,
+      start_at: add(new Date(), { days: 1 }),
+      ends_at: add(new Date(), { days: 1, minutes: 30 }),
+    };
     createEventViaUI(chapterId, testEvent);
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event

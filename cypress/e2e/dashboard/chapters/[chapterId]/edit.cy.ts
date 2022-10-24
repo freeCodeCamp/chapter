@@ -1,23 +1,23 @@
 import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 
-const chapterData = {
-  name: 'New Chapter Name',
-  description: 'New Description',
-  city: 'New City',
-  region: 'New Region',
-  country: 'New Country',
-  category: 'New Category',
-  logo_url: 'https://example.com/new-image.jpg',
-  banner_url: 'https://example.com/new-image.jpg',
-};
 const chapterId = 1;
 
 describe('chapter edit dashboard', () => {
+  let chapterData;
+  let users;
+  before(() => {
+    cy.fixture('chapters').then((fixture) => {
+      chapterData = fixture[1];
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
   });
   it('allows admins to edit a chapter', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
     cy.visit(`/dashboard/chapters/${chapterId}/edit`);
 
     cy.findByRole('textbox', { name: 'Chapter name' })
@@ -58,7 +58,7 @@ describe('chapter edit dashboard', () => {
     cy.contains('loading').should('not.exist');
     cy.contains(chapterData.name).should('not.exist');
 
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
 
     cy.updateChapter(chapterId, chapterData).then((response) => {
       expectToBeRejected(response);
@@ -77,7 +77,7 @@ describe('chapter edit dashboard', () => {
   });
 
   it('only accepts chapter deletion requests from owners', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
 
     cy.deleteChapter(chapterId).then((response) => {
       expectToBeRejected(response);

@@ -38,16 +38,6 @@ describe('chapter page', () => {
 
     cy.contains(/subscribed/);
 
-    cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
-      (chapter_users) => {
-        expect(
-          chapter_users.findIndex(
-            ({ user: { email }, subscribed }) =>
-              email === users.testUser.email && subscribed,
-          ),
-        ).to.not.equal(-1);
-      },
-    );
     cy.leaveChapter(chapterId, { withAuth: true }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.errors).not.to.exist;

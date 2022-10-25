@@ -39,7 +39,7 @@ export const NewEventPage: NextPageWithLayout = () => {
       });
 
       if (event.data) {
-        if (!isFuture(data.start_at)) {
+        if (isFuture(data.start_at)) {
           publish({ variables: { eventId: event.data.createEvent.id } });
         }
         router.replace(

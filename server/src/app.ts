@@ -19,12 +19,7 @@ import { isDev } from './config';
 import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
-import {
-  user,
-  events,
-  handleError,
-  venues,
-} from './controllers/Auth/middleware';
+import { handleError, user } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma, RECORD_MISSING } from './prisma';
 import { getBearerToken } from './util/sessions';
@@ -149,14 +144,10 @@ export const main = async (app: Express) => {
       });
   });
 
-  // TODO: Combine these three into a single middleware that gets the with
-  // relevant events and venues
   // userMiddleware must be added *after* the login and out routes, since they
   // are only concerned with creating and destroying sessions and not with using
   // them.
   app.use(user);
-  app.use(events);
-  app.use(venues);
   if (process.env.NODE_ENV !== 'development') {
     app.use(handleError);
   }

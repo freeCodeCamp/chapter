@@ -46,6 +46,7 @@ import {
 import {
   getUnsubscribeOptions,
   getChapterUnsubscribeToken,
+  NotificationContextText,
 } from '../../util/eventEmail';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
 import { updateEventWaitlist } from '../../util/updateEventWaitlist';
@@ -752,10 +753,7 @@ ${unsubscribeOptions}`,
 
   @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
-  async cancelEvent(
-    @Arg('id', () => Int) id: number,
-    @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<Event | null> {
+  async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
@@ -773,11 +771,11 @@ ${unsubscribeOptions}`,
     await deleteEventReminders(id);
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
     const notCanceledRsvps = event.event_users;
-    const unsubScribeOptions = getUnsubscribeOptions({
-      chapterId: event.chapter_id,
-      eventId: event.id,
-      userId: ctx.user.id,
+    const unsubScribeOptions = NotificationContextText({
+      linkToEvent: eventURL,
+      linkToChapter: chapterURL,
     });
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);

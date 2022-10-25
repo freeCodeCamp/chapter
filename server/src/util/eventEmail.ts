@@ -1,5 +1,18 @@
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
 
+export const NotificationContextText = ({
+  linkToEvent,
+  linkToChapter,
+}: {
+  linkToEvent: string;
+  linkToChapter: string;
+}) => {
+  return `
+  Unsubscribe Options</br>
+  - To manage notifications about this event, go to <a href="${linkToEvent}">${linkToEvent}</a>.<br />
+  - To manage notifications from this chapter about new events, go to <a href="${linkToChapter}">${linkToChapter}</a>.<br />`;
+};
+
 export const getUnsubscribeOptions = ({
   chapterId,
   eventId,
@@ -19,10 +32,10 @@ export const getUnsubscribeOptions = ({
     eventId,
     userId,
   );
-  return `
-  Unsubscribe Options</br>
-  - To manage notifications about this event, go to <a href="${eventUnsubscribeToken}">${eventUnsubscribeToken}</a>.<br />
-  - To manage notifications from this chapter about new events, go to <a href="${chapterUnsubscribeToken}">${chapterUnsubscribeToken}</a>.<br />`;
+  return NotificationContextText({
+    linkToEvent: eventUnsubscribeToken,
+    linkToChapter: chapterUnsubscribeToken,
+  });
 };
 
 export const getChapterUnsubscribeToken = ({

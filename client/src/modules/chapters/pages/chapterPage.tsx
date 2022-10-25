@@ -4,6 +4,7 @@ import {
   HStack,
   Spinner,
   Stack,
+  Box,
   Text,
   Image,
   Link,
@@ -81,7 +82,7 @@ const ChapterUserRoleWidget = ({
 }) =>
   chapterUser?.chapter_role ? (
     <HStack justifyContent={'space-between'}>
-      <Text fontWeight={500}>
+      <Text data-cy="join-success" fontWeight={500}>
         <CheckIcon marginRight={1} />
         {chapterUser.chapter_role.name} of the chapter
       </Text>
@@ -89,10 +90,7 @@ const ChapterUserRoleWidget = ({
     </HStack>
   ) : (
     <HStack justifyContent="space-between">
-      {/* this doesn't open new button, on the call function? */}
-      <Text data-cy="join-success" fontWeight={500}>
-        Become a member of the chapter
-      </Text>
+      <Text fontWeight={500}>Become member of the chapter</Text>
       <Button colorScheme="blue" onClick={JoinChapter}>
         Join
       </Button>
@@ -109,6 +107,7 @@ export const ChapterPage: NextPage = () => {
   });
 
   const confirm = useConfirm();
+  const [hasShownModal, setHasShownModal] = React.useState(false);
   const toast = useToast();
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
@@ -147,8 +146,8 @@ export const ChapterPage: NextPage = () => {
 
   const leaveChapter = async () => {
     const ok = await confirm({
-      title: 'Leave chaper?',
-      body: 'Leaving chapter will remove RSVPs of all subscribed events of the chapter.',
+      title: 'Are you sure you want to leave this chapter?',
+      body: "Leaving will cancel your attendance at all of this chapter's events.",
     });
     if (ok) {
       try {
@@ -196,11 +195,20 @@ export const ChapterPage: NextPage = () => {
 
   const isLoading = loading || loadingChapterUser || !data;
 
-  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
-  const isNotAlreadyMember = !isLoading && !dataChapterUser;
+  const canShowConfirmModal =
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
+  const isAlreadyMember = !!dataChapterUser?.chapterUser;
+
   useEffect(() => {
-    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
-  }, [askUserToConfirm, isNotAlreadyMember]);
+    if (canShowConfirmModal && !hasShownModal) {
+      if (isAlreadyMember) {
+        leaveChapter();
+      } else {
+        joinChapter({ invited: true });
+      }
+      setHasShownModal(true);
+    }
+  }, [canShowConfirmModal, isAlreadyMember, hasShownModal]);
 
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
@@ -209,15 +217,20 @@ export const ChapterPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
-        <Image
-          boxSize="100%"
-          maxH="300px"
-          src={data.chapter.banner_url}
-          alt=""
-          borderRadius="md"
-          objectFit="cover"
-          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
-        />
+        {data.chapter.banner_url && (
+          <Box height={'300px'}>
+            <Image
+              boxSize="100%"
+              maxH="300px"
+              src={data.chapter.banner_url}
+              alt=""
+              borderRadius="md"
+              objectFit="cover"
+              fallbackSrc="https://cdn.freecodecamp.org/chapter/orange-graphics-small.jpg"
+              fallbackStrategy="onError"
+            />
+          </Box>
+        )}
         <Heading
           as="h1"
           lineHeight={1.1}

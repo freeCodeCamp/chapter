@@ -10,6 +10,7 @@ export const CHAPTER = gql`
       city
       region
       country
+      logo_url
       banner_url
       chat_url
       events {
@@ -71,6 +72,7 @@ export const CHAPTERS = gql`
       id
       name
       description
+      logo_url
       banner_url
       city
       events {

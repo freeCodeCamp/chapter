@@ -6,6 +6,7 @@ import {
   Button,
   useToast,
   List,
+  Box,
   HStack,
   Image,
   ListItem,
@@ -38,7 +39,7 @@ import { useLogin } from 'hooks/useAuth';
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loadingUser, isLoggedIn } = useAuth();
   const login = useLogin();
 
   const refetch = {
@@ -60,6 +61,7 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
+  const [hasShownModal, setHasShownModal] = React.useState(false);
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
@@ -67,9 +69,9 @@ export const EventPage: NextPage = () => {
     );
   }, [data?.event]);
   const rsvpStatus = eventUser?.rsvp.name;
-  const allDataLoaded = !!user && !!data;
-  const askUserToConfirm = router.query?.ask_to_confirm;
-  const shouldRsvp = !rsvpStatus || rsvpStatus === 'no';
+  const isLoading = loading || loadingUser;
+  const canShowConfirmationModal =
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
 
   const chapterId = data?.event?.chapter.id;
 
@@ -90,12 +92,12 @@ export const EventPage: NextPage = () => {
           title: 'You have been invited to this event',
           body: `
           Would you like to attend?<br/>
-          Note: if you haven't joined event's chapter, you will become member when RSVPing
+          Note: joining this event will make you a member of the event's chapter.
           `,
         }
       : {
           title: 'Join this event?',
-          body: `Note: if you haven't joined event's chapter, you will become member when RSVPing`,
+          body: `Note: joining this event will make you a member of the event's chapter.`,
         };
     const ok = await confirm(confirmOptions);
 
@@ -149,17 +151,18 @@ export const EventPage: NextPage = () => {
   }
 
   useEffect(() => {
-    if (askUserToConfirm && allDataLoaded) {
-      if (shouldRsvp) {
+    if (canShowConfirmationModal && !hasShownModal) {
+      if (!rsvpStatus || rsvpStatus === 'no') {
         checkOnRsvp({ invited: true });
       } else {
         checkOnCancelRsvp();
       }
+      setHasShownModal(true);
     }
-  }, [allDataLoaded, askUserToConfirm]);
+  }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
 
-  if (error || !data) return <Loading loading={loading} error={error} />;
-  if (!data.event)
+  if (error || isLoading) return <Loading loading={isLoading} error={error} />;
+  if (!data?.event)
     return <NextError statusCode={404} title="Event not found" />;
 
   async function onSubscribeToEvent() {
@@ -206,16 +209,21 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <Image
-        data-cy="event-image"
-        boxSize="100%"
-        maxH="300px"
-        src={data.event.image_url}
-        alt=""
-        borderRadius="md"
-        objectFit="cover"
-        fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
-      />
+      {data.event.image_url && (
+        <Box height={'300px'}>
+          <Image
+            data-cy="event-image"
+            boxSize="100%"
+            maxH="300px"
+            src={data.event.image_url}
+            alt=""
+            borderRadius="md"
+            objectFit="cover"
+            fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+            fallbackStrategy="onError"
+          />
+        </Box>
+      )}
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>

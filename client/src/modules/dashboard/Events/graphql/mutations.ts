@@ -68,17 +68,3 @@ export const sendEventInvite = gql`
     sendEventInvite(id: $eventId, emailGroups: $emailGroups)
   }
 `;
-
-export const deleteChapter = gql`
-  mutation createEvent($chapterId: Int!, $data: EventInputs!) {
-    createEvent(chapterId: $chapterId, data: $data) {
-      id
-      name
-      canceled
-      description
-      url
-      streaming_url
-      capacity
-    }
-  }
-`;

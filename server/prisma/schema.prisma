@@ -21,7 +21,8 @@ model chapters {
   city          String
   region        String
   country       String
-  banner_url    String
+  logo_url      String?
+  banner_url    String?
   calendar_id   String?
   chat_url      String?
   creator_id    Int

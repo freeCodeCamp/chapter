@@ -143,19 +143,8 @@ export class ChapterUserResolver {
           user_id: ctx.user.id,
         },
       },
-      select: {
-        chapter_id: true,
-        user_id: true,
-        joined_date: true,
-        subscribed: true,
-        user: true,
-        chapter_role_id: true,
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
-          },
-        },
-      },
+      // TODO: return only { user_id }
+      include: chapterUsersInclude,
     });
   }
 

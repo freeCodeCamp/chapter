@@ -20,7 +20,7 @@ describe('chapter page', () => {
     cy.login(users.testUser.email);
     cy.visit(`/chapters/${chapterId}`);
 
-    cy.findByRole('button', { name: 'Join chapter' }).click();
+    cy.findByRole('button', { name: 'Join' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
     cy.contains(/joined chapter/);

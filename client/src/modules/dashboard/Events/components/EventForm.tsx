@@ -18,7 +18,7 @@ import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { add, isPast } from 'date-fns';
+import { add, isPast, isValid } from 'date-fns';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -156,7 +156,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const onDatePickerChange = useCallback(
     (key: string) => {
       return (date: Date | null) => {
-        if (!date) return;
+        if (!date || !isValid(date)) return;
         if (key === 'start_at' || date < getValues('start_at')) {
           setValue('start_at', date, { shouldDirty: true });
           setStartDate(date);

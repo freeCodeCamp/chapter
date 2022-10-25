@@ -752,7 +752,10 @@ ${unsubscribeOptions}`,
 
   @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
-  async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
+  async cancelEvent(
+    @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<Event | null> {
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
@@ -774,7 +777,7 @@ ${unsubscribeOptions}`,
     const unsubScribeOptions = getUnsubscribeOptions({
       chapterId: event.chapter_id,
       eventId: event.id,
-      userId: user.id,
+      userId: ctx.user.id,
     });
     if (notCanceledRsvps.length) {
       const emailList = notCanceledRsvps.map(({ user }) => user.email);

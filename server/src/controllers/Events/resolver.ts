@@ -41,13 +41,14 @@ import {
   cancelCalendarEvent,
   createCalendarEvent,
   deleteCalendarEvent,
-  patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
 import {
   getUnsubscribeOptions,
   getChapterUnsubscribeToken,
 } from '../../util/eventEmail';
+import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
+import { updateEventWaitlist } from '../../util/updateEventWaitlist';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -227,39 +228,6 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
   const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
   const waitlist = going.length >= event.capacity;
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
-};
-
-const updateCalendarEventAttendees = async ({
-  eventId,
-  calendarId,
-  calendarEventId,
-}: {
-  eventId: number;
-  calendarId: string | null;
-  calendarEventId: string | null;
-}) => {
-  const attendees = await prisma.event_users.findMany({
-    where: {
-      event_id: eventId,
-      rsvp: { name: 'yes' },
-    },
-    select: { user: { select: { email: true } } },
-  });
-
-  if (calendarId && calendarEventId) {
-    try {
-      // Patch is necessary here, since an update with unchanged start and end
-      // will remove attendees' yes/no/maybe response without notifying them.
-      await patchCalendarEvent({
-        calendarId,
-        calendarEventId,
-        attendeeEmails: attendees.map(({ user }) => user.email),
-      });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
-      throw 'Unable to update calendar event attendees';
-    }
-  }
 };
 
 @Resolver()
@@ -519,34 +487,7 @@ export class EventResolver {
       },
     });
 
-    if (!event.invite_only && eventUser.rsvp.name !== 'waitlist') {
-      const waitList = event.event_users.filter(
-        ({ rsvp, user_id }) =>
-          user_id !== eventUser.user_id && rsvp.name === 'waitlist',
-      );
-
-      if (waitList.length) {
-        const acceptedRsvp = waitList[0];
-        await prisma.event_users.update({
-          data: { rsvp: { connect: { name: 'yes' } } },
-          where: {
-            user_id_event_id: {
-              user_id: acceptedRsvp.user_id,
-              event_id: acceptedRsvp.event_id,
-            },
-          },
-        });
-
-        if (acceptedRsvp.subscribed) {
-          await createReminder({
-            eventId: acceptedRsvp.event_id,
-            remindAt: sub(event.start_at, { days: 1 }),
-            userId: acceptedRsvp.user_id,
-          });
-          // TODO add email about being off waitlist?
-        }
-      }
-    }
+    await updateEventWaitlist({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },

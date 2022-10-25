@@ -49,13 +49,19 @@ function visitNonMemberDashboards() {
 }
 
 describe('all dashboards', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   it('they should be forbidden to the admin banned from that chapter', () => {
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
     visitBannedDashboards();
   });
 
   it('they should be forbidden to members', () => {
-    cy.login('test@member.org');
+    cy.login(users.testUser.email);
     // It doesn't matter which chapter we visit, as a member, they all should be
     // forbidden.
     visitBannedDashboards();

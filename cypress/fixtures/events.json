@@ -1,0 +1,58 @@
+{
+  "eventWithoutDate": {
+    "name": "Homer Simpson",
+    "description": "i will show you damn!",
+    "streaming_url": null,
+    "capacity": 149,
+    "venue_type": "Physical",
+    "venue_id": 2,
+    "image_url": "http://loremflickr.com/640/480/nature?79359",
+    "invite_only": false,
+    "sponsor_ids": []
+  },
+  "eventTwo": {
+    "venue_id": 1,
+    "sponsor_ids": [],
+    "name": "Event Venue change test",
+    "description": "Test Description",
+    "venue_type": "PhysicalAndOnline",
+    "capacity": 10,
+    "image_url": "https://test.event.org/image",
+    "streaming_url": "https://test.event.org/video",
+    "start_at": "2022-01-01T00:01",
+    "ends_at": "2022-01-02T00:02"
+  },
+  "eventThree": {
+    "venue_id": 1,
+    "sponsor_ids": [],
+    "name": "Other Event",
+    "description": "Test Description",
+    "url": "https://test.event.org",
+    "venue_type": "PhysicalAndOnline",
+    "capacity": 10,
+    "image_url": "https://test.event.org/image",
+    "streaming_url": "https://test.event.org/video",
+    "start_at": "2022-01-01T00:01",
+    "ends_at": "2022-01-02T00:02",
+    "invite_only": false
+  },
+  "eventWithoutURL": {
+    "name": "Test Event",
+    "description": "Test Description",
+    "streaming_url": "https://test.event.org/video",
+    "capacity": "10",
+    "start_at": "2022-01-01T00:01",
+    "ends_at": "2022-01-02T00:02",
+    "venue_id": "1",
+    "image_url": "https://test.event.org/image"
+  },
+  "partialData": {
+    "capacity": 10,
+    "venue_id": 1,
+    "sponsor_ids": [],
+    "name": "Other Event",
+    "url": "https://test.event.org",
+    "venue_type": "PhysicalAndOnline",
+    "invite_only": false
+  }
+}

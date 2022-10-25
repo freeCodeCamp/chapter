@@ -1,6 +1,12 @@
 import { ChapterMembers, EventUsers } from '../../cypress.config';
 
 describe('unsubscribe link', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.mhDeleteAll();
@@ -8,7 +14,7 @@ describe('unsubscribe link', () => {
 
   it('should allow for unsubscribing without being logged in', () => {
     const chapterId = 1;
-    const emailAddress = 'foo@bar.com';
+    const emailAddress = users.owner.email;
     cy.login();
     cy.getChapterEvents(chapterId).then((events) => {
       const eventIds = events.map(({ id }) => id);

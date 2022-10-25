@@ -1,5 +1,6 @@
 import { expectToBeRejected } from '../../support/util';
 
+const sponsorId = 1;
 const testSponsor = {
   name: 'Test Sponsor',
   website: 'http://example.com',
@@ -8,6 +9,12 @@ const testSponsor = {
 };
 
 describe('sponsors dashboard', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -33,7 +40,7 @@ describe('sponsors dashboard', () => {
   });
 
   it('lets an instance owner edit sponsors', () => {
-    cy.visit('/dashboard/sponsors/1/edit');
+    cy.visit(`/dashboard/sponsors/${sponsorId}/edit`);
     cy.findByRole('textbox', { name: 'Sponsor Name' })
       .clear()
       .type(testSponsor.name);
@@ -56,12 +63,12 @@ describe('sponsors dashboard', () => {
   });
 
   it('prevents chapter admins from managing sponsors', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
 
     cy.visit('/dashboard/');
     cy.findByRole('link', { name: 'Sponsors' }).should('not.exist');
 
     cy.createSponsor(testSponsor).then(expectToBeRejected);
-    cy.updateSponsor(1, testSponsor).then(expectToBeRejected);
+    cy.updateSponsor(sponsorId, testSponsor).then(expectToBeRejected);
   });
 });

@@ -97,7 +97,7 @@ export const EventPage: NextPage = () => {
         }
       : {
           title: 'Join this event?',
-          body: `Note: joining this event will make you a member of the event's chapter.`
+          body: `Note: joining this event will make you a member of the event's chapter.`,
         };
     const ok = await confirm(confirmOptions);
 

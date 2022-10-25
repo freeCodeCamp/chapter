@@ -1,4 +1,10 @@
 describe('Users dashboard', () => {
+  let instanceRoles;
+  before(() => {
+    cy.fixture('instanceRoles').then((fixture) => {
+      instanceRoles = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -15,32 +21,34 @@ describe('Users dashboard', () => {
     cy.visit('/dashboard/users');
 
     cy.get('[data-cy=role]').then((roles) => {
+      const memberRole = instanceRoles.MEMBER;
+      const ownerRole = instanceRoles.OWNER;
       const roleNames = [...roles.map((_, role) => role.innerText)];
 
       // We cannot change role of existing owner, as that's logged in user
       // and after changing role, we will no longer be authorized to see users.
-      const memberToOwnerToMember = roleNames.indexOf('member');
-      const owner = roleNames.indexOf('owner');
+      const memberToOwnerToMember = roleNames.indexOf(memberRole);
+      const owner = roleNames.indexOf(ownerRole);
 
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('member');
-      cy.findByRole('combobox').select('owner');
+      cy.findByRole('combobox').find(':selected').contains(memberRole);
+      cy.findByRole('combobox').select(ownerRole);
       cy.findByRole('button', { name: 'Change' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
-      cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains('owner');
+      cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains(ownerRole);
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('owner');
-      cy.findByRole('combobox').select('member');
+      cy.findByRole('combobox').find(':selected').contains(ownerRole);
+      cy.findByRole('combobox').select(memberRole);
       cy.findByRole('button', { name: 'Change' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
-      cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains('member');
+      cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains(memberRole);
 
       // Ensure default value is changed
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('member');
+      cy.findByRole('combobox').find(':selected').contains(memberRole);
       cy.get('[aria-label=Close]').click();
       cy.get('[data-cy=changeRole]').eq(owner).click();
-      cy.findByRole('combobox').find(':selected').contains('owner');
+      cy.findByRole('combobox').find(':selected').contains(ownerRole);
     });
   });
 });

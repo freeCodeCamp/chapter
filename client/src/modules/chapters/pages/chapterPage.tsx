@@ -4,6 +4,7 @@ import {
   HStack,
   Spinner,
   Stack,
+  Box,
   Text,
   Image,
   Link,
@@ -154,15 +155,20 @@ export const ChapterPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
-        <Image
-          boxSize="100%"
-          maxH="300px"
-          src={data.chapter.banner_url ? data.chapter.banner_url : ''}
-          alt=""
-          borderRadius="md"
-          objectFit="cover"
-          fallbackSrc="https://cdn.freecodecamp.org/chapter/puppy-small.jpg"
-        />
+        {data.chapter.banner_url && (
+          <Box height={'300px'}>
+            <Image
+              boxSize="100%"
+              maxH="300px"
+              src={data.chapter.banner_url}
+              alt=""
+              borderRadius="md"
+              objectFit="cover"
+              fallbackSrc="https://cdn.freecodecamp.org/chapter/orange-graphics-small.jpg"
+              fallbackStrategy="onError"
+            />
+          </Box>
+        )}
         <Heading
           as="h1"
           lineHeight={1.1}

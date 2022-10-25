@@ -6,6 +6,7 @@ import {
   Button,
   useToast,
   List,
+  Box,
   HStack,
   Image,
   ListItem,
@@ -204,16 +205,21 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <Image
-        data-cy="event-image"
-        boxSize="100%"
-        maxH="300px"
-        src={data.event.image_url}
-        alt=""
-        borderRadius="md"
-        objectFit="cover"
-        fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
-      />
+      {data.event.image_url && (
+        <Box height={'300px'}>
+          <Image
+            data-cy="event-image"
+            boxSize="100%"
+            maxH="300px"
+            src={data.event.image_url}
+            alt=""
+            borderRadius="md"
+            objectFit="cover"
+            fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+            fallbackStrategy="onError"
+          />
+        </Box>
+      )}
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>

@@ -62,7 +62,7 @@ export class UserWithInstanceRoleResolver {
     if (!ctx.user) {
       return null;
     }
-    return await prisma.users.findFirst({
+    return await prisma.users.findUnique({
       where: {
         id: ctx.user.id,
       },

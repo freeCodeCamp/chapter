@@ -55,7 +55,7 @@ export class UserWithInstanceRoleResolver {
     });
   }
 
-  @Query(() => UserInformation)
+  @Query(() => UserInformation, { nullable: true })
   async userInformation(
     @Ctx() ctx: ResolverCtx,
   ): Promise<UserInformation | null> {

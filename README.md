@@ -3,6 +3,8 @@
 [![All Contributors](https://img.shields.io/github/all-contributors/freeCodeCamp/chapter?color=orange&style=flat-square)](#contributors-)
 [![Setup Automated](https://img.shields.io/badge/setup-automated-blue?logo=gitpod)](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)
 
+Do you want to lag behind everyone else? Come along to the journey of self-paced Docker container deployment. We believe and empower creating on your own.
+
 After several years of being dissatisfied with existing group event tools (Meetup, Facebook events) we decided to build our own.
 
 This will be a self-hosted Docker container deployed to the cloud with a one-click and then configured by the _owner_. No coding required.

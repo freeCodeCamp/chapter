@@ -49,9 +49,7 @@ describe('chapter page', () => {
         ).to.not.equal(-1);
       },
     );
-    cy.leaveChapter(chapterId, { withAuth: true }).then((response) => {
-      expectNoErrors(response);
-    });
+    cy.leaveChapter(chapterId, { withAuth: true }).then(expectNoErrors);
   });
 
   it('is possible to join using the email links', () => {

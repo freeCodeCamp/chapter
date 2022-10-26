@@ -263,7 +263,7 @@ export class ChapterUserResolver {
       throw Error('You cannot ban yourself');
     }
 
-    const userEvents = await prisma.event_users.findMany({
+    const eventUsers = await prisma.event_users.findMany({
       where: {
         user_id: userId,
         event: { chapter_id: chapterId },
@@ -282,28 +282,22 @@ export class ChapterUserResolver {
       },
     });
 
-    const attendingEvents = userEvents.filter(
-      ({ rsvp: { name } }) => name === 'yes',
-    );
+    const eventsAttended = eventUsers
+      .filter(({ rsvp: { name } }) => name === 'yes')
+      .map(({ event }) => event);
 
     await Promise.all(
-      attendingEvents.map(async ({ event }) =>
+      eventsAttended.map(async (event) =>
         updateEventWaitlist({ event, userId }),
       ),
     );
 
-    const eventsWithCalendar = attendingEvents.filter(
-      ({ event: { calendar_event_id } }) => calendar_event_id,
+    const eventsWithCalendars = eventsAttended.filter(
+      ({ calendar_event_id }) => calendar_event_id,
     );
 
-    const calendarUpdates = eventsWithCalendar.map(
-      async ({
-        event: {
-          calendar_event_id,
-          chapter: { calendar_id },
-          id,
-        },
-      }) => {
+    const calendarUpdates = eventsWithCalendars.map(
+      async ({ calendar_event_id, chapter: { calendar_id }, id }) => {
         // The calendar must be updated after event_users, so it can use the updated
         // email list
         return await updateCalendarEventAttendees({

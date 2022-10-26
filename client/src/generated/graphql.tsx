@@ -59,7 +59,7 @@ export type ChapterUser = {
   __typename?: 'ChapterUser';
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
-  is_bannable: Scalars['Boolean'];
+  is_bannable?: Maybe<Scalars['Boolean']>;
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
@@ -280,7 +280,6 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUser;
-  leaveChapter: ChapterUser;
   rsvpEvent: EventUser;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
@@ -365,10 +364,6 @@ export type MutationJoinChapterArgs = {
   chapterId: Scalars['Int'];
 };
 
-export type MutationLeaveChapterArgs = {
-  chapterId: Scalars['Int'];
-};
-
 export type MutationRsvpEventArgs = {
   chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
@@ -439,7 +434,7 @@ export type Query = {
   __typename?: 'Query';
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser?: Maybe<ChapterUser>;
+  chapterUser: ChapterUser;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
@@ -740,12 +735,12 @@ export type ChapterUserQueryVariables = Exact<{
 
 export type ChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser?: {
+  chapterUser: {
     __typename?: 'ChapterUser';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  } | null;
+  };
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -911,7 +906,7 @@ export type DashboardChapterUsersQuery = {
     chapter_users: Array<{
       __typename?: 'ChapterUser';
       subscribed: boolean;
-      is_bannable: boolean;
+      is_bannable?: boolean | null;
       user: { __typename?: 'User'; id: number; name: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;

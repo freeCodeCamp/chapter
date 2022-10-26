@@ -446,7 +446,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
-  userInformation: UserInformation;
+  userInformation?: Maybe<UserInformation>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;

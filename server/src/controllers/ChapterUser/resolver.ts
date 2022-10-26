@@ -16,7 +16,7 @@ import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
-import { updateEventWaitlist } from '../../util/updateEventWaitlist';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -110,7 +110,7 @@ export class ChapterUserResolver {
 
     await Promise.all(
       attendingEvents.map(async ({ event }) =>
-        updateEventWaitlist({ event, userId: ctx.user.id }),
+        updateWaitlistForUserRemoval({ event, userId: ctx.user.id }),
       ),
     );
 
@@ -288,7 +288,7 @@ export class ChapterUserResolver {
 
     await Promise.all(
       eventsAttended.map(async (event) =>
-        updateEventWaitlist({ event, userId }),
+        updateWaitlistForUserRemoval({ event, userId }),
       ),
     );
 

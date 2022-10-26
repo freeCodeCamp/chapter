@@ -48,7 +48,7 @@ import {
   updateCalendarEvent,
 } from '../../services/Google';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
-import { updateEventWaitlist } from '../../util/updateEventWaitlist';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -513,7 +513,7 @@ export class EventResolver {
       },
     });
 
-    await updateEventWaitlist({ event, userId: ctx.user.id });
+    await updateWaitlistForUserRemoval({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },

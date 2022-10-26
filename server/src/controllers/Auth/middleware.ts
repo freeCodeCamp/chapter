@@ -91,7 +91,7 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
         }),
         prisma.events.findMany({
           select: { id: true, chapter_id: true },
-          where: { event_users: { some: { user_id: id } } },
+          where: { chapter: { chapter_users: { some: { user_id: id } } } },
         }),
       ]),
     )

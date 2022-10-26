@@ -10,18 +10,18 @@ export const Footer: React.FC = () => {
       className={style.footer}
     >
       <Text className={style.text}>
-        Find out how is your information handled here:
+        Find out how your data is handled on
         <Link className={style.link} href="/policy/">
-          Policy
+          the policy page
         </Link>
       </Text>
       <Text className={style.text}>
-        Have an issue? you can check out:
+        Found a bug? Ask for help on the forum
         <Link
           className={style.link}
           href="https://www.freecodecamp.org/news/support/"
         >
-          Support
+          the forum
         </Link>
       </Text>
     </Flex>

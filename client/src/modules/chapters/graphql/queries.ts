@@ -28,30 +28,6 @@ export const CHAPTER = gql`
   }
 `;
 
-export const DASHBOARD_CHAPTER_USERS = gql`
-  query dashboardChapterUsers($chapterId: Int!) {
-    dashboardChapter(id: $chapterId) {
-      chapter_users {
-        user {
-          id
-          name
-        }
-        chapter_role {
-          id
-          name
-        }
-        subscribed
-        is_bannable
-      }
-      user_bans {
-        user {
-          id
-        }
-      }
-    }
-  }
-`;
-
 export const CHAPTER_USER = gql`
   query chapterUser($chapterId: Int!) {
     chapterUser(chapterId: $chapterId) {

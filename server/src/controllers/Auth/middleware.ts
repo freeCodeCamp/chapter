@@ -57,52 +57,6 @@ export type Venues = Merge<
   Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
 
-// TODO: get events in user middleware and only get those that the user is an
-// event_user for
-export const events = (req: Request, _res: Response, next: NextFunction) => {
-  const id = req.session?.id;
-
-  // user is not logged in, so we don't need to do anything here
-  if (!id) {
-    return next();
-  }
-
-  prisma.events
-    .findMany({
-      select: {
-        id: true,
-        chapter_id: true,
-      },
-    })
-    .then((events) => {
-      req.events = events;
-      next();
-    });
-};
-
-// TODO: get venues in user middleware and only get those that the user is an
-// chapter_user for
-export const venues = (req: Request, _res: Response, next: NextFunction) => {
-  const id = req.session?.id;
-
-  // user is not logged in, so we don't need to do anything here
-  if (!id) {
-    return next();
-  }
-
-  prisma.venues
-    .findMany({
-      select: {
-        id: true,
-        chapter_id: true,
-      },
-    })
-    .then((venues) => {
-      req.venues = venues;
-      next();
-    });
-};
-
 export const user = (req: Request, _res: Response, next: NextFunction) => {
   const id = req.session?.id;
 
@@ -121,10 +75,29 @@ export const user = (req: Request, _res: Response, next: NextFunction) => {
     .then((user) => {
       if (user) {
         req.user = user;
-      } else {
-        // if the session user does not exist in the db, the session is invalid
-        req.session = null;
+        return user.id;
       }
+      // if the session user does not exist in the db, the session is invalid
+      req.session = null;
+      next();
+    })
+    .then((id) =>
+      Promise.all([
+        prisma.venues.findMany({
+          select: { id: true, chapter_id: true },
+          where: {
+            chapter: { chapter_users: { some: { user_id: id } } },
+          },
+        }),
+        prisma.events.findMany({
+          select: { id: true, chapter_id: true },
+          where: { chapter: { chapter_users: { some: { user_id: id } } } },
+        }),
+      ]),
+    )
+    .then(([venues, events]) => {
+      req.venues = venues;
+      req.events = events;
       next();
     })
     .catch((err) => {

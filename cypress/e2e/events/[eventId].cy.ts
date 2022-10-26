@@ -72,7 +72,7 @@ describe('event page', () => {
         // when emails encode long strings they split them into multiple lines,
         // so the extra =\r\n need to be removed
         const token = href.match(/token=3D([\s\S]*)/)[1].replace(/=\s\s/g, '');
-        // @ts-expect-error we don't use email to login, so this will need to be
+        // we don't use email to login, so this will need to be
         // updated
         cy.login(token);
         // NOTE: we can't cy.get('@login-submit').should('not.exist') here

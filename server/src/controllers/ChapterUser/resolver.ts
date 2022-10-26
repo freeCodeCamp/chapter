@@ -29,7 +29,7 @@ const chapterUsersInclude = {
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUser)
+  @Query(() => ChapterUser, { nullable: true })
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
@@ -76,6 +76,74 @@ export class ChapterUserResolver {
       where: {
         user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
       },
+      include: chapterUsersInclude,
+    });
+  }
+
+  @Mutation(() => ChapterUser)
+  async leaveChapter(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<ChapterUser | null> {
+    const userEvents = await prisma.event_users.findMany({
+      where: {
+        user_id: ctx.user.id,
+        event: { chapter_id: chapterId },
+      },
+      include: {
+        event: {
+          include: { chapter: true, event_users: { include: { rsvp: true } } },
+        },
+        rsvp: true,
+      },
+    });
+    await prisma.event_users.deleteMany({
+      where: {
+        user_id: ctx.user.id,
+        event: { chapter_id: chapterId },
+      },
+    });
+
+    const attendingEvents = userEvents.filter(
+      ({ rsvp: { name } }) => name === 'yes',
+    );
+
+    await Promise.all(
+      attendingEvents.map(async ({ event }) =>
+        updateEventWaitlist({ event, userId: ctx.user.id }),
+      ),
+    );
+
+    const eventsWithCalendar = attendingEvents.filter(
+      ({ event: { calendar_event_id } }) => calendar_event_id,
+    );
+
+    const calendarUpdates = eventsWithCalendar.map(
+      async ({
+        event: {
+          calendar_event_id,
+          chapter: { calendar_id },
+          id,
+        },
+      }) => {
+        // The calendar must be updated after event_users, so it can use the updated
+        // email list
+        return await updateCalendarEventAttendees({
+          calendarEventId: calendar_event_id,
+          calendarId: calendar_id,
+          eventId: id,
+        });
+      },
+    );
+    await Promise.all(calendarUpdates);
+    return await prisma.chapter_users.delete({
+      where: {
+        user_id_chapter_id: {
+          chapter_id: chapterId,
+          user_id: ctx.user.id,
+        },
+      },
+      // TODO: return only { user_id }
       include: chapterUsersInclude,
     });
   }

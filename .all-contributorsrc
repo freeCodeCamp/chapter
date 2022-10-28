@@ -634,6 +634,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Jonathan1599",
+      "name": "Jon@1599",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55296387?v=4",
+      "profile": "https://github.com/Jonathan1599",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -641,5 +650,6 @@
   "projectOwner": "freeCodeCamp",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": false
+  "skipCi": false,
+  "commitConvention": "angular"
 }

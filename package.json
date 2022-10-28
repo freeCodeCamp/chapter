@@ -15,6 +15,7 @@
     "dev:server": "npm -w=server run dev",
     "dev:server:coverage": "npm -w=server run dev:coverage",
     "db:init": "npm run -w=server build && node server/prisma/generator/init.js --execute",
+    "db:migrate": "npm run prisma -- migrate deploy",
     "db:seed": "npm run prisma -- db seed",
     "db:sync": "npm run prisma -- db push --force-reset",
     "db:reset": "npm run -w=server build && npm run db:sync && npm run db:seed",

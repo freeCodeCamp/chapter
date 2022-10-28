@@ -31,6 +31,10 @@ jobs:
         run: |
           npm run build
           docker compose -f docker-compose.prisma.yml build
+          docker tag chapter-app chapter-app:$(git rev-parse --short HEAD)
+          docker tag chapter-client chapter-client:$(git rev-parse --short HEAD)
+          docker tag chapter-prisma chapter-prisma:$(git rev-parse --short HEAD)
+
       - name: Save Images
         run: |
           docker save -o app.tar chapter-app

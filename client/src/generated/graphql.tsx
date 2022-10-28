@@ -455,6 +455,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  userInformation?: Maybe<UserInformation>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -587,6 +588,18 @@ export type UserBan = {
   __typename?: 'UserBan';
   chapter: Chapter;
   user: User;
+};
+
+export type UserInformation = {
+  __typename?: 'UserInformation';
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+  user_bans: Array<UserBan>;
+  user_chapters: Array<ChapterUser>;
+  user_events: Array<EventUser>;
 };
 
 export type UserWithInstanceRole = {

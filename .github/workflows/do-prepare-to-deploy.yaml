@@ -69,11 +69,8 @@ jobs:
           key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
-          # TODO: drop the .mailhog file when we want to deploy to staging or production.
-          # Its only purpose is to make mailhog available.
           script: |
             docker image prune -f
             docker load -i images/app.tar
             docker load -i images/client.tar
             docker load -i images/prisma.tar
-            cd chapter && docker compose -f docker-compose.yml -f docker-compose.mailhog.yml up -d

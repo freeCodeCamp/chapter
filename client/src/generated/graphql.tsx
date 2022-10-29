@@ -1456,7 +1456,12 @@ export type EventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: { __typename?: 'User'; id: number; name: string };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        image_url: string;
+      };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -4181,6 +4186,7 @@ export const EventDocument = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id

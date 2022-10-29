@@ -1103,7 +1103,12 @@ export type DashboardEventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: { __typename?: 'User'; id: number; name: string };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        image_url?: string | null;
+      };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -1456,12 +1461,7 @@ export type EventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: {
-        __typename?: 'User';
-        id: number;
-        name: string;
-        image_url: string;
-      };
+      user: { __typename?: 'User'; id: number; name: string };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -3040,6 +3040,7 @@ export const DashboardEventDocument = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id
@@ -4186,7 +4187,6 @@ export const EventDocument = gql`
         user {
           id
           name
-          image_url
         }
         event_role {
           id

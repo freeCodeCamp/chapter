@@ -166,10 +166,13 @@ export const ChapterPage: NextPage = () => {
   const chapterSubscribe = async (toSubscribe: boolean) => {
     const ok = await confirm(
       toSubscribe
-        ? { title: 'Do you want to subscribe?' }
+        ? {
+            title: 'Do you want to subscribe?',
+            body: 'After subscribing you will receive emails about new events in this chapter.',
+          }
         : {
             title: 'Unsubscribe from chapter?',
-            body: 'Unsubscribing from this chapter will affect subscriptions of all existing events, and new events in the chapter.',
+            body: 'After unsubscribing you will not receive emails about new events in this chapter.',
           },
     );
 

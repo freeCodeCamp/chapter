@@ -17,6 +17,7 @@ import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAtte
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
+import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -81,6 +82,38 @@ async function removeUserFromEventsInChapter({
   await Promise.all(calendarUpdates);
 }
 
+interface UpdateInstanceRoleForChapterRoleChange {
+  changedChapterId: number;
+  newChapterRole: string;
+  user: Prisma.usersGetPayload<{
+    include: {
+      user_chapters: { include: { chapter_role: true } };
+      instance_role: true;
+    };
+  }>;
+}
+
+async function updateInstanceRoleForChapterRoleChange({
+  changedChapterId,
+  newChapterRole,
+  user,
+}: UpdateInstanceRoleForChapterRoleChange) {
+  const oldInstanceRole = user.instance_role.name;
+  const userChapters = user.user_chapters;
+  const newInstanceRole = getInstanceRoleName({
+    changedChapterId,
+    newChapterRole,
+    oldInstanceRole,
+    userChapters,
+  });
+  if (newInstanceRole !== oldInstanceRole) {
+    await prisma.users.update({
+      data: { instance_role: { connect: { name: newInstanceRole } } },
+      where: { id: user.id },
+    });
+  }
+}
+
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
   @Query(() => ChapterUser, { nullable: true })
@@ -140,6 +173,19 @@ export class ChapterUserResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser | null> {
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
+
+    const userChapters = ctx.user.user_chapters;
+    const chapterRole = userChapters.find(
+      ({ chapter_id }) => chapter_id === chapterId,
+    )?.chapter_role.name;
+    if (chapterRole === ChapterRoles.administrator) {
+      await updateInstanceRoleForChapterRoleChange({
+        changedChapterId: chapterId,
+        newChapterRole: ChapterRoles.member,
+        user: ctx.user,
+      });
+    }
+
     return await prisma.chapter_users.delete({
       where: {
         user_id_chapter_id: {
@@ -236,22 +282,11 @@ export class ChapterUserResolver {
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
 
-    const oldInstanceRole = chapterUser.user.instance_role.name;
-
-    const newInstanceRole = getInstanceRoleName({
+    await updateInstanceRoleForChapterRoleChange({
       changedChapterId: chapterId,
       newChapterRole,
-      oldInstanceRole,
-      userChapters: chapterUser.user.user_chapters,
+      user: chapterUser.user,
     });
-    if (newInstanceRole !== oldInstanceRole) {
-      await prisma.users.update({
-        data: {
-          instance_role: { connect: { name: newInstanceRole } },
-        },
-        where: { id: chapterUser.user_id },
-      });
-    }
 
     return updatedChapterUser;
   }

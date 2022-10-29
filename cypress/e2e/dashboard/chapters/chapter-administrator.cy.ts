@@ -247,6 +247,16 @@ describe('Chapter Administrator', () => {
       });
     });
 
+    it('should be changed to member when chapter administrator leaves chapter', () => {
+      confirmInstanceRole(
+        users.chapter1Admin,
+        instanceRoles.CHAPTER_ADMINISTRATOR,
+      );
+      cy.login(users.chapter1Admin);
+      cy.leaveChapter(firstChapterId);
+      confirmInstanceRole(users.chapter1Admin, instanceRoles.MEMBER);
+    });
+
     it('should not be visible on users list', () => {
       cy.login();
       cy.visit('/dashboard/users');

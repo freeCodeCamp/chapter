@@ -336,7 +336,7 @@ export const EventPage: NextPage = () => {
         {rsvps.map(({ user }) => (
           <ListItem key={user.id} mb="2">
             <HStack>
-              <Avatar name={user.name} />
+              <Avatar name={user.name} src={user.image_url ?? ''} />
               <Heading size="md">{user.name}</Heading>
             </HStack>
           </ListItem>
@@ -358,7 +358,7 @@ export const EventPage: NextPage = () => {
             {waitlist.map(({ user }) => (
               <ListItem key={user.id} mb="2">
                 <HStack>
-                  <Avatar name={user.name} />
+                  <Avatar name={user.name} src={user.image_url ?? ''} />
                   <Heading size="md">{user.name}</Heading>
                 </HStack>
               </ListItem>

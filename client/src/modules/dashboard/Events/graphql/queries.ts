@@ -65,6 +65,7 @@ export const DASHBOARD_EVENT = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id

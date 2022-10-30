@@ -9,27 +9,9 @@ import {
 } from '../../services/UnsubscribeToken';
 
 const unsubscribeFromChapter = async (userId: number, chapterId: number) => {
-  const chapter = await prisma.chapters.findUniqueOrThrow({
-    where: { id: chapterId },
-    include: { events: true },
-  });
   await prisma.chapter_users.update({
     data: { subscribed: false },
     where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
-  });
-  const onlyUserEventsFromChapter = {
-    AND: [
-      { user_id: userId },
-      { event_id: { in: chapter.events.map(({ id }) => id) } },
-    ],
-  };
-
-  await prisma.event_users.updateMany({
-    data: { subscribed: false },
-    where: onlyUserEventsFromChapter,
-  });
-  await prisma.event_reminders.deleteMany({
-    where: onlyUserEventsFromChapter,
   });
 };
 

@@ -99,7 +99,7 @@ const getUnsubscribeOptions = ({
   return `
 Unsubscribe Options</br>
 - <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving notifications about new events by unfollowing chapter</a>`;
 };
 
 const sendRsvpInvitation = async (

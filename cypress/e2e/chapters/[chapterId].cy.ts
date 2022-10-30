@@ -30,7 +30,6 @@ describe('chapter page', () => {
     cy.findByRole('button', { name: 'Unsubscribe' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
-    // TODO Check if user event_reminders were cleared and user event_users unsubscribed for events in this chapter. And other chapters were not affected.
     cy.contains(/unsubscribed/);
     cy.contains(/Subscribe/);
 

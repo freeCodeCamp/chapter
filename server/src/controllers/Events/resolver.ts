@@ -613,17 +613,11 @@ ${unsubscribeOptions}`,
     const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id: chapterId },
     });
-    const userChapter = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === chapterId,
-    );
 
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
       }));
-
-    const isSubscribedToEvent =
-      userChapter?.subscribed || ctx.user.auto_subscribe;
 
     // TODO: add an option to allow event creators NOT to rsvp. If doing that
     // make sure stop adding them to the calendar event.
@@ -631,7 +625,7 @@ ${unsubscribeOptions}`,
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
       rsvp: { connect: { name: 'yes' } },
-      subscribed: isSubscribedToEvent,
+      subscribed: true,
     };
 
     // TODO: the type safety if we start with ...data is a bit weak here: it

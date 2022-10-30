@@ -147,17 +147,17 @@ describe('event page', () => {
     cy.findByRole('button', { name: 'RSVP' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
-    cy.contains(/Not subscribed/);
-    cy.findByRole('button', { name: 'Subscribe' }).click();
-    cy.findByRole('alertdialog').contains('subscribe?');
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('subscribed to');
-
     cy.contains(/You are subscribed/);
     cy.findByRole('button', { name: 'Unsubscribe' }).click();
     cy.findByRole('alertdialog').contains('Unsubscribe from event');
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('unsubscribed from');
+
+    cy.contains(/Not subscribed/);
+    cy.findByRole('button', { name: 'Subscribe' }).click();
+    cy.findByRole('alertdialog').contains('subscribe?');
+    cy.findByRole('button', { name: 'Confirm' }).click();
+    cy.contains('subscribed to');
   });
 
   it('should reject requests from logged out users, non-members and banned users', () => {

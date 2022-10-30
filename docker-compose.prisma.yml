@@ -4,10 +4,10 @@
 # service. There must be a better way.
 version: "3.7"
 services:
-  seed:
+  prisma:
     env_file: .env
     build:
       context: .
       dockerfile: server.Dockerfile
       target: build
-    image: chapter-seed
+    image: chapter-prisma

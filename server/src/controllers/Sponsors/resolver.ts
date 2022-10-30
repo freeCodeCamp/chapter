@@ -8,14 +8,19 @@ import { CreateSponsorInputs, UpdateSponsorInputs } from './inputs';
 
 @Resolver()
 export class SponsorResolver {
+  @Authorized(Permission.SponsorView)
   @Query(() => [Sponsor])
   sponsors(): Promise<Sponsor[]> {
     return prisma.sponsors.findMany();
   }
-  @Query(() => Sponsor, { nullable: true })
-  sponsor(@Arg('id', () => Int) id: number): Promise<Sponsor | null> {
-    return prisma.sponsors.findUnique({ where: { id } });
+
+  @Authorized(Permission.SponsorManage)
+  @Query(() => Sponsor)
+  dashboardSponsor(@Arg('id', () => Int) id: number): Promise<Sponsor> {
+    return prisma.sponsors.findUniqueOrThrow({ where: { id } });
   }
+
+  @Authorized(Permission.SponsorView)
   @Query(() => SponsorWithEvents)
   async sponsorWithEvents(
     @Arg('sponsorId', () => Int) id: number,
@@ -25,21 +30,21 @@ export class SponsorResolver {
       include: {
         event_sponsors: {
           include: {
-            event: { include: { tags: { include: { tag: true } } } },
+            event: true,
           },
         },
       },
     });
   }
 
-  @Authorized(Permission.SponsorsManage)
+  @Authorized(Permission.SponsorManage)
   @Mutation(() => Sponsor)
   createSponsor(@Arg('data') data: CreateSponsorInputs): Promise<Sponsor> {
     const sponsorData: Prisma.sponsorsCreateInput = data;
     return prisma.sponsors.create({ data: sponsorData });
   }
 
-  @Authorized(Permission.SponsorsManage)
+  @Authorized(Permission.SponsorManage)
   @Mutation(() => Sponsor)
   updateSponsor(
     @Arg('id', () => Int) id: number,

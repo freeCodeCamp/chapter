@@ -18,6 +18,8 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
+import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
+import { isBannable } from '../../util/chapterBans';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -29,7 +31,6 @@ export class ChapterResolver {
         events: {
           include: {
             venue: true,
-            tags: { include: { tag: true } },
           },
         },
       },
@@ -40,11 +41,12 @@ export class ChapterResolver {
   @Query(() => ChapterWithRelations)
   async dashboardChapter(
     @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterWithRelations> {
-    return await prisma.chapters.findUniqueOrThrow({
+    const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: true,
         chapter_users: {
           include: {
             chapter_role: {
@@ -54,13 +56,32 @@ export class ChapterResolver {
                 },
               },
             },
-            user: true,
+            user: { include: { instance_role: true } },
           },
           orderBy: { user: { name: 'asc' } },
         },
         user_bans: { include: { user: true, chapter: true } },
       },
     });
+
+    const userInstanceRole = ctx.user.instance_role.name;
+    const userChapterRole =
+      ctx.user.user_chapters.find(({ chapter_id }) => chapter_id === id)
+        ?.chapter_role.name ?? ChapterRoles.member;
+
+    const usersWithIsBannable = chapter.chapter_users.map((chapterUser) => ({
+      ...chapterUser,
+      is_bannable: isBannable({
+        userId: ctx.user.id,
+        userChapterRole,
+        userInstanceRole,
+        otherUserId: chapterUser.user_id,
+        otherChapterRole: chapterUser.chapter_role.name,
+        otherInstanceRole: chapterUser.user.instance_role.name,
+      }),
+    }));
+
+    return { ...chapter, chapter_users: usersWithIsBannable };
   }
 
   @Query(() => ChapterWithRelations)
@@ -70,7 +91,7 @@ export class ChapterResolver {
     return await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
-        events: { include: { tags: { include: { tag: true } } } },
+        events: true,
         chapter_users: {
           include: {
             chapter_role: {

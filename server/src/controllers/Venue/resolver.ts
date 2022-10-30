@@ -4,20 +4,12 @@ import { Permission } from '../../../../common/permissions';
 
 import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import { CreateVenueInputs, UpdateVenueInputs } from './inputs';
+import { VenueInputs } from './inputs';
 
 const venueIncludes = {
   chapter: {
     include: {
-      events: {
-        include: {
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
-        },
-      },
+      events: true,
     },
   },
 };
@@ -55,7 +47,7 @@ export class VenueResolver {
   @Mutation(() => Venue)
   async createVenue(
     @Arg('chapterId', () => Int) chapter_id: number,
-    @Arg('data') data: CreateVenueInputs,
+    @Arg('data') data: VenueInputs,
   ): Promise<Venue> {
     const venueData: Prisma.venuesCreateInput = {
       ...data,
@@ -72,7 +64,7 @@ export class VenueResolver {
   updateVenue(
     @Arg('venueId', () => Int) id: number,
     @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
-    @Arg('data') data: UpdateVenueInputs,
+    @Arg('data') data: VenueInputs,
   ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
     return prisma.venues.update({

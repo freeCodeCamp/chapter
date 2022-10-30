@@ -1,19 +1,23 @@
-import { ChapterMembers } from '../../../../cypress.config';
-import { expectToBeRejected } from '../../../support/util';
+import { ChapterMembers, EventUsers, User } from '../../../../cypress.config';
+import { expectError, expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
-const knownNames = [
-  'The Owner',
-  'Chapter One Admin',
-  'Chapter Two Admin',
-  'Banned Chapter Admin',
-];
-
-// TODO: this is very brittle, since it depends on precisely how we seed the
-// database. Can make this always be the id of banned@chapter.admin?
-const bannedUserId = 4;
 
 describe('Chapter Users dashboard', () => {
+  let chapterRoles;
+  let users;
+  let bannedUserId;
+  before(() => {
+    cy.fixture('chapterRoles').then((fixture) => {
+      chapterRoles = fixture;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+      cy.task<User>('getUser', users.bannedAdmin.email).then(({ id }) => {
+        bannedUserId = id;
+      });
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
@@ -34,40 +38,41 @@ describe('Chapter Users dashboard', () => {
 
   it('can change user chapter role', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
+    const memberRole = chapterRoles.MEMBER;
+    const adminRole = chapterRoles.ADMINISTRATOR;
 
     cy.get('[data-cy=role]').then((roles) => {
       const roleNames = [...roles.map((_, role) => role.innerText)];
-      const administratorToMember = roleNames.indexOf('administrator');
-      const memberToAdministrator = roleNames.indexOf('member');
+      const administratorToMember = roleNames.indexOf(adminRole);
+      const memberToAdministrator = roleNames.indexOf(memberRole);
 
       cy.get('[data-cy=changeRole]').eq(memberToAdministrator).click();
-      cy.findByRole('combobox').find(':selected').contains('member');
-      cy.findByRole('combobox').select('administrator');
+      cy.findByRole('combobox').find(':selected').contains(memberRole);
+      cy.findByRole('combobox').select(adminRole);
       cy.findByRole('button', { name: 'Change' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
-      cy.get('[data-cy=role]')
-        .eq(memberToAdministrator)
-        .contains('administrator');
+      cy.get('[data-cy=role]').eq(memberToAdministrator).contains(adminRole);
 
       cy.get('[data-cy=changeRole]').eq(administratorToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('administrator');
-      cy.findByRole('combobox').select('member');
+      cy.findByRole('combobox').find(':selected').contains(adminRole);
+      cy.findByRole('combobox').select(memberRole);
       cy.findByRole('button', { name: 'Change' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
-      cy.get('[data-cy=role]').eq(administratorToMember).contains('member');
+      cy.get('[data-cy=role]').eq(administratorToMember).contains(memberRole);
 
       // Ensure default value is changed
       cy.get('[data-cy=changeRole]').eq(memberToAdministrator).click();
-      cy.findByRole('combobox').find(':selected').contains('administrator');
+      cy.findByRole('combobox').find(':selected').contains(adminRole);
       cy.get('[aria-label=Close]').click();
       cy.get('[data-cy=changeRole]').eq(administratorToMember).click();
-      cy.findByRole('combobox').find(':selected').contains('member');
+      cy.findByRole('combobox').find(':selected').contains(memberRole);
     });
   });
 
-  // Currently only instance users can change chapter roles
+  // Currently only instance owners can change chapter roles
   it('rejects chapter admin from changing chapter user role', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
+    const knownNames = Object.keys(users);
 
     cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
       (chapterUsers) => {
@@ -75,17 +80,17 @@ describe('Chapter Users dashboard', () => {
           ({ user: { name } }) => knownNames.indexOf(name) === -1,
         ).user.id;
         const selfUserId = chapterUsers.find(
-          ({ user: { name } }) => name === 'Chapter One Admin',
+          ({ user: { name } }) => name === users.chapter1Admin.name,
         ).user.id;
         cy.getChapterRoles().then((roles) => {
-          const roleIds = roles.map(({ id }) => id);
-          roleIds.forEach((roleId) => {
-            cy.changeChapterUserRole({ chapterId, roleId, userId }).then(
+          const roleNames = roles.map(({ name }) => name);
+          roleNames.forEach((roleName) => {
+            cy.changeChapterUserRole({ chapterId, roleName, userId }).then(
               expectToBeRejected,
             );
             cy.changeChapterUserRole({
               chapterId,
-              roleId,
+              roleName,
               userId: selfUserId,
             }).then(expectToBeRejected);
           });
@@ -94,13 +99,31 @@ describe('Chapter Users dashboard', () => {
     );
   });
 
+  function initializeBanVariables() {
+    // We don't want to interact with the instance owner here
+    cy.findAllByRole('row').not(`:contains("${users.owner.name}")`).as('rows');
+    cy.get('@rows').filter(`:contains("${chapterRoles.MEMBER}")`).as('members');
+    cy.get('@rows')
+      .filter(`:contains("${chapterRoles.ADMINISTRATOR}")`)
+      .as('administrators');
+    cy.get('@members')
+      .not(':contains("Unban")')
+      .not(':contains("Banned")')
+      .first()
+      .as('firstUnbannedMember');
+    cy.get('@firstUnbannedMember')
+      .find('[data-cy=userName]')
+      .invoke('text')
+      .as('firstUnbannedName');
+  }
+
   it('administrator can ban user from chapter', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
 
     cy.get('@rows')
-      .filter(':contains("administrator")')
+      .filter(`:contains("${chapterRoles.ADMINISTRATOR}")`)
       .find('[data-cy=isBanned]')
       .should('have.length', 1);
 
@@ -113,6 +136,7 @@ describe('Chapter Users dashboard', () => {
       .click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('was banned', { matchCase: false });
+
     cy.get('@firstUnbannedMember').find('[data-cy=isBanned]').should('exist');
     cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Unban' })
@@ -120,6 +144,19 @@ describe('Chapter Users dashboard', () => {
     cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Ban' })
       .should('not.exist');
+    cy.get<string>('@firstUnbannedName').then((userName) => {
+      cy.getChapterEvents(chapterId).then((events) => {
+        const eventIds = events.map(({ id }) => id);
+        eventIds.forEach((eventId) => {
+          cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
+            const eventUser = eventUsers.find(
+              ({ user: { name } }) => name === userName,
+            );
+            expect(eventUser).to.be.undefined;
+          });
+        });
+      });
+    });
 
     cy.get('@firstUnbannedMember')
       .findByRole('button', { name: 'Unban' })
@@ -137,20 +174,8 @@ describe('Chapter Users dashboard', () => {
       .should('not.exist');
   });
 
-  function initializeBanVariables() {
-    // We don't want to interact with the instance owner here
-    cy.findAllByRole('row').not(':contains("The Owner")').as('rows');
-    cy.get('@rows').filter(':contains("member")').as('members');
-    cy.get('@rows').filter(':contains("administrator")').as('administrators');
-    cy.get('@members')
-      .not(':contains("Unban")')
-      .not(':contains("Banned")')
-      .first()
-      .as('firstUnbannedMember');
-  }
-
   it("admins of other chapters should NOT be able to ban (or unban) that chapter's users", () => {
-    cy.login('admin@of.chapter.two');
+    cy.login(users.chapter2Admin.email);
 
     cy.task<ChapterMembers>('getChapterMembers', chapterId).each(
       (member: any) => {
@@ -165,25 +190,41 @@ describe('Chapter Users dashboard', () => {
   });
 
   it('an admin cannot ban themselves', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
 
     initializeBanVariables();
 
     cy.get('@administrators')
-      .filter(':contains("Chapter One Admin")')
+      .filter(`:contains("${users.chapter1Admin.name}")`)
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@adminToBan').findByRole('button', { name: 'Ban' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('You cannot ban yourself', { matchCase: false });
+    cy.get('@adminToBan')
+      .findByRole('button', { name: 'Ban' })
+      .should('not.exist');
+
+    cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
+      cy.banUser({ chapterId, userId: id }).then(
+        expectError('You cannot ban yourself'),
+      );
+    });
     cy.get('@adminToBan').find('[data-cy=isBanned]').should('not.exist');
   });
 
   it('an admin cannot unban themselves', () => {
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
 
     cy.unbanUser({ chapterId, userId: bannedUserId }).then(expectToBeRejected);
+  });
+
+  it('instance owner cannot ban another instance owner from chapter', () => {
+    cy.task('promoteToOwner', { email: 'admin@of.chapter.one' });
+
+    cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
+      cy.banUser({ chapterId, userId: id }).then(
+        expectError('You cannot ban this user'),
+      );
+    });
   });
 });

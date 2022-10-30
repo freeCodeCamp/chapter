@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const createEvent = gql`
-  mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+  mutation createEvent($chapterId: Int!, $data: EventInputs!) {
     createEvent(chapterId: $chapterId, data: $data) {
       id
       name
@@ -10,18 +10,12 @@ export const createEvent = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
 
 export const updateEvent = gql`
-  mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+  mutation updateEvent($eventId: Int!, $data: EventInputs!) {
     updateEvent(id: $eventId, data: $data) {
       id
       name
@@ -30,12 +24,6 @@ export const updateEvent = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       invite_only
     }
   }

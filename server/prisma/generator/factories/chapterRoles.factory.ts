@@ -4,10 +4,17 @@ import { ChapterPermission } from '../../../../common/permissions';
 
 const chapterPermissions = Object.values(ChapterPermission);
 
-const roles: Array<{
-  name: string;
-  permissions: readonly ChapterPermission[];
-}> = [
+export enum ChapterRoles {
+  administrator = 'administrator',
+  member = 'member',
+}
+
+export interface ChapterRole {
+  name: keyof typeof ChapterRoles;
+  permissions: typeof chapterPermissions;
+}
+
+const roles: ChapterRole[] = [
   {
     name: 'administrator',
     permissions: Object.values(ChapterPermission),
@@ -16,7 +23,7 @@ const roles: Array<{
     name: 'member',
     permissions: [
       ChapterPermission.Rsvp,
-      ChapterPermission.EventSubscriptionsManage,
+      ChapterPermission.EventSubscriptionManage,
     ],
   },
 ];

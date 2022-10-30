@@ -17,6 +17,7 @@ export const meQuery = gql`
         name
       }
       auto_subscribe
+      image_url
     }
   }
 `;

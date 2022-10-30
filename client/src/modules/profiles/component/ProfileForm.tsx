@@ -34,8 +34,15 @@ const fields: Fields[] = [
     key: 'name',
     label: 'New name',
     placeholder: 'Please type your new name here',
-    required: true,
+    required: false,
     type: 'text',
+  },
+  {
+    key: 'image_url',
+    label: 'Profile Picture',
+    placeholder: 'Link your new profile picture here',
+    required: false,
+    type: 'url',
   },
 ];
 

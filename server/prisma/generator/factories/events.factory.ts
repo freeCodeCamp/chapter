@@ -83,7 +83,6 @@ const createEvents = async (
         return prisma.event_sponsors.create({ data: eventSponsorData });
       }),
     );
-
     const tagNames = [
       'GraphQl',
       'NodeJs',
@@ -100,8 +99,8 @@ const createEvents = async (
       'NextJs',
       'NuxtJs',
       'Angular',
-      'Svelete',
-      'SveleteKit',
+      'Svelte',
+      'SvelteKit',
       'Vite',
       'Prisma',
       'Ruby',

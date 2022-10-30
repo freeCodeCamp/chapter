@@ -8,8 +8,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   useChangeInstanceUserRoleMutation,
@@ -23,9 +22,10 @@ import { Users } from '../graphql/queries';
 import {
   RoleChangeModal,
   RoleChangeModalData,
-} from 'modules/dashboard/shared/components/RoleChangeModal';
+} from '../../shared/components/RoleChangeModal';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const UsersPage: NextPage = () => {
+export const UsersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useUsersQuery();
 
   const { data: instanceRoles } = useInstanceRolesQuery();
@@ -40,10 +40,10 @@ export const UsersPage: NextPage = () => {
     modalProps.onOpen();
   };
 
-  const onModalSubmit = (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = (data: { newRoleName: string; userId: number }) => {
     changeRoleMutation({
       variables: {
-        roleId: data.newRoleId,
+        roleName: data.newRoleName,
         userId: data.userId,
       },
     });
@@ -51,11 +51,10 @@ export const UsersPage: NextPage = () => {
   };
 
   const isLoading = loading || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <Layout>
+    <>
       {instanceRoles && instanceUser && (
         <RoleChangeModal
           modalProps={modalProps}
@@ -88,7 +87,7 @@ export const UsersPage: NextPage = () => {
                     size="xs"
                     onClick={() =>
                       changeRole({
-                        roleId: instance_role.id,
+                        roleName: instance_role.name,
                         userId: id,
                         userName: name,
                       })
@@ -135,7 +134,7 @@ export const UsersPage: NextPage = () => {
                         size="xs"
                         onClick={() =>
                           changeRole({
-                            roleId: instance_role.id,
+                            roleName: instance_role.name,
                             userId: id,
                             userName: name,
                           })
@@ -151,6 +150,10 @@ export const UsersPage: NextPage = () => {
           </Box>
         </Box>
       </VStack>
-    </Layout>
+    </>
   );
+};
+
+UsersPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

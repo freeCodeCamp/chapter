@@ -24,6 +24,7 @@ export type Scalars = {
 
 export type Chapter = {
   __typename?: 'Chapter';
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -31,7 +32,7 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
-  image_url: Scalars['String'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -58,7 +59,7 @@ export type ChapterUser = {
   __typename?: 'ChapterUser';
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
-  is_bannable: Scalars['Boolean'];
+  is_bannable?: Maybe<Scalars['Boolean']>;
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
@@ -67,6 +68,7 @@ export type ChapterUser = {
 
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -75,13 +77,14 @@ export type ChapterWithEvents = {
   description: Scalars['String'];
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
 };
 
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -91,37 +94,22 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
-  image_url: Scalars['String'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
 };
 
 export type CreateChapterInputs = {
+  banner_url: Scalars['String'];
   category: Scalars['String'];
   chat_url?: InputMaybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
-  image_url: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
-};
-
-export type CreateEventInputs = {
-  capacity: Scalars['Float'];
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  image_url: Scalars['String'];
-  invite_only?: InputMaybe<Scalars['Boolean']>;
-  name: Scalars['String'];
-  sponsor_ids: Array<Scalars['Int']>;
-  start_at: Scalars['DateTime'];
-  streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
-  url?: InputMaybe<Scalars['String']>;
-  venue_id?: InputMaybe<Scalars['Int']>;
-  venue_type?: InputMaybe<VenueType>;
 };
 
 export type CreateSponsorInputs = {
@@ -129,17 +117,6 @@ export type CreateSponsorInputs = {
   name: Scalars['String'];
   type: Scalars['String'];
   website: Scalars['String'];
-};
-
-export type CreateVenueInputs = {
-  city: Scalars['String'];
-  country: Scalars['String'];
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  name: Scalars['String'];
-  postal_code: Scalars['String'];
-  region: Scalars['String'];
-  street_address?: InputMaybe<Scalars['String']>;
 };
 
 export type Email = {
@@ -163,9 +140,23 @@ export type Event = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
+};
+
+export type EventInputs = {
+  capacity: Scalars['Float'];
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  image_url: Scalars['String'];
+  invite_only?: InputMaybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  sponsor_ids: Array<Scalars['Int']>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: InputMaybe<Scalars['String']>;
+  url?: InputMaybe<Scalars['String']>;
+  venue_id?: InputMaybe<Scalars['Int']>;
+  venue_type?: InputMaybe<VenueType>;
 };
 
 export type EventPermission = {
@@ -191,11 +182,6 @@ export type EventSponsor = {
   sponsor: Sponsor;
 };
 
-export type EventTag = {
-  __typename?: 'EventTag';
-  tag: Tag;
-};
-
 export type EventUser = {
   __typename?: 'EventUser';
   event_role: EventRole;
@@ -218,7 +204,6 @@ export type EventWithChapter = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
@@ -238,7 +223,6 @@ export type EventWithRelations = {
   sponsors: Array<EventSponsor>;
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -256,7 +240,6 @@ export type EventWithVenue = {
   name: Scalars['String'];
   start_at: Scalars['DateTime'];
   streaming_url?: Maybe<Scalars['String']>;
-  tags: Array<EventTag>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
   venue_type: VenueType;
@@ -297,6 +280,7 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUser;
+  leaveChapter: ChapterUser;
   rsvpEvent: EventUser;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
@@ -328,12 +312,12 @@ export type MutationCancelRsvpArgs = {
 
 export type MutationChangeChapterUserRoleArgs = {
   chapterId: Scalars['Int'];
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 };
 
 export type MutationChangeInstanceUserRoleArgs = {
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 };
 
@@ -348,7 +332,7 @@ export type MutationCreateChapterArgs = {
 
 export type MutationCreateEventArgs = {
   chapterId: Scalars['Int'];
-  data: CreateEventInputs;
+  data: EventInputs;
 };
 
 export type MutationCreateSponsorArgs = {
@@ -357,7 +341,7 @@ export type MutationCreateSponsorArgs = {
 
 export type MutationCreateVenueArgs = {
   chapterId: Scalars['Int'];
-  data: CreateVenueInputs;
+  data: VenueInputs;
 };
 
 export type MutationDeleteChapterArgs = {
@@ -379,6 +363,10 @@ export type MutationDeleteVenueArgs = {
 };
 
 export type MutationJoinChapterArgs = {
+  chapterId: Scalars['Int'];
+};
+
+export type MutationLeaveChapterArgs = {
   chapterId: Scalars['Int'];
 };
 
@@ -423,7 +411,7 @@ export type MutationUpdateChapterArgs = {
 };
 
 export type MutationUpdateEventArgs = {
-  data: UpdateEventInputs;
+  data: EventInputs;
   id: Scalars['Int'];
 };
 
@@ -438,7 +426,7 @@ export type MutationUpdateSponsorArgs = {
 
 export type MutationUpdateVenueArgs = {
   chapterId: Scalars['Int'];
-  data: UpdateVenueInputs;
+  data: VenueInputs;
   venueId: Scalars['Int'];
 };
 
@@ -452,12 +440,13 @@ export type Query = {
   __typename?: 'Query';
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser: ChapterUser;
+  chapterUser?: Maybe<ChapterUser>;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
   dashboardChapter: ChapterWithRelations;
   dashboardEvent?: Maybe<EventWithRelations>;
+  dashboardSponsor: Sponsor;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -465,9 +454,9 @@ export type Query = {
   me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
-  sponsor?: Maybe<Sponsor>;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  userInformation?: Maybe<UserInformation>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -497,6 +486,10 @@ export type QueryDashboardEventArgs = {
   eventId: Scalars['Int'];
 };
 
+export type QueryDashboardSponsorArgs = {
+  id: Scalars['Int'];
+};
+
 export type QueryEventArgs = {
   eventId: Scalars['Int'];
 };
@@ -514,10 +507,6 @@ export type QueryPaginatedEventsArgs = {
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-};
-
-export type QuerySponsorArgs = {
-  id: Scalars['Int'];
 };
 
 export type QuerySponsorWithEventsArgs = {
@@ -565,38 +554,16 @@ export type SponsoredEvent = {
   event: Event;
 };
 
-export type Tag = {
-  __typename?: 'Tag';
-  id: Scalars['Int'];
-  name: Scalars['String'];
-};
-
 export type UpdateChapterInputs = {
+  banner_url?: InputMaybe<Scalars['String']>;
   category?: InputMaybe<Scalars['String']>;
   chat_url?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  image_url?: InputMaybe<Scalars['String']>;
+  logo_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateEventInputs = {
-  capacity?: InputMaybe<Scalars['Float']>;
-  chapter_id: Scalars['Int'];
-  description?: InputMaybe<Scalars['String']>;
-  ends_at?: InputMaybe<Scalars['DateTime']>;
-  image_url?: InputMaybe<Scalars['String']>;
-  invite_only?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  sponsor_ids: Array<Scalars['Int']>;
-  start_at?: InputMaybe<Scalars['DateTime']>;
-  streaming_url?: InputMaybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
-  url?: InputMaybe<Scalars['String']>;
-  venue_id?: InputMaybe<Scalars['Int']>;
-  venue_type?: InputMaybe<VenueType>;
 };
 
 export type UpdateSponsorInputs = {
@@ -608,24 +575,15 @@ export type UpdateSponsorInputs = {
 
 export type UpdateUserInputs = {
   auto_subscribe: Scalars['Boolean'];
+  image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateVenueInputs = {
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  name?: InputMaybe<Scalars['String']>;
-  postal_code?: InputMaybe<Scalars['String']>;
-  region?: InputMaybe<Scalars['String']>;
-  street_address?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
   __typename?: 'User';
   auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
@@ -635,11 +593,25 @@ export type UserBan = {
   user: User;
 };
 
+export type UserInformation = {
+  __typename?: 'UserInformation';
+  auto_subscribe: Scalars['Boolean'];
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+  user_bans: Array<UserBan>;
+  user_chapters: Array<ChapterUser>;
+  user_events: Array<EventUser>;
+};
+
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
 };
@@ -657,6 +629,17 @@ export type Venue = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
+};
+
+export type VenueInputs = {
+  city: Scalars['String'];
+  country: Scalars['String'];
+  latitude?: InputMaybe<Scalars['Float']>;
+  longitude?: InputMaybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: InputMaybe<Scalars['String']>;
 };
 
 /** All possible venue types for an event */
@@ -679,7 +662,12 @@ export type UpdateMeMutationVariables = Exact<{
 
 export type UpdateMeMutation = {
   __typename?: 'Mutation';
-  updateMe: { __typename?: 'User'; id: number; name: string };
+  updateMe: {
+    __typename?: 'User';
+    id: number;
+    name: string;
+    image_url?: string | null;
+  };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -691,6 +679,7 @@ export type MeQuery = {
     id: number;
     name: string;
     auto_subscribe: boolean;
+    image_url?: string | null;
     instance_role: {
       __typename?: 'InstanceRole';
       instance_role_permissions: Array<{
@@ -716,6 +705,18 @@ export type JoinChapterMutationVariables = Exact<{
 export type JoinChapterMutation = {
   __typename?: 'Mutation';
   joinChapter: {
+    __typename?: 'ChapterUser';
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
+  };
+};
+
+export type LeaveChapterMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type LeaveChapterMutation = {
+  __typename?: 'Mutation';
+  leaveChapter: {
     __typename?: 'ChapterUser';
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
@@ -748,7 +749,8 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    image_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -759,32 +761,6 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
-    }>;
-  };
-};
-
-export type DashboardChapterUsersQueryVariables = Exact<{
-  chapterId: Scalars['Int'];
-}>;
-
-export type DashboardChapterUsersQuery = {
-  __typename?: 'Query';
-  dashboardChapter: {
-    __typename?: 'ChapterWithRelations';
-    chapter_users: Array<{
-      __typename?: 'ChapterUser';
-      subscribed: boolean;
-      is_bannable: boolean;
-      user: { __typename?: 'User'; id: number; name: string };
-      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
-    }>;
-    user_bans: Array<{
-      __typename?: 'UserBan';
-      user: { __typename?: 'User'; id: number };
     }>;
   };
 };
@@ -795,12 +771,12 @@ export type ChapterUserQueryVariables = Exact<{
 
 export type ChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser: {
+  chapterUser?: {
     __typename?: 'ChapterUser';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  } | null;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -812,7 +788,8 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    image_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -904,7 +881,7 @@ export type UnbanUserMutation = {
 
 export type ChangeChapterUserRoleMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 }>;
 
@@ -912,7 +889,7 @@ export type ChangeChapterUserRoleMutation = {
   __typename?: 'Mutation';
   changeChapterUserRole: {
     __typename?: 'ChapterUser';
-    chapter_role: { __typename?: 'ChapterRole'; id: number };
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
 };
 
@@ -938,7 +915,8 @@ export type DashboardChapterQuery = {
     city: string;
     region: string;
     country: string;
-    image_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -949,17 +927,35 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
+    }>;
+  };
+};
+
+export type DashboardChapterUsersQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type DashboardChapterUsersQuery = {
+  __typename?: 'Query';
+  dashboardChapter: {
+    __typename?: 'ChapterWithRelations';
+    chapter_users: Array<{
+      __typename?: 'ChapterUser';
+      subscribed: boolean;
+      is_bannable?: boolean | null;
+      user: { __typename?: 'User'; id: number; name: string };
+      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
+    }>;
+    user_bans: Array<{
+      __typename?: 'UserBan';
+      user: { __typename?: 'User'; id: number };
     }>;
   };
 };
 
 export type CreateEventMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: CreateEventInputs;
+  data: EventInputs;
 }>;
 
 export type CreateEventMutation = {
@@ -973,16 +969,12 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   };
 };
 
 export type UpdateEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
-  data: UpdateEventInputs;
+  data: EventInputs;
 }>;
 
 export type UpdateEventMutation = {
@@ -997,10 +989,6 @@ export type UpdateEventMutation = {
     streaming_url?: string | null;
     capacity: number;
     invite_only: boolean;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   };
 };
 
@@ -1072,10 +1060,6 @@ export type EventsQuery = {
     capacity: number;
     venue_type: VenueType;
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
   }>;
 };
 
@@ -1100,10 +1084,6 @@ export type DashboardEventQuery = {
     image_url: string;
     venue_type: VenueType;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
     sponsors: Array<{
       __typename?: 'EventSponsor';
       sponsor: {
@@ -1129,7 +1109,12 @@ export type DashboardEventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: { __typename?: 'User'; id: number; name: string };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        image_url?: string | null;
+      };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -1197,20 +1182,20 @@ export type UpdateSponsorMutation = {
   };
 };
 
-export type SponsorQueryVariables = Exact<{
+export type DashboardSponsorQueryVariables = Exact<{
   sponsorId: Scalars['Int'];
 }>;
 
-export type SponsorQuery = {
+export type DashboardSponsorQuery = {
   __typename?: 'Query';
-  sponsor?: {
+  dashboardSponsor: {
     __typename?: 'Sponsor';
     id: number;
     name: string;
     website: string;
     logo_path: string;
     type: string;
-  } | null;
+  };
 };
 
 export type SponsorWithEventsQueryVariables = Exact<{
@@ -1240,7 +1225,7 @@ export type SponsorWithEventsQuery = {
 };
 
 export type ChangeInstanceUserRoleMutationVariables = Exact<{
-  roleId: Scalars['Int'];
+  roleName: Scalars['String'];
   userId: Scalars['Int'];
 }>;
 
@@ -1248,7 +1233,7 @@ export type ChangeInstanceUserRoleMutation = {
   __typename?: 'Mutation';
   changeInstanceUserRole: {
     __typename?: 'UserWithInstanceRole';
-    instance_role: { __typename?: 'InstanceRole'; id: number };
+    instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
 
@@ -1277,7 +1262,7 @@ export type UsersQuery = {
 
 export type CreateVenueMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: CreateVenueInputs;
+  data: VenueInputs;
 }>;
 
 export type CreateVenueMutation = {
@@ -1299,7 +1284,7 @@ export type CreateVenueMutation = {
 export type UpdateVenueMutationVariables = Exact<{
   venueId: Scalars['Int'];
   chapterId: Scalars['Int'];
-  data: UpdateVenueInputs;
+  data: VenueInputs;
 }>;
 
 export type UpdateVenueMutation = {
@@ -1426,10 +1411,6 @@ export type PaginatedEventsWithTotalQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
-      tags: Array<{
-        __typename?: 'EventTag';
-        tag: { __typename?: 'Tag'; id: number; name: string };
-      }>;
       chapter: {
         __typename?: 'Chapter';
         id: number;
@@ -1461,10 +1442,6 @@ export type EventQuery = {
     image_url: string;
     venue_type: VenueType;
     chapter: { __typename?: 'Chapter'; id: number; name: string };
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
     sponsors: Array<{
       __typename?: 'EventSponsor';
       sponsor: {
@@ -1490,7 +1467,12 @@ export type EventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: { __typename?: 'User'; id: number; name: string };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        image_url?: string | null;
+      };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -1520,10 +1502,6 @@ export type HomeQuery = {
     canceled: boolean;
     start_at: any;
     image_url: string;
-    tags: Array<{
-      __typename?: 'EventTag';
-      tag: { __typename?: 'Tag'; id: number; name: string };
-    }>;
     chapter: {
       __typename?: 'Chapter';
       id: number;
@@ -1536,7 +1514,8 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    image_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -1623,6 +1602,7 @@ export const UpdateMeDocument = gql`
     updateMe(data: $data) {
       id
       name
+      image_url
     }
   }
 `;
@@ -1683,6 +1663,7 @@ export const MeDocument = gql`
         name
       }
       auto_subscribe
+      image_url
     }
   }
 `;
@@ -1769,6 +1750,58 @@ export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
   JoinChapterMutation,
   JoinChapterMutationVariables
 >;
+export const LeaveChapterDocument = gql`
+  mutation leaveChapter($chapterId: Int!) {
+    leaveChapter(chapterId: $chapterId) {
+      chapter_role {
+        name
+      }
+    }
+  }
+`;
+export type LeaveChapterMutationFn = Apollo.MutationFunction<
+  LeaveChapterMutation,
+  LeaveChapterMutationVariables
+>;
+
+/**
+ * __useLeaveChapterMutation__
+ *
+ * To run a mutation, you first call `useLeaveChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveChapterMutation, { data, loading, error }] = useLeaveChapterMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useLeaveChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LeaveChapterMutation,
+    LeaveChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    LeaveChapterMutation,
+    LeaveChapterMutationVariables
+  >(LeaveChapterDocument, options);
+}
+export type LeaveChapterMutationHookResult = ReturnType<
+  typeof useLeaveChapterMutation
+>;
+export type LeaveChapterMutationResult =
+  Apollo.MutationResult<LeaveChapterMutation>;
+export type LeaveChapterMutationOptions = Apollo.BaseMutationOptions<
+  LeaveChapterMutation,
+  LeaveChapterMutationVariables
+>;
 export const ToggleChapterSubscriptionDocument = gql`
   mutation toggleChapterSubscription($chapterId: Int!) {
     toggleChapterSubscription(chapterId: $chapterId) {
@@ -1830,7 +1863,8 @@ export const ChapterDocument = gql`
       city
       region
       country
-      image_url
+      logo_url
+      banner_url
       chat_url
       events {
         id
@@ -1840,12 +1874,6 @@ export const ChapterDocument = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         invite_only
         canceled
       }
@@ -1895,80 +1923,6 @@ export type ChapterLazyQueryHookResult = ReturnType<typeof useChapterLazyQuery>;
 export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
->;
-export const DashboardChapterUsersDocument = gql`
-  query dashboardChapterUsers($chapterId: Int!) {
-    dashboardChapter(id: $chapterId) {
-      chapter_users {
-        user {
-          id
-          name
-        }
-        chapter_role {
-          id
-          name
-        }
-        subscribed
-        is_bannable
-      }
-      user_bans {
-        user {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useDashboardChapterUsersQuery__
- *
- * To run a query within a React component, call `useDashboardChapterUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useDashboardChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDashboardChapterUsersQuery({
- *   variables: {
- *      chapterId: // value for 'chapterId'
- *   },
- * });
- */
-export function useDashboardChapterUsersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >(DashboardChapterUsersDocument, options);
-}
-export function useDashboardChapterUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >(DashboardChapterUsersDocument, options);
-}
-export type DashboardChapterUsersQueryHookResult = ReturnType<
-  typeof useDashboardChapterUsersQuery
->;
-export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
-  typeof useDashboardChapterUsersLazyQuery
->;
-export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
-  DashboardChapterUsersQuery,
-  DashboardChapterUsersQueryVariables
 >;
 export const ChapterUserDocument = gql`
   query chapterUser($chapterId: Int!) {
@@ -2038,7 +1992,8 @@ export const ChaptersDocument = gql`
       id
       name
       description
-      image_url
+      logo_url
+      banner_url
       city
       events {
         id
@@ -2367,16 +2322,16 @@ export type UnbanUserMutationOptions = Apollo.BaseMutationOptions<
 export const ChangeChapterUserRoleDocument = gql`
   mutation changeChapterUserRole(
     $chapterId: Int!
-    $roleId: Int!
+    $roleName: String!
     $userId: Int!
   ) {
     changeChapterUserRole(
       chapterId: $chapterId
-      roleId: $roleId
+      roleName: $roleName
       userId: $userId
     ) {
       chapter_role {
-        id
+        name
       }
     }
   }
@@ -2400,7 +2355,7 @@ export type ChangeChapterUserRoleMutationFn = Apollo.MutationFunction<
  * const [changeChapterUserRoleMutation, { data, loading, error }] = useChangeChapterUserRoleMutation({
  *   variables: {
  *      chapterId: // value for 'chapterId'
- *      roleId: // value for 'roleId'
+ *      roleName: // value for 'roleName'
  *      userId: // value for 'userId'
  *   },
  * });
@@ -2494,7 +2449,8 @@ export const DashboardChapterDocument = gql`
       city
       region
       country
-      image_url
+      logo_url
+      banner_url
       chat_url
       events {
         id
@@ -2504,12 +2460,6 @@ export const DashboardChapterDocument = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
       }
     }
   }
@@ -2565,8 +2515,82 @@ export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQuery,
   DashboardChapterQueryVariables
 >;
+export const DashboardChapterUsersDocument = gql`
+  query dashboardChapterUsers($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
+      chapter_users {
+        user {
+          id
+          name
+        }
+        chapter_role {
+          id
+          name
+        }
+        subscribed
+        is_bannable
+      }
+      user_bans {
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useDashboardChapterUsersQuery__
+ *
+ * To run a query within a React component, call `useDashboardChapterUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardChapterUsersQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDashboardChapterUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >(DashboardChapterUsersDocument, options);
+}
+export function useDashboardChapterUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >(DashboardChapterUsersDocument, options);
+}
+export type DashboardChapterUsersQueryHookResult = ReturnType<
+  typeof useDashboardChapterUsersQuery
+>;
+export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
+  typeof useDashboardChapterUsersLazyQuery
+>;
+export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
+  DashboardChapterUsersQuery,
+  DashboardChapterUsersQueryVariables
+>;
 export const CreateEventDocument = gql`
-  mutation createEvent($chapterId: Int!, $data: CreateEventInputs!) {
+  mutation createEvent($chapterId: Int!, $data: EventInputs!) {
     createEvent(chapterId: $chapterId, data: $data) {
       id
       name
@@ -2575,12 +2599,6 @@ export const CreateEventDocument = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
@@ -2629,7 +2647,7 @@ export type CreateEventMutationOptions = Apollo.BaseMutationOptions<
   CreateEventMutationVariables
 >;
 export const UpdateEventDocument = gql`
-  mutation updateEvent($eventId: Int!, $data: UpdateEventInputs!) {
+  mutation updateEvent($eventId: Int!, $data: EventInputs!) {
     updateEvent(id: $eventId, data: $data) {
       id
       name
@@ -2638,12 +2656,6 @@ export const UpdateEventDocument = gql`
       url
       streaming_url
       capacity
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       invite_only
     }
   }
@@ -2962,12 +2974,6 @@ export const EventsDocument = gql`
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
@@ -3029,12 +3035,6 @@ export const DashboardEventDocument = gql`
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       sponsors {
         sponsor {
           name
@@ -3061,6 +3061,7 @@ export const DashboardEventDocument = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id
@@ -3349,9 +3350,9 @@ export type UpdateSponsorMutationOptions = Apollo.BaseMutationOptions<
   UpdateSponsorMutation,
   UpdateSponsorMutationVariables
 >;
-export const SponsorDocument = gql`
-  query sponsor($sponsorId: Int!) {
-    sponsor(id: $sponsorId) {
+export const DashboardSponsorDocument = gql`
+  query dashboardSponsor($sponsorId: Int!) {
+    dashboardSponsor(id: $sponsorId) {
       id
       name
       website
@@ -3362,47 +3363,54 @@ export const SponsorDocument = gql`
 `;
 
 /**
- * __useSponsorQuery__
+ * __useDashboardSponsorQuery__
  *
- * To run a query within a React component, call `useSponsorQuery` and pass it any options that fit your needs.
- * When your component renders, `useSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDashboardSponsorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardSponsorQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSponsorQuery({
+ * const { data, loading, error } = useDashboardSponsorQuery({
  *   variables: {
  *      sponsorId: // value for 'sponsorId'
  *   },
  * });
  */
-export function useSponsorQuery(
-  baseOptions: Apollo.QueryHookOptions<SponsorQuery, SponsorQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
-    options,
-  );
-}
-export function useSponsorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SponsorQuery,
-    SponsorQueryVariables
+export function useDashboardSponsorQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SponsorQuery, SponsorQueryVariables>(
-    SponsorDocument,
+  return Apollo.useQuery<DashboardSponsorQuery, DashboardSponsorQueryVariables>(
+    DashboardSponsorDocument,
     options,
   );
 }
-export type SponsorQueryHookResult = ReturnType<typeof useSponsorQuery>;
-export type SponsorLazyQueryHookResult = ReturnType<typeof useSponsorLazyQuery>;
-export type SponsorQueryResult = Apollo.QueryResult<
-  SponsorQuery,
-  SponsorQueryVariables
+export function useDashboardSponsorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardSponsorQuery,
+    DashboardSponsorQueryVariables
+  >(DashboardSponsorDocument, options);
+}
+export type DashboardSponsorQueryHookResult = ReturnType<
+  typeof useDashboardSponsorQuery
+>;
+export type DashboardSponsorLazyQueryHookResult = ReturnType<
+  typeof useDashboardSponsorLazyQuery
+>;
+export type DashboardSponsorQueryResult = Apollo.QueryResult<
+  DashboardSponsorQuery,
+  DashboardSponsorQueryVariables
 >;
 export const SponsorWithEventsDocument = gql`
   query sponsorWithEvents($sponsorId: Int!) {
@@ -3475,10 +3483,10 @@ export type SponsorWithEventsQueryResult = Apollo.QueryResult<
   SponsorWithEventsQueryVariables
 >;
 export const ChangeInstanceUserRoleDocument = gql`
-  mutation changeInstanceUserRole($roleId: Int!, $userId: Int!) {
-    changeInstanceUserRole(roleId: $roleId, userId: $userId) {
+  mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
+    changeInstanceUserRole(roleName: $roleName, userId: $userId) {
       instance_role {
-        id
+        name
       }
     }
   }
@@ -3501,7 +3509,7 @@ export type ChangeInstanceUserRoleMutationFn = Apollo.MutationFunction<
  * @example
  * const [changeInstanceUserRoleMutation, { data, loading, error }] = useChangeInstanceUserRoleMutation({
  *   variables: {
- *      roleId: // value for 'roleId'
+ *      roleName: // value for 'roleName'
  *      userId: // value for 'userId'
  *   },
  * });
@@ -3638,7 +3646,7 @@ export type UsersQueryResult = Apollo.QueryResult<
   UsersQueryVariables
 >;
 export const CreateVenueDocument = gql`
-  mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+  mutation createVenue($chapterId: Int!, $data: VenueInputs!) {
     createVenue(chapterId: $chapterId, data: $data) {
       id
       name
@@ -3697,11 +3705,7 @@ export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
   CreateVenueMutationVariables
 >;
 export const UpdateVenueDocument = gql`
-  mutation updateVenue(
-    $venueId: Int!
-    $chapterId: Int!
-    $data: UpdateVenueInputs!
-  ) {
+  mutation updateVenue($venueId: Int!, $chapterId: Int!, $data: VenueInputs!) {
     updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
       id
       name
@@ -4099,12 +4103,6 @@ export const PaginatedEventsWithTotalDocument = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         chapter {
           id
           name
@@ -4184,12 +4182,6 @@ export const EventDocument = gql`
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       sponsors {
         sponsor {
           name
@@ -4216,6 +4208,7 @@ export const EventDocument = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id
@@ -4282,12 +4275,6 @@ export const HomeDocument = gql`
       canceled
       start_at
       image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       chapter {
         id
         name
@@ -4298,7 +4285,8 @@ export const HomeDocument = gql`
       id
       name
       description
-      image_url
+      logo_url
+      banner_url
       city
       events {
         id

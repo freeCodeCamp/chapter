@@ -35,6 +35,7 @@ const baseUser: User = {
   user_events: [],
   name: 'any one',
   id: 1,
+  image_url: null,
   created_at: new Date(),
   updated_at: new Date(),
   email: 'an@add.ress',

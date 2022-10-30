@@ -28,18 +28,6 @@ const timeFormatter = new Intl.DateTimeFormat('en-us', {
 
 type LockCheck = (reminder: Reminder) => Promise<{ hasLock: boolean }>;
 
-const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
-  await Promise.all(
-    reminders.map(async (reminder) => {
-      const { hasLock } = await lock(reminder);
-      if (!hasLock) {
-        return;
-      }
-      await sendEmailForReminder(reminder);
-      await deleteReminder(reminder);
-    }),
-  );
-
 interface ReminderMessageData {
   event: Reminder['event_user']['event'];
   user: Reminder['event_user']['user'];
@@ -121,6 +109,18 @@ const sendEmailForReminder = async (reminder: Reminder) => {
     htmlEmail: email,
   }).sendEmail();
 };
+
+const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
+  await Promise.all(
+    reminders.map(async (reminder) => {
+      const { hasLock } = await lock(reminder);
+      if (!hasLock) {
+        return;
+      }
+      await sendEmailForReminder(reminder);
+      await deleteReminder(reminder);
+    }),
+  );
 
 (async () => {
   const date = new Date();

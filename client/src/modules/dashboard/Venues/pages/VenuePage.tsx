@@ -1,37 +1,32 @@
 import { Heading, Text } from '@chakra-ui/layout';
-import { NextPage } from 'next';
 import NextError from 'next/error';
-import React, { useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useVenueLazyQuery } from '../../../../generated/graphql';
+import { useVenueQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const VenuePage: NextPage = () => {
-  const { param: venueId, isReady } = useParam('id');
+export const VenuePage: NextPageWithLayout = () => {
+  const { param: venueId } = useParam('id');
 
-  const [getVenue, { loading, error, data }] = useVenueLazyQuery({
+  const { loading, error, data } = useVenueQuery({
     variables: { venueId },
   });
 
-  useEffect(() => {
-    if (isReady) getVenue();
-  }, [isReady]);
-
-  const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.venue)
     return <NextError statusCode={404} title="Venue not found" />;
 
   return (
-    <Layout dataCy="view-venue-page">
+    <>
       <Card className={styles.card}>
         <ProgressCardContent>
           <Heading as="h1" fontWeight="normal" mb="2">
@@ -46,6 +41,10 @@ export const VenuePage: NextPage = () => {
         title="Organized By The Venue's Chapter"
         events={data.venue.chapter.events}
       />
-    </Layout>
+    </>
   );
+};
+
+VenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout dataCy="view-venue-page">{page}</Layout>;
 };

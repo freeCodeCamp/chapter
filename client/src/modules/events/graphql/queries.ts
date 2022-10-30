@@ -11,12 +11,6 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         chapter {
           id
           name
@@ -45,12 +39,6 @@ export const EVENT = gql`
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       sponsors {
         sponsor {
           name
@@ -77,6 +65,7 @@ export const EVENT = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id

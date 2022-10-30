@@ -1,35 +1,30 @@
-import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useDashboardEventLazyQuery,
+  useDashboardEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import { isOnline, isPhysical } from '../../../../util/venueType';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
-import { EventFormData } from '../components/EventFormUtils';
+import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
-import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EditEventPage: NextPage = () => {
+export const EditEventPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  const { param: eventId, isReady } = useParam();
+  const { param: eventId } = useParam();
 
-  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
+  const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId: eventId },
   });
-
-  useEffect(() => {
-    if (isReady) getEvent();
-  }, [isReady]);
 
   const toast = useToast();
 
@@ -48,29 +43,8 @@ export const EditEventPage: NextPage = () => {
     setLoadingUpdate(true);
 
     try {
-      const { sponsors, tags, ...rest } = data;
-      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-
-      const eventData = {
-        ...rest,
-        capacity: parseInt(String(data.capacity)),
-        start_at: data.start_at,
-        ends_at: data.ends_at,
-        url: data.url?.trim() || null,
-        venue_id: isPhysical(data.venue_type)
-          ? parseInt(String(data.venue_id))
-          : null,
-        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
-        sponsor_ids: sponsorArray,
-      };
-
       const event = await updateEvent({
-        variables: { eventId, data: { ...eventData } },
+        variables: { eventId, data: parseEventData(data) },
       });
 
       if (event.data) {
@@ -91,8 +65,8 @@ export const EditEventPage: NextPage = () => {
     }
   };
 
-  const isLoading = loading || !isReady || !data;
-  if (isLoading) return <DashboardLoading loading={loading} error={error} />;
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
 
@@ -104,20 +78,21 @@ export const EditEventPage: NextPage = () => {
     };
   });
   return (
-    <Layout>
-      <EventForm
-        data={{
-          ...rest,
-          sponsors: sponsorData || [],
-          venue_id: data.dashboardEvent?.venue?.id,
-          tags: data.dashboardEvent.tags || [],
-        }}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        loadingText={'Saving Event Changes'}
-        submitText={'Save Event Changes'}
-        chapterId={data.dashboardEvent.chapter.id}
-      />
-    </Layout>
+    <EventForm
+      data={{
+        ...rest,
+        sponsors: sponsorData || [],
+        venue_id: data.dashboardEvent?.venue?.id,
+      }}
+      loading={loadingUpdate}
+      onSubmit={onSubmit}
+      loadingText={'Saving Event Changes'}
+      submitText={'Save Event Changes'}
+      chapterId={data.dashboardEvent.chapter.id}
+    />
   );
+};
+
+EditEventPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

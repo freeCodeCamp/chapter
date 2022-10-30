@@ -6,17 +6,17 @@ import {
   Link,
   Text,
   VStack,
+  Flex,
 } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import {
   useConfirmRsvpMutation,
-  useDashboardEventLazyQuery,
+  useDashboardEventQuery,
   useDeleteRsvpMutation,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
@@ -30,6 +30,7 @@ import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
 const args = (eventId: number) => ({
   refetchQueries: [
@@ -38,20 +39,15 @@ const args = (eventId: number) => ({
   ],
 });
 
-export const EventPage: NextPage = () => {
+export const EventPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { param: eventId, isReady } = useParam('id');
+  const { param: eventId } = useParam('id');
 
-  const [getEvent, { loading, error, data }] = useDashboardEventLazyQuery({
+  const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId },
   });
-
-  useEffect(() => {
-    if (isReady) getEvent();
-  }, [isReady]);
-
   const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
-  const [kickRsvpFn] = useDeleteRsvpMutation(args(eventId));
+  const [removeRsvpFn] = useDeleteRsvpMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
@@ -63,16 +59,15 @@ export const EventPage: NextPage = () => {
       if (ok) confirmRsvpFn({ variables: { eventId, userId } });
     };
 
-  const kick =
+  const remove =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
     async () => {
       const ok = await confirmDelete();
-      if (ok) kickRsvpFn({ variables: { eventId, userId } });
+      if (ok) removeRsvpFn({ variables: { eventId, userId } });
     };
 
-  const isLoading = loading || !isReady || !data;
-  if (isLoading || error)
-    return <DashboardLoading loading={isLoading} error={error} />;
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
 
@@ -80,76 +75,107 @@ export const EventPage: NextPage = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
-    },
-    {
-      title: 'Canceled',
-      rsvpFilter: 'no',
-      action: [{ title: 'Kick', onClick: kick, colorScheme: 'red' }],
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
       action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
     },
+    {
+      title: 'Canceled',
+      rsvpFilter: 'no',
+      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
+    },
   ];
 
   return (
-    <Layout>
-      <Box p="2" borderWidth="1px" borderRadius="lg">
-        <Heading>{data.dashboardEvent.name}</Heading>
+    <>
+      <Flex
+        p="2"
+        borderWidth="1px"
+        borderRadius="lg"
+        gap={'3'}
+        flexDirection="column"
+      >
+        <Heading as="h1">{data.dashboardEvent.name}</Heading>
 
         {data.dashboardEvent.canceled && (
-          <Heading color="red.500">Canceled</Heading>
+          <Text fontWeight={500} fontSize={'md'} color="red.500">
+            Canceled
+          </Text>
         )}
-        <Text>{data.dashboardEvent.description}</Text>
+        <Text fontSize={'md'}>{data.dashboardEvent.description}</Text>
         {data.dashboardEvent.image_url && (
-          <Text>
+          <Text opacity={'.9'}>
             Event Image Url:{' '}
-            <Link href={data.dashboardEvent.image_url} isExternal>
+            <Link
+              fontWeight={500}
+              href={data.dashboardEvent.image_url}
+              isExternal
+            >
               {data.dashboardEvent.image_url}
             </Link>
           </Text>
         )}
         {data.dashboardEvent.url && (
-          <Text>
+          <Text opacity={'.9'}>
             Event Url:{' '}
-            <Link href={data.dashboardEvent.url} isExternal>
+            <Link fontWeight={500} href={data.dashboardEvent.url} isExternal>
               {data.dashboardEvent.url}
             </Link>
           </Text>
         )}
-        <Text>Capacity: {data.dashboardEvent.capacity}</Text>
-        {/* <Tags tags={data.dashboardEvent.tags} /> */}
+        <Text opacity={'.9'}>
+          Capacity:{' '}
+          <Text as={'span'} fontWeight={500}>
+            {data.dashboardEvent.capacity}
+          </Text>
+        </Text>
+        {isPhysical(data.dashboardEvent.venue_type) &&
+          data.dashboardEvent.venue && (
+            <>
+              <Text opacity={'.9'}>
+                Venue:{' '}
+                <Text as={'span'} fontWeight={500}>
+                  {data.dashboardEvent.venue.name}
+                </Text>
+              </Text>
+              <Text opacity={'.9'}>
+                Hosted at:{' '}
+                <Text as={'span'} fontWeight={500}>
+                  {getLocationString(data.dashboardEvent.venue, true)}
+                </Text>
+              </Text>
+            </>
+          )}
+        {isOnline(data.dashboardEvent.venue_type) &&
+          data.dashboardEvent.streaming_url && (
+            <Text opacity={'.9'}>
+              Streaming Url:{' '}
+              <Link
+                fontWeight={500}
+                href={data.dashboardEvent.streaming_url}
+                isExternal
+              >
+                {data.dashboardEvent.streaming_url}
+              </Link>
+            </Text>
+          )}
 
         <Actions
           event={data.dashboardEvent}
           chapter_id={data.dashboardEvent.chapter.id}
           onDelete={() => router.replace('/dashboard/events')}
         />
-        {isPhysical(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.venue && (
-            <>
-              <h2>Venue:</h2>
-              <h3>{data.dashboardEvent.venue.name}</h3>
-              <h4>{getLocationString(data.dashboardEvent.venue, true)}</h4>
-            </>
-          )}
-        {isOnline(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.streaming_url && (
-            <Text>
-              Streaming Url:{' '}
-              <Link href={data.dashboardEvent.streaming_url} isExternal>
-                {data.dashboardEvent.streaming_url}
-              </Link>
-            </Text>
-          )}
-      </Box>
+      </Flex>
+
       {data.dashboardEvent.sponsors.length ? (
         <SponsorsCard sponsors={data.dashboardEvent.sponsors} />
       ) : (
         false
       )}
+
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
         {userLists.map(({ title, rsvpFilter, action }) => {
           const users = data.dashboardEvent
@@ -246,6 +272,10 @@ export const EventPage: NextPage = () => {
           );
         })}
       </Box>
-    </Layout>
+    </>
   );
+};
+
+EventPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

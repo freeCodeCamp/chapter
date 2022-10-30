@@ -5,25 +5,20 @@ import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
 import type {
-  Chapter,
   DashboardChapterQuery,
+  CreateChapterInputs,
 } from '../../../../generated/graphql';
-
-export type ChapterFormData = Omit<
-  Chapter,
-  'id' | 'events' | 'creator_id' | 'users' | 'banned_users'
->;
 
 interface ChapterFormProps {
   loading: boolean;
-  onSubmit: (data: ChapterFormData) => Promise<void>;
+  onSubmit: (data: CreateChapterInputs) => Promise<void>;
   data?: DashboardChapterQuery;
   submitText: string;
   loadingText: string;
 }
 
 type Fields = {
-  key: keyof ChapterFormData;
+  key: keyof CreateChapterInputs;
   placeholder: string;
   label: string;
   required: boolean;
@@ -75,9 +70,16 @@ const fields: Fields[] = [
     type: 'text',
   },
   {
-    key: 'image_url',
-    label: 'Image Url',
+    key: 'banner_url',
+    label: 'Banner Url',
     placeholder: 'https://www.freecodecamp.org',
+    required: false,
+    type: 'url',
+  },
+  {
+    key: 'logo_url',
+    label: 'Logo Url',
+    placeholder: 'https://www.freecodecamplogo.org',
     required: false,
     type: 'url',
   },
@@ -94,21 +96,22 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.dashboardChapter;
 
-  const defaultValues: ChapterFormData = {
+  const defaultValues: CreateChapterInputs = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
     city: chapter?.city ?? '',
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
-    image_url: chapter?.image_url ?? '',
+    logo_url: chapter?.logo_url ?? '',
+    banner_url: chapter?.banner_url ?? '',
     chat_url: chapter?.chat_url ?? '',
   };
   const {
     handleSubmit,
     register,
     formState: { isDirty },
-  } = useForm<ChapterFormData>({
+  } = useForm<CreateChapterInputs>({
     defaultValues,
   });
 

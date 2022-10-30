@@ -10,4 +10,7 @@ export class UpdateUserInputs
 
   @Field(() => Boolean)
   auto_subscribe: boolean;
+
+  @Field(() => String, { nullable: true })
+  image_url?: string | null;
 }

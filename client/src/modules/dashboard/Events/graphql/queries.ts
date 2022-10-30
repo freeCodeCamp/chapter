@@ -17,12 +17,6 @@ export const EVENTS = gql`
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
@@ -44,12 +38,6 @@ export const DASHBOARD_EVENT = gql`
       chapter {
         id
         name
-      }
-      tags {
-        tag {
-          id
-          name
-        }
       }
       sponsors {
         sponsor {
@@ -77,6 +65,7 @@ export const DASHBOARD_EVENT = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id

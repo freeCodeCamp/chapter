@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 import coverage from '@cypress/code-coverage/task';
 
 import { prisma } from './server/src/prisma';
+import { InstanceRole } from './server/prisma/generator/factories/instanceRoles.factory';
 
 const getChapterMembers = (chapterId: number) =>
   prisma.chapter_users.findMany({
@@ -22,6 +23,22 @@ const getEventUsers = (eventId: number) =>
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
 
+const getUser = async (email: string) =>
+  await prisma.users.findUnique({
+    where: { email },
+    include: { instance_role: true },
+  });
+
+export type User = Awaited<ReturnType<typeof getUser>>;
+
+const promoteToOwner = async ({ email }: { email: string }) => {
+  const name: InstanceRole['name'] = 'owner';
+  return await prisma.users.update({
+    where: { email },
+    data: { instance_role: { connect: { name } } },
+  });
+};
+
 const seedDb = () => execSync('node server/prisma/generator/seed.js');
 
 config();
@@ -30,7 +47,7 @@ export default defineConfig({
   e2e: {
     projectId: 're65q6',
     baseUrl: 'http://localhost:3000',
-    retries: { runMode: 3, openMode: 3 },
+    retries: { runMode: 3, openMode: 0 },
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config
@@ -50,12 +67,21 @@ export default defineConfig({
         execSync('npm run db:reset');
       });
 
-      on('task', { getChapterMembers, getEventUsers, seedDb });
+      on('task', {
+        getChapterMembers,
+        getEventUsers,
+        getUser,
+        seedDb,
+        promoteToOwner,
+      });
       coverage(on, config);
       return config;
     },
   },
   env: {
     mailHogUrl: 'http://localhost:8025',
+    codeCoverage: {
+      url: 'http://localhost:5000/__coverage__',
+    },
   },
 });

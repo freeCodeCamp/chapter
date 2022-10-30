@@ -8,20 +8,21 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
-import { useAuthStore } from '../../auth/store';
 import { meQuery } from '../../auth/graphql/queries';
+import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const {
-    data: { user },
-  } = useAuthStore();
+  const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
 
-  const confirmDelete = useConfirmDelete({ doubleConfirm: true });
+  const confirmDelete = useConfirmDelete({
+    body: 'Are you sure you want to delete your account? Account deletion cannot be reversed.',
+    buttonText: 'Delete account',
+  });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation({
     refetchQueries: [{ query: meQuery }],
@@ -29,10 +30,13 @@ export const UserProfilePage = () => {
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
+    const image_url = data.image_url;
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { data: { name, auto_subscribe: data.auto_subscribe } },
+        variables: {
+          data: { name, auto_subscribe: data.auto_subscribe, image_url },
+        },
       });
     } catch (err) {
       console.error(err);

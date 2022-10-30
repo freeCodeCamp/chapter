@@ -4,10 +4,25 @@ import { InstancePermission, Permission } from '../../../../common/permissions';
 
 const allPermissions = Object.values(Permission);
 
-interface InstanceRole {
-  name: string;
+export enum InstanceRoles {
+  chapter_administrator = 'chapter_administrator',
+  member = 'member',
+  owner = 'owner',
+}
+
+export interface InstanceRole {
+  name: keyof typeof InstanceRoles;
   permissions: typeof allPermissions;
 }
+
+export type RoleMap = {
+  [key in InstanceRole['name']]?: { name: string; id: number };
+};
+
+const memberPermissions = [
+  InstancePermission.ChapterJoin,
+  InstancePermission.ChapterSubscriptionManage,
+];
 
 const roles: InstanceRole[] = [
   {
@@ -16,15 +31,19 @@ const roles: InstanceRole[] = [
     permissions: allPermissions,
   },
   {
+    name: 'chapter_administrator',
+    permissions: [...memberPermissions, InstancePermission.SponsorView],
+  },
+  {
     name: 'member',
-    permissions: [
-      InstancePermission.ChapterJoin,
-      InstancePermission.ChapterSubscriptionsManage,
-    ],
+    permissions: memberPermissions,
   },
 ];
 
-const createRole = async ({ name, permissions }: InstanceRole) => {
+const createRole = async ({
+  name,
+  permissions,
+}: InstanceRole): Promise<RoleMap> => {
   const permissionsData = permissions.map((name) => ({
     instance_permission: {
       connect: { name },
@@ -36,10 +55,12 @@ const createRole = async ({ name, permissions }: InstanceRole) => {
       instance_role_permissions: { create: permissionsData },
     },
   });
-  return { [name]: { name: createdRole.name, id: createdRole.id } };
+  const role: RoleMap = {};
+  role[name] = createdRole;
+  return role;
 };
 
-const createInstanceRoles = async () => {
+const createInstanceRoles = async (): Promise<Required<RoleMap>> => {
   await prisma.instance_permissions.createMany({
     data: allPermissions.map((permission) => ({ name: permission })),
   });
@@ -47,7 +68,7 @@ const createInstanceRoles = async () => {
   return createdRoles.reduce((acc, role) => ({
     ...acc,
     ...role,
-  }));
+  })) as Required<RoleMap>;
 };
 
 export default createInstanceRoles;

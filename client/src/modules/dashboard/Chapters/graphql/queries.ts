@@ -19,7 +19,8 @@ export const DASHBOARD_CHAPTER = gql`
       city
       region
       country
-      image_url
+      logo_url
+      banner_url
       chat_url
       events {
         id
@@ -29,11 +30,29 @@ export const DASHBOARD_CHAPTER = gql`
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
+      }
+    }
+  }
+`;
+
+export const DASHBOARD_CHAPTER_USERS = gql`
+  query dashboardChapterUsers($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
+      chapter_users {
+        user {
+          id
+          name
+        }
+        chapter_role {
+          id
+          name
+        }
+        subscribed
+        is_bannable
+      }
+      user_bans {
+        user {
+          id
         }
       }
     }

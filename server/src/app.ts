@@ -7,7 +7,10 @@ import cors from 'cors';
 import cookieSession from 'cookie-session';
 import express, { Express, NextFunction, Response } from 'express';
 import cookies from 'cookie-parser';
-
+// coverage is included as production dependency, even though it's just used for
+// testing. This is necessary so that the testing can be kept as close to
+// production-like as possible.
+import coverage from '@cypress/code-coverage/middleware/express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
 
@@ -16,14 +19,9 @@ import { isDev } from './config';
 import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
-import {
-  user,
-  events,
-  handleError,
-  venues,
-} from './controllers/Auth/middleware';
+import { handleError, user } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
-import { prisma } from './prisma';
+import { prisma, RECORD_MISSING } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/Google';
@@ -65,6 +63,30 @@ export const main = async (app: Express) => {
     }),
   );
 
+  async function findUser(email: string) {
+    return await prisma.users.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
+  // TODO: use the register resolver instead? Or just delete it? Probably
+  // delete.
+  async function createUser(email: string) {
+    return prisma.users.create({
+      data: {
+        name: 'place holder',
+        email,
+        instance_role: {
+          connect: {
+            name: 'member',
+          },
+        },
+      },
+    });
+  }
+
   app.post('/login', checkJwt, (req, res, next) => {
     const token = getBearerToken(req);
     if (token) {
@@ -100,36 +122,11 @@ export const main = async (app: Express) => {
     }
   });
 
-  async function findUser(email: string) {
-    return await prisma.users.findUnique({
-      where: {
-        email,
-      },
-    });
-  }
-
-  // TODO: use the register resolver instead? Or just delete it? Probably
-  // delete.
-  async function createUser(email: string) {
-    return prisma.users.create({
-      data: {
-        name: 'place holder',
-        email,
-        instance_role: {
-          connect: {
-            name: 'member',
-          },
-        },
-      },
-    });
-  }
-
   // no need to check for identity provider's token on logout
   app.delete('/logout', (req, res, next) => {
-    if (!req.session) return next('session not found');
-
-    const id = req.session.id;
+    const id = req.session?.id;
     req.session = null;
+    if (!id) return res.end();
 
     prisma.sessions
       .delete({ where: { id } })
@@ -139,23 +136,18 @@ export const main = async (app: Express) => {
         });
       })
       .catch((err) => {
-        // TODO: what to do when the request to delete the session fails? This
-        // should only happen if the session is malformed or doesn't exist.
         res.status(400).send({
           message: 'unable to destroy session',
         });
-        next(err);
+        // Missing sessions can happen and there's no need to log when they do.
+        if (err.code !== RECORD_MISSING) next(err);
       });
   });
 
-  // TODO: Combine these three into a single middleware that gets the with
-  // relevant events and venues
   // userMiddleware must be added *after* the login and out routes, since they
   // are only concerned with creating and destroying sessions and not with using
   // them.
   app.use(user);
-  app.use(events);
-  app.use(venues);
   if (process.env.NODE_ENV !== 'development') {
     app.use(handleError);
   }
@@ -232,6 +224,11 @@ export const main = async (app: Express) => {
 if (require.main === module) {
   (async () => {
     const app = express();
+    // @ts-expect-error this will exist if nyc starts the app
+    if (global.__coverage__) {
+      console.log('Adding coverage middleware for express');
+      coverage(app);
+    }
     await main(app);
 
     app.listen(PORT, () =>

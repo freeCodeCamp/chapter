@@ -1,18 +1,26 @@
-import { expectToBeRejected } from '../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../support/util';
 
-const chapterData = {
-  name: 'Name goes here',
-  description: 'Summary of the chapter',
-  city: 'City it is based in',
-  region: 'Location in the world',
-  country: 'Home country',
-  category: 'Type of chapter',
-  image_url: 'https://example.com/image.jpg',
-};
+const chapterId = 1;
 
 describe('chapters dashboard', () => {
+  let chapterData;
+  let eventData;
+  let users;
+  let venueData;
   before(() => {
     cy.task('seedDb');
+    cy.fixture('chapters').then((fixture) => {
+      chapterData = fixture[0];
+    });
+    cy.fixture('events').then((fixture) => {
+      eventData = fixture.eventThree;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+    cy.fixture('venues').then((fixture) => {
+      venueData = fixture[0];
+    });
   });
   beforeEach(() => {
     cy.login();
@@ -21,7 +29,9 @@ describe('chapters dashboard', () => {
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[aria-current="page"]').should('not.exist');
-    cy.get('a[href="/dashboard/chapters"]').click();
+    cy.get('[data-cy="dashboard-tabs"]')
+      .find('a[href="/dashboard/chapters"]')
+      .click();
     cy.get('[data-cy="chapter-dash-heading"]').should('be.visible');
     cy.get('[data-cy="dashboard-tabs"]')
       .find('a[aria-current="page"]')
@@ -33,9 +43,11 @@ describe('chapters dashboard', () => {
     cy.findByRole('table', { name: 'Chapters' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
-    cy.get('a[href="/dashboard/chapters/1"]').should('be.visible');
+    cy.get(`a[href="/dashboard/chapters/${chapterId}"]`).should('be.visible');
     cy.get('a[href="/dashboard/chapters/new"]').should('be.visible');
-    cy.get('a[href="/dashboard/chapters/1/edit"]').should('be.visible');
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/edit"]`).should(
+      'be.visible',
+    );
   });
 
   it('lets an instance owner create a chapter', () => {
@@ -49,25 +61,50 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);
     cy.findByRole('textbox', { name: 'Category' }).type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Image Url' }).type(chapterData.image_url);
+    cy.findByRole('textbox', { name: 'Logo Url' }).type(chapterData.logo_url);
+    cy.findByRole('textbox', { name: 'Banner Url' }).type(
+      chapterData.banner_url,
+    );
 
     cy.findByRole('form', { name: 'Add chapter' })
       .findByRole('button', {
         name: 'Add chapter',
       })
       .click();
-    // TODO: this should mirror events. i.e. either both should go to the list
-    // or both should go to the newly created page
-    cy.location('pathname').should('match', /^\/dashboard\/chapters$/);
-    // TODO: if go to /dashboard/chapters/<n>/edit, look for the rest of the
-    // data
-
-    // confirm that the test data appears in the new chapter
+    cy.location('pathname').should(
+      'match',
+      /^\/dashboard\/chapters\/\d\/new-venue$/,
+    );
     cy.contains(chapterData.name);
   });
 
+  it('lets a user create a chapter and an event in a fresh instance', () => {
+    cy.exec('npm run db:init');
+    const userEmail = 'fresh@start';
+    cy.login(userEmail);
+    cy.task('promoteToOwner', { email: userEmail });
+    const chapterId = 1;
+
+    cy.createChapter(chapterData).then((response) => {
+      expectNoErrors(response);
+      cy.visit(`/dashboard/chapters/${chapterId}`);
+      cy.contains(chapterData.name);
+    });
+    cy.createVenue({ chapterId }, venueData).then((response) => {
+      expectNoErrors(response);
+      cy.visit(`/dashboard/venues/`);
+      cy.contains(venueData.name);
+    });
+    cy.createEvent(chapterId, eventData).then((response) => {
+      expectNoErrors(response);
+      cy.visit(`/dashboard/events/`);
+      cy.contains(eventData.name);
+    });
+  });
+
   it('only allows owners to create chapters', () => {
-    cy.login('admin@of.chapter.one');
+    cy.task('seedDb');
+    cy.login(users.chapter1Admin.email);
 
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy="new-chapter"]').should('not.exist');
@@ -78,9 +115,7 @@ describe('chapters dashboard', () => {
     cy.login();
 
     cy.createChapter(chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${response.body.data.createChapter.id}`);
       cy.contains(chapterData.name);
     });

@@ -56,6 +56,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
     handleSubmit,
     register,
     reset,
+    watch,
     formState: { isDirty },
   } = useForm<UpdateUserInputs>({
     defaultValues,
@@ -64,6 +65,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   useEffect(() => {
     reset(defaultValues);
   }, [data]);
+
+  const hasAutoSubscribe = watch('auto_subscribe');
 
   return (
     <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
@@ -91,7 +94,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
       )}
       <FormControl>
         <Flex>
-          <FormLabel htmlFor="auto_subscribe">Automatic subscription</FormLabel>
+          <FormLabel htmlFor="auto_subscribe">
+            Automatic chapter subscription
+          </FormLabel>
           <Switch
             id="auto_subscribe"
             {...register('auto_subscribe')}
@@ -99,7 +104,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
           />
         </Flex>
         <FormHelperText>
-          Subscribe automatically to chapters that you join and RSVPed events.
+          {hasAutoSubscribe
+            ? 'Automatically subscribe to chapter when joining it and receive emails about new events in chapter.'
+            : "Don't automatically subscribe to joined chapters."}
         </FormHelperText>
       </FormControl>
       <Button

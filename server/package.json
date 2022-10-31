@@ -11,7 +11,7 @@
     "start": "node ./src/app.js",
     "start:coverage": "npx -y nyc --silent node ./src/app.js",
     "reminders:send": "node ./reminders/reminders.js",
-    "reset:users": "node prisma/generator/resetUsers.js"
+    "reset:users": "node prisma/seed/resetUsers.js"
   },
   "repository": {
     "type": "git",

@@ -39,7 +39,7 @@ const promoteToOwner = async ({ email }: { email: string }) => {
   });
 };
 
-const seedDb = () => execSync('node server/prisma/generator/seed.js');
+const seedDb = () => execSync('node server/prisma/seed/seed.js');
 
 config();
 

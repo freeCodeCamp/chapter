@@ -126,6 +126,16 @@ describe('chapter dashboard', () => {
     });
   });
 
+  it('event created with past date should not send out email invites', () => {
+    const testEvent = {
+      ...events.eventWithoutURL,
+    };
+    createEventViaUI(chapterId, testEvent);
+    cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
+
+    cy.mhGetAllMails().should('have.length', 0);
+  });
+
   it('prevents members and admins from other chapters from creating events', () => {
     const otherChapterId = 2;
     const eventData = {

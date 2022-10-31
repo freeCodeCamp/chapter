@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "prisma": {
-    "seed": "node prisma/generator/seed.js"
+    "seed": "node prisma/seed/seed.js"
   },
   "dependencies": {
     "@cypress/code-coverage": "3.10.0",

@@ -49,7 +49,7 @@
     "@testing-library/dom": "8.19.0",
     "@testing-library/react": "13.4.0",
     "@types/react": "18.0.24",
-    "@types/react-datepicker": "4.4.2",
+    "@types/react-datepicker": "4.8.0",
     "@types/react-dom": "18.0.8",
     "babel-plugin-istanbul": "6.1.1",
     "prettier": "2.7.1",

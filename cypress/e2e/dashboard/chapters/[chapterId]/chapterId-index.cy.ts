@@ -82,8 +82,8 @@ describe('chapter dashboard', () => {
     // confirm url is not required
     const testEvent = {
       ...events.eventWithoutURL,
-      start_at: add(new Date(), { days: 1 }).toISOString(),
-      ends_at: add(new Date(), { days: 1, minutes: 30 }).toISOString(),
+      start_at: add(new Date(), { days: 7 }).toISOString(),
+      ends_at: add(new Date(), { days: 7, minutes: 30 }).toISOString(),
     };
     createEventViaUI(chapterId, testEvent);
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);

@@ -3,28 +3,30 @@ import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useFormContext } from 'react-hook-form';
-import { isPast } from 'date-fns';
+import { add, isPast } from 'date-fns';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { Input } from '../../../../components/Form/Input';
 
 interface EventDatesFormProps {
-  endsAt: Date;
-  isNewEvent: boolean;
+  endsAt: Date | null;
   loading: boolean;
-  startAt: Date;
+  startAt: Date | null;
 }
 
 const EventDatesForm: React.FC<EventDatesFormProps> = ({
   endsAt,
-  isNewEvent,
   loading,
   startAt,
 }) => {
   const { setValue, setError, clearErrors } = useFormContext();
-  const [startDate, setStartDate] = useState<Date>(startAt);
-  const [endDate, setEndDate] = useState<Date>(endsAt);
+  const [startDate, setStartDate] = useState<Date>(
+    startAt || add(new Date(), { days: 1 }),
+  );
+  const [endDate, setEndDate] = useState<Date>(
+    endsAt || add(new Date(), { days: 1, minutes: 30 }),
+  );
   const [startError, setStartError] = useState('');
   const [endError, setEndError] = useState('');
 
@@ -113,7 +115,7 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
       <FormControl isRequired={startDateProps.isRequired}>
         <>
           {datePicker(startDateProps)}
-          {isNewEvent && isPast(startDate) && (
+          {!startAt && isPast(startDate) && (
             <HStack>
               <InfoIcon fontSize="sm" />
               <FormHelperText>

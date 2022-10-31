@@ -120,6 +120,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
         <EventDatesForm
           endsAt={defaultValues.ends_at}
+          isNewEvent={Boolean(!data)}
           loading={loading}
           startAt={defaultValues.start_at}
         />

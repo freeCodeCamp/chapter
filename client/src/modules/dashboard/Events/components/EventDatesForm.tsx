@@ -1,4 +1,4 @@
-import { FormControl, HStack, Text } from '@chakra-ui/react';
+import { FormControl, FormHelperText, HStack } from '@chakra-ui/react';
 import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
@@ -11,12 +11,14 @@ import { Input } from '../../../../components/Form/Input';
 
 interface EventDatesFormProps {
   endsAt: Date;
+  isNewEvent: boolean;
   loading: boolean;
   startAt: Date;
 }
 
 const EventDatesForm: React.FC<EventDatesFormProps> = ({
   endsAt,
+  isNewEvent,
   loading,
   startAt,
 }) => {
@@ -43,6 +45,40 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
     [setValue, setStartDate],
   );
 
+  const datePicker = ({
+    key,
+    date,
+    error,
+    label,
+    isRequired,
+  }: {
+    key: string;
+    date: Date;
+    error: string;
+    label: string;
+    isRequired: boolean;
+  }) => (
+    <DatePicker
+      selected={date}
+      showTimeSelect
+      timeIntervals={5}
+      onChange={onDatePickerChange(key)}
+      disabled={loading}
+      dateFormat="MMMM d, yyyy h:mm aa"
+      customInput={
+        <Input
+          id={`${key}_trigger`}
+          name={key}
+          error={error}
+          label={`${label}${isRequired ? ' (Required)' : ''}`}
+          isDisabled={loading}
+          isRequired={isRequired}
+          value={date.toDateString()}
+        />
+      }
+    />
+  );
+
   useEffect(() => {
     if (startDate > endDate) {
       setError('start_at', { type: 'validate', message: 'date conflict' });
@@ -57,57 +93,40 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
     }
   }, [startDate, endDate]);
 
-  const fields = [
-    {
-      key: 'start_at',
-      label: 'Start at',
-      isRequired: true,
-      date: startDate,
-      error: startError,
-    },
-    {
-      key: 'ends_at',
-      label: 'End at',
-      isRequired: true,
-      date: endDate,
-      error: endError,
-    },
-  ];
+  const startDateProps = {
+    key: 'start_at',
+    label: 'Start at',
+    isRequired: true,
+    date: startDate,
+    error: startError,
+  };
+  const endDateProps = {
+    key: 'ends_at',
+    label: 'End at',
+    isRequired: true,
+    date: endDate,
+    error: endError,
+  };
 
   return (
     <>
-      {fields.map(({ key, date, error, label, isRequired }) => (
-        <FormControl key={key} isRequired={isRequired}>
-          <DatePicker
-            selected={date}
-            showTimeSelect
-            timeIntervals={5}
-            onChange={onDatePickerChange(key)}
-            disabled={loading}
-            dateFormat="MMMM d, yyyy h:mm aa"
-            customInput={
-              <Input
-                id={`${key}_trigger`}
-                name={key}
-                error={error}
-                label={`${label}${isRequired ? ' (Required)' : ''}`}
-                isDisabled={loading}
-                isRequired={isRequired}
-                value={date.toDateString()}
-              />
-            }
-          />
-          {key === 'start_at' && isPast(startDate) && (
+      <FormControl isRequired={startDateProps.isRequired}>
+        <>
+          {datePicker(startDateProps)}
+          {isNewEvent && isPast(startDate) && (
             <HStack>
-              <InfoIcon />
-              <Text>
-                Chapter members will not be notified about event creation, as it
-                starts in the past.
-              </Text>
+              <InfoIcon fontSize="sm" />
+              <FormHelperText>
+                Chapter members will not be notified about creation of this
+                event, as it starts in the past.
+              </FormHelperText>
             </HStack>
           )}
-        </FormControl>
-      ))}
+        </>
+      </FormControl>
+      <FormControl isRequired={endDateProps.isRequired}>
+        {datePicker(endDateProps)}
+      </FormControl>
     </>
   );
 };

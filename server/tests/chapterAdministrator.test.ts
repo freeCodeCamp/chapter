@@ -1,5 +1,5 @@
-import { ChapterRoles } from '../prisma/generator/factories/chapterRoles.factory';
-import { InstanceRoles } from '../prisma/generator/factories/instanceRoles.factory';
+import { ChapterRoles } from '../prisma/seed/factories/chapterRoles.factory';
+import { InstanceRoles } from '../prisma/seed/factories/instanceRoles.factory';
 import {
   getInstanceRoleName,
   getRoleName,

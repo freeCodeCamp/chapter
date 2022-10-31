@@ -1,5 +1,5 @@
 import { FormControl } from '@chakra-ui/form-control';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useFormContext } from 'react-hook-form';
 
@@ -18,19 +18,21 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   loading,
   startAt,
 }) => {
-  const { getValues, setValue } = useFormContext();
+  const { setValue, setError, clearErrors } = useFormContext();
   const [startDate, setStartDate] = useState<Date>(startAt);
   const [endDate, setEndDate] = useState<Date>(endsAt);
+  const [startError, setStartError] = useState('');
+  const [endError, setEndError] = useState('');
 
   const onDatePickerChange = useCallback(
     (key: string) => {
       return (date: Date | null) => {
         if (!date) return;
-        if (key === 'start_at' || date < getValues('start_at')) {
+        if (key === 'start_at') {
           setValue('start_at', date, { shouldDirty: true });
           setStartDate(date);
         }
-        if (key === 'ends_at' || date > getValues('ends_at')) {
+        if (key === 'ends_at') {
           setValue('ends_at', date, { shouldDirty: true });
           setEndDate(date);
         }
@@ -39,24 +41,40 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
     [setValue, setStartDate],
   );
 
+  useEffect(() => {
+    if (startDate > endDate) {
+      setError('start_at', { type: 'validate', message: 'date conflict' });
+      setError('ends_at', { type: 'validate', message: 'date conflict' });
+      setStartError('Start date cannot be after the end');
+      setEndError('End date cannot be before the start');
+    } else {
+      setStartError('');
+      setEndError('');
+      clearErrors('start_at');
+      clearErrors('ends_at');
+    }
+  }, [startDate, endDate]);
+
   const fields = [
     {
       key: 'start_at',
       label: 'Start at',
       isRequired: true,
       date: startDate,
+      error: startError,
     },
     {
       key: 'ends_at',
       label: 'End at',
       isRequired: true,
       date: endDate,
+      error: endError,
     },
   ];
 
   return (
     <>
-      {fields.map(({ key, date, label, isRequired }) => (
+      {fields.map(({ key, date, error, label, isRequired }) => (
         <FormControl key={key} isRequired={isRequired}>
           <DatePicker
             selected={date}
@@ -68,7 +86,8 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
             customInput={
               <Input
                 id={`${key}_trigger`}
-                name={`${key}`}
+                name={key}
+                error={error}
                 label={`${label}${isRequired ? ' (Required)' : ''}`}
                 isDisabled={loading}
                 isRequired={isRequired}

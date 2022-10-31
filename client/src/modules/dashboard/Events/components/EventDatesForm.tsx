@@ -27,6 +27,8 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   const [endDate, setEndDate] = useState<Date>(
     endsAt || add(new Date(), { days: 1, minutes: 30 }),
   );
+  setValue('start_at', startDate);
+  setValue('ends_at', endDate);
   const [startError, setStartError] = useState('');
   const [endError, setEndError] = useState('');
 

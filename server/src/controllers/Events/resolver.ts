@@ -48,7 +48,7 @@ import {
   updateCalendarEvent,
 } from '../../services/Google';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
-import { updateEventWaitlist } from '../../util/updateEventWaitlist';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -99,7 +99,7 @@ const getUnsubscribeOptions = ({
   return `
 Unsubscribe Options</br>
 - <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving notifications about new events by unfollowing chapter</a>`;
 };
 
 const sendRsvpInvitation = async (
@@ -513,7 +513,7 @@ export class EventResolver {
       },
     });
 
-    await updateEventWaitlist({ event, userId: ctx.user.id });
+    await updateWaitlistForUserRemoval({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },

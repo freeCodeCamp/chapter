@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "engines": {
-    "node": "16.17.1",
+    "node": "18.12.0",
     "npm": "8.19.2"
   },
   "scripts": {
@@ -15,6 +15,7 @@
     "dev:server": "npm -w=server run dev",
     "dev:server:coverage": "npm -w=server run dev:coverage",
     "db:init": "npm run -w=server build && node server/prisma/generator/init.js --execute",
+    "db:migrate": "npm run prisma -- migrate deploy",
     "db:seed": "npm run prisma -- db seed",
     "db:sync": "npm run prisma -- db push --force-reset",
     "db:reset": "npm run -w=server build && npm run db:sync && npm run db:seed",
@@ -66,11 +67,11 @@
     "@types/jest": "28.1.8",
     "@types/node-fetch": "2.6.2",
     "@types/supertest": "2.0.12",
-    "@typescript-eslint/eslint-plugin": "5.40.1",
-    "@typescript-eslint/parser": "5.40.1",
+    "@typescript-eslint/eslint-plugin": "5.41.0",
+    "@typescript-eslint/parser": "5.41.0",
     "concurrently": "7.5.0",
     "cross-env": "7.0.3",
-    "cypress": "10.10.0",
+    "cypress": "10.11.0",
     "cypress-mailhog": "1.6.0",
     "cypress-wait-until": "1.7.2",
     "dotenv": "16.0.3",

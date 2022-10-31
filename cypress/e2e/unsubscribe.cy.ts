@@ -77,7 +77,7 @@ describe('unsubscribe link', () => {
               const unsubscribedUser = eventUsers.find(
                 ({ user: { email } }) => email === emailAddress,
               );
-              expect(unsubscribedUser.subscribed).to.be.false;
+              expect(unsubscribedUser.subscribed).to.be.true;
             });
           });
         });

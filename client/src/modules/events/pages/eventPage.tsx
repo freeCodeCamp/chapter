@@ -6,6 +6,7 @@ import {
   Button,
   useToast,
   List,
+  Box,
   HStack,
   Image,
   ListItem,
@@ -89,10 +90,14 @@ export const EventPage: NextPage = () => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
-          body: 'Would you like to attend?',
+          body: `
+          Would you like to attend?<br/>
+          Note: joining this event will make you a member of the event's chapter.
+          `,
         }
       : {
           title: 'Join this event?',
+          body: `Note: joining this event will make you a member of the event's chapter.`,
         };
     const ok = await confirm(confirmOptions);
 
@@ -204,16 +209,21 @@ export const EventPage: NextPage = () => {
 
   return (
     <VStack align="flex-start">
-      <Image
-        data-cy="event-image"
-        boxSize="100%"
-        maxH="300px"
-        src={data.event.image_url}
-        alt=""
-        borderRadius="md"
-        objectFit="cover"
-        fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
-      />
+      {data.event.image_url && (
+        <Box height={'300px'}>
+          <Image
+            data-cy="event-image"
+            boxSize="100%"
+            maxH="300px"
+            src={data.event.image_url}
+            alt=""
+            borderRadius="md"
+            objectFit="cover"
+            fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+            fallbackStrategy="onError"
+          />
+        </Box>
+      )}
       <Flex alignItems={'center'}>
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>
@@ -326,7 +336,7 @@ export const EventPage: NextPage = () => {
         {rsvps.map(({ user }) => (
           <ListItem key={user.id} mb="2">
             <HStack>
-              <Avatar name={user.name} />
+              <Avatar name={user.name} src={user.image_url ?? ''} />
               <Heading size="md">{user.name}</Heading>
             </HStack>
           </ListItem>
@@ -348,7 +358,7 @@ export const EventPage: NextPage = () => {
             {waitlist.map(({ user }) => (
               <ListItem key={user.id} mb="2">
                 <HStack>
-                  <Avatar name={user.name} />
+                  <Avatar name={user.name} src={user.image_url ?? ''} />
                   <Heading size="md">{user.name}</Heading>
                 </HStack>
               </ListItem>

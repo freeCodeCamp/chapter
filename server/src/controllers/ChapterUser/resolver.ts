@@ -2,7 +2,6 @@ import {
   Arg,
   Authorized,
   Ctx,
-  FieldResolver,
   Int,
   Mutation,
   Query,
@@ -16,7 +15,8 @@ import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
-import { updateEventWaitlist } from '../../util/updateEventWaitlist';
+import { canBanOther } from '../../util/chapterBans';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -27,9 +27,63 @@ const chapterUsersInclude = {
   user: true,
 };
 
+async function removeUserFromEventsInChapter({
+  userId,
+  chapterId,
+}: {
+  userId: number;
+  chapterId: number;
+}) {
+  const eventUsers = await prisma.event_users.findMany({
+    where: {
+      user_id: userId,
+      event: { chapter_id: chapterId },
+    },
+    include: {
+      event: {
+        include: { chapter: true, event_users: { include: { rsvp: true } } },
+      },
+      rsvp: true,
+    },
+  });
+  await prisma.event_users.deleteMany({
+    where: {
+      user_id: userId,
+      event: { chapter_id: chapterId },
+    },
+  });
+
+  const eventsAttended = eventUsers
+    .filter(({ rsvp: { name } }) => name === 'yes')
+    .map(({ event }) => event);
+
+  await Promise.all(
+    eventsAttended.map(async (event) =>
+      updateWaitlistForUserRemoval({ event, userId }),
+    ),
+  );
+
+  const eventsWithCalendars = eventsAttended.filter(
+    ({ calendar_event_id }) => calendar_event_id,
+  );
+
+  const calendarUpdates = eventsWithCalendars.map(
+    async ({ calendar_event_id, chapter: { calendar_id }, id }) => {
+      // The calendar must be updated after event_users, so it can use the updated
+      // email list
+      return await updateCalendarEventAttendees({
+        calendarEventId: calendar_event_id,
+        calendarId: calendar_id,
+        eventId: id,
+      });
+    },
+  );
+  await Promise.all(calendarUpdates);
+}
+
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUser)
+  @Query(() => ChapterUser, { nullable: true })
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
@@ -80,39 +134,40 @@ export class ChapterUserResolver {
     });
   }
 
-  @Authorized(Permission.ChapterSubscriptionManage)
   @Mutation(() => ChapterUser)
-  async toggleChapterSubscription(
+  async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser> {
-    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
+  ): Promise<ChapterUser | null> {
+    await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
+    return await prisma.chapter_users.delete({
       where: {
         user_id_chapter_id: {
           chapter_id: chapterId,
           user_id: ctx.user.id,
         },
       },
-      include: { chapter: { include: { events: true } } },
+      // TODO: return only { user_id }
+      include: chapterUsersInclude,
     });
-    const chapter = chapterUser.chapter;
+  }
 
-    if (chapterUser.subscribed) {
-      const onlyUserEventsFromChapter = {
-        AND: [
-          { user_id: ctx.user.id },
-          { event_id: { in: chapter.events.map(({ id }) => id) } },
-        ],
-      };
+  @Authorized(Permission.ChapterSubscriptionManage)
+  @Mutation(() => ChapterUser)
+  async toggleChapterSubscription(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<ChapterUser> {
+    const chapterUser = ctx.user.user_chapters.find(
+      ({ chapter_id }) => chapter_id === chapterId,
+    );
 
-      await prisma.event_users.updateMany({
-        data: { subscribed: false },
-        where: onlyUserEventsFromChapter,
-      });
-      await prisma.event_reminders.deleteMany({
-        where: onlyUserEventsFromChapter,
-      });
+    if (!chapterUser) {
+      throw Error(
+        'Cannot change subscription for user not beloning to chapter',
+      );
     }
+
     return await prisma.chapter_users.update({
       data: {
         subscribed: !chapterUser?.subscribed,
@@ -195,57 +250,16 @@ export class ChapterUserResolver {
       throw Error('You cannot ban yourself');
     }
 
-    const userEvents = await prisma.event_users.findMany({
-      where: {
-        user_id: userId,
-        event: { chapter_id: chapterId },
-      },
-      include: {
-        event: {
-          include: { chapter: true, event_users: { include: { rsvp: true } } },
-        },
-        rsvp: true,
-      },
+    const hasPermissionToBanOtherUser = await canBanOther({
+      chapterId,
+      otherUserId: userId,
+      banningUser: ctx.user,
     });
-    await prisma.event_users.deleteMany({
-      where: {
-        user_id: userId,
-        event: { chapter_id: chapterId },
-      },
-    });
+    if (!hasPermissionToBanOtherUser) {
+      throw Error('You cannot ban this user');
+    }
 
-    const attendingEvents = userEvents.filter(
-      ({ rsvp: { name } }) => name === 'yes',
-    );
-
-    await Promise.all(
-      attendingEvents.map(async ({ event }) =>
-        updateEventWaitlist({ event, userId }),
-      ),
-    );
-
-    const eventsWithCalendar = attendingEvents.filter(
-      ({ event: { calendar_event_id } }) => calendar_event_id,
-    );
-
-    const calendarUpdates = eventsWithCalendar.map(
-      async ({
-        event: {
-          calendar_event_id,
-          chapter: { calendar_id },
-          id,
-        },
-      }) => {
-        // The calendar must be updated after event_users, so it can use the updated
-        // email list
-        return await updateCalendarEventAttendees({
-          calendarEventId: calendar_event_id,
-          calendarId: calendar_id,
-          eventId: id,
-        });
-      },
-    );
-    await Promise.all(calendarUpdates);
+    await removeUserFromEventsInChapter({ chapterId, userId });
 
     return await prisma.user_bans.create({
       data: {
@@ -261,23 +275,20 @@ export class ChapterUserResolver {
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
+    const hasPermissionToBanOtherUser = await canBanOther({
+      chapterId,
+      otherUserId: userId,
+      banningUser: ctx.user,
+    });
+    if (!hasPermissionToBanOtherUser) {
+      throw Error('You cannot ban this user');
+    }
+
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
       include: { chapter: true, user: true },
     });
-  }
-
-  // TODO: it would be nice if this was a field on the ChapterUser type and we
-  // could guarantee type safety of this resolver.
-  @FieldResolver()
-  is_bannable(@Ctx() ctx: ResolverCtx): boolean {
-    // TODO: reimplement the logic of
-    // https://github.com/freeCodeCamp/chapter/commit/a71e570b22e8bad042438369b1162000dcee3f47,
-    // updated with the current roles and permissions
-    if (!ctx.user) {
-      return false;
-    }
-    return true;
   }
 }

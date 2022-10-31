@@ -1,13 +1,11 @@
-name: Reset Dev Database
+name: Stop Chapter
 on:
   workflow_dispatch:
-
 jobs:
-  reset-dev-db:
-    name: Reset Dev Database
+  restart:
     runs-on: ubuntu-latest
     steps:
-      - name: Reset Via SSH
+      - name: Stop Via SSH
         uses: appleboy/ssh-action@f9010ff7f1bbd7db1a0b4bab661437550cea20c0 # tag=v0.1.5
         with:
           host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
@@ -16,5 +14,5 @@ jobs:
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
           script: |
-            cd chapter 
-            docker compose -f docker-compose.seed.yml run seed sh -c "npm run db:sync && npm run db:init"
+            cd chapter
+            docker compose down

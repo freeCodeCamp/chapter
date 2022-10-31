@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 import coverage from '@cypress/code-coverage/task';
 
 import { prisma } from './server/src/prisma';
-import { InstanceRole } from './server/prisma/generator/factories/instanceRoles.factory';
+import { InstanceRole } from './server/prisma/init/factories/instanceRoles.factory';
 
 const getChapterMembers = (chapterId: number) =>
   prisma.chapter_users.findMany({

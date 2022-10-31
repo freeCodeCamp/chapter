@@ -423,7 +423,6 @@ export class EventResolver {
       },
     });
 
-    const eventSubscription = true;
     const newRsvpName = getNameForNewRsvp(event);
 
     let eventUser: EventUser;
@@ -448,7 +447,7 @@ export class EventResolver {
         event: { connect: { id: eventId } },
         rsvp: { connect: { name: newRsvpName } },
         event_role: { connect: { name: 'member' } },
-        subscribed: eventSubscription,
+        subscribed: true,
       };
       eventUser = await prisma.event_users.create({
         data: eventUserData,
@@ -457,7 +456,7 @@ export class EventResolver {
 
       // NOTE: this relies on there being an event_user record, so must follow
       // that.
-      if (newRsvpName !== 'waitlist' && eventSubscription) {
+      if (newRsvpName !== 'waitlist') {
         await createReminder({
           eventId,
           remindAt: sub(event.start_at, { days: 1 }),

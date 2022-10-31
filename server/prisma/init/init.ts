@@ -1,5 +1,5 @@
 import { prisma } from '../../src/prisma';
-import { createRsvpTypes } from '../seed/factories/rsvps.factory';
+import { createRsvpTypes } from './factories/rsvpTypes.factory';
 import createInstanceRoles from './factories/instanceRoles.factory';
 import createChapterRoles from './factories/chapterRoles.factory';
 import createEventRoles from './factories/eventRoles.factory';

@@ -25,11 +25,12 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
-    - [Authorizing GraphGQL requests with `@Authorized` decorator](#authorizing-graphgql-requests-with-authorized-decorator)
-      - [Overview of roles](#overview-of-roles)
-      - [`@Authorized` decorator](#authorized-decorator)
-        - [Flowchart](#flowchart)
-        - [Example](#example)
+  - [Authorizing GraphGQL requests with `@Authorized` decorator](#authorizing-graphgql-requests-with-authorized-decorator)
+    - [Overview of roles](#overview-of-roles)
+    - [Available role scopes](#available-role-scopes)
+    - [`@Authorized` decorator](#authorized-decorator)
+      - [Flowchart](#flowchart)
+      - [Example](#example)
 - [Troubleshooting](#troubleshooting)
 
 # Contribution Guidelines

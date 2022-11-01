@@ -1,5 +1,9 @@
+import { Event } from '../graphql-types';
 import { prisma } from '../prisma';
-import { patchCalendarEvent } from '../services/Google';
+import {
+  createCalendarEvent as createCalendarEventService,
+  patchCalendarEvent,
+} from '../services/Google';
 
 export const updateCalendarEventAttendees = async ({
   eventId,
@@ -31,5 +35,35 @@ export const updateCalendarEventAttendees = async ({
       // TODO: log more details without leaking tokens and user info.
       throw 'Unable to update calendar event attendees';
     }
+  }
+};
+
+interface CreateCalendarEventData {
+  attendeeEmails: string[];
+  calendarId: string;
+  event: Pick<Event, 'id' | 'ends_at' | 'start_at' | 'name'>;
+}
+
+export const createCalendarEvent = async ({
+  attendeeEmails,
+  calendarId,
+  event: { ends_at, id, name, start_at },
+}: CreateCalendarEventData) => {
+  try {
+    const { calendarEventId } = await createCalendarEventService({
+      calendarId,
+      start: start_at,
+      end: ends_at,
+      summary: name,
+      attendeeEmails,
+    });
+
+    return await prisma.events.update({
+      where: { id },
+      data: { calendar_event_id: calendarEventId },
+    });
+  } catch {
+    // TODO: log more details without leaking tokens and user info.
+    throw Error('Unable to create calendar event');
   }
 };

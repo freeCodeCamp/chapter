@@ -8,6 +8,7 @@ import {
   VStack,
   Flex,
 } from '@chakra-ui/react';
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
@@ -163,9 +164,26 @@ export const EventPage: NextPageWithLayout = () => {
             </Text>
           )}
 
+        {data.dashboardEvent.chapter.calendar_id && (
+          <Text>
+            Event in calendar:{' '}
+            {data.dashboardEvent.calendar_event_id ? (
+              <>
+                <CheckIcon fontSize="sm" />
+                Created
+              </>
+            ) : (
+              <>
+                <CloseIcon fontSize="sm" />
+                Not created
+              </>
+            )}
+          </Text>
+        )}
+
         <Actions
           event={data.dashboardEvent}
-          chapter_id={data.dashboardEvent.chapter.id}
+          chapter={data.dashboardEvent.chapter}
           onDelete={() => router.replace('/dashboard/events')}
         />
       </Flex>

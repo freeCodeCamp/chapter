@@ -33,6 +33,9 @@ export class Chapter extends BaseObject {
 
   @Field(() => Int)
   creator_id: number;
+
+  @Field(() => String, { nullable: true })
+  calendar_id?: string | null;
 }
 
 @ObjectType()

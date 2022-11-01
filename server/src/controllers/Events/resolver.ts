@@ -43,11 +43,13 @@ import {
 } from '../../services/UnsubscribeToken';
 import {
   cancelCalendarEvent,
-  createCalendarEvent,
   deleteCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
-import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
+import {
+  createCalendarEvent,
+  updateCalendarEventAttendees,
+} from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { EventInputs } from './inputs';
 
@@ -669,30 +671,35 @@ ${unsubscribeOptions}`,
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      try {
-        const { calendarEventId } = await createCalendarEvent({
-          calendarId: chapter.calendar_id,
-          start: event.start_at,
-          end: event.ends_at,
-          summary: event.name,
-          attendeeEmails: [ctx.user.email],
-        });
-
-        await prisma.events.update({
-          where: {
-            id: event.id,
-          },
-          data: {
-            calendar_event_id: calendarEventId,
-          },
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to create calendar event');
-      }
+      await createCalendarEvent({
+        attendeeEmails: [ctx.user.email],
+        calendarId: chapter.calendar_id,
+        event,
+      });
     }
 
     return event;
+  }
+
+  @Authorized(Permission.GoogleAuthenticate)
+  @Mutation(() => Event)
+  async createCalendarEvent(@Arg('id', () => Int) id: number): Promise<Event> {
+    const event = await prisma.events.findUniqueOrThrow({
+      where: { id },
+      include: { chapter: true, event_users: { include: { user: true } } },
+    });
+    if (event.calendar_event_id) return event;
+    if (!event.chapter.calendar_id) {
+      throw Error('Cannot create event in calendar without calendar_id');
+    }
+
+    const attendeeEmails =
+      event.event_users.map(({ user: { email } }) => email) ?? [];
+    return await createCalendarEvent({
+      attendeeEmails,
+      calendarId: event.chapter.calendar_id,
+      event,
+    });
   }
 
   @Authorized(Permission.EventEdit)

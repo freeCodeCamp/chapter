@@ -1,8 +1,8 @@
 import { prisma } from '../../src/prisma';
+import { createRsvpTypes } from './factories/rsvpTypes.factory';
+import createInstanceRoles from './factories/instanceRoles.factory';
 import createChapterRoles from './factories/chapterRoles.factory';
 import createEventRoles from './factories/eventRoles.factory';
-import createInstanceRoles from './factories/instanceRoles.factory';
-import { createRsvpTypes } from './factories/rsvps.factory';
 
 export async function truncateTables() {
   const tablenames = await prisma.$queryRaw<

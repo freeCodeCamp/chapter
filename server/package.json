@@ -11,7 +11,7 @@
     "start": "node ./src/app.js",
     "start:coverage": "npx -y nyc --silent node ./src/app.js",
     "reminders:send": "node ./reminders/reminders.js",
-    "reset:users": "node prisma/generator/resetUsers.js"
+    "reset:users": "node prisma/seed/resetUsers.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "prisma": {
-    "seed": "node prisma/generator/seed.js"
+    "seed": "node prisma/seed/seed.js"
   },
   "dependencies": {
     "@cypress/code-coverage": "3.10.0",

@@ -1,7 +1,7 @@
-# TODO: get rid of the prisma stuff when we have a less hacky way to do this
-name: Build and Deploy
+name: Prepare to Deploy
 on:
   workflow_dispatch:
+
 jobs:
   build:
     name: Build and Upload Images

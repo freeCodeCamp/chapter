@@ -587,7 +587,7 @@ The database is currently undergoing a re-write and we are using `npm run db:syn
 
 ### Overview of roles
 
-Chapter has a role based permission system, with specific permission assigned to one or multiple roles, on one or more different _scopes_).
+Chapter has a role based permission system, with specific permission assigned to one or multiple roles, on one or more different _scopes_.
 
 ### Available role scopes
 

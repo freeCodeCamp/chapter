@@ -629,7 +629,7 @@ To make sure authorization will check permissions for correct chapter or event, 
 
 By default this means only logged in user can be authorized.
 
-### Flowchart
+#### Flowchart
 
 ```mermaid
 flowchart LR;
@@ -652,7 +652,7 @@ flowchart LR;
     E-->|No| N;
 ```
 
-### Example
+#### Example
 
 Adding `@Authorize(Permissions.EventEdit)` before mutation editing event will authorize user if one of the following applies:
 

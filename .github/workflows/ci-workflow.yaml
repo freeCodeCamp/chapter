@@ -39,6 +39,8 @@ jobs:
       - name:
           Check migrations
           # 1) apply commited migrations, 2) try to generate a new migration, 3) check if this was possible
+        env:
+          DB_PORT: 5432
         run: |
           npm run prisma -- migrate reset --force --skip-generate --skip-seed
           npm run prisma -- migrate dev --skip-generate --skip-seed --name test

@@ -28,18 +28,6 @@ const timeFormatter = new Intl.DateTimeFormat('en-us', {
 
 type LockCheck = (reminder: Reminder) => Promise<{ hasLock: boolean }>;
 
-const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
-  await Promise.all(
-    reminders.map(async (reminder) => {
-      const { hasLock } = await lock(reminder);
-      if (!hasLock) {
-        return;
-      }
-      await sendEmailForReminder(reminder);
-      await deleteReminder(reminder);
-    }),
-  );
-
 interface ReminderMessageData {
   event: Reminder['event_user']['event'];
   user: Reminder['event_user']['user'];
@@ -75,7 +63,7 @@ Copyright © {current year in YYYY format} {Organization}. All rights reserved.<
 
 Unsubscribe Options
 - [Attend this event, but only turn off future notifications for this event](${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken})
-- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
+- Or, [stop receiving notifications about new events in chapter by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
 
 [Privacy Policy](link to privacy page)`;
 };
@@ -86,11 +74,7 @@ const getEmailData = (reminder: Reminder) => {
   const end_time = timeFormatter.format(reminder.event_user.event.ends_at);
   console.log(`Event: ${reminder.event_user.event.name}`);
   console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
-  console.log(
-    `Remind at ${reminder.remind_at.toUTCString()} to ${
-      reminder.event_user.user.email
-    }`,
-  );
+  console.log(`Remind at ${reminder.remind_at.toUTCString()}`);
   console.log();
 
   const chapterUnsubscribeToken = generateToken(
@@ -125,6 +109,18 @@ const sendEmailForReminder = async (reminder: Reminder) => {
     htmlEmail: email,
   }).sendEmail();
 };
+
+const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
+  await Promise.all(
+    reminders.map(async (reminder) => {
+      const { hasLock } = await lock(reminder);
+      if (!hasLock) {
+        return;
+      }
+      await sendEmailForReminder(reminder);
+      await deleteReminder(reminder);
+    }),
+  );
 
 (async () => {
   const date = new Date();

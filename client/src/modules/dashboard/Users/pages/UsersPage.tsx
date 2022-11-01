@@ -4,11 +4,11 @@ import {
   Heading,
   VStack,
   Text,
+  Box,
   useDisclosure,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import { NextPage } from 'next';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   useChangeInstanceUserRoleMutation,
@@ -17,13 +17,15 @@ import {
 } from '../../../../generated/graphql';
 
 import { Layout } from '../../shared/components/Layout';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Users } from '../graphql/queries';
 import {
   RoleChangeModal,
   RoleChangeModalData,
-} from 'modules/dashboard/shared/components/RoleChangeModal';
+} from '../../shared/components/RoleChangeModal';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const UsersPage: NextPage = () => {
+export const UsersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useUsersQuery();
 
   const { data: instanceRoles } = useInstanceRolesQuery();
@@ -38,18 +40,21 @@ export const UsersPage: NextPage = () => {
     modalProps.onOpen();
   };
 
-  const onModalSubmit = (data: { newRoleId: number; userId: number }) => {
+  const onModalSubmit = (data: { newRoleName: string; userId: number }) => {
     changeRoleMutation({
       variables: {
-        roleId: data.newRoleId,
+        roleName: data.newRoleName,
         userId: data.userId,
       },
     });
     modalProps.onClose();
   };
 
+  const isLoading = loading || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
+
   return (
-    <Layout>
+    <>
       {instanceRoles && instanceUser && (
         <RoleChangeModal
           modalProps={modalProps}
@@ -66,45 +71,89 @@ export const UsersPage: NextPage = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Instance Users</Heading>
         </Flex>
-        {loading ? (
-          <Heading>Loading...</Heading>
-        ) : error || !data?.users ? (
-          <>
-            <Heading>Error</Heading>
-            <Text>
-              {error?.name}: {error?.message}
-            </Text>
-          </>
-        ) : (
-          <DataTable
-            data={data.users}
-            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            keys={['name', 'role', 'ops'] as const}
-            mapper={{
-              name: ({ name }) => <Text data-cy="name">{name}</Text>,
-              ops: ({ id, instance_role, name }) => (
-                <Button
-                  data-cy="changeRole"
-                  colorScheme="blue"
-                  size="xs"
-                  onClick={() =>
-                    changeRole({
-                      roleId: instance_role.id,
-                      userId: id,
-                      userName: name,
-                    })
-                  }
-                >
-                  Change role
-                </Button>
-              ),
-              role: ({ instance_role: { name } }) => (
-                <Text data-cy="role">{name}</Text>
-              ),
-            }}
-          />
-        )}
+
+        <Box width={'100%'}>
+          <Box display={{ base: 'none', lg: 'block' }}>
+            <DataTable
+              data={data.users}
+              tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+              keys={['name', 'role', 'action'] as const}
+              mapper={{
+                name: ({ name }) => <Text data-cy="name">{name}</Text>,
+                action: ({ id, instance_role, name }) => (
+                  <Button
+                    data-cy="changeRole"
+                    colorScheme="blue"
+                    size="xs"
+                    onClick={() =>
+                      changeRole({
+                        roleName: instance_role.name,
+                        userId: id,
+                        userName: name,
+                      })
+                    }
+                  >
+                    Change role
+                  </Button>
+                ),
+                role: ({ instance_role: { name } }) => (
+                  <Text data-cy="role">{name}</Text>
+                ),
+              }}
+            />
+          </Box>
+
+          <Box display={{ base: 'block', lg: 'none' }}>
+            {data.users.map(({ name, id, instance_role }, index) => (
+              <DataTable
+                key={id}
+                data={[data.users[index]]}
+                tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+                keys={['type', 'action'] as const}
+                showHeader={false}
+                mapper={{
+                  type: () => (
+                    <VStack
+                      fontWeight={'700'}
+                      fontSize={['sm', 'md']}
+                      align={'flex-start'}
+                      marginBlock={'.5em'}
+                    >
+                      <Text>Name</Text>
+                      <Text>Role</Text>
+                      <Text>Action</Text>
+                    </VStack>
+                  ),
+                  action: () => (
+                    <VStack align={'flex-start'} fontSize={['sm', 'md']}>
+                      <Text data-cy="name">{name}</Text>
+                      <Text data-cy="role">{instance_role.name}</Text>
+                      <Button
+                        data-cy="changeRole"
+                        colorScheme="blue"
+                        size="xs"
+                        onClick={() =>
+                          changeRole({
+                            roleName: instance_role.name,
+                            userId: id,
+                            userName: name,
+                          })
+                        }
+                      >
+                        Change role
+                      </Button>
+                    </VStack>
+                  ),
+                }}
+              />
+            ))}
+          </Box>
+        </Box>
       </VStack>
-    </Layout>
+    </>
   );
+};
+
+UsersPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

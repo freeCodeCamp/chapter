@@ -3,9 +3,11 @@ import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Select } from '@chakra-ui/select';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { VStack } from '@chakra-ui/layout';
+
 import { Input } from '../../../../components/Form/Input';
 import styles from '../../../../styles/Form.module.css';
-import { Sponsor, SponsorQuery } from 'generated/graphql';
+import { DashboardSponsorQuery, Sponsor } from '../../../../generated/graphql';
 
 export type SponsorFormData = Omit<
   Sponsor,
@@ -15,8 +17,9 @@ export type SponsorFormData = Omit<
 interface SponsorFormProps {
   loading: boolean;
   onSubmit: (data: SponsorFormData) => Promise<void>;
-  data?: SponsorQuery;
+  data?: DashboardSponsorQuery;
   submitText: string;
+  loadingText: string;
 }
 export interface FormField {
   key: keyof Omit<SponsorFormData, '__typename'>;
@@ -35,18 +38,18 @@ const fields: FormField[] = [
     key: 'website',
     placeholder: 'www.freecodecamp.com',
     label: 'Website Url',
-    isRequired: true,
+    isRequired: false,
   },
   {
     key: 'logo_path',
     placeholder: 'www.freecodecamp.com',
     label: 'Logo Path',
-    isRequired: true,
+    isRequired: false,
   },
 ];
 const SponsorForm: React.FC<SponsorFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText } = props;
-  const sponsor = data?.sponsor;
+  const { loading, onSubmit, data, submitText, loadingText } = props;
+  const sponsor = data?.dashboardSponsor;
   const defaultValues: SponsorFormData = {
     name: sponsor?.name ?? '',
     website: sponsor?.website ?? '',
@@ -54,40 +57,49 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
     type: sponsor?.type ?? 'FOOD',
   };
 
-  const { handleSubmit, register } = useForm({
+  const {
+    handleSubmit,
+    register,
+    formState: { isDirty },
+  } = useForm({
     defaultValues,
   });
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      {fields.map((field) => {
-        return (
-          <Input
-            key={field.key}
-            label={field.label}
-            placeholder={field.placeholder}
-            isRequired={field.isRequired}
-            {...register(field.key)}
-          />
-        );
-      })}
+      <VStack gap={4}>
+        {fields.map((field) => {
+          return (
+            <Input
+              key={field.key}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired={field.isRequired}
+              isDisabled={loading}
+              {...register(field.key)}
+            />
+          );
+        })}
 
-      <FormControl mt="20px">
-        <FormLabel>Sponsor Type</FormLabel>
-        <Select {...register('type')}>
-          <option value="FOOD">Food</option>
-          <option value="VENUE">Venue</option>
-          <option value="OTHER">Other</option>
-        </Select>
-      </FormControl>
-      <Button
-        mt="20px"
-        variant="solid"
-        colorScheme="blue"
-        type="submit"
-        disabled={loading}
-      >
-        {submitText}
-      </Button>
+        <FormControl mt="20px">
+          <FormLabel>Sponsor Type</FormLabel>
+          <Select {...register('type')} isDisabled={loading}>
+            <option value="FOOD">Food</option>
+            <option value="VENUE">Venue</option>
+            <option value="OTHER">Other</option>
+          </Select>
+        </FormControl>
+        <Button
+          mt="20px"
+          variant="solid"
+          colorScheme="blue"
+          type="submit"
+          isLoading={loading}
+          loadingText={loadingText}
+          isDisabled={!isDirty || loading}
+        >
+          {submitText}
+        </Button>
+      </VStack>
     </form>
   );
 };

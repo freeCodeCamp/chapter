@@ -1,34 +1,38 @@
-import { Button, Heading, VStack } from '@chakra-ui/react';
-import React from 'react';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Select,
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
-import type { Venue, VenueQuery } from '../../../../generated/graphql';
-import styles from '../../../../styles/Form.module.css';
+import type {
+  VenueQuery,
+  VenueInputs,
+  ChapterQuery,
+} from '../../../../generated/graphql';
+import { Form } from '../../../../components/Form/Form';
 
-export type VenueFormData = Omit<
-  Venue,
-  'id' | 'events' | 'chapter_id' | 'chapter'
->;
-
-interface VenueChapter {
-  id: number;
-  name: string;
-}
+export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
 interface VenueFormProps {
-  loading: boolean;
   onSubmit: (data: VenueFormData) => Promise<void>;
   data?: VenueQuery;
+  chapterData?: ChapterQuery;
+  adminedChapters?: { name: string; id: number }[];
   submitText: string;
-  chapter: VenueChapter;
+  chapterId?: number;
+  loadingText: string;
 }
 
 type Fields = {
-  key: keyof VenueFormData;
+  key: keyof VenueInputs;
   label: string;
   placeholder: string;
   isRequired: boolean;
-  type: string;
+  type: 'text' | 'number';
   max?: number;
   min?: number;
   step?: number;
@@ -45,7 +49,7 @@ const fields: Fields[] = [
     key: 'street_address',
     label: 'Street address',
     placeholder: 'Street address',
-    isRequired: true,
+    isRequired: false,
     type: 'text',
   },
   {
@@ -98,58 +102,109 @@ const fields: Fields[] = [
   },
 ];
 
+// We could loop over the fields array to generate this, but we'd lose type
+// safety by doing so.
+const getDefaultValues = (chapterId: number, venue?: VenueQuery['venue']) => ({
+  chapter_id: chapterId,
+  name: venue?.name ?? '',
+  street_address: venue?.street_address ?? null,
+  city: venue?.city ?? '',
+  postal_code: venue?.postal_code ?? '',
+  region: venue?.region ?? '',
+  country: venue?.country ?? '',
+  latitude: venue?.latitude ?? null,
+  longitude: venue?.longitude ?? null,
+});
+
 const VenueForm: React.FC<VenueFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, chapter } = props;
+  const {
+    onSubmit,
+    data,
+    submitText,
+    chapterId,
+    loadingText,
+    chapterData,
+    adminedChapters = [],
+  } = props;
+
+  const [loading, setLoading] = useState(false);
   const venue = data?.venue;
 
-  const defaultValues: VenueFormData = {
-    name: venue?.name ?? '',
-    street_address: venue?.street_address ?? undefined,
-    city: venue?.city ?? '',
-    postal_code: venue?.postal_code ?? '',
-    region: venue?.region ?? '',
-    country: venue?.country ?? '',
-    latitude: venue?.latitude ?? undefined,
-    longitude: venue?.longitude ?? undefined,
-  };
-  const { handleSubmit, register } = useForm<VenueFormData>({
+  const defaultChapterId = adminedChapters[0]?.id ?? chapterId;
+  const defaultValues: VenueFormData = getDefaultValues(
+    defaultChapterId,
+    venue,
+  );
+  const {
+    formState: { isDirty },
+    handleSubmit,
+    register,
+  } = useForm<VenueFormData>({
     defaultValues,
   });
 
+  const disableWhileSubmitting = async (data: VenueFormData) => {
+    setLoading(true);
+    try {
+      await onSubmit(data);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      {chapter && <Heading>{chapter.name}</Heading>}
-      <form
-        aria-label={submitText}
-        onSubmit={handleSubmit(onSubmit)}
-        className={styles.form}
-      >
-        <VStack>
-          {fields.map(({ key, isRequired, label, type, step, max, min }) => (
-            <Input
-              key={key}
-              label={label}
-              {...register(key)}
-              type={type}
-              isRequired={isRequired}
-              step={step ? step : undefined}
-              max={max ? max : undefined}
-              min={min ? min : undefined}
-            />
-          ))}
-          <Button
-            mt="30px"
-            width="100%"
-            variant="solid"
-            colorScheme="blue"
-            type="submit"
-            disabled={loading}
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
+      {chapterData ? (
+        <Heading>{chapterData.chapter.name}</Heading>
+      ) : (
+        <FormControl isRequired>
+          <FormLabel>Chapter</FormLabel>
+          <Select
+            {...register('chapter_id' as const, {
+              required: true,
+              valueAsNumber: true,
+            })}
+            isDisabled={loading}
           >
-            {submitText}
-          </Button>
-        </VStack>
-      </form>
-    </>
+            {adminedChapters.length &&
+              adminedChapters.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+          </Select>
+        </FormControl>
+      )}
+      {fields.map(({ key, isRequired, label, type, step, max, min }) => (
+        <Input
+          key={key}
+          label={label}
+          {...register(key)}
+          type={type}
+          isRequired={isRequired}
+          step={step}
+          max={max}
+          min={min}
+          isDisabled={loading}
+        />
+      ))}
+      <Button
+        mt="30px"
+        width="100%"
+        variant="solid"
+        colorScheme="blue"
+        type="submit"
+        isDisabled={!isDirty}
+        isLoading={loading}
+        loadingText={loadingText}
+      >
+        {submitText}
+      </Button>
+    </Form>
   );
 };
 

@@ -6,7 +6,7 @@ exports[`EventCard should render 1`] = `
     class="css-8l4ckd"
   >
     <img
-      class="chakra-image css-teya6a"
+      class="chakra-image css-gb7fie"
       src="http://example.com/image.png"
     />
     <div
@@ -14,136 +14,55 @@ exports[`EventCard should render 1`] = `
       data-cy="event-card"
     >
       <h4
-        class="css-1vbua13"
+        class="css-15hezon"
       >
-        Thu, Jan 1 @ 00:00
         <div
-          class="css-17xejub"
-        />
-        <span
-          class="css-ba69m4"
+          class="css-5h69ez"
         >
-          <svg
-            class="chakra-icon css-onkibi"
-            focusable="false"
-            viewBox="0 0 24 24"
+          <a
+            class="chakra-link css-0"
+            data-cy="event-link"
+            href="/events/1"
           >
-            <path
-              d="M19.5,9.5h-.75V6.75a6.75,6.75,0,0,0-13.5,0V9.5H4.5a2,2,0,0,0-2,2V22a2,2,0,0,0,2,2h15a2,2,0,0,0,2-2V11.5A2,2,0,0,0,19.5,9.5Zm-9.5,6a2,2,0,1,1,3,1.723V19.5a1,1,0,0,1-2,0V17.223A1.994,1.994,0,0,1,10,15.5ZM7.75,6.75a4.25,4.25,0,0,1,8.5,0V9a.5.5,0,0,1-.5.5H8.25a.5.5,0,0,1-.5-.5Z"
-              fill="currentColor"
-            />
-          </svg>
-        </span>
-      </h4>
-      <div
-        class="css-0"
-      >
-        <a
-          class="chakra-link css-0"
-          data-cy="event-link"
-          href="/events/1"
-        >
-          <h2
-            class="chakra-heading css-0"
-          >
-            bar
-          </h2>
-        </a>
-      </div>
-      <div
-        class="css-0"
-      >
-        <a
-          class="chakra-link css-0"
-          href="/chapters/1"
-        >
-          foo
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`EventCard should render with tags 1`] = `
-<div>
-  <div
-    class="css-8l4ckd"
-  >
-    <img
-      class="chakra-image css-teya6a"
-      src="http://example.com/image.png"
-    />
-    <div
-      class="css-1fuobds"
-      data-cy="event-card"
-    >
-      <h4
-        class="css-1vbua13"
-      >
-        Thu, Jan 1 @ 00:00
+            <h3
+              class="chakra-heading css-1ei6e5r"
+            >
+              bar
+            </h3>
+          </a>
+        </div>
         <div
-          class="css-17xejub"
-        />
-        <span
-          class="css-ba69m4"
+          class="css-14ygirk"
         >
-          <svg
-            class="chakra-icon css-onkibi"
-            focusable="false"
-            viewBox="0 0 24 24"
+          <span
+            class="css-17imrdh"
           >
-            <path
-              d="M19.5,9.5h-.75V6.75a6.75,6.75,0,0,0-13.5,0V9.5H4.5a2,2,0,0,0-2,2V22a2,2,0,0,0,2,2h15a2,2,0,0,0,2-2V11.5A2,2,0,0,0,19.5,9.5Zm-9.5,6a2,2,0,1,1,3,1.723V19.5a1,1,0,0,1-2,0V17.223A1.994,1.994,0,0,1,10,15.5ZM7.75,6.75a4.25,4.25,0,0,1,8.5,0V9a.5.5,0,0,1-.5.5H8.25a.5.5,0,0,1-.5-.5Z"
-              fill="currentColor"
-            />
-          </svg>
-        </span>
+            Invite only
+          </span>
+        </div>
+        <p
+          class="css-x5nzr7"
+        >
+          <a
+            class="chakra-link css-0"
+            href="/chapters/1"
+          >
+            Chapter: 
+            foo
+          </a>
+        </p>
+        <div
+          class="css-11b3qp1"
+        >
+          <p
+            class="chakra-text css-xac110"
+          >
+            Passed
+            : 
+            Thu, Jan 1 @ 00:00
+          </p>
+        </div>
       </h4>
-      <div
-        class="css-0"
-      >
-        <a
-          class="chakra-link css-0"
-          data-cy="event-link"
-          href="/events/1"
-        >
-          <h2
-            class="chakra-heading css-0"
-          >
-            bar
-          </h2>
-        </a>
-      </div>
-      <div
-        class="css-0"
-      >
-        <a
-          class="chakra-link css-0"
-          href="/chapters/1"
-        >
-          foo
-        </a>
-      </div>
-      <div
-        class="css-vctkmi"
-      >
-        <span
-          class="css-12ci4mr"
-        >
-          notfoo
-        </span>
-        <span
-          class="css-12ci4mr"
-        >
-          notbar
-        </span>
-        <span
-          class="css-12ci4mr"
-        >
-          notbaz
-        </span>
-      </div>
     </div>
   </div>
 </div>

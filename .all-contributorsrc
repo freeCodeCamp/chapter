@@ -616,6 +616,42 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "Awais753",
+      "name": "Awais Ahmed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22499873?v=4",
+      "profile": "https://github.com/Awais753",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Nitya-Pasrija",
+      "name": "Nitya Pasrija",
+      "avatar_url": "https://avatars.githubusercontent.com/u/97171261?v=4",
+      "profile": "http://www.linkedin.com/in/nitya-pasrija",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Jonathan1599",
+      "name": "Jon@1599",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55296387?v=4",
+      "profile": "https://github.com/Jonathan1599",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "og118",
+      "name": "Omkar Ghag",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63297841?v=4",
+      "profile": "https://www.linkedin.com/in/ghag-omkar/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -623,5 +659,6 @@
   "projectOwner": "freeCodeCamp",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": false
+  "skipCi": false,
+  "commitConvention": "angular"
 }

@@ -1,8 +1,6 @@
 import {
   Heading,
-  Spinner,
   VStack,
-  Text,
   Grid,
   GridItem,
   Button,
@@ -10,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
+import { Loading } from 'components/Loading';
 import { ChapterCard } from 'components/ChapterCard';
 import { EventCard } from 'components/EventCard';
 import { useHomeQuery } from 'generated/graphql';
@@ -37,26 +36,17 @@ const Home = () => {
     }
   };
 
+  const isLoading = loading || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+
   return (
-    <Grid templateColumns="repeat(3, 1fr)" columnGap={10} mt="5">
-      <GridItem colSpan={{ base: 3, md: 2 }}>
+    <Grid templateColumns="repeat(2, 1fr)" gap={10} mt="5">
+      <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Upcoming events</Heading>
-          {loading ? (
-            <Spinner />
-          ) : error || !data ? (
-            <>
-              <Heading size="md" color="red.400">
-                😕 Something went wrong
-              </Heading>
-              <Text>{error?.message}</Text>
-            </>
-          ) : (
-            data.paginatedEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))
-          )}
-
+          {data.paginatedEvents.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
           {hasMore ? (
             <Button onClick={onLoadMore}>Click for more</Button>
           ) : (
@@ -64,23 +54,12 @@ const Home = () => {
           )}
         </VStack>
       </GridItem>
-      <GridItem colSpan={{ base: 3, md: 1 }}>
+      <GridItem colSpan={{ base: 2, xl: 1 }}>
         <VStack align="flex-start">
           <Heading>Chapters</Heading>
-          {loading ? (
-            <Spinner />
-          ) : error || !data ? (
-            <>
-              <Heading size="md" color="red.400">
-                😕 Something went wrong
-              </Heading>
-              <Text>{error?.message}</Text>
-            </>
-          ) : (
-            data.chapters.map((chapter) => (
-              <ChapterCard key={chapter.id} chapter={chapter} />
-            ))
-          )}
+          {data.chapters.map((chapter) => (
+            <ChapterCard key={chapter.id} chapter={chapter} />
+          ))}
         </VStack>
       </GridItem>
     </Grid>

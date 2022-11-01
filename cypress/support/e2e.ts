@@ -48,6 +48,13 @@ declare global {
       deleteRsvp(eventId: number, userId: number): Chainable<any>;
 
       /**
+       * Delete rsvp of user with userId for the event with eventId
+       * @param eventId Id of the event
+       * @param data data object of the event
+       */
+      updateEvent(eventId: number, data): Chainable<any>;
+
+      /**
        * Rsvp to event with eventId and chapterId
        * @param eventId Id of the event
        * @param chapterId Id of the chapter
@@ -81,7 +88,7 @@ declare global {
       /**
        * Create venue using GQL mutation
        * @param chapterId Id of the chapter
-       * @param data Data of the venue. Equivalent of CreateVenueInputs for the Venue resolver.
+       * @param data Data of the venue. Equivalent of VenueInputs for the Venue resolver.
        * @param {object} [options={ withAuth: true }] Optional options object.
        */
       createVenue(
@@ -94,7 +101,7 @@ declare global {
        * Update venue using GQL mutation
        * @param chapterId Id of the chapter
        * @param venueId Id of the venue
-       * @param data Data of the venue. Equivalent of UpdateVenueInputs for the Venue resolver.
+       * @param data Data of the venue. Equivalent of VenueInputs for the Venue resolver.
        * @param {object} [options={ withAuth: true }] Optional options object.
        */
       updateVenue(

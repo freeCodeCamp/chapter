@@ -1,8 +1,26 @@
+import { Prisma } from '@prisma/client';
+
 import { prisma } from '../prisma';
 
-export type Reminder = Awaited<
-  ReturnType<typeof getRemindersOlderThanDate>
->[number];
+const reminderIncludes = {
+  include: {
+    event_user: {
+      include: {
+        user: true,
+        event: {
+          include: {
+            venue: true,
+            chapter: true,
+          },
+        },
+      },
+    },
+  },
+};
+
+export type Reminder = Prisma.event_remindersGetPayload<
+  typeof reminderIncludes
+>;
 
 export interface ReminderData {
   eventId: number;
@@ -39,20 +57,6 @@ export const deleteReminder = async (reminder: Reminder) =>
 export const deleteEventReminders = async (eventId: number) =>
   await prisma.event_reminders.deleteMany({ where: { event_id: eventId } });
 
-const reminderIncludes = {
-  event_user: {
-    include: {
-      user: true,
-      event: {
-        include: {
-          venue: true,
-          chapter: true,
-        },
-      },
-    },
-  },
-};
-
 export const updateRemindAt = async ({
   eventId,
   remindAt,
@@ -67,7 +71,7 @@ export const updateRemindAt = async ({
 
 export const getRemindersOlderThanDate = async (date: Date) =>
   await prisma.event_reminders.findMany({
-    include: reminderIncludes,
+    ...reminderIncludes,
     where: {
       remind_at: {
         lte: date,
@@ -81,7 +85,7 @@ export const getRemindersOlderThanDate = async (date: Date) =>
 
 export const getOldReminders = async (date: Date) =>
   await prisma.event_reminders.findMany({
-    include: reminderIncludes,
+    ...reminderIncludes,
     where: {
       notifying: true,
       updated_at: {

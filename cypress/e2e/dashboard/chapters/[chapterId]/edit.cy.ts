@@ -1,22 +1,24 @@
-import { expectToBeRejected } from '../../../../support/util';
+import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 
-const chapterData = {
-  name: 'New Chapter Name',
-  description: 'New Description',
-  city: 'New City',
-  region: 'New Region',
-  country: 'New Country',
-  category: 'New Category',
-  imageUrl: 'https://example.com/new-image.jpg',
-};
+const chapterId = 1;
 
 describe('chapter edit dashboard', () => {
+  let chapterData;
+  let users;
+  before(() => {
+    cy.fixture('chapters').then((fixture) => {
+      chapterData = fixture[1];
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
   });
   it('allows admins to edit a chapter', () => {
-    cy.login(Cypress.env('JWT_ADMIN_USER'));
-    cy.visit('/dashboard/chapters/1/edit');
+    cy.login(users.chapter1Admin.email);
+    cy.visit(`/dashboard/chapters/${chapterId}/edit`);
 
     cy.findByRole('textbox', { name: 'Chapter name' })
       .clear()
@@ -34,9 +36,12 @@ describe('chapter edit dashboard', () => {
     cy.findByRole('textbox', { name: 'Category' })
       .clear()
       .type(chapterData.category);
-    cy.findByRole('textbox', { name: 'Image Url' })
+    cy.findByRole('textbox', { name: 'Banner Url' })
       .clear()
-      .type(chapterData.imageUrl);
+      .type(chapterData.banner_url);
+    cy.findByRole('textbox', { name: 'Logo Url' })
+      .clear()
+      .type(chapterData.logo_url);
 
     cy.findByRole('form', { name: 'Save Chapter Changes' })
       .findByRole('button', { name: 'Save Chapter Changes' })
@@ -49,13 +54,11 @@ describe('chapter edit dashboard', () => {
   it('rejects requests from members, but allows them from owners', () => {
     // confirm the chapter is ready to be updated (i.e. doesn't not already have
     // the new name)
-    const chapterId = 1;
     cy.visit(`/dashboard/chapters/${chapterId}`);
     cy.contains('loading').should('not.exist');
     cy.contains(chapterData.name).should('not.exist');
 
-    cy.register();
-    cy.login(Cypress.env('JWT_TEST_USER'));
+    cy.login(users.testUser.email);
 
     cy.updateChapter(chapterId, chapterData).then((response) => {
       expectToBeRejected(response);
@@ -64,13 +67,23 @@ describe('chapter edit dashboard', () => {
       cy.contains(chapterData.name).should('not.exist');
     });
 
+    // back to owner
     cy.login();
     cy.updateChapter(chapterId, chapterData).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/chapters/${chapterId}`);
       cy.contains(chapterData.name);
     });
+  });
+
+  it('only accepts chapter deletion requests from owners', () => {
+    cy.login(users.chapter1Admin.email);
+
+    cy.deleteChapter(chapterId).then((response) => {
+      expectToBeRejected(response);
+    });
+
+    cy.login();
+    cy.deleteChapter(chapterId).then(expectNoErrors);
   });
 });

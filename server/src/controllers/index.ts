@@ -1,4 +1,3 @@
-import { UserResolver } from '../graphql-types';
 import { AuthResolver } from './Auth/resolver';
 import { ChapterResolver } from './Chapter/resolver';
 import { EventResolver } from './Events/resolver';
@@ -12,6 +11,7 @@ import { ChapterUserResolver } from './ChapterUser/resolver';
 import { ChapterRoleResolver } from './ChapterRole/resolver';
 import { VenueResolver } from './Venue/resolver';
 import { UsersResolver } from './Users/resolver';
+import { UserWithInstanceRoleResolver } from './User/resolver';
 
 const resolvers = [
   ChapterResolver,
@@ -26,8 +26,8 @@ const resolvers = [
   UnsubscribeResolver,
   ChapterUserResolver,
   ChapterRoleResolver,
-  UserResolver, // Somehow extract this somewhere else
   UsersResolver,
+  UserWithInstanceRoleResolver,
 ] as const;
 
 export { resolvers };

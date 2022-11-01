@@ -1,12 +1,20 @@
+import { ChapterMembers, EventUsers } from '../../cypress.config';
+
 describe('unsubscribe link', () => {
+  let users;
+  before(() => {
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.mhDeleteAll();
   });
 
   it('should allow for unsubscribing without being logged in', () => {
     const chapterId = 1;
-    const emailAddress = 'foo@bar.com';
+    const emailAddress = users.owner.email;
     cy.login();
     cy.getChapterEvents(chapterId).then((events) => {
       const eventIds = events.map(({ id }) => id);
@@ -39,12 +47,14 @@ describe('unsubscribe link', () => {
           cy.findByRole('button', { name: 'Submit' }).click();
 
           cy.contains('Unsubscribed');
-          cy.getEventUsers(eventIdToUnsubscribe).then((eventUsers) => {
-            const unsubscribedUser = eventUsers.find(
-              ({ user: { email } }) => email === emailAddress,
-            );
-            expect(unsubscribedUser.subscribed).to.be.false;
-          });
+          cy.task<EventUsers>('getEventUsers', eventIdToUnsubscribe).then(
+            (eventUsers) => {
+              const unsubscribedUser = eventUsers.find(
+                ({ user: { email } }) => email === emailAddress,
+              );
+              expect(unsubscribedUser.subscribed).to.be.false;
+            },
+          );
 
           cy.visit(`/unsubscribe?token=${unsubscribeChapterToken}`);
           cy.contains('Unsubscribing');
@@ -52,20 +62,22 @@ describe('unsubscribe link', () => {
           cy.findByRole('button', { name: 'Submit' }).click();
 
           cy.contains('Unsubscribed');
-          cy.getChapterMembers(chapterId).then((chapter_users) => {
-            expect(
-              chapter_users.find(
-                ({ user: { email } }) => email === emailAddress,
-              ).subscribed,
-            ).to.eq(false);
-          });
+          cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
+            (chapter_users) => {
+              expect(
+                chapter_users.find(
+                  ({ user: { email } }) => email === emailAddress,
+                ).subscribed,
+              ).to.eq(false);
+            },
+          );
 
           otherChapterEventIds.forEach((eventId) => {
-            cy.getEventUsers(eventId).then((eventUsers) => {
+            cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
               const unsubscribedUser = eventUsers.find(
                 ({ user: { email } }) => email === emailAddress,
               );
-              expect(unsubscribedUser.subscribed).to.be.false;
+              expect(unsubscribedUser.subscribed).to.be.true;
             });
           });
         });

@@ -1,10 +1,22 @@
 # Production-like configuration for testing
 version: "3.7"
 services:
-  mailhog:
-    depends_on:
-      - app
-    image: mailhog/mailhog
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "54320:5432"
+  app:
+    depends_on:
+      - db
+    command: ["npm", "run", "start:coverage"]
+    # TODO: ugly hack to get the dev login working, remove the volume once there is
+    # a less silly dev login
+    volumes:
+      - ./scripts/dev-data/:/usr/chapter/scripts/dev-data/
+    environment:
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - EMAIL_HOST=mailhog

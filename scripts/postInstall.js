@@ -8,8 +8,6 @@ console.log('--------------------------');
 const CHAPTER_REMOTE = 'freeCodeCamp/chapter.git';
 let IS_ERROR = false;
 
-setup();
-
 function setup() {
   try {
     const rows = execSync('git remote -v', {
@@ -35,7 +33,6 @@ function setup() {
     console.error(e);
   }
 
-  // Copy .env.example to .env
   if (!existsSync('.env')) {
     console.log("You don't have a .env\nCopying .env.example to .env");
 
@@ -54,3 +51,5 @@ function setup() {
     );
   }
 }
+
+setup();

@@ -1,25 +1,24 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
-import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
-import styles from '../../../../styles/Form.module.css';
-
-export type ChapterFormData = Omit<
-  Chapter,
-  'id' | 'events' | 'creator_id' | 'users' | 'banned_users'
->;
+import { Form } from '../../../../components/Form/Form';
+import type {
+  DashboardChapterQuery,
+  CreateChapterInputs,
+} from '../../../../generated/graphql';
 
 interface ChapterFormProps {
   loading: boolean;
-  onSubmit: (data: ChapterFormData) => Promise<void>;
-  data?: ChapterQuery;
+  onSubmit: (data: CreateChapterInputs) => Promise<void>;
+  data?: DashboardChapterQuery;
   submitText: string;
+  loadingText: string;
 }
 
 type Fields = {
-  key: keyof ChapterFormData;
+  key: keyof CreateChapterInputs;
   placeholder: string;
   label: string;
   required: boolean;
@@ -46,21 +45,21 @@ const fields: Fields[] = [
     key: 'city',
     label: 'City',
     placeholder: 'San Francisco',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
     key: 'region',
     label: 'Region',
     placeholder: 'California',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
     key: 'country',
     label: 'Country',
     placeholder: 'United States of America',
-    required: true,
+    required: false,
     type: 'text',
   },
   {
@@ -71,14 +70,21 @@ const fields: Fields[] = [
     type: 'text',
   },
   {
-    key: 'imageUrl',
-    label: 'Image Url',
+    key: 'banner_url',
+    label: 'Banner Url',
     placeholder: 'https://www.freecodecamp.org',
-    required: true,
+    required: false,
     type: 'url',
   },
   {
-    key: 'chatUrl',
+    key: 'logo_url',
+    label: 'Logo Url',
+    placeholder: 'https://www.freecodecamplogo.org',
+    required: false,
+    type: 'url',
+  },
+  {
+    key: 'chat_url',
     label: 'Chat link',
     placeholder: 'https://discord.gg/KVUmVXA',
     required: false,
@@ -87,64 +93,67 @@ const fields: Fields[] = [
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText } = props;
-  const chapter = data?.chapter;
+  const { loading, onSubmit, data, submitText, loadingText } = props;
+  const chapter = data?.dashboardChapter;
 
-  const defaultValues: ChapterFormData = {
+  const defaultValues: CreateChapterInputs = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
     city: chapter?.city ?? '',
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
-    imageUrl: chapter?.imageUrl ?? '',
-    chatUrl: chapter?.chatUrl ?? '',
+    logo_url: chapter?.logo_url ?? '',
+    banner_url: chapter?.banner_url ?? '',
+    chat_url: chapter?.chat_url ?? '',
   };
-  const { handleSubmit, register } = useForm<ChapterFormData>({
+  const {
+    handleSubmit,
+    register,
+    formState: { isDirty },
+  } = useForm<CreateChapterInputs>({
     defaultValues,
   });
 
   return (
-    <form
-      aria-label={submitText}
-      onSubmit={handleSubmit(onSubmit)}
-      className={styles.form}
-    >
-      <VStack>
-        {fields.map(({ key, label, placeholder, required, type }) =>
-          type == 'textarea' ? (
-            <TextArea
-              key={key}
-              label={label}
-              placeholder={placeholder}
-              {...register(key)}
-              isRequired={required}
-              defaultValue={defaultValues[key] ?? undefined}
-            />
-          ) : (
-            <Input
-              key={key}
-              label={label}
-              placeholder={placeholder}
-              {...register(key)}
-              type={type}
-              isRequired={required}
-              defaultValue={defaultValues[key] ?? undefined}
-            />
-          ),
-        )}
-        <Button
-          mt="6"
-          width="100%"
-          variant="solid"
-          colorScheme="blue"
-          type="submit"
-          disabled={loading}
-        >
-          {submitText}
-        </Button>
-      </VStack>
-    </form>
+    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+      {fields.map(({ key, label, placeholder, required, type }) =>
+        type == 'textarea' ? (
+          <TextArea
+            key={key}
+            label={label}
+            placeholder={placeholder}
+            {...register(key)}
+            isRequired={required}
+            defaultValue={defaultValues[key] ?? undefined}
+            isDisabled={loading}
+          />
+        ) : (
+          <Input
+            key={key}
+            label={label}
+            placeholder={placeholder}
+            {...register(key)}
+            type={type}
+            isRequired={required}
+            defaultValue={defaultValues[key] ?? undefined}
+            isDisabled={loading}
+          />
+        ),
+      )}
+      <Button
+        mt="6"
+        width="100%"
+        variant="solid"
+        colorScheme="blue"
+        type="submit"
+        isDisabled={!isDirty || loading}
+        isLoading={loading}
+        loadingText={loadingText}
+      >
+        {submitText}
+      </Button>
+    </Form>
   );
 };
 

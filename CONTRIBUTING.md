@@ -9,7 +9,6 @@
   - [Manual Mode](#running-the-application)
 - [Adding a New Feature](#adding-a-new-feature)
   - [Where to Find the Code](#where-to-find-the-code)
-  - [Where to Find the Issues](#where-to-find-the-issues)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Server-side Technical Documentation](#server-side-technical-documentation)
   - [API Specification](#api-specification)
@@ -399,13 +398,10 @@ Note, MailHog is not started automatically in manual mode.  The easiest way to d
 
 <details><summary><b>Step 5</b> - Log In As Different Users</summary>
 
-The database is seeded with several types of user.  To experiment with different roles, you can log in by going to `http://localhost:3000/auth/login` and using their email addresses:
+The database is seeded with several types of user.  To experiment with different roles, you can run these commands in your terminal:
 
-- `foo@bar.com` (an _owner_ with full permissions)
-- `admin@of.a.chapter` (an _administrator_ of chapter 1)
-- The full list of emails can be found in `server/prisma/generator/factories/user.factory.ts`
-
-In development the login link will appear in the server logs and the email that Mailhog intercepts.
+- `npm run change-user foo@bar.com` (an _owner_ with full permissions)
+- `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
 
 </details>
 
@@ -420,6 +416,11 @@ The database we use is [PostgreSQL](https://www.postgresql.org/), which we inter
 The Chapter client uses the React framework [Next.js](https://nextjs.org/) with [Apollo Client](https://www.apollographql.com/docs/react/) for data fetching.  Since we are generating a GraphQL schema we can use [GraphQL Code Generator](https://www.graphql-code-generator.com/) to convert the schema into a set of TypeScript types and, more importantly, functions to get the data from the server.  As a result we know exactly what we're allowed to request from the server and the shape of the data it returns.
 
 After you have added new feature, to make sure it stays working, we recommend using [Cypress](https://www.cypress.io/). It will automatically test different scenarios starting in the client side of the application, communicating with the server, and warning you if something unexpected happens.
+
+To record test coverage locally, run `npm run both:coverage` before starting cypress with `npm run cypress:run`.  This will generate a `cypress-coverage/lcov-report` folder in the root directory.  Open the `index.html` file in your browser to see the coverage report.
+
+To see the coverage of an single spec, you can either run `npm run cypress:run -- --spec cypress/e2e/path_to/your_spec.js` or run `npm run cypress:open` and run the spec through the UI.
+
 </details>
 
 ## Where to Find the Code
@@ -430,11 +431,7 @@ After you have added new feature, to make sure it stays working, we recommend us
 * The client accesses the data via hooks defined in _client/src/generated/generated.tsx_
 * To create new hooks, modify _queries.ts_ and _mutations.ts_ files in _client/src/modules/**/graphql_
 * Client pages are defined according to [Next.js's routing](https://nextjs.org/docs/routing/dynamic-routes) e.g. _client/src/pages/dashboard/events/\[id\]/edit.tsx_ handles pages like _/dashboard/events/1/edit_
-* Cypress test coverage spec files should go in _/cypress/integration_, roughly mirroring the client pages pattern
-
-## Where to Find the Issues
-
-[This](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started.
+* Cypress test coverage spec files should go in _/cypress/e2e_, roughly mirroring the client pages pattern
 
 # Frequently Asked Questions
 
@@ -476,9 +473,9 @@ You are a champion :).
 
 <details><summary>How do I enable CodeSee?</summary>
 
-Copy the `client/.example.env.local` to `client/.env.local`.
+Uncomment the `CODESEE` variable in .env and restart.
 
-[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter, after creating `.env.local`, you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
+[CodeSee](https://www.codesee.io/) is a developer tool that helps with debugging and understanding the application as it's used. When you first start Chapter you will see a red eye.  If you click on it you can register with CodeSee.  After that the eye turns blue and lets you start and stop recording.
 
 To learn more, take a look at their [docs](https://docs.codesee.io/projects/recordings/en/latest/use/quick-start/) or just click the button and find out.
 
@@ -492,6 +489,12 @@ For example, to add a new `express` to the client, run `npm i -w=client express`
 ## Updating dependencies
 
 We rely on renovate to update dependencies automatically.
+
+</details>
+
+<details><summary>Where to find the issues to contribute?</summary>
+
+The repository's [contribute page](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started with beginner friendly issue.
 
 </details>
 
@@ -523,7 +526,7 @@ The initial values of the _.env_ will be copied from the _.env.example_ file. Ho
 
 ### Running Remotely
 
-When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_APOLLO_SERVER=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
+When not running locally, the client needs to be passed the server's location by changing your [_.env_](#env-configuration-file) file to include `NEXT_PUBLIC_SERVER_URL=<https://address.of.graphql.server:port>`.  For example, if you started **_Chapter_** with `npm run both` and hosted it on `https://example.com` then the address will be `https://example.com:5000`.
 
 ## Database
 
@@ -665,11 +668,6 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
 <details>
  <summary>Application Troubleshooting</summary>
 
-* **Problem:** The application shows
-   > _JsonWebTokenError: invalid signature._ </br>
-
-  **Solution:** Clear the browser cookies for the localhost domain, or use an incognito browser window to open the site.
-
 * **Problem:**  Where do application registration and other emails go? </br>
   **Solution:** All email are captured and saved by Mailhog. Simply open [http://localhost:8025/](http://localhost:8025/) to see captured emails. For account registration, the email validation link can be opened in the browser to complete the registration process.
 
@@ -679,6 +677,9 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
 
   **Solution:** The [database needs to be initialized](https://github.com/freeCodeCamp/chapter/blob/main/CONTRIBUTING.md#initializing-the-database). Run `npm run db:reset` to clear and re-create the database tables.
+
+* **Problem:**  I have come back after a long period of time, and chapter isn't working. </br>
+  **Solution:** As we develop Chapter, it is often necessary to change the environment variables we use. In case .env file being outdated, try replacing it with [.env.example](#env-configuration-file).
 </details>
 
 <details>

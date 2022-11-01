@@ -1,25 +1,14 @@
-import { ObjectType, Field, Resolver, Root, FieldResolver } from 'type-graphql';
+import { ObjectType, Field } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 import { Chapter, ChapterUser, EventUser, InstanceRole, UserBan } from '.';
 
 @ObjectType()
 export class User extends BaseObject {
   @Field(() => String)
-  first_name: string;
+  name: string;
 
-  @Field(() => String)
-  last_name: string;
-
-  @Field(() => String)
-  email: string;
-}
-
-@Resolver(() => User)
-export class UserResolver {
-  @FieldResolver(() => String)
-  name(@Root() user: User) {
-    return `${user.first_name} ${user.last_name}`;
-  }
+  @Field(() => String, { nullable: true })
+  image_url?: string | null;
 }
 
 @ObjectType()
@@ -44,4 +33,22 @@ export class UserWithRelations extends User {
 
   @Field(() => [EventUser])
   event_users: EventUser[];
+}
+
+@ObjectType()
+export class UserInformation extends User {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => [UserBan])
+  user_bans: UserBan[];
+
+  @Field(() => [ChapterUser])
+  user_chapters: ChapterUser[];
+
+  @Field(() => InstanceRole)
+  instance_role: InstanceRole;
+
+  @Field(() => [EventUser])
+  user_events: EventUser[];
 }

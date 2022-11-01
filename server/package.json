@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build": "prisma generate && tsc",
+    "db:init": "npm run build && node prisma/init/init.js --execute",
+    "db:migrate": "prisma migrate deploy",
+    "db:resolve": "prisma migrate resolve",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
     "dev:coverage": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"nyc --silent node src/app.js\"",
     "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
     "start:coverage": "npx -y nyc --silent node ./src/app.js",
-    "reminders:send": "node ./reminders/reminders.js",
-    "reset:users": "node prisma/seed/resetUsers.js"
+    "reminders:send": "node ./reminders/reminders.js"
   },
   "repository": {
     "type": "git",

@@ -583,9 +583,9 @@ The database is currently undergoing a re-write and we are using `npm run db:syn
 
 ### Overview of roles
 
-Chapter uses role based permission system, with specific permission assigned to one or multiple roles, on one or more different _levels/scopes_).
+Chapter has a role based permission system, with specific permission assigned to one or multiple roles, on one or more different _scopes_).
 
-### Available role levels/scopes
+### Available role scopes
 
 * Instance role - per instance - every registered user has instance role.
 * Chapter role - per chapter - chapter role is created for user when explicitly joining chapter, or performing on event actions requiring chapter role. Ie. Rsvping to event. Elevated chapter role for one chapter, doesn't impact chapter roles for different chapters.
@@ -601,7 +601,7 @@ Decorator is available as an import from `type-graphql`.
 import { Authorized } from 'type-graphql';
 ```
 
-Adding decorator in resolver before specific mutation or query, wraps it in the authorization logic. Only after successful authorization, the code within decorated operation will be executed.
+Adding decorator in the resolver before specific mutation or query, wraps it in the authorization logic. Only after successful authorization, the code within decorated operation will be executed.
 
 ```ts
   @Authorized(Permission.EventCreate)
@@ -615,9 +615,9 @@ Adding decorator in resolver before specific mutation or query, wraps it in the 
   }
 ```
 
-To make sure authorization will be checking permissions for correct chapter or event, certain arguments are required in the request.
+To make sure authorization will check permissions for correct chapter or event, certain arguments are required in the request.
 
-| Role _level/scope_ | Required arguments in GraphQL request |
+|    Role _scope_    | Required arguments in GraphQL request |
 |:------------------:|:-------------------------------------:|
 | Instance           | -                                     |
 | Chapter            | `chapterId` or `eventId`              |
@@ -650,7 +650,7 @@ flowchart LR;
 
 ### Example
 
-Adding `@Authorize(Permissions.EventEdit)` before event editing logic will authorize user if one of the following applies:
+Adding `@Authorize(Permissions.EventEdit)` before mutation editing event will authorize user if one of the following applies:
 
 * Their Instance role has `Permissions.EventEdit` permission.
 * User is not banned on the chapter, on which edited event is, and for that chapter their Chapter role has `Permission.EventEdit` permission.

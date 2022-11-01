@@ -131,14 +131,14 @@
         "comments": ""
     },
     {
-        "tableName": "chapters",
+        "tableName": "event_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "calendar_id",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "√",
+        "name": "updated_at",
+        "type": "timestamp",
+        "length": 26,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -354,14 +354,14 @@
     {
         "tableName": "chapters",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
-        "type": "serial",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "city",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
-        "autoUpdated": "√",
-        "defaultValue": "nextval('chapters_id_seq'::regclass)",
+        "autoUpdated": "",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -404,7 +404,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -512,10 +512,10 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "region",
+        "name": "calendar_id",
         "type": "text",
         "length": 2147483647,
-        "nullable": "",
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -560,7 +560,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "indexedColumn",
         "keyTitle": "Indexed",
@@ -577,9 +577,9 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "updated_at",
-        "type": "timestamp",
-        "length": 26,
+        "name": "category",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
@@ -612,7 +612,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_permissions",
+        "tableName": "chapters",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -668,12 +668,12 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "created_at",
-        "type": "timestamp",
-        "length": 26,
+        "name": "description",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "CURRENT_TIMESTAMP",
+        "defaultValue": "null",
         "comments": ""
     },
     {
@@ -768,7 +768,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -777,7 +777,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('event_roles_id_seq'::regclass)",
+        "defaultValue": "nextval('instance_permissions_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -850,10 +850,10 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "logo_url",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "√",
+        "name": "creator_id",
+        "type": "int4",
+        "length": 10,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -885,13 +885,13 @@
         "comments": ""
     },
     {
-        "tableName": "chapters",
+        "tableName": "event_permissions",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "creator_id",
-        "type": "int4",
-        "length": 10,
+        "keyClass": "indexedColumn",
+        "keyTitle": "Indexed",
+        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>name",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
@@ -1041,11 +1041,11 @@
         "comments": ""
     },
     {
-        "tableName": "event_permissions",
+        "tableName": "chapters",
         "tableType": "Table",
-        "keyClass": "indexedColumn",
-        "keyTitle": "Indexed",
-        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>name",
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "name",
         "type": "text",
         "length": 2147483647,
         "nullable": "",
@@ -1136,10 +1136,10 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "category",
+        "name": "logo_url",
         "type": "text",
         "length": 2147483647,
-        "nullable": "",
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -1188,7 +1188,7 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "description",
+        "name": "country",
         "type": "text",
         "length": 2147483647,
         "nullable": "",
@@ -1201,10 +1201,10 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "city",
+        "name": "banner_url",
         "type": "text",
         "length": 2147483647,
-        "nullable": "",
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -1214,7 +1214,7 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "name",
+        "name": "region",
         "type": "text",
         "length": 2147483647,
         "nullable": "",
@@ -1340,7 +1340,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_permissions",
+        "tableName": "chapters",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1353,7 +1353,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1444,7 +1444,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_permissions",
+        "tableName": "chapters",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -1453,7 +1453,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('event_permissions_id_seq'::regclass)",
+        "defaultValue": "nextval('chapters_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -1470,7 +1470,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1500,10 +1500,10 @@
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "country",
+        "name": "chat_url",
         "type": "text",
         "length": 2147483647,
-        "nullable": "",
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
         "comments": ""
@@ -1548,16 +1548,16 @@
         "comments": ""
     },
     {
-        "tableName": "chapters",
+        "tableName": "event_permissions",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "banner_url",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "√",
+        "name": "created_at",
+        "type": "timestamp",
+        "length": 26,
+        "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "null",
+        "defaultValue": "CURRENT_TIMESTAMP",
         "comments": ""
     },
     {
@@ -1613,7 +1613,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1795,16 +1795,16 @@
         "comments": ""
     },
     {
-        "tableName": "chapters",
+        "tableName": "event_permissions",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "chat_url",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "√",
-        "autoUpdated": "",
-        "defaultValue": "null",
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
+        "type": "serial",
+        "length": 10,
+        "nullable": "",
+        "autoUpdated": "√",
+        "defaultValue": "nextval('event_permissions_id_seq'::regclass)",
         "comments": ""
     },
     {
@@ -1847,7 +1847,7 @@
         "comments": ""
     },
     {
-        "tableName": "event_roles",
+        "tableName": "instance_permissions",
         "tableType": "Table",
         "keyClass": "indexedColumn",
         "keyTitle": "Indexed",
@@ -1925,7 +1925,7 @@
         "comments": ""
     },
     {
-        "tableName": "instance_permissions",
+        "tableName": "event_roles",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -1934,7 +1934,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('instance_permissions_id_seq'::regclass)",
+        "defaultValue": "nextval('event_roles_id_seq'::regclass)",
         "comments": ""
     }
 ];

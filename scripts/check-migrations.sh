@@ -1,6 +1,6 @@
 set -o pipefail
 git add .
-git diff --exit-code HEAD | cat
+git diff --exit-code HEAD > /dev/null
 if [ $? -eq 1 ]; then
 echo "
 Changes to the schema must be saved as migrations.

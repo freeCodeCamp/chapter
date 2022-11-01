@@ -90,10 +90,14 @@ export const EventPage: NextPage = () => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
-          body: `
-          Would you like to attend?<br/>
-          Note: joining this event will make you a member of the event's chapter.
-          `,
+          body: (
+            <>
+              Would you like to attend?
+              <br />
+              Note: joining this event will make you a member of the
+              event&apos;s chapter.
+            </>
+          ),
         }
       : {
           title: 'Join this event?',

@@ -18,7 +18,6 @@
     "db:seed": "npm run prisma db seed",
     "db:sync": "npm run prisma db push --force-reset",
     "db:reset": "npm run -w=server build && npm run db:sync && npm run db:seed",
-    "db:reset:users": "npm -w=server run reset:users",
     "both": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"./server/wait-for localhost:5000 -- npm -w=client run gen:dev\"",
     "both:coverage": "cross-env NODE_ENV=test concurrently \"npm run dev:server:coverage\" \"npm run dev:client\" \"./server/wait-for localhost:5000 -- npm -w=client run gen:dev\"",
     "build": "docker compose -f docker-compose.yml build",

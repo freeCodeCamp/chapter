@@ -13,8 +13,7 @@
     "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
     "start:coverage": "npx -y nyc --silent node ./src/app.js",
-    "reminders:send": "node ./reminders/reminders.js",
-    "reset:users": "node prisma/seed/resetUsers.js"
+    "reminders:send": "node ./reminders/reminders.js"
   },
   "repository": {
     "type": "git",

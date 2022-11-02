@@ -25,8 +25,14 @@
       - [Creating a New Model / Entity](#creating-a-new-model--entity)
       - [Syncing the Schema in Development](#syncing-the-schema)
       - [Creating a Migration](#creating-a-migration)
+  - [Authorizing GraphGQL requests with `@Authorized` decorator](#authorizing-graphgql-requests-with-authorized-decorator)
+    - [Overview of roles](#overview-of-roles)
+    - [Available role scopes](#available-role-scopes)
+    - [`@Authorized` decorator](#authorized-decorator)
+      - [Flowchart](#flowchart)
+      - [Example](#example)
 - [Troubleshooting](#troubleshooting)
-    
+
 # Contribution Guidelines
 
 Hello :wave: and welcome to **_Chapter_**, a project of [freeCodeCamp](https://www.freecodecamp.org).
@@ -87,7 +93,7 @@ Your forked copy may be used to submit suggested changes to the **_Chapter_** re
 
     * [SSH method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-ssh-urls) - `git clone git@github.com:YOUR_USER_NAME/Chapter.git`
     * [HTTPS method](https://docs.github.com/en/github/getting-started-with-github/about-remote-repositories#cloning-with-https-urls) - `git clone https://github.com/YOUR_USER_NAME/chapter.git`
- 
+
 Cloning will download your fork, referred to as the _origin_, into a _chapter_ sub-directory in the current directory.
 
 4. Configure the [**_Chapter_**](https://github.com/freeCodeCamp/chapter) repository as the _upstream_. This allows you to regularly synchronize code changes from the _upstream_ to your _origin_ fork.
@@ -114,9 +120,9 @@ Cloning will download your fork, referred to as the _origin_, into a _chapter_ s
 
 <details><summary><b>Step 3</b> - Decide Whether to Run the Application Now, or Later</summary>
 
-It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.  
+It's possible to contribute simple changes, like to README.md, without running the application. However, for many situations you will need to get the application running to view pages, see your code in action, and test changes.
 
-If you want to proceed immeditely with running the client, database, and server, then follow the steps in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section. 
+If you want to proceed immeditely with running the client, database, and server, then follow the steps in the [**Running the Application**](#running-the-application) section, below. Then, return here and continue to the next step of this section.
 
 </details>
 
@@ -131,7 +137,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     ```
 
     You should get an output like this:
-    
+
         On branch main
         Your branch is up-to-date with 'origin/main'.
         nothing to commit, working directory clean
@@ -209,12 +215,12 @@ You are almost ready to make changes to files, but before that you should **alwa
         modified:   README.md
         ...
 
-5. Always Run Code Quality Tools 
+5. Always Run Code Quality Tools
 
     Verify all automated code quality checks will pass before submitting a pull request because PRs with failures will not be merged.
 
     To run the checks locally use `npm run lint-and-test` OR `npm run test:watch` to start "watch" mode.
- 
+
 6. Stage the changes and make a commit
 
     In this step, you should only mark files that you have edited or added yourself. You can perform a reset and resolve files that you did not intend to change if needed.
@@ -290,7 +296,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     >   * fix: A bug fix
     >   * refactor: A code change that neither fixes a bug nor adds a feature
     >   * test: Changes related to tests
-    > * **(Scope)** examples: api, build, ci, client, db, perf, style, ui 
+    > * **(Scope)** examples: api, build, ci, client, db, perf, style, ui
 
 4. Write a more detailed explaination of the changes in the form's text area.
     > The text area will automatically include a checklist of items to confirm before submitting the pull request.
@@ -304,12 +310,12 @@ Submit the form and you have successfully created a PR. Congratulations! :tada:
 **Prerequisite**: Follow the [**Contributing Code**](#contributing-code) section, above, before continuing to the next step in this section.  If you are [using GitPod](#using-gitpod), then this section is unnecessary as GitPod will run the appliction.
 
 <details><summary><b>Step 1</b> - Install Node.js and Dependencies</summary>
- 
+
 **Prerequisite**: _Node.js_ 16+ and _npm_ 8+ must be installed
 
 > Note
 > * To check Node.js, run `node --version` and the output should be like **v16**.#.#
-> * If _Node.js_ is not installed, or using an older version, then:  
+> * If _Node.js_ is not installed, or using an older version, then:
 >   * (Recommended) Use [NVM](https://github.com/nvm-sh/nvm#installing-and-updating) to manage multiple version of Node.js and run `nvm install` within the root code directory.
  >   * Or, install or update the [latest version of Node.js](https://nodejs.org/en/download/). Be sure to close and re-open your terminal for the changes to take effect.
 > * To check npm, run `npm --version` and the output should be like **8**.#.#
@@ -322,14 +328,14 @@ This step will **automatically** read and process the _package.json_ file. Most 
 * Creates the [_.env_ configuration file](#env-configuration-file) if one does not exist.
     > Note: this is done "magically" via the _postinstall_ hook.
 </details>
-    
+
 <details><summary><b>Step 2</b> - Run the App Using Docker Mode OR Manual Mode</summary>
 
-There are two approaches to running the **_Chapter_** application. 
+There are two approaches to running the **_Chapter_** application.
 
 Based on your experience or preference, decide between the two options:
 
-* _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local PostgreSQL database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.  
+* _Docker Mode_: typically easier if you just want to start the application for the first time or don't want to run a local PostgreSQL database on your host computer. It will take longer to "boot up" the container than manual-mode and can be slow to reload some types of code changes.
 * _Manual Mode_: more of a "hands-on" method, is more lightweight in that it's faster to "boot" and faster to refresh for some code changes, requires more knowledge of running PostgreSQL and configuring localhost services to play nice with the code.
 
 See [Running Remotely](#running-remotely) if you are using a remote server.
@@ -369,7 +375,7 @@ This is a much lighter development footprint than _Docker Mode_, but you will ne
 
 **Prerequisite**: PostgreSQL must exist and be [configured](#database).
 
-Set _DB_PORT=5432_ in [_.env_](#env-configuration-file). 
+Set _DB_PORT=5432_ in [_.env_](#env-configuration-file).
 
 Run `npm run both` to start the api-server and client-server:
 
@@ -377,7 +383,7 @@ Run `npm run both` to start the api-server and client-server:
 
 <details><summary><b>Step 3</b> - Prepare the Database for Development</summary>
 The database may be empty and / or need to be recreated to get the last schema changes.
-    
+
 See the [Initializing the Database](#initializing-the-database) section, below, before continuing to the next step in this section.
 </details>
 
@@ -386,7 +392,7 @@ Once the app has started you should be able to pull up these URLs in your web br
 
 * Main Client Website - http://localhost:3000
 * GraphQL Playground - http://localhost:5000/graphql
-* MailHog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface 
+* MailHog - http://localhost:8025/ - all dev environment emails are captured and viewable through this Mailhog interface
 
 Note, MailHog is not started automatically in manual mode.  The easiest way to do that is via Docker: `docker run --rm --network host mailhog/mailhog`, but if you prefer to install it manually, instructions are on their [repository](https://github.com/mailhog/MailHog)
 </details>
@@ -433,7 +439,7 @@ To see the coverage of an single spec, you can either run `npm run cypress:run -
 <details><summary>What do we need help with right now?</summary>
 
 We are in the early stages of development on this new application, but we value any contributions and insights.  In order to prevent duplication, please browse and search our ["Good First Issue"](https://github.com/freeCodeCamp/chapter/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+First+Issue%22) list and [existing issues](https://github.com/freeCodeCamp/chapter/issues).
-  
+
 Please [join our chat](https://discord.gg/QbQd7BpaaH) to stay in the loop.
 </details>
 
@@ -441,7 +447,7 @@ Please [join our chat](https://discord.gg/QbQd7BpaaH) to stay in the loop.
 
 For typos and other wording changes, you can directly open pull requests without first creating an issue. Issues are more for discussing larger problems associated with code or structural aspects of the application.
 </details>
-    
+
 <details><summary>I am new to GitHub and Open Source, where should I start?</summary>
 
 Please read our [How to Contribute to Open Source Guide](https://github.com/freeCodeCamp/how-to-contribute-to-open-source).
@@ -511,13 +517,13 @@ An important, local _.env_ configuration file exists in the root code directory.
 
 Any changes to _.env_ **will not and should not** be committed into your _origin_ fork or the _Chapter_ _upstream_. Plus, a _.gitignore_ rule exists to prevent it. Do not remove this rule or otherwise attempt to commit your _.env_ to any Git repository.
 
-Keeping your _.env_ out of the repositories is important because the file will contain "secrets" (usernames, passwords, API keys) and other values which are specific to you and your local development environment. 
+Keeping your _.env_ out of the repositories is important because the file will contain "secrets" (usernames, passwords, API keys) and other values which are specific to you and your local development environment.
 
-The _.env_ file is automatically created via the [**Running the Application**](#running-the-application) section when you follow **Step 1 - Install Node and Run npx**. 
+The _.env_ file is automatically created via the [**Running the Application**](#running-the-application) section when you follow **Step 1 - Install Node and Run npx**.
 
 This configuration pattern is based on the [dotenv package](https://www.npmjs.com/package/dotenv) and is also popular in other frameworks and programming languages.
 
-The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file. 
+The initial values of the _.env_ will be copied from the _.env.example_ file. However, you should **not** attempt to add any of your personal configuration values / secrets to the _.env.example_ file. The purpose of _.env.example_ is as a template to declare any variable names the application will need and any values in it are "dummy" / example values purely as a guide to help other developers with their _.env_ file.
 
 ### Running Remotely
 
@@ -541,11 +547,11 @@ Updates to the _gh-pages_ branch and [online schema](https://opensource.freecode
 * In **Manual Mode**, the PostgreSQL port will be as you configured it, the default being Host: _localhost_ and Port: _5432_
 * If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in [_.env_](#env-configuration-file).
 
-### Admin Tools 
+### Admin Tools
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
 * psql Client
   * In **Docker Mode** - `psql -h localhost -p 54320 -U postgres`. You don't have to run `docker-compose exec...` commands to "talk" to the PostgreSQL container.
-  * In **Manual Mode** - `psql -h localhost -p 5432 -U postgres` 
+  * In **Manual Mode** - `psql -h localhost -p 5432 -U postgres`
 
 ### Using Prisma and NPM
 
@@ -562,7 +568,7 @@ If starting the application for the first time, or syncronizing with the latest 
 * seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
 
 The `npm run db:reset` command will do all three tasks by running `npm run db:sync` and `npm run db:seed` sequentially. It also builds the server, since `db:sync` needs the compiled JavaScript to run.
-  
+
 _Troubleshooting:_ If using ElephantSQL you may have to submit each of these commands individually.
 
 #### Creating a new table
@@ -577,6 +583,85 @@ The _prisma.schema_ file is the single source of truth for the database schema.
 
 The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
 
+## Authorizing GraphGQL requests with `@Authorized` decorator
+
+### Overview of roles
+
+Chapter has a role based permission system, with specific permission assigned to one or multiple roles, on one or more different _scopes_.
+
+### Available role scopes
+
+* Instance role - per instance - every registered user has instance role.
+* Chapter role - per chapter - chapter role is created for user when explicitly joining chapter, or performing on event actions requiring chapter role. Ie. Rsvping to event. Elevated chapter role for one chapter, doesn't impact chapter roles for different chapters.
+* Event role - per event - chapter role is created for user when Rsvping to an event. Elevated event role (permissions) for a one event doesn't impact event roles for different events.
+
+_Note: in MVP Event roles are not used._
+
+### `@Authorized` decorator
+
+Decorator is available as an import from `type-graphql`.
+
+```ts
+import { Authorized } from 'type-graphql';
+```
+
+Adding decorator in the resolver before specific mutation or query, wraps it in the authorization logic. Only after successful authorization, the code within decorated operation will be executed.
+
+```ts
+  @Authorized(Permission.EventCreate)
+  @Mutation(() => Event)
+  async createEvent(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Arg('data') data: CreateEventInputs,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<Event | null> {
+    /* ... */
+  }
+```
+
+To make sure authorization will check permissions for correct chapter or event, certain arguments are required in the request.
+
+|    Role _scope_    | Required arguments in GraphQL request |
+|:------------------:|:-------------------------------------:|
+| Instance           | -                                     |
+| Chapter            | `chapterId` or `eventId`              |
+| Event              | `eventId`                             |
+
+By default this means only logged in user can be authorized.
+
+#### Flowchart
+
+```mermaid
+flowchart LR;
+    A["Authorize\n(logged in)"]
+    I{Is allowed by\nInstance role?}
+    CP{Is user banned\nfrom chapter?}
+    C{Is allowed by\nChapter role?}
+    E{Is allowed by\nEvent role?}
+    Y[Authorized]
+    N[Not authorized]
+
+    A-->I;
+    I-->|No| CP;
+    I-->|Yes| Y;
+    CP-->|Not banned| C;
+    CP-->|Banned| N;
+    C-->|No| E;
+    C-->|Yes| Y;
+    E-->|Yes| Y;
+    E-->|No| N;
+```
+
+#### Example
+
+Adding `@Authorize(Permissions.EventEdit)` before mutation editing event will authorize user if one of the following applies:
+
+* Their Instance role has `Permissions.EventEdit` permission.
+* User is not banned on the chapter, on which edited event is, and for that chapter their Chapter role has `Permission.EventEdit` permission.
+* Their Event role, for the edited event, has `Permission.EventEdit` permission.
+
+Otherwise request will be rejected.
+
 # Troubleshooting
 
 If your problem isn't resolved in the sections below, then visit our [chat](https://discord.gg/QbQd7BpaaH) for assistance. Or, [create an issue for new bugs or topics](https://github.com/freeCodeCamp/chapter/issues).
@@ -587,7 +672,7 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
 * **Problem:**  Where do application registration and other emails go? </br>
   **Solution:** All email are captured and saved by Mailhog. Simply open [http://localhost:8025/](http://localhost:8025/) to see captured emails. For account registration, the email validation link can be opened in the browser to complete the registration process.
 
-* **Problem:** The applications shows 
+* **Problem:** The applications shows
   > _The table `public.chapters` does not exist in the current database_</br>
   > or
   > *Invalid'prisma_1.prisma.chapters.findMany()* </br>
@@ -606,7 +691,7 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
 
   **Solution:** Run `sudo docker-compose up` or add non-privileged user to the docker group as described in [https://docs.docker.com/engine/install/linux-postinstall/](https://docs.docker.com/engine/install/linux-postinstall/) If Docker was run as sudo before adding your user to the docker group.
 
-* **Problem:** You are getting this error 
+* **Problem:** You are getting this error
   > "WARNING: Error loading config file: /home/user/.docker/config.json "  </br>
 
   **Solution:**  see [https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user).

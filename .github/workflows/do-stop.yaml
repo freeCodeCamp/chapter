@@ -2,7 +2,7 @@ name: Stop Chapter
 on:
   workflow_dispatch:
 jobs:
-  restart:
+  stop:
     runs-on: ubuntu-latest
     steps:
       - name: Stop Via SSH

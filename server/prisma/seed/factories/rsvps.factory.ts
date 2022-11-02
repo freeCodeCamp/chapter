@@ -2,13 +2,7 @@ import { sub } from 'date-fns';
 
 import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
-
-export const createRsvpTypes = async () => {
-  const rsvpNames = ['yes', 'no', 'maybe', 'waitlist'];
-  await prisma.rsvp.createMany({
-    data: rsvpNames.map((rsvp) => ({ name: rsvp })),
-  });
-};
+import { createRsvpTypes } from '../../init/factories/rsvpTypes.factory';
 
 const createRsvps = async (
   eventIds: number[],

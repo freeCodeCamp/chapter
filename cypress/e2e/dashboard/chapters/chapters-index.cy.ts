@@ -79,7 +79,7 @@ describe('chapters dashboard', () => {
   });
 
   it('lets a user create a chapter and an event in a fresh instance', () => {
-    cy.exec('npm run db:init');
+    cy.exec('npm run -w=server db:init');
     const userEmail = 'fresh@start';
     cy.login(userEmail);
     cy.task('promoteToOwner', { email: userEmail });

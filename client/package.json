@@ -33,7 +33,7 @@
     "react": "18.2.0",
     "react-datepicker": "4.8.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "7.39.0"
+    "react-hook-form": "7.39.1"
   },
   "devDependencies": {
     "@codesee/babel-plugin-instrument": "0.418.0",

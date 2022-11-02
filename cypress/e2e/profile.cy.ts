@@ -35,9 +35,9 @@ describe('profile page', () => {
     });
     it('when enabled, should automatically subscribe when joining chapter', () => {
       cy.visit(profilePage);
-      cy.findByRole('checkbox', { name: 'Automatic chapter subscription' }).as(
-        'switch',
-      );
+      cy.findByRole('checkbox', {
+        name: 'Subscribe to chapters when joining them',
+      }).as('switch');
 
       cy.get('@switch').check({ force: true });
       cy.get('@switch').should('be.checked');
@@ -67,7 +67,7 @@ describe('profile page', () => {
     it('when disabled, should not automatically subscribe to chapter when joining chapter', () => {
       cy.visit(profilePage);
       cy.findByRole('checkbox', {
-        name: 'Automatic chapter subscription',
+        name: 'Subscribe to chapters when joining them',
       }).should('not.be.checked');
 
       cy.joinChapter(chapterIdToJoin);
@@ -95,7 +95,7 @@ describe('profile page', () => {
 
       cy.visit(profilePage);
       cy.findByRole('checkbox', {
-        name: 'Automatic chapter subscription',
+        name: 'Subscribe to chapters when joining them',
       }).should('not.be.checked');
 
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });

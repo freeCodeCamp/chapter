@@ -95,7 +95,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
       <FormControl>
         <Flex>
           <FormLabel htmlFor="auto_subscribe">
-            Automatic chapter subscription
+            Subscribe to chapters when joining them
           </FormLabel>
           <Switch
             id="auto_subscribe"
@@ -105,8 +105,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
         </Flex>
         <FormHelperText>
           {hasAutoSubscribe
-            ? 'Automatically subscribe to chapter when joining it and receive emails about new events in chapter.'
-            : "Don't automatically subscribe to joined chapters."}
+            ? '(After joining a new chapter, you will be notified when new events are created.)'
+            : '(After joining a new chapter, you will not be notified about new events unless you subscribe.)'}
         </FormHelperText>
       </FormControl>
       <Button

@@ -108,6 +108,14 @@ export class UserWithInstanceRoleResolver {
   }
 
   @Mutation(() => User)
+  async toggleAutoSubscribe(@Ctx() ctx: Required<ResolverCtx>): Promise<User> {
+    return await prisma.users.update({
+      data: { auto_subscribe: !ctx.user.auto_subscribe },
+      where: { id: ctx.user.id },
+    });
+  }
+
+  @Mutation(() => User)
   async updateMe(
     @Ctx() ctx: Required<ResolverCtx>,
     @Arg('data') data: UpdateUserInputs,

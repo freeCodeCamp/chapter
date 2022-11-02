@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
+import { Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
@@ -8,9 +8,9 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
+import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
-import { meQuery } from 'modules/auth/graphql/queries';
 import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
@@ -34,7 +34,9 @@ export const UserProfilePage = () => {
     setLoadingUpdate(true);
     try {
       await updateMe({
-        variables: { data: { name, image_url } },
+        variables: {
+          data: { name, auto_subscribe: data.auto_subscribe, image_url },
+        },
       });
     } catch (err) {
       console.error(err);

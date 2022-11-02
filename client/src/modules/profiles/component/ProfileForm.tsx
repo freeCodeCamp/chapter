@@ -1,4 +1,11 @@
-import { Button } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Switch,
+} from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
@@ -43,21 +50,23 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { loading, onSubmit, data, submitText, loadingText } = props;
 
   const defaultValues: UpdateUserInputs = {
-    name: data.name,
-    image_url: data.image_url,
+    ...data,
   };
   const {
     handleSubmit,
     register,
     reset,
+    watch,
     formState: { isDirty },
   } = useForm<UpdateUserInputs>({
     defaultValues,
   });
 
   useEffect(() => {
-    reset({ name: data.name, image_url: data.image_url });
+    reset(defaultValues);
   }, [data]);
+
+  const hasAutoSubscribe = watch('auto_subscribe');
 
   return (
     <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
@@ -83,6 +92,23 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
           />
         ),
       )}
+      <FormControl>
+        <Flex>
+          <FormLabel htmlFor="auto_subscribe">
+            Subscribe to chapters when joining them
+          </FormLabel>
+          <Switch
+            id="auto_subscribe"
+            {...register('auto_subscribe')}
+            isDisabled={loading}
+          />
+        </Flex>
+        <FormHelperText>
+          {hasAutoSubscribe
+            ? '(After joining a new chapter, you will be notified when new events are created.)'
+            : '(After joining a new chapter, you will not be notified about new events unless you subscribe.)'}
+        </FormHelperText>
+      </FormControl>
       <Button
         mt="6"
         width="100%"

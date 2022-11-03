@@ -89,25 +89,25 @@
 <polygon fill="none" stroke="#000000" points="99.5,-333.7 99.5,-355.7 189.5,-355.7 189.5,-333.7 99.5,-333.7"/>
 <text text-anchor="start" x="102.0042" y="-341.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">text[2147483647]</text>
 <polygon fill="none" stroke="#000000" points="10.5,-311.7 10.5,-333.7 99.5,-333.7 99.5,-311.7 10.5,-311.7"/>
-<text text-anchor="start" x="30.5" y="-318.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">logo_url</text>
+<text text-anchor="start" x="30.5" y="-318.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">banner_url</text>
 <polygon fill="none" stroke="#000000" points="99.5,-311.7 99.5,-333.7 189.5,-333.7 189.5,-311.7 99.5,-311.7"/>
 <text text-anchor="start" x="102.0042" y="-319.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">text[2147483647]</text>
 <polygon fill="none" stroke="#000000" points="10.5,-289.7 10.5,-311.7 99.5,-311.7 99.5,-289.7 10.5,-289.7"/>
-<text text-anchor="start" x="30.5" y="-296.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">banner_url</text>
+<text text-anchor="start" x="30.5" y="-296.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">calendar_id</text>
 <polygon fill="none" stroke="#000000" points="99.5,-289.7 99.5,-311.7 189.5,-311.7 189.5,-289.7 99.5,-289.7"/>
 <text text-anchor="start" x="102.0042" y="-297.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">text[2147483647]</text>
 <polygon fill="none" stroke="#000000" points="10.5,-267.7 10.5,-289.7 99.5,-289.7 99.5,-267.7 10.5,-267.7"/>
-<text text-anchor="start" x="30.5" y="-274.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">calendar_id</text>
+<text text-anchor="start" x="30.5" y="-274.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">chat_url</text>
 <polygon fill="none" stroke="#000000" points="99.5,-267.7 99.5,-289.7 189.5,-289.7 189.5,-267.7 99.5,-267.7"/>
 <text text-anchor="start" x="102.0042" y="-275.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">text[2147483647]</text>
 <polygon fill="none" stroke="#000000" points="10.5,-245.7 10.5,-267.7 99.5,-267.7 99.5,-245.7 10.5,-245.7"/>
-<text text-anchor="start" x="30.5" y="-252.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">chat_url</text>
+<text text-anchor="start" x="30.5" y="-252.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">creator_id</text>
 <polygon fill="none" stroke="#000000" points="99.5,-245.7 99.5,-267.7 189.5,-267.7 189.5,-245.7 99.5,-245.7"/>
-<text text-anchor="start" x="102.0042" y="-253.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">text[2147483647]</text>
+<text text-anchor="start" x="102.5" y="-253.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">int4[10]</text>
 <polygon fill="none" stroke="#000000" points="10.5,-223.7 10.5,-245.7 99.5,-245.7 99.5,-223.7 10.5,-223.7"/>
-<text text-anchor="start" x="30.5" y="-230.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">creator_id</text>
+<text text-anchor="start" x="30.5" y="-230.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">logo_url</text>
 <polygon fill="none" stroke="#000000" points="99.5,-223.7 99.5,-245.7 189.5,-245.7 189.5,-223.7 99.5,-223.7"/>
-<text text-anchor="start" x="102.5" y="-231.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">int4[10]</text>
+<text text-anchor="start" x="102.0042" y="-231.4" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">text[2147483647]</text>
 <polygon fill="#ffffff" stroke="transparent" points="10.5,-204.7 10.5,-223.7 46.5,-223.7 46.5,-204.7 10.5,-204.7"/>
 <polygon fill="none" stroke="#000000" points="10.5,-204.7 10.5,-223.7 46.5,-223.7 46.5,-204.7 10.5,-204.7"/>
 <text text-anchor="start" x="13.5" y="-210.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 0</text>

@@ -1,4 +1,5 @@
 google_tokens
+_prisma_migrations
 chapter_users
 user_bans
 instance_role_permissions

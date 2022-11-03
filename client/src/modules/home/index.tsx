@@ -22,18 +22,21 @@ type User = NonNullable<AuthContextType['user']>;
 const Welcome = ({ user }: { user: User }) => {
   const helloUser = `Hello, ${user.name || 'annoymous'}`;
   return (
-    <>
-    <Flex alignItems={'center'} justifyContent='space-between'>
-      <Heading as='h1'>
-         {helloUser}
-      </Heading>
+    <Flex alignItems={'center'} justifyContent="space-between">
+      <Heading as="h1">{helloUser}</Heading>
       {!user.name && (
-          <Text>
-            You can set your name on your{' '}
-            <Link href="/profile" textDecoration={"underline"} _hover={{textDecoration: 'none'}}>profile page</Link>
-          </Text>
+        <Text>
+          You can set your name on your{' '}
+          <Link
+            href="/profile"
+            textDecoration={'underline'}
+            _hover={{ textDecoration: 'none' }}
+          >
+            profile page
+          </Link>
+        </Text>
       )}
-      </Flex>
+    </Flex>
   );
 };
 const Home = () => {
@@ -65,14 +68,17 @@ const Home = () => {
 
   return (
     <>
-      {user ?
-       <Welcome user={user} />:
-       <Heading as='h1'>Welcome to Chapter</Heading>
-       }
+      {user ? (
+        <Welcome user={user} />
+      ) : (
+        <Heading as="h1">Welcome to Chapter</Heading>
+      )}
       <Grid templateColumns="repeat(2, 1fr)" gap={10} mt="5">
         <GridItem colSpan={{ base: 2, xl: 1 }}>
           <VStack align="flex-start">
-            <Heading as='h2' size={'md'}>Upcoming events</Heading>
+            <Heading as="h2" size={'md'}>
+              Upcoming events
+            </Heading>
             {data.paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
@@ -85,7 +91,9 @@ const Home = () => {
         </GridItem>
         <GridItem colSpan={{ base: 2, xl: 1 }}>
           <VStack align="flex-start">
-            <Heading as='h2' size={'md'}>Chapters</Heading>
+            <Heading as="h2" size={'md'}>
+              Chapters
+            </Heading>
             {data.chapters.map((chapter) => (
               <ChapterCard key={chapter.id} chapter={chapter} />
             ))}

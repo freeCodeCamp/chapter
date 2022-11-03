@@ -120,7 +120,7 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
           {!startAt && isPast(startDate) && (
             <HStack>
               <InfoIcon fontSize="sm" />
-              <FormHelperText>
+              <FormHelperText data-cy="past-date-info">
                 Chapter members will not be notified about creation of this
                 event, as it starts in the past.
               </FormHelperText>

@@ -5,29 +5,33 @@ import type { ChapterMembers } from '../../../../../cypress.config';
 
 const chapterId = 1;
 
-function createEventViaUI(chapterId, testEvent) {
+function createEventViaUI({ chapterId, eventData, isInPast = false }) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
   cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
-    testEvent.name,
+    eventData.name,
   );
-  cy.findByRole('textbox', { name: 'Description' }).type(testEvent.description);
+  cy.findByRole('textbox', { name: 'Description' }).type(eventData.description);
   cy.findByRole('textbox', { name: 'Event Image Url' }).type(
-    testEvent.image_url,
+    eventData.image_url,
   );
   // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
   cy.findByRole('spinbutton', { name: 'Capacity (Required)' }).type(
-    testEvent.capacity,
+    eventData.capacity,
   );
 
   cy.findByLabelText(/^Start at \(Required\)/)
     .clear()
-    .type(testEvent.start_at)
+    .type(eventData.start_at)
     .type('{esc}');
   cy.findByLabelText(/^End at \(Required\)/)
     .clear()
-    .type(testEvent.ends_at)
+    .type(eventData.ends_at)
     .type('{esc}');
+
+  cy.get('[data-cy="past-date-info"]').should(
+    isInPast ? 'be.visible' : 'not.exist',
+  );
 
   // TODO: figure out why cypress thinks this is covered.
   // cy.findByRole('checkbox', { name: 'Invite only' }).click();
@@ -36,13 +40,13 @@ function createEventViaUI(chapterId, testEvent) {
   // combobox?
   cy.findByRole('combobox', { name: 'Venue' })
     .as('venueSelect')
-    .select(testEvent.venue_id);
+    .select(eventData.venue_id);
   cy.get('@venueSelect')
-    .find(`option[value=${testEvent.venue_id}]`)
+    .find(`option[value=${eventData.venue_id}]`)
     .invoke('text')
     .as('venueTitle');
   cy.findByRole('textbox', { name: 'Streaming URL' }).type(
-    testEvent.streaming_url,
+    eventData.streaming_url,
   );
   cy.findByRole('button', { name: 'Add Sponsor' }).click();
 
@@ -82,10 +86,10 @@ describe('chapter dashboard', () => {
     // confirm url is not required
     const testEvent = {
       ...events.eventWithoutURL,
-      start_at: add(new Date(), { days: 7 }).toISOString(),
-      ends_at: add(new Date(), { days: 7, minutes: 30 }).toISOString(),
+      start_at: add(new Date(), { days: 1 }).toISOString(),
+      ends_at: add(new Date(), { days: 1, minutes: 30 }).toISOString(),
     };
-    createEventViaUI(chapterId, testEvent);
+    createEventViaUI({ chapterId, eventData: testEvent });
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
     Object.entries(testEvent).forEach(([key, value]) => {
@@ -130,7 +134,7 @@ describe('chapter dashboard', () => {
     const testEvent = {
       ...events.eventWithoutURL,
     };
-    createEventViaUI(chapterId, testEvent);
+    createEventViaUI({ chapterId, eventData: testEvent, isInPast: true });
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
 
     cy.mhGetAllMails().should('have.length', 0);

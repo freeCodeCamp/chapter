@@ -587,7 +587,7 @@ git stash pop
 Then, create a migration using the new schema.
 
 ```bash
-npm run db:migrate
+npm run db:migrate:dev
 ```
 
 This will guide you through the process of creating a migration, including the steps required to resolve any issues. Even if there are errors, check the created migration file to see if it looks correct or has any warnings.

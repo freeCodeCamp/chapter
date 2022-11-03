@@ -545,7 +545,7 @@ Updates to the _gh-pages_ branch and [online schema](https://opensource.freecode
 ### Host and Port
 * In **Docker Mode**, the Docker database container will be exposed to the host computer on Host: _localhost_ and Port: _54320_. Thus, avoiding potential port conflicts in the case your computer is running PostgreSQL locally for other projects.
 * In **Manual Mode**, the PostgreSQL port will be as you configured it, the default being Host: _localhost_ and Port: _5432_
-* If you're using a remote PostgreSQL server, like [ElephantSQL](https://www.elephantsql.com/), then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in [_.env_](#env-configuration-file).
+* If you're using a remote PostgreSQL server, then the Host and Port will be provided by the service. You'll also need to update the `DB_URL` value in [_.env_](#env-configuration-file).
 
 ### Admin Tools
 * [pgAdmin](https://www.pgadmin.org/), [Postico](https://eggerapps.at/postico/) or [Table Plus](https://tableplus.com/), can use your mode's **Host and Port** values as described above.
@@ -555,33 +555,44 @@ Updates to the _gh-pages_ branch and [online schema](https://opensource.freecode
 
 ### Using Prisma and NPM
 
-Our DB commands closely mirror their Rails counterparts (there isn't anything quite similar to ActiveRecord and RailsCLI in node yet, so till then #rails 🚋 )
-
-`npm run db:seed` -> `rake db:seed`
-`npm run db:reset` -> `rake db:reset`
-
 #### Initializing the Database
 
 If starting the application for the first time, or syncronizing with the latest development changes, then the following must occur
-* drop the database - to delete all the structure and data
-* sync the database - to structure by setup tables based on the schema
-* seed the database - development is easier with a database full of example entities. The process of creating example entities in the database is called seeding
+* drop the database - delete the schema and data
+* apply all migrations - bring the schema up to date
+* seed the database - fill the database with example data.
 
-The `npm run db:reset` command will do all three tasks by running `npm run db:sync` and `npm run db:seed` sequentially. It also builds the server, since `db:sync` needs the compiled JavaScript to run.
-
-_Troubleshooting:_ If using ElephantSQL you may have to submit each of these commands individually.
+The `npm run db:migrate:reset` command will do all three tasks by running `prisma migrate reset` which handles all three tasks. It also builds the server, since the seed script needs to be compiled to run.
 
 #### Creating a new table
 
 The _prisma.schema_ file is the single source of truth for the database schema.
 
-#### Syncing the Schema
+#### Test schema changes
 
-* In development, run the `npm run db:sync` command.
+To update _prisma.schema_ _without_ creating a migration use `npm run db:reset`. Once you're happy with the changes, go to the next section to see how to create a migration.
 
 #### Creating a Migration
 
-The database is currently undergoing a re-write and we are using `npm run db:sync` to keep the database in sync with the schema.  Once this is complete, we will update the scripts with the migration workflow.
+When you have changed the `schema.prisma` file, these changes will need to be applied to the database.  
+
+First seed the database using the original schema
+
+```bash
+git stash -- server/prisma/schema.prisma
+npm run db:reset
+git stash pop
+```
+
+Then, create a migration using the new schema.
+
+```bash
+npm run db:migrate
+```
+
+This will guide you through the process of creating a migration, including the steps required to resolve any issues. Even if there are errors, check the created migration file to see if it looks correct or has any warnings.
+
+Once the migration file has been created and warnings addressed, the file should be committed to the repository.
 
 ## Authorizing GraphGQL requests with `@Authorized` decorator
 
@@ -716,15 +727,6 @@ If your problem isn't resolved in the sections below, then visit our [chat](http
    > npx /bin/sh^M bad interpreter: No such file or directory </br>
 
   **Solution:** likely happens when Node.js is already installed on Windows, but it also needs to be [installed within the Linux subsystem / terminal](https://nodejs.org/en/download/package-manager/), such as installing it with [apt on in Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
-</details>
-
-<details>
- <summary>ElephantSQL Troubleshooting</summary>
-
-* **Problem:** You are getting this error running `npm run db:reset`
-   > Error during schema drop: QueryFailedError: must be owner of view pg_stat_statements </br>
-
-  **Solution:** the free tier of ElephantSQL doesn't allow concurrent connections, so it's necessary to run database commands one-at-a-time, like `npm run db:drop` then `npm run db:sync` and then `npm run db:seed`. Alternatively, a paid plan on ElephantSQL would avoid this issue. [ElephantSQL Drop Schema error #762](https://github.com/freeCodeCamp/chapter/issues/762).
 </details>
 
 <details>

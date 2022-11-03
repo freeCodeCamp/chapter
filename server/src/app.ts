@@ -71,12 +71,10 @@ export const main = async (app: Express) => {
     });
   }
 
-  // TODO: use the register resolver instead? Or just delete it? Probably
-  // delete.
   async function createUser(email: string) {
     return prisma.users.create({
       data: {
-        name: 'place holder',
+        name: '',
         email,
         instance_role: {
           connect: {

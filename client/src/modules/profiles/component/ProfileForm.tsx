@@ -32,15 +32,15 @@ type Fields = {
 const fields: Fields[] = [
   {
     key: 'name',
-    label: 'New name',
-    placeholder: 'Please type your new name here',
+    label: 'Name',
+    placeholder: 'Add your name here',
     required: false,
     type: 'text',
   },
   {
     key: 'image_url',
     label: 'Profile Picture',
-    placeholder: 'Link your new profile picture here',
+    placeholder: 'Add a link to a profile image here',
     required: false,
     type: 'url',
   },

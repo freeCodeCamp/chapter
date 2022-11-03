@@ -123,7 +123,7 @@ const sendRsvpInvitation = async (
   await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
-    htmlEmail: `Hi ${user.name},</br>
+    htmlEmail: `Hi${user.name ? ' ' + user.name : ''},</br>
 To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${google(linkDetails)}>Google</a>

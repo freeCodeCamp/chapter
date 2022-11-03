@@ -193,7 +193,7 @@ export const EventPage: NextPageWithLayout = () => {
                   emptyText="No users"
                   mapper={{
                     user: ({ user }) => (
-                      <Text data-cy="username">{user.name}</Text>
+                      <Text data-cy="username">{user.name || 'anonymous'}</Text>
                     ),
                     action: ({ user }) => (
                       <HStack>
@@ -248,7 +248,9 @@ export const EventPage: NextPageWithLayout = () => {
                             spacing={'2'}
                             marginBottom={4}
                           >
-                            <Text data-cy="username">{user.name}</Text>
+                            <Text data-cy="username">
+                              {user.name || 'anonymous'}
+                            </Text>
                             {action.map(({ title, onClick, colorScheme }) => (
                               <Button
                                 key={title.toLowerCase()}

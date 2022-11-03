@@ -61,7 +61,7 @@ export const UserProfilePage = () => {
             Profile
           </Heading>
           <Heading as="h2" size={'lg'}>
-            Welcome {user.name}
+            Welcome {user.name || 'anonymous'}
           </Heading>
           {user.admined_chapters.length > 0 && (
             <>

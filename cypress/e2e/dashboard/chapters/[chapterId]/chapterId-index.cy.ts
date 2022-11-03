@@ -84,11 +84,14 @@ describe('chapter dashboard', () => {
 
   it('emails interested users when an event is created', () => {
     // confirm url is not required
+    const date = new Date();
     const testEvent = {
       ...events.eventWithoutURL,
-      start_at: add(new Date(), { days: 1 }).toISOString(),
-      ends_at: add(new Date(), { days: 1, minutes: 30 }).toISOString(),
+      start_at: add(date, { days: 1 }).toISOString(),
+      ends_at: add(date, { days: 1, minutes: 30 }).toISOString(),
     };
+
+    cy.clock(null, ['Date']).invoke('setSystemTime', date);
     createEventViaUI({ chapterId, eventData: testEvent });
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event

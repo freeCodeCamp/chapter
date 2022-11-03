@@ -20,7 +20,7 @@ import { AuthContextType, useAuth } from 'modules/auth/store';
 type User = NonNullable<AuthContextType['user']>;
 
 const Welcome = ({ user }: { user: User }) => {
-  const helloUser = `Hello, ${user.name || 'annoymous'}`;
+  const helloUser = `Welcome, ${user.name || 'annoymous'}`;
   return (
     <Flex alignItems={'center'} justifyContent="space-between">
       <Heading as="h1">{helloUser}</Heading>

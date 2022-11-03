@@ -341,7 +341,7 @@ export const EventPage: NextPage = () => {
           <ListItem key={user.id} mb="2">
             <HStack>
               <Avatar name={user.name} src={user.image_url ?? ''} />
-              <Heading size="md">{user.name}</Heading>
+              <Heading size="md">{user.name || 'anonymous'}</Heading>
             </HStack>
           </ListItem>
         ))}
@@ -363,7 +363,7 @@ export const EventPage: NextPage = () => {
               <ListItem key={user.id} mb="2">
                 <HStack>
                   <Avatar name={user.name} src={user.image_url ?? ''} />
-                  <Heading size="md">{user.name}</Heading>
+                  <Heading size="md">{user.name || 'anonymous'}</Heading>
                 </HStack>
               </ListItem>
             ))}

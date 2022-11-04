@@ -16,6 +16,7 @@ import {
   useUsersQuery,
 } from '../../../../generated/graphql';
 
+import UserName from '../../../../components/UserName';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Users } from '../graphql/queries';
@@ -79,7 +80,7 @@ export const UsersPage: NextPageWithLayout = () => {
               tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
               keys={['name', 'role', 'action'] as const}
               mapper={{
-                name: ({ name }) => <Text data-cy="name">{name}</Text>,
+                name: (user) => <UserName user={user} />,
                 action: ({ id, instance_role, name }) => (
                   <Button
                     data-cy="changeRole"
@@ -126,7 +127,7 @@ export const UsersPage: NextPageWithLayout = () => {
                   ),
                   action: () => (
                     <VStack align={'flex-start'} fontSize={['sm', 'md']}>
-                      <Text data-cy="name">{name}</Text>
+                      <UserName user={{ id, name }} />
                       <Text data-cy="role">{instance_role.name}</Text>
                       <Button
                         data-cy="changeRole"

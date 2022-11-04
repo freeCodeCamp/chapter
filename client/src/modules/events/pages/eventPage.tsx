@@ -23,6 +23,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useAuth } from '../../auth/store';
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
+import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
@@ -341,7 +342,7 @@ export const EventPage: NextPage = () => {
           <ListItem key={user.id} mb="2">
             <HStack>
               <Avatar name={user.name} src={user.image_url ?? ''} />
-              <Heading size="md">{user.name || 'anonymous'}</Heading>
+              <UserName user={user} fontSize="xl" fontWeight="bold" />
             </HStack>
           </ListItem>
         ))}
@@ -363,7 +364,7 @@ export const EventPage: NextPage = () => {
               <ListItem key={user.id} mb="2">
                 <HStack>
                   <Avatar name={user.name} src={user.image_url ?? ''} />
-                  <Heading size="md">{user.name || 'anonymous'}</Heading>
+                  <UserName user={user} fontSize="xl" fontWeight="bold" />
                 </HStack>
               </ListItem>
             ))}

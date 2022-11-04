@@ -22,6 +22,7 @@ import {
   useUnbanUserMutation,
   useDashboardChapterUsersQuery,
 } from '../../../../../generated/graphql';
+import UserName from '../../../../../components/UserName';
 import { DashboardLoading } from '../../../shared/components/DashboardLoading';
 import { Layout } from '../../../shared/components/Layout';
 import {
@@ -157,7 +158,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
             mapper={{
               name: ({ user }) => (
                 <HStack>
-                  <Text data-cy="userName">{user.name}</Text>
+                  <UserName user={user} />
                   {bans.has(user.id) && (
                     <Badge data-cy="isBanned" colorScheme="red">
                       Banned
@@ -236,7 +237,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       actions: () => (
                         <VStack spacing={3} align={'flex-start'}>
                           <HStack>
-                            <Text>{user.name}</Text>
+                            <UserName user={user} />
                             {bans.has(user.id) && (
                               <Badge data-cy="isBanned" colorScheme="red">
                                 Banned

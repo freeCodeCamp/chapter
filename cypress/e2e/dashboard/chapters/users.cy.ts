@@ -112,7 +112,7 @@ describe('Chapter Users dashboard', () => {
       .first()
       .as('firstUnbannedMember');
     cy.get('@firstUnbannedMember')
-      .find('[data-cy=userName]')
+      .find('[data-cy=user-name]')
       .invoke('text')
       .as('firstUnbannedName');
   }

@@ -31,6 +31,7 @@ import SponsorsCard from '../../../../components/SponsorsCard';
 import { DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import UserName from 'components/UserName';
 
 const args = (eventId: number) => ({
   refetchQueries: [
@@ -192,9 +193,7 @@ export const EventPage: NextPageWithLayout = () => {
                   keys={['user', 'role', 'action'] as const}
                   emptyText="No users"
                   mapper={{
-                    user: ({ user }) => (
-                      <Text data-cy="username">{user.name || 'anonymous'}</Text>
-                    ),
+                    user: ({ user }) => <UserName user={user} />,
                     action: ({ user }) => (
                       <HStack>
                         {action.map(({ title, onClick, colorScheme }) => (
@@ -248,9 +247,7 @@ export const EventPage: NextPageWithLayout = () => {
                             spacing={'2'}
                             marginBottom={4}
                           >
-                            <Text data-cy="username">
-                              {user.name || 'anonymous'}
-                            </Text>
+                            <UserName user={user} />
                             {action.map(({ title, onClick, colorScheme }) => (
                               <Button
                                 key={title.toLowerCase()}

@@ -11,19 +11,19 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
-import { Loading } from 'components/Loading';
-import { ChapterCard } from 'components/ChapterCard';
-import { EventCard } from 'components/EventCard';
-import { useHomeQuery } from 'generated/graphql';
-import { AuthContextType, useAuth } from 'modules/auth/store';
+import { Loading } from '../../components/Loading';
+import { ChapterCard } from '../../components/ChapterCard';
+import { EventCard } from '../../components/EventCard';
+import { useHomeQuery } from '../../generated/graphql';
+import { AuthContextType, useAuth } from '../../modules/auth/store';
+import { getNameText } from '../../components/UserName';
 
 type User = NonNullable<AuthContextType['user']>;
 
 const Welcome = ({ user }: { user: User }) => {
-  const helloUser = `Welcome, ${user.name || 'anonymous'}`;
   return (
     <Flex alignItems={'center'} justifyContent="space-between">
-      <Heading as="h1">{helloUser}</Heading>
+      <Heading as="h1">Welcome, {getNameText(user.name)}</Heading>
       {!user.name && (
         <Text>
           You can set your name on your{' '}

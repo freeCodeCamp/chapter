@@ -47,24 +47,24 @@ export const EventPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId },
   });
-  const [confirmRsvpFn] = useConfirmRsvpMutation(args(eventId));
-  const [removeRsvpFn] = useDeleteRsvpMutation(args(eventId));
+  const [confirmRsvp] = useConfirmRsvpMutation(args(eventId));
+  const [removeRsvp] = useDeleteRsvpMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
 
-  const confirmRSVP =
+  const onConfirmRsvp =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
     async () => {
       const ok = await confirm();
-      if (ok) confirmRsvpFn({ variables: { eventId, userId } });
+      if (ok) confirmRsvp({ variables: { eventId, userId } });
     };
 
-  const remove =
+  const onRemove =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
     async () => {
       const ok = await confirmDelete();
-      if (ok) removeRsvpFn({ variables: { eventId, userId } });
+      if (ok) removeRsvp({ variables: { eventId, userId } });
     };
 
   const isLoading = loading || !data;
@@ -76,17 +76,19 @@ export const EventPage: NextPageWithLayout = () => {
     {
       title: 'RSVPs',
       rsvpFilter: 'yes',
-      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
+      action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
       rsvpFilter: 'waitlist',
-      action: [{ title: 'Confirm', onClick: confirmRSVP, colorScheme: 'blue' }],
+      action: [
+        { title: 'Confirm', onClick: onConfirmRsvp, colorScheme: 'blue' },
+      ],
     },
     {
       title: 'Canceled',
       rsvpFilter: 'no',
-      action: [{ title: 'Remove', onClick: remove, colorScheme: 'red' }],
+      action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
   ];
 

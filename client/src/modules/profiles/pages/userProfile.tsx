@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Flex, Heading, Link, Text } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
+import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import {
@@ -70,8 +71,8 @@ export const UserProfilePage = () => {
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
                 {user.admined_chapters.map(({ name, id }) => (
-                  <Link key={id}>
-                    <Text>{name}</Text>
+                  <Link key={id} href={`/chapters/${id}`}>
+                    {name}
                   </Link>
                 ))}
               </Flex>

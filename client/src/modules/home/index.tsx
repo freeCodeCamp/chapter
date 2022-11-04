@@ -7,9 +7,9 @@ import {
   useToast,
   Flex,
   Text,
-  Link,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import { Link } from 'chakra-next-link';
 
 import { Loading } from 'components/Loading';
 import { ChapterCard } from 'components/ChapterCard';

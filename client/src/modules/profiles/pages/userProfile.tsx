@@ -4,11 +4,13 @@ import { useConfirmDelete } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
+
 import {
   useDeleteMeMutation,
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
+import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
@@ -62,7 +64,7 @@ export const UserProfilePage = () => {
             Profile
           </Heading>
           <Heading as="h2" size={'lg'}>
-            Welcome {user.name || 'anonymous'}
+            Welcome {getNameText(user.name)}
           </Heading>
           {user.admined_chapters.length > 0 && (
             <>

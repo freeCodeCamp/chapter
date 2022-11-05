@@ -1408,6 +1408,7 @@ export type PaginatedEventsWithTotalQuery = {
       name: string;
       description: string;
       start_at: any;
+      ends_at: any;
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
@@ -1501,6 +1502,7 @@ export type HomeQuery = {
     invite_only: boolean;
     canceled: boolean;
     start_at: any;
+    ends_at: any;
     image_url: string;
     chapter: {
       __typename?: 'Chapter';
@@ -4100,6 +4102,7 @@ export const PaginatedEventsWithTotalDocument = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url
@@ -4274,6 +4277,7 @@ export const HomeDocument = gql`
       invite_only
       canceled
       start_at
+      ends_at
       image_url
       chapter {
         id

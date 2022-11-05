@@ -9,6 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { isFuture, isPast } from 'date-fns';
 import React from 'react';
 import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
@@ -20,6 +21,7 @@ type EventCardProps = {
     | 'name'
     | 'description'
     | 'start_at'
+    | 'ends_at'
     | 'image_url'
     | 'invite_only'
     | 'canceled'
@@ -49,10 +51,22 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   );
   const eventStatus = event.canceled
     ? 'Canceled'
+    : new Date(event.ends_at) > new Date() &&
+      new Date(event.start_at) < new Date()
+    ? 'Running'
     : new Date(event.start_at) < new Date()
-    ? 'Passed'
+    ? 'Ended at'
     : 'Upcoming';
+
+  console.log(new Date(event.ends_at));
   const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
+  const passedStyle = { color: 'gray.45', opacity: '.6', fontweight: '400' };
+  const runningStyle = {
+    color: 'gray.00',
+    backgroundColor: 'gray.45',
+    paddingInline: '.3em',
+    borderRadius: 'sm',
+  };
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
       <Image
@@ -107,7 +121,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             marginBottom={['1', '2']}
           >
             <Text
-              {...(event.canceled && canceledStyle)}
+              {...(event.canceled
+                ? canceledStyle
+                : isFuture(new Date(event.ends_at)) &&
+                  isPast(new Date(event.start_at))
+                ? runningStyle
+                : isPast(new Date(event.start_at)) && passedStyle)}
               fontSize={['smaller', 'sm']}
               fontWeight={'semibold'}
             >

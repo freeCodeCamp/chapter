@@ -14,13 +14,14 @@ import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
-import { useLogout } from 'hooks/useAuth';
+import { useLogout } from '../../../hooks/useAuth';
 
 export const UserProfilePage = () => {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
+  const goHome = () => router.push('/');
 
   const confirmDelete = useConfirmDelete({
     body: 'Are you sure you want to delete your account? Account deletion cannot be reversed.',
@@ -60,9 +61,18 @@ export const UserProfilePage = () => {
     <div>
       {user ? (
         <>
-          <Heading as="h1" marginBlock={'.5em'}>
-            Profile
-          </Heading>
+          <Flex justifyContent={'space-between'}>
+            <Heading as="h1" marginBlock={'.5em'}>
+              Profile
+            </Heading>
+            <Button
+              onClick={() => logout().then(goHome)}
+              fontWeight="600"
+              mt="5"
+            >
+              Logout
+            </Button>
+          </Flex>
           <Heading as="h2" size={'lg'}>
             Welcome {getNameText(user.name)}
           </Heading>

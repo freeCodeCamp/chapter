@@ -1,4 +1,5 @@
-import React, { ReactElement, useState } from 'react';
+import { useToast } from '@chakra-ui/react';
+import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 import {
   CreateChapterInputs,
@@ -10,31 +11,33 @@ import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const NewChapterPage: NextPageWithLayout = () => {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [createChapter] = useCreateChapterMutation({
     refetchQueries: [{ query: CHAPTERS }],
   });
 
+  const toast = useToast();
+
   const onSubmit = async (inputData: CreateChapterInputs) => {
-    setLoading(true);
-    try {
-      // ToDo: handle empty data differently
-      const { data } = await createChapter({
-        variables: { data: { ...inputData } },
+    // ToDo: handle empty data differently
+    const { data: chapterData, errors } = await createChapter({
+      variables: { data: { ...inputData } },
+    });
+    if (errors) throw errors;
+    if (chapterData) {
+      await router.replace(
+        `/dashboard/chapters/${chapterData.createChapter.id}/new-venue`,
+      );
+      toast({
+        title: `Chapter "${chapterData.createChapter.name}" created!`,
+        status: 'success',
       });
-      router.replace(`/dashboard/chapters/${data?.createChapter.id}/new-venue`);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <ChapterForm
-      loading={loading}
       onSubmit={onSubmit}
       loadingText={'Adding Chapter'}
       submitText={'Add chapter'}

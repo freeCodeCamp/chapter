@@ -11,15 +11,18 @@ interface AvatarProps extends ChakraAvatarProps {
   };
 }
 
-const Avatar = ({ user: { name, image_url }, ...avatarProps }: AvatarProps) => {
-  return (
-    <ChakraAvatar
-      name={name}
-      src={image_url ?? ''}
-      backgroundColor={image_url ? 'transparent' : undefined}
-      {...avatarProps}
-    />
-  );
-};
+const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
+  ({ user: { name, image_url }, ...avatarProps }: AvatarProps, ref) => {
+    return (
+      <ChakraAvatar
+        ref={ref}
+        name={name}
+        src={image_url ?? ''}
+        backgroundColor={image_url ? 'transparent' : undefined}
+        {...avatarProps}
+      />
+    );
+  },
+);
 
 export default Avatar;

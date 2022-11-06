@@ -17,6 +17,8 @@ const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
       <ChakraAvatar
         ref={ref}
         name={name}
+        h={'50px'}
+        w={'50px'}
         src={image_url ?? ''}
         backgroundColor={image_url ? 'transparent' : undefined}
         {...avatarProps}

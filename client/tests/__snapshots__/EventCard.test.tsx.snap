@@ -55,9 +55,10 @@ exports[`EventCard should render 1`] = `
           class="css-11b3qp1"
         >
           <p
-            class="chakra-text css-xac110"
+            class="chakra-text css-x81na9"
+            fontweight="400"
           >
-            Passed
+            Ended at
             : 
             Thu, Jan 1 @ 00:00
           </p>

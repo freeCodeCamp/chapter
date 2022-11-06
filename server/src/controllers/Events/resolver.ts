@@ -513,10 +513,8 @@ export class EventResolver {
     const updatedEventUser = await prisma.event_users.update({
       data: {
         rsvp: { connect: { name: 'no' } },
-        ...(eventUser.subscribed && {
-          event_reminder: { delete: true },
-          subscribed: false,
-        }),
+        subscribed: false,
+        ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
       include: eventUserIncludes,
       where: {

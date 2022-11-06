@@ -30,6 +30,7 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
       {...props}
       w="full"
       as="header"
+      height={'90px'}
       px={[2, 4, 8]}
       py={[2, 4]}
       background={'gray.85'}

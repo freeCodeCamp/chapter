@@ -49,14 +49,18 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       )}
     </>
   );
+
+  const isRunning: boolean =
+    isFuture(new Date(event.ends_at)) && isPast(new Date(event.start_at));
+  const isEnded: boolean = isPast(new Date(event.start_at));
   const eventStatus = event.canceled
     ? 'Canceled'
-    : new Date(event.ends_at) > new Date() &&
-      new Date(event.start_at) < new Date()
+    : isRunning
     ? 'Running'
-    : new Date(event.start_at) < new Date()
+    : isEnded
     ? 'Ended at'
     : 'Upcoming';
+
   const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
   const passedStyle = { color: 'gray.45', opacity: '.6', fontWeight: '400' };
   const runningStyle = {
@@ -65,6 +69,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     paddingInline: '.3em',
     borderRadius: 'sm',
   };
+  const eventStatusStyle = event.canceled
+    ? canceledStyle
+    : isRunning
+    ? runningStyle
+    : isEnded && passedStyle;
   return (
     <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
       <Image
@@ -119,12 +128,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             marginBottom={['1', '2']}
           >
             <Text
-              {...(event.canceled
-                ? canceledStyle
-                : isFuture(new Date(event.ends_at)) &&
-                  isPast(new Date(event.start_at))
-                ? runningStyle
-                : isPast(new Date(event.start_at)) && passedStyle)}
+              {...eventStatusStyle}
               fontSize={['smaller', 'sm']}
               fontWeight={'semibold'}
             >

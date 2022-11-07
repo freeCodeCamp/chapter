@@ -10,13 +10,25 @@ import { Loading } from '../../../../components/Loading';
 import { useAuth } from 'modules/auth/store';
 
 const links = [
-  { text: 'Chapters', link: '/dashboard/chapters' },
-  { text: 'Events', link: '/dashboard/events' },
-  { text: 'Venues', link: '/dashboard/venues' },
+  {
+    text: 'Chapters',
+    link: '/dashboard/chapters',
+    requiredPermission: Permission.ChapterEdit,
+  },
+  {
+    text: 'Events',
+    link: '/dashboard/events',
+    requiredPermission: Permission.EventEdit,
+  },
+  {
+    text: 'Venues',
+    link: '/dashboard/venues',
+    requiredPermission: Permission.VenueEdit,
+  },
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
-    requiredPermission: Permission.SponsorView,
+    requiredPermission: Permission.SponsorManage,
   },
   {
     text: 'Users',
@@ -51,7 +63,7 @@ export const Layout = ({
     <div data-cy={dataCy}>
       <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
         {linksWithPermissions
-          .filter((link) => !link.requiredPermission || link.hasPermission)
+          .filter((link) => !link.requiredPermission)
           .map((item) => (
             <LinkButton
               key={item.link}

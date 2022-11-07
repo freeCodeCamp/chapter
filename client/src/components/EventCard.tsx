@@ -61,21 +61,27 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     ? 'Ended at'
     : 'Upcoming';
 
-  const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
-  const passedStyle = { color: 'gray.45', opacity: '.6', fontWeight: '400' };
-  const runningStyle = {
+  const canceledStatusStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
+  const endedStatusStyle = { color: 'gray.45', fontWeight: '400' };
+  const runningStatusStyle = {
     color: 'gray.00',
     backgroundColor: 'gray.45',
     paddingInline: '.3em',
     borderRadius: 'sm',
   };
   const eventStatusStyle = event.canceled
-    ? canceledStyle
+    ? canceledStatusStyle
     : isRunning
-    ? runningStyle
-    : isEnded && passedStyle;
+    ? runningStatusStyle
+    : isEnded && endedStatusStyle;
   return (
-    <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
+    <Flex
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      width={'full'}
+      {...(isEnded && !isRunning && { opacity: 0.6 })}
+    >
       <Image
         display={['none', 'block']}
         h={'auto'}

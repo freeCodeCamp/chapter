@@ -39,6 +39,7 @@ const baseUser: User = {
   created_at: new Date(),
   updated_at: new Date(),
   email: 'an@add.ress',
+  auto_subscribe: false,
 };
 
 export const userWithInstanceRole: User = merge(baseUser, {

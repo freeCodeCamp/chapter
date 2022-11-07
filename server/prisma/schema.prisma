@@ -267,6 +267,7 @@ model users {
   name             String
   image_url        String?
   email            String          @unique
+  auto_subscribe   Boolean         @default(false)
   user_bans        user_bans[]
   user_chapters    chapter_users[]
   instance_role_id Int

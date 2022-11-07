@@ -16,4 +16,4 @@ jobs:
           port: 22
           script: |
             cd chapter 
-            docker compose -f docker-compose.prisma.yml run prisma sh -c "npm run db:migrate"
+            docker compose -f docker-compose.yml run app sh -c "npm run db:migrate"

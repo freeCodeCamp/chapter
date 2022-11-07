@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '../../../src/prisma';
-import { RoleMap } from './instanceRoles.factory';
+import { RoleMap } from '../../init/factories/instanceRoles.factory';
 
 const { name, internet } = faker;
 

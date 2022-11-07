@@ -166,20 +166,14 @@ export const EventPage: NextPageWithLayout = () => {
           )}
 
         {data.dashboardEvent.chapter.calendar_id && (
-          <Text>
-            Event in calendar:{' '}
+          <HStack>
+            <Text>Event created in calendar:</Text>
             {data.dashboardEvent.calendar_event_id ? (
-              <>
-                <CheckIcon fontSize="sm" />
-                Created
-              </>
+              <CheckIcon boxSize="5" />
             ) : (
-              <>
-                <CloseIcon fontSize="sm" />
-                Not created
-              </>
+              <CloseIcon boxSize="4" />
             )}
-          </Text>
+          </HStack>
         )}
 
         <Actions

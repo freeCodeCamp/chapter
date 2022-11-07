@@ -680,7 +680,9 @@ ${unsubscribeOptions}`,
     });
     if (event.calendar_event_id) return event;
     if (!event.chapter.calendar_id) {
-      throw Error('Cannot create event in calendar without calendar_id');
+      throw Error(
+        'Cannot create event in calendar for chapter not associated with calendar',
+      );
     }
 
     const attendeeEmails =

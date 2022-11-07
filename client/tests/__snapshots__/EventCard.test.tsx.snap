@@ -56,7 +56,7 @@ exports[`EventCard should render 1`] = `
         >
           <p
             class="chakra-text css-x81na9"
-            fontweight="400"
+            fontWeight="400"
           >
             Ended at
             : 

@@ -58,7 +58,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     ? 'Ended at'
     : 'Upcoming';
   const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
-  const passedStyle = { color: 'gray.45', opacity: '.6', fontweight: '400' };
+  const passedStyle = { color: 'gray.45', opacity: '.6', fontWeight: '400' };
   const runningStyle = {
     color: 'gray.00',
     backgroundColor: 'gray.45',

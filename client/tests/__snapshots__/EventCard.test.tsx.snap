@@ -3,7 +3,7 @@
 exports[`EventCard should render 1`] = `
 <div>
   <div
-    class="css-8l4ckd"
+    class="css-t46010"
   >
     <img
       class="chakra-image css-gb7fie"
@@ -55,8 +55,7 @@ exports[`EventCard should render 1`] = `
           class="css-11b3qp1"
         >
           <p
-            class="chakra-text css-x81na9"
-            fontWeight="400"
+            class="chakra-text css-hy5ojy"
           >
             Ended at
             : 

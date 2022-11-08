@@ -49,38 +49,43 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       )}
     </>
   );
+  enum EventStatus {
+    canceled = 'Canceled',
+    running = 'Running',
+    ended = 'Ended at',
+    upcoming = 'Upcoming',
+  }
 
-  const isRunning: boolean =
-    isFuture(new Date(event.ends_at)) && isPast(new Date(event.start_at));
-  const isEnded: boolean = isPast(new Date(event.start_at));
-  const eventStatus = event.canceled
-    ? 'Canceled'
-    : isRunning
-    ? 'Running'
-    : isEnded
-    ? 'Ended at'
-    : 'Upcoming';
-
-  const canceledStatusStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
-  const endedStatusStyle = { color: 'gray.45', fontWeight: '400' };
-  const runningStatusStyle = {
-    color: 'gray.00',
-    backgroundColor: 'gray.45',
-    paddingInline: '.3em',
-    borderRadius: 'sm',
+  const statusToStyle = {
+    [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
+    [EventStatus.running]: {
+      color: 'gray.00',
+      backgroundColor: 'gray.45',
+      paddingInline: '.3em',
+      borderRadius: 'sm',
+    },
+    [EventStatus.ended]: { color: 'gray.45', fontWeight: '400' },
+    [EventStatus.upcoming]: {},
   };
-  const eventStatusStyle = event.canceled
-    ? canceledStatusStyle
-    : isRunning
-    ? runningStatusStyle
-    : isEnded && endedStatusStyle;
+
+  const isStartInPast = isPast(new Date(event.start_at));
+  const isEndInFuture = isFuture(new Date(event.ends_at));
+  const eventStatus = event.canceled
+    ? EventStatus.canceled
+    : isStartInPast
+    ? isEndInFuture
+      ? EventStatus.running
+      : EventStatus.ended
+    : EventStatus.upcoming;
+
+  const eventStatusStyle = statusToStyle[eventStatus];
   return (
     <Flex
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
       width={'full'}
-      {...(isEnded && !isRunning && { opacity: 0.6 })}
+      {...(!isEndInFuture && { opacity: 0.6 })}
     >
       <Image
         display={['none', 'block']}

@@ -1,5 +1,8 @@
+import { inspect } from 'util';
+
 import { prisma } from '../prisma';
 import { patchCalendarEvent } from '../services/Google';
+import { redactSecrets } from './redact-secrets';
 
 export const updateCalendarEventAttendees = async ({
   eventId,
@@ -27,9 +30,9 @@ export const updateCalendarEventAttendees = async ({
         calendarEventId,
         attendeeEmails: attendees.map(({ user }) => user.email),
       });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
-      throw 'Unable to update calendar event attendees';
+    } catch (e) {
+      console.log('Unable to update calendar event attendees');
+      console.error(inspect(redactSecrets(e), { depth: null }));
     }
   }
 };

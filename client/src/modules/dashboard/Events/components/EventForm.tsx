@@ -13,6 +13,7 @@ import {
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import EventChapterSelect from './EventChapterSelect';
 import EventDatesForm from './EventDatesForm';
 import EventCancelButton from './EventCancelButton';
@@ -31,7 +32,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const {
     onSubmit,
     data,
-    loading,
     submitText,
     chapterId: initialChapterId,
     loadingText,
@@ -89,9 +89,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     variables: { chapterId },
   });
 
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<EventFormData>({
+      onSubmit,
+    });
+
   return (
     <FormProvider {...formMethods}>
-      <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+      <Form
+        submitLabel={submitText}
+        FormHandling={handleSubmit(disableWhileSubmitting)}
+      >
         {!isChaptersDropdownNeeded || data ? (
           loadingChapter ? (
             <Text>Loading Chapter</Text>

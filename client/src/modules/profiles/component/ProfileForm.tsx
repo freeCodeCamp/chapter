@@ -12,9 +12,9 @@ import { Input } from '../../../components/Form/Input';
 import { TextArea } from '../../../components/Form/TextArea';
 import { Form } from '../../../components/Form/Form';
 import { UpdateUserInputs } from '../../../generated/graphql';
+import { useDisableWhileSubmitting } from 'hooks/useDisableWhileSubmitting';
 
 interface ProfileFormProps {
-  loading: boolean;
   onSubmit: (data: UpdateUserInputs) => Promise<void>;
   data: UpdateUserInputs;
   submitText: string;
@@ -47,7 +47,7 @@ const fields: Fields[] = [
 ];
 
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, loadingText } = props;
+  const { onSubmit, data, submitText, loadingText } = props;
 
   const defaultValues: UpdateUserInputs = {
     ...data,
@@ -68,8 +68,17 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
 
   const hasAutoSubscribe = watch('auto_subscribe');
 
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<UpdateUserInputs>({
+      onSubmit,
+      enableOnSuccess: true,
+    });
+
   return (
-    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
       {fields.map(({ key, label, placeholder, required, type }) =>
         type == 'textarea' ? (
           <TextArea

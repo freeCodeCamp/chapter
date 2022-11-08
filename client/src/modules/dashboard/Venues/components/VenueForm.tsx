@@ -5,8 +5,9 @@ import {
   Heading,
   Select,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
+
 import { Input } from '../../../../components/Form/Input';
 import type {
   VenueQuery,
@@ -14,6 +15,7 @@ import type {
   ChapterQuery,
 } from '../../../../generated/graphql';
 import { Form } from '../../../../components/Form/Form';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 
 export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
@@ -127,7 +129,6 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     adminedChapters = [],
   } = props;
 
-  const [loading, setLoading] = useState(false);
   const venue = data?.venue;
 
   const defaultChapterId = adminedChapters[0]?.id ?? chapterId;
@@ -143,15 +144,10 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     defaultValues,
   });
 
-  const disableWhileSubmitting = async (data: VenueFormData) => {
-    setLoading(true);
-    try {
-      await onSubmit(data);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<VenueFormData>({
+      onSubmit,
+    });
 
   return (
     <Form

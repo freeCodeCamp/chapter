@@ -5,8 +5,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { VStack } from '@chakra-ui/layout';
 
+import { Form } from '../../../../components/Form/Form';
 import { Input } from '../../../../components/Form/Input';
-import styles from '../../../../styles/Form.module.css';
 import { DashboardSponsorQuery, Sponsor } from '../../../../generated/graphql';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 
@@ -71,9 +71,9 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
     });
 
   return (
-    <form
-      onSubmit={handleSubmit(disableWhileSubmitting)}
-      className={styles.form}
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
     >
       <VStack gap={4}>
         {fields.map((field) => {
@@ -109,7 +109,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
           {submitText}
         </Button>
       </VStack>
-    </form>
+    </Form>
   );
 };
 

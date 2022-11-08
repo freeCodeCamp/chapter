@@ -68,24 +68,34 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     [EventStatus.upcoming]: {},
   };
 
-  const isStartInPast = isPast(new Date(event.start_at));
-  const isEndInFuture = isFuture(new Date(event.ends_at));
-  const eventStatus = event.canceled
-    ? EventStatus.canceled
-    : isStartInPast
-    ? isEndInFuture
-      ? EventStatus.running
-      : EventStatus.ended
-    : EventStatus.upcoming;
-
-  const eventStatusStyle = statusToStyle[eventStatus];
+  const canceled = event.canceled;
+  const isStartDateInPast = isPast(new Date(event.start_at));
+  const isEndDateInFuture = isFuture(new Date(event.ends_at));
+  const getEventStatus = ({
+    canceled,
+    isStartDateInPast,
+    isEndDateInFuture,
+  }: {
+    canceled: boolean;
+    isStartDateInPast: boolean;
+    isEndDateInFuture: boolean;
+  }) => {
+    if (canceled) return EventStatus.canceled;
+    if (!isStartDateInPast) return EventStatus.upcoming;
+    if (isEndDateInFuture) return EventStatus.running;
+    return EventStatus.ended;
+  };
+  const eventStatusStyle =
+    statusToStyle[
+      getEventStatus({ canceled, isStartDateInPast, isEndDateInFuture })
+    ];
   return (
     <Flex
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
       width={'full'}
-      {...(!isEndInFuture && { opacity: 0.6 })}
+      {...(!isEndDateInFuture && { opacity: 0.6 })}
     >
       <Image
         display={['none', 'block']}
@@ -143,7 +153,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               fontSize={['smaller', 'sm']}
               fontWeight={'semibold'}
             >
-              {eventStatus}: {formatDate(event.start_at)}
+              {getEventStatus({
+                canceled,
+                isStartDateInPast,
+                isEndDateInFuture,
+              })}
+              : {formatDate(event.start_at)}
             </Text>
           </GridItem>
         </Grid>

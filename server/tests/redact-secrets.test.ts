@@ -1,3 +1,4 @@
+// import { GaxiosError } from 'gaxios';
 import { redactSecrets } from '../src/util/redact-secrets';
 
 import {
@@ -95,5 +96,19 @@ describe('redactSecrets', () => {
       },
       access_token: '1234567890',
     });
+  });
+
+  it('can redact errors', () => {
+    type SpecialError = Error & { secrets?: Record<string, unknown> };
+    const anError: SpecialError = new Error('some error');
+    anError.secrets = { access_token: '1234567890' };
+
+    const errorObject = {
+      secrets: { access_token: '***' },
+      message: anError.message?.slice(),
+      stack: anError.stack?.slice(),
+    };
+
+    expect(redactSecrets(anError)).toEqual(errorObject);
   });
 });

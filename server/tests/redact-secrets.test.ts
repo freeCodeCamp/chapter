@@ -47,6 +47,18 @@ describe('redactSecrets', () => {
     });
   });
 
+  it('redacts email', () => {
+    const obj = {
+      email: 'test@user.org',
+      attendees: [{ email: 'test2@user.org' }],
+    };
+
+    expect(redactSecrets(obj)).toEqual({
+      email: '***',
+      attendees: [{ email: '***' }],
+    });
+  });
+
   it('redacts secrets in nested objects', () => {
     expect(redactSecrets(nestedObject)).toEqual(redactedNestedObject);
   });

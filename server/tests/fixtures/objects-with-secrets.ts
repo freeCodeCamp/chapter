@@ -18,7 +18,7 @@ export const fullResponse = {
         start: { dateTime: '2022-11-10T11:10:54.000Z' },
         end: { dateTime: '2022-11-11T11:40:54.000Z' },
         summary: 'calendar testing EVENT',
-        attendees: [],
+        attendees: [{ email: 'test2@user.org' }],
         guestsCanSeeOtherGuests: false,
         guestsCanInviteOthers: false,
         refresh_token: 'someaccesstoken', // Google doesn't put these here, it's just here to make the test harder to pass

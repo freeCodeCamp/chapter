@@ -13,8 +13,9 @@ function errorToObject(err: Error) {
   return obj;
 }
 
+const secrets = ['Authorization', 'access_token', 'refresh_token', 'email'];
+
 export const redactSecrets = (input: any): any => {
-  const secrets = ['Authorization', 'access_token', 'refresh_token', 'email'];
   const object = input instanceof Error ? errorToObject(input) : input;
   return cloneDeepWith((_value, key: string) => {
     if (key && secrets.includes(key)) return '***';

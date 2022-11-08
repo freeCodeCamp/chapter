@@ -61,22 +61,24 @@ export const Layout = ({
 
   return (
     <div data-cy={dataCy}>
-      <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
-        {linksWithPermissions
-          .filter((link) => !link.requiredPermission)
-          .map((item) => (
-            <LinkButton
-              key={item.link}
-              href={item.link}
-              colorScheme={
-                router.pathname.startsWith(item.link) ? 'blue' : 'gray'
-              }
-            >
-              {item.text}
-            </LinkButton>
-          ))}
-      </HStack>
-      {children}
+      {linksWithPermissions
+        .filter((link) => !link.requiredPermission)
+        .map((item) => (
+          <>
+            <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
+              <LinkButton
+                key={item.link}
+                href={item.link}
+                colorScheme={
+                  router.pathname.startsWith(item.link) ? 'blue' : 'gray'
+                }
+              >
+                {item.text}
+              </LinkButton>
+            </HStack>
+            {children}
+          </>
+        ))}
     </div>
   );
 };

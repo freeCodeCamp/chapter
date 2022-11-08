@@ -6,7 +6,7 @@ const eventId = 1;
 const setUsernameAlias = (usersAlias: string) =>
   cy
     .get(usersAlias)
-    .find('[data-cy=username]')
+    .find('[data-cy=user-name]')
     .first()
     .invoke('text')
     .as('userName');

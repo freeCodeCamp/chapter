@@ -1,4 +1,4 @@
-import { truncateTables, createRoles } from './init';
+import { truncateTables, createRoles } from '../init/init';
 import createChapters from './factories/chapters.factory';
 import createEvents from './factories/events.factory';
 import createRsvps from './factories/rsvps.factory';

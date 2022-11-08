@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
-import { Flex, Heading, Text, Link } from '@chakra-ui/layout';
+import React from 'react';
+import { Flex, Heading, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
+import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 import { LinkButton } from 'chakra-next-link';
+
 import {
   useDeleteMeMutation,
   useUpdateMeMutation,
   UpdateUserInputs,
 } from '../../../generated/graphql';
+import { getNameText } from '../../../components/UserName';
+import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
-import { meQuery } from 'modules/auth/graphql/queries';
 import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
@@ -31,18 +34,19 @@ export const UserProfilePage = () => {
     refetchQueries: [{ query: meQuery }],
   });
 
+  const toast = useToast();
+
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
     const image_url = data.image_url;
-    setLoadingUpdate(true);
-    try {
-      await updateMe({
-        variables: { data: { name, image_url } },
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingUpdate(false);
+    const { data: userData, errors } = await updateMe({
+      variables: {
+        data: { name, auto_subscribe: data.auto_subscribe, image_url },
+      },
+    });
+    if (errors) throw errors;
+    if (userData) {
+      toast({ title: 'Profile saved!', status: 'success' });
     }
   };
 
@@ -62,7 +66,7 @@ export const UserProfilePage = () => {
             Profile
           </Heading>
           <Heading as="h2" size={'lg'}>
-            Welcome {user.name}
+            Welcome {getNameText(user.name)}
           </Heading>
           {user.admined_chapters.length > 0 && (
             <>
@@ -71,8 +75,8 @@ export const UserProfilePage = () => {
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
                 {user.admined_chapters.map(({ name, id }) => (
-                  <Link key={id}>
-                    <Text>{name}</Text>
+                  <Link key={id} href={`/chapters/${id}`}>
+                    {name}
                   </Link>
                 ))}
               </Flex>
@@ -80,7 +84,6 @@ export const UserProfilePage = () => {
           )}
 
           <ProfileForm
-            loading={loadingUpdate}
             onSubmit={submitUpdateMe}
             data={user}
             loadingText={'Saving Profile Changes'}

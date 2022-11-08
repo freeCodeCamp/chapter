@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Box, Flex, Image, Button } from '@chakra-ui/react';
+import { Box, Flex, Image, Button } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
 import React from 'react';
@@ -10,6 +10,12 @@ import { useAuth } from '../../modules/auth/store';
 import { useLogin, useLogout } from '../../hooks/useAuth';
 import { HeaderMenu } from './components/HeaderMenu';
 import { HeaderContainer } from './components/HeaderContainer';
+import Avatar from '../Avatar';
+
+interface Props {
+  children: React.ReactNode;
+  justifyContent?: GridItemProps['justifyContent'];
+}
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
@@ -70,12 +76,7 @@ export const Header: React.FC = () => {
             ) : (
               <Flex gap={'2'} alignItems={'center'}>
                 <NextLink passHref href="/profile">
-                  <Avatar
-                    cursor="pointer"
-                    name={`${user.name}`}
-                    src={`${user.image_url}`}
-                    backgroundColor={user.image_url ? 'transparent' : undefined}
-                  />
+                  <Avatar user={user} cursor="pointer" />
                 </NextLink>
                 <Box>
                   <HeaderMenu LogoutButton={LogoutButton} />

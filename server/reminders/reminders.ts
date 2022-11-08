@@ -63,7 +63,7 @@ Copyright © {current year in YYYY format} {Organization}. All rights reserved.<
 
 Unsubscribe Options
 - [Attend this event, but only turn off future notifications for this event](${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken})
-- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
+- Or, [stop receiving notifications about new events in chapter by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
 
 [Privacy Policy](link to privacy page)`;
 };

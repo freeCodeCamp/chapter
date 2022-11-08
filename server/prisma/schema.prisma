@@ -21,7 +21,8 @@ model chapters {
   city          String
   region        String
   country       String
-  banner_url    String
+  logo_url      String?
+  banner_url    String?
   calendar_id   String?
   chat_url      String?
   creator_id    Int
@@ -266,6 +267,7 @@ model users {
   name             String
   image_url        String?
   email            String          @unique
+  auto_subscribe   Boolean         @default(false)
   user_bans        user_bans[]
   user_chapters    chapter_users[]
   instance_role_id Int

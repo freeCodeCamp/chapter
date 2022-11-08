@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 import coverage from '@cypress/code-coverage/task';
 
 import { prisma } from './server/src/prisma';
-import { InstanceRole } from './server/prisma/generator/factories/instanceRoles.factory';
+import { InstanceRole } from './server/prisma/init/factories/instanceRoles.factory';
 
 const getChapterMembers = (chapterId: number) =>
   prisma.chapter_users.findMany({
@@ -39,7 +39,7 @@ const promoteToOwner = async ({ email }: { email: string }) => {
   });
 };
 
-const seedDb = () => execSync('node server/prisma/generator/seed.js');
+const seedDb = () => execSync('node server/prisma/seed/seed.js');
 
 config();
 
@@ -47,7 +47,7 @@ export default defineConfig({
   e2e: {
     projectId: 're65q6',
     baseUrl: 'http://localhost:3000',
-    retries: { runMode: 3, openMode: 3 },
+    retries: { runMode: 3, openMode: 0 },
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config

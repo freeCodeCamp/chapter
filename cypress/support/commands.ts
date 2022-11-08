@@ -546,6 +546,28 @@ const joinChapter = (chapterId: number, options = { withAuth: true }) => {
     : cy.request(requestOptions);
 };
 Cypress.Commands.add('joinChapter', joinChapter);
+/**
+ * Leave chapter using GQL mutation
+ * @param chapterId Chapter id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const leaveChapter = (chapterId: number, options = { withAuth: true }) => {
+  const chapterUserMutation = {
+    operationName: 'leaveChapter',
+    variables: { chapterId },
+    query: `mutation leaveChapter($chapterId: Int!) {
+      leaveChapter(chapterId: $chapterId) {
+        user_id
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('leaveChapter', leaveChapter);
 
 /**
  * Toggle subscription status for chapter using GQL mutation
@@ -747,6 +769,7 @@ declare global {
       getChapterRoles: typeof getChapterRoles;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
+      leaveChapter: typeof leaveChapter;
       login: typeof login;
       logout: typeof logout;
       register: typeof register;

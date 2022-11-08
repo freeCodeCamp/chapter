@@ -24,7 +24,7 @@ export type Scalars = {
 
 export type Chapter = {
   __typename?: 'Chapter';
-  banner_url: Scalars['String'];
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -32,6 +32,7 @@ export type Chapter = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   id: Scalars['Int'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -58,7 +59,7 @@ export type ChapterUser = {
   __typename?: 'ChapterUser';
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
-  is_bannable: Scalars['Boolean'];
+  is_bannable?: Maybe<Scalars['Boolean']>;
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
@@ -67,7 +68,7 @@ export type ChapterUser = {
 
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
-  banner_url: Scalars['String'];
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -76,13 +77,14 @@ export type ChapterWithEvents = {
   description: Scalars['String'];
   events: Array<EventWithVenue>;
   id: Scalars['Int'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
 };
 
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
-  banner_url: Scalars['String'];
+  banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -92,6 +94,7 @@ export type ChapterWithRelations = {
   description: Scalars['String'];
   events: Array<Event>;
   id: Scalars['Int'];
+  logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
@@ -104,6 +107,7 @@ export type CreateChapterInputs = {
   city: Scalars['String'];
   country: Scalars['String'];
   description: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -276,10 +280,12 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUser;
+  leaveChapter: ChapterUser;
   rsvpEvent: EventUser;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
+  toggleAutoSubscribe: User;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
   unsubscribe: Scalars['Boolean'];
@@ -360,6 +366,10 @@ export type MutationJoinChapterArgs = {
   chapterId: Scalars['Int'];
 };
 
+export type MutationLeaveChapterArgs = {
+  chapterId: Scalars['Int'];
+};
+
 export type MutationRsvpEventArgs = {
   chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
@@ -430,7 +440,7 @@ export type Query = {
   __typename?: 'Query';
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser: ChapterUser;
+  chapterUser?: Maybe<ChapterUser>;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
@@ -446,6 +456,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  userInformation?: Maybe<UserInformation>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -550,6 +561,7 @@ export type UpdateChapterInputs = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  logo_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
 };
@@ -562,12 +574,14 @@ export type UpdateSponsorInputs = {
 };
 
 export type UpdateUserInputs = {
+  auto_subscribe: Scalars['Boolean'];
   image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
   __typename?: 'User';
+  auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -579,9 +593,23 @@ export type UserBan = {
   user: User;
 };
 
+export type UserInformation = {
+  __typename?: 'UserInformation';
+  auto_subscribe: Scalars['Boolean'];
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+  user_bans: Array<UserBan>;
+  user_chapters: Array<ChapterUser>;
+  user_events: Array<EventUser>;
+};
+
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
@@ -650,6 +678,7 @@ export type MeQuery = {
     __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
+    auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: {
       __typename?: 'InstanceRole';
@@ -676,6 +705,18 @@ export type JoinChapterMutationVariables = Exact<{
 export type JoinChapterMutation = {
   __typename?: 'Mutation';
   joinChapter: {
+    __typename?: 'ChapterUser';
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
+  };
+};
+
+export type LeaveChapterMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type LeaveChapterMutation = {
+  __typename?: 'Mutation';
+  leaveChapter: {
     __typename?: 'ChapterUser';
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
@@ -708,7 +749,8 @@ export type ChapterQuery = {
     city: string;
     region: string;
     country: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -723,40 +765,18 @@ export type ChapterQuery = {
   };
 };
 
-export type DashboardChapterUsersQueryVariables = Exact<{
-  chapterId: Scalars['Int'];
-}>;
-
-export type DashboardChapterUsersQuery = {
-  __typename?: 'Query';
-  dashboardChapter: {
-    __typename?: 'ChapterWithRelations';
-    chapter_users: Array<{
-      __typename?: 'ChapterUser';
-      subscribed: boolean;
-      is_bannable: boolean;
-      user: { __typename?: 'User'; id: number; name: string };
-      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
-    }>;
-    user_bans: Array<{
-      __typename?: 'UserBan';
-      user: { __typename?: 'User'; id: number };
-    }>;
-  };
-};
-
 export type ChapterUserQueryVariables = Exact<{
   chapterId: Scalars['Int'];
 }>;
 
 export type ChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser: {
+  chapterUser?: {
     __typename?: 'ChapterUser';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  } | null;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -768,7 +788,8 @@ export type ChaptersQuery = {
     id: number;
     name: string;
     description: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -894,7 +915,8 @@ export type DashboardChapterQuery = {
     city: string;
     region: string;
     country: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
       __typename?: 'Event';
@@ -905,6 +927,28 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
+    }>;
+  };
+};
+
+export type DashboardChapterUsersQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type DashboardChapterUsersQuery = {
+  __typename?: 'Query';
+  dashboardChapter: {
+    __typename?: 'ChapterWithRelations';
+    chapter_users: Array<{
+      __typename?: 'ChapterUser';
+      subscribed: boolean;
+      is_bannable?: boolean | null;
+      user: { __typename?: 'User'; id: number; name: string };
+      chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
+    }>;
+    user_bans: Array<{
+      __typename?: 'UserBan';
+      user: { __typename?: 'User'; id: number };
     }>;
   };
 };
@@ -1065,7 +1109,12 @@ export type DashboardEventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: { __typename?: 'User'; id: number; name: string };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        image_url?: string | null;
+      };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -1418,7 +1467,12 @@ export type EventQuery = {
       __typename?: 'EventUser';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
-      user: { __typename?: 'User'; id: number; name: string };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        image_url?: string | null;
+      };
       event_role: {
         __typename?: 'EventRole';
         id: number;
@@ -1460,7 +1514,8 @@ export type HomeQuery = {
     id: number;
     name: string;
     description: string;
-    banner_url: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
     city: string;
     events: Array<{
       __typename?: 'EventWithVenue';
@@ -1476,6 +1531,15 @@ export type HomeQuery = {
       } | null;
     }>;
   }>;
+};
+
+export type ToggleAutoSubscribeMutationVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type ToggleAutoSubscribeMutation = {
+  __typename?: 'Mutation';
+  toggleAutoSubscribe: { __typename?: 'User'; auto_subscribe: boolean };
 };
 
 export type UnsubscribeMutationVariables = Exact<{
@@ -1598,6 +1662,7 @@ export const MeDocument = gql`
         id
         name
       }
+      auto_subscribe
       image_url
     }
   }
@@ -1685,6 +1750,58 @@ export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
   JoinChapterMutation,
   JoinChapterMutationVariables
 >;
+export const LeaveChapterDocument = gql`
+  mutation leaveChapter($chapterId: Int!) {
+    leaveChapter(chapterId: $chapterId) {
+      chapter_role {
+        name
+      }
+    }
+  }
+`;
+export type LeaveChapterMutationFn = Apollo.MutationFunction<
+  LeaveChapterMutation,
+  LeaveChapterMutationVariables
+>;
+
+/**
+ * __useLeaveChapterMutation__
+ *
+ * To run a mutation, you first call `useLeaveChapterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveChapterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveChapterMutation, { data, loading, error }] = useLeaveChapterMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useLeaveChapterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LeaveChapterMutation,
+    LeaveChapterMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    LeaveChapterMutation,
+    LeaveChapterMutationVariables
+  >(LeaveChapterDocument, options);
+}
+export type LeaveChapterMutationHookResult = ReturnType<
+  typeof useLeaveChapterMutation
+>;
+export type LeaveChapterMutationResult =
+  Apollo.MutationResult<LeaveChapterMutation>;
+export type LeaveChapterMutationOptions = Apollo.BaseMutationOptions<
+  LeaveChapterMutation,
+  LeaveChapterMutationVariables
+>;
 export const ToggleChapterSubscriptionDocument = gql`
   mutation toggleChapterSubscription($chapterId: Int!) {
     toggleChapterSubscription(chapterId: $chapterId) {
@@ -1746,6 +1863,7 @@ export const ChapterDocument = gql`
       city
       region
       country
+      logo_url
       banner_url
       chat_url
       events {
@@ -1805,80 +1923,6 @@ export type ChapterLazyQueryHookResult = ReturnType<typeof useChapterLazyQuery>;
 export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
->;
-export const DashboardChapterUsersDocument = gql`
-  query dashboardChapterUsers($chapterId: Int!) {
-    dashboardChapter(id: $chapterId) {
-      chapter_users {
-        user {
-          id
-          name
-        }
-        chapter_role {
-          id
-          name
-        }
-        subscribed
-        is_bannable
-      }
-      user_bans {
-        user {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useDashboardChapterUsersQuery__
- *
- * To run a query within a React component, call `useDashboardChapterUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useDashboardChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDashboardChapterUsersQuery({
- *   variables: {
- *      chapterId: // value for 'chapterId'
- *   },
- * });
- */
-export function useDashboardChapterUsersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >(DashboardChapterUsersDocument, options);
-}
-export function useDashboardChapterUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    DashboardChapterUsersQuery,
-    DashboardChapterUsersQueryVariables
-  >(DashboardChapterUsersDocument, options);
-}
-export type DashboardChapterUsersQueryHookResult = ReturnType<
-  typeof useDashboardChapterUsersQuery
->;
-export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
-  typeof useDashboardChapterUsersLazyQuery
->;
-export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
-  DashboardChapterUsersQuery,
-  DashboardChapterUsersQueryVariables
 >;
 export const ChapterUserDocument = gql`
   query chapterUser($chapterId: Int!) {
@@ -1948,6 +1992,7 @@ export const ChaptersDocument = gql`
       id
       name
       description
+      logo_url
       banner_url
       city
       events {
@@ -2404,6 +2449,7 @@ export const DashboardChapterDocument = gql`
       city
       region
       country
+      logo_url
       banner_url
       chat_url
       events {
@@ -2468,6 +2514,80 @@ export type DashboardChapterLazyQueryHookResult = ReturnType<
 export type DashboardChapterQueryResult = Apollo.QueryResult<
   DashboardChapterQuery,
   DashboardChapterQueryVariables
+>;
+export const DashboardChapterUsersDocument = gql`
+  query dashboardChapterUsers($chapterId: Int!) {
+    dashboardChapter(id: $chapterId) {
+      chapter_users {
+        user {
+          id
+          name
+        }
+        chapter_role {
+          id
+          name
+        }
+        subscribed
+        is_bannable
+      }
+      user_bans {
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useDashboardChapterUsersQuery__
+ *
+ * To run a query within a React component, call `useDashboardChapterUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardChapterUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardChapterUsersQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDashboardChapterUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >(DashboardChapterUsersDocument, options);
+}
+export function useDashboardChapterUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    DashboardChapterUsersQuery,
+    DashboardChapterUsersQueryVariables
+  >(DashboardChapterUsersDocument, options);
+}
+export type DashboardChapterUsersQueryHookResult = ReturnType<
+  typeof useDashboardChapterUsersQuery
+>;
+export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
+  typeof useDashboardChapterUsersLazyQuery
+>;
+export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
+  DashboardChapterUsersQuery,
+  DashboardChapterUsersQueryVariables
 >;
 export const CreateEventDocument = gql`
   mutation createEvent($chapterId: Int!, $data: EventInputs!) {
@@ -2941,6 +3061,7 @@ export const DashboardEventDocument = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id
@@ -4087,6 +4208,7 @@ export const EventDocument = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id
@@ -4163,6 +4285,7 @@ export const HomeDocument = gql`
       id
       name
       description
+      logo_url
       banner_url
       city
       events {
@@ -4215,6 +4338,55 @@ export function useHomeLazyQuery(
 export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
 export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
+export const ToggleAutoSubscribeDocument = gql`
+  mutation toggleAutoSubscribe {
+    toggleAutoSubscribe {
+      auto_subscribe
+    }
+  }
+`;
+export type ToggleAutoSubscribeMutationFn = Apollo.MutationFunction<
+  ToggleAutoSubscribeMutation,
+  ToggleAutoSubscribeMutationVariables
+>;
+
+/**
+ * __useToggleAutoSubscribeMutation__
+ *
+ * To run a mutation, you first call `useToggleAutoSubscribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAutoSubscribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAutoSubscribeMutation, { data, loading, error }] = useToggleAutoSubscribeMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useToggleAutoSubscribeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ToggleAutoSubscribeMutation,
+    ToggleAutoSubscribeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ToggleAutoSubscribeMutation,
+    ToggleAutoSubscribeMutationVariables
+  >(ToggleAutoSubscribeDocument, options);
+}
+export type ToggleAutoSubscribeMutationHookResult = ReturnType<
+  typeof useToggleAutoSubscribeMutation
+>;
+export type ToggleAutoSubscribeMutationResult =
+  Apollo.MutationResult<ToggleAutoSubscribeMutation>;
+export type ToggleAutoSubscribeMutationOptions = Apollo.BaseMutationOptions<
+  ToggleAutoSubscribeMutation,
+  ToggleAutoSubscribeMutationVariables
+>;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {
     unsubscribe(token: $token)

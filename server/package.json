@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build": "prisma generate && tsc",
+    "db:init": "npm run build && node prisma/init/init.js --execute",
+    "db:migrate": "prisma migrate deploy",
+    "db:resolve": "prisma migrate resolve",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
     "dev:coverage": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"nyc --silent node src/app.js\"",
     "postinstall": "rimraf tsconfig.tsbuildinfo && prisma generate",
     "start": "node ./src/app.js",
     "start:coverage": "npx -y nyc --silent node ./src/app.js",
-    "reminders:send": "node ./reminders/reminders.js",
-    "reset:users": "node prisma/generator/resetUsers.js"
+    "reminders:send": "node ./reminders/reminders.js"
   },
   "repository": {
     "type": "git",
@@ -29,15 +31,15 @@
   },
   "homepage": "https://github.com/freeCodeCamp/chapter#readme",
   "prisma": {
-    "seed": "node prisma/generator/seed.js"
+    "seed": "node prisma/seed/seed.js"
   },
   "dependencies": {
     "@cypress/code-coverage": "3.10.0",
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.5.0",
     "@sendgrid/mail": "7.7.0",
-    "apollo-server-express": "3.10.3",
-    "calendar-link": "2.3.1",
+    "apollo-server-express": "3.11.1",
+    "calendar-link": "2.4.0",
     "class-validator": "0.13.2",
     "cookie-parser": "1.4.6",
     "cookie-session": "2.0.0",
@@ -46,7 +48,7 @@
     "dotenv": "16.0.3",
     "dotenv-expand": "8.0.3",
     "express": "4.18.2",
-    "express-oauth2-jwt-bearer": "1.1.0",
+    "express-oauth2-jwt-bearer": "1.2.0",
     "express-response-errors": "1.0.5",
     "google-auth-library": "7.14.1",
     "graphql": "15.8.0",
@@ -63,9 +65,9 @@
     "@types/cookie-parser": "1.4.3",
     "@types/cookie-session": "2.0.44",
     "@types/jsonwebtoken": "8.5.9",
-    "@types/lodash": "4.14.186",
+    "@types/lodash": "4.14.188",
     "@types/nodemailer": "6.4.6",
-    "concurrently": "7.4.0",
+    "concurrently": "7.5.0",
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",
     "lodash": "4.17.21",
@@ -73,7 +75,7 @@
     "nyc": "15.1.0",
     "prisma": "4.5.0",
     "rimraf": "3.0.2",
-    "supertest": "6.3.0",
+    "supertest": "6.3.1",
     "typescript": "4.8.4"
   }
 }

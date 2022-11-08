@@ -45,9 +45,10 @@ import {
   cancelCalendarEvent,
   createCalendarEvent,
   deleteCalendarEvent,
-  patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
+import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -98,7 +99,7 @@ const getUnsubscribeOptions = ({
   return `
 Unsubscribe Options</br>
 - <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving all notifications by unfollowing chapter</a>`;
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving notifications about new events by unfollowing chapter</a>`;
 };
 
 const sendRsvpInvitation = async (
@@ -122,7 +123,7 @@ const sendRsvpInvitation = async (
   await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
-    htmlEmail: `Hi ${user.name},</br>
+    htmlEmail: `Hi${user.name ? ' ' + user.name : ''},</br>
 To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${google(linkDetails)}>Google</a>
@@ -253,39 +254,6 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
   const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
   const waitlist = going.length >= event.capacity;
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
-};
-
-const updateCalendarEventAttendees = async ({
-  eventId,
-  calendarId,
-  calendarEventId,
-}: {
-  eventId: number;
-  calendarId: string | null;
-  calendarEventId: string | null;
-}) => {
-  const attendees = await prisma.event_users.findMany({
-    where: {
-      event_id: eventId,
-      rsvp: { name: 'yes' },
-    },
-    select: { user: { select: { email: true } } },
-  });
-
-  if (calendarId && calendarEventId) {
-    try {
-      // Patch is necessary here, since an update with unchanged start and end
-      // will remove attendees' yes/no/maybe response without notifying them.
-      await patchCalendarEvent({
-        calendarId,
-        calendarEventId,
-        attendeeEmails: attendees.map(({ user }) => user.email),
-      });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
-      throw 'Unable to update calendar event attendees';
-    }
-  }
 };
 
 @Resolver()
@@ -445,11 +413,6 @@ export class EventResolver {
       ...chapterUserInclude,
     });
 
-    const isSubscribedToChapter =
-      ctx.user.user_chapters.find(
-        (user_chapter) => user_chapter.chapter_id === chapterId,
-      )?.subscribed ?? true;
-
     const oldEventUser = await prisma.event_users.findUnique({
       include: { rsvp: true },
       where: {
@@ -484,7 +447,7 @@ export class EventResolver {
         event: { connect: { id: eventId } },
         rsvp: { connect: { name: newRsvpName } },
         event_role: { connect: { name: 'member' } },
-        subscribed: isSubscribedToChapter,
+        subscribed: true,
       };
       eventUser = await prisma.event_users.create({
         data: eventUserData,
@@ -493,7 +456,7 @@ export class EventResolver {
 
       // NOTE: this relies on there being an event_user record, so must follow
       // that.
-      if (newRsvpName !== 'waitlist' && isSubscribedToChapter) {
+      if (newRsvpName !== 'waitlist') {
         await createReminder({
           eventId,
           remindAt: sub(event.start_at, { days: 1 }),
@@ -545,34 +508,7 @@ export class EventResolver {
       },
     });
 
-    if (!event.invite_only && eventUser.rsvp.name !== 'waitlist') {
-      const waitList = event.event_users.filter(
-        ({ rsvp, user_id }) =>
-          user_id !== eventUser.user_id && rsvp.name === 'waitlist',
-      );
-
-      if (waitList.length) {
-        const acceptedRsvp = waitList[0];
-        await prisma.event_users.update({
-          data: { rsvp: { connect: { name: 'yes' } } },
-          where: {
-            user_id_event_id: {
-              user_id: acceptedRsvp.user_id,
-              event_id: acceptedRsvp.event_id,
-            },
-          },
-        });
-
-        if (acceptedRsvp.subscribed) {
-          await createReminder({
-            eventId: acceptedRsvp.event_id,
-            remindAt: sub(event.start_at, { days: 1 }),
-            userId: acceptedRsvp.user_id,
-          });
-          // TODO add email about being off waitlist?
-        }
-      }
-    }
+    await updateWaitlistForUserRemoval({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'no' } } },
@@ -676,16 +612,11 @@ ${unsubscribeOptions}`,
     const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id: chapterId },
     });
-    const userChapter = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === chapterId,
-    );
 
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
       }));
-
-    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 
     // TODO: add an option to allow event creators NOT to rsvp. If doing that
     // make sure stop adding them to the calendar event.
@@ -693,7 +624,7 @@ ${unsubscribeOptions}`,
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
       rsvp: { connect: { name: 'yes' } },
-      subscribed: isSubscribedToEvent,
+      subscribed: true,
     };
 
     // TODO: the type safety if we start with ...data is a bit weak here: it

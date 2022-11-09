@@ -17,7 +17,7 @@ import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAtte
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
-import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
+import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 
 const chapterUsersInclude = {
   chapter_role: {

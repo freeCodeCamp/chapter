@@ -85,10 +85,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     if (isEndDateInFuture) return EventStatus.running;
     return EventStatus.ended;
   };
-  const eventStatusStyle =
-    statusToStyle[
-      getEventStatus({ canceled, isStartDateInPast, isEndDateInFuture })
-    ];
+  const eventStatus = getEventStatus({
+    canceled,
+    isStartDateInPast,
+    isEndDateInFuture,
+  });
+  const eventStatusStyle = statusToStyle[eventStatus];
   return (
     <Flex
       borderWidth="1px"
@@ -153,12 +155,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               fontSize={['smaller', 'sm']}
               fontWeight={'semibold'}
             >
-              {getEventStatus({
-                canceled,
-                isStartDateInPast,
-                isEndDateInFuture,
-              })}
-              : {formatDate(event.start_at)}
+              {eventStatus}: {formatDate(event.start_at)}
             </Text>
           </GridItem>
         </Grid>

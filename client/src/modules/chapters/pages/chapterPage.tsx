@@ -118,11 +118,11 @@ export const ChapterPage: NextPage = () => {
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
-  const [joinChapterFn] = useJoinChapterMutation(refetch);
-  const [leaveChapterFn] = useLeaveChapterMutation(refetch);
-  const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation(refetch);
+  const [leaveChapter] = useLeaveChapterMutation(refetch);
+  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
 
-  const joinChapter = async (options?: { invited?: boolean }) => {
+  const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this chapter',
@@ -135,7 +135,7 @@ export const ChapterPage: NextPage = () => {
     const ok = await confirm(confirmOptions);
     if (ok) {
       try {
-        await joinChapterFn({ variables: { chapterId } });
+        await joinChapter({ variables: { chapterId } });
         toast({ title: 'You successfully joined chapter', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
@@ -144,14 +144,14 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const leaveChapter = async () => {
+  const onLeaveChapter = async () => {
     const ok = await confirm({
       title: 'Are you sure you want to leave this chapter?',
       body: "Leaving will cancel your attendance at all of this chapter's events.",
     });
     if (ok) {
       try {
-        await leaveChapterFn({ variables: { chapterId } });
+        await leaveChapter({ variables: { chapterId } });
         toast({
           title: 'You successfully left the chapter',
           status: 'success',
@@ -163,19 +163,22 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const chapterSubscribe = async (toSubscribe: boolean) => {
+  const onChapterSubscribe = async (toSubscribe: boolean) => {
     const ok = await confirm(
       toSubscribe
-        ? { title: 'Do you want to subscribe?' }
+        ? {
+            title: 'Do you want to subscribe?',
+            body: 'After subscribing you will receive emails about new events in this chapter.',
+          }
         : {
             title: 'Unsubscribe from chapter?',
-            body: 'Unsubscribing from this chapter will affect subscriptions of all existing events, and new events in the chapter.',
+            body: 'After unsubscribing you will not receive emails about new events in this chapter.',
           },
     );
 
     if (ok) {
       try {
-        await chapterSubscribeFn({ variables: { chapterId } });
+        await chapterSubscribe({ variables: { chapterId } });
         toast(
           toSubscribe
             ? {
@@ -202,9 +205,9 @@ export const ChapterPage: NextPage = () => {
   useEffect(() => {
     if (canShowConfirmModal && !hasShownModal) {
       if (isAlreadyMember) {
-        leaveChapter();
+        onLeaveChapter();
       } else {
-        joinChapter({ invited: true });
+        onJoinChapter({ invited: true });
       }
       setHasShownModal(true);
     }
@@ -252,8 +255,8 @@ export const ChapterPage: NextPage = () => {
           ) : (
             dataChapterUser && (
               <ChapterUserRoleWidget
-                JoinChapter={joinChapter}
-                LeaveChapter={leaveChapter}
+                JoinChapter={onJoinChapter}
+                LeaveChapter={onLeaveChapter}
                 chapterUser={dataChapterUser.chapterUser}
               />
             )
@@ -265,7 +268,7 @@ export const ChapterPage: NextPage = () => {
             dataChapterUser?.chapterUser && (
               <SubscriptionWidget
                 chapterUser={dataChapterUser.chapterUser}
-                chapterSubscribe={chapterSubscribe}
+                chapterSubscribe={onChapterSubscribe}
               />
             )
           ))}

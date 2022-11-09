@@ -1,5 +1,6 @@
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 
 import {
   useCreateEventMutation,
@@ -17,43 +18,41 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 export const NewEventPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
 
   const [createEvent] = useCreateEventMutation();
 
   const [publish] = useSendEventInviteMutation();
 
+  const toast = useToast();
+
   const onSubmit = async (data: EventFormData) => {
-    setLoading(true);
+    const { chapter_id } = data;
+    const { data: eventData, errors } = await createEvent({
+      variables: { chapterId: chapter_id, data: parseEventData(data) },
+      refetchQueries: [
+        { query: CHAPTER, variables: { chapterId: chapter_id } },
+        { query: EVENTS },
+        { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+      ],
+    });
 
-    try {
-      const { chapter_id } = data;
-      const event = await createEvent({
-        variables: { chapterId: chapter_id, data: parseEventData(data) },
-        refetchQueries: [
-          { query: CHAPTER, variables: { chapterId: chapter_id } },
-          { query: EVENTS },
-          { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
-        ],
+    if (errors) throw errors;
+
+    if (eventData) {
+      await publish({ variables: { eventId: eventData.createEvent.id } });
+      await router.replace(
+        `/dashboard/events/[id]`,
+        `/dashboard/events/${eventData.createEvent.id}`,
+      );
+      toast({
+        title: `Event "${eventData.createEvent.name}" created!`,
+        status: 'success',
       });
-
-      if (event.data) {
-        publish({ variables: { eventId: event.data.createEvent.id } });
-        router.replace(
-          `/dashboard/events/[id]`,
-          `/dashboard/events/${event.data.createEvent.id}`,
-        );
-      }
-    } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <EventForm
-      loading={loading}
       onSubmit={onSubmit}
       submitText={'Add event'}
       loadingText={'Adding Event'}

@@ -145,7 +145,7 @@ export class ChapterUserResolver {
           user: { connect: { id: ctx.user.id } },
           chapter: { connect: { id: chapterId } },
           chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO add user setting option override
+          subscribed: ctx.user.auto_subscribe,
           joined_date: new Date(),
         },
         include: chapterUsersInclude,
@@ -199,33 +199,16 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUser> {
-    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
-      where: {
-        user_id_chapter_id: {
-          chapter_id: chapterId,
-          user_id: ctx.user.id,
-        },
-      },
-      include: { chapter: { include: { events: true } } },
-    });
-    const chapter = chapterUser.chapter;
+    const chapterUser = ctx.user.user_chapters.find(
+      ({ chapter_id }) => chapter_id === chapterId,
+    );
 
-    if (chapterUser.subscribed) {
-      const onlyUserEventsFromChapter = {
-        AND: [
-          { user_id: ctx.user.id },
-          { event_id: { in: chapter.events.map(({ id }) => id) } },
-        ],
-      };
-
-      await prisma.event_users.updateMany({
-        data: { subscribed: false },
-        where: onlyUserEventsFromChapter,
-      });
-      await prisma.event_reminders.deleteMany({
-        where: onlyUserEventsFromChapter,
-      });
+    if (!chapterUser) {
+      throw Error(
+        'Cannot change subscription for user not beloning to chapter',
+      );
     }
+
     return await prisma.chapter_users.update({
       data: {
         subscribed: !chapterUser?.subscribed,

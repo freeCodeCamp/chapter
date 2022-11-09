@@ -18,7 +18,7 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
-import { ChapterRoles } from '../../../prisma/generator/factories/chapterRoles.factory';
+import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 import { isBannable } from '../../util/chapterBans';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 

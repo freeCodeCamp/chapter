@@ -285,6 +285,7 @@ export type Mutation = {
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
+  toggleAutoSubscribe: User;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
   unsubscribe: Scalars['Boolean'];
@@ -573,12 +574,14 @@ export type UpdateSponsorInputs = {
 };
 
 export type UpdateUserInputs = {
+  auto_subscribe: Scalars['Boolean'];
   image_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
   __typename?: 'User';
+  auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -592,6 +595,7 @@ export type UserBan = {
 
 export type UserInformation = {
   __typename?: 'UserInformation';
+  auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
@@ -605,6 +609,7 @@ export type UserInformation = {
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
@@ -673,6 +678,7 @@ export type MeQuery = {
     __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
+    auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: {
       __typename?: 'InstanceRole';
@@ -752,6 +758,7 @@ export type ChapterQuery = {
       name: string;
       description: string;
       start_at: any;
+      ends_at: any;
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
@@ -1402,6 +1409,7 @@ export type PaginatedEventsWithTotalQuery = {
       name: string;
       description: string;
       start_at: any;
+      ends_at: any;
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
@@ -1495,6 +1503,7 @@ export type HomeQuery = {
     invite_only: boolean;
     canceled: boolean;
     start_at: any;
+    ends_at: any;
     image_url: string;
     chapter: {
       __typename?: 'Chapter';
@@ -1525,6 +1534,15 @@ export type HomeQuery = {
       } | null;
     }>;
   }>;
+};
+
+export type ToggleAutoSubscribeMutationVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type ToggleAutoSubscribeMutation = {
+  __typename?: 'Mutation';
+  toggleAutoSubscribe: { __typename?: 'User'; auto_subscribe: boolean };
 };
 
 export type UnsubscribeMutationVariables = Exact<{
@@ -1647,6 +1665,7 @@ export const MeDocument = gql`
         id
         name
       }
+      auto_subscribe
       image_url
     }
   }
@@ -1855,6 +1874,7 @@ export const ChapterDocument = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url
@@ -4084,6 +4104,7 @@ export const PaginatedEventsWithTotalDocument = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url
@@ -4258,6 +4279,7 @@ export const HomeDocument = gql`
       invite_only
       canceled
       start_at
+      ends_at
       image_url
       chapter {
         id
@@ -4322,6 +4344,55 @@ export function useHomeLazyQuery(
 export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
 export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
 export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
+export const ToggleAutoSubscribeDocument = gql`
+  mutation toggleAutoSubscribe {
+    toggleAutoSubscribe {
+      auto_subscribe
+    }
+  }
+`;
+export type ToggleAutoSubscribeMutationFn = Apollo.MutationFunction<
+  ToggleAutoSubscribeMutation,
+  ToggleAutoSubscribeMutationVariables
+>;
+
+/**
+ * __useToggleAutoSubscribeMutation__
+ *
+ * To run a mutation, you first call `useToggleAutoSubscribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAutoSubscribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAutoSubscribeMutation, { data, loading, error }] = useToggleAutoSubscribeMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useToggleAutoSubscribeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ToggleAutoSubscribeMutation,
+    ToggleAutoSubscribeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ToggleAutoSubscribeMutation,
+    ToggleAutoSubscribeMutationVariables
+  >(ToggleAutoSubscribeDocument, options);
+}
+export type ToggleAutoSubscribeMutationHookResult = ReturnType<
+  typeof useToggleAutoSubscribeMutation
+>;
+export type ToggleAutoSubscribeMutationResult =
+  Apollo.MutationResult<ToggleAutoSubscribeMutation>;
+export type ToggleAutoSubscribeMutationOptions = Apollo.BaseMutationOptions<
+  ToggleAutoSubscribeMutation,
+  ToggleAutoSubscribeMutationVariables
+>;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {
     unsubscribe(token: $token)

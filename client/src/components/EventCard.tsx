@@ -9,6 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { isPast } from 'date-fns';
 import React from 'react';
 import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
@@ -20,6 +21,7 @@ type EventCardProps = {
     | 'name'
     | 'description'
     | 'start_at'
+    | 'ends_at'
     | 'image_url'
     | 'invite_only'
     | 'canceled'
@@ -47,14 +49,54 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       )}
     </>
   );
-  const eventStatus = event.canceled
-    ? 'Canceled'
-    : new Date(event.start_at) < new Date()
-    ? 'Passed'
-    : 'Upcoming';
-  const canceledStyle = { 'data-cy': 'event-canceled', color: 'red.500' };
+  enum EventStatus {
+    canceled = 'Canceled',
+    running = 'Running',
+    ended = 'Ended at',
+    upcoming = 'Upcoming',
+  }
+
+  const statusToStyle = {
+    [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
+    [EventStatus.running]: {
+      color: 'gray.00',
+      backgroundColor: 'gray.45',
+      paddingInline: '.3em',
+      borderRadius: 'sm',
+    },
+    [EventStatus.ended]: { color: 'gray.45', fontWeight: '400' },
+    [EventStatus.upcoming]: {},
+  };
+
+  const hasEnded = isPast(new Date(event.ends_at));
+  const getEventStatus = ({
+    canceled,
+    hasStarted,
+    hasEnded,
+  }: {
+    canceled: boolean;
+    hasStarted: boolean;
+    hasEnded: boolean;
+  }) => {
+    if (canceled) return EventStatus.canceled;
+    if (hasEnded) return EventStatus.ended;
+    if (hasStarted) return EventStatus.running;
+    return EventStatus.upcoming;
+  };
+  const eventStatus = getEventStatus({
+    canceled: event.canceled,
+    hasStarted: isPast(new Date(event.start_at)),
+    hasEnded,
+  });
+  const eventStatusStyle = statusToStyle[eventStatus];
   return (
-    <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
+    <Flex
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      width={'full'}
+      {...(hasEnded && { opacity: 0.6 })}
+    >
       <Image
         display={['none', 'block']}
         h={'auto'}
@@ -107,7 +149,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             marginBottom={['1', '2']}
           >
             <Text
-              {...(event.canceled && canceledStyle)}
+              {...eventStatusStyle}
               fontSize={['smaller', 'sm']}
               fontWeight={'semibold'}
             >

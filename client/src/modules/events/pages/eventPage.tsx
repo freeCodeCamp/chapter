@@ -10,7 +10,6 @@ import {
   HStack,
   Image,
   ListItem,
-  Avatar,
   Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
@@ -21,8 +20,10 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
 import { useAuth } from '../../auth/store';
+import Avatar from '../../../components/Avatar';
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
+import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
@@ -90,10 +91,14 @@ export const EventPage: NextPage = () => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
-          body: `
-          Would you like to attend?<br/>
-          Note: joining this event will make you a member of the event's chapter.
-          `,
+          body: (
+            <>
+              Would you like to attend?
+              <br />
+              Note: joining this event will make you a member of the
+              event&apos;s chapter.
+            </>
+          ),
         }
       : {
           title: 'Join this event?',
@@ -336,8 +341,8 @@ export const EventPage: NextPage = () => {
         {rsvps.map(({ user }) => (
           <ListItem key={user.id} mb="2">
             <HStack>
-              <Avatar name={user.name} src={user.image_url ?? ''} />
-              <Heading size="md">{user.name}</Heading>
+              <Avatar user={user} />
+              <UserName user={user} fontSize="xl" fontWeight="bold" />
             </HStack>
           </ListItem>
         ))}
@@ -358,8 +363,8 @@ export const EventPage: NextPage = () => {
             {waitlist.map(({ user }) => (
               <ListItem key={user.id} mb="2">
                 <HStack>
-                  <Avatar name={user.name} src={user.image_url ?? ''} />
-                  <Heading size="md">{user.name}</Heading>
+                  <Avatar user={user} />
+                  <UserName user={user} fontSize="xl" fontWeight="bold" />
                 </HStack>
               </ListItem>
             ))}

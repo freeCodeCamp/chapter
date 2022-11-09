@@ -3,7 +3,7 @@ import { Query, Resolver } from 'type-graphql';
 import { prisma } from '../../prisma';
 
 import { InstanceRole } from '../../graphql-types/InstanceRole';
-import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { InstanceRoles } from '../../../prisma/init/factories/instanceRoles.factory';
 
 @Resolver()
 export class InstanceRoleResolver {

@@ -69,7 +69,7 @@ const Actions: React.FC<ActionsProps> = ({
         Delete
       </Button>
       <SharePopOver
-        size={'sm'}
+        size={['sm', 'md']}
         link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?ask_to_confirm=true`}
       />
     </HStack>

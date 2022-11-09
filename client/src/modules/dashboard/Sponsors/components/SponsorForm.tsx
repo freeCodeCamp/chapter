@@ -5,9 +5,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { VStack } from '@chakra-ui/layout';
 
+import { Form } from '../../../../components/Form/Form';
 import { Input } from '../../../../components/Form/Input';
-import styles from '../../../../styles/Form.module.css';
 import { DashboardSponsorQuery, Sponsor } from '../../../../generated/graphql';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 
 export type SponsorFormData = Omit<
   Sponsor,
@@ -15,7 +16,6 @@ export type SponsorFormData = Omit<
 >;
 
 interface SponsorFormProps {
-  loading: boolean;
   onSubmit: (data: SponsorFormData) => Promise<void>;
   data?: DashboardSponsorQuery;
   submitText: string;
@@ -48,7 +48,7 @@ const fields: FormField[] = [
   },
 ];
 const SponsorForm: React.FC<SponsorFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, loadingText } = props;
+  const { onSubmit, data, submitText, loadingText } = props;
   const sponsor = data?.dashboardSponsor;
   const defaultValues: SponsorFormData = {
     name: sponsor?.name ?? '',
@@ -64,8 +64,17 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
   } = useForm({
     defaultValues,
   });
+
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<SponsorFormData>({
+      onSubmit,
+    });
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
       <VStack gap={4}>
         {fields.map((field) => {
           return (
@@ -100,7 +109,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
           {submitText}
         </Button>
       </VStack>
-    </form>
+    </Form>
   );
 };
 

@@ -1,13 +1,12 @@
 import { FormControl, FormHelperText, HStack } from '@chakra-ui/react';
 import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
 import { useFormContext } from 'react-hook-form';
 import { isPast } from 'date-fns';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { Input } from '../../../../components/Form/Input';
+import DatePicker from './DatePicker';
 
 interface EventDatesFormProps {
   endsAt: Date;
@@ -31,54 +30,14 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   const [endError, setEndError] = useState('');
 
   const onDatePickerChange = useCallback(
-    (key: string) => {
+    (key: string, setDate: (date: React.SetStateAction<Date>) => void) => {
       return (date: Date | null) => {
         if (!date) return;
-        if (key === 'start_at') {
-          setValue('start_at', date, { shouldDirty: true });
-          setStartDate(date);
-        }
-        if (key === 'ends_at') {
-          setValue('ends_at', date, { shouldDirty: true });
-          setEndDate(date);
-        }
+        setValue(key, date, { shouldDirty: true });
+        setDate(date);
       };
     },
-    [setValue, setStartDate],
-  );
-
-  const datePicker = ({
-    key,
-    date,
-    error,
-    label,
-    isRequired,
-  }: {
-    key: string;
-    date: Date;
-    error: string;
-    label: string;
-    isRequired: boolean;
-  }) => (
-    <DatePicker
-      selected={date}
-      showTimeSelect
-      timeIntervals={5}
-      onChange={onDatePickerChange(key)}
-      disabled={loading}
-      dateFormat="MMMM d, yyyy h:mm aa"
-      customInput={
-        <Input
-          id={`${key}_trigger`}
-          name={key}
-          error={error}
-          label={`${label}${isRequired ? ' (Required)' : ''}`}
-          isDisabled={loading}
-          isRequired={isRequired}
-          value={date.toDateString()}
-        />
-      }
-    />
+    [setValue, setStartDate, setEndDate],
   );
 
   useEffect(() => {
@@ -96,25 +55,29 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   }, [startDate, endDate]);
 
   const startDateProps = {
-    key: 'start_at',
-    label: 'Start at',
-    isRequired: true,
     date: startDate,
     error: startError,
+    isRequired: true,
+    key: 'start_at',
+    label: 'Start at',
+    loading,
+    onChange: onDatePickerChange('start_at', setStartDate),
   };
   const endDateProps = {
-    key: 'ends_at',
-    label: 'End at',
-    isRequired: true,
     date: endDate,
     error: endError,
+    key: 'ends_at',
+    isRequired: true,
+    label: 'End at',
+    loading,
+    onChange: onDatePickerChange('ends_at', setEndDate),
   };
 
   return (
     <>
       <FormControl isRequired={startDateProps.isRequired}>
         <>
-          {datePicker(startDateProps)}
+          <DatePicker {...startDateProps} />
           {isPast(startDate) && (
             <HStack>
               <InfoIcon fontSize="sm" />
@@ -122,7 +85,7 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
                 {newEvent
                   ? 'Chapter members will not be notified about creation of this event, as it starts in the past.'
                   : formState.dirtyFields.start_at
-                  ? 'Changed date is in the past.'
+                  ? 'New date is in the past.'
                   : 'Start date has already passed.'}
               </FormHelperText>
             </HStack>
@@ -130,7 +93,7 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
         </>
       </FormControl>
       <FormControl isRequired={endDateProps.isRequired}>
-        {datePicker(endDateProps)}
+        <DatePicker {...endDateProps} />
       </FormControl>
     </>
   );

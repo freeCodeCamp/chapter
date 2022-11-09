@@ -1,44 +1,43 @@
-import { FormControl } from '@chakra-ui/form-control';
+import { FormControl, FormHelperText, HStack } from '@chakra-ui/react';
+import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
 import { useFormContext } from 'react-hook-form';
+import { isPast } from 'date-fns';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { Input } from '../../../../components/Form/Input';
+import DatePicker from './DatePicker';
 
 interface EventDatesFormProps {
   endsAt: Date;
   loading: boolean;
+  newEvent: boolean;
   startAt: Date;
 }
 
 const EventDatesForm: React.FC<EventDatesFormProps> = ({
   endsAt,
   loading,
+  newEvent,
   startAt,
 }) => {
-  const { setValue, setError, clearErrors } = useFormContext();
+  const { setValue, setError, clearErrors, formState } = useFormContext();
   const [startDate, setStartDate] = useState<Date>(startAt);
   const [endDate, setEndDate] = useState<Date>(endsAt);
+  setValue('start_at', startDate);
+  setValue('ends_at', endDate);
   const [startError, setStartError] = useState('');
   const [endError, setEndError] = useState('');
 
   const onDatePickerChange = useCallback(
-    (key: string) => {
+    (key: string, setDate: (date: React.SetStateAction<Date>) => void) => {
       return (date: Date | null) => {
         if (!date) return;
-        if (key === 'start_at') {
-          setValue('start_at', date, { shouldDirty: true });
-          setStartDate(date);
-        }
-        if (key === 'ends_at') {
-          setValue('ends_at', date, { shouldDirty: true });
-          setEndDate(date);
-        }
+        setValue(key, date, { shouldDirty: true });
+        setDate(date);
       };
     },
-    [setValue, setStartDate],
+    [setValue, setStartDate, setEndDate],
   );
 
   useEffect(() => {
@@ -55,48 +54,47 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
     }
   }, [startDate, endDate]);
 
-  const fields = [
-    {
-      key: 'start_at',
-      label: 'Start at',
-      isRequired: true,
-      date: startDate,
-      error: startError,
-    },
-    {
-      key: 'ends_at',
-      label: 'End at',
-      isRequired: true,
-      date: endDate,
-      error: endError,
-    },
-  ];
+  const startDateProps = {
+    date: startDate,
+    error: startError,
+    isRequired: true,
+    key: 'start_at',
+    label: 'Start at',
+    loading,
+    onChange: onDatePickerChange('start_at', setStartDate),
+  };
+  const endDateProps = {
+    date: endDate,
+    error: endError,
+    key: 'ends_at',
+    isRequired: true,
+    label: 'End at',
+    loading,
+    onChange: onDatePickerChange('ends_at', setEndDate),
+  };
 
   return (
     <>
-      {fields.map(({ key, date, error, label, isRequired }) => (
-        <FormControl key={key} isRequired={isRequired}>
-          <DatePicker
-            selected={date}
-            showTimeSelect
-            timeIntervals={5}
-            onChange={onDatePickerChange(key)}
-            disabled={loading}
-            dateFormat="MMMM d, yyyy h:mm aa"
-            customInput={
-              <Input
-                id={`${key}_trigger`}
-                name={key}
-                error={error}
-                label={`${label}${isRequired ? ' (Required)' : ''}`}
-                isDisabled={loading}
-                isRequired={isRequired}
-                value={date.toDateString()}
-              />
-            }
-          />
-        </FormControl>
-      ))}
+      <FormControl isRequired={startDateProps.isRequired}>
+        <>
+          <DatePicker {...startDateProps} />
+          {isPast(startDate) && (
+            <HStack>
+              <InfoIcon fontSize="sm" />
+              <FormHelperText data-cy="past-date-info">
+                {newEvent
+                  ? 'Chapter members will not be notified about creation of this event, as it starts in the past.'
+                  : formState.dirtyFields.start_at
+                  ? 'New date is in the past.'
+                  : 'Start date has already passed.'}
+              </FormHelperText>
+            </HStack>
+          )}
+        </>
+      </FormControl>
+      <FormControl isRequired={endDateProps.isRequired}>
+        <DatePicker {...endDateProps} />
+      </FormControl>
     </>
   );
 };

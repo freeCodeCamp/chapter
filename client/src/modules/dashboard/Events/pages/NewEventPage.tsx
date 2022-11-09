@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { isFuture } from 'date-fns';
 
 import {
   useCreateEventMutation,
@@ -39,7 +40,9 @@ export const NewEventPage: NextPageWithLayout = () => {
     if (errors) throw errors;
 
     if (eventData) {
-      await publish({ variables: { eventId: eventData.createEvent.id } });
+      if (isFuture(data.start_at)) {
+        await publish({ variables: { eventId: eventData.createEvent.id } });
+      }
       await router.replace(
         `/dashboard/events/[id]`,
         `/dashboard/events/${eventData.createEvent.id}`,

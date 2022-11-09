@@ -1,7 +1,7 @@
 import { Button, Checkbox, Heading, HStack, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import add from 'date-fns/add';
+import { add } from 'date-fns';
 
 import {
   useChapterQuery,
@@ -49,11 +49,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const defaultValues = useMemo(() => {
     if (!data) {
+      const date = new Date();
       return {
-        start_at: new Date(),
-        ends_at: add(new Date(), { minutes: 30 }),
         venue_type: VenueType.PhysicalAndOnline,
         chapter_id: initialChapterId,
+        start_at: add(date, { days: 1 }),
+        ends_at: add(date, { days: 1, minutes: 30 }),
       };
     }
     return {
@@ -129,6 +130,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         <EventDatesForm
           endsAt={defaultValues.ends_at}
           loading={loading}
+          newEvent={!data}
           startAt={defaultValues.start_at}
         />
 

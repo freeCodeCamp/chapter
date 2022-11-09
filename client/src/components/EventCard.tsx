@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
-import { isFuture, isPast } from 'date-fns';
+import { isPast } from 'date-fns';
 import React from 'react';
 import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';

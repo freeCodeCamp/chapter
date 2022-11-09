@@ -82,7 +82,7 @@ async function removeUserFromEventsInChapter({
   await Promise.all(calendarUpdates);
 }
 
-interface UpdateInstanceRoleForChapterRoleChange {
+interface Args {
   changedChapterId: number;
   newChapterRole: string;
   user: Prisma.usersGetPayload<{
@@ -97,7 +97,7 @@ async function updateInstanceRoleForChapterRoleChange({
   changedChapterId,
   newChapterRole,
   user,
-}: UpdateInstanceRoleForChapterRoleChange) {
+}: Args) {
   const oldInstanceRole = user.instance_role.name;
   const userChapters = user.user_chapters;
   const newInstanceRole = getInstanceRoleName({
@@ -174,17 +174,12 @@ export class ChapterUserResolver {
   ): Promise<ChapterUser | null> {
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
 
-    const userChapters = ctx.user.user_chapters;
-    const chapterRole = userChapters.find(
-      ({ chapter_id }) => chapter_id === chapterId,
-    )?.chapter_role.name;
-    if (chapterRole === ChapterRoles.administrator) {
-      await updateInstanceRoleForChapterRoleChange({
-        changedChapterId: chapterId,
-        newChapterRole: ChapterRoles.member,
-        user: ctx.user,
-      });
-    }
+    // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.
+    await updateInstanceRoleForChapterRoleChange({
+      changedChapterId: chapterId,
+      newChapterRole: ChapterRoles.member,
+      user: ctx.user,
+    });
 
     return await prisma.chapter_users.delete({
       where: {

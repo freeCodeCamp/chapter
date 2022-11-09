@@ -12,15 +12,17 @@ import { Input } from '../../../../components/Form/Input';
 interface EventDatesFormProps {
   endsAt: Date;
   loading: boolean;
+  newEvent: boolean;
   startAt: Date;
 }
 
 const EventDatesForm: React.FC<EventDatesFormProps> = ({
   endsAt,
   loading,
+  newEvent,
   startAt,
 }) => {
-  const { setValue, setError, clearErrors } = useFormContext();
+  const { setValue, setError, clearErrors, formState } = useFormContext();
   const [startDate, setStartDate] = useState<Date>(startAt);
   const [endDate, setEndDate] = useState<Date>(endsAt);
   setValue('start_at', startDate);
@@ -113,12 +115,15 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
       <FormControl isRequired={startDateProps.isRequired}>
         <>
           {datePicker(startDateProps)}
-          {!startAt && isPast(startDate) && (
+          {isPast(startDate) && (
             <HStack>
               <InfoIcon fontSize="sm" />
               <FormHelperText data-cy="past-date-info">
-                Chapter members will not be notified about creation of this
-                event, as it starts in the past.
+                {newEvent
+                  ? 'Chapter members will not be notified about creation of this event, as it starts in the past.'
+                  : formState.dirtyFields.start_at
+                  ? 'Changed date is in the past.'
+                  : 'Start date has already passed.'}
               </FormHelperText>
             </HStack>
           )}

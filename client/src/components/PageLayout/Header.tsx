@@ -16,7 +16,6 @@ import React from 'react';
 
 import NextLink from 'next/link';
 import Avatar from '../Avatar';
-import styles from '../../styles/Header.module.css';
 import { useAuth } from '../../modules/auth/store';
 import { HeaderContainer } from './component/HeaderContainer';
 import { useLogout, useLogin } from 'hooks/useAuth';
@@ -64,7 +63,7 @@ export const Header: React.FC = () => {
               </MenuButton>
               <MenuList paddingBlock={0}>
                 <Flex
-                  className={styles.header}
+                  gap={'.5em'}
                   flexDirection="column"
                   fontWeight="600"
                   borderRadius="5px"
@@ -77,68 +76,53 @@ export const Header: React.FC = () => {
                     <MenuItem as="a">Events</MenuItem>
                   </NextLink>
 
-                  <>
+                  {user && (
                     <NextLink passHref href="/profile">
-                      <MenuItem as="a">Profile</MenuItem>
+                      <MenuItem
+                        borderTop={'1px'}
+                        borderColor={'gray.85'}
+                        as="a"
+                      >
+                        Profile
+                      </MenuItem>
                     </NextLink>
-                    {CanEditDashboard && (
-                      <NextLink passHref href="/dashboard/chapters">
-                        <MenuItem as="a">Dashboard</MenuItem>
-                      </NextLink>
-                    )}
-
-                    {user ? (
-                      <MenuItem
-                        data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
-                        fontWeight="600"
-                        height={'100%'}
-                        borderRadius={'5px'}
-                      >
-                        logout
-                      </MenuItem>
-                    ) : (
-                      <MenuItem
-                        data-cy="login-button"
-                        onClick={login}
-                        fontWeight="600"
-                        background={'gray.85'}
-                        color={'gray.10'}
-                        height={'100%'}
-                        borderRadius={'5px'}
-                        _hover={{ color: 'gray.85' }}
-                      >
-                        login
-                      </MenuItem>
-                    )}
-                  </>
+                  )}
+                  {CanEditDashboard && (
+                    <NextLink passHref href="/dashboard/chapters">
+                      <MenuItem as="a">Dashboard</MenuItem>
+                    </NextLink>
+                  )}
+                  {user ? (
+                    <MenuItem
+                      data-cy="logout-button"
+                      onClick={() => logout().then(goHome)}
+                      fontWeight="600"
+                      height={'100%'}
+                      borderTop={'1px'}
+                      borderColor={'gray.85'}
+                    >
+                      logout
+                    </MenuItem>
+                  ) : (
+                    <MenuItem
+                      data-cy="login-button"
+                      onClick={login}
+                      fontWeight="600"
+                      height={'100%'}
+                      borderTop={'1px'}
+                      borderColor={'gray.85'}
+                    >
+                      login
+                    </MenuItem>
+                  )}
                 </Flex>
               </MenuList>
             </Menu>
           </Box>
           {user && (
-            <Menu>
-              <MenuButton>
-                <Avatar user={user} cursor="pointer" />
-              </MenuButton>
-              <NextLink passHref href="/profile">
-                <MenuItem as="a">Profile</MenuItem>
-              </NextLink>
-              {CanEditDashboard && (
-                <NextLink passHref href="/dashboard/chapters">
-                  <MenuItem as="a">Dashboard</MenuItem>
-                </NextLink>
-              )}
-              <MenuItem
-                data-cy="logout-button"
-                onClick={() => logout().then(goHome)}
-                fontWeight="600"
-                height={'100%'}
-                borderRadius={'5px'}
-              >
-                logout
-              </MenuItem>
-            </Menu>
+            <NextLink passHref href="/profile">
+              <Avatar user={user} cursor="pointer" />
+            </NextLink>
           )}
         </HStack>
       </HeaderContainer>

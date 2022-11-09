@@ -1,6 +1,5 @@
 import React, { forwardRef } from 'react';
 import { Flex, GridItemProps } from '@chakra-ui/react';
-import styles from '../../../styles/Header.module.css';
 
 interface Props {
   children: React.ReactNode;
@@ -21,7 +20,7 @@ export const HeaderContainer = forwardRef<HTMLDivElement, Props>(
         px={[2, 4, 8]}
         py={[2, 4]}
         background={'gray.85'}
-        className={styles.header}
+        gap={'.5em'}
       />
     );
   },

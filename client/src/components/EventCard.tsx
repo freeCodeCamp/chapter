@@ -68,27 +68,25 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     [EventStatus.upcoming]: {},
   };
 
-  const canceled = event.canceled;
-  const isStartDateInPast = isPast(new Date(event.start_at));
-  const isEndDateInFuture = isFuture(new Date(event.ends_at));
+  const hasEnded = isPast(new Date(event.ends_at));
   const getEventStatus = ({
     canceled,
-    isStartDateInPast,
-    isEndDateInFuture,
+    hasStarted,
+    hasEnded,
   }: {
     canceled: boolean;
-    isStartDateInPast: boolean;
-    isEndDateInFuture: boolean;
+    hasStarted: boolean;
+    hasEnded: boolean;
   }) => {
     if (canceled) return EventStatus.canceled;
-    if (!isStartDateInPast) return EventStatus.upcoming;
-    if (isEndDateInFuture) return EventStatus.running;
-    return EventStatus.ended;
+    if (hasEnded) return EventStatus.ended;
+    if (hasStarted) return EventStatus.running;
+    return EventStatus.upcoming;
   };
   const eventStatus = getEventStatus({
-    canceled,
-    isStartDateInPast,
-    isEndDateInFuture,
+    canceled: event.canceled,
+    hasStarted: isPast(new Date(event.start_at)),
+    hasEnded,
   });
   const eventStatusStyle = statusToStyle[eventStatus];
   return (
@@ -97,7 +95,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       borderRadius="lg"
       overflow="hidden"
       width={'full'}
-      {...(!isEndDateInFuture && { opacity: 0.6 })}
+      {...(hasEnded && { opacity: 0.6 })}
     >
       <Image
         display={['none', 'block']}

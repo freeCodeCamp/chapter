@@ -3,16 +3,16 @@ import { InfoIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useFormContext } from 'react-hook-form';
-import { add, isPast } from 'date-fns';
+import { isPast } from 'date-fns';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { Input } from '../../../../components/Form/Input';
 
 interface EventDatesFormProps {
-  endsAt: Date | null;
+  endsAt: Date;
   loading: boolean;
-  startAt: Date | null;
+  startAt: Date;
 }
 
 const EventDatesForm: React.FC<EventDatesFormProps> = ({
@@ -21,12 +21,8 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   startAt,
 }) => {
   const { setValue, setError, clearErrors } = useFormContext();
-  const [startDate, setStartDate] = useState<Date>(
-    startAt || add(new Date(), { days: 1 }),
-  );
-  const [endDate, setEndDate] = useState<Date>(
-    endsAt || add(new Date(), { days: 1, minutes: 30 }),
-  );
+  const [startDate, setStartDate] = useState<Date>(startAt);
+  const [endDate, setEndDate] = useState<Date>(endsAt);
   setValue('start_at', startDate);
   setValue('ends_at', endDate);
   const [startError, setStartError] = useState('');

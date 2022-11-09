@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex, Heading, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
-import { Link } from 'chakra-next-link';
+import { Link, LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 
@@ -14,12 +14,20 @@ import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
-import { useLogout } from 'hooks/useAuth';
+import { useLogout } from '../../../hooks/useAuth';
+import { checkPermission } from '../../../util/check-permission';
+import { Permission } from '../../../../../common/permissions';
 
 export const UserProfilePage = () => {
   const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
+  const canAuthenticateWithGoogle = checkPermission(
+    user,
+    Permission.GoogleAuthenticate,
+  );
 
   const confirmDelete = useConfirmDelete({
     body: 'Are you sure you want to delete your account? Account deletion cannot be reversed.',
@@ -85,10 +93,25 @@ export const UserProfilePage = () => {
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />
-
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data
           </Button>
+          {canAuthenticateWithGoogle && (
+            <LinkButton
+              as="a"
+              href={new URL('/authenticate-with-google', serverUrl).href}
+              fontWeight="600"
+              background={'gray.85'}
+              color={'gray.10'}
+              height={'100%'}
+              marginLeft={'1em'}
+              borderRadius={'5px'}
+              paddingBlock={'.65em'}
+              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+            >
+              Authenticate with Google
+            </LinkButton>
+          )}
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

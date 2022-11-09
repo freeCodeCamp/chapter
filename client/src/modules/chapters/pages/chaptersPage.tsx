@@ -17,8 +17,8 @@ export const ChaptersPage: NextPage = () => {
     <Center>
       <Grid
         gap="1em"
-        w={['90%', '90%', '60%']}
-        maxW="37.5em"
+        w={{ base: '90%', '2xl': '60%' }}
+        maxW="48em"
         mt={10}
         mb={5}
         placeItems={'center'}

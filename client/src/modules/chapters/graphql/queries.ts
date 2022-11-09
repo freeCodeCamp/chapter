@@ -18,6 +18,7 @@ export const CHAPTER = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url

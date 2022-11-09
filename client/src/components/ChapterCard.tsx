@@ -15,7 +15,6 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
-      maxWidth={'80%'}
       width={'full'}
       minW={'20em'}
       gap={'2'}

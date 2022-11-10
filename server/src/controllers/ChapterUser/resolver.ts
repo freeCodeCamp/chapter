@@ -13,7 +13,7 @@ import { ResolverCtx } from '../../common-types/gql';
 import { prisma, UNIQUE_CONSTRAINT_FAILED } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
+import { updateCalendarEventAttendees } from '../../util/calendar';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';

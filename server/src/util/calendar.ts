@@ -1,9 +1,12 @@
-import { Event } from '../graphql-types';
+import { inspect } from 'util';
+
 import { prisma } from '../prisma';
+import { Event } from '../graphql-types';
 import {
   createCalendarEvent as createCalendarEventService,
   patchCalendarEvent,
 } from '../services/Google';
+import { redactSecrets } from './redact-secrets';
 
 export const updateCalendarEventAttendees = async ({
   eventId,
@@ -31,9 +34,9 @@ export const updateCalendarEventAttendees = async ({
         calendarEventId,
         attendeeEmails: attendees.map(({ user }) => user.email),
       });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
-      throw 'Unable to update calendar event attendees';
+    } catch (e) {
+      console.log('Unable to update calendar event attendees');
+      console.error(inspect(redactSecrets(e), { depth: null }));
     }
   }
 };
@@ -62,8 +65,8 @@ export const createCalendarEvent = async ({
       where: { id },
       data: { calendar_event_id: calendarEventId },
     });
-  } catch {
-    // TODO: log more details without leaking tokens and user info.
-    throw Error('Unable to create calendar event');
+  } catch (e) {
+    console.error('Unable to create calendar event');
+    console.error(inspect(redactSecrets(e), { depth: null }));
   }
 };

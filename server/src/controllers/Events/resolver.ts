@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import {
   events,
   events_venue_type_enum,
@@ -51,6 +52,7 @@ import {
   updateCalendarEventAttendees,
 } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
+import { redactSecrets } from '../../util/redact-secrets';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -687,11 +689,12 @@ ${unsubscribeOptions}`,
 
     const attendeeEmails =
       event.event_users.map(({ user: { email } }) => email) ?? [];
-    return await createCalendarEvent({
+    const updatedEvent = await createCalendarEvent({
       attendeeEmails,
       calendarId: event.chapter.calendar_id,
       event,
     });
+    return updatedEvent ? updatedEvent : event;
   }
 
   @Authorized(Permission.EventEdit)
@@ -766,9 +769,9 @@ ${unsubscribeOptions}`,
             ({ user }) => user.email,
           ),
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to update calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
 
@@ -822,9 +825,9 @@ ${unsubscribeOptions}`,
           end: event.ends_at,
           attendeeEmails: event.event_users.map(({ user }) => user.email),
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to cancel calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
 
@@ -851,9 +854,9 @@ ${unsubscribeOptions}`,
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to delete calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
     return event;

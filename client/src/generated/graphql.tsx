@@ -317,8 +317,8 @@ export type MutationChangeChapterUserRoleArgs = {
 };
 
 export type MutationChangeInstanceUserRoleArgs = {
+  id: Scalars['Int'];
   roleName: Scalars['String'];
-  userId: Scalars['Int'];
 };
 
 export type MutationConfirmRsvpArgs = {
@@ -358,8 +358,8 @@ export type MutationDeleteRsvpArgs = {
 };
 
 export type MutationDeleteVenueArgs = {
-  chapterId: Scalars['Int'];
-  venueId: Scalars['Int'];
+  _onlyUsedForAuth: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 export type MutationJoinChapterArgs = {
@@ -425,9 +425,9 @@ export type MutationUpdateSponsorArgs = {
 };
 
 export type MutationUpdateVenueArgs = {
-  chapterId: Scalars['Int'];
+  _onlyUsedForAuth: Scalars['Int'];
   data: VenueInputs;
-  venueId: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 export type PaginatedEventsWithTotal = {
@@ -483,7 +483,7 @@ export type QueryDashboardChapterArgs = {
 };
 
 export type QueryDashboardEventArgs = {
-  eventId: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 export type QueryDashboardSponsorArgs = {
@@ -491,7 +491,7 @@ export type QueryDashboardSponsorArgs = {
 };
 
 export type QueryEventArgs = {
-  eventId: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 export type QueryEventsArgs = {
@@ -3023,7 +3023,7 @@ export type EventsQueryResult = Apollo.QueryResult<
 >;
 export const DashboardEventDocument = gql`
   query dashboardEvent($eventId: Int!) {
-    dashboardEvent(eventId: $eventId) {
+    dashboardEvent(id: $eventId) {
       id
       name
       description
@@ -3488,7 +3488,7 @@ export type SponsorWithEventsQueryResult = Apollo.QueryResult<
 >;
 export const ChangeInstanceUserRoleDocument = gql`
   mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
-    changeInstanceUserRole(roleName: $roleName, userId: $userId) {
+    changeInstanceUserRole(roleName: $roleName, id: $userId) {
       instance_role {
         name
       }
@@ -3710,7 +3710,7 @@ export type CreateVenueMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateVenueDocument = gql`
   mutation updateVenue($venueId: Int!, $chapterId: Int!, $data: VenueInputs!) {
-    updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
+    updateVenue(id: $venueId, _onlyUsedForAuth: $chapterId, data: $data) {
       id
       name
       street_address
@@ -4171,7 +4171,7 @@ export type PaginatedEventsWithTotalQueryResult = Apollo.QueryResult<
 >;
 export const EventDocument = gql`
   query event($eventId: Int!) {
-    event(eventId: $eventId) {
+    event(id: $eventId) {
       id
       name
       description

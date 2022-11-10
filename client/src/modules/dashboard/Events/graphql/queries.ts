@@ -23,7 +23,7 @@ export const EVENTS = gql`
 
 export const DASHBOARD_EVENT = gql`
   query dashboardEvent($eventId: Int!) {
-    dashboardEvent(eventId: $eventId) {
+    dashboardEvent(id: $eventId) {
       id
       name
       description

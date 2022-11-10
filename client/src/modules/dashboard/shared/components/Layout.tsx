@@ -9,6 +9,8 @@ import { checkPermission } from '../../../../util/check-permission';
 import { Loading } from '../../../../components/Loading';
 import { useAuth } from 'modules/auth/store';
 
+const veiwDashboardPermissions = [Permission.ChapterEdit, Permission.EventEdit];
+
 const links = [
   {
     text: 'Chapters',
@@ -54,10 +56,21 @@ export const Layout = ({
     const hasPermission = checkPermission(user, link.requiredPermission);
     return { ...link, hasPermission };
   });
+  const canVeiwDashboard = user?.instance_role.instance_role_permissions.map(
+    ({ instance_permission }) =>
+      veiwDashboardPermissions.includes(instance_permission.name),
+  );
 
   if (loadingUser) return <Loading loading={loadingUser} />;
   if (!isLoggedIn)
     return <NextError statusCode={401} title={'Log in to see this page'} />;
+  if (!canVeiwDashboard)
+    return (
+      <NextError
+        statusCode={400}
+        title={`Access denied: You don't have access to veiw the page.`}
+      />
+    );
 
   return (
     <div data-cy={dataCy}>

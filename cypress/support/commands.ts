@@ -408,7 +408,7 @@ Cypress.Commands.add(
         data,
       },
       query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: VenueInputs!) {
-      updateVenue(chapterId: $chapterId, venueId: $venueId, data: $data) {
+      updateVenue(_onlyUsedForAuth: $chapterId, id: $venueId, data: $data) {
         id
       }
     }`,
@@ -438,7 +438,7 @@ const deleteVenue = (
       venueId,
     },
     query: `mutation deleteVenue($chapterId: Int!, $venueId: Int!) {
-    deleteVenue(chapterId: $chapterId, venueId: $venueId) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
       id
     }
   }`,
@@ -643,7 +643,7 @@ const changeInstanceUserRole = (
     operationName: 'changeInstanceUserRole',
     variables: { roleName, userId },
     query: `mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
-      changeInstanceUserRole(roleName: $roleName, userId: $userId) {
+      changeInstanceUserRole(roleName: $roleName, id: $userId) {
         instance_role {
           name
         }

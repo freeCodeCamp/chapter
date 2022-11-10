@@ -2971,14 +2971,14 @@
             "description": null,
             "args": [
               {
-                "name": "roleName",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "String",
+                    "name": "Int",
                     "ofType": null
                   }
                 },
@@ -2987,14 +2987,14 @@
                 "deprecationReason": null
               },
               {
-                "name": "userId",
+                "name": "roleName",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Int",
+                    "name": "String",
                     "ofType": null
                   }
                 },
@@ -3397,7 +3397,7 @@
             "description": null,
             "args": [
               {
-                "name": "chapterId",
+                "name": "_onlyUsedForAuth",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -3413,7 +3413,7 @@
                 "deprecationReason": null
               },
               {
-                "name": "venueId",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -4024,7 +4024,7 @@
             "description": null,
             "args": [
               {
-                "name": "chapterId",
+                "name": "_onlyUsedForAuth",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -4056,7 +4056,7 @@
                 "deprecationReason": null
               },
               {
-                "name": "venueId",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -4376,7 +4376,7 @@
             "description": null,
             "args": [
               {
-                "name": "eventId",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -4438,7 +4438,7 @@
             "description": null,
             "args": [
               {
-                "name": "eventId",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

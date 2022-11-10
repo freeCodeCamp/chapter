@@ -334,10 +334,10 @@ export class EventResolver {
   @Authorized(Permission.EventEdit)
   @Query(() => EventWithRelations, { nullable: true })
   async dashboardEvent(
-    @Arg('eventId', () => Int) eventId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         chapter: true,
         venue: true,
@@ -361,10 +361,10 @@ export class EventResolver {
   // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
-    @Arg('eventId', () => Int) eventId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         chapter: true,
         venue: true,

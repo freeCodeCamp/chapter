@@ -24,7 +24,7 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
 
 export const EVENT = gql`
   query event($eventId: Int!) {
-    event(eventId: $eventId) {
+    event(id: $eventId) {
       id
       name
       description

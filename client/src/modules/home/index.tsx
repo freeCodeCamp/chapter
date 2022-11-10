@@ -31,9 +31,8 @@ const Welcome = ({ user }: { user: User }) => {
         <AlertIcon />
         <AlertTitle> This is a testing site. </AlertTitle>
         <AlertDescription>
-          Unless you are a freeCodeCamp staff member or a Chapter maintainer,
-          please do not use this site. Any data you enter will be deleted
-          periodically.
+          This is a testing site for freeCodeCamp staff members and Chapter
+          maintainers. Be mindful that your data will be deleted periodically.
         </AlertDescription>
       </Alert>
       <Flex alignItems={'center'} justifyContent="space-between">

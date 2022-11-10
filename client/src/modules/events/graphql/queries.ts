@@ -8,6 +8,7 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url

@@ -16,7 +16,9 @@ tasks:
       export COOKIE_DOMAIN=gitpod.io
       nvm install lts/gallium && nvm alias default lts/gallium
     # the rest, get persisted, so we can save time and use init:
-    init: npm ci
+    init: |
+      sudo apt-get update && sudo apt-get install netcat -y
+      npm ci
     command: |
       npm run db:reset
       npm run both

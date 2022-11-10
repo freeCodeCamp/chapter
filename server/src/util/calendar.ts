@@ -1,7 +1,11 @@
 import { inspect } from 'util';
 
 import { prisma } from '../prisma';
-import { patchCalendarEvent } from '../services/Google';
+import { Event } from '../graphql-types';
+import {
+  createCalendarEvent as createCalendarEventService,
+  patchCalendarEvent,
+} from '../services/Google';
 import { redactSecrets } from './redact-secrets';
 
 export const updateCalendarEventAttendees = async ({
@@ -34,5 +38,35 @@ export const updateCalendarEventAttendees = async ({
       console.log('Unable to update calendar event attendees');
       console.error(inspect(redactSecrets(e), { depth: null }));
     }
+  }
+};
+
+interface CreateCalendarEventData {
+  attendeeEmails: string[];
+  calendarId: string;
+  event: Pick<Event, 'id' | 'ends_at' | 'start_at' | 'name'>;
+}
+
+export const createCalendarEvent = async ({
+  attendeeEmails,
+  calendarId,
+  event: { ends_at, id, name, start_at },
+}: CreateCalendarEventData) => {
+  try {
+    const { calendarEventId } = await createCalendarEventService({
+      calendarId,
+      start: start_at,
+      end: ends_at,
+      summary: name,
+      attendeeEmails,
+    });
+
+    return await prisma.events.update({
+      where: { id },
+      data: { calendar_event_id: calendarEventId },
+    });
+  } catch (e) {
+    console.error('Unable to create calendar event');
+    console.error(inspect(redactSecrets(e), { depth: null }));
   }
 };

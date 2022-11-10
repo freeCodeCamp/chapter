@@ -23,6 +23,11 @@ const links = [
     link: '/dashboard/users',
     requiredPermission: Permission.UsersView,
   },
+  {
+    text: 'Calendar',
+    link: '/dashboard/authcalendars',
+    requiredPermission: Permission.GoogleAuthenticate,
+  },
 ];
 
 export const Layout = ({

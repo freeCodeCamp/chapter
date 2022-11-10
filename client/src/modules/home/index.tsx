@@ -7,6 +7,10 @@ import {
   useToast,
   Flex,
   Text,
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  AlertTitle,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { Link } from 'chakra-next-link';
@@ -22,21 +26,32 @@ type User = NonNullable<AuthContextType['user']>;
 
 const Welcome = ({ user }: { user: User }) => {
   return (
-    <Flex alignItems={'center'} justifyContent="space-between">
-      <Heading as="h1">Welcome, {getNameText(user.name)}</Heading>
-      {!user.name && (
-        <Text>
-          You can set your name on your{' '}
-          <Link
-            href="/profile"
-            textDecoration={'underline'}
-            _hover={{ textDecoration: 'none' }}
-          >
-            profile page
-          </Link>
-        </Text>
-      )}
-    </Flex>
+    <>
+      <Alert status="error">
+        <AlertIcon />
+        <AlertTitle> This is a testing site. </AlertTitle>
+        <AlertDescription>
+          Unless you are a freeCodeCamp staff member or a Chapter maintainer,
+          please do not use this site. Any data you enter will be deleted
+          periodically.
+        </AlertDescription>
+      </Alert>
+      <Flex alignItems={'center'} justifyContent="space-between">
+        <Heading as="h1">Welcome, {getNameText(user.name)}</Heading>
+        {!user.name && (
+          <Text>
+            You can set your name on your{' '}
+            <Link
+              href="/profile"
+              textDecoration={'underline'}
+              _hover={{ textDecoration: 'none' }}
+            >
+              profile page
+            </Link>
+          </Text>
+        )}
+      </Flex>
+    </>
   );
 };
 const Home = () => {

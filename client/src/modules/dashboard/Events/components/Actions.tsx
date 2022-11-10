@@ -8,9 +8,6 @@ import { DASHBOARD_EVENT, EVENTS } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { SharePopOver } from '../../../../components/SharePopOver';
-import { useAuth } from '../../../auth/store';
-import { checkPermission } from '../../../../util/check-permission';
-import { Permission } from '../../../../../../common/permissions';
 import EventCancelButton from './EventCancelButton';
 import {
   Chapter,
@@ -34,13 +31,6 @@ const Actions: React.FC<ActionsProps> = ({
 }) => {
   const [remove] = useDeleteEventMutation();
   const [createCalendarEvent] = useCreateCalendarEventMutation();
-
-  const { user } = useAuth();
-
-  const hasPermissionToCreateCalendarEvent = checkPermission(
-    user,
-    Permission.GoogleAuthenticate,
-  );
 
   const data = useMemo(
     () => ({
@@ -89,17 +79,15 @@ const Actions: React.FC<ActionsProps> = ({
       >
         Edit
       </LinkButton>
-      {!event.calendar_event_id &&
-        chapter.calendar_id &&
-        hasPermissionToCreateCalendarEvent && (
-          <Button
-            size={['sm', 'md']}
-            colorScheme="blue"
-            onClick={onCreateCalendarEvent}
-          >
-            Create calendar event
-          </Button>
-        )}
+      {!event.calendar_event_id && chapter.calendar_id && (
+        <Button
+          size={['sm', 'md']}
+          colorScheme="blue"
+          onClick={onCreateCalendarEvent}
+        >
+          Create calendar event
+        </Button>
+      )}
       {!hideCancel && !event.canceled && (
         <EventCancelButton
           size={['sm', 'md']}

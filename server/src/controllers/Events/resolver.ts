@@ -671,7 +671,7 @@ ${unsubscribeOptions}`,
     return event;
   }
 
-  @Authorized(Permission.GoogleAuthenticate)
+  @Authorized(Permission.EventCreate)
   @Mutation(() => Event)
   async createCalendarEvent(@Arg('id', () => Int) id: number): Promise<Event> {
     const event = await prisma.events.findUniqueOrThrow({

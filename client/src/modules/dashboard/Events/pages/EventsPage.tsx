@@ -8,38 +8,18 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useAuth } from '../../../auth/store';
-import { useEventsQuery, EventsQueryVariables } from '../../../../generated/graphql';
+import { useEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { EventStatus, getEventStatus } from '../../../../util/eventStatus';
 import { isPast } from 'date-fns';
 
 export const EventsPage: NextPageWithLayout = () => {
   const { error, loading, data } = useEventsQuery();
-  
+
   const { user } = useAuth();
-  
+
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
-  
-  const hasEnded = (event: EventsQueryVariables)=> isPast(new Date(event.ends_at));
-  const hasStarted = (event: EventsQueryVariables)=> isPast(new Date(event.start_at));
-  const canceled = (event: EventsQueryVariables)=> event.canceled
-  const eventStatus =()=> getEventStatus({
-    canceled,
-    hasStarted,
-    hasEnded,
-  });
-  const statusToStyle = {
-    [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
-    [EventStatus.running]: {
-      color: 'gray.00',
-      backgroundColor: 'gray.45',
-      paddingInline: '.3em',
-      borderRadius: 'sm',
-    },
-    [EventStatus.ended]: { color: 'gray.45', fontWeight: '400' },
-    [EventStatus.upcoming]: {},
-  };
+
   return (
     <VStack data-cy="events-dashboard">
       <Flex w="full" justify="space-between">
@@ -73,15 +53,27 @@ export const EventsPage: NextPageWithLayout = () => {
             }
             mapper={{
               status: (event) =>
-                  <Text
-                    data-cy="event-canceled"
-                    color="red.500"
-                    fontSize={['md', 'lg']}
-                    fontWeight={'semibold'}
-                  >
-                    {eventStatus(event)}
-                  </Text>
-              ,
+              {event.canceled ? (
+                <Text
+                  color="red.500"
+                  fontSize={['md', 'lg']}
+                  fontWeight={'semibold'}
+                >
+                  Canceled
+                </Text>
+              ) : isPast(new Date(event.ends_at)) ? (
+                <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                  Ended at
+                </Text>
+              ) : isPast(new Date(event.start_at)) ? (
+                <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                  Running
+                </Text>
+              ) : (
+                <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                  Upcoming
+                </Text>
+              )},
               name: (event) => (
                 <VStack align="flex-start">
                   <LinkButton
@@ -171,9 +163,13 @@ export const EventsPage: NextPageWithLayout = () => {
                           >
                             Canceled
                           </Text>
-                        ) : new Date(start_at) < new Date() ? (
+                        ) : isPast(new Date(ends_at)) ? (
                           <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                            Passed
+                            Ended at
+                          </Text>
+                        ) : isPast(new Date(start_at)) ? (
+                          <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                            Running
                           </Text>
                         ) : (
                           <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>

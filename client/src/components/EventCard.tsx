@@ -13,7 +13,6 @@ import { isPast } from 'date-fns';
 import React from 'react';
 import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
-import { EventStatus, getEventStatus } from '../util/eventStatus';
 
 type EventCardProps = {
   event: Pick<
@@ -49,7 +48,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         </Tag>
       )}
     </>
-  ); 
+  );
+  enum EventStatus {
+    canceled = 'Canceled',
+    running = 'Running',
+    ended = 'Ended at',
+    upcoming = 'Upcoming',
+  }
 
   const statusToStyle = {
     [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
@@ -64,6 +69,20 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   };
 
   const hasEnded = isPast(new Date(event.ends_at));
+  const getEventStatus = ({
+    canceled,
+    hasStarted,
+    hasEnded,
+  }: {
+    canceled: boolean;
+    hasStarted: boolean;
+    hasEnded: boolean;
+  }) => {
+    if (canceled) return EventStatus.canceled;
+    if (hasEnded) return EventStatus.ended;
+    if (hasStarted) return EventStatus.running;
+    return EventStatus.upcoming;
+  };
   const eventStatus = getEventStatus({
     canceled: event.canceled,
     hasStarted: isPast(new Date(event.start_at)),

@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import NextError from 'next/error';
 import { LinkButton } from 'chakra-next-link';
 import { Heading } from '@chakra-ui/layout';
 import { checkPermission } from '../../../../util/check-permission';
@@ -20,8 +21,27 @@ export const Calendar: NextPageWithLayout = () => {
       {canAuthenticateWithGoogle ? (
         <>
           <Heading as="h1" marginBlock={'.5em'}>
-            You can link your google calendar here
+            Integration with Google Calendar
           </Heading>
+          <Box>
+            <p>
+              Chapter is designed to work with Google Calendar. It can
+              automatically create calendars when you create new chapters and
+              calendar events when you create new events in a chapter.
+            </p>
+            <p>
+              Since you can create many chapters, each with multiple events, we
+              recommend that you create a new Google account to use with
+              Chapter. This way you can keep your personal calendar separate
+              from the calendars for your chapters.
+            </p>
+            <p>
+              Once you have decided which account you want to use, click the
+              button below to grant Chapter access to it. You will be redirected
+              to Google and asked to grant Chapter the permissions it needs to
+              manage calendars and events.
+            </p>
+          </Box>
           <LinkButton
             as="a"
             href={new URL('/authenticate-with-google', serverUrl).href}
@@ -38,7 +58,7 @@ export const Calendar: NextPageWithLayout = () => {
           </LinkButton>
         </>
       ) : (
-        <Heading as="h1">This is future a feature</Heading>
+        <NextError statusCode={403} title="Access denied" />;
       )}
     </>
   );

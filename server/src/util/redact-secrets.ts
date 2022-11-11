@@ -13,11 +13,27 @@ function errorToObject(err: Error) {
   return obj;
 }
 
-const secrets = ['Authorization', 'access_token', 'refresh_token', 'email'];
+const secrets = [
+  'Authorization',
+  'access_token',
+  'refresh_token',
+  'email',
+  'client_secret',
+  'client_id',
+];
+
+function redactString(str: string) {
+  return secrets.reduce(
+    (prev, secret) =>
+      prev.replace(new RegExp(`${secret}=[^&]+`, 'g'), `${secret}=***`),
+    str,
+  );
+}
 
 export const redactSecrets = (input: any): any => {
   const object = input instanceof Error ? errorToObject(input) : input;
-  return cloneDeepWith((_value, key: string) => {
+  return cloneDeepWith((value, key: string) => {
     if (key && secrets.includes(key)) return '***';
+    if (typeof value === 'string') return redactString(value);
   }, object);
 };

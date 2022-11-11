@@ -52,7 +52,7 @@ export const EventsPage: NextPageWithLayout = () => {
               ] as const
             }
             mapper={{
-              status: (event) => {
+              status: (event) =>
                 event.canceled ? (
                   <Text
                     color="red.500"
@@ -73,8 +73,7 @@ export const EventsPage: NextPageWithLayout = () => {
                   <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
                     Upcoming
                   </Text>
-                );
-              },
+                ),
               name: (event) => (
                 <VStack align="flex-start">
                   <LinkButton

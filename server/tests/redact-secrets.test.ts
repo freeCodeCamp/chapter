@@ -8,6 +8,7 @@ import {
   redactedCircularObjectWithSecret,
   nestedObject,
   redactedNestedObject,
+  invalidGrant,
 } from './fixtures/objects-with-secrets';
 
 describe('redactSecrets', () => {
@@ -60,6 +61,17 @@ describe('redactSecrets', () => {
     });
   });
 
+  it('redacts inside text', () => {
+    const obj = {
+      prop: 'refresh_token=1%2F%2Fabc123&client_id=123-456id.apps.googleusercontent.com&something_else=123&refresh_token=1%2F%2Fabc123&client_secret=1234567890&grant_type=refresh_token',
+    };
+    const expected = {
+      prop: 'refresh_token=***&client_id=***&something_else=123&refresh_token=***&client_secret=***&grant_type=refresh_token',
+    };
+
+    expect(redactSecrets(obj)).toEqual(expected);
+  });
+
   it('redacts secrets in nested objects', () => {
     expect(redactSecrets(nestedObject)).toEqual(redactedNestedObject);
   });
@@ -76,6 +88,12 @@ describe('redactSecrets', () => {
 
   it('handles a full response object', () => {
     expect(JSON.stringify(redactSecrets(fullResponse))).not.toMatch(
+      'someaccesstoken',
+    );
+  });
+
+  it('handles an invalid grant', () => {
+    expect(JSON.stringify(redactSecrets(invalidGrant))).not.toMatch(
       'someaccesstoken',
     );
   });

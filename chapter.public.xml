@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="chapter" schema="public" type="PostgreSQL - 13.8 (Debian 13.8-1.pgdg110+1)">
+<database name="chapter" schema="public" type="PostgreSQL - 13.9 (Debian 13.9-1.pgdg110+1)">
    <sequences>
       <sequence increment="1" name="chapter_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="chapter_roles_id_seq" startValue="1"/>

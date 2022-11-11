@@ -31,7 +31,7 @@ export const Header: React.FC = () => {
   const goHome = () => router.push('/');
   const CanEditDashboard = user?.instance_role.instance_role_permissions.filter(
     ({ instance_permission }) =>
-      instance_permission.name === 'owner' || 'admin',
+      instance_permission.name === 'owner' || 'chapter_administrator',
   );
 
   return (

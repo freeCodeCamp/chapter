@@ -46,9 +46,9 @@ export const PolicyPage: NextPage = () => {
               fontWeight={'500'}
               fontSize="lg"
             >
-              You can link your Account to Google calander but before you do
+              You can link your Account to Google calendar, but before you do
               please finish reading the policy, you can always do it later in
-              your profile.
+              dashboard.
             </Text>
             <Button
               as="a"

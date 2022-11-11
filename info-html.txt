@@ -1,4 +1,4 @@
-date=2022-11-11 05:41:15+0000
+date=2022-11-11 08:37:10+0000
 os=Linux 5.15.0-1022-azure
 schemaspy-version=6.1.0
 schemaspy-build=6.1.0.41 2019-09-17 21:52:57

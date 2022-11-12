@@ -511,7 +511,11 @@ export class EventResolver {
     await updateWaitlistForUserRemoval({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'no' } } },
+      data: {
+        rsvp: { connect: { name: 'no' } },
+        subscribed: false,
+        ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
+      },
       include: eventUserIncludes,
       where: {
         user_id_event_id: {

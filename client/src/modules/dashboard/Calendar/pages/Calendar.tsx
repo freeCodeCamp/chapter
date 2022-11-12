@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
 import { LinkButton } from 'chakra-next-link';
-import { Heading } from '@chakra-ui/layout';
+import { Flex, Heading } from '@chakra-ui/layout';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useAuth } from '../../../auth/store';
@@ -23,7 +23,7 @@ export const Calendar: NextPageWithLayout = () => {
           <Heading as="h1" marginBlock={'.5em'}>
             Integration with Google Calendar
           </Heading>
-          <Box>
+          <Flex flexDirection={'column'} gap=".5em">
             <p>
               Chapter is designed to work with Google Calendar. It can
               automatically create calendars when you create new chapters and
@@ -41,7 +41,7 @@ export const Calendar: NextPageWithLayout = () => {
               to Google and asked to grant Chapter the permissions it needs to
               manage calendars and events.
             </p>
-          </Box>
+          </Flex>
           <LinkButton
             as="a"
             href={new URL('/authenticate-with-google', serverUrl).href}
@@ -49,7 +49,7 @@ export const Calendar: NextPageWithLayout = () => {
             background={'gray.85'}
             color={'gray.10'}
             height={'100%'}
-            marginLeft={'1em'}
+            marginBlock={'1em'}
             borderRadius={'5px'}
             paddingBlock={'.65em'}
             _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
@@ -58,7 +58,7 @@ export const Calendar: NextPageWithLayout = () => {
           </LinkButton>
         </>
       ) : (
-        <NextError statusCode={403} title="Access denied" />;
+        <NextError statusCode={403} title="Access denied" />
       )}
     </>
   );

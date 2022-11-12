@@ -25,7 +25,7 @@ const links = [
   },
   {
     text: 'Calendar',
-    link: '/dashboard/authcalendars',
+    link: '/dashboard/calendar',
     requiredPermission: Permission.GoogleAuthenticate,
   },
 ];

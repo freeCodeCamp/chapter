@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import React, { forwardRef } from 'react';
 import NextLink from 'next/link';
 
+import { useApolloClient } from '@apollo/client';
 import { useAuth } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import { Permission } from '../../../../common/permissions';
@@ -60,13 +61,17 @@ export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useAuth();
   const logout = useLogout();
+  const client = useApolloClient();
 
   const canAuthenticateWithGoogle = checkPermission(
     user,
     Permission.GoogleAuthenticate,
   );
 
-  const goHome = () => router.push('/');
+  const goHome = async () => {
+    await router.push('/');
+    await client.resetStore();
+  };
 
   return (
     <>

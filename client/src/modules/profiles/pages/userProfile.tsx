@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Heading, useToast } from '@chakra-ui/react';
+import { Flex, Heading, Text, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
@@ -78,7 +78,12 @@ export const UserProfilePage = () => {
               </Flex>
             </>
           )}
-
+          <Heading as="h2" marginTop={'2em'} size="lg" fontWeight={500}>
+            This will change the setting in{' '}
+            <Text as="span" fontWeight={700}>
+              {user.email}
+            </Text>
+          </Heading>
           <ProfileForm
             onSubmit={submitUpdateMe}
             data={user}

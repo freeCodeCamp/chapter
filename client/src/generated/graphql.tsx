@@ -463,7 +463,7 @@ export type Query = {
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<UserWithInstanceRole>;
+  me?: Maybe<UserProfile>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
@@ -618,6 +618,17 @@ export type UserInformation = {
   user_events: Array<EventUser>;
 };
 
+export type UserProfile = {
+  __typename?: 'UserProfile';
+  admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+};
+
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
@@ -687,9 +698,10 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserProfile';
     id: number;
     name: string;
+    email: string;
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: {
@@ -1685,6 +1697,7 @@ export const MeDocument = gql`
     me {
       id
       name
+      email
       instance_role {
         instance_role_permissions {
           instance_permission {

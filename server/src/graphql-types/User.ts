@@ -21,6 +21,12 @@ export class UserWithInstanceRole extends User {
 }
 
 @ObjectType()
+export class UserProfile extends UserWithInstanceRole {
+  @Field(() => String)
+  email: string;
+}
+
+@ObjectType()
 export class UserWithRelations extends User {
   @Field(() => [Chapter])
   created_chapters: Chapter[];

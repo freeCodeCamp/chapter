@@ -37,7 +37,7 @@ describe('spec needing owner', () => {
     cy.task('seedDb');
     cy.login();
     cy.mhDeleteAll();
-    cy.interceptGQL('events');
+    cy.interceptGQL('dashboardEvents');
   });
 
   it('should be the active dashboard link', () => {
@@ -117,7 +117,7 @@ describe('spec needing owner', () => {
 
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
-    cy.wait('@GQLevents');
+    cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
@@ -157,7 +157,7 @@ describe('spec needing owner', () => {
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
-    cy.wait('@GQLevents');
+    cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -220,7 +220,7 @@ describe('events dashboard', () => {
     cy.task('seedDb');
     cy.login('admin@of.chapter.one');
     cy.mhDeleteAll();
-    cy.interceptGQL('events');
+    cy.interceptGQL('dashboardEvents');
   });
 
   it('chapter admin should be allowed to edit event, but nobody else', () => {

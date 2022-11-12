@@ -20,3 +20,19 @@ export function gqlOptions(body: any, additionalOptions?: any) {
     ...additionalOptions,
   };
 }
+
+export function expectHrefIdToBeInArray(link, ids: number[]) {
+  cy.wrap(link)
+    .invoke('attr', 'href')
+    .then((href) => {
+      const id = parseInt(href.match(/\d+/)[0]);
+      expect(ids).includes(id);
+    });
+}
+
+export function expectOnlyObjectIdsInLinks(objects, linksDataCy) {
+  const ids = objects.map(({ id }) => id);
+  cy.get(`[data-cy=${linksDataCy}]`).each((link) =>
+    expectHrefIdToBeInArray(link, ids),
+  );
+}

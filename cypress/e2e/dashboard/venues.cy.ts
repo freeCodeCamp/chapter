@@ -1,4 +1,7 @@
-import { expectToBeRejected } from '../../support/util';
+import {
+  expectOnlyObjectIdsInLinks,
+  expectToBeRejected,
+} from '../../support/util';
 
 const venueData = {
   name: 'Test Venue',
@@ -148,6 +151,15 @@ describe('venues dashboard', () => {
         );
         cy.deleteVenue(venueDeleteVariables).then(expectToBeRejected);
       },
+    );
+  });
+
+  it('chapter admin should see only venues from admined chapters', () => {
+    cy.login('admin@of.chapter.one');
+    const chapterId = 1;
+    cy.visit('/dashboard/venues');
+    cy.getChapterVenues(chapterId).then((venues) =>
+      expectOnlyObjectIdsInLinks(venues, 'view-venue-button'),
     );
   });
 

@@ -73,6 +73,7 @@ export const EventsPage: NextPageWithLayout = () => {
               name: (event) => (
                 <VStack align="flex-start">
                   <LinkButton
+                    data-cy="event"
                     colorScheme={event.canceled ? 'red' : undefined}
                     href={`/dashboard/events/${event.id}`}
                   >
@@ -171,6 +172,7 @@ export const EventsPage: NextPageWithLayout = () => {
                       </HStack>
                       <VStack align="flex-start">
                         <LinkButton
+                          data-cy="event"
                           fontSize={'sm'}
                           height={'2em'}
                           size={'sm'}

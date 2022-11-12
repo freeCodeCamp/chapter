@@ -1,4 +1,7 @@
-import { expectToBeRejected } from '../../../support/util';
+import {
+  expectHrefIdToBeInArray,
+  expectToBeRejected,
+} from '../../../support/util';
 
 const chapterData = {
   name: 'Name goes here',
@@ -143,5 +146,14 @@ describe('chapters dashboard', () => {
       cy.visit(`/dashboard/chapters/${response.body.data.createChapter.id}`);
       cy.contains(chapterData.name);
     });
+  });
+
+  it('chapter admin should see only admined chapters', () => {
+    const adminedChapter = 1;
+    cy.login('admin@of.chapter.one');
+    cy.visit('/dashboard/chapters');
+    cy.get('[data-cy=chapter]').each((link) =>
+      expectHrefIdToBeInArray(link, [adminedChapter]),
+    );
   });
 });

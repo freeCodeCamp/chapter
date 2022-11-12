@@ -46,7 +46,10 @@ export const ChaptersPage: NextPageWithLayout = () => {
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
             name: (chapter) => (
-              <LinkButton href={`/dashboard/chapters/${chapter.id}`}>
+              <LinkButton
+                data-cy="chapter"
+                href={`/dashboard/chapters/${chapter.id}`}
+              >
                 {chapter.name}
               </LinkButton>
             ),
@@ -107,6 +110,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                 actions: () => (
                   <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                     <LinkButton
+                      data-cy="chapter"
                       href={`/dashboard/chapters/${chapter.id}`}
                       marginBottom={'.5em'}
                       width="100%"

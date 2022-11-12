@@ -1,7 +1,10 @@
 import add from 'date-fns/add';
 import { VenueType } from '../../../../client/src/generated/graphql';
 import { EventUsers } from '../../../../cypress.config';
-import { expectToBeRejected } from '../../../support/util';
+import {
+  expectOnlyObjectIdsInLinks,
+  expectToBeRejected,
+} from '../../../support/util';
 
 const eventOneData = {
   name: 'Homer Simpson',
@@ -267,5 +270,14 @@ describe('events dashboard', () => {
     // banned admin should be rejected
     cy.login('banned@chapter.admin');
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+  });
+
+  it('chapter admin should see only events from admined chapters', () => {
+    cy.login('admin@of.chapter.one');
+    const chapterId = 1;
+    cy.visit('/dashboard/events');
+    cy.getChapterEvents(chapterId).then((events) =>
+      expectOnlyObjectIdsInLinks(events, 'event'),
+    );
   });
 });

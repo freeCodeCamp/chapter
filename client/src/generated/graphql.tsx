@@ -437,7 +437,7 @@ export type Query = {
   dashboardChapter: ChapterWithRelations;
   dashboardChapters: Array<ChapterWithEvents>;
   dashboardEvent?: Maybe<EventWithRelations>;
-  dashboardEvents: Array<EventWithRelations>;
+  dashboardEvents: Array<EventWithVenue>;
   dashboardSponsor: Sponsor;
   dashboardVenues: Array<Venue>;
   event?: Maybe<EventWithRelations>;
@@ -1039,7 +1039,7 @@ export type DashboardEventsQueryVariables = Exact<{ [key: string]: never }>;
 export type DashboardEventsQuery = {
   __typename?: 'Query';
   dashboardEvents: Array<{
-    __typename?: 'EventWithRelations';
+    __typename?: 'EventWithVenue';
     id: number;
     name: string;
     canceled: boolean;

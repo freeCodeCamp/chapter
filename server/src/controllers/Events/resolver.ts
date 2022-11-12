@@ -27,6 +27,7 @@ import {
   EventUser,
   EventWithRelations,
   EventWithChapter,
+  EventWithVenue,
   User,
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
@@ -48,6 +49,10 @@ import {
   patchCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
+import {
+  adminedFromChapterUsersWhere,
+  isAdminingAll,
+} from '../../util/dashboards';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -386,92 +391,22 @@ export class EventResolver {
     });
   }
 
-  @Query(() => [EventWithRelations])
+  @Query(() => [EventWithVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ): Promise<EventWithRelations[]> {
-    if (
-      ctx.user.instance_role.instance_role_permissions.some(
-        ({ instance_permission }) =>
-          instance_permission.name === Permission.ChapterEdit,
-      )
-    ) {
-      return await prisma.events.findMany({
-        where: {
-          ...(!showAll && { start_at: { gt: new Date() } }),
-        },
-        include: {
-          chapter: true,
-          venue: true,
-          event_users: {
-            include: {
-              user: true,
-              rsvp: true,
-              event_role: {
-                include: {
-                  event_role_permissions: {
-                    include: { event_permission: true },
-                  },
-                },
-              },
-            },
-          },
-          sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
-        },
-        take: limit,
-        orderBy: {
-          start_at: 'asc',
-        },
-      });
-    }
+  ): Promise<EventWithVenue[]> {
     return await prisma.events.findMany({
       where: {
         ...(!showAll && { start_at: { gt: new Date() } }),
-        chapter: {
-          chapter_users: {
-            some: {
-              AND: [
-                { user_id: ctx.user.id },
-                {
-                  chapter_role: {
-                    chapter_role_permissions: {
-                      some: {
-                        chapter_permission: {
-                          name: Permission.ChapterEdit,
-                        },
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        },
+        ...(!isAdminingAll(ctx.user) && {
+          chapter: adminedFromChapterUsersWhere(ctx.user.id),
+        }),
       },
-      include: {
-        chapter: { include: { chapter_users: true } },
-        venue: true,
-        event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: {
-                  include: { event_permission: true },
-                },
-              },
-            },
-          },
-        },
-        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
-      },
+      include: { venue: true },
       take: limit,
-      orderBy: {
-        start_at: 'asc',
-      },
+      orderBy: { start_at: 'asc' },
     });
   }
 

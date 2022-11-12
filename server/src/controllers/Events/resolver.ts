@@ -485,7 +485,7 @@ export class EventResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUser | null> {
     const eventUser = await prisma.event_users.findUniqueOrThrow({
-      include: { rsvp: true },
+      include: { rsvp: true, event_reminder: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -513,7 +513,9 @@ export class EventResolver {
     const updatedEventUser = await prisma.event_users.update({
       data: {
         rsvp: { connect: { name: 'no' } },
-        subscribed: false,
+        ...(eventUser.subscribed && {
+          subscribed: false,
+        }),
         ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
       include: eventUserIncludes,

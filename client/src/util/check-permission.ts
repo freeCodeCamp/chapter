@@ -7,12 +7,25 @@ import {
 export const checkPermission = (
   user: AuthContextType['user'],
   permission: InstancePermission | ChapterPermission,
+  options?: { chapterId: number },
 ) => {
-  const hasPermission = user
-    ? user.instance_role.instance_role_permissions.some(
-        (x) => x.instance_permission.name === permission,
-      )
-    : false;
+  if (!user) return false;
+  if (
+    user.instance_role.instance_role_permissions.some(
+      (x) => x.instance_permission.name === permission,
+    )
+  )
+    return true;
+  if (!options) return false;
 
-  return hasPermission;
+  if (
+    user.user_chapters
+      .find(({ chapter_id }) => chapter_id === options.chapterId)
+      ?.chapter_role.chapter_role_permissions.some(
+        ({ chapter_permission: { name } }) => name === permission,
+      )
+  )
+    return true;
+
+  return false;
 };

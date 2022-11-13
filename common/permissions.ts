@@ -24,7 +24,6 @@ export enum InstancePermission {
   SponsorManage = 'sponsor-manage',
   SponsorView = 'sponsor-view',
   UserInstanceRoleChange = 'user-instance-role-change',
-  UsersView = 'users-view',
   GoogleAuthenticate = 'google-authenticate',
 }
 

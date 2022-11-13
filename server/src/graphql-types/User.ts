@@ -7,6 +7,9 @@ export class User extends BaseObject {
   @Field(() => String)
   name: string;
 
+  @Field(() => Boolean)
+  auto_subscribe: boolean;
+
   @Field(() => String, { nullable: true })
   image_url?: string | null;
 }
@@ -33,4 +36,22 @@ export class UserWithRelations extends User {
 
   @Field(() => [EventUser])
   event_users: EventUser[];
+}
+
+@ObjectType()
+export class UserInformation extends User {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => [UserBan])
+  user_bans: UserBan[];
+
+  @Field(() => [ChapterUser])
+  user_chapters: ChapterUser[];
+
+  @Field(() => InstanceRole)
+  instance_role: InstanceRole;
+
+  @Field(() => [EventUser])
+  user_events: EventUser[];
 }

@@ -3,21 +3,21 @@
 exports[`EventCard should render 1`] = `
 <div>
   <div
-    class="css-0"
+    class="css-t46010"
   >
     <img
-      class="chakra-image css-0"
+      class="chakra-image css-gb7fie"
       src="http://example.com/image.png"
     />
     <div
-      class="css-0"
+      class="css-1fuobds"
       data-cy="event-card"
     >
       <h4
-        class="css-0"
+        class="css-15hezon"
       >
         <div
-          class="css-0"
+          class="css-5h69ez"
         >
           <a
             class="chakra-link css-0"
@@ -25,23 +25,23 @@ exports[`EventCard should render 1`] = `
             href="/events/1"
           >
             <h3
-              class="chakra-heading css-0"
+              class="chakra-heading css-1ei6e5r"
             >
               bar
             </h3>
           </a>
         </div>
         <div
-          class="css-0"
+          class="css-14ygirk"
         >
           <span
-            class="css-0"
+            class="css-17imrdh"
           >
             Invite only
           </span>
         </div>
         <p
-          class="css-0"
+          class="css-x5nzr7"
         >
           <a
             class="chakra-link css-0"
@@ -52,12 +52,12 @@ exports[`EventCard should render 1`] = `
           </a>
         </p>
         <div
-          class="css-0"
+          class="css-11b3qp1"
         >
           <p
-            class="chakra-text css-0"
+            class="chakra-text css-hy5ojy"
           >
-            Passed
+            Ended at
             : 
             Thu, Jan 1 @ 00:00
           </p>

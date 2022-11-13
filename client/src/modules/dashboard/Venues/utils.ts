@@ -1,4 +1,6 @@
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+
 import { useCreateVenueMutation } from '../../../generated/graphql';
 import { VenueFormData } from './components/VenueForm';
 import { DASHBOARD_VENUES } from './graphql/queries';
@@ -8,6 +10,7 @@ export const useSubmitVenue = () => {
     refetchQueries: [{ query: DASHBOARD_VENUES }],
   });
   const router = useRouter();
+  const toast = useToast();
 
   return async (data: VenueFormData) => {
     const { chapter_id, ...createData } = data;
@@ -24,7 +27,11 @@ export const useSubmitVenue = () => {
     // TODO: handle apollo errors centrally if possible
     if (errors) throw errors;
     if (venueData) {
-      router.replace(`/dashboard/venues/${venueData.createVenue.id}`);
+      await router.replace(`/dashboard/venues/${venueData.createVenue.id}`);
+      toast({
+        title: `Venue "${venueData.createVenue.name}" created!`,
+        status: 'success',
+      });
     }
   };
 };

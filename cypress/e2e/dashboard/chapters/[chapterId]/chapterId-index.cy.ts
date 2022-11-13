@@ -1,53 +1,37 @@
-import { expectToBeRejected } from '../../../../support/util';
+import { add } from 'date-fns';
+
+import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 import type { ChapterMembers } from '../../../../../cypress.config';
-import { VenueType } from '../../../../../client/src/generated/graphql';
 
-// no url string to confirm that it is not required
-const testEvent = {
-  name: 'Test Event',
-  description: 'Test Description',
-  streaming_url: 'https://test.event.org/video',
-  capacity: '10',
-  start_at: '2022-01-01T00:01',
-  ends_at: '2022-01-02T00:02',
-  venue_id: '1',
-  image_url: 'https://test.event.org/image',
-};
+const chapterId = 1;
 
-const eventData = {
-  ...testEvent,
-  capacity: 10,
-  venue_id: 1,
-  sponsor_ids: [],
-  name: 'Other Event',
-  url: 'https://test.event.org',
-  venue_type: VenueType.PhysicalAndOnline,
-  invite_only: false,
-};
-
-function createEventViaUI(chapterId) {
+function createEventViaUI({ chapterId, eventData, isInPast = false }) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
   cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
-    testEvent.name,
+    eventData.name,
   );
-  cy.findByRole('textbox', { name: 'Description' }).type(testEvent.description);
+  cy.findByRole('textbox', { name: 'Description' }).type(eventData.description);
   cy.findByRole('textbox', { name: 'Event Image Url' }).type(
-    testEvent.image_url,
+    eventData.image_url,
   );
   // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
   cy.findByRole('spinbutton', { name: 'Capacity (Required)' }).type(
-    testEvent.capacity,
+    eventData.capacity,
   );
 
   cy.findByLabelText(/^Start at \(Required\)/)
     .clear()
-    .type(testEvent.start_at)
+    .type(eventData.start_at)
     .type('{esc}');
   cy.findByLabelText(/^End at \(Required\)/)
     .clear()
-    .type(testEvent.ends_at)
+    .type(eventData.ends_at)
     .type('{esc}');
+
+  cy.get('[data-cy="past-date-info"]').should(
+    isInPast ? 'be.visible' : 'not.exist',
+  );
 
   // TODO: figure out why cypress thinks this is covered.
   // cy.findByRole('checkbox', { name: 'Invite only' }).click();
@@ -56,13 +40,13 @@ function createEventViaUI(chapterId) {
   // combobox?
   cy.findByRole('combobox', { name: 'Venue' })
     .as('venueSelect')
-    .select(testEvent.venue_id);
+    .select(eventData.venue_id);
   cy.get('@venueSelect')
-    .find(`option[value=${testEvent.venue_id}]`)
+    .find(`option[value=${eventData.venue_id}]`)
     .invoke('text')
     .as('venueTitle');
   cy.findByRole('textbox', { name: 'Streaming URL' }).type(
-    testEvent.streaming_url,
+    eventData.streaming_url,
   );
   cy.findByRole('button', { name: 'Add Sponsor' }).click();
 
@@ -75,26 +59,47 @@ function createEventViaUI(chapterId) {
 }
 
 describe('chapter dashboard', () => {
+  let users;
+  let events;
+  before(() => {
+    cy.fixture('events').then((fixture) => {
+      events = fixture;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
     cy.task('seedDb');
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
     cy.mhDeleteAll();
   });
 
   it('should have link to add event for chapter', () => {
-    cy.visit('/dashboard/chapters/1');
-    cy.get('a[href="/dashboard/chapters/1/new-event"').should('be.visible');
+    cy.visit(`/dashboard/chapters/${chapterId}`);
+    cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"`).should(
+      'be.visible',
+    );
   });
 
   it('emails interested users when an event is created', () => {
-    createEventViaUI(1);
+    // confirm url is not required
+    const date = new Date();
+    const testEvent = {
+      ...events.eventWithoutURL,
+      start_at: add(date, { days: 1 }).toISOString(),
+      ends_at: add(date, { days: 1, minutes: 30 }).toISOString(),
+    };
+
+    cy.clock(null, ['Date']).invoke('setSystemTime', date);
+    createEventViaUI({ chapterId, eventData: testEvent });
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
     Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
       if (!['start_at', 'ends_at', 'venue_id'].includes(key)) {
-        cy.contains(value);
+        cy.contains(value as string);
       }
     });
     // check that the title we selected is in the event we created.
@@ -107,7 +112,7 @@ describe('chapter dashboard', () => {
 
     // TODO: select chapter during event creation and use that here (much like @venueTitle
     // ) i.e. remove the hardcoding.
-    cy.task<ChapterMembers>('getChapterMembers', 1).then((members) => {
+    cy.task<ChapterMembers>('getChapterMembers', chapterId).then((members) => {
       const subscriberEmails = members
         .filter(({ subscribed }) => subscribed)
         .map(({ user: { email } }) => email);
@@ -128,25 +133,36 @@ describe('chapter dashboard', () => {
     });
   });
 
+  it('event created with past date should not send out email invites', () => {
+    const testEvent = {
+      ...events.eventWithoutURL,
+    };
+    createEventViaUI({ chapterId, eventData: testEvent, isInPast: true });
+    cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
+
+    cy.mhGetAllMails().should('have.length', 0);
+  });
+
   it('prevents members and admins from other chapters from creating events', () => {
-    let chapterId = 2;
+    const otherChapterId = 2;
+    const eventData = {
+      ...events.eventWithoutURL,
+      ...events.partialData,
+    };
     // normal member
-    cy.login('test@user.org');
-    cy.createEvent(chapterId, eventData).then(expectToBeRejected);
+    cy.login(users.testUser.email);
+    cy.createEvent(otherChapterId, eventData).then(expectToBeRejected);
 
     // admin of a different chapter
-    cy.login('admin@of.chapter.one');
-    cy.createEvent(2, eventData).then(expectToBeRejected);
+    cy.login(users.chapter1Admin.email);
+    cy.createEvent(otherChapterId, eventData).then(expectToBeRejected);
 
     // switch the chapterId to match the admin's chapter
-    chapterId = 1;
     cy.createEvent(chapterId, {
       ...eventData,
       name: 'Created by Admin',
     }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.errors).not.to.exist;
-
+      expectNoErrors(response);
       cy.visit(`/dashboard/events/`);
       cy.contains('Created by Admin');
       cy.contains(eventData.name).should('not.exist');

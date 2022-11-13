@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import { Prisma } from '@prisma/client';
 import {
   Resolver,
@@ -18,10 +20,13 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
+import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 import {
   explicitlyAdminedWhere,
   isAdminFromInstanceRole,
 } from '../../util/adminedChapters';
+import { isBannable } from '../../util/chapterBans';
+import { redactSecrets } from '../../util/redact-secrets';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -43,8 +48,9 @@ export class ChapterResolver {
   @Query(() => ChapterWithRelations)
   async dashboardChapter(
     @Arg('id', () => Int) id: number,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterWithRelations> {
-    return await prisma.chapters.findUniqueOrThrow({
+    const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id },
       include: {
         events: true,
@@ -57,13 +63,32 @@ export class ChapterResolver {
                 },
               },
             },
-            user: true,
+            user: { include: { instance_role: true } },
           },
           orderBy: { user: { name: 'asc' } },
         },
         user_bans: { include: { user: true, chapter: true } },
       },
     });
+
+    const userInstanceRole = ctx.user.instance_role.name;
+    const userChapterRole =
+      ctx.user.user_chapters.find(({ chapter_id }) => chapter_id === id)
+        ?.chapter_role.name ?? ChapterRoles.member;
+
+    const usersWithIsBannable = chapter.chapter_users.map((chapterUser) => ({
+      ...chapterUser,
+      is_bannable: isBannable({
+        userId: ctx.user.id,
+        userChapterRole,
+        userInstanceRole,
+        otherUserId: chapterUser.user_id,
+        otherChapterRole: chapterUser.chapter_role.name,
+        otherInstanceRole: chapterUser.user.instance_role.name,
+      }),
+    }));
+
+    return { ...chapter, chapter_users: usersWithIsBannable };
   }
 
   @Query(() => [ChapterWithEvents])
@@ -116,9 +141,9 @@ export class ChapterResolver {
         summary: data.name,
         description: `Events for ${data.name}`,
       });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
+    } catch (e) {
       console.log('Unable to create calendar');
+      console.error(inspect(redactSecrets(e), { depth: null }));
     }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,

@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/layout';
-import { Avatar, Box, Flex, Image, Spinner, MenuItem } from '@chakra-ui/react';
+import { Box, Flex, Image, Spinner, MenuItem } from '@chakra-ui/react';
 import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -10,6 +10,7 @@ import NextLink from 'next/link';
 import { useApolloClient } from '@apollo/client';
 import { useAuth } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
+import Avatar from '../Avatar';
 import { Permission } from '../../../../common/permissions';
 import { checkPermission } from '../../util/check-permission';
 import { HeaderMenu } from './HeaderMenu';
@@ -30,6 +31,7 @@ const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
       {...props}
       w="full"
       as="header"
+      height={'4.5em'}
       px={[2, 4, 8]}
       py={[2, 4]}
       background={'gray.85'}
@@ -102,12 +104,7 @@ export const Header: React.FC = () => {
             </Box>
             {user && (
               <NextLink passHref href="/profile">
-                <Avatar
-                  cursor="pointer"
-                  name={`${user.name}`}
-                  src={`${user.image_url}`}
-                  backgroundColor={user.image_url ? 'transparent' : undefined}
-                />
+                <Avatar user={user} cursor="pointer" />
               </NextLink>
             )}
           </HStack>

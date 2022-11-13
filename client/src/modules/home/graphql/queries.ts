@@ -9,6 +9,7 @@ export const HOME_PAGE_QUERY = gql`
       invite_only
       canceled
       start_at
+      ends_at
       image_url
       chapter {
         id
@@ -20,6 +21,7 @@ export const HOME_PAGE_QUERY = gql`
       id
       name
       description
+      logo_url
       banner_url
       city
       events {

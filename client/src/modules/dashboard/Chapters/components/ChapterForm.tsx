@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -8,9 +9,9 @@ import type {
   DashboardChapterQuery,
   CreateChapterInputs,
 } from '../../../../generated/graphql';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 
 interface ChapterFormProps {
-  loading: boolean;
   onSubmit: (data: CreateChapterInputs) => Promise<void>;
   data?: DashboardChapterQuery;
   submitText: string;
@@ -77,6 +78,13 @@ const fields: Fields[] = [
     type: 'url',
   },
   {
+    key: 'logo_url',
+    label: 'Logo Url',
+    placeholder: 'https://www.freecodecamplogo.org',
+    required: false,
+    type: 'url',
+  },
+  {
     key: 'chat_url',
     label: 'Chat link',
     placeholder: 'https://discord.gg/KVUmVXA',
@@ -86,7 +94,7 @@ const fields: Fields[] = [
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, loadingText } = props;
+  const { onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.dashboardChapter;
 
   const defaultValues: CreateChapterInputs = {
@@ -96,6 +104,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     region: chapter?.region ?? '',
     country: chapter?.country ?? '',
     category: chapter?.category ?? '',
+    logo_url: chapter?.logo_url ?? '',
     banner_url: chapter?.banner_url ?? '',
     chat_url: chapter?.chat_url ?? '',
   };
@@ -107,8 +116,16 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     defaultValues,
   });
 
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<CreateChapterInputs>({
+      onSubmit,
+    });
+
   return (
-    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
       {fields.map(({ key, label, placeholder, required, type }) =>
         type == 'textarea' ? (
           <TextArea

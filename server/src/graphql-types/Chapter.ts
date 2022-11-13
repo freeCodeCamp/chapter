@@ -25,11 +25,17 @@ export class Chapter extends BaseObject {
   @Field(() => String)
   country: string;
 
-  @Field(() => String)
-  banner_url!: string;
+  @Field(() => String, { nullable: true })
+  banner_url?: string | null;
+
+  @Field(() => String, { nullable: true })
+  logo_url?: string | null;
 
   @Field(() => Int)
   creator_id: number;
+
+  @Field(() => String, { nullable: true })
+  calendar_id?: string | null;
 }
 
 @ObjectType()

@@ -1,6 +1,10 @@
 describe('dashboard', () => {
+  let users;
   before(() => {
     cy.task('seedDb');
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
     cy.visit('/dashboard');
   });
 
@@ -14,7 +18,7 @@ describe('dashboard', () => {
   });
 
   it('chapter administrator should have links to the dashboards allowed for chapter administrator', () => {
-    cy.login('admin@of.chapter.one');
+    cy.login(users.chapter1Admin.email);
     cy.get('a[href="/dashboard/events"]').should('be.visible');
     cy.get('a[href="/dashboard/chapters"]').should('be.visible');
     cy.get('a[href="/dashboard/venues"]').should('be.visible');
@@ -24,7 +28,7 @@ describe('dashboard', () => {
   });
 
   it('member should have links to the dashboards allowed for member', () => {
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.get('a[href="/dashboard/events"]').should('be.visible');
     cy.get('a[href="/dashboard/chapters"]').should('be.visible');
     cy.get('a[href="/dashboard/venues"]').should('be.visible');

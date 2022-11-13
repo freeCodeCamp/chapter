@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
@@ -32,13 +33,15 @@ export const EditVenuePage: NextPageWithLayout = () => {
     refetchQueries: [{ query: DASHBOARD_VENUES }],
   });
 
+  const toast = useToast();
+
   const onSubmit = async (data: VenueFormData) => {
     const { chapter_id, ...updateData } = data;
 
     const latitude = parseFloat(String(data.latitude));
     const longitude = parseFloat(String(data.longitude));
 
-    const { errors } = await updateVenue({
+    const { data: venueData, errors } = await updateVenue({
       variables: {
         venueId,
         chapterId: chapter_id,
@@ -46,7 +49,13 @@ export const EditVenuePage: NextPageWithLayout = () => {
       },
     });
     if (errors) throw errors;
-    await router.push('/dashboard/venues');
+    if (venueData) {
+      await router.push('/dashboard/venues');
+      toast({
+        title: `Venue "${venueData?.updateVenue.name}" updated successfully!`,
+        status: 'success',
+      });
+    }
   };
 
   const hasLoaded = !!venueData && !!chapterData;

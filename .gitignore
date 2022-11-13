@@ -72,12 +72,12 @@ cypress-coverage/
 
 /server/src/**/*.js
 /server/db/**/*.js
-/server/prisma/generator/**/*.js
+/server/prisma/**/*.js
 /server/tests/**/*.js
 /server/reminders/**/*.js
 /server/src/**/*.map
 /server/db/**/*.map
-/server/prisma/generator/**/*.map
+/server/prisma/**/*.map
 /server/tests/**/*.map
 /server/reminders/**/*.map
 /scripts/dev-data/**/*

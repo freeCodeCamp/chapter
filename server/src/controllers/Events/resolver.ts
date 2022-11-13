@@ -50,9 +50,9 @@ import {
   updateCalendarEvent,
 } from '../../services/Google';
 import {
-  adminedFromChapterUsersWhere,
-  isAdminingAll,
-} from '../../util/dashboards';
+  explicitlyAdminedWhere,
+  isAdminFromInstanceRole,
+} from '../../util/adminedChapters';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -400,8 +400,8 @@ export class EventResolver {
     return await prisma.events.findMany({
       where: {
         ...(!showAll && { start_at: { gt: new Date() } }),
-        ...(!isAdminingAll(ctx.user) && {
-          chapter: adminedFromChapterUsersWhere(ctx.user.id),
+        ...(!isAdminFromInstanceRole(ctx.user) && {
+          chapter: explicitlyAdminedWhere(ctx.user.id),
         }),
       },
       include: { venue: true },

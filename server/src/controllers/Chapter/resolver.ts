@@ -19,9 +19,9 @@ import {
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
 import {
-  adminedFromChapterUsersWhere,
-  isAdminingAll,
-} from '../../util/dashboards';
+  explicitlyAdminedWhere,
+  isAdminFromInstanceRole,
+} from '../../util/adminedChapters';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -71,8 +71,8 @@ export class ChapterResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterWithEvents[]> {
     return await prisma.chapters.findMany({
-      ...(!isAdminingAll(ctx.user) && {
-        where: adminedFromChapterUsersWhere(ctx.user.id),
+      ...(!isAdminFromInstanceRole(ctx.user) && {
+        where: explicitlyAdminedWhere(ctx.user.id),
       }),
       include: { events: true },
     });

@@ -14,9 +14,9 @@ import { ResolverCtx } from '../../common-types/gql';
 import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import {
-  adminedFromChapterUsersWhere,
-  isAdminingAll,
-} from '../../util/dashboards';
+  explicitlyAdminedWhere,
+  isAdminFromInstanceRole,
+} from '../../util/adminedChapters';
 import { VenueInputs } from './inputs';
 
 const venueIncludes = {
@@ -52,8 +52,8 @@ export class VenueResolver {
     return await prisma.venues.findMany({
       include: venueIncludes,
       orderBy: { name: 'asc' },
-      ...(!isAdminingAll(ctx.user) && {
-        where: { chapter: adminedFromChapterUsersWhere(ctx.user.id) },
+      ...(!isAdminFromInstanceRole(ctx.user) && {
+        where: { chapter: explicitlyAdminedWhere(ctx.user.id) },
       }),
     });
   }

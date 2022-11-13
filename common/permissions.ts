@@ -9,6 +9,7 @@ export enum ChapterPermission {
   Rsvp = 'rsvp',
   RsvpDelete = 'rsvp-delete',
   RsvpConfirm = 'rsvp-confirm',
+  UsersView = 'users-view',
   VenueCreate = 'venue-create',
   VenueEdit = 'venue-edit',
   VenueDelete = 'venue-delete',

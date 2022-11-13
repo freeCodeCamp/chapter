@@ -582,6 +582,7 @@ export type UpdateUserInputs = {
 export type User = {
   __typename?: 'User';
   auto_subscribe: Scalars['Boolean'];
+  email?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -610,6 +611,7 @@ export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
+  email?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
@@ -678,6 +680,7 @@ export type MeQuery = {
     __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
+    email?: string | null;
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: {
@@ -1654,6 +1657,7 @@ export const MeDocument = gql`
     me {
       id
       name
+      email
       instance_role {
         instance_role_permissions {
           instance_permission {

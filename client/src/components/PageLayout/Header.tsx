@@ -63,7 +63,6 @@ export const Header: React.FC = () => {
               </MenuButton>
               <MenuList paddingBlock={0}>
                 <Flex
-                  gap={'.5em'}
                   flexDirection="column"
                   fontWeight="600"
                   borderRadius="5px"
@@ -77,20 +76,16 @@ export const Header: React.FC = () => {
                   </NextLink>
 
                   {user && (
-                    <NextLink passHref href="/profile">
-                      <MenuItem
-                        borderTop={'1px'}
-                        borderColor={'gray.85'}
-                        as="a"
-                      >
-                        Profile
-                      </MenuItem>
-                    </NextLink>
-                  )}
-                  {CanEditDashboard && (
-                    <NextLink passHref href="/dashboard/chapters">
-                      <MenuItem as="a">Dashboard</MenuItem>
-                    </NextLink>
+                    <Box borderBlock={'1px'} borderColor={'gray.85'}>
+                      <NextLink passHref href="/profile">
+                        <MenuItem as="a">Profile</MenuItem>
+                      </NextLink>
+                      {CanEditDashboard && (
+                        <NextLink passHref href="/dashboard/chapters">
+                          <MenuItem as="a">Dashboard</MenuItem>
+                        </NextLink>
+                      )}
+                    </Box>
                   )}
                   {user ? (
                     <MenuItem
@@ -98,8 +93,6 @@ export const Header: React.FC = () => {
                       onClick={() => logout().then(goHome)}
                       fontWeight="600"
                       height={'100%'}
-                      borderTop={'1px'}
-                      borderColor={'gray.85'}
                     >
                       logout
                     </MenuItem>
@@ -109,8 +102,6 @@ export const Header: React.FC = () => {
                       onClick={login}
                       fontWeight="600"
                       height={'100%'}
-                      borderTop={'1px'}
-                      borderColor={'gray.85'}
                     >
                       login
                     </MenuItem>

@@ -18,6 +18,9 @@ export class User extends BaseObject {
 export class UserWithInstanceRole extends User {
   @Field(() => InstanceRole)
   instance_role: InstanceRole;
+
+  @Field(() => [ChapterUser])
+  user_chapters: ChapterUser[];
 }
 
 @ObjectType()

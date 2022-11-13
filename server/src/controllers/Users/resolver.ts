@@ -15,6 +15,15 @@ const instanceRoleInclude = {
       },
     },
   },
+  user_chapters: {
+    include: {
+      chapter_role: {
+        include: {
+          chapter_role_permissions: { include: { chapter_permission: true } },
+        },
+      },
+    },
+  },
 };
 
 @Resolver()
@@ -47,10 +56,7 @@ export class UsersResolver {
   ): Promise<UserWithInstanceRole> {
     const user = await prisma.users.findUniqueOrThrow({
       where: { id },
-      include: {
-        ...instanceRoleInclude,
-        user_chapters: { include: { chapter_role: true } },
-      },
+      include: instanceRoleInclude,
     });
 
     const oldRole = user.instance_role.name;

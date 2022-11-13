@@ -63,7 +63,7 @@ export type ChapterUser = {
   is_bannable?: Maybe<Scalars['Boolean']>;
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
-  user: User;
+  user?: Maybe<User>;
   user_id: Scalars['Int'];
 };
 
@@ -626,6 +626,7 @@ export type UserWithInstanceRole = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
+  user_chapters: Array<ChapterUser>;
 };
 
 export type Venue = {
@@ -707,6 +708,20 @@ export type MeQuery = {
       id: number;
       name: string;
     }>;
+    user_chapters: Array<{
+      __typename?: 'ChapterUser';
+      chapter_id: number;
+      chapter_role: {
+        __typename?: 'ChapterRole';
+        chapter_role_permissions: Array<{
+          __typename?: 'ChapterRolePermission';
+          chapter_permission: {
+            __typename?: 'ChapterPermission';
+            name: string;
+          };
+        }>;
+      };
+    }>;
   } | null;
 };
 
@@ -787,7 +802,7 @@ export type ChapterUserQuery = {
   chapterUser?: {
     __typename?: 'ChapterUser';
     subscribed: boolean;
-    user: { __typename?: 'User'; name: string };
+    user?: { __typename?: 'User'; name: string } | null;
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   } | null;
 };
@@ -956,7 +971,7 @@ export type DashboardChapterUsersQuery = {
       __typename?: 'ChapterUser';
       subscribed: boolean;
       is_bannable?: boolean | null;
-      user: { __typename?: 'User'; id: number; name: string };
+      user?: { __typename?: 'User'; id: number; name: string } | null;
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
     user_bans: Array<{
@@ -1698,6 +1713,16 @@ export const MeDocument = gql`
       }
       auto_subscribe
       image_url
+      user_chapters {
+        chapter_id
+        chapter_role {
+          chapter_role_permissions {
+            chapter_permission {
+              name
+            }
+          }
+        }
+      }
     }
   }
 `;

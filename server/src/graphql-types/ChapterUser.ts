@@ -19,8 +19,8 @@ export class ChapterUser {
   @Field(() => ChapterRole)
   chapter_role: ChapterRole;
 
-  @Field(() => User)
-  user: User;
+  @Field(() => User, { nullable: true })
+  user?: User;
 
   @Field(() => Boolean, { nullable: true })
   is_bannable?: boolean;

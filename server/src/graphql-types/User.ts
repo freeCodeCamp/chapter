@@ -12,6 +12,9 @@ export class User extends BaseObject {
 
   @Field(() => String, { nullable: true })
   image_url?: string | null;
+
+  @Field(() => String, { nullable: true })
+  email?: string | null;
 }
 
 @ObjectType()

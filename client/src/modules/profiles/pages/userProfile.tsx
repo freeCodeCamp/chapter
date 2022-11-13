@@ -82,6 +82,7 @@ export const UserProfilePage = () => {
           <ProfileForm
             onSubmit={submitUpdateMe}
             data={user}
+            email={user?.email}
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />

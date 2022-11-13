@@ -5,6 +5,7 @@ import {
   FormHelperText,
   FormLabel,
   Switch,
+  Text,
 } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -19,6 +20,7 @@ interface ProfileFormProps {
   data: UpdateUserInputs;
   submitText: string;
   loadingText: string;
+  email?: string | null;
 }
 
 type Fields = {
@@ -47,7 +49,7 @@ const fields: Fields[] = [
 ];
 
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
-  const { onSubmit, data, submitText, loadingText } = props;
+  const { onSubmit, data, submitText, loadingText, email } = props;
 
   const defaultValues: UpdateUserInputs = {
     ...data,
@@ -101,6 +103,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
           />
         ),
       )}
+      <Text>Email: {email}</Text>
       <FormControl>
         <Flex>
           <FormLabel htmlFor="auto_subscribe">

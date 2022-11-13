@@ -5,6 +5,7 @@ export const meQuery = gql`
     me {
       id
       name
+      email
       instance_role {
         instance_role_permissions {
           instance_permission {

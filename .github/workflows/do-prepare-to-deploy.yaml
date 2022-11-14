@@ -12,7 +12,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
       # Due to a quirk of Actions, the .env file overwrites the env: values you
       # set in the YAML. We create this empty file so that the build does not
       # fail, but pass the values in via env:

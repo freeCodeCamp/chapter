@@ -15,7 +15,7 @@ import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
-import { useLogout } from 'hooks/useAuth';
+import { useLogout } from '../../../hooks/useAuth';
 
 export const UserProfilePage = () => {
   const { user } = useAuth();
@@ -88,7 +88,6 @@ export const UserProfilePage = () => {
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />
-
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data
           </Button>

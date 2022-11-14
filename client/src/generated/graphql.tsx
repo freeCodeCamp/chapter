@@ -503,7 +503,6 @@ export type QueryDashboardEventArgs = {
 
 export type QueryDashboardEventsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
-  showAll?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryDashboardSponsorArgs = {
@@ -3152,7 +3151,7 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const DashboardEventsDocument = gql`
   query dashboardEvents {
-    dashboardEvents(showAll: true) {
+    dashboardEvents {
       id
       name
       canceled

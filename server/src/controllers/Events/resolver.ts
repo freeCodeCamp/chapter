@@ -367,11 +367,9 @@ export class EventResolver {
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('showAll', { nullable: true }) showAll?: boolean,
   ): Promise<EventWithVenue[]> {
     return await prisma.events.findMany({
       where: {
-        ...(!showAll && { start_at: { gt: new Date() } }),
         ...(!isAdminFromInstanceRole(ctx.user) && {
           chapter: isChapterAdminWhere(ctx.user.id),
         }),

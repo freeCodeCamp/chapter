@@ -14,8 +14,8 @@ import { ResolverCtx } from '../../common-types/gql';
 import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import {
-  explicitlyAdminedWhere,
   isAdminFromInstanceRole,
+  isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import { VenueInputs } from './inputs';
 
@@ -53,7 +53,7 @@ export class VenueResolver {
       include: venueIncludes,
       orderBy: { name: 'asc' },
       ...(!isAdminFromInstanceRole(ctx.user) && {
-        where: { chapter: explicitlyAdminedWhere(ctx.user.id) },
+        where: { chapter: isChapterAdminWhere(ctx.user.id) },
       }),
     });
   }

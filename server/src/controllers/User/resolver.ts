@@ -17,8 +17,8 @@ import {
 import { prisma } from '../../prisma';
 import { ResolverCtx } from '../../common-types/gql';
 import {
-  explicitlyAdminedWhere,
   isAdminFromInstanceRole,
+  isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import { UpdateUserInputs } from './input';
 
@@ -30,7 +30,7 @@ export class UserWithInstanceRoleResolver {
   ): Promise<Chapter[]> {
     return await prisma.chapters.findMany({
       ...(!isAdminFromInstanceRole(user) && {
-        where: explicitlyAdminedWhere(user.id),
+        where: isChapterAdminWhere(user.id),
       }),
     });
   }

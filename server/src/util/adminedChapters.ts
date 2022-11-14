@@ -12,7 +12,7 @@ export const isAdminFromInstanceRole = ({ instance_role }: User) =>
       instance_permission.name === Permission.ChapterEdit,
   );
 
-export const explicitlyAdminedWhere = (user_id: number) => ({
+export const isChapterAdminWhere = (user_id: number) => ({
   chapter_users: {
     some: {
       AND: [

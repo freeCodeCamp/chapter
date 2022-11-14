@@ -49,8 +49,8 @@ import {
   updateCalendarEvent,
 } from '../../services/Google';
 import {
-  explicitlyAdminedWhere,
   isAdminFromInstanceRole,
+  isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import {
   createCalendarEvent,
@@ -373,7 +373,7 @@ export class EventResolver {
       where: {
         ...(!showAll && { start_at: { gt: new Date() } }),
         ...(!isAdminFromInstanceRole(ctx.user) && {
-          chapter: explicitlyAdminedWhere(ctx.user.id),
+          chapter: isChapterAdminWhere(ctx.user.id),
         }),
       },
       include: { venue: true },

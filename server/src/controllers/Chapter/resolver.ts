@@ -22,8 +22,8 @@ import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
 import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 import {
-  explicitlyAdminedWhere,
   isAdminFromInstanceRole,
+  isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import { isBannable } from '../../util/chapterBans';
 import { redactSecrets } from '../../util/redact-secrets';
@@ -97,7 +97,7 @@ export class ChapterResolver {
   ): Promise<ChapterWithEvents[]> {
     return await prisma.chapters.findMany({
       ...(!isAdminFromInstanceRole(ctx.user) && {
-        where: explicitlyAdminedWhere(ctx.user.id),
+        where: isChapterAdminWhere(ctx.user.id),
       }),
       include: { events: true },
     });

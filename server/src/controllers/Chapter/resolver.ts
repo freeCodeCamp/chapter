@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import { Prisma } from '@prisma/client';
 import {
   Resolver,
@@ -20,6 +22,7 @@ import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
 import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 import { isBannable } from '../../util/chapterBans';
+import { redactSecrets } from '../../util/redact-secrets';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -122,9 +125,9 @@ export class ChapterResolver {
         summary: data.name,
         description: `Events for ${data.name}`,
       });
-    } catch {
-      // TODO: log more details without leaking tokens and user info.
+    } catch (e) {
       console.log('Unable to create calendar');
+      console.error(inspect(redactSecrets(e), { depth: null }));
     }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,

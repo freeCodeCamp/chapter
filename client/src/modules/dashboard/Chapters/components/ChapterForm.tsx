@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+
 import { Input } from '../../../../components/Form/Input';
 import { TextArea } from '../../../../components/Form/TextArea';
 import { Form } from '../../../../components/Form/Form';
@@ -8,9 +9,9 @@ import type {
   DashboardChapterQuery,
   CreateChapterInputs,
 } from '../../../../generated/graphql';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 
 interface ChapterFormProps {
-  loading: boolean;
   onSubmit: (data: CreateChapterInputs) => Promise<void>;
   data?: DashboardChapterQuery;
   submitText: string;
@@ -93,7 +94,7 @@ const fields: Fields[] = [
 ];
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, loadingText } = props;
+  const { onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.dashboardChapter;
 
   const defaultValues: CreateChapterInputs = {
@@ -115,8 +116,16 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     defaultValues,
   });
 
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<CreateChapterInputs>({
+      onSubmit,
+    });
+
   return (
-    <Form submitLabel={submitText} FormHandling={handleSubmit(onSubmit)}>
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
       {fields.map(({ key, label, placeholder, required, type }) =>
         type == 'textarea' ? (
           <TextArea

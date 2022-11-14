@@ -62,8 +62,8 @@ export class VenueResolver {
   @Authorized(Permission.VenueEdit)
   @Mutation(() => Venue)
   updateVenue(
-    @Arg('venueId', () => Int) id: number,
-    @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
+    @Arg('id', () => Int) id: number,
+    @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
     @Arg('data') data: VenueInputs,
   ): Promise<Venue | null> {
     const venueData: Prisma.venuesUpdateInput = data;
@@ -76,8 +76,8 @@ export class VenueResolver {
   @Authorized(Permission.VenueDelete)
   @Mutation(() => Venue)
   async deleteVenue(
-    @Arg('venueId', () => Int) id: number,
-    @Arg('chapterId', () => Int) _onlyUsedForAuth: number,
+    @Arg('id', () => Int) id: number,
+    @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
     return await prisma.venues.delete({

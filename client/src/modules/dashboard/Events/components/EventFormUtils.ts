@@ -117,8 +117,7 @@ export type IEventData = Pick<
 };
 
 export interface EventFormProps {
-  onSubmit: (data: EventFormData) => void;
-  loading: boolean;
+  onSubmit: (data: EventFormData) => Promise<void>;
   data?: IEventData;
   submitText: string;
   chapterId: number;

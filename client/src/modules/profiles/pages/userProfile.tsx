@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Flex, Heading } from '@chakra-ui/react';
+import React from 'react';
+import { Flex, Heading, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
@@ -14,10 +14,9 @@ import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { useAuth } from '../../auth/store';
 import { ProfileForm } from '../component/ProfileForm';
-import { useLogout } from 'hooks/useAuth';
+import { useLogout } from '../../../hooks/useAuth';
 
 export const UserProfilePage = () => {
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
@@ -31,20 +30,19 @@ export const UserProfilePage = () => {
     refetchQueries: [{ query: meQuery }],
   });
 
+  const toast = useToast();
+
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
     const image_url = data.image_url;
-    setLoadingUpdate(true);
-    try {
-      await updateMe({
-        variables: {
-          data: { name, auto_subscribe: data.auto_subscribe, image_url },
-        },
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingUpdate(false);
+    const { data: userData, errors } = await updateMe({
+      variables: {
+        data: { name, auto_subscribe: data.auto_subscribe, image_url },
+      },
+    });
+    if (errors) throw errors;
+    if (userData) {
+      toast({ title: 'Profile saved!', status: 'success' });
     }
   };
 
@@ -82,13 +80,11 @@ export const UserProfilePage = () => {
           )}
 
           <ProfileForm
-            loading={loadingUpdate}
             onSubmit={submitUpdateMe}
             data={user}
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />
-
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data
           </Button>

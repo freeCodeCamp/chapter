@@ -1,4 +1,4 @@
 {
   "extends": "./server/tsconfig.json",
-  "compilerOptions": { "jsx": "react" }
+  "compilerOptions": { "jsx": "react", "noEmit": true, "allowJs": false }
 }

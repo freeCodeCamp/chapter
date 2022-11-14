@@ -1,6 +1,7 @@
+import { useToast } from '@chakra-ui/react';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 
 import { useParam } from '../../../../hooks/useParam';
 import { Sponsors } from '../../Events/graphql/queries';
@@ -15,7 +16,6 @@ import {
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 const EditSponsorPage: NextPageWithLayout = () => {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { param: sponsorId } = useParam('id');
   const {
@@ -32,20 +32,22 @@ const EditSponsorPage: NextPageWithLayout = () => {
     ],
   });
 
+  const toast = useToast();
+
   const onSubmit = async (data: SponsorFormData) => {
-    setLoading(true);
-    try {
-      updateSponsor({
-        variables: {
-          data,
-          updateSponsorId: sponsorId,
-        },
+    const { data: sponsorData, errors } = await updateSponsor({
+      variables: {
+        data,
+        updateSponsorId: sponsorId,
+      },
+    });
+    if (errors) throw errors;
+    if (sponsorData) {
+      await router.replace('/dashboard/sponsors');
+      toast({
+        title: `Sponsor "${sponsorData?.updateSponsor.name}" updated successfully!`,
+        status: 'success',
       });
-      router.replace('/dashboard/sponsors');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -56,7 +58,6 @@ const EditSponsorPage: NextPageWithLayout = () => {
 
   return (
     <SponsorForm
-      loading={loading}
       onSubmit={onSubmit}
       data={data}
       submitText="Save Sponsor Changes"

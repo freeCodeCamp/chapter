@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import {
   events,
   events_venue_type_enum,
@@ -43,12 +44,15 @@ import {
 } from '../../services/UnsubscribeToken';
 import {
   cancelCalendarEvent,
-  createCalendarEvent,
   deleteCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
-import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
+import {
+  createCalendarEvent,
+  updateCalendarEventAttendees,
+} from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
+import { redactSecrets } from '../../util/redact-secrets';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -330,10 +334,10 @@ export class EventResolver {
   @Authorized(Permission.EventEdit)
   @Query(() => EventWithRelations, { nullable: true })
   async dashboardEvent(
-    @Arg('eventId', () => Int) eventId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         chapter: true,
         venue: true,
@@ -357,10 +361,10 @@ export class EventResolver {
   // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
-    @Arg('eventId', () => Int) eventId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         chapter: true,
         venue: true,
@@ -663,30 +667,38 @@ ${unsubscribeOptions}`,
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      try {
-        const { calendarEventId } = await createCalendarEvent({
-          calendarId: chapter.calendar_id,
-          start: event.start_at,
-          end: event.ends_at,
-          summary: event.name,
-          attendeeEmails: [ctx.user.email],
-        });
-
-        await prisma.events.update({
-          where: {
-            id: event.id,
-          },
-          data: {
-            calendar_event_id: calendarEventId,
-          },
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to create calendar event');
-      }
+      await createCalendarEvent({
+        attendeeEmails: [ctx.user.email],
+        calendarId: chapter.calendar_id,
+        event,
+      });
     }
 
     return event;
+  }
+
+  @Authorized(Permission.EventCreate)
+  @Mutation(() => Event)
+  async createCalendarEvent(@Arg('id', () => Int) id: number): Promise<Event> {
+    const event = await prisma.events.findUniqueOrThrow({
+      where: { id },
+      include: { chapter: true, event_users: { include: { user: true } } },
+    });
+    if (event.calendar_event_id) return event;
+    if (!event.chapter.calendar_id) {
+      throw Error(
+        'Calendar events cannot be created when chapter does not have a Google calendar',
+      );
+    }
+
+    const attendeeEmails =
+      event.event_users.map(({ user: { email } }) => email) ?? [];
+    const updatedEvent = await createCalendarEvent({
+      attendeeEmails,
+      calendarId: event.chapter.calendar_id,
+      event,
+    });
+    return updatedEvent ? updatedEvent : event;
   }
 
   @Authorized(Permission.EventEdit)
@@ -761,9 +773,9 @@ ${unsubscribeOptions}`,
             ({ user }) => user.email,
           ),
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to update calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
 
@@ -817,9 +829,9 @@ ${unsubscribeOptions}`,
           end: event.ends_at,
           attendeeEmails: event.event_users.map(({ user }) => user.email),
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to cancel calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
 
@@ -846,9 +858,9 @@ ${unsubscribeOptions}`,
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to delete calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
     return event;

@@ -14,7 +14,7 @@ export const SharePopOver = ({
   size,
 }: {
   link: string;
-  size?: string;
+  size?: string | string[];
 }) => {
   return (
     <Popover>

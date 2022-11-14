@@ -19,8 +19,9 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
-import { DASHBOARD_VENUES } from '../../Venues/graphql/queries';
+import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { DASHBOARD_EVENTS } from '../../Events/graphql/queries';
+import { DASHBOARD_VENUES } from '../../Venues/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -33,13 +34,14 @@ export const ChapterPage: NextPageWithLayout = () => {
   const [deleteChapter] = useDeleteChapterMutation({
     refetchQueries: [
       { query: CHAPTERS },
+      { query: DASHBOARD_CHAPTERS },
       { query: DASHBOARD_EVENTS },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+      { query: DASHBOARD_VENUES },
       {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
         variables: { offset: 0, limit: 5 },
       },
-      { query: DASHBOARD_VENUES },
+      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
 

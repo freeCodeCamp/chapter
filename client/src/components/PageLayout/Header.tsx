@@ -8,6 +8,7 @@ import {
   MenuList,
   MenuItem,
   MenuButton,
+  Spinner,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -25,14 +26,10 @@ import { useLogout, useLogin } from 'hooks/useAuth';
 
 export const Header: React.FC = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loadingUser } = useAuth();
   const logout = useLogout();
   const login = useLogin();
   const goHome = () => router.push('/');
-  const CanEditDashboard = user?.instance_role.instance_role_permissions.filter(
-    ({ instance_permission }) =>
-      instance_permission.name === 'owner' || 'chapter_administrator',
-  );
 
   return (
     <>
@@ -50,65 +47,67 @@ export const Header: React.FC = () => {
         </Link>
         <HStack as="nav">
           <Box>
-            <Menu>
-              <MenuButton
-                as={Button}
-                aria-label="Options"
-                variant="outline"
-                background="gray.10"
-                px={[2, 4]}
-                py={[1, 2]}
-              >
-                Menu
-              </MenuButton>
-              <MenuList paddingBlock={0}>
-                <Flex
-                  flexDirection="column"
-                  fontWeight="600"
-                  borderRadius="5px"
+            {loadingUser ? (
+              <Spinner color="white" size="xl" />
+            ) : (
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  aria-label="Options"
+                  variant="outline"
+                  background="gray.10"
+                  px={[2, 4]}
+                  py={[1, 2]}
                 >
-                  <NextLink passHref href="/chapters">
-                    <MenuItem as="a">Chapters</MenuItem>
-                  </NextLink>
+                  Menu
+                </MenuButton>
+                <MenuList paddingBlock={0}>
+                  <Flex
+                    flexDirection="column"
+                    fontWeight="600"
+                    borderRadius="5px"
+                  >
+                    <NextLink passHref href="/chapters">
+                      <MenuItem as="a">Chapters</MenuItem>
+                    </NextLink>
 
-                  <NextLink passHref href="/events">
-                    <MenuItem as="a">Events</MenuItem>
-                  </NextLink>
+                    <NextLink passHref href="/events">
+                      <MenuItem as="a">Events</MenuItem>
+                    </NextLink>
 
-                  {user && (
-                    <Box borderBlock={'1px'} borderColor={'gray.85'}>
-                      <NextLink passHref href="/profile">
-                        <MenuItem as="a">Profile</MenuItem>
-                      </NextLink>
-                      {CanEditDashboard && (
+                    {user && (
+                      <Box borderBlock={'1px'} borderColor={'gray.85'}>
+                        <NextLink passHref href="/profile">
+                          <MenuItem as="a">Profile</MenuItem>
+                        </NextLink>
                         <NextLink passHref href="/dashboard/chapters">
                           <MenuItem as="a">Dashboard</MenuItem>
                         </NextLink>
-                      )}
-                    </Box>
-                  )}
-                  {user ? (
-                    <MenuItem
-                      data-cy="logout-button"
-                      onClick={() => logout().then(goHome)}
-                      fontWeight="600"
-                      height={'100%'}
-                    >
-                      Logout
-                    </MenuItem>
-                  ) : (
-                    <MenuItem
-                      data-cy="login-button"
-                      onClick={login}
-                      fontWeight="600"
-                      height={'100%'}
-                    >
-                      Login
-                    </MenuItem>
-                  )}
-                </Flex>
-              </MenuList>
-            </Menu>
+                      </Box>
+                    )}
+                    {user ? (
+                      <MenuItem
+                        data-cy="logout-button"
+                        onClick={() => logout().then(goHome)}
+                        fontWeight="600"
+                        height={'100%'}
+                      >
+                        Logout
+                      </MenuItem>
+                    ) : (
+                      <MenuItem
+                        data-cy="login-button"
+                        onClick={login}
+                        fontWeight="600"
+                        height={'100%'}
+                      >
+                        Login
+                      </MenuItem>
+                    )}
+                  </Flex>
+                </MenuList>
+              </Menu>
+            )}
           </Box>
           {user && (
             <NextLink passHref href="/profile">

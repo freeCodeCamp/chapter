@@ -32,9 +32,13 @@ import {
 import { useParam } from '../../../../../hooks/useParam';
 import { DASHBOARD_CHAPTER_USERS } from '../../graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
+import { checkPermission } from '../../../../../util/check-permission';
+import { Permission } from '../../../../../../../common/permissions';
+import { useAuth } from '../../../../../modules/auth/store';
 
 export const ChapterUsersPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
+  const { user, loadingUser } = useAuth();
 
   const { loading, error, data } = useDashboardChapterUsersQuery({
     variables: { chapterId },
@@ -127,7 +131,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     [data?.dashboardChapter?.chapter_users, data?.dashboardChapter?.user_bans],
   );
 
-  const isLoading = loading || !data;
+  const isLoading = loading || !data || loadingUser;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
@@ -166,29 +170,33 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                   )}
                 </HStack>
               ),
-              actions: ({ is_bannable, user, chapter_role }) => (
+              actions: ({ is_bannable, user: otherUser, chapter_role }) => (
                 <HStack>
-                  <Button
-                    data-cy="changeRole"
-                    colorScheme="blue"
-                    size="xs"
-                    onClick={() =>
-                      changeRole({
-                        roleName: chapter_role.name,
-                        userId: user.id,
-                        userName: user.name,
-                      })
-                    }
-                  >
-                    Change
-                  </Button>
+                  {checkPermission(user, Permission.ChapterUserRoleChange, {
+                    chapterId,
+                  }) && (
+                    <Button
+                      data-cy="changeRole"
+                      colorScheme="blue"
+                      size="xs"
+                      onClick={() =>
+                        changeRole({
+                          roleName: chapter_role.name,
+                          userId: otherUser.id,
+                          userName: otherUser.name,
+                        })
+                      }
+                    >
+                      Change
+                    </Button>
+                  )}
                   {is_bannable &&
-                    (bans.has(user.id) ? (
+                    (bans.has(otherUser.id) ? (
                       <Button
                         data-cy="unbanUser"
                         colorScheme="purple"
                         size="xs"
-                        onClick={() => onUnban(user)}
+                        onClick={() => onUnban(otherUser)}
                       >
                         Unban
                       </Button>
@@ -197,7 +205,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         data-cy="banUser"
                         colorScheme="red"
                         size="xs"
-                        onClick={() => onBan(user)}
+                        onClick={() => onBan(otherUser)}
                       >
                         Ban
                       </Button>

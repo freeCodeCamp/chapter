@@ -63,11 +63,6 @@ export const ChapterPage: NextPageWithLayout = () => {
     router.push('/dashboard/chapters');
   };
 
-  const isLoading = loading || !data || loadingUser;
-  if (isLoading || error) return <DashboardLoading error={error} />;
-  if (!data.dashboardChapter)
-    return <NextError statusCode={404} title="Chapter not found" />;
-
   const actionLinks = [
     {
       colorScheme: 'blue',
@@ -104,6 +99,11 @@ export const ChapterPage: NextPageWithLayout = () => {
       ),
     [actionLinks, chapterId, user],
   );
+
+  const isLoading = loading || !data || loadingUser;
+  if (isLoading || error) return <DashboardLoading error={error} />;
+  if (!data.dashboardChapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
     <>

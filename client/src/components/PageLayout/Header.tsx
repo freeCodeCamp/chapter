@@ -94,7 +94,7 @@ export const Header: React.FC = () => {
                       fontWeight="600"
                       height={'100%'}
                     >
-                      logout
+                      Logout
                     </MenuItem>
                   ) : (
                     <MenuItem
@@ -103,7 +103,7 @@ export const Header: React.FC = () => {
                       fontWeight="600"
                       height={'100%'}
                     >
-                      login
+                      Login
                     </MenuItem>
                   )}
                 </Flex>

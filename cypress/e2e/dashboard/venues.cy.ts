@@ -1,7 +1,4 @@
-import {
-  expectOnlyObjectIdsInLinks,
-  expectToBeRejected,
-} from '../../support/util';
+import { expectToBeRejected, getFirstPathParam } from '../../support/util';
 
 describe('venues dashboard', () => {
   let users;
@@ -154,9 +151,12 @@ describe('venues dashboard', () => {
     cy.login(users.chapter1Admin.email);
     const chapterId = 1;
     cy.visit('/dashboard/venues');
-    cy.getChapterVenues(chapterId).then((venues) =>
-      expectOnlyObjectIdsInLinks(venues, 'view-venue-button'),
-    );
+    cy.getChapterVenues(chapterId).then((venues) => {
+      const venueIds = venues.map(({ id }) => id);
+      cy.get('[data-cy=view-venue-button]').each((link) =>
+        expect(venueIds).to.include(getFirstPathParam(link)),
+      );
+    });
   });
 
   describe('adding venue with chapter selected in form', () => {

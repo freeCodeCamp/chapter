@@ -2,8 +2,8 @@ import add from 'date-fns/add';
 import { EventUsers } from '../../../../cypress.config';
 import {
   expectNoErrors,
-  expectOnlyObjectIdsInLinks,
   expectToBeRejected,
+  getFirstPathParam,
 } from '../../../support/util';
 
 const chapterId = 1;
@@ -264,8 +264,11 @@ describe('events dashboard', () => {
     cy.login(users.chapter1Admin.email);
     const chapterId = 1;
     cy.visit('/dashboard/events');
-    cy.getChapterEvents(chapterId).then((events) =>
-      expectOnlyObjectIdsInLinks(events, 'event'),
-    );
+    cy.getChapterEvents(chapterId).then((events) => {
+      const eventIds = events.map(({ id }) => id);
+      cy.get('[data-cy=event]').each((link) =>
+        expect(eventIds).to.include(getFirstPathParam(link)),
+      );
+    });
   });
 });

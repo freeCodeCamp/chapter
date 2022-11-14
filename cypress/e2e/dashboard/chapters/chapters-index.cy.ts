@@ -1,7 +1,7 @@
 import {
-  expectHrefIdToBeInArray,
   expectNoErrors,
   expectToBeRejected,
+  getFirstPathParam,
 } from '../../../support/util';
 
 const chapterId = 1;
@@ -130,7 +130,7 @@ describe('chapters dashboard', () => {
     cy.login(users.chapter1Admin.email);
     cy.visit('/dashboard/chapters');
     cy.get('[data-cy=chapter]').each((link) =>
-      expectHrefIdToBeInArray(link, [adminedChapter]),
+      expect(getFirstPathParam(link)).to.eq(adminedChapter),
     );
   });
 });

@@ -67,7 +67,7 @@ export const ChapterPage: NextPageWithLayout = () => {
     {
       colorScheme: 'blue',
       size: 'sm',
-      href: `${chapterId}/new-event'`,
+      href: `${chapterId}/new-event`,
       text: 'Add new event',
       dataCy: 'create-event',
       requiredPermission: Permission.EventCreate,
@@ -75,7 +75,7 @@ export const ChapterPage: NextPageWithLayout = () => {
     {
       colorScheme: 'blue',
       size: 'sm',
-      href: `${chapterId}/new-venue'`,
+      href: `${chapterId}/new-venue`,
       text: 'Add new venue',
       dataCy: 'create-venue',
       requiredPermission: Permission.VenueCreate,
@@ -83,7 +83,7 @@ export const ChapterPage: NextPageWithLayout = () => {
     {
       colorScheme: 'blue',
       size: 'sm',
-      href: `${chapterId}/edit'`,
+      href: `${chapterId}/edit`,
       text: 'Edit',
       dataCy: 'edit-chapter',
       requiredPermission: Permission.EventEdit,

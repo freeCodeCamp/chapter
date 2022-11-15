@@ -3,7 +3,7 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
-import { useVenuesQuery } from '../../../../generated/graphql';
+import { useDashboardVenuesQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import getLocationString from '../../../../util/getLocationString';
@@ -11,7 +11,7 @@ import { useAuth } from '../../../auth/store';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const VenuesPage: NextPageWithLayout = () => {
-  const { loading, error, data } = useVenuesQuery();
+  const { loading, error, data } = useDashboardVenuesQuery();
 
   const { user } = useAuth();
   const adminedChapters = user?.admined_chapters ?? [];
@@ -38,7 +38,7 @@ export const VenuesPage: NextPageWithLayout = () => {
         <Box display={{ base: 'none', lg: 'block' }}>
           <DataTable
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            data={data.venues}
+            data={data.dashboardVenues}
             keys={['name', 'location', 'chapter', 'action'] as const}
             mapper={{
               name: (venue) => (
@@ -73,7 +73,7 @@ export const VenuesPage: NextPageWithLayout = () => {
         </Box>
 
         <Box display={{ base: 'block', lg: 'none' }}>
-          {data.venues.map(
+          {data.dashboardVenues.map(
             (
               { id, name, chapter, chapter_id, region, postal_code, country },
               index,
@@ -83,7 +83,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                 tableProps={{
                   table: { 'aria-labelledby': 'page-heading' },
                 }}
-                data={[data.venues[index]]}
+                data={[data.dashboardVenues[index]]}
                 showHeader={false}
                 keys={['type', 'action'] as const}
                 mapper={{

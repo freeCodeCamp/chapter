@@ -525,6 +525,26 @@ const getChapterEvents = (id: number) => {
 Cypress.Commands.add('getChapterEvents', getChapterEvents);
 
 /**
+ * Get venues for chapter using GQL query
+ * @param id Chapter id
+ */
+const getChapterVenues = (id: number) => {
+  const chapterVenuesQuery = {
+    operationName: 'chapterVenues',
+    variables: { id },
+    query: `query chapterVenues($id: Int!) {
+      chapterVenues(chapterId: $id) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .authedRequest(gqlOptions(chapterVenuesQuery))
+    .then((response) => response.body.data.chapterVenues);
+};
+Cypress.Commands.add('getChapterVenues', getChapterVenues);
+
+/**
  * Join chapter using GQL mutation
  * @param chapterId Chapter id
  * @param {object} [options={ withAuth: boolean }] Optional options object.
@@ -767,6 +787,7 @@ declare global {
       sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterRoles: typeof getChapterRoles;
+      getChapterVenues: typeof getChapterVenues;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
       leaveChapter: typeof leaveChapter;

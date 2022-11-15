@@ -28,6 +28,7 @@ import {
   EventUser,
   EventWithRelations,
   EventWithChapter,
+  EventWithVenue,
   User,
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
@@ -47,6 +48,10 @@ import {
   deleteCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
+import {
+  isAdminFromInstanceRole,
+  isChapterAdminWhere,
+} from '../../util/adminedChapters';
 import {
   createCalendarEvent,
   updateCalendarEventAttendees,
@@ -355,6 +360,23 @@ export class EventResolver {
         },
         sponsors: { include: { sponsor: true } },
       },
+    });
+  }
+
+  @Query(() => [EventWithVenue])
+  async dashboardEvents(
+    @Ctx() ctx: Required<ResolverCtx>,
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+  ): Promise<EventWithVenue[]> {
+    return await prisma.events.findMany({
+      where: {
+        ...(!isAdminFromInstanceRole(ctx.user) && {
+          chapter: isChapterAdminWhere(ctx.user.id),
+        }),
+      },
+      include: { venue: true },
+      take: limit,
+      orderBy: { start_at: 'asc' },
     });
   }
 

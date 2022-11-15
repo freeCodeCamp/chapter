@@ -8,11 +8,11 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useAuth } from '../../../auth/store';
-import { useEventsQuery } from '../../../../generated/graphql';
+import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EventsPage: NextPageWithLayout = () => {
-  const { error, loading, data } = useEventsQuery();
+  const { error, loading, data } = useDashboardEventsQuery();
 
   const { user } = useAuth();
 
@@ -37,7 +37,7 @@ export const EventsPage: NextPageWithLayout = () => {
         <HStack display={{ base: 'none', lg: 'block' }} marginBlock={'2em'}>
           <DataTable
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            data={data.events}
+            data={data.dashboardEvents}
             keys={
               [
                 'status',
@@ -73,6 +73,7 @@ export const EventsPage: NextPageWithLayout = () => {
               name: (event) => (
                 <VStack align="flex-start">
                   <LinkButton
+                    data-cy="event"
                     colorScheme={event.canceled ? 'red' : undefined}
                     href={`/dashboard/events/${event.id}`}
                   >
@@ -104,7 +105,7 @@ export const EventsPage: NextPageWithLayout = () => {
           />
         </HStack>
         <HStack display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-          {data.events.map(
+          {data.dashboardEvents.map(
             (
               {
                 canceled,
@@ -124,7 +125,7 @@ export const EventsPage: NextPageWithLayout = () => {
                 tableProps={{
                   table: { 'aria-labelledby': 'page-heading' },
                 }}
-                data={[data.events[index]]}
+                data={[data.dashboardEvents[index]]}
                 keys={['type', 'action'] as const}
                 showHeader={false}
                 mapper={{
@@ -171,6 +172,7 @@ export const EventsPage: NextPageWithLayout = () => {
                       </HStack>
                       <VStack align="flex-start">
                         <LinkButton
+                          data-cy="event"
                           fontSize={'sm'}
                           height={'2em'}
                           size={'sm'}

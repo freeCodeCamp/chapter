@@ -1,4 +1,8 @@
-import { expectNoErrors, expectToBeRejected } from '../../../support/util';
+import {
+  expectNoErrors,
+  expectToBeRejected,
+  getFirstPathParam,
+} from '../../../support/util';
 
 const chapterId = 1;
 
@@ -119,5 +123,14 @@ describe('chapters dashboard', () => {
       cy.visit(`/dashboard/chapters/${response.body.data.createChapter.id}`);
       cy.contains(chapterData.name);
     });
+  });
+
+  it('chapter admin should see only admined chapters', () => {
+    const adminedChapter = 1;
+    cy.login(users.chapter1Admin.email);
+    cy.visit('/dashboard/chapters');
+    cy.get('[data-cy=chapter]').each((link) =>
+      expect(getFirstPathParam(link)).to.eq(adminedChapter),
+    );
   });
 });

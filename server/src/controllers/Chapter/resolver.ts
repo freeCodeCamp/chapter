@@ -21,6 +21,10 @@ import {
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
 import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
+import {
+  isAdminFromInstanceRole,
+  isChapterAdminWhere,
+} from '../../util/adminedChapters';
 import { isBannable } from '../../util/chapterBans';
 import { redactSecrets } from '../../util/redact-secrets';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
@@ -85,6 +89,18 @@ export class ChapterResolver {
     }));
 
     return { ...chapter, chapter_users: usersWithIsBannable };
+  }
+
+  @Query(() => [ChapterWithEvents])
+  async dashboardChapters(
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<ChapterWithEvents[]> {
+    return await prisma.chapters.findMany({
+      ...(!isAdminFromInstanceRole(ctx.user) && {
+        where: isChapterAdminWhere(ctx.user.id),
+      }),
+      include: { events: true },
+    });
   }
 
   @Query(() => ChapterWithRelations)

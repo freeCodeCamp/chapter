@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client';
 import React from 'react';
 import { Flex, Heading, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
@@ -20,6 +21,7 @@ export const UserProfilePage = () => {
   const { user } = useAuth();
   const logout = useLogout();
   const router = useRouter();
+  const client = useApolloClient();
 
   const confirmDelete = useConfirmDelete({
     body: 'Are you sure you want to delete your account? Account deletion cannot be reversed.',
@@ -51,7 +53,8 @@ export const UserProfilePage = () => {
     if (!ok) return;
     await deleteMe();
     await logout();
-    router.push('/');
+    await router.push('/');
+    await client.resetStore();
   };
 
   return (

@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client';
 import { HStack } from '@chakra-ui/layout';
 import {
   Box,
@@ -12,14 +13,14 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import NextLink from 'next/link';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
+import { useLogout, useLogin } from '../../hooks/useAuth';
 import { HeaderContainer } from './component/HeaderContainer';
-import { useLogout, useLogin } from 'hooks/useAuth';
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
@@ -29,7 +30,12 @@ export const Header: React.FC = () => {
   const { user, loadingUser } = useAuth();
   const logout = useLogout();
   const login = useLogin();
-  const goHome = () => router.push('/');
+  const client = useApolloClient();
+
+  const goHome = async () => {
+    await router.push('/');
+    await client.resetStore();
+  };
 
   return (
     <>

@@ -18,6 +18,9 @@ export const checkPermission = (
     return true;
   if (!options) return false;
 
+  if (user.user_bans.some(({ chapter_id }) => chapter_id === options.chapterId))
+    return false;
+
   if (
     user.user_chapters
       .find(({ chapter_id }) => chapter_id === options.chapterId)

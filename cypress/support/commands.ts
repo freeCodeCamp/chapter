@@ -698,7 +698,7 @@ const unbanUser = (
     variables: { chapterId, userId },
     query: `mutation unbanUser($chapterId: Int!, $userId: Int!) {
       unbanUser(chapterId: $chapterId, userId: $userId) {
-        user _id
+        user_id
       }
     }`,
   };

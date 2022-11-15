@@ -1,34 +1,48 @@
-import type { AuthContextType } from '../modules/auth/store';
 import {
   InstancePermission,
   ChapterPermission,
 } from '../../../common/permissions';
+import { AuthContextType } from '../modules/auth/store';
+
+type User = NonNullable<AuthContextType['user']>;
+
+function isAllowedByChapterRole(
+  user: User,
+  requiredPermission: string,
+  options: { chapterId: number },
+) {
+  const chapterRole = user.user_chapters.find(
+    ({ chapter_id }) => chapter_id === options.chapterId,
+  )?.chapter_role;
+  return chapterRole
+    ? chapterRole.chapter_role_permissions.some(
+        ({ chapter_permission: { name } }) => name === requiredPermission,
+      )
+    : false;
+}
+
+function isAllowedByInstanceRole(user: User, requiredPermission: string) {
+  return user.instance_role.instance_role_permissions.some(
+    ({ instance_permission: { name } }) => name === requiredPermission,
+  );
+}
+
+function isBannedFromChapter(user: User, options: { chapterId: number }) {
+  return user.user_bans.some(
+    ({ chapter_id }) => chapter_id === options.chapterId,
+  );
+}
 
 export const checkPermission = (
   user: AuthContextType['user'],
-  permission: InstancePermission | ChapterPermission,
+  requiredPermission: InstancePermission | ChapterPermission,
   options?: { chapterId: number },
 ) => {
   if (!user) return false;
-  if (
-    user.instance_role.instance_role_permissions.some(
-      (x) => x.instance_permission.name === permission,
-    )
-  )
-    return true;
+  if (isAllowedByInstanceRole(user, requiredPermission)) return true;
   if (!options) return false;
-
-  if (user.user_bans.some(({ chapter_id }) => chapter_id === options.chapterId))
-    return false;
-
-  if (
-    user.user_chapters
-      .find(({ chapter_id }) => chapter_id === options.chapterId)
-      ?.chapter_role.chapter_role_permissions.some(
-        ({ chapter_permission: { name } }) => name === permission,
-      )
-  )
-    return true;
+  if (isBannedFromChapter(user, options)) return false;
+  if (isAllowedByChapterRole(user, requiredPermission, options)) return true;
 
   return false;
 };

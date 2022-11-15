@@ -11,7 +11,7 @@ import { Prisma } from '@prisma/client';
 import {
   User,
   Chapter,
-  UserWithInstanceRole,
+  UserWithPermissions,
   UserInformation,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -19,11 +19,11 @@ import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
 import { UpdateUserInputs } from './input';
 
-@Resolver(() => UserWithInstanceRole)
+@Resolver(() => UserWithPermissions)
 export class UserWithInstanceRoleResolver {
   @FieldResolver(() => [Chapter])
   async admined_chapters(
-    @Root() user: UserWithInstanceRole,
+    @Root() user: UserWithPermissions,
   ): Promise<Chapter[]> {
     if (
       user.instance_role.instance_role_permissions.some(

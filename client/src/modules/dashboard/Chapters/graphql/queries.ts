@@ -51,9 +51,7 @@ export const DASHBOARD_CHAPTER_USERS = gql`
         is_bannable
       }
       user_bans {
-        user {
-          id
-        }
+        user_id
       }
     }
   }

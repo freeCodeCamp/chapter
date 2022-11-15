@@ -3198,7 +3198,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "UserWithInstanceRole",
+                "name": "UserWithPermissions",
                 "ofType": null
               }
             },
@@ -4755,7 +4755,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "UserWithInstanceRole",
+              "name": "UserWithPermissions",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4935,7 +4935,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "UserWithInstanceRole",
+                    "name": "UserWithPermissions",
                     "ofType": null
                   }
                 }
@@ -5694,6 +5694,49 @@
         "description": null,
         "fields": [
           {
+            "name": "chapter_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "UserBanWithRelations",
+        "description": null,
+        "fields": [
+          {
             "name": "chapter",
             "description": null,
             "args": [],
@@ -5710,6 +5753,22 @@
             "deprecationReason": null
           },
           {
+            "name": "chapter_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "user",
             "description": null,
             "args": [],
@@ -5719,6 +5778,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "User",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -5843,7 +5918,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "UserBan",
+                    "name": "UserBanWithRelations",
                     "ofType": null
                   }
                 }
@@ -5908,7 +5983,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "UserWithInstanceRole",
+        "name": "UserWithPermissions",
         "description": null,
         "fields": [
           {
@@ -6006,6 +6081,30 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user_bans",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "UserBan",
+                    "ofType": null
+                  }
+                }
               }
             },
             "isDeprecated": false,

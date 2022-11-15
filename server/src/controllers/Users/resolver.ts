@@ -2,7 +2,7 @@ import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 
 import { prisma } from '../../prisma';
 
-import { UserWithInstanceRole } from '../../graphql-types';
+import { UserWithPermissions } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { InstanceRoles } from '../../../prisma/init/factories/instanceRoles.factory';
 import { getRoleName } from '../../util/chapterAdministrator';
@@ -24,13 +24,14 @@ const instanceRoleInclude = {
       },
     },
   },
+  user_bans: true,
 };
 
 @Resolver()
 export class UsersResolver {
   @Authorized(Permission.UsersView)
-  @Query(() => [UserWithInstanceRole])
-  async users(): Promise<UserWithInstanceRole[]> {
+  @Query(() => [UserWithPermissions])
+  async users(): Promise<UserWithPermissions[]> {
     const users = await prisma.users.findMany({
       orderBy: { name: 'asc' },
       include: instanceRoleInclude,
@@ -49,11 +50,11 @@ export class UsersResolver {
   }
 
   @Authorized(Permission.UserInstanceRoleChange)
-  @Mutation(() => UserWithInstanceRole)
+  @Mutation(() => UserWithPermissions)
   async changeInstanceUserRole(
     @Arg('roleName', () => String) newRole: string,
     @Arg('id', () => Int) id: number,
-  ): Promise<UserWithInstanceRole> {
+  ): Promise<UserWithPermissions> {
     const user = await prisma.users.findUniqueOrThrow({
       where: { id },
       include: instanceRoleInclude,

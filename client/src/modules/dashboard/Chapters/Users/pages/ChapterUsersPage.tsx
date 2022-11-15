@@ -127,7 +127,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
   };
 
   const bans = useMemo(
-    () => new Set(data?.dashboardChapter?.user_bans.map((ban) => ban.user.id)),
+    () =>
+      new Set(data?.dashboardChapter?.user_bans.map(({ user_id }) => user_id)),
     [data?.dashboardChapter?.chapter_users, data?.dashboardChapter?.user_bans],
   );
 

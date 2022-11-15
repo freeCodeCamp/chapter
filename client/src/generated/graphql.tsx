@@ -294,7 +294,7 @@ export type Mutation = {
   cancelEvent: Event;
   cancelRsvp?: Maybe<EventUser>;
   changeChapterUserRole: ChapterUserWithRelations;
-  changeInstanceUserRole: UserWithInstanceRole;
+  changeInstanceUserRole: UserWithPermissions;
   confirmRsvp: EventUser;
   createCalendarEvent: Event;
   createChapter: Chapter;
@@ -482,13 +482,13 @@ export type Query = {
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<UserWithInstanceRole>;
+  me?: Maybe<UserWithPermissions>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   userInformation?: Maybe<UserInformation>;
-  users: Array<UserWithInstanceRole>;
+  users: Array<UserWithPermissions>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
 };
@@ -620,8 +620,16 @@ export type User = {
 
 export type UserBan = {
   __typename?: 'UserBan';
+  chapter_id: Scalars['Float'];
+  user_id: Scalars['Float'];
+};
+
+export type UserBanWithRelations = {
+  __typename?: 'UserBanWithRelations';
   chapter: Chapter;
+  chapter_id: Scalars['Float'];
   user: User;
+  user_id: Scalars['Float'];
 };
 
 export type UserInformation = {
@@ -632,19 +640,20 @@ export type UserInformation = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBan>;
+  user_bans: Array<UserBanWithRelations>;
   user_chapters: Array<ChapterUserWithRelations>;
   user_events: Array<EventUser>;
 };
 
-export type UserWithInstanceRole = {
-  __typename?: 'UserWithInstanceRole';
+export type UserWithPermissions = {
+  __typename?: 'UserWithPermissions';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
+  user_bans: Array<UserBan>;
   user_chapters: Array<ChapterUserWithRole>;
 };
 
@@ -707,7 +716,7 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserWithPermissions';
     id: number;
     name: string;
     auto_subscribe: boolean;
@@ -907,10 +916,7 @@ export type BanUserMutationVariables = Exact<{
 
 export type BanUserMutation = {
   __typename?: 'Mutation';
-  banUser: {
-    __typename?: 'UserBan';
-    user: { __typename?: 'User'; name: string };
-  };
+  banUser: { __typename?: 'UserBan'; user_id: number };
 };
 
 export type UnbanUserMutationVariables = Exact<{
@@ -920,10 +926,7 @@ export type UnbanUserMutationVariables = Exact<{
 
 export type UnbanUserMutation = {
   __typename?: 'Mutation';
-  unbanUser: {
-    __typename?: 'UserBan';
-    user: { __typename?: 'User'; name: string };
-  };
+  unbanUser: { __typename?: 'UserBan'; user_id: number };
 };
 
 export type ChangeChapterUserRoleMutationVariables = Exact<{
@@ -993,10 +996,7 @@ export type DashboardChapterUsersQuery = {
       user: { __typename?: 'User'; id: number; name: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
-    user_bans: Array<{
-      __typename?: 'UserBan';
-      user: { __typename?: 'User'; id: number };
-    }>;
+    user_bans: Array<{ __typename?: 'UserBan'; user_id: number }>;
   };
 };
 
@@ -1298,7 +1298,7 @@ export type ChangeInstanceUserRoleMutationVariables = Exact<{
 export type ChangeInstanceUserRoleMutation = {
   __typename?: 'Mutation';
   changeInstanceUserRole: {
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserWithPermissions';
     instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
@@ -1319,7 +1319,7 @@ export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 export type UsersQuery = {
   __typename?: 'Query';
   users: Array<{
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserWithPermissions';
     id: number;
     name: string;
     instance_role: { __typename?: 'InstanceRole'; id: number; name: string };
@@ -2299,9 +2299,7 @@ export type DeleteChapterMutationOptions = Apollo.BaseMutationOptions<
 export const BanUserDocument = gql`
   mutation banUser($chapterId: Int!, $userId: Int!) {
     banUser(chapterId: $chapterId, userId: $userId) {
-      user {
-        name
-      }
+      user_id
     }
   }
 `;
@@ -2349,9 +2347,7 @@ export type BanUserMutationOptions = Apollo.BaseMutationOptions<
 export const UnbanUserDocument = gql`
   mutation unbanUser($chapterId: Int!, $userId: Int!) {
     unbanUser(chapterId: $chapterId, userId: $userId) {
-      user {
-        name
-      }
+      user_id
     }
   }
 `;
@@ -2610,9 +2606,7 @@ export const DashboardChapterUsersDocument = gql`
         is_bannable
       }
       user_bans {
-        user {
-          id
-        }
+        user_id
       }
     }
   }

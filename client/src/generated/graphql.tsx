@@ -750,6 +750,7 @@ export type MeQuery = {
         }>;
       };
     }>;
+    user_bans: Array<{ __typename?: 'UserBan'; chapter_id: number }>;
   } | null;
 };
 
@@ -1741,6 +1742,9 @@ export const MeDocument = gql`
             }
           }
         }
+      }
+      user_bans {
+        chapter_id
       }
     }
   }

@@ -28,6 +28,9 @@ export const meQuery = gql`
           }
         }
       }
+      user_bans {
+        chapter_id
+      }
     }
   }
 `;

@@ -147,7 +147,21 @@ export const ChapterPage: NextPage = () => {
   const onLeaveChapter = async () => {
     const ok = await confirm({
       title: 'Are you sure you want to leave this chapter?',
-      body: "Leaving will cancel your attendance at all of this chapter's events.",
+      body: (
+        <>
+          Leaving will cancel your attendance at all of this chapter&apos;s
+          events.
+          {dataChapterUser?.chapterUser?.chapter_role.name ===
+            'administrator' && (
+            <>
+              <br />
+              <br />
+              Note: This will remove record of your chapter role as well.
+              Joining chapter again will give you member role.
+            </>
+          )}
+        </>
+      ),
     });
     if (ok) {
       try {

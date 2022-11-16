@@ -4,6 +4,23 @@ INSERT INTO instance_permissions (name, created_at, updated_at)
 VALUES ('sponsor-view', NOW(), NOW())
 ON CONFLICT DO NOTHING;
 
+-- Add instance permissions, chapter-subscriptions-manage, chapter-join and
+-- event-subscriptions-manage, if they don't exist (when testing migration in
+-- CI, they won't)
+
+INSERT INTO instance_permissions (name, created_at, updated_at)
+VALUES 
+    ('chapter-subscriptions-manage', NOW(), NOW()),
+    ('chapter-join', NOW(), NOW()),
+    ('event-subscriptions-manage', NOW(), NOW())
+ON CONFLICT DO NOTHING;
+
+-- Add instance role owner, if it doesn't exist (it won't in CI)
+
+INSERT INTO instance_roles (name, created_at, updated_at)
+VALUES ('owner', NOW(), NOW())
+ON CONFLICT DO NOTHING;
+
 -- Update existing instance permissions
 
 UPDATE instance_permissions SET name = 'chapter-subscription-manage' WHERE name = 'chapter-subscriptions-manage';

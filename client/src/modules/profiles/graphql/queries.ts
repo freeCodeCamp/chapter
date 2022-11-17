@@ -1,10 +1,13 @@
 import { gql } from '@apollo/client';
 
-export const meQuery = gql`
-  query me {
-    me {
+export const userProfileQuery = gql`
+  query userProfile {
+    userInformation {
       id
       name
+      email
+      auto_subscribe
+      image_url
       instance_role {
         instance_role_permissions {
           instance_permission {
@@ -12,12 +15,6 @@ export const meQuery = gql`
           }
         }
       }
-      admined_chapters {
-        id
-        name
-      }
-      auto_subscribe
-      image_url
     }
   }
 `;

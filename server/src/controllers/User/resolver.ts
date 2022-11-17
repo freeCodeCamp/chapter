@@ -55,16 +55,11 @@ export class UserWithInstanceRoleResolver {
     });
   }
 
-  @Query(() => UserInformation, { nullable: true })
-  async userInformation(
-    @Ctx() ctx: ResolverCtx,
-  ): Promise<UserInformation | null> {
-    if (!ctx.user) {
-      return null;
-    }
-    return await prisma.users.findUnique({
+  @Query(() => UserInformation)
+  async userInformation(@Ctx() ctx: ResolverCtx): Promise<UserInformation> {
+    return await prisma.users.findFirstOrThrow({
       where: {
-        id: ctx.user.id,
+        id: ctx.user?.id,
       },
       include: {
         user_chapters: {

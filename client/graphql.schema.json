@@ -4723,9 +4723,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "UserInformation",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UserInformation",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

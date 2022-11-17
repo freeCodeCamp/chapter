@@ -53,4 +53,4 @@ jobs:
       - name: Seed the Docker db
         env:
           DB_PORT: 54320
-        run: npm run db:reset
+        run: npm run db:migrate:reset

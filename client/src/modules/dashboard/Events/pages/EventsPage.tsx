@@ -63,7 +63,7 @@ export const EventsPage: NextPageWithLayout = () => {
                   </Text>
                 ) : isPast(new Date(event.ends_at)) ? (
                   <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                    Ended at
+                    Ended
                   </Text>
                 ) : isPast(new Date(event.start_at)) ? (
                   <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
@@ -166,7 +166,7 @@ export const EventsPage: NextPageWithLayout = () => {
                           </Text>
                         ) : isPast(new Date(ends_at)) ? (
                           <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                            Ended at
+                            Ended
                           </Text>
                         ) : isPast(new Date(start_at)) ? (
                           <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>

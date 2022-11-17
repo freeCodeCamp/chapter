@@ -962,7 +962,7 @@ ${unsubscribeOptions}`,
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
     const calendar = ical();
     calendar.createEvent({
       start: event.start_at,

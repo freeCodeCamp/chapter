@@ -463,7 +463,7 @@ export type Query = {
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<UserProfile>;
+  me?: Maybe<UserWithInstanceRole>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
@@ -618,17 +618,6 @@ export type UserInformation = {
   user_events: Array<EventUser>;
 };
 
-export type UserProfile = {
-  __typename?: 'UserProfile';
-  admined_chapters: Array<Chapter>;
-  auto_subscribe: Scalars['Boolean'];
-  email: Scalars['String'];
-  id: Scalars['Int'];
-  image_url?: Maybe<Scalars['String']>;
-  instance_role: InstanceRole;
-  name: Scalars['String'];
-};
-
 export type UserWithInstanceRole = {
   __typename?: 'UserWithInstanceRole';
   admined_chapters: Array<Chapter>;
@@ -698,7 +687,7 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'UserProfile';
+    __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
     auto_subscribe: boolean;

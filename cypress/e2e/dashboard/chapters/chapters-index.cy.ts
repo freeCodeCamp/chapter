@@ -83,7 +83,7 @@ describe('chapters dashboard', () => {
   });
 
   it('lets a user create a chapter and an event in a fresh instance', () => {
-    cy.exec('npm run -w=server db:init');
+    cy.exec('npx prisma migrate reset --force --skip-seed');
     const userEmail = 'fresh@start';
     cy.login(userEmail);
     cy.task('promoteToOwner', { email: userEmail });

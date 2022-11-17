@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 import coverage from '@cypress/code-coverage/task';
 
 import { prisma } from './server/src/prisma';
-import { InstanceRole } from './server/prisma/init/factories/instanceRoles.factory';
+import { InstanceRoles } from './common/roles';
 
 const getChapterMembers = (chapterId: number) =>
   prisma.chapter_users.findMany({
@@ -32,7 +32,7 @@ const getUser = async (email: string) =>
 export type User = Awaited<ReturnType<typeof getUser>>;
 
 const promoteToOwner = async ({ email }: { email: string }) => {
-  const name: InstanceRole['name'] = 'owner';
+  const name = InstanceRoles.owner;
   return await prisma.users.update({
     where: { email },
     data: { instance_role: { connect: { name } } },

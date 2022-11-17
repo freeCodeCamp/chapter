@@ -2,14 +2,8 @@ import { sub } from 'date-fns';
 
 import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
-import { createRsvpTypes } from '../../init/factories/rsvpTypes.factory';
 
-const createRsvps = async (
-  eventIds: number[],
-  userIds: number[],
-  eventRoles: Record<string, { name: string; id: number }>,
-) => {
-  await createRsvpTypes();
+const createRsvps = async (eventIds: number[], userIds: number[]) => {
   for (const eventId of eventIds) {
     const eventUserIds = randomItems(userIds, userIds.length / 2);
     const numberWaiting = 1 + random(eventUserIds.length - 2);
@@ -27,7 +21,7 @@ const createRsvps = async (
           user: { connect: { id: eventUserIds[i] } },
           event_role: {
             connect: {
-              id: eventRoles.member.id,
+              name: 'member',
             },
           },
           rsvp: {

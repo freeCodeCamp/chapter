@@ -107,6 +107,7 @@ export const EventPage: NextPage = () => {
     const ok = await confirm(confirmOptions);
 
     if (ok) {
+      if (!user) await login();
       try {
         await joinChapter({ variables: { chapterId } });
         await rsvpToEvent({
@@ -145,13 +146,11 @@ export const EventPage: NextPage = () => {
 
   // TODO: reimplment this the login modal with Auth0
   async function checkOnRsvp(options?: { invited?: boolean }) {
-    if (!user) await login();
     await onRsvp(options);
   }
 
   // TODO: reimplment this the login modal with Auth0
   async function checkOnCancelRsvp() {
-    if (!user) await login();
     await onCancelRsvp();
   }
 

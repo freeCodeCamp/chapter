@@ -202,6 +202,7 @@ export const EventPage: NextPageWithLayout = () => {
             <>
               <Box
                 display={{ base: 'none', lg: 'block' }}
+                width="100%"
                 key={title.toLowerCase()}
                 data-cy={title.toLowerCase()}
               >

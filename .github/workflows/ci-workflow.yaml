@@ -53,4 +53,6 @@ jobs:
       - name: Seed the Docker db
         env:
           DB_PORT: 54320
+        # We don't need to build the server explicitly, because npm run
+        # dev:server is run earlier and it runs tsc.
         run: npm run db:migrate:reset

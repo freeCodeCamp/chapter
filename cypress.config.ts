@@ -64,7 +64,7 @@ export default defineConfig({
       // it's difficult (when running docker-compose up) to guarantee that both the
       // docker container is running and that the db has been seeded.
       on('before:run', () => {
-        execSync('npm run db:migrate:reset');
+        execSync('npm run -w=server build && npm run db:migrate:reset');
       });
 
       on('task', {

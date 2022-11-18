@@ -59,6 +59,7 @@ export const EventsPage: NextPageWithLayout = () => {
               event.canceled ? (
                 <Text
                   color="red.500"
+                  data-cy="event-canceled"
                   fontSize={['md', 'lg']}
                   fontWeight={'semibold'}
                 >

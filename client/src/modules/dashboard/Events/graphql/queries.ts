@@ -11,6 +11,7 @@ export const DASHBOARD_EVENTS = gql`
       invite_only
       streaming_url
       start_at
+      ends_at
       capacity
       venue_type
       venue {

@@ -9,11 +9,7 @@ export const userProfileQuery = gql`
       auto_subscribe
       image_url
       instance_role {
-        instance_role_permissions {
-          instance_permission {
-            name
-          }
-        }
+        name
       }
     }
   }

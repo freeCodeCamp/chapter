@@ -21,7 +21,7 @@ export class UserWithInstanceRole extends User {
 }
 
 @ObjectType()
-export class UserInformation extends User {
+export class UserInformation extends UserWithInstanceRole {
   @Field(() => String)
   email: string;
 
@@ -30,9 +30,6 @@ export class UserInformation extends User {
 
   @Field(() => [ChapterUser])
   user_chapters: ChapterUser[];
-
-  @Field(() => InstanceRole)
-  instance_role: InstanceRole;
 
   @Field(() => [EventUser])
   user_events: EventUser[];

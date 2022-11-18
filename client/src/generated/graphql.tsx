@@ -607,6 +607,7 @@ export type UserBan = {
 
 export type UserInformation = {
   __typename?: 'UserInformation';
+  admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
   id: Scalars['Int'];
@@ -1587,16 +1588,7 @@ export type UserProfileQuery = {
     email: string;
     auto_subscribe: boolean;
     image_url?: string | null;
-    instance_role: {
-      __typename?: 'InstanceRole';
-      instance_role_permissions: Array<{
-        __typename?: 'InstanceRolePermission';
-        instance_permission: {
-          __typename?: 'InstancePermission';
-          name: string;
-        };
-      }>;
-    };
+    instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
 
@@ -4510,11 +4502,7 @@ export const UserProfileDocument = gql`
       auto_subscribe
       image_url
       instance_role {
-        instance_role_permissions {
-          instance_permission {
-            name
-          }
-        }
+        name
       }
     }
   }

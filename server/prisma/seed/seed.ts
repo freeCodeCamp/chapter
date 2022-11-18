@@ -38,9 +38,7 @@ async function truncateTables() {
   }
 }
 
-(async () => {
-  await truncateTables();
-
+async function seed() {
   const { ownerId, chapter1AdminId, chapter2AdminId, bannedAdminId, userIds } =
     await createUsers();
   const sponsorIds = await createSponsors();
@@ -60,4 +58,22 @@ async function truncateTables() {
     { ownerId, chapter1AdminId, chapter2AdminId, bannedAdminId, userIds },
     chapterIds,
   );
-})();
+}
+
+const myArgs = process.argv.slice(2);
+// Truncation, rather than resetting, is necessary in testing, because the
+// database needs to be initialized before use. However, if we recreate the
+// schema, cached queries targetting the old schema will fail with ERROR: cached
+// plan must not change result type.
+if (myArgs.length === 1 && myArgs[0] === '--truncate-only') {
+  truncateTables();
+} else if (myArgs.length === 0) {
+  truncateTables().then(seed);
+} else {
+  console.error(`--To execute:
+    node seed.js
+or
+    node seed.js --truncate-only
+--All other arguments are invalid
+`);
+}

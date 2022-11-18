@@ -30,10 +30,10 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   const [endError, setEndError] = useState('');
 
   const onDatePickerChange = useCallback(
-    (key: string, setDate: (date: React.SetStateAction<Date>) => void) => {
+    (field: string, setDate: (date: React.SetStateAction<Date>) => void) => {
       return (date: Date | null) => {
         if (!date) return;
-        setValue(key, date, { shouldDirty: true });
+        setValue(field, date, { shouldDirty: true });
         setDate(date);
       };
     },
@@ -57,8 +57,8 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   const startDateProps = {
     date: startDate,
     error: startError,
+    field: 'start_at',
     isRequired: true,
-    key: 'start_at',
     label: 'Start at',
     loading,
     onChange: onDatePickerChange('start_at', setStartDate),
@@ -66,7 +66,7 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   const endDateProps = {
     date: endDate,
     error: endError,
-    key: 'ends_at',
+    field: 'ends_at',
     isRequired: true,
     label: 'End at',
     loading,

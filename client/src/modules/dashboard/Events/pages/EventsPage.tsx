@@ -39,54 +39,43 @@ export const EventsPage: NextPageWithLayout = () => {
         width={'100%'}
         marginBlock={'2em'}
       >
-          <DataTable
-            tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-            data={data.dashboardEvents}
-            keys={
-              [
-                'status',
-                'name',
-                'invite only',
-                'venue',
-                'capacity',
-                'streaming_url',
-                'date',
-                'action',
-              ] as const
-            }
-            mapper={{
-              status: (event) =>
-                event.canceled ? (
-                  <Text
-                    color="red.500"
-                    fontSize={['md', 'lg']}
-                    fontWeight={'semibold'}
-                  >
-                    Canceled
-                  </Text>
-                ) : isPast(new Date(event.ends_at)) ? (
-                  <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                    Ended
-                  </Text>
-                ) : isPast(new Date(event.start_at)) ? (
-                  <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                    Running
-                  </Text>
-                ) : (
-                  <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                    Upcoming
-                  </Text>
-                ),
-              name: (event) => (
-                <VStack align="flex-start">
-                  <LinkButton
-                    data-cy="event"
-                    colorScheme={event.canceled ? 'red' : undefined}
-                    href={`/dashboard/events/${event.id}`}
-                  >
-                    {event.name}
-                  </LinkButton>
-                </VStack>
+        <DataTable
+          tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+          data={data.dashboardEvents}
+          keys={
+            [
+              'status',
+              'name',
+              'invite only',
+              'venue',
+              'capacity',
+              'streaming_url',
+              'date',
+              'action',
+            ] as const
+          }
+          mapper={{
+            status: (event) =>
+              event.canceled ? (
+                <Text
+                  color="red.500"
+                  fontSize={['md', 'lg']}
+                  fontWeight={'semibold'}
+                >
+                  Canceled
+                </Text>
+              ) : isPast(new Date(event.ends_at)) ? (
+                <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                  Ended
+                </Text>
+              ) : isPast(new Date(event.start_at)) ? (
+                <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                  Running
+                </Text>
+              ) : (
+                <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                  Upcoming
+                </Text>
               ),
             name: (event) => (
               <VStack align="flex-start">
@@ -97,95 +86,96 @@ export const EventsPage: NextPageWithLayout = () => {
                 >
                   {event.name}
                 </LinkButton>
-              ),
-            }}
-          />
-        </Box>
-        <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-          {data.dashboardEvents.map(
-            (
-              {
-                canceled,
-                name,
-                id,
-                start_at,
-                ends_at,
-                invite_only,
-                venue,
-                venue_type,
-                streaming_url,
-                capacity,
-              },
-              index,
-            ) => (
-              <DataTable
-                key={id}
-                tableProps={{
-                  table: { 'aria-labelledby': 'page-heading' },
-                }}
-                data={[data.dashboardEvents[index]]}
-                keys={['type', 'action'] as const}
-                showHeader={false}
-                mapper={{
-                  type: () => (
-                    <VStack
-                      fontWeight={'700'}
-                      spacing={3}
-                      align={'flex-start'}
-                      fontSize={['sm', 'md']}
-                      minW={'7em'}
-                      marginBlock={'1.5em'}
-                    >
-                      {/* todo fix spacing between elements */}
-                      <Text>Status</Text>
-                      <Text>Name</Text>
-                      <Text>Invite only</Text>
-                      <Text>Venue</Text>
-                      <Text>Capacity</Text>
-                      <Text>Streaming url</Text>
-                      <Text>Date</Text>
-                      <Text>Actions</Text>
-                    </VStack>
-                  ),
-                  action: () => (
-                    <VStack align={'flex-start'} spacing={2} width="10em">
-                      <HStack>
-                        {canceled ? (
-                          <Text
-                            color="red.500"
-                            fontSize={['md', 'lg']}
-                            fontWeight={'semibold'}
-                          >
-                            Canceled
-                          </Text>
-                        ) : isPast(new Date(ends_at)) ? (
-                          <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                            Ended
-                          </Text>
-                        ) : isPast(new Date(start_at)) ? (
-                          <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                            Running
-                          </Text>
-                        ) : (
-                          <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                            Upcoming
-                          </Text>
-                        )}
-                      </HStack>
-                      <VStack align="flex-start">
-                        <LinkButton
-                          data-cy="event"
-                          fontSize={'sm'}
-                          height={'2em'}
-                          size={'sm'}
-                          colorScheme={canceled ? 'red' : undefined}
-                          href={`/dashboard/events/${id}`}
+              </VStack>
+            ),
+            'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
+            venue: (event) =>
+              isPhysical(event.venue_type)
+                ? event.venue?.name || ''
+                : 'Online only',
+            capacity: true,
+            streaming_url: (event) =>
+              isOnline(event.venue_type)
+                ? event.streaming_url
+                : 'In-person only',
+            date: (event) => formatDate(event.start_at),
+            action: (event) => (
+              <LinkButton
+                colorScheme="blue"
+                size="sm"
+                href={`/dashboard/events/${event.id}/edit`}
+              >
+                Edit
+              </LinkButton>
+            ),
+          }}
+        />
+      </Box>
+
+      <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
+        {data.dashboardEvents.map(
+          (
+            {
+              canceled,
+              name,
+              id,
+              start_at,
+              ends_at,
+              invite_only,
+              venue,
+              venue_type,
+              streaming_url,
+              capacity,
+            },
+            index,
+          ) => (
+            <DataTable
+              key={id}
+              tableProps={{
+                table: { 'aria-labelledby': 'page-heading' },
+              }}
+              data={[data.dashboardEvents[index]]}
+              keys={['type', 'action'] as const}
+              showHeader={false}
+              mapper={{
+                type: () => (
+                  <VStack
+                    fontWeight={'700'}
+                    spacing={3}
+                    align={'flex-start'}
+                    fontSize={['sm', 'md']}
+                    minW={'7em'}
+                    marginBlock={'1.5em'}
+                  >
+                    {/* todo fix spacing between elements */}
+                    <Text>Status</Text>
+                    <Text>Name</Text>
+                    <Text>Invite only</Text>
+                    <Text>Venue</Text>
+                    <Text>Capacity</Text>
+                    <Text>Streaming url</Text>
+                    <Text>Date</Text>
+                    <Text>Actions</Text>
+                  </VStack>
+                ),
+                action: () => (
+                  <VStack align={'flex-start'} spacing={2} width="10em">
+                    <HStack>
+                      {canceled ? (
+                        <Text
+                          color="red.500"
+                          fontSize={['md', 'lg']}
+                          fontWeight={'semibold'}
                         >
                           Canceled
                         </Text>
-                      ) : new Date(start_at) < new Date() ? (
+                      ) : isPast(new Date(ends_at)) ? (
                         <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                          Passed
+                          Ended
+                        </Text>
+                      ) : isPast(new Date(start_at)) ? (
+                        <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                          Running
                         </Text>
                       ) : (
                         <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>

@@ -65,7 +65,10 @@ const Actions: React.FC<ActionsProps> = ({
     if (ok) {
       await createCalendarEvent({
         variables: { eventId: event.id },
-        refetchQueries: [{ query: EVENT, variables: { eventId: event.id } }],
+        refetchQueries: [
+          { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
+          { query: EVENT, variables: { eventId: event.id } },
+        ],
       });
     }
   };

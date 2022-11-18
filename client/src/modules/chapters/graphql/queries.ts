@@ -49,18 +49,14 @@ export const CHAPTERS = gql`
       id
       name
       description
-      logo_url
       banner_url
-      city
       events {
-        id
+        canceled
+        start_at
         name
-        capacity
-        venue {
-          id
-          name
-          region
-          street_address
+      }
+      chapter_users {
+        subscribed
         }
       }
     }

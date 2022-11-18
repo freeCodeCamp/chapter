@@ -199,8 +199,13 @@ export const EventPage: NextPageWithLayout = () => {
               )
             : [];
           return (
-            <Box key={title.toLowerCase()} data-cy={title.toLowerCase()}>
-              <Box display={{ base: 'none', lg: 'block' }}>
+            <>
+              <Box
+                display={{ base: 'none', lg: 'block' }}
+                width="100%"
+                key={title.toLowerCase()}
+                data-cy={title.toLowerCase()}
+              >
                 <DataTable
                   title={`${title}: ${users.length}`}
                   data={users}
@@ -281,7 +286,7 @@ export const EventPage: NextPageWithLayout = () => {
                   </HStack>
                 ))}
               </Box>
-            </Box>
+            </>
           );
         })}
       </Box>

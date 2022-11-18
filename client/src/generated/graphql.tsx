@@ -1117,6 +1117,7 @@ export type DashboardEventsQuery = {
     invite_only: boolean;
     streaming_url?: string | null;
     start_at: any;
+    ends_at: any;
     capacity: number;
     venue_type: VenueType;
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
@@ -3160,6 +3161,7 @@ export const DashboardEventsDocument = gql`
       invite_only
       streaming_url
       start_at
+      ends_at
       capacity
       venue_type
       venue {

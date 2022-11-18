@@ -3,6 +3,7 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
+import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
@@ -54,16 +55,19 @@ export const EventsPage: NextPageWithLayout = () => {
               status: (event) =>
                 event.canceled ? (
                   <Text
-                    data-cy="event-canceled"
                     color="red.500"
                     fontSize={['md', 'lg']}
                     fontWeight={'semibold'}
                   >
                     Canceled
                   </Text>
-                ) : new Date(event.start_at) < new Date() ? (
+                ) : isPast(new Date(event.ends_at)) ? (
                   <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                    Passed
+                    Ended
+                  </Text>
+                ) : isPast(new Date(event.start_at)) ? (
+                  <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                    Running
                   </Text>
                 ) : (
                   <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
@@ -112,6 +116,7 @@ export const EventsPage: NextPageWithLayout = () => {
                 name,
                 id,
                 start_at,
+                ends_at,
                 invite_only,
                 venue,
                 venue_type,
@@ -160,9 +165,13 @@ export const EventsPage: NextPageWithLayout = () => {
                           >
                             Canceled
                           </Text>
-                        ) : new Date(start_at) < new Date() ? (
+                        ) : isPast(new Date(ends_at)) ? (
                           <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
-                            Passed
+                            Ended
+                          </Text>
+                        ) : isPast(new Date(start_at)) ? (
+                          <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>
+                            Running
                           </Text>
                         ) : (
                           <Text fontSize={['md', 'lg']} fontWeight={'semibold'}>

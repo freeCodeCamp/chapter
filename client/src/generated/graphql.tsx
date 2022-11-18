@@ -1589,6 +1589,11 @@ export type UserProfileQuery = {
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: { __typename?: 'InstanceRole'; name: string };
+    admined_chapters: Array<{
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+    }>;
   };
 };
 
@@ -4502,6 +4507,10 @@ export const UserProfileDocument = gql`
       auto_subscribe
       image_url
       instance_role {
+        name
+      }
+      admined_chapters {
+        id
         name
       }
     }

@@ -131,7 +131,6 @@ export const EventPage: NextPage = () => {
     });
 
     if (ok) {
-      if (!isLoggedIn) await login();
       try {
         await cancelRsvp({
           variables: { eventId },

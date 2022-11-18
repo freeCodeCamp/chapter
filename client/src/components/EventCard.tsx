@@ -52,7 +52,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   enum EventStatus {
     canceled = 'Canceled',
     running = 'Running',
-    ended = 'Ended at',
+    ended = 'Ended',
     upcoming = 'Upcoming',
   }
 

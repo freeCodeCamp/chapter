@@ -32,7 +32,8 @@ import SponsorsCard from '../../../../components/SponsorsCard';
 import { DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import UserName from 'components/UserName';
+import UserName from '../../../../components/UserName';
+import { formatDate } from 'util/date';
 
 const args = (eventId: number) => ({
   refetchQueries: [
@@ -73,6 +74,8 @@ export const EventPage: NextPageWithLayout = () => {
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
 
+  const startAt = formatDate(data.dashboardEvent.start_at);
+  const endAt = formatDate(data.dashboardEvent.ends_at);
   const userLists = [
     {
       title: 'RSVPs',
@@ -134,6 +137,18 @@ export const EventPage: NextPageWithLayout = () => {
           Capacity:{' '}
           <Text as={'span'} fontWeight={500}>
             {data.dashboardEvent.capacity}
+          </Text>
+        </Text>
+        <Text opacity={'.9'}>
+          Starting:{' '}
+          <Text as={'span'} fontWeight={500}>
+            {startAt}
+          </Text>
+        </Text>
+        <Text opacity={'.9'}>
+          Ending:{' '}
+          <Text as={'span'} fontWeight={500}>
+            {endAt}
           </Text>
         </Text>
         {isPhysical(data.dashboardEvent.venue_type) &&

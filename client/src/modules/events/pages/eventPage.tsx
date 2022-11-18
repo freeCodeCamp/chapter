@@ -107,7 +107,7 @@ export const EventPage: NextPage = () => {
     const ok = await confirm(confirmOptions);
 
     if (ok) {
-      if (!user) await login();
+      if (!isLoggedIn) await login();
       try {
         await joinChapter({ variables: { chapterId } });
         await rsvpToEvent({
@@ -131,6 +131,7 @@ export const EventPage: NextPage = () => {
     });
 
     if (ok) {
+      if (!isLoggedIn) await login();
       try {
         await cancelRsvp({
           variables: { eventId },

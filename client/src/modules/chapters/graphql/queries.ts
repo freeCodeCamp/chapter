@@ -49,8 +49,10 @@ export const CHAPTERS = gql`
       id
       name
       description
+      logo_url
       banner_url
       events {
+        id
         canceled
         start_at
         name

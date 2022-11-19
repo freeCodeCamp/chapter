@@ -22,14 +22,15 @@ export const HOME_PAGE_QUERY = gql`
       name
       description
       banner_url
+      logo_url
       events {
+        id
         canceled
         start_at
         name
       }
       chapter_users {
         subscribed
-        }
       }
     }
   }

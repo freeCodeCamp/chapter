@@ -207,7 +207,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ChapterCard",
+        "name": "ChapterCardRelations",
         "description": null,
         "fields": [
           {
@@ -4564,7 +4564,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "ChapterCard",
+                    "name": "ChapterCardRelations",
                     "ofType": null
                   }
                 }

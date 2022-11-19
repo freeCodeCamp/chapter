@@ -57,7 +57,7 @@ export class ChapterWithEvents extends Chapter {
 }
 
 @ObjectType()
-export class ChapterCard extends Chapter {
+export class ChapterCardRelations extends Chapter {
   @Field(() => [Event])
   events: Event[];
 

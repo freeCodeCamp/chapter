@@ -2,10 +2,11 @@ import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
-import { ChaptersQuery } from 'generated/graphql';
+import { isPast } from 'date-fns';
+import { ChapterCardRelations } from 'generated/graphql';
 
 type ChapterCardProps = {
-  chapter: ChaptersQuery['chapters'][number];
+  chapter: ChapterCardRelations;
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
@@ -38,7 +39,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 {chapter.name}
               </Heading>
               <Text color={'darkcyan'} fontWeight="bold" as="h4">
-                {chapter.city}
+                Members: {chapter.chapter_users.length}
               </Text>
             </Flex>
           </Link>
@@ -61,43 +62,38 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             paddingInline={'1em'}
             paddingBlock={'.5em'}
           >
-            Organized Events
+            Upcomming Events
           </Heading>
-          {chapter.events.map(({ id, name, venue, capacity }, index) => (
-            <Link key={id} href={`/events/${id}`} _hover={{}}>
-              <Flex
-                direction={'column'}
-                paddingLeft={'1em'}
-                paddingBlock={'.5em'}
-                justifyContent={'space-between'}
-              >
-                <Flex justifyContent={'space-between'}>
-                  <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                    {index + 1}. {name}
-                  </Text>
-                  <Text
-                    mt="2"
-                    fontWeight={600}
-                    fontSize={['sm', 'md', 'lg']}
-                    color={'darkcyan'}
-                  >
-                    Capacity:{capacity}
-                  </Text>
-                </Flex>
-                {venue && (
+          {chapter.events.map(({ id, name, canceled, ends_at, start_at }) => (
+            <>
+              {!canceled && !isPast(new Date(ends_at)) && (
+                <Link key={id} href={`/events/${id}`} _hover={{}}>
                   <Flex
-                    fontWeight={'400'}
-                    marginTop={'.25em'}
-                    opacity=".9"
-                    fontSize={['smaller', 'sm', 'md']}
-                    justifyContent="space-between"
+                    direction={'column'}
+                    paddingLeft={'1em'}
+                    paddingBlock={'.5em'}
+                    justifyContent={'space-between'}
                   >
-                    <Text>Hosted at: {venue.name}</Text>
-                    <Text> {venue.region}</Text>
+                    <Flex justifyContent={'space-between'}>
+                      <Text
+                        mt="2"
+                        fontWeight={600}
+                        fontSize={['sm', 'md', 'lg']}
+                      >
+                        {name}
+                      </Text>
+                      <Text
+                        mt="2"
+                        fontWeight={600}
+                        fontSize={['sm', 'md', 'lg']}
+                      >
+                        {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
+                      </Text>
+                    </Flex>
                   </Flex>
-                )}
-              </Flex>
-            </Link>
+                </Link>
+              )}
+            </>
           ))}
         </GridItem>
       </Grid>

@@ -404,6 +404,7 @@ The database is seeded with several types of user.  To experiment with different
 - `npm run change-user foo@bar.com` (an _owner_ with full permissions)
 - `npm run change-user admin@of.chapter.one` (an _administrator_ of chapter 1)
 - `npm run change-user:banned <email>` If a user with the `<email>` does not exist, it will be created. If no `<email>` is passed then, 'banned@chapter.admin' email is used.
+- `npm run change-user:test <email>` If a user with the `<email>` does not exist, it will be created. If no `<email>` is passed then, 'test@user.org' email is used.
 
 </details>
 

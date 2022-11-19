@@ -1,4 +1,4 @@
-import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
+import { Heading, Grid, Text, GridItem, Flex, Box } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
@@ -11,7 +11,7 @@ type ChapterCardProps = {
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
   return (
-    <Grid
+    <Box
       data-cy="chapter-card"
       borderWidth="1px"
       borderRadius="lg"
@@ -19,12 +19,19 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       width={'full'}
       minW={'20em'}
       gap={'2'}
+      backgroundImage={chapter.banner_url ? chapter.banner_url : ''}
+      backgroundPosition={'center'}
+      backgroundRepeat={'no-repeat'}
+      backgroundSize={'cover'}
     >
       <Grid
         templateColumns="repeat(2, 1fr)"
         gap={'3'}
+        width="100%"
         marginRight={'1em'}
-        marginBlock={'.5em'}
+        paddingBlock={'.5em'}
+        color={'gray.00'}
+        bgGradient="linear(to-b,hsl(240 14% 27% / .8),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
       >
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
@@ -38,7 +45,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               >
                 {chapter.name}
               </Heading>
-              <Text color={'darkcyan'} fontWeight="bold" as="h4">
+              <Text fontWeight="bold" as="h4">
                 Members: {chapter.chapter_users.length}
               </Text>
             </Flex>
@@ -62,7 +69,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             paddingInline={'1em'}
             paddingBlock={'.5em'}
           >
-            Upcomming Events
+            New Events
           </Heading>
           {chapter.events.map(({ id, name, canceled, ends_at, start_at }) => (
             <>
@@ -97,6 +104,6 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           ))}
         </GridItem>
       </Grid>
-    </Grid>
+    </Box>
   );
 };

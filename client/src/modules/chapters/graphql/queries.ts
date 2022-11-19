@@ -59,7 +59,6 @@ export const CHAPTERS = gql`
       }
       chapter_users {
         subscribed
-        }
       }
     }
   }

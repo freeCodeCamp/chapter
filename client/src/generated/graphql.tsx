@@ -833,6 +833,7 @@ export type ChaptersQuery = {
       id: number;
       canceled: boolean;
       start_at: any;
+      ends_at: any;
       name: string;
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
@@ -1602,6 +1603,7 @@ export type HomeQuery = {
       id: number;
       canceled: boolean;
       start_at: any;
+      ends_at: any;
       name: string;
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
@@ -2074,6 +2076,7 @@ export const ChaptersDocument = gql`
         id
         canceled
         start_at
+        ends_at
         name
       }
       chapter_users {
@@ -4512,6 +4515,7 @@ export const HomeDocument = gql`
         id
         canceled
         start_at
+        ends_at
         name
       }
       chapter_users {

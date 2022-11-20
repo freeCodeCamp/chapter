@@ -3,10 +3,10 @@ import { Link } from 'chakra-next-link';
 import React from 'react';
 
 import { isPast } from 'date-fns';
-import { ChapterCardRelations } from 'generated/graphql';
+import { ChaptersQuery } from '../generated/graphql';
 
 type ChapterCardProps = {
-  chapter: ChapterCardRelations;
+  chapter: ChaptersQuery['chapters'][number];
 };
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {

@@ -55,6 +55,7 @@ export const CHAPTERS = gql`
         id
         canceled
         start_at
+        ends_at
         name
       }
       chapter_users {

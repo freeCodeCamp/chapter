@@ -27,6 +27,7 @@ export const HOME_PAGE_QUERY = gql`
         id
         canceled
         start_at
+        ends_at
         name
       }
       chapter_users {

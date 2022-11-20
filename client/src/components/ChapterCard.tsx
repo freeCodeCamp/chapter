@@ -25,52 +25,77 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       backgroundSize={'cover'}
     >
       <Grid
-        templateColumns="repeat(2, 1fr)"
+        templateColumns="repeat(3, 1fr)"
         gap={'3'}
         width="100%"
         marginRight={'1em'}
         paddingBlock={'.5em'}
         color={'gray.00'}
-        bgGradient="linear(to-b,hsl(240 14% 27% / .8),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
+        bgGradient="linear(to-b,hsl(240 14% 27%/ .9),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
+        alignItems="center"
+        templateAreas={`
+          ". . ."
+          ". . ."
+          ". . ."
+          ". . ."
+          "chaptername chaptername subnumber"
+          "eventheader eventheader aboutheader"
+          "event event about"
+          "event event about"
+          `}
       >
-        <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
+        <GridItem
+          paddingInline={'1em'}
+          paddingBlock={'.5em'}
+          area="chaptername"
+        >
           <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
-            <Flex justifyContent={'space-between'}>
-              <Heading
-                data-cy="chapter-heading"
-                fontSize={'xl'}
-                fontWeight={700}
-                fontFamily={'body'}
-                as="h3"
-              >
-                {chapter.name}
-              </Heading>
-              <Text fontWeight="bold" as="h4">
-                Members: {chapter.chapter_users.length}
-              </Text>
-            </Flex>
+            <Heading
+              data-cy="chapter-heading"
+              fontSize={'xl'}
+              fontWeight={700}
+              fontFamily={'body'}
+              as="h3"
+            >
+              {chapter.name}
+            </Heading>
           </Link>
         </GridItem>
-        <GridItem
-          colStart={1}
-          colSpan={2}
-          marginInline={'1em'}
-          marginBlock={'.5em'}
+        <Text fontWeight="bold" as="h4" gridArea="subnumber">
+          Members: {chapter.chapter_users.length}
+        </Text>
+        <Text
+          as="h3"
+          fontSize={'md'}
+          fontWeight={'500'}
+          paddingBlock={'.5em'}
+          gridArea="aboutheader"
         >
-          <Text mt="2" as="p" fontWeight={400} fontSize={['sm', 'md', 'lg']}>
-            {chapter.description}
-          </Text>
-        </GridItem>
-        <GridItem colSpan={2}>
-          <Heading
-            as="h3"
-            fontSize={'md'}
-            fontWeight={'500'}
-            paddingInline={'1em'}
-            paddingBlock={'.5em'}
-          >
-            New Events
-          </Heading>
+          About
+        </Text>
+        <Text
+          height="100%"
+          noOfLines={4}
+          paddingBlock={'.5em'}
+          mt="2"
+          as="p"
+          fontWeight={400}
+          fontSize={['sm', 'md', 'lg']}
+          gridArea="about"
+        >
+          {chapter.description}
+        </Text>
+        <Heading
+          as="h3"
+          fontSize={'md'}
+          fontWeight={'500'}
+          paddingInline={'1em'}
+          paddingBlock={'.5em'}
+          gridArea="eventheader"
+        >
+          New Events
+        </Heading>
+        <GridItem area="event">
           {chapter.events.map(({ id, name, canceled, ends_at, start_at }) => (
             <>
               {!canceled && !isPast(new Date(ends_at)) && (
@@ -93,6 +118,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                         mt="2"
                         fontWeight={600}
                         fontSize={['sm', 'md', 'lg']}
+                        paddingRight=".5em"
                       >
                         {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
                       </Text>

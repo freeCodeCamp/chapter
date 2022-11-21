@@ -2,7 +2,7 @@ import { Button, ButtonProps } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import React from 'react';
 import { Event, useCancelEventMutation } from '../../../../generated/graphql';
-import { DASHBOARD_EVENT, EVENTS } from '../graphql/queries';
+import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 
@@ -30,7 +30,7 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
     refetchQueries: [
       { query: EVENT, variables: { eventId: event.id } },
       { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
-      { query: EVENTS },
+      { query: DASHBOARD_EVENTS },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   };

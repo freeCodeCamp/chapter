@@ -29,6 +29,15 @@ export const updateEvent = gql`
   }
 `;
 
+export const createCalendarEvent = gql`
+  mutation createCalendarEvent($eventId: Int!) {
+    createCalendarEvent(id: $eventId) {
+      id
+      calendar_event_id
+    }
+  }
+`;
+
 export const cancelEvent = gql`
   mutation cancelEvent($eventId: Int!) {
     cancelEvent(id: $eventId) {

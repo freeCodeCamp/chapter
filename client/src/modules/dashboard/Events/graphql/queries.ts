@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const EVENTS = gql`
-  query events {
-    events(showAll: true) {
+export const DASHBOARD_EVENTS = gql`
+  query dashboardEvents {
+    dashboardEvents {
       id
       name
       canceled
@@ -11,6 +11,7 @@ export const EVENTS = gql`
       invite_only
       streaming_url
       start_at
+      ends_at
       capacity
       venue_type
       venue {
@@ -23,7 +24,7 @@ export const EVENTS = gql`
 
 export const DASHBOARD_EVENT = gql`
   query dashboardEvent($eventId: Int!) {
-    dashboardEvent(eventId: $eventId) {
+    dashboardEvent(id: $eventId) {
       id
       name
       description
@@ -35,9 +36,11 @@ export const DASHBOARD_EVENT = gql`
       start_at
       ends_at
       image_url
+      calendar_event_id
       chapter {
         id
         name
+        calendar_id
       }
       sponsors {
         sponsor {
@@ -65,6 +68,7 @@ export const DASHBOARD_EVENT = gql`
         user {
           id
           name
+          image_url
         }
         event_role {
           id

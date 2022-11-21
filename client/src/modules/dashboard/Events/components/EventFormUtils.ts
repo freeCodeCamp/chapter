@@ -81,7 +81,7 @@ export const fields: Field[] = [
   {
     key: 'name',
     type: 'text',
-    label: 'Event Title (Required)',
+    label: 'Event Title',
     placeholder: 'Please put a descriptive title',
     isRequired: true,
   },
@@ -102,19 +102,7 @@ export const fields: Field[] = [
   {
     key: 'capacity',
     type: 'number',
-    label: 'Capacity (Required)',
-    isRequired: true,
-  },
-  {
-    key: 'start_at',
-    type: 'datetime',
-    label: 'Start at (Required)',
-    isRequired: true,
-  },
-  {
-    key: 'ends_at',
-    type: 'datetime',
-    label: 'End at (Required)',
+    label: 'Capacity',
     isRequired: true,
   },
 ];
@@ -129,8 +117,7 @@ export type IEventData = Pick<
 };
 
 export interface EventFormProps {
-  onSubmit: (data: EventFormData) => void;
-  loading: boolean;
+  onSubmit: (data: EventFormData) => Promise<void>;
   data?: IEventData;
   submitText: string;
   chapterId: number;

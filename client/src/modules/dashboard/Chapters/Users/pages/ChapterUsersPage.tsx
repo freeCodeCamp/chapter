@@ -22,6 +22,7 @@ import {
   useUnbanUserMutation,
   useDashboardChapterUsersQuery,
 } from '../../../../../generated/graphql';
+import UserName from '../../../../../components/UserName';
 import { DashboardLoading } from '../../../shared/components/DashboardLoading';
 import { Layout } from '../../../shared/components/Layout';
 import {
@@ -29,7 +30,7 @@ import {
   RoleChangeModalData,
 } from '../../../shared/components/RoleChangeModal';
 import { useParam } from '../../../../../hooks/useParam';
-import { DASHBOARD_CHAPTER_USERS } from '../../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTER_USERS } from '../../graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
 
 export const ChapterUsersPage: NextPageWithLayout = () => {
@@ -149,7 +150,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>
         </Flex>
-        <Box display={{ base: 'none', lg: 'block' }}>
+        <Box display={{ base: 'none', lg: 'block' }} width={'100%'}>
           <DataTable
             data={data.dashboardChapter.chapter_users}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
@@ -157,7 +158,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
             mapper={{
               name: ({ user }) => (
                 <HStack>
-                  <Text data-cy="userName">{user.name}</Text>
+                  <UserName user={user} />
                   {bans.has(user.id) && (
                     <Badge data-cy="isBanned" colorScheme="red">
                       Banned
@@ -236,7 +237,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       actions: () => (
                         <VStack spacing={3} align={'flex-start'}>
                           <HStack>
-                            <Text>{user.name}</Text>
+                            <UserName user={user} />
                             {bans.has(user.id) && (
                               <Badge data-cy="isBanned" colorScheme="red">
                                 Banned

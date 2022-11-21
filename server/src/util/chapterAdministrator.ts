@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { ChapterRoles } from '../..//prisma/generator/factories/chapterRoles.factory';
-import { InstanceRoles } from '../../prisma/generator/factories/instanceRoles.factory';
+import { ChapterRoles, InstanceRoles } from '../../../common/roles';
 
 type UserChapters = Prisma.chapter_usersGetPayload<{
   include: {

@@ -1,5 +1,5 @@
 import { ChapterMembers, EventUsers, User } from '../../../../cypress.config';
-import { expectToBeRejected } from '../../../support/util';
+import { expectError, expectToBeRejected } from '../../../support/util';
 
 const chapterId = 1;
 
@@ -112,7 +112,7 @@ describe('Chapter Users dashboard', () => {
       .first()
       .as('firstUnbannedMember');
     cy.get('@firstUnbannedMember')
-      .find('[data-cy=userName]')
+      .find('[data-cy=user-name]')
       .invoke('text')
       .as('firstUnbannedName');
   }
@@ -200,9 +200,15 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@adminToBan').findByRole('button', { name: 'Ban' }).click();
-    cy.findByRole('button', { name: 'Confirm' }).click();
-    cy.contains('You cannot ban yourself', { matchCase: false });
+    cy.get('@adminToBan')
+      .findByRole('button', { name: 'Ban' })
+      .should('not.exist');
+
+    cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
+      cy.banUser({ chapterId, userId: id }).then(
+        expectError('You cannot ban yourself'),
+      );
+    });
     cy.get('@adminToBan').find('[data-cy=isBanned]').should('not.exist');
   });
 
@@ -210,5 +216,15 @@ describe('Chapter Users dashboard', () => {
     cy.login(users.bannedAdmin.email);
 
     cy.unbanUser({ chapterId, userId: bannedUserId }).then(expectToBeRejected);
+  });
+
+  it('instance owner cannot ban another instance owner from chapter', () => {
+    cy.task('promoteToOwner', { email: 'admin@of.chapter.one' });
+
+    cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
+      cy.banUser({ chapterId, userId: id }).then(
+        expectError('You cannot ban this user'),
+      );
+    });
   });
 });

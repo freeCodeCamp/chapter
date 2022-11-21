@@ -18,7 +18,7 @@ export const createVenue = gql`
 
 export const updateVenue = gql`
   mutation updateVenue($venueId: Int!, $chapterId: Int!, $data: VenueInputs!) {
-    updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
+    updateVenue(id: $venueId, _onlyUsedForAuth: $chapterId, data: $data) {
       id
       name
       street_address

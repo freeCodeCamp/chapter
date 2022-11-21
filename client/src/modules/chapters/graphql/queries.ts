@@ -18,35 +18,12 @@ export const CHAPTER = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url
         invite_only
         canceled
-      }
-    }
-  }
-`;
-
-export const DASHBOARD_CHAPTER_USERS = gql`
-  query dashboardChapterUsers($chapterId: Int!) {
-    dashboardChapter(id: $chapterId) {
-      chapter_users {
-        user {
-          id
-          name
-        }
-        chapter_role {
-          id
-          name
-        }
-        subscribed
-        is_bannable
-      }
-      user_bans {
-        user {
-          id
-        }
       }
     }
   }

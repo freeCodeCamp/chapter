@@ -10,7 +10,6 @@ import {
   HStack,
   Image,
   ListItem,
-  Avatar,
   Flex,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
@@ -21,8 +20,10 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
 import { useAuth } from '../../auth/store';
+import Avatar from '../../../components/Avatar';
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
+import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import {
@@ -33,6 +34,7 @@ import {
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
+import { formatDate } from '../../../util/date';
 import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
@@ -90,10 +92,18 @@ export const EventPage: NextPage = () => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
-          body: 'Would you like to attend?',
+          body: (
+            <>
+              Would you like to attend?
+              <br />
+              Note: joining this event will make you a member of the
+              event&apos;s chapter.
+            </>
+          ),
         }
       : {
           title: 'Join this event?',
+          body: `Note: joining this event will make you a member of the event's chapter.`,
         };
     const ok = await confirm(confirmOptions);
 
@@ -203,6 +213,9 @@ export const EventPage: NextPage = () => {
     ({ rsvp }) => rsvp.name === 'waitlist',
   );
 
+  const startAt = formatDate(data.event.start_at);
+  const endsAt = formatDate(data.event.ends_at);
+
   return (
     <VStack align="flex-start">
       {data.event.image_url && (
@@ -229,6 +242,8 @@ export const EventPage: NextPage = () => {
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
+      <Text>Starting: {startAt}</Text>
+      <Text>Ending: {endsAt}</Text>
       <HStack align="start">
         {rsvps && (
           <Heading
@@ -332,8 +347,8 @@ export const EventPage: NextPage = () => {
         {rsvps.map(({ user }) => (
           <ListItem key={user.id} mb="2">
             <HStack>
-              <Avatar name={user.name} />
-              <Heading size="md">{user.name}</Heading>
+              <Avatar user={user} />
+              <UserName user={user} fontSize="xl" fontWeight="bold" />
             </HStack>
           </ListItem>
         ))}
@@ -354,8 +369,8 @@ export const EventPage: NextPage = () => {
             {waitlist.map(({ user }) => (
               <ListItem key={user.id} mb="2">
                 <HStack>
-                  <Avatar name={user.name} />
-                  <Heading size="md">{user.name}</Heading>
+                  <Avatar user={user} />
+                  <UserName user={user} fontSize="xl" fontWeight="bold" />
                 </HStack>
               </ListItem>
             ))}

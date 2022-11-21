@@ -24,6 +24,7 @@ import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
   useJoinChapterMutation,
+  useLeaveChapterMutation,
   useToggleChapterSubscriptionMutation,
   ChapterUserQuery,
   useChapterQuery,
@@ -49,22 +50,52 @@ const SubscriptionWidget = ({
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
 }) => {
-  return chapterUser.subscribed ? (
-    <HStack>
-      <CheckIcon />
-      <Text data-cy="join-success">
-        {chapterUser.chapter_role.name} of the chapter
-      </Text>
+  return chapterUser?.subscribed ? (
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button onClick={() => chapterSubscribe(false)} size="md">
         Unsubscribe
       </Button>
     </HStack>
   ) : (
-    <Button colorScheme="blue" onClick={() => chapterSubscribe(true)} size="md">
-      Subscribe
-    </Button>
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
+      <Button
+        colorScheme="blue"
+        onClick={() => chapterSubscribe(true)}
+        size="md"
+      >
+        Subscribe
+      </Button>
+    </HStack>
   );
 };
+
+const ChapterUserRoleWidget = ({
+  chapterUser,
+  LeaveChapter,
+  JoinChapter,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  LeaveChapter: () => Promise<void>;
+  JoinChapter: () => Promise<void>;
+}) =>
+  chapterUser?.chapter_role ? (
+    <HStack justifyContent={'space-between'}>
+      <Text data-cy="join-success" fontWeight={500}>
+        <CheckIcon marginRight={1} />
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
+      <Button onClick={LeaveChapter}>Leave</Button>
+    </HStack>
+  ) : (
+    <HStack justifyContent="space-between">
+      <Text fontWeight={500}>Become member of the chapter</Text>
+      <Button colorScheme="blue" onClick={JoinChapter}>
+        Join
+      </Button>
+    </HStack>
+  );
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
@@ -76,6 +107,7 @@ export const ChapterPage: NextPage = () => {
   });
 
   const confirm = useConfirm();
+  const [hasShownModal, setHasShownModal] = React.useState(false);
   const toast = useToast();
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
@@ -86,10 +118,11 @@ export const ChapterPage: NextPage = () => {
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
-  const [joinChapterFn] = useJoinChapterMutation(refetch);
-  const [chapterSubscribeFn] = useToggleChapterSubscriptionMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation(refetch);
+  const [leaveChapter] = useLeaveChapterMutation(refetch);
+  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
 
-  const joinChapter = async (options?: { invited?: boolean }) => {
+  const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this chapter',
@@ -97,11 +130,12 @@ export const ChapterPage: NextPage = () => {
         }
       : {
           title: 'Join this chapter?',
+          body: 'Joining chapter will add you as a member to chapter.',
         };
     const ok = await confirm(confirmOptions);
     if (ok) {
       try {
-        await joinChapterFn({ variables: { chapterId } });
+        await joinChapter({ variables: { chapterId } });
         toast({ title: 'You successfully joined chapter', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
@@ -110,19 +144,55 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const chapterSubscribe = async (toSubscribe: boolean) => {
+  const onLeaveChapter = async () => {
+    const ok = await confirm({
+      title: 'Are you sure you want to leave this chapter?',
+      body: (
+        <>
+          Leaving will cancel your attendance at all of this chapter&apos;s
+          events.
+          {dataChapterUser?.chapterUser?.chapter_role.name ===
+            'administrator' && (
+            <>
+              <br />
+              <br />
+              Note: This will remove record of your chapter role as well.
+              Joining chapter again will give you member role.
+            </>
+          )}
+        </>
+      ),
+    });
+    if (ok) {
+      try {
+        await leaveChapter({ variables: { chapterId } });
+        toast({
+          title: 'You successfully left the chapter',
+          status: 'success',
+        });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const onChapterSubscribe = async (toSubscribe: boolean) => {
     const ok = await confirm(
       toSubscribe
-        ? { title: 'Do you want to subscribe?' }
+        ? {
+            title: 'Do you want to subscribe?',
+            body: 'After subscribing you will receive emails about new events in this chapter.',
+          }
         : {
             title: 'Unsubscribe from chapter?',
-            body: 'Unsubscribing from this chapter will affect subscriptions of all existing events, and new events in the chapter.',
+            body: 'After unsubscribing you will not receive emails about new events in this chapter.',
           },
     );
 
     if (ok) {
       try {
-        await chapterSubscribeFn({ variables: { chapterId } });
+        await chapterSubscribe({ variables: { chapterId } });
         toast(
           toSubscribe
             ? {
@@ -131,7 +201,7 @@ export const ChapterPage: NextPage = () => {
               }
             : {
                 title: 'You have unsubscribed from this chapter',
-                status: 'info',
+                status: 'success',
               },
         );
       } catch (err) {
@@ -142,11 +212,20 @@ export const ChapterPage: NextPage = () => {
 
   const isLoading = loading || loadingChapterUser || !data;
 
-  const askUserToConfirm = router.query?.ask_to_confirm && isLoggedIn;
-  const isNotAlreadyMember = !isLoading && !dataChapterUser;
+  const canShowConfirmModal =
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
+  const isAlreadyMember = !!dataChapterUser?.chapterUser;
+
   useEffect(() => {
-    if (askUserToConfirm && isNotAlreadyMember) joinChapter({ invited: true });
-  }, [askUserToConfirm, isNotAlreadyMember]);
+    if (canShowConfirmModal && !hasShownModal) {
+      if (isAlreadyMember) {
+        onLeaveChapter();
+      } else {
+        onJoinChapter({ invited: true });
+      }
+      setHasShownModal(true);
+    }
+  }, [canShowConfirmModal, isAlreadyMember, hasShownModal]);
 
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   if (!data.chapter)
@@ -187,16 +266,27 @@ export const ChapterPage: NextPage = () => {
         {isLoggedIn &&
           (loadingChapterUser ? (
             <Spinner />
-          ) : dataChapterUser ? (
-            <SubscriptionWidget
-              chapterUser={dataChapterUser.chapterUser}
-              chapterSubscribe={chapterSubscribe}
-            />
           ) : (
-            <Button colorScheme="blue" onClick={() => joinChapter()}>
-              Join chapter
-            </Button>
+            dataChapterUser && (
+              <ChapterUserRoleWidget
+                JoinChapter={onJoinChapter}
+                LeaveChapter={onLeaveChapter}
+                chapterUser={dataChapterUser.chapterUser}
+              />
+            )
           ))}
+        {isLoggedIn &&
+          (loadingChapterUser ? (
+            <Spinner />
+          ) : (
+            dataChapterUser?.chapterUser && (
+              <SubscriptionWidget
+                chapterUser={dataChapterUser.chapterUser}
+                chapterSubscribe={onChapterSubscribe}
+              />
+            )
+          ))}
+
         <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading size="md" color={'gray.700'}>
           Events:

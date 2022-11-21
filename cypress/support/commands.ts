@@ -408,7 +408,7 @@ Cypress.Commands.add(
         data,
       },
       query: `mutation updateVenue($chapterId: Int!, $venueId: Int!, $data: VenueInputs!) {
-      updateVenue(chapterId: $chapterId, venueId: $venueId, data: $data) {
+      updateVenue(_onlyUsedForAuth: $chapterId, id: $venueId, data: $data) {
         id
       }
     }`,
@@ -438,7 +438,7 @@ const deleteVenue = (
       venueId,
     },
     query: `mutation deleteVenue($chapterId: Int!, $venueId: Int!) {
-    deleteVenue(chapterId: $chapterId, venueId: $venueId) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
       id
     }
   }`,
@@ -525,6 +525,26 @@ const getChapterEvents = (id: number) => {
 Cypress.Commands.add('getChapterEvents', getChapterEvents);
 
 /**
+ * Get venues for chapter using GQL query
+ * @param id Chapter id
+ */
+const getChapterVenues = (id: number) => {
+  const chapterVenuesQuery = {
+    operationName: 'chapterVenues',
+    variables: { id },
+    query: `query chapterVenues($id: Int!) {
+      chapterVenues(chapterId: $id) {
+        id
+      }
+    }`,
+  };
+  return cy
+    .authedRequest(gqlOptions(chapterVenuesQuery))
+    .then((response) => response.body.data.chapterVenues);
+};
+Cypress.Commands.add('getChapterVenues', getChapterVenues);
+
+/**
  * Join chapter using GQL mutation
  * @param chapterId Chapter id
  * @param {object} [options={ withAuth: boolean }] Optional options object.
@@ -546,6 +566,28 @@ const joinChapter = (chapterId: number, options = { withAuth: true }) => {
     : cy.request(requestOptions);
 };
 Cypress.Commands.add('joinChapter', joinChapter);
+/**
+ * Leave chapter using GQL mutation
+ * @param chapterId Chapter id
+ * @param {object} [options={ withAuth: boolean }] Optional options object.
+ */
+const leaveChapter = (chapterId: number, options = { withAuth: true }) => {
+  const chapterUserMutation = {
+    operationName: 'leaveChapter',
+    variables: { chapterId },
+    query: `mutation leaveChapter($chapterId: Int!) {
+      leaveChapter(chapterId: $chapterId) {
+        user_id
+      }
+    }`,
+  };
+  const requestOptions = gqlOptions(chapterUserMutation);
+
+  return options.withAuth
+    ? cy.authedRequest(requestOptions)
+    : cy.request(requestOptions);
+};
+Cypress.Commands.add('leaveChapter', leaveChapter);
 
 /**
  * Toggle subscription status for chapter using GQL mutation
@@ -621,7 +663,7 @@ const changeInstanceUserRole = (
     operationName: 'changeInstanceUserRole',
     variables: { roleName, userId },
     query: `mutation changeInstanceUserRole($roleName: String!, $userId: Int!) {
-      changeInstanceUserRole(roleName: $roleName, userId: $userId) {
+      changeInstanceUserRole(roleName: $roleName, id: $userId) {
         instance_role {
           name
         }
@@ -745,8 +787,10 @@ declare global {
       sendEventInvite: typeof sendEventInvite;
       getChapterEvents: typeof getChapterEvents;
       getChapterRoles: typeof getChapterRoles;
+      getChapterVenues: typeof getChapterVenues;
       interceptGQL: typeof interceptGQL;
       joinChapter: typeof joinChapter;
+      leaveChapter: typeof leaveChapter;
       login: typeof login;
       logout: typeof logout;
       register: typeof register;

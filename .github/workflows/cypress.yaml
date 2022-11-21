@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         browsers: [chrome, firefox]
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       # Remove this step after firefox launches 106
       - name: Downgrade Firefox

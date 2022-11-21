@@ -1,5 +1,6 @@
 name: CI Workflow
 on: [push, pull_request]
+
 jobs:
   build:
     name: build and test
@@ -15,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -36,6 +37,15 @@ jobs:
           npm run dev:server & ./server/wait-for localhost:5000 -- npm run gen
           killall node
           ./scripts/check-generated-code.sh
+      - name:
+          Check migrations
+          # 1) apply commited migrations, 2) try to generate a new migration, 3) check if this was possible
+        env:
+          DB_PORT: 5432
+        run: |
+          npm run prisma -- migrate reset --force --skip-generate --skip-seed
+          npm run prisma -- migrate dev --skip-generate --skip-seed --name test
+          ./scripts/check-migrations.sh
       - name: Start Docker Development Environment
         env:
           DB_PORT: 54320
@@ -43,4 +53,6 @@ jobs:
       - name: Seed the Docker db
         env:
           DB_PORT: 54320
-        run: npm run db:reset
+        # We don't need to build the server explicitly, because npm run
+        # dev:server is run earlier and it runs tsc.
+        run: npm run db:migrate:reset

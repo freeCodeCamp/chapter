@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
@@ -11,7 +12,7 @@ import {
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
-import { VENUES } from '../graphql/queries';
+import { DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
@@ -29,8 +30,10 @@ export const EditVenuePage: NextPageWithLayout = () => {
   });
 
   const [updateVenue] = useUpdateVenueMutation({
-    refetchQueries: [{ query: VENUES }],
+    refetchQueries: [{ query: DASHBOARD_VENUES }],
   });
+
+  const toast = useToast();
 
   const onSubmit = async (data: VenueFormData) => {
     const { chapter_id, ...updateData } = data;
@@ -38,7 +41,7 @@ export const EditVenuePage: NextPageWithLayout = () => {
     const latitude = parseFloat(String(data.latitude));
     const longitude = parseFloat(String(data.longitude));
 
-    const { errors } = await updateVenue({
+    const { data: venueData, errors } = await updateVenue({
       variables: {
         venueId,
         chapterId: chapter_id,
@@ -46,7 +49,13 @@ export const EditVenuePage: NextPageWithLayout = () => {
       },
     });
     if (errors) throw errors;
-    await router.push('/dashboard/venues');
+    if (venueData) {
+      await router.push('/dashboard/venues');
+      toast({
+        title: `Venue "${venueData?.updateVenue.name}" updated successfully!`,
+        status: 'success',
+      });
+    }
   };
 
   const hasLoaded = !!venueData && !!chapterData;

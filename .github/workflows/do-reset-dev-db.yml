@@ -1,0 +1,20 @@
+name: Reset Dev Database
+on:
+  workflow_dispatch:
+
+jobs:
+  reset-dev-db:
+    name: Reset Dev Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset Via SSH
+        uses: appleboy/ssh-action@f9010ff7f1bbd7db1a0b4bab661437550cea20c0 # tag=v0.1.5
+        with:
+          host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
+          username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}
+          key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
+          passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
+          port: 22
+          script: |
+            cd chapter 
+            docker compose -f docker-compose.yml run app sh -c "npx prisma migrate reset --force"

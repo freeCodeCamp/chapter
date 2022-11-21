@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import {
   events,
   events_venue_type_enum,
@@ -27,6 +28,7 @@ import {
   EventUser,
   EventWithRelations,
   EventWithChapter,
+  EventWithVenue,
   User,
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
@@ -39,17 +41,19 @@ import {
 } from '../../services/Reminders';
 import {
   cancelCalendarEvent,
-  createCalendarEvent,
   deleteCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
 import {
-  getUnsubscribeOptions,
-  getChapterUnsubscribeToken,
-  NotificationContextText,
-} from '../../util/eventEmail';
-import { updateCalendarEventAttendees } from '../../util/updateCalendarEventAttendees';
-import { updateEventWaitlist } from '../../util/updateEventWaitlist';
+  isAdminFromInstanceRole,
+  isChapterAdminWhere,
+} from '../../util/adminedChapters';
+import {
+  createCalendarEvent,
+  updateCalendarEventAttendees,
+} from '../../util/calendar';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
+import { redactSecrets } from '../../util/redact-secrets';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -78,6 +82,32 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
 
+
+const getUnsubscribeOptions = ({
+  chapterId,
+  eventId,
+  userId,
+}: {
+  chapterId: number;
+  eventId: number;
+  userId: number;
+}) => {
+  const chapterUnsubscribeToken = generateToken(
+    UnsubscribeType.Chapter,
+    chapterId,
+    userId,
+  );
+  const eventUnsubscribeToken = generateToken(
+    UnsubscribeType.Event,
+    eventId,
+    userId,
+  );
+  return `
+Unsubscribe Options</br>
+- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
+- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving notifications about new events by unfollowing chapter</a>`;
+};
+
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
@@ -99,7 +129,7 @@ const sendRsvpInvitation = async (
   await new MailerService({
     emailList: [user.email],
     subject: `Invitation: ${event.name}`,
-    htmlEmail: `Hi ${user.name},</br>
+    htmlEmail: `Hi${user.name ? ' ' + user.name : ''},</br>
 To add this event to your calendar(s) you can use these links:
 </br>
 <a href=${google(linkDetails)}>Google</a>
@@ -305,10 +335,10 @@ export class EventResolver {
   @Authorized(Permission.EventEdit)
   @Query(() => EventWithRelations, { nullable: true })
   async dashboardEvent(
-    @Arg('eventId', () => Int) eventId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         chapter: true,
         venue: true,
@@ -329,13 +359,30 @@ export class EventResolver {
     });
   }
 
+  @Query(() => [EventWithVenue])
+  async dashboardEvents(
+    @Ctx() ctx: Required<ResolverCtx>,
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+  ): Promise<EventWithVenue[]> {
+    return await prisma.events.findMany({
+      where: {
+        ...(!isAdminFromInstanceRole(ctx.user) && {
+          chapter: isChapterAdminWhere(ctx.user.id),
+        }),
+      },
+      include: { venue: true },
+      take: limit,
+      orderBy: { start_at: 'asc' },
+    });
+  }
+
   // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
-    @Arg('eventId', () => Int) eventId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<EventWithRelations | null> {
     return await prisma.events.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         chapter: true,
         venue: true,
@@ -388,11 +435,6 @@ export class EventResolver {
       ...chapterUserInclude,
     });
 
-    const isSubscribedToChapter =
-      ctx.user.user_chapters.find(
-        (user_chapter) => user_chapter.chapter_id === chapterId,
-      )?.subscribed ?? true;
-
     const oldEventUser = await prisma.event_users.findUnique({
       include: { rsvp: true },
       where: {
@@ -427,7 +469,7 @@ export class EventResolver {
         event: { connect: { id: eventId } },
         rsvp: { connect: { name: newRsvpName } },
         event_role: { connect: { name: 'member' } },
-        subscribed: isSubscribedToChapter,
+        subscribed: true,
       };
       eventUser = await prisma.event_users.create({
         data: eventUserData,
@@ -436,7 +478,7 @@ export class EventResolver {
 
       // NOTE: this relies on there being an event_user record, so must follow
       // that.
-      if (newRsvpName !== 'waitlist' && isSubscribedToChapter) {
+      if (newRsvpName !== 'waitlist') {
         await createReminder({
           eventId,
           remindAt: sub(event.start_at, { days: 1 }),
@@ -465,7 +507,7 @@ export class EventResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUser | null> {
     const eventUser = await prisma.event_users.findUniqueOrThrow({
-      include: { rsvp: true },
+      include: { rsvp: true, event_reminder: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -488,10 +530,14 @@ export class EventResolver {
       },
     });
 
-    await updateEventWaitlist({ event, userId: ctx.user.id });
+    await updateWaitlistForUserRemoval({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'no' } } },
+      data: {
+        rsvp: { connect: { name: 'no' } },
+        subscribed: false,
+        ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
+      },
       include: eventUserIncludes,
       where: {
         user_id_event_id: {
@@ -592,16 +638,11 @@ ${unsubscribeOptions}`,
     const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id: chapterId },
     });
-    const userChapter = ctx.user.user_chapters.find(
-      ({ chapter_id }) => chapter_id === chapterId,
-    );
 
     const eventSponsorsData: Prisma.event_sponsorsCreateManyEventInput[] =
       data.sponsor_ids.map((sponsor_id) => ({
         sponsor_id,
       }));
-
-    const isSubscribedToEvent = userChapter ? userChapter.subscribed : true; // TODO add default event subscription setting override
 
     // TODO: add an option to allow event creators NOT to rsvp. If doing that
     // make sure stop adding them to the calendar event.
@@ -609,7 +650,7 @@ ${unsubscribeOptions}`,
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
       rsvp: { connect: { name: 'yes' } },
-      subscribed: isSubscribedToEvent,
+      subscribed: true,
     };
 
     // TODO: the type safety if we start with ...data is a bit weak here: it
@@ -644,30 +685,38 @@ ${unsubscribeOptions}`,
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      try {
-        const { calendarEventId } = await createCalendarEvent({
-          calendarId: chapter.calendar_id,
-          start: event.start_at,
-          end: event.ends_at,
-          summary: event.name,
-          attendeeEmails: [ctx.user.email],
-        });
-
-        await prisma.events.update({
-          where: {
-            id: event.id,
-          },
-          data: {
-            calendar_event_id: calendarEventId,
-          },
-        });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
-        console.error('Unable to create calendar event');
-      }
+      await createCalendarEvent({
+        attendeeEmails: [ctx.user.email],
+        calendarId: chapter.calendar_id,
+        event,
+      });
     }
 
     return event;
+  }
+
+  @Authorized(Permission.EventCreate)
+  @Mutation(() => Event)
+  async createCalendarEvent(@Arg('id', () => Int) id: number): Promise<Event> {
+    const event = await prisma.events.findUniqueOrThrow({
+      where: { id },
+      include: { chapter: true, event_users: { include: { user: true } } },
+    });
+    if (event.calendar_event_id) return event;
+    if (!event.chapter.calendar_id) {
+      throw Error(
+        'Calendar events cannot be created when chapter does not have a Google calendar',
+      );
+    }
+
+    const attendeeEmails =
+      event.event_users.map(({ user: { email } }) => email) ?? [];
+    const updatedEvent = await createCalendarEvent({
+      attendeeEmails,
+      calendarId: event.chapter.calendar_id,
+      event,
+    });
+    return updatedEvent ? updatedEvent : event;
   }
 
   @Authorized(Permission.EventEdit)
@@ -742,9 +791,9 @@ ${unsubscribeOptions}`,
             ({ user }) => user.email,
           ),
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to update calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
 
@@ -813,9 +862,9 @@ ${unsubscribeOptions}`,
           end: event.ends_at,
           attendeeEmails: event.event_users.map(({ user }) => user.email),
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to cancel calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
 
@@ -842,9 +891,9 @@ ${unsubscribeOptions}`,
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
         });
-      } catch {
-        // TODO: log more details without leaking tokens and user info.
+      } catch (e) {
         console.error('Unable to delete calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }
     return event;
@@ -924,7 +973,7 @@ ${unsubscribeOptions}`,
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
     const calendar = ical();
     calendar.createEvent({
       start: event.start_at,

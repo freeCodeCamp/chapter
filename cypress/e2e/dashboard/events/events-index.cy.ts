@@ -1,6 +1,10 @@
 import add from 'date-fns/add';
 import { EventUsers } from '../../../../cypress.config';
-import { expectNoErrors, expectToBeRejected } from '../../../support/util';
+import {
+  expectNoErrors,
+  expectToBeRejected,
+  getFirstPathParam,
+} from '../../../support/util';
 
 const chapterId = 1;
 const eventId = 1;
@@ -18,7 +22,7 @@ describe('spec needing owner', () => {
     cy.task('seedDb');
     cy.login();
     cy.mhDeleteAll();
-    cy.interceptGQL('events');
+    cy.interceptGQL('dashboardEvents');
   });
 
   it('should be the active dashboard link', () => {
@@ -98,7 +102,7 @@ describe('spec needing owner', () => {
 
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
-    cy.wait('@GQLevents');
+    cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
@@ -138,7 +142,7 @@ describe('spec needing owner', () => {
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
-    cy.wait('@GQLevents');
+    cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -211,7 +215,7 @@ describe('events dashboard', () => {
     cy.task('seedDb');
     cy.login(users.chapter1Admin.email);
     cy.mhDeleteAll();
-    cy.interceptGQL('events');
+    cy.interceptGQL('dashboardEvents');
   });
 
   it('chapter admin should be allowed to edit event, but nobody else', () => {
@@ -254,5 +258,17 @@ describe('events dashboard', () => {
     // banned admin should be rejected
     cy.login(users.bannedAdmin.email);
     cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+  });
+
+  it('chapter admin should see only events from admined chapters', () => {
+    cy.login(users.chapter1Admin.email);
+    const chapterId = 1;
+    cy.visit('/dashboard/events');
+    cy.getChapterEvents(chapterId).then((events) => {
+      const eventIds = events.map(({ id }) => id);
+      cy.get('[data-cy=event]').each((link) =>
+        expect(eventIds).to.include(getFirstPathParam(link)),
+      );
+    });
   });
 });

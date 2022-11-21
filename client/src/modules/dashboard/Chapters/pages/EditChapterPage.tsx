@@ -1,5 +1,6 @@
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 
 import {
   CreateChapterInputs,
@@ -8,6 +9,7 @@ import {
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm from '../components/ChapterForm';
@@ -15,8 +17,6 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
-
   const { param: chapterId } = useParam('id');
 
   const { loading, error, data } = useDashboardChapterQuery({
@@ -24,20 +24,22 @@ export const EditChapterPage: NextPageWithLayout = () => {
   });
 
   const [updateChapter] = useUpdateChapterMutation({
-    refetchQueries: [{ query: CHAPTERS }],
+    refetchQueries: [{ query: CHAPTERS }, { query: DASHBOARD_CHAPTERS }],
   });
 
+  const toast = useToast();
+
   const onSubmit = async (data: CreateChapterInputs) => {
-    setLoadingUpdate(true);
-    try {
-      await updateChapter({
-        variables: { chapterId, data: { ...data } },
-      });
+    const { data: chapterData, errors } = await updateChapter({
+      variables: { chapterId, data: { ...data } },
+    });
+    if (errors) throw errors;
+    if (chapterData) {
       await router.push('/dashboard/chapters');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingUpdate(false);
+      toast({
+        title: `Chapter "${chapterData.updateChapter.name}" updated successfully!`,
+        status: 'success',
+      });
     }
   };
 
@@ -47,7 +49,6 @@ export const EditChapterPage: NextPageWithLayout = () => {
   return (
     <ChapterForm
       data={data}
-      loading={loadingUpdate}
       onSubmit={onSubmit}
       loadingText={'Saving Chapter Changes'}
       submitText={'Save Chapter Changes'}

@@ -4,7 +4,7 @@ import { prisma } from '../../prisma';
 
 import { UserWithInstanceRole } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-import { InstanceRoles } from '../../../prisma/generator/factories/instanceRoles.factory';
+import { InstanceRoles } from '../../../../common/roles';
 import { getRoleName } from '../../util/chapterAdministrator';
 
 const instanceRoleInclude = {
@@ -43,10 +43,10 @@ export class UsersResolver {
   @Mutation(() => UserWithInstanceRole)
   async changeInstanceUserRole(
     @Arg('roleName', () => String) newRole: string,
-    @Arg('userId', () => Int) userId: number,
+    @Arg('id', () => Int) id: number,
   ): Promise<UserWithInstanceRole> {
     const user = await prisma.users.findUniqueOrThrow({
-      where: { id: userId },
+      where: { id },
       include: {
         ...instanceRoleInclude,
         user_chapters: { include: { chapter_role: true } },
@@ -68,7 +68,7 @@ export class UsersResolver {
           },
         },
       },
-      where: { id: userId },
+      where: { id },
       include: instanceRoleInclude,
     });
   }

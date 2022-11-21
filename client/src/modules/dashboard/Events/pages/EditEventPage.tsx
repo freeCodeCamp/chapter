@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
@@ -11,7 +11,7 @@ import { useParam } from '../../../../hooks/useParam';
 import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
-import { EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
+import { DASHBOARD_EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -19,7 +19,6 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EditEventPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { param: eventId } = useParam();
 
   const { loading, error, data } = useDashboardEventQuery({
@@ -32,7 +31,7 @@ export const EditEventPage: NextPageWithLayout = () => {
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [
-      { query: EVENTS },
+      { query: DASHBOARD_EVENTS },
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
@@ -40,28 +39,18 @@ export const EditEventPage: NextPageWithLayout = () => {
   });
 
   const onSubmit = async (data: EventFormData) => {
-    setLoadingUpdate(true);
+    const { data: eventData, errors } = await updateEvent({
+      variables: { eventId, data: parseEventData(data) },
+    });
 
-    try {
-      const event = await updateEvent({
-        variables: { eventId, data: parseEventData(data) },
-      });
+    if (errors) throw errors;
 
-      if (event.data) {
-        await router.push('/dashboard/events');
-        toast({
-          title: `Event "${event.data.updateEvent.name}" updated successfuly!`,
-          status: 'success',
-        });
-      }
-    } catch (err) {
+    if (eventData) {
+      await router.push('/dashboard/events');
       toast({
-        title: 'Something went wrong.',
-        status: 'error',
+        title: `Event "${eventData.updateEvent.name}" updated successfully!`,
+        status: 'success',
       });
-      console.error(err);
-    } finally {
-      setLoadingUpdate(false);
     }
   };
 
@@ -84,7 +73,6 @@ export const EditEventPage: NextPageWithLayout = () => {
         sponsors: sponsorData || [],
         venue_id: data.dashboardEvent?.venue?.id,
       }}
-      loading={loadingUpdate}
       onSubmit={onSubmit}
       loadingText={'Saving Event Changes'}
       submitText={'Save Event Changes'}

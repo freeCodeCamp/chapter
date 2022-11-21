@@ -59,7 +59,7 @@ export class UserWithInstanceRoleResolver {
   async userInformation(@Ctx() ctx: ResolverCtx): Promise<UserInformation> {
     return await prisma.users.findFirstOrThrow({
       where: {
-        id: ctx.user.id,
+        id: ctx.user?.id,
       },
       include: {
         user_chapters: {

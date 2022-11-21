@@ -62,7 +62,7 @@ export const UserProfilePage = () => {
             Profile
           </Heading>
           <Heading as="h2" size={'lg'}>
-            Welcome {getNameText(data.userInformation?.name)}
+            Welcome, {getNameText(data.userInformation?.name)}
           </Heading>
           {data.userInformation?.admined_chapters.length > 0 && (
             <>
@@ -79,7 +79,7 @@ export const UserProfilePage = () => {
             </>
           )}
           <Heading as="h2" marginTop={'2em'} size="lg" fontWeight={500}>
-            This will change the setting in{' '}
+            Email address:{' '}
             <Text as="span" fontWeight={700}>
               {data.userInformation?.email}
             </Text>

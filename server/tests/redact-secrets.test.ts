@@ -61,6 +61,17 @@ describe('redactSecrets', () => {
     });
   });
 
+  it('redacts session keys and signatures inside cookies', () => {
+    const obj = {
+      cookie:
+        'fine=abc123; session=abc123; access_token=ghi789; session.sig=def456',
+    };
+
+    expect(redactSecrets(obj)).toEqual({
+      cookie: 'fine=abc123; session=***; access_token=***; session.sig=***',
+    });
+  });
+
   it('redacts secrets encoded as url params', () => {
     const obj = {
       prop: 'refresh_token=1%2F%2Fabc123&client_id=123-456id.apps.googleusercontent.com&something_else=123&refresh_token=1%2F%2Fabc123&client_secret=1234567890&grant_type=refresh_token',

@@ -18,6 +18,7 @@ import { useLogout } from 'hooks/useAuth';
 
 export const UserProfilePage = () => {
   const { data } = useUserProfileQuery();
+  const userInfo = data?.userInformation;
   const logout = useLogout();
   const router = useRouter();
 
@@ -56,21 +57,21 @@ export const UserProfilePage = () => {
 
   return (
     <div>
-      {data ? (
+      {userInfo ? (
         <>
           <Heading as="h1" marginBlock={'.5em'}>
             Profile
           </Heading>
           <Heading as="h2" size={'lg'}>
-            Welcome, {getNameText(data.userInformation?.name)}
+            Welcome, {getNameText(userInfo.name)}
           </Heading>
-          {data.userInformation?.admined_chapters.length > 0 && (
+          {userInfo.admined_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">
                 You are an administrator for these Chapters:
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
-                {data.userInformation?.admined_chapters.map(({ name, id }) => (
+                {userInfo.admined_chapters.map(({ name, id }) => (
                   <Link key={id} href={`/chapters/${id}`}>
                     {name}
                   </Link>
@@ -81,12 +82,12 @@ export const UserProfilePage = () => {
           <Heading as="h2" marginTop={'2em'} size="lg" fontWeight={500}>
             Email address:{' '}
             <Text as="span" fontWeight={700}>
-              {data.userInformation?.email}
+              {userInfo.email}
             </Text>
           </Heading>
           <ProfileForm
             onSubmit={submitUpdateMe}
-            data={data.userInformation}
+            data={userInfo}
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />

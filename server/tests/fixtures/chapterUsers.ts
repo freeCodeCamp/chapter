@@ -2,7 +2,7 @@ import { merge } from 'lodash/fp';
 
 import { chapter_roles, chapter_users } from '@prisma/client';
 
-import { ChapterRoles } from '../../prisma/init/factories/chapterRoles.factory';
+import { ChapterRoles } from '../../../common/roles';
 
 type UserChapter = chapter_users & {
   chapter_role: chapter_roles;

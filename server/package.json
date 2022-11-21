@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "build": "prisma generate && tsc",
-    "db:init": "npm run build && node prisma/init/init.js --execute",
     "db:migrate": "prisma migrate deploy",
     "db:resolve": "prisma migrate resolve",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",

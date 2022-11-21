@@ -1,45 +1,58 @@
 import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
+import { InstanceRoles } from '../../../../common/roles';
 
 import { prisma } from '../../../src/prisma';
-import { RoleMap } from '../../init/factories/instanceRoles.factory';
 
 const { name, internet } = faker;
 
-const createUsers = async (
-  instanceRoles: Required<RoleMap>,
-): Promise<{
+const createUsers = async (): Promise<{
   ownerId: number;
   chapter1AdminId: number;
   chapter2AdminId: number;
   bannedAdminId: number;
   userIds: number[];
 }> => {
+  // TODO: query once and pass this on to setupRoles
+  const instanceRoles = await prisma.instance_roles.findMany();
+  const ownerRoleId = instanceRoles.find(
+    ({ name }) => name === InstanceRoles.owner,
+  )?.id;
+  const chapterAdministratorRoleId = instanceRoles.find(
+    ({ name }) => name === InstanceRoles.chapter_administrator,
+  )?.id;
+  const memberRoleId = instanceRoles.find(
+    ({ name }) => name === InstanceRoles.member,
+  )?.id;
+
+  if (!ownerRoleId || !chapterAdministratorRoleId || !memberRoleId)
+    throw new Error('Missing instance roles');
+
   const ownerData: Prisma.usersCreateInput = {
     email: 'foo@bar.com',
     name: 'The Owner',
-    instance_role: { connect: { id: instanceRoles.owner.id } },
+    instance_role: { connect: { id: ownerRoleId } },
   };
   const owner = await prisma.users.create({ data: ownerData });
 
   const chapter1AdminData: Prisma.usersCreateInput = {
     email: 'admin@of.chapter.one',
     name: 'Chapter One Admin',
-    instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
+    instance_role: { connect: { id: chapterAdministratorRoleId } },
   };
   const chapter1Admin = await prisma.users.create({ data: chapter1AdminData });
 
   const chapter2AdminData: Prisma.usersCreateInput = {
     email: 'admin@of.chapter.two',
     name: 'Chapter Two Admin',
-    instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
+    instance_role: { connect: { id: chapterAdministratorRoleId } },
   };
   const chapter2Admin = await prisma.users.create({ data: chapter2AdminData });
 
   const bannedAdminData: Prisma.usersCreateInput = {
     email: 'banned@chapter.admin',
     name: 'Banned Chapter Admin',
-    instance_role: { connect: { id: instanceRoles.chapter_administrator.id } },
+    instance_role: { connect: { id: chapterAdministratorRoleId } },
   };
 
   const bannedAdmin = await prisma.users.create({ data: bannedAdminData });
@@ -47,7 +60,7 @@ const createUsers = async (
   const testUserData: Prisma.usersCreateInput = {
     email: 'test@user.org',
     name: 'Test User',
-    instance_role: { connect: { id: instanceRoles.member.id } },
+    instance_role: { connect: { id: memberRoleId } },
   };
 
   await prisma.users.create({ data: testUserData });
@@ -57,7 +70,7 @@ const createUsers = async (
     () => ({
       email: internet.email(),
       name: `${name.firstName()} ${name.lastName()}`,
-      instance_role: { connect: { id: instanceRoles.member.id } },
+      instance_role: { connect: { id: memberRoleId } },
     }),
   );
   const otherIds = (

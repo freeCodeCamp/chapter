@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { ChapterRoles } from '../../../common/roles';
 
 import { prisma } from '../../src/prisma';
 import { makeBooleanIterator } from './lib/util';
@@ -18,8 +19,18 @@ const setupRoles = async (
     userIds: number[];
   },
   chapterIds: number[],
-  chapterRoles: Record<string, { name: string; id: number }>, // TODO: import type from chapterRoles.factory
 ): Promise<void> => {
+  const chapterRoles = (await prisma.chapter_roles.findMany()) ?? [];
+
+  const administratorRoleId = chapterRoles.find(
+    ({ name }) => name === ChapterRoles.administrator,
+  )?.id;
+  const memberRoleId = chapterRoles.find(
+    ({ name }) => name === ChapterRoles.member,
+  )?.id;
+
+  if (!administratorRoleId || !memberRoleId)
+    throw new Error('Missing chapter roles');
   const usersData: Prisma.chapter_usersCreateManyInput[] = [];
   const subscribeIterator = makeBooleanIterator();
 
@@ -27,7 +38,7 @@ const setupRoles = async (
     joined_date: new Date(),
     chapter_id: 1,
     user_id: chapter1AdminId,
-    chapter_role_id: chapterRoles.administrator.id,
+    chapter_role_id: administratorRoleId,
     subscribed: true,
   };
   usersData.push(chapter1AdminData);
@@ -36,7 +47,7 @@ const setupRoles = async (
     joined_date: new Date(),
     chapter_id: 2,
     user_id: chapter2AdminId,
-    chapter_role_id: chapterRoles.administrator.id,
+    chapter_role_id: administratorRoleId,
     subscribed: true,
   };
   usersData.push(chapter2AdminData);
@@ -46,7 +57,7 @@ const setupRoles = async (
       joined_date: new Date(),
       chapter_id: chapterId,
       user_id: ownerId,
-      chapter_role_id: chapterRoles.member.id, // This user is an instance owner
+      chapter_role_id: memberRoleId, // This user is an instance owner
       // so this chapter role should not provide additional permissions beyond
       // those provided by the instance owner role. It is possible for them to
       // be a member of a chapter, though, so this grants them the member role
@@ -60,7 +71,7 @@ const setupRoles = async (
       joined_date: new Date(),
       chapter_id: chapterId,
       user_id: bannedAdminId,
-      chapter_role_id: chapterRoles.administrator.id,
+      chapter_role_id: administratorRoleId,
       subscribed: false,
     };
 
@@ -86,7 +97,7 @@ const setupRoles = async (
         joined_date: new Date(),
         chapter_id: chapterId,
         user_id: user,
-        chapter_role_id: chapterRoles.member.id,
+        chapter_role_id: memberRoleId,
         subscribed: userSubscribed.next().value,
       };
 

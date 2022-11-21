@@ -19,7 +19,7 @@ tasks:
     # the rest, get persisted, so we can save time and use init:
     init: npm ci
     command: |
-      npm run db:reset
+      npm run -w=server build && npm run db:migrate:reset
       npm run both
 github:
   prebuilds:

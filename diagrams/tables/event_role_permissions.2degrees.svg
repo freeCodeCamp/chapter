@@ -103,14 +103,14 @@
 <text text-anchor="start" x="51" y="-220.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">name</text>
 <polygon fill="none" stroke="#000000" points="26,-194.7 26,-213.7 125,-213.7 125,-194.7 26,-194.7"/>
 <text text-anchor="start" x="29" y="-200.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="26,-175.7 26,-194.7 52,-194.7 52,-175.7 26,-175.7"/>
-<polygon fill="none" stroke="#000000" points="26,-175.7 26,-194.7 52,-194.7 52,-175.7 26,-175.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="26,-175.7 26,-194.7 55,-194.7 55,-175.7 26,-175.7"/>
+<polygon fill="none" stroke="#000000" points="26,-175.7 26,-194.7 55,-194.7 55,-175.7 26,-175.7"/>
 <text text-anchor="start" x="29" y="-181.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
-<polygon fill="#ffffff" stroke="transparent" points="52,-175.7 52,-194.7 97,-194.7 97,-175.7 52,-175.7"/>
-<polygon fill="none" stroke="#000000" points="52,-175.7 52,-194.7 97,-194.7 97,-175.7 52,-175.7"/>
-<text text-anchor="start" x="61.6105" y="-181.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="97,-175.7 97,-194.7 125,-194.7 125,-175.7 97,-175.7"/>
-<polygon fill="none" stroke="#000000" points="97,-175.7 97,-194.7 125,-194.7 125,-175.7 97,-175.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="55,-175.7 55,-194.7 95,-194.7 95,-175.7 55,-175.7"/>
+<polygon fill="none" stroke="#000000" points="55,-175.7 55,-194.7 95,-194.7 95,-175.7 55,-175.7"/>
+<text text-anchor="start" x="65.1105" y="-181.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">1 row</text>
+<polygon fill="#ffffff" stroke="transparent" points="95,-175.7 95,-194.7 125,-194.7 125,-175.7 95,-175.7"/>
+<polygon fill="none" stroke="#000000" points="95,-175.7 95,-194.7 125,-194.7 125,-175.7 95,-175.7"/>
 <text text-anchor="start" x="106.4053" y="-181.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">2 &gt;</text>
 </a>
 </g>

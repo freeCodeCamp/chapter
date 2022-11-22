@@ -97,6 +97,14 @@ export const UserProfilePage = () => {
           <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
             Delete My Data
           </Button>
+          <area
+            download={`${userInfo.name}.json`}
+            href={`data:text/json;charset=utf-8,${encodeURIComponent(
+              JSON.stringify(userInfo),
+            )}`}
+          >
+            Download your data
+          </area>
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

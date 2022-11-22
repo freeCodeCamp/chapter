@@ -780,7 +780,14 @@ ${unsubscribeOptions}`,
 
   @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
-  async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
+  async cancelEvent(
+    @Arg('id', () => Int) id: number,
+    @Arg('emailGroups', () => [String], {
+      nullable: true,
+      defaultValue: ['interested'],
+    })
+    emailGroups: Array<boolean>,
+  ): Promise<Event | null> {
     const event = await prisma.events.update({
       where: { id },
       data: { canceled: true },
@@ -795,31 +802,50 @@ ${unsubscribeOptions}`,
         },
       },
     });
+    interface User {
+      user: { id: number; email: string };
+      subscribed: boolean;
+    }
+    const users: User[] = [];
+
+    if (emailGroups.includes(true)) {
+      const subscribedUsers = event.event_users.filter(
+        ({ subscribed }) => subscribed === true,
+      );
+      users.push(...subscribedUsers);
+    }
     await deleteEventReminders(id);
 
-    const notCanceledRsvps = event.event_users;
-    const unsubscribeOptions = getEventUnsubscribeOptions({
-      chapterId: event.chapter_id,
-      eventId: event.id,
-      userId: user.id,
-    });
-    if (notCanceledRsvps.length) {
-      const emailList = notCanceledRsvps.map(({ user }) => user.email);
-      const subject = `Event ${event.name} is canceled`;
+    try {
+      for (const { user } of users) {
+        const notCanceledRsvps = event.event_users;
+        const unsubscribeOptions = getEventUnsubscribeOptions({
+          chapterId: event.chapter_id,
+          eventId: event.id,
+          userId: user.id,
+        });
+        if (notCanceledRsvps.length) {
+          const emailList = notCanceledRsvps.map(({ user }) => user.email);
+          const subject = `Event ${event.name} is canceled`;
 
-      const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
-      <br />
-      View upcoming events for ${event.chapter.name}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${event.chapter.name} chapter</a>.<br />
-      You received this email because you Subscribed to ${event.name} Event.<br />
-      <br />
-      ${unsubscribeOptions}
-      `;
+          const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
+          <br />
+          View upcoming events for ${event.chapter.name}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${event.chapter.name} chapter</a>.<br />
+          You received this email because you Subscribed to ${event.name} Event.<br />
+          <br />
+          ${unsubscribeOptions}
+          `;
 
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: cancelEventEmail,
-      }).sendEmail();
+          new MailerService({
+            emailList: emailList,
+            subject: subject,
+            htmlEmail: cancelEventEmail,
+          }).sendEmail();
+        }
+      }
+    } catch (err) {
+      console.log('there is no members subscribed');
+      throw err;
     }
 
     if (event.chapter.calendar_id && event.calendar_event_id) {

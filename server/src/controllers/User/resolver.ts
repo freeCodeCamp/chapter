@@ -104,7 +104,7 @@ export class UserWithInstanceRoleResolver {
         },
       });
     } catch (e) {
-      console.log('Unable to download Data');
+      console.log('Unable to fetch attendee data');
       throw e;
     }
   }

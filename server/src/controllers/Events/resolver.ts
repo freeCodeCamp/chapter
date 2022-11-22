@@ -798,17 +798,17 @@ ${unsubscribeOptions}`,
     await deleteEventReminders(id);
     const notCanceledRsvps = event.event_users;
 
+    if (!notCanceledRsvps) return null;
     for (const { user } of notCanceledRsvps) {
       const unsubscribeOptions = getEventUnsubscribeOptions({
         chapterId: event.chapter_id,
         eventId: event.id,
         userId: user.id,
       });
-      if (notCanceledRsvps.length) {
-        const emailList = notCanceledRsvps.map(({ user }) => user.email);
-        const subject = `Event ${event.name} is canceled`;
+      const emailList = notCanceledRsvps.map(({ user }) => user.email);
+      const subject = `Event ${event.name} is canceled`;
 
-        const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
+      const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
           <br />
           View upcoming events for ${event.chapter.name}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${event.chapter.name} chapter</a>.<br />
           You received this email because you Subscribed to ${event.name} Event.<br />
@@ -816,12 +816,11 @@ ${unsubscribeOptions}`,
           ${unsubscribeOptions}
           `;
 
-        new MailerService({
-          emailList: emailList,
-          subject: subject,
-          htmlEmail: cancelEventEmail,
-        }).sendEmail();
-      }
+      new MailerService({
+        emailList: emailList,
+        subject: subject,
+        htmlEmail: cancelEventEmail,
+      }).sendEmail();
     }
 
     if (event.chapter.calendar_id && event.calendar_event_id) {

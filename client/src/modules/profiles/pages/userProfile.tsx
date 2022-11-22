@@ -68,15 +68,15 @@ export const UserProfilePage = () => {
           <Heading as="h2" size={'lg'}>
             Welcome, {getNameText(userInfo.name)}
           </Heading>
-          {userInfo.admined_chapters.length > 0 && (
+          {userInfo.user_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">
                 You are an administrator for these Chapters:
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
-                {userInfo.admined_chapters.map(({ name, id }) => (
-                  <Link key={id} href={`/chapters/${id}`}>
-                    {name}
+                {userInfo.user_chapters.map(({ chapter }) => (
+                  <Link key={chapter.id} href={`/chapters/${chapter.id}`}>
+                    {chapter.name}
                   </Link>
                 ))}
               </Flex>

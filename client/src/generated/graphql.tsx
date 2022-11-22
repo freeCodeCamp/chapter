@@ -612,9 +612,26 @@ export type UserBan = {
   user: User;
 };
 
+export type UserChapters = {
+  __typename?: 'UserChapters';
+  chapter: Chapter;
+  chapter_id: Scalars['Int'];
+  chapter_role: ChapterRole;
+  is_bannable?: Maybe<Scalars['Boolean']>;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
+};
+
+export type UserEvents = {
+  __typename?: 'UserEvents';
+  event: Event;
+  event_role: EventRole;
+  rsvp: Rsvp;
+  subscribed: Scalars['Boolean'];
+};
+
 export type UserInformation = {
   __typename?: 'UserInformation';
-  admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
   id: Scalars['Int'];
@@ -622,8 +639,8 @@ export type UserInformation = {
   instance_role: InstanceRole;
   name: Scalars['String'];
   user_bans: Array<UserBan>;
-  user_chapters: Array<ChapterUser>;
-  user_events: Array<EventUser>;
+  user_chapters: Array<UserChapters>;
+  user_events: Array<UserEvents>;
 };
 
 export type UserWithInstanceRole = {
@@ -1624,10 +1641,9 @@ export type UserProfileQuery = {
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: { __typename?: 'InstanceRole'; name: string };
-    admined_chapters: Array<{
-      __typename?: 'Chapter';
-      id: number;
-      name: string;
+    user_chapters: Array<{
+      __typename?: 'UserChapters';
+      chapter: { __typename?: 'Chapter'; id: number; name: string };
     }>;
   } | null;
 };
@@ -4637,9 +4653,11 @@ export const UserProfileDocument = gql`
       instance_role {
         name
       }
-      admined_chapters {
-        id
-        name
+      user_chapters {
+        chapter {
+          id
+          name
+        }
       }
     }
   }

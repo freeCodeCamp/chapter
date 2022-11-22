@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { Rsvp, User } from '.';
+import { Rsvp, User, Event } from '.';
 
 @ObjectType()
 export class EventPermission extends BaseObject {

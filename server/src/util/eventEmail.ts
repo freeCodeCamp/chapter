@@ -1,19 +1,6 @@
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
 
-export const NotificationContextText = ({
-  linkToEvent,
-  linkToChapter,
-}: {
-  linkToEvent: string;
-  linkToChapter: string;
-}) => {
-  return `
-  Unsubscribe Options</br>
-  - To manage notifications about this event, go to <a href="${linkToEvent}">${linkToEvent}</a>.<br />
-  - To manage notifications from this chapter about new events, go to <a href="${linkToChapter}">${linkToChapter}</a>.<br />`;
-};
-
-export const getUnsubscribeOptions = ({
+export const getEventUnsubscribeOptions = ({
   chapterId,
   eventId,
   userId,
@@ -32,13 +19,14 @@ export const getUnsubscribeOptions = ({
     eventId,
     userId,
   );
-  return NotificationContextText({
-    linkToEvent: `${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}`,
-    linkToChapter: `${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}`,
-  });
+  const linkToEvent = `${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}`;
+  const linkToChapter = `${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}`;
+  return `</br>
+  - To stop receiving notifications about this event, go to <a href="${linkToEvent}">${linkToEvent}</a>.<br />
+  - To stop receiving notifications about new events in this chapter, go to <a href="${linkToChapter}">${linkToChapter}</a>.<br />`;
 };
 
-export const getChapterUnsubscribeToken = ({
+export const getChapterUnsubscribeOptions = ({
   chapterId,
   userId,
 }: {

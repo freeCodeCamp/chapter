@@ -798,17 +798,17 @@ ${unsubscribeOptions}`,
     await deleteEventReminders(id);
     const notCanceledRsvps = event.event_users;
 
-    if (!notCanceledRsvps.length) return null;
-    for (const { user } of notCanceledRsvps) {
-      const unsubscribeOptions = getEventUnsubscribeOptions({
-        chapterId: event.chapter_id,
-        eventId: event.id,
-        userId: user.id,
-      });
-      const emailList = notCanceledRsvps.map(({ user }) => user.email);
-      const subject = `Event ${event.name} is canceled`;
+    if (notCanceledRsvps.length) {
+      for (const { user } of notCanceledRsvps) {
+        const unsubscribeOptions = getEventUnsubscribeOptions({
+          chapterId: event.chapter_id,
+          eventId: event.id,
+          userId: user.id,
+        });
+        const emailList = notCanceledRsvps.map(({ user }) => user.email);
+        const subject = `Event ${event.name} is canceled`;
 
-      const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
+        const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
           <br />
           View upcoming events for ${event.chapter.name}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${event.chapter.name} chapter</a>.<br />
           You received this email because you Subscribed to ${event.name} Event.<br />
@@ -816,13 +816,13 @@ ${unsubscribeOptions}`,
           ${unsubscribeOptions}
           `;
 
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: cancelEventEmail,
-      }).sendEmail();
+        new MailerService({
+          emailList: emailList,
+          subject: subject,
+          htmlEmail: cancelEventEmail,
+        }).sendEmail();
+      }
     }
-
     if (event.chapter.calendar_id && event.calendar_event_id) {
       try {
         // TODO: consider not awaiting. Ideally the user would see the app
@@ -845,62 +845,6 @@ ${unsubscribeOptions}`,
 
     return event;
   }
-
-  // @Authorized(Permission.EventEdit)
-  // @Mutation(() => Event)
-  // async cancelEvent(@Arg('id', () => Int) id: number): Promise<Event | null> {
-  //   const event = await prisma.events.update({
-  //     where: { id },
-  //     data: { canceled: true },
-  //     include: {
-  //       chapter: { select: { calendar_id: true } },
-  //       event_users: {
-  //         include: { user: true },
-  //         where: {
-  //           subscribed: true,
-  //           rsvp: { name: { not: 'no' } },
-  //         },
-  //       },
-  //     },
-  //   });
-  //   await deleteEventReminders(id);
-
-  //   const notCanceledRsvps = event.event_users;
-
-  //   if (notCanceledRsvps.length) {
-  //     const emailList = notCanceledRsvps.map(({ user }) => user.email);
-  //     const subject = `Event ${event.name} canceled`;
-  //     const body = `The event ${event.name} was canceled`;
-
-  //     new MailerService({
-  //       emailList: emailList,
-  //       subject: subject,
-  //       htmlEmail: body,
-  //     }).sendEmail();
-  //   }
-
-  //   if (event.chapter.calendar_id && event.calendar_event_id) {
-  //     try {
-  //       // TODO: consider not awaiting. Ideally the user would see the app
-  //       // respond immediately, but be informed of any failures later.
-  //       // Client-side this could be handled by something like redux-saga, but
-  //       // I'm not sure how to approach that server-side.
-  //       await cancelCalendarEvent({
-  //         calendarId: event.chapter.calendar_id,
-  //         calendarEventId: event.calendar_event_id,
-  //         summary: event.name,
-  //         start: event.start_at,
-  //         end: event.ends_at,
-  //         attendeeEmails: event.event_users.map(({ user }) => user.email),
-  //       });
-  //     } catch (e) {
-  //       console.error('Unable to cancel calendar event');
-  //       console.error(inspect(redactSecrets(e), { depth: null }));
-  //     }
-  //   }
-
-  //   return event;
-  // }
 
   @Authorized(Permission.EventDelete)
   @Mutation(() => Event)

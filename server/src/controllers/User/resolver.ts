@@ -54,7 +54,7 @@ export class UserWithInstanceRoleResolver {
                 },
               },
             },
-            user: true,
+            chapter: true,
           },
         },
         instance_role: {
@@ -80,7 +80,7 @@ export class UserWithInstanceRoleResolver {
                 },
               },
             },
-            user: true,
+            event: true,
           },
         },
       },

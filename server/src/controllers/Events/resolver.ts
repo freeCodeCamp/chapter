@@ -54,6 +54,11 @@ import {
 } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
+import {
+  getChapterUnsubscribeToken,
+  getUnsubscribeOptions,
+  NotificationContextText,
+} from '../../util/eventEmail';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -81,32 +86,6 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Online;
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
-
-
-const getUnsubscribeOptions = ({
-  chapterId,
-  eventId,
-  userId,
-}: {
-  chapterId: number;
-  eventId: number;
-  userId: number;
-}) => {
-  const chapterUnsubscribeToken = generateToken(
-    UnsubscribeType.Chapter,
-    chapterId,
-    userId,
-  );
-  const eventUnsubscribeToken = generateToken(
-    UnsubscribeType.Event,
-    eventId,
-    userId,
-  );
-  return `
-Unsubscribe Options</br>
-- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving notifications about new events by unfollowing chapter</a>`;
-};
 
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],

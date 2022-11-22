@@ -33,8 +33,8 @@ export const getUnsubscribeOptions = ({
     userId,
   );
   return NotificationContextText({
-    linkToEvent: eventUnsubscribeToken,
-    linkToChapter: chapterUnsubscribeToken,
+    linkToEvent: `${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}`,
+    linkToChapter: `${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}`,
   });
 };
 

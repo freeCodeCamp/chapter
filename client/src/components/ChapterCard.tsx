@@ -26,7 +26,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         marginBlock={'.5em'}
       >
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
-          <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
+          <Link href={`/chapters/${chapter.id}`} _hover={{}}>
             <Flex justifyContent={'space-between'}>
               <Heading
                 data-cy="chapter-heading"

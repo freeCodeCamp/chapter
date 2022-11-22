@@ -57,49 +57,56 @@ export class UserWithInstanceRoleResolver {
 
   @Query(() => UserInformation)
   async userInformation(@Ctx() ctx: ResolverCtx): Promise<UserInformation> {
-    return await prisma.users.findFirstOrThrow({
-      where: {
-        id: ctx.user?.id,
-      },
-      include: {
-        user_chapters: {
-          include: {
-            chapter_role: {
-              include: {
-                chapter_role_permissions: {
-                  include: { chapter_permission: true },
+    try {
+      return await prisma.users.findFirstOrThrow({
+        where: {
+          id: ctx.user?.id,
+        },
+        include: {
+          user_chapters: {
+            include: {
+              chapter_role: {
+                include: {
+                  chapter_role_permissions: {
+                    include: { chapter_permission: true },
+                  },
                 },
               },
-            },
-            user: true,
-          },
-        },
-        instance_role: {
-          include: {
-            instance_role_permissions: {
-              include: { instance_permission: true },
+              user: true,
             },
           },
-        },
-        user_bans: {
-          include: {
-            chapter: true,
-            user: true,
-          },
-        },
-        user_events: {
-          include: {
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
+          instance_role: {
+            include: {
+              instance_role_permissions: {
+                include: { instance_permission: true },
               },
             },
-            user: true,
+          },
+          user_bans: {
+            include: {
+              chapter: true,
+              user: true,
+            },
+          },
+          user_events: {
+            include: {
+              rsvp: true,
+              event_role: {
+                include: {
+                  event_role_permissions: {
+                    include: { event_permission: true },
+                  },
+                },
+              },
+              user: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (e) {
+      console.log('Unable to download Data');
+      throw e;
+    }
   }
 
   @Mutation(() => User)

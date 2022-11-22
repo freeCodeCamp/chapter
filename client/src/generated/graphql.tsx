@@ -468,7 +468,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
-  userInformation: UserInformation;
+  userInformation?: Maybe<UserInformation>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -1581,7 +1581,7 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = {
   __typename?: 'Query';
-  userInformation: {
+  userInformation?: {
     __typename?: 'UserInformation';
     id: number;
     name: string;
@@ -1594,7 +1594,7 @@ export type UserProfileQuery = {
       id: number;
       name: string;
     }>;
-  };
+  } | null;
 };
 
 export type UnsubscribeMutationVariables = Exact<{

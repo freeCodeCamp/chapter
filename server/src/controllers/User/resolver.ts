@@ -55,58 +55,56 @@ export class UserWithInstanceRoleResolver {
     });
   }
 
-  @Query(() => UserInformation)
-  async userInformation(@Ctx() ctx: ResolverCtx): Promise<UserInformation> {
-    try {
-      return await prisma.users.findFirstOrThrow({
-        where: {
-          id: ctx.user?.id,
+  @Query(() => UserInformation, { nullable: true })
+  async userInformation(
+    @Ctx() ctx: ResolverCtx,
+  ): Promise<UserInformation | null> {
+    if (!ctx.user) return null;
+    return await prisma.users.findUnique({
+      where: {
+        id: ctx.user.id,
+      },
+      include: {
+        user_chapters: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
         },
-        include: {
-          user_chapters: {
-            include: {
-              chapter_role: {
-                include: {
-                  chapter_role_permissions: {
-                    include: { chapter_permission: true },
-                  },
-                },
-              },
-              user: true,
-            },
-          },
-          instance_role: {
-            include: {
-              instance_role_permissions: {
-                include: { instance_permission: true },
-              },
-            },
-          },
-          user_bans: {
-            include: {
-              chapter: true,
-              user: true,
-            },
-          },
-          user_events: {
-            include: {
-              rsvp: true,
-              event_role: {
-                include: {
-                  event_role_permissions: {
-                    include: { event_permission: true },
-                  },
-                },
-              },
-              user: true,
+        instance_role: {
+          include: {
+            instance_role_permissions: {
+              include: { instance_permission: true },
             },
           },
         },
-      });
-    } catch (e) {
-      console.log('Unable to fetch attendee data');
-      throw e;
-    }
+        user_bans: {
+          include: {
+            chapter: true,
+            user: true,
+          },
+        },
+        user_events: {
+          include: {
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
+              },
+            },
+            user: true,
+          },
+        },
+      },
+    });
   }
 
   @Mutation(() => User)

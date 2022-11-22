@@ -71,7 +71,7 @@ export const UserProfilePage = () => {
           {userInfo.user_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">
-                You are an administrator for these Chapters:
+                You are an member of these Chapters:
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
                 {userInfo.user_chapters.map(({ chapter }) => (

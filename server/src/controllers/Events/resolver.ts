@@ -798,7 +798,7 @@ ${unsubscribeOptions}`,
     await deleteEventReminders(id);
     const notCanceledRsvps = event.event_users;
 
-    if (!notCanceledRsvps) return null;
+    if (!notCanceledRsvps.length) return null;
     for (const { user } of notCanceledRsvps) {
       const unsubscribeOptions = getEventUnsubscribeOptions({
         chapterId: event.chapter_id,

@@ -43,17 +43,19 @@ const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   ) : null;
 };
 
+// TODO: split this into two components and convert the toggle request to two
+// separate requests (one for subscribe and one for unsubscribe)
 const SubscriptionWidget = ({
   chapterUser,
-  chapterSubscribe,
+  subscribeToChapter,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
-  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+  subscribeToChapter: (toSubscribe: boolean) => Promise<void>;
 }) => {
   return chapterUser?.subscribed ? (
     <HStack justifyContent={'space-between'} width={'100%'}>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
-      <Button onClick={() => chapterSubscribe(false)} size="md">
+      <Button onClick={() => subscribeToChapter(false)} size="md">
         Unsubscribe
       </Button>
     </HStack>
@@ -62,7 +64,7 @@ const SubscriptionWidget = ({
       <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
       <Button
         colorScheme="blue"
-        onClick={() => chapterSubscribe(true)}
+        onClick={() => subscribeToChapter(true)}
         size="md"
       >
         Subscribe
@@ -71,31 +73,30 @@ const SubscriptionWidget = ({
   );
 };
 
-const ChapterUserRoleWidget = ({
-  chapterUser,
-  LeaveChapter,
-  JoinChapter,
+const LeaveChapterWidget = ({
+  onClick,
+  name,
 }: {
-  chapterUser: ChapterUserQuery['chapterUser'];
-  LeaveChapter: () => Promise<void>;
-  JoinChapter: () => Promise<void>;
-}) =>
-  chapterUser?.chapter_role ? (
-    <HStack justifyContent={'space-between'}>
-      <Text data-cy="join-success" fontWeight={500}>
-        <CheckIcon marginRight={1} />
-        {chapterUser.chapter_role.name} of the chapter
-      </Text>
-      <Button onClick={LeaveChapter}>Leave</Button>
-    </HStack>
-  ) : (
-    <HStack justifyContent="space-between">
-      <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" onClick={JoinChapter}>
-        Join
-      </Button>
-    </HStack>
-  );
+  onClick: () => Promise<void>;
+  name: string;
+}) => (
+  <HStack justifyContent={'space-between'}>
+    <Text data-cy="join-success" fontWeight={500}>
+      <CheckIcon marginRight={1} />
+      {name} of the chapter
+    </Text>
+    <Button onClick={onClick}>Leave</Button>
+  </HStack>
+);
+
+const JoinChapterWidget = ({ onClick }: { onClick: () => Promise<void> }) => (
+  <HStack justifyContent="space-between">
+    <Text fontWeight={500}>Become member of the chapter</Text>
+    <Button colorScheme="blue" onClick={onClick}>
+      Join
+    </Button>
+  </HStack>
+);
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
@@ -120,31 +121,48 @@ export const ChapterPage: NextPage = () => {
   };
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [leaveChapter] = useLeaveChapterMutation(refetch);
-  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
+  const [toggleChapterSubscription] =
+    useToggleChapterSubscriptionMutation(refetch);
 
-  const onJoinChapter = async (options?: { invited?: boolean }) => {
-    const confirmOptions = options?.invited
-      ? {
-          title: 'You have been invited to this chapter',
-          body: 'Would you like to join?',
-        }
-      : {
-          title: 'Join this chapter?',
-          body: 'Joining chapter will add you as a member to chapter.',
-        };
-    const ok = await confirm(confirmOptions);
-    if (ok) {
-      try {
-        await joinChapter({ variables: { chapterId } });
-        toast({ title: 'You successfully joined chapter', status: 'success' });
-      } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
-        console.error(err);
-      }
+  const tryToJoinChapter = async () => {
+    try {
+      await joinChapter({ variables: { chapterId } });
+      toast({ title: 'You successfully joined chapter', status: 'success' });
+    } catch (err) {
+      toast({ title: 'Something went wrong', status: 'error' });
+      console.error(err);
+    }
+  };
+  const handleJoinInvitation = async () => {
+    const ok = await confirm({
+      title: 'You have been invited to this chapter',
+      body: 'Would you like to join?',
+    });
+    if (ok) tryToJoinChapter();
+  };
+
+  const handleJoinRequest = async () => {
+    const ok = await confirm({
+      title: 'Join this chapter?',
+      body: 'Joining chapter will add you as a member to chapter.',
+    });
+    if (ok) tryToJoinChapter();
+  };
+
+  const tryToLeaveChapter = async () => {
+    try {
+      await leaveChapter({ variables: { chapterId } });
+      toast({
+        title: 'You successfully left the chapter',
+        status: 'success',
+      });
+    } catch (err) {
+      toast({ title: 'Something went wrong', status: 'error' });
+      console.error(err);
     }
   };
 
-  const onLeaveChapter = async () => {
+  const handleLeaveRequest = async () => {
     const ok = await confirm({
       title: 'Are you sure you want to leave this chapter?',
       body: (
@@ -163,21 +181,29 @@ export const ChapterPage: NextPage = () => {
         </>
       ),
     });
-    if (ok) {
-      try {
-        await leaveChapter({ variables: { chapterId } });
-        toast({
-          title: 'You successfully left the chapter',
-          status: 'success',
-        });
-      } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
-        console.error(err);
-      }
+    if (ok) tryToLeaveChapter();
+  };
+
+  const tryToToggleSubscription = async (toSubscribe: boolean) => {
+    try {
+      await toggleChapterSubscription({ variables: { chapterId } });
+      toast(
+        toSubscribe
+          ? {
+              title: 'You successfully subscribed to this chapter',
+              status: 'success',
+            }
+          : {
+              title: 'You have unsubscribed from this chapter',
+              status: 'success',
+            },
+      );
+    } catch (err) {
+      toast({ title: 'Something went wrong', status: 'error' });
     }
   };
 
-  const onChapterSubscribe = async (toSubscribe: boolean) => {
+  const handleSubscriptionToggleRequest = async (toSubscribe: boolean) => {
     const ok = await confirm(
       toSubscribe
         ? {
@@ -190,24 +216,7 @@ export const ChapterPage: NextPage = () => {
           },
     );
 
-    if (ok) {
-      try {
-        await chapterSubscribe({ variables: { chapterId } });
-        toast(
-          toSubscribe
-            ? {
-                title: 'You successfully subscribed to this chapter',
-                status: 'success',
-              }
-            : {
-                title: 'You have unsubscribed from this chapter',
-                status: 'success',
-              },
-        );
-      } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
-      }
-    }
+    if (ok) tryToToggleSubscription(toSubscribe);
   };
 
   const isLoading = loading || loadingChapterUser || !data;
@@ -219,9 +228,9 @@ export const ChapterPage: NextPage = () => {
   useEffect(() => {
     if (canShowConfirmModal && !hasShownModal) {
       if (isAlreadyMember) {
-        onLeaveChapter();
+        handleLeaveRequest();
       } else {
-        onJoinChapter({ invited: true });
+        handleJoinInvitation();
       }
       setHasShownModal(true);
     }
@@ -267,13 +276,15 @@ export const ChapterPage: NextPage = () => {
           (loadingChapterUser ? (
             <Spinner />
           ) : (
-            dataChapterUser && (
-              <ChapterUserRoleWidget
-                JoinChapter={onJoinChapter}
-                LeaveChapter={onLeaveChapter}
-                chapterUser={dataChapterUser.chapterUser}
+            dataChapterUser &&
+            (dataChapterUser.chapterUser?.chapter_role ? (
+              <LeaveChapterWidget
+                onClick={handleLeaveRequest}
+                name={dataChapterUser.chapterUser.chapter_role.name}
               />
-            )
+            ) : (
+              <JoinChapterWidget onClick={handleJoinRequest} />
+            ))
           ))}
         {isLoggedIn &&
           (loadingChapterUser ? (
@@ -282,7 +293,7 @@ export const ChapterPage: NextPage = () => {
             dataChapterUser?.chapterUser && (
               <SubscriptionWidget
                 chapterUser={dataChapterUser.chapterUser}
-                chapterSubscribe={onChapterSubscribe}
+                subscribeToChapter={handleSubscriptionToggleRequest}
               />
             )
           ))}

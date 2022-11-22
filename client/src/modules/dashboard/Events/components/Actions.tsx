@@ -49,7 +49,7 @@ const Actions: React.FC<ActionsProps> = ({
   const confirmDelete = useConfirmDelete();
   const confirm = useConfirm();
 
-  const clickDelete = async () => {
+  const handleDeleteClick = async () => {
     const ok = await confirmDelete();
     if (ok) {
       await remove(data);
@@ -57,7 +57,7 @@ const Actions: React.FC<ActionsProps> = ({
     }
   };
 
-  const onCreateCalendarEvent = async () => {
+  const handleCreateCalendarEventClick = async () => {
     const ok = await confirm({
       title: 'Create event in chapter calendar',
       body: "Do you want to create this event in chapter's calendar?",
@@ -86,7 +86,7 @@ const Actions: React.FC<ActionsProps> = ({
         <Button
           size={['sm', 'md']}
           colorScheme="blue"
-          onClick={onCreateCalendarEvent}
+          onClick={handleCreateCalendarEventClick}
         >
           Create calendar event
         </Button>
@@ -98,7 +98,7 @@ const Actions: React.FC<ActionsProps> = ({
           buttonText="Cancel"
         />
       )}
-      <Button size={['sm', 'md']} colorScheme="red" onClick={clickDelete}>
+      <Button size={['sm', 'md']} colorScheme="red" onClick={handleDeleteClick}>
         Delete
       </Button>
       <SharePopOver

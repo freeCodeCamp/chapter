@@ -57,7 +57,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     setChapterUser(data);
     modalProps.onOpen();
   };
-  const onModalSubmit = async (data: {
+  const handleSubmit = async (data: {
     newRoleName: string;
     userId: number;
   }) => {
@@ -143,7 +143,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
             name,
           }))}
           title="Change chapter role"
-          onSubmit={onModalSubmit}
+          onSubmit={handleSubmit}
         />
       )}
       <VStack>

@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "build": "prisma generate && tsc",
-    "db:init": "npm run build && node prisma/init/init.js --execute",
     "db:migrate": "prisma migrate deploy",
     "db:resolve": "prisma migrate resolve",
     "dev": "tsc && concurrently \"tsc --watch --preserveWatchOutput\" \"node-dev --notify=false src/app.js\"",
@@ -67,7 +66,7 @@
     "@types/jsonwebtoken": "8.5.9",
     "@types/lodash": "4.14.189",
     "@types/nodemailer": "6.4.6",
-    "concurrently": "7.5.0",
+    "concurrently": "7.6.0",
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",
     "lodash": "4.17.21",

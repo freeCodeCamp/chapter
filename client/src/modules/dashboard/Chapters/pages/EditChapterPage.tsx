@@ -9,6 +9,7 @@ import {
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm from '../components/ChapterForm';
@@ -23,7 +24,7 @@ export const EditChapterPage: NextPageWithLayout = () => {
   });
 
   const [updateChapter] = useUpdateChapterMutation({
-    refetchQueries: [{ query: CHAPTERS }],
+    refetchQueries: [{ query: CHAPTERS }, { query: DASHBOARD_CHAPTERS }],
   });
 
   const toast = useToast();

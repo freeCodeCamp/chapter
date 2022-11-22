@@ -20,12 +20,30 @@ const secrets = [
   'email',
   'client_secret',
   'client_id',
+  'session',
+  'session.sig',
 ];
 
-function redactString(str: string) {
+function redactCookieString(str: string) {
+  return secrets.reduce(
+    (prev, secret) =>
+      prev.replace(new RegExp(`${secret}=[^;]+`, 'g'), `${secret}=***`),
+    str,
+  );
+}
+
+function redactURLEncodedString(str: string) {
   return secrets.reduce(
     (prev, secret) =>
       prev.replace(new RegExp(`${secret}=[^&]+`, 'g'), `${secret}=***`),
+    str,
+  );
+}
+
+function redactJSONString(str: string) {
+  return secrets.reduce(
+    (prev, secret) =>
+      prev.replace(new RegExp(`"${secret}":"[^"]+"`, 'g'), `"${secret}":"***"`),
     str,
   );
 }
@@ -34,6 +52,9 @@ export const redactSecrets = (input: any): any => {
   const object = input instanceof Error ? errorToObject(input) : input;
   return cloneDeepWith((value, key: string) => {
     if (key && secrets.includes(key)) return '***';
-    if (typeof value === 'string') return redactString(value);
+    if ((key == 'Cookie' || key === 'cookie') && typeof value === 'string')
+      return redactCookieString(value);
+    if (typeof value === 'string')
+      return redactJSONString(redactURLEncodedString(value));
   }, object);
 };

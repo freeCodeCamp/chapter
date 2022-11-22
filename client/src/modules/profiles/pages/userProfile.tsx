@@ -1,24 +1,25 @@
 import { useApolloClient } from '@apollo/client';
 import React from 'react';
-import { Flex, Heading, useToast } from '@chakra-ui/react';
+import { Flex, Heading, Text, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
-import { Link } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
 
+import { Link } from 'chakra-next-link';
 import {
   useDeleteMeMutation,
   useUpdateMeMutation,
   UpdateUserInputs,
+  useUserProfileQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
-import { meQuery } from '../../auth/graphql/queries';
-import { useAuth } from '../../auth/store';
+import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
 export const UserProfilePage = () => {
-  const { user } = useAuth();
+  const { data } = useUserProfileQuery();
+  const userInfo = data?.userInformation;
   const logout = useLogout();
   const router = useRouter();
   const client = useApolloClient();
@@ -29,7 +30,7 @@ export const UserProfilePage = () => {
   });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation({
-    refetchQueries: [{ query: meQuery }],
+    refetchQueries: [{ query: userProfileQuery }],
   });
 
   const toast = useToast();
@@ -59,21 +60,21 @@ export const UserProfilePage = () => {
 
   return (
     <div>
-      {user ? (
+      {userInfo ? (
         <>
           <Heading as="h1" marginBlock={'.5em'}>
             Profile
           </Heading>
           <Heading as="h2" size={'lg'}>
-            Welcome {getNameText(user.name)}
+            Welcome, {getNameText(userInfo.name)}
           </Heading>
-          {user.admined_chapters.length > 0 && (
+          {userInfo.admined_chapters.length > 0 && (
             <>
               <Heading as="h2" marginBlock={'.5em'} size="md">
                 You are an administrator for these Chapters:
               </Heading>
               <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
-                {user.admined_chapters.map(({ name, id }) => (
+                {userInfo.admined_chapters.map(({ name, id }) => (
                   <Link key={id} href={`/chapters/${id}`}>
                     {name}
                   </Link>
@@ -81,10 +82,15 @@ export const UserProfilePage = () => {
               </Flex>
             </>
           )}
-
+          <Heading as="h2" marginTop={'2em'} size="lg" fontWeight={500}>
+            Email address:{' '}
+            <Text as="span" fontWeight={700}>
+              {userInfo.email}
+            </Text>
+          </Heading>
           <ProfileForm
             onSubmit={submitUpdateMe}
-            data={user}
+            data={userInfo}
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />

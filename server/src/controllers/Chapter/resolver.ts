@@ -11,6 +11,7 @@ import {
   Authorized,
 } from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
+import { ChapterRoles } from '../../../../common/roles';
 
 import { ResolverCtx } from '../../common-types/gql';
 import {
@@ -21,7 +22,6 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
-import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,

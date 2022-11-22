@@ -49,7 +49,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           paddingBlock={'.5em'}
           area="chaptername"
         >
-          <Link href={`/chapters/${chapter?.id}`} _hover={{}}>
+          <Link href={`/chapters/${chapter.id}`} _hover={{}}>
             <Heading
               data-cy="chapter-heading"
               fontSize={'xl'}

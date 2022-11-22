@@ -8,8 +8,8 @@ import { Input } from '../../../../components/Form/Input';
 interface DatePickerProps {
   date: Date;
   error: string;
+  field: string;
   isRequired: boolean;
-  key: string;
   label: string;
   loading: boolean;
   onChange: (date: Date | null) => void;
@@ -18,8 +18,8 @@ interface DatePickerProps {
 const DatePicker = ({
   date,
   error,
+  field,
   isRequired,
-  key,
   label,
   loading,
   onChange,
@@ -34,8 +34,8 @@ const DatePicker = ({
       dateFormat="MMMM d, yyyy h:mm aa"
       customInput={
         <Input
-          id={`${key}_trigger`}
-          name={key}
+          id={`${field}_trigger`}
+          name={field}
           error={error}
           label={`${label}${isRequired ? ' (Required)' : ''}`}
           isDisabled={loading}

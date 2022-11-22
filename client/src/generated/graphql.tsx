@@ -632,6 +632,7 @@ export type UserBan = {
 
 export type UserInformation = {
   __typename?: 'UserInformation';
+  admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
   id: Scalars['Int'];
@@ -1617,6 +1618,26 @@ export type ToggleAutoSubscribeMutationVariables = Exact<{
 export type ToggleAutoSubscribeMutation = {
   __typename?: 'Mutation';
   toggleAutoSubscribe: { __typename?: 'User'; auto_subscribe: boolean };
+};
+
+export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserProfileQuery = {
+  __typename?: 'Query';
+  userInformation?: {
+    __typename?: 'UserInformation';
+    id: number;
+    name: string;
+    email: string;
+    auto_subscribe: boolean;
+    image_url?: string | null;
+    instance_role: { __typename?: 'InstanceRole'; name: string };
+    admined_chapters: Array<{
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+    }>;
+  } | null;
 };
 
 export type UnsubscribeMutationVariables = Exact<{
@@ -4608,6 +4629,72 @@ export type ToggleAutoSubscribeMutationResult =
 export type ToggleAutoSubscribeMutationOptions = Apollo.BaseMutationOptions<
   ToggleAutoSubscribeMutation,
   ToggleAutoSubscribeMutationVariables
+>;
+export const UserProfileDocument = gql`
+  query userProfile {
+    userInformation {
+      id
+      name
+      email
+      auto_subscribe
+      image_url
+      instance_role {
+        name
+      }
+      admined_chapters {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserProfileQuery__
+ *
+ * To run a query within a React component, call `useUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    UserProfileQuery,
+    UserProfileQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<UserProfileQuery, UserProfileQueryVariables>(
+    UserProfileDocument,
+    options,
+  );
+}
+export function useUserProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    UserProfileQuery,
+    UserProfileQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<UserProfileQuery, UserProfileQueryVariables>(
+    UserProfileDocument,
+    options,
+  );
+}
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<
+  typeof useUserProfileLazyQuery
+>;
+export type UserProfileQueryResult = Apollo.QueryResult<
+  UserProfileQuery,
+  UserProfileQueryVariables
 >;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {

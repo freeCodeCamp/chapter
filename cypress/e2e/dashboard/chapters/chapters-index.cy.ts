@@ -83,7 +83,10 @@ describe('chapters dashboard', () => {
   });
 
   it('lets a user create a chapter and an event in a fresh instance', () => {
-    cy.exec('npm run -w=server db:init');
+    // Do NOT reset the database here, it has to keep the schema intact since
+    // the db client optimizes the queries based on the schema. If the schema
+    // changes the queries will fail.
+    cy.exec('node server/prisma/seed/seed.js --truncate-only');
     const userEmail = 'fresh@start';
     cy.login(userEmail);
     cy.task('promoteToOwner', { email: userEmail });

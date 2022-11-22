@@ -17,4 +17,4 @@ jobs:
           port: 22
           script: |
             cd chapter 
-            docker compose -f docker-compose.yml run app sh -c "npx prisma db push --force-reset && npm run db:init"
+            docker compose -f docker-compose.yml run app sh -c "npx prisma migrate reset --force"

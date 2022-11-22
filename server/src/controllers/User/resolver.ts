@@ -39,9 +39,7 @@ export class UserWithInstanceRoleResolver {
   async userInformation(
     @Ctx() ctx: ResolverCtx,
   ): Promise<UserInformation | null> {
-    if (!ctx.user) {
-      return null;
-    }
+    if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {
         id: ctx.user.id,
@@ -77,7 +75,9 @@ export class UserWithInstanceRoleResolver {
             rsvp: true,
             event_role: {
               include: {
-                event_role_permissions: { include: { event_permission: true } },
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
               },
             },
             user: true,

@@ -6,6 +6,7 @@ import {
   useCreateChapterMutation,
 } from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
+import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -14,7 +15,7 @@ export const NewChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [createChapter] = useCreateChapterMutation({
-    refetchQueries: [{ query: CHAPTERS }],
+    refetchQueries: [{ query: CHAPTERS }, { query: DASHBOARD_CHAPTERS }],
   });
 
   const toast = useToast();

@@ -13,11 +13,11 @@ import { ResolverCtx } from '../../common-types/gql';
 import { prisma, UNIQUE_CONSTRAINT_FAILED } from '../../prisma';
 import { ChapterUser, UserBan } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
+import { ChapterRoles } from '../../../../common/roles';
 import { updateCalendarEventAttendees } from '../../util/calendar';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
-import { ChapterRoles } from '../../../prisma/init/factories/chapterRoles.factory';
 
 const chapterUsersInclude = {
   chapter_role: {

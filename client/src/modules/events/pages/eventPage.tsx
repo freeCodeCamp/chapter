@@ -34,6 +34,7 @@ import {
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
+import { formatDate } from '../../../util/date';
 import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
@@ -212,6 +213,9 @@ export const EventPage: NextPage = () => {
     ({ rsvp }) => rsvp.name === 'waitlist',
   );
 
+  const startAt = formatDate(data.event.start_at);
+  const endsAt = formatDate(data.event.ends_at);
+
   return (
     <VStack align="flex-start">
       {data.event.image_url && (
@@ -238,6 +242,8 @@ export const EventPage: NextPage = () => {
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
+      <Text>Starting: {startAt}</Text>
+      <Text>Ending: {endsAt}</Text>
       <HStack align="start">
         {rsvps && (
           <Heading

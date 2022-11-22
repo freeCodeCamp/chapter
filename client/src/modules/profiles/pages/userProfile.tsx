@@ -94,17 +94,34 @@ export const UserProfilePage = () => {
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />
-          <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
-            Delete My Data
-          </Button>
-          <area
-            download={`${userInfo.name}.json`}
-            href={`data:text/json;charset=utf-8,${encodeURIComponent(
-              JSON.stringify(userInfo),
-            )}`}
-          >
-            Download your data
-          </area>
+          <Flex gap="2em" marginBlock={'2em'}>
+            <Button
+              height={'2.8em'}
+              paddingBlock={'.65em'}
+              paddingInline={'.4em'}
+              colorScheme={'red'}
+              onClick={clickDelete}
+            >
+              Delete My Data
+            </Button>
+            <Link
+              fontWeight="600"
+              background={'gray.85'}
+              color={'gray.10'}
+              height={'100%'}
+              size={'lg'}
+              borderRadius={'5px'}
+              paddingBlock={'.65em'}
+              paddingInline={'.4em'}
+              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+              download={`${userInfo.name}.json`}
+              href={`data:text/json;charset=utf-8,${encodeURIComponent(
+                JSON.stringify(userInfo),
+              )}`}
+            >
+              Download your data
+            </Link>
+          </Flex>
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

@@ -5,16 +5,12 @@ import styles from '../../styles/Form.module.css';
 interface FormProps {
   children: ReactNode;
   submitLabel: string;
-  FormHandling: () => unknown;
+  onSubmit: () => void;
 }
 
-export const Form = ({ children, submitLabel, FormHandling }: FormProps) => {
+export const Form = ({ children, submitLabel, onSubmit }: FormProps) => {
   return (
-    <form
-      aria-label={submitLabel}
-      onSubmit={FormHandling}
-      className={styles.form}
-    >
+    <form aria-label={submitLabel} onSubmit={onSubmit} className={styles.form}>
       <VStack gap={4} alignItems={'flex-start'}>
         {children}
       </VStack>

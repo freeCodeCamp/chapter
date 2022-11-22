@@ -99,7 +99,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     <FormProvider {...formMethods}>
       <Form
         submitLabel={submitText}
-        FormHandling={handleSubmit(disableWhileSubmitting)}
+        onSubmit={handleSubmit(disableWhileSubmitting)}
       >
         {!isChaptersDropdownNeeded || data ? (
           loadingChapter ? (

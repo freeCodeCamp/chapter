@@ -73,7 +73,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
   return (
     <Form
       submitLabel={submitText}
-      FormHandling={handleSubmit(disableWhileSubmitting)}
+      onSubmit={handleSubmit(disableWhileSubmitting)}
     >
       <VStack gap={4}>
         {fields.map((field) => {

@@ -152,7 +152,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
   return (
     <Form
       submitLabel={submitText}
-      FormHandling={handleSubmit(disableWhileSubmitting)}
+      onSubmit={handleSubmit(disableWhileSubmitting)}
     >
       {chapterData ? (
         <Heading>{chapterData.chapter.name}</Heading>

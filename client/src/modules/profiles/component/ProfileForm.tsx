@@ -77,7 +77,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   return (
     <Form
       submitLabel={submitText}
-      FormHandling={handleSubmit(disableWhileSubmitting)}
+      onSubmit={handleSubmit(disableWhileSubmitting)}
     >
       {fields.map(({ key, label, placeholder, required, type }) =>
         type == 'textarea' ? (

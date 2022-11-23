@@ -38,7 +38,7 @@ export class UserWithPermissions extends User {
 }
 
 @ObjectType()
-export class UserInformation extends User {
+export class UserInformation extends UserWithPermissions {
   @Field(() => String)
   email: string;
 
@@ -47,9 +47,6 @@ export class UserInformation extends User {
 
   @Field(() => [ChapterUserWithRelations])
   user_chapters: ChapterUserWithRelations[];
-
-  @Field(() => InstanceRole)
-  instance_role: InstanceRole;
 
   @Field(() => [EventUserWithRelations])
   user_events: EventUserWithRelations[];

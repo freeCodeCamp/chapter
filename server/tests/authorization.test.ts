@@ -39,7 +39,7 @@ const resolverDataWithEventsAndVenues = merge(baseResolverData, {
 
 describe('authorizationChecker', () => {
   describe('when user is NOT banned', () => {
-    it('should return false if user is undefined', () => {
+    it('should reject if user is undefined', () => {
       const result = authorizationChecker(resolverDataWithEventsAndVenues, [
         'some-permission',
       ]);
@@ -47,7 +47,7 @@ describe('authorizationChecker', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false if user is defined, but events or venue is not', () => {
+    it('should reject if user is defined, but events or venue is not', () => {
       const resolverData = merge(baseResolverData, {
         context: { user: userWithInstanceRole },
       });
@@ -69,7 +69,7 @@ describe('authorizationChecker', () => {
       ).toBe(false);
     });
 
-    it('should return true if the events and venues properties exist, but are empty arrays', () => {
+    it('should authorize if the events and venues properties exist, but are empty arrays', () => {
       const resolverData = merge(baseResolverData, {
         context: { user: userWithInstanceRole, events: [], venues: [] },
       });
@@ -79,7 +79,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return true if a user has an instance role granting permission', () => {
+    it('should authorize if a user has an instance role granting permission', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithInstanceRole },
       });
@@ -89,7 +89,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return false if a user does not have an instance role granting permission', () => {
+    it('should reject if a user does not have an instance role granting permission', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithInstanceRole },
       });
@@ -99,7 +99,7 @@ describe('authorizationChecker', () => {
       ).toBe(false);
     });
 
-    it('should return true if a user has a chapter role granting permission', () => {
+    it('should authorize if a user has a chapter role granting permission', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForChapterOne },
         info: {
@@ -112,7 +112,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return true if a user has a chapter role granting permission and the chapter is inferred from the event', () => {
+    it('should authorize if a user has a chapter role granting permission and the chapter is inferred from the event', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForChapterOne },
         info: {
@@ -125,7 +125,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return true if a user has a chapter role granting permission and the chapter is inferred from the venue', () => {
+    it('should authorize if a user has a chapter role granting permission and the chapter is inferred from the venue', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForChapterOne },
         info: {
@@ -138,7 +138,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return false if a user has a role for a chapter but a different chapter is inferred', () => {
+    it('should reject if a user has a role for a chapter but a different chapter is inferred', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForChapterOne },
         info: {
@@ -152,7 +152,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return false if a user only has a chapter role granting permission for another chapter', () => {
+    it('should reject if a user only has a chapter role granting permission for another chapter', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForChapterOne },
         info: {
@@ -165,7 +165,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return true if a user has an event role granting permission', () => {
+    it('should authorize if a user has an event role granting permission', () => {
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForEventOne },
         info: {
@@ -178,7 +178,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return false if a user only has an event role granting permission for another event', () => {
+    it('should reject if a user only has an event role granting permission for another event', () => {
       const eventTwoUserResolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithRoleForEventOne },
         info: {
@@ -191,7 +191,7 @@ describe('authorizationChecker', () => {
       ).toBe(false);
     });
 
-    it('should return false if the event is in a chapter for which the user has no role', () => {
+    it('should reject if the event is in a chapter for which the user has no role', () => {
       const user = merge(userWithRoleForChapterOne, {
         user_events: chapterTwoEventUser,
       });
@@ -206,7 +206,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return true if a user has a chapter role, even if they do not have an event role', () => {
+    it('should authorize if a user has a chapter role, even if they do not have an event role', () => {
       const user = userWithRoleForChapterOne;
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user },
@@ -219,7 +219,7 @@ describe('authorizationChecker', () => {
       );
     });
 
-    it('should return false unless the number of required permissions is 1', () => {
+    it('should reject unless the number of required permissions is 1', () => {
       expect.assertions(4);
       const resolverData = merge(resolverDataWithEventsAndVenues, {
         context: { user: userWithInstanceRole },
@@ -242,7 +242,7 @@ describe('authorizationChecker', () => {
   });
 
   describe('when user is banned', () => {
-    it('should return true if a user has an instance role and a chapter ban', () => {
+    it('should authorize if a user has an instance role and a chapter ban', () => {
       const user = merge(userWithInstanceRole, {
         user_bans: userBansChapterOne,
       });
@@ -254,7 +254,7 @@ describe('authorizationChecker', () => {
         true,
       );
     });
-    it('should return false if a user has a chapter role and a ban for that chapter', () => {
+    it('should reject if a user has a chapter role and a ban for that chapter', () => {
       const user = merge(userWithRoleForChapterOne, {
         user_bans: userBansChapterOne,
       });
@@ -269,7 +269,7 @@ describe('authorizationChecker', () => {
         false,
       );
     });
-    it('should return true if a user has a chapter role for one chapter, but is banned from a different one', () => {
+    it('should authorize if a user has a chapter role for one chapter, but is banned from a different one', () => {
       const user = merge(userWithRoleForChapterOne, {
         user_bans: userBansChapterTwo,
       });
@@ -284,7 +284,7 @@ describe('authorizationChecker', () => {
         true,
       );
     });
-    it('should return false if a user has an event role and a ban for the owning chapter', () => {
+    it('should reject if a user has an event role and a ban for the owning chapter', () => {
       const user = merge(userWithRoleForEventOne, {
         user_bans: userBansChapterOne,
       });
@@ -299,7 +299,7 @@ describe('authorizationChecker', () => {
         false,
       );
     });
-    it('should return true if a user has an event role and a ban for another chapter', () => {
+    it('should authorize if a user has an event role and a ban for another chapter', () => {
       const user = merge(userWithRoleForEventOne, {
         user_bans: userBansChapterTwo,
       });

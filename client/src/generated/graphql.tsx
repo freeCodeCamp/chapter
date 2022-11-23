@@ -1641,9 +1641,22 @@ export type UserProfileQuery = {
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: { __typename?: 'InstanceRole'; name: string };
+    user_bans: Array<{
+      __typename?: 'UserBan';
+      chapter: { __typename?: 'Chapter'; name: string };
+    }>;
     user_chapters: Array<{
       __typename?: 'UserChapters';
+      subscribed: boolean;
+      chapter_role: { __typename?: 'ChapterRole'; name: string };
       chapter: { __typename?: 'Chapter'; id: number; name: string };
+    }>;
+    user_events: Array<{
+      __typename?: 'UserEvents';
+      subscribed: boolean;
+      rsvp: { __typename?: 'Rsvp'; name: string };
+      event_role: { __typename?: 'EventRole'; name: string };
+      event: { __typename?: 'Event'; id: number; name: string };
     }>;
   } | null;
 };
@@ -4653,8 +4666,30 @@ export const UserProfileDocument = gql`
       instance_role {
         name
       }
-      user_chapters {
+      user_bans {
         chapter {
+          name
+        }
+      }
+      user_chapters {
+        subscribed
+        chapter_role {
+          name
+        }
+        chapter {
+          id
+          name
+        }
+      }
+      user_events {
+        subscribed
+        rsvp {
+          name
+        }
+        event_role {
+          name
+        }
+        event {
           id
           name
         }

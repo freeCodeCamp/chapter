@@ -11,8 +11,30 @@ export const userProfileQuery = gql`
       instance_role {
         name
       }
-      user_chapters {
+      user_bans {
         chapter {
+          name
+        }
+      }
+      user_chapters {
+        subscribed
+        chapter_role {
+          name
+        }
+        chapter {
+          id
+          name
+        }
+      }
+      user_events {
+        subscribed
+        rsvp {
+          name
+        }
+        event_role {
+          name
+        }
+        event {
           id
           name
         }

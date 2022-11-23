@@ -11,6 +11,7 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
   useUserProfileQuery,
+  UserProfileQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
@@ -34,6 +35,15 @@ export const UserProfilePage = () => {
   });
 
   const toast = useToast();
+
+  const createDownloadData = (
+    userData: UserProfileQuery['userInformation'],
+  ) => {
+    const dataString = JSON.stringify(userData, (key, value) =>
+      key === '__typename' ? undefined : value,
+    );
+    return `data:text/json;charset=utf-8,${encodeURIComponent(dataString)}`;
+  };
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
@@ -115,9 +125,7 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               download={`${userInfo.name}.json`}
-              href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                JSON.stringify(userInfo),
-              )}`}
+              href={`${createDownloadData(userInfo)}`}
             >
               Download your data
             </Link>

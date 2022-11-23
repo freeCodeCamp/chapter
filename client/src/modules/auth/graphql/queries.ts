@@ -18,6 +18,9 @@ export const meQuery = gql`
       }
       auto_subscribe
       image_url
+      user_bans {
+        chapter_id
+      }
       user_chapters {
         chapter_id
         chapter_role {
@@ -28,8 +31,15 @@ export const meQuery = gql`
           }
         }
       }
-      user_bans {
-        chapter_id
+      user_events {
+        event_id
+        event_role {
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
       }
     }
   }

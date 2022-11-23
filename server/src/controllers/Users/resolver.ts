@@ -15,6 +15,7 @@ const instanceRoleInclude = {
       },
     },
   },
+  user_bans: true,
   user_chapters: {
     include: {
       chapter_role: {
@@ -24,7 +25,15 @@ const instanceRoleInclude = {
       },
     },
   },
-  user_bans: true,
+  user_events: {
+    include: {
+      event_role: {
+        include: {
+          event_role_permissions: { include: { event_permission: true } },
+        },
+      },
+    },
+  },
 };
 
 @Resolver()

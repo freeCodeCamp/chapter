@@ -15,8 +15,11 @@ import {
   UserInformation,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
+import {
+  isAdminFromInstanceRole,
+  isChapterAdminWhere,
+} from '../../util/adminedChapters';
 import { UpdateUserInputs } from './input';
 
 @Resolver(() => UserWithPermissions)
@@ -25,33 +28,10 @@ export class UserWithInstanceRoleResolver {
   async admined_chapters(
     @Root() user: UserWithPermissions,
   ): Promise<Chapter[]> {
-    if (
-      user.instance_role.instance_role_permissions.some(
-        ({ instance_permission }) =>
-          instance_permission.name === Permission.ChapterEdit,
-      )
-    ) {
-      return await prisma.chapters.findMany();
-    }
     return await prisma.chapters.findMany({
-      where: {
-        chapter_users: {
-          some: {
-            AND: [
-              { user_id: user.id },
-              {
-                chapter_role: {
-                  chapter_role_permissions: {
-                    some: {
-                      chapter_permission: { name: Permission.ChapterEdit },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        },
-      },
+      ...(!isAdminFromInstanceRole(user) && {
+        where: isChapterAdminWhere(user.id),
+      }),
     });
   }
 
@@ -59,9 +39,7 @@ export class UserWithInstanceRoleResolver {
   async userInformation(
     @Ctx() ctx: ResolverCtx,
   ): Promise<UserInformation | null> {
-    if (!ctx.user) {
-      return null;
-    }
+    if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {
         id: ctx.user.id,
@@ -97,7 +75,9 @@ export class UserWithInstanceRoleResolver {
             rsvp: true,
             event_role: {
               include: {
-                event_role_permissions: { include: { event_permission: true } },
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
               },
             },
             user: true,

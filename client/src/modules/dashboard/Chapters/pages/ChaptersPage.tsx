@@ -4,7 +4,7 @@ import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
 import { checkPermission } from '../../../../../../common/authorization';
-import { useChaptersQuery } from '../../../../generated/graphql';
+import { useDashboardChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { Permission } from '../../../../../../common/permissions';
@@ -36,7 +36,7 @@ const actionLinks = [
 ];
 
 export const ChaptersPage: NextPageWithLayout = () => {
-  const { loading, error, data } = useChaptersQuery();
+  const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useAuth();
 
   const hasPermissionToCreateChapter = checkPermission(
@@ -65,12 +65,15 @@ export const ChaptersPage: NextPageWithLayout = () => {
       </Flex>
       <Box display={{ base: 'none', lg: 'block' }} width="100%">
         <DataTable
-          data={data.chapters}
+          data={data.dashboardChapters}
           keys={['name', 'actions'] as const}
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
             name: (chapter) => (
-              <LinkButton href={`/dashboard/chapters/${chapter.id}`}>
+              <LinkButton
+                data-cy="chapter"
+                href={`/dashboard/chapters/${chapter.id}`}
+              >
                 {chapter.name}
               </LinkButton>
             ),
@@ -100,10 +103,10 @@ export const ChaptersPage: NextPageWithLayout = () => {
         />
       </Box>
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {data.chapters.map(({ id, name }, index) => (
-          <Flex key={id}>
+        {data.dashboardChapters.map((chapter) => (
+          <Flex key={chapter.id}>
             <DataTable
-              data={[data.chapters[index]]}
+              data={[chapter]}
               keys={['type', 'actions'] as const}
               showHeader={false}
               tableProps={{
@@ -128,12 +131,13 @@ export const ChaptersPage: NextPageWithLayout = () => {
                 actions: () => (
                   <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                     <LinkButton
-                      href={`/dashboard/chapters/${id}`}
+                      data-cy="chapter"
+                      href={`/dashboard/chapters/${chapter.id}`}
                       marginBottom={'.5em'}
                       width="100%"
                       size={'sm'}
                     >
-                      {name}
+                      {chapter.name}
                     </LinkButton>
                     <HStack spacing={1} marginLeft={'-1em'}>
                       {actionLinks
@@ -141,7 +145,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                           ({ requiredPermission }) =>
                             !requiredPermission ||
                             checkPermission(user, requiredPermission, {
-                              chapterId: id,
+                              chapterId: chapter.id,
                             }),
                         )
                         .map(({ colorScheme, size, href, text }) => (
@@ -149,7 +153,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                             key={text}
                             colorScheme={colorScheme}
                             size={size}
-                            href={href(id)}
+                            href={href(chapter.id)}
                           >
                             {text}
                           </LinkButton>

@@ -34,6 +34,7 @@ import {
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
+import { formatDate } from '../../../util/date';
 import { useParam } from 'hooks/useParam';
 import { useLogin } from 'hooks/useAuth';
 
@@ -107,6 +108,7 @@ export const EventPage: NextPage = () => {
     const ok = await confirm(confirmOptions);
 
     if (ok) {
+      if (!isLoggedIn) await login();
       try {
         await joinChapter({ variables: { chapterId } });
         await rsvpToEvent({
@@ -145,13 +147,11 @@ export const EventPage: NextPage = () => {
 
   // TODO: reimplment this the login modal with Auth0
   async function checkOnRsvp(options?: { invited?: boolean }) {
-    if (!user) await login();
     await onRsvp(options);
   }
 
   // TODO: reimplment this the login modal with Auth0
   async function checkOnCancelRsvp() {
-    if (!user) await login();
     await onCancelRsvp();
   }
 
@@ -212,6 +212,9 @@ export const EventPage: NextPage = () => {
     ({ rsvp }) => rsvp.name === 'waitlist',
   );
 
+  const startAt = formatDate(data.event.start_at);
+  const endsAt = formatDate(data.event.ends_at);
+
   return (
     <VStack align="flex-start">
       {data.event.image_url && (
@@ -238,6 +241,8 @@ export const EventPage: NextPage = () => {
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
       </Heading>
       <Text>{data.event.description}</Text>
+      <Text>Starting: {startAt}</Text>
+      <Text>Ending: {endsAt}</Text>
       <HStack align="start">
         {rsvps && (
           <Heading

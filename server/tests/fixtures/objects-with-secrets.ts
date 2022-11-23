@@ -134,6 +134,65 @@ export const fullResponse = {
   errors: [{ domain: 'global', reason: 'notFound', message: 'Not Found' }],
 };
 
+export const invalidGrant = {
+  stack: 'Error: invalid_grant\n',
+  message: 'invalid_grant',
+  response: {
+    config: {
+      method: 'POST',
+      url: 'https://oauth2.googleapis.com/token',
+      data: 'refresh_token=someaccesstoken&client_id=123-456id.apps.googleusercontent.com&client_secret=someaccesstoken&grant_type=refresh_token',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'google-api-nodejs-client/7.14.1',
+        'x-goog-api-client': 'gl-node/16.18.0 auth/7.14.1',
+        Accept: 'application/json',
+      },
+      paramsSerializer: [],
+      body: 'refresh_token=someaccesstoken&client_id=123-456id.apps.googleusercontent.com&client_secret=someaccesstoken&grant_type=refresh_token',
+      validateStatus: [],
+      responseType: 'json',
+    },
+    data: { error: 'invalid_grant', error_description: 'Bad Request' },
+    headers: {
+      'alt-svc':
+        'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"',
+      'cache-control': 'no-cache, no-store, max-age=0, must-revalidate',
+      connection: 'close',
+      'content-encoding': 'gzip',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Fri, 11 Nov 2022 10:14:49 GMT',
+      expires: 'Mon, 01 Jan 1990 00:00:00 GMT',
+      pragma: 'no-cache',
+      server: 'scaffolding on HTTPServer2',
+      'transfer-encoding': 'chunked',
+      vary: 'Origin, X-Origin, Referer',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0',
+    },
+    status: 400,
+    statusText: 'Bad Request',
+    request: { responseURL: 'https://oauth2.googleapis.com/token' },
+  },
+  config: {
+    method: 'POST',
+    url: 'https://oauth2.googleapis.com/token',
+    data: 'refresh_token=someaccesstoken&client_id=123-456id.apps.googleusercontent.com&client_secret=someaccesstoken&grant_type=refresh_token',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'google-api-nodejs-client/7.14.1',
+      'x-goog-api-client': 'gl-node/16.18.0 auth/7.14.1',
+      Accept: 'application/json',
+    },
+    paramsSerializer: [],
+    body: 'refresh_token=someaccesstoken&client_id=123-456id.apps.googleusercontent.com&client_secret=someaccesstoken&grant_type=refresh_token',
+    validateStatus: [],
+    responseType: 'json',
+  },
+  code: '400',
+};
+
 export const circularObject: Record<string, unknown> = {};
 circularObject.circularRef = circularObject;
 

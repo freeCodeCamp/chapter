@@ -4,7 +4,7 @@ import { prisma } from '../../prisma';
 
 import { UserWithPermissions } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
-import { InstanceRoles } from '../../../prisma/init/factories/instanceRoles.factory';
+import { InstanceRoles } from '../../../../common/roles';
 import { getRoleName } from '../../util/chapterAdministrator';
 
 const instanceRoleInclude = {

@@ -155,7 +155,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Chapter Users</Heading>
         </Flex>
-        <Box display={{ base: 'none', lg: 'block' }}>
+        <Box display={{ base: 'none', lg: 'block' }} width={'100%'}>
           <DataTable
             data={data.dashboardChapter.chapter_users}
             tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}

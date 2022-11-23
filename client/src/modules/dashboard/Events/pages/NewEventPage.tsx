@@ -11,7 +11,7 @@ import { Layout } from '../../shared/components/Layout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { CHAPTER } from '../../../chapters/graphql/queries';
-import { EVENTS } from '../graphql/queries';
+import { DASHBOARD_EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -32,7 +32,7 @@ export const NewEventPage: NextPageWithLayout = () => {
       variables: { chapterId: chapter_id, data: parseEventData(data) },
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter_id } },
-        { query: EVENTS },
+        { query: DASHBOARD_EVENTS },
         { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],
     });

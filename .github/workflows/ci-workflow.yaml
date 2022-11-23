@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -53,4 +53,6 @@ jobs:
       - name: Seed the Docker db
         env:
           DB_PORT: 54320
-        run: npm run db:reset
+        # We don't need to build the server explicitly, because npm run
+        # dev:server is run earlier and it runs tsc.
+        run: npm run db:migrate:reset

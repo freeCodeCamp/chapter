@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const VENUES = gql`
-  query venues {
-    venues {
+export const DASHBOARD_VENUES = gql`
+  query dashboardVenues {
+    dashboardVenues {
       id
       chapter_id
       name

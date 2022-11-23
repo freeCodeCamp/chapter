@@ -1,9 +1,22 @@
 import { Prisma } from '@prisma/client';
-import { Resolver, Query, Arg, Int, Mutation, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Resolver,
+  Query,
+} from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
+import { ResolverCtx } from '../../common-types/gql';
 
 import { Venue } from '../../graphql-types';
 import { prisma } from '../../prisma';
+import {
+  isAdminFromInstanceRole,
+  isChapterAdminWhere,
+} from '../../util/adminedChapters';
 import { VenueInputs } from './inputs';
 
 const venueIncludes = {
@@ -31,6 +44,17 @@ export class VenueResolver {
     return prisma.venues.findMany({
       where: { chapter_id: chapterId },
       orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query(() => [Venue])
+  async dashboardVenues(@Ctx() ctx: Required<ResolverCtx>): Promise<Venue[]> {
+    return await prisma.venues.findMany({
+      include: venueIncludes,
+      orderBy: { name: 'asc' },
+      ...(!isAdminFromInstanceRole(ctx.user) && {
+        where: { chapter: isChapterAdminWhere(ctx.user.id) },
+      }),
     });
   }
 

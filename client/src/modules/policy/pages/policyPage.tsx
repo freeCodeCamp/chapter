@@ -1,29 +1,31 @@
 import React from 'react';
 import { NextPage } from 'next';
-import { Flex, Grid, Heading, Text, GridItem } from '@chakra-ui/react';
+import { Button, Heading, Text, Flex, Grid, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 import { useAuth } from '../../../modules/auth/store';
+import { Permission } from '../../../../../common/permissions';
+import { checkPermission } from '../../../../../common/authorization';
 
 interface Props {
   link: string;
   text: string;
 }
 
+const HeaderItem = ({ link, text }: Props) => {
+  return (
+    <LinkButton width={'18em'} href={link} colorScheme={'blue'} margin={'1em'}>
+      {text}
+    </LinkButton>
+  );
+};
 export const PolicyPage: NextPage = () => {
-  const { isLoggedIn } = useAuth();
-
-  const HeaderItem = ({ link, text }: Props) => {
-    return (
-      <LinkButton
-        width={'18em'}
-        href={link}
-        colorScheme={'blue'}
-        margin={'1em'}
-      >
-        {text}
-      </LinkButton>
-    );
-  };
+  const { user, isLoggedIn } = useAuth();
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
+  const canAuthenticateWithGoogle = checkPermission(
+    user,
+    Permission.GoogleAuthenticate,
+  );
   return (
     <Grid>
       <Flex flexDirection={'column'} gap={'1em'}>
@@ -31,7 +33,38 @@ export const PolicyPage: NextPage = () => {
           We take your privacy seriously. And we give you full control over your
           data.
         </Heading>
-
+        {canAuthenticateWithGoogle && (
+          <Flex
+            gap={'1'}
+            justifyContent={'space-between'}
+            alignItems={['flex-start', 'center']}
+            flexDirection={['column', 'row']}
+          >
+            <Text
+              as={'p'}
+              maxW={['100%', '50%']}
+              fontWeight={'500'}
+              fontSize="lg"
+            >
+              You can link your Account to Google calendar, but before you do
+              please finish reading the policy, you can always do it later in
+              dashboard.
+            </Text>
+            <Button
+              as="a"
+              href={new URL('/authenticate-with-google', serverUrl).href}
+              fontWeight="600"
+              background={'gray.85'}
+              color={'gray.10'}
+              height={'2.5em'}
+              borderRadius={'5px'}
+              paddingBlock={'.65em'}
+              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+            >
+              Authenticate with Google
+            </Button>
+          </Flex>
+        )}
         <Heading as={'h2'}>Does Chapter collect anonymous data?</Heading>
         <Text>
           When you use the Chapter website, we may collect some anonymous data

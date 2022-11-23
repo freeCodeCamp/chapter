@@ -1,4 +1,4 @@
-FROM node:16 as development
+FROM node:18 as development
 WORKDIR /usr/chapter/
 
 RUN apt-get update && apt-get install netcat -y
@@ -13,7 +13,7 @@ COPY package*.json ./
 RUN npm ci -w=server --ignore-scripts --include-workspace-root
 RUN npm -w=server run build
 
-FROM node:16-alpine as production
+FROM node:18-alpine as production
 WORKDIR /usr/chapter/
 
 COPY package*.json ./

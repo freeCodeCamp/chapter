@@ -3,16 +3,18 @@ import { useMeQuery } from 'generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 export const useLogin = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithPopup } = useAuth0();
   const { createSession } = useSession();
   const { refetch } = useMeQuery();
 
   const login = async () => {
     if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') {
-      return loginWithRedirect();
+      await loginWithPopup();
+      await createSession();
     } else {
       await createSession();
-      return await refetch();
+      // TODO: it should be possible to remove the refetch once dev login can persist isAuthenticated
+      await refetch();
     }
   };
 

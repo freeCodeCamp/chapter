@@ -1,5 +1,4 @@
-import { ChapterRoles } from '../prisma/init/factories/chapterRoles.factory';
-import { InstanceRoles } from '../prisma/init/factories/instanceRoles.factory';
+import { ChapterRoles, InstanceRoles } from '../../common/roles';
 
 import { isBannable } from '../src/util/chapterBans';
 

@@ -1,7 +1,6 @@
 import { prisma } from '../prisma';
 
-import { ChapterRoles } from '../../prisma/init/factories/chapterRoles.factory';
-import { InstanceRoles } from '../../prisma/init/factories/instanceRoles.factory';
+import { ChapterRoles, InstanceRoles } from '../../../common/roles';
 import { User } from '../controllers/Auth/middleware';
 
 export const isBannable = ({

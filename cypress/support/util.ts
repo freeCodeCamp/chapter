@@ -27,3 +27,7 @@ export function gqlOptions(body: any, additionalOptions?: any) {
     ...additionalOptions,
   };
 }
+
+export function getFirstPathParam(link: JQuery<HTMLElement>) {
+  return parseInt(link.attr('href').match(/\d+/)[0]);
+}

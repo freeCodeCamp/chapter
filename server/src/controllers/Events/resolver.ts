@@ -28,6 +28,7 @@ import {
   EventUserWithRelations,
   EventWithRelations,
   EventWithChapter,
+  EventWithVenue,
   User,
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
@@ -47,6 +48,10 @@ import {
   deleteCalendarEvent,
   updateCalendarEvent,
 } from '../../services/Google';
+import {
+  isAdminFromInstanceRole,
+  isChapterAdminWhere,
+} from '../../util/adminedChapters';
 import {
   createCalendarEvent,
   updateCalendarEventAttendees,
@@ -358,6 +363,23 @@ export class EventResolver {
     });
   }
 
+  @Query(() => [EventWithVenue])
+  async dashboardEvents(
+    @Ctx() ctx: Required<ResolverCtx>,
+    @Arg('limit', () => Int, { nullable: true }) limit?: number,
+  ): Promise<EventWithVenue[]> {
+    return await prisma.events.findMany({
+      where: {
+        ...(!isAdminFromInstanceRole(ctx.user) && {
+          chapter: isChapterAdminWhere(ctx.user.id),
+        }),
+      },
+      include: { venue: true },
+      take: limit,
+      orderBy: { start_at: 'asc' },
+    });
+  }
+
   // TODO: Check we need all the returned data
   @Query(() => EventWithRelations, { nullable: true })
   async event(
@@ -489,7 +511,7 @@ export class EventResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUserWithRelations | null> {
     const eventUser = await prisma.event_users.findUniqueOrThrow({
-      include: { rsvp: true },
+      include: { rsvp: true, event_reminder: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -515,7 +537,11 @@ export class EventResolver {
     await updateWaitlistForUserRemoval({ event, userId: ctx.user.id });
 
     const updatedEventUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'no' } } },
+      data: {
+        rsvp: { connect: { name: 'no' } },
+        subscribed: false,
+        ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
+      },
       include: eventUserIncludes,
       where: {
         user_id_event_id: {
@@ -936,7 +962,7 @@ ${unsubscribeOptions}`,
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?emaillink=true`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
     const calendar = ical();
     calendar.createEvent({
       start: event.start_at,

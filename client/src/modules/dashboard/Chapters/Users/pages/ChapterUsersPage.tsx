@@ -32,7 +32,7 @@ import {
 import { useParam } from '../../../../../hooks/useParam';
 import { DASHBOARD_CHAPTER_USERS } from '../../graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
-import { checkPermission } from '../../../../../util/check-permission';
+import { checkPermission } from '../../../../../../../common/authorization';
 import { Permission } from '../../../../../../../common/permissions';
 import { useAuth } from '../../../../../modules/auth/store';
 

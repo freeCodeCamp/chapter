@@ -11,7 +11,7 @@ import { useAuth } from '../../modules/auth/store';
 import styles from '../../styles/Header.module.css';
 import Avatar from '../Avatar';
 import { Permission } from '../../../../common/permissions';
-import { checkPermission } from '../../util/check-permission';
+import { checkPermission } from '../../../../common/authorization';
 import { HeaderMenu } from './HeaderMenu';
 import { useLogout, useLogin } from 'hooks/useAuth';
 import { MeQuery } from 'generated/graphql';

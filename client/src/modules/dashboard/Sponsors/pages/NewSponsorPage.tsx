@@ -8,7 +8,7 @@ import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { useCreateSponsorMutation } from '../../../../generated/graphql';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkPermission } from '../../../../../../common/authorization';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
 import { useAuth } from 'modules/auth/store';

@@ -15,8 +15,8 @@ import coverage from '@cypress/code-coverage/middleware/express';
 import { buildSchema } from 'type-graphql';
 
 import { Permission } from '../../common/permissions';
+import { authorizationChecker } from '../../common/authorization';
 import { isDev } from './config';
-import { authorizationChecker } from './authorization';
 import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import { handleError, user } from './controllers/Auth/middleware';

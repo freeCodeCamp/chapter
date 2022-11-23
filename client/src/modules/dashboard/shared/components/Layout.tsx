@@ -5,7 +5,7 @@ import NextError from 'next/error';
 import React from 'react';
 
 import { Permission } from '../../../../../../common/permissions';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkPermission } from '../../../../../../common/authorization';
 import { Loading } from '../../../../components/Loading';
 import { useAuth } from 'modules/auth/store';
 

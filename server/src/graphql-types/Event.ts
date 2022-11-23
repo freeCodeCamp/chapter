@@ -1,7 +1,7 @@
 import { events_venue_type_enum } from '@prisma/client';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { Chapter, EventSponsor, EventUser, Venue } from '.';
+import { Chapter, EventSponsor, EventUserWithRelations, Venue } from '.';
 
 export { events_venue_type_enum };
 
@@ -75,8 +75,8 @@ export class EventWithRelations extends Event {
   @Field(() => Venue, { nullable: true })
   venue?: Venue | null;
 
-  @Field(() => [EventUser])
-  event_users: EventUser[];
+  @Field(() => [EventUserWithRelations])
+  event_users: EventUserWithRelations[];
 }
 
 @ObjectType()

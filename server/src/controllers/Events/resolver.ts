@@ -25,7 +25,7 @@ import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
 import {
   Event,
-  EventUser,
+  EventUserWithRelations,
   EventWithRelations,
   EventWithChapter,
   User,
@@ -386,12 +386,12 @@ export class EventResolver {
   }
 
   @Authorized(Permission.Rsvp)
-  @Mutation(() => EventUser)
+  @Mutation(() => EventUserWithRelations)
   async rsvpEvent(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<EventUser> {
+  ): Promise<EventUserWithRelations> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
@@ -429,7 +429,7 @@ export class EventResolver {
 
     const newRsvpName = getNameForNewRsvp(event);
 
-    let eventUser: EventUser;
+    let eventUser: EventUserWithRelations;
     if (oldEventUser) {
       if (['yes', 'waitlist'].includes(oldEventUser.rsvp.name)) {
         throw Error('Already Rsvped');
@@ -483,11 +483,11 @@ export class EventResolver {
   }
 
   @Authorized(Permission.Rsvp)
-  @Mutation(() => EventUser, { nullable: true })
+  @Mutation(() => EventUserWithRelations, { nullable: true })
   async cancelRsvp(
     @Arg('eventId', () => Int) eventId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<EventUser | null> {
+  ): Promise<EventUserWithRelations | null> {
     const eventUser = await prisma.event_users.findUniqueOrThrow({
       include: { rsvp: true },
       where: {
@@ -536,11 +536,11 @@ export class EventResolver {
   }
 
   @Authorized(Permission.RsvpConfirm)
-  @Mutation(() => EventUser)
+  @Mutation(() => EventUserWithRelations)
   async confirmRsvp(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
-  ): Promise<EventUser> {
+  ): Promise<EventUserWithRelations> {
     const updatedUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'yes' } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },

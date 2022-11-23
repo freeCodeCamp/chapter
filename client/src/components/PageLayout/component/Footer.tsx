@@ -41,7 +41,15 @@ export const Footer: React.FC = () => {
           database in your profile
         </ListItem>
       </UnorderedList>
-      <Box>
+      {/* The layout need to have div wrapped around it to give desired looks
+          This isn't normal, ToDo: find out why the need for div,
+          and remove it for cleaner code
+      */}
+      <Box
+        display="inline-grid"
+        placeItems={{ base: 'flex-start', lg: 'center' }}
+        width="100%"
+      >
         <LinkButton
           gridArea="policyLink"
           href="/policy"

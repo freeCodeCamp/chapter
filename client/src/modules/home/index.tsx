@@ -36,11 +36,8 @@ const Home = () => {
   const { user } = useAuth();
 
   const eventData = data?.paginatedEvents;
-  const onGoingEvents = eventData?.filter(({ canceled }) => {
-    return !canceled;
-  });
-  const UpcomingEvents = onGoingEvents?.filter(({ ends_at }) => {
-    return !isPast(new Date(ends_at));
+  const UpcomingEvents = eventData?.filter(({ canceled, ends_at }) => {
+    return !canceled && !isPast(new Date(ends_at));
   });
 
   const isLoading = loading || !data;

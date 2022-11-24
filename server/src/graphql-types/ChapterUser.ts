@@ -23,24 +23,6 @@ export class ChapterUser {
   @Field(() => User)
   user: User;
 
-  @Field(() => Boolean, { nullable: true })
-  is_bannable?: boolean;
-}
-
-@ObjectType()
-export class UserChapters {
-  @Field(() => Int)
-  chapter_id: number;
-
-  @Field(() => Date)
-  joined_date: Date;
-
-  @Field(() => Boolean)
-  subscribed: boolean;
-
-  @Field(() => ChapterRole)
-  chapter_role: ChapterRole;
-
   @Field(() => Chapter)
   chapter: Chapter;
 

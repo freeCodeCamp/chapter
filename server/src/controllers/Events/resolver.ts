@@ -62,6 +62,7 @@ import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
   user: true,
+  event: true,
   rsvp: true,
   event_role: {
     include: {
@@ -282,6 +283,7 @@ export class EventResolver {
         event_users: {
           include: {
             user: true,
+            event: true,
             rsvp: true,
             event_role: {
               include: {
@@ -349,6 +351,7 @@ export class EventResolver {
         event_users: {
           include: {
             user: true,
+            event: true,
             rsvp: true,
             event_role: {
               include: {
@@ -393,6 +396,7 @@ export class EventResolver {
         event_users: {
           include: {
             user: true,
+            event: true,
             rsvp: true,
             event_role: {
               include: {
@@ -570,7 +574,18 @@ export class EventResolver {
     const updatedUser = await prisma.event_users.update({
       data: { rsvp: { connect: { name: 'yes' } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: { include: { chapter: true } }, ...eventUserIncludes },
+      include: {
+        event: { include: { chapter: true } },
+        ...{
+          user: true,
+          rsvp: true,
+          event_role: {
+            include: {
+              event_role_permissions: { include: { event_permission: true } },
+            },
+          },
+        },
+      },
     });
 
     const unsubscribeOptions = getUnsubscribeOptions({

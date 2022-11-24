@@ -39,18 +39,6 @@ export class EventUser {
 
   @Field(() => User)
   user: User;
-}
-
-@ObjectType()
-export class UserEvents {
-  @Field(() => Boolean)
-  subscribed: boolean;
-
-  @Field(() => Rsvp)
-  rsvp: Rsvp;
-
-  @Field(() => EventRole)
-  event_role: EventRole;
 
   @Field(() => Event)
   event: Event;

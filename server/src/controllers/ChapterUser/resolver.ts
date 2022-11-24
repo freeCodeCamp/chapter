@@ -20,6 +20,7 @@ import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 
 const chapterUsersInclude = {
+  chapter: true,
   chapter_role: {
     include: {
       chapter_role_permissions: { include: { chapter_permission: true } },

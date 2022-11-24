@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import Avatar from '../Avatar';
-import { AuthContextType, useAuth } from '../../modules/auth/store';
+import { useAuth } from '../../modules/auth/store';
 import { useLogout, useLogin } from '../../hooks/useAuth';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
@@ -26,12 +26,6 @@ import { checkPermission } from 'util/check-permission';
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
-
-function canViewDashboard(user: AuthContextType['user']) {
-  return user?.admined_chapters.some(({ id }) =>
-    checkPermission(user, Permission.ChapterEdit, { chapterId: id }),
-  );
-}
 
 export const Header: React.FC = () => {
   const router = useRouter();
@@ -95,7 +89,7 @@ export const Header: React.FC = () => {
                           <MenuItem as="a">Profile</MenuItem>
                         </NextLink>
 
-                        {canViewDashboard(user) && (
+                        {checkPermission(user, Permission.ChaptersView) && (
                           <NextLink passHref href="/dashboard/chapters">
                             <MenuItem data-cy="menu-dashboard-link" as="a">
                               Dashboard

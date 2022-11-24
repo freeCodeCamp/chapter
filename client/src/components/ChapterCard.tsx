@@ -93,31 +93,29 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           New Events
         </Heading>
         <GridItem area="event">
-          {chapter.events.map(({ id, name, canceled, ends_at, start_at }) => (
+          {chapter.events.map(({ id, name, start_at }) => (
             <>
-              {!canceled && !isPast(new Date(ends_at)) && (
-                <Link key={id} href={`/events/${id}`} _hover={{}}>
-                  <Flex
-                    direction={'column'}
-                    paddingLeft={'1em'}
-                    paddingBlock={'.5em'}
-                    justifyContent={'space-between'}
-                  >
-                    <Flex justifyContent={'space-between'}>
-                      <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
-                        {name}
-                      </Text>
-                      <Text
-                        fontWeight={600}
-                        fontSize={['sm', 'md', 'lg']}
-                        paddingInlineStart=".5em"
-                      >
-                        {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
-                      </Text>
-                    </Flex>
+              <Link key={id} href={`/events/${id}`} _hover={{}}>
+                <Flex
+                  direction={'column'}
+                  paddingLeft={'1em'}
+                  paddingBlock={'.5em'}
+                  justifyContent={'space-between'}
+                >
+                  <Flex justifyContent={'space-between'}>
+                    <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
+                      {name}
+                    </Text>
+                    <Text
+                      fontWeight={600}
+                      fontSize={['sm', 'md', 'lg']}
+                      paddingInlineStart=".5em"
+                    >
+                      {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
+                    </Text>
                   </Flex>
-                </Link>
-              )}
+                </Flex>
+              </Link>
             </>
           ))}
         </GridItem>

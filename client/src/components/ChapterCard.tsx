@@ -19,7 +19,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       width={'full'}
       minW={'20em'}
       gap={'2'}
-      backgroundImage={chapter.banner_url ? chapter.banner_url : ''}
+      backgroundImage={
+        chapter.banner_url
+          ? chapter.banner_url
+          : 'https://cdn.freecodecamp.org/chapter/orange-graphics-small.jpg'
+      }
       backgroundPosition={'center'}
       backgroundRepeat={'no-repeat'}
       backgroundSize={'cover'}
@@ -64,22 +68,16 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         <Text fontWeight="bold" as="h4" gridArea="subnumber">
           Members: {chapter.chapter_users.length}
         </Text>
-        <Text
-          as="h3"
-          fontSize={'md'}
-          fontWeight={'500'}
-          paddingBlock={'.5em'}
-          gridArea="aboutheader"
-        >
+        <Text as="h3" fontSize={'md'} fontWeight={'500'} gridArea="aboutheader">
           About
         </Text>
         <Text
           height="100%"
           noOfLines={4}
-          paddingBlock={'.5em'}
-          mt="2"
+          paddingBlock={'.4em'}
+          paddingInlineEnd={'.5em'}
           as="p"
-          fontWeight={400}
+          fontWeight={500}
           fontSize={['sm', 'md', 'lg']}
           gridArea="about"
         >
@@ -90,7 +88,6 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           fontSize={'md'}
           fontWeight={'500'}
           paddingInline={'1em'}
-          paddingBlock={'.5em'}
           gridArea="eventheader"
         >
           New Events
@@ -107,18 +104,13 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                     justifyContent={'space-between'}
                   >
                     <Flex justifyContent={'space-between'}>
-                      <Text
-                        mt="2"
-                        fontWeight={600}
-                        fontSize={['sm', 'md', 'lg']}
-                      >
+                      <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
                         {name}
                       </Text>
                       <Text
-                        mt="2"
                         fontWeight={600}
                         fontSize={['sm', 'md', 'lg']}
-                        paddingRight=".5em"
+                        paddingInlineStart=".5em"
                       >
                         {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
                       </Text>

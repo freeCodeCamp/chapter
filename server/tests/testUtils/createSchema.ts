@@ -1,5 +1,5 @@
 import { buildSchema } from 'type-graphql';
-import { authorizationChecker } from '../../../common/authorization';
+import { authorizationChecker } from '../../src/authorization';
 
 import { resolvers } from '../../src/controllers';
 

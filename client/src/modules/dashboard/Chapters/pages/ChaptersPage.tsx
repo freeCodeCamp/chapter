@@ -3,7 +3,7 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
-import { checkPermission } from '../../../../../../common/authorization';
+import { checkPermission } from '../../../../util/check-permission';
 import { useDashboardChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';

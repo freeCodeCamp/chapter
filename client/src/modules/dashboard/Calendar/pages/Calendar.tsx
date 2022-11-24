@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import NextError from 'next/error';
 import { LinkButton } from 'chakra-next-link';
 import { Flex, Heading } from '@chakra-ui/layout';
-import { checkPermission } from '../../../../../../common/authorization';
+import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useAuth } from '../../../auth/store';
 import { Layout } from '../../shared/components/Layout';

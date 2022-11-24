@@ -4,7 +4,7 @@ import { LinkButton } from 'chakra-next-link';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 
-import { checkPermission } from '../../../../../../common/authorization';
+import { checkPermission } from '../../../../util/check-permission';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Permission } from '../../../../../../common/permissions';

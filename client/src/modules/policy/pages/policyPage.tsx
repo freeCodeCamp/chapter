@@ -4,7 +4,7 @@ import { Button, Heading, Text, Flex, Grid, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 import { useAuth } from '../../../modules/auth/store';
 import { Permission } from '../../../../../common/permissions';
-import { checkPermission } from '../../../../../common/authorization';
+import { checkPermission } from '../../../util/check-permission';
 
 interface Props {
   link: string;

@@ -26,7 +26,7 @@ import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useAuth } from '../../../../modules/auth/store';
-import { checkPermission } from '../../../../../../common/authorization';
+import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 
 export const ChapterPage: NextPageWithLayout = () => {

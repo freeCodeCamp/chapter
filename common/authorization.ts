@@ -1,15 +1,12 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { AuthChecker } from 'type-graphql';
 
-import { ResolverCtx } from '../server/src/common-types/gql';
 import type { Events, Venues } from '../server/src/controllers/Auth/middleware';
-import { ChapterPermission, InstancePermission } from './permissions';
 
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
 type VariableValues = GraphQLResolveInfo['variableValues'];
 
-interface UserWithRelations {
+export interface UserWithRelations {
   instance_role: {
     instance_role_permissions: {
       instance_permission: {
@@ -46,16 +43,6 @@ interface ContextData {
   user: UserWithRelations;
   events: Events;
   venues: Venues;
-}
-
-function hasUserEventsAndVenues(
-  ctx: ResolverCtx | Required<ResolverCtx>,
-): ctx is Required<ResolverCtx> {
-  return (
-    typeof ctx.user !== 'undefined' &&
-    typeof ctx.events !== 'undefined' &&
-    typeof ctx.venues !== 'undefined'
-  );
 }
 
 function hasNecessaryPermission(
@@ -160,7 +147,7 @@ function isBannedFromChapter(
   return bannedFromChapter;
 }
 
-function checker(
+export function checker(
   context: ContextData,
   requiredPermission: string,
   variableValues: VariableValues,
@@ -174,28 +161,3 @@ function checker(
 
   return false;
 }
-
-export const checkPermission = (
-  user: UserWithRelations | null | undefined,
-  requiredPermission: InstancePermission | ChapterPermission,
-  variableValues?: VariableValues,
-) => {
-  if (!user) return false;
-  const context = { user, events: [], venues: [] };
-  return checker(context, requiredPermission, variableValues || {});
-};
-
-/** authorizationChecker allows or denies access to fields and resolvers based
- * on a user's role. It cannot affect what is returned by a resolver, it just
- * determines if the resolver is called or not. For fine-grained control, the
- * resolver itself must modify the response based on the user's roles */
-export const authorizationChecker: AuthChecker<
-  ResolverCtx | Required<ResolverCtx>
-> = ({ context, info: { variableValues } }, requiredPermissions): boolean => {
-  if (!hasUserEventsAndVenues(context)) return false;
-
-  if (requiredPermissions.length !== 1) return false;
-  const requiredPermission = requiredPermissions[0];
-
-  return checker(context, requiredPermission, variableValues);
-};

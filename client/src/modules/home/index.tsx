@@ -2,6 +2,7 @@ import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { Link } from 'chakra-next-link';
 
+import { isPast } from 'date-fns';
 import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
@@ -35,11 +36,12 @@ const Home = () => {
   const { user } = useAuth();
 
   const eventData = data?.paginatedEvents;
-  const UpcomingEvents = eventData?.filter(({ canceled }) => {
-    canceled;
+  const onGoingEvents = eventData?.filter(({ canceled }) => {
+    return !canceled;
   });
-  console.log(eventData);
-  console.log(UpcomingEvents);
+  const UpcomingEvents = onGoingEvents?.filter(({ ends_at }) => {
+    return !isPast(new Date(ends_at));
+  });
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;

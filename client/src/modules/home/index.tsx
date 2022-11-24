@@ -1,8 +1,16 @@
-import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
+import {
+  Heading,
+  VStack,
+  Grid,
+  GridItem,
+  Flex,
+  Text,
+  useToast,
+  Button,
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { Link } from 'chakra-next-link';
 
-import { isPast } from 'date-fns';
 import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
@@ -32,13 +40,29 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const { loading, error, data } = useHomeQuery();
+  const [hasMore, setHasMore] = useState(true);
+
+  const { loading, error, data, fetchMore } = useHomeQuery({
+    variables: { offset: 0, limit: 2 },
+  });
   const { user } = useAuth();
 
-  const eventData = data?.paginatedEvents;
-  const UpcomingEvents = eventData?.filter(({ canceled, ends_at }) => {
-    return !canceled && !isPast(new Date(ends_at));
-  });
+  const toast = useToast();
+  const onLoadMore = async () => {
+    try {
+      const res = await fetchMore({
+        variables: { offset: data?.paginatedEvents.length },
+      });
+      setHasMore(res.data.paginatedEvents.length > 0);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast({ title: err.message || err.name });
+      } else {
+        toast({ title: 'An unexpected error occurred' });
+        console.log(err);
+      }
+    }
+  };
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
@@ -56,9 +80,14 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {UpcomingEvents?.map((event) => (
+            {data.paginatedEvents?.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
+            {hasMore ? (
+              <Button onClick={onLoadMore}>Click for more</Button>
+            ) : (
+              <Text size="md">No more</Text>
+            )}
           </VStack>
         </GridItem>
         <GridItem colSpan={{ base: 2, xl: 1 }}>

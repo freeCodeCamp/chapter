@@ -41,7 +41,6 @@ const Welcome = ({ user }: { user: User }) => {
 };
 const Home = () => {
   const [hasMore, setHasMore] = useState(true);
-
   const { loading, error, data, fetchMore } = useHomeQuery({
     variables: { offset: 0, limit: 2 },
   });
@@ -80,7 +79,7 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {data.paginatedEvents?.map((event) => (
+            {data.paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
             {hasMore ? (

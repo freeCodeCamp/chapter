@@ -32,9 +32,8 @@ export const Header: React.FC = () => {
   const login = useLogin();
   const client = useApolloClient();
 
-  const goHome = async () => {
-    await router.push('/');
-    await client.resetStore();
+  const goHome = () => {
+    router.push('/').then(() => client.resetStore());
   };
 
   return (

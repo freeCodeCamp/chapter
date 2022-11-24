@@ -325,7 +325,12 @@ export class EventResolver {
   ): Promise<EventWithChapter[]> {
     const events = await prisma.events.findMany({
       where: {
-        canceled: false,
+        AND: [
+          {
+            canceled: false,
+            ends_at: { gt: new Date() },
+          },
+        ],
       },
       include: {
         chapter: true,

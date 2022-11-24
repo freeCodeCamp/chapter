@@ -323,7 +323,7 @@ export class EventResolver {
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
   ): Promise<EventWithChapter[]> {
-    const events = await prisma.events.findMany({
+    return await prisma.events.findMany({
       where: {
         AND: [
           {
@@ -341,8 +341,6 @@ export class EventResolver {
       take: limit ?? 10,
       skip: offset,
     });
-
-    return events;
   }
 
   // TODO: Check we need all the returned data

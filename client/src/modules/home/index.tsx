@@ -1,14 +1,5 @@
-import {
-  Heading,
-  VStack,
-  Grid,
-  GridItem,
-  Button,
-  useToast,
-  Flex,
-  Text,
-} from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
+import React from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -40,35 +31,15 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const [hasMore, setHasMore] = useState(true);
-  const { loading, error, data, fetchMore } = useHomeQuery({
-    variables: { offset: 0, limit: 2 },
-  });
+  const { loading, error, data } = useHomeQuery();
   const { user } = useAuth();
 
   const eventData = data?.paginatedEvents;
-  console.log(eventData);
-  const UpcomingEvents = eventData?.filter((event) => {
-    event.canceled !== true;
+  const UpcomingEvents = eventData?.filter(({ canceled }) => {
+    canceled;
   });
+  console.log(eventData);
   console.log(UpcomingEvents);
-
-  const toast = useToast();
-  const onLoadMore = async () => {
-    try {
-      const res = await fetchMore({
-        variables: { offset: data?.paginatedEvents.length },
-      });
-      setHasMore(res.data.paginatedEvents.length > 0);
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({ title: err.message || err.name });
-      } else {
-        toast({ title: 'An unexpected error occurred' });
-        console.log(err);
-      }
-    }
-  };
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
@@ -86,14 +57,9 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {data.paginatedEvents.map((event) => (
+            {UpcomingEvents?.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
-            {hasMore ? (
-              <Button onClick={onLoadMore}>Click for more</Button>
-            ) : (
-              <Text size="md">No more</Text>
-            )}
           </VStack>
         </GridItem>
         <GridItem colSpan={{ base: 2, xl: 1 }}>

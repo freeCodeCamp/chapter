@@ -6,6 +6,7 @@ import { authorizationChecker } from '../src/authorization';
 
 import {
   userWithRoleForChapterOne,
+  userWithRoleForChaptersOneAndTwo,
   chapterTwoEventUser,
   userWithRoleForEventOne,
   userWithInstanceRole,
@@ -238,6 +239,67 @@ describe('authorizationChecker', () => {
           'a-different-permission',
         ]),
       ).toBe(false);
+    });
+
+    it('should reject requests when the chapterId inferred from eventId does not match the provided chapterId', () => {
+      expect.assertions(1);
+      const user = userWithRoleForChaptersOneAndTwo;
+
+      const eventIdChapterIdMismatch = merge(resolverDataWithEventsAndVenues, {
+        context: { user },
+        // Event 2 is in chapter 1, but the request should fail even though the
+        // user has the required permission for chapter 1 since they're claiming
+        // it is for chapter 2.
+        info: { variableValues: { eventId: 2, chapterId: 2 } },
+      });
+
+      expect(
+        authorizationChecker(eventIdChapterIdMismatch, ['some-permission']),
+      ).toBe(false);
+    });
+
+    it('should reject requests when the chapterId inferred from venue does not match the provided chapterId', () => {
+      expect.assertions(1);
+      const user = userWithRoleForChaptersOneAndTwo;
+      const venueIdChapterIdMismatch = merge(resolverDataWithEventsAndVenues, {
+        context: { user },
+        // Venue 2 is in chapter 1
+        info: { variableValues: { venueId: 2, chapterId: 2 } },
+      });
+
+      expect(
+        authorizationChecker(venueIdChapterIdMismatch, ['some-permission']),
+      ).toBe(false);
+    });
+    it('should reject requests when the chapterId inferred from eventId does not match the id inferred from venueId', () => {
+      expect.assertions(1);
+      const user = userWithRoleForChaptersOneAndTwo;
+
+      const eventIdVenueIdMismatch = merge(resolverDataWithEventsAndVenues, {
+        context: { user },
+        // Event 2 is in chapter 1, but venueId 3 is in chapter 2.
+        info: { variableValues: { eventId: 2, venueId: 3 } },
+      });
+
+      expect(
+        authorizationChecker(eventIdVenueIdMismatch, ['some-permission']),
+      ).toBe(false);
+    });
+
+    it("should reject event requests if the admin is not a member of that event's chapter", () => {
+      expect.assertions(1);
+      const user = userWithRoleForChaptersOneAndTwo;
+
+      const resolverData = merge(resolverDataWithEventsAndVenues, {
+        context: { user },
+        // Event 10000 does not appear in the admin's event list (i.e. it's in a
+        // chapter they're not a member of)
+        info: { variableValues: { eventId: 10000 } },
+      });
+
+      expect(authorizationChecker(resolverData, ['some-permission'])).toBe(
+        false,
+      );
     });
   });
 

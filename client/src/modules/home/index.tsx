@@ -46,6 +46,13 @@ const Home = () => {
   });
   const { user } = useAuth();
 
+  const eventData = data?.paginatedEvents;
+  console.log(eventData);
+  const UpcomingEvents = eventData?.filter((event) => {
+    event.canceled !== true;
+  });
+  console.log(UpcomingEvents);
+
   const toast = useToast();
   const onLoadMore = async () => {
     try {

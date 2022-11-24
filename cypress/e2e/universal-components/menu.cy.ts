@@ -12,4 +12,11 @@ describe('menu', () => {
     cy.get('[data-cy=menu-button]').click();
     cy.get('[data-cy=menu-dashboard-link]').should('not.exist');
   });
+
+  it('should show a link to the dashboard for an admin', () => {
+    cy.login('admin@of.chapter.one');
+    cy.visit('/');
+    cy.get('[data-cy=menu-button]').click();
+    cy.get('[data-cy=menu-dashboard-link]').should('be.visible');
+  });
 });

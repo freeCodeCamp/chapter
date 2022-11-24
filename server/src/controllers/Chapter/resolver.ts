@@ -91,7 +91,7 @@ export class ChapterResolver {
     return { ...chapter, chapter_users: usersWithIsBannable };
   }
 
-  @Authorized(Permission.ChapterEdit)
+  @Authorized(Permission.ChaptersView)
   @Query(() => [ChapterWithEvents])
   async dashboardChapters(
     @Ctx() ctx: Required<ResolverCtx>,

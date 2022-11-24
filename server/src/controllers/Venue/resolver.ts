@@ -47,7 +47,7 @@ export class VenueResolver {
     });
   }
 
-  @Authorized(Permission.VenueEdit)
+  @Authorized(Permission.VenuesView)
   @Query(() => [Venue])
   async dashboardVenues(@Ctx() ctx: Required<ResolverCtx>): Promise<Venue[]> {
     return await prisma.venues.findMany({

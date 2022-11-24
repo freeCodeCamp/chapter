@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 import { Rsvp, User } from '.';
 
@@ -28,14 +28,26 @@ export class EventUser {
   @Field(() => Date)
   updated_at: Date;
 
+  @Field(() => Int)
+  user_id: number;
+
+  @Field(() => Int)
+  event_id: number;
+
   @Field(() => Boolean)
   subscribed: boolean;
+}
 
-  @Field(() => Rsvp)
-  rsvp: Rsvp;
-
+@ObjectType()
+export class EventUserWithRole extends EventUser {
   @Field(() => EventRole)
   event_role: EventRole;
+}
+
+@ObjectType()
+export class EventUserWithRelations extends EventUserWithRole {
+  @Field(() => Rsvp)
+  rsvp: Rsvp;
 
   @Field(() => User)
   user: User;

@@ -11,6 +11,30 @@ import { Permission } from '../../../../../../common/permissions';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useAuth } from 'modules/auth/store';
 
+const actionLinks = [
+  {
+    colorScheme: 'blue',
+    size: 'xs',
+    href: (id: number) => `/dashboard/chapters/${id}/new-venue`,
+    text: 'Add venue',
+    requiredPermission: Permission.VenueCreate,
+  },
+  {
+    colorScheme: 'blue',
+    size: 'xs',
+    href: (id: number) => `/dashboard/chapters/${id}/new-event`,
+    text: 'Add Event',
+    requiredPermission: Permission.EventCreate,
+  },
+  {
+    colorScheme: 'blue',
+    size: 'xs',
+    href: (id: number) => `/dashboard/chapters/${id}/edit`,
+    text: 'Edit',
+    requiredPermission: Permission.EventEdit,
+  },
+];
+
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useAuth();
@@ -55,27 +79,24 @@ export const ChaptersPage: NextPageWithLayout = () => {
             ),
             actions: (chapter) => (
               <HStack>
-                <LinkButton
-                  colorScheme="blue"
-                  size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/new-venue`}
-                >
-                  Add Venue
-                </LinkButton>
-                <LinkButton
-                  colorScheme="blue"
-                  size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/new-event`}
-                >
-                  Add Event
-                </LinkButton>
-                <LinkButton
-                  colorScheme="blue"
-                  size="xs"
-                  href={`/dashboard/chapters/${chapter.id}/edit`}
-                >
-                  Edit
-                </LinkButton>
+                {actionLinks
+                  .filter(
+                    ({ requiredPermission }) =>
+                      !requiredPermission ||
+                      checkPermission(user, requiredPermission, {
+                        chapterId: chapter.id,
+                      }),
+                  )
+                  .map(({ colorScheme, size, text, href }) => (
+                    <LinkButton
+                      key={text}
+                      colorScheme={colorScheme}
+                      size={size}
+                      href={href(chapter.id)}
+                    >
+                      {text}
+                    </LinkButton>
+                  ))}
               </HStack>
             ),
           }}
@@ -119,27 +140,24 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       {chapter.name}
                     </LinkButton>
                     <HStack spacing={1} marginLeft={'-1em'}>
-                      <LinkButton
-                        colorScheme="blue"
-                        size="xs"
-                        href={`/dashboard/chapters/${chapter.id}/new-venue`}
-                      >
-                        Add Venue
-                      </LinkButton>
-                      <LinkButton
-                        colorScheme="blue"
-                        size="xs"
-                        href={`/dashboard/chapters/${chapter.id}/new-event`}
-                      >
-                        Add Event
-                      </LinkButton>
-                      <LinkButton
-                        colorScheme="blue"
-                        size="xs"
-                        href={`/dashboard/chapters/${chapter.id}/edit`}
-                      >
-                        Edit
-                      </LinkButton>
+                      {actionLinks
+                        .filter(
+                          ({ requiredPermission }) =>
+                            !requiredPermission ||
+                            checkPermission(user, requiredPermission, {
+                              chapterId: chapter.id,
+                            }),
+                        )
+                        .map(({ colorScheme, size, href, text }) => (
+                          <LinkButton
+                            key={text}
+                            colorScheme={colorScheme}
+                            size={size}
+                            href={href(chapter.id)}
+                          >
+                            {text}
+                          </LinkButton>
+                        ))}
                     </HStack>
                   </VStack>
                 ),

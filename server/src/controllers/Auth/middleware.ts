@@ -16,7 +16,6 @@ const userInclude = {
             },
           },
         },
-        user: true,
       },
     },
     user_events: {

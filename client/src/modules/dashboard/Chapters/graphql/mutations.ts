@@ -39,9 +39,7 @@ export const deleteChapter = gql`
 export const banUser = gql`
   mutation banUser($chapterId: Int!, $userId: Int!) {
     banUser(chapterId: $chapterId, userId: $userId) {
-      user {
-        name
-      }
+      user_id
     }
   }
 `;
@@ -49,9 +47,7 @@ export const banUser = gql`
 export const unbanUser = gql`
   mutation unbanUser($chapterId: Int!, $userId: Int!) {
     unbanUser(chapterId: $chapterId, userId: $userId) {
-      user {
-        name
-      }
+      user_id
     }
   }
 `;

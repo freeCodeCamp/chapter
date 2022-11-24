@@ -1,18 +1,16 @@
-import type { AuthContextType } from '../modules/auth/store';
+import { checker } from '../../../common/authorization';
 import {
-  InstancePermission,
   ChapterPermission,
+  InstancePermission,
 } from '../../../common/permissions';
+import { AuthContextType } from 'modules/auth/store';
 
 export const checkPermission = (
   user: AuthContextType['user'],
-  permission: InstancePermission | ChapterPermission,
+  requiredPermission: InstancePermission | ChapterPermission,
+  variableValues?: Record<string, number>,
 ) => {
-  const hasPermission = user
-    ? user.instance_role.instance_role_permissions.some(
-        (x) => x.instance_permission.name === permission,
-      )
-    : false;
-
-  return hasPermission;
+  if (!user) return false;
+  const context = { user, events: [], venues: [] };
+  return checker(context, requiredPermission, variableValues || {});
 };

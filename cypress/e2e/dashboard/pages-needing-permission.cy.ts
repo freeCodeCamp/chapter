@@ -46,6 +46,18 @@ function visitNonMemberDashboards() {
   cy.visit(`/dashboard/sponsors/1`);
   cy.get('[data-cy=loading-error]').should('be.visible');
   cy.contains(deniedText);
+
+  cy.visit('/dashboard/chapters');
+  cy.get('[data-cy=loading-error]').should('be.visible');
+  cy.contains(deniedText);
+
+  cy.visit('/dashboard/events');
+  cy.get('[data-cy=loading-error]').should('be.visible');
+  cy.contains(deniedText);
+
+  cy.visit('/dashboard/venues');
+  cy.get('[data-cy=loading-error]').should('be.visible');
+  cy.contains(deniedText);
 }
 
 describe('all dashboards', () => {

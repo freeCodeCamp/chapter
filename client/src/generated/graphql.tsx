@@ -59,11 +59,30 @@ export type ChapterRolePermission = {
 export type ChapterUser = {
   __typename?: 'ChapterUser';
   chapter_id: Scalars['Int'];
+  is_bannable?: Maybe<Scalars['Boolean']>;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
+  user_id: Scalars['Int'];
+};
+
+export type ChapterUserWithRelations = {
+  __typename?: 'ChapterUserWithRelations';
+  chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
   is_bannable?: Maybe<Scalars['Boolean']>;
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user: User;
+  user_id: Scalars['Int'];
+};
+
+export type ChapterUserWithRole = {
+  __typename?: 'ChapterUserWithRole';
+  chapter_id: Scalars['Int'];
+  chapter_role: ChapterRole;
+  is_bannable?: Maybe<Scalars['Boolean']>;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
   user_id: Scalars['Int'];
 };
 
@@ -89,7 +108,7 @@ export type ChapterWithRelations = {
   banner_url?: Maybe<Scalars['String']>;
   calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
+  chapter_users: Array<ChapterUserWithRelations>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -188,11 +207,30 @@ export type EventSponsor = {
 
 export type EventUser = {
   __typename?: 'EventUser';
+  event_id: Scalars['Int'];
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+};
+
+export type EventUserWithRelations = {
+  __typename?: 'EventUserWithRelations';
+  event_id: Scalars['Int'];
   event_role: EventRole;
   rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
+  user_id: Scalars['Int'];
+};
+
+export type EventUserWithRole = {
+  __typename?: 'EventUserWithRole';
+  event_id: Scalars['Int'];
+  event_role: EventRole;
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
 };
 
 export type EventWithChapter = {
@@ -221,7 +259,7 @@ export type EventWithRelations = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
-  event_users: Array<EventUser>;
+  event_users: Array<EventUserWithRelations>;
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -273,10 +311,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   banUser: UserBan;
   cancelEvent: Event;
-  cancelRsvp?: Maybe<EventUser>;
-  changeChapterUserRole: ChapterUser;
-  changeInstanceUserRole: UserWithInstanceRole;
-  confirmRsvp: EventUser;
+  cancelRsvp?: Maybe<EventUserWithRelations>;
+  changeChapterUserRole: ChapterUserWithRelations;
+  changeInstanceUserRole: UserWithPermissions;
+  confirmRsvp: EventUserWithRelations;
   createCalendarEvent: Event;
   createChapter: Chapter;
   createEvent: Event;
@@ -287,9 +325,9 @@ export type Mutation = {
   deleteMe: User;
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
-  joinChapter: ChapterUser;
-  leaveChapter: ChapterUser;
-  rsvpEvent: EventUser;
+  joinChapter: ChapterUserWithRole;
+  leaveChapter: ChapterUserWithRole;
+  rsvpEvent: EventUserWithRelations;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
@@ -452,7 +490,7 @@ export type Query = {
   __typename?: 'Query';
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser?: Maybe<ChapterUser>;
+  chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterWithEvents>;
@@ -466,13 +504,13 @@ export type Query = {
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<UserWithInstanceRole>;
+  me?: Maybe<UserWithPermissions>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   userInformation?: Maybe<UserInformation>;
-  users: Array<UserWithInstanceRole>;
+  users: Array<UserWithPermissions>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
 };
@@ -608,8 +646,16 @@ export type User = {
 
 export type UserBan = {
   __typename?: 'UserBan';
+  chapter_id: Scalars['Float'];
+  user_id: Scalars['Float'];
+};
+
+export type UserBanWithRelations = {
+  __typename?: 'UserBanWithRelations';
   chapter: Chapter;
+  chapter_id: Scalars['Float'];
   user: User;
+  user_id: Scalars['Float'];
 };
 
 export type UserInformation = {
@@ -621,19 +667,22 @@ export type UserInformation = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBan>;
-  user_chapters: Array<ChapterUser>;
-  user_events: Array<EventUser>;
+  user_bans: Array<UserBanWithRelations>;
+  user_chapters: Array<ChapterUserWithRelations>;
+  user_events: Array<EventUserWithRelations>;
 };
 
-export type UserWithInstanceRole = {
-  __typename?: 'UserWithInstanceRole';
+export type UserWithPermissions = {
+  __typename?: 'UserWithPermissions';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
+  user_bans: Array<UserBan>;
+  user_chapters: Array<ChapterUserWithRole>;
+  user_events: Array<EventUserWithRole>;
 };
 
 export type Venue = {
@@ -695,7 +744,7 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserWithPermissions';
     id: number;
     name: string;
     auto_subscribe: boolean;
@@ -715,6 +764,32 @@ export type MeQuery = {
       id: number;
       name: string;
     }>;
+    user_bans: Array<{ __typename?: 'UserBan'; chapter_id: number }>;
+    user_chapters: Array<{
+      __typename?: 'ChapterUserWithRole';
+      chapter_id: number;
+      chapter_role: {
+        __typename?: 'ChapterRole';
+        chapter_role_permissions: Array<{
+          __typename?: 'ChapterRolePermission';
+          chapter_permission: {
+            __typename?: 'ChapterPermission';
+            name: string;
+          };
+        }>;
+      };
+    }>;
+    user_events: Array<{
+      __typename?: 'EventUserWithRole';
+      event_id: number;
+      event_role: {
+        __typename?: 'EventRole';
+        event_role_permissions: Array<{
+          __typename?: 'EventRolePermission';
+          event_permission: { __typename?: 'EventPermission'; name: string };
+        }>;
+      };
+    }>;
   } | null;
 };
 
@@ -725,7 +800,7 @@ export type JoinChapterMutationVariables = Exact<{
 export type JoinChapterMutation = {
   __typename?: 'Mutation';
   joinChapter: {
-    __typename?: 'ChapterUser';
+    __typename?: 'ChapterUserWithRole';
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
 };
@@ -737,7 +812,7 @@ export type LeaveChapterMutationVariables = Exact<{
 export type LeaveChapterMutation = {
   __typename?: 'Mutation';
   leaveChapter: {
-    __typename?: 'ChapterUser';
+    __typename?: 'ChapterUserWithRole';
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
 };
@@ -793,7 +868,7 @@ export type ChapterUserQueryVariables = Exact<{
 export type ChapterUserQuery = {
   __typename?: 'Query';
   chapterUser?: {
-    __typename?: 'ChapterUser';
+    __typename?: 'ChapterUserWithRelations';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
@@ -881,10 +956,7 @@ export type BanUserMutationVariables = Exact<{
 
 export type BanUserMutation = {
   __typename?: 'Mutation';
-  banUser: {
-    __typename?: 'UserBan';
-    user: { __typename?: 'User'; name: string };
-  };
+  banUser: { __typename?: 'UserBan'; user_id: number };
 };
 
 export type UnbanUserMutationVariables = Exact<{
@@ -894,10 +966,7 @@ export type UnbanUserMutationVariables = Exact<{
 
 export type UnbanUserMutation = {
   __typename?: 'Mutation';
-  unbanUser: {
-    __typename?: 'UserBan';
-    user: { __typename?: 'User'; name: string };
-  };
+  unbanUser: { __typename?: 'UserBan'; user_id: number };
 };
 
 export type ChangeChapterUserRoleMutationVariables = Exact<{
@@ -909,7 +978,7 @@ export type ChangeChapterUserRoleMutationVariables = Exact<{
 export type ChangeChapterUserRoleMutation = {
   __typename?: 'Mutation';
   changeChapterUserRole: {
-    __typename?: 'ChapterUser';
+    __typename?: 'ChapterUserWithRelations';
     chapter_role: { __typename?: 'ChapterRole'; name: string };
   };
 };
@@ -988,16 +1057,13 @@ export type DashboardChapterUsersQuery = {
   dashboardChapter: {
     __typename?: 'ChapterWithRelations';
     chapter_users: Array<{
-      __typename?: 'ChapterUser';
+      __typename?: 'ChapterUserWithRelations';
       subscribed: boolean;
       is_bannable?: boolean | null;
       user: { __typename?: 'User'; id: number; name: string };
       chapter_role: { __typename?: 'ChapterRole'; id: number; name: string };
     }>;
-    user_bans: Array<{
-      __typename?: 'UserBan';
-      user: { __typename?: 'User'; id: number };
-    }>;
+    user_bans: Array<{ __typename?: 'UserBan'; user_id: number }>;
   };
 };
 
@@ -1079,7 +1145,7 @@ export type ConfirmRsvpMutationVariables = Exact<{
 export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
   confirmRsvp: {
-    __typename?: 'EventUser';
+    __typename?: 'EventUserWithRelations';
     rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
   };
 };
@@ -1174,7 +1240,7 @@ export type DashboardEventQuery = {
       country: string;
     } | null;
     event_users: Array<{
-      __typename?: 'EventUser';
+      __typename?: 'EventUserWithRelations';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
       user: {
@@ -1300,7 +1366,7 @@ export type ChangeInstanceUserRoleMutationVariables = Exact<{
 export type ChangeInstanceUserRoleMutation = {
   __typename?: 'Mutation';
   changeInstanceUserRole: {
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserWithPermissions';
     instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
@@ -1321,7 +1387,7 @@ export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 export type UsersQuery = {
   __typename?: 'Query';
   users: Array<{
-    __typename?: 'UserWithInstanceRole';
+    __typename?: 'UserWithPermissions';
     id: number;
     name: string;
     instance_role: { __typename?: 'InstanceRole'; id: number; name: string };
@@ -1430,7 +1496,7 @@ export type RsvpToEventMutationVariables = Exact<{
 
 export type RsvpToEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent: { __typename?: 'EventUser'; updated_at: any };
+  rsvpEvent: { __typename?: 'EventUserWithRelations'; updated_at: any };
 };
 
 export type CancelRsvpMutationVariables = Exact<{
@@ -1439,7 +1505,10 @@ export type CancelRsvpMutationVariables = Exact<{
 
 export type CancelRsvpMutation = {
   __typename?: 'Mutation';
-  cancelRsvp?: { __typename?: 'EventUser'; updated_at: any } | null;
+  cancelRsvp?: {
+    __typename?: 'EventUserWithRelations';
+    updated_at: any;
+  } | null;
 };
 
 export type SubscribeToEventMutationVariables = Exact<{
@@ -1533,7 +1602,7 @@ export type EventQuery = {
       country: string;
     } | null;
     event_users: Array<{
-      __typename?: 'EventUser';
+      __typename?: 'EventUserWithRelations';
       subscribed: boolean;
       rsvp: { __typename?: 'Rsvp'; name: string };
       user: {
@@ -1754,6 +1823,29 @@ export const MeDocument = gql`
       }
       auto_subscribe
       image_url
+      user_bans {
+        chapter_id
+      }
+      user_chapters {
+        chapter_id
+        chapter_role {
+          chapter_role_permissions {
+            chapter_permission {
+              name
+            }
+          }
+        }
+      }
+      user_events {
+        event_id
+        event_role {
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -2311,9 +2403,7 @@ export type DeleteChapterMutationOptions = Apollo.BaseMutationOptions<
 export const BanUserDocument = gql`
   mutation banUser($chapterId: Int!, $userId: Int!) {
     banUser(chapterId: $chapterId, userId: $userId) {
-      user {
-        name
-      }
+      user_id
     }
   }
 `;
@@ -2361,9 +2451,7 @@ export type BanUserMutationOptions = Apollo.BaseMutationOptions<
 export const UnbanUserDocument = gql`
   mutation unbanUser($chapterId: Int!, $userId: Int!) {
     unbanUser(chapterId: $chapterId, userId: $userId) {
-      user {
-        name
-      }
+      user_id
     }
   }
 `;
@@ -2694,9 +2782,7 @@ export const DashboardChapterUsersDocument = gql`
         is_bannable
       }
       user_bans {
-        user {
-          id
-        }
+        user_id
       }
     }
   }

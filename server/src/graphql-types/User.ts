@@ -1,6 +1,14 @@
 import { ObjectType, Field } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { ChapterUser, EventUser, InstanceRole, UserBan } from '.';
+import {
+  ChapterUserWithRelations,
+  ChapterUserWithRole,
+  EventUserWithRole,
+  EventUserWithRelations,
+  InstanceRole,
+  UserBan,
+  UserBanWithRelations,
+} from '.';
 
 @ObjectType()
 export class User extends BaseObject {
@@ -15,22 +23,31 @@ export class User extends BaseObject {
 }
 
 @ObjectType()
-export class UserWithInstanceRole extends User {
+export class UserWithPermissions extends User {
   @Field(() => InstanceRole)
   instance_role: InstanceRole;
-}
-
-@ObjectType()
-export class UserInformation extends UserWithInstanceRole {
-  @Field(() => String)
-  email: string;
 
   @Field(() => [UserBan])
   user_bans: UserBan[];
 
-  @Field(() => [ChapterUser])
-  user_chapters: ChapterUser[];
+  @Field(() => [ChapterUserWithRole])
+  user_chapters: ChapterUserWithRole[];
 
-  @Field(() => [EventUser])
-  user_events: EventUser[];
+  @Field(() => [EventUserWithRole])
+  user_events: EventUserWithRole[];
+}
+
+@ObjectType()
+export class UserInformation extends UserWithPermissions {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => [UserBanWithRelations])
+  user_bans: UserBanWithRelations[];
+
+  @Field(() => [ChapterUserWithRelations])
+  user_chapters: ChapterUserWithRelations[];
+
+  @Field(() => [EventUserWithRelations])
+  user_events: EventUserWithRelations[];
 }

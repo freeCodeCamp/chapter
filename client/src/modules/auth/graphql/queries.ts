@@ -18,6 +18,29 @@ export const meQuery = gql`
       }
       auto_subscribe
       image_url
+      user_bans {
+        chapter_id
+      }
+      user_chapters {
+        chapter_id
+        chapter_role {
+          chapter_role_permissions {
+            chapter_permission {
+              name
+            }
+          }
+        }
+      }
+      user_events {
+        event_id
+        event_role {
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
+      }
     }
   }
 `;

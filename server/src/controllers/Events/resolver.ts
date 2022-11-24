@@ -18,7 +18,7 @@ import {
   Authorized,
 } from 'type-graphql';
 
-import { isEqual, isPast, sub } from 'date-fns';
+import { isEqual, sub } from 'date-fns';
 import ical from 'ical-generator';
 
 import { Permission } from '../../../../common/permissions';
@@ -324,20 +324,20 @@ export class EventResolver {
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
   ): Promise<EventWithChapter[]> {
     const events = await prisma.events.findMany({
+      where: {
+        canceled: false,
+      },
       include: {
         chapter: true,
       },
       orderBy: {
-        start_at: 'desc',
+        start_at: 'asc',
       },
       take: limit ?? 10,
       skip: offset,
     });
-    const upcomingEvents = events.filter(({ canceled, ends_at }) => {
-      return !canceled && !isPast(new Date(ends_at));
-    });
 
-    return upcomingEvents;
+    return events;
   }
 
   // TODO: Check we need all the returned data

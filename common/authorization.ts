@@ -1,7 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
 
-import type { Events, Venues } from '../server/src/controllers/Auth/middleware';
-
 // This is a *very* broad type, but unfortunately variableValues is only
 // constrained to be a Record<string, any>, basically.
 type VariableValues = GraphQLResolveInfo['variableValues'];
@@ -39,10 +37,15 @@ export interface UserWithRelations {
   }[];
 }
 
+interface ContextId {
+  id: number;
+  chapter_id: number;
+}
+
 interface ContextData {
   user: UserWithRelations;
-  events: Events;
-  venues: Venues;
+  events: ContextId[];
+  venues: ContextId[];
 }
 
 function hasNecessaryPermission(
@@ -67,7 +70,7 @@ function getUserPermissionsForChapter(
 // a request may be associate with a specific chapter directly (if the request
 // has a chapter id) or indirectly (if the request just has an event id).
 function getRelatedChapterId(
-  { events, venues }: { events: Events; venues: Venues },
+  { events, venues }: { events: ContextId[]; venues: ContextId[] },
   variableValues: VariableValues,
 ): number | null {
   const { chapterId, eventId, venueId } = variableValues;

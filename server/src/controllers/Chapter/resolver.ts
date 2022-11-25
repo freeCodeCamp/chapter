@@ -39,6 +39,7 @@ export class ChapterResolver {
           where: {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
+          orderBy: { start_at: 'asc' },
           include: {
             venue: true,
           },

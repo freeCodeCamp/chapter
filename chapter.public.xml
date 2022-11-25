@@ -18,7 +18,7 @@
       <sequence increment="1" name="venues_id_seq" startValue="1"/>
    </sequences>
    <tables>
-      <table name="_prisma_migrations" numRows="5" remarks="" schema="public" type="TABLE">
+      <table name="_prisma_migrations" numRows="6" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="36" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="checksum" nullable="false" remarks="" size="64" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="finished_at" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -293,7 +293,7 @@
             <column ascending="true" name="email"/>
          </index>
       </table>
-      <table name="instance_permissions" numRows="23" remarks="" schema="public" type="TABLE">
+      <table name="instance_permissions" numRows="26" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('instance_permissions_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
@@ -308,7 +308,7 @@
             <column ascending="true" name="name"/>
          </index>
       </table>
-      <table name="instance_role_permissions" numRows="28" remarks="" schema="public" type="TABLE">
+      <table name="instance_role_permissions" numRows="34" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="instance_role_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">

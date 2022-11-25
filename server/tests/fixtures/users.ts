@@ -108,6 +108,37 @@ export const userWithRoleForChapterOne: User = merge(baseUser, {
   ],
 });
 
+export const userWithRoleForChaptersOneAndTwo: User = merge(baseUser, {
+  user_chapters: [
+    {
+      chapter_role: {
+        name: 'some-role',
+        chapter_role_permissions: [
+          {
+            chapter_permission: {
+              name: 'some-permission',
+            },
+          },
+        ],
+      },
+      chapter_id: 1,
+    },
+    {
+      chapter_role: {
+        name: 'some-role',
+        chapter_role_permissions: [
+          {
+            chapter_permission: {
+              name: 'some-permission',
+            },
+          },
+        ],
+      },
+      chapter_id: 2,
+    },
+  ],
+});
+
 export const userWithRoleForEventOne: User = merge(baseUser, {
   user_events: [
     {

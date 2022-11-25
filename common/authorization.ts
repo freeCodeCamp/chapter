@@ -75,19 +75,27 @@ function getRelatedChapterId(
 ): number | null {
   const { chapterId, eventId, venueId } = variableValues;
 
-  if (chapterId) return chapterId;
-
-  if (eventId) {
-    const event = events.find(({ id }) => id === eventId);
-    if (event) return event.chapter_id;
+  function inferId(
+    id: number,
+    data: { id: number; chapter_id: number }[],
+  ): number | null {
+    const target = data.find((x) => x.id === id);
+    return target ? target.chapter_id : null;
   }
 
-  if (venueId) {
-    const venue = venues.find(({ id }) => id === venueId);
-    if (venue) return venue.chapter_id;
-  }
+  // We're using 'undefined' when the id should not be inferred, leaving 'null'
+  // to indicate that we've failed to infer the id (and so the request is
+  // invalid)
+  const inferredFromEvent = eventId ? inferId(eventId, events) : undefined;
+  const inferredFromVenue = venueId ? inferId(venueId, venues) : undefined;
 
-  return null;
+  const chapterIds = [inferredFromEvent, inferredFromVenue, chapterId].filter(
+    (x) => typeof x !== 'undefined',
+  );
+
+  return chapterIds.length && chapterIds.every((x) => x === chapterIds[0])
+    ? chapterIds[0]
+    : null;
 }
 
 function isAllowedByChapterRole(

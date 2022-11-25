@@ -6,10 +6,12 @@ import { ChapterCard } from '../../../components/ChapterCard';
 import { useChaptersQuery } from '../../../generated/graphql';
 import { Loading } from '../../../components/Loading';
 import { useAuth } from '../../../modules/auth/store';
+import { checkPermission } from '../../../util/check-permission';
+import { Permission } from '../../../../../common/permissions';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
-  const { isLoggedIn } = useAuth();
+  const { user } = useAuth();
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;
 
@@ -29,7 +31,7 @@ export const ChaptersPage: NextPage = () => {
           width={'100%'}
         >
           <Heading marginBlock={'1em'}>Chapters: </Heading>
-          {isLoggedIn && (
+          {checkPermission(user, Permission.ChaptersView) && (
             <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
               Chapter Dashboard
             </LinkButton>

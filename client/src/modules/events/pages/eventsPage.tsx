@@ -7,6 +7,8 @@ import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
 import { useAuth } from '../../../modules/auth/store';
+import { checkPermission } from '../../../util/check-permission';
+import { Permission } from '../../../../../common/permissions';
 
 function Pagination({
   currentPage = 1,
@@ -58,7 +60,7 @@ const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
-  const { isLoggedIn } = useAuth();
+  const { user } = useAuth();
   const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
@@ -80,7 +82,7 @@ export const EventsPage: NextPage = () => {
       <Stack w={['90%', '90%', '60%']} maxW="37.5em" spacing={6} mt={10} mb={5}>
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading as="h1">Events: </Heading>
-          {isLoggedIn && (
+          {checkPermission(user, Permission.EventsView) && (
             <LinkButton href="/dashboard/events" colorScheme={'blue'}>
               Events Dashboard
             </LinkButton>

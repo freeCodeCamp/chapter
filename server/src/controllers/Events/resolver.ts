@@ -324,6 +324,14 @@ export class EventResolver {
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
   ): Promise<EventWithChapter[]> {
     return await prisma.events.findMany({
+      where: {
+        AND: [
+          {
+            canceled: false,
+            ends_at: { gt: new Date() },
+          },
+        ],
+      },
       include: {
         chapter: true,
       },
@@ -363,6 +371,7 @@ export class EventResolver {
     });
   }
 
+  @Authorized(Permission.EventsView)
   @Query(() => [EventWithVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,

@@ -20,7 +20,9 @@ import React from 'react';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
 import { useLogout, useLogin } from '../../hooks/useAuth';
+import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
+import { checkPermission } from 'util/check-permission';
 
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
@@ -32,9 +34,8 @@ export const Header: React.FC = () => {
   const login = useLogin();
   const client = useApolloClient();
 
-  const goHome = async () => {
-    await router.push('/');
-    await client.resetStore();
+  const goHome = () => {
+    router.push('/').then(() => client.resetStore());
   };
 
   return (
@@ -59,6 +60,7 @@ export const Header: React.FC = () => {
               <Menu>
                 <MenuButton
                   as={Button}
+                  data-cy="menu-button"
                   aria-label="Options"
                   variant="outline"
                   background="gray.10"
@@ -86,9 +88,14 @@ export const Header: React.FC = () => {
                         <NextLink passHref href="/profile">
                           <MenuItem as="a">Profile</MenuItem>
                         </NextLink>
-                        <NextLink passHref href="/dashboard/chapters">
-                          <MenuItem as="a">Dashboard</MenuItem>
-                        </NextLink>
+
+                        {checkPermission(user, Permission.ChaptersView) && (
+                          <NextLink passHref href="/dashboard/chapters">
+                            <MenuItem data-cy="menu-dashboard-link" as="a">
+                              Dashboard
+                            </MenuItem>
+                          </NextLink>
+                        )}
                       </Box>
                     )}
                     {user ? (

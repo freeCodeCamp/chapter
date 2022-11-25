@@ -82,7 +82,7 @@ export const EventsPage: NextPage = () => {
       <Stack w={['90%', '90%', '60%']} maxW="37.5em" spacing={6} mt={10} mb={5}>
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading as="h1">Events: </Heading>
-          {checkPermission(user, Permission.ChaptersView) && (
+          {checkPermission(user, Permission.EventsView) && (
             <LinkButton href="/dashboard/events" colorScheme={'blue'}>
               Events Dashboard
             </LinkButton>

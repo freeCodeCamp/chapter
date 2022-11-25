@@ -371,6 +371,7 @@ export class EventResolver {
     });
   }
 
+  @Authorized(Permission.EventsView)
   @Query(() => [EventWithVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,

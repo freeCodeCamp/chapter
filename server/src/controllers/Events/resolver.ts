@@ -58,6 +58,7 @@ import {
 } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
+import { formatDate } from '../../util/date';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -807,8 +808,8 @@ ${unsubscribeOptions}`,
       }'s date was updated, here is update info: <br />
       ----------------------------<br />
       <br />
-      Starting: ${new Date(update.start_at)}<br />
-      Ending: ${new Date(update.ends_at)}<br />
+      Starting: ${formatDate(update.start_at)}<br />
+      Ending: ${formatDate(update.ends_at)}<br />
       ----------------------------<br />
       <br />
       You received this email because you subscribed to ${

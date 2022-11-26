@@ -159,10 +159,17 @@ const updateReminders = (event: EventWithUsers, startAt: Date) => {
   }
 };
 
-const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
-  data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
-  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+const hasVenueChanged = (data: EventInputs, event: EventWithUsers) => {
+  return (
+    data.venue_type !== event.venue_type ||
+    (isOnline(event.venue_type) &&
+      data.streaming_url !== event.streaming_url) ||
+    (isPhysical(event.venue_type) && data.venue_id !== event.venue_id)
+  );
+};
+const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
+  return data.ends_at !== event.ends_at || data.start_at !== event.start_at;
+};
 
 const buildEmailForUpdatedEvent = async (
   data: EventInputs,
@@ -790,6 +797,33 @@ ${unsubscribeOptions}`,
         event_users: { include: { user: { select: { email: true } } } },
       },
     });
+
+    if (hasDateChanged(data, event)) {
+      const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
+      const emailList = updatedEvent.event_users.map(({ user }) => user.email);
+      const subject = `Event ${event.name} date changes`;
+      const body = `The event ${
+        event.name
+      }'s date was updated, here is update info: <br />
+      ----------------------------<br />
+      <br />
+      Starting: ${new Date(update.start_at)}<br />
+      Ending: ${new Date(update.ends_at)}<br />
+      ----------------------------<br />
+      <br />
+      You received this email because you subscribed to ${
+        event.name
+      } Event.<br />
+      - Stop receiving upcoming event notifications for ${
+        event.name
+      }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
+      `;
+      new MailerService({
+        emailList: emailList,
+        subject: subject,
+        htmlEmail: body,
+      }).sendEmail();
+    }
 
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {

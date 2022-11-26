@@ -37,6 +37,7 @@
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.6.1",
     "@sendgrid/mail": "7.7.0",
+    "@sentry/node": "7.21.1",
     "apollo-server-express": "3.11.1",
     "calendar-link": "2.4.0",
     "class-validator": "0.13.2",

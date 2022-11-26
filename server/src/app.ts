@@ -13,6 +13,7 @@ import cookies from 'cookie-parser';
 import coverage from '@cypress/code-coverage/middleware/express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
+import * as Sentry from '@sentry/node';
 
 import { Permission } from '../../common/permissions';
 import { authorizationChecker } from '../src/authorization';
@@ -25,6 +26,7 @@ import { prisma, RECORD_MISSING } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/Google';
+import { redactSecrets } from './util/redact-secrets';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -222,12 +224,34 @@ export const main = async (app: Express) => {
 if (require.main === module) {
   (async () => {
     const app = express();
+    if (process.env.SENTRY_DSN) {
+      Sentry.init({
+        dsn: process.env.SENTRY_DSN,
+        beforeSend(event) {
+          return redactSecrets(event);
+        },
+        environment: process.env.NODE_ENV,
+        integrations: [
+          // enable HTTP calls tracing
+          new Sentry.Integrations.Http({ tracing: true }),
+        ],
+      });
+      // RequestHandler creates a separate execution context using domains, so that every
+      // transaction/span/breadcrumb is attached to its own Hub instance
+      app.use(Sentry.Handlers.requestHandler());
+    }
+
     // @ts-expect-error this will exist if nyc starts the app
     if (global.__coverage__) {
       console.log('Adding coverage middleware for express');
       coverage(app);
     }
     await main(app);
+
+    if (process.env.SENTRY_DSN) {
+      // The error handler must be before any other error middleware and after all controllers
+      app.use(Sentry.Handlers.errorHandler());
+    }
 
     app.listen(PORT, () =>
       console.log(`Listening on http://localhost:${PORT}/graphql`),

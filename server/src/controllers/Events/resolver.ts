@@ -801,7 +801,7 @@ ${unsubscribeOptions}`,
 
     if (hasDateChanged(data, event)) {
       const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
-      const emailList = updatedEvent.event_users.map(({ user }) => user.email);
+      const emailList = event.event_users.map(({ user }) => user.email);
       const subject = `Event ${event.name} date changes`;
       const body = `The event ${
         event.name

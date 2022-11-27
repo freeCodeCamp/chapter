@@ -70,3 +70,9 @@ export const createCalendarEvent = async ({
     console.error(inspect(redactSecrets(e), { depth: null }));
   }
 };
+
+export const integrationStatus = async () => {
+  const tokens = await prisma.google_tokens.findMany();
+  if (!tokens.length) return false;
+  return tokens.some(({ is_valid }) => is_valid) ? true : null;
+};

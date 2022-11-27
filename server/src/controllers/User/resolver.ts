@@ -23,7 +23,7 @@ import {
 import { UpdateUserInputs } from './input';
 
 @Resolver(() => UserWithPermissions)
-export class UserWithInstanceRoleResolver {
+export class UserWithPermissionsResolver {
   @FieldResolver(() => [Chapter])
   async admined_chapters(
     @Root() user: UserWithPermissions,

@@ -148,9 +148,6 @@ export const main = async (app: Express) => {
   // are only concerned with creating and destroying sessions and not with using
   // them.
   app.use(user);
-  if (process.env.NODE_ENV !== 'development') {
-    app.use(handleError);
-  }
 
   function canAuthWithGoogle(req: Request, _res: Response, next: NextFunction) {
     if (!req.user) {
@@ -251,6 +248,9 @@ if (require.main === module) {
     if (process.env.SENTRY_DSN) {
       // The error handler must be before any other error middleware and after all controllers
       app.use(Sentry.Handlers.errorHandler());
+    }
+    if (process.env.NODE_ENV !== 'development') {
+      app.use(handleError);
     }
 
     app.listen(PORT, () =>

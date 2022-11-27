@@ -11,7 +11,7 @@ import { ChapterUserResolver } from './ChapterUser/resolver';
 import { ChapterRoleResolver } from './ChapterRole/resolver';
 import { VenueResolver } from './Venue/resolver';
 import { UsersResolver } from './Users/resolver';
-import { UserWithInstanceRoleResolver } from './User/resolver';
+import { UserWithPermissionsResolver } from './User/resolver';
 
 const resolvers = [
   ChapterResolver,
@@ -27,7 +27,7 @@ const resolvers = [
   ChapterUserResolver,
   ChapterRoleResolver,
   UsersResolver,
-  UserWithInstanceRoleResolver,
+  UserWithPermissionsResolver,
 ] as const;
 
 export { resolvers };

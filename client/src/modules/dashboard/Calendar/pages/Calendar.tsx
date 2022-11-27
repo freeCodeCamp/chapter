@@ -2,20 +2,29 @@ import React, { ReactElement } from 'react';
 import NextError from 'next/error';
 import { LinkButton } from 'chakra-next-link';
 import { Flex, Heading } from '@chakra-ui/layout';
+
+import { useCalendarIntegrationStatusQuery } from '../../../../generated/graphql';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useAuth } from '../../../auth/store';
 import { Layout } from '../../shared/components/Layout';
+import { DashboardLoading } from '../../../../modules/dashboard/shared/components/DashboardLoading';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 export const Calendar: NextPageWithLayout = () => {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const canAuthenticateWithGoogle = checkPermission(
     user,
     Permission.GoogleAuthenticate,
   );
+  const { loading, error, data } = useCalendarIntegrationStatusQuery();
+  const isLoading = loading || !data || !isLoggedIn;
+  if (isLoading || error) return <DashboardLoading error={error} />;
+
+  const isAuthenticated = data.calendarIntegrationStatus;
+  const isBroken = isAuthenticated === null;
   return (
     <>
       {canAuthenticateWithGoogle ? (
@@ -52,8 +61,13 @@ export const Calendar: NextPageWithLayout = () => {
             borderRadius={'5px'}
             paddingBlock={'.65em'}
             _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+            isDisabled={!!isAuthenticated}
           >
-            Authenticate with Google
+            {isAuthenticated
+              ? 'Authenticated'
+              : isBroken
+              ? 'Reauthenticate with Google'
+              : 'Authenticate with Google'}
           </LinkButton>
         </>
       ) : (

@@ -1,4 +1,3 @@
-import { inspect } from 'util';
 import {
   events,
   events_venue_type_enum,
@@ -57,7 +56,7 @@ import {
   updateCalendarEventAttendees,
 } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
-import { redactSecrets } from '../../util/redact-secrets';
+import { logError } from '../../services/Logging';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -804,9 +803,8 @@ ${unsubscribeOptions}`,
             ({ user }) => user.email,
           ),
         });
-      } catch (e) {
-        console.error('Unable to update calendar event');
-        console.error(inspect(redactSecrets(e), { depth: null }));
+      } catch (err) {
+        logError({ err, message: 'Unable to update calendar event' });
       }
     }
 
@@ -860,9 +858,8 @@ ${unsubscribeOptions}`,
           end: event.ends_at,
           attendeeEmails: event.event_users.map(({ user }) => user.email),
         });
-      } catch (e) {
-        console.error('Unable to cancel calendar event');
-        console.error(inspect(redactSecrets(e), { depth: null }));
+      } catch (err) {
+        logError({ err, message: 'Unable to cancel calendar event' });
       }
     }
 
@@ -889,9 +886,8 @@ ${unsubscribeOptions}`,
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
         });
-      } catch (e) {
-        console.error('Unable to delete calendar event');
-        console.error(inspect(redactSecrets(e), { depth: null }));
+      } catch (err) {
+        logError({ err, message: 'Unable to delete calendar event' });
       }
     }
     return event;

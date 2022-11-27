@@ -1,5 +1,3 @@
-import { inspect } from 'util';
-
 import { Prisma } from '@prisma/client';
 import {
   Resolver,
@@ -21,12 +19,12 @@ import {
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { createCalendar } from '../../services/Google';
+import { logError } from '../../services/Logging';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import { isBannable } from '../../util/chapterBans';
-import { redactSecrets } from '../../util/redact-secrets';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -146,9 +144,8 @@ export class ChapterResolver {
         summary: data.name,
         description: `Events for ${data.name}`,
       });
-    } catch (e) {
-      console.log('Unable to create calendar');
-      console.error(inspect(redactSecrets(e), { depth: null }));
+    } catch (err) {
+      logError({ err, message: 'Unable to create calendar' });
     }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,

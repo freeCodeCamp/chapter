@@ -26,6 +26,7 @@ import { prisma, RECORD_MISSING } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/Google';
+import { logError } from './services/Logging';
 import { redactSecrets } from './util/redact-secrets';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
@@ -114,8 +115,7 @@ export const main = async (app: Express) => {
           }
         })
         .catch((err) => {
-          console.log('Failed to validate user');
-          console.log(err);
+          logError({ err, message: 'Failed to validate user' });
         });
     } else {
       next('no bearer token');

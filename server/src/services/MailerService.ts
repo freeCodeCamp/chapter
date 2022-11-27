@@ -4,6 +4,7 @@ import sendgrid, { MailDataRequired } from '@sendgrid/mail';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
+import { log } from './Logging';
 
 export interface MailerData {
   emailList: Array<string>;
@@ -91,7 +92,7 @@ export default class MailerService {
       return await this._sendEmail();
     } catch (e) {
       // We need to inspect, since mail error objects are often quite deep.
-      console.log('Email failed to send. ', inspect(e, false, null));
+      log('Email failed to send. ' + inspect(e, false, null));
     }
   }
 

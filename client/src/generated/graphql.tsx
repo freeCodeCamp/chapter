@@ -488,6 +488,7 @@ export type PaginatedEventsWithTotal = {
 
 export type Query = {
   __typename?: 'Query';
+  calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
@@ -901,6 +902,15 @@ export type ChaptersQuery = {
       } | null;
     }>;
   }>;
+};
+
+export type CalendarIntegrationStatusQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type CalendarIntegrationStatusQuery = {
+  __typename?: 'Query';
+  calendarIntegrationStatus?: boolean | null;
 };
 
 export type CreateChapterMutationVariables = Exact<{
@@ -2236,6 +2246,61 @@ export type ChaptersLazyQueryHookResult = ReturnType<
 export type ChaptersQueryResult = Apollo.QueryResult<
   ChaptersQuery,
   ChaptersQueryVariables
+>;
+export const CalendarIntegrationStatusDocument = gql`
+  query calendarIntegrationStatus {
+    calendarIntegrationStatus
+  }
+`;
+
+/**
+ * __useCalendarIntegrationStatusQuery__
+ *
+ * To run a query within a React component, call `useCalendarIntegrationStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarIntegrationStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarIntegrationStatusQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCalendarIntegrationStatusQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    CalendarIntegrationStatusQuery,
+    CalendarIntegrationStatusQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    CalendarIntegrationStatusQuery,
+    CalendarIntegrationStatusQueryVariables
+  >(CalendarIntegrationStatusDocument, options);
+}
+export function useCalendarIntegrationStatusLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CalendarIntegrationStatusQuery,
+    CalendarIntegrationStatusQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    CalendarIntegrationStatusQuery,
+    CalendarIntegrationStatusQueryVariables
+  >(CalendarIntegrationStatusDocument, options);
+}
+export type CalendarIntegrationStatusQueryHookResult = ReturnType<
+  typeof useCalendarIntegrationStatusQuery
+>;
+export type CalendarIntegrationStatusLazyQueryHookResult = ReturnType<
+  typeof useCalendarIntegrationStatusLazyQuery
+>;
+export type CalendarIntegrationStatusQueryResult = Apollo.QueryResult<
+  CalendarIntegrationStatusQuery,
+  CalendarIntegrationStatusQueryVariables
 >;
 export const CreateChapterDocument = gql`
   mutation createChapter($data: CreateChapterInputs!) {

@@ -4535,6 +4535,18 @@
         "description": null,
         "fields": [
           {
+            "name": "calendarIntegrationStatus",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "chapter",
             "description": null,
             "args": [

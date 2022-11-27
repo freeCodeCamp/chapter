@@ -35,17 +35,18 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
             maintainers. Be mindful that your data will be deleted periodically.
           </AlertDescription>
         </Alert>
-        {canAuthenticateWithGoogle && data?.calendarIntegrationStatus === null && (
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle> Broken integration. </AlertTitle>
-            <AlertDescription>
-              Integration with Google Calendar is currently not working.
-              Authenticate again in{' '}
-              <Link href="/dashboard/calendar">Calendar dashboard</Link>.
-            </AlertDescription>
-          </Alert>
-        )}
+        {canAuthenticateWithGoogle &&
+          data?.calendarIntegrationStatus === null && (
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle> Broken integration. </AlertTitle>
+              <AlertDescription>
+                Integration with Google Calendar is currently not working.
+                Authenticate again in{' '}
+                <Link href="/dashboard/calendar">Calendar dashboard</Link>.
+              </AlertDescription>
+            </Alert>
+          )}
         {children}
       </Box>
     </>

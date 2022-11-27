@@ -26,22 +26,22 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         marginBlock={'.5em'}
       >
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
-          <Link href={`/chapters/${chapter.id}`} _hover={{}}>
-            <Flex justifyContent={'space-between'}>
-              <Heading
-                data-cy="chapter-heading"
-                fontSize={'xl'}
-                fontWeight={700}
-                fontFamily={'body'}
-                as="h3"
-              >
+          <Flex justifyContent={'space-between'}>
+            <Heading
+              data-cy="chapter-heading"
+              fontSize={'xl'}
+              fontWeight={700}
+              fontFamily={'body'}
+              as="h3"
+            >
+              <Link href={`/chapters/${chapter.id}`} _hover={{}}>
                 {chapter.name}
-              </Heading>
-              <Text color={'darkcyan'} fontWeight="bold" as="h4">
-                {chapter.city}
-              </Text>
-            </Flex>
-          </Link>
+              </Link>
+            </Heading>
+            <Text color={'darkcyan'} fontWeight="bold" as="h4">
+              {chapter.city}
+            </Text>
+          </Flex>
         </GridItem>
         <GridItem
           colStart={1}
@@ -64,40 +64,45 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             Organized Events
           </Heading>
           {chapter.events.map(({ id, name, venue, capacity }, index) => (
-            <Link key={id} href={`/events/${id}`} _hover={{}}>
-              <Flex
-                direction={'column'}
-                paddingLeft={'1em'}
-                paddingBlock={'.5em'}
-                justifyContent={'space-between'}
-              >
-                <Flex justifyContent={'space-between'}>
-                  <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                    {index + 1}. {name}
-                  </Text>
-                  <Text
-                    mt="2"
-                    fontWeight={600}
-                    fontSize={['sm', 'md', 'lg']}
-                    color={'darkcyan'}
-                  >
-                    Capacity:{capacity}
-                  </Text>
-                </Flex>
-                {venue && (
-                  <Flex
-                    fontWeight={'400'}
-                    marginTop={'.25em'}
-                    opacity=".9"
-                    fontSize={['smaller', 'sm', 'md']}
-                    justifyContent="space-between"
-                  >
-                    <Text>Hosted at: {venue.name}</Text>
-                    <Text> {venue.region}</Text>
-                  </Flex>
-                )}
+            <Flex
+              direction={'column'}
+              paddingLeft={'1em'}
+              paddingBlock={'.5em'}
+              justifyContent={'space-between'}
+              key={id}
+            >
+              <Flex justifyContent={'space-between'}>
+                <Link
+                  href={`/events/${id}`}
+                  _hover={{}}
+                  mt="2"
+                  fontWeight={600}
+                  fontSize={['sm', 'md', 'lg']}
+                >
+                  {index + 1}. {name}
+                </Link>
+                <Text
+                  mt="2"
+                  fontWeight={600}
+                  fontSize={['sm', 'md', 'lg']}
+                  color={'darkcyan'}
+                >
+                  Capacity:{capacity}
+                </Text>
               </Flex>
-            </Link>
+              {venue && (
+                <Flex
+                  fontWeight={'400'}
+                  marginTop={'.25em'}
+                  opacity=".9"
+                  fontSize={['smaller', 'sm', 'md']}
+                  justifyContent="space-between"
+                >
+                  <Text>Hosted at: {venue.name}</Text>
+                  <Text> {venue.region}</Text>
+                </Flex>
+              )}
+            </Flex>
           ))}
         </GridItem>
       </Grid>

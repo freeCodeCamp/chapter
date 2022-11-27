@@ -8,9 +8,20 @@ import {
 import React from 'react';
 import { SkipNavContent } from '@chakra-ui/skip-nav';
 
+import Link from 'next/link';
+import { useCalendarIntegrationStatusQuery } from '../../generated/graphql';
+import { useAuth } from '../../modules/auth/store';
+import { checkPermission } from '../../util/check-permission';
+import { Permission } from '../../../../common/permissions';
 import { Header } from './Header';
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
+  const canAuthenticateWithGoogle = checkPermission(
+    user,
+    Permission.GoogleAuthenticate,
+  );
+  const { data } = useCalendarIntegrationStatusQuery();
   return (
     <>
       <Header />
@@ -24,6 +35,17 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
             maintainers. Be mindful that your data will be deleted periodically.
           </AlertDescription>
         </Alert>
+        {canAuthenticateWithGoogle && data?.calendarIntegrationStatus === null && (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle> Broken integration. </AlertTitle>
+            <AlertDescription>
+              Integration with Google Calendar is currently not working.
+              Authenticate again in{' '}
+              <Link href="/dashboard/calendar">Calendar dashboard</Link>.
+            </AlertDescription>
+          </Alert>
+        )}
         {children}
       </Box>
     </>

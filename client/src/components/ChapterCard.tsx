@@ -1,4 +1,4 @@
-import { Heading, Grid, Text, GridItem, Flex } from '@chakra-ui/react';
+import { Grid, Text, GridItem, Flex } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
@@ -28,16 +28,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         <GridItem paddingInline={'1em'} paddingBlock={'.5em'} colSpan={3}>
           <Link href={`/chapters/${chapter.id}`} _hover={{}}>
             <Flex justifyContent={'space-between'}>
-              <Heading
-                data-cy="chapter-heading"
-                fontSize={'xl'}
+              <Text
+                data-cy="chaptercard-name"
+                fontSize={['lg', 'xl', '2xl']}
                 fontWeight={700}
                 fontFamily={'body'}
-                as="h3"
               >
                 {chapter.name}
-              </Heading>
-              <Text color={'darkcyan'} fontWeight="bold" as="h4">
+              </Text>
+              <Text color={'darkcyan'} fontWeight="bold">
                 {chapter.city}
               </Text>
             </Flex>
@@ -54,15 +53,14 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           </Text>
         </GridItem>
         <GridItem colSpan={2}>
-          <Heading
-            as="h3"
-            fontSize={'md'}
+          <Text
+            fontSize={['md', 'lg', 'xl']}
             fontWeight={'500'}
             paddingInline={'1em'}
             paddingBlock={'.5em'}
           >
             Organized Events
-          </Heading>
+          </Text>
           {chapter.events.map(({ id, name, venue, capacity }, index) => (
             <Link key={id} href={`/events/${id}`} _hover={{}}>
               <Flex
@@ -78,7 +76,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                   <Text
                     mt="2"
                     fontWeight={600}
-                    fontSize={['sm', 'md', 'lg']}
+                    fontSize={['smaller', 'sm', 'md']}
                     color={'darkcyan'}
                   >
                     Capacity:{capacity}

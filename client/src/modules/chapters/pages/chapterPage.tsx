@@ -34,10 +34,10 @@ import { useParam } from 'hooks/useParam';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
-    <div>
+    <>
       <Text size="md">Chat Link:</Text>
       <Link>{chatUrl}</Link>
-    </div>
+    </>
   ) : null;
 };
 

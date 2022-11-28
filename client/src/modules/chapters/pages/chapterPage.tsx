@@ -35,9 +35,9 @@ import { useParam } from 'hooks/useParam';
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
     <div>
-      <Heading size="md" color={'gray.700'}>
+      <Text size="md" color={'gray.700'}>
         Chat Link:
-      </Heading>
+      </Text>
       <Link>{chatUrl}</Link>
     </div>
   ) : null;
@@ -252,13 +252,9 @@ export const ChapterPage: NextPage = () => {
           as="h1"
           lineHeight={1.1}
           fontWeight={600}
-          color={'gray.700'}
-          fontSize={{ base: 'xl', sm: '4xl', lg: '3xl' }}
+          fontSize={{ base: 'xl', sm: '2xl', lg: '3xl' }}
         >
-          <Text as={'span'} position={'relative'}>
-            {data.chapter.name}
-          </Text>
-          <br />
+          {data.chapter.name}
         </Heading>
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
@@ -288,7 +284,7 @@ export const ChapterPage: NextPage = () => {
           ))}
 
         <ChatLink chatUrl={data.chapter.chat_url} />
-        <Heading size="md" color={'gray.700'}>
+        <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
           Events:
         </Heading>
         {data.chapter.events.map((event) => (

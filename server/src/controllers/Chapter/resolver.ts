@@ -33,16 +33,13 @@ import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 @Resolver()
 export class ChapterResolver {
   @Query(() => [ChapterCardRelations])
-  async chapters(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-  ): Promise<ChapterCardRelations[]> {
+  async chapters(): Promise<ChapterCardRelations[]> {
     return await prisma.chapters.findMany({
       include: {
         events: {
           where: {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
-          take: limit,
           orderBy: { start_at: 'asc' },
         },
         chapter_users: {

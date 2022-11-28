@@ -40,10 +40,6 @@ import {
   updateRemindAt,
 } from '../../services/Reminders';
 import {
-  generateToken,
-  UnsubscribeType,
-} from '../../services/UnsubscribeToken';
-import {
   cancelCalendarEvent,
   deleteCalendarEvent,
   updateCalendarEvent,
@@ -58,6 +54,10 @@ import {
 } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
+import {
+  getChapterUnsubscribeOptions,
+  getEventUnsubscribeOptions,
+} from '../../util/eventEmail';
 import { formatDate } from '../../util/date';
 import { EventInputs } from './inputs';
 
@@ -87,31 +87,6 @@ const isPhysical = (venue_type: events_venue_type_enum) =>
 const isOnline = (venue_type: events_venue_type_enum) =>
   venue_type !== events_venue_type_enum.Physical;
 
-const getUnsubscribeOptions = ({
-  chapterId,
-  eventId,
-  userId,
-}: {
-  chapterId: number;
-  eventId: number;
-  userId: number;
-}) => {
-  const chapterUnsubscribeToken = generateToken(
-    UnsubscribeType.Chapter,
-    chapterId,
-    userId,
-  );
-  const eventUnsubscribeToken = generateToken(
-    UnsubscribeType.Event,
-    eventId,
-    userId,
-  );
-  return `
-Unsubscribe Options</br>
-- <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}">Attend this event, but only turn off future notifications for this event</a></br>
-- Or, <a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}">stop receiving notifications about new events by unfollowing chapter</a>`;
-};
-
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
@@ -124,7 +99,7 @@ const sendRsvpInvitation = async (
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-  const unsubscribeOptions = getUnsubscribeOptions({
+  const unsubscribeOptions = getEventUnsubscribeOptions({
     chapterId: event.chapter_id,
     eventId: event.id,
     userId: user.id,
@@ -255,11 +230,10 @@ const rsvpNotifyAdministrators = async (
   await batchSender(function* () {
     for (const { chapter_id, user } of chapterAdministrators) {
       const email = user.email;
-      const chapterUnsubscribeToken = generateToken(
-        UnsubscribeType.Chapter,
-        chapter_id,
-        user.id,
-      );
+      const chapterUnsubscribeToken = getChapterUnsubscribeOptions({
+        chapterId: chapter_id,
+        userId: user.id,
+      });
       const text = `${body}<br><a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
       yield { email, subject, text };
     }
@@ -590,7 +564,7 @@ export class EventResolver {
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
-    const unsubscribeOptions = getUnsubscribeOptions({
+    const unsubscribeOptions = getEventUnsubscribeOptions({
       chapterId: updatedUser.event.chapter_id,
       eventId: updatedUser.event_id,
       userId,
@@ -779,12 +753,12 @@ ${unsubscribeOptions}`,
       batchSender(function* () {
         for (const { user } of event.event_users) {
           const email = user.email;
-          const unsubScribeOptions = getUnsubscribeOptions({
+          const unsubscribeOptions = getEventUnsubscribeOptions({
             chapterId: event.chapter_id,
             eventId: event.id,
             userId: user.id,
           });
-          const text = `${body}<br>${unsubScribeOptions}`;
+          const text = `${body}<br>${unsubscribeOptions}`;
           yield { email, subject, text };
         }
       });
@@ -855,7 +829,7 @@ ${unsubscribeOptions}`,
       where: { id },
       data: { canceled: true },
       include: {
-        chapter: { select: { calendar_id: true } },
+        chapter: { select: { id: true, name: true, calendar_id: true } },
         event_users: {
           include: { user: true },
           where: {
@@ -866,21 +840,33 @@ ${unsubscribeOptions}`,
       },
     });
     await deleteEventReminders(id);
-
     const notCanceledRsvps = event.event_users;
 
     if (notCanceledRsvps.length) {
-      const emailList = notCanceledRsvps.map(({ user }) => user.email);
-      const subject = `Event ${event.name} canceled`;
-      const body = `The event ${event.name} was canceled`;
+      for (const { user } of notCanceledRsvps) {
+        const unsubscribeOptions = getEventUnsubscribeOptions({
+          chapterId: event.chapter_id,
+          eventId: event.id,
+          userId: user.id,
+        });
+        const emailList = notCanceledRsvps.map(({ user }) => user.email);
+        const subject = `Event ${event.name} is canceled`;
 
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: body,
-      }).sendEmail();
+        const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
+          <br />
+          View upcoming events for ${event.chapter.name}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${event.chapter.name} chapter</a>.<br />
+          You received this email because you Subscribed to ${event.name} Event.<br />
+          <br />
+          ${unsubscribeOptions}
+          `;
+
+        new MailerService({
+          emailList: emailList,
+          subject: subject,
+          htmlEmail: cancelEventEmail,
+        }).sendEmail();
+      }
     }
-
     if (event.chapter.calendar_id && event.calendar_event_id) {
       try {
         // TODO: consider not awaiting. Ideally the user would see the app
@@ -1053,12 +1039,12 @@ ${unsubscribeOptions}`,
     await batchSender(function* () {
       for (const { user } of users) {
         const email = user.email;
-        const unsubScribeOptions = getUnsubscribeOptions({
+        const unsubscribeOptions = getEventUnsubscribeOptions({
           chapterId: event.chapter_id,
           eventId: event.id,
           userId: user.id,
         });
-        const text = `${subsequentEventEmail}<br>${unsubScribeOptions}`;
+        const text = `${subsequentEventEmail}<br>${unsubscribeOptions}`;
         yield { email, subject, text, options: { iCalEvent } };
       }
     });

@@ -32,15 +32,6 @@ import {
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
-const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
-  return chatUrl ? (
-    <>
-      <Text size="md">Chat Link:</Text>
-      <Link>{chatUrl}</Link>
-    </>
-  ) : null;
-};
-
 const SubscriptionWidget = ({
   chapterUser,
   chapterSubscribe,
@@ -280,8 +271,12 @@ export const ChapterPage: NextPage = () => {
               />
             )
           ))}
-
-        <ChatLink chatUrl={data.chapter.chat_url} />
+        {data.chapter.chat_url && (
+          <Text size="md">
+            Chat Link:{' '}
+            <Link href={data.chapter.chat_url}>{data.chapter.chat_url}</Link>
+          </Text>
+        )}
         <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
           Events:
         </Heading>

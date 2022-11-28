@@ -40,12 +40,12 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         templateAreas={`
           ". . ."
           ". . ."
-          ". . ."
-          ". . ."
           "chaptername chaptername subnumber"
-          "eventheader eventheader aboutheader"
-          "event event about"
-          "event event about"
+          "aboutheader aboutheader aboutheader"
+          "about about about"
+          "eventheader eventheader eventheader"
+          "event event event"
+          "event event event"
           `}
       >
         <GridItem
@@ -59,25 +59,37 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               fontSize={'xl'}
               fontWeight={700}
               fontFamily={'body'}
+              paddingInline=".1em"
               as="h3"
             >
               {chapter.name}
             </Heading>
           </Link>
         </GridItem>
-        <Text fontWeight="bold" as="h4" gridArea="subnumber">
-          Members: {chapter.chapter_users.length}
-        </Text>
-        <Text as="h3" fontSize={'md'} fontWeight={'500'} gridArea="aboutheader">
+        <GridItem
+          display="inline-grid"
+          width="100%"
+          justifyItems="flex-end"
+          gridArea="subnumber"
+          paddingInline="1.5em"
+        >
+          <Text fontWeight="bold" as="h4">
+            Members: {chapter.chapter_users.length}
+          </Text>
+        </GridItem>
+        <Text
+          paddingInline={'1em'}
+          as="h3"
+          fontSize={['md', 'lg', 'xl']}
+          fontWeight={'500'}
+          gridArea="aboutheader"
+        >
           About
         </Text>
         <Text
-          height="100%"
-          noOfLines={4}
-          paddingBlock={'.4em'}
-          paddingInlineEnd={'.5em'}
-          as="p"
-          fontWeight={500}
+          noOfLines={3}
+          paddingInline={'1em'}
+          fontWeight={400}
           fontSize={['sm', 'md', 'lg']}
           gridArea="about"
         >
@@ -85,35 +97,29 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         </Text>
         <Heading
           as="h3"
-          fontSize={'md'}
+          fontSize={['md', 'lg', 'xl']}
           fontWeight={'500'}
           paddingInline={'1em'}
+          marginBlockStart={'.5em'}
           gridArea="eventheader"
         >
           New Events
         </Heading>
-        <GridItem area="event">
+        <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (
             <>
               <Link key={id} href={`/events/${id}`} _hover={{}}>
                 <Flex
-                  direction={'column'}
-                  paddingLeft={'1em'}
                   paddingBlock={'.5em'}
+                  paddingInline={'.3em'}
                   justifyContent={'space-between'}
                 >
-                  <Flex justifyContent={'space-between'}>
-                    <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
-                      {name}
-                    </Text>
-                    <Text
-                      fontWeight={600}
-                      fontSize={['sm', 'md', 'lg']}
-                      paddingInlineStart=".5em"
-                    >
-                      {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
-                    </Text>
-                  </Flex>
+                  <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
+                    {name}
+                  </Text>
+                  <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                    {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
+                  </Text>
                 </Flex>
               </Link>
             </>

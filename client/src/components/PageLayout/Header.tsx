@@ -11,7 +11,7 @@ import {
   MenuButton,
   Spinner,
 } from '@chakra-ui/react';
-import { Link, LinkButton } from 'chakra-next-link';
+import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -132,13 +132,12 @@ export const Header: React.FC = () => {
             )}
           </Box>
           {user && (
-            <LinkButton
-              width="16px"
+            <Link
               href="/profile"
               backgroundColor="transparent"
               _focus={{
                 outlineColor: 'blue.600',
-                outlineOffset: '5px',
+                outlineOffset: '3px',
               }}
               borderRadius="50%"
               _focusVisible={{
@@ -146,7 +145,7 @@ export const Header: React.FC = () => {
               }}
             >
               <Avatar user={user} cursor="pointer" />
-            </LinkButton>
+            </Link>
           )}
         </HStack>
       </HeaderContainer>

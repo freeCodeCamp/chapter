@@ -348,22 +348,6 @@
         "description": null,
         "fields": [
           {
-            "name": "chapter",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Chapter",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "chapter_id",
             "description": null,
             "args": [],
@@ -450,6 +434,22 @@
         "name": "ChapterUserWithRelations",
         "description": null,
         "fields": [
+          {
+            "name": "chapter",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Chapter",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "chapter_id",
             "description": null,
@@ -2115,6 +2115,22 @@
         "description": null,
         "fields": [
           {
+            "name": "event",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Event",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "event_id",
             "description": null,
             "args": [],
@@ -2238,6 +2254,7 @@
         "description": null,
         "fields": [
           {
+            "name": "event_id",
             "description": null,
             "args": [],
             "type": {

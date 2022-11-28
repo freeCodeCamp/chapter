@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -69,32 +68,42 @@ export const Header: React.FC = () => {
                 >
                   Menu
                 </MenuButton>
-                <MenuList paddingBlock={0}>
+                <MenuList paddingBlock={0} as="ul">
                   <Flex
                     flexDirection="column"
                     fontWeight="600"
                     borderRadius="5px"
                   >
-                    <NextLink passHref href="/chapters">
-                      <MenuItem as="a">Chapters</MenuItem>
-                    </NextLink>
+                    <MenuItem as="li" cursor="pointer">
+                      <Link width="100%" href="/chapters">
+                        Chapters
+                      </Link>
+                    </MenuItem>
 
-                    <NextLink passHref href="/events">
-                      <MenuItem as="a">Events</MenuItem>
-                    </NextLink>
+                    <MenuItem as="li" cursor="pointer">
+                      <Link width="100%" href="/events">
+                        Events
+                      </Link>
+                    </MenuItem>
 
                     {user && (
                       <Box borderBlock={'1px'} borderColor={'gray.85'}>
-                        <NextLink passHref href="/profile">
-                          <MenuItem as="a">Profile</MenuItem>
-                        </NextLink>
+                        <MenuItem as="li" cursor="pointer">
+                          <Link width="100%" href="/profile">
+                            Profile
+                          </Link>
+                        </MenuItem>
 
                         {checkPermission(user, Permission.ChaptersView) && (
-                          <NextLink passHref href="/dashboard/chapters">
-                            <MenuItem data-cy="menu-dashboard-link" as="a">
+                          <MenuItem
+                            data-cy="menu-dashboard-link"
+                            as="li"
+                            cursor="pointer"
+                          >
+                            <Link width="100%" href="/dashboard/chapters">
                               Dashboard
-                            </MenuItem>
-                          </NextLink>
+                            </Link>
+                          </MenuItem>
                         )}
                       </Box>
                     )}
@@ -103,7 +112,6 @@ export const Header: React.FC = () => {
                         data-cy="logout-button"
                         onClick={() => logout().then(goHome)}
                         fontWeight="600"
-                        height={'100%'}
                       >
                         Logout
                       </MenuItem>
@@ -112,7 +120,6 @@ export const Header: React.FC = () => {
                         data-cy="login-button"
                         onClick={login}
                         fontWeight="600"
-                        height={'100%'}
                       >
                         Login
                       </MenuItem>
@@ -123,9 +130,9 @@ export const Header: React.FC = () => {
             )}
           </Box>
           {user && (
-            <NextLink passHref href="/profile">
+            <Link width="100%" href="/profile">
               <Avatar user={user} cursor="pointer" />
-            </NextLink>
+            </Link>
           )}
         </HStack>
       </HeaderContainer>

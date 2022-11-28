@@ -236,35 +236,22 @@ export const EventPage: NextPage = () => {
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>
       </Flex>
-      <Heading size="md" as={'h2'}>
+      <Text fontSize={['md', 'lg', 'xl']} fontWeight={'500'}>
         Chapter:{' '}
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
-      </Heading>
-      <Text>{data.event.description}</Text>
-      <Text>Starting: {startAt}</Text>
-      <Text>Ending: {endsAt}</Text>
-      <HStack align="start">
-        {rsvps && (
-          <Heading
-            as={'h3'}
-            fontSize={'md'}
-            fontWeight={'500'}
-            marginRight={'2'}
-          >
-            RSVPs: {rsvps.length}
-          </Heading>
-        )}
-        {waitlist && (
-          <Heading as={'h3'} fontSize={'md'} fontWeight={'500'}>
-            Waitlist: {waitlist.length}
-          </Heading>
-        )}
-      </HStack>
+      </Text>
+      <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+        {data.event.description}
+      </Text>
+      <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+        Starting: {startAt}
+      </Text>
+      <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+        Ending: {endsAt}
+      </Text>
       {rsvpStatus === 'yes' ? (
         <HStack>
-          <Heading data-cy="rsvp-success">
-            You&lsquo;ve RSVPed to this event
-          </Heading>
+          <Text data-cy="rsvp-success">You&lsquo;ve RSVPed to this event</Text>
           <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
           </Button>
@@ -272,13 +259,13 @@ export const EventPage: NextPage = () => {
       ) : rsvpStatus === 'waitlist' ? (
         <HStack>
           {data.event.invite_only ? (
-            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+            <Text fontSize={'md'} fontWeight={'500'}>
               Event owner will soon confirm your request
-            </Heading>
+            </Text>
           ) : (
-            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+            <Text fontSize={'md'} fontWeight={'500'}>
               You&lsquo;re on waitlist for this event
-            </Heading>
+            </Text>
           )}
           <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
             Cancel
@@ -299,9 +286,9 @@ export const EventPage: NextPage = () => {
         <HStack>
           {eventUser.subscribed ? (
             <>
-              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              <Text fontSize={'md'} fontWeight={'500'}>
                 You are subscribed
-              </Heading>
+              </Text>
               <Button
                 onClick={onUnsubscribeFromEvent}
                 paddingInline={'2'}
@@ -312,9 +299,9 @@ export const EventPage: NextPage = () => {
             </>
           ) : (
             <>
-              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
+              <Text fontSize={'md'} fontWeight={'500'}>
                 Not subscribed
-              </Heading>
+              </Text>
               <Button
                 colorScheme="blue"
                 onClick={onSubscribeToEvent}
@@ -333,13 +320,7 @@ export const EventPage: NextPage = () => {
       ) : (
         false
       )}
-      <Heading
-        data-cy="rsvps-heading"
-        size="md"
-        as={'h5'}
-        fontSize={'md'}
-        fontWeight={'400'}
-      >
+      <Heading data-cy="rsvps-heading" fontSize={['sm', 'md', 'lg']} as={'h2'}>
         RSVPs:
       </Heading>
       <List>
@@ -357,10 +338,8 @@ export const EventPage: NextPage = () => {
         <>
           <Heading
             data-cy="waitlist-heading"
-            size="md"
-            as={'h5'}
-            fontSize={'md'}
-            fontWeight={'400'}
+            fontSize={['sm', 'md', 'lg']}
+            as={'h2'}
           >
             Waitlist:
           </Heading>

@@ -1,4 +1,4 @@
-import { Box, Heading, Flex, Spacer, Link, Badge } from '@chakra-ui/react';
+import { Box, Heading, Flex, Link, Badge, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { Sponsor } from '../generated/graphql';
@@ -10,8 +10,9 @@ interface SponsorsProps {
 const SponsorsCard = ({ sponsors }: SponsorsProps) => {
   return (
     <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-      <Heading size="lg">Sponsors</Heading>
-      <Spacer />
+      <Heading as="h2" fontSize={['sm', 'md', 'lg']}>
+        Sponsors
+      </Heading>
       <Flex wrap="wrap" justifyContent="center">
         {sponsors.map(({ sponsor }) => (
           <Box
@@ -22,11 +23,11 @@ const SponsorsCard = ({ sponsors }: SponsorsProps) => {
             borderRadius="lg"
             overflow="hidden"
           >
-            <Heading size="sm">
+            <Text size="sm">
               <Link href={sponsor.website} isExternal>
                 {sponsor.name}
               </Link>
-            </Heading>
+            </Text>
             <Badge m="1">{sponsor.type}</Badge>
           </Box>
         ))}

@@ -1,4 +1,4 @@
-import { Box, Heading, Flex, Link, Badge, Text } from '@chakra-ui/react';
+import { Box, Heading, Flex, Link, Badge } from '@chakra-ui/react';
 import React from 'react';
 
 import { Sponsor } from '../generated/graphql';
@@ -23,11 +23,9 @@ const SponsorsCard = ({ sponsors }: SponsorsProps) => {
             borderRadius="lg"
             overflow="hidden"
           >
-            <Text size="sm">
-              <Link href={sponsor.website} isExternal>
-                {sponsor.name}
-              </Link>
-            </Text>
+            <Link href={sponsor.website} size="sm" isExternal>
+              {sponsor.name}
+            </Link>
             <Badge m="1">{sponsor.type}</Badge>
           </Box>
         ))}

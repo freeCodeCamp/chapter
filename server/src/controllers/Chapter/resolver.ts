@@ -36,6 +36,10 @@ export class ChapterResolver {
     return await prisma.chapters.findMany({
       include: {
         events: {
+          where: {
+            AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
+          },
+          orderBy: { start_at: 'asc' },
           include: {
             venue: true,
           },
@@ -92,6 +96,7 @@ export class ChapterResolver {
     return { ...chapter, chapter_users: usersWithIsBannable };
   }
 
+  @Authorized(Permission.ChaptersView)
   @Query(() => [ChapterWithEvents])
   async dashboardChapters(
     @Ctx() ctx: Required<ResolverCtx>,

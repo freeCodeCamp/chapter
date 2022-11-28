@@ -17,15 +17,21 @@ export class ChapterUser {
   @Field(() => Boolean)
   subscribed: boolean;
 
+  @Field(() => Boolean, { nullable: true })
+  is_bannable?: boolean;
+}
+
+@ObjectType()
+export class ChapterUserWithRole extends ChapterUser {
   @Field(() => ChapterRole)
   chapter_role: ChapterRole;
+}
 
+@ObjectType()
+export class ChapterUserWithRelations extends ChapterUserWithRole {
   @Field(() => User)
   user: User;
 
   @Field(() => Chapter)
   chapter: Chapter;
-
-  @Field(() => Boolean, { nullable: true })
-  is_bannable?: boolean;
 }

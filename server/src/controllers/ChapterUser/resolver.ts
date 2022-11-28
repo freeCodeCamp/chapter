@@ -11,7 +11,12 @@ import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
 import { prisma, UNIQUE_CONSTRAINT_FAILED } from '../../prisma';
-import { ChapterUser, UserBan } from '../../graphql-types';
+import {
+  ChapterUser,
+  ChapterUserWithRelations,
+  ChapterUserWithRole,
+  UserBan,
+} from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { ChapterRoles } from '../../../../common/roles';
 import { updateCalendarEventAttendees } from '../../util/calendar';
@@ -117,11 +122,11 @@ async function updateInstanceRoleForChapterRoleChange({
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUser, { nullable: true })
+  @Query(() => ChapterUserWithRelations, { nullable: true })
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
-  ): Promise<ChapterUser | null> {
+  ): Promise<ChapterUserWithRelations | null> {
     if (!ctx.user) {
       return null;
     }
@@ -135,11 +140,11 @@ export class ChapterUserResolver {
   }
 
   @Authorized(Permission.ChapterJoin)
-  @Mutation(() => ChapterUser)
+  @Mutation(() => ChapterUserWithRole)
   async joinChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser> {
+  ): Promise<ChapterUserWithRole> {
     try {
       return await prisma.chapter_users.create({
         data: {
@@ -168,11 +173,11 @@ export class ChapterUserResolver {
     });
   }
 
-  @Mutation(() => ChapterUser)
+  @Mutation(() => ChapterUserWithRole)
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser | null> {
+  ): Promise<ChapterUserWithRole | null> {
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
 
     // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.
@@ -233,12 +238,12 @@ export class ChapterUserResolver {
   }
 
   @Authorized(Permission.ChapterUserRoleChange)
-  @Mutation(() => ChapterUser)
+  @Mutation(() => ChapterUserWithRelations)
   async changeChapterUserRole(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('roleName', () => String) newChapterRole: string,
     @Arg('userId', () => Int) userId: number,
-  ): Promise<ChapterUser> {
+  ): Promise<ChapterUserWithRelations> {
     const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
       include: {
         ...chapterUsersInclude,
@@ -297,7 +302,6 @@ export class ChapterUserResolver {
         chapter: { connect: { id: chapterId } },
         user: { connect: { id: userId } },
       },
-      include: { chapter: true, user: true },
     });
   }
 
@@ -319,7 +323,6 @@ export class ChapterUserResolver {
 
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
-      include: { chapter: true, user: true },
     });
   }
 }

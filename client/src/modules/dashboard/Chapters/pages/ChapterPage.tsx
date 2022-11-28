@@ -1,7 +1,7 @@
 import { Box, Button, Heading, HStack } from '@chakra-ui/react';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 
 import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
@@ -25,9 +25,13 @@ import { DASHBOARD_VENUES } from '../../Venues/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { useAuth } from '../../../../modules/auth/store';
+import { checkPermission } from '../../../../util/check-permission';
+import { Permission } from '../../../../../../common/permissions';
 
 export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
+  const { user, loadingUser } = useAuth();
 
   const confirmDelete = useConfirmDelete();
 
@@ -61,7 +65,44 @@ export const ChapterPage: NextPageWithLayout = () => {
     router.push('/dashboard/chapters');
   };
 
-  const isLoading = loading || !data;
+  const actionLinks = [
+    {
+      colorScheme: 'blue',
+      size: 'sm',
+      href: `${chapterId}/new-event`,
+      text: 'Add new event',
+      dataCy: 'create-event',
+      requiredPermission: Permission.EventCreate,
+    },
+    {
+      colorScheme: 'blue',
+      size: 'sm',
+      href: `${chapterId}/new-venue`,
+      text: 'Add new venue',
+      dataCy: 'create-venue',
+      requiredPermission: Permission.VenueCreate,
+    },
+    {
+      colorScheme: 'blue',
+      size: 'sm',
+      href: `${chapterId}/edit`,
+      text: 'Edit',
+      dataCy: 'edit-chapter',
+      requiredPermission: Permission.EventEdit,
+    },
+  ];
+
+  const allowedActions = useMemo(
+    () =>
+      actionLinks.filter(
+        ({ requiredPermission }) =>
+          !requiredPermission ||
+          checkPermission(user, requiredPermission, { chapterId }),
+      ),
+    [actionLinks, chapterId, user],
+  );
+
+  const isLoading = loading || !data || loadingUser;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
@@ -78,35 +119,35 @@ export const ChapterPage: NextPageWithLayout = () => {
           >
             {data.dashboardChapter.name}
           </Heading>
-          <Box>
-            <LinkButton href={`${chapterId}/users`} paddingBlock={'2'}>
-              Chapter Users
-            </LinkButton>
-          </Box>
+          {checkPermission(user, Permission.UsersView, { chapterId }) && (
+            <Box>
+              <LinkButton href={`${chapterId}/users`} paddingBlock={'2'}>
+                Chapter Users
+              </LinkButton>
+            </Box>
+          )}
           <HStack mt={'2'}>
-            <LinkButton
-              colorScheme={'blue'}
-              size="sm"
-              href={`${chapterId}/new-event`}
-            >
-              Add new event
-            </LinkButton>
-            <LinkButton
-              colorScheme={'blue'}
-              data-cy="create-venue"
-              size="sm"
-              href={`${chapterId}/new-venue`}
-            >
-              Add new venue
-            </LinkButton>
+            {allowedActions.map(({ colorScheme, size, href, text, dataCy }) => (
+              <LinkButton
+                key={text}
+                colorScheme={colorScheme}
+                size={size}
+                href={href}
+                data-cy={dataCy}
+              >
+                {text}
+              </LinkButton>
+            ))}
             <SharePopOver
               link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
               size="sm"
             />
 
-            <Button colorScheme="red" size="sm" onClick={clickDelete}>
-              Delete Chapter
-            </Button>
+            {checkPermission(user, Permission.ChapterDelete, { chapterId }) && (
+              <Button colorScheme="red" size="sm" onClick={clickDelete}>
+                Delete Chapter
+              </Button>
+            )}
           </HStack>
         </ProgressCardContent>
       </Card>

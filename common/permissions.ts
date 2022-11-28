@@ -9,6 +9,7 @@ export enum ChapterPermission {
   Rsvp = 'rsvp',
   RsvpDelete = 'rsvp-delete',
   RsvpConfirm = 'rsvp-confirm',
+  UsersView = 'users-view',
   VenueCreate = 'venue-create',
   VenueEdit = 'venue-edit',
   VenueDelete = 'venue-delete',
@@ -18,12 +19,14 @@ export enum InstancePermission {
   ChapterCreate = 'chapter-create',
   ChapterJoin = 'chapter-join',
   ChapterDelete = 'chapter-delete',
+  ChaptersView = 'chapters-view',
+  EventsView = 'events-view',
+  VenuesView = 'venues-view',
   ChapterSubscriptionManage = 'chapter-subscription-manage',
   ChapterUserRoleChange = 'chapter-user-role-change',
   SponsorManage = 'sponsor-manage',
   SponsorView = 'sponsor-view',
   UserInstanceRoleChange = 'user-instance-role-change',
-  UsersView = 'users-view',
   GoogleAuthenticate = 'google-authenticate',
 }
 

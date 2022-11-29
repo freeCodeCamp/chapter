@@ -147,7 +147,52 @@ const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
   return data.ends_at !== event.ends_at || data.start_at !== event.start_at;
 };
 
-const buildEmailForUpdatedEvent = async (
+const buildEmailForUpdatedEventVenueAndDate = async (
+  data: EventInputs,
+  event: EventWithUsers,
+) => {
+  const subject = `Venue and Date changed for event ${event.name}`;
+  let venueDetails = '';
+
+  if (isPhysical(event.venue_type)) {
+    const venue = await prisma.venues.findUniqueOrThrow({
+      where: { id: data.venue_id },
+    });
+    // TODO: include a link back to the venue page
+    venueDetails += `The event is now being held at <br>
+${venue.name} <br>
+${venue.street_address ? venue.street_address + '<br>' : ''}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+`;
+  }
+
+  if (isOnline(event.venue_type)) {
+    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+  }
+  // TODO: include a link back to the venue page
+
+  const dateDetails = `The event ${
+    data.name
+  }'s date was updated, here is update info: <br />
+  ----------------------------<br />
+  <br />
+  Starting: ${formatDate(data.start_at)}<br />
+  Ending: ${formatDate(data.ends_at)}<br />
+  ----------------------------<br />
+  <br />
+  `;
+  const body = `We have had to change the location of ${event.name}.<br/>
+${venueDetails}<br />
+----------------------------<br />
+<br />
+${dateDetails}
+`;
+  return { subject, body };
+};
+
+const buildEmailForUpdatedEventVenue = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
@@ -174,6 +219,24 @@ ${venue.postal_code} <br>
   // TODO: include a link back to the venue page
   const body = `We have had to change the location of ${event.name}.<br>
 ${venueDetails}`;
+  return { subject, body };
+};
+
+const buildEmailForUpdatedEventDate = async (
+  data: EventInputs,
+  event: EventWithUsers,
+) => {
+  const subject = `Date changed for event ${event.name}`;
+  const body = `The event ${
+    data.name
+  }'s date was updated, here is update info: <br />
+  ----------------------------<br />
+  <br />
+  Starting: ${formatDate(data.start_at)}<br />
+  Ending: ${formatDate(data.ends_at)}<br />
+  ----------------------------<br />
+  <br />
+  `;
   return { subject, body };
 };
 
@@ -748,8 +811,11 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    if (hasVenueChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
+    if (hasVenueChanged(data, event) && hasDateChanged(data, event)) {
+      const { body, subject } = await buildEmailForUpdatedEventVenueAndDate(
+        data,
+        event,
+      );
       batchSender(function* () {
         for (const { user } of event.event_users) {
           const email = user.email;
@@ -764,6 +830,43 @@ ${unsubscribeOptions}`,
       });
     }
 
+    if (hasVenueChanged(data, event)) {
+      const { body, subject } = await buildEmailForUpdatedEventVenue(
+        data,
+        event,
+      );
+      batchSender(function* () {
+        for (const { user } of event.event_users) {
+          const email = user.email;
+          const unsubscribeOptions = getEventUnsubscribeOptions({
+            chapterId: event.chapter_id,
+            eventId: event.id,
+            userId: user.id,
+          });
+          const text = `${body}<br>${unsubscribeOptions}`;
+          yield { email, subject, text };
+        }
+      });
+    }
+
+    if (hasDateChanged(data, event)) {
+      const { body, subject } = await buildEmailForUpdatedEventDate(
+        data,
+        event,
+      );
+      batchSender(function* () {
+        for (const { user } of event.event_users) {
+          const email = user.email;
+          const unsubscribeOptions = getEventUnsubscribeOptions({
+            chapterId: event.chapter_id,
+            eventId: event.id,
+            userId: user.id,
+          });
+          const text = `${body}<br>${unsubscribeOptions}`;
+          yield { email, subject, text };
+        }
+      });
+    }
     const updatedEvent = await prisma.events.update({
       where: { id },
       data: update,
@@ -772,33 +875,6 @@ ${unsubscribeOptions}`,
         event_users: { include: { user: { select: { email: true } } } },
       },
     });
-
-    if (hasDateChanged(data, event)) {
-      const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
-      const emailList = event.event_users.map(({ user }) => user.email);
-      const subject = `Event ${event.name} date changes`;
-      const body = `The event ${
-        event.name
-      }'s date was updated, here is update info: <br />
-      ----------------------------<br />
-      <br />
-      Starting: ${formatDate(update.start_at)}<br />
-      Ending: ${formatDate(update.ends_at)}<br />
-      ----------------------------<br />
-      <br />
-      You received this email because you subscribed to ${
-        event.name
-      } Event.<br />
-      - Stop receiving upcoming event notifications for ${
-        event.name
-      }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
-      `;
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: body,
-      }).sendEmail();
-    }
 
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {

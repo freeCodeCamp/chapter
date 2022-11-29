@@ -150,8 +150,9 @@ const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
 const buildEmailForUpdatedEvent = async (
   data: EventInputs,
   event: EventWithUsers,
+  changedData: string,
 ) => {
-  const subject = `Venue changed for event ${event.name}`;
+  const subject = `${changedData} changed for event ${event.name}`;
   let venueDetails = '';
 
   if (isPhysical(event.venue_type)) {
@@ -175,6 +176,15 @@ ${venue.postal_code} <br>
   const body = `We have had to change the location of ${event.name}.<br>
 ${venueDetails}`;
   return { subject, body };
+};
+
+const buildEmailForUpdatedEventTwo = async (
+  event: EventWithUsers,
+  changedData: string,
+  emailBody: string,
+) => {
+  const subject = `${changedData} changed for event ${event.name}`;
+  return { subject, emailBody };
 };
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
@@ -749,7 +759,11 @@ ${unsubscribeOptions}`,
     updateReminders(event, update.start_at);
 
     if (hasVenueChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
+      const { body, subject } = await buildEmailForUpdatedEvent(
+        data,
+        event,
+        'Venue',
+      );
       batchSender(function* () {
         for (const { user } of event.event_users) {
           const email = user.email;
@@ -773,31 +787,52 @@ ${unsubscribeOptions}`,
       },
     });
 
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
+
+    const dataEmail = `The event ${
+      event.name
+    }'s date was updated, here is update info: <br />
+    ----------------------------<br />
+    <br />
+    Starting: ${formatDate(update.start_at)}<br />
+    Ending: ${formatDate(update.ends_at)}<br />
+    ----------------------------<br />
+    <br />
+    You received this email because you subscribed to ${event.name} Event.<br />
+    - Stop receiving upcoming event notifications for ${
+      event.name
+    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.`;
+
+    //   const venueChangeEmail = `
+    //   We have had to change the location of ${event.name}.<br>
+    //   The event is now being held at <br>
+    // ${event.venue?.name} <br>
+    // ${event.venue?.street_address ? event.venue?.street_address + '<br>' : ''}
+    // ${event.venue?.city} <br>
+    // ${event.venue?.region} <br>
+    // ${event.venue?.postal_code} <br>
+    // Streaming URL: ${data.streaming_url}<br>
+
+    // ${event.venue}`;
+
     if (hasDateChanged(data, event)) {
-      const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
-      const emailList = event.event_users.map(({ user }) => user.email);
-      const subject = `Event ${event.name} date changes`;
-      const body = `The event ${
-        event.name
-      }'s date was updated, here is update info: <br />
-      ----------------------------<br />
-      <br />
-      Starting: ${formatDate(update.start_at)}<br />
-      Ending: ${formatDate(update.ends_at)}<br />
-      ----------------------------<br />
-      <br />
-      You received this email because you subscribed to ${
-        event.name
-      } Event.<br />
-      - Stop receiving upcoming event notifications for ${
-        event.name
-      }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
-      `;
-      new MailerService({
-        emailList: emailList,
-        subject: subject,
-        htmlEmail: body,
-      }).sendEmail();
+      const { emailBody, subject } = await buildEmailForUpdatedEventTwo(
+        event,
+        'Date',
+        dataEmail,
+      );
+      batchSender(function* () {
+        for (const { user } of event.event_users) {
+          const email = user.email;
+          const unsubscribeOptions = getEventUnsubscribeOptions({
+            chapterId: event.chapter_id,
+            eventId: event.id,
+            userId: user.id,
+          });
+          const text = `${emailBody}<br>${unsubscribeOptions}`;
+          yield { email, subject, text };
+        }
+      });
     }
 
     // TODO: warn the user if the any calendar ids are missing

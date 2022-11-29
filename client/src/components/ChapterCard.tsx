@@ -20,9 +20,8 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       minW={'20em'}
       gap={'2'}
       backgroundImage={
-        chapter.banner_url
-          ? chapter.banner_url
-          : 'https://cdn.freecodecamp.org/chapter/orange-graphics-small.jpg'
+        chapter.banner_url ??
+        'https://cdn.freecodecamp.org/chapter/orange-graphics-small.jpg'
       }
       backgroundPosition={'center'}
       backgroundRepeat={'no-repeat'}
@@ -107,8 +106,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         </Heading>
         <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (
-            <>
-              <Link key={id} href={`/events/${id}`} _hover={{}}>
+              <Link key={id} href={`/events/${id}`}>
                 <Flex
                   paddingBlock={'.5em'}
                   paddingInline={'.3em'}
@@ -118,11 +116,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                     {name}
                   </Text>
                   <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                    {isPast(new Date(start_at)) ? 'Running' : 'Upcomming'}
+                    {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
                   </Text>
                 </Flex>
               </Link>
-            </>
           ))}
         </GridItem>
       </Grid>

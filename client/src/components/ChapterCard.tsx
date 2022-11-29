@@ -106,20 +106,20 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         </Heading>
         <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (
-              <Link key={id} href={`/events/${id}`}>
-                <Flex
-                  paddingBlock={'.5em'}
-                  paddingInline={'.3em'}
-                  justifyContent={'space-between'}
-                >
-                  <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
-                    {name}
-                  </Text>
-                  <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                    {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
-                  </Text>
-                </Flex>
-              </Link>
+            <Link key={id} href={`/events/${id}`}>
+              <Flex
+                paddingBlock={'.5em'}
+                paddingInline={'.3em'}
+                justifyContent={'space-between'}
+              >
+                <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
+                  {name}
+                </Text>
+                <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                  {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
+                </Text>
+              </Flex>
+            </Link>
           ))}
         </GridItem>
       </Grid>

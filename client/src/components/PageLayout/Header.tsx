@@ -41,7 +41,7 @@ export const Header: React.FC = () => {
     <>
       <HeaderContainer>
         <SkipNavLink background={'gray.10'} color={'gray.85'}>
-          Skip Navigation
+          Jump To Content
         </SkipNavLink>
         <Link href="/">
           <Image
@@ -122,7 +122,7 @@ export const Header: React.FC = () => {
           )}
           {user && (
             <NextLink passHref href="/profile">
-              <Avatar user={user} cursor="pointer" title="Profile" />
+              <Avatar user={user} cursor="pointer" />
             </NextLink>
           )}
         </HStack>

@@ -120,6 +120,29 @@ ${unsubscribeOptions}
   }).sendEmail();
 };
 
+// interface CreateEmailForSubscribersProps {
+//   buildEmail: (data: EventInputs, event: EventWithUsers) => Promise<{
+//     subject: string;
+//     body: string;
+// }>,
+// emaildata: EventInputs
+// }
+
+const createEmailForSubscribers = async (buildEmail, emaildata) => {
+  const { body, subject } = await buildEmail;
+  batchSender(function* () {
+    for (const { user } of emaildata.event_users) {
+      const email = user.email;
+      const unsubscribeOptions = getEventUnsubscribeOptions({
+        chapterId: emaildata.chapter_id,
+        eventId: emaildata.id,
+        userId: emaildata.id,
+      });
+      const text = `${body}<br>${unsubscribeOptions}`;
+      yield { email, subject, text };
+    }
+  });
+};
 const updateReminders = (event: EventWithUsers, startAt: Date) => {
   // This is asychronous, but we don't use the result, so we don't wait for it
   if (!isEqual(startAt, event.start_at)) {
@@ -812,61 +835,24 @@ ${unsubscribeOptions}`,
     updateReminders(event, update.start_at);
 
     if (hasVenueChanged(data, event) && hasDateChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEventVenueAndDate(
-        data,
+      createEmailForSubscribers(
+        buildEmailForUpdatedEventVenueAndDate(data, event),
         event,
       );
-      batchSender(function* () {
-        for (const { user } of event.event_users) {
-          const email = user.email;
-          const unsubscribeOptions = getEventUnsubscribeOptions({
-            chapterId: event.chapter_id,
-            eventId: event.id,
-            userId: user.id,
-          });
-          const text = `${body}<br>${unsubscribeOptions}`;
-          yield { email, subject, text };
-        }
-      });
+    }
+    // this doesn't work when changing the venue only
+    else if (hasVenueChanged(data, event)) {
+      createEmailForSubscribers(
+        buildEmailForUpdatedEventVenue(data, event),
+        event,
+      );
+    } else if (hasDateChanged(data, event)) {
+      createEmailForSubscribers(
+        buildEmailForUpdatedEventDate(data, event),
+        event,
+      );
     }
 
-    if (hasVenueChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEventVenue(
-        data,
-        event,
-      );
-      batchSender(function* () {
-        for (const { user } of event.event_users) {
-          const email = user.email;
-          const unsubscribeOptions = getEventUnsubscribeOptions({
-            chapterId: event.chapter_id,
-            eventId: event.id,
-            userId: user.id,
-          });
-          const text = `${body}<br>${unsubscribeOptions}`;
-          yield { email, subject, text };
-        }
-      });
-    }
-
-    if (hasDateChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEventDate(
-        data,
-        event,
-      );
-      batchSender(function* () {
-        for (const { user } of event.event_users) {
-          const email = user.email;
-          const unsubscribeOptions = getEventUnsubscribeOptions({
-            chapterId: event.chapter_id,
-            eventId: event.id,
-            userId: user.id,
-          });
-          const text = `${body}<br>${unsubscribeOptions}`;
-          yield { email, subject, text };
-        }
-      });
-    }
     const updatedEvent = await prisma.events.update({
       where: { id },
       data: update,

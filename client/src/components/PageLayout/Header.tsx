@@ -144,7 +144,7 @@ export const Header: React.FC = () => {
                 boxShadow: 'none',
               }}
             >
-              <Avatar user={user} cursor="pointer" />
+              <Avatar user={user} cursor="pointer" aria-label="Profile" />
             </Link>
           )}
         </HStack>

@@ -15,5 +15,7 @@ jobs:
           passphrase: ${{ secrets.DIGITAL_OCEAN_SSH_PASSPHRASE }}
           port: 22
           script: |
-            cd chapter 
+            cd chapter
+            docker compose down
             docker compose -f docker-compose.yml run app sh -c "npm run db:migrate"
+            docker compose -f docker-compose.yml up --remove-orphans -d

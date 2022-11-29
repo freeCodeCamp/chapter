@@ -28,6 +28,11 @@ import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/Google';
 import { logError } from './services/Logging';
 import { redactSecrets } from './util/redact-secrets';
+import {
+  hasSentry,
+  sentryErrorHandler,
+  sentryRequestHandler,
+} from './util/sentry';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose
@@ -220,8 +225,7 @@ export const main = async (app: Express) => {
 
 if (require.main === module) {
   (async () => {
-    const app = express();
-    if (process.env.SENTRY_DSN) {
+    if (hasSentry) {
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         beforeSend(event) {
@@ -233,10 +237,9 @@ if (require.main === module) {
           new Sentry.Integrations.Http({ tracing: true }),
         ],
       });
-      // RequestHandler creates a separate execution context using domains, so that every
-      // transaction/span/breadcrumb is attached to its own Hub instance
-      app.use(Sentry.Handlers.requestHandler());
     }
+    const app = express();
+    app.use(sentryRequestHandler());
 
     // @ts-expect-error this will exist if nyc starts the app
     if (global.__coverage__) {
@@ -245,10 +248,7 @@ if (require.main === module) {
     }
     await main(app);
 
-    if (process.env.SENTRY_DSN) {
-      // The error handler must be before any other error middleware and after all controllers
-      app.use(Sentry.Handlers.errorHandler());
-    }
+    app.use(sentryErrorHandler());
     if (process.env.NODE_ENV !== 'development') {
       app.use(handleError);
     }

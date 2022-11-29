@@ -2,8 +2,7 @@ import { inspect } from 'util';
 import * as Sentry from '@sentry/node';
 
 import { redactSecrets } from '../util/redact-secrets';
-
-const hasSentry = !!process.env.SENTRY_DSN;
+import { hasSentry } from '../util/sentry';
 
 interface ErrorLogger {
   err: any;

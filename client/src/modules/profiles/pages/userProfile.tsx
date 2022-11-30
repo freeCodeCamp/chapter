@@ -11,15 +11,16 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
   useUserProfileQuery,
-  UserProfileQuery,
+  useUserDownloadQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
-const createDownloadData = (userData: UserProfileQuery['userInformation']) => {
-  const dataString = JSON.stringify(userData, (key, value) =>
+const createDownloadData = () => {
+  const { data } = useUserDownloadQuery();
+  const dataString = JSON.stringify(data, (key, value) =>
     key === '__typename' ? undefined : value,
   );
   return `data:text/json;charset=utf-8,${encodeURIComponent(dataString)}`;
@@ -123,7 +124,7 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               download={`${userInfo.name}.json`}
-              href={createDownloadData(userInfo)}
+              href={createDownloadData()}
             >
               Download your data
             </Link>

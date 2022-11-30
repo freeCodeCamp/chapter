@@ -11,16 +11,16 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
   useUserProfileQuery,
-  useUserDownloadQuery,
+  useUserDownloadLazyQuery,
+  UserProfileQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
-const createDownloadData = () => {
-  const { data } = useUserDownloadQuery();
-  const dataString = JSON.stringify(data, (key, value) =>
+const createDownloadData = (userData: UserProfileQuery) => {
+  const dataString = JSON.stringify(userData, (key, value) =>
     key === '__typename' ? undefined : value,
   );
   return `data:text/json;charset=utf-8,${encodeURIComponent(dataString)}`;
@@ -28,6 +28,7 @@ const createDownloadData = () => {
 
 export const UserProfilePage = () => {
   const { data } = useUserProfileQuery();
+  const [getUserData] = useUserDownloadLazyQuery();
   const userInfo = data?.userInformation;
   const logout = useLogout();
   const router = useRouter();
@@ -124,7 +125,12 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               download={`${userInfo.name}.json`}
-              href={createDownloadData()}
+              href={createDownloadData(
+                getUserData({
+                  // I should select the data here
+                  // https://www.apollographql.com/docs/react/data/queries/#manual-execution-with-uselazyquery
+                }),
+              )}
             >
               Download your data
             </Link>

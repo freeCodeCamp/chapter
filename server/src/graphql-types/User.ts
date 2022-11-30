@@ -51,7 +51,7 @@ export class UserWithPermissions extends User {
 }
 
 @ObjectType()
-export class UserDatat extends UserWithPermissions {
+export class UserData extends UserWithPermissions {
   @Field(() => String)
   email: string;
 

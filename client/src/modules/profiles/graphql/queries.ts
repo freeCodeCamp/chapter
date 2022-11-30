@@ -20,3 +20,46 @@ export const userProfileQuery = gql`
     }
   }
 `;
+
+export const userDownloadQuery = gql`
+  query userDownload {
+    userData {
+      id
+      name
+      email
+      auto_subscribe
+      image_url
+      instance_role {
+        name
+      }
+      user_bans {
+        chapter {
+          name
+        }
+      }
+      user_chapters {
+        subscribed
+        chapter_role {
+          name
+        }
+        chapter {
+          id
+          name
+        }
+      }
+      user_events {
+        subscribed
+        rsvp {
+          name
+        }
+        event_role {
+          name
+        }
+        event {
+          id
+          name
+        }
+      }
+    }
+  }
+`;

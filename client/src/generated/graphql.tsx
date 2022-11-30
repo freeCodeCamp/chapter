@@ -511,6 +511,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  userData?: Maybe<UserData>;
   userInformation?: Maybe<UserInformation>;
   users: Array<UserWithPermissions>;
   venue?: Maybe<Venue>;
@@ -652,6 +653,14 @@ export type UserBan = {
   user_id: Scalars['Float'];
 };
 
+export type UserBanWithRelations = {
+  __typename?: 'UserBanWithRelations';
+  chapter: Chapter;
+  chapter_id: Scalars['Float'];
+  user: User;
+  user_id: Scalars['Float'];
+};
+
 export type UserChapter = {
   __typename?: 'UserChapter';
   chapter: Chapter;
@@ -661,6 +670,20 @@ export type UserChapter = {
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user_id: Scalars['Int'];
+};
+
+export type UserData = {
+  __typename?: 'UserData';
+  admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+  user_bans: Array<UserBanWithRelations>;
+  user_chapters: Array<ChapterUserWithRelations>;
+  user_events: Array<EventUserWithRelations>;
 };
 
 export type UserInformation = {
@@ -1698,6 +1721,38 @@ export type UserProfileQuery = {
     user_chapters: Array<{
       __typename?: 'UserChapter';
       chapter: { __typename?: 'Chapter'; id: number; name: string };
+    }>;
+  } | null;
+};
+
+export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserDownloadQuery = {
+  __typename?: 'Query';
+  userData?: {
+    __typename?: 'UserData';
+    id: number;
+    name: string;
+    email: string;
+    auto_subscribe: boolean;
+    image_url?: string | null;
+    instance_role: { __typename?: 'InstanceRole'; name: string };
+    user_bans: Array<{
+      __typename?: 'UserBanWithRelations';
+      chapter: { __typename?: 'Chapter'; name: string };
+    }>;
+    user_chapters: Array<{
+      __typename?: 'ChapterUserWithRelations';
+      subscribed: boolean;
+      chapter_role: { __typename?: 'ChapterRole'; name: string };
+      chapter: { __typename?: 'Chapter'; id: number; name: string };
+    }>;
+    user_events: Array<{
+      __typename?: 'EventUserWithRelations';
+      subscribed: boolean;
+      rsvp: { __typename?: 'Rsvp'; name: string };
+      event_role: { __typename?: 'EventRole'; name: string };
+      event: { __typename?: 'Event'; id: number; name: string };
     }>;
   } | null;
 };
@@ -4780,6 +4835,98 @@ export type UserProfileLazyQueryHookResult = ReturnType<
 export type UserProfileQueryResult = Apollo.QueryResult<
   UserProfileQuery,
   UserProfileQueryVariables
+>;
+export const UserDownloadDocument = gql`
+  query userDownload {
+    userData {
+      id
+      name
+      email
+      auto_subscribe
+      image_url
+      instance_role {
+        name
+      }
+      user_bans {
+        chapter {
+          name
+        }
+      }
+      user_chapters {
+        subscribed
+        chapter_role {
+          name
+        }
+        chapter {
+          id
+          name
+        }
+      }
+      user_events {
+        subscribed
+        rsvp {
+          name
+        }
+        event_role {
+          name
+        }
+        event {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserDownloadQuery__
+ *
+ * To run a query within a React component, call `useUserDownloadQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserDownloadQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserDownloadQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserDownloadQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    UserDownloadQuery,
+    UserDownloadQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<UserDownloadQuery, UserDownloadQueryVariables>(
+    UserDownloadDocument,
+    options,
+  );
+}
+export function useUserDownloadLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    UserDownloadQuery,
+    UserDownloadQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<UserDownloadQuery, UserDownloadQueryVariables>(
+    UserDownloadDocument,
+    options,
+  );
+}
+export type UserDownloadQueryHookResult = ReturnType<
+  typeof useUserDownloadQuery
+>;
+export type UserDownloadLazyQueryHookResult = ReturnType<
+  typeof useUserDownloadLazyQuery
+>;
+export type UserDownloadQueryResult = Apollo.QueryResult<
+  UserDownloadQuery,
+  UserDownloadQueryVariables
 >;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {

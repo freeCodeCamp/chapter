@@ -13,6 +13,7 @@ import {
   Chapter,
   UserWithPermissions,
   UserInformation,
+  UserData,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { ResolverCtx } from '../../common-types/gql';
@@ -62,6 +63,58 @@ export class UserWithPermissionsResolver {
             instance_role_permissions: {
               include: { instance_permission: true },
             },
+          },
+        },
+      },
+    });
+  }
+
+  @Query(() => UserData, { nullable: true })
+  async userData(@Ctx() ctx: ResolverCtx): Promise<UserData | null> {
+    if (!ctx.user) return null;
+    return await prisma.users.findUnique({
+      where: {
+        id: ctx.user.id,
+      },
+      include: {
+        user_chapters: {
+          include: {
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
+            chapter: true,
+          },
+        },
+        instance_role: {
+          include: {
+            instance_role_permissions: {
+              include: { instance_permission: true },
+            },
+          },
+        },
+        user_bans: {
+          include: {
+            chapter: true,
+            user: true,
+          },
+        },
+        user_events: {
+          include: {
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
+              },
+            },
+            user: true,
+            event: true,
           },
         },
       },

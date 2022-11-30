@@ -29,16 +29,13 @@ export const Footer: React.FC = () => {
       </Heading>
       <UnorderedList gridArea="policy" marginInline="1.5em" spacing={1}>
         <ListItem>
-          We are storing your email and linking it to RSVP system, but we are
-          the only one with access to it.
-        </ListItem>
-        <ListItem>
-          We are trying our best to store the least amount of data about your
-          usage in our database.
+          Chapter is designed to work with Google Calendar. It can automatically
+          create calendars when you create new chapters and calendar events when
+          you create new events in a chapter.
         </ListItem>
         <ListItem>
           You can delete your data at anytime and it will be removed from our
-          database in your profile
+          database in your profile.
         </ListItem>
       </UnorderedList>
       {/* The layout need to have div wrapped around it to give desired looks
@@ -58,7 +55,11 @@ export const Footer: React.FC = () => {
           color={'gray.10'}
           height={'2.5em'}
           borderRadius={'5px'}
-          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          _hover={{
+            color: 'gray.85',
+            backgroundColor: 'gray.10',
+            borderColor: 'gray.85',
+          }}
         >
           Know More
         </LinkButton>

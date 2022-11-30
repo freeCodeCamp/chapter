@@ -10,8 +10,8 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
+      <SkipNavContent />
       <Box px={[4, 4, 8, 16]} id="main-content">
-        <SkipNavContent />
         <Alert status="error" marginBlock={'1em'}>
           <AlertIcon />
           <AlertDescription>

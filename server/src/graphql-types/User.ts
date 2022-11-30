@@ -7,6 +7,7 @@ import {
   EventUserWithRelations,
   InstanceRole,
   UserBan,
+  UserChapter,
   UserBanWithRelations,
 } from '.';
 
@@ -20,6 +21,18 @@ export class User extends BaseObject {
 
   @Field(() => String, { nullable: true })
   image_url?: string | null;
+}
+
+@ObjectType()
+export class UserInformation extends User {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => InstanceRole)
+  instance_role: InstanceRole;
+
+  @Field(() => [UserChapter])
+  user_chapters: UserChapter[];
 }
 
 @ObjectType()
@@ -38,12 +51,9 @@ export class UserWithPermissions extends User {
 }
 
 @ObjectType()
-export class UserInformation extends User {
+export class UserDatat extends UserWithPermissions {
   @Field(() => String)
   email: string;
-
-  @Field(() => InstanceRole)
-  instance_role: InstanceRole;
 
   @Field(() => [UserBanWithRelations])
   user_bans: UserBanWithRelations[];

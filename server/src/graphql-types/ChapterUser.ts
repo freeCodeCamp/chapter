@@ -28,10 +28,13 @@ export class ChapterUserWithRole extends ChapterUser {
 }
 
 @ObjectType()
-export class ChapterUserWithRelations extends ChapterUserWithRole {
-  @Field(() => User)
-  user: User;
-
+export class UserChapter extends ChapterUserWithRole {
   @Field(() => Chapter)
   chapter: Chapter;
+}
+
+@ObjectType()
+export class ChapterUserWithRelations extends UserChapter {
+  @Field(() => User)
+  user: User;
 }

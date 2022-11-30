@@ -652,12 +652,15 @@ export type UserBan = {
   user_id: Scalars['Float'];
 };
 
-export type UserBanWithRelations = {
-  __typename?: 'UserBanWithRelations';
+export type UserChapter = {
+  __typename?: 'UserChapter';
   chapter: Chapter;
-  chapter_id: Scalars['Float'];
-  user: User;
-  user_id: Scalars['Float'];
+  chapter_id: Scalars['Int'];
+  chapter_role: ChapterRole;
+  is_bannable?: Maybe<Scalars['Boolean']>;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
+  user_id: Scalars['Int'];
 };
 
 export type UserInformation = {
@@ -668,9 +671,7 @@ export type UserInformation = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBanWithRelations>;
-  user_chapters: Array<ChapterUserWithRelations>;
-  user_events: Array<EventUserWithRelations>;
+  user_chapters: Array<UserChapter>;
 };
 
 export type UserWithPermissions = {
@@ -1695,7 +1696,7 @@ export type UserProfileQuery = {
     image_url?: string | null;
     instance_role: { __typename?: 'InstanceRole'; name: string };
     user_chapters: Array<{
-      __typename?: 'ChapterUserWithRelations';
+      __typename?: 'UserChapter';
       chapter: { __typename?: 'Chapter'; id: number; name: string };
     }>;
   } | null;

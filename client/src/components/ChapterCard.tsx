@@ -52,20 +52,14 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           paddingBlock={'.5em'}
           area="chaptername"
         >
-            <Heading
-              data-cy="chapter-heading"
-              fontSize={'xl'}
-              fontWeight={700}
-              fontFamily={'body'}
-            >
-              <Link href={`/chapters/${chapter.id}`}>
-                {chapter.name}
-              </Link>
-            </Heading>
-            <Text color={'darkcyan'} fontWeight="bold" as="h4">
-              {chapter.city}
-            </Text>
-          </Flex>
+          <Heading
+            data-cy="chapter-heading"
+            fontSize={'xl'}
+            fontWeight={700}
+            fontFamily={'body'}
+          >
+            <Link href={`/chapters/${chapter.id}`}>{chapter.name}</Link>
+          </Heading>
         </GridItem>
         <GridItem
           display="inline-grid"
@@ -108,13 +102,14 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         </Heading>
         <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (
-              <Flex
-                paddingBlock={'.5em'}
-                paddingInline={'.3em'}
-                justifyContent={'space-between'}
-              >
-                <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
-                  <Link
+            <Flex
+              paddingBlock={'.5em'}
+              paddingInline={'.3em'}
+              justifyContent={'space-between'}
+              key={id}
+            >
+              <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
+                <Link
                   href={`/events/${id}`}
                   _hover={{}}
                   mt="2"
@@ -123,23 +118,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 >
                   {name}
                 </Link>
-                </Text>
-                <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                  {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
-                </Text>
-              </Flex>
-              {venue && (
-                <Flex
-                  fontWeight={'400'}
-                  marginTop={'.25em'}
-                  opacity=".9"
-                  fontSize={['smaller', 'sm', 'md']}
-                  justifyContent="space-between"
-                >
-                  <Text>Hosted at: {venue.name}</Text>
-                  <Text> {venue.region}</Text>
-                </Flex>
-              )}
+              </Text>
+              <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
+              </Text>
             </Flex>
           ))}
         </GridItem>

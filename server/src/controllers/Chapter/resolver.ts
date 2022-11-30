@@ -127,6 +127,7 @@ export class ChapterResolver {
               },
             },
             user: true,
+            chapter: true,
           },
           orderBy: { user: { name: 'asc' } },
         },

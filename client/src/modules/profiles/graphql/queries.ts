@@ -11,30 +11,6 @@ export const userProfileQuery = gql`
       instance_role {
         name
       }
-      user_chapters {
-        chapter_role {
-          name
-        }
-        chapter {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-export const userDownloadQuery = gql`
-  query userDownload {
-    userDownload {
-      id
-      name
-      email
-      auto_subscribe
-      image_url
-      instance_role {
-        name
-      }
       user_bans {
         chapter {
           name

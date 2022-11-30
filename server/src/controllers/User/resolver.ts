@@ -58,6 +58,33 @@ export class UserWithPermissionsResolver {
             chapter: true,
           },
         },
+        instance_role: {
+          include: {
+            instance_role_permissions: {
+              include: { instance_permission: true },
+            },
+          },
+        },
+        user_bans: {
+          include: {
+            chapter: true,
+            user: true,
+          },
+        },
+        user_events: {
+          include: {
+            rsvp: true,
+            event_role: {
+              include: {
+                event_role_permissions: {
+                  include: { event_permission: true },
+                },
+              },
+            },
+            user: true,
+            event: true,
+          },
+        },
       },
     });
   }

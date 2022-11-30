@@ -35,7 +35,7 @@
   "dependencies": {
     "@cypress/code-coverage": "3.10.0",
     "@googleapis/calendar": "2.0.0",
-    "@prisma/client": "4.6.1",
+    "@prisma/client": "4.7.0",
     "@sendgrid/mail": "7.7.0",
     "@sentry/node": "7.21.1",
     "apollo-server-express": "3.11.1",
@@ -73,7 +73,7 @@
     "lodash": "4.17.21",
     "node-dev": "7.4.3",
     "nyc": "15.1.0",
-    "prisma": "4.6.1",
+    "prisma": "4.7.0",
     "rimraf": "3.0.2",
     "supertest": "6.3.1",
     "typescript": "4.9.3"

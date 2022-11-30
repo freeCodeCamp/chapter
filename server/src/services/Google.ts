@@ -168,19 +168,14 @@ export async function createCalendar({ summary, description }: CalendarData) {
 }
 
 interface EventData {
-  calendarId: string;
-  start: Date;
-  end: Date;
-  summary: string;
-  attendeeEmails: string[];
+  start?: Date;
+  end?: Date;
+  summary?: string;
+  attendees?: calendar_v3.Schema$EventAttendee[];
 }
 
-interface EventUpdateData extends EventData {
-  calendarEventId: string;
-}
-
-function getStandardPatchBody({
-  attendeeEmails,
+function parseEventData({
+  attendees,
   start,
   end,
   summary,
@@ -189,89 +184,186 @@ function getStandardPatchBody({
     ...(start && { start: { dateTime: start.toISOString() } }),
     ...(end && { end: { dateTime: end.toISOString() } }),
     ...(summary && { summary }),
-    ...(attendeeEmails && {
-      // Since Google will send emails to these addresses, we don't want to
-      // accidentally send emails in testing.
-      attendees: isProd()
-        ? attendeeEmails.map((email: string) => ({ email }))
-        : [],
-    }),
+    // Since Google will send emails to these addresses, we don't want to
+    // accidentally send emails in testing.
+    ...(attendees ?? { attendees: isProd() ? attendees : [] }),
   };
 }
 
-function getStandardRequestBody({
-  attendeeEmails,
-  start,
-  end,
-  summary,
-}: EventData) {
+function createEventRequestBody({ attendees, start, end, summary }: EventData) {
   const body: calendar_v3.Schema$Event = {
-    ...getStandardPatchBody({ attendeeEmails, start, end, summary }),
+    ...parseEventData({ attendees, start, end, summary }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
   };
   return body;
 }
 
-export async function createCalendarEvent(eventData: EventData) {
+export async function createCalendarEvent(
+  { calendarId }: { calendarId: string },
+  eventData: EventData,
+) {
   const calendarApi = await createCalendarApi();
 
-  const { calendarId } = eventData;
   const { data } = await calendarApi.events.insert({
     calendarId,
     sendUpdates: 'all',
-    requestBody: getStandardRequestBody(eventData),
+    requestBody: createEventRequestBody(eventData),
   });
 
   return { calendarEventId: data.id };
 }
 
-// TODO: create a patchCalendarEvent for updating specific fields (most useful
-// for RSVPs which only modify the attendees list)
-export async function updateCalendarEvent(eventUpdateData: EventUpdateData) {
-  const calendarApi = await createCalendarApi();
-
-  const { calendarId, calendarEventId } = eventUpdateData;
-  await calendarApi.events.update({
+async function getAndUpdateEvent(
+  {
     calendarId,
-    eventId: calendarEventId,
-    sendUpdates: 'all',
-    requestBody: getStandardRequestBody(eventUpdateData),
-  });
-}
-
-export async function patchCalendarEvent(
-  eventUpdateData: Partial<EventUpdateData>,
+    calendarEventId: eventId,
+  }: {
+    calendarId: string;
+    calendarEventId: string;
+  },
+  update: calendar_v3.Schema$Event | null,
+  attendeeUpdater?: (
+    attendees?: calendar_v3.Schema$EventAttendee[],
+  ) => calendar_v3.Schema$EventAttendee[] | undefined,
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { calendarId, calendarEventId } = eventUpdateData;
-
-  await calendarApi.events.patch({
+  const { data } = await calendarApi.events.get({
     calendarId,
-    eventId: calendarEventId,
+    eventId,
+  });
+
+  const { attendees } = data;
+
+  const updatedAttendeesData = attendeeUpdater
+    ? attendeeUpdater(attendees)
+    : attendees;
+
+  await calendarApi.events.update({
+    calendarId,
+    eventId,
     sendUpdates: 'all',
-    requestBody: getStandardPatchBody(eventUpdateData),
+    requestBody: { ...data, ...update, ...{ attendees: updatedAttendeesData } },
   });
 }
 
-export async function cancelCalendarEvent(eventUpdateData: EventUpdateData) {
-  const calendarApi = await createCalendarApi();
-  const { calendarId, calendarEventId } = eventUpdateData;
-  await calendarApi.events.update({
+// To be used to update event, but not the attendees.
+export async function updateCalendarEvent(
+  {
     calendarId,
-    eventId: calendarEventId,
-    sendUpdates: 'all',
-    requestBody: {
-      ...getStandardRequestBody(eventUpdateData),
-      status: 'cancelled',
-    },
-  });
+    calendarEventId,
+  }: {
+    calendarId: string;
+    calendarEventId: string;
+  },
+  eventUpdateData: EventData,
+) {
+  await getAndUpdateEvent(
+    { calendarId, calendarEventId },
+    createEventRequestBody(eventUpdateData),
+  );
+}
+
+// TODO: use alias for id and ids
+export async function cancelCalendarEvent({
+  calendarId,
+  calendarEventId,
+}: {
+  calendarId: string;
+  calendarEventId: string;
+}) {
+  await getAndUpdateEvent(
+    { calendarId, calendarEventId },
+    { status: 'cancelled' },
+  );
+}
+
+function filterFromAttendees(email: string) {
+  return (attendees: calendar_v3.Schema$EventAttendee[]) =>
+    attendees.filter((attendee) => attendee.email === email);
+}
+
+function addToAttendees(email: string) {
+  return (attendees: calendar_v3.Schema$EventAttendee[] = []) =>
+    attendees.concat({ email });
+}
+
+function cancelAttendance(email: string) {
+  return (attendees: calendar_v3.Schema$EventAttendee[] = []) =>
+    attendees.map((attendee) =>
+      attendee.email === email
+        ? { ...attendee, responseStatus: 'declined' }
+        : attendee,
+    );
+}
+
+export async function removeEventAttendee(
+  {
+    calendarId,
+    calendarEventId,
+  }: {
+    calendarId: string;
+    calendarEventId: string;
+  },
+  {
+    attendeeEmail,
+  }: {
+    attendeeEmail: string;
+  },
+) {
+  await getAndUpdateEvent(
+    { calendarId, calendarEventId },
+    null,
+    filterFromAttendees(attendeeEmail),
+  );
+}
+
+export async function cancelEventAttendance(
+  {
+    calendarId,
+    calendarEventId,
+  }: {
+    calendarId: string;
+    calendarEventId: string;
+  },
+  {
+    attendeeEmail,
+  }: {
+    attendeeEmail: string;
+  },
+) {
+  await getAndUpdateEvent(
+    { calendarId, calendarEventId },
+    null,
+    cancelAttendance(attendeeEmail),
+  );
+}
+
+export async function addEventAttendee(
+  {
+    calendarId,
+    calendarEventId,
+  }: {
+    calendarId: string;
+    calendarEventId: string;
+  },
+  {
+    attendeeEmail,
+  }: {
+    attendeeEmail: string;
+  },
+) {
+  await getAndUpdateEvent(
+    { calendarId, calendarEventId },
+    null,
+    addToAttendees(attendeeEmail),
+  );
 }
 
 export async function deleteCalendarEvent({
   calendarId,
-  calendarEventId,
+  calendarEventId: eventId,
 }: {
   calendarId: string;
   calendarEventId: string;
@@ -280,7 +372,7 @@ export async function deleteCalendarEvent({
 
   await calendarApi.events.delete({
     calendarId,
-    eventId: calendarEventId,
+    eventId,
     sendUpdates: 'all',
   });
 }

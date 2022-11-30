@@ -53,12 +53,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           area="chaptername"
         >
           <Heading
-            data-cy="chapter-heading"
             fontSize={'xl'}
             fontWeight={700}
             fontFamily={'body'}
+            paddingInline=".1em"
+            as="h3"
           >
-            <Link href={`/chapters/${chapter.id}`}>{chapter.name}</Link>
+            <Link href={`/chapters/${chapter.id}`} data-cy="chapter-heading">
+              {chapter.name}
+            </Link>
           </Heading>
         </GridItem>
         <GridItem
@@ -111,7 +114,6 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
                 <Link
                   href={`/events/${id}`}
-                  _hover={{}}
                   mt="2"
                   fontWeight={600}
                   fontSize={['sm', 'md', 'lg']}

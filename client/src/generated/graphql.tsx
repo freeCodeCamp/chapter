@@ -652,25 +652,18 @@ export type UserBan = {
   user_id: Scalars['Float'];
 };
 
-export type UserBanWithRelations = {
-  __typename?: 'UserBanWithRelations';
-  chapter: Chapter;
-  chapter_id: Scalars['Float'];
-  user: User;
-  user_id: Scalars['Float'];
-};
-
 export type UserInformation = {
   __typename?: 'UserInformation';
+  admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBanWithRelations>;
+  user_bans: Array<UserBan>;
   user_chapters: Array<ChapterUserWithRelations>;
-  user_events: Array<EventUserWithRelations>;
+  user_events: Array<EventUserWithRole>;
 };
 
 export type UserWithPermissions = {
@@ -1694,22 +1687,10 @@ export type UserProfileQuery = {
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: { __typename?: 'InstanceRole'; name: string };
-    user_bans: Array<{
-      __typename?: 'UserBanWithRelations';
-      chapter: { __typename?: 'Chapter'; name: string };
-    }>;
     user_chapters: Array<{
       __typename?: 'ChapterUserWithRelations';
-      subscribed: boolean;
       chapter_role: { __typename?: 'ChapterRole'; name: string };
       chapter: { __typename?: 'Chapter'; id: number; name: string };
-    }>;
-    user_events: Array<{
-      __typename?: 'EventUserWithRelations';
-      subscribed: boolean;
-      rsvp: { __typename?: 'Rsvp'; name: string };
-      event_role: { __typename?: 'EventRole'; name: string };
-      event: { __typename?: 'Event'; id: number; name: string };
     }>;
   } | null;
 };
@@ -4736,30 +4717,11 @@ export const UserProfileDocument = gql`
       instance_role {
         name
       }
-      user_bans {
-        chapter {
-          name
-        }
-      }
       user_chapters {
-        subscribed
         chapter_role {
           name
         }
         chapter {
-          id
-          name
-        }
-      }
-      user_events {
-        subscribed
-        rsvp {
-          name
-        }
-        event_role {
-          name
-        }
-        event {
           id
           name
         }

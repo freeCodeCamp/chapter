@@ -1,7 +1,6 @@
 import { Field, ObjectType, Int } from 'type-graphql';
 import { User } from './User';
 import { ChapterRole } from './ChapterRole';
-import { Chapter } from './Chapter';
 
 @ObjectType()
 export class ChapterUser {
@@ -31,7 +30,4 @@ export class ChapterUserWithRole extends ChapterUser {
 export class ChapterUserWithRelations extends ChapterUserWithRole {
   @Field(() => User)
   user: User;
-
-  @Field(() => Chapter)
-  chapter: Chapter;
 }

@@ -9,6 +9,7 @@ import React from 'react';
 import { SkipNavContent } from '@chakra-ui/skip-nav';
 
 import { Header } from './Header';
+import { Footer } from './component/Footer';
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -26,6 +27,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
         </Alert>
         {children}
       </Box>
+      <Footer />
     </>
   );
 };

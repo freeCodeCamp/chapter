@@ -46,9 +46,9 @@ export const PolicyPage: NextPage = () => {
               fontWeight={'500'}
               fontSize="lg"
             >
-              You can link your Account to Google calendar, but before you do
-              please finish reading the policy, you can always do it later in
-              dashboard.
+              You can link your Account to Google Calendar API. When you do,
+              this will mean your email is automatically passed to the calendar
+              event as an attendee.
             </Text>
             <Button
               as="a"

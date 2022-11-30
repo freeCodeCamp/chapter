@@ -236,6 +236,11 @@ export const EventPage: NextPage = () => {
         {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
         <Heading as="h1">{data.event.name}</Heading>
       </Flex>
+      {data.event.canceled && (
+        <Text fontWeight={500} fontSize={'md'} color="red.500">
+          Canceled
+        </Text>
+      )}
       <Heading size="md" as={'h2'}>
         Chapter:{' '}
         <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>

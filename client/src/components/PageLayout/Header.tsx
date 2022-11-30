@@ -44,7 +44,16 @@ export const Header: React.FC = () => {
         <SkipNavLink background={'gray.10'} color={'gray.85'}>
           Skip Navigation
         </SkipNavLink>
-        <Link href="/">
+        <Link
+          href="/"
+          _focus={{
+            outlineColor: 'blue.600',
+            outlineOffset: '5px',
+          }}
+          _focusVisible={{
+            boxShadow: 'none',
+          }}
+        >
           <Image
             src="/freecodecamp-logo.svg"
             alt="The freeCodeCamp logo"
@@ -123,9 +132,20 @@ export const Header: React.FC = () => {
             )}
           </Box>
           {user && (
-            <NextLink passHref href="/profile">
-              <Avatar user={user} cursor="pointer" />
-            </NextLink>
+            <Link
+              href="/profile"
+              backgroundColor="transparent"
+              _focus={{
+                outlineColor: 'blue.600',
+                outlineOffset: '3px',
+              }}
+              borderRadius="50%"
+              _focusVisible={{
+                boxShadow: 'none',
+              }}
+            >
+              <Avatar user={user} cursor="pointer" aria-label="Profile" />
+            </Link>
           )}
         </HStack>
       </HeaderContainer>

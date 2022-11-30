@@ -95,7 +95,11 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       href={href(chapter.id)}
                     >
                       {text}
-                      <Text srOnly>to {chapter.name}</Text>
+                      <Text srOnly>
+                        {text !== 'Edit'
+                          ? `to ${chapter.name}`
+                          : `${chapter.name}`}
+                      </Text>
                     </LinkButton>
                   ))}
               </HStack>
@@ -157,7 +161,11 @@ export const ChaptersPage: NextPageWithLayout = () => {
                             href={href(chapter.id)}
                           >
                             {text}
-                            <Text srOnly>to {chapter.name}</Text>
+                            <Text srOnly>
+                              {text !== 'Edit'
+                                ? `to ${chapter.name}`
+                                : `${chapter.name}`}
+                            </Text>
                           </LinkButton>
                         ))}
                     </HStack>

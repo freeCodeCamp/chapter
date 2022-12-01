@@ -768,16 +768,17 @@ ${unsubscribeOptions}`,
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
       try {
-        await updateCalendarEvent({
-          calendarId: updatedEvent.chapter.calendar_id,
-          calendarEventId: updatedEvent.calendar_event_id,
-          summary: updatedEvent.name,
-          start: updatedEvent.start_at,
-          end: updatedEvent.ends_at,
-          attendeeEmails: updatedEvent.event_users.map(
-            ({ user }) => user.email,
-          ),
-        });
+        await updateCalendarEvent(
+          {
+            calendarId: updatedEvent.chapter.calendar_id,
+            calendarEventId: updatedEvent.calendar_event_id,
+          },
+          {
+            summary: updatedEvent.name,
+            start: updatedEvent.start_at,
+            end: updatedEvent.ends_at,
+          },
+        );
       } catch (e) {
         console.error('Unable to update calendar event');
         console.error(inspect(redactSecrets(e), { depth: null }));
@@ -841,10 +842,6 @@ ${unsubscribeOptions}`,
         await cancelCalendarEvent({
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
-          summary: event.name,
-          start: event.start_at,
-          end: event.ends_at,
-          attendeeEmails: event.event_users.map(({ user }) => user.email),
         });
       } catch (e) {
         console.error('Unable to cancel calendar event');

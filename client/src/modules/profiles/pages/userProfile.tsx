@@ -12,14 +12,14 @@ import {
   UpdateUserInputs,
   useUserProfileQuery,
   useUserDownloadLazyQuery,
-  UserProfileQuery,
+  UserData,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
-const createDownloadData = (userData: UserProfileQuery) => {
+const createDownloadData = (userData: UserData) => {
   const dataString = JSON.stringify(userData, (key, value) =>
     key === '__typename' ? undefined : value,
   );

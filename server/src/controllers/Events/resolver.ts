@@ -172,10 +172,17 @@ const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
     typeof data.start_at,
     typeof event.start_at,
   );
-  console.log(data.ends_at !== event.ends_at);
-  console.log(data.start_at !== event.start_at);
+  console.log(data.ends_at > event.ends_at);
+  console.log(data.start_at < event.start_at);
+  console.log(data.start_at > event.start_at);
+  console.log(data.ends_at < event.ends_at);
 
-  return data.ends_at !== event.ends_at || data.start_at !== event.start_at;
+  return (
+    data.ends_at > event.ends_at ||
+    data.ends_at < event.ends_at ||
+    data.start_at > event.start_at ||
+    data.start_at < event.start_at
+  );
 };
 
 const buildEmailForUpdatedEventVenueAndDate = async (

@@ -226,7 +226,7 @@ interface EventIds {
 async function getAndUpdateEvent(
   { calendarId, calendarEventId: eventId }: EventIds,
   update: calendar_v3.Schema$Event | null,
-  attendeeUpdater?: (
+  updateAttendees?: (
     attendees?: calendar_v3.Schema$EventAttendee[],
   ) => calendar_v3.Schema$EventAttendee[] | undefined,
 ) {
@@ -239,8 +239,8 @@ async function getAndUpdateEvent(
 
   const { attendees } = data;
 
-  const updatedAttendeesData = attendeeUpdater
-    ? attendeeUpdater(attendees)
+  const updatedAttendeesData = updateAttendees
+    ? updateAttendees(attendees)
     : attendees;
 
   await calendarApi.events.update({

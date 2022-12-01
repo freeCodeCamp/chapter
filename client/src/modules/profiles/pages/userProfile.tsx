@@ -1,6 +1,6 @@
-import { useApolloClient } from '@apollo/client';
+import { LazyQueryExecFunction, useApolloClient } from '@apollo/client';
 import React from 'react';
-import { Flex, Heading, Text, useToast } from '@chakra-ui/react';
+import { Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
@@ -13,6 +13,8 @@ import {
   useUserProfileQuery,
   useUserDownloadLazyQuery,
   UserProfileQuery,
+  UserDownloadQuery,
+  Exact,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
@@ -23,12 +25,28 @@ const createDownloadData = (userData: UserProfileQuery) => {
   const dataString = JSON.stringify(userData, (key, value) =>
     key === '__typename' ? undefined : value,
   );
-  return `data:text/json;charset=utf-8,${encodeURIComponent(dataString)}`;
+  const downloadFileFormat = `data:text/json;charset=utf-8,${encodeURIComponent(
+    dataString,
+  )}`;
+  return downloadFileFormat;
+};
+
+const fetchDownloadData = (
+  getData: LazyQueryExecFunction<
+    UserDownloadQuery,
+    Exact<{
+      [key: string]: never;
+    }>
+  >,
+  userData: UserDownloadQuery,
+) => {
+  return getData({ variables: { userData } });
 };
 
 export const UserProfilePage = () => {
   const { data } = useUserProfileQuery();
-  const [{ data: downloadableData }] = useUserDownloadLazyQuery();
+  const [getData, { data: downloadableData, loading }] =
+    useUserDownloadLazyQuery();
   const userInfo = data?.userInformation;
   const userData = downloadableData?.userData;
 
@@ -116,7 +134,7 @@ export const UserProfilePage = () => {
             >
               Delete My Data
             </Button>
-            <Link
+            <Button
               fontWeight="600"
               background={'gray.85'}
               color={'gray.10'}
@@ -126,11 +144,20 @@ export const UserProfilePage = () => {
               paddingBlock={'.65em'}
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-              download={`${userInfo.name}.json`}
-              href={createDownloadData(userData)}
+              onClick={fetchDownloadData(getData, userData)}
             >
               Download your data
-            </Link>
+            </Button>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <Button isActive>
+                <Link
+                  download={userData?.name}
+                  href={createDownloadData(userData)}
+                ></Link>
+              </Button>
+            )}
           </Flex>
         </>
       ) : (

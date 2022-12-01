@@ -199,8 +199,12 @@ function createEventRequestBody({ attendees, start, end, summary }: EventData) {
   return body;
 }
 
+interface CalendarId {
+  calendarId: string;
+}
+
 export async function createCalendarEvent(
-  { calendarId }: { calendarId: string },
+  { calendarId }: CalendarId,
   eventData: EventData,
 ) {
   const calendarApi = await createCalendarApi();
@@ -214,14 +218,13 @@ export async function createCalendarEvent(
   return { calendarEventId: data.id };
 }
 
+interface EventIds {
+  calendarId: string;
+  calendarEventId: string;
+}
+
 async function getAndUpdateEvent(
-  {
-    calendarId,
-    calendarEventId: eventId,
-  }: {
-    calendarId: string;
-    calendarEventId: string;
-  },
+  { calendarId, calendarEventId: eventId }: EventIds,
   update: calendar_v3.Schema$Event | null,
   attendeeUpdater?: (
     attendees?: calendar_v3.Schema$EventAttendee[],
@@ -250,13 +253,7 @@ async function getAndUpdateEvent(
 
 // To be used to update event, but not the attendees.
 export async function updateCalendarEvent(
-  {
-    calendarId,
-    calendarEventId,
-  }: {
-    calendarId: string;
-    calendarEventId: string;
-  },
+  { calendarId, calendarEventId }: EventIds,
   eventUpdateData: EventData,
 ) {
   await getAndUpdateEvent(
@@ -269,10 +266,7 @@ export async function updateCalendarEvent(
 export async function cancelCalendarEvent({
   calendarId,
   calendarEventId,
-}: {
-  calendarId: string;
-  calendarEventId: string;
-}) {
+}: EventIds) {
   await getAndUpdateEvent(
     { calendarId, calendarEventId },
     { status: 'cancelled' },
@@ -299,13 +293,7 @@ function cancelAttendance(email: string) {
 }
 
 export async function removeEventAttendee(
-  {
-    calendarId,
-    calendarEventId,
-  }: {
-    calendarId: string;
-    calendarEventId: string;
-  },
+  { calendarId, calendarEventId }: EventIds,
   {
     attendeeEmail,
   }: {
@@ -320,13 +308,7 @@ export async function removeEventAttendee(
 }
 
 export async function cancelEventAttendance(
-  {
-    calendarId,
-    calendarEventId,
-  }: {
-    calendarId: string;
-    calendarEventId: string;
-  },
+  { calendarId, calendarEventId }: EventIds,
   {
     attendeeEmail,
   }: {
@@ -341,13 +323,7 @@ export async function cancelEventAttendance(
 }
 
 export async function addEventAttendee(
-  {
-    calendarId,
-    calendarEventId,
-  }: {
-    calendarId: string;
-    calendarEventId: string;
-  },
+  { calendarId, calendarEventId }: EventIds,
   {
     attendeeEmail,
   }: {
@@ -364,10 +340,7 @@ export async function addEventAttendee(
 export async function deleteCalendarEvent({
   calendarId,
   calendarEventId: eventId,
-}: {
-  calendarId: string;
-  calendarEventId: string;
-}) {
+}: EventIds) {
   const calendarApi = await createCalendarApi();
 
   await calendarApi.events.delete({

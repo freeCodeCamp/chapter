@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
-import { LinkButton } from 'chakra-next-link';
 import { Flex, Heading } from '@chakra-ui/layout';
+import { Button } from '@chakra-ui/button';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useAuth } from '../../../auth/store';
@@ -42,8 +42,9 @@ export const Calendar: NextPageWithLayout = () => {
               manage calendars and events.
             </p>
           </Flex>
-          <LinkButton
-            nextAs={new URL('/authenticate-with-google', serverUrl).href}
+          <Button
+            as="a"
+            href={new URL('/authenticate-with-google', serverUrl).href}
             fontWeight="600"
             background={'gray.85'}
             color={'gray.10'}
@@ -54,7 +55,7 @@ export const Calendar: NextPageWithLayout = () => {
             _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
           >
             Authenticate with Google
-          </LinkButton>
+          </Button>
         </>
       ) : (
         <NextError statusCode={403} title="Access denied" />

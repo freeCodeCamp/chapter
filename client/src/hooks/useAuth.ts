@@ -8,14 +8,9 @@ export const useLogin = () => {
   const { refetch } = useMeQuery();
 
   const login = async () => {
-    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') {
-      await loginWithPopup();
-      await createSession();
-    } else {
-      await createSession();
-      // TODO: it should be possible to remove the refetch once dev login can persist isAuthenticated
-      await refetch();
-    }
+    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') await loginWithPopup();
+    await createSession();
+    return await refetch();
   };
 
   return login;

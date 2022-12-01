@@ -120,15 +120,13 @@ ${unsubscribeOptions}
   }).sendEmail();
 };
 
-// interface CreateEmailForSubscribersProps {
-//   buildEmail: (data: EventInputs, event: EventWithUsers) => Promise<{
-//     subject: string;
-//     body: string;
-// }>,
-// emaildata: EventInputs
-// }
-
-const createEmailForSubscribers = async (buildEmail, emaildata) => {
+const createEmailForSubscribers = async (
+  buildEmail: Promise<{
+    subject: string;
+    body: string;
+  }>,
+  emaildata: EventWithUsers,
+) => {
   const { body, subject } = await buildEmail;
   batchSender(function* () {
     for (const { user } of emaildata.event_users) {

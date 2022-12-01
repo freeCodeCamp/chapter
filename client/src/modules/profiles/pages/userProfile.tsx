@@ -1,4 +1,4 @@
-import { LazyQueryExecFunction, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import React from 'react';
 import { Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
@@ -13,8 +13,6 @@ import {
   useUserProfileQuery,
   useUserDownloadLazyQuery,
   UserProfileQuery,
-  UserDownloadQuery,
-  Exact,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
@@ -29,18 +27,6 @@ const createDownloadData = (userData: UserProfileQuery) => {
     dataString,
   )}`;
   return downloadFileFormat;
-};
-
-const fetchDownloadData = (
-  getData: LazyQueryExecFunction<
-    UserDownloadQuery,
-    Exact<{
-      [key: string]: never;
-    }>
-  >,
-  userData: UserDownloadQuery,
-) => {
-  return getData({ variables: { userData } });
 };
 
 export const UserProfilePage = () => {
@@ -144,7 +130,7 @@ export const UserProfilePage = () => {
               paddingBlock={'.65em'}
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-              onClick={fetchDownloadData(getData, userData)}
+              onClick={() => getData()}
             >
               Download your data
             </Button>
@@ -153,9 +139,11 @@ export const UserProfilePage = () => {
             ) : (
               <Button isActive>
                 <Link
-                  download={userData?.name}
+                  download={`${userData?.name}.json`}
                   href={createDownloadData(userData)}
-                ></Link>
+                >
+                  The data was downloaded successfuly
+                </Link>
               </Button>
             )}
           </Flex>

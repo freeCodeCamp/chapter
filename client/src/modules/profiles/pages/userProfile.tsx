@@ -28,8 +28,10 @@ const createDownloadData = (userData: UserProfileQuery) => {
 
 export const UserProfilePage = () => {
   const { data } = useUserProfileQuery();
-  const [getUserData] = useUserDownloadLazyQuery();
+  const [{ data: downloadableData }] = useUserDownloadLazyQuery();
   const userInfo = data?.userInformation;
+  const userData = downloadableData?.userData;
+
   const logout = useLogout();
   const router = useRouter();
   const client = useApolloClient();
@@ -125,12 +127,7 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               download={`${userInfo.name}.json`}
-              href={createDownloadData(
-                getUserData({
-                  // I should select the data here
-                  // https://www.apollographql.com/docs/react/data/queries/#manual-execution-with-uselazyquery
-                }),
-              )}
+              href={createDownloadData(userData)}
             >
               Download your data
             </Link>

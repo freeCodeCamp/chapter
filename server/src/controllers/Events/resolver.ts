@@ -165,18 +165,6 @@ const hasVenueChanged = (data: EventInputs, event: EventWithUsers) => {
   );
 };
 const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
-  console.log(data.ends_at, event.ends_at, data.start_at, event.start_at);
-  console.log(
-    typeof data.ends_at,
-    typeof event.ends_at,
-    typeof data.start_at,
-    typeof event.start_at,
-  );
-  console.log(data.ends_at > event.ends_at);
-  console.log(data.start_at < event.start_at);
-  console.log(data.start_at > event.start_at);
-  console.log(data.ends_at < event.ends_at);
-
   return (
     data.ends_at > event.ends_at ||
     data.ends_at < event.ends_at ||

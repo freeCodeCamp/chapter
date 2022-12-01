@@ -52,17 +52,16 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           paddingBlock={'.5em'}
           area="chaptername"
         >
-          <Heading
-            fontSize={'xl'}
+          <Text
+            fontSize={['lg', 'xl', '2xl']}
             fontWeight={700}
             fontFamily={'body'}
             paddingInline=".1em"
-            as="h3"
           >
-            <Link href={`/chapters/${chapter.id}`} data-cy="chapter-heading">
+            <Link href={`/chapters/${chapter.id}`} data-cy="chaptercard-name">
               {chapter.name}
             </Link>
-          </Heading>
+          </Text>
         </GridItem>
         <GridItem
           display="inline-grid"
@@ -71,13 +70,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           gridArea="subnumber"
           paddingInline="1.5em"
         >
-          <Text fontWeight="bold" as="h4">
-            Members: {chapter.chapter_users.length}
-          </Text>
+          <Text fontWeight="bold">Members: {chapter.chapter_users.length}</Text>
         </GridItem>
         <Text
           paddingInline={'1em'}
-          as="h3"
           fontSize={['md', 'lg', 'xl']}
           fontWeight={'500'}
           gridArea="aboutheader"
@@ -93,8 +89,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         >
           {chapter.description}
         </Text>
-        <Heading
-          as="h3"
+        <Text
           fontSize={['md', 'lg', 'xl']}
           fontWeight={'500'}
           paddingInline={'1em'}
@@ -102,7 +97,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           gridArea="eventheader"
         >
           New Events
-        </Heading>
+        </Text>
         <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (
             <Flex

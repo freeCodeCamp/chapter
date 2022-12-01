@@ -52,18 +52,17 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           paddingBlock={'.5em'}
           area="chaptername"
         >
-          <Link href={`/chapters/${chapter.id}`} _hover={{}}>
-            <Heading
-              data-cy="chapter-heading"
-              fontSize={'xl'}
-              fontWeight={700}
-              fontFamily={'body'}
-              paddingInline=".1em"
-              as="h3"
-            >
+          <Heading
+            fontSize={'xl'}
+            fontWeight={700}
+            fontFamily={'body'}
+            paddingInline=".1em"
+            as="h3"
+          >
+            <Link href={`/chapters/${chapter.id}`} data-cy="chapter-heading">
               {chapter.name}
-            </Heading>
-          </Link>
+            </Link>
+          </Heading>
         </GridItem>
         <GridItem
           display="inline-grid"
@@ -106,20 +105,26 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
         </Heading>
         <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (
-            <Link key={id} href={`/events/${id}`}>
-              <Flex
-                paddingBlock={'.5em'}
-                paddingInline={'.3em'}
-                justifyContent={'space-between'}
-              >
-                <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
+            <Flex
+              paddingBlock={'.5em'}
+              paddingInline={'.3em'}
+              justifyContent={'space-between'}
+              key={id}
+            >
+              <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
+                <Link
+                  href={`/events/${id}`}
+                  mt="2"
+                  fontWeight={600}
+                  fontSize={['sm', 'md', 'lg']}
+                >
                   {name}
-                </Text>
-                <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                  {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
-                </Text>
-              </Flex>
-            </Link>
+                </Link>
+              </Text>
+              <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
+              </Text>
+            </Flex>
           ))}
         </GridItem>
       </Grid>

@@ -344,7 +344,7 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUserWithRole;
-  leaveChapter: ChapterUserWithRole;
+  leaveChapter: ChapterUser;
   rsvpEvent: EventUserWithRelations;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
@@ -509,7 +509,6 @@ export type Query = {
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
-  chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
@@ -539,10 +538,6 @@ export type QueryChapterArgs = {
 
 export type QueryChapterUserArgs = {
   chapterId: Scalars['Int'];
-};
-
-export type QueryChapterUsersArgs = {
-  id: Scalars['Int'];
 };
 
 export type QueryChapterVenuesArgs = {
@@ -829,10 +824,7 @@ export type LeaveChapterMutationVariables = Exact<{
 
 export type LeaveChapterMutation = {
   __typename?: 'Mutation';
-  leaveChapter: {
-    __typename?: 'ChapterUserWithRole';
-    chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  leaveChapter: { __typename?: 'ChapterUser'; user_id: number };
 };
 
 export type ToggleChapterSubscriptionMutationVariables = Exact<{
@@ -1943,9 +1935,7 @@ export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
 export const LeaveChapterDocument = gql`
   mutation leaveChapter($chapterId: Int!) {
     leaveChapter(chapterId: $chapterId) {
-      chapter_role {
-        name
-      }
+      user_id
     }
   }
 `;

@@ -86,6 +86,17 @@ const ChapterUserRoleWidget = ({
     </HStack>
   );
 
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return (
+    chatUrl && (
+      <Text size="md">
+        Chat Link:
+        <Link>{chatUrl}</Link>
+      </Text>
+    )
+  );
+};
+
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
   const router = useRouter();
@@ -271,12 +282,7 @@ export const ChapterPage: NextPage = () => {
               />
             )
           ))}
-        {data.chapter.chat_url && (
-          <Text size="md">
-            Chat Link:{' '}
-            <Link href={data.chapter.chat_url}>{data.chapter.chat_url}</Link>
-          </Text>
-        )}
+        <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
           Events:
         </Heading>

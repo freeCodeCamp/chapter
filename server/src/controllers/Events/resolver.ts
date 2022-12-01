@@ -166,10 +166,8 @@ const hasVenueChanged = (data: EventInputs, event: EventWithUsers) => {
 };
 const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
   return (
-    data.ends_at > event.ends_at ||
-    data.ends_at < event.ends_at ||
-    data.start_at > event.start_at ||
-    data.start_at < event.start_at
+    isEqual(data.ends_at, event.ends_at) ||
+    isEqual(data.start_at, event.start_at)
   );
 };
 

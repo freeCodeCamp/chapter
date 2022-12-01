@@ -19,17 +19,17 @@ exports[`EventCard should render 1`] = `
         <div
           class="css-5h69ez"
         >
-          <a
-            class="chakra-link css-0"
-            data-cy="event-link"
-            href="/events/1"
+          <h3
+            class="chakra-heading css-1ei6e5r"
           >
-            <h3
-              class="chakra-heading css-1ei6e5r"
+            <a
+              class="chakra-link css-0"
+              data-cy="event-link"
+              href="/events/1"
             >
               bar
-            </h3>
-          </a>
+            </a>
+          </h3>
         </div>
         <div
           class="css-14ygirk"

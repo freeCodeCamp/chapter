@@ -13,9 +13,7 @@ export const joinChapter = gql`
 export const leaveChapter = gql`
   mutation leaveChapter($chapterId: Int!) {
     leaveChapter(chapterId: $chapterId) {
-      chapter_role {
-        name
-      }
+      user_id
     }
   }
 `;

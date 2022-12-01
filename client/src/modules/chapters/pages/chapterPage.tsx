@@ -32,6 +32,15 @@ import {
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
 
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <Text size="md">
+      Chat Link:
+      <Link>{chatUrl}</Link>
+    </Text>
+  ) : null;
+};
+
 const SubscriptionWidget = ({
   chapterUser,
   chapterSubscribe,
@@ -85,17 +94,6 @@ const ChapterUserRoleWidget = ({
       </Button>
     </HStack>
   );
-
-const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
-  return (
-    chatUrl && (
-      <Text size="md">
-        Chat Link:
-        <Link>{chatUrl}</Link>
-      </Text>
-    )
-  );
-};
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');

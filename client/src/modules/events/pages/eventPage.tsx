@@ -68,7 +68,6 @@ export const EventPage: NextPage = () => {
   const toast = useToast();
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = React.useState(false);
-  const [rsvpAfterLogin, setRsvpAfterLogin] = React.useState(false);
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
@@ -88,7 +87,7 @@ export const EventPage: NextPage = () => {
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
 
-  async function onRsvp() {
+  async function onRsvp(rsvpStatus: string | undefined) {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
       return;
@@ -153,23 +152,21 @@ export const EventPage: NextPage = () => {
     const ok = await confirm(confirmOptions);
 
     if (ok) {
-      if (!user) {
-        login();
-        modalProps.onOpen();
-        setRsvpAfterLogin(true);
-      } else {
-        await onRsvp();
+      if (user) {
+        await onRsvp(rsvpStatus);
+        return;
       }
+      modalProps.onOpen();
+      const {
+        data: { me },
+      } = await login();
+      modalProps.onClose();
+      const eventUser = data?.event?.event_users.find(
+        ({ user: event_user }) => event_user.id === me?.id,
+      );
+      await onRsvp(eventUser?.rsvp.name);
     }
   }
-
-  useEffect(() => {
-    if (rsvpAfterLogin && isLoggedIn) {
-      setRsvpAfterLogin(false);
-      modalProps.onClose();
-      onRsvp();
-    }
-  }, [rsvpAfterLogin, isLoggedIn]);
 
   // TODO: reimplment this the login modal with Auth0
   async function checkOnCancelRsvp() {

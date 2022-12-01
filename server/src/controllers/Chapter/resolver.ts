@@ -17,6 +17,7 @@ import { ResolverCtx } from '../../common-types/gql';
 import {
   Chapter,
   ChapterWithRelations,
+  ChapterCardRelations,
   ChapterWithEvents,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
@@ -31,8 +32,8 @@ import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
 export class ChapterResolver {
-  @Query(() => [ChapterWithEvents])
-  async chapters(): Promise<ChapterWithEvents[]> {
+  @Query(() => [ChapterCardRelations])
+  async chapters(): Promise<ChapterCardRelations[]> {
     return await prisma.chapters.findMany({
       include: {
         events: {
@@ -40,8 +41,17 @@ export class ChapterResolver {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
           orderBy: { start_at: 'asc' },
+        },
+        chapter_users: {
           include: {
-            venue: true,
+            chapter_role: {
+              include: {
+                chapter_role_permissions: {
+                  include: { chapter_permission: true },
+                },
+              },
+            },
+            user: true,
           },
         },
       },

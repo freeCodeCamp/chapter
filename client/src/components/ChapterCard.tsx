@@ -52,16 +52,16 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           paddingBlock={'.5em'}
           area="chaptername"
         >
-          <Text
+          <Link
             fontSize={['lg', 'xl', '2xl']}
             fontWeight={700}
             fontFamily={'body'}
             paddingInline=".1em"
+            href={`/chapters/${chapter.id}`}
+            data-cy="chaptercard-name"
           >
-            <Link href={`/chapters/${chapter.id}`} data-cy="chaptercard-name">
-              {chapter.name}
-            </Link>
-          </Text>
+            {chapter.name}
+          </Link>
         </GridItem>
         <GridItem
           display="inline-grid"
@@ -106,16 +106,14 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               justifyContent={'space-between'}
               key={id}
             >
-              <Text fontWeight={'500'} fontSize={['sm', 'md', 'lg']}>
-                <Link
-                  href={`/events/${id}`}
-                  mt="2"
-                  fontWeight={600}
-                  fontSize={['sm', 'md', 'lg']}
-                >
-                  {name}
-                </Link>
-              </Text>
+              <Link
+                href={`/events/${id}`}
+                mt="2"
+                fontWeight={600}
+                fontSize={['sm', 'md', 'lg']}
+              >
+                {name}
+              </Link>
               <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
                 {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
               </Text>

@@ -165,6 +165,16 @@ const hasVenueChanged = (data: EventInputs, event: EventWithUsers) => {
   );
 };
 const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
+  console.log(data.ends_at, event.ends_at, data.start_at, event.start_at);
+  console.log(
+    typeof data.ends_at,
+    typeof event.ends_at,
+    typeof data.start_at,
+    typeof event.start_at,
+  );
+  console.log(data.ends_at !== event.ends_at);
+  console.log(data.start_at !== event.start_at);
+
   return data.ends_at !== event.ends_at || data.start_at !== event.start_at;
 };
 
@@ -832,24 +842,21 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    if (hasVenueChanged(data, event) && hasDateChanged(data, event)) {
-      createEmailForSubscribers(
-        buildEmailForUpdatedEventVenueAndDate(data, event),
-        event,
-      );
-    }
-    // this doesn't work when changing the venue only
-    else if (hasVenueChanged(data, event)) {
-      createEmailForSubscribers(
-        buildEmailForUpdatedEventVenue(data, event),
-        event,
-      );
-    } else if (hasDateChanged(data, event)) {
-      createEmailForSubscribers(
-        buildEmailForUpdatedEventDate(data, event),
-        event,
-      );
-    }
+    hasVenueChanged(data, event) && hasDateChanged(data, event)
+      ? createEmailForSubscribers(
+          buildEmailForUpdatedEventVenueAndDate(data, event),
+          event,
+        )
+      : hasVenueChanged(data, event)
+      ? createEmailForSubscribers(
+          buildEmailForUpdatedEventVenue(data, event),
+          event,
+        )
+      : hasDateChanged(data, event) &&
+        createEmailForSubscribers(
+          buildEmailForUpdatedEventDate(data, event),
+          event,
+        );
 
     const updatedEvent = await prisma.events.update({
       where: { id },

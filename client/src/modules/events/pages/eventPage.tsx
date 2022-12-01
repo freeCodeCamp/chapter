@@ -303,6 +303,9 @@ export const EventPage: NextPage = () => {
                 You&lsquo;re on waitlist for this event
               </Text>
             )}
+            <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
+              Cancel
+            </Button>
           </HStack>
         ) : (
           <Button

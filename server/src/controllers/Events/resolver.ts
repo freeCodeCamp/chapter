@@ -40,18 +40,18 @@ import {
   updateRemindAt,
 } from '../../services/Reminders';
 import {
+  addEventAttendee,
   cancelCalendarEvent,
+  cancelEventAttendance,
   deleteCalendarEvent,
+  removeEventAttendee,
   updateCalendarEvent,
 } from '../../services/Google';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
-import {
-  createCalendarEvent,
-  updateCalendarEventAttendees,
-} from '../../util/calendar';
+import { createCalendarEventHelper } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
 import {
@@ -474,13 +474,19 @@ export class EventResolver {
       }
     }
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: event.calendar_event_id,
-      calendarId: event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarEventId = event.calendar_event_id;
+    const calendarId = event.chapter.calendar_id;
+    if (calendarId && calendarEventId) {
+      try {
+        await addEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: ctx.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to add attendee to calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
 
     await sendRsvpInvitation(ctx.user, event);
     await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
@@ -534,13 +540,20 @@ export class EventResolver {
       },
     });
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: event.calendar_event_id,
-      calendarId: event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarId = event.chapter.calendar_id;
+    const calendarEventId = event.calendar_event_id;
+
+    if (calendarId && calendarEventId) {
+      try {
+        await cancelEventAttendance(
+          { calendarId, calendarEventId },
+          { attendeeEmail: ctx.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to cancel attendance at calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
     return updatedEventUser;
   }
 
@@ -569,13 +582,20 @@ export class EventResolver {
 ${unsubscribeOptions}`,
     }).sendEmail();
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: updatedUser.event.calendar_event_id,
-      calendarId: updatedUser.event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarId = updatedUser.event.chapter.calendar_id;
+    const calendarEventId = updatedUser.event.calendar_event_id;
+
+    if (calendarId && calendarEventId) {
+      try {
+        await addEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: updatedUser.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to confirm attendance at calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
     return updatedUser;
   }
 
@@ -585,9 +605,10 @@ ${unsubscribeOptions}`,
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    const { event } = await prisma.event_users.delete({
+    const { event, user } = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       select: {
+        user: { select: { email: true } },
         event: {
           select: {
             calendar_event_id: true,
@@ -599,13 +620,20 @@ ${unsubscribeOptions}`,
       },
     });
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: event.calendar_event_id,
-      calendarId: event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarId = event.chapter.calendar_id;
+    const calendarEventId = event.calendar_event_id;
+
+    if (calendarId && calendarEventId) {
+      try {
+        await removeEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: user.email },
+        );
+      } catch (e) {
+        console.error('Unable to remove attendee from calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
 
     return true;
   }
@@ -672,7 +700,7 @@ ${unsubscribeOptions}`,
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      await createCalendarEvent({
+      await createCalendarEventHelper({
         attendeeEmails: [ctx.user.email],
         calendarId: chapter.calendar_id,
         event,
@@ -698,7 +726,7 @@ ${unsubscribeOptions}`,
 
     const attendeeEmails =
       event.event_users.map(({ user: { email } }) => email) ?? [];
-    const updatedEvent = await createCalendarEvent({
+    const updatedEvent = await createCalendarEventHelper({
       attendeeEmails,
       calendarId: event.chapter.calendar_id,
       event,

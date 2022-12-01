@@ -131,20 +131,34 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               onClick={() => getData()}
+              isDisabled={!!userData}
             >
-              Download your data
+              Request your data
             </Button>
             {loading ? (
               <Spinner />
             ) : (
-              <Button isActive>
-                <Link
-                  download={`${userData?.name}.json`}
-                  href={createDownloadData(userData)}
-                >
-                  The data was downloaded successfuly
-                </Link>
-              </Button>
+              <>
+                {userData && (
+                  <Flex alignItems={'center'} gap="2em">
+                    <Text>The data was fetched succesfully 🥳</Text>
+                    <Link
+                      fontWeight="600"
+                      background={'gray.85'}
+                      color={'gray.10'}
+                      height={'100%'}
+                      size={'lg'}
+                      borderRadius={'5px'}
+                      paddingBlock={'.65em'}
+                      paddingInline={'.4em'}
+                      download={`${userData?.name}.json`}
+                      href={createDownloadData(userData)}
+                    >
+                      Click Here to download the data
+                    </Link>
+                  </Flex>
+                )}
+              </>
             )}
           </Flex>
         </>

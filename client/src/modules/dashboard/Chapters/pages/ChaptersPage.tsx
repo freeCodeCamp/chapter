@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, VStack } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
@@ -67,7 +67,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
         <DataTable
           data={data.dashboardChapters}
           keys={['name', 'actions'] as const}
-          tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
+          tableProps={{
+            table: { 'aria-labelledby': 'page-heading' },
+          }}
           mapper={{
             name: (chapter) => (
               <LinkButton
@@ -78,7 +80,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
               </LinkButton>
             ),
             actions: (chapter) => (
-              <HStack>
+              <HStack tabIndex={0} aria-label={`Actions for ${chapter.name}`}>
                 {actionLinks
                   .filter(
                     ({ requiredPermission }) =>
@@ -95,11 +97,6 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       href={href(chapter.id)}
                     >
                       {text}
-                      <Text srOnly>
-                        {text !== 'Edit'
-                          ? `to ${chapter.name}`
-                          : `${chapter.name}`}
-                      </Text>
                     </LinkButton>
                   ))}
               </HStack>
@@ -116,6 +113,11 @@ export const ChaptersPage: NextPageWithLayout = () => {
               showHeader={false}
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
+                td: { 'aria-labelledby': '' },
+                thead: { 'aria-labelledby': '' },
+                tbody: { 'aria-labelledby': '' },
+                th: { 'aria-labelledby': '' },
+                trHead: { 'aria-labelledby': '' },
               }}
               mapper={{
                 type: () => (
@@ -144,7 +146,12 @@ export const ChaptersPage: NextPageWithLayout = () => {
                     >
                       {chapter.name}
                     </LinkButton>
-                    <HStack spacing={1} marginLeft={'-1em'}>
+                    <HStack
+                      spacing={1}
+                      marginLeft={'-1em'}
+                      tabIndex={0}
+                      aria-label={`Actions for ${chapter.name}`}
+                    >
                       {actionLinks
                         .filter(
                           ({ requiredPermission }) =>
@@ -161,11 +168,6 @@ export const ChaptersPage: NextPageWithLayout = () => {
                             href={href(chapter.id)}
                           >
                             {text}
-                            <Text srOnly>
-                              {text !== 'Edit'
-                                ? `to ${chapter.name}`
-                                : `${chapter.name}`}
-                            </Text>
                           </LinkButton>
                         ))}
                     </HStack>

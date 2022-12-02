@@ -169,24 +169,26 @@ const buildEmailForUpdatedEvent = async (
   event: EventWithUsers,
 ) => {
   const subject = `Details changed for event ${event.name}`;
-  let venueDetails = '';
+  let venue;
+  const venueDetails = [];
 
-  if (isPhysical(event.venue_type)) {
-    const venue = await prisma.venues.findUniqueOrThrow({
-      where: { id: data.venue_id },
-    });
-    // TODO: include a link back to the venue page
-    venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
+  {
+    isPhysical(event.venue_type) &&
+      (venue = await prisma.venues.findUniqueOrThrow({
+        where: { id: data.venue_id },
+      }));
+    venueDetails.push(`The event is now being held at <br>
+${venue?.name} <br>
+${venue?.street_address && venue?.street_address + '<br>'}
+${venue?.city} <br>
+${venue?.region} <br>
+${venue?.postal_code} <br>
+`);
   }
 
-  if (isOnline(event.venue_type) && data.streaming_url !== null) {
-    venueDetails += `New streaming URL: ${data.streaming_url}<br>`;
+  {
+    isOnline(event.venue_type) &&
+      venueDetails.push(`Streaming URL: ${data.streaming_url}<br>`);
   }
   // TODO: include a link back to the venue page
 
@@ -202,46 +204,13 @@ ${venue.postal_code} <br>
   <br />
   `);
   const body = `Updated venue details<br/>
-${venueDetails}<br />
+${venueDetails.join('')}<br />
 ----------------------------<br />
 <br />
 ${dateChangeContent}
 `;
   return { subject, body };
 };
-
-// const buildEmailForUpdatedEventVenue = async (
-//   data: EventInputs,
-//   event: EventWithUsers,
-// ) => {
-//   let venue
-//   let venueDetails = []
-
-//   {isPhysical(event.venue_type) && (
-//    venue = await prisma.venues.findUniqueOrThrow({
-//       where: { id: data.venue_id },
-//     })
-
-//     venueDetails.push(`The event is now being held at <br>
-// ${venue.name} <br>
-// ${venue.street_address && venue.street_address + '<br>' }
-// ${venue.city} <br>
-// ${venue.region} <br>
-// ${venue.postal_code} <br>
-// `);
-// );
-// }
-
-//   {isOnline(event.venue_type) && (
-//     venueDetails.push(`Streaming URL: ${data.streaming_url}<br>`)
-//     )
-//   }
-
-//   // TODO: include a link back to the venue page
-//   const body = `We have had to change the location of ${event.name}.<br>
-// ${venueDetails.join('')}`;
-//   return { subject, body };
-// };
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   const getVenueData = (data: EventInputs, event: EventWithUsers) => ({

@@ -156,26 +156,19 @@ const updateReminders = (event: EventWithUsers, startAt: Date) => {
   }
 };
 
-const hasVenueChanged = (data: EventInputs, event: EventWithUsers) => {
-  return (
-    data.venue_type !== event.venue_type ||
-    (isOnline(event.venue_type) &&
-      data.streaming_url !== event.streaming_url) ||
-    (isPhysical(event.venue_type) && data.venue_id !== event.venue_id)
-  );
-};
-const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
-  return (
-    !isEqual(data.ends_at, event.ends_at) ||
-    !isEqual(data.start_at, event.start_at)
-  );
-};
+const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+  data.venue_type !== event.venue_type ||
+  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
+  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
+  !isEqual(data.ends_at, event.ends_at) ||
+  !isEqual(data.start_at, event.start_at);
 
 const buildEmailForUpdatedEventVenueAndDate = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
-  const subject = `Venue and date changed for event ${event.name}`;
+  const subject = `Details changed for event ${event.name}`;
   let venueDetails = '';
 
   if (isPhysical(event.venue_type)) {
@@ -192,22 +185,19 @@ ${venue.postal_code} <br>
 `;
   }
 
-  if (isOnline(event.venue_type)) {
-    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
+  if (isOnline(event.venue_type) && data.streaming_url !== null) {
+    venueDetails += `New streaming URL: ${data.streaming_url}<br>`;
   }
   // TODO: include a link back to the venue page
 
-  const dateDetails = `The event ${
-    data.name
-  }'s date was updated, here is update info: <br />
+  const dateDetails = `Updated dates <br />
   ----------------------------<br />
-  <br />
-  Starting: ${formatDate(data.start_at)}<br />
-  Ending: ${formatDate(data.ends_at)}<br />
+  Start: ${formatDate(data.start_at)}<br />
+  End: ${formatDate(data.ends_at)}<br />
   ----------------------------<br />
   <br />
   `;
-  const body = `We have had to change the location of ${event.name}.<br/>
+  const body = `Updated venue details<br/>
 ${venueDetails}<br />
 ----------------------------<br />
 <br />
@@ -251,13 +241,12 @@ const buildEmailForUpdatedEventDate = async (
   event: EventWithUsers,
 ) => {
   const subject = `Date changed for event ${event.name}`;
-  const body = `The event ${
-    data.name
-  }'s date was updated, here is update info: <br />
+  const body = `Updated dates <br />
+  ----------------------------<br />
   ----------------------------<br />
   <br />
-  Starting: ${formatDate(data.start_at)}<br />
-  Ending: ${formatDate(data.ends_at)}<br />
+  Start: ${formatDate(data.start_at)}<br />
+  End: ${formatDate(data.ends_at)}<br />
   ----------------------------<br />
   <br />
   `;

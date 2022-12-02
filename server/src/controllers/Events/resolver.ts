@@ -156,60 +156,64 @@ const updateReminders = (event: EventWithUsers, startAt: Date) => {
   }
 };
 
-const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+const hasVenueLocationChanged = (data: EventInputs, event: EventWithUsers) =>
   data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
   (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
 const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
   !isEqual(data.ends_at, event.ends_at) ||
   !isEqual(data.start_at, event.start_at);
+const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
+  isOnline(event.venue_type) && data.streaming_url !== event.streaming_url;
 
 const buildEmailForUpdatedEvent = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
   const subject = `Details changed for event ${event.name}`;
-  let venueContent: Array<string> = [];
 
-  // TODO: include a link back to the venue page
-  const createVenueContent = async () => {
-    const venueDetails = [];
-    let venue;
-    isPhysical(event.venue_type) &&
-      (venue = await prisma.venues.findUniqueOrThrow({
-        where: { id: data.venue_id },
-      }));
-    venueDetails.push(`The event is now being held at <br>
-${venue?.name} <br>
-${venue?.street_address && venue?.street_address + '<br>'}
-${venue?.city} <br>
-${venue?.region} <br>
-${venue?.postal_code} <br>
-`);
-    isOnline(event.venue_type) &&
-      venueDetails.push(`Streaming URL: ${data.streaming_url}<br>`);
+  // this returns [object Promise] and I don't know why
+  const createVenueLocationContent = async () => {
+    const venue = await prisma.venues.findUniqueOrThrow({
+      where: { id: data.venue_id },
+    });
 
-    return (venueContent = venueDetails);
+    // TODO: include a link back to the venue page
+    return `The event is now being held at <br>
+${venue.name} <br>
+${venue.street_address && venue.street_address + '<br>'}
+${venue.city} <br>
+${venue.region} <br>
+${venue.postal_code} <br>
+----------------------------<br />
+<br />
+`;
   };
-  {
-    hasVenueChanged(data, event) && createVenueContent();
-  }
-  let dateChangeContent = '';
-  hasDateChanged(data, event) &&
-    (dateChangeContent = `Updated dates <br />
-  ----------------------------<br />
-  ----------------------------<br />
-  <br />
+  const createDateUpdates = () => {
+    return `
   Start: ${formatDate(data.start_at)}<br />
   End: ${formatDate(data.ends_at)}<br />
   ----------------------------<br />
   <br />
-  `);
-  const body = `Updated venue details<br/>
-${venueContent?.join('')}<br />
+  `;
+  };
+  const createStreamUpdate = () => {
+    return `Streaming URL: ${data.streaming_url}<br>
 ----------------------------<br />
-<br />
-${dateChangeContent}
+<br />`;
+  };
+
+  const streamingUrl = hasStreamingUrlChanged(data, event)
+    ? createStreamUpdate()
+    : '';
+  const venueLocationChange = hasVenueLocationChanged(data, event)
+    ? createVenueLocationContent()
+    : '';
+  const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
+
+  const body = `Updated venue details<br/>
+${venueLocationChange}
+${streamingUrl}
+${dateChange}
 `;
   return { subject, body };
 };
@@ -785,12 +789,14 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    hasVenueChanged(data, event) ||
-      (hasDateChanged(data, event) &&
-        createEmailForSubscribers(
-          buildEmailForUpdatedEvent(data, event),
-          event,
-        ));
+    const hasEventDataChanged =
+      hasVenueLocationChanged(data, event) ||
+      hasDateChanged(data, event) ||
+      hasStreamingUrlChanged(data, event);
+
+    if (hasEventDataChanged) {
+      createEmailForSubscribers(buildEmailForUpdatedEvent(data, event), event);
+    }
 
     const updatedEvent = await prisma.events.update({
       where: { id },

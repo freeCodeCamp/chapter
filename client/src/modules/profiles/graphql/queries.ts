@@ -40,7 +40,6 @@ export const userDownloadQuery = gql`
         region
       }
       instance_role {
-        id
         name
         instance_role_permissions {
           instance_permission {
@@ -50,12 +49,6 @@ export const userDownloadQuery = gql`
       }
       user_bans {
         chapter_id
-        user {
-          id
-          name
-          auto_subscribe
-        }
-        user_id
         chapter {
           id
           name
@@ -64,17 +57,14 @@ export const userDownloadQuery = gql`
           city
           region
           country
-          creator_id
         }
       }
       user_chapters {
         subscribed
         chapter_role {
-          id
           name
           chapter_role_permissions {
             chapter_permission {
-              id
               name
             }
           }
@@ -87,41 +77,23 @@ export const userDownloadQuery = gql`
           city
           region
           country
-          creator_id
         }
-        chapter_id
         joined_date
-        user {
-          id
-          name
-          auto_subscribe
-        }
-        user_id
       }
       user_events {
         subscribed
-        event_id
         updated_at
         rsvp {
-          id
           updated_at
           name
         }
-        user {
-          id
-          name
-          auto_subscribe
-        }
-        user_id
         rsvp {
           name
         }
         event_role {
-          id
           name
           event_role_permissions {
             event_permission {
-              id
               name
             }
           }

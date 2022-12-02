@@ -172,6 +172,7 @@ interface EventData {
   end?: Date;
   summary?: string;
   attendees?: calendar_v3.Schema$EventAttendee[];
+  status?: 'cancelled';
 }
 
 function parseEventData({
@@ -190,13 +191,17 @@ function parseEventData({
   };
 }
 
-function createEventRequestBody({ attendees, start, end, summary }: EventData) {
-  const body: calendar_v3.Schema$Event = {
+function createEventRequestBody({
+  attendees,
+  start,
+  end,
+  summary,
+}: EventData): calendar_v3.Schema$Event {
+  return {
     ...parseEventData({ attendees, start, end, summary }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
   };
-  return body;
 }
 
 interface CalendarId {
@@ -225,7 +230,7 @@ interface EventIds {
 
 async function getAndUpdateEvent(
   { calendarId, calendarEventId: eventId }: EventIds,
-  update: calendar_v3.Schema$Event | null,
+  update: EventData | null,
   updateAttendees?: (
     attendees?: calendar_v3.Schema$EventAttendee[],
   ) => calendar_v3.Schema$EventAttendee[] | undefined,
@@ -243,11 +248,16 @@ async function getAndUpdateEvent(
     ? updateAttendees(attendees)
     : attendees;
 
+  const requestBodyUpdates: EventData = {
+    ...update,
+    ...{ attendees: updatedAttendeesData },
+  };
+
   await calendarApi.events.update({
     calendarId,
     eventId,
     sendUpdates: 'all',
-    requestBody: { ...data, ...update, ...{ attendees: updatedAttendeesData } },
+    requestBody: { ...data, ...parseEventData(requestBodyUpdates) },
   });
 }
 
@@ -256,10 +266,7 @@ export async function updateCalendarEvent(
   { calendarId, calendarEventId }: EventIds,
   eventUpdateData: EventData,
 ) {
-  await getAndUpdateEvent(
-    { calendarId, calendarEventId },
-    createEventRequestBody(eventUpdateData),
-  );
+  await getAndUpdateEvent({ calendarId, calendarEventId }, eventUpdateData);
 }
 
 // TODO: use alias for id and ids

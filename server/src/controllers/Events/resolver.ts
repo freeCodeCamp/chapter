@@ -169,10 +169,12 @@ const buildEmailForUpdatedEvent = async (
   event: EventWithUsers,
 ) => {
   const subject = `Details changed for event ${event.name}`;
-  let venue;
-  const venueDetails = [];
+  let venueContent: Array<string> = [];
 
-  {
+  // TODO: include a link back to the venue page
+  const createVenueContent = async () => {
+    const venueDetails = [];
+    let venue;
     isPhysical(event.venue_type) &&
       (venue = await prisma.venues.findUniqueOrThrow({
         where: { id: data.venue_id },
@@ -184,14 +186,14 @@ ${venue?.city} <br>
 ${venue?.region} <br>
 ${venue?.postal_code} <br>
 `);
-  }
-
-  {
     isOnline(event.venue_type) &&
       venueDetails.push(`Streaming URL: ${data.streaming_url}<br>`);
-  }
-  // TODO: include a link back to the venue page
 
+    return (venueContent = venueDetails);
+  };
+  {
+    hasVenueChanged(data, event) && createVenueContent();
+  }
   let dateChangeContent = '';
   hasDateChanged(data, event) &&
     (dateChangeContent = `Updated dates <br />
@@ -204,7 +206,7 @@ ${venue?.postal_code} <br>
   <br />
   `);
   const body = `Updated venue details<br/>
-${venueDetails.join('')}<br />
+${venueContent?.join('')}<br />
 ----------------------------<br />
 <br />
 ${dateChangeContent}
@@ -783,9 +785,12 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    hasVenueChanged(data, event) &&
-      hasDateChanged(data, event) &&
-      createEmailForSubscribers(buildEmailForUpdatedEvent(data, event), event);
+    hasVenueChanged(data, event) ||
+      (hasDateChanged(data, event) &&
+        createEmailForSubscribers(
+          buildEmailForUpdatedEvent(data, event),
+          event,
+        ));
 
     const updatedEvent = await prisma.events.update({
       where: { id },

@@ -299,13 +299,13 @@ function cancelAttendance(email: string) {
     );
 }
 
+interface Attendee {
+  attendeeEmail: string;
+}
+
 export async function removeEventAttendee(
   { calendarId, calendarEventId }: EventIds,
-  {
-    attendeeEmail,
-  }: {
-    attendeeEmail: string;
-  },
+  { attendeeEmail }: Attendee,
 ) {
   await getAndUpdateEvent(
     { calendarId, calendarEventId },
@@ -316,11 +316,7 @@ export async function removeEventAttendee(
 
 export async function cancelEventAttendance(
   { calendarId, calendarEventId }: EventIds,
-  {
-    attendeeEmail,
-  }: {
-    attendeeEmail: string;
-  },
+  { attendeeEmail }: Attendee,
 ) {
   await getAndUpdateEvent(
     { calendarId, calendarEventId },
@@ -331,11 +327,7 @@ export async function cancelEventAttendance(
 
 export async function addEventAttendee(
   { calendarId, calendarEventId }: EventIds,
-  {
-    attendeeEmail,
-  }: {
-    attendeeEmail: string;
-  },
+  { attendeeEmail }: Attendee,
 ) {
   await getAndUpdateEvent(
     { calendarId, calendarEventId },

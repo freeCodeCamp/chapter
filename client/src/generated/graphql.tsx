@@ -1749,7 +1749,6 @@ export type UserDownloadQuery = {
     }>;
     instance_role: {
       __typename?: 'InstanceRole';
-      id: number;
       name: string;
       instance_role_permissions: Array<{
         __typename?: 'InstanceRolePermission';
@@ -1762,13 +1761,6 @@ export type UserDownloadQuery = {
     user_bans: Array<{
       __typename?: 'UserBanWithRelations';
       chapter_id: number;
-      user_id: number;
-      user: {
-        __typename?: 'User';
-        id: number;
-        name: string;
-        auto_subscribe: boolean;
-      };
       chapter: {
         __typename?: 'Chapter';
         id: number;
@@ -1778,24 +1770,19 @@ export type UserDownloadQuery = {
         city: string;
         region: string;
         country: string;
-        creator_id: number;
       };
     }>;
     user_chapters: Array<{
       __typename?: 'ChapterUserWithRelations';
       subscribed: boolean;
-      chapter_id: number;
       joined_date: any;
-      user_id: number;
       chapter_role: {
         __typename?: 'ChapterRole';
-        id: number;
         name: string;
         chapter_role_permissions: Array<{
           __typename?: 'ChapterRolePermission';
           chapter_permission: {
             __typename?: 'ChapterPermission';
-            id: number;
             name: string;
           };
         }>;
@@ -1809,39 +1796,19 @@ export type UserDownloadQuery = {
         city: string;
         region: string;
         country: string;
-        creator_id: number;
-      };
-      user: {
-        __typename?: 'User';
-        id: number;
-        name: string;
-        auto_subscribe: boolean;
       };
     }>;
     user_events: Array<{
       __typename?: 'EventUserWithRelations';
       subscribed: boolean;
-      event_id: number;
       updated_at: any;
-      user_id: number;
-      rsvp: { __typename?: 'Rsvp'; id: number; updated_at: any; name: string };
-      user: {
-        __typename?: 'User';
-        id: number;
-        name: string;
-        auto_subscribe: boolean;
-      };
+      rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
       event_role: {
         __typename?: 'EventRole';
-        id: number;
         name: string;
         event_role_permissions: Array<{
           __typename?: 'EventRolePermission';
-          event_permission: {
-            __typename?: 'EventPermission';
-            id: number;
-            name: string;
-          };
+          event_permission: { __typename?: 'EventPermission'; name: string };
         }>;
       };
       event: {
@@ -4959,7 +4926,6 @@ export const UserDownloadDocument = gql`
         region
       }
       instance_role {
-        id
         name
         instance_role_permissions {
           instance_permission {
@@ -4969,12 +4935,6 @@ export const UserDownloadDocument = gql`
       }
       user_bans {
         chapter_id
-        user {
-          id
-          name
-          auto_subscribe
-        }
-        user_id
         chapter {
           id
           name
@@ -4983,17 +4943,14 @@ export const UserDownloadDocument = gql`
           city
           region
           country
-          creator_id
         }
       }
       user_chapters {
         subscribed
         chapter_role {
-          id
           name
           chapter_role_permissions {
             chapter_permission {
-              id
               name
             }
           }
@@ -5006,41 +4963,23 @@ export const UserDownloadDocument = gql`
           city
           region
           country
-          creator_id
         }
-        chapter_id
         joined_date
-        user {
-          id
-          name
-          auto_subscribe
-        }
-        user_id
       }
       user_events {
         subscribed
-        event_id
         updated_at
         rsvp {
-          id
           updated_at
           name
         }
-        user {
-          id
-          name
-          auto_subscribe
-        }
-        user_id
         rsvp {
           name
         }
         event_role {
-          id
           name
           event_role_permissions {
             event_permission {
-              id
               name
             }
           }

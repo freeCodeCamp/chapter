@@ -166,8 +166,8 @@ const hasVenueChanged = (data: EventInputs, event: EventWithUsers) => {
 };
 const hasDateChanged = (data: EventInputs, event: EventWithUsers) => {
   return (
-    isEqual(data.ends_at, event.ends_at) ||
-    isEqual(data.start_at, event.start_at)
+    !isEqual(data.ends_at, event.ends_at) ||
+    !isEqual(data.start_at, event.start_at)
   );
 };
 
@@ -175,7 +175,7 @@ const buildEmailForUpdatedEventVenueAndDate = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
-  const subject = `Venue and Date changed for event ${event.name}`;
+  const subject = `Venue and date changed for event ${event.name}`;
   let venueDetails = '';
 
   if (isPhysical(event.venue_type)) {

@@ -257,7 +257,7 @@ async function getAndUpdateEvent(
     calendarId,
     eventId,
     sendUpdates: 'all',
-    requestBody: { ...data, ...parseEventData(requestBodyUpdates) },
+    requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
   });
 }
 

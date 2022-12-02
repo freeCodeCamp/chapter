@@ -164,7 +164,7 @@ const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
   !isEqual(data.ends_at, event.ends_at) ||
   !isEqual(data.start_at, event.start_at);
 
-const buildEmailForUpdatedEventVenueAndDate = async (
+const buildEmailForUpdatedEvent = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
@@ -190,68 +190,58 @@ ${venue.postal_code} <br>
   }
   // TODO: include a link back to the venue page
 
-  const dateDetails = `Updated dates <br />
+  let dateChangeContent = '';
+  hasDateChanged(data, event) &&
+    (dateChangeContent = `Updated dates <br />
   ----------------------------<br />
+  ----------------------------<br />
+  <br />
   Start: ${formatDate(data.start_at)}<br />
   End: ${formatDate(data.ends_at)}<br />
   ----------------------------<br />
   <br />
-  `;
+  `);
   const body = `Updated venue details<br/>
 ${venueDetails}<br />
 ----------------------------<br />
 <br />
-${dateDetails}
+${dateChangeContent}
 `;
   return { subject, body };
 };
 
-const buildEmailForUpdatedEventVenue = async (
-  data: EventInputs,
-  event: EventWithUsers,
-) => {
-  const subject = `Venue changed for event ${event.name}`;
-  let venueDetails = '';
+// const buildEmailForUpdatedEventVenue = async (
+//   data: EventInputs,
+//   event: EventWithUsers,
+// ) => {
+//   let venue
+//   let venueDetails = []
 
-  if (isPhysical(event.venue_type)) {
-    const venue = await prisma.venues.findUniqueOrThrow({
-      where: { id: data.venue_id },
-    });
-    // TODO: include a link back to the venue page
-    venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
-  }
+//   {isPhysical(event.venue_type) && (
+//    venue = await prisma.venues.findUniqueOrThrow({
+//       where: { id: data.venue_id },
+//     })
 
-  if (isOnline(event.venue_type)) {
-    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-  }
-  // TODO: include a link back to the venue page
-  const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}`;
-  return { subject, body };
-};
+//     venueDetails.push(`The event is now being held at <br>
+// ${venue.name} <br>
+// ${venue.street_address && venue.street_address + '<br>' }
+// ${venue.city} <br>
+// ${venue.region} <br>
+// ${venue.postal_code} <br>
+// `);
+// );
+// }
 
-const buildEmailForUpdatedEventDate = async (
-  data: EventInputs,
-  event: EventWithUsers,
-) => {
-  const subject = `Date changed for event ${event.name}`;
-  const body = `Updated dates <br />
-  ----------------------------<br />
-  ----------------------------<br />
-  <br />
-  Start: ${formatDate(data.start_at)}<br />
-  End: ${formatDate(data.ends_at)}<br />
-  ----------------------------<br />
-  <br />
-  `;
-  return { subject, body };
-};
+//   {isOnline(event.venue_type) && (
+//     venueDetails.push(`Streaming URL: ${data.streaming_url}<br>`)
+//     )
+//   }
+
+//   // TODO: include a link back to the venue page
+//   const body = `We have had to change the location of ${event.name}.<br>
+// ${venueDetails.join('')}`;
+//   return { subject, body };
+// };
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
@@ -824,21 +814,9 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    hasVenueChanged(data, event) && hasDateChanged(data, event)
-      ? createEmailForSubscribers(
-          buildEmailForUpdatedEventVenueAndDate(data, event),
-          event,
-        )
-      : hasVenueChanged(data, event)
-      ? createEmailForSubscribers(
-          buildEmailForUpdatedEventVenue(data, event),
-          event,
-        )
-      : hasDateChanged(data, event) &&
-        createEmailForSubscribers(
-          buildEmailForUpdatedEventDate(data, event),
-          event,
-        );
+    hasVenueChanged(data, event) &&
+      hasDateChanged(data, event) &&
+      createEmailForSubscribers(buildEmailForUpdatedEvent(data, event), event);
 
     const updatedEvent = await prisma.events.update({
       where: { id },

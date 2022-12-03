@@ -59,6 +59,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                     href={`/dashboard/sponsors/${sponsor.id}/edit`}
                   >
                     Edit
+                    <Text srOnly>{sponsor.name}</Text>
                   </LinkButton>
                 ),
             }}
@@ -102,6 +103,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
                         href={`/dashboard/sponsors/${id}/edit`}
                       >
                         Edit
+                        <Text srOnly>{name}</Text>
                       </LinkButton>
                     )}
                     <Text

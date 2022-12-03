@@ -4,7 +4,6 @@ import {
   Box,
   Image,
   Button,
-  Flex,
   Menu,
   MenuList,
   MenuItem,
@@ -17,6 +16,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { ArrowUpDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
 import { useLogout, useLogin } from '../../hooks/useAuth';
@@ -24,9 +24,18 @@ import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';
 
+const menuButtonStyles = {
+  logout: { backgroundColor: 'gray.10' },
+  login: {
+    backgroundColor: 'transparent',
+    _hover: {
+      outline: '2px solid #dfdfe2',
+    },
+    _active: {},
+  },
+};
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
-
 export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useAuth();
@@ -42,18 +51,9 @@ export const Header: React.FC = () => {
     <>
       <HeaderContainer>
         <SkipNavLink background={'gray.10'} color={'gray.85'}>
-          Skip Navigation
+          Jump To Content
         </SkipNavLink>
-        <Link
-          href="/"
-          _focus={{
-            outlineColor: 'blue.600',
-            outlineOffset: '5px',
-          }}
-          _focusVisible={{
-            boxShadow: 'none',
-          }}
-        >
+        <Link href="/">
           <Image
             src="/freecodecamp-logo.svg"
             alt="The freeCodeCamp logo"
@@ -62,90 +62,110 @@ export const Header: React.FC = () => {
           />
         </Link>
         <HStack as="nav">
-          <Box>
-            {loadingUser ? (
-              <Spinner color="white" size="xl" />
-            ) : (
+          {loadingUser ? (
+            <Spinner color="white" size="xl" />
+          ) : (
+            <>
+              {user ? (
+                <Button
+                  data-cy="logout-button"
+                  onClick={() => logout().then(goHome)}
+                  background="gray.10"
+                  fontWeight="600"
+                  width="4.5em"
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  data-cy="login-button"
+                  background="gray.10"
+                  onClick={login}
+                  fontWeight="600"
+                  width="4.5em"
+                >
+                  Login
+                </Button>
+              )}
               <Menu>
                 <MenuButton
                   as={Button}
                   data-cy="menu-button"
-                  aria-label="Options"
-                  variant="outline"
-                  background="gray.10"
-                  px={[2, 4]}
-                  py={[1, 2]}
+                  aria-controls="navigation"
+                  padding="0"
+                  width="4.5em"
+                  {...(user ? menuButtonStyles.login : menuButtonStyles.logout)}
                 >
-                  Menu
+                  {user ? (
+                    <HStack spacing="0">
+                      <Avatar user={user} cursor="pointer" aria-label="menu" />
+                      <ArrowUpDownIcon color="gray" />
+                    </HStack>
+                  ) : (
+                    'Menu'
+                  )}
                 </MenuButton>
-                <MenuList paddingBlock={0}>
-                  <Flex
-                    flexDirection="column"
-                    fontWeight="600"
-                    borderRadius="5px"
-                  >
-                    <NextLink passHref href="/chapters">
-                      <MenuItem as="a">Chapters</MenuItem>
-                    </NextLink>
+                <MenuList
+                  paddingBlock={0}
+                  display="flex"
+                  flexDirection="column"
+                  fontWeight="600"
+                  borderRadius="5px"
+                  id="navigation"
+                >
+                  {/* We are using Nextlink because of confustion in NextJs which harm the loading functionality and force the page to wait for the JS loading to display it */}
+                  <NextLink passHref href="/chapters">
+                    <MenuItem as="a">Chapters</MenuItem>
+                  </NextLink>
 
-                    <NextLink passHref href="/events">
-                      <MenuItem as="a">Events</MenuItem>
-                    </NextLink>
+                  <NextLink passHref href="/events">
+                    <MenuItem as="a">Events</MenuItem>
+                  </NextLink>
 
-                    {user && (
-                      <Box borderBlock={'1px'} borderColor={'gray.85'}>
-                        <NextLink passHref href="/profile">
-                          <MenuItem as="a">Profile</MenuItem>
+                  {user && (
+                    <Box borderBlock={'1px'} borderColor={'gray.85'}>
+                      <NextLink passHref href="/profile">
+                        <MenuItem
+                          as="a"
+                          borderTop={'1px'}
+                          borderColor={'gray.85'}
+                        >
+                          Profile
+                        </MenuItem>
+                      </NextLink>
+                      {checkPermission(user, Permission.ChaptersView) && (
+                        <NextLink passHref href="/dashboard/chapters">
+                          <MenuItem data-cy="menu-dashboard-link" as="a">
+                            Dashboard
+                          </MenuItem>
                         </NextLink>
-
-                        {checkPermission(user, Permission.ChaptersView) && (
-                          <NextLink passHref href="/dashboard/chapters">
-                            <MenuItem data-cy="menu-dashboard-link" as="a">
-                              Dashboard
-                            </MenuItem>
-                          </NextLink>
-                        )}
-                      </Box>
-                    )}
-                    {user ? (
-                      <MenuItem
-                        data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
-                        fontWeight="600"
-                        height={'100%'}
-                      >
-                        Logout
-                      </MenuItem>
-                    ) : (
-                      <MenuItem
-                        data-cy="login-button"
-                        onClick={login}
-                        fontWeight="600"
-                        height={'100%'}
-                      >
-                        Login
-                      </MenuItem>
-                    )}
-                  </Flex>
+                      )}
+                    </Box>
+                  )}
+                  {user ? (
+                    <Button
+                      data-cy="logout-button"
+                      onClick={() => logout().then(goHome)}
+                      background="gray.10"
+                      fontWeight="600"
+                      width="4.5em"
+                    >
+                      Logout
+                    </Button>
+                  ) : (
+                    <Button
+                      data-cy="login-button"
+                      background="gray.10"
+                      onClick={login}
+                      fontWeight="600"
+                      width="4.5em"
+                    >
+                      Login
+                    </Button>
+                  )}
                 </MenuList>
               </Menu>
-            )}
-          </Box>
-          {user && (
-            <Link
-              href="/profile"
-              backgroundColor="transparent"
-              _focus={{
-                outlineColor: 'blue.600',
-                outlineOffset: '3px',
-              }}
-              borderRadius="50%"
-              _focusVisible={{
-                boxShadow: 'none',
-              }}
-            >
-              <Avatar user={user} cursor="pointer" aria-label="Profile" />
-            </Link>
+            </>
           )}
         </HStack>
       </HeaderContainer>

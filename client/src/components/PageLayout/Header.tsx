@@ -100,7 +100,6 @@ export const Header: React.FC = () => {
                 <MenuButton
                   as={Button}
                   data-cy="menu-button"
-                  aria-controls="navigation"
                   padding="0"
                   width="4.5em"
                   {...(user ? menuButtonStyles.login : menuButtonStyles.logout)}
@@ -120,7 +119,6 @@ export const Header: React.FC = () => {
                   flexDirection="column"
                   fontWeight="600"
                   borderRadius="5px"
-                  id="navigation"
                 >
                   {/* We are using Nextlink because of confustion in NextJs which harm the loading functionality and force the page to wait for the JS loading to display it */}
                   <NextLink passHref href="/chapters">

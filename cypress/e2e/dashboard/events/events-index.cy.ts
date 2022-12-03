@@ -91,13 +91,13 @@ describe('spec needing owner', () => {
 
   it('editing event updates cached events on home page', () => {
     cy.visit('');
-    cy.get('button[aria-label="Options"]').click();
+    cy.get('button[aria-controls="navigation"]').click();
     cy.findByRole('menuitem', { name: 'Events' }).click();
     cy.get('a[href*="/events/"]').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
-    cy.get('button[aria-label="Options"]').click();
+    cy.get('button[aria-controls="navigation"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
 
     cy.findByRole('link', { name: 'Events' }).click();
@@ -138,7 +138,7 @@ describe('spec needing owner', () => {
     cy.get('a[href*="/events/"]').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
-    cy.get('button[aria-label="Options"]').click();
+    cy.get('button[aria-controls="navigation"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');

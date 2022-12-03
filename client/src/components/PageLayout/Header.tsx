@@ -53,7 +53,16 @@ export const Header: React.FC = () => {
         <SkipNavLink background={'gray.10'} color={'gray.85'}>
           Jump To Content
         </SkipNavLink>
-        <Link href="/">
+        <Link
+          href="/"
+          _focus={{
+            outlineColor: 'blue.600',
+            outlineOffset: '5px',
+          }}
+          _focusVisible={{
+            boxShadow: 'none',
+          }}
+        >
           <Image
             src="/freecodecamp-logo.svg"
             alt="The freeCodeCamp logo"

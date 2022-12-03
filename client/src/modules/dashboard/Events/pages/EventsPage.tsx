@@ -107,6 +107,7 @@ export const EventsPage: NextPageWithLayout = () => {
                 href={`/dashboard/events/${event.id}/edit`}
               >
                 Edit
+                <Text srOnly>{event.name}</Text>
               </LinkButton>
             ),
           }}
@@ -215,6 +216,7 @@ export const EventsPage: NextPageWithLayout = () => {
                       href={`/dashboard/events/${id}/edit`}
                     >
                       Edit
+                      <Text srOnly>{name}</Text>
                     </LinkButton>
                   </VStack>
                 ),

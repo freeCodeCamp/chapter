@@ -37,15 +37,6 @@ export class EventUserResolver {
         },
       },
       where: whereCondition,
-      include: {
-        event_role: {
-          include: {
-            event_role_permissions: { include: { event_permission: true } },
-          },
-        },
-        user: true,
-        rsvp: true,
-      },
     });
   }
 
@@ -71,15 +62,6 @@ export class EventUserResolver {
         ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
       where: whereCondition,
-      include: {
-        event_role: {
-          include: {
-            event_role_permissions: { include: { event_permission: true } },
-          },
-        },
-        user: true,
-        rsvp: true,
-      },
     });
   }
 }

@@ -23,10 +23,13 @@ export class User extends BaseObject {
 }
 
 @ObjectType()
-export class UserWithPermissions extends User {
+export class UserWithInstanceRole extends User {
   @Field(() => InstanceRole)
   instance_role: InstanceRole;
+}
 
+@ObjectType()
+export class UserWithPermissions extends UserWithInstanceRole {
   @Field(() => [UserBan])
   user_bans: UserBan[];
 

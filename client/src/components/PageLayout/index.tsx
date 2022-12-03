@@ -5,11 +5,11 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SkipNavContent } from '@chakra-ui/skip-nav';
 
 import Link from 'next/link';
-import { useCalendarIntegrationStatusQuery } from '../../generated/graphql';
+import { useCalendarIntegrationStatusLazyQuery } from '../../generated/graphql';
 import { useAuth } from '../../modules/auth/store';
 import { checkPermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
@@ -22,7 +22,14 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
     user,
     Permission.GoogleAuthenticate,
   );
-  const { data } = useCalendarIntegrationStatusQuery();
+  const [loadStatus, { data }] = useCalendarIntegrationStatusLazyQuery();
+
+  useEffect(() => {
+    if (canAuthenticateWithGoogle) {
+      loadStatus();
+    }
+  }, [canAuthenticateWithGoogle]);
+
   return (
     <>
       <Header />
@@ -41,7 +48,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
             <AlertTitle> Broken integration. </AlertTitle>
             <AlertDescription>
               Integration with Google Calendar is currently not working.
-              Authenticate again in{' '}
+              Reauthenticate with Google Calendar in{' '}
               <Link href="/dashboard/calendar">Calendar dashboard</Link>.
             </AlertDescription>
           </Alert>

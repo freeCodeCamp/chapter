@@ -172,11 +172,11 @@ export class ChapterUserResolver {
     });
   }
 
-  @Mutation(() => ChapterUserWithRole)
+  @Mutation(() => ChapterUser)
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUserWithRole | null> {
+  ): Promise<ChapterUser | null> {
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
 
     // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.
@@ -193,8 +193,6 @@ export class ChapterUserResolver {
           user_id: ctx.user.id,
         },
       },
-      // TODO: return only { user_id }
-      include: chapterUsersInclude,
     });
   }
 
@@ -224,15 +222,6 @@ export class ChapterUserResolver {
           chapter_id: chapterId,
         },
       },
-      include: chapterUsersInclude,
-    });
-  }
-
-  @Query(() => [ChapterUser])
-  async chapterUsers(@Arg('id', () => Int) id: number): Promise<ChapterUser[]> {
-    return await prisma.chapter_users.findMany({
-      where: { chapter_id: id },
-      include: chapterUsersInclude,
     });
   }
 

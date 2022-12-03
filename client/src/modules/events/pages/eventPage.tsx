@@ -1,16 +1,18 @@
 import { LockIcon } from '@chakra-ui/icons';
 import {
-  Heading,
-  VStack,
-  Text,
-  Button,
-  useToast,
-  List,
   Box,
+  Button,
+  Flex,
+  Heading,
   HStack,
   Image,
+  List,
   ListItem,
-  Flex,
+  Spinner,
+  Text,
+  useDisclosure,
+  useToast,
+  VStack,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import { Link } from 'chakra-next-link';
@@ -22,6 +24,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useAuth } from '../../auth/store';
 import Avatar from '../../../components/Avatar';
 import { Loading } from '../../../components/Loading';
+import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';
 import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
@@ -35,14 +38,15 @@ import {
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
-import { useParam } from 'hooks/useParam';
-import { useLogin } from 'hooks/useAuth';
+import { useParam } from '../../../hooks/useParam';
+import { useLogin } from '../../../hooks/useAuth';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user, loadingUser, isLoggedIn } = useAuth();
   const login = useLogin();
+  const modalProps = useDisclosure();
 
   const refetch = {
     refetchQueries: [
@@ -69,7 +73,7 @@ export const EventPage: NextPage = () => {
     return data?.event?.event_users.find(
       ({ user: event_user }) => event_user.id === user?.id,
     );
-  }, [data?.event]);
+  }, [data?.event, user]);
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
   const canShowConfirmationModal =
@@ -83,46 +87,28 @@ export const EventPage: NextPage = () => {
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
 
-  async function onRsvp(options?: { invited?: boolean }) {
+  async function onRsvp(rsvpStatus: string | undefined) {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
       return;
     }
+    if (rsvpStatus === 'yes' || rsvpStatus === 'waitlist') {
+      toast({ title: 'Already RSVPed', status: 'info' });
+      return;
+    }
+    try {
+      await joinChapter({ variables: { chapterId } });
+      await rsvpToEvent({
+        variables: { eventId, chapterId },
+      });
 
-    const confirmOptions = options?.invited
-      ? {
-          title: 'You have been invited to this event',
-          body: (
-            <>
-              Would you like to attend?
-              <br />
-              Note: joining this event will make you a member of the
-              event&apos;s chapter.
-            </>
-          ),
-        }
-      : {
-          title: 'Join this event?',
-          body: `Note: joining this event will make you a member of the event's chapter.`,
-        };
-    const ok = await confirm(confirmOptions);
-
-    if (ok) {
-      if (!isLoggedIn) await login();
-      try {
-        await joinChapter({ variables: { chapterId } });
-        await rsvpToEvent({
-          variables: { eventId, chapterId },
-        });
-
-        toast({
-          title: 'You successfully RSVPed to this event',
-          status: 'success',
-        });
-      } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
-        console.error(err);
-      }
+      toast({
+        title: 'You successfully RSVPed to this event',
+        status: 'success',
+      });
+    } catch (err) {
+      toast({ title: 'Something went wrong', status: 'error' });
+      console.error(err);
     }
   }
 
@@ -147,7 +133,39 @@ export const EventPage: NextPage = () => {
 
   // TODO: reimplment this the login modal with Auth0
   async function checkOnRsvp(options?: { invited?: boolean }) {
-    await onRsvp(options);
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this event',
+          body: (
+            <>
+              Would you like to attend?
+              <br />
+              Note: joining this event will make you a member of the
+              event&apos;s chapter.
+            </>
+          ),
+        }
+      : {
+          title: 'Join this event?',
+          body: `Note: joining this event will make you a member of the event's chapter.`,
+        };
+    const ok = await confirm(confirmOptions);
+
+    if (ok) {
+      if (user) {
+        await onRsvp(rsvpStatus);
+        return;
+      }
+      modalProps.onOpen();
+      const {
+        data: { me },
+      } = await login();
+      modalProps.onClose();
+      const eventUser = data?.event?.event_users.find(
+        ({ user: event_user }) => event_user.id === me?.id,
+      );
+      await onRsvp(eventUser?.rsvp.name);
+    }
   }
 
   // TODO: reimplment this the login modal with Auth0
@@ -216,166 +234,165 @@ export const EventPage: NextPage = () => {
   const endsAt = formatDate(data.event.ends_at);
 
   return (
-    <VStack align="flex-start">
-      {data.event.image_url && (
-        <Box height={'300px'}>
-          <Image
-            data-cy="event-image"
-            boxSize="100%"
-            maxH="300px"
-            src={data.event.image_url}
-            alt=""
-            borderRadius="md"
-            objectFit="cover"
-            fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
-            fallbackStrategy="onError"
-          />
-        </Box>
-      )}
-      <Flex alignItems={'center'}>
-        {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
-        <Heading as="h1">{data.event.name}</Heading>
-      </Flex>
-      <Heading size="md" as={'h2'}>
-        Chapter:{' '}
-        <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
-      </Heading>
-      <Text>{data.event.description}</Text>
-      <Text>Starting: {startAt}</Text>
-      <Text>Ending: {endsAt}</Text>
-      <HStack align="start">
-        {rsvps && (
-          <Heading
-            as={'h3'}
-            fontSize={'md'}
-            fontWeight={'500'}
-            marginRight={'2'}
+    <>
+      <Modal modalProps={modalProps} title="Waiting for login">
+        <Spinner />
+      </Modal>
+      <VStack align="flex-start">
+        {data.event.image_url && (
+          <Box height={'300px'}>
+            <Image
+              data-cy="event-image"
+              boxSize="100%"
+              maxH="300px"
+              src={data.event.image_url}
+              alt=""
+              borderRadius="md"
+              objectFit="cover"
+              fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+              fallbackStrategy="onError"
+            />
+          </Box>
+        )}
+        <Flex alignItems={'center'}>
+          {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+          <Heading as="h1">{data.event.name}</Heading>
+        </Flex>
+        {data.event.canceled && (
+          <Text fontWeight={500} fontSize={'md'} color="red.500">
+            Canceled
+          </Text>
+        )}
+        <Text fontSize={['md', 'lg', 'xl']} fontWeight={'500'}>
+          Chapter:{' '}
+          <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
+        </Text>
+        <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+          {data.event.description}
+        </Text>
+        <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+          Starting: {startAt}
+        </Text>
+        <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+          Ending: {endsAt}
+        </Text>
+        {rsvpStatus === 'yes' ? (
+          <HStack>
+            <Text data-cy="rsvp-success">
+              You&lsquo;ve RSVPed to this event
+            </Text>
+            <Button
+              onClick={onCancelRsvp}
+              paddingInline={'2'}
+              paddingBlock={'1'}
+            >
+              Cancel
+            </Button>
+          </HStack>
+        ) : rsvpStatus === 'waitlist' ? (
+          <HStack>
+            {data.event.invite_only ? (
+              <Text fontSize={'md'} fontWeight={'500'}>
+                Event owner will soon confirm your request
+              </Text>
+            ) : (
+              <Text fontSize={'md'} fontWeight={'500'}>
+                You&lsquo;re on waitlist for this event
+              </Text>
+            )}
+            <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
+              Cancel
+            </Button>
+          </HStack>
+        ) : (
+          <Button
+            data-cy="rsvp-button"
+            colorScheme="blue"
+            onClick={() => checkOnRsvp()}
+            paddingInline={'2'}
+            paddingBlock={'1'}
           >
-            RSVPs: {rsvps.length}
-          </Heading>
-        )}
-        {waitlist && (
-          <Heading as={'h3'} fontSize={'md'} fontWeight={'500'}>
-            Waitlist: {waitlist.length}
-          </Heading>
-        )}
-      </HStack>
-      {rsvpStatus === 'yes' ? (
-        <HStack>
-          <Heading data-cy="rsvp-success">
-            You&lsquo;ve RSVPed to this event
-          </Heading>
-          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
-            Cancel
+            {data.event.invite_only ? 'Request' : 'RSVP'}
           </Button>
-        </HStack>
-      ) : rsvpStatus === 'waitlist' ? (
-        <HStack>
-          {data.event.invite_only ? (
-            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
-              Event owner will soon confirm your request
-            </Heading>
-          ) : (
-            <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
-              You&lsquo;re on waitlist for this event
-            </Heading>
-          )}
-          <Button onClick={onCancelRsvp} paddingInline={'2'} paddingBlock={'1'}>
-            Cancel
-          </Button>
-        </HStack>
-      ) : (
-        <Button
-          data-cy="rsvp-button"
-          colorScheme="blue"
-          onClick={() => checkOnRsvp()}
-          paddingInline={'2'}
-          paddingBlock={'1'}
+        )}
+        {eventUser && (
+          <HStack>
+            {eventUser.subscribed ? (
+              <>
+                <Text fontSize={'md'} fontWeight={'500'}>
+                  You are subscribed
+                </Text>
+                <Button
+                  onClick={onUnsubscribeFromEvent}
+                  paddingInline={'2'}
+                  paddingBlock={'1'}
+                >
+                  Unsubscribe
+                </Button>
+              </>
+            ) : (
+              <>
+                <Text fontSize={'md'} fontWeight={'500'}>
+                  Not subscribed
+                </Text>
+                <Button
+                  colorScheme="blue"
+                  onClick={onSubscribeToEvent}
+                  paddingInline={'2'}
+                  paddingBlock={'1'}
+                >
+                  Subscribe
+                </Button>
+              </>
+            )}
+          </HStack>
+        )}
+
+        {data.event.sponsors.length ? (
+          <SponsorsCard sponsors={data.event.sponsors} />
+        ) : (
+          false
+        )}
+        <Heading
+          data-cy="rsvps-heading"
+          fontSize={['sm', 'md', 'lg']}
+          as={'h2'}
         >
-          {data.event.invite_only ? 'Request' : 'RSVP'}
-        </Button>
-      )}
-      {eventUser && (
-        <HStack>
-          {eventUser.subscribed ? (
-            <>
-              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
-                You are subscribed
-              </Heading>
-              <Button
-                onClick={onUnsubscribeFromEvent}
-                paddingInline={'2'}
-                paddingBlock={'1'}
-              >
-                Unsubscribe
-              </Button>
-            </>
-          ) : (
-            <>
-              <Heading as={'h4'} fontSize={'md'} fontWeight={'500'}>
-                Not subscribed
-              </Heading>
-              <Button
-                colorScheme="blue"
-                onClick={onSubscribeToEvent}
-                paddingInline={'2'}
-                paddingBlock={'1'}
-              >
-                Subscribe
-              </Button>
-            </>
-          )}
-        </HStack>
-      )}
+          RSVPs:
+        </Heading>
+        <List>
+          {rsvps.map(({ user }) => (
+            <ListItem key={user.id} mb="2">
+              <HStack>
+                <Avatar user={user} />
+                <UserName user={user} fontSize="xl" fontWeight="bold" />
+              </HStack>
+            </ListItem>
+          ))}
+        </List>
 
-      {data.event.sponsors.length ? (
-        <SponsorsCard sponsors={data.event.sponsors} />
-      ) : (
-        false
-      )}
-      <Heading
-        data-cy="rsvps-heading"
-        size="md"
-        as={'h5'}
-        fontSize={'md'}
-        fontWeight={'400'}
-      >
-        RSVPs:
-      </Heading>
-      <List>
-        {rsvps.map(({ user }) => (
-          <ListItem key={user.id} mb="2">
-            <HStack>
-              <Avatar user={user} />
-              <UserName user={user} fontSize="xl" fontWeight="bold" />
-            </HStack>
-          </ListItem>
-        ))}
-      </List>
-
-      {!data.event.invite_only && (
-        <>
-          <Heading
-            data-cy="waitlist-heading"
-            size="md"
-            as={'h5'}
-            fontSize={'md'}
-            fontWeight={'400'}
-          >
-            Waitlist:
-          </Heading>
-          <List>
-            {waitlist.map(({ user }) => (
-              <ListItem key={user.id} mb="2">
-                <HStack>
-                  <Avatar user={user} />
-                  <UserName user={user} fontSize="xl" fontWeight="bold" />
-                </HStack>
-              </ListItem>
-            ))}
-          </List>
-        </>
-      )}
-    </VStack>
+        {!data.event.invite_only && (
+          <>
+            <Heading
+              data-cy="waitlist-heading"
+              fontSize={['sm', 'md', 'lg']}
+              as={'h2'}
+            >
+              Waitlist:
+            </Heading>
+            <List>
+              {waitlist.map(({ user }) => (
+                <ListItem key={user.id} mb="2">
+                  <HStack>
+                    <Avatar user={user} />
+                    <UserName user={user} fontSize="xl" fontWeight="bold" />
+                  </HStack>
+                </ListItem>
+              ))}
+            </List>
+          </>
+        )}
+      </VStack>
+    </>
   );
 };

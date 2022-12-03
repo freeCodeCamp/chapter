@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
-import { LinkButton } from 'chakra-next-link';
-import { Flex, Heading } from '@chakra-ui/layout';
+import { Button, Flex, Heading } from '@chakra-ui/react';
 
 import { useCalendarIntegrationStatusQuery } from '../../../../generated/graphql';
 import { checkPermission } from '../../../../util/check-permission';
@@ -51,8 +50,9 @@ export const Calendar: NextPageWithLayout = () => {
               manage calendars and events.
             </p>
           </Flex>
-          <LinkButton
-            nextAs={new URL('/authenticate-with-google', serverUrl).href}
+          <Button
+            as="a"
+            href={new URL('/authenticate-with-google', serverUrl).href}
             fontWeight="600"
             background={'gray.85'}
             color={'gray.10'}
@@ -68,7 +68,7 @@ export const Calendar: NextPageWithLayout = () => {
               : isBroken
               ? 'Reauthenticate with Google'
               : 'Authenticate with Google'}
-          </LinkButton>
+          </Button>
         </>
       ) : (
         <NextError statusCode={403} title="Access denied" />

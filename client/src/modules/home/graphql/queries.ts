@@ -21,19 +21,17 @@ export const HOME_PAGE_QUERY = gql`
       id
       name
       description
-      logo_url
       banner_url
-      city
+      logo_url
       events {
         id
+        canceled
+        start_at
+        ends_at
         name
-        capacity
-        venue {
-          id
-          name
-          region
-          street_address
-        }
+      }
+      chapter_users {
+        subscribed
       }
     }
   }

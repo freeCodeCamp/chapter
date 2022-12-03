@@ -12,7 +12,7 @@ import { SponsorResolver } from './Sponsors/resolver';
 import { VenueResolver } from './Venue/resolver';
 import { UnsubscribeResolver } from './Unsubscribe/resolver';
 import { UsersResolver } from './Users/resolver';
-import { UserWithInstanceRoleResolver } from './User/resolver';
+import { UserWithPermissionsResolver } from './User/resolver';
 
 const resolvers = [
   AuthResolver,
@@ -29,7 +29,7 @@ const resolvers = [
   VenueResolver,
   UnsubscribeResolver,
   UsersResolver,
-  UserWithInstanceRoleResolver,
+  UserWithPermissionsResolver,
 ] as const;
 
 export { resolvers };

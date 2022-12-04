@@ -1,7 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { HStack } from '@chakra-ui/layout';
 import {
-  Box,
   Image,
   Button,
   Menu,
@@ -130,7 +129,7 @@ export const Header: React.FC = () => {
                   </NextLink>
 
                   {user && (
-                    <Box borderBlock={'1px'} borderColor={'gray.85'}>
+                    <>
                       <NextLink passHref href="/profile">
                         <MenuItem
                           as="a"
@@ -147,28 +146,7 @@ export const Header: React.FC = () => {
                           </MenuItem>
                         </NextLink>
                       )}
-                    </Box>
-                  )}
-                  {user ? (
-                    <Button
-                      data-cy="logout-button"
-                      onClick={() => logout().then(goHome)}
-                      background="gray.10"
-                      fontWeight="600"
-                      width="4.5em"
-                    >
-                      Logout
-                    </Button>
-                  ) : (
-                    <Button
-                      data-cy="login-button"
-                      background="gray.10"
-                      onClick={login}
-                      fontWeight="600"
-                      width="4.5em"
-                    >
-                      Login
-                    </Button>
+                    </>
                   )}
                 </MenuList>
               </Menu>

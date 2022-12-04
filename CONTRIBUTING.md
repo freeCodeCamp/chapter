@@ -558,8 +558,9 @@ Updates to the _gh-pages_ branch and [online schema](https://opensource.freecode
 #### Initializing the Database
 
 If starting the application for the first time, or syncronizing with the latest development changes, then the following must occur
-* drop the database - delete the schema and data
-* apply all migrations - bring the schema up to date
+* build a server with `npm run -w=server build`, to create `prisma/seed.js` file.
+* drop the database - delete the schema and data.
+* apply all migrations - bring the schema up to date.
 * seed the database - fill the database with example data.
 
 The `npm run db:migrate:reset` command will do all three tasks by running `prisma migrate reset` which handles all three tasks. It also builds the server, since the seed script needs to be compiled to run.

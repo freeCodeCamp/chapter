@@ -206,7 +206,7 @@ ${venue.postal_code} <br>
     ? createStreamUpdate()
     : '';
   const venueLocationChange = hasVenueLocationChanged(data, event)
-    ? createVenueLocationContent()
+    ? await createVenueLocationContent()
     : '';
   const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
 

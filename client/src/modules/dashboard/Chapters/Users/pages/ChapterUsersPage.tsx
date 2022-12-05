@@ -206,8 +206,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       hasArrow
                       label={
                         is_bannable
-                          ? `This will remove them from Chapter entirly`
-                          : `The attendee isn't bannable because of their privaliage as mentainers of this Chapter`
+                          ? `Block member from interacting with Chapter`
+                          : `You can't ban this member, due to their privileges in the Chapter or the Instance`
                       }
                       bg="gray.10"
                       color="gray.90"
@@ -294,8 +294,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               hasArrow
                               label={
                                 is_bannable
-                                  ? `This will remove them from Chapter entirly`
-                                  : `The attendee isn't bannable because of their privaliage as mentainers of this Chapter`
+                                  ? `Block member from interacting with Chapter`
+                                  : `You can't ban this member, due to their privileges in the Chapter or the Instance`
                               }
                               bg="gray.300"
                               color="black"

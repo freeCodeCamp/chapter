@@ -179,6 +179,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
     </tr>
     <tr>
       <td align="center"><a href="https://github.com/auchynnikau"><img src="https://avatars.githubusercontent.com/u/33329898?v=4?s=100" width="100px;" alt="auchynnikau"/><br /><sub><b>auchynnikau</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=auchynnikau" title="Code">💻</a> <a href="https://github.com/freeCodeCamp/chapter/pulls?q=is%3Apr+reviewed-by%3Aauchynnikau" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center"><a href="https://github.com/nwernink"><img src="https://avatars.githubusercontent.com/u/59752837?v=4?s=100" width="100px;" alt="nwernink"/><br /><sub><b>nwernink</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=nwernink" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

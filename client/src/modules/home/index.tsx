@@ -25,7 +25,7 @@ const Welcome = ({ user }: { user: User }) => {
     <Flex
       alignItems={'center'}
       justifyContent="space-between"
-      paddingTop="20px"
+      marginTop="20px"
     >
       <Heading as="h1">Welcome, {getNameText(user.name)}</Heading>
       {!user.name && (

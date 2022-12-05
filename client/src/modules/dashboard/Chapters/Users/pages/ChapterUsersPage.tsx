@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -191,26 +192,37 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       Change
                     </Button>
                   )}
-                  {is_bannable &&
-                    (bans.has(otherUser.id) ? (
-                      <Button
-                        data-cy="unbanUser"
-                        colorScheme="purple"
-                        size="xs"
-                        onClick={() => onUnban(otherUser)}
-                      >
-                        Unban
-                      </Button>
-                    ) : (
+                  {bans.has(otherUser.id) ? (
+                    <Button
+                      data-cy="unbanUser"
+                      colorScheme="purple"
+                      size="xs"
+                      onClick={() => onUnban(otherUser)}
+                    >
+                      Unban
+                    </Button>
+                  ) : (
+                    <Tooltip
+                      hasArrow
+                      label={
+                        is_bannable
+                          ? `This will remove them from Chapter entirly`
+                          : `The attendee isn't bannable because of their privaliage as mentainers of this Chapter`
+                      }
+                      bg="gray.10"
+                      color="gray.90"
+                    >
                       <Button
                         data-cy="banUser"
                         colorScheme="red"
                         size="xs"
+                        disabled={is_bannable ? false : true}
                         onClick={() => onBan(otherUser)}
                       >
                         Ban
                       </Button>
-                    ))}
+                    </Tooltip>
+                  )}
                 </HStack>
               ),
               role: ({ chapter_role: { name } }) => (
@@ -268,26 +280,37 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                             >
                               Change
                             </Button>
-                            {is_bannable &&
-                              (bans.has(user.id) ? (
-                                <Button
-                                  data-cy="unbanUser"
-                                  colorScheme="purple"
-                                  size="xs"
-                                  onClick={() => onUnban(user)}
-                                >
-                                  Unban
-                                </Button>
-                              ) : (
-                                <Button
-                                  data-cy="banUser"
-                                  colorScheme="red"
-                                  size="xs"
-                                  onClick={() => onBan(user)}
-                                >
-                                  Ban
-                                </Button>
-                              ))}
+                            (bans.has(user.id) ? (
+                            <Button
+                              data-cy="unbanUser"
+                              colorScheme="purple"
+                              size="xs"
+                              onClick={() => onUnban(user)}
+                            >
+                              Unban
+                            </Button>
+                            ) : (
+                            <Tooltip
+                              hasArrow
+                              label={
+                                is_bannable
+                                  ? `This will remove them from Chapter entirly`
+                                  : `The attendee isn't bannable because of their privaliage as mentainers of this Chapter`
+                              }
+                              bg="gray.300"
+                              color="black"
+                            >
+                              <Button
+                                data-cy="banUser"
+                                colorScheme="red"
+                                size="xs"
+                                disabled={is_bannable ? false : true}
+                                onClick={() => onBan(user)}
+                              >
+                                Ban
+                              </Button>
+                            </Tooltip>
+                            ))
                           </HStack>
                           <Text data-cy="role">{chapter_role.name}</Text>
                         </VStack>

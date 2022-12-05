@@ -73,7 +73,6 @@ describe('spec needing owner', () => {
         cy.get('@venueMail')
           .mhGetBody()
           .should('include', 'Updated venue details')
-          .and('include', eventTwoData['name'])
           .and('include', venueTitle);
 
         cy.findAllByRole('row')

@@ -280,7 +280,7 @@ export async function cancelCalendarEvent({
   );
 }
 
-function filterFromAttendees(email: string) {
+function removeFromAttendees(email: string) {
   return (attendees: calendar_v3.Schema$EventAttendee[]) =>
     attendees.filter((attendee) => attendee.email !== email);
 }
@@ -310,7 +310,7 @@ export async function removeEventAttendee(
   await getAndUpdateEvent(
     { calendarId, calendarEventId },
     null,
-    filterFromAttendees(attendeeEmail),
+    removeFromAttendees(attendeeEmail),
   );
 }
 

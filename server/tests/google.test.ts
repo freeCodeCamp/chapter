@@ -218,18 +218,20 @@ describe('Google Service', () => {
       expect(mockUpdate).toHaveBeenCalledTimes(1);
     });
 
-    it('include event details in the request to Google', async () => {
+    it('ignores attendees in the request to Google', async () => {
       const start = '2022-12-05T14:07:12.687Z';
       const end = '2022-12-05T14:10:56.874Z';
       const eventData = {
         start: new Date(start),
         end: new Date(end),
         summary: 'test',
+        attendees: [{ email: 'a@person' }, { email: 'b@person' }],
       };
       const expectedRequestBody = {
         start: { dateTime: start },
         end: { dateTime: end },
         summary: 'test',
+        attendees,
       };
 
       await updateCalendarEvent(

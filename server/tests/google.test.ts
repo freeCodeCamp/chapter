@@ -6,15 +6,24 @@ import {
   createCalendar,
   createCalendarEvent,
   removeEventAttendee,
+  updateCalendarEvent,
 } from '../src/services/Google';
 
 const { objectContaining, arrayContaining } = expect;
 
-const mockAttendees: calendar_v3.Schema$EventAttendee[] = [
+const attendees: calendar_v3.Schema$EventAttendee[] = [
   { email: 'a@person', responseStatus: 'accepted' },
   { email: 'b@person', responseStatus: 'accepted' },
   { email: 'c@person', responseStatus: 'accepted' },
 ];
+
+const mockGet = () => {
+  return {
+    data: {
+      attendees: attendees,
+    },
+  };
+};
 
 const mockUpdate = jest.fn(
   ({ requestBody }: calendar_v3.Params$Resource$Events$Update) => ({
@@ -29,13 +38,7 @@ const mockInsertEvent = jest.fn(
 );
 
 const mockEvents = {
-  get(): { data: calendar_v3.Schema$Event } {
-    return {
-      data: {
-        attendees: mockAttendees,
-      },
-    };
-  },
+  get: mockGet,
   // This just returns whatever was passed in. In reality, each attendee would
   // get a responseStatus, but we're only checking that the update is called
   // with the correct attendees.
@@ -113,9 +116,7 @@ describe('Google Service', () => {
       );
 
       expect(updatedEvent.data.attendees?.length).toBe(3);
-      expect(updatedEvent.data.attendees).toEqual(
-        arrayContaining(mockAttendees),
-      );
+      expect(updatedEvent.data.attendees).toEqual(arrayContaining(attendees));
     });
   });
 
@@ -138,7 +139,7 @@ describe('Google Service', () => {
 
       expect(updatedEvent.data.attendees?.length).toBe(4);
       expect(updatedEvent.data.attendees).toEqual(
-        arrayContaining([...mockAttendees, { email: 'd@person' }]),
+        arrayContaining([...attendees, { email: 'd@person' }]),
       );
     });
   });
@@ -161,7 +162,7 @@ describe('Google Service', () => {
       );
 
       const expectedAttendees = [
-        ...mockAttendees.filter((attendee) => attendee.email !== 'b@person'),
+        ...attendees.filter((attendee) => attendee.email !== 'b@person'),
         { email: 'b@person', responseStatus: 'declined' },
       ];
 
@@ -195,7 +196,6 @@ describe('Google Service', () => {
         summary: 'test',
         attendees: [{ email: 'a@person' }, { email: 'b@person' }],
       };
-
       await createCalendarEvent({ calendarId: 'foo' }, eventData);
 
       expect(mockInsertEvent).toHaveBeenCalledWith(
@@ -204,6 +204,45 @@ describe('Google Service', () => {
         }),
       );
       expect(mockInsertEvent).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('updateCalendarEvent', () => {
+    it('should update everyone and configure guest permissions', async () => {
+      await updateCalendarEvent(
+        { calendarId: 'foo', calendarEventId: 'bar' },
+        {},
+      );
+
+      expect(mockUpdate).toHaveBeenCalledWith(eventParams);
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+    });
+
+    it('include event details in the request to Google', async () => {
+      const start = '2022-12-05T14:07:12.687Z';
+      const end = '2022-12-05T14:10:56.874Z';
+      const eventData = {
+        start: new Date(start),
+        end: new Date(end),
+        summary: 'test',
+      };
+      const expectedRequestBody = {
+        start: { dateTime: start },
+        end: { dateTime: end },
+        summary: 'test',
+      };
+
+      await updateCalendarEvent(
+        { calendarId: 'foo', calendarEventId: 'bar' },
+        eventData,
+      );
+
+      expect(mockUpdate).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -24,7 +24,7 @@ import { checkJwt } from './controllers/Auth/check-jwt';
 import { prisma, RECORD_MISSING } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
-import { getGoogleAuthUrl, requestTokens } from './services/Google';
+import { getGoogleAuthUrl, requestTokens } from './services/InitGoogle';
 
 // TODO: reinstate these checks (possibly using an IS_DOCKER env var)
 // // Make sure to kill the app if using non docker-compose setup and docker-compose

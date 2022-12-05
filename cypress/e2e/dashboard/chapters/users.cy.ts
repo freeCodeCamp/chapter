@@ -202,7 +202,7 @@ describe('Chapter Users dashboard', () => {
 
     cy.get('@adminToBan')
       .findByRole('button', { name: 'Ban' })
-      .should('not.exist');
+      .should('be.disabled');
 
     cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
       cy.banUser({ chapterId, userId: id }).then(

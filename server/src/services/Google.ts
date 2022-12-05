@@ -122,17 +122,6 @@ export async function updateCalendarEvent(
   await getAndUpdateEvent({ calendarId, calendarEventId }, eventUpdateData);
 }
 
-// TODO: use alias for id and ids
-export async function cancelCalendarEvent({
-  calendarId,
-  calendarEventId,
-}: EventIds) {
-  await getAndUpdateEvent(
-    { calendarId, calendarEventId },
-    { status: 'cancelled' },
-  );
-}
-
 function removeFromAttendees(email: string) {
   return (attendees: calendar_v3.Schema$EventAttendee[]) =>
     attendees.filter((attendee) => attendee.email !== email);

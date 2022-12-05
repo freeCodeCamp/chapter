@@ -41,7 +41,6 @@ import {
 } from '../../services/Reminders';
 import {
   addEventAttendee,
-  cancelCalendarEvent,
   cancelEventAttendance,
   deleteCalendarEvent,
   removeEventAttendee,
@@ -867,7 +866,7 @@ ${unsubscribeOptions}`,
         // respond immediately, but be informed of any failures later.
         // Client-side this could be handled by something like redux-saga, but
         // I'm not sure how to approach that server-side.
-        await cancelCalendarEvent({
+        await deleteCalendarEvent({
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
         });

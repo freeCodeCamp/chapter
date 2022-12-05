@@ -72,7 +72,7 @@ describe('spec needing owner', () => {
           .should('eq', `Details changed for event ${eventTwoData['name']}`);
         cy.get('@venueMail')
           .mhGetBody()
-          .should('include', 'We have had to change the location')
+          .should('include', 'Updated venue details')
           .and('include', eventTwoData['name'])
           .and('include', venueTitle);
 

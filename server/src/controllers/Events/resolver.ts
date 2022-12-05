@@ -178,20 +178,21 @@ const buildEmailForUpdatedEvent = async (
     });
 
     // TODO: include a link back to the venue page
-    return `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address && venue.street_address + '<br>'}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
+    return `The event is now being held at <br />
+    <br />
+- ${venue.name} <br />
+- ${venue.street_address && venue.street_address + '<br />'}
+- ${venue.city} <br />
+- ${venue.region} <br />
+- ${venue.postal_code} <br />
 ----------------------------<br />
 <br />
 `;
   };
   const createDateUpdates = () => {
     return `
-  Start: ${formatDate(data.start_at)}<br />
-  End: ${formatDate(data.ends_at)}<br />
+  - Start: ${formatDate(data.start_at)}<br />
+  - End: ${formatDate(data.ends_at)}<br />
   ----------------------------<br />
   <br />
   `;

@@ -5,6 +5,7 @@ import {
   cancelEventAttendance,
   createCalendar,
   createCalendarEvent,
+  deleteCalendarEvent,
   removeEventAttendee,
   updateCalendarEvent,
 } from '../src/services/Google';
@@ -25,6 +26,9 @@ const mockGet = () => {
   };
 };
 
+// This just returns whatever was passed in. In reality, each attendee would
+// get a responseStatus, but we're only checking that the update is called
+// with the correct attendees.
 const mockUpdate = jest.fn(
   ({ requestBody }: calendar_v3.Params$Resource$Events$Update) => ({
     data: requestBody,
@@ -37,13 +41,13 @@ const mockInsertEvent = jest.fn(
   }),
 );
 
+const mockDelete = jest.fn();
+
 const mockEvents = {
   get: mockGet,
-  // This just returns whatever was passed in. In reality, each attendee would
-  // get a responseStatus, but we're only checking that the update is called
-  // with the correct attendees.
   update: mockUpdate,
   insert: mockInsertEvent,
+  delete: mockDelete,
 };
 
 const mockInsertCalendar = jest.fn(
@@ -258,6 +262,23 @@ describe('Google Service', () => {
       expect(mockInsertCalendar).toHaveBeenCalledWith(
         objectContaining({
           requestBody: { summary: 'foo', description: 'bar' },
+        }),
+      );
+    });
+  });
+
+  describe('deleteCalendarEvent', () => {
+    it('should call the delete endpoint', async () => {
+      await deleteCalendarEvent({
+        calendarId: 'foo',
+        calendarEventId: 'bar',
+      });
+
+      expect(mockDelete).toHaveBeenCalledWith(
+        objectContaining({
+          calendarId: 'foo',
+          eventId: 'bar',
+          sendUpdates: 'all',
         }),
       );
     });

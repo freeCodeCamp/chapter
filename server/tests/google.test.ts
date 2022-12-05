@@ -12,6 +12,12 @@ const mockAttendees: calendar_v3.Schema$EventAttendee[] = [
   { email: 'c@person', responseStatus: 'accepted' },
 ];
 
+const mockUpdate = jest.fn(
+  ({ requestBody }: calendar_v3.Params$Resource$Events$Update) => ({
+    data: requestBody,
+  }),
+);
+
 const mockEvents = {
   get(): { data: calendar_v3.Schema$Event } {
     return {
@@ -23,13 +29,7 @@ const mockEvents = {
   // This just returns whatever was passed in. In reality, each attendee would
   // get a responseStatus, but we're only checking that the update is called
   // with the correct attendees.
-  update({ requestBody }: calendar_v3.Params$Resource$Events$Update): {
-    data?: calendar_v3.Schema$Event;
-  } {
-    return {
-      data: requestBody,
-    };
-  },
+  update: mockUpdate,
 };
 
 jest.mock('../src/services/InitGoogle', () => {
@@ -44,7 +44,24 @@ jest.mock('../src/services/InitGoogle', () => {
   };
 });
 
+const updateParams = expect.objectContaining({
+  sendUpdates: 'all',
+  requestBody: expect.objectContaining({
+    guestsCanInviteOthers: false,
+    guestsCanSeeOtherGuests: false,
+  }),
+});
+
 describe('removeEventAttendee', () => {
+  it('should update everyone and configure guest permissions', async () => {
+    await removeEventAttendee(
+      { calendarId: 'foo', calendarEventId: 'bar' },
+      { attendeeEmail: 'b@person' },
+    );
+
+    expect(mockUpdate).toHaveBeenCalledWith(updateParams);
+  });
+
   const remainingAttendees = [
     { email: 'a@person', responseStatus: 'accepted' },
     { email: 'c@person', responseStatus: 'accepted' },
@@ -76,6 +93,15 @@ describe('removeEventAttendee', () => {
 });
 
 describe('addEventAttendee', () => {
+  it('should update everyone and configure guest permissions', async () => {
+    await addEventAttendee(
+      { calendarId: 'foo', calendarEventId: 'bar' },
+      { attendeeEmail: 'b@person' },
+    );
+
+    expect(mockUpdate).toHaveBeenCalledWith(updateParams);
+  });
+
   it('should add the attendee to the event', async () => {
     const updatedEvent = await addEventAttendee(
       { calendarId: 'id', calendarEventId: 'id' },
@@ -90,6 +116,15 @@ describe('addEventAttendee', () => {
 });
 
 describe('cancelEventAttendance', () => {
+  it('should update everyone and configure guest permissions', async () => {
+    await cancelEventAttendance(
+      { calendarId: 'foo', calendarEventId: 'bar' },
+      { attendeeEmail: 'b@person' },
+    );
+
+    expect(mockUpdate).toHaveBeenCalledWith(updateParams);
+  });
+
   it('should cancel (but not remove) attendance', async () => {
     const updatedEvent = await cancelEventAttendance(
       { calendarId: 'id', calendarEventId: 'id' },

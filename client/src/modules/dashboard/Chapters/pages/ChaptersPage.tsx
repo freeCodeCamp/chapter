@@ -60,6 +60,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
             colorScheme={'blue'}
           >
             Add new
+            <Text srOnly as="span">
+              chapter
+            </Text>
           </LinkButton>
         )}
       </Flex>
@@ -95,9 +98,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
                       href={href(chapter.id)}
                     >
                       {text}
-                      <Text srOnly>
+                      <Text srOnly as="span">
                         {text !== 'Edit'
-                          ? `to ${chapter.name}`
+                          ? `for ${chapter.name}`
                           : `${chapter.name}`}
                       </Text>
                     </LinkButton>
@@ -161,9 +164,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
                             href={href(chapter.id)}
                           >
                             {text}
-                            <Text srOnly>
+                            <Text srOnly as="span">
                               {text !== 'Edit'
-                                ? `to ${chapter.name}`
+                                ? `for ${chapter.name}`
                                 : `${chapter.name}`}
                             </Text>
                           </LinkButton>

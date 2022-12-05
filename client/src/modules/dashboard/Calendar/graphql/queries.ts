@@ -5,3 +5,12 @@ export const CALENDAR_INTEGRATION = gql`
     calendarIntegrationStatus
   }
 `;
+
+export const TOKEN_STATUSES = gql`
+  query tokenStatuses {
+    tokenStatuses {
+      email
+      is_valid
+    }
+  }
+`;

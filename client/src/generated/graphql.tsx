@@ -527,6 +527,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  tokenStatuses: Array<TokenStatus>;
   userInformation?: Maybe<UserInformation>;
   users: Array<UserWithPermissions>;
   venue?: Maybe<Venue>;
@@ -623,6 +624,12 @@ export type SponsorWithEvents = {
 export type SponsoredEvent = {
   __typename?: 'SponsoredEvent';
   event: Event;
+};
+
+export type TokenStatus = {
+  __typename?: 'TokenStatus';
+  email: Scalars['String'];
+  is_valid: Scalars['Boolean'];
 };
 
 export type UpdateChapterInputs = {
@@ -916,6 +923,17 @@ export type CalendarIntegrationStatusQueryVariables = Exact<{
 export type CalendarIntegrationStatusQuery = {
   __typename?: 'Query';
   calendarIntegrationStatus?: boolean | null;
+};
+
+export type TokenStatusesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type TokenStatusesQuery = {
+  __typename?: 'Query';
+  tokenStatuses: Array<{
+    __typename?: 'TokenStatus';
+    email: string;
+    is_valid: boolean;
+  }>;
 };
 
 export type CreateChapterMutationVariables = Exact<{
@@ -2297,6 +2315,64 @@ export type CalendarIntegrationStatusLazyQueryHookResult = ReturnType<
 export type CalendarIntegrationStatusQueryResult = Apollo.QueryResult<
   CalendarIntegrationStatusQuery,
   CalendarIntegrationStatusQueryVariables
+>;
+export const TokenStatusesDocument = gql`
+  query tokenStatuses {
+    tokenStatuses {
+      email
+      is_valid
+    }
+  }
+`;
+
+/**
+ * __useTokenStatusesQuery__
+ *
+ * To run a query within a React component, call `useTokenStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTokenStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTokenStatusesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTokenStatusesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    TokenStatusesQuery,
+    TokenStatusesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<TokenStatusesQuery, TokenStatusesQueryVariables>(
+    TokenStatusesDocument,
+    options,
+  );
+}
+export function useTokenStatusesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    TokenStatusesQuery,
+    TokenStatusesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<TokenStatusesQuery, TokenStatusesQueryVariables>(
+    TokenStatusesDocument,
+    options,
+  );
+}
+export type TokenStatusesQueryHookResult = ReturnType<
+  typeof useTokenStatusesQuery
+>;
+export type TokenStatusesLazyQueryHookResult = ReturnType<
+  typeof useTokenStatusesLazyQuery
+>;
+export type TokenStatusesQueryResult = Apollo.QueryResult<
+  TokenStatusesQuery,
+  TokenStatusesQueryVariables
 >;
 export const CreateChapterDocument = gql`
   mutation createChapter($data: CreateChapterInputs!) {

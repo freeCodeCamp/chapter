@@ -113,7 +113,7 @@ describe('Google Service', () => {
       );
     });
 
-    it("should do nothing if the email one of the attendee's", async () => {
+    it("should do nothing if the email is not one of the attendee's", async () => {
       const updatedEvent = await removeEventAttendee(
         { calendarId: 'id', calendarEventId: 'id' },
         { attendeeEmail: 'd@person' },

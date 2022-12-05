@@ -8,6 +8,8 @@ import {
   removeEventAttendee,
 } from '../src/services/Google';
 
+const { objectContaining, arrayContaining } = expect;
+
 const mockAttendees: calendar_v3.Schema$EventAttendee[] = [
   { email: 'a@person', responseStatus: 'accepted' },
   { email: 'b@person', responseStatus: 'accepted' },
@@ -64,9 +66,9 @@ jest.mock('../src/services/InitGoogle', () => {
   };
 });
 
-const eventParams = expect.objectContaining({
+const eventParams = objectContaining({
   sendUpdates: 'all',
-  requestBody: expect.objectContaining({
+  requestBody: objectContaining({
     guestsCanInviteOthers: false,
     guestsCanSeeOtherGuests: false,
   }),
@@ -100,7 +102,7 @@ describe('Google Service', () => {
 
       expect(updatedEvent.data.attendees?.length).toBe(2);
       expect(updatedEvent.data.attendees).toEqual(
-        expect.arrayContaining(remainingAttendees),
+        arrayContaining(remainingAttendees),
       );
     });
 
@@ -112,7 +114,7 @@ describe('Google Service', () => {
 
       expect(updatedEvent.data.attendees?.length).toBe(3);
       expect(updatedEvent.data.attendees).toEqual(
-        expect.arrayContaining(mockAttendees),
+        arrayContaining(mockAttendees),
       );
     });
   });
@@ -136,7 +138,7 @@ describe('Google Service', () => {
 
       expect(updatedEvent.data.attendees?.length).toBe(4);
       expect(updatedEvent.data.attendees).toEqual(
-        expect.arrayContaining([...mockAttendees, { email: 'd@person' }]),
+        arrayContaining([...mockAttendees, { email: 'd@person' }]),
       );
     });
   });
@@ -165,7 +167,7 @@ describe('Google Service', () => {
 
       expect(updatedEvent.data.attendees?.length).toBe(3);
       expect(updatedEvent.data.attendees).toEqual(
-        expect.arrayContaining(expectedAttendees),
+        arrayContaining(expectedAttendees),
       );
     });
   });
@@ -175,6 +177,32 @@ describe('Google Service', () => {
       await createCalendarEvent({ calendarId: 'foo' }, {});
 
       expect(mockInsertEvent).toHaveBeenCalledWith(eventParams);
+      expect(mockInsertEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('include event details in the request to Google', async () => {
+      const start = '2022-12-05T14:07:12.687Z';
+      const end = '2022-12-05T14:10:56.874Z';
+      const eventData = {
+        start: new Date(start),
+        end: new Date(end),
+        summary: 'test',
+        attendees: [{ email: 'a@person' }, { email: 'b@person' }],
+      };
+      const expectedRequestBody = {
+        start: { dateTime: start },
+        end: { dateTime: end },
+        summary: 'test',
+        attendees: [{ email: 'a@person' }, { email: 'b@person' }],
+      };
+
+      await createCalendarEvent({ calendarId: 'foo' }, eventData);
+
+      expect(mockInsertEvent).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
       expect(mockInsertEvent).toHaveBeenCalledTimes(1);
     });
   });
@@ -187,7 +215,7 @@ describe('Google Service', () => {
       });
 
       expect(mockInsertCalendar).toHaveBeenCalledWith(
-        expect.objectContaining({
+        objectContaining({
           requestBody: { summary: 'foo', description: 'bar' },
         }),
       );

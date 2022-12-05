@@ -189,7 +189,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       }
                     >
                       Change
-                      <Text srOnly>{otherUser.name} role</Text>
+                      <Text srOnly as="span">
+                        {otherUser.name} role
+                      </Text>
                     </Button>
                   )}
                   {is_bannable &&
@@ -201,7 +203,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         onClick={() => onUnban(otherUser)}
                       >
                         Unban
-                        <Text srOnly>{otherUser.name}</Text>
+                        <Text srOnly as="span">
+                          {otherUser.name}
+                        </Text>
                       </Button>
                     ) : (
                       <Button
@@ -211,7 +215,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         onClick={() => onBan(otherUser)}
                       >
                         Ban
-                        <Text srOnly>{otherUser.name}</Text>
+                        <Text srOnly as="span">
+                          {otherUser.name}
+                        </Text>
                       </Button>
                     ))}
                 </HStack>
@@ -270,7 +276,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               }
                             >
                               Change
-                              <Text srOnly>{user.name} role</Text>
+                              <Text srOnly as="span">
+                                {user.name} role
+                              </Text>
                             </Button>
                             {is_bannable &&
                               (bans.has(user.id) ? (
@@ -281,7 +289,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                   onClick={() => onUnban(user)}
                                 >
                                   Unban
-                                  <Text srOnly>{user.name}</Text>
+                                  <Text srOnly as="span">
+                                    {user.name}
+                                  </Text>
                                 </Button>
                               ) : (
                                 <Button
@@ -291,7 +301,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                   onClick={() => onBan(user)}
                                 >
                                   Ban
-                                  <Text srOnly>{user.name}</Text>
+                                  <Text srOnly as="span">
+                                    {user.name}
+                                  </Text>
                                 </Button>
                               ))}
                           </HStack>

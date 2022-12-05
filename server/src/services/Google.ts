@@ -171,7 +171,7 @@ export async function cancelEventAttendance(
   { calendarId, calendarEventId }: EventIds,
   { attendeeEmail }: Attendee,
 ) {
-  await getAndUpdateEvent(
+  return await getAndUpdateEvent(
     { calendarId, calendarEventId },
     null,
     cancelAttendance(attendeeEmail),
@@ -182,7 +182,7 @@ export async function addEventAttendee(
   { calendarId, calendarEventId }: EventIds,
   { attendeeEmail }: Attendee,
 ) {
-  await getAndUpdateEvent(
+  return await getAndUpdateEvent(
     { calendarId, calendarEventId },
     null,
     addToAttendees(attendeeEmail),

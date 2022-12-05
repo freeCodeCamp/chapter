@@ -282,7 +282,7 @@ export async function cancelCalendarEvent({
 
 function filterFromAttendees(email: string) {
   return (attendees: calendar_v3.Schema$EventAttendee[]) =>
-    attendees.filter((attendee) => attendee.email === email);
+    attendees.filter((attendee) => attendee.email !== email);
 }
 
 function addToAttendees(email: string) {

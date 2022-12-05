@@ -1,6 +1,6 @@
 import type { calendar_v3 } from '@googleapis/calendar';
 
-import { isProd } from '../config';
+import { isProd, isTest } from '../config';
 import { createCalendarApi } from './InitGoogle';
 interface CalendarData {
   summary: string;
@@ -40,7 +40,7 @@ function parseEventData({
     ...(summary && { summary }),
     // Since Google will send emails to these addresses, we don't want to
     // accidentally send emails in testing.
-    ...(attendees ?? { attendees: isProd() ? attendees : [] }),
+    ...(attendees && { attendees: isProd() || isTest() ? attendees : [] }),
   };
 }
 
@@ -106,7 +106,7 @@ async function getAndUpdateEvent(
     ...{ attendees: updatedAttendeesData },
   };
 
-  await calendarApi.events.update({
+  return await calendarApi.events.update({
     calendarId,
     eventId,
     sendUpdates: 'all',
@@ -160,7 +160,7 @@ export async function removeEventAttendee(
   { calendarId, calendarEventId }: EventIds,
   { attendeeEmail }: Attendee,
 ) {
-  await getAndUpdateEvent(
+  return await getAndUpdateEvent(
     { calendarId, calendarEventId },
     null,
     removeFromAttendees(attendeeEmail),

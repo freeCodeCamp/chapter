@@ -3,6 +3,7 @@ import type { calendar_v3 } from '@googleapis/calendar';
 import {
   addEventAttendee,
   cancelEventAttendance,
+  createCalendar,
   removeEventAttendee,
 } from '../src/services/Google';
 
@@ -32,6 +33,16 @@ const mockEvents = {
   update: mockUpdate,
 };
 
+const mockInsert = jest.fn(
+  ({ requestBody }: calendar_v3.Params$Resource$Calendars$Insert) => ({
+    data: requestBody,
+  }),
+);
+
+const mockCalendars = {
+  insert: mockInsert,
+};
+
 jest.mock('../src/services/InitGoogle', () => {
   const originalModule = jest.requireActual('../src/services/InitGoogle');
 
@@ -40,6 +51,7 @@ jest.mock('../src/services/InitGoogle', () => {
     ...originalModule,
     createCalendarApi: jest.fn(() => ({
       events: mockEvents,
+      calendars: mockCalendars,
     })),
   };
 });
@@ -139,6 +151,21 @@ describe('cancelEventAttendance', () => {
     expect(updatedEvent.data.attendees?.length).toBe(3);
     expect(updatedEvent.data.attendees).toEqual(
       expect.arrayContaining(expectedAttendees),
+    );
+  });
+});
+
+describe('createCalendar', () => {
+  it('should insert a new calendar with a summary and description', async () => {
+    await createCalendar({
+      summary: 'foo',
+      description: 'bar',
+    });
+
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        requestBody: { summary: 'foo', description: 'bar' },
+      }),
     );
   });
 });

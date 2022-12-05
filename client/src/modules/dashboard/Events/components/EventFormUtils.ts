@@ -193,7 +193,7 @@ export const parseEventData = (data: EventFormData) => {
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
   // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.
-  const streaming_url = data.streaming_url?.trim() || null;
+  const streaming_url = data.streaming_url?.trim().toLowerCase() || null;
 
   return {
     ...rest,

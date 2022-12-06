@@ -12,8 +12,8 @@ import {
   User,
   Chapter,
   UserWithPermissions,
-  UserInformation,
-  UserData,
+  UserForDownload,
+  UserProfile,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import { ResolverCtx } from '../../common-types/gql';
@@ -36,10 +36,10 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserInformation, { nullable: true })
+  @Query(() => UserForDownload, { nullable: true })
   async userInformation(
     @Ctx() ctx: ResolverCtx,
-  ): Promise<UserInformation | null> {
+  ): Promise<UserForDownload | null> {
     if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {
@@ -69,8 +69,8 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserData, { nullable: true })
-  async userData(@Ctx() ctx: ResolverCtx): Promise<UserData | null> {
+  @Query(() => UserProfile, { nullable: true })
+  async userData(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
     if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {

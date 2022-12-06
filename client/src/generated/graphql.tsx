@@ -511,8 +511,8 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
-  userData?: Maybe<UserData>;
-  userInformation?: Maybe<UserInformation>;
+  userData?: Maybe<UserProfile>;
+  userInformation?: Maybe<UserForDownload>;
   users: Array<UserWithPermissions>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -672,8 +672,19 @@ export type UserChapter = {
   user_id: Scalars['Int'];
 };
 
-export type UserData = {
-  __typename?: 'UserData';
+export type UserForDownload = {
+  __typename?: 'UserForDownload';
+  auto_subscribe: Scalars['Boolean'];
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+  user_chapters: Array<UserChapter>;
+};
+
+export type UserProfile = {
+  __typename?: 'UserProfile';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
@@ -684,17 +695,6 @@ export type UserData = {
   user_bans: Array<UserBanWithRelations>;
   user_chapters: Array<ChapterUserWithRelations>;
   user_events: Array<EventUserWithRelations>;
-};
-
-export type UserInformation = {
-  __typename?: 'UserInformation';
-  auto_subscribe: Scalars['Boolean'];
-  email: Scalars['String'];
-  id: Scalars['Int'];
-  image_url?: Maybe<Scalars['String']>;
-  instance_role: InstanceRole;
-  name: Scalars['String'];
-  user_chapters: Array<UserChapter>;
 };
 
 export type UserWithPermissions = {
@@ -1711,7 +1711,7 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 export type UserProfileQuery = {
   __typename?: 'Query';
   userInformation?: {
-    __typename?: 'UserInformation';
+    __typename?: 'UserForDownload';
     id: number;
     name: string;
     email: string;
@@ -1730,7 +1730,7 @@ export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
 export type UserDownloadQuery = {
   __typename?: 'Query';
   userData?: {
-    __typename?: 'UserData';
+    __typename?: 'UserProfile';
     id: number;
     name: string;
     email: string;

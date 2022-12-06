@@ -140,22 +140,20 @@ export const UserProfilePage = () => {
             ) : (
               <>
                 {userDataDownload && (
-                  <Flex alignItems={'center'} gap="2em">
-                    <Link
-                      fontWeight="600"
-                      background={'gray.85'}
-                      color={'gray.10'}
-                      height={'100%'}
-                      size={'lg'}
-                      borderRadius={'5px'}
-                      paddingBlock={'.65em'}
-                      paddingInline={'.4em'}
-                      download={`${userDataDownload.userData?.name}.json`}
-                      href={createDownloadData(userDataDownload)}
-                    >
-                      Download the data
-                    </Link>
-                  </Flex>
+                  <Link
+                    fontWeight="600"
+                    background={'gray.85'}
+                    color={'gray.10'}
+                    height={'100%'}
+                    size={'lg'}
+                    borderRadius={'5px'}
+                    paddingBlock={'.65em'}
+                    paddingInline={'.4em'}
+                    download={`${userDataDownload.userData?.name}.json`}
+                    href={createDownloadData(userDataDownload)}
+                  >
+                    Download the data
+                  </Link>
                 )}
               </>
             )}

@@ -24,7 +24,7 @@ export class User extends BaseObject {
 }
 
 @ObjectType()
-export class UserInformation extends User {
+export class UserForDownload extends User {
   @Field(() => String)
   email: string;
 
@@ -51,7 +51,7 @@ export class UserWithPermissions extends User {
 }
 
 @ObjectType()
-export class UserData extends UserWithPermissions {
+export class UserProfile extends UserWithPermissions {
   @Field(() => String)
   email: string;
 

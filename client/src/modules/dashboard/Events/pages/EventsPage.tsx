@@ -31,6 +31,9 @@ export const EventsPage: NextPageWithLayout = () => {
             colorScheme={'blue'}
           >
             Add new
+            <Text srOnly as="span">
+              Event
+            </Text>
           </LinkButton>
         )}
       </Flex>
@@ -107,7 +110,9 @@ export const EventsPage: NextPageWithLayout = () => {
                 href={`/dashboard/events/${event.id}/edit`}
               >
                 Edit
-                <Text srOnly>{event.name}</Text>
+                <Text srOnly as="span">
+                  {event.name}
+                </Text>
               </LinkButton>
             ),
           }}
@@ -216,7 +221,9 @@ export const EventsPage: NextPageWithLayout = () => {
                       href={`/dashboard/events/${id}/edit`}
                     >
                       Edit
-                      <Text srOnly>{name}</Text>
+                      <Text srOnly as="span">
+                        {name}
+                      </Text>
                     </LinkButton>
                   </VStack>
                 ),

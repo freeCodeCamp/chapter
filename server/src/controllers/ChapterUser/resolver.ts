@@ -23,7 +23,6 @@ import { updateCalendarEventAttendees } from '../../util/calendar';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
-import MailerService from '../../../src/services/MailerService';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -97,18 +96,12 @@ interface Args {
       instance_role: true;
     };
   }>;
-  email: string[];
-  emailHeader: string;
-  emailContent: string;
 }
 
 async function updateInstanceRoleForChapterRoleChange({
   changedChapterId,
   newChapterRole,
   user,
-  email,
-  emailHeader,
-  emailContent,
 }: Args) {
   const oldInstanceRole = user.instance_role.name;
   const userChapters = user.user_chapters;
@@ -118,18 +111,11 @@ async function updateInstanceRoleForChapterRoleChange({
     oldInstanceRole,
     userChapters,
   });
-  console.log(newInstanceRole);
-  console.log(oldInstanceRole);
   if (newInstanceRole !== oldInstanceRole) {
     await prisma.users.update({
       data: { instance_role: { connect: { name: newInstanceRole } } },
       where: { id: user.id },
     });
-    await new MailerService({
-      emailList: email,
-      subject: emailHeader,
-      htmlEmail: emailContent,
-    }).sendEmail();
   }
 }
 
@@ -193,16 +179,11 @@ export class ChapterUserResolver {
   ): Promise<ChapterUser | null> {
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
 
-    const subject = `You have left chapter successifully`;
-    const body = `This is a confirmational email, which confirms that you have left chapter successfully`;
     // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.
     await updateInstanceRoleForChapterRoleChange({
       changedChapterId: chapterId,
       newChapterRole: ChapterRoles.member,
       user: ctx.user,
-      email: [ctx.user.email],
-      emailHeader: subject,
-      emailContent: body,
     });
 
     return await prisma.chapter_users.delete({
@@ -273,18 +254,11 @@ export class ChapterUserResolver {
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
 
-    const subject = `Your ${oldChapterRole} has changed to ${newChapterRole} in ${chapterUser.user.user_chapters}`;
-    const body = ``;
-    for (const emailAdress of chapterUser.user.email) {
-      await updateInstanceRoleForChapterRoleChange({
-        changedChapterId: chapterId,
-        newChapterRole,
-        user: chapterUser.user,
-        email: [emailAdress],
-        emailContent: subject,
-        emailHeader: body,
-      });
-    }
+    await updateInstanceRoleForChapterRoleChange({
+      changedChapterId: chapterId,
+      newChapterRole,
+      user: chapterUser.user,
+    });
 
     return updatedChapterUser;
   }

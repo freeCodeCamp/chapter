@@ -275,7 +275,6 @@ export class ChapterUserResolver {
 
     const subject = `Your ${oldChapterRole} has changed to ${newChapterRole} in ${chapterUser.user.user_chapters}`;
     const body = ``;
-    // the for statement is unnessecary because the Ui only allow you to change one person role at a time.
     for (const emailAdress of chapterUser.user.email) {
       await updateInstanceRoleForChapterRoleChange({
         changedChapterId: chapterId,

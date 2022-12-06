@@ -239,7 +239,9 @@ export const EventPage: NextPageWithLayout = () => {
                             onClick={onClick({ eventId, userId: user.id })}
                           >
                             {title}
-                            <Text srOnly>{user.name} RSVP</Text>
+                            <Text srOnly as="span">
+                              {user.name} RSVP
+                            </Text>
                           </Button>
                         ))}
                       </HStack>
@@ -292,7 +294,9 @@ export const EventPage: NextPageWithLayout = () => {
                                 onClick={onClick({ eventId, userId: user.id })}
                               >
                                 {title}
-                                <Text srOnly>{user.name} RSVP</Text>
+                                <Text srOnly as="span">
+                                  {user.name} RSVP
+                                </Text>
                               </Button>
                             ))}
                             <Text data-cy="role">{event_role.name}</Text>

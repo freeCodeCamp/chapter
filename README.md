@@ -177,6 +177,10 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
       <td align="center"><a href="http://programicon.blogspot.com"><img src="https://avatars.githubusercontent.com/u/14340591?v=4?s=100" width="100px;" alt="Jait Jacob"/><br /><sub><b>Jait Jacob</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=jaitjacob" title="Code">💻</a></td>
       <td align="center"><a href="https://sureshkoochana.vercel.app/"><img src="https://avatars.githubusercontent.com/u/29767625?v=4?s=100" width="100px;" alt="Suresh Koochana"/><br /><sub><b>Suresh Koochana</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=SureshKuchana" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/auchynnikau"><img src="https://avatars.githubusercontent.com/u/33329898?v=4?s=100" width="100px;" alt="auchynnikau"/><br /><sub><b>auchynnikau</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=auchynnikau" title="Code">💻</a> <a href="https://github.com/freeCodeCamp/chapter/pulls?q=is%3Apr+reviewed-by%3Aauchynnikau" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center"><a href="https://github.com/nwernink"><img src="https://avatars.githubusercontent.com/u/59752837?v=4?s=100" width="100px;" alt="nwernink"/><br /><sub><b>nwernink</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=nwernink" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 

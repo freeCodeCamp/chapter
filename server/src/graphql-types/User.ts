@@ -23,19 +23,18 @@ export class User extends BaseObject {
 }
 
 @ObjectType()
-export class UserWithPermissions extends User {
+export class UserWithInstanceRole extends User {
   @Field(() => InstanceRole)
   instance_role: InstanceRole;
 }
 
 @ObjectType()
-export class UserProfile extends UserWithPermissions {
+export class UserProfile extends UserWithInstanceRole {
   @Field(() => String)
   email: string;
 }
 
-@ObjectType()
-export class UserWithPermissionInfo extends UserWithPermissions {
+export class UserWithPermissionInfo extends UserWithInstanceRole {
   @Field(() => [UserBan])
   user_bans: UserBan[];
 
@@ -47,7 +46,7 @@ export class UserWithPermissionInfo extends UserWithPermissions {
 }
 
 @ObjectType()
-export class UserForDownload extends UserWithPermissions {
+export class UserForDownload extends UserWithInstanceRole {
   @Field(() => String)
   email: string;
 

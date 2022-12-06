@@ -38,6 +38,24 @@ export type Chapter = {
   region: Scalars['String'];
 };
 
+export type ChapterCardRelations = {
+  __typename?: 'ChapterCardRelations';
+  banner_url?: Maybe<Scalars['String']>;
+  calendar_id?: Maybe<Scalars['String']>;
+  category: Scalars['String'];
+  chapter_users: Array<ChapterUser>;
+  chat_url?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  creator_id: Scalars['Int'];
+  description: Scalars['String'];
+  events: Array<Event>;
+  id: Scalars['Int'];
+  logo_url?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
 export type ChapterPermission = {
   __typename?: 'ChapterPermission';
   id: Scalars['Int'];
@@ -313,7 +331,7 @@ export type Mutation = {
   cancelEvent: Event;
   cancelRsvp?: Maybe<EventUserWithRelations>;
   changeChapterUserRole: ChapterUserWithRelations;
-  changeInstanceUserRole: UserWithPermissions;
+  changeInstanceUserRole: UserWithInstanceRole;
   confirmRsvp: EventUserWithRelations;
   createCalendarEvent: Event;
   createChapter: Chapter;
@@ -326,7 +344,7 @@ export type Mutation = {
   deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUserWithRole;
-  leaveChapter: ChapterUserWithRole;
+  leaveChapter: ChapterUser;
   rsvpEvent: EventUserWithRelations;
   sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
@@ -491,29 +509,27 @@ export type Query = {
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
-  chapterUsers: Array<ChapterUser>;
   chapterVenues: Array<Venue>;
-  chapters: Array<ChapterWithEvents>;
+  chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
   dashboardChapters: Array<ChapterWithEvents>;
   dashboardEvent?: Maybe<EventWithRelations>;
   dashboardEvents: Array<EventWithVenue>;
   dashboardSponsor: Sponsor;
-  dashboardVenues: Array<Venue>;
+  dashboardVenues: Array<VenueWithChapter>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<UserWithPermissionInfo>;
+  me?: Maybe<UserWithPermissions>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   userData?: Maybe<UserForDownload>;
   userInformation?: Maybe<UserProfile>;
-  users: Array<UserWithPermissions>;
-  venue?: Maybe<Venue>;
-  venues: Array<Venue>;
+  users: Array<UserWithInstanceRole>;
+  venue?: Maybe<VenueWithChapterEvents>;
 };
 
 export type QueryChapterArgs = {
@@ -522,10 +538,6 @@ export type QueryChapterArgs = {
 
 export type QueryChapterUserArgs = {
   chapterId: Scalars['Int'];
-};
-
-export type QueryChapterUsersArgs = {
-  id: Scalars['Int'];
 };
 
 export type QueryChapterVenuesArgs = {
@@ -705,8 +717,18 @@ export type UserProfile = {
   name: Scalars['String'];
 };
 
-export type UserWithPermissionInfo = {
-  __typename?: 'UserWithPermissionInfo';
+export type UserWithInstanceRole = {
+  __typename?: 'UserWithInstanceRole';
+  admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+};
+
+export type UserWithPermissions = {
+  __typename?: 'UserWithPermissions';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   id: Scalars['Int'];
@@ -718,19 +740,8 @@ export type UserWithPermissionInfo = {
   user_events: Array<EventUserWithRole>;
 };
 
-export type UserWithPermissions = {
-  __typename?: 'UserWithPermissions';
-  admined_chapters: Array<Chapter>;
-  auto_subscribe: Scalars['Boolean'];
-  id: Scalars['Int'];
-  image_url?: Maybe<Scalars['String']>;
-  instance_role: InstanceRole;
-  name: Scalars['String'];
-};
-
 export type Venue = {
   __typename?: 'Venue';
-  chapter: ChapterWithEvents;
   chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
@@ -761,6 +772,36 @@ export enum VenueType {
   PhysicalAndOnline = 'PhysicalAndOnline',
 }
 
+export type VenueWithChapter = {
+  __typename?: 'VenueWithChapter';
+  chapter: Chapter;
+  chapter_id: Scalars['Int'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  id: Scalars['Int'];
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: Maybe<Scalars['String']>;
+};
+
+export type VenueWithChapterEvents = {
+  __typename?: 'VenueWithChapterEvents';
+  chapter: ChapterWithEvents;
+  chapter_id: Scalars['Int'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  id: Scalars['Int'];
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: Maybe<Scalars['String']>;
+};
+
 export type DeleteMeMutationVariables = Exact<{ [key: string]: never }>;
 
 export type DeleteMeMutation = {
@@ -787,7 +828,7 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'UserWithPermissionInfo';
+    __typename?: 'UserWithPermissions';
     id: number;
     name: string;
     auto_subscribe: boolean;
@@ -854,10 +895,7 @@ export type LeaveChapterMutationVariables = Exact<{
 
 export type LeaveChapterMutation = {
   __typename?: 'Mutation';
-  leaveChapter: {
-    __typename?: 'ChapterUserWithRole';
-    chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  leaveChapter: { __typename?: 'ChapterUser'; user_id: number };
 };
 
 export type ToggleChapterSubscriptionMutationVariables = Exact<{
@@ -923,26 +961,21 @@ export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 export type ChaptersQuery = {
   __typename?: 'Query';
   chapters: Array<{
-    __typename?: 'ChapterWithEvents';
+    __typename?: 'ChapterCardRelations';
     id: number;
     name: string;
     description: string;
     logo_url?: string | null;
     banner_url?: string | null;
-    city: string;
     events: Array<{
-      __typename?: 'EventWithVenue';
+      __typename?: 'Event';
       id: number;
+      canceled: boolean;
+      start_at: any;
+      ends_at: any;
       name: string;
-      capacity: number;
-      venue?: {
-        __typename?: 'Venue';
-        id: number;
-        name: string;
-        region: string;
-        street_address?: string | null;
-      } | null;
     }>;
+    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
 };
 
@@ -1409,7 +1442,7 @@ export type ChangeInstanceUserRoleMutationVariables = Exact<{
 export type ChangeInstanceUserRoleMutation = {
   __typename?: 'Mutation';
   changeInstanceUserRole: {
-    __typename?: 'UserWithPermissions';
+    __typename?: 'UserWithInstanceRole';
     instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
@@ -1430,7 +1463,7 @@ export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 export type UsersQuery = {
   __typename?: 'Query';
   users: Array<{
-    __typename?: 'UserWithPermissions';
+    __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
     instance_role: { __typename?: 'InstanceRole'; id: number; name: string };
@@ -1485,7 +1518,7 @@ export type DashboardVenuesQueryVariables = Exact<{ [key: string]: never }>;
 export type DashboardVenuesQuery = {
   __typename?: 'Query';
   dashboardVenues: Array<{
-    __typename?: 'Venue';
+    __typename?: 'VenueWithChapter';
     id: number;
     chapter_id: number;
     name: string;
@@ -1496,7 +1529,7 @@ export type DashboardVenuesQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
-    chapter: { __typename?: 'ChapterWithEvents'; id: number; name: string };
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
   }>;
 };
 
@@ -1507,7 +1540,7 @@ export type VenueQueryVariables = Exact<{
 export type VenueQuery = {
   __typename?: 'Query';
   venue?: {
-    __typename?: 'Venue';
+    __typename?: 'VenueWithChapterEvents';
     id: number;
     name: string;
     street_address?: string | null;
@@ -1692,26 +1725,21 @@ export type HomeQuery = {
     };
   }>;
   chapters: Array<{
-    __typename?: 'ChapterWithEvents';
+    __typename?: 'ChapterCardRelations';
     id: number;
     name: string;
     description: string;
-    logo_url?: string | null;
     banner_url?: string | null;
-    city: string;
+    logo_url?: string | null;
     events: Array<{
-      __typename?: 'EventWithVenue';
+      __typename?: 'Event';
       id: number;
+      canceled: boolean;
+      start_at: any;
+      ends_at: any;
       name: string;
-      capacity: number;
-      venue?: {
-        __typename?: 'Venue';
-        id: number;
-        name: string;
-        region: string;
-        street_address?: string | null;
-      } | null;
     }>;
+    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
 };
 
@@ -2081,9 +2109,7 @@ export type JoinChapterMutationOptions = Apollo.BaseMutationOptions<
 export const LeaveChapterDocument = gql`
   mutation leaveChapter($chapterId: Int!) {
     leaveChapter(chapterId: $chapterId) {
-      chapter_role {
-        name
-      }
+      user_id
     }
   }
 `;
@@ -2323,17 +2349,15 @@ export const ChaptersDocument = gql`
       description
       logo_url
       banner_url
-      city
       events {
         id
+        canceled
+        start_at
+        ends_at
         name
-        capacity
-        venue {
-          id
-          name
-          region
-          street_address
-        }
+      }
+      chapter_users {
+        subscribed
       }
     }
   }
@@ -4756,19 +4780,17 @@ export const HomeDocument = gql`
       id
       name
       description
-      logo_url
       banner_url
-      city
+      logo_url
       events {
         id
+        canceled
+        start_at
+        ends_at
         name
-        capacity
-        venue {
-          id
-          name
-          region
-          street_address
-        }
+      }
+      chapter_users {
+        subscribed
       }
     }
   }

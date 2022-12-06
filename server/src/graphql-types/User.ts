@@ -1,6 +1,14 @@
 import { ObjectType, Field } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { InstanceRole, UserChapter, UserEvent, UserBanChapters } from '.';
+import {
+  ChapterUserWithRole,
+  UserBan,
+  EventUserWithRole,
+  InstanceRole,
+  UserChapter,
+  UserEvent,
+  UserBanChapters,
+} from '.';
 
 @ObjectType()
 export class User extends BaseObject {
@@ -18,6 +26,18 @@ export class User extends BaseObject {
 export class UserWithInstanceRole extends User {
   @Field(() => InstanceRole)
   instance_role: InstanceRole;
+}
+
+@ObjectType()
+export class UserWithPermissions extends UserWithInstanceRole {
+  @Field(() => [UserBan])
+  user_bans: UserBan[];
+
+  @Field(() => [ChapterUserWithRole])
+  user_chapters: ChapterUserWithRole[];
+
+  @Field(() => [EventUserWithRole])
+  user_events: EventUserWithRole[];
 }
 
 @ObjectType()

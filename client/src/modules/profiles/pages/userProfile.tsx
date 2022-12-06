@@ -12,14 +12,14 @@ import {
   UpdateUserInputs,
   useUserProfileQuery,
   useUserDownloadLazyQuery,
-  UserData,
+  UserDownloadQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
-const createDownloadData = (userData: UserData) => {
+const createDownloadData = (userData: UserDownloadQuery) => {
   const dataString = JSON.stringify(userData, (key, value) =>
     key === '__typename' ? undefined : value,
   );
@@ -34,7 +34,7 @@ export const UserProfilePage = () => {
   const [getData, { data: downloadableData, loading }] =
     useUserDownloadLazyQuery();
   const userInfo = data?.userInformation;
-  const userData = downloadableData?.userData;
+  const userDataDownload = downloadableData;
 
   const logout = useLogout();
   const router = useRouter();
@@ -131,7 +131,7 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               onClick={() => getData()}
-              isDisabled={!!userData}
+              isDisabled={!!userDataDownload}
             >
               Request your data
             </Button>
@@ -139,7 +139,7 @@ export const UserProfilePage = () => {
               <Spinner />
             ) : (
               <>
-                {userData && (
+                {userDataDownload && (
                   <Flex alignItems={'center'} gap="2em">
                     <Text>The data was fetched succesfully 🥳</Text>
                     <Link
@@ -151,8 +151,8 @@ export const UserProfilePage = () => {
                       borderRadius={'5px'}
                       paddingBlock={'.65em'}
                       paddingInline={'.4em'}
-                      download={`${userData?.name}.json`}
-                      href={createDownloadData(userData)}
+                      download={`${userDataDownload.userData?.name}.json`}
+                      href={createDownloadData(userDataDownload)}
                     >
                       Click Here to download the data
                     </Link>

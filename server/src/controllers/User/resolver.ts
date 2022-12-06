@@ -11,7 +11,7 @@ import { Prisma } from '@prisma/client';
 import {
   User,
   Chapter,
-  UserWithPermissions,
+  UserWithInstanceRole,
   UserForDownload,
   UserProfile,
 } from '../../graphql-types';
@@ -23,11 +23,11 @@ import {
 } from '../../util/adminedChapters';
 import { UpdateUserInputs } from './input';
 
-@Resolver(() => UserWithPermissions)
+@Resolver(() => UserWithInstanceRole)
 export class UserWithPermissionsResolver {
   @FieldResolver(() => [Chapter])
   async admined_chapters(
-    @Root() user: UserWithPermissions,
+    @Root() user: UserWithInstanceRole,
   ): Promise<Chapter[]> {
     return await prisma.chapters.findMany({
       ...(!isAdminFromInstanceRole(user) && {

@@ -141,7 +141,6 @@ export const UserProfilePage = () => {
               <>
                 {userDataDownload && (
                   <Flex alignItems={'center'} gap="2em">
-                    <Text>The data was fetched succesfully 🥳</Text>
                     <Link
                       fontWeight="600"
                       background={'gray.85'}
@@ -154,7 +153,7 @@ export const UserProfilePage = () => {
                       download={`${userDataDownload.userData?.name}.json`}
                       href={createDownloadData(userDataDownload)}
                     >
-                      Click Here to download the data
+                      Download the data
                     </Link>
                   </Flex>
                 )}

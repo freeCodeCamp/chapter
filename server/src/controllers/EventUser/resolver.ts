@@ -38,7 +38,6 @@ export class EventUserResolver {
       },
       where: whereCondition,
       include: {
-        event: true,
         event_role: {
           include: {
             event_role_permissions: { include: { event_permission: true } },
@@ -73,7 +72,6 @@ export class EventUserResolver {
       },
       where: whereCondition,
       include: {
-        event: true,
         event_role: {
           include: {
             event_role_permissions: { include: { event_permission: true } },

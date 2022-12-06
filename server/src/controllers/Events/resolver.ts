@@ -171,7 +171,6 @@ const buildEmailForUpdatedEvent = async (
 ) => {
   const subject = `Details changed for event ${event.name}`;
 
-  // this returns [object Promise] and I don't know why
   const createVenueLocationContent = async () => {
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: data.venue_id },
@@ -181,8 +180,8 @@ const buildEmailForUpdatedEvent = async (
     return `The event is now being held at <br />
     <br />
 - ${venue.name} <br />
-- ${venue.street_address && venue.street_address + '<br />'}
-- ${venue.city} <br />
+- ${venue.street_address ? venue.street_address + '<br />- ' : ''}
+${venue.city} <br />
 - ${venue.region} <br />
 - ${venue.postal_code} <br />
 ----------------------------<br />

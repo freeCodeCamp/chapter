@@ -44,18 +44,6 @@ export class UserWithPermissionsResolver {
         id: ctx.user.id,
       },
       include: {
-        user_chapters: {
-          include: {
-            chapter_role: {
-              include: {
-                chapter_role_permissions: {
-                  include: { chapter_permission: true },
-                },
-              },
-            },
-            chapter: true,
-          },
-        },
         instance_role: {
           include: {
             instance_role_permissions: {

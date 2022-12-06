@@ -190,7 +190,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     >
                       Change
                       <Text srOnly as="span">
-                        role of {otherUser.name} 
+                        role of {otherUser.name}
                       </Text>
                     </Button>
                   )}

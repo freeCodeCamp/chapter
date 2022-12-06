@@ -74,7 +74,6 @@ export const Header: React.FC = () => {
                 fontWeight="600"
                 borderRadius="5px"
               >
-                {/* We are using Nextlink because of confustion in NextJs which harm the loading functionality and force the page to wait for the JS loading to display it */}
                 <NextLink passHref href="/chapters">
                   <MenuItem as="a">Chapters</MenuItem>
                 </NextLink>

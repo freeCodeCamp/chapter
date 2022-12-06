@@ -12,7 +12,7 @@ interface CreateCalendarEventData {
 }
 
 // TODO: consider pulling this back into the resolver (it's only used twice,
-// it's not that complex so I don't think we need to abstract it out)q
+// it's not that complex so I don't think we need to abstract it out)
 export const createCalendarEventHelper = async ({
   attendeeEmails,
   calendarId,

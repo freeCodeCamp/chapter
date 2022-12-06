@@ -13,21 +13,42 @@ import { useAuth } from 'modules/auth/store';
 
 const actionLinks = [
   {
-    colorScheme: 'blue',
+    background: 'gray.85',
+    color: 'gray.10',
+    _hover: { color: 'gray.85', backgroundColor: 'gray.10' },
+    _focusVisible: {
+      outlineColor: 'blue.600',
+      outlineOffset: '1px',
+      boxShadow: 'none',
+    },
     size: 'xs',
     href: (id: number) => `/dashboard/chapters/${id}/new-venue`,
     text: 'Add venue',
     requiredPermission: Permission.VenueCreate,
   },
   {
-    colorScheme: 'blue',
+    background: 'gray.85',
+    color: 'gray.10',
+    _hover: { color: 'gray.85', backgroundColor: 'gray.10' },
+    _focusVisible: {
+      outlineColor: 'blue.600',
+      outlineOffset: '1px',
+      boxShadow: 'none',
+    },
     size: 'xs',
     href: (id: number) => `/dashboard/chapters/${id}/new-event`,
     text: 'Add Event',
     requiredPermission: Permission.EventCreate,
   },
   {
-    colorScheme: 'blue',
+    background: 'gray.85',
+    color: 'gray.10',
+    _hover: { color: 'gray.85', backgroundColor: 'gray.10' },
+    _focusVisible: {
+      outlineColor: 'blue.600',
+      outlineOffset: '1px',
+      boxShadow: 'none',
+    },
     size: 'xs',
     href: (id: number) => `/dashboard/chapters/${id}/edit`,
     text: 'Edit',
@@ -57,7 +78,14 @@ export const ChaptersPage: NextPageWithLayout = () => {
           <LinkButton
             data-cy="new-chapter"
             href="/dashboard/chapters/new"
-            colorScheme={'blue'}
+            background="gray.85"
+            color="gray.10"
+            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+            _focusVisible={{
+              outlineColor: 'blue.600',
+              outlineOffset: '1px',
+              boxShadow: 'none',
+            }}
           >
             Add new
           </LinkButton>

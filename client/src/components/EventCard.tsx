@@ -39,7 +39,14 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           mt="1"
           paddingInline="[1 , 2]"
           paddingBlock="[.5, 1]"
-          colorScheme={'blue'}
+          background="gray.85"
+          color="gray.10"
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          _focusVisible={{
+            outlineColor: 'blue.600',
+            outlineOffset: '1px',
+            boxShadow: 'none',
+          }}
           fontSize={['small', 'md']}
           maxWidth={'8em'}
           maxH={'2em'}

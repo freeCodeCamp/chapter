@@ -59,7 +59,14 @@ const SubscriptionWidget = ({
     <HStack justifyContent={'space-between'} width={'100%'}>
       <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
       <Button
-        colorScheme="blue"
+        background={'gray.85'}
+        color={'gray.10'}
+        _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+        _focusVisible={{
+          outlineColor: 'blue.600',
+          outlineOffset: '1px',
+          boxShadow: 'none',
+        }}
         onClick={() => chapterSubscribe(true)}
         size="md"
       >
@@ -89,7 +96,17 @@ const ChapterUserRoleWidget = ({
   ) : (
     <HStack justifyContent="space-between">
       <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" onClick={JoinChapter}>
+      <Button
+        background="gray.85"
+        color="gray.10"
+        _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+        _focusVisible={{
+          outlineColor: 'blue.600',
+          outlineOffset: '1px',
+          boxShadow: 'none',
+        }}
+        onClick={JoinChapter}
+      >
         Join
       </Button>
     </HStack>

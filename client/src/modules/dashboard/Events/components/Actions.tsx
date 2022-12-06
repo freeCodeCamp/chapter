@@ -77,7 +77,14 @@ const Actions: React.FC<ActionsProps> = ({
     <HStack spacing="3">
       <LinkButton
         size={['sm', 'md']}
-        colorScheme="blue"
+        background="gray.85"
+        color="gray.10"
+        _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+        _focusVisible={{
+          outlineColor: 'blue.600',
+          outlineOffset: '1px',
+          boxShadow: 'none',
+        }}
         href={`/dashboard/events/${event.id}/edit`}
       >
         Edit
@@ -85,7 +92,14 @@ const Actions: React.FC<ActionsProps> = ({
       {!event.calendar_event_id && chapter.calendar_id && (
         <Button
           size={['sm', 'md']}
-          colorScheme="blue"
+          background="gray.85"
+          color="gray.10"
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          _focusVisible={{
+            outlineColor: 'blue.600',
+            outlineOffset: '1px',
+            boxShadow: 'none',
+          }}
           onClick={onCreateCalendarEvent}
         >
           Create calendar event

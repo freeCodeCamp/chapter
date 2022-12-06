@@ -100,7 +100,14 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
         <Button
           mt="20px"
           variant="solid"
-          colorScheme="blue"
+          background="gray.85"
+          color="gray.10"
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          _focusVisible={{
+            outlineColor: 'blue.600',
+            outlineOffset: '1px',
+            boxShadow: 'none',
+          }}
           type="submit"
           isLoading={loading}
           loadingText={loadingText}

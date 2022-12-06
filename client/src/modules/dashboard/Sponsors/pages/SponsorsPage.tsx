@@ -33,7 +33,17 @@ export const SponsorsPage: NextPageWithLayout = () => {
         <Flex w="full" justify="space-between">
           <Heading id="page-heading">Sponsors</Heading>
           {hasPermissionToManageSponsor && (
-            <LinkButton href="/dashboard/sponsors/new" colorScheme="blue">
+            <LinkButton
+              href="/dashboard/sponsors/new"
+              background="gray.85"
+              color="gray.10"
+              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+              _focusVisible={{
+                outlineColor: 'blue.600',
+                outlineOffset: '1px',
+                boxShadow: 'none',
+              }}
+            >
               Add new
             </LinkButton>
           )}
@@ -54,7 +64,14 @@ export const SponsorsPage: NextPageWithLayout = () => {
               action: (sponsor) =>
                 hasPermissionToManageSponsor && (
                   <LinkButton
-                    colorScheme="blue"
+                    background="gray.85"
+                    color="gray.10"
+                    _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+                    _focusVisible={{
+                      outlineColor: 'blue.600',
+                      outlineOffset: '1px',
+                      boxShadow: 'none',
+                    }}
                     size="xs"
                     href={`/dashboard/sponsors/${sponsor.id}/edit`}
                   >
@@ -97,7 +114,17 @@ export const SponsorsPage: NextPageWithLayout = () => {
                     <Text>{type}</Text>
                     {hasPermissionToManageSponsor && (
                       <LinkButton
-                        colorScheme="blue"
+                        background="gray.85"
+                        color="gray.10"
+                        _hover={{
+                          color: 'gray.85',
+                          backgroundColor: 'gray.10',
+                        }}
+                        _focusVisible={{
+                          outlineColor: 'blue.600',
+                          outlineOffset: '1px',
+                          boxShadow: 'none',
+                        }}
                         size="xs"
                         href={`/dashboard/sponsors/${id}/edit`}
                       >

@@ -27,7 +27,14 @@ function Pagination({
     <Flex>
       <Center>
         <Button
-          colorScheme="blue"
+          background="gray.85"
+          color="gray.10"
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          _focusVisible={{
+            outlineColor: 'blue.600',
+            outlineOffset: '1px',
+            boxShadow: 'none',
+          }}
           data-testid="pagination-back"
           disabled={!(currentPage > 1)}
           onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
@@ -43,7 +50,14 @@ function Pagination({
           {totalPages}
         </Box>
         <Button
-          colorScheme="blue"
+          background="gray.85"
+          color="gray.10"
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          _focusVisible={{
+            outlineColor: 'blue.600',
+            outlineOffset: '1px',
+            boxShadow: 'none',
+          }}
           data-testid="pagination-forward"
           disabled={!(currentPage < totalPages)}
           onClick={() =>
@@ -83,7 +97,17 @@ export const EventsPage: NextPage = () => {
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Heading as="h1">Events: </Heading>
           {checkPermission(user, Permission.EventsView) && (
-            <LinkButton href="/dashboard/events" colorScheme={'blue'}>
+            <LinkButton
+              href="/dashboard/events"
+              background="gray.85"
+              color="gray.10"
+              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+              _focusVisible={{
+                outlineColor: 'blue.600',
+                outlineOffset: '1px',
+                boxShadow: 'none',
+              }}
+            >
               Events Dashboard
             </LinkButton>
           )}

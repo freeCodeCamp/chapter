@@ -46,12 +46,10 @@ export const Header: React.FC = () => {
         </SkipNavLink>
         <Link
           href="/"
-          _focus={{
-            outlineColor: 'blue.600',
-            outlineOffset: '5px',
-          }}
           _focusVisible={{
             boxShadow: 'none',
+            outlineColor: 'blue.600',
+            outlineOffset: '5px',
           }}
         >
           <Image
@@ -135,13 +133,11 @@ export const Header: React.FC = () => {
             <Link
               href="/profile"
               backgroundColor="transparent"
-              _focus={{
-                outlineColor: 'blue.600',
-                outlineOffset: '3px',
-              }}
               borderRadius="50%"
               _focusVisible={{
                 boxShadow: 'none',
+                outlineColor: 'blue.600',
+                outlineOffset: '3px',
               }}
             >
               <Avatar user={user} cursor="pointer" aria-label="Profile" />

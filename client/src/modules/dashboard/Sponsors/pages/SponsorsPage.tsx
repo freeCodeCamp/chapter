@@ -35,6 +35,9 @@ export const SponsorsPage: NextPageWithLayout = () => {
           {hasPermissionToManageSponsor && (
             <LinkButton href="/dashboard/sponsors/new" colorScheme="blue">
               Add new
+              <Text srOnly as="span">
+                sponsor
+              </Text>
             </LinkButton>
           )}
         </Flex>
@@ -59,6 +62,9 @@ export const SponsorsPage: NextPageWithLayout = () => {
                     href={`/dashboard/sponsors/${sponsor.id}/edit`}
                   >
                     Edit
+                    <Text srOnly as="span">
+                      {sponsor.name}
+                    </Text>
                   </LinkButton>
                 ),
             }}
@@ -102,6 +108,9 @@ export const SponsorsPage: NextPageWithLayout = () => {
                         href={`/dashboard/sponsors/${id}/edit`}
                       >
                         Edit
+                        <Text srOnly as="span">
+                          {name}
+                        </Text>
                       </LinkButton>
                     )}
                     <Text

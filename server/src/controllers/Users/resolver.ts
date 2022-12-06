@@ -6,6 +6,7 @@ import { UserWithPermissions } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { InstanceRoles } from '../../../../common/roles';
 import { getRoleName } from '../../util/chapterAdministrator';
+import MailerService from '../../../src/services/MailerService';
 
 const instanceRoleInclude = {
   instance_role: {
@@ -71,6 +72,18 @@ export class UsersResolver {
 
     const oldRole = user.instance_role.name;
     if (oldRole === newRole) return user;
+
+    const emailSubject = `Your role has changed to ${newRole} in chapter`;
+    const emailContent = `Hello, ${user.name}<br />
+  Your role in chapter has changed to ${newRole}<br />
+  This means you can change chapters, events, venues, and sponsors dashboard however you like.<br />
+  Furthermore, you can manage members in users section of dashboard.<br />
+  You can also use chapter to manages your future calendar and events in calender section of dashboard.`;
+    await new MailerService({
+      emailList: [user.email],
+      subject: emailSubject,
+      htmlEmail: emailContent,
+    }).sendEmail();
 
     return await prisma.users.update({
       data: {

@@ -12,10 +12,10 @@ export const Footer: React.FC = () => {
       gap="2em"
       justifyContent="space-evenly"
     >
-      <Link href="/policy" fontWeight="600">
+      <Link href="/chapters" fontWeight="600">
         Chapters
       </Link>
-      <Link href="/policy" fontWeight="600">
+      <Link href="/events" fontWeight="600">
         Events
       </Link>
       <Link href="/policy" fontWeight="600">

@@ -115,16 +115,29 @@ export const ChaptersPage: NextPageWithLayout = () => {
                         chapterId: chapter.id,
                       }),
                   )
-                  .map(({ colorScheme, size, text, href }) => (
-                    <LinkButton
-                      key={text}
-                      colorScheme={colorScheme}
-                      size={size}
-                      href={href(chapter.id)}
-                    >
-                      {text}
-                    </LinkButton>
-                  ))}
+                  .map(
+                    ({
+                      size,
+                      text,
+                      href,
+                      _focusVisible,
+                      _hover,
+                      background,
+                      color,
+                    }) => (
+                      <LinkButton
+                        key={text}
+                        background={background}
+                        color={color}
+                        _focusVisible={_focusVisible}
+                        _hover={_hover}
+                        size={size}
+                        href={href(chapter.id)}
+                      >
+                        {text}
+                      </LinkButton>
+                    ),
+                  )}
               </HStack>
             ),
           }}
@@ -176,16 +189,29 @@ export const ChaptersPage: NextPageWithLayout = () => {
                               chapterId: chapter.id,
                             }),
                         )
-                        .map(({ colorScheme, size, href, text }) => (
-                          <LinkButton
-                            key={text}
-                            colorScheme={colorScheme}
-                            size={size}
-                            href={href(chapter.id)}
-                          >
-                            {text}
-                          </LinkButton>
-                        ))}
+                        .map(
+                          ({
+                            size,
+                            text,
+                            href,
+                            _focusVisible,
+                            _hover,
+                            background,
+                            color,
+                          }) => (
+                            <LinkButton
+                              key={text}
+                              background={background}
+                              color={color}
+                              _focusVisible={_focusVisible}
+                              _hover={_hover}
+                              size={size}
+                              href={href(chapter.id)}
+                            >
+                              {text}
+                            </LinkButton>
+                          ),
+                        )}
                     </HStack>
                   </VStack>
                 ),

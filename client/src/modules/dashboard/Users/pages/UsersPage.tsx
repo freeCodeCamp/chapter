@@ -93,7 +93,10 @@ export const UsersPage: NextPageWithLayout = () => {
                     })
                   }
                 >
-                  Change role<Text srOnly> for {name}</Text>
+                  Change role
+                  <Text srOnly as="span">
+                    for {name}
+                  </Text>
                 </Button>
               ),
               role: ({ instance_role: { name } }) => (
@@ -140,7 +143,10 @@ export const UsersPage: NextPageWithLayout = () => {
                         })
                       }
                     >
-                      Change role<Text srOnly>for {name}</Text>
+                      Change role
+                      <Text srOnly as="span">
+                        for {name}
+                      </Text>
                     </Button>
                   </VStack>
                 ),

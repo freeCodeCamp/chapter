@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
@@ -88,6 +88,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
             }}
           >
             Add new
+            <Text srOnly as="span">
+              chapter
+            </Text>
           </LinkButton>
         )}
       </Flex>
@@ -135,6 +138,11 @@ export const ChaptersPage: NextPageWithLayout = () => {
                         href={href(chapter.id)}
                       >
                         {text}
+                        <Text srOnly as="span">
+                          {text !== 'Edit'
+                            ? `for ${chapter.name}`
+                            : `${chapter.name}`}
+                        </Text>
                       </LinkButton>
                     ),
                   )}
@@ -209,6 +217,11 @@ export const ChaptersPage: NextPageWithLayout = () => {
                               href={href(chapter.id)}
                             >
                               {text}
+                              <Text srOnly as="span">
+                                {text !== 'Edit'
+                                  ? `for ${chapter.name}`
+                                  : `${chapter.name}`}
+                              </Text>
                             </LinkButton>
                           ),
                         )}

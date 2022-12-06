@@ -504,13 +504,13 @@ export type Query = {
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
-  me?: Maybe<UserWithPermissions>;
+  me?: Maybe<UserWithPermissionInfo>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
-  userData?: Maybe<UserProfile>;
-  userInformation?: Maybe<UserForDownload>;
+  userData?: Maybe<UserForDownload>;
+  userInformation?: Maybe<UserProfile>;
   users: Array<UserWithPermissions>;
   venue?: Maybe<Venue>;
   venues: Array<Venue>;
@@ -651,11 +651,10 @@ export type UserBan = {
   user_id: Scalars['Float'];
 };
 
-export type UserBanWithRelations = {
-  __typename?: 'UserBanWithRelations';
+export type UserBanChapters = {
+  __typename?: 'UserBanChapters';
   chapter: Chapter;
   chapter_id: Scalars['Float'];
-  user: User;
   user_id: Scalars['Float'];
 };
 
@@ -683,13 +682,16 @@ export type UserEvent = {
 
 export type UserForDownload = {
   __typename?: 'UserForDownload';
+  admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
   id: Scalars['Int'];
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
+  user_bans: Array<UserBanChapters>;
   user_chapters: Array<UserChapter>;
+  user_events: Array<UserEvent>;
 };
 
 export type UserProfile = {
@@ -701,9 +703,19 @@ export type UserProfile = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBanWithRelations>;
-  user_chapters: Array<UserChapter>;
-  user_events: Array<UserEvent>;
+};
+
+export type UserWithPermissionInfo = {
+  __typename?: 'UserWithPermissionInfo';
+  admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+  user_bans: Array<UserBan>;
+  user_chapters: Array<ChapterUserWithRole>;
+  user_events: Array<EventUserWithRole>;
 };
 
 export type UserWithPermissions = {
@@ -714,9 +726,6 @@ export type UserWithPermissions = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBan>;
-  user_chapters: Array<ChapterUserWithRole>;
-  user_events: Array<EventUserWithRole>;
 };
 
 export type Venue = {
@@ -778,7 +787,7 @@ export type MeQueryVariables = Exact<{ [key: string]: never }>;
 export type MeQuery = {
   __typename?: 'Query';
   me?: {
-    __typename?: 'UserWithPermissions';
+    __typename?: 'UserWithPermissionInfo';
     id: number;
     name: string;
     auto_subscribe: boolean;
@@ -1720,16 +1729,17 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 export type UserProfileQuery = {
   __typename?: 'Query';
   userInformation?: {
-    __typename?: 'UserForDownload';
+    __typename?: 'UserProfile';
     id: number;
     name: string;
     email: string;
     auto_subscribe: boolean;
     image_url?: string | null;
     instance_role: { __typename?: 'InstanceRole'; name: string };
-    user_chapters: Array<{
-      __typename?: 'UserChapter';
-      chapter: { __typename?: 'Chapter'; id: number; name: string };
+    admined_chapters: Array<{
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
     }>;
   } | null;
 };
@@ -1739,7 +1749,7 @@ export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
 export type UserDownloadQuery = {
   __typename?: 'Query';
   userData?: {
-    __typename?: 'UserProfile';
+    __typename?: 'UserForDownload';
     id: number;
     name: string;
     email: string;
@@ -1768,7 +1778,7 @@ export type UserDownloadQuery = {
       }>;
     };
     user_bans: Array<{
-      __typename?: 'UserBanWithRelations';
+      __typename?: 'UserBanChapters';
       chapter_id: number;
       chapter: {
         __typename?: 'Chapter';
@@ -4859,11 +4869,9 @@ export const UserProfileDocument = gql`
       instance_role {
         name
       }
-      user_chapters {
-        chapter {
-          id
-          name
-        }
+      admined_chapters {
+        id
+        name
       }
     }
   }

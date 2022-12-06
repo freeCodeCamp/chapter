@@ -7,7 +7,7 @@ import {
   UserBan,
   UserChapter,
   UserEvent,
-  UserBanWithRelations,
+  UserBanChapters,
 } from '.';
 
 @ObjectType()
@@ -23,22 +23,19 @@ export class User extends BaseObject {
 }
 
 @ObjectType()
-export class UserForDownload extends User {
-  @Field(() => String)
-  email: string;
-
-  @Field(() => InstanceRole)
-  instance_role: InstanceRole;
-
-  @Field(() => [UserChapter])
-  user_chapters: UserChapter[];
-}
-
-@ObjectType()
 export class UserWithPermissions extends User {
   @Field(() => InstanceRole)
   instance_role: InstanceRole;
+}
 
+@ObjectType()
+export class UserProfile extends UserWithPermissions {
+  @Field(() => String)
+  email: string;
+}
+
+@ObjectType()
+export class UserWithPermissionInfo extends UserWithPermissions {
   @Field(() => [UserBan])
   user_bans: UserBan[];
 
@@ -50,12 +47,12 @@ export class UserWithPermissions extends User {
 }
 
 @ObjectType()
-export class UserProfile extends UserWithPermissions {
+export class UserForDownload extends UserWithPermissions {
   @Field(() => String)
   email: string;
 
-  @Field(() => [UserBanWithRelations])
-  user_bans: UserBanWithRelations[];
+  @Field(() => [UserBanChapters])
+  user_bans: UserBanChapters[];
 
   @Field(() => [UserChapter])
   user_chapters: UserChapter[];

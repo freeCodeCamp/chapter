@@ -36,10 +36,8 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserForDownload, { nullable: true })
-  async userInformation(
-    @Ctx() ctx: ResolverCtx,
-  ): Promise<UserForDownload | null> {
+  @Query(() => UserProfile, { nullable: true })
+  async userInformation(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
     if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {
@@ -69,8 +67,8 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserProfile, { nullable: true })
-  async userData(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
+  @Query(() => UserForDownload, { nullable: true })
+  async userData(@Ctx() ctx: ResolverCtx): Promise<UserForDownload | null> {
     if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {
@@ -86,7 +84,6 @@ export class UserWithPermissionsResolver {
                 },
               },
             },
-            user: true,
             chapter: true,
           },
         },
@@ -100,7 +97,6 @@ export class UserWithPermissionsResolver {
         user_bans: {
           include: {
             chapter: true,
-            user: true,
           },
         },
         user_events: {

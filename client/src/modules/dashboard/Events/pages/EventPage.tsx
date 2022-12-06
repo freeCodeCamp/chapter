@@ -240,7 +240,7 @@ export const EventPage: NextPageWithLayout = () => {
                           >
                             {title}
                             <Text srOnly as="span">
-                              {user.name} RSVP
+                              RSVP of {user.name}
                             </Text>
                           </Button>
                         ))}
@@ -295,7 +295,7 @@ export const EventPage: NextPageWithLayout = () => {
                               >
                                 {title}
                                 <Text srOnly as="span">
-                                  {user.name} RSVP
+                                  RSVP of {user.name}
                                 </Text>
                               </Button>
                             ))}

@@ -67,7 +67,6 @@ export type ChapterUser = {
 
 export type ChapterUserWithRelations = {
   __typename?: 'ChapterUserWithRelations';
-  chapter: Chapter;
   chapter_id: Scalars['Int'];
   chapter_role: ChapterRole;
   is_bannable?: Maybe<Scalars['Boolean']>;
@@ -216,7 +215,6 @@ export type EventUser = {
 
 export type EventUserWithRelations = {
   __typename?: 'EventUserWithRelations';
-  event: Event;
   event_id: Scalars['Int'];
   event_role: EventRole;
   rsvp: Rsvp;
@@ -672,6 +670,17 @@ export type UserChapter = {
   user_id: Scalars['Int'];
 };
 
+export type UserEvent = {
+  __typename?: 'UserEvent';
+  event: Event;
+  event_id: Scalars['Int'];
+  event_role: EventRole;
+  rsvp: Rsvp;
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+};
+
 export type UserForDownload = {
   __typename?: 'UserForDownload';
   auto_subscribe: Scalars['Boolean'];
@@ -693,8 +702,8 @@ export type UserProfile = {
   instance_role: InstanceRole;
   name: Scalars['String'];
   user_bans: Array<UserBanWithRelations>;
-  user_chapters: Array<ChapterUserWithRelations>;
-  user_events: Array<EventUserWithRelations>;
+  user_chapters: Array<UserChapter>;
+  user_events: Array<UserEvent>;
 };
 
 export type UserWithPermissions = {
@@ -1773,7 +1782,7 @@ export type UserDownloadQuery = {
       };
     }>;
     user_chapters: Array<{
-      __typename?: 'ChapterUserWithRelations';
+      __typename?: 'UserChapter';
       subscribed: boolean;
       joined_date: any;
       chapter_role: {
@@ -1799,7 +1808,7 @@ export type UserDownloadQuery = {
       };
     }>;
     user_events: Array<{
-      __typename?: 'EventUserWithRelations';
+      __typename?: 'UserEvent';
       subscribed: boolean;
       updated_at: any;
       rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };

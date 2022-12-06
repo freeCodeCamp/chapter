@@ -113,7 +113,6 @@ export class UserWithPermissionsResolver {
                 },
               },
             },
-            user: true,
             event: true,
           },
         },

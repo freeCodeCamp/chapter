@@ -1,13 +1,12 @@
 import { ObjectType, Field } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 import {
-  ChapterUserWithRelations,
   ChapterUserWithRole,
   EventUserWithRole,
-  EventUserWithRelations,
   InstanceRole,
   UserBan,
   UserChapter,
+  UserEvent,
   UserBanWithRelations,
 } from '.';
 
@@ -58,9 +57,9 @@ export class UserProfile extends UserWithPermissions {
   @Field(() => [UserBanWithRelations])
   user_bans: UserBanWithRelations[];
 
-  @Field(() => [ChapterUserWithRelations])
-  user_chapters: ChapterUserWithRelations[];
+  @Field(() => [UserChapter])
+  user_chapters: UserChapter[];
 
-  @Field(() => [EventUserWithRelations])
-  user_events: EventUserWithRelations[];
+  @Field(() => [UserEvent])
+  user_events: UserEvent[];
 }

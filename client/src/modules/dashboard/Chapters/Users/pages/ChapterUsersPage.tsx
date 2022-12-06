@@ -193,14 +193,25 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     </Button>
                   )}
                   {bans.has(otherUser.id) ? (
-                    <Button
-                      data-cy="unbanUser"
-                      colorScheme="purple"
-                      size="xs"
-                      onClick={() => onUnban(otherUser)}
+                    <Tooltip
+                      hasArrow
+                      label={
+                        !is_bannable &&
+                        `You can't unban this member, due to lack privileges in the Instance`
+                      }
+                      bg="gray.10"
+                      color="gray.90"
                     >
-                      Unban
-                    </Button>
+                      <Button
+                        data-cy="unbanUser"
+                        colorScheme="purple"
+                        size="xs"
+                        disabled={is_bannable ? false : true}
+                        onClick={() => onUnban(otherUser)}
+                      >
+                        Unban
+                      </Button>
+                    </Tooltip>
                   ) : (
                     <Tooltip
                       hasArrow

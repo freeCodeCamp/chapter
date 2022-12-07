@@ -90,7 +90,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                         chapterId: chapter.id,
                       }),
                   )
-                  .map(({ size, text, href, colorScheme }) => (
+                  .map(({ colorScheme, size, text, href }) => (
                     <LinkButton
                       key={text}
                       colorScheme={colorScheme}
@@ -156,7 +156,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                               chapterId: chapter.id,
                             }),
                         )
-                        .map(({ size, text, href, colorScheme }) => (
+                        .map(({ colorScheme, size, href, text }) => (
                           <LinkButton
                             key={text}
                             colorScheme={colorScheme}

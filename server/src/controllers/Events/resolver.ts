@@ -58,6 +58,7 @@ import {
   getChapterUnsubscribeOptions,
   getEventUnsubscribeOptions,
 } from '../../util/eventEmail';
+import { formatDate } from '../../util/date';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -119,6 +120,27 @@ ${unsubscribeOptions}
   }).sendEmail();
 };
 
+const createEmailForSubscribers = async (
+  buildEmail: Promise<{
+    subject: string;
+    body: string;
+  }>,
+  emaildata: EventWithUsers,
+) => {
+  const { body, subject } = await buildEmail;
+  batchSender(function* () {
+    for (const { user } of emaildata.event_users) {
+      const email = user.email;
+      const unsubscribeOptions = getEventUnsubscribeOptions({
+        chapterId: emaildata.chapter_id,
+        eventId: emaildata.id,
+        userId: emaildata.id,
+      });
+      const text = `${body}<br>${unsubscribeOptions}`;
+      yield { email, subject, text };
+    }
+  });
+};
 const updateReminders = (event: EventWithUsers, startAt: Date) => {
   // This is asychronous, but we don't use the result, so we don't wait for it
   if (!isEqual(startAt, event.start_at)) {
@@ -134,38 +156,65 @@ const updateReminders = (event: EventWithUsers, startAt: Date) => {
   }
 };
 
-const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+const hasVenueLocationChanged = (data: EventInputs, event: EventWithUsers) =>
   data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
   (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
+  !isEqual(data.ends_at, event.ends_at) ||
+  !isEqual(data.start_at, event.start_at);
+const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
+  isOnline(event.venue_type) && data.streaming_url !== event.streaming_url;
 
 const buildEmailForUpdatedEvent = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
-  const subject = `Venue changed for event ${event.name}`;
-  let venueDetails = '';
+  const subject = `Details changed for event ${event.name}`;
 
-  if (isPhysical(event.venue_type)) {
+  const createVenueLocationContent = async () => {
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: data.venue_id },
     });
-    // TODO: include a link back to the venue page
-    venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
-  }
 
-  if (isOnline(event.venue_type)) {
-    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-  }
-  // TODO: include a link back to the venue page
-  const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}`;
+    // TODO: include a link back to the venue page
+    return `The event is now being held at <br />
+    <br />
+- ${venue.name} <br />
+- ${venue.street_address ? venue.street_address + '<br />- ' : ''}
+${venue.city} <br />
+- ${venue.region} <br />
+- ${venue.postal_code} <br />
+----------------------------<br />
+<br />
+`;
+  };
+  const createDateUpdates = () => {
+    return `
+  - Start: ${formatDate(data.start_at)}<br />
+  - End: ${formatDate(data.ends_at)}<br />
+  ----------------------------<br />
+  <br />
+  `;
+  };
+  const createStreamUpdate = () => {
+    return `Streaming URL: ${data.streaming_url}<br>
+----------------------------<br />
+<br />`;
+  };
+
+  const streamingUrl = hasStreamingUrlChanged(data, event)
+    ? createStreamUpdate()
+    : '';
+  const venueLocationChange = hasVenueLocationChanged(data, event)
+    ? await createVenueLocationContent()
+    : '';
+  const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
+
+  const body = `Updated venue details<br/>
+${venueLocationChange}
+${streamingUrl}
+${dateChange}
+`;
   return { subject, body };
 };
 
@@ -740,20 +789,13 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    if (hasVenueChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
-      batchSender(function* () {
-        for (const { user } of event.event_users) {
-          const email = user.email;
-          const unsubscribeOptions = getEventUnsubscribeOptions({
-            chapterId: event.chapter_id,
-            eventId: event.id,
-            userId: user.id,
-          });
-          const text = `${body}<br>${unsubscribeOptions}`;
-          yield { email, subject, text };
-        }
-      });
+    const hasEventDataChanged =
+      hasVenueLocationChanged(data, event) ||
+      hasDateChanged(data, event) ||
+      hasStreamingUrlChanged(data, event);
+
+    if (hasEventDataChanged) {
+      createEmailForSubscribers(buildEmailForUpdatedEvent(data, event), event);
     }
 
     const updatedEvent = await prisma.events.update({

@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import {
   Arg,
   Authorized,
@@ -19,10 +21,11 @@ import {
 } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { ChapterRoles } from '../../../../common/roles';
-import { updateCalendarEventAttendees } from '../../util/calendar';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
+import { removeEventAttendee } from '../../services/Google';
+import { redactSecrets } from '../../util/redact-secrets';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -40,6 +43,10 @@ async function removeUserFromEventsInChapter({
   userId: number;
   chapterId: number;
 }) {
+  const user = await prisma.users.findUnique({
+    where: { id: userId },
+    select: { email: true },
+  });
   const eventUsers = await prisma.event_users.findMany({
     where: {
       user_id: userId,
@@ -73,15 +80,31 @@ async function removeUserFromEventsInChapter({
     ({ calendar_event_id }) => calendar_event_id,
   );
 
+  const attendeeEmail = user?.email;
+  if (!attendeeEmail) {
+    console.error(
+      `unable to find user ${userId}'s email, cannot remove from calendar events`,
+    );
+    return;
+  }
   const calendarUpdates = eventsWithCalendars.map(
-    async ({ calendar_event_id, chapter: { calendar_id }, id }) => {
-      // The calendar must be updated after event_users, so it can use the updated
-      // email list
-      return await updateCalendarEventAttendees({
-        calendarEventId: calendar_event_id,
-        calendarId: calendar_id,
-        eventId: id,
-      });
+    async ({ calendar_event_id, chapter: { calendar_id } }) => {
+      if (calendar_event_id && calendar_id) {
+        try {
+          await removeEventAttendee(
+            {
+              calendarEventId: calendar_event_id,
+              calendarId: calendar_id,
+            },
+            {
+              attendeeEmail: user?.email,
+            },
+          );
+        } catch (e) {
+          console.error('Unable to remove event attendee');
+          console.error(inspect(redactSecrets(e), { depth: null }));
+        }
+      }
     },
   );
   await Promise.all(calendarUpdates);

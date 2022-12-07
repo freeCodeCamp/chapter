@@ -153,7 +153,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
       )}
       <VStack>
         <Flex w="full" justify="space-between">
-          <Heading id="page-heading">Chapter Users</Heading>
+          <Heading id="page-heading">
+            {data.dashboardChapter.name} Users
+          </Heading>
         </Flex>
         <Box display={{ base: 'none', lg: 'block' }} width={'100%'}>
           <DataTable

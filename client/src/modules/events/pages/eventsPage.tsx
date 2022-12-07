@@ -1,7 +1,7 @@
-import { Heading, VStack, Stack, Center } from '@chakra-ui/layout';
+import { Heading, VStack, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
-import { Button, Box, Flex } from '@chakra-ui/react';
+import { Button, Text, Flex } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
@@ -24,35 +24,32 @@ function Pagination({
   const totalPages = Math.ceil(records / pageSize);
 
   return (
-    <Flex>
-      <Center>
-        <Button
-          colorScheme="blue"
-          data-testid="pagination-back"
-          disabled={!(currentPage > 1)}
-          onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-        >
-          &lt;
-        </Button>
-        <Box p="5">Page</Box>
-        <Box p="5" data-testid="current-page">
-          {currentPage}
-        </Box>
-        <Box p="5">of</Box>
-        <Box p="5" data-testid="total-pages">
-          {totalPages}
-        </Box>
-        <Button
-          colorScheme="blue"
-          data-testid="pagination-forward"
-          disabled={!(currentPage < totalPages)}
-          onClick={() =>
-            currentPage < totalPages && setCurrentPage(currentPage + 1)
-          }
-        >
-          &gt;
-        </Button>
-      </Center>
+    <Flex gap="1em" alignItems="center">
+      <Button
+        colorScheme="blue"
+        data-testid="pagination-back"
+        fontWeight="600"
+        fontSize="xl"
+        disabled={!(currentPage > 1)}
+        onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+      >
+        &lt;
+      </Button>
+      <Text data-testid="current-page">{currentPage}</Text>
+      <Text>of</Text>
+      <Text data-testid="total-pages">{totalPages}</Text>
+      <Button
+        colorScheme="blue"
+        data-testid="pagination-forward"
+        fontWeight="600"
+        fontSize="xl"
+        disabled={!(currentPage < totalPages)}
+        onClick={() =>
+          currentPage < totalPages && setCurrentPage(currentPage + 1)
+        }
+      >
+        &gt;
+      </Button>
     </Flex>
   );
 }

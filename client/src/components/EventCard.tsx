@@ -1,13 +1,4 @@
-import {
-  Heading,
-  Tag,
-  Box,
-  Flex,
-  Image,
-  Grid,
-  GridItem,
-  Text,
-} from '@chakra-ui/react';
+import { Tag, Box, Flex, Image, Grid, GridItem, Text } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { isPast } from 'date-fns';
 import React from 'react';
@@ -107,7 +98,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <Box p="3" py={3} width="full" data-cy="event-card">
         <Grid
           mb="2"
-          as="h4"
           lineHeight="tight"
           gridTemplateColumns={'repeat(3, 1fr)'}
           templateAreas={`
@@ -117,45 +107,38 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           "metatag metatag metatag"
           `}
         >
-          <GridItem area={'eventname'}>
-            <Heading
-              mt={1}
-              size="sm"
-              as={'h3'}
-              fontSize={'xl'}
-              fontWeight={700}
-            >
-              <Link data-cy="event-link" href={`/events/${event.id}`}>
-                {event.name}
-              </Link>
-            </Heading>
-          </GridItem>
+          <Link
+            data-cy="event-link"
+            mt={1}
+            size="sm"
+            gridArea={'eventname'}
+            fontSize={'xl'}
+            fontWeight={700}
+            href={`/events/${event.id}`}
+          >
+            {event.name}
+          </Link>
           <GridItem area={'metatag'}>{metaTag}</GridItem>
-          <GridItem
+          <Link
             fontSize={'md'}
             fontWeight={500}
             fontFamily={'body'}
-            area={'chaptername'}
+            gridArea={'chaptername'}
             marginBlock={'2'}
-            as={'p'}
+            href={`/chapters/${event.chapter.id}`}
           >
-            <Link href={`/chapters/${event.chapter.id}`}>
-              Chapter: {event.chapter.name}
-            </Link>
-          </GridItem>
-          <GridItem
+            Chapter: {event.chapter.name}
+          </Link>
+          <Text
             opacity={'.8'}
-            area={'eventstart'}
+            gridArea={'eventstart'}
             marginBottom={['1', '2']}
+            {...eventStatusStyle}
+            fontSize={['smaller', 'sm']}
+            fontWeight={'semibold'}
           >
-            <Text
-              {...eventStatusStyle}
-              fontSize={['smaller', 'sm']}
-              fontWeight={'semibold'}
-            >
-              {eventStatus}: {formatDate(event.start_at)}
-            </Text>
-          </GridItem>
+            {eventStatus}: {formatDate(event.start_at)}
+          </Text>
         </Grid>
       </Box>
     </Flex>

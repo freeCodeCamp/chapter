@@ -17,7 +17,7 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 export const Calendar: NextPageWithLayout = () => {
-  const { user, isLoggedIn } = useAuth();
+  const { user } = useAuth();
   const canAuthenticateWithGoogle = checkPermission(
     user,
     Permission.GoogleAuthenticate,
@@ -28,14 +28,14 @@ export const Calendar: NextPageWithLayout = () => {
     error: errorStatuses,
     data: dataStatuses,
   } = useTokenStatusesQuery();
-  const isLoading = loading || loadingStatuses || !data || !isLoggedIn;
+  const isLoading = loading || loadingStatuses;
   if (isLoading || error || errorStatuses)
     return <DashboardLoading error={error || errorStatuses} />;
 
   if (!canAuthenticateWithGoogle)
     return <NextError statusCode={403} title="Access denied" />;
 
-  const isAuthenticated = data.calendarIntegrationStatus;
+  const isAuthenticated = data?.calendarIntegrationStatus;
   const isBroken = isAuthenticated === null;
   return (
     <>

@@ -5,11 +5,11 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { SkipNavContent } from '@chakra-ui/skip-nav';
 
 import Link from 'next/link';
-import { useCalendarIntegrationStatusLazyQuery } from '../../generated/graphql';
+import { useCalendarIntegrationStatusQuery } from '../../generated/graphql';
 import { useAuth } from '../../modules/auth/store';
 import { checkPermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
@@ -22,13 +22,10 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
     user,
     Permission.GoogleAuthenticate,
   );
-  const [loadStatus, { data }] = useCalendarIntegrationStatusLazyQuery();
 
-  useEffect(() => {
-    if (canAuthenticateWithGoogle) {
-      loadStatus();
-    }
-  }, [canAuthenticateWithGoogle]);
+  const { data } = useCalendarIntegrationStatusQuery({
+    skip: !canAuthenticateWithGoogle,
+  });
 
   return (
     <>

@@ -24,7 +24,7 @@ describe('Chapter Users dashboard', () => {
   });
   it('should have a table of users', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/users`);
-    cy.findByRole('table', { name: 'Chapter Users' }).should('be.visible');
+    cy.findByRole('table', { name: /Users$/ }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
   });
@@ -157,18 +157,16 @@ describe('Chapter Users dashboard', () => {
       .find('[data-cy=isBanned]')
       .should('not.exist');
 
-    cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Ban' })
-      .click();
+    cy.get('@firstUnbannedMember').find('button[data-cy="banUser"]').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('was banned', { matchCase: false });
 
     cy.get('@firstUnbannedMember').find('[data-cy=isBanned]').should('exist');
     cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Unban' })
+      .find('button[data-cy="unbanUser"]')
       .should('exist');
     cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Ban' })
+      .find('button[data-cy="banUser"]')
       .should('not.exist');
     cy.get<string>('@firstUnbannedName').then((userName) => {
       cy.getChapterEvents(chapterId).then((events) => {
@@ -184,19 +182,17 @@ describe('Chapter Users dashboard', () => {
       });
     });
 
-    cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Unban' })
-      .click();
+    cy.get('@firstUnbannedMember').find('button[data-cy="unbanUser"]').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
     cy.contains('was unbanned', { matchCase: false });
     cy.get('@firstUnbannedMember')
       .find('[data-cy=isBanned]')
       .should('not.exist');
     cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Ban' })
+      .find('button[data-cy="banUser"]')
       .should('exist');
     cy.get('@firstUnbannedMember')
-      .findByRole('button', { name: 'Unban' })
+      .find('button[data-cy="unbanUser"]')
       .should('not.exist');
   });
 
@@ -226,9 +222,7 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@adminToBan')
-      .findByRole('button', { name: 'Ban' })
-      .should('be.disabled');
+    cy.get('@adminToBan').find('button[data-cy="banUser"]').should('be.disabled');
 
     cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
       cy.banUser({ chapterId, userId: id }).then(

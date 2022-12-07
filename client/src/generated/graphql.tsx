@@ -331,7 +331,7 @@ export type Mutation = {
   cancelEvent: Event;
   cancelRsvp?: Maybe<EventUserWithRelations>;
   changeChapterUserRole: ChapterUserWithRelations;
-  changeInstanceUserRole: UserWithPermissions;
+  changeInstanceUserRole: UserWithInstanceRole;
   confirmRsvp: EventUserWithRelations;
   createCalendarEvent: Event;
   createChapter: Chapter;
@@ -516,7 +516,7 @@ export type Query = {
   dashboardEvent?: Maybe<EventWithRelations>;
   dashboardEvents: Array<EventWithVenue>;
   dashboardSponsor: Sponsor;
-  dashboardVenues: Array<Venue>;
+  dashboardVenues: Array<VenueWithChapter>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
   events: Array<EventWithRelations>;
@@ -526,10 +526,10 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
-  userInformation?: Maybe<UserInformation>;
-  users: Array<UserWithPermissions>;
-  venue?: Maybe<Venue>;
-  venues: Array<Venue>;
+  userDownload?: Maybe<UserForDownload>;
+  userProfile?: Maybe<UserProfile>;
+  users: Array<UserWithInstanceRole>;
+  venue?: Maybe<VenueWithChapterEvents>;
 };
 
 export type QueryChapterArgs = {
@@ -663,16 +663,37 @@ export type UserBan = {
   user_id: Scalars['Float'];
 };
 
-export type UserBanWithRelations = {
-  __typename?: 'UserBanWithRelations';
+export type UserBanChapters = {
+  __typename?: 'UserBanChapters';
   chapter: Chapter;
   chapter_id: Scalars['Float'];
-  user: User;
   user_id: Scalars['Float'];
 };
 
-export type UserInformation = {
-  __typename?: 'UserInformation';
+export type UserChapter = {
+  __typename?: 'UserChapter';
+  chapter: Chapter;
+  chapter_id: Scalars['Int'];
+  chapter_role: ChapterRole;
+  is_bannable?: Maybe<Scalars['Boolean']>;
+  joined_date: Scalars['DateTime'];
+  subscribed: Scalars['Boolean'];
+  user_id: Scalars['Int'];
+};
+
+export type UserEvent = {
+  __typename?: 'UserEvent';
+  event: Event;
+  event_id: Scalars['Int'];
+  event_role: EventRole;
+  rsvp: Rsvp;
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+};
+
+export type UserForDownload = {
+  __typename?: 'UserForDownload';
   admined_chapters: Array<Chapter>;
   auto_subscribe: Scalars['Boolean'];
   email: Scalars['String'];
@@ -680,9 +701,30 @@ export type UserInformation = {
   image_url?: Maybe<Scalars['String']>;
   instance_role: InstanceRole;
   name: Scalars['String'];
-  user_bans: Array<UserBanWithRelations>;
-  user_chapters: Array<ChapterUserWithRelations>;
-  user_events: Array<EventUserWithRelations>;
+  user_bans: Array<UserBanChapters>;
+  user_chapters: Array<UserChapter>;
+  user_events: Array<UserEvent>;
+};
+
+export type UserProfile = {
+  __typename?: 'UserProfile';
+  admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
+};
+
+export type UserWithInstanceRole = {
+  __typename?: 'UserWithInstanceRole';
+  admined_chapters: Array<Chapter>;
+  auto_subscribe: Scalars['Boolean'];
+  id: Scalars['Int'];
+  image_url?: Maybe<Scalars['String']>;
+  instance_role: InstanceRole;
+  name: Scalars['String'];
 };
 
 export type UserWithPermissions = {
@@ -700,7 +742,6 @@ export type UserWithPermissions = {
 
 export type Venue = {
   __typename?: 'Venue';
-  chapter: ChapterWithEvents;
   chapter_id: Scalars['Int'];
   city: Scalars['String'];
   country: Scalars['String'];
@@ -730,6 +771,36 @@ export enum VenueType {
   Physical = 'Physical',
   PhysicalAndOnline = 'PhysicalAndOnline',
 }
+
+export type VenueWithChapter = {
+  __typename?: 'VenueWithChapter';
+  chapter: Chapter;
+  chapter_id: Scalars['Int'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  id: Scalars['Int'];
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: Maybe<Scalars['String']>;
+};
+
+export type VenueWithChapterEvents = {
+  __typename?: 'VenueWithChapterEvents';
+  chapter: ChapterWithEvents;
+  chapter_id: Scalars['Int'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  id: Scalars['Int'];
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  name: Scalars['String'];
+  postal_code: Scalars['String'];
+  region: Scalars['String'];
+  street_address?: Maybe<Scalars['String']>;
+};
 
 export type DeleteMeMutationVariables = Exact<{ [key: string]: never }>;
 
@@ -1061,6 +1132,7 @@ export type DashboardChapterUsersQuery = {
   __typename?: 'Query';
   dashboardChapter: {
     __typename?: 'ChapterWithRelations';
+    name: string;
     chapter_users: Array<{
       __typename?: 'ChapterUserWithRelations';
       subscribed: boolean;
@@ -1371,7 +1443,7 @@ export type ChangeInstanceUserRoleMutationVariables = Exact<{
 export type ChangeInstanceUserRoleMutation = {
   __typename?: 'Mutation';
   changeInstanceUserRole: {
-    __typename?: 'UserWithPermissions';
+    __typename?: 'UserWithInstanceRole';
     instance_role: { __typename?: 'InstanceRole'; name: string };
   };
 };
@@ -1392,7 +1464,7 @@ export type UsersQueryVariables = Exact<{ [key: string]: never }>;
 export type UsersQuery = {
   __typename?: 'Query';
   users: Array<{
-    __typename?: 'UserWithPermissions';
+    __typename?: 'UserWithInstanceRole';
     id: number;
     name: string;
     instance_role: { __typename?: 'InstanceRole'; id: number; name: string };
@@ -1447,7 +1519,7 @@ export type DashboardVenuesQueryVariables = Exact<{ [key: string]: never }>;
 export type DashboardVenuesQuery = {
   __typename?: 'Query';
   dashboardVenues: Array<{
-    __typename?: 'Venue';
+    __typename?: 'VenueWithChapter';
     id: number;
     chapter_id: number;
     name: string;
@@ -1458,7 +1530,7 @@ export type DashboardVenuesQuery = {
     country: string;
     latitude?: number | null;
     longitude?: number | null;
-    chapter: { __typename?: 'ChapterWithEvents'; id: number; name: string };
+    chapter: { __typename?: 'Chapter'; id: number; name: string };
   }>;
 };
 
@@ -1469,7 +1541,7 @@ export type VenueQueryVariables = Exact<{
 export type VenueQuery = {
   __typename?: 'Query';
   venue?: {
-    __typename?: 'Venue';
+    __typename?: 'VenueWithChapterEvents';
     id: number;
     name: string;
     street_address?: string | null;
@@ -1685,8 +1757,8 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = {
   __typename?: 'Query';
-  userInformation?: {
-    __typename?: 'UserInformation';
+  userProfile?: {
+    __typename?: 'UserProfile';
     id: number;
     name: string;
     email: string;
@@ -1697,6 +1769,109 @@ export type UserProfileQuery = {
       __typename?: 'Chapter';
       id: number;
       name: string;
+    }>;
+  } | null;
+};
+
+export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserDownloadQuery = {
+  __typename?: 'Query';
+  userDownload?: {
+    __typename?: 'UserForDownload';
+    id: number;
+    name: string;
+    email: string;
+    auto_subscribe: boolean;
+    image_url?: string | null;
+    admined_chapters: Array<{
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+      category: string;
+      city: string;
+      country: string;
+      creator_id: number;
+      description: string;
+      region: string;
+    }>;
+    instance_role: {
+      __typename?: 'InstanceRole';
+      name: string;
+      instance_role_permissions: Array<{
+        __typename?: 'InstanceRolePermission';
+        instance_permission: {
+          __typename?: 'InstancePermission';
+          name: string;
+        };
+      }>;
+    };
+    user_bans: Array<{
+      __typename?: 'UserBanChapters';
+      chapter_id: number;
+      chapter: {
+        __typename?: 'Chapter';
+        id: number;
+        name: string;
+        description: string;
+        category: string;
+        city: string;
+        region: string;
+        country: string;
+      };
+    }>;
+    user_chapters: Array<{
+      __typename?: 'UserChapter';
+      subscribed: boolean;
+      joined_date: any;
+      chapter_role: {
+        __typename?: 'ChapterRole';
+        name: string;
+        chapter_role_permissions: Array<{
+          __typename?: 'ChapterRolePermission';
+          chapter_permission: {
+            __typename?: 'ChapterPermission';
+            name: string;
+          };
+        }>;
+      };
+      chapter: {
+        __typename?: 'Chapter';
+        id: number;
+        name: string;
+        description: string;
+        category: string;
+        city: string;
+        region: string;
+        country: string;
+      };
+    }>;
+    user_events: Array<{
+      __typename?: 'UserEvent';
+      subscribed: boolean;
+      updated_at: any;
+      rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+      event_role: {
+        __typename?: 'EventRole';
+        name: string;
+        event_role_permissions: Array<{
+          __typename?: 'EventRolePermission';
+          event_permission: { __typename?: 'EventPermission'; name: string };
+        }>;
+      };
+      event: {
+        __typename?: 'Event';
+        id: number;
+        name: string;
+        canceled: boolean;
+        capacity: number;
+        description: string;
+        start_at: any;
+        ends_at: any;
+        image_url: string;
+        invite_only: boolean;
+        venue_type: VenueType;
+      };
     }>;
   } | null;
 };
@@ -2765,6 +2940,7 @@ export type DashboardChaptersQueryResult = Apollo.QueryResult<
 export const DashboardChapterUsersDocument = gql`
   query dashboardChapterUsers($chapterId: Int!) {
     dashboardChapter(id: $chapterId) {
+      name
       chapter_users {
         user {
           id
@@ -4708,7 +4884,7 @@ export type ToggleAutoSubscribeMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UserProfileDocument = gql`
   query userProfile {
-    userInformation {
+    userProfile {
       id
       name
       email
@@ -4771,6 +4947,149 @@ export type UserProfileLazyQueryHookResult = ReturnType<
 export type UserProfileQueryResult = Apollo.QueryResult<
   UserProfileQuery,
   UserProfileQueryVariables
+>;
+export const UserDownloadDocument = gql`
+  query userDownload {
+    userDownload {
+      id
+      name
+      email
+      auto_subscribe
+      image_url
+      admined_chapters {
+        id
+        name
+        category
+        city
+        country
+        creator_id
+        description
+        region
+      }
+      instance_role {
+        name
+        instance_role_permissions {
+          instance_permission {
+            name
+          }
+        }
+      }
+      user_bans {
+        chapter_id
+        chapter {
+          id
+          name
+          description
+          category
+          city
+          region
+          country
+        }
+      }
+      user_chapters {
+        subscribed
+        chapter_role {
+          name
+          chapter_role_permissions {
+            chapter_permission {
+              name
+            }
+          }
+        }
+        chapter {
+          id
+          name
+          description
+          category
+          city
+          region
+          country
+        }
+        joined_date
+      }
+      user_events {
+        subscribed
+        updated_at
+        rsvp {
+          updated_at
+          name
+        }
+        rsvp {
+          name
+        }
+        event_role {
+          name
+          event_role_permissions {
+            event_permission {
+              name
+            }
+          }
+        }
+        event {
+          id
+          name
+          canceled
+          capacity
+          description
+          start_at
+          ends_at
+          image_url
+          invite_only
+          venue_type
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserDownloadQuery__
+ *
+ * To run a query within a React component, call `useUserDownloadQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserDownloadQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserDownloadQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserDownloadQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    UserDownloadQuery,
+    UserDownloadQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<UserDownloadQuery, UserDownloadQueryVariables>(
+    UserDownloadDocument,
+    options,
+  );
+}
+export function useUserDownloadLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    UserDownloadQuery,
+    UserDownloadQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<UserDownloadQuery, UserDownloadQueryVariables>(
+    UserDownloadDocument,
+    options,
+  );
+}
+export type UserDownloadQueryHookResult = ReturnType<
+  typeof useUserDownloadQuery
+>;
+export type UserDownloadLazyQueryHookResult = ReturnType<
+  typeof useUserDownloadLazyQuery
+>;
+export type UserDownloadQueryResult = Apollo.QueryResult<
+  UserDownloadQuery,
+  UserDownloadQueryVariables
 >;
 export const UnsubscribeDocument = gql`
   mutation unsubscribe($token: String!) {

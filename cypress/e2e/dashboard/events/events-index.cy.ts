@@ -102,6 +102,7 @@ describe('spec needing owner', () => {
 
     cy.findByRole('link', { name: 'Events' }).click();
     cy.contains('Loading...');
+    // I have no idea what this is :sweat:
     cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
 

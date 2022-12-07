@@ -90,34 +90,21 @@ export const ChaptersPage: NextPageWithLayout = () => {
                         chapterId: chapter.id,
                       }),
                   )
-                  .map(
-                    ({
-                      size,
-                      text,
-                      href,
-                      _focusVisible,
-                      _hover,
-                      background,
-                      color,
-                    }) => (
-                      <LinkButton
-                        key={text}
-                        background={background}
-                        color={color}
-                        _focusVisible={_focusVisible}
-                        _hover={_hover}
-                        size={size}
-                        href={href(chapter.id)}
-                      >
-                        {text}
-                        <Text srOnly as="span">
-                          {text !== 'Edit'
-                            ? `for ${chapter.name}`
-                            : `${chapter.name}`}
-                        </Text>
-                      </LinkButton>
-                    ),
-                  )}
+                  .map(({ size, text, href, colorScheme }) => (
+                    <LinkButton
+                      key={text}
+                      colorScheme={colorScheme}
+                      size={size}
+                      href={href(chapter.id)}
+                    >
+                      {text}
+                      <Text srOnly as="span">
+                        {text !== 'Edit'
+                          ? `for ${chapter.name}`
+                          : `${chapter.name}`}
+                      </Text>
+                    </LinkButton>
+                  ))}
               </HStack>
             ),
           }}
@@ -169,34 +156,21 @@ export const ChaptersPage: NextPageWithLayout = () => {
                               chapterId: chapter.id,
                             }),
                         )
-                        .map(
-                          ({
-                            size,
-                            text,
-                            href,
-                            _focusVisible,
-                            _hover,
-                            background,
-                            color,
-                          }) => (
-                            <LinkButton
-                              key={text}
-                              background={background}
-                              color={color}
-                              _focusVisible={_focusVisible}
-                              _hover={_hover}
-                              size={size}
-                              href={href(chapter.id)}
-                            >
-                              {text}
-                              <Text srOnly as="span">
-                                {text !== 'Edit'
-                                  ? `for ${chapter.name}`
-                                  : `${chapter.name}`}
-                              </Text>
-                            </LinkButton>
-                          ),
-                        )}
+                        .map(({ size, text, href, colorScheme }) => (
+                          <LinkButton
+                            key={text}
+                            colorScheme={colorScheme}
+                            size={size}
+                            href={href(chapter.id)}
+                          >
+                            {text}
+                            <Text srOnly as="span">
+                              {text !== 'Edit'
+                                ? `for ${chapter.name}`
+                                : `${chapter.name}`}
+                            </Text>
+                          </LinkButton>
+                        ))}
                     </HStack>
                   </VStack>
                 ),

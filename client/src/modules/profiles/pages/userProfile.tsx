@@ -15,6 +15,7 @@ import {
   UserDownloadQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
+import { meQuery } from '../../auth/graphql/queries';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
@@ -46,7 +47,7 @@ export const UserProfilePage = () => {
   });
   const [deleteMe] = useDeleteMeMutation();
   const [updateMe] = useUpdateMeMutation({
-    refetchQueries: [{ query: userProfileQuery }],
+    refetchQueries: [{ query: meQuery }, { query: userProfileQuery }],
   });
 
   const toast = useToast();

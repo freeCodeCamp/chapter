@@ -196,6 +196,11 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
+    cy.get('@administrators')
+      .filter(`:contains("${users.bannedAdmin.name}")`)
+      .as('adminToUnban')
+      .should('have.length', 1);
+
     cy.get('@adminToBan')
       .find('button[data-cy="banUser"]')
       .should('be.disabled');

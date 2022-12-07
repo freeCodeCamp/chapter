@@ -69,11 +69,10 @@ describe('spec needing owner', () => {
       cy.get('@newVenueTitle').then((venueTitle) => {
         cy.get('@venueMail')
           .mhGetSubject()
-          .should('eq', `Venue changed for event ${eventTwoData['name']}`);
+          .should('eq', `Details changed for event ${eventTwoData['name']}`);
         cy.get('@venueMail')
           .mhGetBody()
-          .should('include', 'We have had to change the location')
-          .and('include', eventTwoData['name'])
+          .should('include', 'Updated venue details')
           .and('include', venueTitle);
 
         cy.findAllByRole('row')

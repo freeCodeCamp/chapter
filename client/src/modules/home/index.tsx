@@ -22,7 +22,7 @@ type User = NonNullable<AuthContextType['user']>;
 
 const Welcome = ({ user }: { user: User }) => {
   return (
-    <Flex alignItems={'center'} justifyContent="space-between">
+    <Flex alignItems={'center'} justifyContent="space-between" marginTop="20px">
       <Heading as="h1">Welcome, {getNameText(user.name)}</Heading>
       {!user.name && (
         <Text>
@@ -71,7 +71,9 @@ const Home = () => {
       {user ? (
         <Welcome user={user} />
       ) : (
-        <Heading as="h1">Welcome to Chapter</Heading>
+        <Heading as="h1" marginTop="20px">
+          Welcome to Chapter
+        </Heading>
       )}
       <Grid templateColumns="repeat(2, 1fr)" gap={10} mt="5">
         <GridItem colSpan={{ base: 2, xl: 1 }}>

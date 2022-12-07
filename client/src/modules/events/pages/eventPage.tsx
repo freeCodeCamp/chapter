@@ -276,44 +276,33 @@ export const EventPage: NextPage = () => {
         <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
           Ending: {endsAt}
         </Text>
-        {rsvpStatus === 'yes' ? (
+        {!rsvpStatus || rsvpStatus === 'no' ? (
+          <Button
+            data-cy="rsvp-button"
+            colorScheme="blue"
+            onClick={() => checkOnRsvp()}
+            paddingInline="2"
+            paddingBlock="1"
+          >
+            {data.event.invite_only ? 'Request' : 'RSVP'}
+          </Button>
+        ) : (
           <HStack>
-            <Text data-cy="rsvp-success">
-              You&lsquo;ve RSVPed to this event
-            </Text>
-            <Button
-              onClick={onCancelRsvp}
-              paddingInline={'2'}
-              paddingBlock={'1'}
-            >
-              Cancel
-            </Button>
-          </HStack>
-        ) : rsvpStatus === 'waitlist' ? (
-          <HStack>
-            {data.event.invite_only ? (
-              <Text fontSize={'md'} fontWeight={'500'}>
-                Event owner will soon confirm your request
+            {rsvpStatus === 'waitlist' ? (
+              <Text fontSize="md" fontWeight="500">
+                {data.event.invite_only
+                  ? 'Event owner will soon confirm your request'
+                  : "You're on waitlist for this event"}
               </Text>
             ) : (
-              <Text fontSize={'md'} fontWeight={'500'}>
-                You&lsquo;re on waitlist for this event
+              <Text data-cy="rsvp-success">
+                You&lsquo;ve RSVPed to this event
               </Text>
             )}
             <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
               Cancel
             </Button>
           </HStack>
-        ) : (
-          <Button
-            data-cy="rsvp-button"
-            colorScheme="blue"
-            onClick={() => checkOnRsvp()}
-            paddingInline={'2'}
-            paddingBlock={'1'}
-          >
-            {data.event.invite_only ? 'Request' : 'RSVP'}
-          </Button>
         )}
         {eventUser && (
           <HStack>

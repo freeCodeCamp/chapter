@@ -30,6 +30,9 @@ export const VenuesPage: NextPageWithLayout = () => {
             colorScheme={'blue'}
           >
             Add new
+            <Text srOnly as="span">
+              venue
+            </Text>
           </LinkButton>
         )}
       </Flex>
@@ -65,6 +68,9 @@ export const VenuesPage: NextPageWithLayout = () => {
                 href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
               >
                 Edit
+                <Text srOnly as="span">
+                  {venue.name}
+                </Text>
               </LinkButton>
             ),
           }}
@@ -132,6 +138,9 @@ export const VenuesPage: NextPageWithLayout = () => {
                       href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
                     >
                       Edit
+                      <Text srOnly as="span">
+                        {name}
+                      </Text>
                     </LinkButton>
                   </VStack>
                 ),

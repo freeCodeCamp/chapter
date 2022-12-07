@@ -153,7 +153,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
       )}
       <VStack>
         <Flex w="full" justify="space-between">
-          <Heading id="page-heading">Chapter Users</Heading>
+          <Heading id="page-heading">
+            {data.dashboardChapter.name} Users
+          </Heading>
         </Flex>
         <Box display={{ base: 'none', lg: 'block' }} width={'100%'}>
           <DataTable
@@ -189,6 +191,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       }
                     >
                       Change
+                      <Text srOnly as="span">
+                        role of {otherUser.name}
+                      </Text>
                     </Button>
                   )}
                   {is_bannable &&
@@ -200,6 +205,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         onClick={() => onUnban(otherUser)}
                       >
                         Unban
+                        <Text srOnly as="span">
+                          {otherUser.name}
+                        </Text>
                       </Button>
                     ) : (
                       <Button
@@ -209,6 +217,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         onClick={() => onBan(otherUser)}
                       >
                         Ban
+                        <Text srOnly as="span">
+                          {otherUser.name}
+                        </Text>
                       </Button>
                     ))}
                 </HStack>
@@ -267,6 +278,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               }
                             >
                               Change
+                              <Text srOnly as="span">
+                                role of {user.name}
+                              </Text>
                             </Button>
                             {is_bannable &&
                               (bans.has(user.id) ? (
@@ -277,6 +291,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                   onClick={() => onUnban(user)}
                                 >
                                   Unban
+                                  <Text srOnly as="span">
+                                    {user.name}
+                                  </Text>
                                 </Button>
                               ) : (
                                 <Button
@@ -286,6 +303,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                   onClick={() => onBan(user)}
                                 >
                                   Ban
+                                  <Text srOnly as="span">
+                                    {user.name}
+                                  </Text>
                                 </Button>
                               ))}
                           </HStack>

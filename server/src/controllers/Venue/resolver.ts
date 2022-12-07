@@ -11,7 +11,11 @@ import {
 import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
 
-import { Venue } from '../../graphql-types';
+import {
+  Venue,
+  VenueWithChapter,
+  VenueWithChapterEvents,
+} from '../../graphql-types';
 import { prisma } from '../../prisma';
 import {
   isAdminFromInstanceRole,
@@ -19,24 +23,8 @@ import {
 } from '../../util/adminedChapters';
 import { VenueInputs } from './inputs';
 
-const venueIncludes = {
-  chapter: {
-    include: {
-      events: true,
-    },
-  },
-};
-
 @Resolver()
 export class VenueResolver {
-  @Query(() => [Venue])
-  venues(): Promise<Venue[]> {
-    return prisma.venues.findMany({
-      include: venueIncludes,
-      orderBy: { name: 'asc' },
-    });
-  }
-
   @Query(() => [Venue])
   chapterVenues(
     @Arg('chapterId', () => Int) chapterId: number,
@@ -48,10 +36,12 @@ export class VenueResolver {
   }
 
   @Authorized(Permission.VenuesView)
-  @Query(() => [Venue])
-  async dashboardVenues(@Ctx() ctx: Required<ResolverCtx>): Promise<Venue[]> {
+  @Query(() => [VenueWithChapter])
+  async dashboardVenues(
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<VenueWithChapter[]> {
     return await prisma.venues.findMany({
-      include: venueIncludes,
+      include: { chapter: true },
       orderBy: { name: 'asc' },
       ...(!isAdminFromInstanceRole(ctx.user) && {
         where: { chapter: isChapterAdminWhere(ctx.user.id) },
@@ -60,11 +50,13 @@ export class VenueResolver {
   }
 
   @Authorized(Permission.VenueEdit)
-  @Query(() => Venue, { nullable: true })
-  venue(@Arg('venueId', () => Int) id: number): Promise<Venue | null> {
+  @Query(() => VenueWithChapterEvents, { nullable: true })
+  venue(
+    @Arg('venueId', () => Int) id: number,
+  ): Promise<VenueWithChapterEvents | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: venueIncludes,
+      include: { chapter: { include: { events: true } } },
     });
   }
 
@@ -80,7 +72,6 @@ export class VenueResolver {
     };
     return prisma.venues.create({
       data: venueData,
-      include: venueIncludes,
     });
   }
 

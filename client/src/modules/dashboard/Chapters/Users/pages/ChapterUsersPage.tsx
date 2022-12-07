@@ -201,8 +201,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     <Tooltip
                       hasArrow
                       label={
-                        !is_bannable &&
-                        `You can't unban other administrators.`
+                        !is_bannable && `You can't unban other administrators.`
                       }
                       bg="gray.10"
                       color="gray.90"
@@ -324,8 +323,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               >
                                 Unban
                                 <Text srOnly as="span">
-                                    {user.name}
-                                  </Text>
+                                  {user.name}
+                                </Text>
                               </Button>
                             </Tooltip>
                             ) : (
@@ -347,9 +346,9 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 onClick={() => onBan(user)}
                               >
                                 Ban
-<Text srOnly as="span">
-                                    {user.name}
-                                  </Text>
+                                <Text srOnly as="span">
+                                  {user.name}
+                                </Text>
                               </Button>
                             </Tooltip>
                             ))

@@ -99,32 +99,6 @@ describe('Chapter Users dashboard', () => {
     );
   });
 
-  it('rejects chapter admin from unbanning admin', () => {
-    cy.login(users.chapter1Admin.email);
-    const knownNames = Object.keys(users);
-
-    cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
-      (chapterUsers) => {
-        const userId = chapterUsers.find(
-          ({ user: { name } }) => knownNames.indexOf(name) === -1,
-        ).user.id;
-        const selfUserId = chapterUsers.find(
-          ({ user: { name } }) => name === users.chapter1Admin.name,
-        ).user.id;
-        cy.getChapterRoles().then((roles) => {
-          const roleNames = roles.map(({ name }) => name);
-          roleNames.forEach(() => {
-            cy.unbanUser({ chapterId, userId }).then(expectToBeRejected);
-            cy.unbanUser({
-              chapterId,
-              userId: selfUserId,
-            }).then(expectToBeRejected);
-          });
-        });
-      },
-    );
-  });
-
   function initializeBanVariables() {
     // We don't want to interact with the instance owner here
     cy.findAllByRole('row').not(`:contains("${users.owner.name}")`).as('rows');
@@ -222,7 +196,9 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@adminToBan').find('button[data-cy="banUser"]').should('be.disabled');
+    cy.get('@adminToBan')
+      .find('button[data-cy="banUser"]')
+      .should('be.disabled');
 
     cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
       cy.banUser({ chapterId, userId: id }).then(
@@ -246,5 +222,15 @@ describe('Chapter Users dashboard', () => {
         expectError('You cannot ban this user'),
       );
     });
+  });
+
+  it('rejects chapter admin from unbanning admin', () => {
+    cy.login(users.chapter1Admin.email);
+    cy.get('@adminToUnBan')
+      .find('button[data-cy="unbanUser"]')
+      .should('be.disabled');
+    cy.unbanUser({ chapterId, userId: bannedUserId }).then(
+      expectError('You cannot unban this user'),
+    );
   });
 });

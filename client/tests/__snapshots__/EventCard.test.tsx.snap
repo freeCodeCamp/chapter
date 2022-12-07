@@ -13,24 +13,16 @@ exports[`EventCard should render 1`] = `
       class="css-1fuobds"
       data-cy="event-card"
     >
-      <h4
+      <div
         class="css-15hezon"
       >
-        <div
-          class="css-5h69ez"
+        <a
+          class="chakra-link css-binssk"
+          data-cy="event-link"
+          href="/events/1"
         >
-          <h3
-            class="chakra-heading css-1ei6e5r"
-          >
-            <a
-              class="chakra-link css-0"
-              data-cy="event-link"
-              href="/events/1"
-            >
-              bar
-            </a>
-          </h3>
-        </div>
+          bar
+        </a>
         <div
           class="css-14ygirk"
         >
@@ -40,29 +32,21 @@ exports[`EventCard should render 1`] = `
             Invite only
           </span>
         </div>
+        <a
+          class="chakra-link css-13pwhdi"
+          href="/chapters/1"
+        >
+          Chapter: 
+          foo
+        </a>
         <p
-          class="css-x5nzr7"
+          class="chakra-text css-1q8l8r5"
         >
-          <a
-            class="chakra-link css-0"
-            href="/chapters/1"
-          >
-            Chapter: 
-            foo
-          </a>
+          Ended
+          : 
+          Thu, Jan 1 @ 00:00
         </p>
-        <div
-          class="css-11b3qp1"
-        >
-          <p
-            class="chakra-text css-hy5ojy"
-          >
-            Ended
-            : 
-            Thu, Jan 1 @ 00:00
-          </p>
-        </div>
-      </h4>
+      </div>
     </div>
   </div>
 </div>

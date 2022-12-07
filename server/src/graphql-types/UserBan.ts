@@ -12,10 +12,13 @@ export class UserBan {
 }
 
 @ObjectType()
-export class UserBanWithRelations extends UserBan {
-  @Field(() => User)
-  user: User;
-
+export class UserBanChapters extends UserBan {
   @Field(() => Chapter)
   chapter: Chapter;
+}
+
+@ObjectType()
+export class UserBanWithRelations extends UserBanChapters {
+  @Field(() => User)
+  user: User;
 }

@@ -25,9 +25,9 @@ export class CalendarResolver {
       lastLetterWithDomain: string,
     ) => `${firstLetter}${middle.replace(/./g, '*')}${lastLetterWithDomain}`;
     const statusesWithRedactedEmail = statuses.map((status) => {
-      const { email } = status;
+      const { email, ...rest } = status;
       const redactedEmail = email.replace(/^(.)(.*)(.@.*)$/, replacer);
-      return { ...status, email: redactedEmail };
+      return { ...rest, redacted_email: redactedEmail };
     });
     return statusesWithRedactedEmail;
   }

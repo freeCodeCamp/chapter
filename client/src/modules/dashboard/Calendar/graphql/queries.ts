@@ -9,7 +9,7 @@ export const CALENDAR_INTEGRATION = gql`
 export const TOKEN_STATUSES = gql`
   query tokenStatuses {
     tokenStatuses {
-      email
+      redacted_email
       is_valid
     }
   }

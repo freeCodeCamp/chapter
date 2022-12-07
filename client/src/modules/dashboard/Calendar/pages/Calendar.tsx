@@ -86,7 +86,7 @@ export const Calendar: NextPageWithLayout = () => {
           data={dataStatuses.tokenStatuses}
           keys={['email', 'token status'] as const}
           mapper={{
-            email: ({ email }) => email,
+            email: ({ redacted_email }) => redacted_email,
             'token status': ({ is_valid }) => (is_valid ? 'valid' : 'invalid'),
           }}
         />

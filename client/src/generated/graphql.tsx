@@ -628,8 +628,8 @@ export type SponsoredEvent = {
 
 export type TokenStatus = {
   __typename?: 'TokenStatus';
-  email: Scalars['String'];
   is_valid: Scalars['Boolean'];
+  redacted_email: Scalars['String'];
 };
 
 export type UpdateChapterInputs = {
@@ -931,7 +931,7 @@ export type TokenStatusesQuery = {
   __typename?: 'Query';
   tokenStatuses: Array<{
     __typename?: 'TokenStatus';
-    email: string;
+    redacted_email: string;
     is_valid: boolean;
   }>;
 };
@@ -2319,7 +2319,7 @@ export type CalendarIntegrationStatusQueryResult = Apollo.QueryResult<
 export const TokenStatusesDocument = gql`
   query tokenStatuses {
     tokenStatuses {
-      email
+      redacted_email
       is_valid
     }
   }

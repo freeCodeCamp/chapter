@@ -15,7 +15,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { ArrowUpDownIcon } from '@chakra-ui/icons';
+import { ArrowDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
 import { useLogout, useLogin } from '../../hooks/useAuth';
@@ -74,17 +74,7 @@ export const Header: React.FC = () => {
             <Spinner color="white" size="xl" />
           ) : (
             <>
-              {user ? (
-                <Button
-                  data-cy="logout-button"
-                  onClick={() => logout().then(goHome)}
-                  background="gray.10"
-                  fontWeight="600"
-                  width="4.5em"
-                >
-                  Logout
-                </Button>
-              ) : (
+              {!user && (
                 <Button
                   data-cy="login-button"
                   background="gray.10"
@@ -106,7 +96,7 @@ export const Header: React.FC = () => {
                   {user ? (
                     <HStack spacing="0">
                       <Avatar user={user} cursor="pointer" aria-label="menu" />
-                      <ArrowUpDownIcon color="gray" />
+                      <ArrowDownIcon color="gray" />
                     </HStack>
                   ) : (
                     'Menu'
@@ -119,7 +109,6 @@ export const Header: React.FC = () => {
                   fontWeight="600"
                   borderRadius="5px"
                 >
-                  {/* We are using Nextlink because of confustion in NextJs which harm the loading functionality and force the page to wait for the JS loading to display it */}
                   <NextLink passHref href="/chapters">
                     <MenuItem as="a">Chapters</MenuItem>
                   </NextLink>
@@ -146,6 +135,15 @@ export const Header: React.FC = () => {
                           </MenuItem>
                         </NextLink>
                       )}
+                      <MenuItem
+                        data-cy="logout-button"
+                        onClick={() => logout().then(goHome)}
+                        fontWeight="600"
+                        borderTop={'1px'}
+                        borderColor={'gray.85'}
+                      >
+                        Logout
+                      </MenuItem>
                     </>
                   )}
                 </MenuList>

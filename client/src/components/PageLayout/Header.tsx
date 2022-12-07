@@ -96,7 +96,7 @@ export const Header: React.FC = () => {
                   {user ? (
                     <HStack spacing="0">
                       <Avatar user={user} cursor="pointer" aria-label="menu" />
-                      <ArrowDownIcon color="gray" />
+                      <ArrowDownIcon color="gray" fontSize="xl" />
                     </HStack>
                   ) : (
                     'Menu'

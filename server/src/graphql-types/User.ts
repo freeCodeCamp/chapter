@@ -47,10 +47,7 @@ export class UserProfile extends UserWithInstanceRole {
 }
 
 @ObjectType()
-export class UserForDownload extends UserWithInstanceRole {
-  @Field(() => String)
-  email: string;
-
+export class UserForDownload extends UserProfile {
   @Field(() => [UserBanChapters])
   user_bans: UserBanChapters[];
 

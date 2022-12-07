@@ -19,22 +19,22 @@ import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
-const createDownloadData = (userData: UserDownloadQuery) => {
+const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
   const dataString = JSON.stringify(userData, (key, value) =>
     key === '__typename' ? undefined : value,
   );
-  const downloadFileFormat = `data:text/json;charset=utf-8,${encodeURIComponent(
+  const dataUrl = `data:text/json;charset=utf-8,${encodeURIComponent(
     dataString,
   )}`;
-  return downloadFileFormat;
+  return dataUrl;
 };
 
 export const UserProfilePage = () => {
   const { data } = useUserProfileQuery();
-  const [getData, { data: downloadableData, loading }] =
+  const [getData, { data: userDownloadData, loading }] =
     useUserDownloadLazyQuery();
-  const userInfo = data?.userInformation;
-  const userDataDownload = downloadableData;
+  const userInfo = data?.userProfile;
+  const userDownload = userDownloadData?.userDownload;
 
   const logout = useLogout();
   const router = useRouter();
@@ -131,7 +131,7 @@ export const UserProfilePage = () => {
               paddingInline={'.4em'}
               _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
               onClick={() => getData()}
-              isDisabled={!!userDataDownload}
+              isDisabled={!!userDownload}
             >
               Request your data
             </Button>
@@ -139,7 +139,7 @@ export const UserProfilePage = () => {
               <Spinner />
             ) : (
               <>
-                {userDataDownload && (
+                {userDownload && (
                   <Link
                     fontWeight="600"
                     background={'gray.85'}
@@ -149,8 +149,8 @@ export const UserProfilePage = () => {
                     borderRadius={'5px'}
                     paddingBlock={'.65em'}
                     paddingInline={'.4em'}
-                    download={`${userDataDownload.userData?.name}.json`}
-                    href={createDownloadData(userDataDownload)}
+                    download={`${userDownload?.name}.json`}
+                    href={createDataUrl(userDownload)}
                   >
                     Download the data
                   </Link>

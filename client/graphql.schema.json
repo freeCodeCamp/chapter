@@ -5386,7 +5386,7 @@
             "deprecationReason": null
           },
           {
-            "name": "userData",
+            "name": "userDownload",
             "description": null,
             "args": [],
             "type": {
@@ -5398,7 +5398,7 @@
             "deprecationReason": null
           },
           {
-            "name": "userInformation",
+            "name": "userProfile",
             "description": null,
             "args": [],
             "type": {

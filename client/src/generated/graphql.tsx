@@ -526,8 +526,8 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
-  userData?: Maybe<UserForDownload>;
-  userInformation?: Maybe<UserProfile>;
+  userDownload?: Maybe<UserForDownload>;
+  userProfile?: Maybe<UserProfile>;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<VenueWithChapterEvents>;
 };
@@ -1756,7 +1756,7 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = {
   __typename?: 'Query';
-  userInformation?: {
+  userProfile?: {
     __typename?: 'UserProfile';
     id: number;
     name: string;
@@ -1776,7 +1776,7 @@ export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserDownloadQuery = {
   __typename?: 'Query';
-  userData?: {
+  userDownload?: {
     __typename?: 'UserForDownload';
     id: number;
     name: string;
@@ -4882,7 +4882,7 @@ export type ToggleAutoSubscribeMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UserProfileDocument = gql`
   query userProfile {
-    userInformation {
+    userProfile {
       id
       name
       email
@@ -4948,7 +4948,7 @@ export type UserProfileQueryResult = Apollo.QueryResult<
 >;
 export const UserDownloadDocument = gql`
   query userDownload {
-    userData {
+    userDownload {
       id
       name
       email

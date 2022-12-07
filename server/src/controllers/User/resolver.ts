@@ -37,7 +37,7 @@ export class UserWithPermissionsResolver {
   }
 
   @Query(() => UserProfile, { nullable: true })
-  async userInformation(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
+  async userProfile(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
     if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {
@@ -56,7 +56,7 @@ export class UserWithPermissionsResolver {
   }
 
   @Query(() => UserForDownload, { nullable: true })
-  async userData(@Ctx() ctx: ResolverCtx): Promise<UserForDownload | null> {
+  async userDownload(@Ctx() ctx: ResolverCtx): Promise<UserForDownload | null> {
     if (!ctx.user) return null;
     return await prisma.users.findUnique({
       where: {

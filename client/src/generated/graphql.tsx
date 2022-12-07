@@ -1132,6 +1132,7 @@ export type DashboardChapterUsersQuery = {
   __typename?: 'Query';
   dashboardChapter: {
     __typename?: 'ChapterWithRelations';
+    name: string;
     chapter_users: Array<{
       __typename?: 'ChapterUserWithRelations';
       subscribed: boolean;
@@ -2939,6 +2940,7 @@ export type DashboardChaptersQueryResult = Apollo.QueryResult<
 export const DashboardChapterUsersDocument = gql`
   query dashboardChapterUsers($chapterId: Int!) {
     dashboardChapter(id: $chapterId) {
+      name
       chapter_users {
         user {
           id

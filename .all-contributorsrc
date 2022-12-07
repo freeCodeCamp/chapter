@@ -689,6 +689,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "bryanleemoore",
+      "name": "Bryan Moore",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31421559?v=4",
+      "profile": "http://linkedin.com/in/bryanleemoore/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

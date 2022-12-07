@@ -279,14 +279,7 @@ export const EventPage: NextPage = () => {
         {!rsvpStatus || rsvpStatus === 'no' ? (
           <Button
             data-cy="rsvp-button"
-            background="gray.85"
-            color="gray.10"
-            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-            _focusVisible={{
-              outlineColor: 'blue.600',
-              outlineOffset: '1px',
-              boxShadow: 'none',
-            }}
+            colorScheme="blue"
             onClick={() => checkOnRsvp()}
             paddingInline="2"
             paddingBlock="1"
@@ -332,14 +325,7 @@ export const EventPage: NextPage = () => {
                   Not subscribed
                 </Text>
                 <Button
-                  background="gray.85"
-                  color="gray.10"
-                  _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                  _focusVisible={{
-                    outlineColor: 'blue.600',
-                    outlineOffset: '1px',
-                    boxShadow: 'none',
-                  }}
+                  colorScheme="blue"
                   onClick={onSubscribeToEvent}
                   paddingInline={'2'}
                   paddingBlock={'1'}

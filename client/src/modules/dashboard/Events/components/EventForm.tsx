@@ -155,14 +155,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         <HStack width="100%" mb="10 !important">
           <Button
             width="full"
-            background="gray.85"
-            color="gray.10"
-            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-            _focusVisible={{
-              outlineColor: 'blue.600',
-              outlineOffset: '1px',
-              boxShadow: 'none',
-            }}
+            colorScheme="blue"
             type="submit"
             isDisabled={!isDirty || loading}
             isLoading={loading}

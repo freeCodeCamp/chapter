@@ -28,14 +28,7 @@ export const EventsPage: NextPageWithLayout = () => {
           <LinkButton
             data-cy="new-event"
             href="/dashboard/events/new"
-            background="gray.85"
-            color="gray.10"
-            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-            _focusVisible={{
-              outlineColor: 'blue.600',
-              outlineOffset: '1px',
-              boxShadow: 'none',
-            }}
+            colorScheme={'blue'}
           >
             Add new
           </LinkButton>
@@ -109,14 +102,7 @@ export const EventsPage: NextPageWithLayout = () => {
             date: (event) => formatDate(event.start_at),
             action: (event) => (
               <LinkButton
-                background="gray.85"
-                color="gray.10"
-                _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                _focusVisible={{
-                  outlineColor: 'blue.600',
-                  outlineOffset: '1px',
-                  boxShadow: 'none',
-                }}
+                colorScheme="blue"
                 size="sm"
                 href={`/dashboard/events/${event.id}/edit`}
               >
@@ -222,14 +208,7 @@ export const EventsPage: NextPageWithLayout = () => {
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
                     <LinkButton
-                      background="gray.85"
-                      color="gray.10"
-                      _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                      _focusVisible={{
-                        outlineColor: 'blue.600',
-                        outlineOffset: '1px',
-                        boxShadow: 'none',
-                      }}
+                      colorScheme="blue"
                       fontSize={'sm'}
                       height={'2em'}
                       size="sm"

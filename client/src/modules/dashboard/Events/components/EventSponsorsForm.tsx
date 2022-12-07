@@ -49,14 +49,7 @@ const EventSponsorsForm: React.FC<EventSponsorsFormProps> = ({
         <FormLabel>Sponsors</FormLabel>
         <Spacer />
         <Button
-          background="gray.85"
-          color="gray.10"
-          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-          _focusVisible={{
-            outlineColor: 'blue.600',
-            outlineOffset: '1px',
-            boxShadow: 'none',
-          }}
+          colorScheme="blue"
           onClick={() => {
             if (data) {
               const allowedSponsors = getAllowedSponsors(

@@ -27,14 +27,7 @@ export const VenuesPage: NextPageWithLayout = () => {
           <LinkButton
             data-cy="new-venue"
             href="/dashboard/venues/new"
-            background="gray.85"
-            color="gray.10"
-            _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-            _focusVisible={{
-              outlineColor: 'blue.600',
-              outlineOffset: '1px',
-              boxShadow: 'none',
-            }}
+            colorScheme={'blue'}
           >
             Add new
           </LinkButton>
@@ -67,14 +60,7 @@ export const VenuesPage: NextPageWithLayout = () => {
             action: (venue) => (
               <LinkButton
                 data-cy="edit-venue-button"
-                background="gray.85"
-                color="gray.10"
-                _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                _focusVisible={{
-                  outlineColor: 'blue.600',
-                  outlineOffset: '1px',
-                  boxShadow: 'none',
-                }}
+                colorScheme="blue"
                 size="xs"
                 href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
               >
@@ -141,14 +127,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                     </Text>
                     <LinkButton
                       data-cy="edit-venue-button"
-                      background="gray.85"
-                      color="gray.10"
-                      _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                      _focusVisible={{
-                        outlineColor: 'blue.600',
-                        outlineOffset: '1px',
-                        boxShadow: 'none',
-                      }}
+                      colorScheme="blue"
                       size="xs"
                       href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
                     >

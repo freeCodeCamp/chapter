@@ -67,14 +67,7 @@ export const ChapterPage: NextPageWithLayout = () => {
 
   const actionLinks = [
     {
-      background: 'gray.85',
-      color: 'gray.10',
-      _hover: { color: 'gray.85', backgroundColor: 'gray.10' },
-      _focusVisible: {
-        outlineColor: 'blue.600',
-        outlineOffset: '1px',
-        boxShadow: 'none',
-      },
+      colorScheme: 'blue',
       size: 'sm',
       href: `${chapterId}/new-event`,
       text: 'Add new event',
@@ -82,14 +75,7 @@ export const ChapterPage: NextPageWithLayout = () => {
       requiredPermission: Permission.EventCreate,
     },
     {
-      background: 'gray.85',
-      color: 'gray.10',
-      _hover: { color: 'gray.85', backgroundColor: 'gray.10' },
-      _focusVisible: {
-        outlineColor: 'blue.600',
-        outlineOffset: '1px',
-        boxShadow: 'none',
-      },
+      colorScheme: 'blue',
       size: 'sm',
       href: `${chapterId}/new-venue`,
       text: 'Add new venue',
@@ -97,14 +83,7 @@ export const ChapterPage: NextPageWithLayout = () => {
       requiredPermission: Permission.VenueCreate,
     },
     {
-      background: 'gray.85',
-      color: 'gray.10',
-      _hover: { color: 'gray.85', backgroundColor: 'gray.10' },
-      _focusVisible: {
-        outlineColor: 'blue.600',
-        outlineOffset: '1px',
-        boxShadow: 'none',
-      },
+      colorScheme: 'blue',
       size: 'sm',
       href: `${chapterId}/edit`,
       text: 'Edit',
@@ -148,31 +127,17 @@ export const ChapterPage: NextPageWithLayout = () => {
             </Box>
           )}
           <HStack mt={'2'}>
-            {allowedActions.map(
-              ({
-                _focusVisible,
-                _hover,
-                background,
-                color,
-                size,
-                href,
-                text,
-                dataCy,
-              }) => (
-                <LinkButton
-                  _focusVisible={_focusVisible}
-                  _hover={_hover}
-                  background={background}
-                  color={color}
-                  key={text}
-                  size={size}
-                  href={href}
-                  data-cy={dataCy}
-                >
-                  {text}
-                </LinkButton>
-              ),
-            )}
+            {allowedActions.map(({ colorScheme, size, href, text, dataCy }) => (
+              <LinkButton
+                key={text}
+                colorScheme={colorScheme}
+                size={size}
+                href={href}
+                data-cy={dataCy}
+              >
+                {text}
+              </LinkButton>
+            ))}
             <SharePopOver
               link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
               size="sm"

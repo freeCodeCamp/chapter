@@ -83,14 +83,7 @@ export const UsersPage: NextPageWithLayout = () => {
               action: ({ id, instance_role, name }) => (
                 <Button
                   data-cy="changeRole"
-                  background="gray.85"
-                  color="gray.10"
-                  _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                  _focusVisible={{
-                    outlineColor: 'blue.600',
-                    outlineOffset: '1px',
-                    boxShadow: 'none',
-                  }}
+                  colorScheme="blue"
                   size="xs"
                   onClick={() =>
                     changeRole({
@@ -137,14 +130,7 @@ export const UsersPage: NextPageWithLayout = () => {
                     <Text data-cy="role">{instance_role.name}</Text>
                     <Button
                       data-cy="changeRole"
-                      background="gray.85"
-                      color="gray.10"
-                      _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                      _focusVisible={{
-                        outlineColor: 'blue.600',
-                        outlineOffset: '1px',
-                        boxShadow: 'none',
-                      }}
+                      colorScheme="blue"
                       size="xs"
                       onClick={() =>
                         changeRole({

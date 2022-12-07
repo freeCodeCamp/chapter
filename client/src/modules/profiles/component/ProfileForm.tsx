@@ -122,14 +122,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
         mt="6"
         width="100%"
         variant="solid"
-        background="gray.85"
-        color="gray.10"
-        _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-        _focusVisible={{
-          outlineColor: 'blue.600',
-          outlineOffset: '1px',
-          boxShadow: 'none',
-        }}
+        colorScheme="blue"
         type="submit"
         isDisabled={!isDirty || loading}
         isLoading={loading}

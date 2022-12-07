@@ -66,17 +66,7 @@ export const Modal = (props: ModalProps) => {
               <Button onClick={modalProps.onClose}>Close</Button>
               {buttons}
               {formButtonText && (
-                <Button
-                  background="gray.85"
-                  color="gray.10"
-                  _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-                  _focusVisible={{
-                    outlineColor: 'blue.600',
-                    outlineOffset: '1px',
-                    boxShadow: 'none',
-                  }}
-                  type="submit"
-                >
+                <Button colorScheme={'blue'} type="submit">
                   {formButtonText}
                 </Button>
               )}

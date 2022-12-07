@@ -192,14 +192,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         mt="30px"
         width="100%"
         variant="solid"
-        background="gray.85"
-        color="gray.10"
-        _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-        _focusVisible={{
-          outlineColor: 'blue.600',
-          outlineOffset: '1px',
-          boxShadow: 'none',
-        }}
+        colorScheme="blue"
         type="submit"
         isDisabled={!isDirty}
         isLoading={loading}

@@ -226,7 +226,7 @@ describe('Chapter Users dashboard', () => {
 
   it('rejects chapter admin from unbanning admin', () => {
     cy.login(users.chapter1Admin.email);
-    cy.get('@adminToUnBan')
+    cy.get('@adminToUnban')
       .find('button[data-cy="unbanUser"]')
       .should('be.disabled');
     cy.unbanUser({ chapterId, userId: bannedUserId }).then(

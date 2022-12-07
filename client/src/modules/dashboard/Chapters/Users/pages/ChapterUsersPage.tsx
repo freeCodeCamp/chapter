@@ -197,7 +197,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       hasArrow
                       label={
                         !is_bannable &&
-                        `You can't unban this member, due to missing privileges in the Instance`
+                        `You can't unban other administrators.`
                       }
                       bg="gray.10"
                       color="gray.90"
@@ -217,8 +217,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       hasArrow
                       label={
                         is_bannable
-                          ? `Block member from interacting with Chapter`
-                          : `You can't ban this member, due to their privileges in the Chapter or the Instance`
+                          ? `Block user from interacting with this Chapter`
+                          : `To ban this user, reach out to an instance owner`
                       }
                       bg="gray.10"
                       color="gray.90"
@@ -296,7 +296,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               hasArrow
                               label={
                                 !is_bannable &&
-                                `You can't unban this member, due to missing privileges in the Instance`
+                                `You can't unban other administrators.`
                               }
                               bg="gray.10"
                               color="gray.90"
@@ -316,8 +316,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               hasArrow
                               label={
                                 is_bannable
-                                  ? `Block member from interacting with Chapter`
-                                  : `You can't ban this member, due to their privileges in the Chapter or the Instance`
+                                  ? `Block user from interacting with this Chapter`
+                                  : `To ban this user, reach out to an instance owner`
                               }
                               bg="gray.300"
                               color="black"

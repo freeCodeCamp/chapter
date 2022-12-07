@@ -40,24 +40,24 @@ import {
   updateRemindAt,
 } from '../../services/Reminders';
 import {
-  cancelCalendarEvent,
+  addEventAttendee,
+  cancelEventAttendance,
   deleteCalendarEvent,
+  removeEventAttendee,
   updateCalendarEvent,
 } from '../../services/Google';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
-import {
-  createCalendarEvent,
-  updateCalendarEventAttendees,
-} from '../../util/calendar';
+import { createCalendarEventHelper } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
 import {
   getChapterUnsubscribeOptions,
   getEventUnsubscribeOptions,
 } from '../../util/eventEmail';
+import { formatDate } from '../../util/date';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {
@@ -119,6 +119,27 @@ ${unsubscribeOptions}
   }).sendEmail();
 };
 
+const createEmailForSubscribers = async (
+  buildEmail: Promise<{
+    subject: string;
+    body: string;
+  }>,
+  emaildata: EventWithUsers,
+) => {
+  const { body, subject } = await buildEmail;
+  batchSender(function* () {
+    for (const { user } of emaildata.event_users) {
+      const email = user.email;
+      const unsubscribeOptions = getEventUnsubscribeOptions({
+        chapterId: emaildata.chapter_id,
+        eventId: emaildata.id,
+        userId: emaildata.id,
+      });
+      const text = `${body}<br>${unsubscribeOptions}`;
+      yield { email, subject, text };
+    }
+  });
+};
 const updateReminders = (event: EventWithUsers, startAt: Date) => {
   // This is asychronous, but we don't use the result, so we don't wait for it
   if (!isEqual(startAt, event.start_at)) {
@@ -134,38 +155,65 @@ const updateReminders = (event: EventWithUsers, startAt: Date) => {
   }
 };
 
-const hasVenueChanged = (data: EventInputs, event: EventWithUsers) =>
+const hasVenueLocationChanged = (data: EventInputs, event: EventWithUsers) =>
   data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url) ||
   (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
+  !isEqual(data.ends_at, event.ends_at) ||
+  !isEqual(data.start_at, event.start_at);
+const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
+  isOnline(event.venue_type) && data.streaming_url !== event.streaming_url;
 
 const buildEmailForUpdatedEvent = async (
   data: EventInputs,
   event: EventWithUsers,
 ) => {
-  const subject = `Venue changed for event ${event.name}`;
-  let venueDetails = '';
+  const subject = `Details changed for event ${event.name}`;
 
-  if (isPhysical(event.venue_type)) {
+  const createVenueLocationContent = async () => {
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: data.venue_id },
     });
-    // TODO: include a link back to the venue page
-    venueDetails += `The event is now being held at <br>
-${venue.name} <br>
-${venue.street_address ? venue.street_address + '<br>' : ''}
-${venue.city} <br>
-${venue.region} <br>
-${venue.postal_code} <br>
-`;
-  }
 
-  if (isOnline(event.venue_type)) {
-    venueDetails += `Streaming URL: ${data.streaming_url}<br>`;
-  }
-  // TODO: include a link back to the venue page
-  const body = `We have had to change the location of ${event.name}.<br>
-${venueDetails}`;
+    // TODO: include a link back to the venue page
+    return `The event is now being held at <br />
+    <br />
+- ${venue.name} <br />
+- ${venue.street_address ? venue.street_address + '<br />- ' : ''}
+${venue.city} <br />
+- ${venue.region} <br />
+- ${venue.postal_code} <br />
+----------------------------<br />
+<br />
+`;
+  };
+  const createDateUpdates = () => {
+    return `
+  - Start: ${formatDate(data.start_at)}<br />
+  - End: ${formatDate(data.ends_at)}<br />
+  ----------------------------<br />
+  <br />
+  `;
+  };
+  const createStreamUpdate = () => {
+    return `Streaming URL: ${data.streaming_url}<br>
+----------------------------<br />
+<br />`;
+  };
+
+  const streamingUrl = hasStreamingUrlChanged(data, event)
+    ? createStreamUpdate()
+    : '';
+  const venueLocationChange = hasVenueLocationChanged(data, event)
+    ? await createVenueLocationContent()
+    : '';
+  const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
+
+  const body = `Updated venue details<br/>
+${venueLocationChange}
+${streamingUrl}
+${dateChange}
+`;
   return { subject, body };
 };
 
@@ -474,13 +522,19 @@ export class EventResolver {
       }
     }
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: event.calendar_event_id,
-      calendarId: event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarEventId = event.calendar_event_id;
+    const calendarId = event.chapter.calendar_id;
+    if (calendarId && calendarEventId) {
+      try {
+        await addEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: ctx.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to add attendee to calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
 
     await sendRsvpInvitation(ctx.user, event);
     await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
@@ -534,13 +588,20 @@ export class EventResolver {
       },
     });
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: event.calendar_event_id,
-      calendarId: event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarId = event.chapter.calendar_id;
+    const calendarEventId = event.calendar_event_id;
+
+    if (calendarId && calendarEventId) {
+      try {
+        await cancelEventAttendance(
+          { calendarId, calendarEventId },
+          { attendeeEmail: ctx.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to cancel attendance at calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
     return updatedEventUser;
   }
 
@@ -569,13 +630,20 @@ export class EventResolver {
 ${unsubscribeOptions}`,
     }).sendEmail();
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: updatedUser.event.calendar_event_id,
-      calendarId: updatedUser.event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarId = updatedUser.event.chapter.calendar_id;
+    const calendarEventId = updatedUser.event.calendar_event_id;
+
+    if (calendarId && calendarEventId) {
+      try {
+        await addEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: updatedUser.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to confirm attendance at calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
     return updatedUser;
   }
 
@@ -585,9 +653,10 @@ ${unsubscribeOptions}`,
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    const { event } = await prisma.event_users.delete({
+    const { event, user } = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       select: {
+        user: { select: { email: true } },
         event: {
           select: {
             calendar_event_id: true,
@@ -599,13 +668,20 @@ ${unsubscribeOptions}`,
       },
     });
 
-    // The calendar must be updated after event_users, so it can use the updated
-    // email list
-    await updateCalendarEventAttendees({
-      calendarEventId: event.calendar_event_id,
-      calendarId: event.chapter.calendar_id,
-      eventId,
-    });
+    const calendarId = event.chapter.calendar_id;
+    const calendarEventId = event.calendar_event_id;
+
+    if (calendarId && calendarEventId) {
+      try {
+        await removeEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: user.email },
+        );
+      } catch (e) {
+        console.error('Unable to remove attendee from calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
 
     return true;
   }
@@ -672,7 +748,7 @@ ${unsubscribeOptions}`,
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      await createCalendarEvent({
+      await createCalendarEventHelper({
         attendeeEmails: [ctx.user.email],
         calendarId: chapter.calendar_id,
         event,
@@ -698,7 +774,7 @@ ${unsubscribeOptions}`,
 
     const attendeeEmails =
       event.event_users.map(({ user: { email } }) => email) ?? [];
-    const updatedEvent = await createCalendarEvent({
+    const updatedEvent = await createCalendarEventHelper({
       attendeeEmails,
       calendarId: event.chapter.calendar_id,
       event,
@@ -740,20 +816,13 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    if (hasVenueChanged(data, event)) {
-      const { body, subject } = await buildEmailForUpdatedEvent(data, event);
-      batchSender(function* () {
-        for (const { user } of event.event_users) {
-          const email = user.email;
-          const unsubscribeOptions = getEventUnsubscribeOptions({
-            chapterId: event.chapter_id,
-            eventId: event.id,
-            userId: user.id,
-          });
-          const text = `${body}<br>${unsubscribeOptions}`;
-          yield { email, subject, text };
-        }
-      });
+    const hasEventDataChanged =
+      hasVenueLocationChanged(data, event) ||
+      hasDateChanged(data, event) ||
+      hasStreamingUrlChanged(data, event);
+
+    if (hasEventDataChanged) {
+      createEmailForSubscribers(buildEmailForUpdatedEvent(data, event), event);
     }
 
     const updatedEvent = await prisma.events.update({
@@ -768,16 +837,17 @@ ${unsubscribeOptions}`,
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
       try {
-        await updateCalendarEvent({
-          calendarId: updatedEvent.chapter.calendar_id,
-          calendarEventId: updatedEvent.calendar_event_id,
-          summary: updatedEvent.name,
-          start: updatedEvent.start_at,
-          end: updatedEvent.ends_at,
-          attendeeEmails: updatedEvent.event_users.map(
-            ({ user }) => user.email,
-          ),
-        });
+        await updateCalendarEvent(
+          {
+            calendarId: updatedEvent.chapter.calendar_id,
+            calendarEventId: updatedEvent.calendar_event_id,
+          },
+          {
+            summary: updatedEvent.name,
+            start: updatedEvent.start_at,
+            end: updatedEvent.ends_at,
+          },
+        );
       } catch (e) {
         console.error('Unable to update calendar event');
         console.error(inspect(redactSecrets(e), { depth: null }));
@@ -838,13 +908,9 @@ ${unsubscribeOptions}`,
         // respond immediately, but be informed of any failures later.
         // Client-side this could be handled by something like redux-saga, but
         // I'm not sure how to approach that server-side.
-        await cancelCalendarEvent({
+        await deleteCalendarEvent({
           calendarId: event.chapter.calendar_id,
           calendarEventId: event.calendar_event_id,
-          summary: event.name,
-          start: event.start_at,
-          end: event.ends_at,
-          attendeeEmails: event.event_users.map(({ user }) => user.email),
         });
       } catch (e) {
         console.error('Unable to cancel calendar event');

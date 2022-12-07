@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import React from 'react';
-import { Flex, Heading, Text, useToast } from '@chakra-ui/react';
+import { Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
@@ -11,15 +11,31 @@ import {
   useUpdateMeMutation,
   UpdateUserInputs,
   useUserProfileQuery,
+  useUserDownloadLazyQuery,
+  UserDownloadQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useLogout } from '../../../hooks/useAuth';
 
+const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
+  const dataString = JSON.stringify(userData, (key, value) =>
+    key === '__typename' ? undefined : value,
+  );
+  const dataUrl = `data:text/json;charset=utf-8,${encodeURIComponent(
+    dataString,
+  )}`;
+  return dataUrl;
+};
+
 export const UserProfilePage = () => {
   const { data } = useUserProfileQuery();
-  const userInfo = data?.userInformation;
+  const [getData, { data: userDownloadData, loading }] =
+    useUserDownloadLazyQuery();
+  const userInfo = data?.userProfile;
+  const userDownload = userDownloadData?.userDownload;
+
   const logout = useLogout();
   const router = useRouter();
   const client = useApolloClient();
@@ -94,9 +110,54 @@ export const UserProfilePage = () => {
             loadingText={'Saving Profile Changes'}
             submitText={'Save Profile Changes'}
           />
-          <Button colorScheme={'red'} marginBlock={'2em'} onClick={clickDelete}>
-            Delete My Data
-          </Button>
+          <Flex gap="2em" marginBlock={'2em'}>
+            <Button
+              height={'2.8em'}
+              paddingBlock={'.65em'}
+              paddingInline={'.4em'}
+              colorScheme={'red'}
+              onClick={clickDelete}
+            >
+              Delete My Data
+            </Button>
+            <Button
+              fontWeight="600"
+              background={'gray.85'}
+              color={'gray.10'}
+              height={'100%'}
+              size={'lg'}
+              borderRadius={'5px'}
+              paddingBlock={'.65em'}
+              paddingInline={'.4em'}
+              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+              onClick={() => getData()}
+              isDisabled={!!userDownload}
+            >
+              Request your data
+            </Button>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <>
+                {userDownload && (
+                  <Link
+                    fontWeight="600"
+                    background={'gray.85'}
+                    color={'gray.10'}
+                    height={'100%'}
+                    size={'lg'}
+                    borderRadius={'5px'}
+                    paddingBlock={'.65em'}
+                    paddingInline={'.4em'}
+                    download={`${userDownload?.name}.json`}
+                    href={createDataUrl(userDownload)}
+                  >
+                    Download the data
+                  </Link>
+                )}
+              </>
+            )}
+          </Flex>
         </>
       ) : (
         <Heading as="h1">Please login to see your profile</Heading>

@@ -1,7 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { HStack } from '@chakra-ui/layout';
 import {
-  Box,
   Image,
   Button,
   Menu,
@@ -16,6 +15,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
 import { useLogout, useLogin } from '../../hooks/useAuth';
@@ -23,9 +23,18 @@ import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';
 
+const menuButtonStyles = {
+  logout: { backgroundColor: 'gray.10' },
+  login: {
+    backgroundColor: 'transparent',
+    _hover: {
+      outline: '2px solid #dfdfe2',
+    },
+    _active: {},
+  },
+};
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
-
 export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useAuth();
@@ -64,85 +73,86 @@ export const Header: React.FC = () => {
           {loadingUser ? (
             <Spinner color="white" size="xl" />
           ) : (
-            <Menu>
-              <MenuButton
-                as={Button}
-                data-cy="menu-button"
-                aria-label="Options"
-                variant="outline"
-                background="gray.10"
-                px={[2, 4]}
-                py={[1, 2]}
-              >
-                Menu
-              </MenuButton>
-              <MenuList
-                paddingBlock={0}
-                display="flex"
-                flexDirection="column"
-                fontWeight="600"
-                borderRadius="5px"
-              >
-                <NextLink passHref href="/chapters">
-                  <MenuItem as="a">Chapters</MenuItem>
-                </NextLink>
+            <>
+              {!user && (
+                <Button
+                  data-cy="login-button"
+                  background="gray.10"
+                  onClick={login}
+                  fontWeight="600"
+                  width="4.5em"
+                >
+                  Login
+                </Button>
+              )}
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  data-cy="menu-button"
+                  padding="0"
+                  width="4.5em"
+                  {...(user ? menuButtonStyles.login : menuButtonStyles.logout)}
+                >
+                  {user ? (
+                    <HStack spacing="0">
+                      <Avatar user={user} cursor="pointer" aria-label="menu" />
+                      <ChevronDownIcon
+                        color="gray.10"
+                        fontSize="xl"
+                        opacity=".9"
+                      />
+                    </HStack>
+                  ) : (
+                    'Menu'
+                  )}
+                </MenuButton>
+                <MenuList
+                  paddingBlock={0}
+                  display="flex"
+                  flexDirection="column"
+                  fontWeight="600"
+                  borderRadius="5px"
+                >
+                  <NextLink passHref href="/chapters">
+                    <MenuItem as="a">Chapters</MenuItem>
+                  </NextLink>
 
-                <NextLink passHref href="/events">
-                  <MenuItem as="a">Events</MenuItem>
-                </NextLink>
+                  <NextLink passHref href="/events">
+                    <MenuItem as="a">Events</MenuItem>
+                  </NextLink>
 
-                {user && (
-                  <Box borderBlock={'1px'} borderColor={'gray.85'}>
-                    <NextLink passHref href="/profile">
-                      <MenuItem as="a">Profile</MenuItem>
-                    </NextLink>
-
-                    {checkPermission(user, Permission.ChaptersView) && (
-                      <NextLink passHref href="/dashboard/chapters">
-                        <MenuItem data-cy="menu-dashboard-link" as="a">
-                          Dashboard
+                  {user && (
+                    <>
+                      <NextLink passHref href="/profile">
+                        <MenuItem
+                          as="a"
+                          borderTop={'1px'}
+                          borderColor={'gray.85'}
+                        >
+                          Profile
                         </MenuItem>
                       </NextLink>
-                    )}
-                  </Box>
-                )}
-                {user ? (
-                  <MenuItem
-                    data-cy="logout-button"
-                    onClick={() => logout().then(goHome)}
-                    fontWeight="600"
-                    height={'100%'}
-                  >
-                    Logout
-                  </MenuItem>
-                ) : (
-                  <MenuItem
-                    data-cy="login-button"
-                    onClick={login}
-                    fontWeight="600"
-                    height={'100%'}
-                  >
-                    Login
-                  </MenuItem>
-                )}
-              </MenuList>
-            </Menu>
-          )}
-          {user && (
-            <Link
-              href="/profile"
-              backgroundColor="transparent"
-              _focus={{
-                outlineColor: 'blue.600',
-                outlineOffset: '3px',
-              }}
-              borderRadius="50%"
-              _focusVisible={{
-                boxShadow: 'none',
-              }}
-            >
-              <Avatar user={user} cursor="pointer" aria-label="Profile" />
-            </Link>
+                      {checkPermission(user, Permission.ChaptersView) && (
+                        <NextLink passHref href="/dashboard/chapters">
+                          <MenuItem data-cy="menu-dashboard-link" as="a">
+                            Dashboard
+                          </MenuItem>
+                        </NextLink>
+                      )}
+                      <MenuItem
+                        data-cy="logout-button"
+                        onClick={() => logout().then(goHome)}
+                        fontWeight="600"
+                        borderTop={'1px'}
+                        borderColor={'gray.85'}
+                      >
+                        Logout
+                      </MenuItem>
+                    </>
+                  )}
+                </MenuList>
+              </Menu>
+            </>
           )}
         </HStack>
       </HeaderContainer>

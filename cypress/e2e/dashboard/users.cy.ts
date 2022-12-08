@@ -43,6 +43,22 @@ describe('Users dashboard', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains(memberRole);
 
+      cy.waitUntilMail().mhFirst().as('email');
+
+      cy.get('@email')
+        .mhGetSubject()
+        .should(
+          'include',
+          `Your role has changed to ${memberRole} in the chapter's instances`,
+        );
+      cy.get('@email')
+        .mhGetBody()
+        .should(
+          'include',
+          `Hello, ${memberRole.name}<br />
+        Your role in chapter has changed to ${memberRole}<br />`,
+        );
+
       // Ensure default value is changed
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains(memberRole);

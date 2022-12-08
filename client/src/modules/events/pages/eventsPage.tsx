@@ -33,6 +33,7 @@ function Pagination({
         disabled={!(currentPage > 1)}
         onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
       >
+        <Text srOnly>Previous page</Text>
         &lt;
       </Button>
       <Text data-testid="current-page">{currentPage}</Text>
@@ -48,6 +49,7 @@ function Pagination({
           currentPage < totalPages && setCurrentPage(currentPage + 1)
         }
       >
+        <Text srOnly>Next Page</Text>
         &gt;
       </Button>
     </Flex>

@@ -196,7 +196,9 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@adminToBan').find('button[data-cy="banUser"]').should('not.exist');
+    cy.get('@adminToBan')
+      .find('button[data-cy="banUser"]')
+      .should('be.disabled');
 
     cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
       cy.banUser({ chapterId, userId: id }).then(
@@ -220,5 +222,23 @@ describe('Chapter Users dashboard', () => {
         expectError('You cannot ban this user'),
       );
     });
+  });
+
+  it('rejects chapter admin from unbanning admin', () => {
+    cy.login(users.chapter1Admin.email);
+
+    initializeBanVariables();
+
+    cy.get('@administrators')
+      .filter(`:contains("${users.bannedAdmin.name}")`)
+      .as('adminToUnban')
+      .should('have.length', 1);
+
+    cy.get('@adminToUnban')
+      .find('button[data-cy="unbanUser"]')
+      .should('be.disabled');
+    cy.unbanUser({ chapterId, userId: bannedUserId }).then(
+      expectError('You cannot unban this user'),
+    );
   });
 });

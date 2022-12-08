@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -196,12 +197,20 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                       </Text>
                     </Button>
                   )}
-                  {is_bannable &&
-                    (bans.has(otherUser.id) ? (
+                  {bans.has(otherUser.id) ? (
+                    <Tooltip
+                      hasArrow
+                      label={
+                        !is_bannable && `You can't unban other administrators.`
+                      }
+                      bg="gray.10"
+                      color="gray.90"
+                    >
                       <Button
                         data-cy="unbanUser"
                         colorScheme="purple"
                         size="xs"
+                        disabled={is_bannable ? false : true}
                         onClick={() => onUnban(otherUser)}
                       >
                         Unban
@@ -209,11 +218,23 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                           {otherUser.name}
                         </Text>
                       </Button>
-                    ) : (
+                    </Tooltip>
+                  ) : (
+                    <Tooltip
+                      hasArrow
+                      label={
+                        is_bannable
+                          ? `Block user from interacting with this Chapter`
+                          : `To ban this user, reach out to an instance owner`
+                      }
+                      bg="gray.10"
+                      color="gray.90"
+                    >
                       <Button
                         data-cy="banUser"
                         colorScheme="red"
                         size="xs"
+                        disabled={is_bannable ? false : true}
                         onClick={() => onBan(otherUser)}
                       >
                         Ban
@@ -221,7 +242,8 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                           {otherUser.name}
                         </Text>
                       </Button>
-                    ))}
+                    </Tooltip>
+                  )}
                 </HStack>
               ),
               role: ({ chapter_role: { name } }) => (
@@ -282,32 +304,54 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 role of {user.name}
                               </Text>
                             </Button>
-                            {is_bannable &&
-                              (bans.has(user.id) ? (
-                                <Button
-                                  data-cy="unbanUser"
-                                  colorScheme="purple"
-                                  size="xs"
-                                  onClick={() => onUnban(user)}
-                                >
-                                  Unban
-                                  <Text srOnly as="span">
-                                    {user.name}
-                                  </Text>
-                                </Button>
-                              ) : (
-                                <Button
-                                  data-cy="banUser"
-                                  colorScheme="red"
-                                  size="xs"
-                                  onClick={() => onBan(user)}
-                                >
-                                  Ban
-                                  <Text srOnly as="span">
-                                    {user.name}
-                                  </Text>
-                                </Button>
-                              ))}
+                            (bans.has(user.id) ? (
+                            <Tooltip
+                              hasArrow
+                              label={
+                                !is_bannable &&
+                                `You can't unban other administrators.`
+                              }
+                              bg="gray.10"
+                              color="gray.90"
+                            >
+                              <Button
+                                data-cy="unbanUser"
+                                colorScheme="purple"
+                                size="xs"
+                                disabled={is_bannable ? false : true}
+                                onClick={() => onUnban(user)}
+                              >
+                                Unban
+                                <Text srOnly as="span">
+                                  {user.name}
+                                </Text>
+                              </Button>
+                            </Tooltip>
+                            ) : (
+                            <Tooltip
+                              hasArrow
+                              label={
+                                is_bannable
+                                  ? `Block user from interacting with this Chapter`
+                                  : `To ban this user, reach out to an instance owner`
+                              }
+                              bg="gray.300"
+                              color="black"
+                            >
+                              <Button
+                                data-cy="banUser"
+                                colorScheme="red"
+                                size="xs"
+                                disabled={is_bannable ? false : true}
+                                onClick={() => onBan(user)}
+                              >
+                                Ban
+                                <Text srOnly as="span">
+                                  {user.name}
+                                </Text>
+                              </Button>
+                            </Tooltip>
+                            ))
                           </HStack>
                           <Text data-cy="role">{chapter_role.name}</Text>
                         </VStack>

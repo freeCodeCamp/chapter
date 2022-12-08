@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { buttonTheme } from './ButtonOutline';
 
 const chapterStyleVaribles = {
   colors: {
@@ -21,4 +22,6 @@ const chapterStyleVaribles = {
   },
 };
 
-export const chapterTheme = extendTheme(chapterStyleVaribles);
+export const chapterTheme = extendTheme(chapterStyleVaribles, {
+  components: { Button: buttonTheme },
+});

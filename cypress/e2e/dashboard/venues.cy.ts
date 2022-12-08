@@ -19,7 +19,7 @@ describe('venues dashboard', () => {
     cy.visit('/dashboard/');
     cy.get('a[aria-current="page"]').should('not.exist');
     cy.get('a[href="/dashboard/venues"]').click();
-    cy.get('a[aria-current="page"]').should('have.text', 'Venues');
+    cy.get('a[aria-current="page"]').should('have.text', 'Venues Dashboard');
   });
 
   it('should have a table with links to view and edit venues', () => {

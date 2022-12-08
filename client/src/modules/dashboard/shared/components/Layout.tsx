@@ -1,4 +1,4 @@
-import { HStack } from '@chakra-ui/layout';
+import { HStack, Text } from '@chakra-ui/layout';
 import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import NextError from 'next/error';
@@ -65,7 +65,10 @@ export const Layout = ({
                 router.pathname.startsWith(item.link) ? 'blue' : 'gray'
               }
             >
-              {item.text}
+              {item.text}{' '}
+              <Text srOnly as="span">
+                Dashboard
+              </Text>
             </LinkButton>
           ))}
       </HStack>

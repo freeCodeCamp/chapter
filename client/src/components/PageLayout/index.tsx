@@ -24,7 +24,12 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
         </AlertDescription>
       </Alert>
       <SkipNavContent />
-      <Box px={[4, 4, 8, 16]} id="main-content">
+      <Box
+        as="main"
+        minHeight={{ base: '70vh', '2xl': '82vh' }}
+        px={[4, 4, 8, 16]}
+        id="main-content"
+      >
         {children}
       </Box>
       <Footer />

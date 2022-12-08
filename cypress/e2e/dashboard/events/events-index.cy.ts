@@ -28,7 +28,7 @@ describe('spec needing owner', () => {
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[href="/dashboard/events"]').click();
-    cy.get('a[aria-current="page"]').should('have.text', 'Events');
+    cy.get('a[aria-current="page"]').should('have.text', 'Events Dashboard');
   });
 
   it('should have a table with links to view and edit events', () => {
@@ -99,8 +99,9 @@ describe('spec needing owner', () => {
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
 
-    cy.findByRole('link', { name: 'Events' }).click();
+    cy.findByRole('link', { name: 'Events Dashboard' }).click();
     cy.contains('Loading...');
+    cy.location('pathname').should('match', /^\/dashboard\/events$/);
     cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
@@ -139,8 +140,9 @@ describe('spec needing owner', () => {
 
     cy.get('button[aria-label="Options"]').click();
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-    cy.findByRole('link', { name: 'Events' }).click();
+    cy.findByRole('link', { name: 'Events Dashboard' }).click();
     cy.contains('Loading...');
+    cy.location('pathname').should('match', /^\/dashboard\/events$/);
     cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {

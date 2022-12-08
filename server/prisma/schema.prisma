@@ -39,11 +39,12 @@ model sessions {
 }
 
 model google_tokens {
-  id            Int    @id @default(autoincrement())
-  email         String @unique
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
   access_token  String
   refresh_token String
   expiry_date   BigInt
+  is_valid      Boolean @default(true)
 }
 
 model chapter_users {

@@ -101,6 +101,7 @@ describe('spec needing owner', () => {
 
     cy.findByRole('link', { name: 'Events Dashboard' }).click();
     cy.contains('Loading...');
+    cy.location('pathname').should('match', /^\/dashboard\/events$/);
     cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
 
@@ -141,6 +142,7 @@ describe('spec needing owner', () => {
     cy.findByRole('menuitem', { name: 'Dashboard' }).click();
     cy.findByRole('link', { name: 'Events Dashboard' }).click();
     cy.contains('Loading...');
+    cy.location('pathname').should('match', /^\/dashboard\/events$/);
     cy.wait('@GQLdashboardEvents');
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {

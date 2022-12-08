@@ -56,7 +56,7 @@ describe('Users dashboard', () => {
         .should(
           'include',
           `Hello, ${memberRole.name}<br />
-        Your role in chapter has changed to ${memberRole}<br />`,
+        This is a notification about your role in chapter has changed to ${memberRole}.`,
         );
 
       // Ensure default value is changed

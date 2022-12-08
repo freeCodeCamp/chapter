@@ -73,12 +73,9 @@ export class UsersResolver {
     const oldRole = user.instance_role.name;
     if (oldRole === newRole) return user;
 
-    const emailSubject = `Your role has changed to ${newRole} in chapter`;
+    const emailSubject = `Your role has changed to ${newRole} in chapter's instances`;
     const emailContent = `Hello, ${user.name}<br />
-  Your role in chapter has changed to ${newRole}<br />
-  This means you can change chapters, events, venues, and sponsors dashboard however you like.<br />
-  Furthermore, you can manage members in users section of dashboard.<br />
-  You can also use chapter to manages your future calendar and events in calender section of dashboard.`;
+    This is a notification about your role in chapter has changed to ${newRole}.`;
     await new MailerService({
       emailList: [user.email],
       subject: emailSubject,

@@ -323,13 +323,13 @@ export class ChapterUserResolver {
     @Arg('userId', () => Int) userId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    const hasPermissionToBanOtherUser = await canBanOther({
+    const hasPermissionToUnbanOtherUser = await canBanOther({
       chapterId,
       otherUserId: userId,
       banningUser: ctx.user,
     });
-    if (!hasPermissionToBanOtherUser) {
-      throw Error('You cannot ban this user');
+    if (!hasPermissionToUnbanOtherUser) {
+      throw Error('You cannot unban this user');
     }
 
     return await prisma.user_bans.delete({

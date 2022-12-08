@@ -18,7 +18,7 @@
       <sequence increment="1" name="venues_id_seq" startValue="1"/>
    </sequences>
    <tables>
-      <table name="_prisma_migrations" numRows="6" remarks="" schema="public" type="TABLE">
+      <table name="_prisma_migrations" numRows="7" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="36" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="checksum" nullable="false" remarks="" size="64" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="finished_at" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -285,6 +285,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="access_token" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="refresh_token" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="expiry_date" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="5" name="is_valid" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="google_tokens_pkey" unique="true">
             <column ascending="true" name="id"/>

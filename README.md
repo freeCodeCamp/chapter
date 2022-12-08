@@ -181,6 +181,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
       <td align="center"><a href="https://github.com/auchynnikau"><img src="https://avatars.githubusercontent.com/u/33329898?v=4?s=100" width="100px;" alt="auchynnikau"/><br /><sub><b>auchynnikau</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=auchynnikau" title="Code">💻</a> <a href="https://github.com/freeCodeCamp/chapter/pulls?q=is%3Apr+reviewed-by%3Aauchynnikau" title="Reviewed Pull Requests">👀</a></td>
       <td align="center"><a href="https://github.com/nwernink"><img src="https://avatars.githubusercontent.com/u/59752837?v=4?s=100" width="100px;" alt="nwernink"/><br /><sub><b>nwernink</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=nwernink" title="Code">💻</a></td>
       <td align="center"><a href="http://linkedin.com/in/bryanleemoore/"><img src="https://avatars.githubusercontent.com/u/31421559?v=4?s=100" width="100px;" alt="Bryan Moore"/><br /><sub><b>Bryan Moore</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=bryanleemoore" title="Code">💻</a></td>
+      <td align="center"><a href="http://zameel7.live"><img src="https://avatars.githubusercontent.com/u/43750093?v=4?s=100" width="100px;" alt="Zameel Hassan"/><br /><sub><b>Zameel Hassan</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=zameel7" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

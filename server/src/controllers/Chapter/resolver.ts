@@ -28,6 +28,7 @@ import {
 } from '../../util/adminedChapters';
 import { isBannable } from '../../util/chapterBans';
 import { redactSecrets } from '../../util/redact-secrets';
+import { integrationStatus } from '../../util/calendar';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
 @Resolver()
@@ -151,14 +152,17 @@ export class ChapterResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
     let calendarData;
-    try {
-      calendarData = await createCalendar({
-        summary: data.name,
-        description: `Events for ${data.name}`,
-      });
-    } catch (e) {
-      console.log('Unable to create calendar');
-      console.error(inspect(redactSecrets(e), { depth: null }));
+    const calendarStatus = await integrationStatus();
+    if (calendarStatus) {
+      try {
+        calendarData = await createCalendar({
+          summary: data.name,
+          description: `Events for ${data.name}`,
+        });
+      } catch (e) {
+        console.log('Unable to create calendar');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
     }
     const chapterData: Prisma.chaptersCreateInput = {
       ...data,

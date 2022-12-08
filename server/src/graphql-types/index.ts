@@ -10,6 +10,7 @@ export * from './InstanceRole';
 export * from './Rsvp';
 export * from './Sponsor';
 export * from './Tag';
+export * from './TokenStatus';
 export * from './User';
 export * from './UserBan';
 export * from './Venue';

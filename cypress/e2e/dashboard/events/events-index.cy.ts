@@ -28,7 +28,7 @@ describe('spec needing owner', () => {
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[href="/dashboard/events"]').click();
-    cy.get('a[aria-current="page"]').should('have.text', 'Events');
+    cy.get('a[aria-current="page"]').should('have.text', 'Events Dashboard');
   });
 
   it('should have a table with links to view and edit events', () => {

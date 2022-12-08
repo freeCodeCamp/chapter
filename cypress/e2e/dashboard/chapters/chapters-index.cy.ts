@@ -39,7 +39,7 @@ describe('chapters dashboard', () => {
     cy.get('[data-cy="chapter-dash-heading"]').should('be.visible');
     cy.get('[data-cy="dashboard-tabs"]')
       .find('a[aria-current="page"]')
-      .should('have.text', 'Chapters');
+      .should('have.text', 'Chapters Dashboard');
   });
 
   it('should have a table with links to view, create and edit chapters', () => {

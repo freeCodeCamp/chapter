@@ -227,6 +227,8 @@ describe('Chapter Users dashboard', () => {
   it('rejects chapter admin from unbanning admin', () => {
     cy.login(users.chapter1Admin.email);
 
+    initializeBanVariables();
+
     cy.get('@administrators')
       .filter(`:contains("${users.bannedAdmin.name}")`)
       .as('adminToUnban')

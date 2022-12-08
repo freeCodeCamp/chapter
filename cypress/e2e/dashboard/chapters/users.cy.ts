@@ -196,11 +196,6 @@ describe('Chapter Users dashboard', () => {
       .as('adminToBan')
       .should('have.length', 1);
 
-    cy.get('@administrators')
-      .filter(`:contains("${users.bannedAdmin.name}")`)
-      .as('adminToUnban')
-      .should('have.length', 1);
-
     cy.get('@adminToBan')
       .find('button[data-cy="banUser"]')
       .should('be.disabled');
@@ -231,6 +226,12 @@ describe('Chapter Users dashboard', () => {
 
   it('rejects chapter admin from unbanning admin', () => {
     cy.login(users.chapter1Admin.email);
+
+    cy.get('@administrators')
+      .filter(`:contains("${users.bannedAdmin.name}")`)
+      .as('adminToUnban')
+      .should('have.length', 1);
+
     cy.get('@adminToUnban')
       .find('button[data-cy="unbanUser"]')
       .should('be.disabled');

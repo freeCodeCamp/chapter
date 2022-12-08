@@ -55,7 +55,7 @@ describe('Users dashboard', () => {
         .mhGetBody()
         .should(
           'include',
-          `Hello, ${memberRole.name}<br />
+          `Hello, ${memberToOwnerToMember.name}<br />
         This is a notification about your role in chapter has changed to ${memberRole}.`,
         );
 

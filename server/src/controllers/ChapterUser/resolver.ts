@@ -26,6 +26,7 @@ import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { removeEventAttendee } from '../../services/Google';
 import { redactSecrets } from '../../util/redact-secrets';
+import MailerService from '../../../src/services/MailerService';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -121,11 +122,26 @@ interface Args {
   }>;
 }
 
+type EmailProps =
+  | {
+      email: string[];
+      emailSubject: string;
+      emailBody: string;
+    }
+  | {
+      email?: never;
+      emailSubject?: never;
+      emailBody?: never;
+    };
+
 async function updateInstanceRoleForChapterRoleChange({
   changedChapterId,
   newChapterRole,
   user,
-}: Args) {
+  email,
+  emailSubject,
+  emailBody,
+}: EmailProps & Args) {
   const oldInstanceRole = user.instance_role.name;
   const userChapters = user.user_chapters;
   const newInstanceRole = getInstanceRoleName({
@@ -139,6 +155,13 @@ async function updateInstanceRoleForChapterRoleChange({
       data: { instance_role: { connect: { name: newInstanceRole } } },
       where: { id: user.id },
     });
+  }
+  if (email && emailSubject && emailBody) {
+    await new MailerService({
+      emailList: email,
+      subject: emailSubject,
+      htmlEmail: emailBody,
+    }).sendEmail();
   }
 }
 
@@ -277,10 +300,18 @@ export class ChapterUserResolver {
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
 
+    const subject = `Your role in chapter has been changed to ${newChapterRole}`;
+    const body = `Hi ${chapterUser.user.name}.<br />
+    Your role in chapter has been changed to ${newChapterRole}.<br />
+    `;
+
     await updateInstanceRoleForChapterRoleChange({
       changedChapterId: chapterId,
       newChapterRole,
       user: chapterUser.user,
+      email: [chapterUser.user.email],
+      emailSubject: subject,
+      emailBody: body,
     });
 
     return updatedChapterUser;

@@ -15,7 +15,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { ArrowDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
 import { useLogout, useLogin } from '../../hooks/useAuth';
@@ -96,7 +96,7 @@ export const Header: React.FC = () => {
                   {user ? (
                     <HStack spacing="0">
                       <Avatar user={user} cursor="pointer" aria-label="menu" />
-                      <ArrowDownIcon
+                      <ChevronDownIcon
                         color="gray.10"
                         fontSize="xl"
                         opacity=".9"

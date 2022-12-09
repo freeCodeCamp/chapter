@@ -6,6 +6,7 @@ import { UserWithInstanceRole } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { InstanceRoles } from '../../../../common/roles';
 import { getRoleName } from '../../util/chapterAdministrator';
+import MailerService from '../../../src/services/MailerService';
 
 const instanceRoleInclude = {
   instance_role: {
@@ -55,6 +56,15 @@ export class UsersResolver {
 
     const oldRole = user.instance_role.name;
     if (oldRole === newRole) return user;
+
+    const emailSubject = `Instance role changed`;
+    const emailContent = `Hello, ${user.name}.<br />
+    Your instance role has been changed to ${newRole}.`;
+    await new MailerService({
+      emailList: [user.email],
+      subject: emailSubject,
+      htmlEmail: emailContent,
+    }).sendEmail();
 
     return await prisma.users.update({
       data: {

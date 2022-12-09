@@ -43,6 +43,25 @@ describe('Users dashboard', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains(memberRole);
 
+      cy.get('[data-cy="user-name"]')
+        .eq(memberToOwnerToMember)
+        .invoke('text')
+        .as('userName');
+      cy.waitUntilMail().mhFirst().as('email');
+
+      cy.get('@email')
+        .mhGetSubject()
+        .should('include', `Instance role changed`);
+      cy.get('@userName').then((userName) => {
+        cy.get('@email')
+          .mhGetBody()
+          .should('include', `Hello, ${userName}.<br />`)
+          .should(
+            'include',
+            `Your instance role has been changed to ${memberRole}.`,
+          );
+      });
+
       // Ensure default value is changed
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains(memberRole);

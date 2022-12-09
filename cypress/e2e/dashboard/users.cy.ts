@@ -51,10 +51,7 @@ describe('Users dashboard', () => {
 
       cy.get('@email')
         .mhGetSubject()
-        .should(
-          'include',
-          `Instance role changed`,
-        );
+        .should('include', `Instance role changed`);
       cy.get('@userName').then((userName) => {
         cy.get('@email')
           .mhGetBody()

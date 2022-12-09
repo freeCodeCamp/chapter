@@ -74,8 +74,8 @@ export class UsersResolver {
     if (oldRole === newRole) return user;
 
     const emailSubject = `Instance role changed`;
-    const emailContent = `Hello, ${user.name}<br />
-    `Your instance role has been changed to ${newRole}.`;
+    const emailContent = `Hello, ${user.name}.<br />
+    Your instance role has been changed to ${newRole}.`;
     await new MailerService({
       emailList: [user.email],
       subject: emailSubject,

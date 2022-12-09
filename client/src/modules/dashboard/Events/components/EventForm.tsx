@@ -36,14 +36,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     chapterId: initialChapterId,
     loadingText,
   } = props;
-  const isChaptersDropdownNeeded = initialChapterId === -1;
+  const isChaptersDropdownNeeded = typeof initialChapterId === 'undefined';
+
+  const queryOptions = isChaptersDropdownNeeded
+    ? { skip: true }
+    : { variables: { chapterId: initialChapterId } };
+
   const {
     loading: loadingChapter,
     error: errorChapter,
     data: dataChapter,
-  } = useChapterQuery({
-    variables: { chapterId: initialChapterId },
-  });
+  } = useChapterQuery(queryOptions);
 
   const sponsorQuery = useSponsorsQuery();
 

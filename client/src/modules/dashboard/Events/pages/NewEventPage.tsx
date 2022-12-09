@@ -13,11 +13,11 @@ import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { CHAPTER } from '../../../chapters/graphql/queries';
 import { DASHBOARD_EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
-import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const NewEventPage: NextPageWithLayout = () => {
-  const { param: chapterId } = useParam('id');
+export const NewEventPage: NextPageWithLayout<{
+  chapterId?: number;
+}> = ({ chapterId }) => {
   const router = useRouter();
 
   const [createEvent] = useCreateEventMutation();

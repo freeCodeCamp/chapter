@@ -282,7 +282,7 @@ export class ChapterUserResolver {
             user_chapters: { include: { chapter_role: true } },
           },
         },
-        chapter: true,
+        chapter: { select: { name: true } },
       },
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });

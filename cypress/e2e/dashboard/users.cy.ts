@@ -29,6 +29,7 @@ describe('Users dashboard', () => {
       // and after changing role, we will no longer be authorized to see users.
       const memberToOwnerToMember = roleNames.indexOf(memberRole);
       const owner = roleNames.indexOf(ownerRole);
+      let userName;
 
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains(memberRole);
@@ -43,6 +44,10 @@ describe('Users dashboard', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
       cy.get('[data-cy=role]').eq(memberToOwnerToMember).contains(memberRole);
 
+      cy.get('[data-cy="user-name"]')
+        .eq(memberToOwnerToMember)
+        .invoke('text')
+        .as(userName);
       cy.waitUntilMail().mhFirst().as('email');
 
       cy.get('@email')
@@ -55,7 +60,7 @@ describe('Users dashboard', () => {
         .mhGetBody()
         .should(
           'include',
-          `Hello, ${memberToOwnerToMember.name}<br />
+          `Hello, ${userName}<br />
         This is a notification about your role in chapter has changed to ${memberRole}.`,
         );
 

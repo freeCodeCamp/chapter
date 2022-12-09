@@ -11,17 +11,11 @@ import { isProd } from '../config';
 // to update the tokens. This is it.
 const TOKENS_ID = 1;
 
-// TODO: Audit scopes. Are there any we can remove? Once the audit is complete
-// ensure the project provides only these scopes.
-const scopes = [
-  'https://www.googleapis.com/auth/calendar.acls',
-  'https://www.googleapis.com/auth/calendar.app.created',
-  'https://www.googleapis.com/auth/calendar.readonly',
-  'https://www.googleapis.com/auth/calendar.events',
-  'https://www.googleapis.com/auth/contacts.readonly',
-  'https://www.googleapis.com/auth/user.emails.read',
+const scopes: string[] = [
+  // We need to insert calendars, so we need the full scope (rather than more restricted scopes like 'calendar.events').
+  'https://www.googleapis.com/auth/calendar',
+  // We need the user's email to check if they are the same user as when the tokens were first created.
   'https://www.googleapis.com/auth/userinfo.email',
-  'profile',
 ];
 
 function init() {

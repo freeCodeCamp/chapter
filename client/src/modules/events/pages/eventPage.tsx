@@ -113,9 +113,10 @@ export const EventPage: NextPage = () => {
   }
 
   async function onCancelRsvp() {
-    const ok = await confirm({
-      title: 'Are you sure you want to cancel your RSVP?',
-    });
+    // const ok = await confirm({
+    //   title: 'Are you sure you want to cancel your RSVP?',
+    // });
+    const ok = true;
 
     if (ok) {
       try {
@@ -146,28 +147,29 @@ export const EventPage: NextPage = () => {
           ),
         }
       : {
-          title: 'Join this event?',
+          title: 'Would you like to login and join this event?',
           body: `Note: joining this event will make you a member of the event's chapter.`,
         };
-    const ok = await confirm(confirmOptions);
+    const ok = true; //await confirm(confirmOptions);
 
     if (ok) {
       if (user) {
         await onRsvp(rsvpStatus);
         return;
+      } else if (!user) {
+        await confirm(confirmOptions);
+        modalProps.onOpen();
+        const {
+          data: { me },
+        } = await login();
+        modalProps.onClose();
+        const eventUser = data?.event?.event_users.find(
+          ({ user: event_user }) => event_user.id === me?.id,
+        );
+        await onRsvp(eventUser?.rsvp.name);
       }
-      modalProps.onOpen();
-      const {
-        data: { me },
-      } = await login();
-      modalProps.onClose();
-      const eventUser = data?.event?.event_users.find(
-        ({ user: event_user }) => event_user.id === me?.id,
-      );
-      await onRsvp(eventUser?.rsvp.name);
     }
   }
-
   // TODO: reimplment this the login modal with Auth0
   async function checkOnCancelRsvp() {
     await onCancelRsvp();

@@ -62,8 +62,10 @@ export const Calendar: NextPageWithLayout = () => {
         </p>
       </Flex>
       <Button
-        as="a"
-        href={new URL('/authenticate-with-google', serverUrl).href}
+        {...(!isAuthenticated && {
+          as: 'a',
+          href: new URL('/authenticate-with-google', serverUrl).href,
+        })}
         fontWeight="600"
         background={'gray.85'}
         color={'gray.10'}

@@ -35,6 +35,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     submitText,
     chapterId: initialChapterId,
     loadingText,
+    formType,
   } = props;
   const isChaptersDropdownNeeded = initialChapterId === -1;
   const {
@@ -152,6 +153,17 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         <EventSponsorsForm loading={loading} sponsorsQuery={sponsorQuery} />
 
         {data?.canceled && <Text color="red.500">Event canceled</Text>}
+
+        {formType === 'new' && (
+          <Checkbox
+            defaultChecked={true}
+            disabled={loading}
+            {...register('attend_event')}
+          >
+            Attend Event
+          </Checkbox>
+        )}
+
         <HStack width="100%" mb="10 !important">
           <Button
             width="full"

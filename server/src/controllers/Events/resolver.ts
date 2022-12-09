@@ -691,12 +691,12 @@ ${unsubscribeOptions}`,
   async createEvent(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: EventInputs,
+    @Arg('attendEvent', () => Boolean) attendEvent: boolean,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
-    let venue;
-    if (data.venue_id) {
-      venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
-    }
+    const venue = data.venue_id
+      ? await prisma.venues.findUnique({ where: { id: data.venue_id } })
+      : null;
 
     const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id: chapterId },
@@ -707,14 +707,15 @@ ${unsubscribeOptions}`,
         sponsor_id,
       }));
 
-    // TODO: add an option to allow event creators NOT to rsvp. If doing that
-    // make sure stop adding them to the calendar event.
-    const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
-      user: { connect: { id: ctx.user.id } },
-      event_role: { connect: { name: 'member' } },
-      rsvp: { connect: { name: 'yes' } },
-      subscribed: true,
-    };
+    const eventUserData: Prisma.event_usersCreateWithoutEventInput | null =
+      attendEvent
+        ? {
+            user: { connect: { id: ctx.user.id } },
+            event_role: { connect: { name: 'member' } },
+            rsvp: { connect: { name: 'yes' } },
+            subscribed: true,
+          }
+        : null;
 
     // TODO: the type safety if we start with ...data is a bit weak here: it
     // does not correctly check if data has all the required properties
@@ -737,9 +738,7 @@ ${unsubscribeOptions}`,
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
-      event_users: {
-        create: eventUserData,
-      },
+      ...(eventUserData && { event_users: { create: eventUserData } }),
     };
 
     const event = await prisma.events.create({

@@ -27,9 +27,13 @@ export const NewEventPage: NextPageWithLayout = () => {
   const toast = useToast();
 
   const onSubmit = async (data: EventFormData) => {
-    const { chapter_id } = data;
+    const { chapter_id, attend_event } = data;
     const { data: eventData, errors } = await createEvent({
-      variables: { chapterId: chapter_id, data: parseEventData(data) },
+      variables: {
+        chapterId: chapter_id,
+        data: parseEventData(data),
+        attendEvent: attend_event ?? false,
+      },
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter_id } },
         { query: DASHBOARD_EVENTS },
@@ -57,9 +61,10 @@ export const NewEventPage: NextPageWithLayout = () => {
   return (
     <EventForm
       onSubmit={onSubmit}
-      submitText={'Add event'}
-      loadingText={'Adding Event'}
+      submitText="Add event"
+      loadingText="Adding Event"
       chapterId={chapterId}
+      formType="new"
     />
   );
 };

@@ -50,6 +50,8 @@ function createEventViaUI({ chapterId, eventData, isInPast = false }) {
   );
   cy.findByRole('button', { name: 'Add Sponsor' }).click();
 
+  cy.findByRole('checkbox', { name: 'Attend Event' }).should('be.checked');
+
   cy.findByRole('form', { name: 'Add event' })
     .findByRole('button', {
       name: 'Add event',

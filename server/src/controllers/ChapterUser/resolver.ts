@@ -26,6 +26,7 @@ import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { removeEventAttendee } from '../../services/Google';
 import { redactSecrets } from '../../util/redact-secrets';
+import MailerService from '../../../src/services/MailerService';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -121,6 +122,12 @@ interface Args {
   }>;
 }
 
+type EmailProps = {
+  email: string[];
+  emailSubject: string;
+  emailBody: string;
+};
+
 async function updateInstanceRoleForChapterRoleChange({
   changedChapterId,
   newChapterRole,
@@ -140,6 +147,17 @@ async function updateInstanceRoleForChapterRoleChange({
       where: { id: user.id },
     });
   }
+}
+async function emailUserAboutRoleChange({
+  email,
+  emailSubject,
+  emailBody,
+}: EmailProps) {
+  await new MailerService({
+    emailList: email,
+    subject: emailSubject,
+    htmlEmail: emailBody,
+  }).sendEmail();
 }
 
 @Resolver(() => ChapterUser)
@@ -264,6 +282,7 @@ export class ChapterUserResolver {
             user_chapters: { include: { chapter_role: true } },
           },
         },
+        chapter: { select: { name: true } },
       },
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
@@ -277,10 +296,21 @@ export class ChapterUserResolver {
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
 
+    const subject = `Role changed in ${chapterUser.chapter.name}`;
+    const body = `Hi ${chapterUser.user.name}.<br />
+    Your role in chapter ${chapterUser.chapter.name} has been changed from ${oldChapterRole} to ${newChapterRole}.<br />
+    `;
+
     await updateInstanceRoleForChapterRoleChange({
       changedChapterId: chapterId,
       newChapterRole,
       user: chapterUser.user,
+    });
+
+    await emailUserAboutRoleChange({
+      email: [chapterUser.user.email],
+      emailSubject: subject,
+      emailBody: body,
     });
 
     return updatedChapterUser;

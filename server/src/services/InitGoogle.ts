@@ -86,14 +86,20 @@ async function onTokens(tokens: Credentials) {
   }
 
   if (refresh_token) {
-    const update = { access_token, refresh_token, expiry_date, email };
+    const update = {
+      access_token,
+      refresh_token,
+      expiry_date,
+      email,
+      is_valid: true,
+    };
     await prisma.google_tokens.upsert({
       where: { id: TOKENS_ID },
       update,
       create: { id: TOKENS_ID, ...update },
     });
   } else {
-    const update = { access_token, expiry_date };
+    const update = { access_token, expiry_date, is_valid: true };
     // TODO: Handle the case where the refresh token is not sent *and* the
     // record doesn't exist. If this happens, we need to redirect them to a
     // new auth url, but with prompt: 'consent', so that Google will provide

@@ -707,15 +707,13 @@ ${unsubscribeOptions}`,
         sponsor_id,
       }));
 
-    const eventUserData: Prisma.event_usersCreateWithoutEventInput | null =
-      attendEvent
-        ? {
-            user: { connect: { id: ctx.user.id } },
-            event_role: { connect: { name: 'member' } },
-            rsvp: { connect: { name: 'yes' } },
-            subscribed: true,
-          }
-        : null;
+    // if attending, this will be used to create the RSVP
+    const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
+      user: { connect: { id: ctx.user.id } },
+      event_role: { connect: { name: 'member' } },
+      rsvp: { connect: { name: 'yes' } },
+      subscribed: true,
+    };
 
     // TODO: the type safety if we start with ...data is a bit weak here: it
     // does not correctly check if data has all the required properties
@@ -738,7 +736,7 @@ ${unsubscribeOptions}`,
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
-      ...(eventUserData && { event_users: { create: eventUserData } }),
+      ...(attendEvent && { event_users: { create: eventUserData } }),
     };
 
     const event = await prisma.events.create({
@@ -748,7 +746,7 @@ ${unsubscribeOptions}`,
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
       await createCalendarEventHelper({
-        attendeeEmails: [ctx.user.email],
+        attendeeEmails: attendEvent ? [ctx.user.email] : [],
         calendarId: chapter.calendar_id,
         event,
       });

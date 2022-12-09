@@ -29,7 +29,6 @@ describe('Users dashboard', () => {
       // and after changing role, we will no longer be authorized to see users.
       const memberToOwnerToMember = roleNames.indexOf(memberRole);
       const owner = roleNames.indexOf(ownerRole);
-      let userName;
 
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();
       cy.findByRole('combobox').find(':selected').contains(memberRole);
@@ -47,22 +46,24 @@ describe('Users dashboard', () => {
       cy.get('[data-cy="user-name"]')
         .eq(memberToOwnerToMember)
         .invoke('text')
-        .as(userName);
+        .as('userName');
       cy.waitUntilMail().mhFirst().as('email');
 
       cy.get('@email')
         .mhGetSubject()
         .should(
           'include',
-          `Your role has changed to ${memberRole} in the chapter's instances`,
+          `Instance role changed`,
         );
-      cy.get('@email')
-        .mhGetBody()
-        .should(
-          'include',
-          `Hello, ${userName}<br />
-        This is a notification about your role in chapter has changed to ${memberRole}.`,
-        );
+      cy.get('@userName').then((userName) => {
+        cy.get('@email')
+          .mhGetBody()
+          .should('include', `Hello, ${userName}<br />`)
+          .should(
+            'include',
+            `Your instance role has been changed to ${memberRole}.`,
+          );
+      });
 
       // Ensure default value is changed
       cy.get('[data-cy=changeRole]').eq(memberToOwnerToMember).click();

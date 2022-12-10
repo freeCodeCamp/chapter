@@ -170,7 +170,7 @@ export const main = async (app: Express) => {
     next();
   }
 
-  app.get('/authenticate-with-google', canAuthWithGoogle, (_req, res) => {
+  app.get('/authenticate-with-google', canAuthWithGoogle, (req, res) => {
     const state = crypto.randomUUID();
     res.cookie('state', state, {
       httpOnly: true,
@@ -178,7 +178,7 @@ export const main = async (app: Express) => {
       sameSite: 'lax',
     });
 
-    const authUrl = getGoogleAuthUrl(state);
+    const authUrl = getGoogleAuthUrl(state, req.query.prompt === 'true');
     res.redirect(authUrl);
   });
 
@@ -194,7 +194,11 @@ export const main = async (app: Express) => {
         res.send('Authentication successful');
       })
       .catch((err) => {
-        next(err);
+        if (err instanceof Error && err.message === 'Missing refresh_token') {
+          res.redirect('/authenticate-with-google?prompt=true');
+        } else {
+          next(err);
+        }
       });
   });
 

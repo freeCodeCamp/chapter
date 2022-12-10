@@ -92,36 +92,46 @@ async function onTokens(tokens: Credentials) {
       update,
       create: { id: TOKENS_ID, ...update },
     });
-  } else {
+  } else if (existingGoogleTokens) {
     const update = { access_token, expiry_date, is_valid: true };
-    // TODO: Handle the case where the refresh token is not sent *and* the
-    // record doesn't exist. If this happens, we need to redirect them to a
-    // new auth url, but with prompt: 'consent', so that Google will provide
-    // a new refresh token.
     await prisma.google_tokens.update({
       where: { id: TOKENS_ID },
       data: { ...update },
     });
+  } else {
+    // TODO: Handle the case where the refresh token is not sent *and* the
+    // record doesn't exist. If this happens, we need to redirect them to a
+    // new auth url, but with prompt: 'consent', so that Google will provide
+    // a new refresh token.
+    throw new Error('Missing refresh_token');
   }
 }
 
 export async function requestTokens(code: string) {
-  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
-
-  try {
-    await oauth2Client.getToken(code);
-  } catch {
-    throw new Error('Failed to get tokens');
-  }
+  const oauth2Client = createOAuth2Client();
+  await Promise.all([
+    new Promise((resolve, reject) => {
+      oauth2Client.on('tokens', (tokens: Credentials) => {
+        onTokens(tokens).then(resolve).catch(reject);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      oauth2Client
+        .getToken(code)
+        .then(resolve)
+        .catch(() => reject(new Error('Failed to get tokens')));
+    }),
+  ]);
 }
 
-export function getGoogleAuthUrl(state: string) {
+export function getGoogleAuthUrl(state: string, prompt = false) {
   const oauth2Client = createOAuth2Client();
 
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes.join(' '),
     state,
+    ...(prompt && { prompt: 'consent' }),
   });
 }
 

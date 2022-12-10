@@ -1,16 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
+import { buttonTheme } from './ButtonOutline';
 
 const chapterStyleVaribles = {
-  styles: {
-    global: {
-      'button:focus-visible': {
-        outlineColor: 'blue.600',
-        bg: 'crimsion',
-        outlineOffset: '1px',
-        boxShadow: 'none',
-      },
-    },
-  },
   colors: {
     gray: {
       '00': '#ffffff',
@@ -31,4 +22,6 @@ const chapterStyleVaribles = {
   },
 };
 
-export const chapterTheme = extendTheme(chapterStyleVaribles);
+export const chapterTheme = extendTheme(chapterStyleVaribles, {
+  components: { Button: buttonTheme },
+});

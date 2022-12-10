@@ -152,8 +152,8 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       )}
       <Button
         mt="6"
+        variant="outline"
         width="100%"
-        variant="solid"
         colorScheme="blue"
         type="submit"
         isDisabled={!isDirty || loading}

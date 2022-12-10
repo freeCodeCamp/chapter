@@ -76,6 +76,7 @@ export const Header: React.FC = () => {
             <>
               {!user && (
                 <Button
+                  variant="outline"
                   data-cy="login-button"
                   background="gray.10"
                   onClick={login}

@@ -280,6 +280,7 @@ export const EventPage: NextPage = () => {
           <Button
             data-cy="rsvp-button"
             colorScheme="blue"
+            variant="outline"
             onClick={() => checkOnRsvp()}
             paddingInline="2"
             paddingBlock="1"
@@ -299,7 +300,12 @@ export const EventPage: NextPage = () => {
                 You&lsquo;ve RSVPed to this event
               </Text>
             )}
-            <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
+            <Button
+              variant="outline"
+              onClick={onCancelRsvp}
+              paddingInline="2"
+              paddingBlock="1"
+            >
               Cancel
             </Button>
           </HStack>
@@ -314,6 +320,7 @@ export const EventPage: NextPage = () => {
                 <Button
                   onClick={onUnsubscribeFromEvent}
                   paddingInline={'2'}
+                  variant="outline"
                   paddingBlock={'1'}
                 >
                   Unsubscribe
@@ -326,6 +333,7 @@ export const EventPage: NextPage = () => {
                 </Text>
                 <Button
                   colorScheme="blue"
+                  variant="outline"
                   onClick={onSubscribeToEvent}
                   paddingInline={'2'}
                   paddingBlock={'1'}

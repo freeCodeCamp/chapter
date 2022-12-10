@@ -29,6 +29,7 @@ function Pagination({
         colorScheme="blue"
         data-testid="pagination-back"
         fontWeight="600"
+        variant="outline"
         fontSize="xl"
         disabled={!(currentPage > 1)}
         onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
@@ -43,6 +44,7 @@ function Pagination({
         colorScheme="blue"
         data-testid="pagination-forward"
         fontWeight="600"
+        variant="outline"
         fontSize="xl"
         disabled={!(currentPage < totalPages)}
         onClick={() =>

@@ -191,7 +191,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
       <Button
         mt="30px"
         width="100%"
-        variant="solid"
+        variant="outline"
         colorScheme="blue"
         type="submit"
         isDisabled={!isDirty}

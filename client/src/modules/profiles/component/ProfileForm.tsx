@@ -121,7 +121,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
       <Button
         mt="6"
         width="100%"
-        variant="solid"
+        variant="outline"
         colorScheme="blue"
         type="submit"
         isDisabled={!isDirty || loading}

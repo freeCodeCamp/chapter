@@ -158,6 +158,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         <HStack width="100%" mb="10 !important">
           <Button
             width="full"
+            variant="outline"
             colorScheme="blue"
             type="submit"
             isDisabled={!isDirty || loading}

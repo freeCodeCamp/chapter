@@ -117,6 +117,7 @@ export const UserProfilePage = () => {
               paddingBlock={'.65em'}
               paddingInline={'.4em'}
               colorScheme={'red'}
+              variant="outline"
               onClick={clickDelete}
             >
               Delete My Data
@@ -126,6 +127,7 @@ export const UserProfilePage = () => {
               background={'gray.85'}
               color={'gray.10'}
               height={'100%'}
+              variant="outline"
               size={'lg'}
               borderRadius={'5px'}
               paddingBlock={'.65em'}

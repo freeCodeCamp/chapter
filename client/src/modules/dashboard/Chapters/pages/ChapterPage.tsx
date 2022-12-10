@@ -144,7 +144,12 @@ export const ChapterPage: NextPageWithLayout = () => {
             />
 
             {checkPermission(user, Permission.ChapterDelete, { chapterId }) && (
-              <Button colorScheme="red" size="sm" onClick={clickDelete}>
+              <Button
+                variant="outline"
+                colorScheme="red"
+                size="sm"
+                onClick={clickDelete}
+              >
                 Delete Chapter
               </Button>
             )}

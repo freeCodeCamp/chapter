@@ -63,10 +63,12 @@ export const Modal = (props: ModalProps) => {
           <ModalFooter>
             {buttonsLeft}
             <HStack>
-              <Button onClick={modalProps.onClose}>Close</Button>
+              <Button variant="outline" onClick={modalProps.onClose}>
+                Close
+              </Button>
               {buttons}
               {formButtonText && (
-                <Button colorScheme={'blue'} type="submit">
+                <Button variant="outline" colorScheme={'blue'} type="submit">
                   {formButtonText}
                 </Button>
               )}

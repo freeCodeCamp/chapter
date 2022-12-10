@@ -86,6 +86,7 @@ const Actions: React.FC<ActionsProps> = ({
         <Button
           size={['sm', 'md']}
           colorScheme="blue"
+          variant="outline"
           onClick={onCreateCalendarEvent}
         >
           Create calendar event
@@ -98,7 +99,12 @@ const Actions: React.FC<ActionsProps> = ({
           buttonText="Cancel"
         />
       )}
-      <Button size={['sm', 'md']} colorScheme="red" onClick={clickDelete}>
+      <Button
+        variant="outline"
+        size={['sm', 'md']}
+        colorScheme="red"
+        onClick={clickDelete}
+      >
         Delete
       </Button>
       <SharePopOver

@@ -52,7 +52,7 @@ const UnsubscribePage: NextPage = () => {
               >
                 Confirm unsubscribing
               </Checkbox>
-              <Button type="submit" isDisabled={!confirmed}>
+              <Button variant="outline" type="submit" isDisabled={!confirmed}>
                 Submit
               </Button>
             </HStack>

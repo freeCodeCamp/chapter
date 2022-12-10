@@ -20,6 +20,7 @@ export const SharePopOver = ({
     <Popover>
       <PopoverTrigger>
         <Button
+          variant="outline"
           onClick={() => navigator.clipboard.writeText(link)}
           colorScheme={'blue'}
           size={size}

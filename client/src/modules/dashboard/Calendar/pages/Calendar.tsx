@@ -63,6 +63,7 @@ export const Calendar: NextPageWithLayout = () => {
       </Flex>
       <Button
         as="a"
+        variant="outline"
         href={new URL('/authenticate-with-google', serverUrl).href}
         fontWeight="600"
         background={'gray.85'}

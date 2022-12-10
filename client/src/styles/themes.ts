@@ -1,12 +1,14 @@
 import { extendTheme } from '@chakra-ui/react';
 
 const chapterStyleVaribles = {
-  global: {
-    'button:focus-visible': {
-      outlineColor: 'blue.600',
-      background: 'crimsion',
-      outlineOffset: '1px',
-      boxShadow: 'none',
+  styles: {
+    global: {
+      'button:focus-visible': {
+        outlineColor: 'blue.600',
+        bg: 'crimsion',
+        outlineOffset: '1px',
+        boxShadow: 'none',
+      },
     },
   },
   colors: {

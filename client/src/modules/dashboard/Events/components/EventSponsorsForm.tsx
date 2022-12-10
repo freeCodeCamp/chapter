@@ -50,7 +50,6 @@ const EventSponsorsForm: React.FC<EventSponsorsFormProps> = ({
         <Spacer />
         <Button
           colorScheme="blue"
-          variant="outline"
           onClick={() => {
             if (data) {
               const allowedSponsors = getAllowedSponsors(

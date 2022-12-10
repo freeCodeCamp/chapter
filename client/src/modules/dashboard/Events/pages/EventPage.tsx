@@ -233,7 +233,6 @@ export const EventPage: NextPageWithLayout = () => {
                         {action.map(({ title, onClick, colorScheme }) => (
                           <Button
                             key={title.toLowerCase()}
-                            variant="outline"
                             data-cy={title.toLowerCase()}
                             size="xs"
                             colorScheme={colorScheme}
@@ -289,7 +288,6 @@ export const EventPage: NextPageWithLayout = () => {
                             {action.map(({ title, onClick, colorScheme }) => (
                               <Button
                                 key={title.toLowerCase()}
-                                variant="outline"
                                 data-cy={title.toLowerCase()}
                                 size="xs"
                                 colorScheme={colorScheme}

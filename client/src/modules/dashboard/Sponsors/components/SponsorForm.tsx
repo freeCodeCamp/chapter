@@ -99,9 +99,9 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
         </FormControl>
         <Button
           mt="20px"
+          variant="solid"
           colorScheme="blue"
           type="submit"
-          variant="outline"
           isLoading={loading}
           loadingText={loadingText}
           isDisabled={!isDirty || loading}

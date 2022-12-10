@@ -84,7 +84,6 @@ export const UsersPage: NextPageWithLayout = () => {
                 <Button
                   data-cy="changeRole"
                   colorScheme="blue"
-                  variant="outline"
                   size="xs"
                   onClick={() =>
                     changeRole({
@@ -135,7 +134,6 @@ export const UsersPage: NextPageWithLayout = () => {
                     <Button
                       data-cy="changeRole"
                       colorScheme="blue"
-                      variant="outline"
                       size="xs"
                       onClick={() =>
                         changeRole({

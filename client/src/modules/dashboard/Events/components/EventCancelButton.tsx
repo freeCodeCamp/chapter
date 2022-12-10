@@ -44,7 +44,6 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
   return (
     <Button
       {...rest}
-      variant="outline"
       width={isFullWidth ? 'full' : 'auto'}
       onClick={clickCancel}
       isDisabled={isDisabled}

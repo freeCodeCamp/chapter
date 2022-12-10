@@ -85,9 +85,7 @@ const Home = () => {
               <EventCard key={event.id} event={event} />
             ))}
             {hasMore ? (
-              <Button variant="outline" onClick={onLoadMore}>
-                Click for more
-              </Button>
+              <Button onClick={onLoadMore}>Click for more</Button>
             ) : (
               <Text size="md">No more</Text>
             )}

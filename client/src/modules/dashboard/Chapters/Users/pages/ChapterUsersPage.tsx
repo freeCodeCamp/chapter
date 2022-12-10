@@ -181,7 +181,6 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                   }) && (
                     <Button
                       data-cy="changeRole"
-                      variant="outline"
                       colorScheme="blue"
                       size="xs"
                       onClick={() =>
@@ -209,7 +208,6 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     >
                       <Button
                         data-cy="unbanUser"
-                        variant="outline"
                         colorScheme="purple"
                         size="xs"
                         disabled={is_bannable ? false : true}
@@ -234,7 +232,6 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                     >
                       <Button
                         data-cy="banUser"
-                        variant="outline"
                         colorScheme="red"
                         size="xs"
                         disabled={is_bannable ? false : true}
@@ -292,7 +289,6 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                           <HStack>
                             <Button
                               data-cy="changeRole"
-                              variant="outline"
                               colorScheme="blue"
                               size="xs"
                               onClick={() =>
@@ -321,7 +317,6 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                               <Button
                                 data-cy="unbanUser"
                                 colorScheme="purple"
-                                variant="outline"
                                 size="xs"
                                 disabled={is_bannable ? false : true}
                                 onClick={() => onUnban(user)}
@@ -347,7 +342,6 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 data-cy="banUser"
                                 colorScheme="red"
                                 size="xs"
-                                variant="outline"
                                 disabled={is_bannable ? false : true}
                                 onClick={() => onBan(user)}
                               >

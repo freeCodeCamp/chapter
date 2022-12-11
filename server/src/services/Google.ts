@@ -1,23 +1,41 @@
 import type { calendar_v3 } from '@googleapis/calendar';
 
 import { isProd, isTest } from '../config';
-import { createCalendarApi } from './InitGoogle';
+import { createCalendarApi, invalidateToken } from './InitGoogle';
 interface CalendarData {
   summary: string;
   description: string;
 }
 
+const tokenErrors = [
+  'Invalid Credentials',
+  'invalid_grant',
+  'No access, refresh token, API key or refresh handler callback is set.',
+];
+
+async function errorHandler(err: unknown) {
+  if (err instanceof Error && tokenErrors.indexOf(err.message) !== -1) {
+    console.error('Marking token as invalid');
+    await invalidateToken();
+    // TODO send email to users with GoogleAuthenticate permission
+  }
+}
+
 export async function createCalendar({ summary, description }: CalendarData) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await calendarApi.calendars.insert({
-    requestBody: {
-      summary,
-      description,
-    },
-  });
-
-  return data;
+  try {
+    const { data } = await calendarApi.calendars.insert({
+      requestBody: {
+        summary,
+        description,
+      },
+    });
+    return data;
+  } catch (err) {
+    await errorHandler(err);
+    throw err;
+  }
 }
 
 interface EventData {
@@ -67,13 +85,18 @@ export async function createCalendarEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await calendarApi.events.insert({
-    calendarId,
-    sendUpdates: 'all',
-    requestBody: createEventRequestBody(eventData),
-  });
+  try {
+    const { data } = await calendarApi.events.insert({
+      calendarId,
+      sendUpdates: 'all',
+      requestBody: createEventRequestBody(eventData),
+    });
 
-  return { calendarEventId: data.id };
+    return { calendarEventId: data.id };
+  } catch (err) {
+    await errorHandler(err);
+    throw err;
+  }
 }
 
 interface EventIds {
@@ -90,11 +113,18 @@ async function getAndUpdateEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await calendarApi.events.get({
-    calendarId,
-    eventId,
-  });
+  let response;
+  try {
+    response = await calendarApi.events.get({
+      calendarId,
+      eventId,
+    });
+  } catch (err) {
+    await errorHandler(err);
+    throw err;
+  }
 
+  const { data } = response;
   const { attendees } = data;
 
   const updatedAttendeesData = updateAttendees
@@ -106,12 +136,17 @@ async function getAndUpdateEvent(
     ...{ attendees: updatedAttendeesData },
   };
 
-  return await calendarApi.events.update({
-    calendarId,
-    eventId,
-    sendUpdates: 'all',
-    requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
-  });
+  try {
+    return await calendarApi.events.update({
+      calendarId,
+      eventId,
+      sendUpdates: 'all',
+      requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
+    });
+  } catch (err) {
+    await errorHandler(err);
+    throw err;
+  }
 }
 
 // To be used to update event, but not the attendees.
@@ -184,9 +219,14 @@ export async function deleteCalendarEvent({
 }: EventIds) {
   const calendarApi = await createCalendarApi();
 
-  await calendarApi.events.delete({
-    calendarId,
-    eventId,
-    sendUpdates: 'all',
-  });
+  try {
+    await calendarApi.events.delete({
+      calendarId,
+      eventId,
+      sendUpdates: 'all',
+    });
+  } catch (err) {
+    await errorHandler(err);
+    throw err;
+  }
 }

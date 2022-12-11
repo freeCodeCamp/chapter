@@ -152,3 +152,10 @@ export async function createCalendarApi() {
   const auth = await createCredentialedClient();
   return calendar({ version: 'v3', auth });
 }
+
+export async function invalidateToken() {
+  await prisma.google_tokens.update({
+    data: { is_valid: false },
+    where: { id: TOKENS_ID },
+  });
+}

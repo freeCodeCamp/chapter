@@ -1,13 +1,11 @@
-import { defineStyle, defineStyleConfig } from '@chakra-ui/styled-system';
-
-const outline = defineStyle({
-  _focusVisible: {
-    outlineColor: 'blue.600',
-    outlineOffset: '1px',
-    boxShadow: 'none',
-  },
-});
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export const buttonTheme = defineStyleConfig({
-  variants: { outline },
+  baseStyle: {
+    _focusVisible: {
+      outlineColor: 'blue.600',
+      outlineOffset: '1px',
+      boxShadow: 'none',
+    },
+  },
 });

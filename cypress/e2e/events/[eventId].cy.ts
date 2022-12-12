@@ -83,27 +83,6 @@ describe('event page', () => {
       });
   });
 
-  it('is possible to cancel using the email links', () => {
-    cy.login(users.testUser.email);
-    cy.joinChapter(chapterId).then(() => {
-      cy.rsvpToEvent({ eventId, chapterId }).then(() => {
-        cy.visit(`/events/${eventId}?confirm_rsvp=true`);
-
-        cy.contains('Are you sure you want to cancel your RSVP?');
-        cy.findByRole('button', { name: 'Confirm' }).click();
-        cy.findByRole('button', { name: 'RSVP' }).should('be.visible');
-
-        // the modal should not reappear, so first we check the cancel modal has
-        // gone...
-        cy.contains('Are you sure you want to cancel your RSVP?').should(
-          'not.exist',
-        );
-        /// ...then we check the invitation modal has not reappeared.
-        cy.contains('You have been invited to this event').should('not.exist');
-      });
-    });
-  });
-
   it('is possible to join using the email links', () => {
     cy.login(users.testUser.email);
     cy.visit(`/events/${eventId}?confirm_rsvp=true`);

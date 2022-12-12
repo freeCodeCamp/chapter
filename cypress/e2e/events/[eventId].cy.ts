@@ -87,7 +87,7 @@ describe('event page', () => {
     cy.login(users.testUser.email);
     cy.joinChapter(chapterId).then(() => {
       cy.rsvpToEvent({ eventId, chapterId }).then(() => {
-        cy.visit(`/events/${eventId}?confirm_rsvp=true`);
+        cy.visit(`/events/${eventId}?ask_to_confirm=true`);
 
         cy.contains('Are you sure you want to cancel your RSVP?');
         cy.findByRole('button', { name: 'Confirm' }).click();
@@ -106,7 +106,7 @@ describe('event page', () => {
 
   it('is possible to join using the email links', () => {
     cy.login(users.testUser.email);
-    cy.visit(`/events/${eventId}?confirm_rsvp=true`);
+    cy.visit(`/events/${eventId}?ask_to_confirm=true`);
 
     cy.contains('You have been invited to this event');
     cy.findByRole('button', { name: 'Confirm' }).click();

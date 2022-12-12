@@ -211,7 +211,7 @@ export const ChapterPage: NextPage = () => {
   const isLoading = loading || loadingChapterUser || !data;
 
   const canShowConfirmModal =
-    router.query?.confirm_rsvp && !isLoading && isLoggedIn;
+    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
   const isAlreadyMember = !!dataChapterUser?.chapterUser;
 
   useEffect(() => {

@@ -130,12 +130,14 @@ export const EventPage: NextPage = () => {
   }
 
   async function tryToRsvp(options?: { invited?: boolean }) {
-    const loggedInConfirmOptions = options?.invited
+    const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
           body: (
             <>
-              Would you like to attend?
+              {user
+                ? 'Would you like to attend?'
+                : 'Would you like to log in and join this event?'}
               <br />
               Note: joining this event will make you a member of the
               event&apos;s chapter.
@@ -147,36 +149,27 @@ export const EventPage: NextPage = () => {
           body: `Note: joining this event will make you a member of the event's chapter.`,
         };
 
-    const loggedOutConfirmOptions = {
-      title: 'Would you like to log in and join this event?',
-      body: `Note: joining this event will make you a member of the event's chapter.`,
-    };
+    const ok = await confirm(confirmOptions);
+    if (!ok) return;
 
     if (user) {
-      const ok = await confirm(loggedInConfirmOptions);
-      if (ok) {
-        await onRsvp(rsvpStatus);
-        return;
-      }
-    } else if (!user) {
-      const ok = await confirm(loggedOutConfirmOptions);
-      if (ok) {
-        modalProps.onOpen();
-        const {
-          data: { me },
-        } = await login();
-        modalProps.onClose();
-        const eventUser = data?.event?.event_users.find(
-          ({ user: event_user }) => event_user.id === me?.id,
-        );
-        await onRsvp(eventUser?.rsvp.name);
-      }
+      await onRsvp(rsvpStatus);
+      return;
     }
+    modalProps.onOpen();
+    const {
+      data: { me },
+    } = await login();
+    modalProps.onClose();
+    const eventUser = data?.event?.event_users.find(
+      ({ user: event_user }) => event_user.id === me?.id,
+    );
+    await onRsvp(eventUser?.rsvp.name);
   }
 
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
-      tryToRsvp();
+      tryToRsvp({ invited: true });
       setHasShownModal(true);
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);

@@ -44,7 +44,7 @@ import { useLogin } from '../../../hooks/useAuth';
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser} = useAuth();
+  const { user, loadingUser } = useAuth();
   const login = useLogin();
   const modalProps = useDisclosure();
 
@@ -76,8 +76,7 @@ export const EventPage: NextPage = () => {
   }, [data?.event, user]);
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
-  const canShowConfirmationModal =
-    router.query?.confirm_rsvp && !isLoading;
+  const canShowConfirmationModal = router.query?.confirm_rsvp && !isLoading;
   const chapterId = data?.event?.chapter.id;
 
   // The useEffect has to be before the early return (rule of hooks), but the
@@ -152,7 +151,7 @@ export const EventPage: NextPage = () => {
       title: 'Would you like to log in and join this event?',
       body: `Note: joining this event will make you a member of the event's chapter.`,
     };
-    
+
     if (user) {
       const ok = await confirm(loggedInConfirmOptions);
       if (ok) {
@@ -173,15 +172,15 @@ export const EventPage: NextPage = () => {
         await onRsvp(eventUser?.rsvp.name);
       }
     }
-  
-}
+  }
+
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
       tryToRsvp();
       setHasShownModal(true);
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
-  
+
   if (error || isLoading) return <Loading loading={isLoading} error={error} />;
   if (!data?.event)
     return <NextError statusCode={404} title="Event not found" />;

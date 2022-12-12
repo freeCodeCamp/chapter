@@ -1,199 +1,171 @@
-import { LockIcon } from '@chakra-ui/icons';
 import {
-  Box,
-  Button,
-  Flex,
   Heading,
-  HStack,
-  Image,
-  List,
-  ListItem,
-  Spinner,
-  Text,
-  useDisclosure,
-  useToast,
   VStack,
+  HStack,
+  Spinner,
+  Stack,
+  Box,
+  Text,
+  Image,
+  Link,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
-import { useConfirm } from 'chakra-confirm';
-import { Link } from 'chakra-next-link';
+import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
+import { useConfirm } from 'chakra-confirm';
+import { CHAPTER_USER } from '../graphql/queries';
 import { useAuth } from '../../auth/store';
-import Avatar from '../../../components/Avatar';
-import { Loading } from '../../../components/Loading';
-import { Modal } from '../../../components/Modal';
-import SponsorsCard from '../../../components/SponsorsCard';
-import UserName from '../../../components/UserName';
-import { EVENT } from '../graphql/queries';
-import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
+import { Loading } from 'components/Loading';
+import { EventCard } from 'components/EventCard';
 import {
-  useCancelRsvpMutation,
-  useEventQuery,
   useJoinChapterMutation,
-  useRsvpToEventMutation,
-  useSubscribeToEventMutation,
-  useUnsubscribeFromEventMutation,
-} from '../../../generated/graphql';
-import { formatDate } from '../../../util/date';
-import { useParam } from '../../../hooks/useParam';
-import { useLogin } from '../../../hooks/useAuth';
+  useLeaveChapterMutation,
+  useToggleChapterSubscriptionMutation,
+  ChapterUserQuery,
+  useChapterQuery,
+  useChapterUserQuery,
+} from 'generated/graphql';
+import { useParam } from 'hooks/useParam';
 
-export const EventPage: NextPage = () => {
-  const { param: eventId } = useParam('eventId');
+const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
+  return chatUrl ? (
+    <Text size="md">
+      Chat Link:
+      <Link>{chatUrl}</Link>
+    </Text>
+  ) : null;
+};
+
+const SubscriptionWidget = ({
+  chapterUser,
+  chapterSubscribe,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+}) => {
+  return chapterUser?.subscribed ? (
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
+      <Button onClick={() => chapterSubscribe(false)} size="md">
+        Unsubscribe
+      </Button>
+    </HStack>
+  ) : (
+    <HStack justifyContent={'space-between'} width={'100%'}>
+      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
+      <Button
+        colorScheme="blue"
+        onClick={() => chapterSubscribe(true)}
+        size="md"
+      >
+        Subscribe
+      </Button>
+    </HStack>
+  );
+};
+
+const ChapterUserRoleWidget = ({
+  chapterUser,
+  LeaveChapter,
+  JoinChapter,
+}: {
+  chapterUser: ChapterUserQuery['chapterUser'];
+  LeaveChapter: () => Promise<void>;
+  JoinChapter: () => Promise<void>;
+}) =>
+  chapterUser?.chapter_role ? (
+    <HStack justifyContent={'space-between'}>
+      <Text data-cy="join-success" fontWeight={500}>
+        <CheckIcon marginRight={1} />
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
+      <Button onClick={LeaveChapter}>Leave</Button>
+    </HStack>
+  ) : (
+    <HStack justifyContent="space-between">
+      <Text fontWeight={500}>Become member of the chapter</Text>
+      <Button colorScheme="blue" onClick={JoinChapter}>
+        Join
+      </Button>
+    </HStack>
+  );
+
+export const ChapterPage: NextPage = () => {
+  const { param: chapterId } = useParam('chapterId');
   const router = useRouter();
-  const { user, loadingUser} = useAuth();
-  const login = useLogin();
-  const modalProps = useDisclosure();
+  const { isLoggedIn } = useAuth();
 
-  const refetch = {
-    refetchQueries: [
-      { query: EVENT, variables: { eventId } },
-      { query: DASHBOARD_EVENT, variables: { eventId } },
-    ],
-  };
-
-  const [rsvpToEvent] = useRsvpToEventMutation(refetch);
-  const [cancelRsvp] = useCancelRsvpMutation(refetch);
-  const [joinChapter] = useJoinChapterMutation(refetch);
-  const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
-  const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
-
-  const { loading, error, data } = useEventQuery({
-    variables: { eventId },
+  const { loading, error, data } = useChapterQuery({
+    variables: { chapterId },
   });
 
-  const toast = useToast();
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = React.useState(false);
+  const toast = useToast();
 
-  const eventUser = useMemo(() => {
-    return data?.event?.event_users.find(
-      ({ user: event_user }) => event_user.id === user?.id,
-    );
-  }, [data?.event, user]);
-  const rsvpStatus = eventUser?.rsvp.name;
-  const isLoading = loading || loadingUser;
-  const canShowConfirmationModal =
-    router.query?.confirm_rsvp && !isLoading;
-  const chapterId = data?.event?.chapter.id;
-
-  // The useEffect has to be before the early return (rule of hooks), but the
-  // functions rely on chapterId which cannot be guaranteed to be defined here.
-  // It's easy to create bugs by calling arrow functions before they're defined,
-  // or by calling functions that rely on variables that aren't defined yet, so
-  // we define everything before it's used.
-
-  async function onRsvp(rsvpStatus: string | undefined) {
-    if (!chapterId) {
-      toast({ title: 'Something went wrong', status: 'error' });
-      return;
-    }
-    if (rsvpStatus === 'yes' || rsvpStatus === 'waitlist') {
-      toast({ title: 'Already RSVPed', status: 'info' });
-      return;
-    }
-    try {
-      await joinChapter({ variables: { chapterId } });
-      await rsvpToEvent({
-        variables: { eventId, chapterId },
-      });
-
-      toast({
-        title: 'You successfully RSVPed to this event',
-        status: 'success',
-      });
-    } catch (err) {
-      toast({ title: 'Something went wrong', status: 'error' });
-      console.error(err);
-    }
-  }
-
-  async function onCancelRsvp() {
-    const ok = await confirm({
-      title: 'Are you sure you want to cancel your RSVP?',
+  const { loading: loadingChapterUser, data: dataChapterUser } =
+    useChapterUserQuery({
+      variables: { chapterId },
     });
 
+  const refetch = {
+    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
+  };
+  const [joinChapter] = useJoinChapterMutation(refetch);
+  const [leaveChapter] = useLeaveChapterMutation(refetch);
+  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
+
+  const onJoinChapter = async (options?: { invited?: boolean }) => {
+    const confirmOptions = options?.invited
+      ? {
+          title: 'You have been invited to this chapter',
+          body: 'Would you like to join?',
+        }
+      : {
+          title: 'Join this chapter?',
+          body: 'Joining chapter will add you as a member to chapter.',
+        };
+    const ok = await confirm(confirmOptions);
     if (ok) {
       try {
-        await cancelRsvp({
-          variables: { eventId },
-        });
-
-        toast({ title: 'You canceled your RSVP 👋', status: 'info' });
+        await joinChapter({ variables: { chapterId } });
+        toast({ title: 'You successfully joined chapter', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
-  }
+  };
 
-  async function tryToRsvp(options?: { invited?: boolean }) {
-    const loggedInConfirmOptions = options?.invited
-      ? {
-          title: 'You have been invited to this event',
-          body: (
+  const onLeaveChapter = async () => {
+    const ok = await confirm({
+      title: 'Are you sure you want to leave this chapter?',
+      body: (
+        <>
+          Leaving will cancel your attendance at all of this chapter&apos;s
+          events.
+          {dataChapterUser?.chapterUser?.chapter_role.name ===
+            'administrator' && (
             <>
-              Would you like to attend?
               <br />
-              Note: joining this event will make you a member of the
-              event&apos;s chapter.
+              <br />
+              Note: This will remove record of your chapter role as well.
+              Joining chapter again will give you member role.
             </>
-          ),
-        }
-      : {
-          title: 'Join this event?',
-          body: `Note: joining this event will make you a member of the event's chapter.`,
-        };
-
-    const loggedOutConfirmOptions = {
-      title: 'Would you like to log in and join this event?',
-      body: `Note: joining this event will make you a member of the event's chapter.`,
-    };
-    
-    if (user) {
-      const ok = await confirm(loggedInConfirmOptions);
-      if (ok) {
-        await onRsvp(rsvpStatus);
-        return;
-      }
-    } else if (!user) {
-      const ok = await confirm(loggedOutConfirmOptions);
-      if (ok) {
-        modalProps.onOpen();
-        const {
-          data: { me },
-        } = await login();
-        modalProps.onClose();
-        const eventUser = data?.event?.event_users.find(
-          ({ user: event_user }) => event_user.id === me?.id,
-        );
-        await onRsvp(eventUser?.rsvp.name);
-      }
-    }
-  
-}
-  useEffect(() => {
-    if (canShowConfirmationModal && !hasShownModal) {
-      tryToRsvp();
-      setHasShownModal(true);
-    }
-  }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
-  
-
-  if (error || isLoading) return <Loading loading={isLoading} error={error} />;
-  if (!data?.event)
-    return <NextError statusCode={404} title="Event not found" />;
-
-  async function onSubscribeToEvent() {
-    const ok = await confirm({ title: 'Do you want to subscribe?' });
+          )}
+        </>
+      ),
+    });
     if (ok) {
       try {
-        await subscribeToEvent({ variables: { eventId } });
+        await leaveChapter({ variables: { chapterId } });
         toast({
-          title: 'You successfully subscribed to this event',
+          title: 'You successfully left the chapter',
           status: 'success',
         });
       } catch (err) {
@@ -201,187 +173,127 @@ export const EventPage: NextPage = () => {
         console.error(err);
       }
     }
-  }
+  };
 
-  
-  async function onUnsubscribeFromEvent() {
-    const ok = await confirm({
-      title: 'Unsubscribe from event?',
-      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
-    });
+  const onChapterSubscribe = async (toSubscribe: boolean) => {
+    const ok = await confirm(
+      toSubscribe
+        ? {
+            title: 'Do you want to subscribe?',
+            body: 'After subscribing you will receive emails about new events in this chapter.',
+          }
+        : {
+            title: 'Unsubscribe from chapter?',
+            body: 'After unsubscribing you will not receive emails about new events in this chapter.',
+          },
+    );
+
     if (ok) {
       try {
-        await unsubscribeFromEvent({ variables: { eventId } });
-        toast({
-          title: 'You have unsubscribed from this event',
-          status: 'info',
-        });
+        await chapterSubscribe({ variables: { chapterId } });
+        toast(
+          toSubscribe
+            ? {
+                title: 'You successfully subscribed to this chapter',
+                status: 'success',
+              }
+            : {
+                title: 'You have unsubscribed from this chapter',
+                status: 'success',
+              },
+        );
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
-        console.error(err);
       }
     }
-  }
+  };
 
-  const rsvps = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'yes',
-  );
-  const waitlist = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'waitlist',
-  );
+  const isLoading = loading || loadingChapterUser || !data;
 
-  const startAt = formatDate(data.event.start_at);
-  const endsAt = formatDate(data.event.ends_at);
+  const canShowConfirmModal =
+    router.query?.confirm_rsvp && !isLoading && isLoggedIn;
+  const isAlreadyMember = !!dataChapterUser?.chapterUser;
+
+  useEffect(() => {
+    if (canShowConfirmModal && !hasShownModal) {
+      if (isAlreadyMember) {
+        onLeaveChapter();
+      } else {
+        onJoinChapter({ invited: true });
+      }
+      setHasShownModal(true);
+    }
+  }, [canShowConfirmModal, isAlreadyMember, hasShownModal]);
+
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (!data.chapter)
+    return <NextError statusCode={404} title="Chapter not found" />;
 
   return (
-    <>
-      <Modal modalProps={modalProps} title="Waiting for login">
-        <Spinner />
-      </Modal>
-      <VStack align="flex-start">
-        {data.event.image_url && (
+    <VStack>
+      <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+        {data.chapter.banner_url && (
           <Box height={'300px'}>
             <Image
-              data-cy="event-image"
               boxSize="100%"
               maxH="300px"
-              src={data.event.image_url}
+              src={data.chapter.banner_url}
               alt=""
               borderRadius="md"
               objectFit="cover"
-              fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+              fallbackSrc="https://cdn.freecodecamp.org/chapter/orange-graphics-small.jpg"
               fallbackStrategy="onError"
             />
           </Box>
         )}
-        <Flex alignItems={'center'}>
-          {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
-          <Heading as="h1">{data.event.name}</Heading>
-        </Flex>
-        {data.event.canceled && (
-          <Text fontWeight={500} fontSize={'md'} color="red.500">
-            Canceled
-          </Text>
-        )}
-        <Text fontSize={['md', 'lg', 'xl']} fontWeight={'500'}>
-          Chapter:{' '}
-          <Link href={`/chapters/${chapterId}`}>{data.event.chapter.name}</Link>
-        </Text>
-        <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
-          {data.event.description}
-        </Text>
-        <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
-          Starting: {startAt}
-        </Text>
-        <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
-          Ending: {endsAt}
-        </Text>
-        {!rsvpStatus || rsvpStatus === 'no' ? (
-          <Button
-            data-cy="rsvp-button"
-            colorScheme="blue"
-            onClick={() => tryToRsvp()}
-            paddingInline="2"
-            paddingBlock="1"
-          >
-            {data.event.invite_only ? 'Request' : 'RSVP'}
-          </Button>
-        ) : (
-          <HStack>
-            {rsvpStatus === 'waitlist' ? (
-              <Text fontSize="md" fontWeight="500">
-                {data.event.invite_only
-                  ? 'Event owner will soon confirm your request'
-                  : "You're on waitlist for this event"}
-              </Text>
-            ) : (
-              <Text data-cy="rsvp-success">
-                You&lsquo;ve RSVPed to this event
-              </Text>
-            )}
-            <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
-              Cancel
-            </Button>
-          </HStack>
-        )}
-        {eventUser && (
-          <HStack>
-            {eventUser.subscribed ? (
-              <>
-                <Text fontSize={'md'} fontWeight={'500'}>
-                  You are subscribed
-                </Text>
-                <Button
-                  onClick={onUnsubscribeFromEvent}
-                  paddingInline={'2'}
-                  paddingBlock={'1'}
-                >
-                  Unsubscribe
-                </Button>
-              </>
-            ) : (
-              <>
-                <Text fontSize={'md'} fontWeight={'500'}>
-                  Not subscribed
-                </Text>
-                <Button
-                  colorScheme="blue"
-                  onClick={onSubscribeToEvent}
-                  paddingInline={'2'}
-                  paddingBlock={'1'}
-                >
-                  Subscribe
-                </Button>
-              </>
-            )}
-          </HStack>
-        )}
-
-        {data.event.sponsors.length ? (
-          <SponsorsCard sponsors={data.event.sponsors} />
-        ) : (
-          false
-        )}
         <Heading
-          data-cy="rsvps-heading"
-          fontSize={['sm', 'md', 'lg']}
-          as={'h2'}
+          as="h1"
+          lineHeight={1.1}
+          fontWeight={600}
+          fontSize={{ base: 'xl', sm: '2xl', lg: '3xl' }}
         >
-          RSVPs:
+          {data.chapter.name}
         </Heading>
-        <List>
-          {rsvps.map(({ user }) => (
-            <ListItem key={user.id} mb="2">
-              <HStack>
-                <Avatar user={user} />
-                <UserName user={user} fontSize="xl" fontWeight="bold" />
-              </HStack>
-            </ListItem>
+        <Text fontSize={'lg'} color={'gray.500'}>
+          {data.chapter.description}
+        </Text>
+        {isLoggedIn &&
+          (loadingChapterUser ? (
+            <Spinner />
+          ) : (
+            dataChapterUser && (
+              <ChapterUserRoleWidget
+                JoinChapter={onJoinChapter}
+                LeaveChapter={onLeaveChapter}
+                chapterUser={dataChapterUser.chapterUser}
+              />
+            )
           ))}
-        </List>
-
-        {!data.event.invite_only && (
-          <>
-            <Heading
-              data-cy="waitlist-heading"
-              fontSize={['sm', 'md', 'lg']}
-              as={'h2'}
-            >
-              Waitlist:
-            </Heading>
-            <List>
-              {waitlist.map(({ user }) => (
-                <ListItem key={user.id} mb="2">
-                  <HStack>
-                    <Avatar user={user} />
-                    <UserName user={user} fontSize="xl" fontWeight="bold" />
-                  </HStack>
-                </ListItem>
-              ))}
-            </List>
-          </>
-        )}
-      </VStack>
-    </>
+        {isLoggedIn &&
+          (loadingChapterUser ? (
+            <Spinner />
+          ) : (
+            dataChapterUser?.chapterUser && (
+              <SubscriptionWidget
+                chapterUser={dataChapterUser.chapterUser}
+                chapterSubscribe={onChapterSubscribe}
+              />
+            )
+          ))}
+        <ChatLink chatUrl={data.chapter.chat_url} />
+        <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
+          Events:
+        </Heading>
+        {data.chapter.events.map((event) => (
+          <EventCard
+            key={event.id}
+            event={{
+              ...event,
+              chapter: { id: chapterId, name: data.chapter.name },
+            }}
+          />
+        ))}
+      </Stack>
+    </VStack>
   );
 };

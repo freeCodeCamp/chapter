@@ -63,9 +63,9 @@ describe('MailerService Class', () => {
   });
 
   it("Should use 'bcc' if sending to multiple email addresses", async () => {
-    const mailer = mailerService.loadValues(data);
+    // const mailer = mailerService.loadValues(data);
     const mockSendMail = jest
-      .spyOn(mailer.transporter, 'sendMail')
+      .spyOn(mailerService.transporter, 'sendMail')
       .mockImplementation(jest.fn());
     mailerService.sendEmail(data);
     expect(mockSendMail).toHaveBeenCalledWith(

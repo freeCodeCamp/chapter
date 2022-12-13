@@ -14,11 +14,11 @@ const tokenErrors = [
   'No access, refresh token, API key or refresh handler callback is set.',
 ];
 
-async function errorHandler(err: unknown) {
-  if (err instanceof Error && tokenErrors.indexOf(err.message) !== -1) {
+function errorHandler(err: unknown) {
+  if (err instanceof Error && tokenErrors.includes(err.message)) {
     console.error('Marking token as invalid');
-    await invalidateToken();
-    await sendInvalidTokenNotification();
+    invalidateToken();
+    sendInvalidTokenNotification();
   }
 }
 
@@ -28,7 +28,7 @@ async function callWithHandler<T>(
   try {
     return await func();
   } catch (err) {
-    await errorHandler(err);
+    errorHandler(err);
     throw err;
   }
 }

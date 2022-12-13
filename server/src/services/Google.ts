@@ -1,4 +1,4 @@
-import type { calendar_v3 } from '@googleapis/calendar';
+import { calendar_v3, GaxiosPromise } from '@googleapis/calendar';
 
 import { isProd, isTest } from '../config';
 import { createCalendarApi, invalidateToken } from './InitGoogle';
@@ -21,21 +21,28 @@ async function errorHandler(err: unknown) {
   }
 }
 
-export async function createCalendar({ summary, description }: CalendarData) {
-  const calendarApi = await createCalendarApi();
-
+async function wrapWithHandler<T>(func: GaxiosPromise<T>): GaxiosPromise<T> {
   try {
-    const { data } = await calendarApi.calendars.insert({
-      requestBody: {
-        summary,
-        description,
-      },
-    });
-    return data;
+    return await func;
   } catch (err) {
     await errorHandler(err);
     throw err;
   }
+}
+
+export async function createCalendar({ summary, description }: CalendarData) {
+  const calendarApi = await createCalendarApi();
+
+  const { data } = await wrapWithHandler<calendar_v3.Schema$Calendar>(
+    calendarApi.calendars.insert({
+      requestBody: {
+        summary,
+        description,
+      },
+    }),
+  );
+
+  return data;
 }
 
 interface EventData {
@@ -85,18 +92,14 @@ export async function createCalendarEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  try {
-    const { data } = await calendarApi.events.insert({
+  const { data } = await wrapWithHandler<calendar_v3.Schema$Event>(
+    calendarApi.events.insert({
       calendarId,
       sendUpdates: 'all',
       requestBody: createEventRequestBody(eventData),
-    });
-
-    return { calendarEventId: data.id };
-  } catch (err) {
-    await errorHandler(err);
-    throw err;
-  }
+    }),
+  );
+  return { calendarEventId: data.id };
 }
 
 interface EventIds {
@@ -113,18 +116,12 @@ async function getAndUpdateEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  let response;
-  try {
-    response = await calendarApi.events.get({
+  const { data } = await wrapWithHandler<calendar_v3.Schema$Event>(
+    calendarApi.events.get({
       calendarId,
       eventId,
-    });
-  } catch (err) {
-    await errorHandler(err);
-    throw err;
-  }
-
-  const { data } = response;
+    }),
+  );
   const { attendees } = data;
 
   const updatedAttendeesData = updateAttendees
@@ -136,17 +133,14 @@ async function getAndUpdateEvent(
     ...{ attendees: updatedAttendeesData },
   };
 
-  try {
-    return await calendarApi.events.update({
+  return await wrapWithHandler<calendar_v3.Schema$Event>(
+    calendarApi.events.update({
       calendarId,
       eventId,
       sendUpdates: 'all',
       requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
-    });
-  } catch (err) {
-    await errorHandler(err);
-    throw err;
-  }
+    }),
+  );
 }
 
 // To be used to update event, but not the attendees.
@@ -219,14 +213,11 @@ export async function deleteCalendarEvent({
 }: EventIds) {
   const calendarApi = await createCalendarApi();
 
-  try {
-    await calendarApi.events.delete({
+  await wrapWithHandler<void>(
+    calendarApi.events.delete({
       calendarId,
       eventId,
       sendUpdates: 'all',
-    });
-  } catch (err) {
-    await errorHandler(err);
-    throw err;
-  }
+    }),
+  );
 }

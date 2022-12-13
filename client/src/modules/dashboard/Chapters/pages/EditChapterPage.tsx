@@ -14,6 +14,7 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { DeleteChapterButton } from '../components/DeleteChapterButton';
 
 export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -47,12 +48,15 @@ export const EditChapterPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <ChapterForm
-      data={data}
-      onSubmit={onSubmit}
-      loadingText={'Saving Chapter Changes'}
-      submitText={'Save Chapter Changes'}
-    />
+    <>
+      <ChapterForm
+        data={data}
+        onSubmit={onSubmit}
+        loadingText={'Saving Chapter Changes'}
+        submitText={'Save Chapter Changes'}
+      />
+      <DeleteChapterButton chapterId={chapterId} />
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { isFuture } from 'date-fns';
 
 import {
   useCreateEventMutation,
+  useJoinChapterMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
 import { Layout } from '../../shared/components/Layout';
@@ -26,6 +27,8 @@ export const NewEventPage: NextPageWithLayout = () => {
 
   const toast = useToast();
 
+  const [joinChapter] = useJoinChapterMutation();
+
   const onSubmit = async (data: EventFormData) => {
     const { chapter_id, attend_event } = data;
     const { data: eventData, errors } = await createEvent({
@@ -44,6 +47,7 @@ export const NewEventPage: NextPageWithLayout = () => {
     if (errors) throw errors;
 
     if (eventData) {
+      if (attend_event) joinChapter({ variables: { chapterId: chapter_id } });
       if (isFuture(data.start_at)) {
         await publish({ variables: { eventId: eventData.createEvent.id } });
       }

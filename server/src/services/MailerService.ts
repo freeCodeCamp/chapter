@@ -20,7 +20,7 @@ function btoa(str: string): string {
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
-export default class MailerService {
+class MailerService {
   emailList: Array<string>;
   subject: string;
   htmlEmail: string;
@@ -40,11 +40,6 @@ export default class MailerService {
   private static _instance: MailerService = new MailerService();
 
   constructor() {
-    if (MailerService._instance) {
-      throw new Error(
-        'Error: Instantiation failed: Use MailerData.getInstance() instead of new.',
-      );
-    }
     MailerService._instance = this;
   }
 
@@ -172,6 +167,8 @@ export interface BatchEmailData {
   text: string;
   options?: object;
 }
+const mailerService = new MailerService();
+export default mailerService;
 
 export async function batchSender(
   mailData: () => Generator<BatchEmailData, void>,

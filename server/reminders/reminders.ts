@@ -103,11 +103,11 @@ const getEmailData = (reminder: Reminder) => {
 
 const sendEmailForReminder = async (reminder: Reminder) => {
   const { email, subject } = getEmailData(reminder);
-  await new MailerService({
+  await MailerService.getInstance().sendEmail({
     emailList: [reminder.event_user.user.email],
     subject: subject,
     htmlEmail: email,
-  }).sendEmail();
+  });
 };
 
 const processReminders = async (reminders: Reminder[], lock: LockCheck) =>

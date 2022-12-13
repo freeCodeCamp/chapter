@@ -36,29 +36,16 @@ export default class MailerService {
   iCalEvent?: string;
   private _sendEmail: () => Promise<SentMessageInfo>;
 
-  constructor(data: MailerData) {
-    this.emailList = data.emailList;
-    this.subject = data.subject;
-    this.htmlEmail = data.htmlEmail;
-    this.backupText = data.backupText || '';
-    this.iCalEvent = data.iCalEvent;
+  // eslint-disable-next-line no-use-before-define
+  private static _instance: MailerService = new MailerService();
 
-    // to be replaced with env vars
-    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
-    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
-    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
-    this.emailService = process.env.EMAIL_SERVICE;
-    this.emailHost = process.env.EMAIL_HOST || 'localhost';
-
-    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
-      this.createTransporter();
-      this._sendEmail = this.sendViaNodemailer;
-    } else {
-      this.sendgridKey = process.env.SENDGRID_KEY;
-      this.sendgridEmail = process.env.SENDGRID_EMAIL;
-      sendgrid.setApiKey(this.sendgridKey);
-      this._sendEmail = this.sendViaSendgrid;
+  constructor() {
+    if (MailerService._instance) {
+      throw new Error(
+        'Error: Instantiation failed: Use MailerData.getInstance() instead of new.',
+      );
     }
+    MailerService._instance = this;
   }
 
   private createTransporter() {
@@ -85,8 +72,34 @@ export default class MailerService {
       },
     });
   }
+  public static getInstance(): MailerService {
+    return MailerService._instance;
+  }
 
-  public async sendEmail(): Promise<SentMessageInfo> {
+  public async sendEmail(data: MailerData): Promise<SentMessageInfo> {
+    this.emailList = data.emailList;
+    this.subject = data.subject;
+    this.htmlEmail = data.htmlEmail;
+    this.backupText = data.backupText || '';
+    this.iCalEvent = data.iCalEvent;
+
+    // to be replaced with env vars
+    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
+    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
+    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
+    this.emailService = process.env.EMAIL_SERVICE;
+    this.emailHost = process.env.EMAIL_HOST || 'localhost';
+
+    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
+      this.createTransporter();
+      this._sendEmail = this.sendViaNodemailer;
+    } else {
+      this.sendgridKey = process.env.SENDGRID_KEY;
+      this.sendgridEmail = process.env.SENDGRID_EMAIL;
+      sendgrid.setApiKey(this.sendgridKey);
+      this._sendEmail = this.sendViaSendgrid;
+    }
+
     try {
       return await this._sendEmail();
     } catch (e) {
@@ -166,12 +179,12 @@ export async function batchSender(
   const mails = [];
   for (const { email, subject, text, options } of mailData()) {
     mails.push(
-      new MailerService({
+      MailerService.getInstance().sendEmail({
         emailList: [email],
         subject,
         htmlEmail: text,
         ...options,
-      }).sendEmail(),
+      }),
     );
   }
   await Promise.all(mails);

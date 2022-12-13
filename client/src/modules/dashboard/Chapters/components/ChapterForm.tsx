@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -10,6 +10,7 @@ import type {
   CreateChapterInputs,
 } from '../../../../generated/graphql';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
+import { DeleteChapterButton } from './DeleteChapterButton';
 
 interface ChapterFormProps {
   onSubmit: (data: CreateChapterInputs) => Promise<void>;
@@ -150,18 +151,22 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           />
         ),
       )}
-      <Button
-        mt="6"
-        width="100%"
-        variant="solid"
-        colorScheme="blue"
-        type="submit"
-        isDisabled={!isDirty || loading}
-        isLoading={loading}
-        loadingText={loadingText}
-      >
-        {submitText}
-      </Button>
+      <HStack gap="1em" width="100%">
+        <Button
+          width="100%"
+          variant="solid"
+          colorScheme="blue"
+          type="submit"
+          isDisabled={!isDirty || loading}
+          isLoading={loading}
+          loadingText={loadingText}
+        >
+          {submitText}
+        </Button>
+        {chapter?.id && (
+          <DeleteChapterButton width="100%" chapterId={chapter.id} />
+        )}
+      </HStack>
     </Form>
   );
 };

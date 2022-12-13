@@ -1,6 +1,7 @@
 import { calendar_v3, GaxiosPromise } from '@googleapis/calendar';
 
 import { isProd, isTest } from '../config';
+import { sendInvalidTokenNotification } from '../util/calendar';
 import { createCalendarApi, invalidateToken } from './InitGoogle';
 interface CalendarData {
   summary: string;
@@ -17,7 +18,7 @@ async function errorHandler(err: unknown) {
   if (err instanceof Error && tokenErrors.indexOf(err.message) !== -1) {
     console.error('Marking token as invalid');
     await invalidateToken();
-    // TODO send email to users with GoogleAuthenticate permission
+    await sendInvalidTokenNotification();
   }
 }
 

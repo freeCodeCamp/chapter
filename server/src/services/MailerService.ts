@@ -77,6 +77,10 @@ class MailerService {
     this.emailService = process.env.EMAIL_SERVICE;
     this.emailHost = process.env.EMAIL_HOST || 'localhost';
 
+    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
+      this.createTransporter();
+    }
+
     return this;
   }
 

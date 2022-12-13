@@ -100,6 +100,7 @@ export const Header: React.FC = () => {
               {user ? (
                 <Button
                   display={{ base: 'flex', lg: 'none' }}
+                  onFocus={onToggle}
                   onClick={onToggle}
                   padding="0"
                   backgroundColor="transparent"

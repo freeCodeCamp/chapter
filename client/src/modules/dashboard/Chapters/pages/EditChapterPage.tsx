@@ -47,14 +47,12 @@ export const EditChapterPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
-    <>
-      <ChapterForm
-        data={data}
-        onSubmit={onSubmit}
-        loadingText={'Saving Chapter Changes'}
-        submitText={'Save Chapter Changes'}
-      />
-    </>
+    <ChapterForm
+      data={data}
+      onSubmit={onSubmit}
+      loadingText={'Saving Chapter Changes'}
+      submitText={'Save Chapter Changes'}
+    />
   );
 };
 

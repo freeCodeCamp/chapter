@@ -1,4 +1,4 @@
-import MailerService, { MailerData } from '../src/services/MailerService';
+import mailerService, { MailerData } from '../src/services/MailerService';
 
 const emailAddresses = [
   '123@test.com',
@@ -44,7 +44,7 @@ describe('MailerService Class', () => {
   });
 
   it('Should assign the email username, password, and service to transporter', () => {
-    const mailer = new MailerService(dataWithOptional);
+    const mailer = mailerService.loadValues(dataWithOptional);
 
     const { auth, service } = mailer.transporter.options as any;
     expect(service).toEqual(mailer.emailService);
@@ -53,7 +53,7 @@ describe('MailerService Class', () => {
   });
 
   it('Should correctly instantiate values', () => {
-    const mailer = new MailerService(dataWithOptional);
+    const mailer = mailerService.loadValues(dataWithOptional);
 
     expect(subject).toEqual(mailer.subject);
     expect(htmlEmail).toEqual(mailer.htmlEmail);
@@ -63,11 +63,11 @@ describe('MailerService Class', () => {
   });
 
   it("Should use 'bcc' if sending to multiple email addresses", async () => {
-    const mailer = new MailerService(data);
+    const mailer = mailerService.loadValues(data);
     const mockSendMail = jest
       .spyOn(mailer.transporter, 'sendMail')
       .mockImplementation(jest.fn());
-    mailer.sendEmail();
+    mailerService.sendEmail(data);
     expect(mockSendMail).toHaveBeenCalledWith(
       expect.objectContaining({ bcc: emailAddresses }),
     );
@@ -77,18 +77,18 @@ describe('MailerService Class', () => {
   });
 
   it('Should provide a blank string if backup text is undefined', () => {
-    const mailer = new MailerService(data);
+    const mailer = mailerService.loadValues(data);
     expect(mailer.backupText).toEqual('');
   });
 
   it('Should default iCalEvent to undefined', () => {
-    const mailer = new MailerService(data);
+    const mailer = mailerService.loadValues(data);
     expect(mailer.iCalEvent).toBeUndefined();
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {
     // stub(Utilities, 'allValuesAreDefined').callsFake(() => false);
-    new MailerService(data);
+    mailerService.loadValues(data);
     expect(console.warn).toHaveBeenCalledTimes(1);
   });
 });

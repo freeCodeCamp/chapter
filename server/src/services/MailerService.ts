@@ -37,11 +37,6 @@ class MailerService {
   private _sendEmail: () => Promise<SentMessageInfo>;
 
   // eslint-disable-next-line no-use-before-define
-  private static _instance: MailerService = new MailerService();
-
-  constructor() {
-    MailerService._instance = this;
-  }
 
   private createTransporter() {
     const validateOurCredentials = Utilities.allValuesAreDefined([
@@ -67,8 +62,22 @@ class MailerService {
       },
     });
   }
-  public static getInstance(): MailerService {
-    return MailerService._instance;
+
+  public loadValues(data: MailerData): MailerService {
+    this.emailList = data.emailList;
+    this.subject = data.subject;
+    this.htmlEmail = data.htmlEmail;
+    this.backupText = data.backupText || '';
+    this.iCalEvent = data.iCalEvent;
+
+    // to be replaced with env vars
+    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
+    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
+    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
+    this.emailService = process.env.EMAIL_SERVICE;
+    this.emailHost = process.env.EMAIL_HOST || 'localhost';
+
+    return this;
   }
 
   public async sendEmail(data: MailerData): Promise<SentMessageInfo> {
@@ -176,7 +185,7 @@ export async function batchSender(
   const mails = [];
   for (const { email, subject, text, options } of mailData()) {
     mails.push(
-      MailerService.getInstance().sendEmail({
+      mailerService.sendEmail({
         emailList: [email],
         subject,
         htmlEmail: text,

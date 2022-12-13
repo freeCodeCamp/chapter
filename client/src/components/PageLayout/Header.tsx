@@ -1,17 +1,15 @@
 import { useApolloClient } from '@apollo/client';
-import { HStack } from '@chakra-ui/layout';
 import {
   Image,
   Button,
-  Menu,
-  MenuList,
-  MenuItem,
-  MenuButton,
+  HStack,
   Spinner,
+  Link,
+  useDisclosure,
+  Collapse,
+  Flex,
 } from '@chakra-ui/react';
-import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -23,19 +21,10 @@ import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';
 
-const menuButtonStyles = {
-  logout: { backgroundColor: 'gray.10' },
-  login: {
-    backgroundColor: 'transparent',
-    _hover: {
-      outline: '2px solid #dfdfe2',
-    },
-    _active: {},
-  },
-};
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
 export const Header: React.FC = () => {
+  const { isOpen, onToggle } = useDisclosure();
   const router = useRouter();
   const { user, loadingUser } = useAuth();
   const logout = useLogout();
@@ -74,7 +63,61 @@ export const Header: React.FC = () => {
             <Spinner color="white" size="xl" />
           ) : (
             <>
-              {!user && (
+              <HStack display={{ base: 'none', lg: 'flex' }}>
+                <Link color="gray.10" href="/chapters">
+                  Chapters
+                </Link>
+                <Link color="gray.10" href="/events">
+                  Events
+                </Link>
+                {user && (
+                  <>
+                    <Link color="gray.10" href="/profile">
+                      Profile
+                    </Link>
+                    {checkPermission(user, Permission.ChaptersView) && (
+                      <Link
+                        color="gray.10"
+                        href="/dashboard/chapters"
+                        data-cy="menu-dashboard-link"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
+                    <Button
+                      data-cy="logout-button"
+                      onClick={() => logout().then(goHome)}
+                      fontWeight="600"
+                      borderTop={'1px'}
+                      borderColor={'gray.85'}
+                    >
+                      Logout
+                    </Button>
+                  </>
+                )}
+              </HStack>
+
+              {user ? (
+                <Button
+                  display={{ base: 'flex', lg: 'none' }}
+                  onClick={onToggle}
+                  padding="0"
+                  backgroundColor="transparent"
+                  _hover={{
+                    outline: '2px solid #858591',
+                    outlineOffset: '1px',
+                  }}
+                  _active={{}}
+                >
+                  <Avatar user={user} cursor="pointer" aria-label="menu" />
+                  <ChevronDownIcon
+                    color="gray.00"
+                    opacity=".7"
+                    fontSize="3xl"
+                    aria-hidden="true"
+                  />
+                </Button>
+              ) : (
                 <Button
                   data-cy="login-button"
                   background="gray.10"
@@ -85,77 +128,85 @@ export const Header: React.FC = () => {
                   Login
                 </Button>
               )}
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  data-cy="menu-button"
-                  padding="0"
-                  width="4.5em"
-                  {...(user ? menuButtonStyles.login : menuButtonStyles.logout)}
-                >
-                  {user ? (
-                    <HStack spacing="0">
-                      <Avatar user={user} cursor="pointer" aria-label="menu" />
-                      <ChevronDownIcon
-                        color="gray.10"
-                        fontSize="xl"
-                        opacity=".9"
-                      />
-                    </HStack>
-                  ) : (
-                    'Menu'
-                  )}
-                </MenuButton>
-                <MenuList
-                  paddingBlock={0}
-                  display="flex"
-                  flexDirection="column"
-                  fontWeight="600"
-                  borderRadius="5px"
-                >
-                  <NextLink passHref href="/chapters">
-                    <MenuItem as="a">Chapters</MenuItem>
-                  </NextLink>
-
-                  <NextLink passHref href="/events">
-                    <MenuItem as="a">Events</MenuItem>
-                  </NextLink>
-
-                  {user && (
-                    <>
-                      <NextLink passHref href="/profile">
-                        <MenuItem
-                          as="a"
-                          borderTop={'1px'}
-                          borderColor={'gray.85'}
-                        >
-                          Profile
-                        </MenuItem>
-                      </NextLink>
-                      {checkPermission(user, Permission.ChaptersView) && (
-                        <NextLink passHref href="/dashboard/chapters">
-                          <MenuItem data-cy="menu-dashboard-link" as="a">
-                            Dashboard
-                          </MenuItem>
-                        </NextLink>
-                      )}
-                      <MenuItem
-                        data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
-                        fontWeight="600"
-                        borderTop={'1px'}
-                        borderColor={'gray.85'}
-                      >
-                        Logout
-                      </MenuItem>
-                    </>
-                  )}
-                </MenuList>
-              </Menu>
             </>
           )}
         </HStack>
       </HeaderContainer>
+      <Collapse in={isOpen}>
+        <Flex
+          display={{ base: 'flex', lg: 'none' }}
+          gap=".25em"
+          onClick={onToggle}
+          flexDirection="column"
+          paddingInline="1em"
+          backgroundColor="gray.00"
+          color="gray.85"
+          boxShadow="lg"
+        >
+          <Link
+            fontWeight="600"
+            paddingBlock=".25em"
+            href="/chapters"
+            _hover={{
+              textDecoration: 'none',
+            }}
+          >
+            Chapter
+          </Link>
+          <Link
+            fontWeight="600"
+            paddingBlock=".25em"
+            href="/events"
+            _hover={{
+              textDecoration: 'none',
+            }}
+          >
+            Events
+          </Link>
+          {user && (
+            <>
+              <Link
+                fontWeight="600"
+                paddingBlock=".25em"
+                borderTop="1px"
+                borderColor="gray.85"
+                href="/profile"
+                _hover={{
+                  textDecoration: 'none',
+                }}
+              >
+                Profile
+              </Link>
+              {checkPermission(user, Permission.ChaptersView) && (
+                <Link
+                  fontWeight="600"
+                  paddingBlock=".25em"
+                  href="/dashboard/chapters"
+                  _hover={{
+                    textDecoration: 'none',
+                  }}
+                >
+                  Dashboard
+                </Link>
+              )}
+              <Button
+                data-cy="logout-button"
+                onClick={() => logout().then(goHome)}
+                borderTop="1px"
+                borderColor="gray.85"
+                paddingBlock=".25em"
+                fontWeight="600"
+                background="transparent"
+                textAlign="left"
+                justifyContent="flex-start"
+                paddingInline="0"
+              >
+                Logout
+              </Button>
+            </>
+          )}
+        </Flex>
+      </Collapse>
     </>
   );
 };

@@ -22,9 +22,11 @@ async function errorHandler(err: unknown) {
   }
 }
 
-async function wrapWithHandler<T>(func: GaxiosPromise<T>): GaxiosPromise<T> {
+async function callWithHandler<T>(
+  func: () => GaxiosPromise<T>,
+): GaxiosPromise<T> {
   try {
-    return await func;
+    return await func();
   } catch (err) {
     await errorHandler(err);
     throw err;
@@ -34,7 +36,7 @@ async function wrapWithHandler<T>(func: GaxiosPromise<T>): GaxiosPromise<T> {
 export async function createCalendar({ summary, description }: CalendarData) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await wrapWithHandler<calendar_v3.Schema$Calendar>(
+  const { data } = await callWithHandler(() =>
     calendarApi.calendars.insert({
       requestBody: {
         summary,
@@ -93,7 +95,7 @@ export async function createCalendarEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await wrapWithHandler<calendar_v3.Schema$Event>(
+  const { data } = await callWithHandler(() =>
     calendarApi.events.insert({
       calendarId,
       sendUpdates: 'all',
@@ -117,7 +119,7 @@ async function getAndUpdateEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await wrapWithHandler<calendar_v3.Schema$Event>(
+  const { data } = await callWithHandler(() =>
     calendarApi.events.get({
       calendarId,
       eventId,
@@ -134,7 +136,7 @@ async function getAndUpdateEvent(
     ...{ attendees: updatedAttendeesData },
   };
 
-  return await wrapWithHandler<calendar_v3.Schema$Event>(
+  return await callWithHandler(() =>
     calendarApi.events.update({
       calendarId,
       eventId,
@@ -214,7 +216,7 @@ export async function deleteCalendarEvent({
 }: EventIds) {
   const calendarApi = await createCalendarApi();
 
-  await wrapWithHandler<void>(
+  await callWithHandler(() =>
     calendarApi.events.delete({
       calendarId,
       eventId,

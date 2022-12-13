@@ -12,6 +12,7 @@ const tokenErrors = [
   'Invalid Credentials',
   'invalid_grant',
   'No access, refresh token, API key or refresh handler callback is set.',
+  'No refresh token is set.',
 ];
 
 function errorHandler(err: unknown) {

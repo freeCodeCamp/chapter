@@ -14,7 +14,15 @@ import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useDeleteChapterMutation } from '../../../../generated/graphql';
 
-export const DeleteChapterButton = ({ chapterId }: { chapterId: number }) => {
+export const DeleteChapterButton = ({
+  chapterId,
+  size,
+  width,
+}: {
+  chapterId: number;
+  size?: string;
+  width?: string;
+}) => {
   const { user } = useAuth();
   const router = useRouter();
   const confirmDelete = useConfirmDelete();
@@ -46,7 +54,12 @@ export const DeleteChapterButton = ({ chapterId }: { chapterId: number }) => {
   return (
     <>
       {checkPermission(user, Permission.ChapterDelete, { chapterId }) && (
-        <Button colorScheme="red" size="sm" onClick={clickDelete}>
+        <Button
+          colorScheme="red"
+          size={size}
+          width={width}
+          onClick={clickDelete}
+        >
           Delete Chapter
         </Button>
       )}

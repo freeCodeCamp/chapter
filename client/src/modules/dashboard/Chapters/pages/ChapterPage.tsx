@@ -104,7 +104,7 @@ export const ChapterPage: NextPageWithLayout = () => {
               link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
               size="sm"
             />
-            <DeleteChapterButton chapterId={chapterId} />
+            <DeleteChapterButton size="sm" chapterId={chapterId} />
           </HStack>
         </ProgressCardContent>
       </Card>

@@ -521,7 +521,6 @@ export type Query = {
   dashboardVenues: Array<VenueWithChapter>;
   event?: Maybe<EventWithRelations>;
   eventRoles: Array<EventRole>;
-  events: Array<EventWithRelations>;
   instanceRoles: Array<InstanceRole>;
   me?: Maybe<UserWithPermissions>;
   paginatedEvents: Array<EventWithChapter>;
@@ -565,11 +564,6 @@ export type QueryDashboardSponsorArgs = {
 
 export type QueryEventArgs = {
   id: Scalars['Int'];
-};
-
-export type QueryEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  showAll?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryPaginatedEventsArgs = {

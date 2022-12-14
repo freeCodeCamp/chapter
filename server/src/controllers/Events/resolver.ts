@@ -289,38 +289,6 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [EventWithRelations])
-  async events(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ): Promise<EventWithRelations[]> {
-    return await prisma.events.findMany({
-      where: {
-        ...(!showAll && { start_at: { gt: new Date() } }),
-      },
-      include: {
-        chapter: true,
-        venue: true,
-        event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
-          },
-        },
-        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
-      },
-      take: limit,
-      orderBy: {
-        start_at: 'asc',
-      },
-    });
-  }
-
   @Query(() => PaginatedEventsWithTotal)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,

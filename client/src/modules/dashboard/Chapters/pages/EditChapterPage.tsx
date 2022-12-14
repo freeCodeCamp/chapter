@@ -14,6 +14,11 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { meQuery } from '../../../auth/graphql/queries';
+import {
+  userDownloadQuery,
+  userProfileQuery,
+} from '../../../profiles/graphql/queries';
 
 export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -24,7 +29,13 @@ export const EditChapterPage: NextPageWithLayout = () => {
   });
 
   const [updateChapter] = useUpdateChapterMutation({
-    refetchQueries: [{ query: CHAPTERS }, { query: DASHBOARD_CHAPTERS }],
+    refetchQueries: [
+      { query: CHAPTERS },
+      { query: DASHBOARD_CHAPTERS },
+      { query: meQuery },
+      { query: userDownloadQuery },
+      { query: userProfileQuery },
+    ],
   });
 
   const toast = useToast();

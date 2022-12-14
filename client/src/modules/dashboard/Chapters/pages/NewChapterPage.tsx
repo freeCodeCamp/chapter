@@ -10,7 +10,11 @@ import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { Layout } from '../../shared/components/Layout';
 import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { meQuery } from 'modules/auth/graphql/queries';
+import { meQuery } from '../../../auth/graphql/queries';
+import {
+  userDownloadQuery,
+  userProfileQuery,
+} from '../../../profiles/graphql/queries';
 
 export const NewChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -20,6 +24,8 @@ export const NewChapterPage: NextPageWithLayout = () => {
       { query: CHAPTERS },
       { query: DASHBOARD_CHAPTERS },
       { query: meQuery },
+      { query: userDownloadQuery },
+      { query: userProfileQuery },
     ],
   });
 

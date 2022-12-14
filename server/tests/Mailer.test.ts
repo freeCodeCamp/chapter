@@ -18,7 +18,7 @@ DTSTAMP:20220403T072207Z
 DTSTART:20220325T234500Z
 DTEND:20220326T014500Z
 SUMMARY:Rolfson, Emmerich and Davis
-URL;VALUE=URI:http://localhost:3000/events/15?ask_to_confirm=true
+URL;VALUE=URI:http://localhost:3000/events/15?confirm_rsvp=true
 END:VEVENT
 END:VCALENDAR`;
 

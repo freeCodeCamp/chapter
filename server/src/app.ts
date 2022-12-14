@@ -212,6 +212,9 @@ export const main = async (app: Express) => {
       venues: req.venues,
     }),
     csrfPrevention: true,
+    // To prevent DoS via filling up the cache, we limit its size
+    // https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#ensuring-a-bounded-cache
+    cache: 'bounded',
   });
 
   await server.start();

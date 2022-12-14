@@ -29,6 +29,7 @@ import SponsorsCard from '../../../components/SponsorsCard';
 import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
+import { meQuery } from '../../auth/graphql/queries';
 import {
   useCancelRsvpMutation,
   useEventQuery,
@@ -52,6 +53,7 @@ export const EventPage: NextPage = () => {
     refetchQueries: [
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
+      { query: meQuery },
     ],
   };
 
@@ -74,6 +76,9 @@ export const EventPage: NextPage = () => {
       ({ user: event_user }) => event_user.id === user?.id,
     );
   }, [data?.event, user]);
+  const userEvent = user?.user_events.find(
+    ({ event_id }) => event_id === eventId,
+  );
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
   const canShowConfirmationModal =
@@ -304,9 +309,9 @@ export const EventPage: NextPage = () => {
             </Button>
           </HStack>
         )}
-        {eventUser && (
+        {userEvent && (
           <HStack>
-            {eventUser.subscribed ? (
+            {userEvent.subscribed ? (
               <>
                 <Text fontSize={'md'} fontWeight={'500'}>
                   You are subscribed

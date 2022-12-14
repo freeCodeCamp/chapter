@@ -208,7 +208,6 @@ export type EventPermission = {
 
 export type EventRole = {
   __typename?: 'EventRole';
-  event_role_permissions: Array<EventRolePermission>;
   id: Scalars['Int'];
   name: Scalars['String'];
 };
@@ -216,6 +215,13 @@ export type EventRole = {
 export type EventRolePermission = {
   __typename?: 'EventRolePermission';
   event_permission: EventPermission;
+};
+
+export type EventRoleWithPermissions = {
+  __typename?: 'EventRoleWithPermissions';
+  event_role_permissions: Array<EventRolePermission>;
+  id: Scalars['Int'];
+  name: Scalars['String'];
 };
 
 export type EventSponsor = {
@@ -242,12 +248,22 @@ export type EventUserWithRelations = {
   user_id: Scalars['Int'];
 };
 
-export type EventUserWithRole = {
-  __typename?: 'EventUserWithRole';
+export type EventUserWithRolePermissions = {
+  __typename?: 'EventUserWithRolePermissions';
   event_id: Scalars['Int'];
-  event_role: EventRole;
+  event_role: EventRoleWithPermissions;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
+  user_id: Scalars['Int'];
+};
+
+export type EventUserWithRsvpAndUser = {
+  __typename?: 'EventUserWithRsvpAndUser';
+  event_id: Scalars['Int'];
+  rsvp: Rsvp;
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user: User;
   user_id: Scalars['Int'];
 };
 
@@ -269,8 +285,29 @@ export type EventWithChapter = {
   venue_type: VenueType;
 };
 
-export type EventWithRelations = {
-  __typename?: 'EventWithRelations';
+export type EventWithRelationsWithEventUser = {
+  __typename?: 'EventWithRelationsWithEventUser';
+  calendar_event_id?: Maybe<Scalars['String']>;
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  event_users: Array<EventUserWithRsvpAndUser>;
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  sponsors: Array<EventSponsor>;
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  venue?: Maybe<Venue>;
+  venue_type: VenueType;
+};
+
+export type EventWithRelationsWithEventUserRelations = {
+  __typename?: 'EventWithRelationsWithEventUserRelations';
   calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
@@ -515,11 +552,11 @@ export type Query = {
   chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
   dashboardChapters: Array<ChapterWithEvents>;
-  dashboardEvent?: Maybe<EventWithRelations>;
+  dashboardEvent?: Maybe<EventWithRelationsWithEventUserRelations>;
   dashboardEvents: Array<EventWithVenue>;
   dashboardSponsor: Sponsor;
   dashboardVenues: Array<VenueWithChapter>;
-  event?: Maybe<EventWithRelations>;
+  event?: Maybe<EventWithRelationsWithEventUser>;
   eventRoles: Array<EventRole>;
   instanceRoles: Array<InstanceRole>;
   me?: Maybe<UserWithPermissions>;
@@ -688,7 +725,7 @@ export type UserEvent = {
   __typename?: 'UserEvent';
   event: Event;
   event_id: Scalars['Int'];
-  event_role: EventRole;
+  event_role: EventRoleWithPermissions;
   rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
@@ -740,7 +777,7 @@ export type UserWithPermissions = {
   name: Scalars['String'];
   user_bans: Array<UserBan>;
   user_chapters: Array<ChapterUserWithRole>;
-  user_events: Array<EventUserWithRole>;
+  user_events: Array<EventUserWithRolePermissions>;
 };
 
 export type Venue = {
@@ -867,10 +904,11 @@ export type MeQuery = {
       };
     }>;
     user_events: Array<{
-      __typename?: 'EventUserWithRole';
+      __typename?: 'EventUserWithRolePermissions';
       event_id: number;
+      subscribed: boolean;
       event_role: {
-        __typename?: 'EventRole';
+        __typename?: 'EventRoleWithPermissions';
         event_role_permissions: Array<{
           __typename?: 'EventRolePermission';
           event_permission: { __typename?: 'EventPermission'; name: string };
@@ -1299,7 +1337,7 @@ export type DashboardEventQueryVariables = Exact<{
 export type DashboardEventQuery = {
   __typename?: 'Query';
   dashboardEvent?: {
-    __typename?: 'EventWithRelations';
+    __typename?: 'EventWithRelationsWithEventUserRelations';
     id: number;
     name: string;
     description: string;
@@ -1350,15 +1388,7 @@ export type DashboardEventQuery = {
         name: string;
         image_url?: string | null;
       };
-      event_role: {
-        __typename?: 'EventRole';
-        id: number;
-        name: string;
-        event_role_permissions: Array<{
-          __typename?: 'EventRolePermission';
-          event_permission: { __typename?: 'EventPermission'; name: string };
-        }>;
-      };
+      event_role: { __typename?: 'EventRole'; id: number; name: string };
     }>;
   } | null;
 };
@@ -1667,7 +1697,7 @@ export type EventQueryVariables = Exact<{
 export type EventQuery = {
   __typename?: 'Query';
   event?: {
-    __typename?: 'EventWithRelations';
+    __typename?: 'EventWithRelationsWithEventUser';
     id: number;
     name: string;
     description: string;
@@ -1703,23 +1733,13 @@ export type EventQuery = {
       country: string;
     } | null;
     event_users: Array<{
-      __typename?: 'EventUserWithRelations';
-      subscribed: boolean;
+      __typename?: 'EventUserWithRsvpAndUser';
       rsvp: { __typename?: 'Rsvp'; name: string };
       user: {
         __typename?: 'User';
         id: number;
         name: string;
         image_url?: string | null;
-      };
-      event_role: {
-        __typename?: 'EventRole';
-        id: number;
-        name: string;
-        event_role_permissions: Array<{
-          __typename?: 'EventRolePermission';
-          event_permission: { __typename?: 'EventPermission'; name: string };
-        }>;
       };
     }>;
   } | null;
@@ -1876,7 +1896,7 @@ export type UserDownloadQuery = {
       updated_at: any;
       rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
       event_role: {
-        __typename?: 'EventRole';
+        __typename?: 'EventRoleWithPermissions';
         name: string;
         event_role_permissions: Array<{
           __typename?: 'EventRolePermission';
@@ -2044,6 +2064,7 @@ export const MeDocument = gql`
             }
           }
         }
+        subscribed
       }
     }
   }
@@ -3693,11 +3714,6 @@ export const DashboardEventDocument = gql`
         event_role {
           id
           name
-          event_role_permissions {
-            event_permission {
-              name
-            }
-          }
         }
         subscribed
       }
@@ -4848,16 +4864,6 @@ export const EventDocument = gql`
           name
           image_url
         }
-        event_role {
-          id
-          name
-          event_role_permissions {
-            event_permission {
-              name
-            }
-          }
-        }
-        subscribed
       }
     }
   }

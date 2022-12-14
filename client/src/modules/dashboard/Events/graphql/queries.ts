@@ -73,11 +73,6 @@ export const DASHBOARD_EVENT = gql`
         event_role {
           id
           name
-          event_role_permissions {
-            event_permission {
-              name
-            }
-          }
         }
         subscribed
       }

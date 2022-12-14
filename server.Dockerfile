@@ -1,4 +1,4 @@
-FROM node:18 as development
+FROM node:18.12 as development
 WORKDIR /usr/chapter/
 
 RUN apt-get update && apt-get install netcat -y
@@ -13,7 +13,7 @@ COPY package*.json ./
 RUN npm ci -w=server --ignore-scripts --include-workspace-root
 RUN npm -w=server run build
 
-FROM node:18-alpine as production
+FROM node:18-alpine3.17 as production
 WORKDIR /usr/chapter/
 
 # Workaround for https://github.com/prisma/prisma/issues/16553 (prisma generate fails with openssl 3.0)

@@ -16,6 +16,9 @@ RUN npm -w=server run build
 FROM node:18-alpine as production
 WORKDIR /usr/chapter/
 
+# Workaround for https://github.com/prisma/prisma/issues/16553 (prisma generate fails with openssl 3.0)
+RUN apk add openssl1.1-compat
+
 COPY package*.json ./
 COPY server/package.json ./server/package.json
 RUN npm ci -w=server --ignore-scripts --include-workspace-root --omit=dev

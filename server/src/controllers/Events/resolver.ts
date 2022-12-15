@@ -106,12 +106,12 @@ const sendRsvpInvitation = async (
 
   await new MailerService({
     emailList: [user.email],
-    subject: `Invitation: ${event.name}`,
-    htmlEmail: `Hi${user.name ? ' ' + user.name : ''},</br>
-To add this event to your calendar(s) you can use these links:
-</br>
+    subject: `Confirmation of attendance: ${event.name}`,
+    htmlEmail: `Hi${user.name ? ' ' + user.name : ''},<br>
+You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br>
+<br>
 <a href=${google(linkDetails)}>Google</a>
-</br>
+<br>
 <a href=${outlook(linkDetails)}>Outlook</a>
 
 ${unsubscribeOptions}

@@ -44,7 +44,7 @@ import { useLogin } from '../../../hooks/useAuth';
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser, isLoggedIn } = useAuth();
+  const { user, loadingUser } = useAuth();
   const login = useLogin();
   const modalProps = useDisclosure();
 
@@ -76,9 +76,7 @@ export const EventPage: NextPage = () => {
   }, [data?.event, user]);
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
-  const canShowConfirmationModal =
-    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
-
+  const canShowConfirmationModal = router.query?.confirm_rsvp && !isLoading;
   const chapterId = data?.event?.chapter.id;
 
   // The useEffect has to be before the early return (rule of hooks), but the
@@ -131,14 +129,15 @@ export const EventPage: NextPage = () => {
     }
   }
 
-  // TODO: reimplment this the login modal with Auth0
-  async function checkOnRsvp(options?: { invited?: boolean }) {
+  async function tryToRsvp(options?: { invited?: boolean }) {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
           body: (
             <>
-              Would you like to attend?
+              {user
+                ? 'Would you like to attend?'
+                : 'Would you like to log in and join this event?'}
               <br />
               Note: joining this event will make you a member of the
               event&apos;s chapter.
@@ -149,37 +148,28 @@ export const EventPage: NextPage = () => {
           title: 'Join this event?',
           body: `Note: joining this event will make you a member of the event's chapter.`,
         };
+
     const ok = await confirm(confirmOptions);
+    if (!ok) return;
 
-    if (ok) {
-      if (user) {
-        await onRsvp(rsvpStatus);
-        return;
-      }
-      modalProps.onOpen();
-      const {
-        data: { me },
-      } = await login();
-      modalProps.onClose();
-      const eventUser = data?.event?.event_users.find(
-        ({ user: event_user }) => event_user.id === me?.id,
-      );
-      await onRsvp(eventUser?.rsvp.name);
+    if (user) {
+      await onRsvp(rsvpStatus);
+      return;
     }
-  }
-
-  // TODO: reimplment this the login modal with Auth0
-  async function checkOnCancelRsvp() {
-    await onCancelRsvp();
+    modalProps.onOpen();
+    const {
+      data: { me },
+    } = await login();
+    modalProps.onClose();
+    const eventUser = data?.event?.event_users.find(
+      ({ user: event_user }) => event_user.id === me?.id,
+    );
+    await onRsvp(eventUser?.rsvp.name);
   }
 
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
-      if (!rsvpStatus || rsvpStatus === 'no') {
-        checkOnRsvp({ invited: true });
-      } else {
-        checkOnCancelRsvp();
-      }
+      tryToRsvp({ invited: true });
       setHasShownModal(true);
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
@@ -280,7 +270,7 @@ export const EventPage: NextPage = () => {
           <Button
             data-cy="rsvp-button"
             colorScheme="blue"
-            onClick={() => checkOnRsvp()}
+            onClick={() => tryToRsvp()}
             paddingInline="2"
             paddingBlock="1"
           >

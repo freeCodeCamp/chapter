@@ -13,7 +13,7 @@ import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { Fragment, ReactElement } from 'react';
 
 import {
   useConfirmRsvpMutation,
@@ -214,11 +214,10 @@ export const EventPage: NextPageWithLayout = () => {
               )
             : [];
           return (
-            <>
+            <Fragment key={title.toLowerCase()}>
               <Box
                 display={{ base: 'none', lg: 'block' }}
                 width="100%"
-                key={title.toLowerCase()}
                 data-cy={title.toLowerCase()}
               >
                 <DataTable
@@ -307,7 +306,7 @@ export const EventPage: NextPageWithLayout = () => {
                   </HStack>
                 ))}
               </Box>
-            </>
+            </Fragment>
           );
         })}
       </Box>

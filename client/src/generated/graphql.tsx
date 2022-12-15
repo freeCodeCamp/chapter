@@ -389,6 +389,7 @@ export type MutationCreateChapterArgs = {
 };
 
 export type MutationCreateEventArgs = {
+  attendEvent: Scalars['Boolean'];
   chapterId: Scalars['Int'];
   data: EventInputs;
 };
@@ -1155,6 +1156,7 @@ export type DashboardChapterUsersQuery = {
 export type CreateEventMutationVariables = Exact<{
   chapterId: Scalars['Int'];
   data: EventInputs;
+  attendEvent: Scalars['Boolean'];
 }>;
 
 export type CreateEventMutation = {
@@ -3132,8 +3134,12 @@ export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
   DashboardChapterUsersQueryVariables
 >;
 export const CreateEventDocument = gql`
-  mutation createEvent($chapterId: Int!, $data: EventInputs!) {
-    createEvent(chapterId: $chapterId, data: $data) {
+  mutation createEvent(
+    $chapterId: Int!
+    $data: EventInputs!
+    $attendEvent: Boolean!
+  ) {
+    createEvent(chapterId: $chapterId, data: $data, attendEvent: $attendEvent) {
       id
       name
       canceled
@@ -3164,6 +3170,7 @@ export type CreateEventMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      chapterId: // value for 'chapterId'
  *      data: // value for 'data'
+ *      attendEvent: // value for 'attendEvent'
  *   },
  * });
  */

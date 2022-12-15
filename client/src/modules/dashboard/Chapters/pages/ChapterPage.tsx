@@ -1,69 +1,31 @@
-import { Box, Button, Heading, HStack } from '@chakra-ui/react';
+import { Box, Heading, HStack } from '@chakra-ui/react';
 import NextError from 'next/error';
-import { useRouter } from 'next/router';
 import React, { ReactElement, useMemo } from 'react';
 
-import { useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import {
-  useDashboardChapterQuery,
-  useDeleteChapterMutation,
-} from '../../../../generated/graphql';
+import { useDashboardChapterQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
-import { CHAPTERS } from '../../../chapters/graphql/queries';
-import { DASHBOARD_CHAPTERS } from '../graphql/queries';
-import { DASHBOARD_EVENTS } from '../../Events/graphql/queries';
-import { DASHBOARD_VENUES } from '../../Venues/graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
-import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useAuth } from '../../../../modules/auth/store';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
+import { DeleteChapterButton } from '../components/DeleteChapterButton';
 
 export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
   const { user, loadingUser } = useAuth();
 
-  const confirmDelete = useConfirmDelete();
-
-  const [deleteChapter] = useDeleteChapterMutation({
-    refetchQueries: [
-      { query: CHAPTERS },
-      { query: DASHBOARD_CHAPTERS },
-      { query: DASHBOARD_EVENTS },
-      { query: DASHBOARD_VENUES },
-      {
-        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
-        variables: { offset: 0, limit: 5 },
-      },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
-    ],
-  });
-
   const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
   });
-
-  const router = useRouter();
-
-  const clickDelete = async () => {
-    const ok = await confirmDelete({
-      body: 'Are you sure you want to delete this chapter? All information related to chapter will be deleted, including events and venues from this chapter. Chapter deletion cannot be reversed.',
-      buttonText: 'Delete Chapter',
-    });
-    if (!ok) return;
-    deleteChapter({ variables: { chapterId } });
-    router.push('/dashboard/chapters');
-  };
 
   const actionLinks = [
     {
@@ -142,12 +104,7 @@ export const ChapterPage: NextPageWithLayout = () => {
               link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
               size="sm"
             />
-
-            {checkPermission(user, Permission.ChapterDelete, { chapterId }) && (
-              <Button colorScheme="red" size="sm" onClick={clickDelete}>
-                Delete Chapter
-              </Button>
-            )}
+            <DeleteChapterButton size="sm" chapterId={chapterId} />
           </HStack>
         </ProgressCardContent>
       </Card>

@@ -142,15 +142,20 @@ Cypress.Commands.add('waitUntilMail', waitUntilMail);
  * @param chapterId Id of the chapter
  * @param data Data of the event. Defined by the GraphQL input type EventInputs.
  */
-const createEvent = (chapterId: number, data: EventInputs) => {
+const createEvent = (
+  chapterId: number,
+  data: EventInputs,
+  attendEvent = true,
+) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
       chapterId,
       data,
+      attendEvent,
     },
-    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!) {
-      createEvent(chapterId: $chapterId, data: $data) {
+    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!, $attendEvent: Boolean!) {
+      createEvent(chapterId: $chapterId, data: $data, attendEvent: $attendEvent) {
         id
       }
     }`,

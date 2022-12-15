@@ -691,12 +691,12 @@ ${unsubscribeOptions}`,
   async createEvent(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: EventInputs,
+    @Arg('attendEvent', () => Boolean) attendEvent: boolean,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Event | null> {
-    let venue;
-    if (data.venue_id) {
-      venue = await prisma.venues.findUnique({ where: { id: data.venue_id } });
-    }
+    const venue = data.venue_id
+      ? await prisma.venues.findUnique({ where: { id: data.venue_id } })
+      : null;
 
     const chapter = await prisma.chapters.findUniqueOrThrow({
       where: { id: chapterId },
@@ -707,8 +707,7 @@ ${unsubscribeOptions}`,
         sponsor_id,
       }));
 
-    // TODO: add an option to allow event creators NOT to rsvp. If doing that
-    // make sure stop adding them to the calendar event.
+    // if attending, this will be used to create the RSVP
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
@@ -737,9 +736,7 @@ ${unsubscribeOptions}`,
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
-      event_users: {
-        create: eventUserData,
-      },
+      ...(attendEvent && { event_users: { create: eventUserData } }),
     };
 
     const event = await prisma.events.create({
@@ -749,7 +746,7 @@ ${unsubscribeOptions}`,
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
       await createCalendarEventHelper({
-        attendeeEmails: [ctx.user.email],
+        attendeeEmails: attendEvent ? [ctx.user.email] : [],
         calendarId: chapter.calendar_id,
         event,
       });
@@ -1023,7 +1020,7 @@ ${unsubscribeOptions}`,
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?ask_to_confirm=true`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?confirm_rsvp=true`;
     const calendar = ical();
     calendar.createEvent({
       start: event.start_at,

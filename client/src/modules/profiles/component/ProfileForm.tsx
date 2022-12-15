@@ -114,8 +114,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
         </Flex>
         <FormHelperText>
           {hasAutoSubscribe
-            ? '(After joining a new chapter, you will be notified when new events are created.)'
-            : '(After joining a new chapter, you will not be notified about new events unless you subscribe.)'}
+            ? '(After joining a chapter, you will be notified about new events unless you unsubscribe.)'
+            : '(After joining a chapter, you will not be notified about new events unless you subscribe.)'}
         </FormHelperText>
       </FormControl>
       <Button

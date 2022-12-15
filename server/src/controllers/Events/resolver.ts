@@ -26,7 +26,8 @@ import { ResolverCtx } from '../../common-types/gql';
 import {
   Event,
   EventUserWithRelations,
-  EventWithRelations,
+  EventWithRelationsWithEventUserRelations,
+  EventWithRelationsWithEventUser,
   EventWithChapter,
   EventWithVenue,
   User,
@@ -63,11 +64,7 @@ import { EventInputs } from './inputs';
 const eventUserIncludes = {
   user: true,
   rsvp: true,
-  event_role: {
-    include: {
-      event_role_permissions: { include: { event_permission: true } },
-    },
-  },
+  event_role: true,
 };
 
 type EventWithUsers = Prisma.eventsGetPayload<{
@@ -289,38 +286,6 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [EventWithRelations])
-  async events(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ): Promise<EventWithRelations[]> {
-    return await prisma.events.findMany({
-      where: {
-        ...(!showAll && { start_at: { gt: new Date() } }),
-      },
-      include: {
-        chapter: true,
-        venue: true,
-        event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
-          },
-        },
-        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
-      },
-      take: limit,
-      orderBy: {
-        start_at: 'asc',
-      },
-    });
-  }
-
   @Query(() => PaginatedEventsWithTotal)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
@@ -365,27 +330,18 @@ export class EventResolver {
     });
   }
 
-  // TODO: Check we need all the returned data
   @Authorized(Permission.EventEdit)
-  @Query(() => EventWithRelations, { nullable: true })
+  @Query(() => EventWithRelationsWithEventUserRelations, { nullable: true })
   async dashboardEvent(
     @Arg('id', () => Int) id: number,
-  ): Promise<EventWithRelations | null> {
+  ): Promise<EventWithRelationsWithEventUserRelations | null> {
     return await prisma.events.findUnique({
       where: { id },
       include: {
         chapter: true,
         venue: true,
         event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
-          },
+          include: eventUserIncludes,
           orderBy: { user: { name: 'asc' } },
         },
         sponsors: { include: { sponsor: true } },
@@ -411,11 +367,10 @@ export class EventResolver {
     });
   }
 
-  // TODO: Check we need all the returned data
-  @Query(() => EventWithRelations, { nullable: true })
+  @Query(() => EventWithRelationsWithEventUser, { nullable: true })
   async event(
     @Arg('id', () => Int) id: number,
-  ): Promise<EventWithRelations | null> {
+  ): Promise<EventWithRelationsWithEventUser | null> {
     return await prisma.events.findUnique({
       where: { id },
       include: {
@@ -425,11 +380,6 @@ export class EventResolver {
           include: {
             user: true,
             rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
           },
           orderBy: { user: { name: 'asc' } },
         },
@@ -448,9 +398,7 @@ export class EventResolver {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
-        event_users: {
-          include: eventUserIncludes,
-        },
+        event_users: { include: eventUserIncludes },
         venue: true,
         chapter: {
           select: {
@@ -563,9 +511,7 @@ export class EventResolver {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
-        event_users: {
-          include: eventUserIncludes,
-        },
+        event_users: { include: eventUserIncludes },
         venue: true,
         chapter: { select: { calendar_id: true } },
       },

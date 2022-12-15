@@ -1062,8 +1062,6 @@ ${unsubscribeOptions}`,
     See the options above to change your notifications.
     `;
 
-    const iCalEvent = calendar.toString();
-
     await batchSender(function* () {
       for (const { user } of users) {
         const email = user.email;
@@ -1073,7 +1071,7 @@ ${unsubscribeOptions}`,
           userId: user.id,
         });
         const text = `${subsequentEventEmail}<br>${unsubscribeOptions}`;
-        yield { email, subject, text, options: { iCalEvent } };
+        yield { email, subject, text };
       }
     });
 

@@ -449,7 +449,6 @@ export type MutationSendEmailArgs = {
 };
 
 export type MutationSendEventInviteArgs = {
-  emailGroups?: InputMaybe<Array<Scalars['String']>>;
   id: Scalars['Int'];
 };
 
@@ -1269,7 +1268,6 @@ export type DeleteRsvpMutation = {
 
 export type SendEventInviteMutationVariables = Exact<{
   eventId: Scalars['Int'];
-  emailGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type SendEventInviteMutation = {
@@ -3529,8 +3527,8 @@ export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
   DeleteRsvpMutationVariables
 >;
 export const SendEventInviteDocument = gql`
-  mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
-    sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+  mutation sendEventInvite($eventId: Int!) {
+    sendEventInvite(id: $eventId)
   }
 `;
 export type SendEventInviteMutationFn = Apollo.MutationFunction<
@@ -3552,7 +3550,6 @@ export type SendEventInviteMutationFn = Apollo.MutationFunction<
  * const [sendEventInviteMutation, { data, loading, error }] = useSendEventInviteMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
- *      emailGroups: // value for 'emailGroups'
  *   },
  * });
  */

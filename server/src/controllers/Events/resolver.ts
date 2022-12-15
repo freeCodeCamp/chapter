@@ -950,14 +950,7 @@ ${unsubscribeOptions}`,
   // an object type)
   @Authorized(Permission.EventSendInvite)
   @Mutation(() => Boolean)
-  async sendEventInvite(
-    @Arg('id', () => Int) id: number,
-    @Arg('emailGroups', () => [String], {
-      nullable: true,
-      defaultValue: ['interested'],
-    })
-    emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
-  ): Promise<boolean> {
+  async sendEventInvite(@Arg('id', () => Int) id: number): Promise<boolean> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id },
       include: {
@@ -967,10 +960,6 @@ ${unsubscribeOptions}`,
             chapter_users: { include: { user: true } },
             user_bans: true,
           },
-        },
-        event_users: {
-          include: { rsvp: true, user: true },
-          where: { subscribed: true },
         },
       },
     });
@@ -984,35 +973,10 @@ ${unsubscribeOptions}`,
       event.chapter.user_bans.map(({ user_id }) => user_id),
     );
 
-    const users: User[] = [];
-    if (emailGroups.includes('interested')) {
-      const interestedUsers =
-        event.chapter.chapter_users?.filter(
-          ({ subscribed, user_id }) =>
-            !bannedUserIds.has(user_id) && subscribed,
-        ) ?? [];
-
-      users.push(...interestedUsers);
-    }
-
-    if (emailGroups.includes('on_waitlist')) {
-      const waitlistUsers = event.event_users.filter(
-        ({ rsvp }) => rsvp.name === 'waitlist',
-      );
-      users.push(...waitlistUsers);
-    }
-    if (emailGroups.includes('confirmed')) {
-      const confirmedUsers = event.event_users.filter(
-        ({ rsvp }) => rsvp.name === 'yes',
-      );
-      users.push(...confirmedUsers);
-    }
-    if (emailGroups.includes('canceled')) {
-      const canceledUsers = event.event_users.filter(
-        ({ rsvp }) => rsvp.name === 'no',
-      );
-      users.push(...canceledUsers);
-    }
+    const users: User[] =
+      event.chapter.chapter_users?.filter(
+        ({ subscribed, user_id }) => !bannedUserIds.has(user_id) && subscribed,
+      ) ?? [];
 
     if (!users.length) {
       return true;

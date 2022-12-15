@@ -756,14 +756,13 @@ Cypress.Commands.add('getChapterRoles', getChapterRoles);
 /**
  * sends event invites for attendees
  * @param eventId event id
- * @param emailGroups Chapter id
  */
-const sendEventInvite = (eventId: number, emailGroups: [string]) => {
+const sendEventInvite = (eventId: number) => {
   const sendEventInviteMutation = {
     operationName: 'sendEventInvite',
-    variables: { eventId, emailGroups },
-    query: `mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
-      sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+    variables: { eventId },
+    query: `mutation sendEventInvite($eventId: Int!) {
+      sendEventInvite(id: $eventId)
     }`,
   };
   return cy.authedRequest(gqlOptions(sendEventInviteMutation));

@@ -21,10 +21,6 @@ function btoa(str: string): string {
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
 class MailerService {
-  emailList: Array<string>;
-  subject: string;
-  htmlEmail: string;
-  backupText: string;
   transporter: Transporter;
   ourEmail: string;
   emailUsername?: string;
@@ -33,10 +29,29 @@ class MailerService {
   emailHost?: string;
   sendgridKey: string;
   sendgridEmail: string;
-  iCalEvent?: string;
-  private _sendEmail: () => Promise<SentMessageInfo>;
+
+  private _sendEmail: (data: MailerData) => Promise<SentMessageInfo>;
 
   // eslint-disable-next-line no-use-before-define
+
+  public constructor() {
+    // to be replaced with env vars
+    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
+    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
+    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
+    this.emailService = process.env.EMAIL_SERVICE;
+    this.emailHost = process.env.EMAIL_HOST || 'localhost';
+
+    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
+      this.createTransporter();
+      this._sendEmail = this.sendViaNodemailer;
+    } else {
+      this.sendgridKey = process.env.SENDGRID_KEY;
+      this.sendgridEmail = process.env.SENDGRID_EMAIL;
+      sendgrid.setApiKey(this.sendgridKey);
+      this._sendEmail = this.sendViaSendgrid;
+    }
+  }
 
   private createTransporter() {
     const validateOurCredentials = Utilities.allValuesAreDefined([
@@ -63,75 +78,31 @@ class MailerService {
     });
   }
 
-  public loadValues(data: MailerData): MailerService {
-    this.emailList = data.emailList;
-    this.subject = data.subject;
-    this.htmlEmail = data.htmlEmail;
-    this.backupText = data.backupText || '';
-    this.iCalEvent = data.iCalEvent;
-
-    // to be replaced with env vars
-    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
-    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
-    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
-    this.emailService = process.env.EMAIL_SERVICE;
-    this.emailHost = process.env.EMAIL_HOST || 'localhost';
-
-    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
-      this.createTransporter();
-    }
-
-    return this;
-  }
-
   public async sendEmail(data: MailerData): Promise<SentMessageInfo> {
-    this.emailList = data.emailList;
-    this.subject = data.subject;
-    this.htmlEmail = data.htmlEmail;
-    this.backupText = data.backupText || '';
-    this.iCalEvent = data.iCalEvent;
-
-    // to be replaced with env vars
-    this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
-    this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
-    this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
-    this.emailService = process.env.EMAIL_SERVICE;
-    this.emailHost = process.env.EMAIL_HOST || 'localhost';
-
-    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
-      this.createTransporter();
-      this._sendEmail = this.sendViaNodemailer;
-    } else {
-      this.sendgridKey = process.env.SENDGRID_KEY;
-      this.sendgridEmail = process.env.SENDGRID_EMAIL;
-      sendgrid.setApiKey(this.sendgridKey);
-      this._sendEmail = this.sendViaSendgrid;
-    }
-
     try {
-      return await this._sendEmail();
+      return await this._sendEmail(data);
     } catch (e) {
       // We need to inspect, since mail error objects are often quite deep.
       console.log('Email failed to send. ', inspect(e, false, null));
     }
   }
 
-  private async sendViaSendgrid() {
-    const attachment = this.iCalEvent
+  private async sendViaSendgrid(data: MailerData) {
+    const attachment = data.iCalEvent
       ? {
           filename: 'calendar.ics',
           name: 'calendar.ics',
-          content: btoa(this.iCalEvent),
+          content: btoa(data.iCalEvent),
           disposition: 'attachment',
           type: 'text/calendar; method=REQUEST',
         }
       : null;
-    for (const email of this.emailList) {
+    for (const email of data.emailList) {
       const baseOpts: MailDataRequired = {
         to: email,
         from: this.sendgridEmail,
-        subject: this.subject,
-        html: this.htmlEmail || this.backupText,
+        subject: data.subject,
+        html: data.htmlEmail || data.backupText,
         trackingSettings: {
           clickTracking: {
             enable: false,
@@ -154,21 +125,21 @@ class MailerService {
     }
   }
 
-  private async sendViaNodemailer() {
-    const calendarEvent = this.iCalEvent
+  private async sendViaNodemailer(data: MailerData) {
+    const calendarEvent = data.iCalEvent
       ? {
           icalEvent: {
             filename: 'calendar.ics',
-            content: this.iCalEvent,
+            content: data.iCalEvent,
           },
         }
       : null;
     return await this.transporter.sendMail({
       from: this.ourEmail,
-      bcc: this.emailList,
-      subject: this.subject,
-      text: this.backupText,
-      html: this.htmlEmail,
+      bcc: data.emailList,
+      subject: data.subject,
+      text: data.backupText,
+      html: data.htmlEmail,
       ...calendarEvent,
     });
   }

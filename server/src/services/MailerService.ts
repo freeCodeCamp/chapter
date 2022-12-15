@@ -20,7 +20,7 @@ function btoa(str: string): string {
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
-class MailerService {
+export class MailerService {
   transporter: Transporter;
   ourEmail: string;
   emailUsername?: string;
@@ -102,7 +102,7 @@ class MailerService {
         to: email,
         from: this.sendgridEmail,
         subject: data.subject,
-        html: data.htmlEmail || data.backupText,
+        html: data.htmlEmail || data.backupText || '',
         trackingSettings: {
           clickTracking: {
             enable: false,

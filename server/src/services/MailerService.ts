@@ -20,11 +20,7 @@ function btoa(str: string): string {
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
 // environment variables when they become available. Temporary placeholders
 // provided until updated info available.
-export default class MailerService {
-  emailList: Array<string>;
-  subject: string;
-  htmlEmail: string;
-  backupText: string;
+export class MailerService {
   transporter: Transporter;
   ourEmail: string;
   emailUsername?: string;
@@ -33,16 +29,12 @@ export default class MailerService {
   emailHost?: string;
   sendgridKey: string;
   sendgridEmail: string;
-  iCalEvent?: string;
-  private _sendEmail: () => Promise<SentMessageInfo>;
 
-  constructor(data: MailerData) {
-    this.emailList = data.emailList;
-    this.subject = data.subject;
-    this.htmlEmail = data.htmlEmail;
-    this.backupText = data.backupText || '';
-    this.iCalEvent = data.iCalEvent;
+  private _sendEmail: (data: MailerData) => Promise<SentMessageInfo>;
 
+  // eslint-disable-next-line no-use-before-define
+
+  public constructor() {
     // to be replaced with env vars
     this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
     this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
@@ -86,31 +78,31 @@ export default class MailerService {
     });
   }
 
-  public async sendEmail(): Promise<SentMessageInfo> {
+  public async sendEmail(data: MailerData): Promise<SentMessageInfo> {
     try {
-      return await this._sendEmail();
+      return await this._sendEmail(data);
     } catch (e) {
       // We need to inspect, since mail error objects are often quite deep.
       console.log('Email failed to send. ', inspect(e, false, null));
     }
   }
 
-  private async sendViaSendgrid() {
-    const attachment = this.iCalEvent
+  private async sendViaSendgrid(data: MailerData) {
+    const attachment = data.iCalEvent
       ? {
           filename: 'calendar.ics',
           name: 'calendar.ics',
-          content: btoa(this.iCalEvent),
+          content: btoa(data.iCalEvent),
           disposition: 'attachment',
           type: 'text/calendar; method=REQUEST',
         }
       : null;
-    for (const email of this.emailList) {
+    for (const email of data.emailList) {
       const baseOpts: MailDataRequired = {
         to: email,
         from: this.sendgridEmail,
-        subject: this.subject,
-        html: this.htmlEmail || this.backupText,
+        subject: data.subject,
+        html: data.htmlEmail || data.backupText || '',
         trackingSettings: {
           clickTracking: {
             enable: false,
@@ -133,21 +125,21 @@ export default class MailerService {
     }
   }
 
-  private async sendViaNodemailer() {
-    const calendarEvent = this.iCalEvent
+  private async sendViaNodemailer(data: MailerData) {
+    const calendarEvent = data.iCalEvent
       ? {
           icalEvent: {
             filename: 'calendar.ics',
-            content: this.iCalEvent,
+            content: data.iCalEvent,
           },
         }
       : null;
     return await this.transporter.sendMail({
       from: this.ourEmail,
-      bcc: this.emailList,
-      subject: this.subject,
-      text: this.backupText,
-      html: this.htmlEmail,
+      bcc: data.emailList,
+      subject: data.subject,
+      text: data.backupText,
+      html: data.htmlEmail,
       ...calendarEvent,
     });
   }
@@ -159,6 +151,8 @@ export interface BatchEmailData {
   text: string;
   options?: object;
 }
+const mailerService = new MailerService();
+export default mailerService;
 
 export async function batchSender(
   mailData: () => Generator<BatchEmailData, void>,
@@ -166,12 +160,12 @@ export async function batchSender(
   const mails = [];
   for (const { email, subject, text, options } of mailData()) {
     mails.push(
-      new MailerService({
+      mailerService.sendEmail({
         emailList: [email],
         subject,
         htmlEmail: text,
         ...options,
-      }).sendEmail(),
+      }),
     );
   }
   await Promise.all(mails);

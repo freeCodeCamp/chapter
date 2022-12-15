@@ -159,15 +159,6 @@ export type CreateSponsorInputs = {
   website: Scalars['String'];
 };
 
-export type Email = {
-  __typename?: 'Email';
-  backupText: Scalars['String'];
-  emailList: Array<Scalars['String']>;
-  htmlEmail: Scalars['String'];
-  ourEmail: Scalars['String'];
-  subject: Scalars['String'];
-};
-
 export type Event = {
   __typename?: 'Event';
   calendar_event_id?: Maybe<Scalars['String']>;
@@ -346,7 +337,6 @@ export type Mutation = {
   joinChapter: ChapterUserWithRole;
   leaveChapter: ChapterUser;
   rsvpEvent: EventUserWithRelations;
-  sendEmail: Email;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
   toggleAutoSubscribe: User;
@@ -442,10 +432,6 @@ export type MutationLeaveChapterArgs = {
 export type MutationRsvpEventArgs = {
   chapterId: Scalars['Int'];
   eventId: Scalars['Int'];
-};
-
-export type MutationSendEmailArgs = {
-  data: SendEmailInputs;
 };
 
 export type MutationSendEventInviteArgs = {
@@ -595,12 +581,6 @@ export type Rsvp = {
   id: Scalars['Int'];
   name: Scalars['String'];
   updated_at: Scalars['DateTime'];
-};
-
-export type SendEmailInputs = {
-  html: Scalars['String'];
-  subject: Scalars['String'];
-  to: Array<Scalars['String']>;
 };
 
 export type Sponsor = {

@@ -33,7 +33,7 @@ import {
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import MailerService, { batchSender } from '../../services/MailerService';
+import mailerService, { batchSender } from '../../services/MailerService';
 import {
   createReminder,
   deleteEventReminders,
@@ -104,7 +104,7 @@ const sendRsvpInvitation = async (
     userId: user.id,
   });
 
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: [user.email],
     subject: `Confirmation of attendance: ${event.name}`,
     htmlEmail: `Hi${user.name ? ' ' + user.name : ''},<br>
@@ -116,7 +116,7 @@ You should receive a calendar invite shortly. If you do not, you can add the eve
 
 ${unsubscribeOptions}
       `,
-  }).sendEmail();
+  });
 };
 
 const createEmailForSubscribers = async (
@@ -623,12 +623,12 @@ export class EventResolver {
       userId,
     });
 
-    await new MailerService({
+    await mailerService.sendEmail({
       emailList: [updatedUser.user.email],
       subject: 'Your RSVP is confirmed',
       htmlEmail: `Your reservation is confirmed. You can attend the event ${updatedUser.event.name}
 ${unsubscribeOptions}`,
-    }).sendEmail();
+    });
 
     const calendarId = updatedUser.event.chapter.calendar_id;
     const calendarEventId = updatedUser.event.calendar_event_id;
@@ -892,11 +892,11 @@ ${unsubscribeOptions}`,
           ${unsubscribeOptions}
           `;
 
-        new MailerService({
+        mailerService.sendEmail({
           emailList: emailList,
           subject: subject,
           htmlEmail: cancelEventEmail,
-        }).sendEmail();
+        });
       }
     }
     if (event.chapter.calendar_id && event.calendar_event_id) {

@@ -1,4 +1,4 @@
-import MailerService from '../src/services/MailerService';
+import mailerService from '../src/services/MailerService';
 import {
   deleteReminder,
   getRemindersOlderThanDate,
@@ -103,11 +103,11 @@ const getEmailData = (reminder: Reminder) => {
 
 const sendEmailForReminder = async (reminder: Reminder) => {
   const { email, subject } = getEmailData(reminder);
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: [reminder.event_user.user.email],
     subject: subject,
     htmlEmail: email,
-  }).sendEmail();
+  });
 };
 
 const processReminders = async (reminders: Reminder[], lock: LockCheck) =>

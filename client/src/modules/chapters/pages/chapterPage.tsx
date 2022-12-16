@@ -51,7 +51,11 @@ const SubscriptionWidget = ({
   return chapterUser?.subscribed ? (
     <HStack justifyContent={'space-between'} width={'100%'}>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
-      <Button onClick={() => chapterSubscribe(false)} size="md">
+      <Button
+        data-cy="unsubscribe-chapter"
+        onClick={() => chapterSubscribe(false)}
+        size="md"
+      >
         Unsubscribe
       </Button>
     </HStack>
@@ -60,6 +64,7 @@ const SubscriptionWidget = ({
       <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
       <Button
         colorScheme="blue"
+        data-cy="subscribe-chapter"
         onClick={() => chapterSubscribe(true)}
         size="md"
       >

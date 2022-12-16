@@ -964,11 +964,6 @@ ${unsubscribeOptions}`,
       },
     });
 
-    interface User {
-      user: { id: number; email: string };
-      subscribed: boolean;
-    }
-
     const bannedUserIds = new Set(
       event.chapter.user_bans.map(({ user_id }) => user_id),
     );

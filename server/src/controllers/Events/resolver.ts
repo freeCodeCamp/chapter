@@ -973,7 +973,7 @@ ${unsubscribeOptions}`,
       event.chapter.user_bans.map(({ user_id }) => user_id),
     );
 
-    const users: User[] =
+    const users =
       event.chapter.chapter_users?.filter(
         ({ subscribed, user_id }) => !bannedUserIds.has(user_id) && subscribed,
       ) ?? [];

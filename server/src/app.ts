@@ -191,7 +191,7 @@ export const main = async (app: Express) => {
 
     requestTokens(code)
       .then(() => {
-        res.send('Authentication successful');
+        res.redirect(`${clientLocation}/dashboard/calendar`);
       })
       .catch((err) => {
         next(err);

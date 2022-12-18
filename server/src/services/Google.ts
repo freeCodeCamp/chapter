@@ -1,4 +1,5 @@
 import { calendar_v3, GaxiosPromise } from '@googleapis/calendar';
+import { isFuture } from 'date-fns';
 
 import { isProd, isTest } from '../config';
 import { sendInvalidTokenNotification } from '../util/calendar';
@@ -69,7 +70,9 @@ function parseEventData({
     ...(summary && { summary }),
     // Since Google will send emails to these addresses, we don't want to
     // accidentally send emails in testing.
-    ...(attendees && { attendees: isProd() || isTest() ? attendees : [] }),
+    // Additionally include attendees only for future events.
+    ...((!start || isFuture(start)) &&
+      attendees && { attendees: isProd() || isTest() ? attendees : [] }),
   };
 }
 
@@ -128,9 +131,12 @@ async function getAndUpdateEvent(
   );
   const { attendees } = data;
 
-  const updatedAttendeesData = updateAttendees
-    ? updateAttendees(attendees)
-    : attendees;
+  const updatedAttendeesData =
+    data.start?.dateTime &&
+    isFuture(new Date(data.start.dateTime)) &&
+    updateAttendees
+      ? updateAttendees(attendees)
+      : attendees;
 
   const requestBodyUpdates: EventData = {
     ...update,

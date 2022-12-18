@@ -251,14 +251,14 @@ describe('events dashboard', () => {
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectNoErrors);
+    cy.sendEventInvite(eventId).then(expectNoErrors);
 
     cy.login(users.testUser.email);
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login(users.bannedAdmin.email);
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
   });
 
   it('chapter admin should see only events from admined chapters', () => {

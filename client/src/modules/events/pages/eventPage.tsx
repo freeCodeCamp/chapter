@@ -135,6 +135,10 @@ export const EventPage: NextPage = () => {
   }
 
   async function tryToRsvp(options?: { invited?: boolean }) {
+    if (rsvpStatus === 'yes') {
+      await onRsvp(rsvpStatus);
+      return;
+    }
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',

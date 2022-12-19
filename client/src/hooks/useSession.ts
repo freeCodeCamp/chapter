@@ -24,13 +24,16 @@ const destroySession = () =>
 
 const useAuth0Session = (): {
   isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
+  createSession: () => Promise<Response | null>;
   destroySession: () => Promise<Response>;
 } => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const createSession = async () => {
-    const token = await getAccessTokenSilently();
-    return requestSession(token);
+    if (isAuthenticated) {
+      const token = await getAccessTokenSilently();
+      return requestSession(token);
+    }
+    return null;
   };
 
   return {
@@ -60,6 +63,6 @@ export const useDevSession = (): {
 
 export const useSession: () => {
   isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
+  createSession: () => Promise<Response | null>;
   destroySession: () => Promise<Response>;
 } = needsDevLogin ? useDevSession : useAuth0Session;

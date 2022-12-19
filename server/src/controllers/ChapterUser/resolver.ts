@@ -26,7 +26,7 @@ import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { removeEventAttendee } from '../../services/Google';
 import { redactSecrets } from '../../util/redact-secrets';
-import MailerService from '../../../src/services/MailerService';
+import mailerService from '../../../src/services/MailerService';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -153,11 +153,11 @@ async function emailUserAboutRoleChange({
   emailSubject,
   emailBody,
 }: EmailProps) {
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: email,
     subject: emailSubject,
     htmlEmail: emailBody,
-  }).sendEmail();
+  });
 }
 
 @Resolver(() => ChapterUser)

@@ -25,14 +25,15 @@ import { ResolverCtx } from '../../common-types/gql';
 import {
   Event,
   EventUserWithRelations,
-  EventWithRelations,
+  EventWithRelationsWithEventUserRelations,
+  EventWithRelationsWithEventUser,
   EventWithChapter,
   EventWithVenue,
   User,
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import MailerService, { batchSender } from '../../services/MailerService';
+import mailerService, { batchSender } from '../../services/MailerService';
 import {
   createReminder,
   deleteEventReminders,
@@ -62,11 +63,7 @@ import { EventInputs } from './inputs';
 const eventUserIncludes = {
   user: true,
   rsvp: true,
-  event_role: {
-    include: {
-      event_role_permissions: { include: { event_permission: true } },
-    },
-  },
+  event_role: true,
 };
 
 type EventWithUsers = Prisma.eventsGetPayload<{
@@ -103,7 +100,7 @@ const sendRsvpInvitation = async (
     userId: user.id,
   });
 
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: [user.email],
     subject: `Confirmation of attendance: ${event.name}`,
     htmlEmail: `Hi${user.name ? ' ' + user.name : ''},<br>
@@ -115,7 +112,7 @@ You should receive a calendar invite shortly. If you do not, you can add the eve
 
 ${unsubscribeOptions}
       `,
-  }).sendEmail();
+  });
 };
 
 const createEmailForSubscribers = async (
@@ -288,38 +285,6 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [EventWithRelations])
-  async events(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('showAll', { nullable: true }) showAll?: boolean,
-  ): Promise<EventWithRelations[]> {
-    return await prisma.events.findMany({
-      where: {
-        ...(!showAll && { start_at: { gt: new Date() } }),
-      },
-      include: {
-        chapter: true,
-        venue: true,
-        event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
-          },
-        },
-        sponsors: { include: { sponsor: true } }, // TODO: remove this, ideally "Omit" it, if TypeGraphQL supports that.
-      },
-      take: limit,
-      orderBy: {
-        start_at: 'asc',
-      },
-    });
-  }
-
   @Query(() => PaginatedEventsWithTotal)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
@@ -364,27 +329,18 @@ export class EventResolver {
     });
   }
 
-  // TODO: Check we need all the returned data
   @Authorized(Permission.EventEdit)
-  @Query(() => EventWithRelations, { nullable: true })
+  @Query(() => EventWithRelationsWithEventUserRelations, { nullable: true })
   async dashboardEvent(
     @Arg('id', () => Int) id: number,
-  ): Promise<EventWithRelations | null> {
+  ): Promise<EventWithRelationsWithEventUserRelations | null> {
     return await prisma.events.findUnique({
       where: { id },
       include: {
         chapter: true,
         venue: true,
         event_users: {
-          include: {
-            user: true,
-            rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
-          },
+          include: eventUserIncludes,
           orderBy: { user: { name: 'asc' } },
         },
         sponsors: { include: { sponsor: true } },
@@ -410,11 +366,10 @@ export class EventResolver {
     });
   }
 
-  // TODO: Check we need all the returned data
-  @Query(() => EventWithRelations, { nullable: true })
+  @Query(() => EventWithRelationsWithEventUser, { nullable: true })
   async event(
     @Arg('id', () => Int) id: number,
-  ): Promise<EventWithRelations | null> {
+  ): Promise<EventWithRelationsWithEventUser | null> {
     return await prisma.events.findUnique({
       where: { id },
       include: {
@@ -424,11 +379,6 @@ export class EventResolver {
           include: {
             user: true,
             rsvp: true,
-            event_role: {
-              include: {
-                event_role_permissions: { include: { event_permission: true } },
-              },
-            },
           },
           orderBy: { user: { name: 'asc' } },
         },
@@ -447,9 +397,7 @@ export class EventResolver {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
-        event_users: {
-          include: eventUserIncludes,
-        },
+        event_users: { include: eventUserIncludes },
         venue: true,
         chapter: {
           select: {
@@ -562,9 +510,7 @@ export class EventResolver {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
-        event_users: {
-          include: eventUserIncludes,
-        },
+        event_users: { include: eventUserIncludes },
         venue: true,
         chapter: { select: { calendar_id: true } },
       },
@@ -622,12 +568,12 @@ export class EventResolver {
       userId,
     });
 
-    await new MailerService({
+    await mailerService.sendEmail({
       emailList: [updatedUser.user.email],
       subject: 'Your RSVP is confirmed',
       htmlEmail: `Your reservation is confirmed. You can attend the event ${updatedUser.event.name}
 ${unsubscribeOptions}`,
-    }).sendEmail();
+    });
 
     const calendarId = updatedUser.event.chapter.calendar_id;
     const calendarEventId = updatedUser.event.calendar_event_id;
@@ -891,11 +837,11 @@ ${unsubscribeOptions}`,
           ${unsubscribeOptions}
           `;
 
-        new MailerService({
+        mailerService.sendEmail({
           emailList: emailList,
           subject: subject,
           htmlEmail: cancelEventEmail,
-        }).sendEmail();
+        });
       }
     }
     if (event.chapter.calendar_id && event.calendar_event_id) {
@@ -949,14 +895,7 @@ ${unsubscribeOptions}`,
   // an object type)
   @Authorized(Permission.EventSendInvite)
   @Mutation(() => Boolean)
-  async sendEventInvite(
-    @Arg('id', () => Int) id: number,
-    @Arg('emailGroups', () => [String], {
-      nullable: true,
-      defaultValue: ['interested'],
-    })
-    emailGroups: Array<'confirmed' | 'on_waitlist' | 'canceled' | 'interested'>,
-  ): Promise<boolean> {
+  async sendEventInvite(@Arg('id', () => Int) id: number): Promise<boolean> {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id },
       include: {
@@ -967,51 +906,17 @@ ${unsubscribeOptions}`,
             user_bans: true,
           },
         },
-        event_users: {
-          include: { rsvp: true, user: true },
-          where: { subscribed: true },
-        },
       },
     });
-
-    interface User {
-      user: { id: number; email: string };
-      subscribed: boolean;
-    }
 
     const bannedUserIds = new Set(
       event.chapter.user_bans.map(({ user_id }) => user_id),
     );
 
-    const users: User[] = [];
-    if (emailGroups.includes('interested')) {
-      const interestedUsers =
-        event.chapter.chapter_users?.filter(
-          ({ subscribed, user_id }) =>
-            !bannedUserIds.has(user_id) && subscribed,
-        ) ?? [];
-
-      users.push(...interestedUsers);
-    }
-
-    if (emailGroups.includes('on_waitlist')) {
-      const waitlistUsers = event.event_users.filter(
-        ({ rsvp }) => rsvp.name === 'waitlist',
-      );
-      users.push(...waitlistUsers);
-    }
-    if (emailGroups.includes('confirmed')) {
-      const confirmedUsers = event.event_users.filter(
-        ({ rsvp }) => rsvp.name === 'yes',
-      );
-      users.push(...confirmedUsers);
-    }
-    if (emailGroups.includes('canceled')) {
-      const canceledUsers = event.event_users.filter(
-        ({ rsvp }) => rsvp.name === 'no',
-      );
-      users.push(...canceledUsers);
-    }
+    const users =
+      event.chapter.chapter_users?.filter(
+        ({ subscribed, user_id }) => !bannedUserIds.has(user_id) && subscribed,
+      ) ?? [];
 
     if (!users.length) {
       return true;

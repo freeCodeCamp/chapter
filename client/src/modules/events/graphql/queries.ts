@@ -68,16 +68,6 @@ export const EVENT = gql`
           name
           image_url
         }
-        event_role {
-          id
-          name
-          event_role_permissions {
-            event_permission {
-              name
-            }
-          }
-        }
-        subscribed
       }
     }
   }

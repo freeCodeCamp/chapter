@@ -77,7 +77,7 @@ export const deleteRSVP = gql`
 `;
 
 export const sendEventInvite = gql`
-  mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
-    sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+  mutation sendEventInvite($eventId: Int!) {
+    sendEventInvite(id: $eventId)
   }
 `;

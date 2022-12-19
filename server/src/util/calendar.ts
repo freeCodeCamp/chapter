@@ -4,7 +4,7 @@ import { Permission } from '../../../common/permissions';
 import { prisma } from '../prisma';
 import { Event } from '../graphql-types';
 import { createCalendarEvent } from '../services/Google';
-import MailerService from '../services/MailerService';
+import mailerService from '../services/MailerService';
 import { redactSecrets } from './redact-secrets';
 
 interface CreateCalendarEventData {
@@ -65,10 +65,10 @@ export const sendInvalidTokenNotification = async () => {
   });
 
   const emailList = users.map(({ email }) => email);
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList,
     subject: 'Token marked as invalid',
     htmlEmail:
       "One of the calendar actions was unsuccessful due to issues with validity of the saved authentication token. It's required to reauthenticate with calendar api in the Calendar dashboard.",
-  }).sendEmail();
+  });
 };

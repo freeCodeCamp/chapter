@@ -64,7 +64,7 @@
     "@types/cookie-session": "2.0.44",
     "@types/jsonwebtoken": "8.5.9",
     "@types/lodash": "4.14.191",
-    "@types/nodemailer": "6.4.6",
+    "@types/nodemailer": "6.4.7",
     "concurrently": "7.6.0",
     "dotenv-cli": "5.1.0",
     "get-port": "6.1.2",

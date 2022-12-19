@@ -10,11 +10,6 @@ export interface MailerData {
   subject: string;
   htmlEmail: string;
   backupText?: string;
-  iCalEvent?: string;
-}
-
-function btoa(str: string): string {
-  return Buffer.from(str).toString('base64');
 }
 
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
@@ -33,7 +28,6 @@ export default class MailerService {
   emailHost?: string;
   sendgridKey: string;
   sendgridEmail: string;
-  iCalEvent?: string;
   private _sendEmail: () => Promise<SentMessageInfo>;
 
   constructor(data: MailerData) {
@@ -41,7 +35,6 @@ export default class MailerService {
     this.subject = data.subject;
     this.htmlEmail = data.htmlEmail;
     this.backupText = data.backupText || '';
-    this.iCalEvent = data.iCalEvent;
 
     // to be replaced with env vars
     this.ourEmail = process.env.CHAPTER_EMAIL || 'ourEmail@placeholder.place';
@@ -96,17 +89,8 @@ export default class MailerService {
   }
 
   private async sendViaSendgrid() {
-    const attachment = this.iCalEvent
-      ? {
-          filename: 'calendar.ics',
-          name: 'calendar.ics',
-          content: btoa(this.iCalEvent),
-          disposition: 'attachment',
-          type: 'text/calendar; method=REQUEST',
-        }
-      : null;
     for (const email of this.emailList) {
-      const baseOpts: MailDataRequired = {
+      const opts: MailDataRequired = {
         to: email,
         from: this.sendgridEmail,
         subject: this.subject,
@@ -125,30 +109,17 @@ export default class MailerService {
         },
       };
 
-      const opts: MailDataRequired = {
-        ...baseOpts,
-        ...(attachment && { attachments: [attachment] }),
-      };
       await sendgrid.send(opts);
     }
   }
 
   private async sendViaNodemailer() {
-    const calendarEvent = this.iCalEvent
-      ? {
-          icalEvent: {
-            filename: 'calendar.ics',
-            content: this.iCalEvent,
-          },
-        }
-      : null;
     return await this.transporter.sendMail({
       from: this.ourEmail,
       bcc: this.emailList,
       subject: this.subject,
       text: this.backupText,
       html: this.htmlEmail,
-      ...calendarEvent,
     });
   }
 }

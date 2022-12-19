@@ -10,11 +10,6 @@ export interface MailerData {
   subject: string;
   htmlEmail: string;
   backupText?: string;
-  iCalEvent?: string;
-}
-
-function btoa(str: string): string {
-  return Buffer.from(str).toString('base64');
 }
 
 // @todo add ourEmail, emailUsername, emailPassword, and emailService as
@@ -31,8 +26,6 @@ export class MailerService {
   sendgridEmail: string;
 
   private _sendEmail: (data: MailerData) => Promise<SentMessageInfo>;
-
-  // eslint-disable-next-line no-use-before-define
 
   public constructor() {
     // to be replaced with env vars
@@ -88,17 +81,8 @@ export class MailerService {
   }
 
   private async sendViaSendgrid(data: MailerData) {
-    const attachment = data.iCalEvent
-      ? {
-          filename: 'calendar.ics',
-          name: 'calendar.ics',
-          content: btoa(data.iCalEvent),
-          disposition: 'attachment',
-          type: 'text/calendar; method=REQUEST',
-        }
-      : null;
     for (const email of data.emailList) {
-      const baseOpts: MailDataRequired = {
+      const opts: MailDataRequired = {
         to: email,
         from: this.sendgridEmail,
         subject: data.subject,
@@ -117,30 +101,17 @@ export class MailerService {
         },
       };
 
-      const opts: MailDataRequired = {
-        ...baseOpts,
-        ...(attachment && { attachments: [attachment] }),
-      };
       await sendgrid.send(opts);
     }
   }
 
   private async sendViaNodemailer(data: MailerData) {
-    const calendarEvent = data.iCalEvent
-      ? {
-          icalEvent: {
-            filename: 'calendar.ics',
-            content: data.iCalEvent,
-          },
-        }
-      : null;
     return await this.transporter.sendMail({
       from: this.ourEmail,
       bcc: data.emailList,
       subject: data.subject,
       text: data.backupText,
       html: data.htmlEmail,
-      ...calendarEvent,
     });
   }
 }

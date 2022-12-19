@@ -19,7 +19,6 @@ import {
 } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
-import ical from 'ical-generator';
 
 import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
@@ -926,13 +925,6 @@ ${unsubscribeOptions}`,
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?confirm_rsvp=true`;
-    const calendar = ical();
-    calendar.createEvent({
-      start: event.start_at,
-      end: event.ends_at,
-      summary: event.name,
-      url: eventURL,
-    });
 
     const subsequentEventEmail = `New Upcoming Event for ${
       event.chapter.name
@@ -967,8 +959,6 @@ ${unsubscribeOptions}`,
     See the options above to change your notifications.
     `;
 
-    const iCalEvent = calendar.toString();
-
     await batchSender(function* () {
       for (const { user } of users) {
         const email = user.email;
@@ -978,7 +968,7 @@ ${unsubscribeOptions}`,
           userId: user.id,
         });
         const text = `${subsequentEventEmail}<br>${unsubscribeOptions}`;
-        yield { email, subject, text, options: { iCalEvent } };
+        yield { email, subject, text };
       }
     });
 

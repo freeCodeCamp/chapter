@@ -27,12 +27,11 @@ describe('dashboard', () => {
     cy.get('a[href="/dashboard/users"]').should('not.exist');
   });
 
-  it('member should have links to the dashboards allowed for member', () => {
+  it(`member shouldn't have links to the dashboards`, () => {
     cy.login(users.testUser.email);
-    cy.get('a[href="/dashboard/events"]').should('be.visible');
-    cy.get('a[href="/dashboard/chapters"]').should('be.visible');
-    cy.get('a[href="/dashboard/venues"]').should('be.visible');
-
+    cy.get('a[href="/dashboard/events"]').should('not.exist');
+    cy.get('a[href="/dashboard/chapters"]').should('not.exist');
+    cy.get('a[href="/dashboard/venues"]').should('not.exist');
     cy.get('a[href="/dashboard/sponsors"]').should('not.exist');
     cy.get('a[href="/dashboard/users"]').should('not.exist');
   });

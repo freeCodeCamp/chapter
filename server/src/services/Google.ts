@@ -105,13 +105,12 @@ async function updateAttendees(
   { calendarId, calendarEventId }: EventIds,
   updateAttendees: (
     attendees?: calendar_v3.Schema$EventAttendee[],
-  ) => calendar_v3.Schema$EventAttendee[] | undefined,
+  ) => calendar_v3.Schema$EventAttendee[],
 ) {
   function updater(oldEventData: calendar_v3.Schema$Event) {
     const canUpdateAttendees =
       oldEventData.start?.dateTime &&
-      isFuture(new Date(oldEventData.start.dateTime)) &&
-      updateAttendees;
+      isFuture(new Date(oldEventData.start.dateTime));
     const attendees = canUpdateAttendees
       ? updateAttendees(oldEventData.attendees)
       : oldEventData.attendees;

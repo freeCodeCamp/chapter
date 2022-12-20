@@ -124,7 +124,7 @@ describe('Google Service', () => {
       );
     });
 
-    it('should ignore request for event in past', async () => {
+    it('should not update attendees for past events', async () => {
       mockGet.mockImplementationOnce(mockGetPastEvent);
       const updatedEvent = await removeEventAttendee(
         { calendarId: 'id', calendarEventId: 'id' },
@@ -169,7 +169,7 @@ describe('Google Service', () => {
       );
     });
 
-    it('should ignore request for event in the past', async () => {
+    it('should not update attendees for past events', async () => {
       mockGet.mockImplementationOnce(mockGetPastEvent);
       const updatedEvent = await addEventAttendee(
         { calendarId: 'id', calendarEventId: 'id' },
@@ -209,7 +209,7 @@ describe('Google Service', () => {
       );
     });
 
-    it('should ignore request for event in the past', async () => {
+    it('should not update attendees for past events', async () => {
       mockGet.mockImplementationOnce(mockGetPastEvent);
       const updatedEvent = await cancelEventAttendance(
         { calendarId: 'id', calendarEventId: 'id' },

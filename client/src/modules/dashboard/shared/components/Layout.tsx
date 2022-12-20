@@ -63,17 +63,6 @@ export const Layout = ({
   if (loadingUser) return <Loading loading={loadingUser} />;
   if (!isLoggedIn)
     return <NextError statusCode={401} title={'Log in to see this page'} />;
-  if (
-    linksWithPermissions.filter(
-      (link) => !link.requiredPermission || link.hasPermission,
-    )
-  )
-    return (
-      <NextError
-        statusCode={500}
-        title={`You don't have access to view this page`}
-      />
-    );
 
   return (
     <div data-cy={dataCy}>

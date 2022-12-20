@@ -33,15 +33,11 @@ describe('profile page', () => {
     beforeEach(() => {
       cy.login(users.testUser.email);
     });
-    it('when enabled, should automatically subscribe when joining chapter', () => {
+    it('by default users should automatically subscribe when joining chapters', () => {
       cy.visit(profilePage);
       cy.findByRole('checkbox', {
         name: 'Subscribe to chapters when joining them',
-      }).as('switch');
-
-      cy.get('@switch').check({ force: true });
-      cy.get('@switch').should('be.checked');
-      cy.findByRole('button', { name: 'Save Profile Changes' }).click();
+      }).should('be.checked');
 
       cy.joinChapter(chapterIdToJoin);
       cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
@@ -68,9 +64,10 @@ describe('profile page', () => {
       cy.visit(profilePage);
       cy.findByRole('checkbox', {
         name: 'Subscribe to chapters when joining them',
-      }).should('not.be.checked');
-
+      }).uncheck({ force: true });
+      cy.findByRole('button', { name: 'Save Profile Changes' }).click();
       cy.joinChapter(chapterIdToJoin);
+
       cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
         (chapterUsers) =>
           checkSubscription({
@@ -81,22 +78,37 @@ describe('profile page', () => {
       );
     });
 
-    it('should not affect default subscribing to event', () => {
-      cy.joinChapter(chapterIdToJoin);
-      cy.toggleChapterSubscription(chapterIdToJoin);
-      cy.task<ChapterMembers>('getChapterMembers', chapterIdToJoin).then(
-        (chapterUsers) =>
-          checkSubscription({
-            userName: users.testUser.name,
-            users: chapterUsers,
-            status: true,
-          }),
-      );
-
+    it('users should be subscribed to events they rsvp to, regardless of auto_subscribe', () => {
+      // first with auto_subscribe enabled
       cy.visit(profilePage);
       cy.findByRole('checkbox', {
         name: 'Subscribe to chapters when joining them',
-      }).should('not.be.checked');
+      }).check({ force: true });
+
+      cy.joinChapter(chapterIdToJoin);
+      cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
+      cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) => {
+        checkSubscription({
+          userName: users.testUser.name,
+          users: eventUsers,
+          status: true,
+        });
+        const eventUser = eventUsers.find(
+          ({ user: { name } }) => name === users.testUser.name,
+        );
+        cy.task('deleteEventUser', {
+          eventId: eventIdToJoin,
+          userId: eventUser.user.id,
+        });
+      });
+
+      // now with auto_subscribe disabled
+      cy.findByRole('checkbox', {
+        name: 'Subscribe to chapters when joining them',
+      }).uncheck({ force: true });
+      // leave and rejoin chapter to clear out old subscription
+      cy.leaveChapter(chapterIdToJoin);
+      cy.joinChapter(chapterIdToJoin);
 
       cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
       cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) =>

@@ -216,15 +216,11 @@ describe('Google Service', () => {
         { attendeeEmail: 'b@person' },
       );
 
-      const expectedAttendees = [
-        ...attendees.filter((attendee) => attendee.email !== 'b@person'),
-        { email: 'b@person', responseStatus: 'declined' },
-      ];
-
       expect(updatedEvent.data.attendees?.length).toBe(3);
-      expect(updatedEvent.data.attendees).toEqual(
-        expect.not.arrayContaining(expectedAttendees),
-      );
+      expect(updatedEvent.data.attendees).not.toContainEqual({
+        email: 'b@person',
+        responseStatus: 'declined',
+      });
     });
   });
 

@@ -25,9 +25,13 @@ import {
   RoleChangeModalData,
 } from '../../shared/components/RoleChangeModal';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { Permission } from '../../../../../../common/permissions';
+import { checkPermission } from 'util/check-permission';
+import { useAuth } from 'modules/auth/store';
 
 export const UsersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useUsersQuery();
+  const { user } = useAuth();
 
   const { data: instanceRoles } = useInstanceRolesQuery();
   const modalProps = useDisclosure();
@@ -51,22 +55,31 @@ export const UsersPage: NextPageWithLayout = () => {
     modalProps.onClose();
   };
 
+  const hasPermissionToChangeRole = checkPermission(
+    user,
+    Permission.ChapterUserRoleChange,
+  );
+
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <>
-      {instanceRoles && instanceUser && (
-        <RoleChangeModal
-          modalProps={modalProps}
-          data={instanceUser}
-          roles={instanceRoles.instanceRoles.map(({ id, name }) => ({
-            id,
-            name,
-          }))}
-          title="Change instance role"
-          onSubmit={onModalSubmit}
-        />
+      {hasPermissionToChangeRole && (
+        <>
+          {instanceRoles && instanceUser && (
+            <RoleChangeModal
+              modalProps={modalProps}
+              data={instanceUser}
+              roles={instanceRoles.instanceRoles.map(({ id, name }) => ({
+                id,
+                name,
+              }))}
+              title="Change instance role"
+              onSubmit={onModalSubmit}
+            />
+          )}
+        </>
       )}
       <VStack>
         <Flex w="full" justify="space-between">
@@ -81,23 +94,27 @@ export const UsersPage: NextPageWithLayout = () => {
             mapper={{
               name: (user) => <UserName user={user} />,
               action: ({ id, instance_role, name }) => (
-                <Button
-                  data-cy="changeRole"
-                  colorScheme="blue"
-                  size="xs"
-                  onClick={() =>
-                    changeRole({
-                      roleName: instance_role.name,
-                      userId: id,
-                      userName: name,
-                    })
-                  }
-                >
-                  Change role
-                  <Text srOnly as="span">
-                    for {name}
-                  </Text>
-                </Button>
+                <>
+                  {hasPermissionToChangeRole && (
+                    <Button
+                      data-cy="changeRole"
+                      colorScheme="blue"
+                      size="xs"
+                      onClick={() =>
+                        changeRole({
+                          roleName: instance_role.name,
+                          userId: id,
+                          userName: name,
+                        })
+                      }
+                    >
+                      Change role
+                      <Text srOnly as="span">
+                        for {name}
+                      </Text>
+                    </Button>
+                  )}
+                </>
               ),
               role: ({ instance_role: { name } }) => (
                 <Text data-cy="role">{name}</Text>
@@ -124,30 +141,32 @@ export const UsersPage: NextPageWithLayout = () => {
                   >
                     <Text>Name</Text>
                     <Text>Role</Text>
-                    <Text>Action</Text>
+                    {hasPermissionToChangeRole && <Text>Action</Text>}
                   </VStack>
                 ),
                 action: () => (
                   <VStack align={'flex-start'} fontSize={['sm', 'md']}>
                     <UserName user={{ id, name }} />
                     <Text data-cy="role">{instance_role.name}</Text>
-                    <Button
-                      data-cy="changeRole"
-                      colorScheme="blue"
-                      size="xs"
-                      onClick={() =>
-                        changeRole({
-                          roleName: instance_role.name,
-                          userId: id,
-                          userName: name,
-                        })
-                      }
-                    >
-                      Change role
-                      <Text srOnly as="span">
-                        for {name}
-                      </Text>
-                    </Button>
+                    {hasPermissionToChangeRole && (
+                      <Button
+                        data-cy="changeRole"
+                        colorScheme="blue"
+                        size="xs"
+                        onClick={() =>
+                          changeRole({
+                            roleName: instance_role.name,
+                            userId: id,
+                            userName: name,
+                          })
+                        }
+                      >
+                        Change role
+                        <Text srOnly as="span">
+                          for {name}
+                        </Text>
+                      </Button>
+                    )}
                   </VStack>
                 ),
               }}

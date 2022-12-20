@@ -11,6 +11,8 @@ import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useAuth } from '../../../auth/store';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { Permission } from '../../../../../../common/permissions';
+import { checkPermission } from 'util/check-permission';
 
 export const EventsPage: NextPageWithLayout = () => {
   const { error, loading, data } = useDashboardEventsQuery();
@@ -19,12 +21,18 @@ export const EventsPage: NextPageWithLayout = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
+  const hasPermissionToCreateEvent = checkPermission(
+    user,
+    Permission.EventCreate,
+  );
+
+  const hasPermissionToEditEvent = checkPermission(user, Permission.EventEdit);
 
   return (
     <VStack data-cy="events-dashboard">
       <Flex w="full" justify="space-between">
         <Heading id="page-heading">Events</Heading>
-        {!!user?.admined_chapters.length && (
+        {hasPermissionToCreateEvent && (
           <LinkButton
             data-cy="new-event"
             href="/dashboard/events/new"
@@ -104,16 +112,20 @@ export const EventsPage: NextPageWithLayout = () => {
                 : 'In-person only',
             date: (event) => formatDate(event.start_at),
             action: (event) => (
-              <LinkButton
-                colorScheme="blue"
-                size="sm"
-                href={`/dashboard/events/${event.id}/edit`}
-              >
-                Edit
-                <Text srOnly as="span">
-                  {event.name}
-                </Text>
-              </LinkButton>
+              <>
+                {hasPermissionToEditEvent && (
+                  <LinkButton
+                    colorScheme="blue"
+                    size="sm"
+                    href={`/dashboard/events/${event.id}/edit`}
+                  >
+                    Edit
+                    <Text srOnly as="span">
+                      {event.name}
+                    </Text>
+                  </LinkButton>
+                )}
+              </>
             ),
           }}
         />
@@ -162,7 +174,7 @@ export const EventsPage: NextPageWithLayout = () => {
                     <Text>Capacity</Text>
                     <Text>Streaming url</Text>
                     <Text>Date</Text>
-                    <Text>Actions</Text>
+                    {hasPermissionToEditEvent && <Text>Actions</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -213,18 +225,20 @@ export const EventsPage: NextPageWithLayout = () => {
                       {isOnline(venue_type) ? streaming_url : 'In-person only'}
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
-                    <LinkButton
-                      colorScheme="blue"
-                      fontSize={'sm'}
-                      height={'2em'}
-                      size="sm"
-                      href={`/dashboard/events/${id}/edit`}
-                    >
-                      Edit
-                      <Text srOnly as="span">
-                        {name}
-                      </Text>
-                    </LinkButton>
+                    {hasPermissionToEditEvent && (
+                      <LinkButton
+                        colorScheme="blue"
+                        fontSize={'sm'}
+                        height={'2em'}
+                        size="sm"
+                        href={`/dashboard/events/${id}/edit`}
+                      >
+                        Edit
+                        <Text srOnly as="span">
+                          {name}
+                        </Text>
+                      </LinkButton>
+                    )}
                   </VStack>
                 ),
               }}

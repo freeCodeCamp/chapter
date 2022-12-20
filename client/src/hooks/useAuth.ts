@@ -8,14 +8,16 @@ export const useLogin = () => {
   const { refetch } = useMeQuery();
 
   const login = async () => {
-    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false')
+    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') {
       await loginWithPopup(undefined, { timeoutInSeconds: 400 });
-
-    if (isAuthenticated) {
+      if (isAuthenticated) {
+        await createSession();
+        return await refetch();
+      }
+    } else {
       await createSession();
       return await refetch();
     }
-    return;
   };
 
   return login;

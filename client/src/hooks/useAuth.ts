@@ -12,12 +12,11 @@ export const useLogin = () => {
       await loginWithPopup(undefined, { timeoutInSeconds: 400 });
       if (isAuthenticated) {
         await createSession();
-        return await refetch();
       }
     } else {
       await createSession();
-      return await refetch();
     }
+    return await refetch();
   };
 
   return login;

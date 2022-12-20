@@ -9,6 +9,27 @@ interface CalendarData {
   description: string;
 }
 
+interface EventData {
+  start?: Date;
+  end?: Date;
+  summary?: string;
+  attendees?: calendar_v3.Schema$EventAttendee[];
+  status?: 'cancelled';
+}
+
+interface CalendarId {
+  calendarId: string;
+}
+
+interface EventIds {
+  calendarId: string;
+  calendarEventId: string;
+}
+
+interface Attendee {
+  attendeeEmail: string;
+}
+
 const tokenErrors = [
   'Invalid Credentials',
   'invalid_grant',
@@ -35,130 +56,75 @@ async function callWithHandler<T>(
   }
 }
 
-export async function createCalendar({ summary, description }: CalendarData) {
-  const calendarApi = await createCalendarApi();
-
-  const { data } = await callWithHandler(() =>
-    calendarApi.calendars.insert({
-      requestBody: {
-        summary,
-        description,
-      },
-    }),
-  );
-
-  return data;
-}
-
-interface EventData {
-  start?: Date;
-  end?: Date;
-  summary?: string;
-  attendees?: calendar_v3.Schema$EventAttendee[];
-  status?: 'cancelled';
-}
-
-function parseEventData({
-  attendees,
-  start,
-  end,
-  summary,
-}: Partial<EventData>): calendar_v3.Schema$Event {
+function createEventRequestBody(
+  { attendees, start, end, summary }: EventData,
+  oldEventData?: calendar_v3.Schema$Event,
+): calendar_v3.Schema$Event {
+  // Only send emails to attendees when creating or updating events in
+  // the future.
+  const updateAttendees = (!start || isFuture(start)) && !!attendees;
   return {
+    ...oldEventData,
     ...(start && { start: { dateTime: start.toISOString() } }),
     ...(end && { end: { dateTime: end.toISOString() } }),
     ...(summary && { summary }),
     // Since Google will send emails to these addresses, we don't want to
     // accidentally send emails in testing.
-    // Additionally include attendees only for future events.
-    ...((!start || isFuture(start)) &&
-      attendees && { attendees: isProd() || isTest() ? attendees : [] }),
-  };
-}
-
-function createEventRequestBody({
-  attendees,
-  start,
-  end,
-  summary,
-}: EventData): calendar_v3.Schema$Event {
-  return {
-    ...parseEventData({ attendees, start, end, summary }),
+    ...(updateAttendees && {
+      attendees: isProd() || isTest() ? attendees : [],
+    }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
   };
 }
 
-interface CalendarId {
-  calendarId: string;
-}
-
-export async function createCalendarEvent(
-  { calendarId }: CalendarId,
-  eventData: EventData,
-) {
-  const calendarApi = await createCalendarApi();
-
-  const { data } = await callWithHandler(() =>
-    calendarApi.events.insert({
-      calendarId,
-      sendUpdates: 'all',
-      requestBody: createEventRequestBody(eventData),
-    }),
-  );
-  return { calendarEventId: data.id };
-}
-
-interface EventIds {
-  calendarId: string;
-  calendarEventId: string;
-}
-
 async function getAndUpdateEvent(
   { calendarId, calendarEventId: eventId }: EventIds,
-  update: EventData | null,
-  updateAttendees?: (
-    attendees?: calendar_v3.Schema$EventAttendee[],
-  ) => calendar_v3.Schema$EventAttendee[] | undefined,
+  updater: (oldEvent: calendar_v3.Schema$Event) => calendar_v3.Schema$Event,
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await callWithHandler(() =>
+  const { data: oldEventData } = await callWithHandler(() =>
     calendarApi.events.get({
       calendarId,
       eventId,
     }),
   );
-  const { attendees } = data;
-
-  const updatedAttendeesData =
-    data.start?.dateTime &&
-    isFuture(new Date(data.start.dateTime)) &&
-    updateAttendees
-      ? updateAttendees(attendees)
-      : attendees;
-
-  const requestBodyUpdates: EventData = {
-    ...update,
-    ...{ attendees: updatedAttendeesData },
-  };
 
   return await callWithHandler(() =>
     calendarApi.events.update({
       calendarId,
       eventId,
       sendUpdates: 'all',
-      requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
+      requestBody: updater(oldEventData),
     }),
   );
 }
 
-// To be used to update event, but not the attendees.
-export async function updateCalendarEvent(
+async function updateAttendees(
   { calendarId, calendarEventId }: EventIds,
-  eventUpdateData: EventData,
+  updateAttendees: (
+    attendees?: calendar_v3.Schema$EventAttendee[],
+  ) => calendar_v3.Schema$EventAttendee[] | undefined,
 ) {
-  await getAndUpdateEvent({ calendarId, calendarEventId }, eventUpdateData);
+  function updater(oldEventData: calendar_v3.Schema$Event) {
+    const canUpdateAttendees =
+      oldEventData.start?.dateTime &&
+      isFuture(new Date(oldEventData.start.dateTime)) &&
+      updateAttendees;
+    const attendees = canUpdateAttendees
+      ? updateAttendees(oldEventData.attendees)
+      : oldEventData.attendees;
+
+    return createEventRequestBody(
+      {
+        attendees,
+      },
+      oldEventData,
+    );
+  }
+
+  return getAndUpdateEvent({ calendarId, calendarEventId }, updater);
 }
 
 function removeFromAttendees(email: string) {
@@ -180,17 +146,54 @@ function cancelAttendance(email: string) {
     );
 }
 
-interface Attendee {
-  attendeeEmail: string;
+export async function createCalendar({ summary, description }: CalendarData) {
+  const calendarApi = await createCalendarApi();
+
+  const { data } = await callWithHandler(() =>
+    calendarApi.calendars.insert({
+      requestBody: {
+        summary,
+        description,
+      },
+    }),
+  );
+
+  return data;
+}
+
+export async function createCalendarEvent(
+  { calendarId }: CalendarId,
+  eventData: EventData,
+) {
+  const calendarApi = await createCalendarApi();
+
+  const { data } = await callWithHandler(() =>
+    calendarApi.events.insert({
+      calendarId,
+      sendUpdates: 'all',
+      requestBody: createEventRequestBody(eventData),
+    }),
+  );
+  return { calendarEventId: data.id };
+}
+
+// To be used to update event, but not the attendees.
+export async function updateCalendarEventDetails(
+  { calendarId, calendarEventId }: EventIds,
+  eventUpdateData: EventData,
+) {
+  const updater = (oldEventData: calendar_v3.Schema$Event) =>
+    createEventRequestBody(eventUpdateData, oldEventData);
+
+  await getAndUpdateEvent({ calendarId, calendarEventId }, updater);
 }
 
 export async function removeEventAttendee(
   { calendarId, calendarEventId }: EventIds,
   { attendeeEmail }: Attendee,
 ) {
-  return await getAndUpdateEvent(
+  return await updateAttendees(
     { calendarId, calendarEventId },
-    null,
     removeFromAttendees(attendeeEmail),
   );
 }
@@ -199,9 +202,8 @@ export async function cancelEventAttendance(
   { calendarId, calendarEventId }: EventIds,
   { attendeeEmail }: Attendee,
 ) {
-  return await getAndUpdateEvent(
+  return await updateAttendees(
     { calendarId, calendarEventId },
-    null,
     cancelAttendance(attendeeEmail),
   );
 }
@@ -210,9 +212,8 @@ export async function addEventAttendee(
   { calendarId, calendarEventId }: EventIds,
   { attendeeEmail }: Attendee,
 ) {
-  return await getAndUpdateEvent(
+  return await updateAttendees(
     { calendarId, calendarEventId },
-    null,
     addToAttendees(attendeeEmail),
   );
 }

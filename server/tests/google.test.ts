@@ -8,7 +8,7 @@ import {
   createCalendarEvent,
   deleteCalendarEvent,
   removeEventAttendee,
-  updateCalendarEvent,
+  updateCalendarEventDetails,
 } from '../src/services/Google';
 
 const { objectContaining, arrayContaining } = expect;
@@ -302,9 +302,9 @@ describe('Google Service', () => {
     });
   });
 
-  describe('updateCalendarEvent', () => {
+  describe('updateCalendarEventDetails', () => {
     it('should update everyone and configure guest permissions', async () => {
-      await updateCalendarEvent(
+      await updateCalendarEventDetails(
         { calendarId: 'foo', calendarEventId: 'bar' },
         {},
       );
@@ -329,7 +329,7 @@ describe('Google Service', () => {
         attendees,
       };
 
-      await updateCalendarEvent(
+      await updateCalendarEventDetails(
         { calendarId: 'foo', calendarEventId: 'bar' },
         eventData,
       );

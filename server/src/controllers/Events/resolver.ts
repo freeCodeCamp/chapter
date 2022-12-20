@@ -45,7 +45,7 @@ import {
   cancelEventAttendance,
   deleteCalendarEvent,
   removeEventAttendee,
-  updateCalendarEvent,
+  updateCalendarEventDetails,
 } from '../../services/Google';
 import {
   isAdminFromInstanceRole,
@@ -780,7 +780,7 @@ ${unsubscribeOptions}`,
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
       try {
-        await updateCalendarEvent(
+        await updateCalendarEventDetails(
           {
             calendarId: updatedEvent.chapter.calendar_id,
             calendarEventId: updatedEvent.calendar_event_id,

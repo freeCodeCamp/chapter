@@ -18,7 +18,7 @@
       <sequence increment="1" name="venues_id_seq" startValue="1"/>
    </sequences>
    <tables>
-      <table name="_prisma_migrations" numRows="7" remarks="" schema="public" type="TABLE">
+      <table name="_prisma_migrations" numRows="8" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="36" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="checksum" nullable="false" remarks="" size="64" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="finished_at" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -430,7 +430,7 @@
             <parent column="id" foreignKey="users_instance_role_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="instance_roles"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="image_url" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="7" name="auto_subscribe" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="7" name="auto_subscribe" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="users_pkey" unique="true">
             <column ascending="true" name="id"/>

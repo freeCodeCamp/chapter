@@ -10,9 +10,21 @@ import { Loading } from '../../../../components/Loading';
 import { useAuth } from 'modules/auth/store';
 
 const links = [
-  { text: 'Chapters', link: '/dashboard/chapters' },
-  { text: 'Events', link: '/dashboard/events' },
-  { text: 'Venues', link: '/dashboard/venues' },
+  {
+    text: 'Chapters',
+    link: '/dashboard/chapters',
+    requiredPermission: Permission.ChaptersView,
+  },
+  {
+    text: 'Events',
+    link: '/dashboard/events',
+    requiredPermission: Permission.EventsView,
+  },
+  {
+    text: 'Venues',
+    link: '/dashboard/venues',
+    requiredPermission: Permission.VenuesView,
+  },
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
@@ -51,6 +63,17 @@ export const Layout = ({
   if (loadingUser) return <Loading loading={loadingUser} />;
   if (!isLoggedIn)
     return <NextError statusCode={401} title={'Log in to see this page'} />;
+  if (
+    linksWithPermissions.filter(
+      (link) => !link.requiredPermission || link.hasPermission,
+    )
+  )
+    return (
+      <NextError
+        statusCode={500}
+        title={`You don't have access to view this page`}
+      />
+    );
 
   return (
     <div data-cy={dataCy}>

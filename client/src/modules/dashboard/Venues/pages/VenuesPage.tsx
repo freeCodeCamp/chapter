@@ -9,21 +9,29 @@ import { Layout } from '../../shared/components/Layout';
 import getLocationString from '../../../../util/getLocationString';
 import { useAuth } from '../../../auth/store';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { Permission } from '../../../../../../common/permissions';
+import { checkPermission } from 'util/check-permission';
 
 export const VenuesPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardVenuesQuery();
 
   const { user } = useAuth();
-  const adminedChapters = user?.admined_chapters ?? [];
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
+
+  const hasPermissionToCreateVenue = checkPermission(
+    user,
+    Permission.VenueCreate,
+  );
+
+  const hasPermissiontoEditVenue = checkPermission(user, Permission.VenueEdit);
 
   return (
     <VStack>
       <Flex w="full" justify="space-between">
         <Heading id="page-heading">Venues</Heading>
-        {adminedChapters.length > 0 && (
+        {hasPermissionToCreateVenue && (
           <LinkButton
             data-cy="new-venue"
             href="/dashboard/venues/new"
@@ -61,17 +69,21 @@ export const VenuesPage: NextPageWithLayout = () => {
               </LinkButton>
             ),
             action: (venue) => (
-              <LinkButton
-                data-cy="edit-venue-button"
-                colorScheme="blue"
-                size="xs"
-                href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
-              >
-                Edit
-                <Text srOnly as="span">
-                  {venue.name}
-                </Text>
-              </LinkButton>
+              <>
+                {hasPermissiontoEditVenue && (
+                  <LinkButton
+                    data-cy="edit-venue-button"
+                    colorScheme="blue"
+                    size="xs"
+                    href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
+                  >
+                    Edit
+                    <Text srOnly as="span">
+                      {venue.name}
+                    </Text>
+                  </LinkButton>
+                )}
+              </>
             ),
           }}
         />
@@ -103,7 +115,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                     <Text>Venue</Text>
                     <Text>Chapter</Text>
                     <Text>Location</Text>
-                    <Text>Action</Text>
+                    {hasPermissiontoEditVenue && <Text>Action</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -131,17 +143,19 @@ export const VenuesPage: NextPageWithLayout = () => {
                       {' '}
                       {region}, {country}, {postal_code}
                     </Text>
-                    <LinkButton
-                      data-cy="edit-venue-button"
-                      colorScheme="blue"
-                      size="xs"
-                      href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
-                    >
-                      Edit
-                      <Text srOnly as="span">
-                        {name}
-                      </Text>
-                    </LinkButton>
+                    {hasPermissiontoEditVenue && (
+                      <LinkButton
+                        data-cy="edit-venue-button"
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
+                      >
+                        Edit
+                        <Text srOnly as="span">
+                          {name}
+                        </Text>
+                      </LinkButton>
+                    )}
                   </VStack>
                 ),
               }}

@@ -99,10 +99,9 @@ async function onTokens(tokens: Credentials) {
       data: { ...update },
     });
   } else {
-    // TODO: Handle the case where the refresh token is not sent *and* the
-    // record doesn't exist. If this happens, we need to redirect them to a
-    // new auth url, but with prompt: 'consent', so that Google will provide
-    // a new refresh token.
+    // This should not happen, but if it did, presumably something went
+    // wrong during the Google authentication flow. All we can do is ask the
+    // user to try again.
     throw new Error('Missing refresh_token');
   }
 }

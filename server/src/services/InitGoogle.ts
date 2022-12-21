@@ -109,19 +109,13 @@ async function onTokens(tokens: Credentials) {
 
 export async function requestTokens(code: string) {
   const oauth2Client = createOAuth2Client();
-  await Promise.all([
-    new Promise((resolve, reject) => {
-      oauth2Client.on('tokens', (tokens: Credentials) => {
-        onTokens(tokens).then(resolve).catch(reject);
-      });
-    }),
-    new Promise((resolve, reject) => {
-      oauth2Client
-        .getToken(code)
-        .then(resolve)
-        .catch(() => reject(new Error('Failed to get tokens')));
-    }),
-  ]);
+  try {
+    const tokens = (await oauth2Client.getToken(code)).tokens;
+    await onTokens(tokens);
+  } catch (e) {
+    console.error('Failed to get tokens');
+    throw redactSecrets(e);
+  }
 }
 
 export function getGoogleAuthUrl(state: string, prompt = false) {

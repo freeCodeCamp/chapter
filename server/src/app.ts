@@ -194,7 +194,10 @@ export const main = async (app: Express) => {
         res.send('Authentication successful');
       })
       .catch((err) => {
-        if (err instanceof Error && err.message === 'Missing refresh_token') {
+        // Refresh token is returned only for the first authorization
+        // - when user sees the consent screen. If user is re-authenticating
+        // we need to force displaying of the consent screen.
+        if (err?.message === 'Missing refresh_token') {
           res.redirect('/authenticate-with-google?prompt=true');
         } else {
           next(err);

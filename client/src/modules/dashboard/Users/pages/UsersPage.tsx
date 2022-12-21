@@ -8,7 +8,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   useChangeInstanceUserRoleMutation,
@@ -36,19 +36,20 @@ export const UsersPage: NextPageWithLayout = () => {
     refetchQueries: [{ query: Users }],
   });
 
-  useEffect(() => {
-    setInstanceUser(instanceUser);
+  const changeRole = (data: RoleChangeModalData) => {
+    setInstanceUser(data);
     modalProps.onOpen();
-    if (instanceUser) {
-      changeRoleMutation({
-        variables: {
-          roleName: instanceUser.roleName,
-          userId: instanceUser.userId,
-        },
-      });
-    }
+  };
+
+  const onModalSubmit = (data: { newRoleName: string; userId: number }) => {
+    changeRoleMutation({
+      variables: {
+        roleName: data.newRoleName,
+        userId: data.userId,
+      },
+    });
     modalProps.onClose();
-  }, [instanceUser]);
+  };
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
@@ -64,7 +65,7 @@ export const UsersPage: NextPageWithLayout = () => {
             name,
           }))}
           title="Change instance role"
-          onSubmit={() => instanceUser}
+          onSubmit={onModalSubmit}
         />
       )}
       <VStack>
@@ -85,7 +86,7 @@ export const UsersPage: NextPageWithLayout = () => {
                   colorScheme="blue"
                   size="xs"
                   onClick={() =>
-                    setInstanceUser({
+                    changeRole({
                       roleName: instance_role.name,
                       userId: id,
                       userName: name,
@@ -131,11 +132,11 @@ export const UsersPage: NextPageWithLayout = () => {
                     <UserName user={{ id, name }} />
                     <Text data-cy="role">{instance_role.name}</Text>
                     <Button
-                      data-cy="instanceUser"
+                      data-cy="changeRole"
                       colorScheme="blue"
                       size="xs"
                       onClick={() =>
-                        setInstanceUser({
+                        changeRole({
                           roleName: instance_role.name,
                           userId: id,
                           userName: name,

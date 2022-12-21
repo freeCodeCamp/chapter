@@ -6,6 +6,7 @@ import { calendar } from '@googleapis/calendar';
 
 import { prisma } from '../prisma';
 import { isProd } from '../config';
+import { redactSecrets } from '../util/redact-secrets';
 
 // We need a single set of tokens for the server and Prisma needs a unique id
 // to update the tokens. This is it.
@@ -98,6 +99,7 @@ async function onTokens(tokens: Credentials) {
       where: { id: TOKENS_ID },
       data: { ...update },
     });
+    throw new Error('Missing refresh_token');
   } else {
     // This should not happen, but if it did, presumably something went
     // wrong during the Google authentication flow. All we can do is ask the

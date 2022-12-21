@@ -23,7 +23,7 @@ export const HOME_PAGE_QUERY = gql`
       description
       banner_url
       logo_url
-      events(first: 2) {
+      events {
         id
         canceled
         start_at

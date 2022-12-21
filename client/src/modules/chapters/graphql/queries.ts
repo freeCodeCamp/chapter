@@ -44,14 +44,14 @@ export const CHAPTER_USER = gql`
 `;
 
 export const CHAPTERS = gql`
-  query chapters {
+  query chapters($limit: Int) {
     chapters {
       id
       name
       description
       logo_url
       banner_url
-      events {
+      events(limit: $limit) {
         id
         canceled
         start_at

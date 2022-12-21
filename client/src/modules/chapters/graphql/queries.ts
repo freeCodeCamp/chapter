@@ -43,6 +43,7 @@ export const CHAPTER_USER = gql`
   }
 `;
 
+// https://graphql.org/learn/pagination/#slicing
 export const CHAPTERS = gql`
   query chapters {
     chapters {
@@ -51,7 +52,7 @@ export const CHAPTERS = gql`
       description
       logo_url
       banner_url
-      events {
+      events(first: 2) {
         id
         canceled
         start_at

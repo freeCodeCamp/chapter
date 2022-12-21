@@ -352,7 +352,6 @@ export class EventResolver {
   @Query(() => [EventWithVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
   ): Promise<EventWithVenue[]> {
     return await prisma.events.findMany({
       where: {
@@ -361,7 +360,6 @@ export class EventResolver {
         }),
       },
       include: { venue: true },
-      take: limit,
       orderBy: { start_at: 'asc' },
     });
   }

@@ -568,16 +568,16 @@ export type QueryChapterVenuesArgs = {
   chapterId: Scalars['Int'];
 };
 
+export type QueryChaptersArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryDashboardChapterArgs = {
   id: Scalars['Int'];
 };
 
 export type QueryDashboardEventArgs = {
   id: Scalars['Int'];
-};
-
-export type QueryDashboardEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryDashboardSponsorArgs = {

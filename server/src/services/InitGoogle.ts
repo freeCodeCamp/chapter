@@ -51,11 +51,18 @@ function createOAuth2Client() {
 // TODO: Communicate these errors to the user. As of now, if the user
 // authenticates, and an error is thrown here, they will still see
 // Authentication successful in the browser.
-async function onTokens(tokens: Credentials) {
+async function onTokens(
+  tokens: Credentials,
+  { requireRefreshToken }: { requireRefreshToken?: boolean } = {
+    requireRefreshToken: false,
+  },
+) {
   // TODO: handle the case where the user rejects some or all of the scopes
   const { access_token, refresh_token, expiry_date } = tokens;
 
   if (!access_token || !expiry_date) throw new Error('Tokens invalid');
+  if (requireRefreshToken && !refresh_token)
+    throw new Error('Missing refresh_token');
 
   let userInfo;
   try {
@@ -99,7 +106,6 @@ async function onTokens(tokens: Credentials) {
       where: { id: TOKENS_ID },
       data: { ...update },
     });
-    throw new Error('Missing refresh_token');
   } else {
     // This should not happen, but if it did, presumably something went
     // wrong during the Google authentication flow. All we can do is ask the
@@ -112,7 +118,7 @@ export async function requestTokens(code: string) {
   const oauth2Client = createOAuth2Client();
   try {
     const tokens = (await oauth2Client.getToken(code)).tokens;
-    await onTokens(tokens);
+    await onTokens(tokens, { requireRefreshToken: true });
   } catch (e) {
     console.error('Failed to get tokens');
     throw redactSecrets(e);
@@ -131,7 +137,9 @@ export function getGoogleAuthUrl(state: string, prompt = false) {
 }
 
 async function createCredentialedClient() {
-  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
+  const oauth2Client = createOAuth2Client().on('tokens', (tokens) =>
+    onTokens(tokens),
+  );
 
   const tokenInfo = await prisma.google_tokens.findFirstOrThrow({
     where: { is_valid: true },

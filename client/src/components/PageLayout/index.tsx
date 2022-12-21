@@ -30,7 +30,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <Alert status="error">
+      <Alert status="error" color="gray.85">
         <AlertIcon />
         <AlertTitle> This is a testing site. </AlertTitle>
         <AlertDescription>

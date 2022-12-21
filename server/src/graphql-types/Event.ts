@@ -1,7 +1,13 @@
 import { events_venue_type_enum } from '@prisma/client';
 import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { Chapter, EventSponsor, EventUserWithRelations, Venue } from '.';
+import {
+  Chapter,
+  EventSponsor,
+  EventUserWithRelations,
+  EventUserWithRsvpAndUser,
+  Venue,
+} from '.';
 
 export { events_venue_type_enum };
 
@@ -56,6 +62,21 @@ export class EventWithChapter extends Event {
 }
 
 @ObjectType()
+export class EventWithVenue extends Event {
+  @Field(() => Venue, { nullable: true })
+  venue?: Venue | null;
+}
+
+@ObjectType()
+export class EventWithChapterAndVenue extends Event {
+  @Field(() => Chapter)
+  chapter: Chapter;
+
+  @Field(() => Venue, { nullable: true })
+  venue?: Venue | null;
+}
+
+@ObjectType()
 export class PaginatedEventsWithTotal {
   @Field(() => Int)
   total: number;
@@ -65,22 +86,19 @@ export class PaginatedEventsWithTotal {
 }
 
 @ObjectType()
-export class EventWithRelations extends Event {
-  @Field(() => Chapter)
-  chapter: Chapter;
-
+class EventRelationsWithoutEventUsers extends EventWithChapterAndVenue {
   @Field(() => [EventSponsor])
   sponsors: EventSponsor[];
-
-  @Field(() => Venue, { nullable: true })
-  venue?: Venue | null;
-
-  @Field(() => [EventUserWithRelations])
-  event_users: EventUserWithRelations[];
 }
 
 @ObjectType()
-export class EventWithVenue extends Event {
-  @Field(() => Venue, { nullable: true })
-  venue?: Venue | null;
+export class EventWithRelationsWithEventUser extends EventRelationsWithoutEventUsers {
+  @Field(() => [EventUserWithRsvpAndUser])
+  event_users: EventUserWithRsvpAndUser[];
+}
+
+@ObjectType()
+export class EventWithRelationsWithEventUserRelations extends EventRelationsWithoutEventUsers {
+  @Field(() => [EventUserWithRelations])
+  event_users: EventUserWithRelations[];
 }

@@ -27,6 +27,7 @@ export interface EventFormData {
   sponsors: Array<EventSponsorInput>;
   canceled: boolean;
   chapter_id: number;
+  attend_event?: boolean;
 }
 
 export interface Field {
@@ -109,7 +110,11 @@ export const fields: Field[] = [
 
 export type IEventData = Pick<
   Event,
-  keyof Omit<EventFormData, 'venue_id' | 'sponsors' | 'chapter_id'> | 'id'
+  | keyof Omit<
+      EventFormData,
+      'venue_id' | 'sponsors' | 'chapter_id' | 'attend_event'
+    >
+  | 'id'
 > & {
   venue_id?: number;
   venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
@@ -122,6 +127,7 @@ export interface EventFormProps {
   submitText: string;
   chapterId?: number;
   loadingText: string;
+  formType: 'new' | 'edit';
 }
 
 const getSelectedFieldIdForSponsor = (
@@ -186,10 +192,10 @@ export const getAllowedSponsors = (
   );
 
 export const parseEventData = (data: EventFormData) => {
-  // It's ugly, but we can't rely on TS to check that chapter_id is absent, so
-  // we have to remove it in case it's present:
+  // It's ugly, but we can't rely on TS to check that properties are absent, so
+  // we have to remove them to avoid sending them to the server.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { chapter_id, sponsors, ...rest } = data;
+  const { chapter_id, attend_event, sponsors, ...rest } = data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
   // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.

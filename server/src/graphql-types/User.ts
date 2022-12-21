@@ -3,7 +3,7 @@ import { BaseObject } from './BaseObject';
 import {
   ChapterUserWithRole,
   UserBan,
-  EventUserWithRole,
+  EventUserWithRolePermissions,
   InstanceRole,
   UserChapter,
   UserEvent,
@@ -36,8 +36,8 @@ export class UserWithPermissions extends UserWithInstanceRole {
   @Field(() => [ChapterUserWithRole])
   user_chapters: ChapterUserWithRole[];
 
-  @Field(() => [EventUserWithRole])
-  user_events: EventUserWithRole[];
+  @Field(() => [EventUserWithRolePermissions])
+  user_events: EventUserWithRolePermissions[];
 }
 
 @ObjectType()

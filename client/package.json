@@ -10,16 +10,16 @@
     "gen:dev": "npm run gen -- --watch"
   },
   "dependencies": {
-    "@apollo/client": "3.7.2",
+    "@apollo/client": "3.7.3",
     "@auth0/auth0-react": "1.12.0",
     "@chakra-ui/button": "2.0.13",
     "@chakra-ui/checkbox": "2.2.5",
     "@chakra-ui/form-control": "2.0.13",
     "@chakra-ui/hooks": "2.1.2",
-    "@chakra-ui/icons": "2.0.13",
+    "@chakra-ui/icons": "2.0.14",
     "@chakra-ui/layout": "2.1.11",
     "@chakra-ui/modal": "2.2.5",
-    "@chakra-ui/react": "2.4.3",
+    "@chakra-ui/react": "2.4.4",
     "@chakra-ui/select": "2.0.14",
     "@chakra-ui/skip-nav": "2.0.12",
     "@emotion/react": "11.10.5",
@@ -33,11 +33,11 @@
     "react": "18.2.0",
     "react-datepicker": "4.8.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "7.40.0"
+    "react-hook-form": "7.41.0"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.457.0",
-    "@codesee/tracker": "0.457.0",
+    "@codesee/babel-plugin-instrument": "0.462.0",
+    "@codesee/tracker": "0.462.0",
     "@graphql-codegen/cli": "2.16.1",
     "@graphql-codegen/fragment-matcher": "3.3.3",
     "@graphql-codegen/introspection": "2.2.3",

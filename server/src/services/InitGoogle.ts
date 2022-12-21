@@ -133,7 +133,9 @@ export function getGoogleAuthUrl(state: string, prompt = false) {
 async function createCredentialedClient() {
   const oauth2Client = createOAuth2Client().on('tokens', onTokens);
 
-  const tokenInfo = await prisma.google_tokens.findFirstOrThrow();
+  const tokenInfo = await prisma.google_tokens.findFirstOrThrow({
+    where: { is_valid: true },
+  });
   const tokens = {
     access_token: tokenInfo.access_token,
     refresh_token: tokenInfo.refresh_token,
@@ -154,4 +156,11 @@ async function createCredentialedClient() {
 export async function createCalendarApi() {
   const auth = await createCredentialedClient();
   return calendar({ version: 'v3', auth });
+}
+
+export async function invalidateToken() {
+  await prisma.google_tokens.update({
+    data: { is_valid: false },
+    where: { id: TOKENS_ID },
+  });
 }

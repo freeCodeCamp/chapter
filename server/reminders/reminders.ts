@@ -1,4 +1,4 @@
-import MailerService from '../src/services/MailerService';
+import mailerService from '../src/services/MailerService';
 import {
   deleteReminder,
   getRemindersOlderThanDate,
@@ -47,18 +47,18 @@ const reminderMessage = ({
   chapterUnsubscribeToken,
   eventUnsubscribeToken,
 }: ReminderMessageData) => {
-  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}]) organized by ${event.chapter.name} is happening soon.</br>
-</br>
-Your RSVP Status: {rsvps.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
-</br>
-When: ${date} from ${start_time} to ${end_time} (GMT)</br>
-</br>
-Where: ${event.venue?.name} | ${event.venue?.street_address} ${event.venue?.city}, ${event.venue?.region} ${event.venue?.postal_code}</br>
-</br>
-(post-MVP feature) Add to My Calendar: [Google](URL for Google) | [Outlook](URL for Outlook) | [Yahoo](URL for Yahoo) | [iCal](URL for iCal)</br>
-</br>
-This email was sent to ${user.email} by ${event.chapter.name} | ${event.chapter.city}, ${event.chapter.region} ${event.chapter.country}</br>
-Copyright © {current year in YYYY format} {Organization}. All rights reserved.</br>
+  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}]) organized by ${event.chapter.name} is happening soon.<br />
+<br />
+Your RSVP Status: {rsvps.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)<br />
+<br />
+When: ${date} from ${start_time} to ${end_time} (GMT)<br />
+<br />
+Where: ${event.venue?.name} | ${event.venue?.street_address} ${event.venue?.city}, ${event.venue?.region} ${event.venue?.postal_code}<br />
+<br />
+(post-MVP feature) Add to My Calendar: [Google](URL for Google) | [Outlook](URL for Outlook) | [Yahoo](URL for Yahoo) | [iCal](URL for iCal)<br />
+<br />
+This email was sent to ${user.email} by ${event.chapter.name} | ${event.chapter.city}, ${event.chapter.region} ${event.chapter.country}<br />
+Copyright © {current year in YYYY format} {Organization}. All rights reserved.<br />
 
 
 Unsubscribe Options
@@ -103,11 +103,11 @@ const getEmailData = (reminder: Reminder) => {
 
 const sendEmailForReminder = async (reminder: Reminder) => {
   const { email, subject } = getEmailData(reminder);
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: [reminder.event_user.user.email],
     subject: subject,
     htmlEmail: email,
-  }).sendEmail();
+  });
 };
 
 const processReminders = async (reminders: Reminder[], lock: LockCheck) =>

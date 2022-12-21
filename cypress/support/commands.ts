@@ -142,15 +142,20 @@ Cypress.Commands.add('waitUntilMail', waitUntilMail);
  * @param chapterId Id of the chapter
  * @param data Data of the event. Defined by the GraphQL input type EventInputs.
  */
-const createEvent = (chapterId: number, data: EventInputs) => {
+const createEvent = (
+  chapterId: number,
+  data: EventInputs,
+  attendEvent = true,
+) => {
   const eventMutation = {
     operationName: 'createEvent',
     variables: {
       chapterId,
       data,
+      attendEvent,
     },
-    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!) {
-      createEvent(chapterId: $chapterId, data: $data) {
+    query: `mutation createEvent($chapterId: Int!, $data: EventInputs!, $attendEvent: Boolean!) {
+      createEvent(chapterId: $chapterId, data: $data, attendEvent: $attendEvent) {
         id
       }
     }`,
@@ -751,14 +756,13 @@ Cypress.Commands.add('getChapterRoles', getChapterRoles);
 /**
  * sends event invites for attendees
  * @param eventId event id
- * @param emailGroups Chapter id
  */
-const sendEventInvite = (eventId: number, emailGroups: [string]) => {
+const sendEventInvite = (eventId: number) => {
   const sendEventInviteMutation = {
     operationName: 'sendEventInvite',
-    variables: { eventId, emailGroups },
-    query: `mutation sendEventInvite($eventId: Int!, $emailGroups: [String!]) {
-      sendEventInvite(id: $eventId, emailGroups: $emailGroups)
+    variables: { eventId },
+    query: `mutation sendEventInvite($eventId: Int!) {
+      sendEventInvite(id: $eventId)
     }`,
   };
   return cy.authedRequest(gqlOptions(sendEventInviteMutation));

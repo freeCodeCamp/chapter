@@ -219,7 +219,7 @@ describe('events dashboard', () => {
     cy.interceptGQL('dashboardEvents');
   });
 
-  it('chapter admin should be allowed to edit event, but nobody else', () => {
+  it('chapter admins should be allowed to edit events, members and banned users should not', () => {
     const eventOneData = {
       ...event,
       start_at: new Date(),
@@ -236,7 +236,7 @@ describe('events dashboard', () => {
     cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
   });
 
-  it('chapter admin should be allowed to delete event, but nobody else', () => {
+  it('chapter admins should be allowed to delete events, members and banned users should not', () => {
     // newly registered user (without a chapter_users record)
     cy.login(users.testUser.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);
@@ -251,14 +251,14 @@ describe('events dashboard', () => {
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectNoErrors);
+    cy.sendEventInvite(eventId).then(expectNoErrors);
 
     cy.login(users.testUser.email);
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login(users.bannedAdmin.email);
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
   });
 
   it('chapter admin should see only events from admined chapters', () => {

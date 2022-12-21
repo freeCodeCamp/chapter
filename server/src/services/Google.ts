@@ -1,21 +1,50 @@
-import type { calendar_v3 } from '@googleapis/calendar';
+import { calendar_v3, GaxiosPromise } from '@googleapis/calendar';
 
 import { isProd, isTest } from '../config';
-import { createCalendarApi } from './InitGoogle';
+import { sendInvalidTokenNotification } from '../util/calendar';
+import { createCalendarApi, invalidateToken } from './InitGoogle';
 interface CalendarData {
   summary: string;
   description: string;
 }
 
+const tokenErrors = [
+  'Invalid Credentials',
+  'invalid_grant',
+  'No access, refresh token, API key or refresh handler callback is set.',
+  'No refresh token is set.',
+];
+
+function errorHandler(err: unknown) {
+  if (err instanceof Error && tokenErrors.includes(err.message)) {
+    console.error('Marking token as invalid');
+    invalidateToken();
+    sendInvalidTokenNotification();
+  }
+}
+
+async function callWithHandler<T>(
+  func: () => GaxiosPromise<T>,
+): GaxiosPromise<T> {
+  try {
+    return await func();
+  } catch (err) {
+    errorHandler(err);
+    throw err;
+  }
+}
+
 export async function createCalendar({ summary, description }: CalendarData) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await calendarApi.calendars.insert({
-    requestBody: {
-      summary,
-      description,
-    },
-  });
+  const { data } = await callWithHandler(() =>
+    calendarApi.calendars.insert({
+      requestBody: {
+        summary,
+        description,
+      },
+    }),
+  );
 
   return data;
 }
@@ -67,12 +96,13 @@ export async function createCalendarEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await calendarApi.events.insert({
-    calendarId,
-    sendUpdates: 'all',
-    requestBody: createEventRequestBody(eventData),
-  });
-
+  const { data } = await callWithHandler(() =>
+    calendarApi.events.insert({
+      calendarId,
+      sendUpdates: 'all',
+      requestBody: createEventRequestBody(eventData),
+    }),
+  );
   return { calendarEventId: data.id };
 }
 
@@ -90,11 +120,12 @@ async function getAndUpdateEvent(
 ) {
   const calendarApi = await createCalendarApi();
 
-  const { data } = await calendarApi.events.get({
-    calendarId,
-    eventId,
-  });
-
+  const { data } = await callWithHandler(() =>
+    calendarApi.events.get({
+      calendarId,
+      eventId,
+    }),
+  );
   const { attendees } = data;
 
   const updatedAttendeesData = updateAttendees
@@ -106,12 +137,14 @@ async function getAndUpdateEvent(
     ...{ attendees: updatedAttendeesData },
   };
 
-  return await calendarApi.events.update({
-    calendarId,
-    eventId,
-    sendUpdates: 'all',
-    requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
-  });
+  return await callWithHandler(() =>
+    calendarApi.events.update({
+      calendarId,
+      eventId,
+      sendUpdates: 'all',
+      requestBody: { ...data, ...createEventRequestBody(requestBodyUpdates) },
+    }),
+  );
 }
 
 // To be used to update event, but not the attendees.
@@ -184,9 +217,11 @@ export async function deleteCalendarEvent({
 }: EventIds) {
   const calendarApi = await createCalendarApi();
 
-  await calendarApi.events.delete({
-    calendarId,
-    eventId,
-    sendUpdates: 'all',
-  });
+  await callWithHandler(() =>
+    calendarApi.events.delete({
+      calendarId,
+      eventId,
+      sendUpdates: 'all',
+    }),
+  );
 }

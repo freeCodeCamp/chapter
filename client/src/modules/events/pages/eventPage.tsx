@@ -89,14 +89,18 @@ export const EventPage: NextPage = () => {
   // It's easy to create bugs by calling arrow functions before they're defined,
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
+  function isAlreadyRsvp(rsvpStatus: string | undefined) {
+    const alreadyRsvp = rsvpStatus === 'yes' || rsvpStatus === 'waitlist';
+    if (alreadyRsvp) {
+      toast({ title: 'Already RSVPed', status: 'info' });
+      return true;
+    }
+    return false;
+  }
 
-  async function onRsvp(rsvpStatus: string | undefined) {
+  async function onRsvp() {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
-      return;
-    }
-    if (rsvpStatus === 'yes' || rsvpStatus === 'waitlist') {
-      toast({ title: 'Already RSVPed', status: 'info' });
       return;
     }
     try {
@@ -158,7 +162,7 @@ export const EventPage: NextPage = () => {
     if (!ok) return;
 
     if (user) {
-      await onRsvp(rsvpStatus);
+      await onRsvp();
       return;
     }
     modalProps.onOpen();
@@ -169,12 +173,16 @@ export const EventPage: NextPage = () => {
     const eventUser = data?.event?.event_users.find(
       ({ user: event_user }) => event_user.id === me?.id,
     );
-    await onRsvp(eventUser?.rsvp.name);
+    if (!isAlreadyRsvp(eventUser?.rsvp.name)) {
+      await onRsvp();
+    }
   }
 
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
-      tryToRsvp({ invited: true });
+      if (!isAlreadyRsvp(rsvpStatus)) {
+        tryToRsvp({ invited: true });
+      }
       setHasShownModal(true);
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);

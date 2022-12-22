@@ -98,14 +98,14 @@ export const EventPage: NextPage = () => {
     return false;
   }
 
-  async function onRsvp() {
+  function onRsvp() {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
-      await joinChapter({ variables: { chapterId } });
-      await rsvpToEvent({
+      joinChapter({ variables: { chapterId } });
+      rsvpToEvent({
         variables: { eventId, chapterId },
       });
 
@@ -162,7 +162,7 @@ export const EventPage: NextPage = () => {
     if (!ok) return;
 
     if (user) {
-      await onRsvp();
+      onRsvp();
       return;
     }
     modalProps.onOpen();
@@ -174,7 +174,7 @@ export const EventPage: NextPage = () => {
       ({ user: event_user }) => event_user.id === me?.id,
     );
     if (!isAlreadyRsvp(eventUser?.rsvp.name)) {
-      await onRsvp();
+      onRsvp();
     }
   }
 

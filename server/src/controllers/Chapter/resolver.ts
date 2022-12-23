@@ -173,6 +173,33 @@ export class ChapterResolver {
     return prisma.chapters.create({ data: chapterData });
   }
 
+  @Authorized(Permission.ChapterCreate)
+  @Mutation(() => Chapter)
+  async createChapterCalendar(
+    @Arg('id', () => Int) id: number,
+  ): Promise<Chapter> {
+    const chapter = await prisma.chapters.findUniqueOrThrow({ where: { id } });
+    if (chapter.calendar_id) return chapter;
+
+    const calendarStatus = await integrationStatus();
+    if (!calendarStatus) return chapter;
+
+    try {
+      const calendarData = await createCalendar({
+        summary: chapter.name,
+        description: `Events for ${chapter.name}`,
+      });
+      return await prisma.chapters.update({
+        where: { id },
+        data: { calendar_id: calendarData.id },
+      });
+    } catch (e) {
+      console.log('Unable to create calendar');
+      console.error(inspect(redactSecrets(e), { depth: null }));
+      return chapter;
+    }
+  }
+
   @Authorized(Permission.ChapterEdit)
   @Mutation(() => Chapter)
   async updateChapter(

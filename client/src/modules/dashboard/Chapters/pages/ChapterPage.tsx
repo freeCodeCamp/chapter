@@ -163,7 +163,12 @@ export const ChapterPage: NextPageWithLayout = () => {
               checkPermission(user, Permission.ChapterCreate, {
                 chapterId,
               }) && (
-                <Button size="sm" colorScheme="blue" onClick={onCreateCalendar}>
+                <Button
+                  colorScheme="blue"
+                  isLoading={loadingCalendar}
+                  onClick={onCreateCalendar}
+                  size="sm"
+                >
                   Create calendar
                 </Button>
               )}

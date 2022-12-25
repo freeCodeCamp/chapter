@@ -43,15 +43,18 @@ const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
 const SubscriptionWidget = ({
   chapterUser,
   chapterSubscribe,
+  loading,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+  loading: boolean;
 }) => {
   return chapterUser?.subscribed ? (
     <>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button
         data-cy="unsubscribe-chapter"
+        isLoading={loading}
         onClick={() => chapterSubscribe(false)}
       >
         Unsubscribe
@@ -63,6 +66,7 @@ const SubscriptionWidget = ({
       <Button
         colorScheme="blue"
         data-cy="subscribe-chapter"
+        isLoading={loading}
         onClick={() => chapterSubscribe(true)}
       >
         Subscribe
@@ -73,12 +77,16 @@ const SubscriptionWidget = ({
 
 const ChapterUserRoleWidget = ({
   chapterUser,
-  LeaveChapter,
   JoinChapter,
+  LeaveChapter,
+  loadingJoin,
+  loadingLeave,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
-  LeaveChapter: () => Promise<void>;
   JoinChapter: () => Promise<void>;
+  LeaveChapter: () => Promise<void>;
+  loadingJoin: boolean;
+  loadingLeave: boolean;
 }) =>
   chapterUser?.chapter_role ? (
     <>
@@ -86,12 +94,14 @@ const ChapterUserRoleWidget = ({
         <CheckIcon marginRight={1} />
         {chapterUser.chapter_role.name} of the chapter
       </Text>
-      <Button onClick={LeaveChapter}>Leave</Button>
+      <Button isLoading={loadingLeave} onClick={LeaveChapter}>
+        Leave
+      </Button>
     </>
   ) : (
     <>
       <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" onClick={JoinChapter}>
+      <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
         Join
       </Button>
     </>
@@ -118,9 +128,12 @@ export const ChapterPage: NextPage = () => {
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
-  const [joinChapter] = useJoinChapterMutation(refetch);
-  const [leaveChapter] = useLeaveChapterMutation(refetch);
-  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
+  const [joinChapter, { loading: loadingJoin }] =
+    useJoinChapterMutation(refetch);
+  const [leaveChapter, { loading: loadingLeave }] =
+    useLeaveChapterMutation(refetch);
+  const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
+    useToggleChapterSubscriptionMutation(refetch);
 
   const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
@@ -262,14 +275,17 @@ export const ChapterPage: NextPage = () => {
         {isLoggedIn && dataChapterUser && (
           <SimpleGrid columns={2} gap={5} alignItems="center">
             <ChapterUserRoleWidget
+              chapterUser={dataChapterUser.chapterUser}
               JoinChapter={onJoinChapter}
               LeaveChapter={onLeaveChapter}
-              chapterUser={dataChapterUser.chapterUser}
+              loadingJoin={loadingJoin}
+              loadingLeave={loadingLeave}
             />
             {dataChapterUser.chapterUser && (
               <SubscriptionWidget
                 chapterUser={dataChapterUser.chapterUser}
                 chapterSubscribe={onChapterSubscribe}
+                loading={loadingSubscribeToggle}
               />
             )}
           </SimpleGrid>

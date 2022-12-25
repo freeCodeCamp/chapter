@@ -5,7 +5,6 @@ import {
   Image,
   Link,
   SimpleGrid,
-  Spinner,
   Stack,
   Text,
   useToast,
@@ -282,31 +281,21 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        <SimpleGrid columns={2} gap={5} alignItems="center">
-          {isLoggedIn &&
-            (loadingChapterUser ? (
-              <Spinner />
-            ) : (
-              dataChapterUser && (
-                <ChapterUserRoleWidget
-                  JoinChapter={onJoinChapter}
-                  LeaveChapter={onLeaveChapter}
-                  chapterUser={dataChapterUser.chapterUser}
-                />
-              )
-            ))}
-          {isLoggedIn &&
-            (loadingChapterUser ? (
-              <Spinner />
-            ) : (
-              dataChapterUser?.chapterUser && (
-                <SubscriptionWidget
-                  chapterUser={dataChapterUser.chapterUser}
-                  chapterSubscribe={onChapterSubscribe}
-                />
-              )
-            ))}
-        </SimpleGrid>
+        {isLoggedIn && dataChapterUser && (
+          <SimpleGrid columns={2} gap={5} alignItems="center">
+            <ChapterUserRoleWidget
+              JoinChapter={onJoinChapter}
+              LeaveChapter={onLeaveChapter}
+              chapterUser={dataChapterUser.chapterUser}
+            />
+            {dataChapterUser.chapterUser && (
+              <SubscriptionWidget
+                chapterUser={dataChapterUser.chapterUser}
+                chapterSubscribe={onChapterSubscribe}
+              />
+            )}
+          </SimpleGrid>
+        )}
         <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
           Events:

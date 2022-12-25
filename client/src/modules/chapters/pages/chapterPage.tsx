@@ -49,36 +49,24 @@ const SubscriptionWidget = ({
 }) => {
   return chapterUser?.subscribed ? (
     <>
-      <Box>
-        <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
-      </Box>
-      <Box>
-        <Button
-          data-cy="unsubscribe-chapter"
-          onClick={() => chapterSubscribe(false)}
-          size="md"
-          width="100%"
-        >
-          Unsubscribe
-        </Button>
-      </Box>
+      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
+      <Button
+        data-cy="unsubscribe-chapter"
+        onClick={() => chapterSubscribe(false)}
+      >
+        Unsubscribe
+      </Button>
     </>
   ) : (
     <>
-      <Box>
-        <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
-      </Box>
-      <Box>
-        <Button
-          colorScheme="blue"
-          data-cy="subscribe-chapter"
-          onClick={() => chapterSubscribe(true)}
-          size="md"
-          width="100%"
-        >
-          Subscribe
-        </Button>
-      </Box>
+      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
+      <Button
+        colorScheme="blue"
+        data-cy="subscribe-chapter"
+        onClick={() => chapterSubscribe(true)}
+      >
+        Subscribe
+      </Button>
     </>
   );
 };
@@ -94,28 +82,20 @@ const ChapterUserRoleWidget = ({
 }) =>
   chapterUser?.chapter_role ? (
     <>
-      <Box>
-        <Text data-cy="join-success" fontWeight={500}>
-          <CheckIcon marginRight={1} />
-          {chapterUser.chapter_role.name} of the chapter
-        </Text>
-      </Box>
-      <Box>
-        <Button onClick={LeaveChapter} width="100%">
-          Leave
-        </Button>
-      </Box>
+      <Text data-cy="join-success" fontWeight={500}>
+        <CheckIcon marginRight={1} />
+        {chapterUser.chapter_role.name} of the chapter
+      </Text>
+      <Button onClick={LeaveChapter}>
+        Leave
+      </Button>
     </>
   ) : (
     <>
-      <Box>
-        <Text fontWeight={500}>Become member of the chapter</Text>
-      </Box>
-      <Box>
-        <Button colorScheme="blue" onClick={JoinChapter} width="100%">
-          Join
-        </Button>
-      </Box>
+      <Text fontWeight={500}>Become member of the chapter</Text>
+      <Button colorScheme="blue" onClick={JoinChapter}>
+        Join
+      </Button>
     </>
   );
 

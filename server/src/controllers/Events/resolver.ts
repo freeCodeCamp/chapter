@@ -362,7 +362,7 @@ export class EventResolver {
       },
       include: { venue: true },
       take: limit,
-      orderBy: { start_at: 'asc' },
+      orderBy: { start_at: 'desc' },
     });
   }
 

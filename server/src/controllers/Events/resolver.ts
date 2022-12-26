@@ -354,7 +354,7 @@ export class EventResolver {
     @Ctx() ctx: Required<ResolverCtx>,
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showCanceled', () => Boolean, { nullable: true })
-    showCanceled = false,
+    showCanceled = true,
   ): Promise<EventWithVenue[]> {
     return await prisma.events.findMany({
       where: {

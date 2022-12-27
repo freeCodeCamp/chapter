@@ -56,7 +56,13 @@ export class VenueResolver {
   ): Promise<VenueWithChapterEvents | null> {
     return prisma.venues.findUnique({
       where: { id },
-      include: { chapter: { include: { events: true } } },
+      include: {
+        chapter: {
+          include: {
+            events: { where: { venue_id: id }, orderBy: { start_at: 'desc' } },
+          },
+        },
+      },
     });
   }
 

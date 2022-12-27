@@ -38,7 +38,7 @@ export const VenuePage: NextPageWithLayout = () => {
         </ProgressCardContent>
       </Card>
       <EventList
-        title="Organized By The Venue's Chapter"
+        title="Organized At The Venue"
         events={data.venue.chapter.events}
       />
     </>

@@ -1,10 +1,11 @@
-import { Button, Flex, Heading, Text } from '@chakra-ui/react';
+import { Button, Flex, Heading, HStack, Text } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 
 import {
   useCalendarIntegrationStatusQuery,
+  useCalendarIntegrationTestMutation,
   useTokenStatusesQuery,
 } from '../../../../generated/graphql';
 import { checkPermission } from '../../../../util/check-permission';
@@ -13,6 +14,7 @@ import { useAuth } from '../../../auth/store';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../../../modules/dashboard/shared/components/DashboardLoading';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { CALENDAR_INTEGRATION, TOKEN_STATUSES } from '../graphql/queries';
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
@@ -28,6 +30,16 @@ export const Calendar: NextPageWithLayout = () => {
     error: errorStatuses,
     data: dataStatuses,
   } = useTokenStatusesQuery();
+  const [calendarIntegrationTest, { loading: loadingTest }] =
+    useCalendarIntegrationTestMutation({
+      refetchQueries: [
+        { query: CALENDAR_INTEGRATION },
+        { query: TOKEN_STATUSES },
+      ],
+    });
+  const onIntegrationTest = async () => {
+    await calendarIntegrationTest();
+  };
   const isLoading = loading || loadingStatuses;
   if (isLoading || error || errorStatuses)
     return <DashboardLoading error={error || errorStatuses} />;
@@ -61,25 +73,32 @@ export const Calendar: NextPageWithLayout = () => {
           calendars and events.
         </p>
       </Flex>
-      <Button
-        as="a"
-        href={new URL('/authenticate-with-google', serverUrl).href}
-        fontWeight="600"
-        background={'gray.85'}
-        color={'gray.10'}
-        height={'100%'}
-        marginBlock={'1em'}
-        borderRadius={'5px'}
-        paddingBlock={'.65em'}
-        _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-        isDisabled={!!isAuthenticated}
-      >
-        {isAuthenticated
-          ? 'Authenticated'
-          : isBroken
-          ? 'Reauthenticate with Google'
-          : 'Authenticate with Google'}
-      </Button>
+      <HStack>
+        <Button
+          as="a"
+          href={new URL('/authenticate-with-google', serverUrl).href}
+          fontWeight="600"
+          background={'gray.85'}
+          color={'gray.10'}
+          height={'100%'}
+          marginBlock={'1em'}
+          borderRadius={'5px'}
+          paddingBlock={'.65em'}
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          isDisabled={!!isAuthenticated}
+        >
+          {isAuthenticated
+            ? 'Authenticated'
+            : isBroken
+            ? 'Reauthenticate with Google'
+            : 'Authenticate with Google'}
+        </Button>
+        {(isAuthenticated || isBroken) && (
+          <Button onClick={onIntegrationTest} isLoading={loadingTest}>
+            Test integration
+          </Button>
+        )}
+      </HStack>
       {(isAuthenticated || isBroken) && dataStatuses?.tokenStatuses?.length && (
         <DataTable
           title="Authentication status"

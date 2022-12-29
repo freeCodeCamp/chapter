@@ -3,7 +3,11 @@ import { isFuture } from 'date-fns';
 
 import { isProd, isTest } from '../config';
 import { sendInvalidTokenNotification } from '../util/calendar';
-import { createCalendarApi, invalidateToken } from './InitGoogle';
+import {
+  createCalendarApi,
+  createCalendarApis,
+  invalidateToken,
+} from './InitGoogle';
 interface CalendarData {
   summary: string;
   description: string;
@@ -231,4 +235,16 @@ export async function deleteCalendarEvent({
       sendUpdates: 'all',
     }),
   );
+}
+
+export async function testTokens() {
+  const apis = await createCalendarApis();
+  for (const { tokenId, createApi } of apis) {
+    const calendarApi = await createApi();
+    try {
+      await callWithHandler(() => calendarApi.calendarList.list(), tokenId);
+    } catch {
+      console.log('Token tested as invalid.');
+    }
+  }
 }

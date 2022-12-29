@@ -356,6 +356,7 @@ export type InstanceRolePermission = {
 export type Mutation = {
   __typename?: 'Mutation';
   banUser: UserBan;
+  calendarIntegrationTest?: Maybe<Scalars['Boolean']>;
   cancelEvent: Event;
   cancelRsvp?: Maybe<EventUserWithRelations>;
   changeChapterUserRole: ChapterUserWithRelations;
@@ -997,6 +998,15 @@ export type ChaptersQuery = {
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
+};
+
+export type CalendarIntegrationTestMutationVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type CalendarIntegrationTestMutation = {
+  __typename?: 'Mutation';
+  calendarIntegrationTest?: boolean | null;
 };
 
 export type CalendarIntegrationStatusQueryVariables = Exact<{
@@ -2430,6 +2440,53 @@ export type ChaptersLazyQueryHookResult = ReturnType<
 export type ChaptersQueryResult = Apollo.QueryResult<
   ChaptersQuery,
   ChaptersQueryVariables
+>;
+export const CalendarIntegrationTestDocument = gql`
+  mutation calendarIntegrationTest {
+    calendarIntegrationTest
+  }
+`;
+export type CalendarIntegrationTestMutationFn = Apollo.MutationFunction<
+  CalendarIntegrationTestMutation,
+  CalendarIntegrationTestMutationVariables
+>;
+
+/**
+ * __useCalendarIntegrationTestMutation__
+ *
+ * To run a mutation, you first call `useCalendarIntegrationTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCalendarIntegrationTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [calendarIntegrationTestMutation, { data, loading, error }] = useCalendarIntegrationTestMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCalendarIntegrationTestMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CalendarIntegrationTestMutation,
+    CalendarIntegrationTestMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CalendarIntegrationTestMutation,
+    CalendarIntegrationTestMutationVariables
+  >(CalendarIntegrationTestDocument, options);
+}
+export type CalendarIntegrationTestMutationHookResult = ReturnType<
+  typeof useCalendarIntegrationTestMutation
+>;
+export type CalendarIntegrationTestMutationResult =
+  Apollo.MutationResult<CalendarIntegrationTestMutation>;
+export type CalendarIntegrationTestMutationOptions = Apollo.BaseMutationOptions<
+  CalendarIntegrationTestMutation,
+  CalendarIntegrationTestMutationVariables
 >;
 export const CalendarIntegrationStatusDocument = gql`
   query calendarIntegrationStatus {

@@ -37,21 +37,22 @@ const tokenErrors = [
   'No refresh token is set.',
 ];
 
-function errorHandler(err: unknown) {
+function errorHandler(err: unknown, tokenId?: number) {
   if (err instanceof Error && tokenErrors.includes(err.message)) {
     console.error('Marking token as invalid');
-    invalidateToken();
+    invalidateToken(tokenId);
     sendInvalidTokenNotification();
   }
 }
 
 async function callWithHandler<T>(
   func: () => GaxiosPromise<T>,
+  tokenId?: number,
 ): GaxiosPromise<T> {
   try {
     return await func();
   } catch (err) {
-    errorHandler(err);
+    errorHandler(err, tokenId);
     throw err;
   }
 }

@@ -36,19 +36,19 @@
     "ends_at": "2022-01-02T00:02",
     "invite_only": false
   },
-  "eventWithoutURL": {
+  "eventWithoutDateAndURL": {
     "name": "Test Event",
     "description": "Test Description",
     "streaming_url": "https://test.event.org/video",
     "capacity": "10",
-    "start_at": "2022-01-01T00:01",
-    "ends_at": "2022-01-02T00:02",
     "venue_id": "1",
     "image_url": "https://test.event.org/image"
   },
   "partialData": {
     "capacity": 10,
     "venue_id": 1,
+    "start_at": "2022-01-01T00:01",
+    "ends_at": "2022-01-02T00:02",
     "sponsor_ids": [],
     "name": "Other Event",
     "url": "https://test.event.org",

@@ -9,6 +9,18 @@ import {
 const chapterId = 1;
 const eventId = 1;
 
+function navigateToEventsDashboard() {
+  cy.get('button[data-cy="menu-button"]').click();
+  cy.findByRole('menuitem', { name: 'Dashboard' }).click();
+
+  cy.get('[data-cy="dashboard-tabs"]').should('be.visible');
+  cy.findByRole('link', { name: 'Events Dashboard' }).click();
+  cy.contains('Loading...');
+  cy.location('pathname').should('match', /^\/dashboard\/events$/);
+  cy.wait('@GQLdashboardEvents');
+  cy.get('[data-cy="events-dashboard"]').should('be.visible');
+}
+
 // TODO: Move these specs into the other describe block, once we can make sure
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
@@ -90,20 +102,12 @@ describe('spec needing owner', () => {
 
   it('editing event updates cached events on home page', () => {
     cy.visit('');
-    cy.get('button[data-cy="menu-button"]').click();
-    cy.findByRole('menuitem', { name: 'Events' }).click();
+    cy.contains('Upcoming events');
     cy.get('a[href*="/events/"]').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
-    cy.get('button[data-cy="menu-button"]').click();
-    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-
-    cy.findByRole('link', { name: 'Events Dashboard' }).click();
-    cy.contains('Loading...');
-    cy.location('pathname').should('match', /^\/dashboard\/events$/);
-    cy.wait('@GQLdashboardEvents');
-    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    navigateToEventsDashboard();
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -135,16 +139,12 @@ describe('spec needing owner', () => {
 
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
+    cy.contains('Upcoming events');
     cy.get('a[href*="/events/"]').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
-    cy.get('button[data-cy="menu-button"]').click();
-    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-    cy.findByRole('link', { name: 'Events Dashboard' }).click();
-    cy.contains('Loading...');
-    cy.location('pathname').should('match', /^\/dashboard\/events$/);
-    cy.wait('@GQLdashboardEvents');
-    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    navigateToEventsDashboard();
+
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });

@@ -22,8 +22,8 @@ export const getEventUnsubscribeOptions = ({
   const linkToEvent = `${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}`;
   const linkToChapter = `${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}`;
   return `<br />
-  - To stop receiving notifications about this event, go to <a href="${linkToEvent}">${linkToEvent}</a>.<br />
-  - To stop receiving notifications about new events in this chapter, go to <a href="${linkToChapter}">${linkToChapter}</a>.<br />`;
+  - To stop receiving notifications about this event, <a href="${linkToEvent}">unsubscribe here</a>.<br />
+  - To stop receiving notifications about new events in this chapter, <a href="${linkToChapter}">unsubscribe here</a>.<br />`;
 };
 
 export const getChapterUnsubscribeOptions = ({

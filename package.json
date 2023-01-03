@@ -75,7 +75,7 @@
     "cypress-wait-until": "1.7.2",
     "dotenv": "16.0.3",
     "eslint": "8.31.0",
-    "eslint-config-prettier": "8.5.0",
+    "eslint-config-prettier": "8.6.0",
     "eslint-config-react": "1.1.7",
     "eslint-import-resolver-typescript": "3.5.2",
     "eslint-plugin-cypress": "2.12.1",

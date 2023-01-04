@@ -53,7 +53,12 @@ export const EventsPage: NextPageWithLayout = () => {
 
   return (
     <VStack data-cy="events-dashboard">
-      <Flex w="full" justify="space-between">
+      <Flex
+        w="full"
+        justify="space-between"
+        alignItems={{ base: '', sm: 'center' }}
+        flexDirection={{ base: 'column', sm: 'row' }}
+      >
         <Heading id="page-heading">Events</Heading>
         <ShowCanceledSwitch
           defaultChecked={showCanceled}

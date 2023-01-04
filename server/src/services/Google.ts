@@ -238,15 +238,19 @@ export async function deleteCalendarEvent({
 }
 
 export async function testTokens() {
-  for await (const { tokenId, createApi } of createCalendarApis()) {
-    const calendarApi = await createApi();
-    try {
-      await callWithHandler(
-        () => calendarApi.calendarList.list(),
-        (err) => errorHandler(err, tokenId),
-      );
-    } catch {
-      console.log('Token tested as invalid.');
-    }
-  }
+  const apis = await createCalendarApis();
+
+  await Promise.all(
+    apis.map(async ({ tokenId, createApi }) => {
+      const calendarApi = await createApi();
+      try {
+        await callWithHandler(
+          () => calendarApi.calendarList.list(),
+          (err) => errorHandler(err, tokenId),
+        );
+      } catch {
+        console.log('Token tested as invalid.');
+      }
+    }),
+  );
 }

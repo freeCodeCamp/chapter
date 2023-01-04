@@ -163,17 +163,19 @@ export async function createCalendarApi(
   return calendar({ version: 'v3', auth: await createClient() });
 }
 
-export async function* createCalendarApis() {
+export async function createCalendarApis() {
   const tokensInfo = await prisma.google_tokens.findMany({
     where: { is_valid: true },
   });
+  const apis = [];
   for (const tokenInfo of tokensInfo) {
-    yield {
+    apis.push({
       tokenId: tokenInfo.id,
       createApi: () =>
         createCalendarApi(() => createCredentialedClient(tokenInfo)),
-    };
+    });
   }
+  return apis;
 }
 
 export async function invalidateToken(tokenId?: number) {

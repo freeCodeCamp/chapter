@@ -132,14 +132,9 @@ interface TokenInfo {
   refresh_token: string;
 }
 
-async function createCredentialedClient(tokenInfo?: TokenInfo) {
+async function createCredentialedClient(tokenInfo: TokenInfo) {
   const oauth2Client = createOAuth2Client().on('tokens', onTokens);
 
-  if (!tokenInfo) {
-    tokenInfo = await prisma.google_tokens.findFirstOrThrow({
-      where: { is_valid: true },
-    });
-  }
   const tokens = {
     access_token: tokenInfo.access_token,
     refresh_token: tokenInfo.refresh_token,
@@ -157,9 +152,15 @@ async function createCredentialedClient(tokenInfo?: TokenInfo) {
 // It's not necessary to recreate the client for each request, but it is safer.
 // If multiple tokens end up being used, it will be important to use the
 // appropriate one for that request.
-export async function createCalendarApi(tokenInfo?: TokenInfo) {
-  const auth = await createCredentialedClient(tokenInfo);
-  return calendar({ version: 'v3', auth });
+export async function createCalendarApi(
+  createClient: () => Promise<OAuth2Client> = async () =>
+    createCredentialedClient(
+      await prisma.google_tokens.findFirstOrThrow({
+        where: { is_valid: true },
+      }),
+    ),
+) {
+  return calendar({ version: 'v3', auth: await createClient() });
 }
 
 export async function createCalendarApis() {
@@ -170,7 +171,8 @@ export async function createCalendarApis() {
   for (const tokenInfo of tokensInfo) {
     apis.push({
       tokenId: tokenInfo.id,
-      createApi: () => createCalendarApi(tokenInfo),
+      createApi: () =>
+        createCalendarApi(() => createCredentialedClient(tokenInfo)),
     });
   }
   return apis;

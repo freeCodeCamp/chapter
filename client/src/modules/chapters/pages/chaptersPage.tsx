@@ -10,9 +10,7 @@ import { checkPermission } from '../../../util/check-permission';
 import { Permission } from '../../../../../common/permissions';
 
 export const ChaptersPage: NextPage = () => {
-  const { loading, error, data } = useChaptersQuery({
-    variables: { events: { limit: 3 } },
-  });
+  const { loading, error, data } = useChaptersQuery();
   const { user } = useAuth();
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading loading={isLoading} error={error} />;

@@ -930,6 +930,77 @@ export type ToggleChapterSubscriptionMutation = {
   };
 };
 
+export type ChapterQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type ChapterQuery = {
+  __typename?: 'Query';
+  chapter: {
+    __typename?: 'ChapterWithRelations';
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+    city: string;
+    region: string;
+    country: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
+    chat_url?: string | null;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      name: string;
+      description: string;
+      start_at: any;
+      ends_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+      image_url: string;
+    }>;
+  };
+};
+
+export type ChapterUserQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type ChapterUserQuery = {
+  __typename?: 'Query';
+  chapterUser?: {
+    __typename?: 'ChapterUserWithRelations';
+    subscribed: boolean;
+    user: { __typename?: 'User'; name: string };
+    chapter_role: { __typename?: 'ChapterRole'; name: string };
+  } | null;
+};
+
+export type ChaptersQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type ChaptersQuery = {
+  __typename?: 'Query';
+  chapters: Array<{
+    __typename?: 'ChapterCardRelations';
+    id: number;
+    name: string;
+    description: string;
+    logo_url?: string | null;
+    banner_url?: string | null;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      canceled: boolean;
+      start_at: any;
+      ends_at: any;
+      name: string;
+    }>;
+    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
+  }>;
+};
+
 export type CalendarIntegrationStatusQueryVariables = Exact<{
   [key: string]: never;
 }>;
@@ -2162,6 +2233,207 @@ export type ToggleChapterSubscriptionMutationOptions =
     ToggleChapterSubscriptionMutation,
     ToggleChapterSubscriptionMutationVariables
   >;
+export const ChapterDocument = gql`
+  query chapter($chapterId: Int!) {
+    chapter(id: $chapterId) {
+      id
+      name
+      description
+      category
+      city
+      region
+      country
+      logo_url
+      banner_url
+      chat_url
+      events {
+        id
+        name
+        description
+        start_at
+        ends_at
+        invite_only
+        canceled
+        image_url
+        invite_only
+        canceled
+      }
+    }
+  }
+`;
+
+/**
+ * __useChapterQuery__
+ *
+ * To run a query within a React component, call `useChapterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useChapterQuery(
+  baseOptions: Apollo.QueryHookOptions<ChapterQuery, ChapterQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChapterQuery, ChapterQueryVariables>(
+    ChapterDocument,
+    options,
+  );
+}
+export function useChapterLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChapterQuery,
+    ChapterQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChapterQuery, ChapterQueryVariables>(
+    ChapterDocument,
+    options,
+  );
+}
+export type ChapterQueryHookResult = ReturnType<typeof useChapterQuery>;
+export type ChapterLazyQueryHookResult = ReturnType<typeof useChapterLazyQuery>;
+export type ChapterQueryResult = Apollo.QueryResult<
+  ChapterQuery,
+  ChapterQueryVariables
+>;
+export const ChapterUserDocument = gql`
+  query chapterUser($chapterId: Int!) {
+    chapterUser(chapterId: $chapterId) {
+      user {
+        name
+      }
+      chapter_role {
+        name
+      }
+      subscribed
+    }
+  }
+`;
+
+/**
+ * __useChapterUserQuery__
+ *
+ * To run a query within a React component, call `useChapterUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterUserQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useChapterUserQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ChapterUserQuery,
+    ChapterUserQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChapterUserQuery, ChapterUserQueryVariables>(
+    ChapterUserDocument,
+    options,
+  );
+}
+export function useChapterUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChapterUserQuery,
+    ChapterUserQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChapterUserQuery, ChapterUserQueryVariables>(
+    ChapterUserDocument,
+    options,
+  );
+}
+export type ChapterUserQueryHookResult = ReturnType<typeof useChapterUserQuery>;
+export type ChapterUserLazyQueryHookResult = ReturnType<
+  typeof useChapterUserLazyQuery
+>;
+export type ChapterUserQueryResult = Apollo.QueryResult<
+  ChapterUserQuery,
+  ChapterUserQueryVariables
+>;
+export const ChaptersDocument = gql`
+  query chapters($limit: Int) {
+    chapters(limit: $limit) {
+      id
+      name
+      description
+      logo_url
+      banner_url
+      events {
+        id
+        canceled
+        start_at
+        ends_at
+        name
+      }
+      chapter_users {
+        subscribed
+      }
+    }
+  }
+`;
+
+/**
+ * __useChaptersQuery__
+ *
+ * To run a query within a React component, call `useChaptersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChaptersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChaptersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useChaptersQuery(
+  baseOptions?: Apollo.QueryHookOptions<ChaptersQuery, ChaptersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ChaptersQuery, ChaptersQueryVariables>(
+    ChaptersDocument,
+    options,
+  );
+}
+export function useChaptersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ChaptersQuery,
+    ChaptersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ChaptersQuery, ChaptersQueryVariables>(
+    ChaptersDocument,
+    options,
+  );
+}
+export type ChaptersQueryHookResult = ReturnType<typeof useChaptersQuery>;
+export type ChaptersLazyQueryHookResult = ReturnType<
+  typeof useChaptersLazyQuery
+>;
+export type ChaptersQueryResult = Apollo.QueryResult<
+  ChaptersQuery,
+  ChaptersQueryVariables
+>;
 export const CalendarIntegrationStatusDocument = gql`
   query calendarIntegrationStatus {
     calendarIntegrationStatus

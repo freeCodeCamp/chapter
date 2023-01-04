@@ -43,7 +43,7 @@ export class ChapterResolver {
           where: {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
-          take: limit,
+          take: limit ?? 3,
           orderBy: { start_at: 'asc' },
         },
         chapter_users: {

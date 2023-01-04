@@ -74,7 +74,7 @@ Quincy Larson is the project lead. [freeCodeCamp](https://www.freecodecamp.org) 
 
 ## License
 
-Copyright (c) 2019-2022 freeCodeCamp.org
+Copyright (c) 2019-2023 freeCodeCamp.org
 
 The computer software is licensed under the [BSD-3-Clause](LICENSE) license.
 
@@ -183,6 +183,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
       <td align="center"><a href="http://linkedin.com/in/bryanleemoore/"><img src="https://avatars.githubusercontent.com/u/31421559?v=4?s=100" width="100px;" alt="Bryan Moore"/><br /><sub><b>Bryan Moore</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=bryanleemoore" title="Code">💻</a></td>
       <td align="center"><a href="http://zameel7.live"><img src="https://avatars.githubusercontent.com/u/43750093?v=4?s=100" width="100px;" alt="Zameel Hassan"/><br /><sub><b>Zameel Hassan</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=zameel7" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/spham67"><img src="https://avatars.githubusercontent.com/u/98799078?v=4?s=100" width="100px;" alt="spham67"/><br /><sub><b>spham67</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=spham67" title="Code">💻</a></td>
+      <td align="center"><a href="http://www.tecforfun.com"><img src="https://avatars.githubusercontent.com/u/10340892?v=4?s=100" width="100px;" alt="Daminda Dinesh W Imaduwa Gamage"/><br /><sub><b>Daminda Dinesh W Imaduwa Gamage</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=dineshigdd" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

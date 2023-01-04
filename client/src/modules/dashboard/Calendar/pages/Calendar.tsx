@@ -1,4 +1,4 @@
-import { Button, Flex, Heading } from '@chakra-ui/react';
+import { Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
@@ -87,7 +87,11 @@ export const Calendar: NextPageWithLayout = () => {
           keys={['email', 'token status'] as const}
           mapper={{
             email: ({ redacted_email }) => redacted_email,
-            'token status': ({ is_valid }) => (is_valid ? 'valid' : 'invalid'),
+            'token status': ({ is_valid }) => (
+              <Text color={is_valid ? 'green.500' : 'red.500'}>
+                {is_valid ? 'valid' : 'invalid'}
+              </Text>
+            ),
           }}
         />
       )}

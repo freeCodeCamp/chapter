@@ -90,7 +90,12 @@ export const UserProfilePage = () => {
               <Heading as="h2" marginBlock={'.5em'} size="md">
                 You are an administrator for these Chapters:
               </Heading>
-              <Flex marginTop={'1em'} flexDirection={'column'} gap={4}>
+              <Flex
+                marginTop={'1em'}
+                maxWidth={'fit-content'}
+                flexDirection={'column'}
+                gap={4}
+              >
                 {userInfo.admined_chapters.map(({ name, id }) => (
                   <Link key={id} href={`/chapters/${id}`}>
                     {name}

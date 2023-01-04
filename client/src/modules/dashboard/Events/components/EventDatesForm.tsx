@@ -24,8 +24,6 @@ const EventDatesForm: React.FC<EventDatesFormProps> = ({
   const { setValue, setError, clearErrors, formState } = useFormContext();
   const [startDate, setStartDate] = useState<Date>(startAt);
   const [endDate, setEndDate] = useState<Date>(endsAt);
-  setValue('start_at', startDate);
-  setValue('ends_at', endDate);
   const [startError, setStartError] = useState('');
   const [endError, setEndError] = useState('');
 

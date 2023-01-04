@@ -1,7 +1,16 @@
-import { Heading, VStack, Text, Flex, HStack, Box } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  FormLabel,
+  Heading,
+  HStack,
+  Text,
+  Switch,
+  VStack,
+} from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
@@ -14,8 +23,30 @@ import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
 import { checkPermission } from 'util/check-permission';
 
+const ShowCanceledSwitch = ({
+  setShowCanceled,
+  defaultChecked,
+}: {
+  setShowCanceled: React.Dispatch<React.SetStateAction<boolean>>;
+  defaultChecked: boolean;
+}) => {
+  return (
+    <Flex>
+      <FormLabel htmlFor="show-canceled-events">Show canceled events</FormLabel>
+      <Switch
+        isChecked={defaultChecked}
+        id="show-canceled-events"
+        onChange={(e) => setShowCanceled(e.target.checked)}
+      />
+    </Flex>
+  );
+};
+
 export const EventsPage: NextPageWithLayout = () => {
-  const { error, loading, data } = useDashboardEventsQuery();
+  const [showCanceled, setShowCanceled] = useState(true);
+  const { error, loading, data } = useDashboardEventsQuery({
+    variables: { showCanceled },
+  });
 
   const { user } = useAuth();
 
@@ -30,8 +61,17 @@ export const EventsPage: NextPageWithLayout = () => {
 
   return (
     <VStack data-cy="events-dashboard">
-      <Flex w="full" justify="space-between">
+      <Flex
+        w="full"
+        justify="space-between"
+        alignItems={{ base: '', sm: 'center' }}
+        flexDirection={{ base: 'column', sm: 'row' }}
+      >
         <Heading id="page-heading">Events</Heading>
+        <ShowCanceledSwitch
+          defaultChecked={showCanceled}
+          setShowCanceled={setShowCanceled}
+        />
         {hasPermissionToCreateEvent && (
           <LinkButton
             data-cy="new-event"

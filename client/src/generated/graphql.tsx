@@ -568,10 +568,6 @@ export type QueryChapterVenuesArgs = {
   chapterId: Scalars['Int'];
 };
 
-export type QueryChaptersArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-};
-
 export type QueryDashboardChapterArgs = {
   id: Scalars['Int'];
 };
@@ -976,9 +972,7 @@ export type ChapterUserQuery = {
   } | null;
 };
 
-export type ChaptersQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']>;
-}>;
+export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChaptersQuery = {
   __typename?: 'Query';
@@ -2368,8 +2362,8 @@ export type ChapterUserQueryResult = Apollo.QueryResult<
   ChapterUserQueryVariables
 >;
 export const ChaptersDocument = gql`
-  query chapters($limit: Int) {
-    chapters(limit: $limit) {
+  query chapters {
+    chapters {
       id
       name
       description
@@ -2401,7 +2395,6 @@ export const ChaptersDocument = gql`
  * @example
  * const { data, loading, error } = useChaptersQuery({
  *   variables: {
- *      limit: // value for 'limit'
  *   },
  * });
  */

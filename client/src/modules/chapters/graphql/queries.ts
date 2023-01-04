@@ -44,8 +44,8 @@ export const CHAPTER_USER = gql`
 `;
 
 export const CHAPTERS = gql`
-  query chapters($limit: Int) {
-    chapters(limit: $limit) {
+  query chapters {
+    chapters {
       id
       name
       description

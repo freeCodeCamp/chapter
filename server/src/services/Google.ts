@@ -238,8 +238,7 @@ export async function deleteCalendarEvent({
 }
 
 export async function testTokens() {
-  const apis = await createCalendarApis();
-  for (const { tokenId, createApi } of apis) {
+  for await (const { tokenId, createApi } of createCalendarApis()) {
     const calendarApi = await createApi();
     try {
       await callWithHandler(

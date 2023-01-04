@@ -137,9 +137,7 @@ export function getGoogleAuthUrl(state: string, prompt = false) {
 }
 
 async function createCredentialedClient() {
-  const oauth2Client = createOAuth2Client().on('tokens', (tokens) =>
-    onTokens(tokens),
-  );
+  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
 
   const tokenInfo = await prisma.google_tokens.findFirstOrThrow({
     where: { is_valid: true },

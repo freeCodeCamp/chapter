@@ -96,7 +96,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginBlockStart={'.5em'}
           gridArea="eventheader"
         >
-          New Events
+          Next Events
         </Text>
         <GridItem area="event" paddingInline={'1em'}>
           {chapter.events.map(({ id, name, start_at }) => (

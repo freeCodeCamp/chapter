@@ -54,16 +54,23 @@ export const Layout = ({
 
   return (
     <div data-cy={dataCy}>
-      <HStack {...rest} data-cy="dashboard-tabs" as="nav" my="2">
+      <HStack
+        {...rest}
+        as="nav"
+        data-cy="dashboard-tabs"
+        my="2"
+        overflowX="auto"
+      >
         {linksWithPermissions
           .filter((link) => !link.requiredPermission || link.hasPermission)
           .map((item) => (
             <LinkButton
-              key={item.link}
-              href={item.link}
               colorScheme={
                 router.pathname.startsWith(item.link) ? 'blue' : 'gray'
               }
+              href={item.link}
+              key={item.link}
+              minWidth="fit-content"
             >
               {item.text}{' '}
               <Text srOnly as="span">

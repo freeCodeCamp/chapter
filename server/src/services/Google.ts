@@ -51,12 +51,12 @@ function errorHandler(err: unknown, tokenId?: number) {
 
 async function callWithHandler<T>(
   func: () => GaxiosPromise<T>,
-  tokenId?: number,
+  handler: (err: unknown) => void = errorHandler,
 ): GaxiosPromise<T> {
   try {
     return await func();
   } catch (err) {
-    errorHandler(err, tokenId);
+    handler(err);
     throw err;
   }
 }
@@ -242,7 +242,10 @@ export async function testTokens() {
   for (const { tokenId, createApi } of apis) {
     const calendarApi = await createApi();
     try {
-      await callWithHandler(() => calendarApi.calendarList.list(), tokenId);
+      await callWithHandler(
+        () => calendarApi.calendarList.list(),
+        (err) => errorHandler(err, tokenId),
+      );
     } catch {
       console.log('Token tested as invalid.');
     }

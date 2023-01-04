@@ -6,6 +6,7 @@ import { calendar } from '@googleapis/calendar';
 
 import { prisma } from '../prisma';
 import { isProd } from '../config';
+import { redactSecrets } from '../util/redact-secrets';
 
 // We need a single set of tokens for the server and Prisma needs a unique id
 // to update the tokens. This is it.
@@ -50,11 +51,18 @@ function createOAuth2Client() {
 // TODO: Communicate these errors to the user. As of now, if the user
 // authenticates, and an error is thrown here, they will still see
 // Authentication successful in the browser.
-async function onTokens(tokens: Credentials) {
+async function onTokens(
+  tokens: Credentials,
+  { requireRefreshToken }: { requireRefreshToken?: boolean } = {
+    requireRefreshToken: false,
+  },
+) {
   // TODO: handle the case where the user rejects some or all of the scopes
   const { access_token, refresh_token, expiry_date } = tokens;
 
   if (!access_token || !expiry_date) throw new Error('Tokens invalid');
+  if (requireRefreshToken && !refresh_token)
+    throw new Error('Missing refresh_token');
 
   let userInfo;
   try {
@@ -92,36 +100,39 @@ async function onTokens(tokens: Credentials) {
       update,
       create: { id: TOKENS_ID, ...update },
     });
-  } else {
+  } else if (existingGoogleTokens) {
     const update = { access_token, expiry_date, is_valid: true };
-    // TODO: Handle the case where the refresh token is not sent *and* the
-    // record doesn't exist. If this happens, we need to redirect them to a
-    // new auth url, but with prompt: 'consent', so that Google will provide
-    // a new refresh token.
     await prisma.google_tokens.update({
       where: { id: TOKENS_ID },
       data: { ...update },
     });
+  } else {
+    // This should not happen, but if it did, presumably something went
+    // wrong during the Google authentication flow. All we can do is ask the
+    // user to try again.
+    throw new Error('Missing refresh_token');
   }
 }
 
 export async function requestTokens(code: string) {
-  const oauth2Client = createOAuth2Client().on('tokens', onTokens);
-
+  const oauth2Client = createOAuth2Client();
   try {
-    await oauth2Client.getToken(code);
-  } catch {
-    throw new Error('Failed to get tokens');
+    const tokens = (await oauth2Client.getToken(code)).tokens;
+    await onTokens(tokens, { requireRefreshToken: true });
+  } catch (e) {
+    console.error('Failed to get tokens');
+    throw redactSecrets(e);
   }
 }
 
-export function getGoogleAuthUrl(state: string) {
+export function getGoogleAuthUrl(state: string, prompt = false) {
   const oauth2Client = createOAuth2Client();
 
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes.join(' '),
     state,
+    ...(prompt && { prompt: 'consent' }),
   });
 }
 

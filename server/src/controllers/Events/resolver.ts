@@ -924,9 +924,15 @@ ${unsubscribeOptions}`,
     const subject = `Invitation to ${event.name}.`;
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}?confirm_rsvp=true`;
+    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
+    const confirmRsvpQuery = '?confirm_rsvp=true';
+    const description = event.description
+      ? `About the event: <br />
+    ${event.description}<br />
+    ----------------------------<br /><br />`
+      : '';
 
-    const subsequentEventEmail = `New Upcoming Event for ${
+    const subsequentEventEmail = `Upcoming event for ${
       event.chapter.name
     }.<br />
     <br />
@@ -934,29 +940,15 @@ ${unsubscribeOptions}`,
     <br />
    ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
    ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
-   <br />
-    View All of Upcoming Events for ${
+    <br />
+    Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.<br />
+    ----------------------------<br />
+    <br />
+    ${description}
+    View all upcoming events for ${
       event.chapter.name
     }: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
-    RSVP or Learn More <a href="${eventURL}">${eventURL}</a>.<br />
-    ----------------------------<br />
     <br />
-    About the event: <br />
-    ${event.description}<br />
-    <br />
-    - Stop receiving upcoming event notifications for ${
-      event.chapter.name
-    }. You can do it here: <a href="${eventURL}">${eventURL}</a>.<br />
-    - More about ${
-      event.chapter.name
-    } or to unfollow this chapter: <a href="${chapterURL}">${chapterURL}</a>.<br />
-    <br />
-    ----------------------------<br />
-    You received this email because you follow ${
-      event.chapter.name
-    } chapter.<br />
-    <br />
-    See the options above to change your notifications.
     `;
 
     await batchSender(function* () {

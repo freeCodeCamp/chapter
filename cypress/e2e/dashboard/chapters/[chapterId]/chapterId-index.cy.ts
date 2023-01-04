@@ -1,11 +1,9 @@
-import { add } from 'date-fns';
-
 import { expectNoErrors, expectToBeRejected } from '../../../../support/util';
 import type { ChapterMembers } from '../../../../../cypress.config';
 
 const chapterId = 1;
 
-function createEventViaUI({ chapterId, eventData, isInPast = false }) {
+function createEventViaUI({ chapterId, eventData, createInPast = false }) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
   cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
@@ -20,17 +18,19 @@ function createEventViaUI({ chapterId, eventData, isInPast = false }) {
     eventData.capacity,
   );
 
-  cy.findByLabelText(/^Start at \(Required\)/)
-    .clear()
-    .type(eventData.start_at)
-    .type('{esc}');
-  cy.findByLabelText(/^End at \(Required\)/)
-    .clear()
-    .type(eventData.ends_at)
-    .type('{esc}');
+  const whichMonth = createInPast ? 'Previous' : 'Next';
+  cy.findByLabelText(/^Start at \(Required\)/).click();
+  cy.get(`[aria-label="${whichMonth} Month"]`).click().click();
+  cy.findByRole('option', { name: /.*15th, .*/ }).click();
+  cy.findByText('12:00 PM').click();
+
+  cy.findByLabelText(/^End at \(Required\)/).click();
+  cy.get(`[aria-label="${whichMonth} Month"]`).click().click();
+  cy.findByRole('option', { name: /.*17th, .*/ }).click();
+  cy.findByText('12:30 PM').click();
 
   cy.get('[data-cy="past-date-info"]').should(
-    isInPast ? 'be.visible' : 'not.exist',
+    createInPast ? 'be.visible' : 'not.exist',
   );
 
   // TODO: figure out why cypress thinks this is covered.
@@ -86,14 +86,8 @@ describe('chapter dashboard', () => {
 
   it('emails interested users when an event is created', () => {
     // confirm url is not required
-    const date = new Date();
-    const testEvent = {
-      ...events.eventWithoutURL,
-      start_at: add(date, { days: 1 }).toISOString(),
-      ends_at: add(date, { days: 1, minutes: 30 }).toISOString(),
-    };
+    const testEvent = { ...events.eventWithoutDateAndURL };
 
-    cy.clock(null, ['Date']).invoke('setSystemTime', date);
     createEventViaUI({ chapterId, eventData: testEvent });
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
     // confirm that the test data appears in the new event
@@ -136,10 +130,9 @@ describe('chapter dashboard', () => {
   });
 
   it('event created with past date should not send out email invites', () => {
-    const testEvent = {
-      ...events.eventWithoutURL,
-    };
-    createEventViaUI({ chapterId, eventData: testEvent, isInPast: true });
+    const testEvent = { ...events.eventWithoutDateAndURL };
+
+    createEventViaUI({ chapterId, eventData: testEvent, createInPast: true });
     cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
 
     cy.mhGetAllMails().should('have.length', 0);
@@ -148,7 +141,7 @@ describe('chapter dashboard', () => {
   it('prevents members and admins from other chapters from creating events', () => {
     const otherChapterId = 2;
     const eventData = {
-      ...events.eventWithoutURL,
+      ...events.eventWithoutDateAndURL,
       ...events.partialData,
     };
     // normal member

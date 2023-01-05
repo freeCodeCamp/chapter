@@ -23,6 +23,13 @@ const getEventUsers = (eventId: number) =>
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
 
+const deleteEventUser = async (arg: { eventId: number; userId: number }) =>
+  await prisma.event_users.delete({
+    where: { user_id_event_id: { user_id: arg.userId, event_id: arg.eventId } },
+  });
+
+export type EventUser = Awaited<ReturnType<typeof deleteEventUser>>;
+
 const getUser = async (email: string) =>
   await prisma.users.findUnique({
     where: { email },
@@ -68,6 +75,7 @@ export default defineConfig({
       });
 
       on('task', {
+        deleteEventUser,
         getChapterMembers,
         getEventUsers,
         getUser,

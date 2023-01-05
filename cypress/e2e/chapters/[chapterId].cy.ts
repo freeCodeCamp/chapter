@@ -25,37 +25,31 @@ describe('chapter page', () => {
 
     cy.contains(/joined chapter/);
     cy.contains(/Join chapter/).should('not.exist');
-    cy.contains(/Subscribe/);
-
-    cy.findByRole('button', { name: 'Subscribe' }).click();
+    cy.get('[data-cy="unsubscribe-chapter"]').should('be.visible').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
-
-    cy.contains(/subscribed/);
 
     cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
       (chapter_users) => {
         expect(
-          chapter_users.findIndex(
+          chapter_users.find(
             ({ user: { email }, subscribed }) =>
-              email === users.testUser.email && subscribed,
+              email === users.testUser.email && !subscribed,
           ),
-        ).to.not.equal(-1);
+        ).to.exist;
       },
     );
 
-    cy.contains(/Unsubscribe/);
-    cy.findByRole('button', { name: 'Unsubscribe' }).click();
+    cy.get('[data-cy="subscribe-chapter"]').should('be.visible').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
-    cy.contains(/unsubscribed/);
     cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
       (chapter_users) => {
         expect(
-          chapter_users.findIndex(
+          chapter_users.find(
             ({ user: { email }, subscribed }) =>
               email === users.testUser.email && subscribed,
           ),
-        ).to.equal(-1);
+        ).to.exist;
       },
     );
     cy.leaveChapter(chapterId, { withAuth: true }).then(expectNoErrors);

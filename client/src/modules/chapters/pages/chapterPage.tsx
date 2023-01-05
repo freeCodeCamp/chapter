@@ -1,15 +1,14 @@
 import {
-  Heading,
-  VStack,
-  HStack,
-  Spinner,
-  Stack,
   Box,
-  Text,
+  Button,
+  Heading,
   Image,
   Link,
-  Button,
+  SimpleGrid,
+  Stack,
+  Text,
   useToast,
+  VStack,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
@@ -44,55 +43,68 @@ const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
 const SubscriptionWidget = ({
   chapterUser,
   chapterSubscribe,
+  loading,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+  loading: boolean;
 }) => {
   return chapterUser?.subscribed ? (
-    <HStack justifyContent={'space-between'} width={'100%'}>
+    <>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
-      <Button onClick={() => chapterSubscribe(false)} size="md">
+      <Button
+        data-cy="unsubscribe-chapter"
+        isLoading={loading}
+        onClick={() => chapterSubscribe(false)}
+      >
         Unsubscribe
       </Button>
-    </HStack>
+    </>
   ) : (
-    <HStack justifyContent={'space-between'} width={'100%'}>
+    <>
       <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
       <Button
         colorScheme="blue"
+        data-cy="subscribe-chapter"
+        isLoading={loading}
         onClick={() => chapterSubscribe(true)}
-        size="md"
       >
         Subscribe
       </Button>
-    </HStack>
+    </>
   );
 };
 
 const ChapterUserRoleWidget = ({
   chapterUser,
-  LeaveChapter,
   JoinChapter,
+  LeaveChapter,
+  loadingJoin,
+  loadingLeave,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
-  LeaveChapter: () => Promise<void>;
   JoinChapter: () => Promise<void>;
+  LeaveChapter: () => Promise<void>;
+  loadingJoin: boolean;
+  loadingLeave: boolean;
 }) =>
   chapterUser?.chapter_role ? (
-    <HStack justifyContent={'space-between'}>
+    <>
       <Text data-cy="join-success" fontWeight={500}>
         <CheckIcon marginRight={1} />
         {chapterUser.chapter_role.name} of the chapter
       </Text>
-      <Button onClick={LeaveChapter}>Leave</Button>
-    </HStack>
+      <Button isLoading={loadingLeave} onClick={LeaveChapter}>
+        Leave
+      </Button>
+    </>
   ) : (
-    <HStack justifyContent="space-between">
+    <>
       <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" onClick={JoinChapter}>
+      <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
         Join
       </Button>
-    </HStack>
+    </>
   );
 
 export const ChapterPage: NextPage = () => {
@@ -116,9 +128,12 @@ export const ChapterPage: NextPage = () => {
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
-  const [joinChapter] = useJoinChapterMutation(refetch);
-  const [leaveChapter] = useLeaveChapterMutation(refetch);
-  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
+  const [joinChapter, { loading: loadingJoin }] =
+    useJoinChapterMutation(refetch);
+  const [leaveChapter, { loading: loadingLeave }] =
+    useLeaveChapterMutation(refetch);
+  const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
+    useToggleChapterSubscriptionMutation(refetch);
 
   const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
@@ -257,29 +272,24 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {isLoggedIn &&
-          (loadingChapterUser ? (
-            <Spinner />
-          ) : (
-            dataChapterUser && (
-              <ChapterUserRoleWidget
-                JoinChapter={onJoinChapter}
-                LeaveChapter={onLeaveChapter}
-                chapterUser={dataChapterUser.chapterUser}
-              />
-            )
-          ))}
-        {isLoggedIn &&
-          (loadingChapterUser ? (
-            <Spinner />
-          ) : (
-            dataChapterUser?.chapterUser && (
+        {isLoggedIn && dataChapterUser && (
+          <SimpleGrid columns={2} gap={5} alignItems="center">
+            <ChapterUserRoleWidget
+              chapterUser={dataChapterUser.chapterUser}
+              JoinChapter={onJoinChapter}
+              LeaveChapter={onLeaveChapter}
+              loadingJoin={loadingJoin}
+              loadingLeave={loadingLeave}
+            />
+            {dataChapterUser.chapterUser && (
               <SubscriptionWidget
                 chapterUser={dataChapterUser.chapterUser}
                 chapterSubscribe={onChapterSubscribe}
+                loading={loadingSubscribeToggle}
               />
-            )
-          ))}
+            )}
+          </SimpleGrid>
+        )}
         <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
           Events:

@@ -3,19 +3,18 @@ import { useMeQuery } from 'generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 export const useLogin = () => {
-  const { loginWithPopup, isAuthenticated } = useAuth0();
+  const { loginWithPopup } = useAuth0();
   const { createSession } = useSession();
   const { refetch } = useMeQuery();
 
+  const loginHelper =
+    process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false'
+      ? loginWithPopup
+      : () => localStorage.setItem('dev-login-authenticated', 'true');
+
   const login = async () => {
-    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') {
-      await loginWithPopup(undefined, { timeoutInSeconds: 400 });
-      if (isAuthenticated) {
-        await createSession();
-      }
-    } else {
-      await createSession();
-    }
+    await loginHelper();
+    await createSession();
     return await refetch();
   };
 
@@ -27,8 +26,13 @@ export const useLogout = () => {
   const { destroySession } = useSession();
   const { refetch } = useMeQuery();
 
+  const logoutHelper =
+    process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false'
+      ? logoutAuth0
+      : () => localStorage.removeItem('dev-login-authenticated');
+
   const logout = async () => {
-    if (process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false') logoutAuth0();
+    logoutHelper();
     await destroySession();
     return await refetch();
   };

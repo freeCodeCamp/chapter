@@ -45,14 +45,13 @@ export const useDevSession = (): {
   createSession: () => Promise<Response>;
   destroySession: () => Promise<Response>;
 } => {
+  const isAuthenticated =
+    typeof window !== 'undefined' &&
+    !!window.localStorage.getItem('dev-login-authenticated');
   const createSession = async () => await requestSession('fake-token');
 
-  // Unlike the Auth0 login, the dev login creates the session immediately when
-  // you click the login button. Since `isAuthenticated` communicates that a
-  // session can be created, we return false to stop the client from trying to
-  // create a session on every page load.
   return {
-    isAuthenticated: false,
+    isAuthenticated,
     createSession,
     destroySession,
   };

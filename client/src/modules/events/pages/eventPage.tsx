@@ -57,11 +57,15 @@ export const EventPage: NextPage = () => {
     ],
   };
 
-  const [rsvpToEvent] = useRsvpToEventMutation(refetch);
-  const [cancelRsvp] = useCancelRsvpMutation(refetch);
+  const [rsvpToEvent, { loading: loadingRsvp }] =
+    useRsvpToEventMutation(refetch);
+  const [cancelRsvp, { loading: loadingCancel }] =
+    useCancelRsvpMutation(refetch);
   const [joinChapter] = useJoinChapterMutation(refetch);
-  const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
-  const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
+  const [subscribeToEvent, { loading: loadingSubscribe }] =
+    useSubscribeToEventMutation(refetch);
+  const [unsubscribeFromEvent, { loading: loadingUnsubscribe }] =
+    useUnsubscribeFromEventMutation(refetch);
 
   const { loading, error, data } = useEventQuery({
     variables: { eventId },
@@ -89,14 +93,18 @@ export const EventPage: NextPage = () => {
   // It's easy to create bugs by calling arrow functions before they're defined,
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
+  function isAlreadyRsvp(rsvpStatus: string | undefined) {
+    const alreadyRsvp = rsvpStatus === 'yes' || rsvpStatus === 'waitlist';
+    if (alreadyRsvp) {
+      toast({ title: 'Already RSVPed', status: 'info' });
+      return true;
+    }
+    return false;
+  }
 
-  async function onRsvp(rsvpStatus: string | undefined) {
+  async function onRsvp() {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
-      return;
-    }
-    if (rsvpStatus === 'yes' || rsvpStatus === 'waitlist') {
-      toast({ title: 'Already RSVPed', status: 'info' });
       return;
     }
     try {
@@ -158,7 +166,7 @@ export const EventPage: NextPage = () => {
     if (!ok) return;
 
     if (user) {
-      await onRsvp(rsvpStatus);
+      await onRsvp();
       return;
     }
     modalProps.onOpen();
@@ -169,12 +177,16 @@ export const EventPage: NextPage = () => {
     const eventUser = data?.event?.event_users.find(
       ({ user: event_user }) => event_user.id === me?.id,
     );
-    await onRsvp(eventUser?.rsvp.name);
+    if (!isAlreadyRsvp(eventUser?.rsvp.name)) {
+      await onRsvp();
+    }
   }
 
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
-      tryToRsvp({ invited: true });
+      if (!isAlreadyRsvp(rsvpStatus)) {
+        tryToRsvp({ invited: true });
+      }
       setHasShownModal(true);
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
@@ -273,11 +285,12 @@ export const EventPage: NextPage = () => {
         </Text>
         {!rsvpStatus || rsvpStatus === 'no' ? (
           <Button
-            data-cy="rsvp-button"
             colorScheme="blue"
+            data-cy="rsvp-button"
+            isLoading={loadingRsvp}
             onClick={() => tryToRsvp()}
-            paddingInline="2"
             paddingBlock="1"
+            paddingInline="2"
           >
             {data.event.invite_only ? 'Request' : 'RSVP'}
           </Button>
@@ -294,7 +307,12 @@ export const EventPage: NextPage = () => {
                 You&lsquo;ve RSVPed to this event
               </Text>
             )}
-            <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
+            <Button
+              isLoading={loadingCancel}
+              onClick={onCancelRsvp}
+              paddingBlock="1"
+              paddingInline="2"
+            >
               Cancel
             </Button>
           </HStack>
@@ -307,9 +325,10 @@ export const EventPage: NextPage = () => {
                   You are subscribed
                 </Text>
                 <Button
+                  isLoading={loadingUnsubscribe}
                   onClick={onUnsubscribeFromEvent}
-                  paddingInline={'2'}
-                  paddingBlock={'1'}
+                  paddingBlock="1"
+                  paddingInline="2"
                 >
                   Unsubscribe
                 </Button>
@@ -321,9 +340,10 @@ export const EventPage: NextPage = () => {
                 </Text>
                 <Button
                   colorScheme="blue"
+                  isLoading={loadingSubscribe}
                   onClick={onSubscribeToEvent}
-                  paddingInline={'2'}
-                  paddingBlock={'1'}
+                  paddingBlock="1"
+                  paddingInline="2"
                 >
                   Subscribe
                 </Button>

@@ -1,4 +1,5 @@
 import type { calendar_v3 } from '@googleapis/calendar';
+import { add, sub } from 'date-fns';
 
 import {
   addEventAttendee,
@@ -7,7 +8,7 @@ import {
   createCalendarEvent,
   deleteCalendarEvent,
   removeEventAttendee,
-  updateCalendarEvent,
+  updateCalendarEventDetails,
 } from '../src/services/Google';
 
 const { objectContaining, arrayContaining } = expect;
@@ -18,13 +19,23 @@ const attendees: calendar_v3.Schema$EventAttendee[] = [
   { email: 'c@person', responseStatus: 'accepted' },
 ];
 
-const mockGet = () => {
+const mockGet = jest.fn(() => {
   return {
     data: {
-      attendees: attendees,
+      start: { dateTime: add(new Date(), { days: 1 }).toISOString() },
+      attendees,
     },
   };
-};
+});
+
+const mockGetPastEvent = jest.fn(() => {
+  return {
+    data: {
+      start: { dateTime: sub(new Date(), { days: 1 }).toISOString() },
+      attendees,
+    },
+  };
+});
 
 // This just returns whatever was passed in. In reality, each attendee would
 // get a responseStatus, but we're only checking that the update is called
@@ -101,7 +112,7 @@ describe('Google Service', () => {
       { email: 'c@person', responseStatus: 'accepted' },
     ];
 
-    it('should remove the attendee from the event', async () => {
+    it('should remove the attendee from the event for future event', async () => {
       const updatedEvent = await removeEventAttendee(
         { calendarId: 'id', calendarEventId: 'id' },
         { attendeeEmail: 'b@person' },
@@ -111,6 +122,17 @@ describe('Google Service', () => {
       expect(updatedEvent.data.attendees).toEqual(
         arrayContaining(remainingAttendees),
       );
+    });
+
+    it('should not update attendees for past events', async () => {
+      mockGet.mockImplementationOnce(mockGetPastEvent);
+      const updatedEvent = await removeEventAttendee(
+        { calendarId: 'id', calendarEventId: 'id' },
+        { attendeeEmail: 'b@person' },
+      );
+
+      expect(updatedEvent.data.attendees?.length).toBe(3);
+      expect(updatedEvent.data.attendees).toEqual(arrayContaining(attendees));
     });
 
     it("should do nothing if the email is not one of the attendee's", async () => {
@@ -135,7 +157,7 @@ describe('Google Service', () => {
       expect(mockUpdate).toHaveBeenCalledTimes(1);
     });
 
-    it('should add the attendee to the event', async () => {
+    it('should add the attendee to the event for future event', async () => {
       const updatedEvent = await addEventAttendee(
         { calendarId: 'id', calendarEventId: 'id' },
         { attendeeEmail: 'd@person' },
@@ -145,6 +167,17 @@ describe('Google Service', () => {
       expect(updatedEvent.data.attendees).toEqual(
         arrayContaining([...attendees, { email: 'd@person' }]),
       );
+    });
+
+    it('should not update attendees for past events', async () => {
+      mockGet.mockImplementationOnce(mockGetPastEvent);
+      const updatedEvent = await addEventAttendee(
+        { calendarId: 'id', calendarEventId: 'id' },
+        { attendeeEmail: 'd@person' },
+      );
+
+      expect(updatedEvent.data.attendees?.length).toBe(3);
+      expect(updatedEvent.data.attendees).toEqual(arrayContaining(attendees));
     });
   });
 
@@ -159,7 +192,7 @@ describe('Google Service', () => {
       expect(mockUpdate).toHaveBeenCalledTimes(1);
     });
 
-    it('should cancel (but not remove) attendance', async () => {
+    it('should cancel (but not remove) attendance for future event', async () => {
       const updatedEvent = await cancelEventAttendance(
         { calendarId: 'id', calendarEventId: 'id' },
         { attendeeEmail: 'b@person' },
@@ -174,6 +207,20 @@ describe('Google Service', () => {
       expect(updatedEvent.data.attendees).toEqual(
         arrayContaining(expectedAttendees),
       );
+    });
+
+    it('should not update attendees for past events', async () => {
+      mockGet.mockImplementationOnce(mockGetPastEvent);
+      const updatedEvent = await cancelEventAttendance(
+        { calendarId: 'id', calendarEventId: 'id' },
+        { attendeeEmail: 'b@person' },
+      );
+
+      expect(updatedEvent.data.attendees?.length).toBe(3);
+      expect(updatedEvent.data.attendees).not.toContainEqual({
+        email: 'b@person',
+        responseStatus: 'declined',
+      });
     });
   });
 
@@ -192,12 +239,33 @@ describe('Google Service', () => {
         start: new Date(start),
         end: new Date(end),
         summary: 'test',
-        attendees: [{ email: 'a@person' }, { email: 'b@person' }],
       };
       const expectedRequestBody = {
         start: { dateTime: start },
         end: { dateTime: end },
         summary: 'test',
+      };
+      await createCalendarEvent({ calendarId: 'foo' }, eventData);
+
+      expect(mockInsertEvent).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockInsertEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('should include attendees details for future event', async () => {
+      const date = new Date();
+      const start = add(date, { days: 1 });
+      const end = add(date, { days: 1, minutes: 30 });
+      const eventData = {
+        start,
+        end,
+        summary: 'test',
+        attendees: [{ email: 'a@person' }, { email: 'b@person' }],
+      };
+      const expectedRequestBody = {
         attendees: [{ email: 'a@person' }, { email: 'b@person' }],
       };
       await createCalendarEvent({ calendarId: 'foo' }, eventData);
@@ -209,11 +277,30 @@ describe('Google Service', () => {
       );
       expect(mockInsertEvent).toHaveBeenCalledTimes(1);
     });
+
+    it('should ignore attendees details for event in the past', async () => {
+      const start = '2022-12-05T14:07:12.687Z';
+      const eventData = {
+        start: new Date(start),
+        summary: 'test',
+        attendees: [{ email: 'a@person' }, { email: 'b@person' }],
+      };
+      await createCalendarEvent({ calendarId: 'foo' }, eventData);
+
+      expect(mockInsertEvent).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: expect.not.objectContaining({
+            attendees: [{ email: 'a@person' }, { email: 'b@person' }],
+          }),
+        }),
+      );
+      expect(mockInsertEvent).toHaveBeenCalledTimes(1);
+    });
   });
 
-  describe('updateCalendarEvent', () => {
+  describe('updateCalendarEventDetails', () => {
     it('should update everyone and configure guest permissions', async () => {
-      await updateCalendarEvent(
+      await updateCalendarEventDetails(
         { calendarId: 'foo', calendarEventId: 'bar' },
         {},
       );
@@ -238,7 +325,7 @@ describe('Google Service', () => {
         attendees,
       };
 
-      await updateCalendarEvent(
+      await updateCalendarEventDetails(
         { calendarId: 'foo', calendarEventId: 'bar' },
         eventData,
       );

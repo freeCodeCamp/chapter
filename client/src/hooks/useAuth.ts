@@ -1,11 +1,16 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect } from 'react';
 import { useMeQuery } from 'generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 export const useLogin = () => {
   const { loginWithPopup } = useAuth0();
-  const { createSession } = useSession();
+  const { createSession, isAuthenticated } = useSession();
   const { refetch } = useMeQuery();
+
+  useEffect(() => {
+    if (isAuthenticated) createSession();
+  }, [isAuthenticated]);
 
   const loginHelper =
     process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false'
@@ -14,7 +19,6 @@ export const useLogin = () => {
 
   const login = async () => {
     await loginHelper();
-    await createSession();
     return await refetch();
   };
 

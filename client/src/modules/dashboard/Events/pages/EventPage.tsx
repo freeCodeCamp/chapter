@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
   Flex,
+  Spinner,
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
@@ -21,6 +22,8 @@ import {
   useDeleteRsvpMutation,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
+  useCreateCalendarEventMutation,
+  useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
@@ -49,8 +52,12 @@ export const EventPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId },
   });
+  const { loading: loadingStatus, data: dataStatus } =
+    useCalendarIntegrationStatusQuery();
   const [confirmRsvp] = useConfirmRsvpMutation(args(eventId));
   const [removeRsvp] = useDeleteRsvpMutation(args(eventId));
+  const [createCalendarEvent, { loading: loadingCalendar }] =
+    useCreateCalendarEventMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
@@ -69,7 +76,7 @@ export const EventPage: NextPageWithLayout = () => {
       if (ok) removeRsvp({ variables: { eventId, userId } });
     };
 
-  const isLoading = loading || !data;
+  const isLoading = loading || !data || loadingStatus;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
@@ -95,6 +102,8 @@ export const EventPage: NextPageWithLayout = () => {
       action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
   ];
+
+  const integrationStatus = dataStatus?.calendarIntegrationStatus;
 
   return (
     <>
@@ -182,21 +191,26 @@ export const EventPage: NextPageWithLayout = () => {
             </Text>
           )}
 
-        {data.dashboardEvent.chapter.calendar_id && (
-          <HStack>
-            <Text>Event created in calendar:</Text>
-            {data.dashboardEvent.calendar_event_id ? (
-              <CheckIcon boxSize="5" />
-            ) : (
-              <CloseIcon boxSize="4" />
-            )}
-          </HStack>
-        )}
+        {integrationStatus !== false &&
+          data.dashboardEvent.chapter.calendar_id && (
+            <HStack>
+              <Text>Event created in calendar:</Text>
+              {loadingCalendar ? (
+                <Spinner size="sm" />
+              ) : data.dashboardEvent.calendar_event_id ? (
+                <CheckIcon boxSize="5" />
+              ) : (
+                <CloseIcon boxSize="4" />
+              )}
+            </HStack>
+          )}
 
         <Actions
           event={data.dashboardEvent}
           chapter={data.dashboardEvent.chapter}
           onDelete={() => router.replace('/dashboard/events')}
+          integrationStatus={integrationStatus}
+          createCalendarEvent={createCalendarEvent}
         />
       </Flex>
 

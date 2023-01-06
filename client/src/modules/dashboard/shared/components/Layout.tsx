@@ -31,7 +31,7 @@ const links = [
     requiredPermission: Permission.GoogleAuthenticate,
   },
 ];
-const scrollWidth = 50;
+const scrollWidth = 150;
 
 export const Layout = ({
   children,

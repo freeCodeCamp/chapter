@@ -3,8 +3,8 @@ import { useMeQuery } from 'generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 export const useLogin = () => {
-  const { loginWithPopup } = useAuth0();
-  const { createSession } = useSession();
+  const { loginWithPopup, logout: logoutAuth0 } = useAuth0();
+  const { createSession, destroySession } = useSession();
   const { refetch } = useMeQuery();
 
   const loginHelper =
@@ -18,14 +18,6 @@ export const useLogin = () => {
     return await refetch();
   };
 
-  return login;
-};
-
-export const useLogout = () => {
-  const { logout: logoutAuth0 } = useAuth0();
-  const { destroySession } = useSession();
-  const { refetch } = useMeQuery();
-
   const logoutHelper =
     process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false'
       ? logoutAuth0
@@ -37,5 +29,5 @@ export const useLogout = () => {
     return await refetch();
   };
 
-  return logout;
+  return { login, logout };
 };

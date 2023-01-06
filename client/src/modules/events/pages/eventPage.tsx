@@ -46,7 +46,7 @@ export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user, loadingUser } = useAuth();
-  const login = useLogin();
+  const { login } = useLogin();
   const modalProps = useDisclosure();
 
   const refetch = {

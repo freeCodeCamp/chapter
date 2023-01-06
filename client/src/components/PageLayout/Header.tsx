@@ -18,7 +18,7 @@ import React from 'react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
-import { useLogin } from '../../hooks/useAuth';
+import { useLogin } from '../../hooks/useLogin';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';

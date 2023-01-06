@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { MeQuery, useMeQuery } from '../../../generated/graphql';
-import { useSession } from 'hooks/useSession';
-import { useLogin } from 'hooks/useAuth';
+import { useLogin } from '../../../hooks/useLogin';
+import { useSession } from '../../../hooks/useSession';
 
 export interface AuthContextType {
   user?: MeQuery['me'];

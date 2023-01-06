@@ -40,7 +40,7 @@ import {
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
-import { useLogin } from '../../../hooks/useAuth';
+import { useLogin } from '../../../hooks/useLogin';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');

@@ -18,7 +18,7 @@ import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
-import { useLogin } from '../../../hooks/useAuth';
+import { useLogin } from '../../../hooks/useLogin';
 
 const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
   const dataString = JSON.stringify(userData, (key, value) =>

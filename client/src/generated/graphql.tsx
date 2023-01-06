@@ -577,7 +577,6 @@ export type QueryDashboardEventArgs = {
 };
 
 export type QueryDashboardEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
   showCanceled?: InputMaybe<Scalars['Boolean']>;
 };
 

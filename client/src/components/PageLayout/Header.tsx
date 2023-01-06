@@ -1,4 +1,3 @@
-import { useApolloClient } from '@apollo/client';
 import { HStack } from '@chakra-ui/layout';
 import {
   Image,
@@ -39,10 +38,9 @@ export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useAuth();
   const { login, logout } = useLogin();
-  const client = useApolloClient();
 
   const goHome = () => {
-    router.push('/').then(() => client.resetStore());
+    router.push('/');
   };
 
   return (

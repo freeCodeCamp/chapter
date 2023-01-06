@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useApolloClient } from '@apollo/client';
 
 import { useDevAuth } from '../modules/auth/store/dev';
 import { useMeQuery } from 'generated/graphql';
@@ -28,17 +29,21 @@ export const useLogin = () => {
     process.env.NEXT_PUBLIC_USE_AUTH0 !== 'false'
       ? useAuth0Login()
       : useDevLogin();
-
+  const client = useApolloClient();
   const { createSession, destroySession } = useSession();
   const { refetch } = useMeQuery();
 
+  // Note: this triggers twice whenever isAuthenticated changes.  More reason to
+  // handle side effects centrally.
   useEffect(() => {
     if (isAuthenticated) {
       createSession().then(() => refetch());
     } else {
-      destroySession().then(() => refetch());
+      destroySession()
+        .then(() => refetch())
+        .then(() => client.resetStore());
     }
-  });
+  }, [isAuthenticated]);
 
   const login = async () => {
     await loginHelper();

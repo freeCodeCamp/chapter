@@ -2,7 +2,7 @@ import { IconButton, HStack, Text } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
 import { useRouter } from 'next/router';
 import NextError from 'next/error';
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useLayoutEffect, useState } from 'react';
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Permission } from '../../../../../../common/permissions';
@@ -51,42 +51,37 @@ export const Layout = ({
   const [rightScroll, setRightScroll] = useState(true);
   const { user, loadingUser, isLoggedIn } = useAuth();
 
-  const updateLayout = () => {
+  const setScrollButtonsDisplay = () => {
     if (!ref.current) return;
-
-    const widthWithButtons =
-      ref.current.scrollWidth -
-      2 * (buttonRef.current ? buttonRef.current.clientWidth : 0);
+    const buttonWidth = buttonRef.current ? buttonRef.current.clientWidth : 0;
+    const widthWithButtons = ref.current.scrollWidth - 2 * buttonWidth;
     if (widthWithButtons > ref.current.clientWidth) {
       setDisplayLeftScroll(true);
       setDisplayRightScroll(true);
-    }
-    if (widthWithButtons < ref.current.clientWidth) {
+    } else {
       setDisplayLeftScroll(false);
       setDisplayRightScroll(false);
     }
   };
 
-  useEffect(() => {
-    window.addEventListener('resize', updateLayout);
-  });
-
-  const setScrolls = () => {
+  const setScrollButtonsToggle = () => {
     if (!ref.current) return;
+    const element = ref.current;
+    const fromLeft = element.scrollLeft;
+    if (leftScroll && fromLeft === 0) setLeftScroll(false);
+    if (!leftScroll && fromLeft > 0) setLeftScroll(true);
 
-    const div = ref.current;
-    const left = div.scrollLeft;
-    if (leftScroll && left === 0) setLeftScroll(false);
-    if (!leftScroll && left > 0) setLeftScroll(true);
-
-    const maximumLeft = div.scrollWidth - div.clientWidth;
-    if (rightScroll && left === maximumLeft) setRightScroll(false);
-    if (!rightScroll && left < maximumLeft) setRightScroll(true);
+    const maximumFromLeft = element.scrollWidth - element.clientWidth;
+    if (rightScroll && fromLeft === maximumFromLeft) setRightScroll(false);
+    if (!rightScroll && fromLeft < maximumFromLeft) setRightScroll(true);
   };
 
-  useEffect(() => {
-    if (displayLeftScroll || displayRightScroll) setScrolls();
-  }, [displayLeftScroll, displayRightScroll]);
+  useLayoutEffect(() => {
+    setScrollButtonsDisplay();
+    setScrollButtonsToggle();
+    window.addEventListener('resize', setScrollButtonsDisplay);
+    window.addEventListener('resize', setScrollButtonsToggle);
+  });
 
   const linksWithPermissions = links.map((link) => {
     if (!link.requiredPermission) return link;
@@ -94,12 +89,9 @@ export const Layout = ({
     return { ...link, hasPermission };
   });
 
-  const scroll = (scrollToLeft: boolean, element?: HTMLDivElement | null) => {
-    if (element)
-      element.scrollBy({
-        left: scrollToLeft ? scrollWidth : -scrollWidth,
-        behavior: 'smooth',
-      });
+  const scroll = (scrollBy: number) => {
+    if (!ref.current) return;
+    ref.current.scrollBy({ left: scrollBy, behavior: 'smooth' });
   };
 
   if (loadingUser) return <Loading loading={loadingUser} />;
@@ -113,17 +105,17 @@ export const Layout = ({
           aria-label="Scroll left"
           icon={<ChevronLeftIcon boxSize={iconSize} />}
           isDisabled={!leftScroll}
-          onClick={() => scroll(false, ref.current)}
+          onClick={() => scroll(-scrollWidth)}
           ref={buttonRef}
           {...(!displayLeftScroll && { display: 'none' })}
         />
         <HStack
-          {...rest}
           as="nav"
           data-cy="dashboard-tabs"
-          onScroll={() => setScrolls()}
+          onScroll={setScrollButtonsToggle}
           overflowX="auto"
           ref={ref}
+          {...rest}
         >
           {linksWithPermissions
             .filter((link) => !link.requiredPermission || link.hasPermission)
@@ -147,7 +139,7 @@ export const Layout = ({
           aria-label="Scroll right"
           icon={<ChevronRightIcon boxSize={iconSize} />}
           isDisabled={!rightScroll}
-          onClick={() => scroll(true, ref.current)}
+          onClick={() => scroll(scrollWidth)}
           {...(!displayRightScroll && { display: 'none' })}
         />
       </HStack>

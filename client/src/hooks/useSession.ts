@@ -22,43 +22,33 @@ const destroySession = () =>
     credentials: 'include',
   });
 
-const useAuth0Session = (): {
-  isAuthenticated: boolean;
+type SessionReturnType = {
   createSession: () => Promise<Response>;
   destroySession: () => Promise<Response>;
-} => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+};
+
+const useAuth0Session = () => {
+  const { getAccessTokenSilently } = useAuth0();
   const createSession = async () => {
     const token = await getAccessTokenSilently();
     return requestSession(token);
   };
 
   return {
-    isAuthenticated,
     createSession,
     destroySession,
   };
 };
 
-export const useDevSession = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} => {
-  const isAuthenticated =
-    typeof window !== 'undefined' &&
-    !!window.localStorage.getItem('dev-login-authenticated');
+export const useDevSession = () => {
   const createSession = async () => await requestSession('fake-token');
 
   return {
-    isAuthenticated,
     createSession,
     destroySession,
   };
 };
 
-export const useSession: () => {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} = needsDevLogin ? useDevSession : useAuth0Session;
+export const useSession: () => SessionReturnType = needsDevLogin
+  ? useDevSession
+  : useAuth0Session;

@@ -48,5 +48,5 @@ export const useLogin = () => {
     logoutHelper();
   };
 
-  return { login, logout };
+  return { login, logout, isAuthenticated };
 };

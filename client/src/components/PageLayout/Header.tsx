@@ -17,7 +17,7 @@ import React from 'react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useAuth } from '../../modules/auth/store';
-import { useLogin } from '../../hooks/useLogin';
+import { useSession } from '../../hooks/useSession';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';
@@ -37,7 +37,7 @@ const menuButtonStyles = {
 export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useAuth();
-  const { login, logout } = useLogin();
+  const { login, logout } = useSession();
 
   const goHome = () => {
     router.push('/');

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { MeQuery, useMeQuery } from '../../../generated/graphql';
-import { useLogin } from '../../../hooks/useLogin';
 import { useSession } from '../../../hooks/useSession';
 
 export interface AuthContextType {
@@ -28,8 +27,7 @@ export const AuthContextProvider = ({
     isLoggedIn: false,
   });
   const { loading: loadingMe, error, data: meData, refetch } = useMeQuery();
-  const { createSession } = useSession();
-  const { isAuthenticated } = useLogin();
+  const { isAuthenticated, createSession } = useSession();
 
   const tryToCreateSession = async () => {
     if (isAuthenticated) {

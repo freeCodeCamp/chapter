@@ -40,13 +40,13 @@ import {
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
-import { useLogin } from '../../../hooks/useLogin';
+import { useSession } from '../../../hooks/useSession';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user, loadingUser, isLoggedIn } = useAuth();
-  const { login } = useLogin();
+  const { login } = useSession();
   const modalProps = useDisclosure();
 
   const refetch = {

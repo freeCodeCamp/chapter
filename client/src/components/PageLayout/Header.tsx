@@ -39,9 +39,7 @@ export const Header: React.FC = () => {
   const { user, loadingUser } = useAuth();
   const { login, logout } = useSession();
 
-  const goHome = () => {
-    router.push('/');
-  };
+  const goHome = () => router.push('/');
 
   return (
     <>
@@ -138,7 +136,7 @@ export const Header: React.FC = () => {
                       )}
                       <MenuItem
                         data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
+                        onClick={() => goHome().then(() => logout())}
                         fontWeight="600"
                         borderTop={'1px'}
                         borderColor={'gray.85'}

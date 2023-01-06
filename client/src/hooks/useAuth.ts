@@ -1,11 +1,14 @@
 import { useAuth0 } from '@auth0/auth0-react';
+
+import { useDevAuth } from '../modules/auth/store/dev';
 import { useMeQuery } from 'generated/graphql';
 import { useSession } from 'hooks/useSession';
 
 const useDevLogin = () => {
+  const { login, logout } = useDevAuth();
   return {
-    loginHelper: () => localStorage.setItem('dev-login-authenticated', 'true'),
-    logoutHelper: () => localStorage.removeItem('dev-login-authenticated'),
+    loginHelper: login,
+    logoutHelper: logout,
   };
 };
 

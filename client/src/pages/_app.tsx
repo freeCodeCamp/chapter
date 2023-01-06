@@ -20,6 +20,7 @@ import React, { ReactElement, ReactNode, useEffect } from 'react';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
+import { DevAuthProvider } from '../modules/auth/store/dev';
 import { chapterTheme } from '../styles/themes';
 
 const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
@@ -97,6 +98,10 @@ const Auth0Wrapper = (children: React.ReactNode) => {
   );
 };
 
+const DevAuthWrapper = (children: React.ReactNode) => (
+  <DevAuthProvider>{children}</DevAuthProvider>
+);
+
 export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
   P,
   IP
@@ -145,7 +150,9 @@ const CustomApp: React.FC<AppProps> = ({
         <ChakraProvider theme={chapterTheme}>
           <ConditionalWrap
             wrapper={
-              process.env.NEXT_PUBLIC_USE_AUTH0 === 'true' && Auth0Wrapper
+              process.env.NEXT_PUBLIC_USE_AUTH0 === 'true'
+                ? Auth0Wrapper
+                : DevAuthWrapper
             }
           >
             <AuthContextProvider>

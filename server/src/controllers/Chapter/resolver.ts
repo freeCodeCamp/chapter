@@ -41,7 +41,8 @@ export class ChapterResolver {
           where: {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
-          orderBy: { start_at: 'asc' },
+          take: 3,
+          orderBy: { start_at: 'desc' },
         },
         chapter_users: {
           include: {

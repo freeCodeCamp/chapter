@@ -14,6 +14,15 @@ export const createChapter = gql`
   }
 `;
 
+export const createChapterCalendar = gql`
+  mutation createChapterCalendar($chapterId: Int!) {
+    createChapterCalendar(id: $chapterId) {
+      id
+      calendar_id
+    }
+  }
+`;
+
 export const updateChapter = gql`
   mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
     updateChapter(id: $chapterId, data: $data) {

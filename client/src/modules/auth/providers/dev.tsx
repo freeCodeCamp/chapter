@@ -1,17 +1,15 @@
 import React, { useContext } from 'react';
 
-type DevAuthContextType = {
-  isAuthenticated: boolean;
-  login: () => void;
-  logout: () => void;
-};
+import { AuthContextType } from './common-types';
 
-const DevAuthContext = React.createContext<DevAuthContextType>({
+const DevAuthContext = React.createContext<AuthContextType>({
   isAuthenticated: false,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   login: () => {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   logout: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  getToken: () => Promise.resolve(''),
 });
 
 export const DevAuthProvider = ({
@@ -31,8 +29,11 @@ export const DevAuthProvider = ({
     localStorage.removeItem('dev-login-authenticated');
     setIsAuthenticated(false);
   };
+  const getToken = () => Promise.resolve('fake-token');
   return (
-    <DevAuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <DevAuthContext.Provider
+      value={{ isAuthenticated, login, logout, getToken }}
+    >
       {children}
     </DevAuthContext.Provider>
   );

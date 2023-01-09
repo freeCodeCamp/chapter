@@ -9,7 +9,6 @@ import {
 import { NetworkError } from '@apollo/client/errors';
 import { onError } from '@apollo/client/link/error';
 import { offsetLimitPagination } from '@apollo/client/utilities';
-import { Auth0Provider } from '@auth0/auth0-react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
 import { NextPage } from 'next';
@@ -20,7 +19,7 @@ import React, { ReactElement, ReactNode, useEffect } from 'react';
 
 import PageLayout from '../components/PageLayout';
 import { AuthContextProvider } from '../modules/auth/store';
-import { DevAuthProvider } from '../modules/auth/store/dev';
+import { AuthProvider } from '../modules/auth/context';
 import { chapterTheme } from '../styles/themes';
 
 const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
@@ -62,45 +61,6 @@ const client = new ApolloClient({
     },
   }),
 });
-
-// TODO: Reuse this component in Modal
-export interface ConditionalWrapProps {
-  wrapper:
-    | false
-    | ((children: React.ReactNode | null | undefined) => JSX.Element);
-  children: React.ReactNode;
-}
-
-export const ConditionalWrap = (props: ConditionalWrapProps) => {
-  const { wrapper: Wrap, children } = props;
-  return Wrap ? Wrap(children) : <>{children}</>;
-};
-
-const Auth0Wrapper = (children: React.ReactNode) => {
-  // TODO: create a module to handle environment variables
-  const domain = process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string;
-  const clientId = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string;
-  const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE as string;
-  const clientURL = process.env.NEXT_PUBLIC_CLIENT_URL as string;
-  {
-    /* TODO: Can we conditionally use window.location.origin for the redirectUri if
-           we're in the browser? Or should we require site maintainers to supply it? */
-  }
-  return (
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      redirectUri={clientURL}
-      audience={audience}
-    >
-      {children}
-    </Auth0Provider>
-  );
-};
-
-const DevAuthWrapper = (children: React.ReactNode) => (
-  <DevAuthProvider>{children}</DevAuthProvider>
-);
 
 export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
   P,
@@ -148,13 +108,7 @@ const CustomApp: React.FC<AppProps> = ({
       </Head>
       <ApolloProvider client={client}>
         <ChakraProvider theme={chapterTheme}>
-          <ConditionalWrap
-            wrapper={
-              process.env.NEXT_PUBLIC_USE_AUTH0 === 'true'
-                ? Auth0Wrapper
-                : DevAuthWrapper
-            }
-          >
+          <AuthProvider>
             <AuthContextProvider>
               <ConfirmContextProvider>
                 <PageLayout>
@@ -162,7 +116,7 @@ const CustomApp: React.FC<AppProps> = ({
                 </PageLayout>
               </ConfirmContextProvider>
             </AuthContextProvider>
-          </ConditionalWrap>
+          </AuthProvider>
         </ChakraProvider>
       </ApolloProvider>
     </>

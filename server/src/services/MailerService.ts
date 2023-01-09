@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import sendgrid, { MailDataRequired } from '@sendgrid/mail';
+import AWS from 'aws-sdk';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
@@ -22,8 +22,8 @@ export class MailerService {
   emailPassword?: string;
   emailService?: string;
   emailHost?: string;
-  sendgridKey: string;
-  sendgridEmail: string;
+  accessKeyId: string;
+  secretAccessKey: string;
 
   private _sendEmail: (data: MailerData) => Promise<SentMessageInfo>;
 
@@ -35,14 +35,13 @@ export class MailerService {
     this.emailService = process.env.EMAIL_SERVICE;
     this.emailHost = process.env.EMAIL_HOST || 'localhost';
 
-    if (!process.env.SENDGRID_KEY || !process.env.SENDGRID_EMAIL) {
+    if (!process.env.SES_ACCESS_KEY_ID || !process.env.SES_SECRET_ACCESS_KEY) {
       this.createTransporter();
       this._sendEmail = this.sendViaNodemailer;
     } else {
-      this.sendgridKey = process.env.SENDGRID_KEY;
-      this.sendgridEmail = process.env.SENDGRID_EMAIL;
-      sendgrid.setApiKey(this.sendgridKey);
-      this._sendEmail = this.sendViaSendgrid;
+      this.accessKeyId = process.env.SES_ACCESS_KEY_ID;
+      this.secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+      this._sendEmail = this.sendViaSES;
     }
   }
 
@@ -80,28 +79,35 @@ export class MailerService {
     }
   }
 
-  private async sendViaSendgrid(data: MailerData) {
+  private async sendViaSES(data: MailerData) {
+    const awsConfig = new AWS.Config({
+      credentials: {
+        accessKeyId: this.accessKeyId,
+        secretAccessKey: this.secretAccessKey,
+      },
+      region: 'us-east-1',
+    });
     for (const email of data.emailList) {
-      const opts: MailDataRequired = {
-        to: email,
-        from: this.sendgridEmail,
-        subject: data.subject,
-        html: data.htmlEmail || data.backupText || '',
-        trackingSettings: {
-          clickTracking: {
-            enable: false,
-            enableText: false,
+      const opts: AWS.SES.Types.SendEmailRequest = {
+        Destination: {
+          ToAddresses: [email],
+        },
+        Message: {
+          Subject: {
+            Data: data.subject,
+            Charset: 'UTF-8',
           },
-          openTracking: {
-            enable: false,
-          },
-          subscriptionTracking: {
-            enable: false,
+          Body: {
+            Html: {
+              Charset: 'UTF-8',
+              Data: data.htmlEmail || data.backupText || '',
+            },
           },
         },
+        Source: this.ourEmail,
       };
 
-      await sendgrid.send(opts);
+      await new AWS.SES(awsConfig).sendEmail(opts).promise();
     }
   }
 

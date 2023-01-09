@@ -16,7 +16,7 @@ import {
   Event,
   useDeleteEventMutation,
 } from '../../../../generated/graphql';
-import { useAuth } from '../../../auth/store';
+import { useUser } from '../../../auth/user';
 import EventCancelButton from './EventCancelButton';
 
 interface ActionsProps {
@@ -37,7 +37,7 @@ const Actions: React.FC<ActionsProps> = ({
   createCalendarEvent,
 }) => {
   const [isCreatingCalendarEvent, setCreatingCalendarEvent] = useState(false);
-  const { user } = useAuth();
+  const { user } = useUser();
   const [remove] = useDeleteEventMutation();
 
   const data = useMemo(

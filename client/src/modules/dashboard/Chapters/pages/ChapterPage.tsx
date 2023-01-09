@@ -28,7 +28,7 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { Layout } from '../../shared/components/Layout';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { useAuth } from '../../../../modules/auth/store';
+import { useUser } from '../../../auth/user';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { DeleteChapterButton } from '../components/DeleteChapterButton';
@@ -36,7 +36,7 @@ import { DASHBOARD_CHAPTER } from '../graphql/queries';
 
 export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser } = useUser();
 
   const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },

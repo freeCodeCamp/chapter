@@ -21,7 +21,7 @@ import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { useAuth } from '../../auth/store';
+import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
@@ -45,7 +45,7 @@ import { useSession } from '../../../hooks/useSession';
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser, isLoggedIn } = useAuth();
+  const { user, loadingUser, isLoggedIn } = useUser();
   const { login } = useSession();
   const modalProps = useDisclosure();
 

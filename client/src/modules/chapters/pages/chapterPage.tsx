@@ -18,7 +18,7 @@ import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
-import { useAuth } from '../../auth/store';
+import { useUser } from '../../auth/user';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
@@ -110,7 +110,7 @@ const ChapterUserRoleWidget = ({
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
   const router = useRouter();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useUser();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },

@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import React, { ReactElement, ReactNode, useEffect } from 'react';
 
 import PageLayout from '../components/PageLayout';
-import { AuthContextProvider } from '../modules/auth/store';
+import { UserProvider } from '../modules/auth/user';
 import { AuthProvider } from '../modules/auth/context';
 import { chapterTheme } from '../styles/themes';
 
@@ -109,13 +109,13 @@ const CustomApp: React.FC<AppProps> = ({
       <ApolloProvider client={client}>
         <ChakraProvider theme={chapterTheme}>
           <AuthProvider>
-            <AuthContextProvider>
+            <UserProvider>
               <ConfirmContextProvider>
                 <PageLayout>
                   {ready && getLayout(<Component {...pageProps} />)}
                 </PageLayout>
               </ConfirmContextProvider>
-            </AuthContextProvider>
+            </UserProvider>
           </AuthProvider>
         </ChakraProvider>
       </ApolloProvider>

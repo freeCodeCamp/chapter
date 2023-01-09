@@ -2,7 +2,7 @@ import { FormControl, FormLabel, Select } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { useAuth } from '../../../auth/store';
+import { useUser } from '../../../auth/user';
 
 interface Chapter {
   id: number;
@@ -13,7 +13,7 @@ interface EventChapterSelectProps {
 }
 
 const EventChapterSelect: React.FC<EventChapterSelectProps> = ({ loading }) => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const adminedChapters: Chapter[] = user?.admined_chapters ?? [];
 
   const { register, resetField } = useFormContext();

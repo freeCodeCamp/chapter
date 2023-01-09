@@ -1,28 +1,24 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { MeQuery, useMeQuery } from '../../../generated/graphql';
-import { useSession } from '../../../hooks/useSession';
+import { MeQuery, useMeQuery } from '../../generated/graphql';
+import { useSession } from '../../hooks/useSession';
 
-export interface AuthContextType {
+export interface UserContextType {
   user?: MeQuery['me'];
   loadingUser: boolean;
   isLoggedIn: boolean;
 }
 
-export const AuthContext = createContext<{
-  data: AuthContextType;
+const UserContext = createContext<{
+  data: UserContextType;
 }>({
   data: { loadingUser: true, isLoggedIn: false },
 });
 
-export const useAuth = () => useContext(AuthContext).data;
+export const useUser = () => useContext(UserContext).data;
 
-export const AuthContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [data, setData] = useState<AuthContextType>({
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [data, setData] = useState<UserContextType>({
     loadingUser: true,
     isLoggedIn: false,
   });
@@ -52,12 +48,12 @@ export const AuthContextProvider = ({
   }, [loadingMe, error, meData, isAuthenticated]);
 
   return (
-    <AuthContext.Provider
+    <UserContext.Provider
       value={{
         data,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </UserContext.Provider>
   );
 };

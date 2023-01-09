@@ -2,7 +2,7 @@ import React from 'react';
 import { NextPage } from 'next';
 import { Heading, Text, Flex, Grid, GridItem } from '@chakra-ui/react';
 import { LinkButton } from 'chakra-next-link';
-import { useAuth } from '../../../modules/auth/store';
+import { useUser } from '../../auth/user';
 
 interface Props {
   link: string;
@@ -17,7 +17,7 @@ const HeaderItem = ({ link, text }: Props) => {
   );
 };
 export const PolicyPage: NextPage = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useUser();
 
   return (
     <Grid>

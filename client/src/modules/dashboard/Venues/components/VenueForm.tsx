@@ -3,6 +3,7 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Grid,
   Select,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -25,6 +26,7 @@ interface VenueFormProps {
   chapterData?: ChapterQuery;
   adminedChapters?: { name: string; id: number }[];
   submitText: string;
+  deleteText: string;
   chapterId?: number;
   loadingText: string;
 }
@@ -123,6 +125,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     onSubmit,
     data,
     submitText,
+    deleteText,
     chapterId,
     loadingText,
     chapterData,
@@ -188,18 +191,23 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           isDisabled={loading}
         />
       ))}
-      <Button
+      <Grid
+        gap=".5em"
         mt="30px"
         width="100%"
-        variant="solid"
-        colorScheme="blue"
-        type="submit"
-        isDisabled={!isDirty}
-        isLoading={loading}
-        loadingText={loadingText}
+        gridTemplateColumns="repeat(auto-fit, minmax(13rem, 1fr))"
       >
-        {submitText}
-      </Button>
+        <Button
+          colorScheme="blue"
+          type="submit"
+          isDisabled={!isDirty}
+          isLoading={loading}
+          loadingText={loadingText}
+        >
+          {submitText}
+        </Button>
+        <Button colorScheme="red">{deleteText}</Button>
+      </Grid>
     </Form>
   );
 };

@@ -1569,6 +1569,7 @@ export type UpdateVenueMutation = {
 
 export type DeleteVenueMutationVariables = Exact<{
   venueId: Scalars['Int'];
+  chapterId: Scalars['Int'];
 }>;
 
 export type DeleteVenueMutation = {
@@ -4468,8 +4469,8 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutationVariables
 >;
 export const DeleteVenueDocument = gql`
-  mutation deleteVenue($venueId: Int!) {
-    deleteVenue(id: $venueId) {
+  mutation deleteVenue($venueId: Int!, $chapterId: Int!) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
       id
     }
   }
@@ -4493,6 +4494,7 @@ export type DeleteVenueMutationFn = Apollo.MutationFunction<
  * const [deleteVenueMutation, { data, loading, error }] = useDeleteVenueMutation({
  *   variables: {
  *      venueId: // value for 'venueId'
+ *      chapterId: // value for 'chapterId'
  *   },
  * });
  */

@@ -83,14 +83,13 @@ export const EditVenuePage: NextPageWithLayout = () => {
   if (!hasLoaded || errors.length) return <DashboardLoading errors={errors} />;
   if (!venueData.venue || !chapterData.chapter)
     return <NextError statusCode={404} title={'Page not found'} />;
-
   const clickDelete = async () => {
     const ok = await confirmDelete({
       body: 'Are you sure you want to delete this venue? All information related to venue will be deleted. Venue deletion cannot be reversed.',
       buttonText: 'Delete Venue',
     });
     if (!ok) return;
-    deleteVenue({ variables: { venueId } });
+    deleteVenue({ variables: { venueId, chapterId } });
     router.push('/dashboard/venues');
   };
 

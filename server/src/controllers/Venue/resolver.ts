@@ -97,7 +97,10 @@ export class VenueResolver {
 
   @Authorized(Permission.VenueDelete)
   @Mutation(() => Venue)
-  async deleteVenue(@Arg('id', () => Int) id: number): Promise<{ id: number }> {
+  async deleteVenue(
+    @Arg('id', () => Int) id: number,
+    @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
+  ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
     return await prisma.venues.delete({
       where: { id },

@@ -15,6 +15,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
       {chapter.logo_url && (
         <Image
           src={chapter.logo_url}
+          alt={`${chapter.name} logo`}
           position="relative"
           top="2.75em"
           left="2em"

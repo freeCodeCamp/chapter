@@ -26,7 +26,8 @@ interface VenueFormProps {
   chapterData?: ChapterQuery;
   adminedChapters?: { name: string; id: number }[];
   submitText: string;
-  deleteText: string;
+  deleteText?: string;
+  deleteVenue?: () => Promise<void>;
   chapterId?: number;
   loadingText: string;
 }
@@ -126,6 +127,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     data,
     submitText,
     deleteText,
+    deleteVenue,
     chapterId,
     loadingText,
     chapterData,
@@ -206,7 +208,9 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         >
           {submitText}
         </Button>
-        <Button colorScheme="red">{deleteText}</Button>
+        <Button colorScheme="red" onClick={deleteVenue}>
+          {deleteText}
+        </Button>
       </Grid>
     </Form>
   );

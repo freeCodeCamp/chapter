@@ -14,7 +14,6 @@ export const ChapterNewVenuePage: NextPageWithLayout = () => {
   const { loading, data, error } = useChapterQuery({
     variables: { chapterId },
   });
-
   const onSubmit = useSubmitVenue();
 
   const isLoading = loading || !data;

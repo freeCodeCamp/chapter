@@ -1,6 +1,10 @@
 import { inspect } from 'util';
 
-import AWS from 'aws-sdk';
+import {
+  SESClient,
+  SESClientConfig,
+  SendEmailCommand,
+} from '@aws-sdk/client-ses';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
@@ -80,15 +84,15 @@ export class MailerService {
   }
 
   private async sendViaSES(data: MailerData) {
-    const awsConfig = new AWS.Config({
+    const awsConfig: SESClientConfig = {
       credentials: {
         accessKeyId: this.accessKeyId,
         secretAccessKey: this.secretAccessKey,
       },
       region: 'us-east-1',
-    });
+    };
     for (const email of data.emailList) {
-      const opts: AWS.SES.Types.SendEmailRequest = {
+      const opts = new SendEmailCommand({
         Destination: {
           ToAddresses: [email],
         },
@@ -105,9 +109,9 @@ export class MailerService {
           },
         },
         Source: this.ourEmail,
-      };
+      });
 
-      await new AWS.SES(awsConfig).sendEmail(opts).promise();
+      await new SESClient(awsConfig).send(opts);
     }
   }
 

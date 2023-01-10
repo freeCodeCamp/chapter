@@ -1,8 +1,8 @@
 import {
-  Box,
   Button,
   Heading,
   HStack,
+  Grid,
   Spinner,
   Text,
   useToast,
@@ -140,13 +140,18 @@ export const ChapterPage: NextPageWithLayout = () => {
             </HStack>
           )}
           {checkPermission(user, Permission.UsersView, { chapterId }) && (
-            <Box>
-              <LinkButton href={`${chapterId}/users`} paddingBlock={'2'}>
-                Chapter Users
-              </LinkButton>
-            </Box>
+            <LinkButton
+              href={`${chapterId}/users`}
+              paddingBlock="2"
+              marginBlock="1.5em"
+            >
+              Chapter Users
+            </LinkButton>
           )}
-          <HStack mt={'2'}>
+          <Grid
+            gridTemplateColumns="repeat(auto-fill, minmax(6.5rem, 1fr))"
+            gap="1em"
+          >
             {allowedActions.map(({ colorScheme, size, href, text, dataCy }) => (
               <LinkButton
                 key={text}
@@ -158,6 +163,10 @@ export const ChapterPage: NextPageWithLayout = () => {
                 {text}
               </LinkButton>
             ))}
+            <SharePopOver
+              link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
+              size="sm"
+            />
             {integrationStatus &&
               !data.dashboardChapter.calendar_id &&
               checkPermission(user, Permission.ChapterCreate, {
@@ -172,12 +181,8 @@ export const ChapterPage: NextPageWithLayout = () => {
                   Create calendar
                 </Button>
               )}
-            <SharePopOver
-              link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/chapters/${chapterId}?ask_to_confirm=true`}
-              size="sm"
-            />
             <DeleteChapterButton size="sm" chapterId={chapterId} />
-          </HStack>
+          </Grid>
         </ProgressCardContent>
       </Card>
       <EventList

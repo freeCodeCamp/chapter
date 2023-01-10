@@ -5,6 +5,7 @@ import {
   SESClientConfig,
   SendEmailCommand,
 } from '@aws-sdk/client-ses';
+import sendgrid, { MailDataRequired } from '@sendgrid/mail';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
 import Utilities from '../util/Utilities';
@@ -26,6 +27,7 @@ export class MailerService {
   emailPassword?: string;
   emailService?: string;
   emailHost?: string;
+  sendgridKey: string;
   accessKeyId: string;
   secretAccessKey: string;
 
@@ -39,13 +41,33 @@ export class MailerService {
     this.emailService = process.env.EMAIL_SERVICE;
     this.emailHost = process.env.EMAIL_HOST || 'localhost';
 
-    if (!process.env.SES_ACCESS_KEY_ID || !process.env.SES_SECRET_ACCESS_KEY) {
-      this.createTransporter();
-      this._sendEmail = this.sendViaNodemailer;
-    } else {
-      this.accessKeyId = process.env.SES_ACCESS_KEY_ID;
-      this.secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
-      this._sendEmail = this.sendViaSES;
+    switch (this.emailService) {
+      case 'ses':
+        if (
+          !process.env.SES_ACCESS_KEY_ID ||
+          !process.env.SES_SECRET_ACCESS_KEY
+        ) {
+          throw new Error(
+            'Email service is set to SES but missing required keys.',
+          );
+        }
+        this.accessKeyId = process.env.SES_ACCESS_KEY_ID;
+        this.secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+        this._sendEmail = this.sendViaSES;
+        break;
+      case 'sendgrid':
+        if (!process.env.SENDGRID_KEY) {
+          throw new Error(
+            'Email service is set to SendGrid but missing required keys.',
+          );
+        }
+        this.sendgridKey = process.env.SENDGRID_KEY;
+        sendgrid.setApiKey(this.sendgridKey);
+        this._sendEmail = this.sendViaSendgrid;
+        break;
+      default:
+        this.createTransporter();
+        this._sendEmail = this.sendViaNodemailer;
     }
   }
 
@@ -112,6 +134,31 @@ export class MailerService {
       });
 
       await new SESClient(awsConfig).send(opts);
+    }
+  }
+
+  private async sendViaSendgrid(data: MailerData) {
+    for (const email of data.emailList) {
+      const opts: MailDataRequired = {
+        to: email,
+        from: this.ourEmail,
+        subject: data.subject,
+        html: data.htmlEmail || data.backupText || '',
+        trackingSettings: {
+          clickTracking: {
+            enable: false,
+            enableText: false,
+          },
+          openTracking: {
+            enable: false,
+          },
+          subscriptionTracking: {
+            enable: false,
+          },
+        },
+      };
+
+      await sendgrid.send(opts);
     }
   }
 

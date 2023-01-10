@@ -1,4 +1,4 @@
-import { Button, Checkbox, Heading, HStack, Text } from '@chakra-ui/react';
+import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
@@ -167,9 +167,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </Checkbox>
         )}
 
-        <HStack width="100%" mb="10 !important">
+        <Grid
+          gridTemplateColumns="repeat(auto-fit, minmax(13rem, 1fr))"
+          width="100%"
+          gap="1em"
+        >
           <Button
-            width="full"
             colorScheme="blue"
             type="submit"
             isDisabled={!isDirty || loading}
@@ -186,7 +189,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               buttonText="Cancel this Event"
             />
           )}
-        </HStack>
+        </Grid>
       </Form>
     </FormProvider>
   );

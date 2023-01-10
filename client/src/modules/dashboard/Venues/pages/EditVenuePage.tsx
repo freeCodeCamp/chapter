@@ -17,11 +17,11 @@ import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { DASHBOARD_VENUES, VENUE } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { DASHBOARD_CHAPTER } from 'modules/dashboard/Chapters/graphql/queries';
+import { DASHBOARD_CHAPTER } from '../../../dashboard/Chapters/graphql/queries';
 import {
   DASHBOARD_EVENT,
   DASHBOARD_EVENTS,
-} from 'modules/dashboard/Events/graphql/queries';
+} from '../../../dashboard/Events/graphql/queries';
 
 export const EditVenuePage: NextPageWithLayout = () => {
   const router = useRouter();

@@ -149,7 +149,7 @@ export const ChapterPage: NextPageWithLayout = () => {
             </LinkButton>
           )}
           <Grid
-            gridTemplateColumns="repeat(auto-fit, minmax(6.5rem, 1fr))"
+            gridTemplateColumns="repeat(auto-fill, minmax(6.5rem, 1fr))"
             gap="1em"
           >
             {allowedActions.map(({ colorScheme, size, href, text, dataCy }) => (

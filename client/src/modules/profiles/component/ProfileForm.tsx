@@ -6,7 +6,7 @@ import {
   FormLabel,
   Switch,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/Form/Input';
 import { TextArea } from '../../../components/Form/TextArea';
@@ -55,16 +55,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    reset,
     watch,
     formState: { isDirty },
   } = useForm<UpdateUserInputs>({
-    defaultValues,
+    values: defaultValues,
   });
-
-  useEffect(() => {
-    reset(defaultValues);
-  }, [data]);
 
   const hasAutoSubscribe = watch('auto_subscribe');
 

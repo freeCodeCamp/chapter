@@ -31,3 +31,11 @@ export const updateVenue = gql`
     }
   }
 `;
+
+export const deleteVenue = gql`
+  mutation deleteVenue($venueId: Int!) {
+    deleteVenue(id: $venueId) {
+      id
+    }
+  }
+`;

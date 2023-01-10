@@ -183,7 +183,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </Button>
           {data && !data.canceled && (
             <EventCancelButton
-              isFullWidth={true}
               event={data}
               isDisabled={loading}
               buttonText="Cancel this Event"

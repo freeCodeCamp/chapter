@@ -163,15 +163,14 @@ async function createCredentialedClient(tokenInfo: TokenInfo) {
 // It's not necessary to recreate the client for each request, but it is safer.
 // If multiple tokens end up being used, it will be important to use the
 // appropriate one for that request.
-export async function createCalendarApi(
-  createClient: () => Promise<OAuth2Client> = async () =>
-    createCredentialedClient(
-      await prisma.google_tokens.findFirstOrThrow({
-        where: { is_valid: true },
-      }),
-    ),
-) {
-  return calendar({ version: 'v3', auth: await createClient() });
+export async function createCalendarApi(tokenInfo?: TokenInfo) {
+  const tokens =
+    tokenInfo ??
+    (await prisma.google_tokens.findFirstOrThrow({
+      where: { is_valid: true },
+    }));
+  const auth = await createCredentialedClient(tokens);
+  return calendar({ version: 'v3', auth });
 }
 
 export async function createCalendarApis() {

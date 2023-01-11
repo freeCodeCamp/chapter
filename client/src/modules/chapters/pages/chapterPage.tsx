@@ -247,6 +247,17 @@ export const ChapterPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+        {data.chapter.logo_url && (
+          <Image
+            src={data.chapter.logo_url}
+            alt={`${data.chapter.name} logo`}
+            position={`${data.chapter.banner_url ? 'absolute' : 'initial'}`}
+            width="6em"
+            height="6em"
+            borderRadius="50%"
+            outline="2px solid white"
+          />
+        )}
         {data.chapter.banner_url && (
           <Box height={'300px'}>
             <Image

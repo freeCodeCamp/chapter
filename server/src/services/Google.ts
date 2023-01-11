@@ -241,8 +241,7 @@ export async function testTokens() {
   const apis = await createCalendarApis();
 
   await Promise.all(
-    apis.map(async ({ tokenId, createApi }) => {
-      const calendarApi = await createApi();
+    apis.map(async ({ tokenId, calendarApi }) => {
       try {
         await callWithHandler(
           () => calendarApi.calendarList.list(),

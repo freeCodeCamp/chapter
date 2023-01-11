@@ -1,18 +1,21 @@
 import React from 'react';
 import { useAuth0, Auth0Provider } from '@auth0/auth0-react';
 
-import { AuthContextType } from './common-types';
+import { AuthContext } from './common-context';
 
-export const useAuth = (): AuthContextType => {
-  const { isAuthenticated, getAccessTokenSilently, loginWithPopup, logout } =
-    useAuth0();
-
-  return {
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const {
     isAuthenticated,
-    login: loginWithPopup,
+    getAccessTokenSilently: getToken,
+    loginWithPopup: login,
     logout,
-    getToken: getAccessTokenSilently,
-  };
+  } = useAuth0();
+
+  return (
+    <AuthContext.Provider value={{ getToken, isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -33,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       redirectUri={clientURL}
       audience={audience}
     >
-      {children}
+      <Wrapper>{children}</Wrapper>
     </Auth0Provider>
   );
 };

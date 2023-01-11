@@ -7,13 +7,13 @@ import { useDashboardVenuesQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import getLocationString from '../../../../util/getLocationString';
-import { useAuth } from '../../../auth/store';
+import { useUser } from '../../../auth/user';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const VenuesPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardVenuesQuery();
 
-  const { user } = useAuth();
+  const { user } = useUser();
   const adminedChapters = user?.admined_chapters ?? [];
 
   const isLoading = loading || !data;

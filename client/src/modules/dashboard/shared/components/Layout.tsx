@@ -8,7 +8,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Permission } from '../../../../../../common/permissions';
 import { checkPermission } from '../../../../util/check-permission';
 import { Loading } from '../../../../components/Loading';
-import { useAuth } from 'modules/auth/store';
+import { useUser } from '../../../auth/user';
 
 const iconSize = '1.5em';
 const links = [
@@ -49,7 +49,7 @@ export const Layout = ({
   const [displayRightScroll, setDisplayRightScroll] = useState(false);
   const [leftScroll, setLeftScroll] = useState(true);
   const [rightScroll, setRightScroll] = useState(true);
-  const { user, loadingUser, isLoggedIn } = useAuth();
+  const { user, loadingUser, isLoggedIn } = useUser();
 
   const setScrollButtonsDisplay = () => {
     if (!ref.current) return;

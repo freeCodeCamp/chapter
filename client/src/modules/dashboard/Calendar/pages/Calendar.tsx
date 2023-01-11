@@ -37,9 +37,6 @@ export const Calendar: NextPageWithLayout = () => {
         { query: TOKEN_STATUSES },
       ],
     });
-  const onIntegrationTest = async () => {
-    await calendarIntegrationTest();
-  };
   const isLoading = loading || loadingStatuses;
   if (isLoading || error || errorStatuses)
     return <DashboardLoading error={error || errorStatuses} />;
@@ -94,7 +91,10 @@ export const Calendar: NextPageWithLayout = () => {
             : 'Authenticate with Google'}
         </Button>
         {(isAuthenticated || isBroken) && (
-          <Button onClick={onIntegrationTest} isLoading={loadingTest}>
+          <Button
+            onClick={() => calendarIntegrationTest()}
+            isLoading={loadingTest}
+          >
             Test integration
           </Button>
         )}

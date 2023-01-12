@@ -208,6 +208,13 @@ export const main = async (app: Express) => {
   const schema = await buildSchema({
     resolvers,
     authChecker: authorizationChecker,
+    validate: {
+      // This is required for the classes that have no explicit validator
+      // decorators. Without this type-graphql will throw an error when tries to
+      // validate them. See
+      // https://github.com/MichalLytek/type-graphql/issues/1397#issuecomment-1351432122
+      forbidUnknownValues: false,
+    },
   });
   const server = new ApolloServer({
     schema,

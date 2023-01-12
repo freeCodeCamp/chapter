@@ -18,7 +18,7 @@ const resolveType = (name?: string) => {
   return isSpecifiedType(name) ? name : 'text';
 };
 
-type AllowedTypes = typeof allowed_types[number];
+type AllowedTypes = (typeof allowed_types)[number];
 
 interface BaseProps extends Omit<ChakraInputProps, 'type'> {
   error?: string;

@@ -11,7 +11,7 @@ import {
   updateCalendarEventDetails,
 } from '../src/services/Google';
 
-const { objectContaining, arrayContaining } = expect;
+const { objectContaining, stringContaining, arrayContaining } = expect;
 
 const attendees: calendar_v3.Schema$EventAttendee[] = [
   { email: 'a@person', responseStatus: 'accepted' },
@@ -90,6 +90,23 @@ const eventParams = objectContaining({
     guestsCanInviteOthers: false,
     guestsCanSeeOtherGuests: false,
   }),
+});
+
+const eventCreateParams = objectContaining({
+  sendUpdates: 'all',
+  requestBody: {
+    guestsCanInviteOthers: false,
+    guestsCanSeeOtherGuests: false,
+    conferenceData: {
+      createRequest: {
+        requestId: stringContaining(''),
+        conferenceSolutionKey: {
+          type: 'hangoutsMeet',
+        },
+      },
+    },
+  },
+  conferenceDataVersion: 1,
 });
 
 describe('Google Service', () => {
@@ -225,10 +242,10 @@ describe('Google Service', () => {
   });
 
   describe('createCalendarEvent', () => {
-    it('should update everyone and configure guest permissions', async () => {
+    it('should update everyone, configure guest permissions and add a meet', async () => {
       await createCalendarEvent({ calendarId: 'foo' }, {});
 
-      expect(mockInsertEvent).toHaveBeenCalledWith(eventParams);
+      expect(mockInsertEvent).toHaveBeenCalledWith(eventCreateParams);
       expect(mockInsertEvent).toHaveBeenCalledTimes(1);
     });
 

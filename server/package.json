@@ -39,7 +39,7 @@
     "@sendgrid/mail": "7.7.0",
     "apollo-server-express": "3.11.1",
     "calendar-link": "2.4.0",
-    "class-validator": "0.13.2",
+    "class-validator": "0.14.0",
     "cookie-parser": "1.4.6",
     "cookie-session": "2.0.0",
     "cors": "2.8.5",

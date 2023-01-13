@@ -1,9 +1,10 @@
-import { Authorized, Resolver, Query } from 'type-graphql';
+import { Authorized, Mutation, Query, Resolver } from 'type-graphql';
 
 import { prisma } from '../../prisma';
 import { TokenStatus } from '../../graphql-types';
 import { integrationStatus } from '../../util/calendar';
 import { Permission } from '../../../../common/permissions';
+import { testTokens } from '../../services/Google';
 
 @Resolver()
 export class CalendarResolver {
@@ -30,5 +31,12 @@ export class CalendarResolver {
       return { ...rest, redacted_email: redactedEmail };
     });
     return statusesWithRedactedEmail;
+  }
+
+  @Authorized(Permission.GoogleAuthenticate)
+  @Mutation(() => Boolean, { nullable: true })
+  async calendarIntegrationTest(): Promise<boolean | null> {
+    await testTokens();
+    return await integrationStatus();
   }
 }

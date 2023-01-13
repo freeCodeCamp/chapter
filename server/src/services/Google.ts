@@ -3,7 +3,11 @@ import { isFuture } from 'date-fns';
 
 import { isProd, isTest } from '../config';
 import { sendInvalidTokenNotification } from '../util/calendar';
-import { createCalendarApi, invalidateToken } from './InitGoogle';
+import {
+  createCalendarApi,
+  createCalendarApis,
+  invalidateToken,
+} from './InitGoogle';
 interface CalendarData {
   summary: string;
   description: string;
@@ -40,21 +44,22 @@ const TOKEN_ERRORS = [
 
 const MEET_ID = '1';
 
-function errorHandler(err: unknown) {
+function errorHandler(err: unknown, tokenId?: number) {
   if (err instanceof Error && TOKEN_ERRORS.includes(err.message)) {
     console.error('Marking token as invalid');
-    invalidateToken();
+    invalidateToken(tokenId);
     sendInvalidTokenNotification();
   }
 }
 
 async function callWithHandler<T>(
   func: () => GaxiosPromise<T>,
+  handler: (err: unknown) => void = errorHandler,
 ): GaxiosPromise<T> {
   try {
     return await func();
   } catch (err) {
-    errorHandler(err);
+    handler(err);
     throw err;
   }
 }
@@ -242,6 +247,23 @@ export async function deleteCalendarEvent({
       calendarId,
       eventId,
       sendUpdates: 'all',
+    }),
+  );
+}
+
+export async function testTokens() {
+  const apis = await createCalendarApis();
+
+  await Promise.all(
+    apis.map(async ({ tokenId, calendarApi }) => {
+      try {
+        await callWithHandler(
+          () => calendarApi.calendarList.list(),
+          (err) => errorHandler(err, tokenId),
+        );
+      } catch {
+        console.log('Token tested as invalid.');
+      }
     }),
   );
 }

@@ -1,11 +1,10 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect } from 'react';
+import { useApolloClient } from '@apollo/client';
+
+import { useAuth } from '../modules/auth/context';
+import { useMeQuery } from 'generated/graphql';
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
-
-// TODO: figure out how to create a proper separation between auth0 and the dev
-// login.  How about creating two providers and conditionally wrapping the rest
-// of the site in one or the other?
-const needsDevLogin = process.env.NEXT_PUBLIC_USE_AUTH0 === 'false';
 
 const requestSession = (token: string) =>
   fetch(new URL('/login', serverUrl).href, {
@@ -22,44 +21,26 @@ const destroySession = () =>
     credentials: 'include',
   });
 
-const useAuth0Session = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+export const useSession = () => {
+  const { getToken, login, logout, isAuthenticated } = useAuth();
   const createSession = async () => {
-    const token = await getAccessTokenSilently();
+    const token = await getToken();
     return requestSession(token);
   };
+  const client = useApolloClient();
+  const { refetch } = useMeQuery();
 
-  return {
-    isAuthenticated,
-    createSession,
-    destroySession,
-  };
+  // Note: this triggers twice whenever isAuthenticated changes.  More reason to
+  // handle side effects centrally.
+  useEffect(() => {
+    if (isAuthenticated) {
+      createSession().then(() => refetch());
+    } else {
+      destroySession()
+        .then(() => refetch())
+        .then(() => client.resetStore());
+    }
+  }, [isAuthenticated]);
+
+  return { createSession, login, logout, isAuthenticated };
 };
-
-export const useDevSession = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} => {
-  const createSession = async () => await requestSession('fake-token');
-
-  // Unlike the Auth0 login, the dev login creates the session immediately when
-  // you click the login button. Since `isAuthenticated` communicates that a
-  // session can be created, we return false to stop the client from trying to
-  // create a session on every page load.
-  return {
-    isAuthenticated: false,
-    createSession,
-    destroySession,
-  };
-};
-
-export const useSession: () => {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} = needsDevLogin ? useDevSession : useAuth0Session;

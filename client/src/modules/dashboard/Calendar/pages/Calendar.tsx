@@ -10,7 +10,7 @@ import {
 } from '../../../../generated/graphql';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
-import { useAuth } from '../../../auth/store';
+import { useUser } from '../../../auth/user';
 import { Layout } from '../../shared/components/Layout';
 import { DashboardLoading } from '../../../../modules/dashboard/shared/components/DashboardLoading';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -19,7 +19,7 @@ import { CALENDAR_INTEGRATION, TOKEN_STATUSES } from '../graphql/queries';
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 export const Calendar: NextPageWithLayout = () => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const canAuthenticateWithGoogle = checkPermission(
     user,
     Permission.GoogleAuthenticate,

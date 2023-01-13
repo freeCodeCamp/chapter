@@ -35,11 +35,11 @@ import { DASHBOARD_CHAPTER_USERS } from '../../graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
 import { checkPermission } from '../../../../../util/check-permission';
 import { Permission } from '../../../../../../../common/permissions';
-import { useAuth } from '../../../../../modules/auth/store';
+import { useUser } from '../../../../auth/user';
 
 export const ChapterUsersPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser } = useUser();
 
   const { loading, error, data } = useDashboardChapterUsersQuery({
     variables: { chapterId },

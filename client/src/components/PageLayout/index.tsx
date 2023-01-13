@@ -10,14 +10,14 @@ import { SkipNavContent } from '@chakra-ui/skip-nav';
 
 import Link from 'next/link';
 import { useCalendarIntegrationStatusQuery } from '../../generated/graphql';
-import { useAuth } from '../../modules/auth/store';
+import { useUser } from '../../modules/auth/user';
 import { checkPermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
 import { Header } from './Header';
 import { Footer } from './component/Footer';
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const canAuthenticateWithGoogle = checkPermission(
     user,
     Permission.GoogleAuthenticate,

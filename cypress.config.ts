@@ -7,6 +7,10 @@ import coverage from '@cypress/code-coverage/task';
 import { prisma } from './server/src/prisma';
 import { InstanceRoles } from './common/roles';
 
+const getEvents = () => prisma.events.findMany();
+
+export type Events = Awaited<ReturnType<typeof getEvents>>;
+
 const getChapterMembers = (chapterId: number) =>
   prisma.chapter_users.findMany({
     where: { chapter_id: chapterId },
@@ -76,6 +80,7 @@ export default defineConfig({
 
       on('task', {
         deleteEventUser,
+        getEvents,
         getChapterMembers,
         getEventUsers,
         getUser,

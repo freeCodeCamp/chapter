@@ -2,7 +2,7 @@ image:
   file: .gitpod.dockerfile
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: notify
   - port: 5432
     onOpen: ignore
   - port: 5000

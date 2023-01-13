@@ -6,10 +6,10 @@ import VenueForm from '../components/VenueForm';
 
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useSubmitVenue } from '../utils';
-import { useAuth } from 'modules/auth/store';
+import { useUser } from '../../../auth/user';
 
 export const NewVenuePage: NextPageWithLayout = () => {
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const onSubmit = useSubmitVenue();
 

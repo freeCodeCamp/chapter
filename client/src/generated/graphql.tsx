@@ -364,6 +364,7 @@ export type Mutation = {
   confirmRsvp: EventUserWithRelations;
   createCalendarEvent: Event;
   createChapter: Chapter;
+  createChapterCalendar: Chapter;
   createEvent: Event;
   createSponsor: Sponsor;
   createVenue: Venue;
@@ -424,6 +425,10 @@ export type MutationCreateCalendarEventArgs = {
 
 export type MutationCreateChapterArgs = {
   data: CreateChapterInputs;
+};
+
+export type MutationCreateChapterCalendarArgs = {
+  id: Scalars['Int'];
 };
 
 export type MutationCreateEventArgs = {
@@ -578,7 +583,7 @@ export type QueryDashboardEventArgs = {
 };
 
 export type QueryDashboardEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
+  showCanceled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryDashboardSponsorArgs = {
@@ -1047,6 +1052,19 @@ export type CreateChapterMutation = {
   };
 };
 
+export type CreateChapterCalendarMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type CreateChapterCalendarMutation = {
+  __typename?: 'Mutation';
+  createChapterCalendar: {
+    __typename?: 'Chapter';
+    id: number;
+    calendar_id?: string | null;
+  };
+};
+
 export type UpdateChapterMutationVariables = Exact<{
   chapterId: Scalars['Int'];
   data: UpdateChapterInputs;
@@ -1134,6 +1152,7 @@ export type DashboardChapterQuery = {
     logo_url?: string | null;
     banner_url?: string | null;
     chat_url?: string | null;
+    calendar_id?: string | null;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -1297,7 +1316,9 @@ export type SendEventInviteMutation = {
   sendEventInvite: boolean;
 };
 
-export type DashboardEventsQueryVariables = Exact<{ [key: string]: never }>;
+export type DashboardEventsQueryVariables = Exact<{
+  showCanceled?: InputMaybe<Scalars['Boolean']>;
+}>;
 
 export type DashboardEventsQuery = {
   __typename?: 'Query';
@@ -2657,6 +2678,57 @@ export type CreateChapterMutationOptions = Apollo.BaseMutationOptions<
   CreateChapterMutation,
   CreateChapterMutationVariables
 >;
+export const CreateChapterCalendarDocument = gql`
+  mutation createChapterCalendar($chapterId: Int!) {
+    createChapterCalendar(id: $chapterId) {
+      id
+      calendar_id
+    }
+  }
+`;
+export type CreateChapterCalendarMutationFn = Apollo.MutationFunction<
+  CreateChapterCalendarMutation,
+  CreateChapterCalendarMutationVariables
+>;
+
+/**
+ * __useCreateChapterCalendarMutation__
+ *
+ * To run a mutation, you first call `useCreateChapterCalendarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChapterCalendarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChapterCalendarMutation, { data, loading, error }] = useCreateChapterCalendarMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useCreateChapterCalendarMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateChapterCalendarMutation,
+    CreateChapterCalendarMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateChapterCalendarMutation,
+    CreateChapterCalendarMutationVariables
+  >(CreateChapterCalendarDocument, options);
+}
+export type CreateChapterCalendarMutationHookResult = ReturnType<
+  typeof useCreateChapterCalendarMutation
+>;
+export type CreateChapterCalendarMutationResult =
+  Apollo.MutationResult<CreateChapterCalendarMutation>;
+export type CreateChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
+  CreateChapterCalendarMutation,
+  CreateChapterCalendarMutationVariables
+>;
 export const UpdateChapterDocument = gql`
   mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
     updateChapter(id: $chapterId, data: $data) {
@@ -2995,6 +3067,7 @@ export const DashboardChapterDocument = gql`
       logo_url
       banner_url
       chat_url
+      calendar_id
       events {
         id
         name
@@ -3627,8 +3700,8 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutationVariables
 >;
 export const DashboardEventsDocument = gql`
-  query dashboardEvents {
-    dashboardEvents {
+  query dashboardEvents($showCanceled: Boolean) {
+    dashboardEvents(showCanceled: $showCanceled) {
       id
       name
       canceled
@@ -3660,6 +3733,7 @@ export const DashboardEventsDocument = gql`
  * @example
  * const { data, loading, error } = useDashboardEventsQuery({
  *   variables: {
+ *      showCanceled: // value for 'showCanceled'
  *   },
  * });
  */

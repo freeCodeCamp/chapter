@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - name: Use Node.js
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '18.x'
       # Due to a quirk of Actions, the .env file overwrites the env: values you
@@ -57,7 +57,7 @@ jobs:
           source: 'docker-compose.yml,docker-compose.mailhog.yml'
           target: chapter
       - name: Unpack Images
-        uses: appleboy/ssh-action@4a03da89e5c43da56e502053be4bbcb293411883 # v0.1.6
+        uses: appleboy/ssh-action@d91a1af6f57cd4478ceee14d7705601dafabaa19 # v0.1.7
         with:
           host: ${{ secrets.DIGITAL_OCEAN_HOST_IP }}
           username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}

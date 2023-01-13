@@ -14,7 +14,7 @@ import {
   userDownloadQuery,
   userProfileQuery,
 } from '../../../profiles/graphql/queries';
-import { useAuth } from '../../../../modules/auth/store';
+import { useUser } from '../../../auth/user';
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useDeleteChapterMutation } from '../../../../generated/graphql';
@@ -28,7 +28,7 @@ export const DeleteChapterButton = ({
   size?: string;
   width?: string;
 }) => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const confirmDelete = useConfirmDelete();
 
@@ -36,7 +36,8 @@ export const DeleteChapterButton = ({
     refetchQueries: [
       { query: CHAPTERS },
       { query: DASHBOARD_CHAPTERS },
-      { query: DASHBOARD_EVENTS },
+      { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
+      { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
       { query: DASHBOARD_VENUES },
       {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,

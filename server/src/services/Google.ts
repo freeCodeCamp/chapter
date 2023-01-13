@@ -19,6 +19,7 @@ interface EventData {
   summary?: string;
   attendees?: calendar_v3.Schema$EventAttendee[];
   status?: 'cancelled';
+  createMeet?: boolean;
 }
 
 interface CalendarId {
@@ -34,15 +35,17 @@ interface Attendee {
   attendeeEmail: string;
 }
 
-const tokenErrors = [
+const TOKEN_ERRORS = [
   'Invalid Credentials',
   'invalid_grant',
   'No access, refresh token, API key or refresh handler callback is set.',
   'No refresh token is set.',
 ];
 
+const MEET_ID = '1';
+
 function errorHandler(err: unknown, tokenId?: number) {
-  if (err instanceof Error && tokenErrors.includes(err.message)) {
+  if (err instanceof Error && TOKEN_ERRORS.includes(err.message)) {
     console.error('Marking token as invalid');
     invalidateToken(tokenId);
     sendInvalidTokenNotification();
@@ -62,7 +65,7 @@ async function callWithHandler<T>(
 }
 
 function createEventRequestBody(
-  { attendees, start, end, summary }: EventData,
+  { attendees, start, end, summary, createMeet }: EventData,
   oldEventData?: calendar_v3.Schema$Event,
 ): calendar_v3.Schema$Event {
   // Only send emails to attendees when creating or updating events in
@@ -77,6 +80,16 @@ function createEventRequestBody(
     // accidentally send emails in testing.
     ...(updateAttendees && {
       attendees: isProd() || isTest() ? attendees : [],
+    }),
+    ...(createMeet && {
+      conferenceData: {
+        createRequest: {
+          requestId: MEET_ID,
+          conferenceSolutionKey: {
+            type: 'hangoutsMeet',
+          },
+        },
+      },
     }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
@@ -175,7 +188,8 @@ export async function createCalendarEvent(
     calendarApi.events.insert({
       calendarId,
       sendUpdates: 'all',
-      requestBody: createEventRequestBody(eventData),
+      requestBody: createEventRequestBody({ ...eventData, createMeet: true }),
+      conferenceDataVersion: 1,
     }),
   );
   return { calendarEventId: data.id };

@@ -22,6 +22,7 @@ export const DASHBOARD_CHAPTER = gql`
       logo_url
       banner_url
       chat_url
+      calendar_id
       events {
         id
         name

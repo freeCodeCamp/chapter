@@ -1,29 +1,69 @@
-import { Heading, VStack, Text, Flex, HStack, Box } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  FormLabel,
+  Heading,
+  HStack,
+  Text,
+  Switch,
+  VStack,
+} from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
-import { useAuth } from '../../../auth/store';
+import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const EventsPage: NextPageWithLayout = () => {
-  const { error, loading, data } = useDashboardEventsQuery();
+const ShowCanceledSwitch = ({
+  setShowCanceled,
+  defaultChecked,
+}: {
+  setShowCanceled: React.Dispatch<React.SetStateAction<boolean>>;
+  defaultChecked: boolean;
+}) => {
+  return (
+    <Flex>
+      <FormLabel htmlFor="show-canceled-events">Show canceled events</FormLabel>
+      <Switch
+        isChecked={defaultChecked}
+        id="show-canceled-events"
+        onChange={(e) => setShowCanceled(e.target.checked)}
+      />
+    </Flex>
+  );
+};
 
-  const { user } = useAuth();
+export const EventsPage: NextPageWithLayout = () => {
+  const [showCanceled, setShowCanceled] = useState(true);
+  const { error, loading, data } = useDashboardEventsQuery({
+    variables: { showCanceled },
+  });
+
+  const { user } = useUser();
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   return (
     <VStack data-cy="events-dashboard">
-      <Flex w="full" justify="space-between">
+      <Flex
+        w="full"
+        justify="space-between"
+        alignItems={{ base: '', sm: 'center' }}
+        flexDirection={{ base: 'column', sm: 'row' }}
+      >
         <Heading id="page-heading">Events</Heading>
+        <ShowCanceledSwitch
+          defaultChecked={showCanceled}
+          setShowCanceled={setShowCanceled}
+        />
         {!!user?.admined_chapters.length && (
           <LinkButton
             data-cy="new-event"

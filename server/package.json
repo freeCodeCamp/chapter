@@ -35,11 +35,11 @@
   "dependencies": {
     "@cypress/code-coverage": "3.10.0",
     "@googleapis/calendar": "2.0.0",
-    "@prisma/client": "4.8.0",
+    "@prisma/client": "4.8.1",
     "@sendgrid/mail": "7.7.0",
     "apollo-server-express": "3.11.1",
     "calendar-link": "2.4.0",
-    "class-validator": "0.13.2",
+    "class-validator": "0.14.0",
     "cookie-parser": "1.4.6",
     "cookie-session": "2.0.0",
     "cors": "2.8.5",
@@ -53,8 +53,8 @@
     "graphql": "15.8.0",
     "is-docker": "2.2.1",
     "jsonwebtoken": "9.0.0",
-    "node-fetch": "2.6.7",
-    "nodemailer": "6.8.0",
+    "node-fetch": "2.6.8",
+    "nodemailer": "6.9.0",
     "pg": "8.8.0",
     "reflect-metadata": "0.1.13",
     "type-graphql": "1.1.1"
@@ -71,7 +71,7 @@
     "lodash": "4.17.21",
     "node-dev": "7.4.3",
     "nyc": "15.1.0",
-    "prisma": "4.8.0",
+    "prisma": "4.8.1",
     "rimraf": "3.0.2",
     "supertest": "6.3.3",
     "typescript": "4.9.4"

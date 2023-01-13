@@ -1,4 +1,3 @@
-import { useApolloClient } from '@apollo/client';
 import { HStack } from '@chakra-ui/layout';
 import {
   Image,
@@ -17,8 +16,8 @@ import React from 'react';
 
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
-import { useAuth } from '../../modules/auth/store';
-import { useLogout, useLogin } from '../../hooks/useAuth';
+import { useUser } from '../../modules/auth/user';
+import { useSession } from '../../hooks/useSession';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';
@@ -37,14 +36,10 @@ const menuButtonStyles = {
 // use sign-in for the app?
 export const Header: React.FC = () => {
   const router = useRouter();
-  const { user, loadingUser } = useAuth();
-  const logout = useLogout();
-  const login = useLogin();
-  const client = useApolloClient();
+  const { user, loadingUser } = useUser();
+  const { login, logout } = useSession();
 
-  const goHome = () => {
-    router.push('/').then(() => client.resetStore());
-  };
+  const goHome = () => router.push('/');
 
   return (
     <>
@@ -141,7 +136,7 @@ export const Header: React.FC = () => {
                       )}
                       <MenuItem
                         data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
+                        onClick={() => goHome().then(() => logout())}
                         fontWeight="600"
                         borderTop={'1px'}
                         borderColor={'gray.85'}

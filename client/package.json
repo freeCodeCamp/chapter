@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.7.3",
-    "@auth0/auth0-react": "1.12.0",
+    "@auth0/auth0-react": "1.12.1",
     "@chakra-ui/button": "2.0.14",
     "@chakra-ui/checkbox": "2.2.8",
     "@chakra-ui/form-control": "2.0.15",

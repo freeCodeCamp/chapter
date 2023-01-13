@@ -53,7 +53,7 @@
     "graphql": "15.8.0",
     "is-docker": "2.2.1",
     "jsonwebtoken": "9.0.0",
-    "node-fetch": "2.6.7",
+    "node-fetch": "2.6.8",
     "nodemailer": "6.9.0",
     "pg": "8.8.0",
     "reflect-metadata": "0.1.13",

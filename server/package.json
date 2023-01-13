@@ -33,11 +33,11 @@
     "seed": "node prisma/seed/seed.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.245.0",
+    "@aws-sdk/client-ses": "3.245.0",
     "@cypress/code-coverage": "3.10.0",
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.8.1",
-    "@sendgrid/mail": "^7.7.0",
+    "@sendgrid/mail": "7.7.0",
     "apollo-server-express": "3.11.1",
     "calendar-link": "2.4.0",
     "class-validator": "0.14.0",

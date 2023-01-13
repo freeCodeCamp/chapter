@@ -49,8 +49,10 @@ const fields: Fields[] = [
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { onSubmit, data, submitText, loadingText } = props;
 
+  const { image_url, ...rest } = data;
   const defaultValues: UpdateUserInputs = {
-    ...data,
+    image_url: image_url ?? '',
+    ...rest,
   };
   const {
     handleSubmit,

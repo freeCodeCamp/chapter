@@ -16,7 +16,6 @@ export const VenuesPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardVenuesQuery();
 
   const { user } = useUser();
-  const adminedChapters = user?.admined_chapters ?? [];
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
@@ -25,8 +24,14 @@ export const VenuesPage: NextPageWithLayout = () => {
     user,
     Permission.VenueCreate,
   );
-
-  const hasPermissiontoEditVenue = checkPermission(user, Permission.VenueEdit);
+  const checkIfhasPermission = (currentVenueId: number) => {
+    const hasPermissiontoEditVenue = checkPermission(
+      user,
+      Permission.VenueEdit,
+      { venueId: currentVenueId },
+    );
+    return hasPermissiontoEditVenue;
+  };
 
   return (
     <VStack>
@@ -71,7 +76,7 @@ export const VenuesPage: NextPageWithLayout = () => {
             ),
             action: (venue) => (
               <>
-                {hasPermissiontoEditVenue && (
+                {checkIfhasPermission(venue.id) && (
                   <LinkButton
                     data-cy="edit-venue-button"
                     colorScheme="blue"
@@ -116,7 +121,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                     <Text>Venue</Text>
                     <Text>Chapter</Text>
                     <Text>Location</Text>
-                    {hasPermissiontoEditVenue && <Text>Action</Text>}
+                    {checkIfhasPermission(id) && <Text>Action</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -144,7 +149,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                       {' '}
                       {region}, {country}, {postal_code}
                     </Text>
-                    {hasPermissiontoEditVenue && (
+                    {checkIfhasPermission(id) && (
                       <LinkButton
                         data-cy="edit-venue-button"
                         colorScheme="blue"

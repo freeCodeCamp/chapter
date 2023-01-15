@@ -26,12 +26,12 @@ import {
 } from '../../shared/components/RoleChangeModal';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { checkPermission } from 'util/check-permission';
-import { useAuth } from 'modules/auth/store';
+import { checkPermission } from '../../../../util/check-permission';
+import { useUser } from '../../../auth/user';
 
 export const UsersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useUsersQuery();
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const { data: instanceRoles } = useInstanceRolesQuery();
   const modalProps = useDisclosure();

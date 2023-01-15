@@ -57,7 +57,13 @@ export const EventsPage: NextPageWithLayout = () => {
     Permission.EventCreate,
   );
 
-  const hasPermissionToEditEvent = checkPermission(user, Permission.EventEdit);
+  const events = data.dashboardEvents;
+  const eventsWithPermissions = events.map((event) => {
+    const hasPermission = checkPermission(user, Permission.EventEdit, {
+      eventId: event.id,
+    });
+    return { ...event, hasPermission };
+  });
 
   return (
     <VStack data-cy="events-dashboard">
@@ -92,7 +98,7 @@ export const EventsPage: NextPageWithLayout = () => {
       >
         <DataTable
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-          data={data.dashboardEvents}
+          data={eventsWithPermissions}
           keys={
             [
               'status',
@@ -153,18 +159,16 @@ export const EventsPage: NextPageWithLayout = () => {
             date: (event) => formatDate(event.start_at),
             action: (event) => (
               <>
-                {hasPermissionToEditEvent && (
-                  <LinkButton
-                    colorScheme="blue"
-                    size="sm"
-                    href={`/dashboard/events/${event.id}/edit`}
-                  >
-                    Edit
-                    <Text srOnly as="span">
-                      {event.name}
-                    </Text>
-                  </LinkButton>
-                )}
+                <LinkButton
+                  colorScheme="blue"
+                  size="sm"
+                  href={`/dashboard/events/${event.id}/edit`}
+                >
+                  Edit
+                  <Text srOnly as="span">
+                    {event.name}
+                  </Text>
+                </LinkButton>
               </>
             ),
           }}
@@ -193,7 +197,7 @@ export const EventsPage: NextPageWithLayout = () => {
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
               }}
-              data={[data.dashboardEvents[index]]}
+              data={[eventsWithPermissions[index]]}
               keys={['type', 'action'] as const}
               showHeader={false}
               mapper={{
@@ -214,7 +218,7 @@ export const EventsPage: NextPageWithLayout = () => {
                     <Text>Capacity</Text>
                     <Text>Streaming url</Text>
                     <Text>Date</Text>
-                    {hasPermissionToEditEvent && <Text>Actions</Text>}
+                    {eventsWithPermissions.length === 0 && <Text>Actions</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -265,20 +269,18 @@ export const EventsPage: NextPageWithLayout = () => {
                       {isOnline(venue_type) ? streaming_url : 'In-person only'}
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
-                    {hasPermissionToEditEvent && (
-                      <LinkButton
-                        colorScheme="blue"
-                        fontSize={'sm'}
-                        height={'2em'}
-                        size="sm"
-                        href={`/dashboard/events/${id}/edit`}
-                      >
-                        Edit
-                        <Text srOnly as="span">
-                          {name}
-                        </Text>
-                      </LinkButton>
-                    )}
+                    <LinkButton
+                      colorScheme="blue"
+                      fontSize={'sm'}
+                      height={'2em'}
+                      size="sm"
+                      href={`/dashboard/events/${id}/edit`}
+                    >
+                      Edit
+                      <Text srOnly as="span">
+                        {name}
+                      </Text>
+                    </LinkButton>
                   </VStack>
                 ),
               }}

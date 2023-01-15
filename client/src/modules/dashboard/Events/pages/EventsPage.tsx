@@ -57,13 +57,19 @@ export const EventsPage: NextPageWithLayout = () => {
     Permission.EventCreate,
   );
 
-  const events = data.dashboardEvents;
-  const eventsWithPermissions = events.map((event) => {
+  const isHasEventPermission = (currentChapterId: number) => {
+    // admin doesn't have premission to edit?
     const hasPermission = checkPermission(user, Permission.EventEdit, {
-      eventId: event.id,
+      eventId: currentChapterId,
     });
-    return { ...event, hasPermission };
-  });
+
+    // const hasPermission = checkPermission(user, Permission.EventsView, {
+    //   eventId: currentEventId,
+    // });
+
+    console.log(hasPermission);
+    return hasPermission;
+  };
 
   return (
     <VStack data-cy="events-dashboard">
@@ -98,7 +104,7 @@ export const EventsPage: NextPageWithLayout = () => {
       >
         <DataTable
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-          data={eventsWithPermissions}
+          data={data.dashboardEvents}
           keys={
             [
               'status',
@@ -159,16 +165,19 @@ export const EventsPage: NextPageWithLayout = () => {
             date: (event) => formatDate(event.start_at),
             action: (event) => (
               <>
-                <LinkButton
-                  colorScheme="blue"
-                  size="sm"
-                  href={`/dashboard/events/${event.id}/edit`}
-                >
-                  Edit
-                  <Text srOnly as="span">
-                    {event.name}
-                  </Text>
-                </LinkButton>
+                {/* need to inject chapter id instead of event id */}
+                {isHasEventPermission(event.id) && (
+                  <LinkButton
+                    colorScheme="blue"
+                    size="sm"
+                    href={`/dashboard/events/${event.id}/edit`}
+                  >
+                    Edit
+                    <Text srOnly as="span">
+                      {event.name}
+                    </Text>
+                  </LinkButton>
+                )}
               </>
             ),
           }}
@@ -197,7 +206,7 @@ export const EventsPage: NextPageWithLayout = () => {
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
               }}
-              data={[eventsWithPermissions[index]]}
+              data={[data.dashboardEvents[index]]}
               keys={['type', 'action'] as const}
               showHeader={false}
               mapper={{
@@ -218,7 +227,7 @@ export const EventsPage: NextPageWithLayout = () => {
                     <Text>Capacity</Text>
                     <Text>Streaming url</Text>
                     <Text>Date</Text>
-                    {eventsWithPermissions.length === 0 && <Text>Actions</Text>}
+                    {isHasEventPermission(id) && <Text>Actions</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -269,18 +278,20 @@ export const EventsPage: NextPageWithLayout = () => {
                       {isOnline(venue_type) ? streaming_url : 'In-person only'}
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
-                    <LinkButton
-                      colorScheme="blue"
-                      fontSize={'sm'}
-                      height={'2em'}
-                      size="sm"
-                      href={`/dashboard/events/${id}/edit`}
-                    >
-                      Edit
-                      <Text srOnly as="span">
-                        {name}
-                      </Text>
-                    </LinkButton>
+                    {isHasEventPermission(id) && (
+                      <LinkButton
+                        colorScheme="blue"
+                        fontSize={'sm'}
+                        height={'2em'}
+                        size="sm"
+                        href={`/dashboard/events/${id}/edit`}
+                      >
+                        Edit
+                        <Text srOnly as="span">
+                          {name}
+                        </Text>
+                      </LinkButton>
+                    )}
                   </VStack>
                 ),
               }}

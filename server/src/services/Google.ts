@@ -3,7 +3,11 @@ import { isFuture } from 'date-fns';
 
 import { isProd, isTest } from '../config';
 import { sendInvalidTokenNotification } from '../util/calendar';
-import { createCalendarApi, invalidateToken } from './InitGoogle';
+import {
+  createCalendarApi,
+  createCalendarApis,
+  invalidateToken,
+} from './InitGoogle';
 interface CalendarData {
   summary: string;
   description: string;
@@ -15,6 +19,7 @@ interface EventData {
   summary?: string;
   attendees?: calendar_v3.Schema$EventAttendee[];
   status?: 'cancelled';
+  createMeet?: boolean;
 }
 
 interface CalendarId {
@@ -30,34 +35,37 @@ interface Attendee {
   attendeeEmail: string;
 }
 
-const tokenErrors = [
+const TOKEN_ERRORS = [
   'Invalid Credentials',
   'invalid_grant',
   'No access, refresh token, API key or refresh handler callback is set.',
   'No refresh token is set.',
 ];
 
-function errorHandler(err: unknown) {
-  if (err instanceof Error && tokenErrors.includes(err.message)) {
+const MEET_ID = '1';
+
+function errorHandler(err: unknown, tokenId?: number) {
+  if (err instanceof Error && TOKEN_ERRORS.includes(err.message)) {
     console.error('Marking token as invalid');
-    invalidateToken();
+    invalidateToken(tokenId);
     sendInvalidTokenNotification();
   }
 }
 
 async function callWithHandler<T>(
   func: () => GaxiosPromise<T>,
+  handler: (err: unknown) => void = errorHandler,
 ): GaxiosPromise<T> {
   try {
     return await func();
   } catch (err) {
-    errorHandler(err);
+    handler(err);
     throw err;
   }
 }
 
 function createEventRequestBody(
-  { attendees, start, end, summary }: EventData,
+  { attendees, start, end, summary, createMeet }: EventData,
   oldEventData?: calendar_v3.Schema$Event,
 ): calendar_v3.Schema$Event {
   // Only send emails to attendees when creating or updating events in
@@ -72,6 +80,16 @@ function createEventRequestBody(
     // accidentally send emails in testing.
     ...(updateAttendees && {
       attendees: isProd() || isTest() ? attendees : [],
+    }),
+    ...(createMeet && {
+      conferenceData: {
+        createRequest: {
+          requestId: MEET_ID,
+          conferenceSolutionKey: {
+            type: 'hangoutsMeet',
+          },
+        },
+      },
     }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
@@ -170,7 +188,8 @@ export async function createCalendarEvent(
     calendarApi.events.insert({
       calendarId,
       sendUpdates: 'all',
-      requestBody: createEventRequestBody(eventData),
+      requestBody: createEventRequestBody({ ...eventData, createMeet: true }),
+      conferenceDataVersion: 1,
     }),
   );
   return { calendarEventId: data.id };
@@ -228,6 +247,23 @@ export async function deleteCalendarEvent({
       calendarId,
       eventId,
       sendUpdates: 'all',
+    }),
+  );
+}
+
+export async function testTokens() {
+  const apis = await createCalendarApis();
+
+  await Promise.all(
+    apis.map(async ({ tokenId, calendarApi }) => {
+      try {
+        await callWithHandler(
+          () => calendarApi.calendarList.list(),
+          (err) => errorHandler(err, tokenId),
+        );
+      } catch {
+        console.log('Token tested as invalid.');
+      }
     }),
   );
 }

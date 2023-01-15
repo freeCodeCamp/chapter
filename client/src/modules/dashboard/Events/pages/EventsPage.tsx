@@ -17,7 +17,7 @@ import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
-import { useAuth } from '../../../auth/store';
+import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
@@ -48,7 +48,7 @@ export const EventsPage: NextPageWithLayout = () => {
     variables: { showCanceled },
   });
 
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;

@@ -11,14 +11,14 @@ import { useCreateSponsorMutation } from '../../../../generated/graphql';
 import { checkPermission } from '../../../../util/check-permission';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { useAuth } from 'modules/auth/store';
+import { useUser } from '../../../auth/user';
 
 const NewSponsorPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [createSponsor] = useCreateSponsorMutation({
     refetchQueries: [{ query: Sponsors }],
   });
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser } = useUser();
 
   const hasPermissionToCreateSponsor = checkPermission(
     user,

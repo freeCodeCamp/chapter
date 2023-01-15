@@ -56,6 +56,7 @@ const login = (email?: string) => {
   email
     ? cy.exec(`npm run change-user -- ${email} `)
     : cy.exec('npm run change-user:owner');
+  localStorage.setItem('dev-login-authenticated', 'true');
   return cy
     .request({
       url: Cypress.env('SERVER_URL') + '/login',
@@ -69,6 +70,7 @@ const login = (email?: string) => {
 Cypress.Commands.add('login', login);
 
 const logout = () => {
+  localStorage.removeItem('dev-login-authenticated');
   cy.request({
     url: Cypress.env('SERVER_URL') + '/logout',
     method: 'DELETE',

@@ -18,7 +18,7 @@ import { getNameText } from '../../../components/UserName';
 import { meQuery } from '../../auth/graphql/queries';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
-import { useLogout } from '../../../hooks/useAuth';
+import { useSession } from '../../../hooks/useSession';
 
 const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
   const dataString = JSON.stringify(userData, (key, value) =>
@@ -37,7 +37,7 @@ export const UserProfilePage = () => {
   const userInfo = data?.userProfile;
   const userDownload = userDownloadData?.userDownload;
 
-  const logout = useLogout();
+  const { logout } = useSession();
   const router = useRouter();
   const client = useApolloClient();
 

@@ -9,10 +9,10 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           fetch-depth: 0
-      - uses: FantasticFiasco/action-update-license-year@f3d1911d2a05b8a69fee1de4033b2847c347d911 # tag=v2
+      - uses: FantasticFiasco/action-update-license-year@26ffac173f956c25f7467aa8e6f750eed24a1b7a # v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: |

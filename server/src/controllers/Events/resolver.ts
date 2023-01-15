@@ -352,7 +352,6 @@ export class EventResolver {
   @Query(() => [EventWithVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('showCanceled', () => Boolean, { nullable: true })
     showCanceled = true,
   ): Promise<EventWithVenue[]> {
@@ -364,7 +363,6 @@ export class EventResolver {
         ...(!showCanceled && { canceled: false }),
       },
       include: { venue: true },
-      take: limit,
       orderBy: { start_at: 'desc' },
     });
   }

@@ -7,7 +7,6 @@ import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 
 interface EventCancelButtonProps {
-  isFullWidth?: boolean;
   size?: ButtonProps['size'];
   buttonText: string;
   event: Pick<Event, 'id' | 'canceled'>;
@@ -15,7 +14,7 @@ interface EventCancelButtonProps {
 }
 
 const EventCancelButton = (props: EventCancelButtonProps) => {
-  const { isDisabled = false, isFullWidth, buttonText, event, ...rest } = props;
+  const { isDisabled = false, buttonText, event, ...rest } = props;
 
   const [cancel] = useCancelEventMutation();
 
@@ -43,12 +42,7 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
     }
   };
   return (
-    <Button
-      {...rest}
-      width={isFullWidth ? 'full' : 'auto'}
-      onClick={clickCancel}
-      isDisabled={isDisabled}
-    >
+    <Button {...rest} onClick={clickCancel} isDisabled={isDisabled}>
       {buttonText}
     </Button>
   );

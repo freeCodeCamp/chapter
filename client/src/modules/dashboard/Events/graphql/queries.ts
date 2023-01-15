@@ -14,6 +14,9 @@ export const DASHBOARD_EVENTS = gql`
       ends_at
       capacity
       venue_type
+      chapter {
+        id
+      }
       venue {
         id
         name

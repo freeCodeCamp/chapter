@@ -28,7 +28,7 @@ import {
   EventWithRelationsWithEventUserRelations,
   EventWithRelationsWithEventUser,
   EventWithChapter,
-  EventWithVenue,
+  EventWithChapterAndVenue,
   User,
   PaginatedEventsWithTotal,
 } from '../../graphql-types';
@@ -349,12 +349,12 @@ export class EventResolver {
   }
 
   @Authorized(Permission.EventsView)
-  @Query(() => [EventWithVenue])
+  @Query(() => [EventWithChapterAndVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
     @Arg('showCanceled', () => Boolean, { nullable: true })
     showCanceled = true,
-  ): Promise<EventWithVenue[]> {
+  ): Promise<EventWithChapterAndVenue[]> {
     return await prisma.events.findMany({
       where: {
         ...(!isAdminFromInstanceRole(ctx.user) && {
@@ -362,7 +362,7 @@ export class EventResolver {
         }),
         ...(!showCanceled && { canceled: false }),
       },
-      include: { venue: true },
+      include: { venue: true, chapter: true },
       orderBy: { start_at: 'desc' },
     });
   }

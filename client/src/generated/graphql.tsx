@@ -276,6 +276,25 @@ export type EventWithChapter = {
   venue_type: VenueType;
 };
 
+export type EventWithChapterAndVenue = {
+  __typename?: 'EventWithChapterAndVenue';
+  calendar_event_id?: Maybe<Scalars['String']>;
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  venue?: Maybe<Venue>;
+  venue_type: VenueType;
+};
+
 export type EventWithRelationsWithEventUser = {
   __typename?: 'EventWithRelationsWithEventUser';
   calendar_event_id?: Maybe<Scalars['String']>;
@@ -544,7 +563,7 @@ export type Query = {
   dashboardChapter: ChapterWithRelations;
   dashboardChapters: Array<ChapterWithEvents>;
   dashboardEvent?: Maybe<EventWithRelationsWithEventUserRelations>;
-  dashboardEvents: Array<EventWithVenue>;
+  dashboardEvents: Array<EventWithChapterAndVenue>;
   dashboardSponsor: Sponsor;
   dashboardVenues: Array<VenueWithChapter>;
   event?: Maybe<EventWithRelationsWithEventUser>;
@@ -1323,7 +1342,7 @@ export type DashboardEventsQueryVariables = Exact<{
 export type DashboardEventsQuery = {
   __typename?: 'Query';
   dashboardEvents: Array<{
-    __typename?: 'EventWithVenue';
+    __typename?: 'EventWithChapterAndVenue';
     id: number;
     name: string;
     canceled: boolean;
@@ -1335,6 +1354,7 @@ export type DashboardEventsQuery = {
     ends_at: any;
     capacity: number;
     venue_type: VenueType;
+    chapter: { __typename?: 'Chapter'; id: number };
     venue?: { __typename?: 'Venue'; id: number; name: string } | null;
   }>;
 };
@@ -3713,6 +3733,9 @@ export const DashboardEventsDocument = gql`
       ends_at
       capacity
       venue_type
+      chapter {
+        id
+      }
       venue {
         id
         name

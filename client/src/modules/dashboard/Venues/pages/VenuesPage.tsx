@@ -5,7 +5,7 @@ import React, { ReactElement } from 'react';
 
 import { useDashboardVenuesQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import getLocationString from '../../../../util/getLocationString';
 import { useUser } from '../../../auth/user';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -154,5 +154,5 @@ export const VenuesPage: NextPageWithLayout = () => {
 };
 
 VenuesPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

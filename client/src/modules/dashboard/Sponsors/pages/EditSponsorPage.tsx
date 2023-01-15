@@ -5,7 +5,7 @@ import React, { ReactElement } from 'react';
 
 import { useParam } from '../../../../hooks/useParam';
 import { Sponsors } from '../../Events/graphql/queries';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { DASHBOARD_SPONSOR } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -69,5 +69,5 @@ const EditSponsorPage: NextPageWithLayout = () => {
 export { EditSponsorPage };
 
 EditSponsorPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

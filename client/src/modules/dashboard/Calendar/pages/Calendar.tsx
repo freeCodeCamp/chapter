@@ -10,7 +10,7 @@ import {
 import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useUser } from '../../../auth/user';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../../../modules/dashboard/shared/components/DashboardLoading';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
@@ -100,5 +100,5 @@ export const Calendar: NextPageWithLayout = () => {
 };
 
 Calendar.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

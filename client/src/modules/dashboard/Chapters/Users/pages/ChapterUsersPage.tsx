@@ -25,7 +25,7 @@ import {
 } from '../../../../../generated/graphql';
 import UserName from '../../../../../components/UserName';
 import { DashboardLoading } from '../../../shared/components/DashboardLoading';
-import { Layout } from '../../../shared/components/Layout';
+import { DashboardLayout } from '../../../shared/components/DashboardLayout';
 import {
   RoleChangeModal,
   RoleChangeModalData,
@@ -371,5 +371,5 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
 };
 
 ChapterUsersPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

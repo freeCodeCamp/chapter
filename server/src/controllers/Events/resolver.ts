@@ -60,6 +60,12 @@ import {
 import { formatDate } from '../../util/date';
 import { EventInputs } from './inputs';
 
+const SPACER = `<br />
+----------------------------<br />
+<br />
+`;
+const TBD_VENUE_ID = 0;
+
 const eventUserIncludes = {
   user: true,
   rsvp: true,
@@ -167,6 +173,9 @@ const buildEmailForUpdatedEvent = async (
   const subject = `Details changed for event ${event.name}`;
 
   const createVenueLocationContent = async () => {
+    if (!data.venue_id)
+      return `Location of event is currently Undecided/TBD.${SPACER}`;
+
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: data.venue_id },
     });
@@ -178,31 +187,25 @@ const buildEmailForUpdatedEvent = async (
 - ${venue.street_address ? venue.street_address + '<br />- ' : ''}
 ${venue.city} <br />
 - ${venue.region} <br />
-- ${venue.postal_code} <br />
-----------------------------<br />
-<br />
-`;
+- ${venue.postal_code} ${SPACER}`;
   };
   const createDateUpdates = () => {
     return `
   - Start: ${formatDate(data.start_at)}<br />
-  - End: ${formatDate(data.ends_at)}<br />
-  ----------------------------<br />
-  <br />
-  `;
+  - End: ${formatDate(data.ends_at)}${SPACER}`;
   };
   const createStreamUpdate = () => {
-    return `Streaming URL: ${data.streaming_url}<br>
-----------------------------<br />
-<br />`;
+    return `Streaming URL: ${data.streaming_url || 'Undecided/TBD'}${SPACER}`;
   };
 
-  const streamingUrl = hasStreamingUrlChanged(data, event)
-    ? createStreamUpdate()
-    : '';
-  const venueLocationChange = hasVenueLocationChanged(data, event)
-    ? await createVenueLocationContent()
-    : '';
+  const streamingUrl =
+    hasStreamingUrlChanged(data, event) && isOnline(data.venue_type)
+      ? createStreamUpdate()
+      : '';
+  const venueLocationChange =
+    hasVenueLocationChanged(data, event) && isPhysical(data.venue_type)
+      ? await createVenueLocationContent()
+      : '';
   const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
 
   const body = `Updated venue details<br/>
@@ -215,12 +218,11 @@ ${dateChange}
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
-    streaming_url: isOnline(event.venue_type)
-      ? data.streaming_url ?? event.streaming_url
-      : null,
-    venue: isPhysical(event.venue_type)
-      ? { connect: { id: data.venue_id } }
-      : { disconnect: true },
+    streaming_url: isOnline(event.venue_type) ? data.streaming_url : null,
+    venue:
+      isPhysical(event.venue_type) && data.venue_id !== TBD_VENUE_ID
+        ? { connect: { id: data.venue_id } }
+        : { disconnect: true },
   });
 
   const update = {
@@ -677,7 +679,10 @@ ${unsubscribeOptions}`,
       url: data.url ?? null,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
-      venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},
+      venue:
+        isPhysical(data.venue_type) && data.venue_id !== TBD_VENUE_ID
+          ? { connect: { id: venue?.id } }
+          : {},
       chapter: { connect: { id: chapter.id } },
       sponsors: {
         createMany: { data: eventSponsorsData },

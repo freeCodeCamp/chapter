@@ -166,7 +166,7 @@ export const EventsPage: NextPageWithLayout = () => {
             action: (event) => (
               <>
                 {/* need to inject chapter id instead of event id */}
-                {isHasEventPermission(event.chapter.id) && (
+                {isHasEventPermission(event.id) && (
                   <LinkButton
                     colorScheme="blue"
                     size="sm"
@@ -191,7 +191,6 @@ export const EventsPage: NextPageWithLayout = () => {
               canceled,
               name,
               id,
-              chapter,
               start_at,
               ends_at,
               invite_only,
@@ -279,7 +278,7 @@ export const EventsPage: NextPageWithLayout = () => {
                       {isOnline(venue_type) ? streaming_url : 'In-person only'}
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
-                    {isHasEventPermission(chapter.id) && (
+                    {isHasEventPermission(id) && (
                       <LinkButton
                         colorScheme="blue"
                         fontSize={'sm'}

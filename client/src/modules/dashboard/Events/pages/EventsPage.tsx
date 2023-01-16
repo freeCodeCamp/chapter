@@ -135,12 +135,12 @@ export const EventsPage: NextPageWithLayout = () => {
             'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
             venue: (event) =>
               isPhysical(event.venue_type)
-                ? event.venue?.name || ''
+                ? event.venue?.name || 'TBD'
                 : 'Online only',
             capacity: true,
             streaming_url: (event) =>
               isOnline(event.venue_type)
-                ? event.streaming_url
+                ? event.streaming_url || 'TBD'
                 : 'In-person only',
             date: (event) => formatDate(event.start_at),
             action: (event) => (

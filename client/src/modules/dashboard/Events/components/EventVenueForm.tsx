@@ -68,6 +68,7 @@ const EventVenueForm: React.FC<EventVenueFormProps> = ({
               {...register('venue_id' as const, { valueAsNumber: true })}
               isDisabled={loadingForm}
             >
+              <option value={0}>Undecided/TBD</option>
               {data.chapterVenues.map((v) => (
                 <option key={v.id} value={v.id}>
                   {v.name}

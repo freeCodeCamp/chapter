@@ -73,6 +73,7 @@ function getRelatedChapterId(
   { events, venues }: { events: ContextId[]; venues: ContextId[] },
   variableValues: VariableValues,
 ): number | null {
+  // set chapter ID in checker
   const { chapterId, eventId, venueId } = variableValues;
 
   function inferId(
@@ -106,6 +107,7 @@ function isAllowedByChapterRole(
   const chapterId = getRelatedChapterId({ events, venues }, variableValues);
   if (chapterId === null) return false;
   const userChapterPermissions = getUserPermissionsForChapter(user, chapterId);
+  console.log(chapterId, variableValues);
   return hasNecessaryPermission(requiredPermission, userChapterPermissions);
 }
 
@@ -165,6 +167,7 @@ export function checker(
 ) {
   if (isAllowedByInstanceRole(context, requiredPermission)) return true;
   if (isBannedFromChapter(context, variableValues)) return false;
+  console.log(variableValues);
   if (isAllowedByChapterRole(context, requiredPermission, variableValues))
     return true;
   if (isAllowedByEventRole(context, requiredPermission, variableValues))

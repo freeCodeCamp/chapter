@@ -22,6 +22,7 @@ import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
 import { checkIfhasPermission } from '../../../../util/check-the-permission-is-enough';
+import { checkPermission } from 'util/check-permission';
 
 const ShowCanceledSwitch = ({
   setShowCanceled,
@@ -57,10 +58,10 @@ export const EventsPage: NextPageWithLayout = () => {
     user,
     Permission.EventCreate,
   );
-  const hasPermissiontoEditEvent = checkIfhasPermission(
-    user,
-    Permission.EventEdit,
-  );
+  const hasPermissiontoEditEvent = user?.admined_chapters.some(({ id }) => {
+    console.log(id); // result in 1
+    checkPermission(user, Permission.EventEdit, { chapterId: id });
+  });
 
   console.log(hasPermissionToCreateEvent, hasPermissiontoEditEvent);
   return (

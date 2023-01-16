@@ -56,6 +56,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       const date = new Date();
       return {
         venue_type: VenueType.PhysicalAndOnline,
+        venue_id: 0,
         chapter_id: initialChapterId,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
@@ -64,13 +65,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     return {
       name: data.name,
       description: data.description,
-      streaming_url: data.streaming_url,
+      streaming_url: data.streaming_url ?? '',
       capacity: data.capacity,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       sponsors: data.sponsors,
       venue_type: data.venue_type,
-      venue_id: data.venue_id,
+      venue_id: data.venue_id ?? 0,
       image_url: data.image_url,
       invite_only: data.invite_only,
       chapter_id: initialChapterId,

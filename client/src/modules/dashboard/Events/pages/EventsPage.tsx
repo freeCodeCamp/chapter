@@ -21,7 +21,7 @@ import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { checkPermission } from 'util/check-permission';
+import { checkIfhasPermission } from '../../../../util/check-the-permission-is-enough';
 
 const ShowCanceledSwitch = ({
   setShowCanceled,
@@ -52,25 +52,17 @@ export const EventsPage: NextPageWithLayout = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
-  const hasPermissionToCreateEvent = checkPermission(
+
+  const hasPermissionToCreateEvent = checkIfhasPermission(
     user,
     Permission.EventCreate,
   );
+  const hasPermissiontoEditEvent = checkIfhasPermission(
+    user,
+    Permission.EventEdit,
+  );
 
-  const isHasEventPermission = (currentChapterId: number) => {
-    // admin doesn't have premission to edit?
-    const hasPermission = checkPermission(user, Permission.EventEdit, {
-      eventId: currentChapterId,
-    });
-
-    // const hasPermission = checkPermission(user, Permission.EventsView, {
-    //   eventId: currentEventId,
-    // });
-
-    console.log(hasPermission);
-    return hasPermission;
-  };
-
+  console.log(hasPermissionToCreateEvent, hasPermissiontoEditEvent);
   return (
     <VStack data-cy="events-dashboard">
       <Flex
@@ -166,7 +158,7 @@ export const EventsPage: NextPageWithLayout = () => {
             action: (event) => (
               <>
                 {/* need to inject chapter id instead of event id */}
-                {isHasEventPermission(event.id) && (
+                {hasPermissiontoEditEvent && (
                   <LinkButton
                     colorScheme="blue"
                     size="sm"
@@ -227,7 +219,7 @@ export const EventsPage: NextPageWithLayout = () => {
                     <Text>Capacity</Text>
                     <Text>Streaming url</Text>
                     <Text>Date</Text>
-                    {isHasEventPermission(id) && <Text>Actions</Text>}
+                    {hasPermissiontoEditEvent && <Text>Actions</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -278,7 +270,7 @@ export const EventsPage: NextPageWithLayout = () => {
                       {isOnline(venue_type) ? streaming_url : 'In-person only'}
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
-                    {isHasEventPermission(id) && (
+                    {hasPermissiontoEditEvent && (
                       <LinkButton
                         colorScheme="blue"
                         fontSize={'sm'}

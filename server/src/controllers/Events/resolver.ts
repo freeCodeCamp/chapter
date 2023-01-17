@@ -218,14 +218,18 @@ ${dateChange}
 };
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
-  const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
-    streaming_url: isOnline(event.venue_type) ? data.streaming_url : null,
+  const getVenueData = (
+    data: EventInputs,
+    venueType: events_venue_type_enum,
+  ) => ({
+    streaming_url: isOnline(venueType) ? data.streaming_url : null,
     venue:
-      isPhysical(event.venue_type) && data.venue_id !== TBD_VENUE_ID
+      isPhysical(venueType) && data.venue_id !== TBD_VENUE_ID
         ? { connect: { id: data.venue_id } }
         : { disconnect: true },
   });
 
+  const venueType = data.venue_type ?? event.venue_type;
   const update = {
     invite_only: data.invite_only ?? event.invite_only,
     name: data.name ?? event.name,
@@ -235,8 +239,8 @@ const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
     ends_at: new Date(data.ends_at) ?? event.ends_at,
     capacity: data.capacity ?? event.capacity,
     image_url: data.image_url ?? event.image_url,
-    venue_type: data.venue_type ?? event.venue_type,
-    ...getVenueData(data, event),
+    venue_type: venueType,
+    ...getVenueData(data, venueType),
   };
   return update;
 };

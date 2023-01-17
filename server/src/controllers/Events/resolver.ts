@@ -65,6 +65,7 @@ const SPACER = `<br />
 <br />
 `;
 const TBD_VENUE_ID = 0;
+const TBD = 'Undecided/TBD';
 
 const eventUserIncludes = {
   user: true,
@@ -174,7 +175,7 @@ const buildEmailForUpdatedEvent = async (
 
   const createVenueLocationContent = async () => {
     if (!data.venue_id)
-      return `Location of event is currently Undecided/TBD.${SPACER}`;
+      return `Location of event is currently ${TBD}.${SPACER}`;
 
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: data.venue_id },
@@ -195,7 +196,7 @@ ${venue.city} <br />
   - End: ${formatDate(data.ends_at)}${SPACER}`;
   };
   const createStreamUpdate = () => {
-    return `Streaming URL: ${data.streaming_url || 'Undecided/TBD'}${SPACER}`;
+    return `Streaming URL: ${data.streaming_url || TBD}${SPACER}`;
   };
 
   const streamingUrl =
@@ -934,8 +935,7 @@ ${unsubscribeOptions}`,
     const confirmRsvpQuery = '?confirm_rsvp=true';
     const description = event.description
       ? `About the event: <br />
-    ${event.description}<br />
-    ----------------------------<br /><br />`
+    ${event.description}${SPACER}`
       : '';
 
     const subsequentEventEmail = `Upcoming event for ${
@@ -944,12 +944,16 @@ ${unsubscribeOptions}`,
     <br />
     When: ${event.start_at} to ${event.ends_at}
     <br />
-   ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
-   ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+    ${
+      isPhysical(event.venue_type) &&
+      `Where: ${event.venue?.name || TBD}.<br />`
+    }
+    ${
+      isOnline(event.venue_type) &&
+      `Streaming URL: ${event.streaming_url || TBD}<br />`
+    }
     <br />
-    Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.<br />
-    ----------------------------<br />
-    <br />
+    Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.${SPACER}
     ${description}
     View all upcoming events for ${
       event.chapter.name

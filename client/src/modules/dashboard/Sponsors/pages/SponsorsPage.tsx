@@ -5,7 +5,7 @@ import Head from 'next/head';
 import React, { ReactElement } from 'react';
 
 import { checkPermission } from '../../../../util/check-permission';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Permission } from '../../../../../../common/permissions';
 import { useSponsorsQuery } from '../../../../generated/graphql';
@@ -133,5 +133,5 @@ export const SponsorsPage: NextPageWithLayout = () => {
 };
 
 SponsorsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

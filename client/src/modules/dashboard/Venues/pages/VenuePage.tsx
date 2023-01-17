@@ -11,7 +11,7 @@ import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const VenuePage: NextPageWithLayout = () => {
@@ -53,5 +53,5 @@ export const VenuePage: NextPageWithLayout = () => {
 };
 
 VenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout dataCy="view-venue-page">{page}</Layout>;
+  return <DashboardLayout dataCy="view-venue-page">{page}</DashboardLayout>;
 };

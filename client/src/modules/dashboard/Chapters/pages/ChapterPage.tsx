@@ -26,7 +26,7 @@ import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useUser } from '../../../auth/user';
 import { checkPermission } from '../../../../util/check-permission';
@@ -194,5 +194,5 @@ export const ChapterPage: NextPageWithLayout = () => {
 };
 
 ChapterPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

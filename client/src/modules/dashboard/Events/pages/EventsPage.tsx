@@ -15,7 +15,7 @@ import React, { ReactElement, useState } from 'react';
 import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
@@ -277,5 +277,5 @@ export const EventsPage: NextPageWithLayout = () => {
 };
 
 EventsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

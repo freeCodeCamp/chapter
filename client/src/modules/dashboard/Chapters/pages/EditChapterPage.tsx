@@ -11,7 +11,7 @@ import { useParam } from '../../../../hooks/useParam';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { meQuery } from '../../../auth/graphql/queries';
@@ -68,5 +68,5 @@ export const EditChapterPage: NextPageWithLayout = () => {
 };
 
 EditChapterPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

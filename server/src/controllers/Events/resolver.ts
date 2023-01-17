@@ -158,7 +158,8 @@ const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
   !isEqual(data.ends_at, event.ends_at) ||
   !isEqual(data.start_at, event.start_at);
 const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
-  isOnline(event.venue_type) && data.streaming_url !== event.streaming_url;
+  data.venue_type !== event.venue_type ||
+  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url);
 
 const buildEmailForUpdatedEvent = async (
   data: EventInputs,

@@ -90,9 +90,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const inviteOnly = watch('invite_only');
   const chapterId = watch('chapter_id');
 
-  const chapterVenuesQuery = useChapterVenuesQuery({
-    variables: { chapterId },
-  });
+  const chapterVenuesQuery = useChapterVenuesQuery(
+    !chapterId ? { skip: true } : { variables: { chapterId } },
+  );
 
   const { loading, disableWhileSubmitting } =
     useDisableWhileSubmitting<EventFormData>({

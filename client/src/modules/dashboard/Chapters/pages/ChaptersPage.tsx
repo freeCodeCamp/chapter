@@ -3,13 +3,13 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
-import { checkPermission } from '../../../../util/check-permission';
 import { useDashboardChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Layout } from '../../shared/components/Layout';
 import { Permission } from '../../../../../../common/permissions';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useUser } from '../../../auth/user';
+import { checkHasChapterPermission } from '../../../../util/check-chapter-permission';
 
 const actionLinks = [
   {
@@ -39,7 +39,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
 
-  const hasPermissionToCreateChapter = checkPermission(
+  const hasPermissionToCreateChapter = checkHasChapterPermission(
     user,
     Permission.ChapterCreate,
   );
@@ -86,9 +86,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                   .filter(
                     ({ requiredPermission }) =>
                       !requiredPermission ||
-                      checkPermission(user, requiredPermission, {
-                        chapterId: chapter.id,
-                      }),
+                      checkHasChapterPermission(user, requiredPermission),
                   )
                   .map(({ colorScheme, size, text, href }) => (
                     <LinkButton
@@ -152,9 +150,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                         .filter(
                           ({ requiredPermission }) =>
                             !requiredPermission ||
-                            checkPermission(user, requiredPermission, {
-                              chapterId: chapter.id,
-                            }),
+                            checkHasChapterPermission(user, requiredPermission),
                         )
                         .map(({ colorScheme, size, href, text }) => (
                           <LinkButton

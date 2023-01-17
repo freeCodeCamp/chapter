@@ -21,7 +21,7 @@ import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { checkIfhasPermission } from '../../../../util/check-the-permission-is-enough';
+import { checkHasChapterPermission } from '../../../../util/check-chapter-permission';
 
 const ShowCanceledSwitch = ({
   setShowCanceled,
@@ -53,11 +53,11 @@ export const EventsPage: NextPageWithLayout = () => {
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
-  const hasPermissionToCreateEvent = checkIfhasPermission(
+  const hasPermissionToCreateEvent = checkHasChapterPermission(
     user,
     Permission.EventCreate,
   );
-  const hasPermissiontoEditEvent = checkIfhasPermission(
+  const hasPermissiontoEditEvent = checkHasChapterPermission(
     user,
     Permission.EventEdit,
   );
@@ -157,7 +157,6 @@ export const EventsPage: NextPageWithLayout = () => {
             date: (event) => formatDate(event.start_at),
             action: (event) => (
               <>
-                {/* need to inject chapter id instead of event id */}
                 {hasPermissiontoEditEvent && (
                   <LinkButton
                     colorScheme="blue"

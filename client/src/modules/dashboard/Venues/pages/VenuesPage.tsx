@@ -10,7 +10,7 @@ import getLocationString from '../../../../util/getLocationString';
 import { useUser } from '../../../auth/user';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { checkPermission } from 'util/check-permission';
+import { checkHasChapterPermission } from '../../../../util/check-chapter-permission';
 
 export const VenuesPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardVenuesQuery();
@@ -20,18 +20,14 @@ export const VenuesPage: NextPageWithLayout = () => {
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
-  const hasPermissionToCreateVenue = checkPermission(
+  const hasPermissionToCreateVenue = checkHasChapterPermission(
     user,
     Permission.VenueCreate,
   );
-  const checkIfhasPermission = (currentVenueId: number) => {
-    const hasPermissiontoEditVenue = checkPermission(
-      user,
-      Permission.VenueEdit,
-      { venueId: currentVenueId },
-    );
-    return hasPermissiontoEditVenue;
-  };
+  const hasPermissiontoEditVenue = checkHasChapterPermission(
+    user,
+    Permission.VenueEdit,
+  );
 
   return (
     <VStack>
@@ -76,7 +72,7 @@ export const VenuesPage: NextPageWithLayout = () => {
             ),
             action: (venue) => (
               <>
-                {checkIfhasPermission(venue.id) && (
+                {hasPermissiontoEditVenue && (
                   <LinkButton
                     data-cy="edit-venue-button"
                     colorScheme="blue"
@@ -121,7 +117,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                     <Text>Venue</Text>
                     <Text>Chapter</Text>
                     <Text>Location</Text>
-                    {checkIfhasPermission(id) && <Text>Action</Text>}
+                    {hasPermissiontoEditVenue && <Text>Action</Text>}
                   </VStack>
                 ),
                 action: () => (
@@ -149,7 +145,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                       {' '}
                       {region}, {country}, {postal_code}
                     </Text>
-                    {checkIfhasPermission(id) && (
+                    {hasPermissiontoEditVenue && (
                       <LinkButton
                         data-cy="edit-venue-button"
                         colorScheme="blue"

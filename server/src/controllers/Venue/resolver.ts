@@ -102,14 +102,9 @@ export class VenueResolver {
     @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
-    await prisma.events.updateMany({
-      where: {
-        venue_id: id,
-      },
-      data: {
-        venue_id: 0,
-        streaming_url: '',
-      },
+    await prisma.venues.update({
+      where: { id: id },
+      data: { events: { set: [] } },
     });
     return await prisma.venues.delete({
       where: { id },

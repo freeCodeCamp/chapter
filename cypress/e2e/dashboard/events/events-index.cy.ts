@@ -154,7 +154,9 @@ describe('spec needing owner', () => {
     cy.get('@streamingUrlField').type(streamingUrl);
     saveEventChanges();
 
-    cy.get('@editedEvent').find('[data-cy="venue"]').should('contain', 'TBD');
+    cy.get('@editedEvent')
+      .find('[data-cy="venue"]')
+      .should('contain', 'Online only');
     cy.get('@editedEvent')
       .find('[data-cy="streamingUrl"]')
       .should('contain', streamingUrl);

@@ -10,7 +10,7 @@ import {
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
 import { DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
@@ -80,5 +80,5 @@ export const EditVenuePage: NextPageWithLayout = () => {
 };
 
 EditVenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout dataCy="edit-venue-page">{page}</Layout>;
+  return <DashboardLayout dataCy="edit-venue-page">{page}</DashboardLayout>;
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Layout } from '../../modules/dashboard/shared/components/Layout';
+import { DashboardLayout } from '../../modules/dashboard/shared/components/DashboardLayout';
 
 const Dashboard = () => {
   return (
-    <Layout>
+    <DashboardLayout>
       <h1>Admin dashboard</h1>
-    </Layout>
+    </DashboardLayout>
   );
 };
 

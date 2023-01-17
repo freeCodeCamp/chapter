@@ -108,6 +108,7 @@ export class VenueResolver {
       },
       data: {
         venue_id: 0,
+        streaming_url: '',
       },
     });
     return await prisma.venues.delete({

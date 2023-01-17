@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  app:
+  server:
     restart: unless-stopped
     env_file: .env
     build:
@@ -11,12 +11,12 @@ services:
       - ./server/keys/:/usr/chapter/server/keys/
     ports:
       - "5000:5000"
-    image: chapter-app
+    image: chapter-server
   client:
     restart: unless-stopped
     env_file: .env
     depends_on:
-      - app
+      - server
     build:
       context: .
       dockerfile: client.Dockerfile

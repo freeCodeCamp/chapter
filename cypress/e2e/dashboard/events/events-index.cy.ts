@@ -21,6 +21,13 @@ function navigateToEventsDashboard() {
   cy.get('[data-cy="events-dashboard"]').should('be.visible');
 }
 
+function saveEventChanges() {
+  cy.findByRole('button', { name: 'Save Event Changes' }).click();
+  cy.contains('Loading...');
+  cy.contains('Save Event Changes').should('not.exist');
+  cy.get('[data-cy="events-dashboard"]').should('be.visible');
+}
+
 // TODO: Move these specs into the other describe block, once we can make sure
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
@@ -98,6 +105,59 @@ describe('spec needing owner', () => {
 
       cy.deleteEvent(newEventId);
     });
+  });
+
+  it('should be possible to change venue type, change venue and streaming url, set them to TBD', () => {
+    const streamingUrl = 'https://random.com';
+    cy.visit('/dashboard/events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    cy.findAllByRole('row')
+      .filter(':has([data-cy="event"])')
+      .first()
+      .as('editedEvent');
+    cy.get('@editedEvent').find('a').last().as('editButton');
+
+    cy.get('@editButton').click();
+    cy.contains('Loading...');
+
+    cy.findByRole('radio', { name: 'In-person & Online' }).click({
+      force: true,
+    });
+    cy.findByRole('combobox', { name: 'Venue' }).as('venueSelect');
+    cy.get('@venueSelect').select('0');
+    cy.findByRole('textbox', { name: 'Streaming URL' }).as('streamingUrlField');
+    cy.get('@streamingUrlField').clear();
+    saveEventChanges();
+
+    cy.get('@editedEvent').find('[data-cy="venue"]').should('contain', 'TBD');
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'TBD');
+
+    cy.get('@editButton').click();
+    cy.findByRole('radio', { name: 'In-person' }).click({ force: true });
+    cy.get('@venueSelect').select(1);
+    cy.get('@venueSelect').find('option').eq(1).invoke('text').as('venueName');
+    saveEventChanges();
+
+    cy.get('@venueName').then((venueName) => {
+      cy.get('@editedEvent')
+        .find('[data-cy="venue"]')
+        .should('contain', venueName);
+    });
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'In-person only');
+
+    cy.get('@editButton').click();
+    cy.findByRole('radio', { name: 'Online' }).click({ force: true });
+    cy.get('@streamingUrlField').type(streamingUrl);
+    saveEventChanges();
+
+    cy.get('@editedEvent').find('[data-cy="venue"]').should('contain', 'TBD');
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'In-person only');
   });
 
   it('editing event updates cached events on home page', () => {

@@ -157,7 +157,7 @@ describe('spec needing owner', () => {
     cy.get('@editedEvent').find('[data-cy="venue"]').should('contain', 'TBD');
     cy.get('@editedEvent')
       .find('[data-cy="streamingUrl"]')
-      .should('contain', 'In-person only');
+      .should('contain', streamingUrl);
   });
 
   it('editing event updates cached events on home page', () => {

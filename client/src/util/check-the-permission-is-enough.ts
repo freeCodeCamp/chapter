@@ -9,7 +9,7 @@ export const checkIfhasPermission = (
   currentUserData: MeQuery['me'],
   permission: InstancePermission | ChapterPermission,
 ) => {
-  return currentUserData?.admined_chapters.some(({ id }) => {
-    checkPermission(currentUserData, permission, { chapterId: id });
-  });
+  return currentUserData?.admined_chapters.some(({ id }) =>
+    checkPermission(currentUserData, permission, { chapterId: id }),
+  );
 };

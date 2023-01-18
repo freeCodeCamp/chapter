@@ -17,6 +17,7 @@ import {
   VenueWithChapterEvents,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
+import mailerService from '../../services/MailerService';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
@@ -102,10 +103,25 @@ export class VenueResolver {
     @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
+    const physicalAndNotCanceledRsvp = await prisma.venues.findMany({
+      where: {
+        id: id,
+        events: { every: { canceled: false, ends_at: { gt: new Date() } } },
+        street_address: { not: '' || null || undefined },
+      },
+    });
     await prisma.venues.update({
       where: { id: id },
       data: { events: { set: [] } },
     });
+    for (const { chapter_id } of physicalAndNotCanceledRsvp) {
+      // find the user id from chapter
+      mailerService.sendEmail({
+        emailList: chapter_id,
+        subject: 'subject',
+        htmlEmail: 'cancelEventEmail',
+      });
+    }
     return await prisma.venues.delete({
       where: { id },
     });

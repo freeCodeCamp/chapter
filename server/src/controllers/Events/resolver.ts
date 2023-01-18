@@ -60,6 +60,13 @@ import {
 import { formatDate } from '../../util/date';
 import { EventInputs } from './inputs';
 
+const SPACER = `<br />
+----------------------------<br />
+<br />
+`;
+const TBD_VENUE_ID = 0;
+const TBD = 'Undecided/TBD';
+
 const eventUserIncludes = {
   user: true,
   rsvp: true,
@@ -168,6 +175,9 @@ const buildEmailForUpdatedEvent = async (
   const subject = `Details changed for event ${event.name}`;
 
   const createVenueLocationContent = async () => {
+    if (!data.venue_id)
+      return `Location of event is currently ${TBD}.${SPACER}`;
+
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: data.venue_id },
     });
@@ -179,31 +189,25 @@ const buildEmailForUpdatedEvent = async (
 - ${venue.street_address ? venue.street_address + '<br />- ' : ''}
 ${venue.city} <br />
 - ${venue.region} <br />
-- ${venue.postal_code} <br />
-----------------------------<br />
-<br />
-`;
+- ${venue.postal_code} ${SPACER}`;
   };
   const createDateUpdates = () => {
     return `
   - Start: ${formatDate(data.start_at)}<br />
-  - End: ${formatDate(data.ends_at)}<br />
-  ----------------------------<br />
-  <br />
-  `;
+  - End: ${formatDate(data.ends_at)}${SPACER}`;
   };
   const createStreamUpdate = () => {
-    return `Streaming URL: ${data.streaming_url}<br>
-----------------------------<br />
-<br />`;
+    return `Streaming URL: ${data.streaming_url || TBD}${SPACER}`;
   };
 
-  const streamingUrl = hasStreamingUrlChanged(data, event)
-    ? createStreamUpdate()
-    : '';
-  const venueLocationChange = hasVenueLocationChanged(data, event)
-    ? await createVenueLocationContent()
-    : '';
+  const streamingUrl =
+    hasStreamingUrlChanged(data, event) && isOnline(data.venue_type)
+      ? createStreamUpdate()
+      : '';
+  const venueLocationChange =
+    hasVenueLocationChanged(data, event) && isPhysical(data.venue_type)
+      ? await createVenueLocationContent()
+      : '';
   const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
 
   const body = `Updated venue details<br/>
@@ -215,15 +219,18 @@ ${dateChange}
 };
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
-  const getVenueData = (data: EventInputs, event: EventWithUsers) => ({
-    streaming_url: isOnline(event.venue_type)
-      ? data.streaming_url ?? event.streaming_url
-      : null,
-    venue: isPhysical(event.venue_type)
-      ? { connect: { id: data.venue_id } }
-      : { disconnect: true },
+  const getVenueData = (
+    data: EventInputs,
+    venueType: events_venue_type_enum,
+  ) => ({
+    streaming_url: isOnline(venueType) ? data.streaming_url : null,
+    venue:
+      isPhysical(venueType) && data.venue_id !== TBD_VENUE_ID
+        ? { connect: { id: data.venue_id } }
+        : { disconnect: true },
   });
 
+  const venueType = data.venue_type ?? event.venue_type;
   const update = {
     invite_only: data.invite_only ?? event.invite_only,
     name: data.name ?? event.name,
@@ -233,8 +240,8 @@ const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
     ends_at: new Date(data.ends_at) ?? event.ends_at,
     capacity: data.capacity ?? event.capacity,
     image_url: data.image_url ?? event.image_url,
-    venue_type: data.venue_type ?? event.venue_type,
-    ...getVenueData(data, event),
+    venue_type: venueType,
+    ...getVenueData(data, venueType),
   };
   return update;
 };
@@ -678,7 +685,10 @@ ${unsubscribeOptions}`,
       url: data.url ?? null,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
-      venue: isPhysical(data.venue_type) ? { connect: { id: venue?.id } } : {},
+      venue:
+        isPhysical(data.venue_type) && data.venue_id !== TBD_VENUE_ID
+          ? { connect: { id: venue?.id } }
+          : {},
       chapter: { connect: { id: chapter.id } },
       sponsors: {
         createMany: { data: eventSponsorsData },
@@ -930,8 +940,7 @@ ${unsubscribeOptions}`,
     const confirmRsvpQuery = '?confirm_rsvp=true';
     const description = event.description
       ? `About the event: <br />
-    ${event.description}<br />
-    ----------------------------<br /><br />`
+    ${event.description}${SPACER}`
       : '';
 
     const subsequentEventEmail = `Upcoming event for ${
@@ -940,12 +949,16 @@ ${unsubscribeOptions}`,
     <br />
     When: ${event.start_at} to ${event.ends_at}
     <br />
-   ${event.venue ? `Where: ${event.venue.name}.<br />` : ''}
-   ${event.streaming_url ? `Streaming URL: ${event.streaming_url}<br />` : ''}
+    ${
+      isPhysical(event.venue_type) &&
+      `Where: ${event.venue?.name || TBD}.<br />`
+    }
+    ${
+      isOnline(event.venue_type) &&
+      `Streaming URL: ${event.streaming_url || TBD}<br />`
+    }
     <br />
-    Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.<br />
-    ----------------------------<br />
-    <br />
+    Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.${SPACER}
     ${description}
     View all upcoming events for ${
       event.chapter.name

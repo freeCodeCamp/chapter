@@ -1,12 +1,5 @@
 import { inspect } from 'util';
-import {
-  events,
-  events_venue_type_enum,
-  event_users,
-  Prisma,
-  rsvp,
-  venues,
-} from '@prisma/client';
+import { events, event_users, Prisma, rsvp, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import {
   Resolver,
@@ -77,11 +70,6 @@ type EventWithUsers = Prisma.eventsGetPayload<{
     };
   };
 }>;
-
-const isPhysical = (venue_type: events_venue_type_enum) =>
-  venue_type !== events_venue_type_enum.Online;
-const isOnline = (venue_type: events_venue_type_enum) =>
-  venue_type !== events_venue_type_enum.Physical;
 
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
@@ -781,6 +769,10 @@ ${unsubscribeOptions}`,
 
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
+      const createMeet =
+        isOnline(data.venue_type) && !isOnline(event.venue_type);
+      const removeMeet =
+        isOnline(event.venue_type) && !isOnline(data.venue_type);
       try {
         await updateCalendarEventDetails(
           {
@@ -791,6 +783,8 @@ ${unsubscribeOptions}`,
             summary: updatedEvent.name,
             start: updatedEvent.start_at,
             end: updatedEvent.ends_at,
+            createMeet,
+            removeMeet,
           },
         );
       } catch (e) {

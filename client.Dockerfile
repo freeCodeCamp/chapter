@@ -18,8 +18,9 @@ COPY client ./client
 COPY common ./common
 COPY package*.json ./
 
-# Install dependencies (by default all dependencies, as long as NODE_ENV is not production)
-RUN npm ci -w=client --ignore-scripts
+# Regardless of the NODE_ENV, we need to install dev dependencies to build the
+# app. They will not be included in the final image.
+RUN npm ci -w=client --ignore-scripts --include=dev
 RUN npm -w=client run build
 
 FROM node:18-alpine3.17 as production

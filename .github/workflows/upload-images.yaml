@@ -9,10 +9,6 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
-      - name: Use Node.js
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          node-version: '18.x'
       - name: Login to Docker Hub
         run: | 
           echo ${{ secrets.DOCKER_PAT }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -30,13 +26,12 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
           NEXT_PUBLIC_CLIENT_URL: ${{ secrets.CHAPTER_CLIENT_URL }}
         run: |
-          npm run build
+          docker compose -f docker-compose.yml build
           tagname=$(git rev-parse --short HEAD)-$(date +%Y%m%d)-$(date +%H%M)
           docker tag chapter-server ${{ secrets.DOCKER_REPOSITORY }}/chapter-server:$tagname
           docker tag chapter-server ${{ secrets.DOCKER_REPOSITORY }}/chapter-server:latest
           docker tag chapter-client ${{ secrets.DOCKER_REPOSITORY }}/chapter-client:$tagname
           docker tag chapter-client ${{ secrets.DOCKER_REPOSITORY }}/chapter-client:latest
-
       - name: Upload Images
         run: |
           docker push --all-tags ${{ secrets.DOCKER_REPOSITORY }}/chapter-server

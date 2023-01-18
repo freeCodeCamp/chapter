@@ -20,3 +20,9 @@ services:
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
       - EMAIL_HOST=mailhog
+  mailhog:
+    restart: unless-stopped
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

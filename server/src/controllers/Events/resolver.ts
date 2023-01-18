@@ -58,6 +58,7 @@ import {
   getEventUnsubscribeOptions,
 } from '../../util/eventEmail';
 import { formatDate } from '../../util/date';
+import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
 
 const eventUserIncludes = {

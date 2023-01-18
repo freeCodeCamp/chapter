@@ -37,11 +37,9 @@ export const VenuePage: NextPageWithLayout = () => {
           </Heading>
 
           <Text>{getLocationString(data.venue, true)}</Text>
-          <Text>
-            <Link fontWeight={500} href={`/dashboard/chapters/${chapter.id}`}>
-              {chapter.name}
-            </Link>
-          </Text>
+          <Link fontWeight={500} href={`/dashboard/chapters/${chapter.id}`}>
+            {chapter.name}
+          </Link>
         </ProgressCardContent>
       </Card>
       <EventList

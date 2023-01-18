@@ -9,7 +9,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - "54320:5432"
-  app:
+  server:
     depends_on:
       - db
     command: ["npm", "run", "start:coverage"]

@@ -1,0 +1,38 @@
+name: Upload Images
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Upload Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - name: Login to Docker Hub
+        run: | 
+          echo ${{ secrets.DOCKER_PAT }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      # Due to a quirk of Actions, the .env file overwrites the env: values you
+      # set in the YAML. We create this empty file so that the build does not
+      # fail, but pass the values in via env:
+      - name: Create Dummy .env
+        run: touch .env
+      - name: Build Images
+        env:
+          NEXT_PUBLIC_SERVER_URL: ${{ secrets.CHAPTER_SERVER_URL }}
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          NEXT_PUBLIC_CLIENT_URL: ${{ secrets.CHAPTER_CLIENT_URL }}
+        run: |
+          docker compose -f docker-compose.yml build
+          tagname=$(git rev-parse --short HEAD)-$(date +%Y%m%d)-$(date +%H%M)
+          docker tag chapter-server ${{ secrets.DOCKER_REPOSITORY }}/chapter-server:$tagname
+          docker tag chapter-server ${{ secrets.DOCKER_REPOSITORY }}/chapter-server:latest
+          docker tag chapter-client ${{ secrets.DOCKER_REPOSITORY }}/chapter-client:$tagname
+          docker tag chapter-client ${{ secrets.DOCKER_REPOSITORY }}/chapter-client:latest
+      - name: Upload Images
+        run: |
+          docker push --all-tags ${{ secrets.DOCKER_REPOSITORY }}/chapter-server
+          docker push --all-tags ${{ secrets.DOCKER_REPOSITORY }}/chapter-client

@@ -9,7 +9,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - "54320:5432"
-  app:
+  server:
     restart: "no"
     depends_on:
       - db
@@ -32,7 +32,7 @@ services:
 
   mailhog:
     depends_on:
-      - app
+      - server
     image: mailhog/mailhog
     ports:
       - "1025:1025"

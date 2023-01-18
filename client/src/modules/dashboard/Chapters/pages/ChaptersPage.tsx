@@ -6,7 +6,7 @@ import React, { ReactElement } from 'react';
 import { checkPermission } from '../../../../util/check-permission';
 import { useDashboardChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { Permission } from '../../../../../../common/permissions';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useUser } from '../../../auth/user';
@@ -184,5 +184,5 @@ export const ChaptersPage: NextPageWithLayout = () => {
 };
 
 ChaptersPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import VenueForm from '../components/VenueForm';
 
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -26,5 +26,5 @@ export const NewVenuePage: NextPageWithLayout = () => {
 };
 
 NewVenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

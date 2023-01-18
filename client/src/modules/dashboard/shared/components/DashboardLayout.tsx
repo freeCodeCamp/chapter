@@ -33,7 +33,7 @@ const links = [
 ];
 const scrollWidth = 150;
 
-export const Layout = ({
+export const DashboardLayout = ({
   children,
   dataCy,
   ...rest

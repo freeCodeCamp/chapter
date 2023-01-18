@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 
 import { Sponsors } from '../../Events/graphql/queries';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { useCreateSponsorMutation } from '../../../../generated/graphql';
@@ -59,5 +59,5 @@ const NewSponsorPage: NextPageWithLayout = () => {
 export { NewSponsorPage };
 
 NewSponsorPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

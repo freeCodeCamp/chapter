@@ -29,7 +29,7 @@ import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { DASHBOARD_EVENT } from '../graphql/queries';
@@ -160,27 +160,30 @@ export const EventPage: NextPageWithLayout = () => {
             {endAt}
           </Text>
         </Text>
-        {isPhysical(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.venue && (
-            <>
-              <Text opacity={'.9'}>
-                Venue:{' '}
-                <Text as={'span'} fontWeight={500}>
-                  {data.dashboardEvent.venue.name}
-                </Text>
+        {isPhysical(data.dashboardEvent.venue_type) && (
+          <>
+            <Text opacity={'.9'}>
+              Venue:{' '}
+              <Text as={'span'} fontWeight={500}>
+                {data?.dashboardEvent?.venue?.name || 'Undecided/TBD'}
               </Text>
+            </Text>
+            {data.dashboardEvent.venue && (
               <Text opacity={'.9'}>
                 Hosted at:{' '}
                 <Text as={'span'} fontWeight={500}>
                   {getLocationString(data.dashboardEvent.venue, true)}
                 </Text>
               </Text>
-            </>
-          )}
-        {isOnline(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.streaming_url && (
-            <Text opacity={'.9'}>
-              Streaming Url:{' '}
+            )}
+          </>
+        )}
+        {isOnline(data.dashboardEvent.venue_type) && (
+          <Text opacity={'.9'}>
+            Streaming Url:{' '}
+            {!data.dashboardEvent.streaming_url ? (
+              'Undecided/TBD'
+            ) : (
               <Link
                 fontWeight={500}
                 href={data.dashboardEvent.streaming_url}
@@ -188,8 +191,9 @@ export const EventPage: NextPageWithLayout = () => {
               >
                 {data.dashboardEvent.streaming_url}
               </Link>
-            </Text>
-          )}
+            )}
+          </Text>
+        )}
 
         {integrationStatus !== false &&
           data.dashboardEvent.chapter.calendar_id && (
@@ -329,5 +333,5 @@ export const EventPage: NextPageWithLayout = () => {
 };
 
 EventPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

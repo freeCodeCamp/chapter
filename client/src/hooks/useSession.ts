@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 
 import { useAuth } from '../modules/auth/context';
@@ -22,25 +22,43 @@ const destroySession = () =>
   });
 
 export const useSession = () => {
-  const { getToken, login, logout, isAuthenticated } = useAuth();
+  const {
+    getToken,
+    login: loginAuth,
+    logout: logoutAuth,
+    isAuthenticated,
+  } = useAuth();
   const createSession = async () => {
     const token = await getToken();
     return requestSession(token);
   };
-  const client = useApolloClient();
+  const apollo = useApolloClient();
   const { refetch } = useMeQuery();
+  // Until the user initiates a login or logout, we don't want to create or
+  // destroy a session
+  const [canAlterSession, setCanAlterSession] = useState(false);
 
-  // Note: this triggers twice whenever isAuthenticated changes.  More reason to
-  // handle side effects centrally.
+  const login = async () => {
+    await loginAuth();
+    setCanAlterSession(true);
+  };
+  const logout = async () => {
+    await logoutAuth();
+    setCanAlterSession(true);
+  };
+
   useEffect(() => {
+    if (!canAlterSession) return;
+    setCanAlterSession(false);
+
     if (isAuthenticated) {
       createSession().then(() => refetch());
     } else {
       destroySession()
         .then(() => refetch())
-        .then(() => client.resetStore());
+        .then(() => apollo.resetStore());
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, canAlterSession]);
 
   return { createSession, login, logout, isAuthenticated };
 };

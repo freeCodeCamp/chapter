@@ -7,26 +7,26 @@ import {
 import { MailerData, MailProvider } from './abstract-provider';
 
 export class SESProvider extends MailProvider {
-  private accessKeyId: string;
-  private secretAccessKey: string;
+  private SESClient: SESClient;
 
   constructor() {
     super();
     if (!process.env.SES_ACCESS_KEY_ID || !process.env.SES_SECRET_ACCESS_KEY) {
       throw new Error('Email service is set to SES but missing required keys.');
     }
-    this.accessKeyId = process.env.SES_ACCESS_KEY_ID;
-    this.secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
-  }
-
-  async send(data: MailerData) {
     const awsConfig: SESClientConfig = {
       credentials: {
-        accessKeyId: this.accessKeyId,
-        secretAccessKey: this.secretAccessKey,
+        accessKeyId: process.env.SES_ACCESS_KEY_ID,
+        secretAccessKey: process.env.SES_SECRET_ACCESS_KEY,
       },
       region: 'us-east-1',
     };
+    this.SESClient = new SESClient(awsConfig);
+  }
+
+  async send(data: MailerData) {
+    // TODO: batch into 50 emails per request
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-ses/classes/sendemailcommand.html
     for (const email of data.emailList) {
       const opts = new SendEmailCommand({
         Destination: {
@@ -47,7 +47,7 @@ export class SESProvider extends MailProvider {
         Source: this.ourEmail,
       });
 
-      await new SESClient(awsConfig).send(opts);
+      await this.SESClient.send(opts);
     }
   }
 }

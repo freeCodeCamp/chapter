@@ -10,8 +10,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
+import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import EventChapterSelect from './EventChapterSelect';
@@ -20,13 +19,6 @@ import EventCancelButton from './EventCancelButton';
 import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
 import { EventFormProps, fields, EventFormData } from './EventFormUtils';
-
-const fieldTypeToComponent = (type: string) => {
-  if (type === 'textarea') {
-    return TextArea;
-  }
-  return Input;
-};
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
@@ -82,7 +74,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     defaultValues,
   });
   const {
-    formState: { isDirty },
+    formState: { isDirty, errors },
     handleSubmit,
     register,
     watch,
@@ -119,6 +111,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
+          const error = errors[key]?.message;
           return (
             <Component
               key={key}
@@ -127,7 +120,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               placeholder={placeholder}
               isRequired={isRequired}
               isDisabled={loading}
-              {...register(key)}
+              error={error}
+              {...register(key, {
+                required: {
+                  value: isRequired,
+                  message: `${label} is required`,
+                },
+              })}
             />
           );
         })}

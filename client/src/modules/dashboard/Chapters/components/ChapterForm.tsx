@@ -2,8 +2,7 @@ import { Button, HStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
+import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import type {
   DashboardChapterQuery,
@@ -112,7 +111,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<CreateChapterInputs>({
     defaultValues,
   });
@@ -127,30 +126,28 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       submitLabel={submitText}
       FormHandling={handleSubmit(disableWhileSubmitting)}
     >
-      {fields.map(({ key, label, placeholder, required, type }) =>
-        type == 'textarea' ? (
-          <TextArea
+      {fields.map(({ key, label, placeholder, required, type }) => {
+        const error = errors[key]?.message;
+        const Component = fieldTypeToComponent(type);
+        return (
+          <Component
             key={key}
-            label={label}
-            placeholder={placeholder}
-            {...register(key)}
-            isRequired={required}
-            defaultValue={defaultValues[key] ?? undefined}
-            isDisabled={loading}
-          />
-        ) : (
-          <Input
-            key={key}
-            label={label}
-            placeholder={placeholder}
-            {...register(key)}
             type={type}
-            isRequired={required}
-            defaultValue={defaultValues[key] ?? undefined}
+            label={label}
+            error={error}
             isDisabled={loading}
+            isRequired={required}
+            placeholder={placeholder}
+            defaultValue={defaultValues[key] ?? undefined}
+            {...register(key, {
+              required: {
+                value: required,
+                message: `${label} is required`,
+              },
+            })}
           />
-        ),
-      )}
+        );
+      })}
       <HStack gap="1em" width="100%">
         <Button
           width="100%"

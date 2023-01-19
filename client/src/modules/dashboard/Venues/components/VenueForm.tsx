@@ -137,7 +137,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     venue,
   );
   const {
-    formState: { isDirty },
+    formState: { isDirty, errors },
     handleSubmit,
     register,
   } = useForm<VenueFormData>({
@@ -175,19 +175,28 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           </Select>
         </FormControl>
       )}
-      {fields.map(({ key, isRequired, label, type, step, max, min }) => (
-        <Input
-          key={key}
-          label={label}
-          {...register(key)}
-          type={type}
-          isRequired={isRequired}
-          step={step}
-          max={max}
-          min={min}
-          isDisabled={loading}
-        />
-      ))}
+      {fields.map(({ key, isRequired, label, type, step, max, min }) => {
+        const error = errors[key]?.message;
+        return (
+          <Input
+            key={key}
+            label={label}
+            error={error}
+            {...register(key, {
+              required: {
+                value: isRequired,
+                message: `${label} is required`,
+              },
+            })}
+            type={type}
+            isRequired={isRequired}
+            step={step}
+            max={max}
+            min={min}
+            isDisabled={loading}
+          />
+        );
+      })}
       <Button
         mt="30px"
         width="100%"

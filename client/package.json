@@ -36,8 +36,8 @@
     "react-hook-form": "7.42.1"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.479.0",
-    "@codesee/tracker": "0.479.0",
+    "@codesee/babel-plugin-instrument": "0.480.0",
+    "@codesee/tracker": "0.480.0",
     "@graphql-codegen/cli": "2.16.4",
     "@graphql-codegen/fragment-matcher": "3.3.3",
     "@graphql-codegen/introspection": "2.2.3",
@@ -48,7 +48,7 @@
     "@graphql-codegen/typescript-react-apollo": "3.3.7",
     "@testing-library/dom": "8.20.0",
     "@testing-library/react": "13.4.0",
-    "@types/react": "18.0.26",
+    "@types/react": "18.0.27",
     "@types/react-datepicker": "4.8.0",
     "@types/react-dom": "18.0.10",
     "babel-plugin-istanbul": "6.1.1",

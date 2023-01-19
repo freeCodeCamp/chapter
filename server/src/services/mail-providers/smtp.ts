@@ -1,8 +1,8 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import Utilities from '../../util/Utilities';
 
 import type { MailerData } from './abstract-provider';
 import { MailProvider } from './abstract-provider';
+import { allValuesAreDefined } from './smtp-helpers';
 
 export class SMTPProvider extends MailProvider {
   private transporter: Transporter;
@@ -12,6 +12,18 @@ export class SMTPProvider extends MailProvider {
 
   constructor() {
     super();
+    const credentialsAreValid = allValuesAreDefined([
+      process.env.EMAIL_USERNAME,
+      process.env.EMAIL_PASSWORD,
+      process.env.EMAIL_HOST,
+      this.ourEmail,
+    ]);
+
+    if (!credentialsAreValid) {
+      console.warn(
+        'Email, Username, password, and/or email service are missing in Mailer.ts',
+      );
+    }
     this.emailUsername = process.env.EMAIL_USERNAME || 'project.1';
     this.emailPassword = process.env.EMAIL_PASSWORD || 'secret.1';
     this.emailHost = process.env.EMAIL_HOST || 'localhost';
@@ -19,18 +31,6 @@ export class SMTPProvider extends MailProvider {
   }
 
   private createTransporter() {
-    const validateOurCredentials = Utilities.allValuesAreDefined([
-      this.emailUsername,
-      this.emailPassword,
-      this.ourEmail,
-    ]);
-
-    if (!validateOurCredentials) {
-      console.warn(
-        'Email, Username, password, and/or email service are missing in Mailer.ts',
-      );
-    }
-
     this.transporter = nodemailer.createTransport({
       host: this.emailHost,
       port: 1025,

@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/client';
+import NextError from 'next/error';
 import React from 'react';
 import { Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
@@ -15,10 +16,12 @@ import {
   UserDownloadQuery,
 } from '../../../generated/graphql';
 import { getNameText } from '../../../components/UserName';
+import { Loading } from '../../../components/Loading';
 import { meQuery } from '../../auth/graphql/queries';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
 import { useSession } from '../../../hooks/useSession';
+import { useUser } from '../../auth/user';
 
 const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
   const dataString = JSON.stringify(userData, (key, value) =>
@@ -31,13 +34,13 @@ const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
 };
 
 export const UserProfilePage = () => {
-  const { data } = useUserProfileQuery();
-  const [getData, { data: userDownloadData, loading }] =
+  const { data, loading } = useUserProfileQuery();
+  const [getData, { data: userDownloadData, loading: loadingDownloadData }] =
     useUserDownloadLazyQuery();
-  const userInfo = data?.userProfile;
   const userDownload = userDownloadData?.userDownload;
 
   const { logout } = useSession();
+  const { isLoggedIn, loadingUser } = useUser();
   const router = useRouter();
   const client = useApolloClient();
 
@@ -75,99 +78,101 @@ export const UserProfilePage = () => {
     await client.resetStore();
   };
 
+  const isLoading = loading || loadingUser || !data;
+
+  if (isLoading) return <Loading loading={isLoading} />;
+  if (!isLoggedIn || !data.userProfile)
+    return <NextError statusCode={401} title={'Log in to see this page'} />;
+
+  const userInfo = data.userProfile;
+
   return (
     <div>
-      {userInfo ? (
+      <Heading as="h1" marginBlock={'.5em'}>
+        Profile
+      </Heading>
+      <Heading as="h2" size={'lg'}>
+        Welcome, {getNameText(userInfo.name)}
+      </Heading>
+      {userInfo.admined_chapters.length > 0 && (
         <>
-          <Heading as="h1" marginBlock={'.5em'}>
-            Profile
+          <Heading as="h2" marginBlock={'.5em'} size="md">
+            You are an administrator for these Chapters:
           </Heading>
-          <Heading as="h2" size={'lg'}>
-            Welcome, {getNameText(userInfo.name)}
-          </Heading>
-          {userInfo.admined_chapters.length > 0 && (
-            <>
-              <Heading as="h2" marginBlock={'.5em'} size="md">
-                You are an administrator for these Chapters:
-              </Heading>
-              <Flex
-                marginTop={'1em'}
-                maxWidth={'fit-content'}
-                flexDirection={'column'}
-                gap={4}
-              >
-                {userInfo.admined_chapters.map(({ name, id }) => (
-                  <Link key={id} href={`/chapters/${id}`}>
-                    {name}
-                  </Link>
-                ))}
-              </Flex>
-            </>
-          )}
-          <Heading as="h2" marginTop={'2em'} size="lg" fontWeight={500}>
-            Email address:{' '}
-            <Text as="span" fontWeight={700}>
-              {userInfo.email}
-            </Text>
-          </Heading>
-          <ProfileForm
-            onSubmit={submitUpdateMe}
-            data={userInfo}
-            loadingText={'Saving Profile Changes'}
-            submitText={'Save Profile Changes'}
-          />
-          <Flex gap="2em" marginBlock={'2em'}>
-            <Button
-              height={'2.8em'}
-              paddingBlock={'.65em'}
-              paddingInline={'.4em'}
-              colorScheme={'red'}
-              onClick={clickDelete}
-            >
-              Delete My Data
-            </Button>
-            <Button
-              fontWeight="600"
-              background={'gray.85'}
-              color={'gray.10'}
-              height={'100%'}
-              size={'lg'}
-              borderRadius={'5px'}
-              paddingBlock={'.65em'}
-              paddingInline={'.4em'}
-              _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
-              onClick={() => getData()}
-              isDisabled={!!userDownload}
-            >
-              Request your data
-            </Button>
-            {loading ? (
-              <Spinner />
-            ) : (
-              <>
-                {userDownload && (
-                  <Link
-                    fontWeight="600"
-                    background={'gray.85'}
-                    color={'gray.10'}
-                    height={'100%'}
-                    size={'lg'}
-                    borderRadius={'5px'}
-                    paddingBlock={'.65em'}
-                    paddingInline={'.4em'}
-                    download={`${userDownload?.name}.json`}
-                    href={createDataUrl(userDownload)}
-                  >
-                    Download the data
-                  </Link>
-                )}
-              </>
-            )}
+          <Flex
+            marginTop={'1em'}
+            maxWidth={'fit-content'}
+            flexDirection={'column'}
+            gap={4}
+          >
+            {userInfo.admined_chapters.map(({ name, id }) => (
+              <Link key={id} href={`/chapters/${id}`}>
+                {name}
+              </Link>
+            ))}
           </Flex>
         </>
-      ) : (
-        <Heading as="h1">Please login to see your profile</Heading>
       )}
+      <Heading as="h2" marginTop={'2em'} size="lg" fontWeight={500}>
+        Email address:{' '}
+        <Text as="span" fontWeight={700}>
+          {userInfo.email}
+        </Text>
+      </Heading>
+      <ProfileForm
+        onSubmit={submitUpdateMe}
+        data={userInfo}
+        loadingText={'Saving Profile Changes'}
+        submitText={'Save Profile Changes'}
+      />
+      <Flex gap="2em" marginBlock={'2em'}>
+        <Button
+          height={'2.8em'}
+          paddingBlock={'.65em'}
+          paddingInline={'.4em'}
+          colorScheme={'red'}
+          onClick={clickDelete}
+        >
+          Delete My Data
+        </Button>
+        <Button
+          fontWeight="600"
+          background={'gray.85'}
+          color={'gray.10'}
+          height={'100%'}
+          size={'lg'}
+          borderRadius={'5px'}
+          paddingBlock={'.65em'}
+          paddingInline={'.4em'}
+          _hover={{ color: 'gray.85', backgroundColor: 'gray.10' }}
+          onClick={() => getData()}
+          isDisabled={!!userDownload}
+        >
+          Request your data
+        </Button>
+        {loadingDownloadData ? (
+          <Spinner />
+        ) : (
+          <>
+            {userDownload && (
+              <Link
+                fontWeight="600"
+                background={'gray.85'}
+                color={'gray.10'}
+                height={'100%'}
+                size={'lg'}
+                borderRadius={'5px'}
+                paddingBlock={'.65em'}
+                paddingInline={'.4em'}
+                download={`${userDownload?.name}.json`}
+                href={createDataUrl(userDownload)}
+              >
+                Download the data
+              </Link>
+            )}
+          </>
+        )}
+      </Flex>
     </div>
   );
 };

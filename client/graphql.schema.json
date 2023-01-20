@@ -5202,13 +5202,9 @@
               }
             ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ChapterUserWithRelations",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "ChapterUserWithRelations",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

@@ -162,14 +162,14 @@ async function emailUserAboutRoleChange({
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUserWithRelations)
+  @Query(() => ChapterUserWithRelations, { nullable: true })
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
-  ): Promise<ChapterUserWithRelations> {
+  ): Promise<ChapterUserWithRelations | null> {
     if (!ctx.user) throw Error('User not found');
 
-    return await prisma.chapter_users.findUniqueOrThrow({
+    return await prisma.chapter_users.findUnique({
       include: chapterUsersInclude,
       where: {
         user_id_chapter_id: { user_id: ctx.user.id, chapter_id: chapterId },

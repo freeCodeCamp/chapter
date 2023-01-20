@@ -538,7 +538,7 @@ export type Query = {
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser: ChapterUserWithRelations;
+  chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
@@ -974,12 +974,12 @@ export type ChapterUserQueryVariables = Exact<{
 
 export type ChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser: {
+  chapterUser?: {
     __typename?: 'ChapterUserWithRelations';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  };
+  } | null;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;

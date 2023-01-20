@@ -104,6 +104,7 @@ export const EventPage: NextPageWithLayout = () => {
   ];
 
   const integrationStatus = dataStatus?.calendarIntegrationStatus;
+  const eventChapter = data.dashboardEvent.chapter;
 
   return (
     <>
@@ -159,6 +160,15 @@ export const EventPage: NextPageWithLayout = () => {
           <Text as={'span'} fontWeight={500}>
             {endAt}
           </Text>
+        </Text>
+        <Text opacity={'.9'}>
+          Event By:{' '}
+          <Link
+            fontWeight={500}
+            href={`/dashboard/chapters/${eventChapter.id}`}
+          >
+            {eventChapter.name}
+          </Link>
         </Text>
         {isPhysical(data.dashboardEvent.venue_type) && (
           <>

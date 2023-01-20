@@ -21,7 +21,7 @@ export const DASHBOARD_VENUES = gql`
   }
 `;
 
-export const VENUE = gql`
+export const DASHBOARD_VENUE = gql`
   query venue($venueId: Int!) {
     venue(venueId: $venueId) {
       id

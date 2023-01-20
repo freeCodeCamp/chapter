@@ -62,9 +62,12 @@ describe('profile page', () => {
 
     it('when disabled, should not automatically subscribe to chapter when joining chapter', () => {
       cy.visit(profilePage);
+      cy.contains('will be notified');
       cy.findByRole('checkbox', {
         name: 'Subscribe to chapters when joining them',
-      }).uncheck({ force: true });
+      })
+        .should('be.checked')
+        .uncheck({ force: true });
       cy.findByRole('button', { name: 'Save Profile Changes' }).click();
       cy.joinChapter(chapterIdToJoin);
 

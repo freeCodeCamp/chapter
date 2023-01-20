@@ -62,7 +62,6 @@ const Home = () => {
         toast({ title: err.message || err.name });
       } else {
         toast({ title: 'An unexpected error occurred' });
-        console.log(err);
       }
     }
   };

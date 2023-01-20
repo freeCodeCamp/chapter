@@ -23,7 +23,6 @@ export const ChaptersPage: NextPage = () => {
         maxW="48em"
         mt={10}
         mb={5}
-        placeItems={'center'}
       >
         <Flex
           justifyContent={'space-between'}

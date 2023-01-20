@@ -33,14 +33,23 @@ const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
   return dataUrl;
 };
 
-export const UserProfilePage = () => {
-  const { data, loading } = useUserProfileQuery();
+const RequireLogin = ({ children }: { children: React.ReactNode }) => {
+  const { isLoggedIn, loadingUser } = useUser();
+
+  if (loadingUser) return <Loading loading={loadingUser} />;
+  if (!isLoggedIn)
+    return <NextError statusCode={401} title={'Log in to see this page'} />;
+
+  return <>{children}</>;
+};
+
+const UserProfile = () => {
+  const { data, loading, error } = useUserProfileQuery();
   const [getData, { data: userDownloadData, loading: loadingDownloadData }] =
     useUserDownloadLazyQuery();
   const userDownload = userDownloadData?.userDownload;
 
   const { logout } = useSession();
-  const { isLoggedIn, loadingUser } = useUser();
   const router = useRouter();
   const client = useApolloClient();
 
@@ -78,12 +87,8 @@ export const UserProfilePage = () => {
     await client.resetStore();
   };
 
-  const isLoading = loading || loadingUser || !data;
-
-  if (isLoading) return <Loading loading={isLoading} />;
-  if (!isLoggedIn || !data.userProfile)
-    return <NextError statusCode={401} title={'Log in to see this page'} />;
-
+  const isLoading = loading || !data;
+  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
   const userInfo = data.userProfile;
 
   return (
@@ -174,5 +179,13 @@ export const UserProfilePage = () => {
         )}
       </Flex>
     </div>
+  );
+};
+
+export const UserProfilePage = () => {
+  return (
+    <RequireLogin>
+      <UserProfile />
+    </RequireLogin>
   );
 };

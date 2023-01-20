@@ -557,7 +557,7 @@ export type Query = {
   sponsors: Array<Sponsor>;
   tokenStatuses: Array<TokenStatus>;
   userDownload?: Maybe<UserForDownload>;
-  userProfile?: Maybe<UserProfile>;
+  userProfile: UserProfile;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<VenueWithChapterEvents>;
 };
@@ -1810,7 +1810,7 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = {
   __typename?: 'Query';
-  userProfile?: {
+  userProfile: {
     __typename?: 'UserProfile';
     id: number;
     name: string;
@@ -1823,7 +1823,7 @@ export type UserProfileQuery = {
       id: number;
       name: string;
     }>;
-  } | null;
+  };
 };
 
 export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;

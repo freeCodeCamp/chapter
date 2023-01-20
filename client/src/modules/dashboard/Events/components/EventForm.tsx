@@ -74,7 +74,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     defaultValues,
   });
   const {
-    formState: { isDirty, errors },
+    formState: { isDirty },
     handleSubmit,
     register,
     watch,
@@ -111,7 +111,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
-          const error = errors[key]?.message;
           return (
             <Component
               key={key}
@@ -120,13 +119,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               placeholder={placeholder}
               isRequired={isRequired}
               isDisabled={loading}
-              error={error}
-              {...register(key, {
-                required: {
-                  value: isRequired,
-                  message: `${label} is required`,
-                },
-              })}
+              {...register(key)}
             />
           );
         })}

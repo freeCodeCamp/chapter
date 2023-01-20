@@ -111,7 +111,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isDirty, errors },
+    formState: { isDirty },
   } = useForm<CreateChapterInputs>({
     defaultValues,
   });
@@ -127,24 +127,17 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       FormHandling={handleSubmit(disableWhileSubmitting)}
     >
       {fields.map(({ key, label, placeholder, required, type }) => {
-        const error = errors[key]?.message;
         const Component = fieldTypeToComponent(type);
         return (
           <Component
             key={key}
             type={type}
             label={label}
-            error={error}
             isDisabled={loading}
             isRequired={required}
             placeholder={placeholder}
             defaultValue={defaultValues[key] ?? undefined}
-            {...register(key, {
-              required: {
-                value: required,
-                message: `${label} is required`,
-              },
-            })}
+            {...register(key)}
           />
         );
       })}

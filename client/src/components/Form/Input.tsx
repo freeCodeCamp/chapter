@@ -63,6 +63,7 @@ export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
           id={name}
           name={name}
           ref={ref}
+          isRequired={isRequired}
           placeholder={placeholder ?? label}
           {...rest}
         />

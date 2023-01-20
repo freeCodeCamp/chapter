@@ -1,8 +1,10 @@
 import { inspect } from 'util';
 
+import { Permission } from '../../../common/permissions';
 import { prisma } from '../prisma';
 import { Event } from '../graphql-types';
 import { createCalendarEvent } from '../services/Google';
+import mailerService from '../services/MailerService';
 import { redactSecrets } from './redact-secrets';
 
 interface CreateCalendarEventData {
@@ -45,4 +47,28 @@ export const integrationStatus = async () => {
   const tokens = await prisma.google_tokens.findMany();
   if (!tokens.length) return false;
   return tokens.some(({ is_valid }) => is_valid) ? true : null;
+};
+
+export const sendInvalidTokenNotification = async () => {
+  const users = await prisma.users.findMany({
+    where: {
+      instance_role: {
+        instance_role_permissions: {
+          some: {
+            instance_permission: {
+              name: Permission.GoogleAuthenticate,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const emailList = users.map(({ email }) => email);
+  await mailerService.sendEmail({
+    emailList,
+    subject: 'Token marked as invalid',
+    htmlEmail:
+      "One of the calendar actions was unsuccessful due to issues with validity of the saved authentication token. It's required to reauthenticate with calendar api in the Calendar dashboard.",
+  });
 };

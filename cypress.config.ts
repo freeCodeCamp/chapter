@@ -7,6 +7,10 @@ import coverage from '@cypress/code-coverage/task';
 import { prisma } from './server/src/prisma';
 import { InstanceRoles } from './common/roles';
 
+const getEvents = () => prisma.events.findMany();
+
+export type Events = Awaited<ReturnType<typeof getEvents>>;
+
 const getChapterMembers = (chapterId: number) =>
   prisma.chapter_users.findMany({
     where: { chapter_id: chapterId },
@@ -22,6 +26,13 @@ const getEventUsers = (eventId: number) =>
   });
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
+
+const deleteEventUser = async (arg: { eventId: number; userId: number }) =>
+  await prisma.event_users.delete({
+    where: { user_id_event_id: { user_id: arg.userId, event_id: arg.eventId } },
+  });
+
+export type EventUser = Awaited<ReturnType<typeof deleteEventUser>>;
 
 const getUser = async (email: string) =>
   await prisma.users.findUnique({
@@ -68,6 +79,8 @@ export default defineConfig({
       });
 
       on('task', {
+        deleteEventUser,
+        getEvents,
         getChapterMembers,
         getEventUsers,
         getUser,

@@ -9,6 +9,25 @@ import {
 const chapterId = 1;
 const eventId = 1;
 
+function navigateToEventsDashboard() {
+  cy.get('button[data-cy="menu-button"]').click();
+  cy.findByRole('menuitem', { name: 'Dashboard' }).click();
+
+  cy.get('[data-cy="dashboard-tabs"]').should('be.visible');
+  cy.findByRole('link', { name: 'Events Dashboard' }).click();
+  cy.contains('Loading...');
+  cy.location('pathname').should('match', /^\/dashboard\/events$/);
+  cy.wait('@GQLdashboardEvents');
+  cy.get('[data-cy="events-dashboard"]').should('be.visible');
+}
+
+function saveEventChanges() {
+  cy.findByRole('button', { name: 'Save Event Changes' }).click();
+  cy.contains('Loading...');
+  cy.contains('Save Event Changes').should('not.exist');
+  cy.get('[data-cy="events-dashboard"]').should('be.visible');
+}
+
 // TODO: Move these specs into the other describe block, once we can make sure
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
@@ -88,22 +107,69 @@ describe('spec needing owner', () => {
     });
   });
 
+  it('should be possible to change venue type, change venue and streaming url, set them to TBD', () => {
+    const streamingUrl = 'https://random.com';
+    cy.visit('/dashboard/events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    cy.findAllByRole('row')
+      .filter(':has([data-cy="event"])')
+      .first()
+      .as('editedEvent');
+    cy.get('@editedEvent').find('a').last().as('editButton');
+
+    cy.get('@editButton').click();
+    cy.contains('Loading...');
+
+    cy.findByRole('radio', { name: 'In-person & Online' }).click({
+      force: true,
+    });
+    cy.findByRole('combobox', { name: 'Venue' }).as('venueSelect');
+    cy.get('@venueSelect').select('0');
+    cy.findByRole('textbox', { name: 'Streaming URL' }).as('streamingUrlField');
+    cy.get('@streamingUrlField').clear();
+    saveEventChanges();
+
+    cy.get('@editedEvent').find('[data-cy="venue"]').should('contain', 'TBD');
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'TBD');
+
+    cy.get('@editButton').click();
+    cy.findByRole('radio', { name: 'In-person' }).click({ force: true });
+    cy.get('@venueSelect').select(1);
+    cy.get('@venueSelect').find('option').eq(1).invoke('text').as('venueName');
+    saveEventChanges();
+
+    cy.get('@venueName').then((venueName) => {
+      cy.get('@editedEvent')
+        .find('[data-cy="venue"]')
+        .should('contain', venueName);
+    });
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'In-person only');
+
+    cy.get('@editButton').click();
+    cy.findByRole('radio', { name: 'Online' }).click({ force: true });
+    cy.get('@streamingUrlField').type(streamingUrl);
+    saveEventChanges();
+
+    cy.get('@editedEvent')
+      .find('[data-cy="venue"]')
+      .should('contain', 'Online only');
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', streamingUrl);
+  });
+
   it('editing event updates cached events on home page', () => {
     cy.visit('');
-    cy.get('button[data-cy="menu-button"]').click();
-    cy.findByRole('menuitem', { name: 'Events' }).click();
+    cy.contains('Upcoming events');
     cy.get('a[href*="/events/"]').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
-    cy.get('button[data-cy="menu-button"]').click();
-    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-
-    cy.findByRole('link', { name: 'Events Dashboard' }).click();
-    cy.contains('Loading...');
-    cy.location('pathname').should('match', /^\/dashboard\/events$/);
-    cy.wait('@GQLdashboardEvents');
-    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    navigateToEventsDashboard();
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -135,16 +201,12 @@ describe('spec needing owner', () => {
 
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
+    cy.contains('Upcoming events');
     cy.get('a[href*="/events/"]').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
-    cy.get('button[data-cy="menu-button"]').click();
-    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-    cy.findByRole('link', { name: 'Events Dashboard' }).click();
-    cy.contains('Loading...');
-    cy.location('pathname').should('match', /^\/dashboard\/events$/);
-    cy.wait('@GQLdashboardEvents');
-    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    navigateToEventsDashboard();
+
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
@@ -219,7 +281,7 @@ describe('events dashboard', () => {
     cy.interceptGQL('dashboardEvents');
   });
 
-  it('chapter admin should be allowed to edit event, but nobody else', () => {
+  it('chapter admins should be allowed to edit events, members and banned users should not', () => {
     const eventOneData = {
       ...event,
       start_at: new Date(),
@@ -236,7 +298,7 @@ describe('events dashboard', () => {
     cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
   });
 
-  it('chapter admin should be allowed to delete event, but nobody else', () => {
+  it('chapter admins should be allowed to delete events, members and banned users should not', () => {
     // newly registered user (without a chapter_users record)
     cy.login(users.testUser.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);
@@ -251,14 +313,14 @@ describe('events dashboard', () => {
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectNoErrors);
+    cy.sendEventInvite(eventId).then(expectNoErrors);
 
     cy.login(users.testUser.email);
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
 
     // banned admin should be rejected
     cy.login(users.bannedAdmin.email);
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
   });
 
   it('chapter admin should see only events from admined chapters', () => {

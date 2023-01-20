@@ -6,7 +6,6 @@ import { ChapterUserResolver } from './ChapterUser/resolver';
 import { EventResolver } from './Events/resolver';
 import { EventRoleResolver } from './EventRole/resolver';
 import { EventUserResolver } from './EventUser/resolver';
-import { EmailResolver } from './Messages/resolver';
 import { InstanceRoleResolver } from './InstanceRole/resolver';
 import { SponsorResolver } from './Sponsors/resolver';
 import { VenueResolver } from './Venue/resolver';
@@ -20,7 +19,6 @@ const resolvers = [
   ChapterResolver,
   ChapterRoleResolver,
   ChapterUserResolver,
-  EmailResolver,
   EventResolver,
   EventRoleResolver,
   EventUserResolver,

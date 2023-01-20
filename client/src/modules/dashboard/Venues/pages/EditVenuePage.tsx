@@ -10,9 +10,9 @@ import {
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import VenueForm, { VenueFormData } from '../components/VenueForm';
-import { DASHBOARD_VENUES } from '../graphql/queries';
+import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
@@ -30,7 +30,10 @@ export const EditVenuePage: NextPageWithLayout = () => {
   });
 
   const [updateVenue] = useUpdateVenueMutation({
-    refetchQueries: [{ query: DASHBOARD_VENUES }],
+    refetchQueries: [
+      { query: DASHBOARD_VENUE, variables: { venueId } },
+      { query: DASHBOARD_VENUES },
+    ],
   });
 
   const toast = useToast();
@@ -80,5 +83,5 @@ export const EditVenuePage: NextPageWithLayout = () => {
 };
 
 EditVenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout dataCy="edit-venue-page">{page}</Layout>;
+  return <DashboardLayout dataCy="edit-venue-page">{page}</DashboardLayout>;
 };

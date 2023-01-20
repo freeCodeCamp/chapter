@@ -18,7 +18,10 @@ export class EventRolePermission {
 export class EventRole extends BaseObject {
   @Field(() => String)
   name: string;
+}
 
+@ObjectType()
+export class EventRoleWithPermissions extends EventRole {
   @Field(() => [EventRolePermission])
   event_role_permissions: EventRolePermission[];
 }
@@ -45,6 +48,12 @@ export class EventUserWithRole extends EventUser {
 }
 
 @ObjectType()
+export class EventUserWithRolePermissions extends EventUser {
+  @Field(() => EventRoleWithPermissions)
+  event_role: EventRoleWithPermissions;
+}
+
+@ObjectType()
 export class EventUserWithRelations extends EventUserWithRole {
   @Field(() => Rsvp)
   rsvp: Rsvp;
@@ -54,7 +63,16 @@ export class EventUserWithRelations extends EventUserWithRole {
 }
 
 @ObjectType()
-export class UserEvent extends EventUserWithRole {
+export class EventUserWithRsvpAndUser extends EventUser {
+  @Field(() => Rsvp)
+  rsvp: Rsvp;
+
+  @Field(() => User)
+  user: User;
+}
+
+@ObjectType()
+export class UserEvent extends EventUserWithRolePermissions {
   @Field(() => Rsvp)
   rsvp: Rsvp;
 

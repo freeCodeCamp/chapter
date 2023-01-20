@@ -1,15 +1,15 @@
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import VenueForm from '../components/VenueForm';
 
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useSubmitVenue } from '../utils';
-import { useAuth } from 'modules/auth/store';
+import { useUser } from '../../../auth/user';
 
 export const NewVenuePage: NextPageWithLayout = () => {
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const onSubmit = useSubmitVenue();
 
@@ -26,5 +26,5 @@ export const NewVenuePage: NextPageWithLayout = () => {
 };
 
 NewVenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

@@ -8,7 +8,7 @@ import {
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { DASHBOARD_EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
@@ -31,7 +31,8 @@ export const EditEventPage: NextPageWithLayout = () => {
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [
-      { query: DASHBOARD_EVENTS },
+      { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
+      { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
@@ -77,10 +78,11 @@ export const EditEventPage: NextPageWithLayout = () => {
       loadingText={'Saving Event Changes'}
       submitText={'Save Event Changes'}
       chapterId={data.dashboardEvent.chapter.id}
+      formType="edit"
     />
   );
 };
 
 EditEventPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

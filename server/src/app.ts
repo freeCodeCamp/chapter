@@ -170,7 +170,7 @@ export const main = async (app: Express) => {
     next();
   }
 
-  app.get('/authenticate-with-google', canAuthWithGoogle, (_req, res) => {
+  app.get('/authenticate-with-google', canAuthWithGoogle, (req, res) => {
     const state = crypto.randomUUID();
     res.cookie('state', state, {
       httpOnly: true,
@@ -178,7 +178,7 @@ export const main = async (app: Express) => {
       sameSite: 'lax',
     });
 
-    const authUrl = getGoogleAuthUrl(state);
+    const authUrl = getGoogleAuthUrl(state, req.query.prompt === 'true');
     res.redirect(authUrl);
   });
 
@@ -191,16 +191,30 @@ export const main = async (app: Express) => {
 
     requestTokens(code)
       .then(() => {
-        res.send('Authentication successful');
+        res.redirect(`${clientLocation}/dashboard/calendar`);
       })
       .catch((err) => {
-        next(err);
+        // Refresh token is returned only for the first authorization
+        // - when user sees the consent screen. If user is re-authenticating
+        // we need to force displaying of the consent screen.
+        if (err?.message === 'Missing refresh_token') {
+          res.redirect('/authenticate-with-google?prompt=true');
+        } else {
+          next(err);
+        }
       });
   });
 
   const schema = await buildSchema({
     resolvers,
     authChecker: authorizationChecker,
+    validate: {
+      // This is required for the classes that have no explicit validator
+      // decorators. Without this type-graphql will throw an error when tries to
+      // validate them. See
+      // https://github.com/MichalLytek/type-graphql/issues/1397#issuecomment-1351432122
+      forbidUnknownValues: false,
+    },
   });
   const server = new ApolloServer({
     schema,
@@ -212,6 +226,9 @@ export const main = async (app: Express) => {
       venues: req.venues,
     }),
     csrfPrevention: true,
+    // To prevent DoS via filling up the cache, we limit its size
+    // https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#ensuring-a-bounded-cache
+    cache: 'bounded',
   });
 
   await server.start();

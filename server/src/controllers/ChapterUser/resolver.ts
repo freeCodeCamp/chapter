@@ -26,7 +26,7 @@ import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { removeEventAttendee } from '../../services/Google';
 import { redactSecrets } from '../../util/redact-secrets';
-import MailerService from '../../../src/services/MailerService';
+import mailerService from '../../../src/services/MailerService';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -153,11 +153,11 @@ async function emailUserAboutRoleChange({
   emailSubject,
   emailBody,
 }: EmailProps) {
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: email,
     subject: emailSubject,
     htmlEmail: emailBody,
-  }).sendEmail();
+  });
 }
 
 @Resolver(() => ChapterUser)
@@ -167,9 +167,7 @@ export class ChapterUserResolver {
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
   ): Promise<ChapterUserWithRelations | null> {
-    if (!ctx.user) {
-      return null;
-    }
+    if (!ctx.user) throw Error('User not found');
 
     return await prisma.chapter_users.findUnique({
       include: chapterUsersInclude,
@@ -216,8 +214,9 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUser)
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser | null> {
+    @Ctx() ctx: ResolverCtx,
+  ): Promise<ChapterUser> {
+    if (!ctx.user) throw Error('User not found');
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
 
     // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.

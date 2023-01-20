@@ -19,9 +19,9 @@ import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { useAuth } from '../../auth/store';
+import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
@@ -29,6 +29,7 @@ import SponsorsCard from '../../../components/SponsorsCard';
 import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
+import { meQuery } from '../../auth/graphql/queries';
 import {
   useCancelRsvpMutation,
   useEventQuery,
@@ -39,27 +40,32 @@ import {
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
-import { useLogin } from '../../../hooks/useAuth';
+import { useSession } from '../../../hooks/useSession';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser, isLoggedIn } = useAuth();
-  const login = useLogin();
+  const { user, loadingUser, isLoggedIn } = useUser();
+  const { login } = useSession();
   const modalProps = useDisclosure();
 
   const refetch = {
     refetchQueries: [
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
+      { query: meQuery },
     ],
   };
 
-  const [rsvpToEvent] = useRsvpToEventMutation(refetch);
-  const [cancelRsvp] = useCancelRsvpMutation(refetch);
+  const [rsvpToEvent, { loading: loadingRsvp }] =
+    useRsvpToEventMutation(refetch);
+  const [cancelRsvp, { loading: loadingCancel }] =
+    useCancelRsvpMutation(refetch);
   const [joinChapter] = useJoinChapterMutation(refetch);
-  const [subscribeToEvent] = useSubscribeToEventMutation(refetch);
-  const [unsubscribeFromEvent] = useUnsubscribeFromEventMutation(refetch);
+  const [subscribeToEvent, { loading: loadingSubscribe }] =
+    useSubscribeToEventMutation(refetch);
+  const [unsubscribeFromEvent, { loading: loadingUnsubscribe }] =
+    useUnsubscribeFromEventMutation(refetch);
 
   const { loading, error, data } = useEventQuery({
     variables: { eventId },
@@ -67,18 +73,20 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
-  const [hasShownModal, setHasShownModal] = React.useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false);
+  const [awaitingLogin, setAwaitingLogin] = useState(false);
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
       ({ user: event_user }) => event_user.id === user?.id,
     );
   }, [data?.event, user]);
+  const userEvent = user?.user_events.find(
+    ({ event_id }) => event_id === eventId,
+  );
   const rsvpStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
-  const canShowConfirmationModal =
-    router.query?.ask_to_confirm && !isLoading && isLoggedIn;
-
+  const canShowConfirmationModal = router.query?.confirm_rsvp && !isLoading;
   const chapterId = data?.event?.chapter.id;
 
   // The useEffect has to be before the early return (rule of hooks), but the
@@ -86,14 +94,18 @@ export const EventPage: NextPage = () => {
   // It's easy to create bugs by calling arrow functions before they're defined,
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
+  function isAlreadyRsvp(rsvpStatus: string | undefined) {
+    const alreadyRsvp = rsvpStatus === 'yes' || rsvpStatus === 'waitlist';
+    if (alreadyRsvp) {
+      toast({ title: 'Already RSVPed', status: 'info' });
+      return true;
+    }
+    return false;
+  }
 
-  async function onRsvp(rsvpStatus: string | undefined) {
+  async function onRsvp() {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
-      return;
-    }
-    if (rsvpStatus === 'yes' || rsvpStatus === 'waitlist') {
-      toast({ title: 'Already RSVPed', status: 'info' });
       return;
     }
     try {
@@ -131,14 +143,15 @@ export const EventPage: NextPage = () => {
     }
   }
 
-  // TODO: reimplment this the login modal with Auth0
-  async function checkOnRsvp(options?: { invited?: boolean }) {
+  async function tryToRsvp(options?: { invited?: boolean }) {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
           body: (
             <>
-              Would you like to attend?
+              {user
+                ? 'Would you like to attend?'
+                : 'Would you like to log in and join this event?'}
               <br />
               Note: joining this event will make you a member of the
               event&apos;s chapter.
@@ -149,36 +162,38 @@ export const EventPage: NextPage = () => {
           title: 'Join this event?',
           body: `Note: joining this event will make you a member of the event's chapter.`,
         };
+
     const ok = await confirm(confirmOptions);
+    if (!ok) return;
 
-    if (ok) {
-      if (user) {
-        await onRsvp(rsvpStatus);
-        return;
-      }
-      modalProps.onOpen();
-      const {
-        data: { me },
-      } = await login();
-      modalProps.onClose();
-      const eventUser = data?.event?.event_users.find(
-        ({ user: event_user }) => event_user.id === me?.id,
-      );
-      await onRsvp(eventUser?.rsvp.name);
+    if (user) {
+      await onRsvp();
+      return;
     }
-  }
+    modalProps.onOpen();
+    login();
 
-  // TODO: reimplment this the login modal with Auth0
-  async function checkOnCancelRsvp() {
-    await onCancelRsvp();
+    // TODO: handling async events (like login finishing) using state and
+    // effects is not pretty. Post MVP, we should try to find a less hacky
+    // approach.
+    setAwaitingLogin(true);
   }
 
   useEffect(() => {
+    if (awaitingLogin && isLoggedIn) {
+      setAwaitingLogin(false);
+      modalProps.onClose();
+      const eventUser = data?.event?.event_users.find(
+        ({ user: event_user }) => event_user.id === user?.id,
+      );
+      if (!isAlreadyRsvp(eventUser?.rsvp.name)) onRsvp();
+    }
+  }, [awaitingLogin, isLoggedIn]);
+
+  useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
-      if (!rsvpStatus || rsvpStatus === 'no') {
-        checkOnRsvp({ invited: true });
-      } else {
-        checkOnCancelRsvp();
+      if (!isAlreadyRsvp(rsvpStatus)) {
+        tryToRsvp({ invited: true });
       }
       setHasShownModal(true);
     }
@@ -278,11 +293,12 @@ export const EventPage: NextPage = () => {
         </Text>
         {!rsvpStatus || rsvpStatus === 'no' ? (
           <Button
-            data-cy="rsvp-button"
             colorScheme="blue"
-            onClick={() => checkOnRsvp()}
-            paddingInline="2"
+            data-cy="rsvp-button"
+            isLoading={loadingRsvp}
+            onClick={() => tryToRsvp()}
             paddingBlock="1"
+            paddingInline="2"
           >
             {data.event.invite_only ? 'Request' : 'RSVP'}
           </Button>
@@ -299,22 +315,28 @@ export const EventPage: NextPage = () => {
                 You&lsquo;ve RSVPed to this event
               </Text>
             )}
-            <Button onClick={onCancelRsvp} paddingInline="2" paddingBlock="1">
+            <Button
+              isLoading={loadingCancel}
+              onClick={onCancelRsvp}
+              paddingBlock="1"
+              paddingInline="2"
+            >
               Cancel
             </Button>
           </HStack>
         )}
-        {eventUser && (
+        {userEvent && (
           <HStack>
-            {eventUser.subscribed ? (
+            {userEvent.subscribed ? (
               <>
                 <Text fontSize={'md'} fontWeight={'500'}>
                   You are subscribed
                 </Text>
                 <Button
+                  isLoading={loadingUnsubscribe}
                   onClick={onUnsubscribeFromEvent}
-                  paddingInline={'2'}
-                  paddingBlock={'1'}
+                  paddingBlock="1"
+                  paddingInline="2"
                 >
                   Unsubscribe
                 </Button>
@@ -326,9 +348,10 @@ export const EventPage: NextPage = () => {
                 </Text>
                 <Button
                   colorScheme="blue"
+                  isLoading={loadingSubscribe}
                   onClick={onSubscribeToEvent}
-                  paddingInline={'2'}
-                  paddingBlock={'1'}
+                  paddingBlock="1"
+                  paddingInline="2"
                 >
                   Subscribe
                 </Button>

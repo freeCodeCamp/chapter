@@ -23,7 +23,9 @@ export const RoleChangeModal: React.FC<{
   title: string;
   onSubmit: (submitData: SubmitData) => void;
 }> = ({ modalProps, data, roles, title, onSubmit }) => {
-  const { handleSubmit, register, setValue, getValues } = useForm<SubmitData>();
+  const { handleSubmit, register } = useForm<SubmitData>({
+    values: { newRoleName: data.roleName, userId: data.userId },
+  });
   const currentRole = data.roleName;
 
   const confirm = useConfirm();
@@ -41,9 +43,6 @@ export const RoleChangeModal: React.FC<{
     }
   };
 
-  setValue('userId', data.userId);
-  setValue('newRoleName', data.roleName);
-
   return (
     <Modal
       modalProps={modalProps}
@@ -54,10 +53,7 @@ export const RoleChangeModal: React.FC<{
       )}
     >
       <Text>Select role for {data.userName}</Text>
-      <Select
-        defaultValue={getValues('newRoleName')}
-        {...register('newRoleName')}
-      >
+      <Select defaultValue={currentRole} {...register('newRoleName')}>
         {roles.map(({ id, name }) => (
           <option key={id} value={name}>
             {name}

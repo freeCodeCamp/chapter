@@ -15,14 +15,18 @@ import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
 import { useHomeQuery } from '../../generated/graphql';
-import { AuthContextType, useAuth } from '../../modules/auth/store';
+import { UserContextType, useUser } from '../auth/user';
 import { getNameText } from '../../components/UserName';
 
-type User = NonNullable<AuthContextType['user']>;
+type User = NonNullable<UserContextType['user']>;
 
 const Welcome = ({ user }: { user: User }) => {
   return (
-    <Flex alignItems={'center'} justifyContent="space-between" marginTop="20px">
+    <Flex
+      alignItems={'center'}
+      justifyContent="space-between"
+      marginBlockStart="1.25em"
+    >
       <Heading as="h1">Welcome, {getNameText(user.name)}</Heading>
       {!user.name && (
         <Text>
@@ -44,7 +48,7 @@ const Home = () => {
   const { loading, error, data, fetchMore } = useHomeQuery({
     variables: { offset: 0, limit: 2 },
   });
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const toast = useToast();
   const onLoadMore = async () => {
@@ -58,7 +62,6 @@ const Home = () => {
         toast({ title: err.message || err.name });
       } else {
         toast({ title: 'An unexpected error occurred' });
-        console.log(err);
       }
     }
   };
@@ -71,7 +74,7 @@ const Home = () => {
       {user ? (
         <Welcome user={user} />
       ) : (
-        <Heading as="h1" marginTop="20px">
+        <Heading as="h1" marginBlockStart="1.25em">
           Welcome to Chapter
         </Heading>
       )}

@@ -3,10 +3,10 @@ import {
   ChapterPermission,
   InstancePermission,
 } from '../../../common/permissions';
-import { AuthContextType } from 'modules/auth/store';
+import { UserContextType } from '../modules/auth/user';
 
 export const checkPermission = (
-  user: AuthContextType['user'],
+  user: UserContextType['user'],
   requiredPermission: InstancePermission | ChapterPermission,
   variableValues?: Record<string, number>,
 ) => {

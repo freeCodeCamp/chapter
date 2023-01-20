@@ -1,15 +1,14 @@
 import {
-  Heading,
-  VStack,
-  HStack,
-  Spinner,
-  Stack,
   Box,
-  Text,
+  Button,
+  Heading,
   Image,
   Link,
-  Button,
+  SimpleGrid,
+  Stack,
+  Text,
   useToast,
+  VStack,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
@@ -19,7 +18,7 @@ import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { CHAPTER_USER } from '../graphql/queries';
-import { useAuth } from '../../auth/store';
+import { useUser } from '../../auth/user';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
 import {
@@ -44,61 +43,74 @@ const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
 const SubscriptionWidget = ({
   chapterUser,
   chapterSubscribe,
+  loading,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
+  loading: boolean;
 }) => {
   return chapterUser?.subscribed ? (
-    <HStack justifyContent={'space-between'} width={'100%'}>
+    <>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
-      <Button onClick={() => chapterSubscribe(false)} size="md">
+      <Button
+        data-cy="unsubscribe-chapter"
+        isLoading={loading}
+        onClick={() => chapterSubscribe(false)}
+      >
         Unsubscribe
       </Button>
-    </HStack>
+    </>
   ) : (
-    <HStack justifyContent={'space-between'} width={'100%'}>
+    <>
       <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
       <Button
         colorScheme="blue"
+        data-cy="subscribe-chapter"
+        isLoading={loading}
         onClick={() => chapterSubscribe(true)}
-        size="md"
       >
         Subscribe
       </Button>
-    </HStack>
+    </>
   );
 };
 
 const ChapterUserRoleWidget = ({
   chapterUser,
-  LeaveChapter,
   JoinChapter,
+  LeaveChapter,
+  loadingJoin,
+  loadingLeave,
 }: {
   chapterUser: ChapterUserQuery['chapterUser'];
-  LeaveChapter: () => Promise<void>;
   JoinChapter: () => Promise<void>;
+  LeaveChapter: () => Promise<void>;
+  loadingJoin: boolean;
+  loadingLeave: boolean;
 }) =>
   chapterUser?.chapter_role ? (
-    <HStack justifyContent={'space-between'}>
+    <>
       <Text data-cy="join-success" fontWeight={500}>
         <CheckIcon marginRight={1} />
         {chapterUser.chapter_role.name} of the chapter
       </Text>
-      <Button onClick={LeaveChapter}>Leave</Button>
-    </HStack>
+      <Button isLoading={loadingLeave} onClick={LeaveChapter}>
+        Leave
+      </Button>
+    </>
   ) : (
-    <HStack justifyContent="space-between">
+    <>
       <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" onClick={JoinChapter}>
+      <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
         Join
       </Button>
-    </HStack>
+    </>
   );
 
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
   const router = useRouter();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useUser();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
@@ -116,9 +128,12 @@ export const ChapterPage: NextPage = () => {
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };
-  const [joinChapter] = useJoinChapterMutation(refetch);
-  const [leaveChapter] = useLeaveChapterMutation(refetch);
-  const [chapterSubscribe] = useToggleChapterSubscriptionMutation(refetch);
+  const [joinChapter, { loading: loadingJoin }] =
+    useJoinChapterMutation(refetch);
+  const [leaveChapter, { loading: loadingLeave }] =
+    useLeaveChapterMutation(refetch);
+  const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
+    useToggleChapterSubscriptionMutation(refetch);
 
   const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
@@ -232,6 +247,17 @@ export const ChapterPage: NextPage = () => {
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="600px" spacing={6} mt={10} mb={5}>
+        {data.chapter.logo_url && (
+          <Image
+            src={data.chapter.logo_url}
+            alt={`${data.chapter.name} logo`}
+            position={`${data.chapter.banner_url ? 'absolute' : 'initial'}`}
+            width="6em"
+            height="6em"
+            borderRadius="50%"
+            outline="2px solid white"
+          />
+        )}
         {data.chapter.banner_url && (
           <Box height={'300px'}>
             <Image
@@ -257,29 +283,24 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {isLoggedIn &&
-          (loadingChapterUser ? (
-            <Spinner />
-          ) : (
-            dataChapterUser && (
-              <ChapterUserRoleWidget
-                JoinChapter={onJoinChapter}
-                LeaveChapter={onLeaveChapter}
-                chapterUser={dataChapterUser.chapterUser}
-              />
-            )
-          ))}
-        {isLoggedIn &&
-          (loadingChapterUser ? (
-            <Spinner />
-          ) : (
-            dataChapterUser?.chapterUser && (
+        {isLoggedIn && dataChapterUser && (
+          <SimpleGrid columns={2} gap={5} alignItems="center">
+            <ChapterUserRoleWidget
+              chapterUser={dataChapterUser.chapterUser}
+              JoinChapter={onJoinChapter}
+              LeaveChapter={onLeaveChapter}
+              loadingJoin={loadingJoin}
+              loadingLeave={loadingLeave}
+            />
+            {dataChapterUser.chapterUser && (
               <SubscriptionWidget
                 chapterUser={dataChapterUser.chapterUser}
                 chapterSubscribe={onChapterSubscribe}
+                loading={loadingSubscribeToggle}
               />
-            )
-          ))}
+            )}
+          </SimpleGrid>
+        )}
         <ChatLink chatUrl={data.chapter.chat_url} />
         <Heading as="h2" fontSize={['md', 'lg', 'xl']}>
           Events:

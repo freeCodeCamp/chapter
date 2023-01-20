@@ -4,21 +4,21 @@ import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 
 import { Sponsors } from '../../Events/graphql/queries';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { useCreateSponsorMutation } from '../../../../generated/graphql';
 import { checkPermission } from '../../../../util/check-permission';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { useAuth } from 'modules/auth/store';
+import { useUser } from '../../../auth/user';
 
 const NewSponsorPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [createSponsor] = useCreateSponsorMutation({
     refetchQueries: [{ query: Sponsors }],
   });
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser } = useUser();
 
   const hasPermissionToCreateSponsor = checkPermission(
     user,
@@ -59,5 +59,5 @@ const NewSponsorPage: NextPageWithLayout = () => {
 export { NewSponsorPage };
 
 NewSponsorPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

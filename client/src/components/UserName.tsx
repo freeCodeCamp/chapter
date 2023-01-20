@@ -1,7 +1,7 @@
 import { Text, TextProps } from '@chakra-ui/react';
 import React from 'react';
 
-import { useAuth } from '../modules/auth/store';
+import { useUser } from '../modules/auth/user';
 
 interface UserNameProps extends TextProps {
   highlight?: boolean;
@@ -20,7 +20,7 @@ const UserName = ({
   user: { id, name },
   ...textProps
 }: UserNameProps) => {
-  const { user } = useAuth();
+  const { user } = useUser();
 
   return (
     <Text

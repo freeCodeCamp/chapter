@@ -12,7 +12,7 @@ import { capitalize } from '../../util/capitalize';
 
 const allowed_types = ['text'] as const;
 
-type AllowedTypes = typeof allowed_types[number];
+type AllowedTypes = (typeof allowed_types)[number];
 
 export interface TextAreaProps extends Omit<ChakraTextareaProps, 'type'> {
   label?: string;

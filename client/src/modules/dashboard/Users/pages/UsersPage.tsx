@@ -17,7 +17,7 @@ import {
 } from '../../../../generated/graphql';
 
 import UserName from '../../../../components/UserName';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Users } from '../graphql/queries';
 import {
@@ -160,5 +160,5 @@ export const UsersPage: NextPageWithLayout = () => {
 };
 
 UsersPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

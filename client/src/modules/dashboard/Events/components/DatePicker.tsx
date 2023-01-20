@@ -15,6 +15,8 @@ interface DatePickerProps {
   onChange: (date: Date | null) => void;
 }
 
+// TODO: figure out why only name and field from ReactDatePicker matter.  The
+// ones in the custom input are ignored.
 const DatePicker = ({
   date,
   error,
@@ -26,6 +28,8 @@ const DatePicker = ({
 }: DatePickerProps) => {
   return (
     <ReactDatePicker
+      name={field}
+      id={field}
       selected={date}
       showTimeSelect
       timeIntervals={5}

@@ -1,12 +1,12 @@
-import { useApolloClient } from '@apollo/client';
 import { HStack } from '@chakra-ui/layout';
 import {
-  Image,
+  Box,
   Button,
+  Image,
   Menu,
-  MenuList,
-  MenuItem,
   MenuButton,
+  MenuItem,
+  MenuList,
   Spinner,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
@@ -17,8 +17,8 @@ import React from 'react';
 
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
-import { useAuth } from '../../modules/auth/store';
-import { useLogout, useLogin } from '../../hooks/useAuth';
+import { useUser } from '../../modules/auth/user';
+import { useSession } from '../../hooks/useSession';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
 import { checkPermission } from 'util/check-permission';
@@ -37,14 +37,10 @@ const menuButtonStyles = {
 // use sign-in for the app?
 export const Header: React.FC = () => {
   const router = useRouter();
-  const { user, loadingUser } = useAuth();
-  const logout = useLogout();
-  const login = useLogin();
-  const client = useApolloClient();
+  const { user, loadingUser } = useUser();
+  const { login, logout } = useSession();
 
-  const goHome = () => {
-    router.push('/').then(() => client.resetStore());
-  };
+  const goHome = () => router.push('/');
 
   return (
     <>
@@ -69,7 +65,7 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <HStack as="nav">
+        <HStack as="nav" color="gray.85">
           {loadingUser ? (
             <Spinner color="white" size="xl" />
           ) : (
@@ -85,73 +81,81 @@ export const Header: React.FC = () => {
                   Login
                 </Button>
               )}
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  data-cy="menu-button"
-                  padding="0"
-                  width="4.5em"
-                  {...(user ? menuButtonStyles.login : menuButtonStyles.logout)}
-                >
-                  {user ? (
-                    <HStack spacing="0">
-                      <Avatar user={user} cursor="pointer" aria-label="menu" />
-                      <ChevronDownIcon
-                        color="gray.10"
-                        fontSize="xl"
-                        opacity=".9"
-                      />
-                    </HStack>
-                  ) : (
-                    'Menu'
-                  )}
-                </MenuButton>
-                <MenuList
-                  paddingBlock={0}
-                  display="flex"
-                  flexDirection="column"
-                  fontWeight="600"
-                  borderRadius="5px"
-                >
-                  <NextLink passHref href="/chapters">
-                    <MenuItem as="a">Chapters</MenuItem>
-                  </NextLink>
+              <Box>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    data-cy="menu-button"
+                    padding="0"
+                    width="4.5em"
+                    {...(user
+                      ? menuButtonStyles.login
+                      : menuButtonStyles.logout)}
+                  >
+                    {user ? (
+                      <HStack spacing="0">
+                        <Avatar
+                          user={user}
+                          cursor="pointer"
+                          aria-label="menu"
+                        />
+                        <ChevronDownIcon
+                          color="gray.10"
+                          fontSize="xl"
+                          opacity=".9"
+                        />
+                      </HStack>
+                    ) : (
+                      'Menu'
+                    )}
+                  </MenuButton>
+                  <MenuList
+                    paddingBlock={0}
+                    display="flex"
+                    flexDirection="column"
+                    fontWeight="600"
+                    borderRadius="5px"
+                  >
+                    <NextLink passHref href="/chapters">
+                      <MenuItem as="a">Chapters</MenuItem>
+                    </NextLink>
 
-                  <NextLink passHref href="/events">
-                    <MenuItem as="a">Events</MenuItem>
-                  </NextLink>
+                    <NextLink passHref href="/events">
+                      <MenuItem as="a">Events</MenuItem>
+                    </NextLink>
 
-                  {user && (
-                    <>
-                      <NextLink passHref href="/profile">
-                        <MenuItem
-                          as="a"
-                          borderTop={'1px'}
-                          borderColor={'gray.85'}
-                        >
-                          Profile
-                        </MenuItem>
-                      </NextLink>
-                      {checkPermission(user, Permission.ChaptersView) && (
-                        <NextLink passHref href="/dashboard/chapters">
-                          <MenuItem data-cy="menu-dashboard-link" as="a">
-                            Dashboard
+                    {user && (
+                      <>
+                        <NextLink passHref href="/profile">
+                          <MenuItem
+                            as="a"
+                            borderTop="1px"
+                            borderColor="gray.85"
+                          >
+                            Profile
                           </MenuItem>
                         </NextLink>
-                      )}
-                      <MenuItem
-                        data-cy="logout-button"
-                        onClick={() => logout().then(goHome)}
-                        fontWeight="600"
-                        borderTop={'1px'}
-                        borderColor={'gray.85'}
-                      >
-                        Logout
-                      </MenuItem>
-                    </>
-                  )}
-                </MenuList>
-              </Menu>
+                        {checkPermission(user, Permission.ChaptersView) && (
+                          <NextLink passHref href="/dashboard/chapters">
+                            <MenuItem data-cy="menu-dashboard-link" as="a">
+                              Dashboard
+                            </MenuItem>
+                          </NextLink>
+                        )}
+                        <MenuItem
+                          data-cy="logout-button"
+                          onClick={() => goHome().then(() => logout())}
+                          fontWeight="600"
+                          borderTop="1px"
+                          borderColor="gray.85"
+                        >
+                          Logout
+                        </MenuItem>
+                      </>
+                    )}
+                  </MenuList>
+                </Menu>
+              </Box>
             </>
           )}
         </HStack>

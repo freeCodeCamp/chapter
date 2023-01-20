@@ -7,13 +7,14 @@ import {
   Text,
   VStack,
   Flex,
+  Spinner,
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { Fragment, ReactElement } from 'react';
 
 import {
   useConfirmRsvpMutation,
@@ -21,12 +22,14 @@ import {
   useDeleteRsvpMutation,
   MutationConfirmRsvpArgs,
   MutationDeleteRsvpArgs,
+  useCreateCalendarEventMutation,
+  useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
 import { DASHBOARD_EVENT } from '../graphql/queries';
@@ -49,8 +52,12 @@ export const EventPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId },
   });
+  const { loading: loadingStatus, data: dataStatus } =
+    useCalendarIntegrationStatusQuery();
   const [confirmRsvp] = useConfirmRsvpMutation(args(eventId));
   const [removeRsvp] = useDeleteRsvpMutation(args(eventId));
+  const [createCalendarEvent, { loading: loadingCalendar }] =
+    useCreateCalendarEventMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
@@ -69,7 +76,7 @@ export const EventPage: NextPageWithLayout = () => {
       if (ok) removeRsvp({ variables: { eventId, userId } });
     };
 
-  const isLoading = loading || !data;
+  const isLoading = loading || !data || loadingStatus;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
@@ -95,6 +102,9 @@ export const EventPage: NextPageWithLayout = () => {
       action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
   ];
+
+  const integrationStatus = dataStatus?.calendarIntegrationStatus;
+  const eventChapter = data.dashboardEvent.chapter;
 
   return (
     <>
@@ -151,27 +161,39 @@ export const EventPage: NextPageWithLayout = () => {
             {endAt}
           </Text>
         </Text>
-        {isPhysical(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.venue && (
-            <>
-              <Text opacity={'.9'}>
-                Venue:{' '}
-                <Text as={'span'} fontWeight={500}>
-                  {data.dashboardEvent.venue.name}
-                </Text>
+        <Text opacity={'.9'}>
+          Event By:{' '}
+          <Link
+            fontWeight={500}
+            href={`/dashboard/chapters/${eventChapter.id}`}
+          >
+            {eventChapter.name}
+          </Link>
+        </Text>
+        {isPhysical(data.dashboardEvent.venue_type) && (
+          <>
+            <Text opacity={'.9'}>
+              Venue:{' '}
+              <Text as={'span'} fontWeight={500}>
+                {data?.dashboardEvent?.venue?.name || 'Undecided/TBD'}
               </Text>
+            </Text>
+            {data.dashboardEvent.venue && (
               <Text opacity={'.9'}>
                 Hosted at:{' '}
                 <Text as={'span'} fontWeight={500}>
                   {getLocationString(data.dashboardEvent.venue, true)}
                 </Text>
               </Text>
-            </>
-          )}
-        {isOnline(data.dashboardEvent.venue_type) &&
-          data.dashboardEvent.streaming_url && (
-            <Text opacity={'.9'}>
-              Streaming Url:{' '}
+            )}
+          </>
+        )}
+        {isOnline(data.dashboardEvent.venue_type) && (
+          <Text opacity={'.9'}>
+            Streaming Url:{' '}
+            {!data.dashboardEvent.streaming_url ? (
+              'Undecided/TBD'
+            ) : (
               <Link
                 fontWeight={500}
                 href={data.dashboardEvent.streaming_url}
@@ -179,24 +201,30 @@ export const EventPage: NextPageWithLayout = () => {
               >
                 {data.dashboardEvent.streaming_url}
               </Link>
-            </Text>
-          )}
-
-        {data.dashboardEvent.chapter.calendar_id && (
-          <HStack>
-            <Text>Event created in calendar:</Text>
-            {data.dashboardEvent.calendar_event_id ? (
-              <CheckIcon boxSize="5" />
-            ) : (
-              <CloseIcon boxSize="4" />
             )}
-          </HStack>
+          </Text>
         )}
+
+        {integrationStatus !== false &&
+          data.dashboardEvent.chapter.calendar_id && (
+            <HStack>
+              <Text>Event created in calendar:</Text>
+              {loadingCalendar ? (
+                <Spinner size="sm" />
+              ) : data.dashboardEvent.calendar_event_id ? (
+                <CheckIcon boxSize="5" />
+              ) : (
+                <CloseIcon boxSize="4" />
+              )}
+            </HStack>
+          )}
 
         <Actions
           event={data.dashboardEvent}
           chapter={data.dashboardEvent.chapter}
           onDelete={() => router.replace('/dashboard/events')}
+          integrationStatus={integrationStatus}
+          createCalendarEvent={createCalendarEvent}
         />
       </Flex>
 
@@ -214,11 +242,10 @@ export const EventPage: NextPageWithLayout = () => {
               )
             : [];
           return (
-            <>
+            <Fragment key={title.toLowerCase()}>
               <Box
                 display={{ base: 'none', lg: 'block' }}
                 width="100%"
-                key={title.toLowerCase()}
                 data-cy={title.toLowerCase()}
               >
                 <DataTable
@@ -307,7 +334,7 @@ export const EventPage: NextPageWithLayout = () => {
                   </HStack>
                 ))}
               </Box>
-            </>
+            </Fragment>
           );
         })}
       </Box>
@@ -316,5 +343,5 @@ export const EventPage: NextPageWithLayout = () => {
 };
 
 EventPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

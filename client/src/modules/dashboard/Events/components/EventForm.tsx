@@ -1,4 +1,4 @@
-import { Button, Checkbox, Heading, HStack, Text } from '@chakra-ui/react';
+import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
@@ -35,6 +35,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     submitText,
     chapterId: initialChapterId,
     loadingText,
+    formType,
   } = props;
   const isChaptersDropdownNeeded = typeof initialChapterId === 'undefined';
 
@@ -55,6 +56,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       const date = new Date();
       return {
         venue_type: VenueType.PhysicalAndOnline,
+        venue_id: 0,
         chapter_id: initialChapterId,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
@@ -63,13 +65,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     return {
       name: data.name,
       description: data.description,
-      streaming_url: data.streaming_url,
+      streaming_url: data.streaming_url ?? '',
       capacity: data.capacity,
       start_at: new Date(data.start_at),
       ends_at: new Date(data.ends_at),
       sponsors: data.sponsors,
       venue_type: data.venue_type,
-      venue_id: data.venue_id,
+      venue_id: data.venue_id ?? 0,
       image_url: data.image_url,
       invite_only: data.invite_only,
       chapter_id: initialChapterId,
@@ -89,9 +91,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const inviteOnly = watch('invite_only');
   const chapterId = watch('chapter_id');
 
-  const chapterVenuesQuery = useChapterVenuesQuery({
-    variables: { chapterId },
-  });
+  const chapterVenuesQuery = useChapterVenuesQuery(
+    !chapterId ? { skip: true } : { variables: { chapterId } },
+  );
 
   const { loading, disableWhileSubmitting } =
     useDisableWhileSubmitting<EventFormData>({
@@ -155,9 +157,23 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         <EventSponsorsForm loading={loading} sponsorsQuery={sponsorQuery} />
 
         {data?.canceled && <Text color="red.500">Event canceled</Text>}
-        <HStack width="100%" mb="10 !important">
+
+        {formType === 'new' && (
+          <Checkbox
+            defaultChecked={true}
+            disabled={loading}
+            {...register('attend_event')}
+          >
+            Attend Event
+          </Checkbox>
+        )}
+
+        <Grid
+          gridTemplateColumns="repeat(auto-fit, minmax(13rem, 1fr))"
+          width="100%"
+          gap="1em"
+        >
           <Button
-            width="full"
             colorScheme="blue"
             type="submit"
             isDisabled={!isDirty || loading}
@@ -168,13 +184,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           </Button>
           {data && !data.canceled && (
             <EventCancelButton
-              isFullWidth={true}
               event={data}
               isDisabled={loading}
               buttonText="Cancel this Event"
             />
           )}
-        </HStack>
+        </Grid>
       </Form>
     </FormProvider>
   );

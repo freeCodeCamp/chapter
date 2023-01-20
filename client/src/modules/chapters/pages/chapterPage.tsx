@@ -49,7 +49,7 @@ const SubscriptionWidget = ({
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
   loading: boolean;
 }) => {
-  return chapterUser?.subscribed ? (
+  return chapterUser.subscribed ? (
     <>
       <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
       <Button
@@ -88,7 +88,7 @@ const ChapterUserRoleWidget = ({
   loadingJoin: boolean;
   loadingLeave: boolean;
 }) =>
-  chapterUser?.chapter_role ? (
+  chapterUser.chapter_role ? (
     <>
       <Text data-cy="join-success" fontWeight={500}>
         <CheckIcon marginRight={1} />
@@ -164,7 +164,7 @@ export const ChapterPage: NextPage = () => {
         <>
           Leaving will cancel your attendance at all of this chapter&apos;s
           events.
-          {dataChapterUser?.chapterUser?.chapter_role.name ===
+          {dataChapterUser?.chapterUser.chapter_role.name ===
             'administrator' && (
             <>
               <br />

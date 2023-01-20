@@ -538,7 +538,7 @@ export type Query = {
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
   chapter: ChapterWithRelations;
   chapterRoles: Array<ChapterRole>;
-  chapterUser?: Maybe<ChapterUserWithRelations>;
+  chapterUser: ChapterUserWithRelations;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
@@ -556,7 +556,7 @@ export type Query = {
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   tokenStatuses: Array<TokenStatus>;
-  userDownload?: Maybe<UserForDownload>;
+  userDownload: UserForDownload;
   userProfile: UserProfile;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<VenueWithChapterEvents>;
@@ -974,12 +974,12 @@ export type ChapterUserQueryVariables = Exact<{
 
 export type ChapterUserQuery = {
   __typename?: 'Query';
-  chapterUser?: {
+  chapterUser: {
     __typename?: 'ChapterUserWithRelations';
     subscribed: boolean;
     user: { __typename?: 'User'; name: string };
     chapter_role: { __typename?: 'ChapterRole'; name: string };
-  } | null;
+  };
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -1830,7 +1830,7 @@ export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserDownloadQuery = {
   __typename?: 'Query';
-  userDownload?: {
+  userDownload: {
     __typename?: 'UserForDownload';
     id: number;
     name: string;
@@ -1926,7 +1926,7 @@ export type UserDownloadQuery = {
         venue_type: VenueType;
       };
     }>;
-  } | null;
+  };
 };
 
 export type UnsubscribeMutationVariables = Exact<{

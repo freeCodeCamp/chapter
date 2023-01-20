@@ -162,16 +162,14 @@ async function emailUserAboutRoleChange({
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUserWithRelations, { nullable: true })
+  @Query(() => ChapterUserWithRelations)
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
-  ): Promise<ChapterUserWithRelations | null> {
-    if (!ctx.user) {
-      return null;
-    }
+  ): Promise<ChapterUserWithRelations> {
+    if (!ctx.user) throw Error('User not found');
 
-    return await prisma.chapter_users.findUnique({
+    return await prisma.chapter_users.findUniqueOrThrow({
       include: chapterUsersInclude,
       where: {
         user_id_chapter_id: { user_id: ctx.user.id, chapter_id: chapterId },
@@ -216,8 +214,9 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUser)
   async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser | null> {
+    @Ctx() ctx: ResolverCtx,
+  ): Promise<ChapterUser> {
+    if (!ctx.user) throw Error('User not found');
     await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
 
     // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.

@@ -36,10 +36,9 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserProfile, { nullable: true })
-  async userProfile(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
-    if (!ctx.user) return null;
-    return await prisma.users.findUnique({
+  @Query(() => UserProfile)
+  async userProfile(@Ctx() ctx: Required<ResolverCtx>): Promise<UserProfile> {
+    return await prisma.users.findUniqueOrThrow({
       where: {
         id: ctx.user.id,
       },

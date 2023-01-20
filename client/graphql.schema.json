@@ -5731,9 +5731,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "UserProfile",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UserProfile",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

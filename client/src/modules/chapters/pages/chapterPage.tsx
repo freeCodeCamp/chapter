@@ -125,9 +125,6 @@ export const ChapterPage: NextPage = () => {
       variables: { chapterId },
     });
 
-  console.log('dataChapterUser', dataChapterUser);
-  console.log('isLoggedIn', isLoggedIn);
-
   const refetch = {
     refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
   };

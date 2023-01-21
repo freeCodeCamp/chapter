@@ -62,7 +62,6 @@ export const EventsPage: NextPageWithLayout = () => {
     Permission.EventEdit,
   );
 
-  console.log(hasPermissionToCreateEvent, hasPermissiontoEditEvent);
   return (
     <VStack data-cy="events-dashboard">
       <Flex

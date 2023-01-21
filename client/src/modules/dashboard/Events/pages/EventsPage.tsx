@@ -15,7 +15,7 @@ import React, { ReactElement, useState } from 'react';
 import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
@@ -145,15 +145,21 @@ export const EventsPage: NextPageWithLayout = () => {
               </VStack>
             ),
             'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
-            venue: (event) =>
-              isPhysical(event.venue_type)
-                ? event.venue?.name || ''
-                : 'Online only',
+            venue: (event) => (
+              <Text data-cy="venue">
+                {isPhysical(event.venue_type)
+                  ? event.venue?.name || 'TBD'
+                  : 'Online only'}
+              </Text>
+            ),
             capacity: true,
-            streaming_url: (event) =>
-              isOnline(event.venue_type)
-                ? event.streaming_url
-                : 'In-person only',
+            streaming_url: (event) => (
+              <Text data-cy="streamingUrl">
+                {isOnline(event.venue_type)
+                  ? event.streaming_url || 'TBD'
+                  : 'In-person only'}
+              </Text>
+            ),
             date: (event) => formatDate(event.start_at),
             action: (event) => (
               <>
@@ -261,12 +267,14 @@ export const EventsPage: NextPageWithLayout = () => {
                     <Text>{invite_only ? 'Yes' : 'No'}</Text>
                     <Text>
                       {isPhysical(venue_type)
-                        ? venue?.name || ''
+                        ? venue?.name || 'TBD'
                         : 'Online only'}
                     </Text>
                     <Text>{capacity}</Text>
                     <Text>
-                      {isOnline(venue_type) ? streaming_url : 'In-person only'}
+                      {isOnline(venue_type)
+                        ? streaming_url || 'TBD'
+                        : 'In-person only'}
                     </Text>
                     <Text>{formatDate(start_at)}</Text>
                     {hasPermissiontoEditEvent && (
@@ -295,5 +303,5 @@ export const EventsPage: NextPageWithLayout = () => {
 };
 
 EventsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

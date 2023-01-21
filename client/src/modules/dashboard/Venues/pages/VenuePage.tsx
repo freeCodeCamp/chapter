@@ -1,6 +1,7 @@
 import { Heading, Text } from '@chakra-ui/layout';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
+import { Link } from 'chakra-next-link';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
@@ -10,7 +11,7 @@ import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const VenuePage: NextPageWithLayout = () => {
@@ -25,6 +26,8 @@ export const VenuePage: NextPageWithLayout = () => {
   if (!data.venue)
     return <NextError statusCode={404} title="Venue not found" />;
 
+  const chapter = data.venue.chapter;
+
   return (
     <>
       <Card className={styles.card}>
@@ -34,7 +37,9 @@ export const VenuePage: NextPageWithLayout = () => {
           </Heading>
 
           <Text>{getLocationString(data.venue, true)}</Text>
-          <Text>{data.venue.chapter.name}</Text>
+          <Link fontWeight={500} href={`/dashboard/chapters/${chapter.id}`}>
+            {chapter.name}
+          </Link>
         </ProgressCardContent>
       </Card>
       <EventList
@@ -46,5 +51,5 @@ export const VenuePage: NextPageWithLayout = () => {
 };
 
 VenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout dataCy="view-venue-page">{page}</Layout>;
+  return <DashboardLayout dataCy="view-venue-page">{page}</DashboardLayout>;
 };

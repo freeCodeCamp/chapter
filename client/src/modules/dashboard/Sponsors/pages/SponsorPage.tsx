@@ -7,7 +7,7 @@ import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { useSponsorWithEventsQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -53,5 +53,5 @@ export const SponsorPage: NextPageWithLayout = () => {
 };
 
 SponsorPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

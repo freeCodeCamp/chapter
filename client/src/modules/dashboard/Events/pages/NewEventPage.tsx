@@ -8,7 +8,7 @@ import {
   useJoinChapterMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { CHAPTER } from '../../../chapters/graphql/queries';
@@ -75,5 +75,5 @@ export const NewEventPage: NextPageWithLayout<{
 };
 
 NewEventPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

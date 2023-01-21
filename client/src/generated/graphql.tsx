@@ -556,8 +556,8 @@ export type Query = {
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   tokenStatuses: Array<TokenStatus>;
-  userDownload?: Maybe<UserForDownload>;
-  userProfile?: Maybe<UserProfile>;
+  userDownload: UserForDownload;
+  userProfile: UserProfile;
   users: Array<UserWithInstanceRole>;
   venue?: Maybe<VenueWithChapterEvents>;
 };
@@ -1810,7 +1810,7 @@ export type UserProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProfileQuery = {
   __typename?: 'Query';
-  userProfile?: {
+  userProfile: {
     __typename?: 'UserProfile';
     id: number;
     name: string;
@@ -1823,14 +1823,14 @@ export type UserProfileQuery = {
       id: number;
       name: string;
     }>;
-  } | null;
+  };
 };
 
 export type UserDownloadQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserDownloadQuery = {
   __typename?: 'Query';
-  userDownload?: {
+  userDownload: {
     __typename?: 'UserForDownload';
     id: number;
     name: string;
@@ -1926,7 +1926,7 @@ export type UserDownloadQuery = {
         venue_type: VenueType;
       };
     }>;
-  } | null;
+  };
 };
 
 export type UnsubscribeMutationVariables = Exact<{

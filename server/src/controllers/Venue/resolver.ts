@@ -106,8 +106,21 @@ export class VenueResolver {
     // TODO: handle deletion of non-existent venue
     const users = await prisma.users.findMany({
       where: {
-        user_chapters: { every: { chapter_id: chapterId, chapter: {venues: {every: {street_address: {not: '' || null || undefined}}}} } },
-        AND: {user_events: {every: {event: {canceled: false, ends_at: {gt: new Date()}}}}}
+        user_chapters: {
+          every: {
+            chapter_id: chapterId,
+            chapter: {
+              venues: {
+                every: { street_address: { not: '' || null || undefined } },
+              },
+            },
+          },
+        },
+        AND: {
+          user_events: {
+            every: { event: { canceled: false, ends_at: { gt: new Date() } } },
+          },
+        },
       },
     });
 

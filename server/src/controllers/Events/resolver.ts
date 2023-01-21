@@ -736,7 +736,6 @@ ${unsubscribeOptions}`,
     return updatedEvent ? updatedEvent : event;
   }
 
-  // How does admin have permission to edit, but when checked in the client it results in false
   @Authorized(Permission.EventEdit)
   @Mutation(() => Event)
   async updateEvent(

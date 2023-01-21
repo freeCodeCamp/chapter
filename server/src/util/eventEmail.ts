@@ -1,6 +1,24 @@
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
 
-export const getEventUnsubscribeOptions = ({
+const unsubscribeUrlFromToken = (token: string) =>
+  `${process.env.CLIENT_LOCATION}/unsubscribe?token=${token}`;
+
+export const chapterUnsubscribeOptions = ({
+  chapterId,
+  userId,
+}: {
+  chapterId: number;
+  userId: number;
+}) => {
+  return `<br />
+  - To stop receiving notifications about new events in this chapter, <a href="${generateToken(
+    UnsubscribeType.Chapter,
+    chapterId,
+    userId,
+  )}">unsubscribe here</a>.`;
+};
+
+export const eventUnsubscribeOptions = ({
   chapterId,
   eventId,
   userId,
@@ -9,29 +27,30 @@ export const getEventUnsubscribeOptions = ({
   eventId: number;
   userId: number;
 }) => {
-  const chapterUnsubscribeToken = generateToken(
-    UnsubscribeType.Chapter,
-    chapterId,
-    userId,
-  );
   const eventUnsubscribeToken = generateToken(
     UnsubscribeType.Event,
     eventId,
     userId,
   );
-  const linkToEvent = `${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken}`;
-  const linkToChapter = `${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}`;
+  const linkForEvent = unsubscribeUrlFromToken(eventUnsubscribeToken);
+  const chapterUnsubscribe = chapterUnsubscribeOptions({ chapterId, userId });
   return `<br />
-  - To stop receiving notifications about this event, <a href="${linkToEvent}">unsubscribe here</a>.<br />
-  - To stop receiving notifications about new events in this chapter, <a href="${linkToChapter}">unsubscribe here</a>.<br />`;
+  - To stop receiving notifications about this event, <a href="${linkForEvent}">unsubscribe here</a>.${chapterUnsubscribe}`;
 };
 
-export const getChapterUnsubscribeOptions = ({
+export const chapterAdminUnsubscribeOptions = ({
   chapterId,
   userId,
 }: {
   chapterId: number;
   userId: number;
 }) => {
-  generateToken(UnsubscribeType.Chapter, chapterId, userId);
+  const chapterUnsubscribeToken = generateToken(
+    UnsubscribeType.Chapter,
+    chapterId,
+    userId,
+  );
+  return `<br /><a href="${unsubscribeUrlFromToken(
+    chapterUnsubscribeToken,
+  )}">Unsubscribe from chapter emails</a>`;
 };

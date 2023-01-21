@@ -9,6 +9,7 @@ import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { Permission } from '../../../../../../common/permissions';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useUser } from '../../../auth/user';
+import { checkPermission } from '../../../../util/check-permission';
 import { checkHasChapterPermission } from '../../../../util/check-chapter-permission';
 
 const actionLinks = [
@@ -39,7 +40,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
 
-  const hasPermissionToCreateChapter = checkHasChapterPermission(
+  const hasPermissionToCreateChapter = checkPermission(
     user,
     Permission.ChapterCreate,
   );

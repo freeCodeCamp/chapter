@@ -73,7 +73,8 @@ export const Calendar: NextPageWithLayout = () => {
       </Flex>
       <HStack>
         <LinkButton
-          nextAs={new URL('/authenticate-with-google', serverUrl).href}
+          as="div"
+          href={new URL('/authenticate-with-google', serverUrl).href}
           fontWeight="600"
           background={'gray.85'}
           color={'gray.10'}

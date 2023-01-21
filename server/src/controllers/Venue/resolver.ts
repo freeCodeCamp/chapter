@@ -70,12 +70,12 @@ export class VenueResolver {
   @Authorized(Permission.VenueCreate)
   @Mutation(() => Venue)
   async createVenue(
-    @Arg('chapterId', () => Int) chapter_id: number,
+    @Arg('chapterId', () => Int) chapterId: number,
     @Arg('data') data: VenueInputs,
   ): Promise<Venue> {
     const venueData: Prisma.venuesCreateInput = {
       ...data,
-      chapter: { connect: { id: chapter_id } },
+      chapter: { connect: { id: chapterId } },
     };
     return prisma.venues.create({
       data: venueData,
@@ -100,24 +100,25 @@ export class VenueResolver {
   @Mutation(() => Venue)
   async deleteVenue(
     @Arg('id', () => Int) id: number,
+    @Arg('chapterId', () => Int) chapterId: number,
     @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
-    const physicalAndNotCanceledRsvp = await prisma.venues.findMany({
+    const users = await prisma.users.findMany({
       where: {
-        id: id,
-        events: { every: { canceled: false, ends_at: { gt: new Date() } } },
-        street_address: { not: '' || null || undefined },
+        user_chapters: { every: { chapter_id: chapterId, chapter: {venues: {every: {street_address: {not: '' || null || undefined}}}} } },
+        AND: {user_events: {every: {event: {canceled: false, ends_at: {gt: new Date()}}}}}
       },
     });
+
     await prisma.venues.update({
       where: { id: id },
       data: { events: { set: [] } },
     });
-    for (const { chapter_id } of physicalAndNotCanceledRsvp) {
+    for (const { email } of users) {
       // find the user id from chapter
       mailerService.sendEmail({
-        emailList: chapter_id,
+        emailList: [email],
         subject: 'subject',
         htmlEmail: 'cancelEventEmail',
       });

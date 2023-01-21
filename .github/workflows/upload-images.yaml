@@ -25,6 +25,7 @@ jobs:
           NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
           NEXT_PUBLIC_CLIENT_URL: ${{ secrets.CHAPTER_CLIENT_URL }}
+          NODE_ENV: production
         run: |
           docker compose -f docker-compose.yml build
           tagname=$(git rev-parse --short HEAD)-$(date +%Y%m%d)-$(date +%H%M)

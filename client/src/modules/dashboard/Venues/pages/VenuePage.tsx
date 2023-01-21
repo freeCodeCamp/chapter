@@ -1,6 +1,7 @@
 import { Heading, Text } from '@chakra-ui/layout';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
+import { Link } from 'chakra-next-link';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
@@ -25,6 +26,8 @@ export const VenuePage: NextPageWithLayout = () => {
   if (!data.venue)
     return <NextError statusCode={404} title="Venue not found" />;
 
+  const chapter = data.venue.chapter;
+
   return (
     <>
       <Card className={styles.card}>
@@ -34,7 +37,9 @@ export const VenuePage: NextPageWithLayout = () => {
           </Heading>
 
           <Text>{getLocationString(data.venue, true)}</Text>
-          <Text>{data.venue.chapter.name}</Text>
+          <Link fontWeight={500} href={`/dashboard/chapters/${chapter.id}`}>
+            {chapter.name}
+          </Link>
         </ProgressCardContent>
       </Card>
       <EventList

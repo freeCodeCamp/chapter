@@ -10,6 +10,7 @@ import {
 } from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
+// import { isPhysical } from '../../util/venue';
 
 import {
   Venue,
@@ -109,16 +110,17 @@ export class VenueResolver {
         user_chapters: {
           every: {
             chapter_id: chapterId,
-            chapter: {
-              venues: {
-                every: { street_address: { not: '' || null || undefined } },
-              },
-            },
           },
         },
         AND: {
           user_events: {
-            every: { event: { canceled: false, ends_at: { gt: new Date() } } },
+            every: {
+              event: {
+                canceled: false,
+                ends_at: { gt: new Date() },
+                venue_type: isPhysical,
+              },
+            },
           },
         },
       },
@@ -128,14 +130,13 @@ export class VenueResolver {
       where: { id: id },
       data: { events: { set: [] } },
     });
-    for (const { email } of users) {
-      // find the user id from chapter
-      mailerService.sendEmail({
-        emailList: [email],
-        subject: 'subject',
-        htmlEmail: 'cancelEventEmail',
-      });
-    }
+    const emailList = users.map(({ email }) => email);
+    // find the user id from chapter
+    mailerService.sendEmail({
+      emailList,
+      subject: '',
+      htmlEmail: 'cancelEventEmail',
+    });
     return await prisma.venues.delete({
       where: { id },
     });

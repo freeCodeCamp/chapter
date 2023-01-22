@@ -13,7 +13,7 @@ export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
   const { user } = useUser();
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
 
   return (
     <Center>

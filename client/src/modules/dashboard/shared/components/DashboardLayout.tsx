@@ -94,7 +94,7 @@ export const DashboardLayout = ({
     ref.current.scrollBy({ left: scrollBy, behavior: 'smooth' });
   };
 
-  if (loadingUser) return <Loading loading={loadingUser} />;
+  if (loadingUser) return <Loading />;
   if (!isLoggedIn)
     return <NextError statusCode={401} title={'Log in to see this page'} />;
 

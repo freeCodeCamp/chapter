@@ -67,7 +67,7 @@ const Home = () => {
   };
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
 
   return (
     <>

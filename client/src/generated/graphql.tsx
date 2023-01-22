@@ -461,6 +461,7 @@ export type MutationDeleteRsvpArgs = {
 
 export type MutationDeleteVenueArgs = {
   _onlyUsedForAuth: Scalars['Int'];
+  chapterId: Scalars['Int'];
   id: Scalars['Int'];
 };
 

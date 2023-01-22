@@ -10,12 +10,11 @@ export const chapterUnsubscribeOptions = ({
   chapterId: number;
   userId: number;
 }) => {
+  const url = unsubscribeUrlFromToken(
+    generateToken(UnsubscribeType.Chapter, chapterId, userId),
+  );
   return `<br />
-  - To stop receiving notifications about new events in this chapter, <a href="${generateToken(
-    UnsubscribeType.Chapter,
-    chapterId,
-    userId,
-  )}">unsubscribe here</a>.`;
+  - To stop receiving notifications about new events in this chapter, <a href="${url}">unsubscribe here</a>.`;
 };
 
 export const eventUnsubscribeOptions = ({

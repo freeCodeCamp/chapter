@@ -1,8 +1,9 @@
 import { verify } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { getConfig } from '../../config';
-import { prisma } from '../../prisma';
+import { prisma, RECORD_MISSING } from '../../prisma';
 import {
   UnsubscribeToken,
   UnsubscribeType,
@@ -48,7 +49,18 @@ export class UnsubscribeResolver {
       throw Error('Invalid token');
     }
 
-    await typeToUnsubscribe[data.type](data.userId, data.id);
+    try {
+      await typeToUnsubscribe[data.type](data.userId, data.id);
+    } catch (err) {
+      if (
+        // There's nothing to update when RECORD_MISSING is thrown.
+        // Data in the "where" does not point to existing record.
+        !(err instanceof Prisma.PrismaClientKnownRequestError) ||
+        err.code !== RECORD_MISSING
+      ) {
+        throw err;
+      }
+    }
 
     return true;
   }

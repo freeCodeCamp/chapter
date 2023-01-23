@@ -1,12 +1,5 @@
 import { inspect } from 'util';
-import {
-  events,
-  events_venue_type_enum,
-  event_users,
-  Prisma,
-  rsvp,
-  venues,
-} from '@prisma/client';
+import { events, event_users, Prisma, rsvp, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import {
   Resolver,
@@ -54,10 +47,12 @@ import { createCalendarEventHelper } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
 import {
-  getChapterUnsubscribeOptions,
-  getEventUnsubscribeOptions,
+  chapterAdminUnsubscribeOptions,
+  chapterUnsubscribeOptions,
+  eventUnsubscribeOptions,
 } from '../../util/eventEmail';
 import { formatDate } from '../../util/date';
+import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
 
 const SPACER = `<br />
@@ -84,11 +79,6 @@ type EventWithUsers = Prisma.eventsGetPayload<{
   };
 }>;
 
-const isPhysical = (venue_type: events_venue_type_enum) =>
-  venue_type !== events_venue_type_enum.Online;
-const isOnline = (venue_type: events_venue_type_enum) =>
-  venue_type !== events_venue_type_enum.Physical;
-
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
@@ -101,7 +91,7 @@ const sendRsvpInvitation = async (
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-  const unsubscribeOptions = getEventUnsubscribeOptions({
+  const unsubscribeOptions = eventUnsubscribeOptions({
     chapterId: event.chapter_id,
     eventId: event.id,
     userId: user.id,
@@ -111,12 +101,12 @@ const sendRsvpInvitation = async (
     emailList: [user.email],
     subject: `Confirmation of attendance: ${event.name}`,
     htmlEmail: `Hi${user.name ? ' ' + user.name : ''},<br>
-You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br>
-<br>
+You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
+<br />
 <a href=${google(linkDetails)}>Google</a>
-<br>
+<br />
 <a href=${outlook(linkDetails)}>Outlook</a>
-
+<br />
 ${unsubscribeOptions}
       `,
   });
@@ -133,7 +123,7 @@ const createEmailForSubscribers = async (
   batchSender(function* () {
     for (const { user } of emaildata.event_users) {
       const email = user.email;
-      const unsubscribeOptions = getEventUnsubscribeOptions({
+      const unsubscribeOptions = eventUnsubscribeOptions({
         chapterId: emaildata.chapter_id,
         eventId: emaildata.id,
         userId: emaildata.id,
@@ -274,11 +264,11 @@ const rsvpNotifyAdministrators = async (
   await batchSender(function* () {
     for (const { chapter_id, user } of chapterAdministrators) {
       const email = user.email;
-      const chapterUnsubscribeToken = getChapterUnsubscribeOptions({
+      const unsubscribeOptions = chapterAdminUnsubscribeOptions({
         chapterId: chapter_id,
         userId: user.id,
       });
-      const text = `${body}<br><a href="${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken}Unsubscribe from chapter emails`;
+      const text = `${body}<br />${unsubscribeOptions}<br />`;
       yield { email, subject, text };
     }
   });
@@ -571,7 +561,7 @@ export class EventResolver {
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
-    const unsubscribeOptions = getEventUnsubscribeOptions({
+    const unsubscribeOptions = eventUnsubscribeOptions({
       chapterId: updatedUser.event.chapter_id,
       eventId: updatedUser.event_id,
       userId,
@@ -790,6 +780,10 @@ ${unsubscribeOptions}`,
 
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
+      const createMeet =
+        isOnline(data.venue_type) && !isOnline(event.venue_type);
+      const removeMeet =
+        isOnline(event.venue_type) && !isOnline(data.venue_type);
       try {
         await updateCalendarEventDetails(
           {
@@ -800,6 +794,8 @@ ${unsubscribeOptions}`,
             summary: updatedEvent.name,
             start: updatedEvent.start_at,
             end: updatedEvent.ends_at,
+            createMeet,
+            removeMeet,
           },
         );
       } catch (e) {
@@ -833,7 +829,7 @@ ${unsubscribeOptions}`,
 
     if (notCanceledRsvps.length) {
       for (const { user } of notCanceledRsvps) {
-        const unsubscribeOptions = getEventUnsubscribeOptions({
+        const unsubscribeOptions = eventUnsubscribeOptions({
           chapterId: event.chapter_id,
           eventId: event.id,
           userId: user.id,
@@ -969,12 +965,11 @@ ${unsubscribeOptions}`,
     await batchSender(function* () {
       for (const { user } of users) {
         const email = user.email;
-        const unsubscribeOptions = getEventUnsubscribeOptions({
+        const unsubscribeOptions = chapterUnsubscribeOptions({
           chapterId: event.chapter_id,
-          eventId: event.id,
           userId: user.id,
         });
-        const text = `${subsequentEventEmail}<br>${unsubscribeOptions}`;
+        const text = `${subsequentEventEmail}<br />${unsubscribeOptions}<br />`;
         yield { email, subject, text };
       }
     });

@@ -199,7 +199,7 @@ export const EventPage: NextPage = () => {
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
 
-  if (error || isLoading) return <Loading loading={isLoading} error={error} />;
+  if (error || isLoading) return <Loading error={error} />;
   if (!data?.event)
     return <NextError statusCode={404} title="Event not found" />;
 

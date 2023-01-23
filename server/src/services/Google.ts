@@ -20,6 +20,7 @@ interface EventData {
   attendees?: calendar_v3.Schema$EventAttendee[];
   status?: 'cancelled';
   createMeet?: boolean;
+  removeMeet?: boolean;
 }
 
 interface CalendarId {
@@ -65,7 +66,7 @@ async function callWithHandler<T>(
 }
 
 function createEventRequestBody(
-  { attendees, start, end, summary, createMeet }: EventData,
+  { attendees, start, end, summary, createMeet, removeMeet }: EventData,
   oldEventData?: calendar_v3.Schema$Event,
 ): calendar_v3.Schema$Event {
   // Only send emails to attendees when creating or updating events in
@@ -91,6 +92,7 @@ function createEventRequestBody(
         },
       },
     }),
+    ...(removeMeet && { conferenceData: {} }),
     guestsCanSeeOtherGuests: false,
     guestsCanInviteOthers: false,
   };
@@ -115,6 +117,7 @@ async function getAndUpdateEvent(
       eventId,
       sendUpdates: 'all',
       requestBody: updater(oldEventData),
+      conferenceDataVersion: 1,
     }),
   );
 }
@@ -188,7 +191,7 @@ export async function createCalendarEvent(
     calendarApi.events.insert({
       calendarId,
       sendUpdates: 'all',
-      requestBody: createEventRequestBody({ ...eventData, createMeet: true }),
+      requestBody: createEventRequestBody(eventData),
       conferenceDataVersion: 1,
     }),
   );

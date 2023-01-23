@@ -97,14 +97,6 @@ const eventCreateParams = objectContaining({
   requestBody: {
     guestsCanInviteOthers: false,
     guestsCanSeeOtherGuests: false,
-    conferenceData: {
-      createRequest: {
-        requestId: stringContaining(''),
-        conferenceSolutionKey: {
-          type: 'hangoutsMeet',
-        },
-      },
-    },
   },
   conferenceDataVersion: 1,
 });
@@ -242,7 +234,7 @@ describe('Google Service', () => {
   });
 
   describe('createCalendarEvent', () => {
-    it('should update everyone, configure guest permissions and add a meet', async () => {
+    it('should update everyone, configure guest permissions and not add a meet', async () => {
       await createCalendarEvent({ calendarId: 'foo' }, {});
 
       expect(mockInsertEvent).toHaveBeenCalledWith(eventCreateParams);
@@ -267,6 +259,50 @@ describe('Google Service', () => {
       expect(mockInsertEvent).toHaveBeenCalledWith(
         objectContaining({
           requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockInsertEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('when createMeet is true should include meet creation in the request to Google', async () => {
+      const eventData = { createMeet: true };
+      const expectedRequestBody = {
+        conferenceData: {
+          createRequest: {
+            requestId: stringContaining(''),
+            conferenceSolutionKey: {
+              type: 'hangoutsMeet',
+            },
+          },
+        },
+      };
+      await createCalendarEvent({ calendarId: 'foo' }, eventData);
+
+      expect(mockInsertEvent).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockInsertEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('when createMeet is false should not include meet creation in the request to Google', async () => {
+      const eventData = { createMeet: false };
+      const expectedRequestBody = {
+        conferenceData: {
+          createRequest: {
+            requestId: stringContaining(''),
+            conferenceSolutionKey: {
+              type: 'hangoutsMeet',
+            },
+          },
+        },
+      };
+      await createCalendarEvent({ calendarId: 'foo' }, eventData);
+
+      expect(mockInsertEvent).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: expect.not.objectContaining(expectedRequestBody),
         }),
       );
       expect(mockInsertEvent).toHaveBeenCalledTimes(1);
@@ -350,6 +386,96 @@ describe('Google Service', () => {
       expect(mockUpdate).toHaveBeenCalledWith(
         objectContaining({
           requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+    });
+
+    it('when createMeet is true should request meet creation in the request to Google', async () => {
+      const eventData = { createMeet: true };
+      const expectedRequestBody = {
+        conferenceData: {
+          createRequest: {
+            requestId: stringContaining(''),
+            conferenceSolutionKey: {
+              type: 'hangoutsMeet',
+            },
+          },
+        },
+      };
+
+      await updateCalendarEventDetails(
+        { calendarId: 'foo', calendarEventId: 'bar' },
+        eventData,
+      );
+
+      expect(mockUpdate).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+    });
+
+    it('when createMeet is false should not request meet creation in the request to Google', async () => {
+      const eventData = { createMeet: false };
+      const expectedRequestBody = {
+        conferenceData: {
+          createRequest: {
+            requestId: stringContaining(''),
+            conferenceSolutionKey: {
+              type: 'hangoutsMeet',
+            },
+          },
+        },
+      };
+
+      await updateCalendarEventDetails(
+        { calendarId: 'foo', calendarEventId: 'bar' },
+        eventData,
+      );
+
+      expect(mockUpdate).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: expect.not.objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+    });
+
+    it('when removeMeet is true should request meet removal in the request to Google', async () => {
+      const eventData = { removeMeet: true };
+      const expectedRequestBody = {
+        conferenceData: {},
+      };
+
+      await updateCalendarEventDetails(
+        { calendarId: 'foo', calendarEventId: 'bar' },
+        eventData,
+      );
+
+      expect(mockUpdate).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: objectContaining(expectedRequestBody),
+        }),
+      );
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+    });
+
+    it('when removeMeet is false should not request meet removal in the request to Google', async () => {
+      const eventData = { removeMeet: false };
+      const expectedRequestBody = {
+        conferenceData: {},
+      };
+
+      await updateCalendarEventDetails(
+        { calendarId: 'foo', calendarEventId: 'bar' },
+        eventData,
+      );
+
+      expect(mockUpdate).toHaveBeenCalledWith(
+        objectContaining({
+          requestBody: expect.not.objectContaining(expectedRequestBody),
         }),
       );
       expect(mockUpdate).toHaveBeenCalledTimes(1);

@@ -1,4 +1,5 @@
-import { MailerData, MailerService } from '../src/services/MailerService';
+import type { MailerData } from '../src/services/mail-providers/abstract-provider';
+import { SMTPProvider } from '../src/services/mail-providers/smtp';
 
 const emailAddresses = [
   '123@test.com',
@@ -14,7 +15,7 @@ const data: MailerData = {
   htmlEmail: htmlEmail,
 };
 
-describe('MailerService Class', () => {
+describe('SMTPProvider', () => {
   beforeEach(() => {
     jest.spyOn(console, 'warn').mockImplementation(jest.fn());
   });
@@ -24,20 +25,28 @@ describe('MailerService Class', () => {
   });
 
   it('Should assign the email username, password, and service to transporter', () => {
-    const mailer = new MailerService();
+    const mailer = new SMTPProvider();
 
-    const { auth, service } = mailer.transporter.options as any;
-    expect(service).toEqual(mailer.emailService);
+    /* @ts-expect-error we're accessing private properties for testing */
+    const { auth, host } = mailer.transporter.options;
+
+    expect(auth).toBeDefined();
+    expect(host).toBeDefined();
+    /* @ts-expect-error we're accessing private properties for testing */
+    expect(host).toEqual(mailer.emailHost);
+    /* @ts-expect-error we're accessing private properties for testing */
     expect(auth.user).toEqual(mailer.emailUsername);
+    /* @ts-expect-error we're accessing private properties for testing */
     expect(auth.pass).toEqual(mailer.emailPassword);
   });
 
   it("Should use 'bcc' if sending to multiple email addresses", async () => {
-    const mailer = new MailerService();
+    const mailer = new SMTPProvider();
     const mockSendMail = jest
+      // @ts-expect-error we're accessing private properties for testing
       .spyOn(mailer.transporter, 'sendMail')
       .mockImplementation(jest.fn());
-    mailer.sendEmail(data);
+    mailer.send(data);
     expect(mockSendMail).toHaveBeenCalledWith(
       expect.objectContaining({ bcc: emailAddresses }),
     );
@@ -47,7 +56,7 @@ describe('MailerService Class', () => {
   });
 
   it('Should log a warning if emailUsername, emailPassword, or emailService is not specified', () => {
-    new MailerService();
+    new SMTPProvider();
     expect(console.warn).toHaveBeenCalledTimes(1);
   });
 });

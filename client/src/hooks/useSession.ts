@@ -1,11 +1,10 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useState } from 'react';
+import { useApolloClient } from '@apollo/client';
+
+import { useAuth } from '../modules/auth/context';
+import { useMeQuery } from 'generated/graphql';
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
-
-// TODO: figure out how to create a proper separation between auth0 and the dev
-// login.  How about creating two providers and conditionally wrapping the rest
-// of the site in one or the other?
-const needsDevLogin = process.env.NEXT_PUBLIC_USE_AUTH0 === 'false';
 
 const requestSession = (token: string) =>
   fetch(new URL('/login', serverUrl).href, {
@@ -22,43 +21,44 @@ const destroySession = () =>
     credentials: 'include',
   });
 
-const useAuth0Session = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+export const useSession = () => {
+  const {
+    getToken,
+    login: loginAuth,
+    logout: logoutAuth,
+    isAuthenticated,
+  } = useAuth();
   const createSession = async () => {
-    const token = await getAccessTokenSilently();
+    const token = await getToken();
     return requestSession(token);
   };
+  const apollo = useApolloClient();
+  const { refetch } = useMeQuery();
+  // Until the user initiates a login or logout, we don't want to create or
+  // destroy a session
+  const [canAlterSession, setCanAlterSession] = useState(false);
 
-  return {
-    isAuthenticated,
-    createSession,
-    destroySession,
+  const login = async () => {
+    await loginAuth();
+    setCanAlterSession(true);
   };
-};
-
-export const useDevSession = (): {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} => {
-  const isAuthenticated =
-    typeof window !== 'undefined' &&
-    !!window.localStorage.getItem('dev-login-authenticated');
-  const createSession = async () => await requestSession('fake-token');
-
-  return {
-    isAuthenticated,
-    createSession,
-    destroySession,
+  const logout = async () => {
+    await logoutAuth();
+    setCanAlterSession(true);
   };
-};
 
-export const useSession: () => {
-  isAuthenticated: boolean;
-  createSession: () => Promise<Response>;
-  destroySession: () => Promise<Response>;
-} = needsDevLogin ? useDevSession : useAuth0Session;
+  useEffect(() => {
+    if (!canAlterSession) return;
+    setCanAlterSession(false);
+
+    if (isAuthenticated) {
+      createSession().then(() => refetch());
+    } else {
+      destroySession()
+        .then(() => refetch())
+        .then(() => apollo.resetStore());
+    }
+  }, [isAuthenticated, canAlterSession]);
+
+  return { createSession, login, logout, isAuthenticated };
+};

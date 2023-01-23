@@ -56,52 +56,50 @@ export type Venues = Merge<
   Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
 
-export const user = (req: Request, _res: Response, next: NextFunction) => {
-  const id = req.session?.id;
-
-  // user is not logged in, so we will not be adding user to the request and can
-  // move on
-  if (!id) return next();
-
+const findAndAddUser = async (
+  req: Request,
+  next: NextFunction,
+  { sessionId }: { sessionId: number },
+) => {
   // While we can't make a findUnique call here (sessions.id is not in users),
   // there is a 1-1 relationship between user and session. So, if a session
   // exists, there can only be one user with that session.
-  prisma.users
-    .findFirst({
-      where: { session: { id } },
-      ...userInclude,
-    })
-    .then((user) => {
-      if (user) {
-        req.user = user;
-        return user.id;
-      }
-      // if the session user does not exist in the db, the session is invalid
-      req.session = null;
-      next();
-    })
-    .then((id) =>
-      Promise.all([
-        prisma.venues.findMany({
-          select: { id: true, chapter_id: true },
-          where: {
-            chapter: { chapter_users: { some: { user_id: id } } },
-          },
-        }),
-        prisma.events.findMany({
-          select: { id: true, chapter_id: true },
-          where: { chapter: { chapter_users: { some: { user_id: id } } } },
-        }),
-      ]),
-    )
-    .then(([venues, events]) => {
-      req.venues = venues;
-      req.events = events;
-      next();
-    })
-    .catch((err) => {
-      next(err);
-    });
+  const user = await prisma.users.findFirst({
+    where: { session: { id: sessionId } },
+    ...userInclude,
+  });
+
+  if (!user) {
+    req.session = null;
+    return next();
+  }
+
+  const [venues, events] = await Promise.all([
+    prisma.venues.findMany({
+      select: { id: true, chapter_id: true },
+      where: {
+        chapter: { chapter_users: { some: { user_id: user.id } } },
+      },
+    }),
+    prisma.events.findMany({
+      select: { id: true, chapter_id: true },
+      where: { chapter: { chapter_users: { some: { user_id: user.id } } } },
+    }),
+  ]);
+
+  req.user = user;
+  req.venues = venues;
+  req.events = events;
+  next();
+};
+
+export const user = (req: Request, _res: Response, next: NextFunction) => {
+  const sessionId: number = req.session?.id;
+
+  // user is not logged in, so we will not be adding user to the request and can
+  // move on
+  if (!sessionId) return next();
+  findAndAddUser(req, next, { sessionId });
 };
 
 export function handleError(

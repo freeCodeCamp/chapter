@@ -6,7 +6,7 @@ import { LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
-import { useAuth } from '../../../modules/auth/store';
+import { useUser } from '../../auth/user';
 import { checkPermission } from '../../../util/check-permission';
 import { Permission } from '../../../../../common/permissions';
 
@@ -59,7 +59,7 @@ const pageSize = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
-  const { user } = useAuth();
+  const { user } = useUser();
   const offset = (currentPage - 1) * pageSize;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: pageSize },
@@ -74,7 +74,7 @@ export const EventsPage: NextPage = () => {
   }, [currentPage]);
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
 
   return (
     <VStack>

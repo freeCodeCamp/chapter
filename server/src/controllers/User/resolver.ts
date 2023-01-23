@@ -36,10 +36,10 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserProfile, { nullable: true })
-  async userProfile(@Ctx() ctx: ResolverCtx): Promise<UserProfile | null> {
-    if (!ctx.user) return null;
-    return await prisma.users.findUnique({
+  @Query(() => UserProfile)
+  async userProfile(@Ctx() ctx: ResolverCtx): Promise<UserProfile> {
+    if (!ctx.user) throw Error('User not found');
+    return await prisma.users.findUniqueOrThrow({
       where: {
         id: ctx.user.id,
       },
@@ -55,10 +55,10 @@ export class UserWithPermissionsResolver {
     });
   }
 
-  @Query(() => UserForDownload, { nullable: true })
-  async userDownload(@Ctx() ctx: ResolverCtx): Promise<UserForDownload | null> {
-    if (!ctx.user) return null;
-    return await prisma.users.findUnique({
+  @Query(() => UserForDownload)
+  async userDownload(@Ctx() ctx: ResolverCtx): Promise<UserForDownload> {
+    if (!ctx.user) throw Error('User not found');
+    return await prisma.users.findUniqueOrThrow({
       where: {
         id: ctx.user.id,
       },
@@ -105,7 +105,8 @@ export class UserWithPermissionsResolver {
   }
 
   @Mutation(() => User)
-  async toggleAutoSubscribe(@Ctx() ctx: Required<ResolverCtx>): Promise<User> {
+  async toggleAutoSubscribe(@Ctx() ctx: ResolverCtx): Promise<User> {
+    if (!ctx.user) throw Error('User not found');
     return await prisma.users.update({
       data: { auto_subscribe: !ctx.user.auto_subscribe },
       where: { id: ctx.user.id },
@@ -114,9 +115,10 @@ export class UserWithPermissionsResolver {
 
   @Mutation(() => User)
   async updateMe(
-    @Ctx() ctx: Required<ResolverCtx>,
+    @Ctx() ctx: ResolverCtx,
     @Arg('data') data: UpdateUserInputs,
   ): Promise<User | undefined> {
+    if (!ctx.user) throw Error('User not found');
     const UserData: Prisma.usersUpdateInput = data;
     return await prisma.users.update({
       where: { id: ctx.user.id },
@@ -125,7 +127,8 @@ export class UserWithPermissionsResolver {
   }
 
   @Mutation(() => User)
-  async deleteMe(@Ctx() ctx: Required<ResolverCtx>): Promise<User | undefined> {
+  async deleteMe(@Ctx() ctx: ResolverCtx): Promise<User | undefined> {
+    if (!ctx.user) throw Error('User not found');
     return await prisma.users.delete({ where: { id: ctx.user.id } });
   }
 }

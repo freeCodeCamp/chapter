@@ -8,7 +8,7 @@ import {
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { DASHBOARD_EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
@@ -84,5 +84,5 @@ export const EditEventPage: NextPageWithLayout = () => {
 };
 
 EditEventPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

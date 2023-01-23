@@ -19,9 +19,9 @@ import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { useAuth } from '../../auth/store';
+import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
@@ -40,13 +40,13 @@ import {
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
-import { useLogin } from '../../../hooks/useAuth';
+import { useSession } from '../../../hooks/useSession';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
-  const { user, loadingUser } = useAuth();
-  const login = useLogin();
+  const { user, loadingUser, isLoggedIn } = useUser();
+  const { login } = useSession();
   const modalProps = useDisclosure();
 
   const refetch = {
@@ -73,7 +73,8 @@ export const EventPage: NextPage = () => {
 
   const toast = useToast();
   const confirm = useConfirm();
-  const [hasShownModal, setHasShownModal] = React.useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false);
+  const [awaitingLogin, setAwaitingLogin] = useState(false);
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
@@ -170,17 +171,24 @@ export const EventPage: NextPage = () => {
       return;
     }
     modalProps.onOpen();
-    const {
-      data: { me },
-    } = await login();
-    modalProps.onClose();
-    const eventUser = data?.event?.event_users.find(
-      ({ user: event_user }) => event_user.id === me?.id,
-    );
-    if (!isAlreadyRsvp(eventUser?.rsvp.name)) {
-      await onRsvp();
-    }
+    login();
+
+    // TODO: handling async events (like login finishing) using state and
+    // effects is not pretty. Post MVP, we should try to find a less hacky
+    // approach.
+    setAwaitingLogin(true);
   }
+
+  useEffect(() => {
+    if (awaitingLogin && isLoggedIn) {
+      setAwaitingLogin(false);
+      modalProps.onClose();
+      const eventUser = data?.event?.event_users.find(
+        ({ user: event_user }) => event_user.id === user?.id,
+      );
+      if (!isAlreadyRsvp(eventUser?.rsvp.name)) onRsvp();
+    }
+  }, [awaitingLogin, isLoggedIn]);
 
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
@@ -191,7 +199,7 @@ export const EventPage: NextPage = () => {
     }
   }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
 
-  if (error || isLoading) return <Loading loading={isLoading} error={error} />;
+  if (error || isLoading) return <Loading error={error} />;
   if (!data?.event)
     return <NextError statusCode={404} title="Event not found" />;
 

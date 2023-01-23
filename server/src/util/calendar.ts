@@ -6,11 +6,12 @@ import { Event } from '../graphql-types';
 import { createCalendarEvent } from '../services/Google';
 import mailerService from '../services/MailerService';
 import { redactSecrets } from './redact-secrets';
+import { isOnline } from './venue';
 
 interface CreateCalendarEventData {
   attendeeEmails: string[];
   calendarId: string;
-  event: Pick<Event, 'id' | 'ends_at' | 'start_at' | 'name'>;
+  event: Pick<Event, 'id' | 'ends_at' | 'name' | 'start_at' | 'venue_type'>;
 }
 
 // TODO: consider pulling this back into the resolver (it's only used twice,
@@ -18,7 +19,7 @@ interface CreateCalendarEventData {
 export const createCalendarEventHelper = async ({
   attendeeEmails,
   calendarId,
-  event: { ends_at, id, name, start_at },
+  event: { ends_at, id, name, start_at, venue_type },
 }: CreateCalendarEventData) => {
   try {
     const { calendarEventId } = await createCalendarEvent(
@@ -30,6 +31,7 @@ export const createCalendarEventHelper = async ({
         end: ends_at,
         summary: name,
         attendees: attendeeEmails.map((email) => ({ email })),
+        createMeet: isOnline(venue_type),
       },
     );
 

@@ -14,7 +14,7 @@ exports[`EventCard should render 1`] = `
       data-cy="event-card"
     >
       <div
-        class="css-15hezon"
+        class="css-1444ix4"
       >
         <a
           class="chakra-link css-binssk"
@@ -27,7 +27,7 @@ exports[`EventCard should render 1`] = `
           class="css-14ygirk"
         >
           <span
-            class="css-17imrdh"
+            class="css-y2lvzo"
           >
             Invite only
           </span>

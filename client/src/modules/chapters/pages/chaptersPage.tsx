@@ -5,15 +5,15 @@ import { LinkButton } from 'chakra-next-link';
 import { ChapterCard } from '../../../components/ChapterCard';
 import { useChaptersQuery } from '../../../generated/graphql';
 import { Loading } from '../../../components/Loading';
-import { useAuth } from '../../../modules/auth/store';
+import { useUser } from '../../auth/user';
 import { checkPermission } from '../../../util/check-permission';
 import { Permission } from '../../../../../common/permissions';
 
 export const ChaptersPage: NextPage = () => {
   const { loading, error, data } = useChaptersQuery();
-  const { user } = useAuth();
+  const { user } = useUser();
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
 
   return (
     <Center>
@@ -23,7 +23,6 @@ export const ChaptersPage: NextPage = () => {
         maxW="48em"
         mt={10}
         mb={5}
-        placeItems={'center'}
       >
         <Flex
           justifyContent={'space-between'}

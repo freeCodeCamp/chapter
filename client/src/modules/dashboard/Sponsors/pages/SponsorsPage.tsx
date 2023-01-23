@@ -5,16 +5,16 @@ import Head from 'next/head';
 import React, { ReactElement } from 'react';
 
 import { checkPermission } from '../../../../util/check-permission';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Permission } from '../../../../../../common/permissions';
 import { useSponsorsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { useAuth } from 'modules/auth/store';
+import { useUser } from '../../../auth/user';
 
 export const SponsorsPage: NextPageWithLayout = () => {
   const { loading, error, data } = useSponsorsQuery();
-  const { user, loadingUser } = useAuth();
+  const { user, loadingUser } = useUser();
 
   const hasPermissionToManageSponsor = checkPermission(
     user,
@@ -133,5 +133,5 @@ export const SponsorsPage: NextPageWithLayout = () => {
 };
 
 SponsorsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

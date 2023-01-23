@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 
 import { useChapterQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import VenueForm from '../components/VenueForm';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -33,5 +33,5 @@ export const ChapterNewVenuePage: NextPageWithLayout = () => {
 };
 
 ChapterNewVenuePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

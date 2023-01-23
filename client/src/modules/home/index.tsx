@@ -15,10 +15,10 @@ import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
 import { useHomeQuery } from '../../generated/graphql';
-import { AuthContextType, useAuth } from '../../modules/auth/store';
+import { UserContextType, useUser } from '../auth/user';
 import { getNameText } from '../../components/UserName';
 
-type User = NonNullable<AuthContextType['user']>;
+type User = NonNullable<UserContextType['user']>;
 
 const Welcome = ({ user }: { user: User }) => {
   return (
@@ -48,7 +48,7 @@ const Home = () => {
   const { loading, error, data, fetchMore } = useHomeQuery({
     variables: { offset: 0, limit: 2 },
   });
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const toast = useToast();
   const onLoadMore = async () => {
@@ -62,13 +62,12 @@ const Home = () => {
         toast({ title: err.message || err.name });
       } else {
         toast({ title: 'An unexpected error occurred' });
-        console.log(err);
       }
     }
   };
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
 
   return (
     <>

@@ -1,12 +1,5 @@
 import { inspect } from 'util';
-import {
-  events,
-  events_venue_type_enum,
-  event_users,
-  Prisma,
-  rsvp,
-  venues,
-} from '@prisma/client';
+import { events, event_users, Prisma, rsvp, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import {
   Resolver,

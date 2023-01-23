@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, events_venue_type_enum } from '@prisma/client';
 import {
   Arg,
   Authorized,
@@ -10,7 +10,6 @@ import {
 } from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
-// import { isPhysical } from '../../util/venue';
 
 import {
   Venue,
@@ -23,6 +22,7 @@ import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
+import { chapterUnsubscribeOptions } from '../../util/eventEmail';
 import { VenueInputs } from './inputs';
 
 @Resolver()
@@ -107,35 +107,42 @@ export class VenueResolver {
     // TODO: handle deletion of non-existent venue
     const users = await prisma.users.findMany({
       where: {
-        user_chapters: {
+        user_events: {
           every: {
-            chapter_id: chapterId,
-          },
-        },
-        AND: {
-          user_events: {
-            every: {
-              event: {
-                canceled: false,
-                ends_at: { gt: new Date() },
-                venue_type: isPhysical,
-              },
+            event: {
+              canceled: false,
+              ends_at: { gt: new Date() },
+              venue_type: events_venue_type_enum.Physical,
             },
           },
         },
       },
     });
 
+    const venueChapter = await prisma.chapters.findUniqueOrThrow({
+      where: { id: chapterId },
+    });
+    const unsubscribeOptions = (userId: number) =>
+      chapterUnsubscribeOptions({
+        chapterId: chapterId,
+        userId: userId,
+      });
+    const emailSubject = `${venueChapter.name} won't host the venue anymore`;
+    const emailContent = (
+      currentUserId: number,
+    ) => `The events related to venue won't be host locally anymore.<br />
+    ${unsubscribeOptions(currentUserId)}`;
+    for (const { email, id: currentUserId } of users) {
+      mailerService.sendEmail({
+        emailList: [email],
+        subject: emailSubject,
+        htmlEmail: emailContent(currentUserId),
+      });
+    }
+
     await prisma.venues.update({
       where: { id: id },
       data: { events: { set: [] } },
-    });
-    const emailList = users.map(({ email }) => email);
-    // find the user id from chapter
-    mailerService.sendEmail({
-      emailList,
-      subject: '',
-      htmlEmail: 'cancelEventEmail',
     });
     return await prisma.venues.delete({
       where: { id },

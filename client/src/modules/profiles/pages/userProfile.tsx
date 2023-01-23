@@ -36,7 +36,7 @@ const createDataUrl = (userData: UserDownloadQuery['userDownload']) => {
 const RequireLogin = ({ children }: { children: React.ReactNode }) => {
   const { isLoggedIn, loadingUser } = useUser();
 
-  if (loadingUser) return <Loading loading={loadingUser} />;
+  if (loadingUser) return <Loading />;
   if (!isLoggedIn)
     return <NextError statusCode={401} title={'Log in to see this page'} />;
 
@@ -88,7 +88,7 @@ const UserProfile = () => {
   };
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
   const userInfo = data.userProfile;
 
   return (

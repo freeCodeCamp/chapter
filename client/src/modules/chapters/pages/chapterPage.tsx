@@ -240,7 +240,7 @@ export const ChapterPage: NextPage = () => {
     }
   }, [canShowConfirmModal, isAlreadyMember, hasShownModal]);
 
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 

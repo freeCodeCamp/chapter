@@ -56,12 +56,16 @@ export type Venues = Merge<
   Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
 
-const findAndAddUser = async (req: Request, next: NextFunction, id: number) => {
+const findAndAddUser = async (
+  req: Request,
+  next: NextFunction,
+  { sessionId }: { sessionId: number },
+) => {
   // While we can't make a findUnique call here (sessions.id is not in users),
   // there is a 1-1 relationship between user and session. So, if a session
   // exists, there can only be one user with that session.
   const user = await prisma.users.findFirst({
-    where: { session: { id } },
+    where: { session: { id: sessionId } },
     ...userInclude,
   });
 
@@ -74,12 +78,12 @@ const findAndAddUser = async (req: Request, next: NextFunction, id: number) => {
     prisma.venues.findMany({
       select: { id: true, chapter_id: true },
       where: {
-        chapter: { chapter_users: { some: { user_id: id } } },
+        chapter: { chapter_users: { some: { user_id: user.id } } },
       },
     }),
     prisma.events.findMany({
       select: { id: true, chapter_id: true },
-      where: { chapter: { chapter_users: { some: { user_id: id } } } },
+      where: { chapter: { chapter_users: { some: { user_id: user.id } } } },
     }),
   ]);
 
@@ -90,12 +94,12 @@ const findAndAddUser = async (req: Request, next: NextFunction, id: number) => {
 };
 
 export const user = (req: Request, _res: Response, next: NextFunction) => {
-  const id = req.session?.id;
+  const sessionId: number = req.session?.id;
 
   // user is not logged in, so we will not be adding user to the request and can
   // move on
-  if (!id) return next();
-  findAndAddUser(req, next, id);
+  if (!sessionId) return next();
+  findAndAddUser(req, next, { sessionId });
 };
 
 export function handleError(

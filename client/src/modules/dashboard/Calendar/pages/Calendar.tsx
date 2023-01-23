@@ -8,7 +8,7 @@ import {
   useCalendarIntegrationTestMutation,
   useTokenStatusesQuery,
 } from '../../../../generated/graphql';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useUser } from '../../../auth/user';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
@@ -20,7 +20,7 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 export const Calendar: NextPageWithLayout = () => {
   const { user } = useUser();
-  const canAuthenticateWithGoogle = checkPermission(
+  const canAuthenticateWithGoogle = checkInstancePermission(
     user,
     Permission.GoogleAuthenticate,
   );

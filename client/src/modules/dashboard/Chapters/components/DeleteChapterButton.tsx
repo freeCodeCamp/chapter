@@ -15,7 +15,7 @@ import {
   userProfileQuery,
 } from '../../../profiles/graphql/queries';
 import { useUser } from '../../../auth/user';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useDeleteChapterMutation } from '../../../../generated/graphql';
 
@@ -62,7 +62,7 @@ export const DeleteChapterButton = ({
 
   return (
     <>
-      {checkPermission(user, Permission.ChapterDelete, { chapterId }) && (
+      {checkInstancePermission(user, Permission.ChapterDelete) && (
         <Button
           colorScheme="red"
           size={size}

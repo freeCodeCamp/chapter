@@ -60,5 +60,5 @@ export const useSession = () => {
     }
   }, [isAuthenticated, canAlterSession]);
 
-  return { createSession, login, logout, isAuthenticated };
+  return { login, logout, isAuthenticated };
 };

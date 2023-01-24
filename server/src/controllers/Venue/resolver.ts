@@ -101,7 +101,6 @@ export class VenueResolver {
   @Mutation(() => Venue)
   async deleteVenue(
     @Arg('id', () => Int) id: number,
-    @Arg('chapterId', () => Int) chapterId: number,
     @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
   ): Promise<{ id: number }> {
     // TODO: handle deletion of non-existent venue
@@ -119,19 +118,22 @@ export class VenueResolver {
       },
     });
 
-    const venueChapter = await prisma.chapters.findUniqueOrThrow({
-      where: { id: chapterId },
+    const venue = await prisma.venues.findUniqueOrThrow({
+      where: { id: id },
     });
+    const chapterId = venue.chapter_id;
+
     const unsubscribeOptions = (userId: number) =>
       chapterUnsubscribeOptions({
         chapterId: chapterId,
         userId: userId,
       });
-    const emailSubject = `${venueChapter.name} won't host the venue anymore`;
-    const emailContent = (
-      currentUserId: number,
-    ) => `The events related to venue won't be host locally anymore.<br />
+    const emailSubject = `Events hosted at ${venue.name} won't be hosted there anymore`;
+    const emailContent = (currentUserId: number) => `The events related to ${
+      venue.name
+    } won't be host locally anymore.<br />
     ${unsubscribeOptions(currentUserId)}`;
+
     for (const { email, id: currentUserId } of users) {
       mailerService.sendEmail({
         emailList: [email],

@@ -107,12 +107,13 @@ export class VenueResolver {
     const users = await prisma.users.findMany({
       where: {
         user_events: {
-          every: {
+          some: {
             event: {
               canceled: false,
               ends_at: { gt: new Date() },
-              venue_type: events_venue_type_enum.Physical,
+              venue_id: id,
             },
+            subscribed: true,
           },
         },
       },

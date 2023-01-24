@@ -71,7 +71,7 @@
     "concurrently": "7.6.0",
     "cross-env": "7.0.3",
     "cypress": "10.11.0",
-    "cypress-mailhog": "1.6.0",
+    "cypress-mailhog": "1.7.0",
     "cypress-wait-until": "1.7.2",
     "dotenv": "16.0.3",
     "eslint": "8.32.0",

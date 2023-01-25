@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
 import NextError from 'next/error';
-import React, { ReactElement, useMemo } from 'react';
+import React, { ReactElement, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
@@ -25,6 +25,7 @@ import {
   useCreateChapterCalendarMutation,
   useDashboardChapterQuery,
   DashboardChapterQuery,
+  useTestChapterCalendarAccessLazyQuery,
   useUnlinkChapterCalendarMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
@@ -52,6 +53,8 @@ const eventRefetches = (data?: DashboardChapterQuery) => {
 export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
   const { user, loadingUser } = useUser();
+  const [displayUnlink, setDisplayUnlink] = useState(false);
+  const [disableTest, setDisableTest] = useState(false);
 
   const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
@@ -63,6 +66,8 @@ export const ChapterPage: NextPageWithLayout = () => {
     useCreateChapterCalendarMutation();
   const [unlinkChapterCalendar, { loading: loadingUnlink }] =
     useUnlinkChapterCalendarMutation();
+  const [testChapterCalendarAccess, { loading: loadingTest }] =
+    useTestChapterCalendarAccessLazyQuery();
 
   const confirm = useConfirm();
   const toast = useToast();
@@ -88,13 +93,60 @@ export const ChapterPage: NextPageWithLayout = () => {
     }
   };
 
+  const onTestCalendar = async () => {
+    const ok = await confirm({
+      title: 'Test chapter calendar test',
+      body: (
+        <>
+          Do you want to test access to Google calendar for this chapter?
+          <List>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              We will try to access linked Google calendar.
+            </ListItem>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              If Google calendar no longer exists, or cannot be accessed, you
+              will have option to unlink it.
+            </ListItem>
+          </List>
+        </>
+      ),
+    });
+    if (ok) {
+      setDisableTest(true);
+      try {
+        const { data } = await testChapterCalendarAccess({
+          variables: { chapterId },
+        });
+        if (data?.testChapterCalendarAccess) {
+          toast({
+            title: 'Calendar access test successful',
+            status: 'success',
+          });
+        } else if (data?.testChapterCalendarAccess === false) {
+          toast({ title: "Couldn't access the calendar", status: 'error' });
+          setDisplayUnlink(true);
+        } else {
+          toast({
+            title:
+              'Something went wrong, make sure integration is working and try again',
+            status: 'warning',
+          });
+        }
+      } catch (error) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.log(error);
+      }
+    }
+  };
+
   const onUnlinkCalendar = async () => {
     const ok = await confirm({
       title: 'Unlink chapter calendar',
       body: (
         <>
           Do you want to unlink current Google calendar from this chapter?
-          <br />
           <List>
             <ListItem>
               <ListIcon as={InfoIcon} boxSize={5} />
@@ -190,15 +242,26 @@ export const ChapterPage: NextPageWithLayout = () => {
               ) : data.dashboardChapter.calendar_id ? (
                 <>
                   <CheckIcon boxSize="5" />
-                  {checkPermission(user, Permission.ChapterEdit, {
+                  {checkPermission(user, Permission.ChapterCreate, {
                     chapterId,
                   }) && (
-                    <Button
-                      isLoading={loadingUnlink}
-                      onClick={onUnlinkCalendar}
-                    >
-                      Unlink
-                    </Button>
+                    <>
+                      <Button
+                        isDisabled={disableTest}
+                        isLoading={loadingTest}
+                        onClick={onTestCalendar}
+                      >
+                        Test access
+                      </Button>
+                      {displayUnlink && (
+                        <Button
+                          isLoading={loadingUnlink}
+                          onClick={onUnlinkCalendar}
+                        >
+                          Unlink
+                        </Button>
+                      )}
+                    </>
                   )}
                 </>
               ) : (

@@ -560,6 +560,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  testChapterCalendarAccess?: Maybe<Scalars['Boolean']>;
   tokenStatuses: Array<TokenStatus>;
   userDownload: UserForDownload;
   userProfile: UserProfile;
@@ -611,6 +612,10 @@ export type QueryPaginatedEventsWithTotalArgs = {
 
 export type QuerySponsorWithEventsArgs = {
   sponsorId: Scalars['Int'];
+};
+
+export type QueryTestChapterCalendarAccessArgs = {
+  id: Scalars['Int'];
 };
 
 export type QueryVenueArgs = {
@@ -1229,6 +1234,15 @@ export type DashboardChapterUsersQuery = {
     }>;
     user_bans: Array<{ __typename?: 'UserBan'; user_id: number }>;
   };
+};
+
+export type TestChapterCalendarAccessQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type TestChapterCalendarAccessQuery = {
+  __typename?: 'Query';
+  testChapterCalendarAccess?: boolean | null;
 };
 
 export type CreateEventMutationVariables = Exact<{
@@ -3344,6 +3358,62 @@ export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
 export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
   DashboardChapterUsersQuery,
   DashboardChapterUsersQueryVariables
+>;
+export const TestChapterCalendarAccessDocument = gql`
+  query testChapterCalendarAccess($chapterId: Int!) {
+    testChapterCalendarAccess(id: $chapterId)
+  }
+`;
+
+/**
+ * __useTestChapterCalendarAccessQuery__
+ *
+ * To run a query within a React component, call `useTestChapterCalendarAccessQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTestChapterCalendarAccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTestChapterCalendarAccessQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useTestChapterCalendarAccessQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >(TestChapterCalendarAccessDocument, options);
+}
+export function useTestChapterCalendarAccessLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >(TestChapterCalendarAccessDocument, options);
+}
+export type TestChapterCalendarAccessQueryHookResult = ReturnType<
+  typeof useTestChapterCalendarAccessQuery
+>;
+export type TestChapterCalendarAccessLazyQueryHookResult = ReturnType<
+  typeof useTestChapterCalendarAccessLazyQuery
+>;
+export type TestChapterCalendarAccessQueryResult = Apollo.QueryResult<
+  TestChapterCalendarAccessQuery,
+  TestChapterCalendarAccessQueryVariables
 >;
 export const CreateEventDocument = gql`
   mutation createEvent(

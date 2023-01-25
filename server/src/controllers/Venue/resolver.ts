@@ -170,7 +170,7 @@ export class VenueResolver {
           canceled: false,
           ends_at: { gt: new Date() },
           venue_id: id,
-          event_users: { some: { user_id: currentUserId, subscribed: true } },
+          event_users: { every: { user_id: currentUserId, subscribed: true } },
         },
       });
       mailerService.sendEmail({

@@ -10,8 +10,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
+import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import EventChapterSelect from './EventChapterSelect';
@@ -20,13 +19,6 @@ import EventCancelButton from './EventCancelButton';
 import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
 import { EventFormProps, fields, EventFormData } from './EventFormUtils';
-
-const fieldTypeToComponent = (type: string) => {
-  if (type === 'textarea') {
-    return TextArea;
-  }
-  return Input;
-};
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {

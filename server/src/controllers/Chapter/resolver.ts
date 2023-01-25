@@ -203,6 +203,22 @@ export class ChapterResolver {
 
   @Authorized(Permission.ChapterEdit)
   @Mutation(() => Chapter)
+  async unlinkChapterCalendar(
+    @Arg('id', () => Int) id: number,
+  ): Promise<Chapter> {
+    await prisma.events.updateMany({
+      data: { calendar_event_id: null },
+      where: { chapter_id: id },
+    });
+
+    return await prisma.chapters.update({
+      data: { calendar_id: null },
+      where: { id },
+    });
+  }
+
+  @Authorized(Permission.ChapterEdit)
+  @Mutation(() => Chapter)
   async updateChapter(
     @Arg('id', () => Int) id: number,
     @Arg('data') data: UpdateChapterInputs,

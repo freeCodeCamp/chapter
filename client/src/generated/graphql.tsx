@@ -381,6 +381,7 @@ export type Mutation = {
   toggleAutoSubscribe: User;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
+  unlinkChapterCalendar: Chapter;
   unsubscribe: Scalars['Boolean'];
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
@@ -492,6 +493,10 @@ export type MutationToggleChapterSubscriptionArgs = {
 export type MutationUnbanUserArgs = {
   chapterId: Scalars['Int'];
   userId: Scalars['Int'];
+};
+
+export type MutationUnlinkChapterCalendarArgs = {
+  id: Scalars['Int'];
 };
 
 export type MutationUnsubscribeArgs = {
@@ -1059,6 +1064,19 @@ export type CreateChapterCalendarMutationVariables = Exact<{
 export type CreateChapterCalendarMutation = {
   __typename?: 'Mutation';
   createChapterCalendar: {
+    __typename?: 'Chapter';
+    id: number;
+    calendar_id?: string | null;
+  };
+};
+
+export type UnlinkChapterCalendarMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type UnlinkChapterCalendarMutation = {
+  __typename?: 'Mutation';
+  unlinkChapterCalendar: {
     __typename?: 'Chapter';
     id: number;
     calendar_id?: string | null;
@@ -2728,6 +2746,57 @@ export type CreateChapterCalendarMutationResult =
 export type CreateChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
   CreateChapterCalendarMutation,
   CreateChapterCalendarMutationVariables
+>;
+export const UnlinkChapterCalendarDocument = gql`
+  mutation unlinkChapterCalendar($chapterId: Int!) {
+    unlinkChapterCalendar(id: $chapterId) {
+      id
+      calendar_id
+    }
+  }
+`;
+export type UnlinkChapterCalendarMutationFn = Apollo.MutationFunction<
+  UnlinkChapterCalendarMutation,
+  UnlinkChapterCalendarMutationVariables
+>;
+
+/**
+ * __useUnlinkChapterCalendarMutation__
+ *
+ * To run a mutation, you first call `useUnlinkChapterCalendarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlinkChapterCalendarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlinkChapterCalendarMutation, { data, loading, error }] = useUnlinkChapterCalendarMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useUnlinkChapterCalendarMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UnlinkChapterCalendarMutation,
+    UnlinkChapterCalendarMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UnlinkChapterCalendarMutation,
+    UnlinkChapterCalendarMutationVariables
+  >(UnlinkChapterCalendarDocument, options);
+}
+export type UnlinkChapterCalendarMutationHookResult = ReturnType<
+  typeof useUnlinkChapterCalendarMutation
+>;
+export type UnlinkChapterCalendarMutationResult =
+  Apollo.MutationResult<UnlinkChapterCalendarMutation>;
+export type UnlinkChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
+  UnlinkChapterCalendarMutation,
+  UnlinkChapterCalendarMutationVariables
 >;
 export const UpdateChapterDocument = gql`
   mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {

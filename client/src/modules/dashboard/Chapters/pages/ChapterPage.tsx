@@ -3,11 +3,14 @@ import {
   Heading,
   HStack,
   Grid,
+  List,
+  ListItem,
+  ListIcon,
   Spinner,
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
 import NextError from 'next/error';
 import React, { ReactElement, useMemo } from 'react';
 
@@ -21,6 +24,8 @@ import {
   useCalendarIntegrationStatusQuery,
   useCreateChapterCalendarMutation,
   useDashboardChapterQuery,
+  DashboardChapterQuery,
+  useUnlinkChapterCalendarMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
@@ -33,6 +38,16 @@ import { checkPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { DeleteChapterButton } from '../components/DeleteChapterButton';
 import { DASHBOARD_CHAPTER } from '../graphql/queries';
+import { DASHBOARD_EVENT } from '../../Events/graphql/queries';
+
+const eventRefetches = (data?: DashboardChapterQuery) => {
+  return (
+    data?.dashboardChapter.events.map(({ id: eventId }) => ({
+      query: DASHBOARD_EVENT,
+      variables: { eventId },
+    })) ?? []
+  );
+};
 
 export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
@@ -46,6 +61,8 @@ export const ChapterPage: NextPageWithLayout = () => {
     useCalendarIntegrationStatusQuery();
   const [createChapterCalendar, { loading: loadingCalendar }] =
     useCreateChapterCalendarMutation();
+  const [unlinkChapterCalendar, { loading: loadingUnlink }] =
+    useUnlinkChapterCalendarMutation();
 
   const confirm = useConfirm();
   const toast = useToast();
@@ -64,6 +81,44 @@ export const ChapterPage: NextPageWithLayout = () => {
           ],
         });
         toast({ title: 'Chapter calendar created', status: 'success' });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const onUnlinkCalendar = async () => {
+    const ok = await confirm({
+      title: 'Unlink chapter calendar',
+      body: (
+        <>
+          Do you want to unlink current Google calendar from this chapter?
+          <br />
+          <List>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              All events in this chapter will have Google calendar events
+              unlinked as well.
+            </ListItem>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              Unlinked Google calendar will not be deleted.
+            </ListItem>
+          </List>
+        </>
+      ),
+    });
+    if (ok) {
+      try {
+        await unlinkChapterCalendar({
+          variables: { chapterId },
+          refetchQueries: [
+            { query: DASHBOARD_CHAPTER, variables: { chapterId } },
+            ...eventRefetches(data),
+          ],
+        });
+        toast({ title: 'Chapter calendar unlinked', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -133,7 +188,19 @@ export const ChapterPage: NextPageWithLayout = () => {
               {loadingCalendar ? (
                 <Spinner size="sm" />
               ) : data.dashboardChapter.calendar_id ? (
-                <CheckIcon boxSize="5" />
+                <>
+                  <CheckIcon boxSize="5" />
+                  {checkPermission(user, Permission.ChapterEdit, {
+                    chapterId,
+                  }) && (
+                    <Button
+                      isLoading={loadingUnlink}
+                      onClick={onUnlinkCalendar}
+                    >
+                      Unlink
+                    </Button>
+                  )}
+                </>
               ) : (
                 <CloseIcon boxSize="4" />
               )}

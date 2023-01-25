@@ -1,4 +1,4 @@
-import { Prisma, events_venue_type_enum } from '@prisma/client';
+import { Prisma, events } from '@prisma/client';
 import {
   Arg,
   Authorized,
@@ -22,7 +22,7 @@ import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
-import { chapterUnsubscribeOptions } from '../../util/eventEmail';
+import { eventUnsubscribeOptions } from '../../util/eventEmail';
 import { VenueInputs } from './inputs';
 
 @Resolver()
@@ -122,24 +122,61 @@ export class VenueResolver {
     const venue = await prisma.venues.findUniqueOrThrow({
       where: { id: id },
     });
+
     const chapterId = venue.chapter_id;
 
-    const unsubscribeOptions = (userId: number) =>
-      chapterUnsubscribeOptions({
+    const unsubscribeOptions = (
+      currentUserId: number,
+      currentEventId: number,
+    ) =>
+      eventUnsubscribeOptions({
         chapterId: chapterId,
-        userId: userId,
+        eventId: currentEventId,
+        userId: currentUserId,
       });
+
+    const eventList = (event: events[], currentUserId: number) => {
+      event.map(
+        ({ name, id }) => `
+      <tr>
+      <td>${name}</td>
+      <td>${unsubscribeOptions(id, currentUserId)}</td>
+     </tr>
+  `,
+      );
+    };
     const emailSubject = `Events hosted at ${venue.name} won't be hosted there anymore`;
-    const emailContent = (currentUserId: number) => `The events related to ${
+    const emailContent = (
+      event: events[],
+      currentUserId: number,
+    ) => `The events related to ${
       venue.name
     } won't be host locally anymore.<br />
-    ${unsubscribeOptions(currentUserId)}`;
+    <table>
+    <thead>
+        <tr>
+          <th>Event</th>
+          <th>Cancel RSVP</th>
+        </tr>
+    </thead>
+    <tbody>
+       ${eventList(event, currentUserId)}
+    </tbody>
+</table>`;
 
     for (const { email, id: currentUserId } of users) {
+      const events = await prisma.events.findMany({
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+          venue_id: id,
+          event_users: { some: { user_id: currentUserId, subscribed: true } },
+        },
+      });
       mailerService.sendEmail({
         emailList: [email],
         subject: emailSubject,
-        htmlEmail: emailContent(currentUserId),
+        htmlEmail: emailContent(events, currentUserId),
       });
     }
 

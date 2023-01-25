@@ -175,21 +175,19 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           </Select>
         </FormControl>
       )}
-      {fields.map(({ key, isRequired, label, type, step, max, min }) => {
-        return (
-          <Input
-            key={key}
-            label={label}
-            {...register(key)}
-            type={type}
-            isRequired={isRequired}
-            step={step}
-            max={max}
-            min={min}
-            isDisabled={loading}
-          />
-        );
-      })}
+      {fields.map(({ key, isRequired, label, type, step, max, min }) => (
+        <Input
+          key={key}
+          label={label}
+          {...register(key)}
+          type={type}
+          isRequired={isRequired}
+          step={step}
+          max={max}
+          min={min}
+          isDisabled={loading}
+        />
+      ))}
       <Button
         mt="30px"
         width="100%"

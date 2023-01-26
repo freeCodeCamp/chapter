@@ -29,11 +29,11 @@ jobs:
         run: |
           docker compose -f docker-compose.yml build
           tagname=$(git rev-parse --short HEAD)-$(date +%Y%m%d)-$(date +%H%M)
-          docker tag chapter-server ${{ secrets.DOCKER_REPOSITORY }}/chapter-server:$tagname
-          docker tag chapter-server ${{ secrets.DOCKER_REPOSITORY }}/chapter-server:latest
-          docker tag chapter-client ${{ secrets.DOCKER_REPOSITORY }}/chapter-client:$tagname
-          docker tag chapter-client ${{ secrets.DOCKER_REPOSITORY }}/chapter-client:latest
+          docker tag chapter-server ${{ secrets.DOCKER_NAMESPACE }}/chapter-server:$tagname
+          docker tag chapter-server ${{ secrets.DOCKER_NAMESPACE }}/chapter-server:latest
+          docker tag chapter-client ${{ secrets.DOCKER_NAMESPACE }}/chapter-client:$tagname
+          docker tag chapter-client ${{ secrets.DOCKER_NAMESPACE }}/chapter-client:latest
       - name: Upload Images
         run: |
-          docker push --all-tags ${{ secrets.DOCKER_REPOSITORY }}/chapter-server
-          docker push --all-tags ${{ secrets.DOCKER_REPOSITORY }}/chapter-client
+          docker push --all-tags ${{ secrets.DOCKER_NAMESPACE }}/chapter-server
+          docker push --all-tags ${{ secrets.DOCKER_NAMESPACE }}/chapter-client

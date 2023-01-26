@@ -81,7 +81,7 @@ describe('profile page', () => {
       );
     });
 
-    it('users should be subscribed to events they rsvp to, regardless of auto_subscribe', () => {
+    it('users should be subscribed to events they attend, regardless of auto_subscribe', () => {
       // first with auto_subscribe enabled
       cy.visit(profilePage);
       cy.findByRole('checkbox', {

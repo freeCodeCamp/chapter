@@ -114,6 +114,20 @@ export class VenueResolver {
               venue_id: id,
             },
             subscribed: true,
+            rsvp: { name: 'yes' },
+          },
+        },
+      },
+      include: {
+        user_events: {
+          where: {
+            event: {
+              canceled: false,
+              ends_at: { gt: new Date() },
+              venue_id: id,
+            },
+            subscribed: true,
+            rsvp: { name: 'yes' },
           },
         },
       },

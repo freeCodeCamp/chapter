@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const DASHBOARD_EVENTS = gql`
-  query dashboardEvents($showCanceled: Boolean) {
-    dashboardEvents(showCanceled: $showCanceled) {
+  query dashboardEvents($showCanceled: Boolean, $showRecent: Boolean) {
+    dashboardEvents(showCanceled: $showCanceled, showRecent: $showRecent) {
       id
       name
       canceled

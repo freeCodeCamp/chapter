@@ -584,6 +584,7 @@ export type QueryDashboardEventArgs = {
 
 export type QueryDashboardEventsArgs = {
   showCanceled?: InputMaybe<Scalars['Boolean']>;
+  showRecent?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryDashboardSponsorArgs = {
@@ -1318,6 +1319,7 @@ export type SendEventInviteMutation = {
 
 export type DashboardEventsQueryVariables = Exact<{
   showCanceled?: InputMaybe<Scalars['Boolean']>;
+  showRecent?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type DashboardEventsQuery = {
@@ -3700,8 +3702,8 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutationVariables
 >;
 export const DashboardEventsDocument = gql`
-  query dashboardEvents($showCanceled: Boolean) {
-    dashboardEvents(showCanceled: $showCanceled) {
+  query dashboardEvents($showCanceled: Boolean, $showRecent: Boolean) {
+    dashboardEvents(showCanceled: $showCanceled, showRecent: $showRecent) {
       id
       name
       canceled
@@ -3734,6 +3736,7 @@ export const DashboardEventsDocument = gql`
  * const { data, loading, error } = useDashboardEventsQuery({
  *   variables: {
  *      showCanceled: // value for 'showCanceled'
+ *      showRecent: // value for 'showRecent'
  *   },
  * });
  */

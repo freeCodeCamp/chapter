@@ -358,7 +358,9 @@ export class EventResolver {
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
     @Arg('showCanceled', () => Boolean, { nullable: true })
+    @Arg('showRecent', () => Boolean, { nullable: true })
     showCanceled = true,
+    showRecent = true,
   ): Promise<EventWithVenue[]> {
     return await prisma.events.findMany({
       where: {
@@ -366,6 +368,7 @@ export class EventResolver {
           chapter: isChapterAdminWhere(ctx.user.id),
         }),
         ...(!showCanceled && { canceled: false }),
+        ...(!showRecent && { ends_at: { gt: new Date() } }),
       },
       include: { venue: true },
       orderBy: { start_at: 'desc' },

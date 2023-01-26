@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Grid,
   FormLabel,
   Heading,
   HStack,
@@ -21,20 +22,26 @@ import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
-const ShowCanceledSwitch = ({
-  setShowCanceled,
-  defaultChecked,
-}: {
-  setShowCanceled: React.Dispatch<React.SetStateAction<boolean>>;
+interface FilterEventsProps {
+  setFilterEvent: React.Dispatch<React.SetStateAction<boolean>>;
   defaultChecked: boolean;
-}) => {
+  filterLabel: string;
+}
+
+const FilterEvents = ({
+  setFilterEvent,
+  defaultChecked,
+  filterLabel,
+}: FilterEventsProps) => {
   return (
-    <Flex>
-      <FormLabel htmlFor="show-canceled-events">Show canceled events</FormLabel>
+    <Flex alignItems="center" justifyContent="space-between">
+      <FormLabel marginTop=".5em" htmlFor="show-canceled-events">
+        {filterLabel}
+      </FormLabel>
       <Switch
         isChecked={defaultChecked}
         id="show-canceled-events"
-        onChange={(e) => setShowCanceled(e.target.checked)}
+        onChange={(e) => setFilterEvent(e.target.checked)}
       />
     </Flex>
   );
@@ -42,8 +49,10 @@ const ShowCanceledSwitch = ({
 
 export const EventsPage: NextPageWithLayout = () => {
   const [showCanceled, setShowCanceled] = useState(true);
+  const [showRecent, setShowRecent] = useState(true);
+
   const { error, loading, data } = useDashboardEventsQuery({
-    variables: { showCanceled },
+    variables: { showCanceled, showRecent },
   });
 
   const { user } = useUser();
@@ -53,16 +62,23 @@ export const EventsPage: NextPageWithLayout = () => {
 
   return (
     <VStack data-cy="events-dashboard">
-      <Flex
-        w="full"
-        justify="space-between"
-        alignItems={{ base: '', sm: 'center' }}
-        flexDirection={{ base: 'column', sm: 'row' }}
+      <Grid
+        width="100%"
+        alignItems="center"
+        marginBlock="2em"
+        gap="2em"
+        gridTemplateColumns="repeat(auto-fit, minmax(10rem, 1fr))"
       >
         <Heading id="page-heading">Events</Heading>
-        <ShowCanceledSwitch
+        <FilterEvents
           defaultChecked={showCanceled}
-          setShowCanceled={setShowCanceled}
+          setFilterEvent={setShowCanceled}
+          filterLabel="Show canceled events"
+        />
+        <FilterEvents
+          defaultChecked={showRecent}
+          setFilterEvent={setShowRecent}
+          filterLabel="Show recent events"
         />
         {!!user?.admined_chapters.length && (
           <LinkButton
@@ -76,7 +92,7 @@ export const EventsPage: NextPageWithLayout = () => {
             </Text>
           </LinkButton>
         )}
-      </Flex>
+      </Grid>
       <Box
         display={{ base: 'none', lg: 'block' }}
         width={'100%'}

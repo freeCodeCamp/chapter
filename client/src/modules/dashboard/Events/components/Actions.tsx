@@ -122,7 +122,7 @@ const Actions: React.FC<ActionsProps> = ({
       </Button>
       <SharePopOver
         size={['sm', 'md']}
-        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?confirm_rsvp=true`}
+        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?confirm_attendance=true`}
       />
     </HStack>
   );

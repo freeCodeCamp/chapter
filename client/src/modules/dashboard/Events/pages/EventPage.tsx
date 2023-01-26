@@ -54,26 +54,26 @@ export const EventPage: NextPageWithLayout = () => {
   });
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery();
-  const [confirmRsvp] = useConfirmRsvpMutation(args(eventId));
-  const [removeRsvp] = useDeleteRsvpMutation(args(eventId));
+  const [confirmAttendee] = useConfirmRsvpMutation(args(eventId));
+  const [removeAttendee] = useDeleteRsvpMutation(args(eventId));
   const [createCalendarEvent, { loading: loadingCalendar }] =
     useCreateCalendarEventMutation(args(eventId));
 
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
 
-  const onConfirmRsvp =
+  const onConfirmAttendee =
     ({ eventId, userId }: MutationConfirmRsvpArgs) =>
     async () => {
       const ok = await confirm();
-      if (ok) confirmRsvp({ variables: { eventId, userId } });
+      if (ok) confirmAttendee({ variables: { eventId, userId } });
     };
 
   const onRemove =
     ({ eventId, userId }: MutationDeleteRsvpArgs) =>
     async () => {
       const ok = await confirmDelete();
-      if (ok) removeRsvp({ variables: { eventId, userId } });
+      if (ok) removeAttendee({ variables: { eventId, userId } });
     };
 
   const isLoading = loading || !data || loadingStatus;
@@ -85,20 +85,20 @@ export const EventPage: NextPageWithLayout = () => {
   const endAt = formatDate(data.dashboardEvent.ends_at);
   const userLists = [
     {
-      title: 'RSVPs',
-      rsvpFilter: 'yes',
+      title: 'Attendees',
+      statusFilter: 'yes',
       action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
     {
       title: 'Waitlist',
-      rsvpFilter: 'waitlist',
+      statusFilter: 'waitlist',
       action: [
-        { title: 'Confirm', onClick: onConfirmRsvp, colorScheme: 'blue' },
+        { title: 'Confirm', onClick: onConfirmAttendee, colorScheme: 'blue' },
       ],
     },
     {
       title: 'Canceled',
-      rsvpFilter: 'no',
+      statusFilter: 'no',
       action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
   ];
@@ -235,10 +235,10 @@ export const EventPage: NextPageWithLayout = () => {
       )}
 
       <Box p="2" borderWidth="1px" borderRadius="lg" mt="2">
-        {userLists.map(({ title, rsvpFilter, action }) => {
+        {userLists.map(({ title, statusFilter, action }) => {
           const users = data.dashboardEvent
             ? data.dashboardEvent.event_users.filter(
-                ({ rsvp }) => rsvp.name === rsvpFilter,
+                ({ rsvp }) => rsvp.name === statusFilter,
               )
             : [];
           return (
@@ -267,7 +267,7 @@ export const EventPage: NextPageWithLayout = () => {
                           >
                             {title}
                             <Text srOnly as="span">
-                              RSVP of {user.name}
+                              {user.name} attendee
                             </Text>
                           </Button>
                         ))}
@@ -285,7 +285,7 @@ export const EventPage: NextPageWithLayout = () => {
                   // entry, so we can use the user id as the key.
                   <HStack key={user.id}>
                     <DataTable
-                      title={'RSVP: ' + rsvp.name.toUpperCase()}
+                      title={'Attendee: ' + rsvp.name.toUpperCase()}
                       data={[users[index]]}
                       keys={['type', 'action'] as const}
                       showHeader={false}
@@ -322,7 +322,7 @@ export const EventPage: NextPageWithLayout = () => {
                               >
                                 {title}
                                 <Text srOnly as="span">
-                                  RSVP of {user.name}
+                                  {user.name} attendee
                                 </Text>
                               </Button>
                             ))}

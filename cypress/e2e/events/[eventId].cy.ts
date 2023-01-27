@@ -29,8 +29,8 @@ describe('event page', () => {
 
     it('should render correctly', () => {
       cy.get('h1').should('not.have.text', 'Loading...');
-      cy.get('[data-cy="rsvp-button"]').should('be.visible');
-      cy.get('[data-cy="rsvps-heading"]')
+      cy.get('[data-cy="attend-button"]').should('be.visible');
+      cy.get('[data-cy="attendees-heading"]')
         .should('be.visible')
         .next()
         .should('be.visible')
@@ -47,10 +47,10 @@ describe('event page', () => {
 
     // TODO: we need to rework how we register users before this test can be used.
     // Currently it's automatic, but gives them a placeholder name.
-    it.skip('ask the user to login before they can RSVP', () => {
+    it.skip('ask the user to login before they can attend', () => {
       const newUser = users.testUser;
 
-      cy.findByRole('button', { name: 'RSVP' }).click();
+      cy.findByRole('button', { name: 'Attend' }).click();
       cy.findByRole('heading', { name: 'Login' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Email' })
         .as('email')
@@ -101,35 +101,35 @@ describe('event page', () => {
 
     it('is possible to join using the email links', () => {
       cy.login(users.testUser.email);
-      cy.visit(`/events/${eventId}?confirm_rsvp=true`);
+      cy.visit(`/events/${eventId}?confirm_attendance=true`);
 
       cy.contains('You have been invited to this event');
       cy.findByRole('button', { name: 'Confirm' }).click();
-      cy.get('[data-cy="rsvp-success"]').should('be.visible');
+      cy.get('[data-cy="attend-success"]').should('be.visible');
       cy.findByRole('button', { name: 'Cancel' }).should('be.visible');
     });
 
-    it('should be possible to RSVP and cancel', () => {
+    it('should be possible to attend and cancel', () => {
       cy.login(users.testUser.email);
 
-      cy.get('[data-cy="rsvps-heading"]')
+      cy.get('[data-cy="attendees-heading"]')
         .next()
-        .as('rsvp-list')
+        .as('attendees')
         .within(() => {
           cy.findByText(users.testUser.name).should('not.exist');
         });
 
-      cy.findByRole('button', { name: 'RSVP' }).click();
+      cy.findByRole('button', { name: 'Attend' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.get('@rsvp-list').within(() => {
+      cy.get('@attendees').within(() => {
         cy.findByText(users.testUser.name).should('exist');
       });
 
       cy.findByRole('button', { name: 'Cancel' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.get('@rsvp-list').within(() => {
+      cy.get('@attendees').within(() => {
         cy.findByText(users.testUser.name).should('not.exist');
       });
       cy.findByRole('button', { name: 'Cancel' }).should('not.exist');
@@ -138,8 +138,8 @@ describe('event page', () => {
     it('should be possible to change event subscription', () => {
       cy.login(users.testUser.email);
 
-      // RSVPing is required for managing event subscription
-      cy.findByRole('button', { name: 'RSVP' }).click();
+      // Attending is required for managing event subscription
+      cy.findByRole('button', { name: 'Attend' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.contains(/You are subscribed/);
@@ -184,10 +184,10 @@ describe('event page', () => {
       cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
     });
 
-    it('should email the chapter administrator when a user RSVPs', () => {
+    it('should email the chapter administrator when a user attends', () => {
       cy.login(users.testUser.email);
 
-      cy.findByRole('button', { name: 'RSVP' }).click();
+      cy.findByRole('button', { name: 'Attend' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.waitUntilMail();
@@ -197,13 +197,13 @@ describe('event page', () => {
       );
       cy.mhGetMailsByRecipient(users.chapter1Admin.email)
         .mhFirst()
-        .as('rsvp-mail');
-      cy.get('@rsvp-mail')
+        .as('attend-mail');
+      cy.get('@attend-mail')
         .mhGetSubject()
-        .should('match', /^New RSVP for/);
-      cy.get('@rsvp-mail')
+        .should('match', /^New attendee for/);
+      cy.get('@attend-mail')
         .mhGetBody()
-        .should('include', `User ${users.testUser.name} has RSVP'd`);
+        .should('include', `User ${users.testUser.name} is attending`);
     });
   });
 
@@ -215,9 +215,9 @@ describe('event page', () => {
     it('should be possible to request and cancel', () => {
       cy.login(users.testUser.email);
 
-      cy.get('[data-cy="rsvps-heading"]')
+      cy.get('[data-cy="attendees-heading"]')
         .next()
-        .as('rsvp-list')
+        .as('attendees')
         .within(() => {
           cy.findByText(users.testUser.name).should('not.exist');
         });
@@ -228,7 +228,7 @@ describe('event page', () => {
       cy.contains('Event owner will soon confirm your request');
       cy.findByRole('button', { name: 'Request' }).should('not.exist');
 
-      cy.get('@rsvp-list').within(() => {
+      cy.get('@attendees').within(() => {
         cy.findByText(users.testUser.name).should('not.exist');
       });
 
@@ -244,7 +244,7 @@ describe('event page', () => {
       cy.findByRole('button', { name: 'Cancel' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.contains('You canceled your RSVP');
+      cy.contains('You canceled your attendance');
       cy.findByRole('button', { name: 'Request' }).should('be.visible');
 
       cy.task<EventUsers>('getEventUsers', inviteOnlyEventId).then(

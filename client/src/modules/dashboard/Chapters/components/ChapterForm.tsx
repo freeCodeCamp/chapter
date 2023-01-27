@@ -1,13 +1,14 @@
-import { Button, HStack } from '@chakra-ui/react';
+import { Button, Container, HStack } from '@chakra-ui/react';
+import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
+import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
-import type {
+import {
   DashboardChapterQuery,
   CreateChapterInputs,
+  useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import { DeleteChapterButton } from './DeleteChapterButton';
@@ -98,6 +99,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.dashboardChapter;
 
+  const { loading: loadingStatus, data: dataStatus } =
+    useCalendarIntegrationStatusQuery({ skip: !!chapter });
+
   const defaultValues: CreateChapterInputs = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
@@ -122,34 +126,51 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       onSubmit,
     });
 
+  const isAuthenticated = dataStatus?.calendarIntegrationStatus;
+  const isBroken = isAuthenticated === null;
+
   return (
     <Form
       submitLabel={submitText}
       FormHandling={handleSubmit(disableWhileSubmitting)}
     >
-      {fields.map(({ key, label, placeholder, required, type }) =>
-        type == 'textarea' ? (
-          <TextArea
+      {fields.map(({ key, label, placeholder, required, type }) => {
+        const Component = fieldTypeToComponent(type);
+        return (
+          <Component
             key={key}
-            label={label}
-            placeholder={placeholder}
-            {...register(key)}
-            isRequired={required}
-            defaultValue={defaultValues[key] ?? undefined}
-            isDisabled={loading}
-          />
-        ) : (
-          <Input
-            key={key}
-            label={label}
-            placeholder={placeholder}
-            {...register(key)}
             type={type}
-            isRequired={required}
-            defaultValue={defaultValues[key] ?? undefined}
+            label={label}
             isDisabled={loading}
+            isRequired={required}
+            placeholder={placeholder}
+            defaultValue={defaultValues[key] ?? undefined}
+            {...register(key)}
           />
-        ),
+        );
+      })}
+      {!loadingStatus && dataStatus && (
+        <Container>
+          {isAuthenticated ? (
+            <>
+              <InfoIcon boxSize={5} marginRight={1} />
+              Chapter is authenticated with calendar api, it will attempt
+              creating calendar for chapter.
+            </>
+          ) : isBroken ? (
+            <>
+              <WarningTwoIcon boxSize={5} marginRight={1} />
+              Calendar integration is not working. Calendar will not be created
+              for chapter.
+            </>
+          ) : (
+            <>
+              <InfoIcon boxSize={5} marginRight={1} />
+              Chapter is not authenticated with calendar api, it will not create
+              calendar for chapter.
+            </>
+          )}
+        </Container>
       )}
       <HStack gap="1em" width="100%">
         <Button

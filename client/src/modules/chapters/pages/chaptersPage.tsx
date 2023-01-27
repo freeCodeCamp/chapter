@@ -6,7 +6,7 @@ import { ChapterCard } from '../../../components/ChapterCard';
 import { useChaptersQuery } from '../../../generated/graphql';
 import { Loading } from '../../../components/Loading';
 import { useUser } from '../../auth/user';
-import { checkPermission } from '../../../util/check-permission';
+import { checkInstancePermission } from '../../../util/check-permission';
 import { Permission } from '../../../../../common/permissions';
 
 export const ChaptersPage: NextPage = () => {
@@ -30,7 +30,7 @@ export const ChaptersPage: NextPage = () => {
           width={'100%'}
         >
           <Heading marginBlock={'1em'}>Chapters: </Heading>
-          {checkPermission(user, Permission.ChaptersView) && (
+          {checkInstancePermission(user, Permission.ChaptersView) && (
             <LinkButton href="/dashboard/chapters" colorScheme={'blue'}>
               Chapter Dashboard
             </LinkButton>

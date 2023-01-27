@@ -6,94 +6,17 @@ import { useForm } from 'react-hook-form';
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import {
-  DashboardChapterQuery,
   CreateChapterInputs,
   useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import { DeleteChapterButton } from './DeleteChapterButton';
-
-interface ChapterFormProps {
-  onSubmit: (data: CreateChapterInputs) => Promise<void>;
-  data?: DashboardChapterQuery;
-  submitText: string;
-  loadingText: string;
-}
-
-type Fields = {
-  key: keyof CreateChapterInputs;
-  placeholder: string;
-  label: string;
-  required: boolean;
-  type: string;
-};
-
-const fields: Fields[] = [
-  {
-    key: 'name',
-    label: 'Chapter name',
-    placeholder: 'freeCodeCamp',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'description',
-    label: 'Description',
-    placeholder:
-      'freeCodeCamp is a nonprofit organization that helps people learn to code for free',
-    required: true,
-    type: 'textarea',
-  },
-  {
-    key: 'city',
-    label: 'City',
-    placeholder: 'San Francisco',
-    required: false,
-    type: 'text',
-  },
-  {
-    key: 'region',
-    label: 'Region',
-    placeholder: 'California',
-    required: false,
-    type: 'text',
-  },
-  {
-    key: 'country',
-    label: 'Country',
-    placeholder: 'United States of America',
-    required: false,
-    type: 'text',
-  },
-  {
-    key: 'category',
-    label: 'Category',
-    placeholder: 'Education and nonprofit work',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'banner_url',
-    label: 'Banner Url',
-    placeholder: 'https://www.freecodecamp.org',
-    required: false,
-    type: 'url',
-  },
-  {
-    key: 'logo_url',
-    label: 'Logo Url',
-    placeholder: 'https://www.freecodecamplogo.org',
-    required: false,
-    type: 'url',
-  },
-  {
-    key: 'chat_url',
-    label: 'Chat link',
-    placeholder: 'https://discord.gg/KVUmVXA',
-    required: false,
-    type: 'url',
-  },
-];
+import {
+  ChapterFormProps,
+  fields,
+  getDefaultValues,
+  resolver,
+} from './ChapterFormUtils';
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { onSubmit, data, submitText, loadingText } = props;
@@ -102,23 +25,14 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery({ skip: !!chapter });
 
-  const defaultValues: CreateChapterInputs = {
-    name: chapter?.name ?? '',
-    description: chapter?.description ?? '',
-    city: chapter?.city ?? '',
-    region: chapter?.region ?? '',
-    country: chapter?.country ?? '',
-    category: chapter?.category ?? '',
-    logo_url: chapter?.logo_url ?? '',
-    banner_url: chapter?.banner_url ?? '',
-    chat_url: chapter?.chat_url ?? '',
-  };
+  const defaultValues: CreateChapterInputs = getDefaultValues(chapter);
   const {
     handleSubmit,
     register,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<CreateChapterInputs>({
     defaultValues,
+    resolver,
   });
 
   const { loading, disableWhileSubmitting } =
@@ -136,11 +50,13 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
     >
       {fields.map(({ key, label, placeholder, required, type }) => {
         const Component = fieldTypeToComponent(type);
+        const error = errors[key]?.message;
         return (
           <Component
             key={key}
             type={type}
             label={label}
+            error={error}
             isDisabled={loading}
             isRequired={required}
             placeholder={placeholder}

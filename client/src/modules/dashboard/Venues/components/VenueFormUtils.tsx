@@ -12,6 +12,7 @@ import type {
   VenueInputs,
   ChapterQuery,
 } from '../../../../generated/graphql';
+import { IsNonEmptyString } from '../../../util/form';
 
 export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
@@ -46,28 +47,23 @@ export class Venue {
   @IsNotEmpty()
   chapter_id: number;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNonEmptyString()
   name: string;
 
   @IsOptional()
   @IsString()
   street_address?: string | null;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNonEmptyString()
   city: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNonEmptyString()
   postal_code: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNonEmptyString()
   region: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNonEmptyString()
   country: string;
 
   @IsOptional()

@@ -10,41 +10,51 @@ export const fieldTypeToComponent = (type: string) => {
   return Input;
 };
 
-export const IsNonEmptyString = () => {
+const generateDecorator = (
+  name: string,
+  msgSuffix: string,
+  runValidation: (value: any) => boolean | Promise<boolean>,
+) => {
   return (object: object, propertyName: string) => {
     registerDecorator({
-      name: 'isNonEmptyString',
+      name: name,
       target: object.constructor,
       propertyName: propertyName,
       options: {
-        message: `${propertyName} should be a non empty string`,
+        message: `${propertyName} ${msgSuffix}`,
       },
       validator: {
         validate(value: any) {
-          return typeof value === 'string' && value.trim().length !== 0;
+          return runValidation(value);
         },
       },
     });
   };
 };
 
+const isNonEmptyString = (value: any) => {
+  return typeof value === 'string' && value.trim().length !== 0;
+};
+
+export const IsNonEmptyString = () => {
+  return generateDecorator(
+    'isNonEmptyString',
+    'should be a non empty string',
+    isNonEmptyString,
+  );
+};
+
+const isOptionalUrl = (value: any) => {
+  if (!value) {
+    return true;
+  }
+  return isURL(value);
+};
+
 export const IsOptionalUrl = () => {
-  return (object: object, propertyName: string) => {
-    registerDecorator({
-      name: 'isOptionalUrl',
-      target: object.constructor,
-      propertyName: propertyName,
-      options: {
-        message: `${propertyName} must be a URL address`,
-      },
-      validator: {
-        validate(value: any) {
-          if (!value) {
-            return true;
-          }
-          return isURL(value);
-        },
-      },
-    });
-  };
+  return generateDecorator(
+    'isOptionalUrl',
+    'must be a URL address',
+    isOptionalUrl,
+  );
 };

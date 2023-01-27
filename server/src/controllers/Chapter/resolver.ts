@@ -57,6 +57,7 @@ export class ChapterResolver {
           },
         },
       },
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -117,6 +118,7 @@ export class ChapterResolver {
         where: isChapterAdminWhere(ctx.user.id),
       }),
       include: { events: true },
+      orderBy: { name: 'asc' },
     });
   }
 

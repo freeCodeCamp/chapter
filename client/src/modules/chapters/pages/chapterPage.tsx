@@ -95,7 +95,7 @@ const ChapterUserRoleWidget = ({
         {chapterUser.chapter_role.name} of the chapter
       </Text>
       <Button isLoading={loadingLeave} onClick={LeaveChapter}>
-        Leave
+        Leave Chapter
       </Button>
     </>
   ) : (

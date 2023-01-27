@@ -120,6 +120,7 @@ export class VenueResolver {
       },
       include: {
         user_events: {
+          include: { event: true },
           where: {
             event: {
               canceled: false,
@@ -178,15 +179,8 @@ export class VenueResolver {
     </tbody>
 </table>`;
 
-    for (const { email, id: currentUserId } of users) {
-      const events = await prisma.events.findMany({
-        where: {
-          canceled: false,
-          ends_at: { gt: new Date() },
-          venue_id: id,
-          event_users: { every: { user_id: currentUserId, subscribed: true } },
-        },
-      });
+    for (const { email, id: currentUserId, user_events } of users) {
+      const events = user_events.map(({ event }) => event);
       mailerService.sendEmail({
         emailList: [email],
         subject: emailSubject,

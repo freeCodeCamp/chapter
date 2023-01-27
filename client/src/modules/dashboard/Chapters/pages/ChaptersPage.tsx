@@ -1,13 +1,25 @@
-import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Grid,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useCallback, useMemo, useReducer } from 'react';
 
 import {
   checkInstancePermission,
   checkChapterPermission,
 } from '../../../../util/check-permission';
-import { useDashboardChaptersQuery } from '../../../../generated/graphql';
+import {
+  DashboardChaptersQuery,
+  useDashboardChaptersQuery,
+} from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { Permission } from '../../../../../../common/permissions';
@@ -38,6 +50,21 @@ const actionLinks = [
   },
 ];
 
+type ChapterState = {
+  chapters: DashboardChaptersQuery;
+  search: string;
+};
+
+type ChapterAction =
+  | {
+      type: 'setChapter';
+      payload: DashboardChaptersQuery;
+    }
+  | {
+      type: 'setSearch';
+      payload: string;
+    };
+
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
@@ -50,17 +77,51 @@ export const ChaptersPage: NextPageWithLayout = () => {
   const isLoading = loading || loadingUser || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
+  const [{ chapters, search }, dispatch] = useReducer(
+    (state: ChapterState, action: ChapterAction) => {
+      switch (action.type) {
+        case 'setChapter':
+          return { ...state, chapters: action.payload };
+        case 'setSearch':
+          return { ...state, search: action.payload };
+      }
+    },
+    { chapters: data, search: '' },
+  );
+
+  const setSearch = useCallback((search: string) => {
+    dispatch({
+      type: 'setSearch',
+      payload: search,
+    });
+  }, []);
+
+  const filteredChapter = useMemo(() => {
+    return chapters.dashboardChapters.filter(({ name }) =>
+      name.includes(search),
+    );
+  }, [chapters, search]);
+
   return (
     <VStack>
-      <Flex w="full" justify="space-between">
+      <Grid w="full" gap="3em" gridTemplateColumns="">
         <Heading data-cy="chapter-dash-heading" id="page-heading">
           Chapters
         </Heading>
+        <Input
+          width="full"
+          type="text"
+          backgroundColor="gray.50"
+          placeholder="Search For..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         {hasPermissionToCreateChapter && (
           <LinkButton
             data-cy="new-chapter"
             href="/dashboard/chapters/new"
             colorScheme={'blue'}
+            marginLeft="auto"
           >
             Add new
             <Text srOnly as="span">
@@ -68,10 +129,10 @@ export const ChaptersPage: NextPageWithLayout = () => {
             </Text>
           </LinkButton>
         )}
-      </Flex>
+      </Grid>
       <Box display={{ base: 'none', lg: 'block' }} width="100%">
         <DataTable
-          data={data.dashboardChapters}
+          data={filteredChapter}
           keys={['name', 'actions'] as const}
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
@@ -114,7 +175,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
         />
       </Box>
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {data.dashboardChapters.map((chapter) => (
+        {filteredChapter.map((chapter) => (
           <Flex key={chapter.id}>
             <DataTable
               data={[chapter]}

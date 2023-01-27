@@ -20,7 +20,7 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
 
   const confirmCancel = useConfirm({
     title: 'Are you sure you want to cancel this',
-    body: 'Canceling this will send emails to everyone who RSVPd',
+    body: 'Canceling this will send emails to attendees',
     buttonColor: 'orange',
   });
 

@@ -10,7 +10,7 @@
     "gen:dev": "npm run gen -- --watch"
   },
   "dependencies": {
-    "@apollo/client": "3.7.4",
+    "@apollo/client": "3.7.5",
     "@auth0/auth0-react": "1.12.1",
     "@chakra-ui/button": "2.0.14",
     "@chakra-ui/checkbox": "2.2.8",
@@ -36,8 +36,8 @@
     "react-hook-form": "7.42.1"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.485.0",
-    "@codesee/tracker": "0.485.0",
+    "@codesee/babel-plugin-instrument": "0.488.0",
+    "@codesee/tracker": "0.488.0",
     "@graphql-codegen/cli": "2.16.4",
     "@graphql-codegen/fragment-matcher": "3.3.3",
     "@graphql-codegen/introspection": "2.2.3",

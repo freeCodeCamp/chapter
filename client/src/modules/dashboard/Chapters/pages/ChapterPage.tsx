@@ -35,7 +35,10 @@ import { EventList } from '../../shared/components/EventList';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useUser } from '../../../auth/user';
-import { checkPermission } from '../../../../util/check-permission';
+import {
+  checkChapterPermission,
+  checkInstancePermission,
+} from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { DeleteChapterButton } from '../components/DeleteChapterButton';
 import { DASHBOARD_CHAPTER } from '../graphql/queries';
@@ -210,7 +213,7 @@ export const ChapterPage: NextPageWithLayout = () => {
       actionLinks.filter(
         ({ requiredPermission }) =>
           !requiredPermission ||
-          checkPermission(user, requiredPermission, { chapterId }),
+          checkChapterPermission(user, requiredPermission, { chapterId }),
       ),
     [actionLinks, chapterId, user],
   );
@@ -242,9 +245,7 @@ export const ChapterPage: NextPageWithLayout = () => {
               ) : data.dashboardChapter.calendar_id ? (
                 <>
                   <CheckIcon boxSize="5" />
-                  {checkPermission(user, Permission.ChapterCreate, {
-                    chapterId,
-                  }) && (
+                  {checkInstancePermission(user, Permission.ChapterCreate) && (
                     <>
                       <Button
                         isDisabled={disableTest}
@@ -269,7 +270,9 @@ export const ChapterPage: NextPageWithLayout = () => {
               )}
             </HStack>
           )}
-          {checkPermission(user, Permission.UsersView, { chapterId }) && (
+          {checkChapterPermission(user, Permission.ChapterEdit, {
+            chapterId,
+          }) && (
             <LinkButton
               href={`${chapterId}/users`}
               paddingBlock="2"
@@ -299,9 +302,7 @@ export const ChapterPage: NextPageWithLayout = () => {
             />
             {integrationStatus &&
               !data.dashboardChapter.calendar_id &&
-              checkPermission(user, Permission.ChapterCreate, {
-                chapterId,
-              }) && (
+              checkInstancePermission(user, Permission.ChapterCreate) && (
                 <Button
                   colorScheme="blue"
                   isLoading={loadingCalendar}

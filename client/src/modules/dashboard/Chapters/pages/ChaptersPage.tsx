@@ -3,7 +3,10 @@ import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement } from 'react';
 
-import { checkPermission } from '../../../../util/check-permission';
+import {
+  checkInstancePermission,
+  checkChapterPermission,
+} from '../../../../util/check-permission';
 import { useDashboardChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
@@ -39,7 +42,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
 
-  const hasPermissionToCreateChapter = checkPermission(
+  const hasPermissionToCreateChapter = checkInstancePermission(
     user,
     Permission.ChapterCreate,
   );
@@ -86,7 +89,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                   .filter(
                     ({ requiredPermission }) =>
                       !requiredPermission ||
-                      checkPermission(user, requiredPermission, {
+                      checkChapterPermission(user, requiredPermission, {
                         chapterId: chapter.id,
                       }),
                   )
@@ -152,7 +155,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
                         .filter(
                           ({ requiredPermission }) =>
                             !requiredPermission ||
-                            checkPermission(user, requiredPermission, {
+                            checkChapterPermission(user, requiredPermission, {
                               chapterId: chapter.id,
                             }),
                         )

@@ -21,7 +21,7 @@ import { useUser } from '../../modules/auth/user';
 import { useSession } from '../../hooks/useSession';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
-import { checkPermission } from 'util/check-permission';
+import { checkInstancePermission } from 'util/check-permission';
 
 const menuButtonStyles = {
   logout: { backgroundColor: 'gray.10' },
@@ -135,7 +135,10 @@ export const Header: React.FC = () => {
                             Profile
                           </MenuItem>
                         </NextLink>
-                        {checkPermission(user, Permission.ChaptersView) && (
+                        {checkInstancePermission(
+                          user,
+                          Permission.ChaptersView,
+                        ) && (
                           <NextLink passHref href="/dashboard/chapters">
                             <MenuItem data-cy="menu-dashboard-link" as="a">
                               Dashboard

@@ -8,7 +8,7 @@ import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { SharePopOver } from '../../../../components/SharePopOver';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkChapterPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import {
   Chapter,
@@ -97,7 +97,7 @@ const Actions: React.FC<ActionsProps> = ({
       {integrationStatus &&
         !event.calendar_event_id &&
         chapter.calendar_id &&
-        checkPermission(user, Permission.EventCreate, {
+        checkChapterPermission(user, Permission.EventCreate, {
           chapterId: chapter.id,
           eventId: event.id,
         }) && (
@@ -122,7 +122,7 @@ const Actions: React.FC<ActionsProps> = ({
       </Button>
       <SharePopOver
         size={['sm', 'md']}
-        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?confirm_rsvp=true`}
+        link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${event.id}?confirm_attendance=true`}
       />
     </HStack>
   );

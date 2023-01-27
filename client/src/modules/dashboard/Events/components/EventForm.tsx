@@ -30,52 +30,53 @@ import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
 import { EventFormProps, fields, EventFormData } from './EventFormUtils';
 
+interface IntegrationInfoData {
+  isAuthenticated: boolean | null | undefined;
+  hasCalendar: boolean;
+}
+
 const IntegrationInfo = ({
   isAuthenticated,
   hasCalendar,
-}: {
-  isAuthenticated: boolean | null | undefined;
-  hasCalendar: boolean;
-}) => {
-  const isBroken = isAuthenticated === null;
+}: IntegrationInfoData) => {
+  const infoData = ({ isAuthenticated, hasCalendar }: IntegrationInfoData) => {
+    if (isAuthenticated) {
+      if (hasCalendar) {
+        return {
+          Icon: InfoIcon,
+          text: 'Instance is authenticated with calendar api, and chapter has created calendar. Chapter will attempt creating event in the calendar.',
+        };
+      }
+      return {
+        Icon: WarningTwoIcon,
+        text: "Instance is authenticated with calendar api, but chapter doesn't have calendar created. Event will not be created in the calendar.",
+      };
+    }
+
+    const isBroken = isAuthenticated === null;
+    if (isBroken) {
+      if (hasCalendar) {
+        return {
+          Icon: WarningTwoIcon,
+          text: 'Chapter has calendar created, but calendar integration is not working. Event will not be created in the calendar.',
+        };
+      }
+      return {
+        Icon: WarningTwoIcon,
+        text: 'Calendar integration is not working, and chapter does not have calendar created. Event will not be created in calendar.',
+      };
+    }
+    return {
+      Icon: WarningTwoIcon,
+      text: 'Instance is not authenticated with calendar api. Automatic creation of events in calendar is not possible.',
+    };
+  };
+
+  const { Icon, text } = infoData({ isAuthenticated, hasCalendar });
   return (
     <Container>
-      {isAuthenticated ? (
-        hasCalendar ? (
-          <>
-            <InfoIcon boxSize={5} marginRight={1} />
-            Instance is authenticated with calendar api, and chapter has created
-            calendar. Chapter will attempt creating event in the calendar.
-          </>
-        ) : (
-          <>
-            <WarningTwoIcon boxSize={5} marginRight={1} />
-            Instance is authenticated with calendar api, but chapter
-            doesn&apos;t have calendar created. Event will not be created in the
-            calendar.
-          </>
-        )
-      ) : isBroken ? (
-        hasCalendar ? (
-          <>
-            <WarningTwoIcon boxSize={5} marginRight={1} />
-            Chapter has calendar created, but calendar integration is not
-            working. Event will not be created in the calendar.
-          </>
-        ) : (
-          <>
-            <WarningTwoIcon boxSize={5} marginRight={1} />
-            Calendar integration is not working, and chapter does not have
-            calendar created. Event will not be created in calendar.
-          </>
-        )
-      ) : (
-        <>
-          <WarningTwoIcon boxSize={5} marginRight={1} />
-          Instance is not authenticated with calendar api. Automatic creation of
-          events in not possible.
-        </>
-      )}
+      <Icon boxSize={5} marginRight={1} />
+      {text}
     </Container>
   );
 };
@@ -224,7 +225,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           ) : (
             <IntegrationInfo
               isAuthenticated={dataStatus?.calendarIntegrationStatus}
-              hasCalendar={!!dataChapter?.dashboardChapter.calendar_id}
+              hasCalendar={!!dataChapter?.dashboardChapter.has_calendar}
             />
           ))}
 

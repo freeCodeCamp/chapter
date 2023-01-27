@@ -59,7 +59,6 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           key={'chapter_id'}
           isRequired={true}
           isDisabled={loading}
-          placeholder={'Select chapter'}
           error={errors['chapter_id']?.message}
           options={[...adminedChapters.map(({ id, name }) => ({ id, name }))]}
           {...register('chapter_id')}

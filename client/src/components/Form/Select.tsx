@@ -29,7 +29,6 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       isInvalid,
       isRequired,
       label,
-      placeholder,
       outerProps,
       noLabel,
       options,
@@ -47,9 +46,6 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           isInvalid={isError}
           {...rest}
         >
-          <option disabled value="">
-            {placeholder ?? label}
-          </option>
           {options.length &&
             options.map(({ id, name }) => (
               <option key={id} value={id}>

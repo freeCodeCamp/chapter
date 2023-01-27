@@ -23,7 +23,7 @@ interface ActionsProps {
   event: Pick<Event, 'id' | 'canceled' | 'calendar_event_id'>;
   onDelete?: () => any;
   hideCancel?: boolean;
-  chapter: Pick<Chapter, 'id' | 'calendar_id'>;
+  chapter: Pick<Chapter, 'id' | 'has_calendar'>;
   integrationStatus: boolean | null | undefined;
   createCalendarEvent: CreateCalendarEventMutationFn;
 }
@@ -96,7 +96,7 @@ const Actions: React.FC<ActionsProps> = ({
       </LinkButton>
       {integrationStatus &&
         !event.calendar_event_id &&
-        chapter.calendar_id &&
+        chapter.has_calendar &&
         checkChapterPermission(user, Permission.EventCreate, {
           chapterId: chapter.id,
           eventId: event.id,

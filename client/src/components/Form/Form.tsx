@@ -14,6 +14,7 @@ export const Form = ({ children, submitLabel, FormHandling }: FormProps) => {
       aria-label={submitLabel}
       onSubmit={FormHandling}
       className={styles.form}
+      noValidate
     >
       <VStack gap={4} alignItems={'flex-start'}>
         {children}

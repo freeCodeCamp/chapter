@@ -1084,7 +1084,7 @@ export type UnlinkChapterCalendarMutation = {
   unlinkChapterCalendar: {
     __typename?: 'Chapter';
     id: number;
-    calendar_id?: string | null;
+    has_calendar: boolean;
   };
 };
 
@@ -2765,7 +2765,7 @@ export const UnlinkChapterCalendarDocument = gql`
   mutation unlinkChapterCalendar($chapterId: Int!) {
     unlinkChapterCalendar(id: $chapterId) {
       id
-      calendar_id
+      has_calendar
     }
   }
 `;

@@ -23,6 +23,15 @@ export const createChapterCalendar = gql`
   }
 `;
 
+export const unlinkChapterCalendar = gql`
+  mutation unlinkChapterCalendar($chapterId: Int!) {
+    unlinkChapterCalendar(id: $chapterId) {
+      id
+      calendar_id
+    }
+  }
+`;
+
 export const updateChapter = gql`
   mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
     updateChapter(id: $chapterId, data: $data) {

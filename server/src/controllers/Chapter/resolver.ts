@@ -21,7 +21,7 @@ import {
   ChapterWithEvents,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import { createCalendar } from '../../services/Google';
+import { createCalendar, testCalendarAccess } from '../../services/Google';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
@@ -201,6 +201,38 @@ export class ChapterResolver {
       console.error(inspect(redactSecrets(e), { depth: null }));
       return chapter;
     }
+  }
+
+  @Authorized(Permission.ChapterCreate)
+  @Query(() => Boolean, { nullable: true })
+  async testChapterCalendarAccess(
+    @Arg('id', () => Int) id: number,
+  ): Promise<boolean | null> {
+    const chapter = await prisma.chapters.findUniqueOrThrow({ where: { id } });
+    if (!chapter.calendar_id) return null;
+    try {
+      return await testCalendarAccess({
+        calendarId: chapter.calendar_id,
+      });
+    } catch (err) {
+      return null;
+    }
+  }
+
+  @Authorized(Permission.ChapterCreate)
+  @Mutation(() => Chapter)
+  async unlinkChapterCalendar(
+    @Arg('id', () => Int) id: number,
+  ): Promise<Chapter> {
+    await prisma.events.updateMany({
+      data: { calendar_event_id: null },
+      where: { chapter_id: id },
+    });
+
+    return await prisma.chapters.update({
+      data: { calendar_id: null },
+      where: { id },
+    });
   }
 
   @Authorized(Permission.ChapterEdit)

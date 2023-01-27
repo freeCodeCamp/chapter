@@ -81,3 +81,9 @@ export const DASHBOARD_CHAPTER_USERS = gql`
     }
   }
 `;
+
+export const testChapterCalendarAccess = gql`
+  query testChapterCalendarAccess($chapterId: Int!) {
+    testChapterCalendarAccess(id: $chapterId)
+  }
+`;

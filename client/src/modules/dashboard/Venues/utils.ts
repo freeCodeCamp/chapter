@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import { useCreateVenueMutation } from '../../../generated/graphql';
-import { VenueFormData } from './components/VenueForm';
+import { VenueFormData } from './components/VenueFormUtils';
 import { DASHBOARD_VENUES } from './graphql/queries';
 
 export const useSubmitVenue = () => {

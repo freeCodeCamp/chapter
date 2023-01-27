@@ -48,7 +48,6 @@ export const TextArea = forwardRef<any, TextAreaProps>((props, ref) => {
         id={name}
         name={name}
         ref={ref as any}
-        isRequired={isRequired}
         placeholder={placeholder || label || capitalize(name)}
         {...rest}
       />

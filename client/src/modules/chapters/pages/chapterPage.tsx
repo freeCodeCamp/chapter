@@ -99,9 +99,9 @@ const ChapterUserRoleWidget = ({
       </Button>
     </>
   ) : (
-      <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
-        Join Chapter
-      </Button>
+    <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
+      Join Chapter
+    </Button>
   );
 
 export const ChapterPage: NextPage = () => {

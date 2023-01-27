@@ -1,11 +1,21 @@
-import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Checkbox,
+  Container,
+  Grid,
+  Heading,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
 
+import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import {
-  useChapterQuery,
+  useCalendarIntegrationStatusQuery,
   useChapterVenuesQuery,
+  useDashboardChapterQuery,
   useSponsorsQuery,
   VenueType,
 } from '../../../../generated/graphql';
@@ -20,6 +30,56 @@ import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
 import { EventFormProps, fields, EventFormData } from './EventFormUtils';
 
+const IntegrationInfo = ({
+  isAuthenticated,
+  hasCalendar,
+}: {
+  isAuthenticated: boolean | null | undefined;
+  hasCalendar: boolean;
+}) => {
+  const isBroken = isAuthenticated === null;
+  return (
+    <Container>
+      {isAuthenticated ? (
+        hasCalendar ? (
+          <>
+            <InfoIcon boxSize={5} marginRight={1} />
+            Instance is authenticated with calendar api, and chapter has created
+            calendar. Chapter will attempt creating event in the calendar.
+          </>
+        ) : (
+          <>
+            <WarningTwoIcon boxSize={5} marginRight={1} />
+            Instance is authenticated with calendar api, but chapter
+            doesn&apos;t have calendar created. Event will not be created in the
+            calendar.
+          </>
+        )
+      ) : isBroken ? (
+        hasCalendar ? (
+          <>
+            <WarningTwoIcon boxSize={5} marginRight={1} />
+            Chapter has calendar created, but calendar integration is not
+            working. Event will not be created in the calendar.
+          </>
+        ) : (
+          <>
+            <WarningTwoIcon boxSize={5} marginRight={1} />
+            Calendar integration is not working, and chapter does not have
+            calendar created. Event will not be created in calendar.
+          </>
+        )
+      ) : (
+        <>
+          <WarningTwoIcon boxSize={5} marginRight={1} />
+          Instance is not authenticated with calendar api. Automatic creation of
+          events in not possible.
+        </>
+      )}
+    </Container>
+  );
+};
+
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
     onSubmit,
@@ -30,18 +90,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     formType,
   } = props;
   const isChaptersDropdownNeeded = typeof initialChapterId === 'undefined';
-
-  const queryOptions = isChaptersDropdownNeeded
-    ? { skip: true }
-    : { variables: { chapterId: initialChapterId } };
-
-  const {
-    loading: loadingChapter,
-    error: errorChapter,
-    data: dataChapter,
-  } = useChapterQuery(queryOptions);
-
-  const sponsorQuery = useSponsorsQuery();
 
   const defaultValues = useMemo(() => {
     if (!data) {
@@ -83,6 +131,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
   const inviteOnly = watch('invite_only');
   const chapterId = watch('chapter_id');
 
+  const {
+    loading: loadingChapter,
+    error: errorChapter,
+    data: dataChapter,
+  } = useDashboardChapterQuery({ variables: { chapterId } });
+  const { loading: loadingStatus, data: dataStatus } =
+    useCalendarIntegrationStatusQuery({ skip: !!data });
+
+  const sponsorQuery = useSponsorsQuery();
+
   const chapterVenuesQuery = useChapterVenuesQuery(
     !chapterId ? { skip: true } : { variables: { chapterId } },
   );
@@ -101,10 +159,10 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         {!isChaptersDropdownNeeded || data ? (
           loadingChapter ? (
             <Text>Loading Chapter</Text>
-          ) : errorChapter || !dataChapter?.chapter ? (
+          ) : errorChapter || !dataChapter?.dashboardChapter ? (
             <Text>Error loading chapter</Text>
           ) : (
-            <Heading>{dataChapter.chapter.name}</Heading>
+            <Heading>{dataChapter.dashboardChapter.name}</Heading>
           )
         ) : (
           <EventChapterSelect loading={loading} />
@@ -159,6 +217,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             Attend Event
           </Checkbox>
         )}
+
+        {!data &&
+          (loadingStatus || loadingChapter ? (
+            <Spinner />
+          ) : (
+            <IntegrationInfo
+              isAuthenticated={dataStatus?.calendarIntegrationStatus}
+              hasCalendar={!!dataChapter?.dashboardChapter.calendar_id}
+            />
+          ))}
 
         <Grid
           gridTemplateColumns="repeat(auto-fit, minmax(13rem, 1fr))"

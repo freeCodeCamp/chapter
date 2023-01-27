@@ -9,6 +9,8 @@ import {
   Mutation,
   Ctx,
   Authorized,
+  FieldResolver,
+  Root,
 } from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
 import { ChapterRoles } from '../../../../common/roles';
@@ -31,8 +33,13 @@ import { redactSecrets } from '../../util/redact-secrets';
 import { integrationStatus } from '../../util/calendar';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
-@Resolver()
+@Resolver(() => Chapter)
 export class ChapterResolver {
+  @FieldResolver(() => Boolean)
+  has_calendar(@Root() chapter: Chapter) {
+    return typeof chapter.calendar_id === 'string';
+  }
+
   @Query(() => [ChapterCardRelations])
   async chapters(): Promise<ChapterCardRelations[]> {
     return await prisma.chapters.findMany({

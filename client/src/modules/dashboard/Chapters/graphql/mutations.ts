@@ -18,7 +18,7 @@ export const createChapterCalendar = gql`
   mutation createChapterCalendar($chapterId: Int!) {
     createChapterCalendar(id: $chapterId) {
       id
-      calendar_id
+      has_calendar
     }
   }
 `;

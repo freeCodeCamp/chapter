@@ -242,7 +242,7 @@ export const ChapterPage: NextPageWithLayout = () => {
               <Text>Calendar created:</Text>
               {loadingCalendar ? (
                 <Spinner size="sm" />
-              ) : data.dashboardChapter.calendar_id ? (
+              ) : data.dashboardChapter.has_calendar ? (
                 <>
                   <CheckIcon boxSize="5" />
                   {checkInstancePermission(user, Permission.ChapterCreate) && (
@@ -301,7 +301,7 @@ export const ChapterPage: NextPageWithLayout = () => {
               size="sm"
             />
             {integrationStatus &&
-              !data.dashboardChapter.calendar_id &&
+              !data.dashboardChapter.has_calendar &&
               checkInstancePermission(user, Permission.ChapterCreate) && (
                 <Button
                   colorScheme="blue"

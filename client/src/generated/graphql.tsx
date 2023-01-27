@@ -25,13 +25,13 @@ export type Scalars = {
 export type Chapter = {
   __typename?: 'Chapter';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -41,7 +41,6 @@ export type Chapter = {
 export type ChapterCardRelations = {
   __typename?: 'ChapterCardRelations';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -50,6 +49,7 @@ export type ChapterCardRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -107,7 +107,6 @@ export type ChapterUserWithRole = {
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -115,6 +114,7 @@ export type ChapterWithEvents = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<EventWithVenue>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -124,7 +124,6 @@ export type ChapterWithEvents = {
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUserWithRelations>;
   chat_url?: Maybe<Scalars['String']>;
@@ -133,6 +132,7 @@ export type ChapterWithRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -1071,7 +1071,7 @@ export type CreateChapterCalendarMutation = {
   createChapterCalendar: {
     __typename?: 'Chapter';
     id: number;
-    calendar_id?: string | null;
+    has_calendar: boolean;
   };
 };
 
@@ -1175,7 +1175,7 @@ export type DashboardChapterQuery = {
     logo_url?: string | null;
     banner_url?: string | null;
     chat_url?: string | null;
-    calendar_id?: string | null;
+    has_calendar: boolean;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -1396,7 +1396,7 @@ export type DashboardEventQuery = {
       __typename?: 'Chapter';
       id: number;
       name: string;
-      calendar_id?: string | null;
+      has_calendar: boolean;
     };
     sponsors: Array<{
       __typename?: 'EventSponsor';
@@ -2714,7 +2714,7 @@ export const CreateChapterCalendarDocument = gql`
   mutation createChapterCalendar($chapterId: Int!) {
     createChapterCalendar(id: $chapterId) {
       id
-      calendar_id
+      has_calendar
     }
   }
 `;
@@ -3150,7 +3150,7 @@ export const DashboardChapterDocument = gql`
       logo_url
       banner_url
       chat_url
-      calendar_id
+      has_calendar
       events {
         id
         name
@@ -3928,7 +3928,7 @@ export const DashboardEventDocument = gql`
       chapter {
         id
         name
-        calendar_id
+        has_calendar
       }
       sponsors {
         sponsor {

@@ -100,9 +100,8 @@ const ChapterUserRoleWidget = ({
     </>
   ) : (
     <>
-      <Text fontWeight={500}>Become member of the chapter</Text>
       <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
-        Join
+        Join Chapter
       </Button>
     </>
   );
@@ -149,7 +148,10 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await joinChapter({ variables: { chapterId } });
-        toast({ title: 'You successfully joined chapter', status: 'success' });
+        toast({
+          title: 'You successfully joined this chapter',
+          status: 'success',
+        });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -169,8 +171,7 @@ export const ChapterPage: NextPage = () => {
             <>
               <br />
               <br />
-              Note: This will remove record of your chapter role as well.
-              Joining chapter again will give you member role.
+              Warning: if you rejoin you will no longer be an administrator.
             </>
           )}
         </>

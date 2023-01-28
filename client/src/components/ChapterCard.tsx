@@ -123,7 +123,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 key={id}
               >
                 <Link
-                  href={`/events/${id}`}
+                  href={`dashboard/events/${id}`}
                   mt="2"
                   fontWeight={600}
                   fontSize={['sm', 'md', 'lg']}

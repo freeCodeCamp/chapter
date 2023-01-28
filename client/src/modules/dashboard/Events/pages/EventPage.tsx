@@ -206,7 +206,7 @@ export const EventPage: NextPageWithLayout = () => {
         )}
 
         {integrationStatus !== false &&
-          data.dashboardEvent.chapter.calendar_id && (
+          data.dashboardEvent.chapter.has_calendar && (
             <HStack>
               <Text>Event created in calendar:</Text>
               {loadingCalendar ? (

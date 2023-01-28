@@ -70,8 +70,8 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           {isAuthenticated ? (
             <>
               <InfoIcon boxSize={5} marginRight={1} />
-              Chapter is authenticated with calendar api, it will attempt
-              creating calendar for chapter.
+              Instance is authenticated with calendar api, it will attempt
+              creating calendar for created chapter.
             </>
           ) : isBroken ? (
             <>
@@ -81,9 +81,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
             </>
           ) : (
             <>
-              <InfoIcon boxSize={5} marginRight={1} />
-              Chapter is not authenticated with calendar api, it will not create
-              calendar for chapter.
+              <WarningTwoIcon boxSize={5} marginRight={1} />
+              Instance is not authenticated with calendar api, it will not
+              create calendar for chapter.
             </>
           )}
         </Container>

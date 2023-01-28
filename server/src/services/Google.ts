@@ -270,3 +270,17 @@ export async function testTokens() {
     }),
   );
 }
+
+export async function testCalendarAccess(calendarId: CalendarId) {
+  const calendarApi = await createCalendarApi();
+
+  try {
+    await callWithHandler(() => calendarApi.events.list(calendarId));
+    return true;
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Not Found') {
+      return false;
+    }
+    return null;
+  }
+}

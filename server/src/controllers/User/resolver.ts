@@ -33,6 +33,7 @@ export class UserWithPermissionsResolver {
       ...(!isAdminFromInstanceRole(user) && {
         where: isChapterAdminWhere(user.id),
       }),
+      orderBy: { name: 'asc' },
     });
   }
 

@@ -26,7 +26,7 @@ import {
 } from '../../shared/components/RoleChangeModal';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { useUser } from '../../../auth/user';
 
 export const UsersPage: NextPageWithLayout = () => {
@@ -55,7 +55,7 @@ export const UsersPage: NextPageWithLayout = () => {
     modalProps.onClose();
   };
 
-  const hasPermissionToChangeRole = checkPermission(
+  const hasPermissionToChangeRole = checkInstancePermission(
     user,
     Permission.ChapterUserRoleChange,
   );

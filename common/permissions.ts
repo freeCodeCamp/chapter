@@ -1,4 +1,4 @@
-export enum ChapterPermission {
+enum ChapterPermission {
   ChapterEdit = 'chapter-edit',
   ChapterBanUser = 'chapter-ban-user',
   EventCreate = 'event-create',
@@ -14,7 +14,7 @@ export enum ChapterPermission {
   VenueDelete = 'venue-delete',
 }
 
-export enum InstancePermission {
+enum InstancePermission {
   ChapterCreate = 'chapter-create',
   ChapterJoin = 'chapter-join',
   ChapterDelete = 'chapter-delete',
@@ -33,3 +33,4 @@ export enum InstancePermission {
 // Ideally this would be a new enum, but TS does not (to my knowledge) support
 // that yet.
 export const Permission = { ...InstancePermission, ...ChapterPermission };
+export type { InstancePermission, ChapterPermission };

@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement, useCallback, useMemo, useReducer } from 'react';
+import React, { ReactElement, useCallback, useReducer } from 'react';
 
 import {
   checkInstancePermission,
@@ -90,27 +90,13 @@ export const ChaptersPage: NextPageWithLayout = () => {
   const isLoading = loading || loadingUser || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
-  // Works
-  // const filteredChapter =  data?.dashboardChapters.filter(({ name }) =>
-  //     name.toLowerCase().includes(search),
-  //   );
-
-  // Works, if I change the call to filteredChapter()
-  // const filteredChapter = () =>  data?.dashboardChapters.filter(({ name }) =>
-  // name.toLowerCase().includes(search)
-  // );
-
-  // Fails, but why?
-  const filteredChapter = useMemo(
-    () =>
-      data.dashboardChapters.filter(({ name }) =>
-        name.toLowerCase().includes(search),
-      ),
-    [data, search],
+  const filteredChapters = data.dashboardChapters.filter(({ name }) =>
+    name.toLowerCase().includes(search),
   );
+
   return (
     <VStack>
-      <Grid w="full" gap="3em" gridTemplateColumns="1fr 2fr 8em">
+      <Grid w="full" gap="1em" gridTemplateColumns="1fr 2fr 8em">
         <Heading data-cy="chapter-dash-heading" id="page-heading">
           Chapters
         </Heading>
@@ -120,6 +106,9 @@ export const ChaptersPage: NextPageWithLayout = () => {
           backgroundColor="gray.50"
           placeholder="Search For..."
           value={search}
+          gridRowStart={{ base: 2, lg: 1 }}
+          gridColumnStart={{ base: 1, lg: 2 }}
+          gridColumnEnd={{ base: -1, lg: 3 }}
           onChange={(e) => setSearch(e.target.value)}
         />
         {hasPermissionToCreateChapter && (
@@ -127,6 +116,8 @@ export const ChaptersPage: NextPageWithLayout = () => {
             data-cy="new-chapter"
             href="/dashboard/chapters/new"
             colorScheme={'blue'}
+            gridColumnStart={-2}
+            gridColumnEnd={-1}
             marginLeft="auto"
           >
             Add new
@@ -138,7 +129,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
       </Grid>
       <Box display={{ base: 'none', lg: 'block' }} width="100%">
         <DataTable
-          data={filteredChapter}
+          data={filteredChapters}
           keys={['name', 'actions'] as const}
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
@@ -181,7 +172,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
         />
       </Box>
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {filteredChapter.map((chapter) => (
+        {filteredChapters.map((chapter) => (
           <Flex key={chapter.id}>
             <DataTable
               data={[chapter]}

@@ -16,10 +16,7 @@ import {
   checkInstancePermission,
   checkChapterPermission,
 } from '../../../../util/check-permission';
-import {
-  DashboardChaptersQuery,
-  useDashboardChaptersQuery,
-} from '../../../../generated/graphql';
+import { useDashboardChaptersQuery } from '../../../../generated/graphql';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { Permission } from '../../../../../../common/permissions';
@@ -50,32 +47,24 @@ const actionLinks = [
   },
 ];
 
-type ChapterState = {
-  chapters: DashboardChaptersQuery;
+type searchState = {
   search: string;
 };
 
-type ChapterAction =
-  | {
-      type: 'setChapter';
-      payload: DashboardChaptersQuery;
-    }
-  | {
-      type: 'setSearch';
-      payload: string;
-    };
+interface SearchAction {
+  type: 'setSearch';
+  payload: string;
+}
 
-const useFilter = (data: DashboardChaptersQuery) => {
-  const [{ chapters, search }, dispatch] = useReducer(
-    (state: ChapterState, action: ChapterAction) => {
+const useFilter = () => {
+  const [{ search }, dispatch] = useReducer(
+    (state: searchState, action: SearchAction) => {
       switch (action.type) {
-        case 'setChapter':
-          return { ...state, chapters: action.payload };
         case 'setSearch':
           return { ...state, search: action.payload };
       }
     },
-    { chapters: data, search: '' },
+    { search: '' },
   );
 
   const setSearch = useCallback((search: string) => {
@@ -85,17 +74,13 @@ const useFilter = (data: DashboardChaptersQuery) => {
     });
   }, []);
 
-  const filteredData = useMemo(() => {
-    return chapters.dashboardChapters.filter(({ name }) =>
-      name.includes(search),
-    );
-  }, [chapters, search]);
-  return { filteredData, setSearch, search };
+  return { setSearch, search };
 };
 
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
+  const { setSearch, search } = useFilter();
 
   const hasPermissionToCreateChapter = checkInstancePermission(
     user,
@@ -104,7 +89,25 @@ export const ChaptersPage: NextPageWithLayout = () => {
 
   const isLoading = loading || loadingUser || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
-  const { filteredData: filteredChapter, setSearch, search } = useFilter(data);
+
+  // Works
+  // const filteredChapter =  data?.dashboardChapters.filter(({ name }) =>
+  //     name.toLowerCase().includes(search),
+  //   );
+
+  // Works, if I change the call to filteredChapter()
+  // const filteredChapter = () =>  data?.dashboardChapters.filter(({ name }) =>
+  // name.toLowerCase().includes(search)
+  // );
+
+  // Fails, but why?
+  const filteredChapter = useMemo(
+    () =>
+      data.dashboardChapters.filter(({ name }) =>
+        name.toLowerCase().includes(search),
+      ),
+    [data, search],
+  );
   return (
     <VStack>
       <Grid w="full" gap="3em" gridTemplateColumns="1fr 2fr 8em">
@@ -136,7 +139,6 @@ export const ChaptersPage: NextPageWithLayout = () => {
       <Box display={{ base: 'none', lg: 'block' }} width="100%">
         <DataTable
           data={filteredChapter}
-          key={filteredChapter.findIndex(({ id }) => id)}
           keys={['name', 'actions'] as const}
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
@@ -183,7 +185,6 @@ export const ChaptersPage: NextPageWithLayout = () => {
           <Flex key={chapter.id}>
             <DataTable
               data={[chapter]}
-              key={chapter.id}
               keys={['type', 'actions'] as const}
               showHeader={false}
               tableProps={{

@@ -20,8 +20,11 @@ import { isOnline, isPhysical } from '../../../../util/venueType';
 import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { Permission } from '../../../../../../common/permissions';
-import { checkHasChapterPermission } from '../../../../util/check-chapter-permission';
+import {
+  type ChapterPermission,
+  Permission,
+} from '../../../../../../common/permissions';
+import { checkChapterPermission } from '../../../../util/check-permission';
 
 const ShowCanceledSwitch = ({
   setShowCanceled,
@@ -52,15 +55,18 @@ export const EventsPage: NextPageWithLayout = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
+  const checkHasEventPermision = (permission: ChapterPermission) => {
+    return data.dashboardEvents.some(({ id }) =>
+      checkChapterPermission(user, permission, {
+        chapterId: id,
+      }),
+    );
+  };
 
-  const hasPermissionToCreateEvent = checkHasChapterPermission(
-    user,
+  const hasPermissionToCreateEvent = checkHasEventPermision(
     Permission.EventCreate,
   );
-  const hasPermissiontoEditEvent = checkHasChapterPermission(
-    user,
-    Permission.EventEdit,
-  );
+  const hasPermissiontoEditEvent = checkHasEventPermision(Permission.EventEdit);
 
   return (
     <VStack data-cy="events-dashboard">

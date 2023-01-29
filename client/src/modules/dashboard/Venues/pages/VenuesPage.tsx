@@ -9,8 +9,11 @@ import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import getLocationString from '../../../../util/getLocationString';
 import { useUser } from '../../../auth/user';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { Permission } from '../../../../../../common/permissions';
-import { checkHasChapterPermission } from '../../../../util/check-chapter-permission';
+import {
+  type ChapterPermission,
+  Permission,
+} from '../../../../../../common/permissions';
+import { checkChapterPermission } from '../../../../util/check-permission';
 
 export const VenuesPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardVenuesQuery();
@@ -20,14 +23,18 @@ export const VenuesPage: NextPageWithLayout = () => {
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
-  const hasPermissionToCreateVenue = checkHasChapterPermission(
-    user,
+  const checkHasVenuePermision = (permission: ChapterPermission) => {
+    return data.dashboardVenues.some(({ id }) =>
+      checkChapterPermission(user, permission, {
+        chapterId: id,
+      }),
+    );
+  };
+
+  const hasPermissionToCreateVenue = checkHasVenuePermision(
     Permission.VenueCreate,
   );
-  const hasPermissiontoEditVenue = checkHasChapterPermission(
-    user,
-    Permission.VenueEdit,
-  );
+  const hasPermissiontoEditVenue = checkHasVenuePermision(Permission.VenueEdit);
 
   return (
     <VStack>

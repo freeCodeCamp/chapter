@@ -1,5 +1,5 @@
 import { checker } from '../../../common/authorization';
-import {
+import type {
   ChapterPermission,
   InstancePermission,
 } from '../../../common/permissions';

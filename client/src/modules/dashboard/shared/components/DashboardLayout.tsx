@@ -6,7 +6,7 @@ import React, { createRef, useLayoutEffect, useState } from 'react';
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Permission } from '../../../../../../common/permissions';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { Loading } from '../../../../components/Loading';
 import { useUser } from '../../../auth/user';
 
@@ -97,7 +97,10 @@ export const DashboardLayout = ({
 
   const linksWithPermissions = links.map((link) => {
     if (!link.requiredPermission) return link;
-    const hasPermission = checkPermission(user, link.requiredPermission);
+    const hasPermission = checkInstancePermission(
+      user,
+      link.requiredPermission,
+    );
     return { ...link, hasPermission };
   });
 
@@ -106,7 +109,7 @@ export const DashboardLayout = ({
     ref.current.scrollBy({ left: scrollBy, behavior: 'smooth' });
   };
 
-  if (loadingUser) return <Loading loading={loadingUser} />;
+  if (loadingUser) return <Loading />;
   if (!isLoggedIn)
     return <NextError statusCode={401} title={'Log in to see this page'} />;
 

@@ -8,7 +8,7 @@ import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
 import { useCreateSponsorMutation } from '../../../../generated/graphql';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
 import { useUser } from '../../../auth/user';
@@ -20,7 +20,7 @@ const NewSponsorPage: NextPageWithLayout = () => {
   });
   const { user, loadingUser } = useUser();
 
-  const hasPermissionToCreateSponsor = checkPermission(
+  const hasPermissionToCreateSponsor = checkInstancePermission(
     user,
     Permission.SponsorManage,
   );

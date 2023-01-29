@@ -9,6 +9,8 @@ import {
   Mutation,
   Ctx,
   Authorized,
+  FieldResolver,
+  Root,
 } from 'type-graphql';
 import { Permission } from '../../../../common/permissions';
 import { ChapterRoles } from '../../../../common/roles';
@@ -21,7 +23,7 @@ import {
   ChapterWithEvents,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
-import { createCalendar } from '../../services/Google';
+import { createCalendar, testCalendarAccess } from '../../services/Google';
 import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
@@ -31,8 +33,13 @@ import { redactSecrets } from '../../util/redact-secrets';
 import { integrationStatus } from '../../util/calendar';
 import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
 
-@Resolver()
+@Resolver(() => Chapter)
 export class ChapterResolver {
+  @FieldResolver(() => Boolean)
+  has_calendar(@Root() chapter: Chapter) {
+    return typeof chapter.calendar_id === 'string';
+  }
+
   @Query(() => [ChapterCardRelations])
   async chapters(): Promise<ChapterCardRelations[]> {
     return await prisma.chapters.findMany({
@@ -57,6 +64,7 @@ export class ChapterResolver {
           },
         },
       },
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -117,6 +125,7 @@ export class ChapterResolver {
         where: isChapterAdminWhere(ctx.user.id),
       }),
       include: { events: true },
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -199,6 +208,38 @@ export class ChapterResolver {
       console.error(inspect(redactSecrets(e), { depth: null }));
       return chapter;
     }
+  }
+
+  @Authorized(Permission.ChapterCreate)
+  @Query(() => Boolean, { nullable: true })
+  async testChapterCalendarAccess(
+    @Arg('id', () => Int) id: number,
+  ): Promise<boolean | null> {
+    const chapter = await prisma.chapters.findUniqueOrThrow({ where: { id } });
+    if (!chapter.calendar_id) return null;
+    try {
+      return await testCalendarAccess({
+        calendarId: chapter.calendar_id,
+      });
+    } catch (err) {
+      return null;
+    }
+  }
+
+  @Authorized(Permission.ChapterCreate)
+  @Mutation(() => Chapter)
+  async unlinkChapterCalendar(
+    @Arg('id', () => Int) id: number,
+  ): Promise<Chapter> {
+    await prisma.events.updateMany({
+      data: { calendar_event_id: null },
+      where: { chapter_id: id },
+    });
+
+    return await prisma.chapters.update({
+      data: { calendar_id: null },
+      where: { id },
+    });
   }
 
   @Authorized(Permission.ChapterEdit)

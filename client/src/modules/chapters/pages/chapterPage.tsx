@@ -95,16 +95,13 @@ const ChapterUserRoleWidget = ({
         {chapterUser.chapter_role.name} of the chapter
       </Text>
       <Button isLoading={loadingLeave} onClick={LeaveChapter}>
-        Leave
+        Leave Chapter
       </Button>
     </>
   ) : (
-    <>
-      <Text fontWeight={500}>Become member of the chapter</Text>
-      <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
-        Join
-      </Button>
-    </>
+    <Button colorScheme="blue" isLoading={loadingJoin} onClick={JoinChapter}>
+      Join Chapter
+    </Button>
   );
 
 export const ChapterPage: NextPage = () => {
@@ -149,7 +146,10 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await joinChapter({ variables: { chapterId } });
-        toast({ title: 'You successfully joined chapter', status: 'success' });
+        toast({
+          title: 'You successfully joined this chapter',
+          status: 'success',
+        });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -169,8 +169,7 @@ export const ChapterPage: NextPage = () => {
             <>
               <br />
               <br />
-              Note: This will remove record of your chapter role as well.
-              Joining chapter again will give you member role.
+              Warning: if you rejoin you will no longer be an administrator.
             </>
           )}
         </>
@@ -240,7 +239,7 @@ export const ChapterPage: NextPage = () => {
     }
   }, [canShowConfirmModal, isAlreadyMember, hasShownModal]);
 
-  if (isLoading || error) return <Loading loading={isLoading} error={error} />;
+  if (isLoading || error) return <Loading error={error} />;
   if (!data.chapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 

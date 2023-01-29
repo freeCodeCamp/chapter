@@ -1,4 +1,4 @@
-import { LockIcon } from '@chakra-ui/icons';
+import { InfoIcon, LockIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   HStack,
   Image,
   List,
+  ListIcon,
   ListItem,
   Spinner,
   Text,
@@ -57,9 +58,9 @@ export const EventPage: NextPage = () => {
     ],
   };
 
-  const [rsvpToEvent, { loading: loadingRsvp }] =
+  const [attendEvent, { loading: loadingAttend }] =
     useRsvpToEventMutation(refetch);
-  const [cancelRsvp, { loading: loadingCancel }] =
+  const [cancelAttendance, { loading: loadingCancel }] =
     useCancelRsvpMutation(refetch);
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent, { loading: loadingSubscribe }] =
@@ -84,9 +85,10 @@ export const EventPage: NextPage = () => {
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );
-  const rsvpStatus = eventUser?.rsvp.name;
+  const attendanceStatus = eventUser?.rsvp.name;
   const isLoading = loading || loadingUser;
-  const canShowConfirmationModal = router.query?.confirm_rsvp && !isLoading;
+  const canShowConfirmationModal =
+    router.query?.confirm_attendance && !isLoading;
   const chapterId = data?.event?.chapter.id;
 
   // The useEffect has to be before the early return (rule of hooks), but the
@@ -94,28 +96,29 @@ export const EventPage: NextPage = () => {
   // It's easy to create bugs by calling arrow functions before they're defined,
   // or by calling functions that rely on variables that aren't defined yet, so
   // we define everything before it's used.
-  function isAlreadyRsvp(rsvpStatus: string | undefined) {
-    const alreadyRsvp = rsvpStatus === 'yes' || rsvpStatus === 'waitlist';
-    if (alreadyRsvp) {
-      toast({ title: 'Already RSVPed', status: 'info' });
+  function isAlreadyAttending(attencanceStatus: string | undefined) {
+    const alreadyAttending =
+      attencanceStatus === 'yes' || attencanceStatus === 'waitlist';
+    if (alreadyAttending) {
+      toast({ title: 'Already attending', status: 'info' });
       return true;
     }
     return false;
   }
 
-  async function onRsvp() {
+  async function onAttend() {
     if (!chapterId) {
       toast({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
       await joinChapter({ variables: { chapterId } });
-      await rsvpToEvent({
+      await attendEvent({
         variables: { eventId, chapterId },
       });
 
       toast({
-        title: 'You successfully RSVPed to this event',
+        title: 'You are attending this event',
         status: 'success',
       });
     } catch (err) {
@@ -124,18 +127,18 @@ export const EventPage: NextPage = () => {
     }
   }
 
-  async function onCancelRsvp() {
+  async function onCancelAttendance() {
     const ok = await confirm({
-      title: 'Are you sure you want to cancel your RSVP?',
+      title: 'Are you sure you want to cancel your attendance?',
     });
 
     if (ok) {
       try {
-        await cancelRsvp({
+        await cancelAttendance({
           variables: { eventId },
         });
 
-        toast({ title: 'You canceled your RSVP 👋', status: 'info' });
+        toast({ title: 'You canceled your attendance 👋', status: 'info' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -143,7 +146,20 @@ export const EventPage: NextPage = () => {
     }
   }
 
-  async function tryToRsvp(options?: { invited?: boolean }) {
+  const AttendInfo = () => (
+    <List>
+      <ListItem>
+        <ListIcon as={InfoIcon} boxSize={5} />
+        Attending this event will make you a member of the event&apos;s chapter.
+      </ListItem>
+      <ListItem>
+        <ListIcon as={InfoIcon} boxSize={5} />
+        If event capacity if full, you will be placed on the waitlist.
+      </ListItem>
+    </List>
+  );
+
+  async function tryToAttend(options?: { invited?: boolean }) {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
@@ -151,23 +167,21 @@ export const EventPage: NextPage = () => {
             <>
               {user
                 ? 'Would you like to attend?'
-                : 'Would you like to log in and join this event?'}
-              <br />
-              Note: joining this event will make you a member of the
-              event&apos;s chapter.
+                : 'Would you like to log in and attend this event?'}
+              <AttendInfo />
             </>
           ),
         }
       : {
-          title: 'Join this event?',
-          body: `Note: joining this event will make you a member of the event's chapter.`,
+          title: 'Attend this event?',
+          body: <AttendInfo />,
         };
 
     const ok = await confirm(confirmOptions);
     if (!ok) return;
 
     if (user) {
-      await onRsvp();
+      await onAttend();
       return;
     }
     modalProps.onOpen();
@@ -186,20 +200,20 @@ export const EventPage: NextPage = () => {
       const eventUser = data?.event?.event_users.find(
         ({ user: event_user }) => event_user.id === user?.id,
       );
-      if (!isAlreadyRsvp(eventUser?.rsvp.name)) onRsvp();
+      if (!isAlreadyAttending(eventUser?.rsvp.name)) onAttend();
     }
   }, [awaitingLogin, isLoggedIn]);
 
   useEffect(() => {
     if (canShowConfirmationModal && !hasShownModal) {
-      if (!isAlreadyRsvp(rsvpStatus)) {
-        tryToRsvp({ invited: true });
+      if (!isAlreadyAttending(attendanceStatus)) {
+        tryToAttend({ invited: true });
       }
       setHasShownModal(true);
     }
-  }, [hasShownModal, canShowConfirmationModal, rsvpStatus]);
+  }, [hasShownModal, canShowConfirmationModal, attendanceStatus]);
 
-  if (error || isLoading) return <Loading loading={isLoading} error={error} />;
+  if (error || isLoading) return <Loading error={error} />;
   if (!data?.event)
     return <NextError statusCode={404} title="Event not found" />;
 
@@ -238,7 +252,7 @@ export const EventPage: NextPage = () => {
     }
   }
 
-  const rsvps = data.event.event_users.filter(
+  const attendees = data.event.event_users.filter(
     ({ rsvp }) => rsvp.name === 'yes',
   );
   const waitlist = data.event.event_users.filter(
@@ -291,33 +305,31 @@ export const EventPage: NextPage = () => {
         <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
           Ending: {endsAt}
         </Text>
-        {!rsvpStatus || rsvpStatus === 'no' ? (
+        {!attendanceStatus || attendanceStatus === 'no' ? (
           <Button
             colorScheme="blue"
-            data-cy="rsvp-button"
-            isLoading={loadingRsvp}
-            onClick={() => tryToRsvp()}
+            data-cy="attend-button"
+            isLoading={loadingAttend}
+            onClick={() => tryToAttend()}
             paddingBlock="1"
             paddingInline="2"
           >
-            {data.event.invite_only ? 'Request' : 'RSVP'}
+            {data.event.invite_only ? 'Request' : 'Attend'}
           </Button>
         ) : (
           <HStack>
-            {rsvpStatus === 'waitlist' ? (
+            {attendanceStatus === 'waitlist' ? (
               <Text fontSize="md" fontWeight="500">
                 {data.event.invite_only
                   ? 'Event owner will soon confirm your request'
                   : "You're on waitlist for this event"}
               </Text>
             ) : (
-              <Text data-cy="rsvp-success">
-                You&lsquo;ve RSVPed to this event
-              </Text>
+              <Text data-cy="attend-success">You are attending this event</Text>
             )}
             <Button
               isLoading={loadingCancel}
-              onClick={onCancelRsvp}
+              onClick={onCancelAttendance}
               paddingBlock="1"
               paddingInline="2"
             >
@@ -366,14 +378,14 @@ export const EventPage: NextPage = () => {
           false
         )}
         <Heading
-          data-cy="rsvps-heading"
+          data-cy="attendees-heading"
           fontSize={['sm', 'md', 'lg']}
           as={'h2'}
         >
-          RSVPs:
+          Attendees:
         </Heading>
         <List>
-          {rsvps.map(({ user }) => (
+          {attendees.map(({ user }) => (
             <ListItem key={user.id} mb="2">
               <HStack>
                 <Avatar user={user} />

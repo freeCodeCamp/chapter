@@ -224,7 +224,7 @@ describe('spec needing owner', () => {
     });
   });
 
-  it('emails not canceled rsvps when event is canceled', () => {
+  it('emails not canceled attendees when event is canceled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')
       .not(':has([data-cy=event-canceled])')

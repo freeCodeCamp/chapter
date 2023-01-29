@@ -22,29 +22,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     loadingUser: true,
     isLoggedIn: false,
   });
-  const { loading: loadingMe, error, data: meData, refetch } = useMeQuery();
-  const { isAuthenticated, createSession } = useSession();
-
-  const tryToCreateSession = async () => {
-    if (isAuthenticated) {
-      const { status } = await createSession();
-      if (status === 200) refetch();
-    }
-  };
+  const { loading: loadingMe, error, data: meData } = useMeQuery();
+  const { isAuthenticated } = useSession();
 
   useEffect(() => {
-    if (!loadingMe && !error) {
-      if (meData)
-        setData({
-          user: meData.me,
-          loadingUser: false,
-          isLoggedIn: !!meData.me,
-        });
-      // If there is no user data, either the user doesn't have a session or
-      // they don't exist. Since we can't tell the difference, we have to try to
-      // create a session.
-      if (!meData?.me) tryToCreateSession();
-    }
+    if (!loadingMe && !error && meData)
+      setData({
+        user: meData.me,
+        loadingUser: false,
+        isLoggedIn: !!meData.me,
+      });
   }, [loadingMe, error, meData, isAuthenticated]);
 
   return (

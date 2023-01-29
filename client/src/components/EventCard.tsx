@@ -119,16 +119,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             {event.name}
           </Link>
           <GridItem area={'metatag'}>{metaTag}</GridItem>
-          <Link
-            fontSize={'md'}
-            fontWeight={500}
-            fontFamily={'body'}
-            gridArea={'chaptername'}
-            marginBlock={'2'}
-            href={`/chapters/${event.chapter.id}`}
-          >
-            Chapter: {event.chapter.name}
-          </Link>
           <Text
             opacity={'.8'}
             gridArea={'eventstart'}

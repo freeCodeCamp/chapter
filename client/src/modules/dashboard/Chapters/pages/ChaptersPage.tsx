@@ -65,18 +65,7 @@ type ChapterAction =
       payload: string;
     };
 
-export const ChaptersPage: NextPageWithLayout = () => {
-  const { loading, error, data } = useDashboardChaptersQuery();
-  const { user, loadingUser } = useUser();
-
-  const hasPermissionToCreateChapter = checkInstancePermission(
-    user,
-    Permission.ChapterCreate,
-  );
-
-  const isLoading = loading || loadingUser || !data;
-  if (isLoading || error) return <DashboardLoading error={error} />;
-
+const useFilter = (data: DashboardChaptersQuery) => {
   const [{ chapters, search }, dispatch] = useReducer(
     (state: ChapterState, action: ChapterAction) => {
       switch (action.type) {
@@ -96,15 +85,29 @@ export const ChaptersPage: NextPageWithLayout = () => {
     });
   }, []);
 
-  const filteredChapter = useMemo(() => {
+  const filteredData = useMemo(() => {
     return chapters.dashboardChapters.filter(({ name }) =>
       name.includes(search),
     );
   }, [chapters, search]);
+  return { filteredData, setSearch, search };
+};
 
+export const ChaptersPage: NextPageWithLayout = () => {
+  const { loading, error, data } = useDashboardChaptersQuery();
+  const { user, loadingUser } = useUser();
+
+  const hasPermissionToCreateChapter = checkInstancePermission(
+    user,
+    Permission.ChapterCreate,
+  );
+
+  const isLoading = loading || loadingUser || !data;
+  if (isLoading || error) return <DashboardLoading error={error} />;
+  const { filteredData: filteredChapter, setSearch, search } = useFilter(data);
   return (
     <VStack>
-      <Grid w="full" gap="3em" gridTemplateColumns="">
+      <Grid w="full" gap="3em" gridTemplateColumns="1fr 2fr 8em">
         <Heading data-cy="chapter-dash-heading" id="page-heading">
           Chapters
         </Heading>
@@ -133,6 +136,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
       <Box display={{ base: 'none', lg: 'block' }} width="100%">
         <DataTable
           data={filteredChapter}
+          key={filteredChapter.findIndex(({ id }) => id)}
           keys={['name', 'actions'] as const}
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
@@ -179,6 +183,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
           <Flex key={chapter.id}>
             <DataTable
               data={[chapter]}
+              key={chapter.id}
               keys={['type', 'actions'] as const}
               showHeader={false}
               tableProps={{

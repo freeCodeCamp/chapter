@@ -602,7 +602,6 @@ export type QueryPaginatedEventsArgs = {
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  showCanceled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QuerySponsorWithEventsArgs = {

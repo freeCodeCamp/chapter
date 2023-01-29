@@ -1,4 +1,9 @@
-import { isURL, registerDecorator } from 'class-validator';
+import {
+  isURL,
+  registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+} from 'class-validator';
 
 import { TextArea } from '../../components/Form/TextArea';
 import { Input } from '../../components/Form/Input';
@@ -56,5 +61,70 @@ export const IsOptionalUrl = () => {
     'isOptionalUrl',
     'must be a URL address',
     isOptionalUrl,
+  );
+};
+
+const generateDateCompareDecorator = (
+  name: string,
+  runValidation: (
+    value: any,
+    args: ValidationArguments,
+  ) => boolean | Promise<boolean>,
+  property: string,
+  validationOptions?: ValidationOptions,
+) => {
+  return (object: object, propertyName: string) => {
+    registerDecorator({
+      name: name,
+      target: object.constructor,
+      propertyName: propertyName,
+      constraints: [property],
+      options: validationOptions,
+      validator: {
+        validate(value: any, args: ValidationArguments) {
+          return runValidation(value, args);
+        },
+      },
+    });
+  };
+};
+
+const isDateBefore = (value: any, args: ValidationArguments) => {
+  const [otherProperty] = args.constraints;
+  const otherValue = (args.object as any)[otherProperty];
+  return (
+    value instanceof Date && otherValue instanceof Date && value < otherValue
+  );
+};
+
+export const IsDateBefore = (
+  property: string,
+  validationOptions: ValidationOptions,
+) => {
+  return generateDateCompareDecorator(
+    'isDateBefore',
+    isDateBefore,
+    property,
+    validationOptions,
+  );
+};
+
+const isDateAfter = (value: any, args: ValidationArguments) => {
+  const [otherProperty] = args.constraints;
+  const otherValue = (args.object as any)[otherProperty];
+  return (
+    value instanceof Date && otherValue instanceof Date && value > otherValue
+  );
+};
+
+export const IsDateAfter = (
+  property: string,
+  validationOptions: ValidationOptions,
+) => {
+  return generateDateCompareDecorator(
+    'isDateAfter',
+    isDateAfter,
+    property,
+    validationOptions,
   );
 };

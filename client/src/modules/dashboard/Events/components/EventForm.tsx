@@ -18,7 +18,12 @@ import EventDatesForm from './EventDatesForm';
 import EventCancelButton from './EventCancelButton';
 import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
-import { EventFormProps, fields, EventFormData } from './EventFormUtils';
+import {
+  EventFormProps,
+  fields,
+  EventFormData,
+  resolver,
+} from './EventFormUtils';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
@@ -72,9 +77,10 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const formMethods = useForm<EventFormData>({
     defaultValues,
+    resolver,
   });
   const {
-    formState: { isDirty },
+    formState: { isDirty, errors },
     handleSubmit,
     register,
     watch,
@@ -111,14 +117,16 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
+          const error = errors[key]?.message;
           return (
             <Component
               key={key}
               type={type}
-              label={`${label}${isRequired ? ' (Required)' : ''}`}
+              label={label}
               placeholder={placeholder}
               isRequired={isRequired}
               isDisabled={loading}
+              error={error}
               {...register(key)}
             />
           );

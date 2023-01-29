@@ -1,8 +1,8 @@
-import { FormControl, FormLabel, Select } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { useUser } from '../../../auth/user';
+import { Select } from '../../../../components/Form/Select';
 
 interface Chapter {
   id: number;
@@ -13,32 +13,31 @@ interface EventChapterSelectProps {
 }
 
 const EventChapterSelect: React.FC<EventChapterSelectProps> = ({ loading }) => {
+  const key = 'chapter_id';
   const { user } = useUser();
   const adminedChapters: Chapter[] = user?.admined_chapters ?? [];
 
-  const { register, resetField } = useFormContext();
+  const {
+    register,
+    resetField,
+    formState: { errors },
+  } = useFormContext();
+  const error = errors[key]?.message as string;
 
   useEffect(() => {
-    resetField('chapter_id', { defaultValue: adminedChapters[0]?.id ?? -1 });
+    resetField(key, { defaultValue: adminedChapters[0]?.id ?? -1 });
   }, [adminedChapters]);
 
   return (
-    <FormControl isRequired>
-      <FormLabel>Chapter (Required)</FormLabel>
-      <Select
-        {...register('chapter_id' as const, {
-          required: true,
-          valueAsNumber: true,
-        })}
-        isDisabled={loading}
-      >
-        {adminedChapters.map(({ id, name }) => (
-          <option key={id} value={id}>
-            {name}
-          </option>
-        ))}
-      </Select>
-    </FormControl>
+    <Select
+      label="Chapter"
+      key={key}
+      isRequired={true}
+      isDisabled={loading}
+      error={error}
+      options={[...adminedChapters.map(({ id, name }) => ({ id, name }))]}
+      {...register(key)}
+    />
   );
 };
 

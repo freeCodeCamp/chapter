@@ -1,11 +1,26 @@
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import {
   Event,
   SponsorsQuery,
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
-
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import {
+  IsDateAfter,
+  IsDateBefore,
+  IsNonEmptyString,
+  IsOptionalUrl,
+} from 'modules/util/form';
 
 export interface EventSponsorInput {
   id: number;
@@ -77,6 +92,60 @@ export const venueTypes: VenueTypeInput[] = [
     value: VenueType.PhysicalAndOnline,
   },
 ];
+
+export class EventClass {
+  @IsNonEmptyString()
+  name: string;
+
+  @IsString()
+  description: string;
+
+  @IsOptionalUrl()
+  url?: string | null;
+
+  @IsOptionalUrl()
+  image_url: string;
+
+  @IsNumberString()
+  capacity: number;
+
+  @IsDateBefore('ends_at', {
+    message: 'Start date must come before the end date',
+  })
+  start_at: Date;
+
+  @IsDateAfter('start_at', {
+    message: 'End date must be after the start date',
+  })
+  ends_at: Date;
+
+  @IsBoolean()
+  invite_only?: boolean;
+
+  @IsIn([...venueTypes.map((venueType) => venueType.value)])
+  venue_type: VenueType;
+
+  @IsNotEmpty()
+  venue_id?: number | null;
+
+  @IsOptionalUrl()
+  streaming_url?: string | null;
+
+  @IsOptional()
+  @IsArray()
+  sponsors: Array<EventSponsorInput>;
+
+  @IsOptional()
+  canceled: boolean;
+
+  @IsNotEmpty()
+  chapter_id: number;
+
+  @IsBoolean()
+  attend_event?: boolean;
+}
+
+export const resolver = classValidatorResolver(EventClass);
 
 export const fields: Field[] = [
   {

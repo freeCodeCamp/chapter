@@ -40,13 +40,16 @@ export const useSession = () => {
   // isAuthenticated does not change immediately after login/logout, so we
   // need to track the intent to prevent accidental session creation/deletion
   const [toLogout, setToLogout] = useState(false);
+  const [error, setError] = useState<Error | undefined>(undefined);
 
   const login = async () => {
+    setError(undefined);
     await loginAuth();
     setCanAlterSession(true);
     setToLogout(false);
   };
   const logout = async () => {
+    setError(undefined);
     await logoutAuth();
     setCanAlterSession(true);
     setToLogout(true);
@@ -59,11 +62,14 @@ export const useSession = () => {
     if (toLogout) {
       destroySession()
         .then(() => refetch())
-        .then(() => apollo.resetStore());
+        .then(() => apollo.resetStore())
+        .catch((e) => setError(e));
     } else if (isAuthenticated) {
-      createSession().then(() => refetch());
+      createSession()
+        .then(() => refetch())
+        .catch((e) => setError(e));
     }
   }, [isAuthenticated, canAlterSession, toLogout]);
 
-  return { login, logout, isAuthenticated };
+  return { login, logout, isAuthenticated, error };
 };

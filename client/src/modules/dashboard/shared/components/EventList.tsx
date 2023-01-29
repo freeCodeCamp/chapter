@@ -26,7 +26,7 @@ export const EventList = ({ events, emptyText, title }: Props) => {
         <Grid gap="2em">
           {events.map(({ canceled, id, invite_only, name }) => (
             <Flex justifyContent="space-between" key={id}>
-              <LinkButton href={`/events/${id}`}>{name}</LinkButton>
+              <LinkButton href={`/dashboard/events/${id}`}>{name}</LinkButton>
               <Flex marginTop="1" gap="1em">
                 {invite_only && (
                   <Tag

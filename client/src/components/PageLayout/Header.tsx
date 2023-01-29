@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
   Spinner,
+  useToast,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -38,8 +39,10 @@ const menuButtonStyles = {
 export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useUser();
-  const { login, logout, isAuthenticated } = useSession();
+  const { login, logout, isAuthenticated, error } = useSession();
   const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
 
   const goHome = () => router.push('/');
 
@@ -48,6 +51,14 @@ export const Header: React.FC = () => {
       setLoading(false);
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (error) {
+      toast({ title: 'Something went wrong', status: 'error' });
+      setLoading(false);
+      console.log(error);
+    }
+  }, [error]);
 
   return (
     <>

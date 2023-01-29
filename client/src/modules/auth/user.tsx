@@ -32,6 +32,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         loadingUser: false,
         isLoggedIn: !!meData.me,
       });
+    if (error) {
+      setData({
+        loadingUser: false,
+        isLoggedIn: false,
+      });
+    }
   }, [loadingMe, error, meData, isAuthenticated]);
 
   return (

@@ -91,7 +91,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   const filteredChapters = data.dashboardChapters.filter(({ name }) =>
-    name.toLowerCase().includes(search.trim()),
+    name.toLowerCase().includes(search.toLowerCase().trim()),
   );
 
   return (

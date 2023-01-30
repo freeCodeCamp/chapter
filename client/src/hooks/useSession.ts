@@ -61,11 +61,17 @@ export const useSession = () => {
 
     if (toLogout) {
       destroySession()
+        .then((res) => {
+          if (!res.ok) throw Error(`Server returned ${res.status} error.`);
+        })
         .then(() => refetch())
         .then(() => apollo.resetStore())
         .catch((e) => setError(e));
     } else if (isAuthenticated) {
       createSession()
+        .then((res) => {
+          if (!res.ok) throw Error(`Server returned ${res.status} error.`);
+        })
         .then(() => refetch())
         .catch((e) => setError(e));
     }

@@ -40,16 +40,16 @@ export const useSession = () => {
   // isAuthenticated does not change immediately after login/logout, so we
   // need to track the intent to prevent accidental session creation/deletion
   const [toLogout, setToLogout] = useState(false);
-  const [error, setError] = useState<Error | undefined>(undefined);
+  const [error, setError] = useState<Error | null>(null);
 
   const login = async () => {
-    setError(undefined);
+    setError(null);
     await loginAuth();
     setCanAlterSession(true);
     setToLogout(false);
   };
   const logout = async () => {
-    setError(undefined);
+    setError(null);
     await logoutAuth();
     setCanAlterSession(true);
     setToLogout(true);

@@ -6,7 +6,7 @@ import React, { ReactElement } from 'react';
 import { useParam } from '../../../../hooks/useParam';
 import { Sponsors } from '../../Events/graphql/queries';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
-import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
+import SponsorForm from '../components/SponsorForm';
 import { DASHBOARD_SPONSOR } from '../graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import {
@@ -14,6 +14,7 @@ import {
   useUpdateSponsorMutation,
 } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { SponsorFormData } from '../components/SponsorFormUtils';
 
 const EditSponsorPage: NextPageWithLayout = () => {
   const router = useRouter();

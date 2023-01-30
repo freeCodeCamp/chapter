@@ -36,7 +36,9 @@ const EventChapterSelect: React.FC<EventChapterSelectProps> = ({ loading }) => {
       isDisabled={loading}
       error={error}
       options={[...adminedChapters.map(({ id, name }) => ({ id, name }))]}
-      {...register(key)}
+      {...register(key, {
+        valueAsNumber: true,
+      })}
     />
   );
 };

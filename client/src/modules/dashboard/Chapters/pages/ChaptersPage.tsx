@@ -91,7 +91,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   const filteredChapters = data.dashboardChapters.filter(({ name }) =>
-    name.toLowerCase().includes(search),
+    name.toLowerCase().includes(search.trim()),
   );
 
   return (
@@ -100,15 +100,20 @@ export const ChaptersPage: NextPageWithLayout = () => {
         <Heading data-cy="chapter-dash-heading" id="page-heading">
           Chapters
         </Heading>
+        <Text srOnly>
+          Type the name of chapter, that you are looking for, in the FilterBar
+          to find it.
+        </Text>
         <Input
           width="full"
           type="text"
           backgroundColor="gray.50"
-          placeholder="Search For..."
+          placeholder="Filter Chapter..."
           value={search}
-          gridRowStart={{ base: 2, lg: 1 }}
-          gridColumnStart={{ base: 1, lg: 2 }}
-          gridColumnEnd={{ base: -1, lg: 3 }}
+          aria-Label="FilterBar"
+          gridRowStart="2"
+          gridColumnStart="1"
+          gridColumnEnd="-1"
           onChange={(e) => setSearch(e.target.value)}
         />
         {hasPermissionToCreateChapter && (

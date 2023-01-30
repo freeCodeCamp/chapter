@@ -6,25 +6,21 @@ const chapterId = 1;
 function createEventViaUI({ chapterId, eventData, createInPast = false }) {
   cy.visit(`/dashboard/chapters/${chapterId}`);
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
-  cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
-    eventData.name,
-  );
+  cy.findByRole('textbox', { name: 'Event Title' }).type(eventData.name);
   cy.findByRole('textbox', { name: 'Description' }).type(eventData.description);
   cy.findByRole('textbox', { name: 'Event Image Url' }).type(
     eventData.image_url,
   );
   // cy.findByRole('textbox', { name: 'Url' }).type(testEvent.url);
-  cy.findByRole('spinbutton', { name: 'Capacity (Required)' }).type(
-    eventData.capacity,
-  );
+  cy.findByRole('spinbutton', { name: 'Capacity' }).type(eventData.capacity);
 
   const whichMonth = createInPast ? 'Previous' : 'Next';
-  cy.findByLabelText(/^Start at \(Required\)/).click();
+  cy.findByLabelText(/^Start at/).click();
   cy.get(`[aria-label="${whichMonth} Month"]`).click().click();
   cy.findByRole('option', { name: /.*15th, .*/ }).click();
   cy.findByText('12:00 PM').click();
 
-  cy.findByLabelText(/^End at \(Required\)/).click();
+  cy.findByLabelText(/^End at/).click();
   cy.get(`[aria-label="${whichMonth} Month"]`).click().click();
   cy.findByRole('option', { name: /.*17th, .*/ }).click();
   cy.findByText('12:30 PM').click();

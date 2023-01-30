@@ -127,7 +127,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               isRequired={isRequired}
               isDisabled={loading}
               error={error}
-              {...register(key)}
+              {...register(key, {
+                ...(type === 'number' && { valueAsNumber: true }),
+              })}
             />
           );
         })}

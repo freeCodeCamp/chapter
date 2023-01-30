@@ -4,7 +4,7 @@ import {
   IsBoolean,
   IsIn,
   IsNotEmpty,
-  IsNumberString,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -106,7 +106,7 @@ export class EventClass {
   @IsOptionalUrl()
   image_url: string;
 
-  @IsNumberString()
+  @IsNumber()
   capacity: number;
 
   @IsDateBefore('ends_at', {
@@ -141,6 +141,7 @@ export class EventClass {
   @IsNotEmpty()
   chapter_id: number;
 
+  @IsOptional()
   @IsBoolean()
   attend_event?: boolean;
 }

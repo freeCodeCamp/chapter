@@ -178,9 +178,7 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
-      titleAddon,
-    );
+    cy.findByRole('textbox', { name: 'Event Title' }).type(titleAddon);
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',

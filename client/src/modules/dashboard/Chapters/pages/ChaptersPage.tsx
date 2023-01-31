@@ -101,16 +101,15 @@ export const ChaptersPage: NextPageWithLayout = () => {
           Chapters
         </Heading>
         <Text srOnly>
-          Type the name of chapter, that you are looking for, in the FilterBar
-          to find it.
+          Type the name of chapter that you are looking for in the filter chapter input
+          to filter out other chapters
         </Text>
         <Input
           width="full"
           type="text"
           backgroundColor="gray.50"
-          placeholder="Filter Chapter..."
+          placeholder="Filter Chapter"
           value={search}
-          aria-Label="FilterBar"
           gridRowStart="2"
           gridColumnStart="1"
           gridColumnEnd="-1"

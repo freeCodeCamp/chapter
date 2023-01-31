@@ -47,7 +47,7 @@ export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user, loadingUser, isLoggedIn } = useUser();
-  const { login } = useSession();
+  const { login, error: loginError } = useSession();
   const modalProps = useDisclosure();
 
   const refetch = {
@@ -265,7 +265,11 @@ export const EventPage: NextPage = () => {
   return (
     <>
       <Modal modalProps={modalProps} title="Waiting for login">
-        <Spinner />
+        {loginError ? (
+          <>Something went wrong, {loginError.message}</>
+        ) : (
+          <Spinner />
+        )}
       </Modal>
       <VStack align="flex-start">
         {data.event.image_url && (

@@ -7,7 +7,6 @@ import {
   rsvp,
   venues,
 } from '@prisma/client';
-import { CalendarEvent, google, outlook } from 'calendar-link';
 import {
   Resolver,
   Query,
@@ -54,20 +53,21 @@ import { createCalendarEventHelper } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
 import {
+  buildEmailForUpdatedEvent,
   chapterAdminUnsubscribeOptions,
   chapterUnsubscribeOptions,
+  eventAttendanceConfirmEmail,
+  eventCancelationEmail,
+  eventInviteEmail,
+  eventRsvpConfirmation,
+  eventRsvpNotifyEmail,
   eventUnsubscribeOptions,
+  EventWithUsers,
 } from '../../util/eventEmail';
-import { formatDate } from '../../util/date';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
 
-const SPACER = `<br />
-----------------------------<br />
-<br />
-`;
 const TBD_VENUE_ID = 0;
-const TBD = 'Undecided/TBD';
 
 const eventUserIncludes = {
   user: true,
@@ -75,47 +75,25 @@ const eventUserIncludes = {
   event_role: true,
 };
 
-type EventWithUsers = Prisma.eventsGetPayload<{
-  include: {
-    venue: true;
-    sponsors: true;
-    event_users: {
-      include: { user: true; event_reminder: true };
-      where: { subscribed: true };
-    };
-  };
-}>;
-
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
-  const linkDetails: CalendarEvent = {
-    title: event.name,
-    start: event.start_at,
-    end: event.ends_at,
-    description: event.description,
-  };
-  if (event.venue?.name) linkDetails.location = event.venue?.name;
-
   const unsubscribeOptions = eventUnsubscribeOptions({
     chapterId: event.chapter_id,
     eventId: event.id,
     userId: user.id,
   });
 
+  const { subject, emailText } = eventRsvpConfirmation({
+    event,
+    userName: user.name,
+  });
+
   await mailerService.sendEmail({
     emailList: [user.email],
-    subject: `Confirmation of attendance: ${event.name}`,
-    htmlEmail: `Hi${user.name ? ' ' + user.name : ''},<br>
-You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
-<br />
-<a href=${google(linkDetails)}>Google</a>
-<br />
-<a href=${outlook(linkDetails)}>Outlook</a>
-<br />
-${unsubscribeOptions}
-      `,
+    subject,
+    htmlEmail: `${emailText}<br />${unsubscribeOptions}<br />`,
   });
 };
 
@@ -164,56 +142,6 @@ const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
 const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
   data.venue_type !== event.venue_type ||
   (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url);
-
-const buildEmailForUpdatedEvent = async (
-  data: EventInputs,
-  event: EventWithUsers,
-) => {
-  const subject = `Details changed for event ${event.name}`;
-
-  const createVenueLocationContent = async () => {
-    if (!data.venue_id)
-      return `Location of event is currently ${TBD}.${SPACER}`;
-
-    const venue = await prisma.venues.findUniqueOrThrow({
-      where: { id: data.venue_id },
-    });
-
-    // TODO: include a link back to the venue page
-    return `The event is now being held at <br />
-    <br />
-- ${venue.name} <br />
-- ${venue.street_address ? venue.street_address + '<br />- ' : ''}
-${venue.city} <br />
-- ${venue.region} <br />
-- ${venue.postal_code} ${SPACER}`;
-  };
-  const createDateUpdates = () => {
-    return `
-  - Start: ${formatDate(data.start_at)}<br />
-  - End: ${formatDate(data.ends_at)}${SPACER}`;
-  };
-  const createStreamUpdate = () => {
-    return `Streaming URL: ${data.streaming_url || TBD}${SPACER}`;
-  };
-
-  const streamingUrl =
-    hasStreamingUrlChanged(data, event) && isOnline(data.venue_type)
-      ? createStreamUpdate()
-      : '';
-  const venueLocationChange =
-    hasVenueLocationChanged(data, event) && isPhysical(data.venue_type)
-      ? await createVenueLocationContent()
-      : '';
-  const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
-
-  const body = `Updated venue details<br/>
-${venueLocationChange}
-${streamingUrl}
-${dateChange}
-`;
-  return { subject, body };
-};
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   const getVenueData = (
@@ -265,8 +193,10 @@ const rsvpNotifyAdministrators = async (
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const subject = `New attendee for ${eventName}`;
-  const body = `User ${rsvpingUser.name} is attending.`;
+  const { subject, emailText } = eventRsvpNotifyEmail({
+    eventName,
+    userName: rsvpingUser.name,
+  });
 
   await batchSender(function* () {
     for (const { chapter_id, user } of chapterAdministrators) {
@@ -275,7 +205,7 @@ const rsvpNotifyAdministrators = async (
         chapterId: chapter_id,
         userId: user.id,
       });
-      const text = `${body}<br />${unsubscribeOptions}<br />`;
+      const text = `${emailText}<br />${unsubscribeOptions}<br />`;
       yield { email, subject, text };
     }
   });
@@ -574,11 +504,14 @@ export class EventResolver {
       userId,
     });
 
+    const { subject, emailText } = eventAttendanceConfirmEmail(
+      updatedUser.event.name,
+    );
+
     await mailerService.sendEmail({
       emailList: [updatedUser.user.email],
-      subject: 'Your attendance is confirmed',
-      htmlEmail: `Your reservation is confirmed. You can attend the event ${updatedUser.event.name}
-${unsubscribeOptions}`,
+      subject,
+      htmlEmail: `${emailText}<br />${unsubscribeOptions}<br />`,
     });
 
     const calendarId = updatedUser.event.chapter.calendar_id;
@@ -767,23 +700,27 @@ ${unsubscribeOptions}`,
 
     updateReminders(event, update.start_at);
 
-    const hasEventDataChanged =
-      hasVenueLocationChanged(data, event) ||
-      hasDateChanged(data, event) ||
-      hasStreamingUrlChanged(data, event);
-
-    if (hasEventDataChanged) {
-      createEmailForSubscribers(buildEmailForUpdatedEvent(data, event), event);
-    }
-
     const updatedEvent = await prisma.events.update({
       where: { id },
       data: update,
       include: {
         chapter: { select: { calendar_id: true } },
         event_users: { include: { user: { select: { email: true } } } },
+        venue: true,
       },
     });
+
+    const hasEventDataChanged =
+      hasVenueLocationChanged(data, event) ||
+      hasDateChanged(data, event) ||
+      hasStreamingUrlChanged(data, event);
+
+    if (hasEventDataChanged) {
+      createEmailForSubscribers(
+        buildEmailForUpdatedEvent(data, event, updatedEvent),
+        event,
+      );
+    }
 
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
@@ -834,6 +771,8 @@ ${unsubscribeOptions}`,
     await deleteEventReminders(id);
     const notCanceledRsvps = event.event_users;
 
+    const { subject, emailText } = eventCancelationEmail(event);
+
     if (notCanceledRsvps.length) {
       for (const { user } of notCanceledRsvps) {
         const unsubscribeOptions = eventUnsubscribeOptions({
@@ -842,19 +781,11 @@ ${unsubscribeOptions}`,
           userId: user.id,
         });
         const emailList = notCanceledRsvps.map(({ user }) => user.email);
-        const subject = `Event ${event.name} is canceled`;
-
-        const cancelEventEmail = `The upcoming event ${event.name} has been canceled.<br />
-          <br />
-          View upcoming events for ${event.chapter.name}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${event.chapter.name} chapter</a>.<br />
-          You received this email because you Subscribed to ${event.name} Event.<br />
-          <br />
-          ${unsubscribeOptions}
-          `;
+        const cancelEventEmail = `${emailText}<br />${unsubscribeOptions}<br />`;
 
         mailerService.sendEmail({
           emailList: emailList,
-          subject: subject,
+          subject,
           htmlEmail: cancelEventEmail,
         });
       }
@@ -936,38 +867,8 @@ ${unsubscribeOptions}`,
     if (!users.length) {
       return true;
     }
-    const subject = `Invitation to ${event.name}.`;
 
-    const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
-    const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
-    const confirmRsvpQuery = '?confirm_attendance=true';
-    const description = event.description
-      ? `About the event: <br />
-    ${event.description}${SPACER}`
-      : '';
-
-    const subsequentEventEmail = `Upcoming event for ${
-      event.chapter.name
-    }.<br />
-    <br />
-    When: ${event.start_at} to ${event.ends_at}
-    <br />
-    ${
-      isPhysical(event.venue_type) &&
-      `Where: ${event.venue?.name || TBD}.<br />`
-    }
-    ${
-      isOnline(event.venue_type) &&
-      `Streaming URL: ${event.streaming_url || TBD}<br />`
-    }
-    <br />
-    Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.${SPACER}
-    ${description}
-    View all upcoming events for ${
-      event.chapter.name
-    }: <a href='${chapterURL}'>${event.chapter.name} chapter</a>.<br />
-    <br />
-    `;
+    const { subject, emailText } = eventInviteEmail(event);
 
     await batchSender(function* () {
       for (const { user } of users) {
@@ -976,7 +877,7 @@ ${unsubscribeOptions}`,
           chapterId: event.chapter_id,
           userId: user.id,
         });
-        const text = `${subsequentEventEmail}<br />${unsubscribeOptions}<br />`;
+        const text = `${emailText}<br />${unsubscribeOptions}<br />`;
         yield { email, subject, text };
       }
     });

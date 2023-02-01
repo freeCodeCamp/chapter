@@ -25,13 +25,13 @@ export type Scalars = {
 export type Chapter = {
   __typename?: 'Chapter';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -41,7 +41,6 @@ export type Chapter = {
 export type ChapterCardRelations = {
   __typename?: 'ChapterCardRelations';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
@@ -50,6 +49,7 @@ export type ChapterCardRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -107,7 +107,6 @@ export type ChapterUserWithRole = {
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -115,6 +114,7 @@ export type ChapterWithEvents = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<EventWithVenue>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -124,7 +124,6 @@ export type ChapterWithEvents = {
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUserWithRelations>;
   chat_url?: Maybe<Scalars['String']>;
@@ -133,6 +132,7 @@ export type ChapterWithRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -381,6 +381,7 @@ export type Mutation = {
   toggleAutoSubscribe: User;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
+  unlinkChapterCalendar: Chapter;
   unsubscribe: Scalars['Boolean'];
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
@@ -494,6 +495,10 @@ export type MutationUnbanUserArgs = {
   userId: Scalars['Int'];
 };
 
+export type MutationUnlinkChapterCalendarArgs = {
+  id: Scalars['Int'];
+};
+
 export type MutationUnsubscribeArgs = {
   token: Scalars['String'];
 };
@@ -555,6 +560,7 @@ export type Query = {
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  testChapterCalendarAccess?: Maybe<Scalars['Boolean']>;
   tokenStatuses: Array<TokenStatus>;
   userDownload: UserForDownload;
   userProfile: UserProfile;
@@ -607,6 +613,10 @@ export type QueryPaginatedEventsWithTotalArgs = {
 
 export type QuerySponsorWithEventsArgs = {
   sponsorId: Scalars['Int'];
+};
+
+export type QueryTestChapterCalendarAccessArgs = {
+  id: Scalars['Int'];
 };
 
 export type QueryVenueArgs = {
@@ -1062,7 +1072,20 @@ export type CreateChapterCalendarMutation = {
   createChapterCalendar: {
     __typename?: 'Chapter';
     id: number;
-    calendar_id?: string | null;
+    has_calendar: boolean;
+  };
+};
+
+export type UnlinkChapterCalendarMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type UnlinkChapterCalendarMutation = {
+  __typename?: 'Mutation';
+  unlinkChapterCalendar: {
+    __typename?: 'Chapter';
+    id: number;
+    has_calendar: boolean;
   };
 };
 
@@ -1153,7 +1176,7 @@ export type DashboardChapterQuery = {
     logo_url?: string | null;
     banner_url?: string | null;
     chat_url?: string | null;
-    calendar_id?: string | null;
+    has_calendar: boolean;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -1212,6 +1235,15 @@ export type DashboardChapterUsersQuery = {
     }>;
     user_bans: Array<{ __typename?: 'UserBan'; user_id: number }>;
   };
+};
+
+export type TestChapterCalendarAccessQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type TestChapterCalendarAccessQuery = {
+  __typename?: 'Query';
+  testChapterCalendarAccess?: boolean | null;
 };
 
 export type CreateEventMutationVariables = Exact<{
@@ -1366,7 +1398,7 @@ export type DashboardEventQuery = {
       __typename?: 'Chapter';
       id: number;
       name: string;
-      calendar_id?: string | null;
+      has_calendar: boolean;
     };
     sponsors: Array<{
       __typename?: 'EventSponsor';
@@ -2684,7 +2716,7 @@ export const CreateChapterCalendarDocument = gql`
   mutation createChapterCalendar($chapterId: Int!) {
     createChapterCalendar(id: $chapterId) {
       id
-      calendar_id
+      has_calendar
     }
   }
 `;
@@ -2730,6 +2762,57 @@ export type CreateChapterCalendarMutationResult =
 export type CreateChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
   CreateChapterCalendarMutation,
   CreateChapterCalendarMutationVariables
+>;
+export const UnlinkChapterCalendarDocument = gql`
+  mutation unlinkChapterCalendar($chapterId: Int!) {
+    unlinkChapterCalendar(id: $chapterId) {
+      id
+      has_calendar
+    }
+  }
+`;
+export type UnlinkChapterCalendarMutationFn = Apollo.MutationFunction<
+  UnlinkChapterCalendarMutation,
+  UnlinkChapterCalendarMutationVariables
+>;
+
+/**
+ * __useUnlinkChapterCalendarMutation__
+ *
+ * To run a mutation, you first call `useUnlinkChapterCalendarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlinkChapterCalendarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlinkChapterCalendarMutation, { data, loading, error }] = useUnlinkChapterCalendarMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useUnlinkChapterCalendarMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UnlinkChapterCalendarMutation,
+    UnlinkChapterCalendarMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UnlinkChapterCalendarMutation,
+    UnlinkChapterCalendarMutationVariables
+  >(UnlinkChapterCalendarDocument, options);
+}
+export type UnlinkChapterCalendarMutationHookResult = ReturnType<
+  typeof useUnlinkChapterCalendarMutation
+>;
+export type UnlinkChapterCalendarMutationResult =
+  Apollo.MutationResult<UnlinkChapterCalendarMutation>;
+export type UnlinkChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
+  UnlinkChapterCalendarMutation,
+  UnlinkChapterCalendarMutationVariables
 >;
 export const UpdateChapterDocument = gql`
   mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
@@ -3069,7 +3152,7 @@ export const DashboardChapterDocument = gql`
       logo_url
       banner_url
       chat_url
-      calendar_id
+      has_calendar
       events {
         id
         name
@@ -3277,6 +3360,62 @@ export type DashboardChapterUsersLazyQueryHookResult = ReturnType<
 export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
   DashboardChapterUsersQuery,
   DashboardChapterUsersQueryVariables
+>;
+export const TestChapterCalendarAccessDocument = gql`
+  query testChapterCalendarAccess($chapterId: Int!) {
+    testChapterCalendarAccess(id: $chapterId)
+  }
+`;
+
+/**
+ * __useTestChapterCalendarAccessQuery__
+ *
+ * To run a query within a React component, call `useTestChapterCalendarAccessQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTestChapterCalendarAccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTestChapterCalendarAccessQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useTestChapterCalendarAccessQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >(TestChapterCalendarAccessDocument, options);
+}
+export function useTestChapterCalendarAccessLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >(TestChapterCalendarAccessDocument, options);
+}
+export type TestChapterCalendarAccessQueryHookResult = ReturnType<
+  typeof useTestChapterCalendarAccessQuery
+>;
+export type TestChapterCalendarAccessLazyQueryHookResult = ReturnType<
+  typeof useTestChapterCalendarAccessLazyQuery
+>;
+export type TestChapterCalendarAccessQueryResult = Apollo.QueryResult<
+  TestChapterCalendarAccessQuery,
+  TestChapterCalendarAccessQueryVariables
 >;
 export const CreateEventDocument = gql`
   mutation createEvent(
@@ -3792,7 +3931,7 @@ export const DashboardEventDocument = gql`
       chapter {
         id
         name
-        calendar_id
+        has_calendar
       }
       sponsors {
         sponsor {

@@ -265,8 +265,8 @@ const rsvpNotifyAdministrators = async (
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const subject = `New RSVP for ${eventName}`;
-  const body = `User ${rsvpingUser.name} has RSVP'd.`;
+  const subject = `New attendee for ${eventName}`;
+  const body = `User ${rsvpingUser.name} is attending.`;
 
   await batchSender(function* () {
     for (const { chapter_id, user } of chapterAdministrators) {
@@ -579,7 +579,7 @@ export class EventResolver {
 
     await mailerService.sendEmail({
       emailList: [updatedUser.user.email],
-      subject: 'Your RSVP is confirmed',
+      subject: 'Your attendance is confirmed',
       htmlEmail: `Your reservation is confirmed. You can attend the event ${updatedUser.event.name}
 ${unsubscribeOptions}`,
     });
@@ -943,7 +943,7 @@ ${unsubscribeOptions}`,
 
     const chapterURL = `${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}`;
     const eventURL = `${process.env.CLIENT_LOCATION}/events/${event.id}`;
-    const confirmRsvpQuery = '?confirm_rsvp=true';
+    const confirmRsvpQuery = '?confirm_attendance=true';
     const description = event.description
       ? `About the event: <br />
     ${event.description}${SPACER}`

@@ -11,7 +11,7 @@ export class SponsorResolver {
   @Authorized(Permission.SponsorView)
   @Query(() => [Sponsor])
   sponsors(): Promise<Sponsor[]> {
-    return prisma.sponsors.findMany();
+    return prisma.sponsors.findMany({ orderBy: { name: 'asc' } });
   }
 
   @Authorized(Permission.SponsorManage)

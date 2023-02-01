@@ -1,12 +1,14 @@
-import { Button, HStack } from '@chakra-ui/react';
+import { Button, Container, HStack } from '@chakra-ui/react';
+import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
-import type {
+import {
   DashboardChapterQuery,
   CreateChapterInputs,
+  useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import { DeleteChapterButton } from './DeleteChapterButton';
@@ -97,6 +99,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { onSubmit, data, submitText, loadingText } = props;
   const chapter = data?.dashboardChapter;
 
+  const { loading: loadingStatus, data: dataStatus } =
+    useCalendarIntegrationStatusQuery({ skip: !!chapter });
+
   const defaultValues: CreateChapterInputs = {
     name: chapter?.name ?? '',
     description: chapter?.description ?? '',
@@ -121,6 +126,9 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       onSubmit,
     });
 
+  const isAuthenticated = dataStatus?.calendarIntegrationStatus;
+  const isBroken = isAuthenticated === null;
+
   return (
     <Form
       submitLabel={submitText}
@@ -141,6 +149,29 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           />
         );
       })}
+      {!loadingStatus && dataStatus && (
+        <Container>
+          {isAuthenticated ? (
+            <>
+              <InfoIcon boxSize={5} marginRight={1} />
+              Instance is authenticated with calendar api, it will attempt
+              creating calendar for created chapter.
+            </>
+          ) : isBroken ? (
+            <>
+              <WarningTwoIcon boxSize={5} marginRight={1} />
+              Calendar integration is not working. Calendar will not be created
+              for chapter.
+            </>
+          ) : (
+            <>
+              <WarningTwoIcon boxSize={5} marginRight={1} />
+              Instance is not authenticated with calendar api, it will not
+              create calendar for chapter.
+            </>
+          )}
+        </Container>
+      )}
       <HStack gap="1em" width="100%">
         <Button
           width="100%"

@@ -32,13 +32,6 @@ exports[`EventCard should render 1`] = `
             Invite only
           </span>
         </div>
-        <a
-          class="chakra-link css-13pwhdi"
-          href="/chapters/1"
-        >
-          Chapter: 
-          foo
-        </a>
         <p
           class="chakra-text css-1q8l8r5"
         >

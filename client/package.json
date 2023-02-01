@@ -10,7 +10,7 @@
     "gen:dev": "npm run gen -- --watch"
   },
   "dependencies": {
-    "@apollo/client": "3.7.5",
+    "@apollo/client": "3.7.6",
     "@auth0/auth0-react": "1.12.1",
     "@chakra-ui/button": "2.0.14",
     "@chakra-ui/checkbox": "2.2.8",
@@ -31,20 +31,20 @@
     "graphql": "15.8.0",
     "next": "12.3.4",
     "react": "18.2.0",
-    "react-datepicker": "4.8.0",
+    "react-datepicker": "4.10.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "7.42.1"
+    "react-hook-form": "7.43.0"
   },
   "devDependencies": {
-    "@codesee/babel-plugin-instrument": "0.486.0",
-    "@codesee/tracker": "0.486.0",
-    "@graphql-codegen/cli": "2.16.4",
+    "@codesee/babel-plugin-instrument": "0.492.0",
+    "@codesee/tracker": "0.492.0",
+    "@graphql-codegen/cli": "2.16.5",
     "@graphql-codegen/fragment-matcher": "3.3.3",
     "@graphql-codegen/introspection": "2.2.3",
-    "@graphql-codegen/typescript": "2.8.7",
-    "@graphql-codegen/typescript-document-nodes": "2.3.12",
+    "@graphql-codegen/typescript": "2.8.8",
+    "@graphql-codegen/typescript-document-nodes": "2.3.13",
     "@graphql-codegen/typescript-graphql-files-modules": "2.2.1",
-    "@graphql-codegen/typescript-operations": "2.5.12",
+    "@graphql-codegen/typescript-operations": "2.5.13",
     "@graphql-codegen/typescript-react-apollo": "3.3.7",
     "@testing-library/dom": "8.20.0",
     "@testing-library/react": "13.4.0",
@@ -53,7 +53,7 @@
     "@types/react-dom": "18.0.10",
     "babel-plugin-istanbul": "6.1.1",
     "prettier": "2.8.3",
-    "typescript": "4.9.4"
+    "typescript": "4.9.5"
   },
   "license": "MIT"
 }

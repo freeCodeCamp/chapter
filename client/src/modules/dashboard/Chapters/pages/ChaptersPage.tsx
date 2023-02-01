@@ -84,9 +84,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
             gridRowStart="2"
             gridColumnStart="1"
             gridColumnEnd="-1"
-            onChange={(e) => {
-              return setFilterChapter(e.target.value);
-            }}
+            onChange={(e) => setFilterChapter(e.target.value)}
           />
         )}
         {hasPermissionToCreateChapter && (

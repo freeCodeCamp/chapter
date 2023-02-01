@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
@@ -59,13 +59,20 @@ export const EventsPage: NextPageWithLayout = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
-  let filteredEvents = data.dashboardEvents;
-  useEffect(() => {
-    if (showCanceled)
-      filteredEvents = data.dashboardEvents.filter(({ canceled }) => !canceled);
-    if (showRecent)
-      filteredEvents = data.dashboardEvents.filter(({ ends_at }) => !ends_at);
-  }, [showCanceled, showRecent]);
+  const recentEvents = data.dashboardEvents.some(
+    ({ ends_at }) => !isPast(new Date(ends_at)) && ends_at,
+  );
+  const eventWithRecent = data.dashboardEvents.filter(
+    (event) => isPast(event.ends_at) === recentEvents,
+  );
+  const canceledEvents = data.dashboardEvents.filter(
+    ({ canceled }) => !canceled,
+  );
+  const shownEvents = showCanceled
+    ? canceledEvents
+    : showRecent
+    ? eventWithRecent
+    : data.dashboardEvents;
 
   return (
     <VStack data-cy="events-dashboard">
@@ -109,7 +116,7 @@ export const EventsPage: NextPageWithLayout = () => {
       >
         <DataTable
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-          data={filteredEvents}
+          data={shownEvents}
           keys={
             [
               'status',
@@ -191,7 +198,7 @@ export const EventsPage: NextPageWithLayout = () => {
       </Box>
 
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {filteredEvents.map(
+        {shownEvents.map(
           (
             {
               canceled,
@@ -212,7 +219,7 @@ export const EventsPage: NextPageWithLayout = () => {
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
               }}
-              data={[filteredEvents[index]]}
+              data={[shownEvents[index]]}
               keys={['type', 'action'] as const}
               showHeader={false}
               mapper={{

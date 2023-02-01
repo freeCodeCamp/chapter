@@ -14,10 +14,10 @@ exports[`EventCard should render 1`] = `
       data-cy="event-card"
     >
       <div
-        class="css-1444ix4"
+        class="css-pfvov2"
       >
         <a
-          class="chakra-link css-18nay2d"
+          class="chakra-link css-1erir9l"
           data-cy="event-link"
           href="/events/1"
         >

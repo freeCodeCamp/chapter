@@ -3,7 +3,7 @@
 exports[`EventCard should render 1`] = `
 <div>
   <div
-    class="css-t46010"
+    class="css-dui41h"
   >
     <img
       class="chakra-image css-gb7fie"
@@ -17,7 +17,7 @@ exports[`EventCard should render 1`] = `
         class="css-1444ix4"
       >
         <a
-          class="chakra-link css-binssk"
+          class="chakra-link css-18nay2d"
           data-cy="event-link"
           href="/events/1"
         >

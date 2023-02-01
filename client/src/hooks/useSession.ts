@@ -27,6 +27,7 @@ export const useSession = () => {
     login: loginAuth,
     logout: logoutAuth,
     isAuthenticated,
+    authError,
   } = useAuth();
   const createSession = async () => {
     const token = await getToken();
@@ -77,5 +78,8 @@ export const useSession = () => {
     }
   }, [isAuthenticated, canAlterSession, toLogout]);
 
+  useEffect(() => {
+    if (authError) setError(authError);
+  }, [authError]);
   return { login, logout, isAuthenticated, error };
 };

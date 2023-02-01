@@ -87,6 +87,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       overflow="hidden"
       width={'full'}
       {...(hasEnded && { opacity: 0.6 })}
+      position="relative"
     >
       <Image
         display={['none', 'block']}
@@ -109,12 +110,22 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         >
           <Link
             data-cy="event-link"
+            className="card-link"
             mt={1}
             size="sm"
             gridArea={'eventname'}
             fontSize={'xl'}
             fontWeight={700}
             href={`/events/${event.id}`}
+            _before={{
+              content: '""',
+              position: 'absolute',
+              inset: '0',
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
           >
             {event.name}
           </Link>

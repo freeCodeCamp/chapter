@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement, useCallback, useReducer } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   checkInstancePermission,
@@ -47,40 +47,11 @@ const actionLinks = [
   },
 ];
 
-type searchState = {
-  search: string;
-};
-
-interface SearchAction {
-  type: 'setSearch';
-  payload: string;
-}
-
-const useFilter = () => {
-  const [{ search }, dispatch] = useReducer(
-    (state: searchState, action: SearchAction) => {
-      switch (action.type) {
-        case 'setSearch':
-          return { ...state, search: action.payload };
-      }
-    },
-    { search: '' },
-  );
-
-  const setSearch = useCallback((search: string) => {
-    dispatch({
-      type: 'setSearch',
-      payload: search,
-    });
-  }, []);
-
-  return { setSearch, search };
-};
 
 export const ChaptersPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
-  const { setSearch, search } = useFilter();
+  const { setSearch, search } = useState('');
 
   const hasPermissionToCreateChapter = checkInstancePermission(
     user,

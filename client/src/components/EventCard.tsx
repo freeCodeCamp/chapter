@@ -110,7 +110,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         >
           <Link
             data-cy="event-link"
-            className="card-link"
             mt={1}
             size="sm"
             gridArea={'eventname'}

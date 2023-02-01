@@ -47,11 +47,10 @@ const actionLinks = [
   },
 ];
 
-
 export const ChaptersPage: NextPageWithLayout = () => {
+  const [filterChapter, setFilterChapter] = useState('');
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
-  const { setSearch, search } = useState('');
 
   const hasPermissionToCreateChapter = checkInstancePermission(
     user,
@@ -62,7 +61,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   const filteredChapters = data.dashboardChapters.filter(({ name }) =>
-    name.toLowerCase().includes(search.toLowerCase().trim()),
+    name.toLowerCase().includes(filterChapter.toLowerCase().trim()),
   );
 
   return (
@@ -72,20 +71,24 @@ export const ChaptersPage: NextPageWithLayout = () => {
           Chapters
         </Heading>
         <Text srOnly>
-          Type the name of chapter that you are looking for in the filter chapter input
-          to filter out other chapters
+          Type the name of chapter that you are looking for in the filter
+          chapter input to filter out other chapters
         </Text>
-        <Input
-          width="full"
-          type="text"
-          backgroundColor="gray.50"
-          placeholder="Filter Chapter"
-          value={search}
-          gridRowStart="2"
-          gridColumnStart="1"
-          gridColumnEnd="-1"
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        {data.dashboardChapters.length > 1 && (
+          <Input
+            width="full"
+            type="text"
+            backgroundColor="gray.50"
+            placeholder="Filter Chapter"
+            value={filterChapter}
+            gridRowStart="2"
+            gridColumnStart="1"
+            gridColumnEnd="-1"
+            onChange={(e) => {
+              return setFilterChapter(e.target.value);
+            }}
+          />
+        )}
         {hasPermissionToCreateChapter && (
           <LinkButton
             data-cy="new-chapter"

@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import { isPast } from 'date-fns';
 import { formatDate } from '../../../../util/date';
@@ -59,6 +59,13 @@ export const EventsPage: NextPageWithLayout = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
+  let filteredEvents = data.dashboardEvents;
+  useEffect(() => {
+    if (showCanceled)
+      filteredEvents = data.dashboardEvents.filter(({ canceled }) => !canceled);
+    if (showRecent)
+      filteredEvents = data.dashboardEvents.filter(({ ends_at }) => !ends_at);
+  }, [showCanceled, showRecent]);
 
   return (
     <VStack data-cy="events-dashboard">
@@ -67,20 +74,20 @@ export const EventsPage: NextPageWithLayout = () => {
         alignItems="center"
         marginBlock="2em"
         gap="2em"
-        gridTemplateColumns="repeat(auto-fit, minmax(10rem, 1fr))"
+        gridTemplateColumns=""
       >
         <Heading id="page-heading">Events</Heading>
-        <FilterEvents
-          defaultChecked={showCanceled}
-          setFilterEvent={setShowCanceled}
-          filterLabel="Show canceled events"
-          id={'show-canceled-events'}
-        />
         <FilterEvents
           defaultChecked={showRecent}
           setFilterEvent={setShowRecent}
           filterLabel="Show recent events"
           id={'show-recent-events'}
+        />
+        <FilterEvents
+          defaultChecked={showCanceled}
+          setFilterEvent={setShowCanceled}
+          filterLabel="Show canceled events"
+          id={'show-canceled-events'}
         />
         {!!user?.admined_chapters.length && (
           <LinkButton
@@ -102,7 +109,7 @@ export const EventsPage: NextPageWithLayout = () => {
       >
         <DataTable
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-          data={data.dashboardEvents}
+          data={filteredEvents}
           keys={
             [
               'status',
@@ -184,7 +191,7 @@ export const EventsPage: NextPageWithLayout = () => {
       </Box>
 
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {data.dashboardEvents.map(
+        {filteredEvents.map(
           (
             {
               canceled,
@@ -205,7 +212,7 @@ export const EventsPage: NextPageWithLayout = () => {
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
               }}
-              data={[data.dashboardEvents[index]]}
+              data={[filteredEvents[index]]}
               keys={['type', 'action'] as const}
               showHeader={false}
               mapper={{

@@ -71,22 +71,22 @@ export const ChaptersPage: NextPageWithLayout = () => {
           Chapters
         </Heading>
         {data.dashboardChapters.length > 1 && (
-        <>
-        <Text srOnly>
-          Type the name of chapter that you are looking for in the filter
-          chapter input to filter out other chapters
-        </Text>
-          <Input
-            width="full"
-            type="text"
-            backgroundColor="gray.50"
-            placeholder="Filter Chapter"
-            value={filterChapter}
-            gridRowStart="2"
-            gridColumnStart="1"
-            gridColumnEnd="-1"
-            onChange={(e) => setFilterChapter(e.target.value)}
-          />
+          <>
+            <Text srOnly>
+              Type the name of chapter that you are looking for in the filter
+              chapter input to filter out other chapters
+            </Text>
+            <Input
+              width="full"
+              type="text"
+              backgroundColor="gray.50"
+              placeholder="Filter Chapter"
+              value={filterChapter}
+              gridRowStart="2"
+              gridColumnStart="1"
+              gridColumnEnd="-1"
+              onChange={(e) => setFilterChapter(e.target.value)}
+            />
           </>
         )}
         {hasPermissionToCreateChapter && (

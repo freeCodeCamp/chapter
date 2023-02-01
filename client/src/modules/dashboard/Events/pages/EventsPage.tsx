@@ -26,21 +26,23 @@ interface FilterEventsProps {
   setFilterEvent: React.Dispatch<React.SetStateAction<boolean>>;
   defaultChecked: boolean;
   filterLabel: string;
+  id: string;
 }
 
 const FilterEvents = ({
   setFilterEvent,
   defaultChecked,
   filterLabel,
+  id,
 }: FilterEventsProps) => {
   return (
     <Flex alignItems="center" justifyContent="space-between">
-      <FormLabel marginTop=".5em" htmlFor="show-canceled-events">
+      <FormLabel marginTop=".5em" htmlFor={id}>
         {filterLabel}
       </FormLabel>
       <Switch
         isChecked={defaultChecked}
-        id="show-canceled-events"
+        id={id}
         onChange={(e) => setFilterEvent(e.target.checked)}
       />
     </Flex>
@@ -51,9 +53,7 @@ export const EventsPage: NextPageWithLayout = () => {
   const [showCanceled, setShowCanceled] = useState(true);
   const [showRecent, setShowRecent] = useState(true);
 
-  const { error, loading, data } = useDashboardEventsQuery({
-    variables: { showCanceled, showRecent },
-  });
+  const { error, loading, data } = useDashboardEventsQuery();
 
   const { user } = useUser();
 
@@ -74,11 +74,13 @@ export const EventsPage: NextPageWithLayout = () => {
           defaultChecked={showCanceled}
           setFilterEvent={setShowCanceled}
           filterLabel="Show canceled events"
+          id={'show-canceled-events'}
         />
         <FilterEvents
           defaultChecked={showRecent}
           setFilterEvent={setShowRecent}
           filterLabel="Show recent events"
+          id={'show-recent-events'}
         />
         {!!user?.admined_chapters.length && (
           <LinkButton

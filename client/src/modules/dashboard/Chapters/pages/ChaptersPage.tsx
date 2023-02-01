@@ -70,11 +70,12 @@ export const ChaptersPage: NextPageWithLayout = () => {
         <Heading data-cy="chapter-dash-heading" id="page-heading">
           Chapters
         </Heading>
+        {data.dashboardChapters.length > 1 && (
+        <>
         <Text srOnly>
           Type the name of chapter that you are looking for in the filter
           chapter input to filter out other chapters
         </Text>
-        {data.dashboardChapters.length > 1 && (
           <Input
             width="full"
             type="text"
@@ -86,6 +87,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
             gridColumnEnd="-1"
             onChange={(e) => setFilterChapter(e.target.value)}
           />
+          </>
         )}
         {hasPermissionToCreateChapter && (
           <LinkButton

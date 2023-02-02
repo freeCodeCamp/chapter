@@ -72,7 +72,7 @@ export const chapterUnsubscribeOptions = ({
     generateToken(UnsubscribeType.Chapter, chapterId, userId),
   );
   return `<br />
-  - To stop receiving notifications about new events in this chapter, <a href="${url}">unsubscribe here</a>.`;
+- To stop receiving notifications about new events in this chapter, <a href="${url}">unsubscribe here</a>.`;
 };
 
 export const eventUnsubscribeOptions = ({
@@ -92,7 +92,7 @@ export const eventUnsubscribeOptions = ({
   const linkForEvent = unsubscribeUrlFromToken(eventUnsubscribeToken);
   const chapterUnsubscribe = chapterUnsubscribeOptions({ chapterId, userId });
   return `<br />
-  - To stop receiving notifications about this event, <a href="${linkForEvent}">unsubscribe here</a>.${chapterUnsubscribe}`;
+- To stop receiving notifications about this event, <a href="${linkForEvent}">unsubscribe here</a>.${chapterUnsubscribe}`;
 };
 
 export const chapterAdminUnsubscribeOptions = ({

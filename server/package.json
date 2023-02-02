@@ -33,7 +33,7 @@
     "seed": "node prisma/seed/seed.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "3.261.0",
+    "@aws-sdk/client-ses": "3.262.0",
     "@cypress/code-coverage": "3.10.0",
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.9.0",

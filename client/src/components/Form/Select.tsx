@@ -46,12 +46,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           isInvalid={isError}
           {...rest}
         >
-          {options.length &&
-            options.map(({ id, name }) => (
-              <option key={id} value={id}>
-                {name}
-              </option>
-            ))}
+          {options.map(({ id, name }) => (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          ))}
         </ChakraSelect>
         <FormErrorMessage>{props.error}</FormErrorMessage>
       </FormControl>

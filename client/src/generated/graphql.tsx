@@ -1010,6 +1010,7 @@ export type ChaptersQuery = {
       start_at: any;
       ends_at: any;
       name: string;
+      invite_only: boolean;
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
@@ -1824,6 +1825,7 @@ export type HomeQuery = {
       start_at: any;
       ends_at: any;
       name: string;
+      invite_only: boolean;
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
@@ -2440,6 +2442,7 @@ export const ChaptersDocument = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed
@@ -5183,6 +5186,7 @@ export const HomeDocument = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed

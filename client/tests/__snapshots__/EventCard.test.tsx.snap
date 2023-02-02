@@ -5,10 +5,14 @@ exports[`EventCard should render 1`] = `
   <div
     class="css-t46010"
   >
-    <img
-      class="chakra-image css-gb7fie"
-      src="http://example.com/image.png"
-    />
+    <div
+      class="css-19995zd"
+    >
+      <img
+        class="chakra-image css-3tbbj3"
+        src="/freecodecamp-logo.svg"
+      />
+    </div>
     <div
       class="css-1fuobds"
       data-cy="event-card"

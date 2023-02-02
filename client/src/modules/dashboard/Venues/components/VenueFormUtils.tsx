@@ -67,11 +67,15 @@ export class Venue {
   country: string;
 
   @IsOptional()
-  @IsLatitude()
+  @IsLatitude({
+    message: '$property should be between -90 and +90',
+  })
   latitude?: number | null;
 
   @IsOptional()
-  @IsLongitude()
+  @IsLongitude({
+    message: '$property should be between -180 and +180',
+  })
   longitude?: number | null;
 }
 

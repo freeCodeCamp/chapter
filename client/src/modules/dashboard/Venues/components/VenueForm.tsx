@@ -70,7 +70,9 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           <Input
             key={key}
             label={label}
-            {...register(key)}
+            {...register(key, {
+              ...(type === 'number' && { valueAsNumber: true }),
+            })}
             type={type}
             isRequired={isRequired}
             step={step}

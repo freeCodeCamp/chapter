@@ -13,6 +13,7 @@ import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement, useState } from 'react';
 
 import { isPast } from 'date-fns';
+import { LockIcon, UnlockIcon } from '@chakra-ui/icons';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
@@ -248,7 +249,11 @@ export const EventsPage: NextPageWithLayout = () => {
                         {name}
                       </LinkButton>
                     </VStack>
-                    <Text>{invite_only ? 'Yes' : 'No'}</Text>
+                    {invite_only ? (
+                      <LockIcon> invite_only</LockIcon>
+                    ) : (
+                      <UnlockIcon>Open for attending</UnlockIcon>
+                    )}
                     <Text>
                       {isPhysical(venue_type)
                         ? venue?.name || 'TBD'

@@ -2,6 +2,7 @@ import { Flex, Grid, Heading, Tag, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { LinkButton } from 'chakra-next-link';
+import { LockIcon } from '@chakra-ui/icons';
 
 interface Event {
   canceled: boolean;
@@ -38,6 +39,7 @@ export const EventList = ({ events, emptyText, title }: Props) => {
                     maxWidth="8em"
                     maxH="2em"
                   >
+                    <LockIcon />
                     Invite only
                   </Tag>
                 )}

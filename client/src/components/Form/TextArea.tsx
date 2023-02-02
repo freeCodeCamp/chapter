@@ -34,13 +34,9 @@ export const TextArea = forwardRef<any, TextAreaProps>((props, ref) => {
     noLabel,
     ...rest
   } = props;
-
+  const isError = isInvalid || !!props.error;
   return (
-    <FormControl
-      isInvalid={isInvalid || !!props.error}
-      isRequired={isRequired}
-      {...outerProps}
-    >
+    <FormControl isInvalid={isError} isRequired={isRequired} {...outerProps}>
       {!noLabel && (
         <FormLabel htmlFor={name}>{label || capitalize(name)}</FormLabel>
       )}
@@ -48,8 +44,8 @@ export const TextArea = forwardRef<any, TextAreaProps>((props, ref) => {
         id={name}
         name={name}
         ref={ref as any}
-        isRequired={isRequired}
         placeholder={placeholder || label || capitalize(name)}
+        isInvalid={isError}
         {...rest}
       />
       <FormErrorMessage>{props.error}</FormErrorMessage>

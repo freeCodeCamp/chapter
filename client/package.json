@@ -24,9 +24,12 @@
     "@chakra-ui/skip-nav": "2.0.13",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
+    "@hookform/resolvers": "^2.9.10",
     "chakra-confirm": "1.2.17",
     "chakra-data-table": "1.4.1",
     "chakra-next-link": "1.0.10",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "date-fns": "2.29.3",
     "graphql": "15.8.0",
     "next": "12.3.4",
@@ -36,6 +39,8 @@
     "react-hook-form": "7.43.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-proposal-decorators": "^7.20.13",
     "@codesee/babel-plugin-instrument": "0.493.0",
     "@codesee/tracker": "0.493.0",
     "@graphql-codegen/cli": "2.16.5",

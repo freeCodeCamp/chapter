@@ -1,7 +1,6 @@
-import { events, Prisma, venues } from '@prisma/client';
+import { events, events_venue_type_enum, Prisma, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
-import { EventInputs } from '../controllers/Events/inputs';
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
 import { formatDate } from './date';
 import { isOnline, isPhysical } from './venue';
@@ -28,6 +27,39 @@ const chapterUrl = (id: number) =>
 const eventUrl = (id: number) => `${process.env.CLIENT_LOCATION}/events/${id}`;
 const unsubscribeUrlFromToken = (token: string) =>
   `${process.env.CLIENT_LOCATION}/unsubscribe?token=${token}`;
+
+interface PhysicalLocationChangeData {
+  venue_type: events_venue_type_enum;
+  venue_id: number | null;
+}
+
+export const hasPhysicalLocationChanged = (
+  data: PhysicalLocationChangeData,
+  event: PhysicalLocationChangeData,
+) =>
+  data.venue_type !== event.venue_type ||
+  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+
+interface DateChangeData {
+  start_at: Date;
+  ends_at: Date;
+}
+
+export const hasDateChanged = (data: DateChangeData, event: DateChangeData) =>
+  !isEqual(data.ends_at, event.ends_at) ||
+  !isEqual(data.start_at, event.start_at);
+
+interface StreamingUrlChangeData {
+  streaming_url?: string | null;
+  venue_type: events_venue_type_enum;
+}
+
+export const hasStreamingUrlChanged = (
+  data: StreamingUrlChangeData,
+  event: StreamingUrlChangeData,
+) =>
+  data.venue_type !== event.venue_type ||
+  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url);
 
 export const chapterUnsubscribeOptions = ({
   chapterId,
@@ -181,68 +213,71 @@ You should receive a calendar invite shortly. If you do not, you can add the eve
   return { subject, emailText };
 };
 
-const hasVenueLocationChanged = (data: EventInputs, event: EventWithUsers) =>
-  data.venue_type !== event.venue_type ||
-  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
-const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
-  !isEqual(data.ends_at, event.ends_at) ||
-  !isEqual(data.start_at, event.start_at);
-const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
-  data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url);
+interface UpdateEmailData {
+  ends_at: Date;
+  name: string;
+  start_at: Date;
+  streaming_url?: string | null;
+  venue: venues | null;
+  venue_id: number | null;
+  venue_type: events_venue_type_enum;
+}
 
-interface UpdatedEvent {
+interface PhysicalLocationTextData {
   venue: venues | null;
   venue_id: number | null;
 }
 
-export const buildEmailForUpdatedEvent = async (
-  data: EventInputs,
-  event: EventWithUsers,
-  updatedEvent: UpdatedEvent,
+const physicalLocationChangeText = ({
+  venue,
+  venue_id,
+}: PhysicalLocationTextData) => {
+  if (!venue_id || !venue) return `Location of event is currently ${TBD}.`;
+
+  // TODO: include a link back to the venue page
+  return `The event is now being held at <br />
+<br />
+- ${venue.name} <br />
+${venue.street_address ? `- ${venue.street_address} <br />` : ''}
+${venue.city} <br />
+- ${venue.region} <br />
+- ${venue.postal_code}`;
+};
+
+const dateChangeText = ({ ends_at, start_at }: DateChangeData) => {
+  return `
+- Start: ${formatDate(start_at)}<br />
+- End: ${formatDate(ends_at)}`;
+};
+
+const streamingUrlChangeText = ({
+  streaming_url,
+}: {
+  streaming_url?: string | null;
+}) => {
+  return `Streaming URL: ${streaming_url || TBD}`;
+};
+
+export const buildEmailForUpdatedEvent = (
+  updatedEvent: UpdateEmailData,
+  event: UpdateEmailData,
 ) => {
   const subject = `Details changed for event ${event.name}`;
 
-  const createVenueLocationContent = async () => {
-    if (!updatedEvent.venue_id || !updatedEvent.venue)
-      return `Location of event is currently ${TBD}.${SPACER}`;
-
-    // TODO: include a link back to the venue page
-    return `The event is now being held at <br />
-    <br />
-- ${updatedEvent.venue.name} <br />
-- ${
-      updatedEvent.venue.street_address
-        ? updatedEvent.venue.street_address + '<br />- '
-        : ''
-    }
-${updatedEvent.venue.city} <br />
-- ${updatedEvent.venue.region} <br />
-- ${updatedEvent.venue.postal_code} ${SPACER}`;
-  };
-  const createDateUpdates = () => {
-    return `
-- Start: ${formatDate(data.start_at)}<br />
-- End: ${formatDate(data.ends_at)}${SPACER}`;
-  };
-  const createStreamUpdate = () => {
-    return `Streaming URL: ${data.streaming_url || TBD}${SPACER}`;
-  };
-
-  const streamingUrl =
-    hasStreamingUrlChanged(data, event) && isOnline(data.venue_type)
-      ? createStreamUpdate()
+  const streamingUrlChange =
+    hasStreamingUrlChanged(updatedEvent, event) &&
+    isOnline(updatedEvent.venue_type)
+      ? `${streamingUrlChangeText(updatedEvent)}${SPACER}`
       : '';
-  const venueLocationChange =
-    hasVenueLocationChanged(data, event) && isPhysical(data.venue_type)
-      ? await createVenueLocationContent()
+  const physicalLocationChange =
+    hasPhysicalLocationChanged(updatedEvent, event) &&
+    isPhysical(updatedEvent.venue_type)
+      ? `${physicalLocationChangeText(updatedEvent)}${SPACER}`
       : '';
-  const dateChange = hasDateChanged(data, event) ? createDateUpdates() : '';
+  const dateChange = hasDateChanged(updatedEvent, event)
+    ? `${dateChangeText(updatedEvent)}${SPACER}`
+    : '';
 
-  const body = `Updated venue details<br/>
-${venueLocationChange}
-${streamingUrl}
-${dateChange}
-`;
+  const body = `Updated venue details<br/>${physicalLocationChange}${streamingUrlChange}${dateChange}`;
   return { subject, body };
 };

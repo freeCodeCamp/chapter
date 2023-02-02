@@ -63,6 +63,9 @@ import {
   eventRsvpNotifyEmail,
   eventUnsubscribeOptions,
   EventWithUsers,
+  hasStreamingUrlChanged,
+  hasPhysicalLocationChanged,
+  hasDateChanged,
 } from '../../util/eventEmail';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
@@ -97,14 +100,14 @@ const sendRsvpInvitation = async (
   });
 };
 
-const createEmailForSubscribers = async (
-  buildEmail: Promise<{
+const createEmailForSubscribers = (
+  buildEmail: {
     subject: string;
     body: string;
-  }>,
+  },
   emaildata: EventWithUsers,
 ) => {
-  const { body, subject } = await buildEmail;
+  const { body, subject } = buildEmail;
   batchSender(function* () {
     for (const { user } of emaildata.event_users) {
       const email = user.email;
@@ -118,6 +121,7 @@ const createEmailForSubscribers = async (
     }
   });
 };
+
 const updateReminders = (event: EventWithUsers, startAt: Date) => {
   // This is asychronous, but we don't use the result, so we don't wait for it
   if (!isEqual(startAt, event.start_at)) {
@@ -132,16 +136,6 @@ const updateReminders = (event: EventWithUsers, startAt: Date) => {
     });
   }
 };
-
-const hasVenueLocationChanged = (data: EventInputs, event: EventWithUsers) =>
-  data.venue_type !== event.venue_type ||
-  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
-const hasDateChanged = (data: EventInputs, event: EventWithUsers) =>
-  !isEqual(data.ends_at, event.ends_at) ||
-  !isEqual(data.start_at, event.start_at);
-const hasStreamingUrlChanged = (data: EventInputs, event: EventWithUsers) =>
-  data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url);
 
 const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   const getVenueData = (
@@ -711,13 +705,13 @@ export class EventResolver {
     });
 
     const hasEventDataChanged =
-      hasVenueLocationChanged(data, event) ||
-      hasDateChanged(data, event) ||
-      hasStreamingUrlChanged(data, event);
+      hasPhysicalLocationChanged(updatedEvent, event) ||
+      hasDateChanged(updatedEvent, event) ||
+      hasStreamingUrlChanged(updatedEvent, event);
 
     if (hasEventDataChanged) {
       createEmailForSubscribers(
-        buildEmailForUpdatedEvent(data, event, updatedEvent),
+        buildEmailForUpdatedEvent(updatedEvent, event),
         event,
       );
     }
@@ -725,9 +719,9 @@ export class EventResolver {
     // TODO: warn the user if the any calendar ids are missing
     if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
       const createMeet =
-        isOnline(data.venue_type) && !isOnline(event.venue_type);
+        isOnline(updatedEvent.venue_type) && !isOnline(event.venue_type);
       const removeMeet =
-        isOnline(event.venue_type) && !isOnline(data.venue_type);
+        isOnline(event.venue_type) && !isOnline(updatedEvent.venue_type);
       try {
         await updateCalendarEventDetails(
           {

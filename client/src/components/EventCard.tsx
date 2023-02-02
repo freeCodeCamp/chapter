@@ -4,6 +4,7 @@ import { isPast } from 'date-fns';
 import React from 'react';
 import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
+import ImagePlaceholder from './ImagePlaceholder';
 
 type EventCardProps = {
   event: Pick<
@@ -88,13 +89,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       width={'full'}
       {...(hasEnded && { opacity: 0.6 })}
     >
-      <Image
-        display={['none', 'block']}
-        h={'auto'}
-        w={'200px'}
-        src={event.image_url}
-        objectFit={'cover'}
-      />
+      <Box w="240px" h="120px" display={['none', 'block']}>
+        <Image
+          width="100%"
+          height="100%"
+          src={event.image_url}
+          fit="cover"
+          fallback={<ImagePlaceholder />}
+        />
+      </Box>
       <Box p="3" py={3} width="full" data-cy="event-card">
         <Grid
           mb="2"

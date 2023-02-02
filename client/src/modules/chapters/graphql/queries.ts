@@ -57,6 +57,7 @@ export const CHAPTERS = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed

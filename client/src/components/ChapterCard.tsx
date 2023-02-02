@@ -115,7 +115,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             Next Events
           </Text>
           <GridItem area="event" paddingInline={'1em'}>
-            {chapter.events.map(({ id, name, start_at }) => (
+            {chapter.events.map(({ id, name, start_at, invite_only }) => (
               <Flex
                 paddingBlock={'.5em'}
                 paddingInline={'.3em'}
@@ -133,6 +133,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
                   {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
                 </Text>
+                {invite_only && (
+                  <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                    Invite only
+                  </Text>
+                )}
               </Flex>
             ))}
           </GridItem>

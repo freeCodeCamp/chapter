@@ -88,7 +88,7 @@ const sendRsvpInvitation = async (
     userId: user.id,
   });
 
-  const { subject, emailText } = eventRsvpConfirmation({
+  const { subject, attachUnsubscribe } = eventRsvpConfirmation({
     event,
     userName: user.name,
   });
@@ -96,18 +96,19 @@ const sendRsvpInvitation = async (
   await mailerService.sendEmail({
     emailList: [user.email],
     subject,
-    htmlEmail: `${emailText}<br />${unsubscribeOptions}<br />`,
+    htmlEmail: attachUnsubscribe(unsubscribeOptions),
   });
 };
 
 const createEmailForSubscribers = (
   buildEmail: {
     subject: string;
-    body: string;
+    emailText: string;
+    attachUnsubscribe: (unsubscribeOptions: string) => string;
   },
   emaildata: EventWithUsers,
 ) => {
-  const { body, subject } = buildEmail;
+  const { subject, attachUnsubscribe } = buildEmail;
   batchSender(function* () {
     for (const { user } of emaildata.event_users) {
       const email = user.email;
@@ -116,7 +117,7 @@ const createEmailForSubscribers = (
         eventId: emaildata.id,
         userId: emaildata.id,
       });
-      const text = `${body}<br>${unsubscribeOptions}`;
+      const text = attachUnsubscribe(unsubscribeOptions);
       yield { email, subject, text };
     }
   });
@@ -498,14 +499,14 @@ export class EventResolver {
       userId,
     });
 
-    const { subject, emailText } = eventAttendanceConfirmEmail(
+    const { subject, attachUnsubscribe } = eventAttendanceConfirmEmail(
       updatedUser.event.name,
     );
 
     await mailerService.sendEmail({
       emailList: [updatedUser.user.email],
       subject,
-      htmlEmail: `${emailText}<br />${unsubscribeOptions}<br />`,
+      htmlEmail: attachUnsubscribe(unsubscribeOptions),
     });
 
     const calendarId = updatedUser.event.chapter.calendar_id;
@@ -765,7 +766,7 @@ export class EventResolver {
     await deleteEventReminders(id);
     const notCanceledRsvps = event.event_users;
 
-    const { subject, emailText } = eventCancelationEmail(event);
+    const { subject, attachUnsubscribe } = eventCancelationEmail(event);
 
     if (notCanceledRsvps.length) {
       for (const { user } of notCanceledRsvps) {
@@ -775,7 +776,7 @@ export class EventResolver {
           userId: user.id,
         });
         const emailList = notCanceledRsvps.map(({ user }) => user.email);
-        const cancelEventEmail = `${emailText}<br />${unsubscribeOptions}<br />`;
+        const cancelEventEmail = attachUnsubscribe(unsubscribeOptions);
 
         mailerService.sendEmail({
           emailList: emailList,

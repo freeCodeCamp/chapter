@@ -119,6 +119,23 @@ type InviteEvent = Prisma.eventsGetPayload<{
   };
 }>;
 
+const attachUnsubscribe = (emailText: string) => {
+  return (unsubscribeOptions: string) =>
+    `${emailText}<br />${unsubscribeOptions}<br />`;
+};
+
+const withUnsubscribe = ({
+  subject,
+  emailText,
+}: {
+  subject: string;
+  emailText: string;
+}) => ({
+  subject,
+  emailText,
+  attachUnsubscribe: attachUnsubscribe(emailText),
+});
+
 export const eventInviteEmail = (event: InviteEvent) => {
   const physicalLocation = isPhysical(event.venue_type)
     ? `Where: ${event.venue?.name || TBD}<br />`
@@ -146,7 +163,10 @@ ${description}
 View all upcoming events for ${chapterName}: <a href='${chapterURL}'>${chapterName} chapter</a>.<br />
 <br />`;
 
-  return { subject, emailText };
+  return withUnsubscribe({
+    subject,
+    emailText,
+  });
 };
 
 type CancelEvent = Prisma.eventsGetPayload<{
@@ -163,13 +183,19 @@ export const eventCancelationEmail = (event: CancelEvent) => {
 View upcoming events for ${chapterName}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${chapterName} chapter</a>.<br />
 You received this email because you Subscribed to ${eventName} Event.<br />`;
 
-  return { subject, emailText };
+  return withUnsubscribe({
+    subject,
+    emailText,
+  });
 };
 
 export const eventAttendanceConfirmEmail = (eventName: string) => {
   const subject = 'Your attendance is confirmed';
   const emailText = `Your reservation is confirmed. You can attend the event ${eventName}`;
-  return { subject, emailText };
+  return withUnsubscribe({
+    subject,
+    emailText,
+  });
 };
 
 export const eventRsvpNotifyEmail = ({
@@ -181,7 +207,10 @@ export const eventRsvpNotifyEmail = ({
 }) => {
   const subject = `New attendee for ${eventName}`;
   const emailText = `User ${userName} is attending.`;
-  return { subject, emailText };
+  return withUnsubscribe({
+    subject,
+    emailText,
+  });
 };
 
 interface RsvpConfirmation {
@@ -210,7 +239,10 @@ You should receive a calendar invite shortly. If you do not, you can add the eve
 <br />
 <a href=${outlook(linkDetails)}>Outlook</a>`;
 
-  return { subject, emailText };
+  return withUnsubscribe({
+    subject,
+    emailText,
+  });
 };
 
 interface UpdateEmailData {
@@ -278,6 +310,6 @@ export const buildEmailForUpdatedEvent = (
     ? `${dateChangeText(updatedEvent)}${SPACER}`
     : '';
 
-  const body = `Updated venue details<br/>${physicalLocationChange}${streamingUrlChange}${dateChange}`;
-  return { subject, body };
+  const emailText = `Updated venue details<br/>${physicalLocationChange}${streamingUrlChange}${dateChange}`;
+  return withUnsubscribe({ subject, emailText });
 };

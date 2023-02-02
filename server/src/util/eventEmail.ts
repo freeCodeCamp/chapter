@@ -34,20 +34,23 @@ interface PhysicalLocationChangeData {
 }
 
 export const hasPhysicalLocationChanged = (
-  data: PhysicalLocationChangeData,
-  event: PhysicalLocationChangeData,
+  newData: PhysicalLocationChangeData,
+  oldData: PhysicalLocationChangeData,
 ) =>
-  data.venue_type !== event.venue_type ||
-  (isPhysical(event.venue_type) && data.venue_id !== event.venue_id);
+  newData.venue_type !== oldData.venue_type ||
+  (isPhysical(oldData.venue_type) && newData.venue_id !== oldData.venue_id);
 
 interface DateChangeData {
   start_at: Date;
   ends_at: Date;
 }
 
-export const hasDateChanged = (data: DateChangeData, event: DateChangeData) =>
-  !isEqual(data.ends_at, event.ends_at) ||
-  !isEqual(data.start_at, event.start_at);
+export const hasDateChanged = (
+  newData: DateChangeData,
+  oldData: DateChangeData,
+) =>
+  !isEqual(newData.ends_at, oldData.ends_at) ||
+  !isEqual(newData.start_at, oldData.start_at);
 
 interface StreamingUrlChangeData {
   streaming_url?: string | null;
@@ -55,11 +58,12 @@ interface StreamingUrlChangeData {
 }
 
 export const hasStreamingUrlChanged = (
-  data: StreamingUrlChangeData,
-  event: StreamingUrlChangeData,
+  newData: StreamingUrlChangeData,
+  oldData: StreamingUrlChangeData,
 ) =>
-  data.venue_type !== event.venue_type ||
-  (isOnline(event.venue_type) && data.streaming_url !== event.streaming_url);
+  newData.venue_type !== oldData.venue_type ||
+  (isOnline(oldData.venue_type) &&
+    newData.streaming_url !== oldData.streaming_url);
 
 export const chapterUnsubscribeOptions = ({
   chapterId,
@@ -291,23 +295,22 @@ const streamingUrlChangeText = ({
 };
 
 export const buildEmailForUpdatedEvent = (
-  updatedEvent: UpdateEmailData,
-  event: UpdateEmailData,
+  newData: UpdateEmailData,
+  oldData: UpdateEmailData,
 ) => {
-  const subject = `Details changed for event ${event.name}`;
+  const subject = `Details changed for event ${oldData.name}`;
 
   const streamingUrlChange =
-    hasStreamingUrlChanged(updatedEvent, event) &&
-    isOnline(updatedEvent.venue_type)
-      ? `${streamingUrlChangeText(updatedEvent)}${SPACER}`
+    hasStreamingUrlChanged(newData, oldData) && isOnline(newData.venue_type)
+      ? `${streamingUrlChangeText(newData)}${SPACER}`
       : '';
   const physicalLocationChange =
-    hasPhysicalLocationChanged(updatedEvent, event) &&
-    isPhysical(updatedEvent.venue_type)
-      ? `${physicalLocationChangeText(updatedEvent)}${SPACER}`
+    hasPhysicalLocationChanged(newData, oldData) &&
+    isPhysical(newData.venue_type)
+      ? `${physicalLocationChangeText(newData)}${SPACER}`
       : '';
-  const dateChange = hasDateChanged(updatedEvent, event)
-    ? `${dateChangeText(updatedEvent)}${SPACER}`
+  const dateChange = hasDateChanged(newData, oldData)
+    ? `${dateChangeText(newData)}${SPACER}`
     : '';
 
   const emailText = `Updated venue details<br/>${physicalLocationChange}${streamingUrlChange}${dateChange}`;

@@ -26,8 +26,6 @@ interface FilterEventsProps {
   setFilterEvent: React.Dispatch<React.SetStateAction<boolean>>;
   defaultChecked: boolean;
   filterLabel: string;
-  gridRow?: string | number | Record<string, string | number>;
-  gridColumn?: string | number | Record<string, string | number>;
   id: string;
 }
 
@@ -35,17 +33,10 @@ const FilterEvents = ({
   setFilterEvent,
   defaultChecked,
   filterLabel,
-  gridRow,
-  gridColumn,
   id,
 }: FilterEventsProps) => {
   return (
-    <Flex
-      alignItems="center"
-      gap="1rem"
-      gridRow={gridRow}
-      gridColumn={gridColumn}
-    >
+    <>
       <FormLabel marginTop=".5em" htmlFor={id}>
         {filterLabel}
       </FormLabel>
@@ -54,7 +45,7 @@ const FilterEvents = ({
         id={id}
         onChange={(e) => setFilterEvent(e.target.checked)}
       />
-    </Flex>
+    </>
   );
 };
 
@@ -96,22 +87,33 @@ export const EventsPage: NextPageWithLayout = () => {
         gridTemplateColumns=".5fr 1fr 1fr 8em"
       >
         <Heading id="page-heading">Events</Heading>
-        <FilterEvents
-          defaultChecked={hideRecent}
-          setFilterEvent={setHideRecent}
-          filterLabel="Hide recent events"
-          id={'hide-recent-events'}
-          gridRow={{ base: 2, lg: 1 }}
-          gridColumn={{ base: 1, lg: 2 }}
-        />
-        <FilterEvents
-          defaultChecked={hideCanceled}
-          setFilterEvent={setHideCanceled}
-          filterLabel="Hide canceled events"
-          id={'hide-canceled-events'}
-          gridRow={{ base: 2, lg: 1 }}
-          gridColumn={{ base: -3 / -1, lg: 3 }}
-        />
+        <Flex
+          alignItems="center"
+          justifyContent={{ base: 'space-between', md: 'revert' }}
+          gridRow={{ base: '2', lg: '1' }}
+          gridColumn={{ base: '1 / -1', md: '1 / 3', lg: '2 / 3' }}
+        >
+          <FilterEvents
+            defaultChecked={hideRecent}
+            setFilterEvent={setHideRecent}
+            filterLabel="Hide recent events"
+            id={'hide-recent-events'}
+          />
+        </Flex>
+        <Flex
+          alignItems="center"
+          justifyContent={{ base: 'space-between', md: 'revert' }}
+          gridRow={{ base: '3', md: '2', lg: '1' }}
+          gridColumn={{ base: '1 / -1', md: '-3 / -1', lg: '3 / 4' }}
+          marginLeft={{ base: 'revert', md: 'auto', lg: 'revert' }}
+        >
+          <FilterEvents
+            defaultChecked={hideCanceled}
+            setFilterEvent={setHideCanceled}
+            filterLabel="Hide canceled events"
+            id={'hide-canceled-events'}
+          />
+        </Flex>
         {!!user?.admined_chapters.length && (
           <LinkButton
             data-cy="new-event"

@@ -26,6 +26,8 @@ interface FilterEventsProps {
   setFilterEvent: React.Dispatch<React.SetStateAction<boolean>>;
   defaultChecked: boolean;
   filterLabel: string;
+  gridRow?: string | number | Record<string, string | number>;
+  gridColumn?: string | number | Record<string, string | number>;
   id: string;
 }
 
@@ -33,10 +35,17 @@ const FilterEvents = ({
   setFilterEvent,
   defaultChecked,
   filterLabel,
+  gridRow,
+  gridColumn,
   id,
 }: FilterEventsProps) => {
   return (
-    <Flex alignItems="center" justifyContent="space-between">
+    <Flex
+      alignItems="center"
+      gap="1rem"
+      gridRow={gridRow}
+      gridColumn={gridColumn}
+    >
       <FormLabel marginTop=".5em" htmlFor={id}>
         {filterLabel}
       </FormLabel>
@@ -50,8 +59,8 @@ const FilterEvents = ({
 };
 
 export const EventsPage: NextPageWithLayout = () => {
-  const [showCanceled, setShowCanceled] = useState(true);
-  const [showRecent, setShowRecent] = useState(true);
+  const [hideCanceled, setHideCanceled] = useState(true);
+  const [hideRecent, setHideRecent] = useState(true);
 
   const { error, loading, data } = useDashboardEventsQuery();
 
@@ -61,21 +70,20 @@ export const EventsPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   let filteredEvents = data.dashboardEvents;
-  if (showCanceled) {
-    let events: typeof filteredEvents;
-    const onGoingEvent: typeof filteredEvents = filteredEvents.filter(
-      ({ canceled }) => !canceled,
-    );
-    if (showRecent) {
-      events = onGoingEvent.filter(({ ends_at }) => !isPast(new Date(ends_at)));
-      filteredEvents = events;
-    } else {
-      filteredEvents = onGoingEvent;
-    }
-  } else if (showRecent) {
-    filteredEvents = data.dashboardEvents.filter(
+  if (hideCanceled && hideRecent) {
+    const notCanceledEvent = filteredEvents.filter(({ canceled }) => !canceled);
+    const onGoingAndNotCanceledEvents = notCanceledEvent.filter(
       ({ ends_at }) => !isPast(new Date(ends_at)),
     );
+    filteredEvents = onGoingAndNotCanceledEvents;
+  } else if (hideRecent) {
+    const onGoingEvents = filteredEvents.filter(
+      ({ ends_at }) => !isPast(new Date(ends_at)),
+    );
+    filteredEvents = onGoingEvents;
+  } else if (hideCanceled) {
+    const notCanceledEvent = filteredEvents.filter(({ canceled }) => !canceled);
+    filteredEvents = notCanceledEvent;
   }
 
   return (
@@ -85,26 +93,31 @@ export const EventsPage: NextPageWithLayout = () => {
         alignItems="center"
         marginBlock="2em"
         gap="2em"
-        gridTemplateColumns=""
+        gridTemplateColumns=".5fr 1fr 1fr 8em"
       >
         <Heading id="page-heading">Events</Heading>
         <FilterEvents
-          defaultChecked={showRecent}
-          setFilterEvent={setShowRecent}
-          filterLabel="Show recent events"
-          id={'show-recent-events'}
+          defaultChecked={hideRecent}
+          setFilterEvent={setHideRecent}
+          filterLabel="Hide recent events"
+          id={'hide-recent-events'}
+          gridRow={{ base: 2, lg: 1 }}
+          gridColumn={{ base: 1, lg: 2 }}
         />
         <FilterEvents
-          defaultChecked={showCanceled}
-          setFilterEvent={setShowCanceled}
-          filterLabel="Show canceled events"
-          id={'show-canceled-events'}
+          defaultChecked={hideCanceled}
+          setFilterEvent={setHideCanceled}
+          filterLabel="Hide canceled events"
+          id={'hide-canceled-events'}
+          gridRow={{ base: 2, lg: 1 }}
+          gridColumn={{ base: -3 / -1, lg: 3 }}
         />
         {!!user?.admined_chapters.length && (
           <LinkButton
             data-cy="new-event"
             href="/dashboard/events/new"
             colorScheme={'blue'}
+            gridColumn="-2 / -1"
           >
             Add new
             <Text srOnly as="span">

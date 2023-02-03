@@ -89,13 +89,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       {...(hasEnded && { opacity: 0.6 })}
       position="relative"
     >
-      <Image
-        display={['none', 'block']}
-        h={'auto'}
-        w={'200px'}
-        src={event.image_url}
-        objectFit={'cover'}
-      />
+      <Box w="240px" h="120px" display={['none', 'block']} background="gray.85">
+        <Image
+          width="100%"
+          height="100%"
+          src={event.image_url}
+          fit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+        />
+      </Box>
       <Box p="3" py={3} width="full" data-cy="event-card">
         <Grid
           mb="2"

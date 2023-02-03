@@ -53,19 +53,18 @@ import { createCalendarEventHelper } from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
 import {
+  AttachUnsubscribeData,
   buildEmailForUpdatedEvent,
   chapterAdminUnsubscribeOptions,
-  chapterUnsubscribeOptions,
   eventAttendanceConfirmEmail,
   eventCancelationEmail,
   eventInviteEmail,
   eventRsvpConfirmation,
   eventRsvpNotifyEmail,
-  eventUnsubscribeOptions,
   EventWithUsers,
-  hasStreamingUrlChanged,
-  hasPhysicalLocationChanged,
   hasDateChanged,
+  hasPhysicalLocationChanged,
+  hasStreamingUrlChanged,
 } from '../../util/eventEmail';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
@@ -82,12 +81,6 @@ const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
-  const unsubscribeOptions = eventUnsubscribeOptions({
-    chapterId: event.chapter_id,
-    eventId: event.id,
-    userId: user.id,
-  });
-
   const { subject, attachUnsubscribe } = eventRsvpConfirmation({
     event,
     userName: user.name,
@@ -96,7 +89,11 @@ const sendRsvpInvitation = async (
   await mailerService.sendEmail({
     emailList: [user.email],
     subject,
-    htmlEmail: attachUnsubscribe(unsubscribeOptions),
+    htmlEmail: attachUnsubscribe({
+      chapterId: event.chapter_id,
+      eventId: event.id,
+      userId: user.id,
+    }),
   });
 };
 
@@ -104,7 +101,7 @@ const createEmailForSubscribers = (
   buildEmail: {
     subject: string;
     emailText: string;
-    attachUnsubscribe: (unsubscribeOptions: string) => string;
+    attachUnsubscribe: AttachUnsubscribeData;
   },
   emaildata: EventWithUsers,
 ) => {
@@ -112,12 +109,11 @@ const createEmailForSubscribers = (
   batchSender(function* () {
     for (const { user } of emaildata.event_users) {
       const email = user.email;
-      const unsubscribeOptions = eventUnsubscribeOptions({
+      const text = attachUnsubscribe({
         chapterId: emaildata.chapter_id,
         eventId: emaildata.id,
         userId: emaildata.id,
       });
-      const text = attachUnsubscribe(unsubscribeOptions);
       yield { email, subject, text };
     }
   });
@@ -188,7 +184,7 @@ const rsvpNotifyAdministrators = async (
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const { subject, emailText } = eventRsvpNotifyEmail({
+  const { subject, attachUnsubscribeText } = eventRsvpNotifyEmail({
     eventName,
     userName: rsvpingUser.name,
   });
@@ -200,7 +196,7 @@ const rsvpNotifyAdministrators = async (
         chapterId: chapter_id,
         userId: user.id,
       });
-      const text = `${emailText}<br />${unsubscribeOptions}<br />`;
+      const text = attachUnsubscribeText(unsubscribeOptions);
       yield { email, subject, text };
     }
   });
@@ -493,12 +489,6 @@ export class EventResolver {
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
-    const unsubscribeOptions = eventUnsubscribeOptions({
-      chapterId: updatedUser.event.chapter_id,
-      eventId: updatedUser.event_id,
-      userId,
-    });
-
     const { subject, attachUnsubscribe } = eventAttendanceConfirmEmail(
       updatedUser.event.name,
     );
@@ -506,7 +496,11 @@ export class EventResolver {
     await mailerService.sendEmail({
       emailList: [updatedUser.user.email],
       subject,
-      htmlEmail: attachUnsubscribe(unsubscribeOptions),
+      htmlEmail: attachUnsubscribe({
+        chapterId: updatedUser.event.chapter_id,
+        eventId: updatedUser.event_id,
+        userId,
+      }),
     });
 
     const calendarId = updatedUser.event.chapter.calendar_id;
@@ -770,13 +764,12 @@ export class EventResolver {
 
     if (notCanceledRsvps.length) {
       for (const { user } of notCanceledRsvps) {
-        const unsubscribeOptions = eventUnsubscribeOptions({
+        const emailList = notCanceledRsvps.map(({ user }) => user.email);
+        const cancelEventEmail = attachUnsubscribe({
           chapterId: event.chapter_id,
           eventId: event.id,
           userId: user.id,
         });
-        const emailList = notCanceledRsvps.map(({ user }) => user.email);
-        const cancelEventEmail = attachUnsubscribe(unsubscribeOptions);
 
         mailerService.sendEmail({
           emailList: emailList,
@@ -863,16 +856,15 @@ export class EventResolver {
       return true;
     }
 
-    const { subject, emailText } = eventInviteEmail(event);
+    const { subject, attachUnsubscribe } = eventInviteEmail(event);
 
     await batchSender(function* () {
       for (const { user } of users) {
         const email = user.email;
-        const unsubscribeOptions = chapterUnsubscribeOptions({
+        const text = attachUnsubscribe({
           chapterId: event.chapter_id,
           userId: user.id,
         });
-        const text = `${emailText}<br />${unsubscribeOptions}<br />`;
         yield { email, subject, text };
       }
     });

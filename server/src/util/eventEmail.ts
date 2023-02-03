@@ -80,11 +80,9 @@ export const chapterUnsubscribeOptions = ({
 };
 
 export const eventUnsubscribeOptions = ({
-  chapterId,
   eventId,
   userId,
 }: {
-  chapterId: number;
   eventId: number;
   userId: number;
 }) => {
@@ -93,10 +91,9 @@ export const eventUnsubscribeOptions = ({
     eventId,
     userId,
   );
-  const linkForEvent = unsubscribeUrlFromToken(eventUnsubscribeToken);
-  const chapterUnsubscribe = chapterUnsubscribeOptions({ chapterId, userId });
+  const url = unsubscribeUrlFromToken(eventUnsubscribeToken);
   return `<br />
-- To stop receiving notifications about this event, <a href="${linkForEvent}">unsubscribe here</a>.${chapterUnsubscribe}`;
+- To stop receiving notifications about this event, <a href="${url}">unsubscribe here</a>.`;
 };
 
 export const chapterAdminUnsubscribeOptions = ({
@@ -123,9 +120,27 @@ type InviteEvent = Prisma.eventsGetPayload<{
   };
 }>;
 
+export type AttachUnsubscribeData = {
+  (options: { chapterId: number; eventId: number; userId: number }): string;
+  (options: { chapterId: number; eventId?: never; userId: number }): string;
+  (options: { chapterId?: never; eventId: number; userId: number }): string;
+};
+
 const attachUnsubscribe = (emailText: string) => {
-  return (unsubscribeOptions: string) =>
-    `${emailText}<br />${unsubscribeOptions}<br />`;
+  return <AttachUnsubscribeData>(({ chapterId, eventId, userId }) => {
+    const chapterUnsubscribe =
+      chapterId && userId
+        ? chapterUnsubscribeOptions({ chapterId, userId })
+        : '';
+    const eventUnsubscribe =
+      eventId && userId ? eventUnsubscribeOptions({ eventId, userId }) : '';
+
+    return `${emailText}<br />${eventUnsubscribe}${chapterUnsubscribe}<br />`;
+  });
+};
+
+const attachUnsubscribeText = (emailText: string) => {
+  return (unsubscribeText: string) => `${emailText}<br />${unsubscribeText}`;
 };
 
 const withUnsubscribe = ({
@@ -138,6 +153,7 @@ const withUnsubscribe = ({
   subject,
   emailText,
   attachUnsubscribe: attachUnsubscribe(emailText),
+  attachUnsubscribeText: attachUnsubscribeText(emailText),
 });
 
 export const eventInviteEmail = (event: InviteEvent) => {

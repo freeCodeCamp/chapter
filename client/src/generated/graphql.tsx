@@ -967,9 +967,9 @@ export type ChapterQuery = {
       description: string;
       start_at: any;
       ends_at: any;
+      image_url: string;
       invite_only: boolean;
       canceled: boolean;
-      image_url: string;
     }>;
   };
 };
@@ -1006,6 +1006,7 @@ export type ChaptersQuery = {
       start_at: any;
       ends_at: any;
       name: string;
+      invite_only: boolean;
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
@@ -1818,6 +1819,7 @@ export type HomeQuery = {
       start_at: any;
       ends_at: any;
       name: string;
+      invite_only: boolean;
     }>;
     chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
   }>;
@@ -2307,8 +2309,6 @@ export const ChapterDocument = gql`
         description
         start_at
         ends_at
-        invite_only
-        canceled
         image_url
         invite_only
         canceled
@@ -2436,6 +2436,7 @@ export const ChaptersDocument = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed
@@ -5178,6 +5179,7 @@ export const HomeDocument = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed

@@ -36,9 +36,7 @@ export const DeleteChapterButton = ({
     refetchQueries: [
       { query: CHAPTERS },
       { query: DASHBOARD_CHAPTERS },
-      {
-        query: DASHBOARD_EVENTS,
-      },
+      { query: DASHBOARD_EVENTS },
       { query: DASHBOARD_VENUES },
       {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,

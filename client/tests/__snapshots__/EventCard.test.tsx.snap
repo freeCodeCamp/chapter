@@ -6,11 +6,11 @@ exports[`EventCard should render 1`] = `
     class="css-t46010"
   >
     <div
-      class="css-19995zd"
+      class="css-1r4lq52"
     >
       <img
-        class="chakra-image css-3tbbj3"
-        src="/freecodecamp-logo.svg"
+        class="chakra-image__placeholder css-bh4wo8"
+        src="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
       />
     </div>
     <div

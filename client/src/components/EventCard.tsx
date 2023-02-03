@@ -87,6 +87,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       overflow="hidden"
       width={'full'}
       {...(hasEnded && { opacity: 0.6 })}
+      position="relative"
     >
       <Box w="240px" h="120px" display={['none', 'block']} background="gray.85">
         <Image
@@ -100,7 +101,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <Box p="3" py={3} width="full" data-cy="event-card">
         <Grid
           mb="2"
-          lineHeight="tight"
           gridTemplateColumns={'repeat(3, 1fr)'}
           templateAreas={`
           "eventname eventname eventname"
@@ -117,6 +117,16 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             fontSize={'xl'}
             fontWeight={700}
             href={`/events/${event.id}`}
+            _before={{
+              content: '""',
+              position: 'absolute',
+              inset: '0',
+              zIndex: '1',
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
           >
             {event.name}
           </Link>

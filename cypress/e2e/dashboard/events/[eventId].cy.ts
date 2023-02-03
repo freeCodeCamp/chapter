@@ -21,6 +21,7 @@ describe('event dashboard', () => {
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
+    cy.mhDeleteAll();
   });
 
   describe('users lists', () => {

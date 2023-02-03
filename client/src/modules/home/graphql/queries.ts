@@ -29,6 +29,7 @@ export const HOME_PAGE_QUERY = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed

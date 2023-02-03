@@ -84,8 +84,7 @@ export const chapterUnsubscribeOptions = ({
   const url = unsubscribeUrlFromToken(
     generateToken(UnsubscribeType.Chapter, chapterId, userId),
   );
-  return `<br />
-- To stop receiving notifications about new events in this chapter, <a href="${url}">unsubscribe here</a>.`;
+  return `- To stop receiving notifications about new events in this chapter, <a href="${url}">unsubscribe here</a>.`;
 };
 
 export const eventUnsubscribeOptions = ({
@@ -101,8 +100,7 @@ export const eventUnsubscribeOptions = ({
     userId,
   );
   const url = unsubscribeUrlFromToken(eventUnsubscribeToken);
-  return `<br />
-- To stop receiving notifications about this event, <a href="${url}">unsubscribe here</a>.`;
+  return `- To stop receiving notifications about this event, <a href="${url}">unsubscribe here</a>.`;
 };
 
 export const chapterAdminUnsubscribeOptions = ({
@@ -117,7 +115,7 @@ export const chapterAdminUnsubscribeOptions = ({
     chapterId,
     userId,
   );
-  return `<br /><a href="${unsubscribeUrlFromToken(
+  return `<a href="${unsubscribeUrlFromToken(
     chapterUnsubscribeToken,
   )}">Unsubscribe from chapter emails</a>`;
 };
@@ -139,10 +137,12 @@ const attachUnsubscribe = (emailText: string) => {
   return <AttachUnsubscribeData>(({ chapterId, eventId, userId }) => {
     const chapterUnsubscribe =
       chapterId && userId
-        ? chapterUnsubscribeOptions({ chapterId, userId })
+        ? `<br />${chapterUnsubscribeOptions({ chapterId, userId })}`
         : '';
     const eventUnsubscribe =
-      eventId && userId ? eventUnsubscribeOptions({ eventId, userId }) : '';
+      eventId && userId
+        ? `<br />${eventUnsubscribeOptions({ eventId, userId })}`
+        : '';
 
     return `${emailText}<br />${eventUnsubscribe}${chapterUnsubscribe}<br />`;
   });

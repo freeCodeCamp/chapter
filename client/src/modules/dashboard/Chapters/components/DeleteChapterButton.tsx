@@ -38,11 +38,6 @@ export const DeleteChapterButton = ({
       { query: DASHBOARD_CHAPTERS },
       {
         query: DASHBOARD_EVENTS,
-        variables: { showCanceled: true, showRecent: true },
-      },
-      {
-        query: DASHBOARD_EVENTS,
-        variables: { showCanceled: false, showRecent: false },
       },
       { query: DASHBOARD_VENUES },
       {

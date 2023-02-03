@@ -59,20 +59,14 @@ export const EventsPage: NextPageWithLayout = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
-  const recentEvents = data.dashboardEvents.some(
-    ({ ends_at }) => !isPast(new Date(ends_at)) && ends_at,
-  );
-  const eventWithRecent = data.dashboardEvents.filter(
-    (event) => isPast(event.ends_at) === recentEvents,
-  );
-  const canceledEvents = data.dashboardEvents.filter(
-    ({ canceled }) => !canceled,
-  );
-  const shownEvents = showCanceled
-    ? canceledEvents
-    : showRecent
-    ? eventWithRecent
-    : data.dashboardEvents;
+
+  let filteredEvents = data.dashboardEvents;
+
+  // if(showCanceled) filteredEvents.filter(({canceled})=> !canceled)
+  if (showRecent)
+    filteredEvents = data.dashboardEvents.filter(
+      ({ ends_at }) => !isPast(new Date(ends_at)),
+    );
 
   return (
     <VStack data-cy="events-dashboard">
@@ -116,7 +110,7 @@ export const EventsPage: NextPageWithLayout = () => {
       >
         <DataTable
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-          data={shownEvents}
+          data={filteredEvents}
           keys={
             [
               'status',
@@ -198,7 +192,7 @@ export const EventsPage: NextPageWithLayout = () => {
       </Box>
 
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {shownEvents.map(
+        {filteredEvents.map(
           (
             {
               canceled,
@@ -219,7 +213,7 @@ export const EventsPage: NextPageWithLayout = () => {
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
               }}
-              data={[shownEvents[index]]}
+              data={[filteredEvents[index]]}
               keys={['type', 'action'] as const}
               showHeader={false}
               mapper={{

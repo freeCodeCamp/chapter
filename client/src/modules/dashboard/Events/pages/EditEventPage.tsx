@@ -33,11 +33,6 @@ export const EditEventPage: NextPageWithLayout = () => {
     refetchQueries: [
       {
         query: DASHBOARD_EVENTS,
-        variables: { showCanceled: true, showRecent: true },
-      },
-      {
-        query: DASHBOARD_EVENTS,
-        variables: { showCanceled: false, showRecent: false },
       },
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },

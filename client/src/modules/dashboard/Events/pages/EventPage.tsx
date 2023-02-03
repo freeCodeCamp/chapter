@@ -238,7 +238,7 @@ export const EventPage: NextPageWithLayout = () => {
         {userLists.map(({ title, statusFilter, action }) => {
           const users = data.dashboardEvent
             ? data.dashboardEvent.event_users.filter(
-                ({ rsvp }) => rsvp.name === statusFilter,
+                ({ attendance }) => attendance.name === statusFilter,
               )
             : [];
           return (
@@ -280,12 +280,12 @@ export const EventPage: NextPageWithLayout = () => {
                 />
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-                {users.map(({ event_role, user, rsvp }, index) => (
+                {users.map(({ attendance, event_role, user }, index) => (
                   // For a single event, each user can only have one event_user
                   // entry, so we can use the user id as the key.
                   <HStack key={user.id}>
                     <DataTable
-                      title={'Attendee: ' + rsvp.name.toUpperCase()}
+                      title={'Attendee: ' + attendance.name.toUpperCase()}
                       data={[users[index]]}
                       keys={['type', 'action'] as const}
                       showHeader={false}

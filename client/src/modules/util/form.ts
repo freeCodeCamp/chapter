@@ -1,4 +1,5 @@
 import {
+  isLatitude,
   isURL,
   registerDecorator,
   ValidationArguments,
@@ -61,6 +62,46 @@ export const IsOptionalUrl = () => {
     'isOptionalUrl',
     'must be a URL address',
     isOptionalUrl,
+  );
+};
+
+const isValidNumber = (value: any) => {
+  return !Number.isNaN(Number(value));
+};
+
+const isOptionalLatitude = (value: any) => {
+  if (!value) {
+    return true;
+  }
+  if (isValidNumber(value)) {
+    return isLatitude(value);
+  }
+  return false;
+};
+
+export const IsOptionalLatitude = () => {
+  return generateDecorator(
+    'isOptionalLatitude',
+    'should be between -90 and +90',
+    isOptionalLatitude,
+  );
+};
+
+const isOptionalLongitude = (value: any) => {
+  if (!value) {
+    return true;
+  }
+  if (isValidNumber(value)) {
+    return isLatitude(value);
+  }
+  return false;
+};
+
+export const IsOptionalLongitude = () => {
+  return generateDecorator(
+    'isOptionalLongitude',
+    'should be between -180 and +180',
+    isOptionalLongitude,
   );
 };
 

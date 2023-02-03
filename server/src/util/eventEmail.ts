@@ -65,6 +65,15 @@ export const hasStreamingUrlChanged = (
   (isOnline(oldData.venue_type) &&
     newData.streaming_url !== oldData.streaming_url);
 
+interface VenueTypeChangeData {
+  venue_type: events_venue_type_enum;
+}
+
+export const hasVenueTypeChanged = (
+  newData: VenueTypeChangeData,
+  oldData: VenueTypeChangeData,
+) => newData.venue_type !== oldData.venue_type;
+
 export const chapterUnsubscribeOptions = ({
   chapterId,
   userId,
@@ -275,6 +284,38 @@ interface UpdateEmailData {
   venue_type: events_venue_type_enum;
 }
 
+const venueTypeChangeText = (
+  oldData: VenueTypeChangeData,
+  newData: VenueTypeChangeData,
+) => {
+  switch (oldData.venue_type) {
+    case events_venue_type_enum.Online:
+      switch (newData.venue_type) {
+        case events_venue_type_enum.Physical:
+          return 'Event was online-only, but now it will be in-person only. It will no longer be possible to attend online.';
+        case events_venue_type_enum.PhysicalAndOnline:
+          return 'Event was online-only, but now it will be held also in-person. Online attendees are still welcome.';
+      }
+      break;
+    case events_venue_type_enum.Physical:
+      switch (newData.venue_type) {
+        case events_venue_type_enum.Online:
+          return 'Event was in-person only, but now it will be online-only. It will no longer be possible to attend in-person.';
+        case events_venue_type_enum.PhysicalAndOnline:
+          return 'Event was online-only, but now it will be held also in -person. Online attendees are still welcome.';
+      }
+      break;
+    case events_venue_type_enum.PhysicalAndOnline:
+      switch (newData.venue_type) {
+        case events_venue_type_enum.Online:
+          return 'Event was being held in-person and online, but now it will be online-only. It will no longer be possible to attend in-person. Online attendees are still welcome.';
+        case events_venue_type_enum.Physical:
+          return 'Event was being held in-person and online, but now it will be in-person only. It will no longer be possible to attend online. In-person attendees are still welcome.';
+      }
+  }
+  return null;
+};
+
 interface PhysicalLocationTextData {
   venue: venues | null;
   venue_id: number | null;
@@ -316,19 +357,22 @@ export const buildEmailForUpdatedEvent = (
 ) => {
   const subject = `Details changed for event ${oldData.name}`;
 
-  const streamingUrlChange =
-    hasStreamingUrlChanged(newData, oldData) && isOnline(newData.venue_type)
-      ? `${streamingUrlChangeText(newData)}${SPACER}`
-      : '';
+  const venueTypeChange = hasVenueTypeChanged(newData, oldData)
+    ? `${venueTypeChangeText(newData, oldData)}${SPACER}`
+    : '';
   const physicalLocationChange =
     hasPhysicalLocationChanged(newData, oldData) &&
     isPhysical(newData.venue_type)
       ? `${physicalLocationChangeText(newData)}${SPACER}`
       : '';
+  const streamingUrlChange =
+    hasStreamingUrlChanged(newData, oldData) && isOnline(newData.venue_type)
+      ? `${streamingUrlChangeText(newData)}${SPACER}`
+      : '';
   const dateChange = hasDateChanged(newData, oldData)
     ? `${dateChangeText(newData)}${SPACER}`
     : '';
 
-  const emailText = `Updated venue details<br/>${physicalLocationChange}${streamingUrlChange}${dateChange}`;
+  const emailText = `Updated venue details<br/>${venueTypeChange}${physicalLocationChange}${streamingUrlChange}${dateChange}`;
   return withUnsubscribe({ subject, emailText });
 };

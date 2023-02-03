@@ -65,6 +65,7 @@ import {
   hasDateChanged,
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
+  hasVenueTypeChanged,
 } from '../../util/eventEmail';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
@@ -700,6 +701,7 @@ export class EventResolver {
     });
 
     const hasEventDataChanged =
+      hasVenueTypeChanged(updatedEvent, event) ||
       hasPhysicalLocationChanged(updatedEvent, event) ||
       hasDateChanged(updatedEvent, event) ||
       hasStreamingUrlChanged(updatedEvent, event);

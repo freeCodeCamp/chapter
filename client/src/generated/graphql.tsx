@@ -22,6 +22,13 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Attendance = {
+  __typename?: 'Attendance';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  updated_at: Scalars['DateTime'];
+};
+
 export type Chapter = {
   __typename?: 'Chapter';
   banner_url?: Maybe<Scalars['String']>;
@@ -230,9 +237,9 @@ export type EventUser = {
 
 export type EventUserWithRelations = {
   __typename?: 'EventUserWithRelations';
+  attendance: Attendance;
   event_id: Scalars['Int'];
   event_role: EventRole;
-  rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -250,8 +257,8 @@ export type EventUserWithRolePermissions = {
 
 export type EventUserWithRsvpAndUser = {
   __typename?: 'EventUserWithRsvpAndUser';
+  attendance: Attendance;
   event_id: Scalars['Int'];
-  rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -622,13 +629,6 @@ export type QueryVenueArgs = {
   venueId: Scalars['Int'];
 };
 
-export type Rsvp = {
-  __typename?: 'Rsvp';
-  id: Scalars['Int'];
-  name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
-};
-
 export type Sponsor = {
   __typename?: 'Sponsor';
   id: Scalars['Int'];
@@ -718,10 +718,10 @@ export type UserChapter = {
 
 export type UserEvent = {
   __typename?: 'UserEvent';
+  attendance: Attendance;
   event: Event;
   event_id: Scalars['Int'];
   event_role: EventRoleWithPermissions;
-  rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user_id: Scalars['Int'];
@@ -1326,7 +1326,7 @@ export type ConfirmRsvpMutation = {
   __typename?: 'Mutation';
   confirmRsvp: {
     __typename?: 'EventUserWithRelations';
-    rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+    attendance: { __typename?: 'Attendance'; updated_at: any; name: string };
   };
 };
 
@@ -1423,7 +1423,7 @@ export type DashboardEventQuery = {
     event_users: Array<{
       __typename?: 'EventUserWithRelations';
       subscribed: boolean;
-      rsvp: { __typename?: 'Rsvp'; name: string };
+      attendance: { __typename?: 'Attendance'; name: string };
       user: {
         __typename?: 'User';
         id: number;
@@ -1776,7 +1776,7 @@ export type EventQuery = {
     } | null;
     event_users: Array<{
       __typename?: 'EventUserWithRsvpAndUser';
-      rsvp: { __typename?: 'Rsvp'; name: string };
+      attendance: { __typename?: 'Attendance'; name: string };
       user: {
         __typename?: 'User';
         id: number;
@@ -1937,7 +1937,7 @@ export type UserDownloadQuery = {
       __typename?: 'UserEvent';
       subscribed: boolean;
       updated_at: any;
-      rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+      attendance: { __typename?: 'Attendance'; updated_at: any; name: string };
       event_role: {
         __typename?: 'EventRoleWithPermissions';
         name: string;
@@ -3691,7 +3691,7 @@ export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
 export const ConfirmRsvpDocument = gql`
   mutation confirmRsvp($eventId: Int!, $userId: Int!) {
     confirmRsvp(eventId: $eventId, userId: $userId) {
-      rsvp {
+      attendance {
         updated_at
         name
       }
@@ -3951,7 +3951,7 @@ export const DashboardEventDocument = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {
@@ -5104,7 +5104,7 @@ export const EventDocument = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {
@@ -5407,11 +5407,8 @@ export const UserDownloadDocument = gql`
       user_events {
         subscribed
         updated_at
-        rsvp {
+        attendance {
           updated_at
-          name
-        }
-        rsvp {
           name
         }
         event_role {

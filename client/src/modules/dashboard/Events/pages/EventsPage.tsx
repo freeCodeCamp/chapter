@@ -61,12 +61,22 @@ export const EventsPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   let filteredEvents = data.dashboardEvents;
-
-  // if(showCanceled) filteredEvents.filter(({canceled})=> !canceled)
-  if (showRecent)
+  if (showCanceled) {
+    let events: typeof filteredEvents;
+    const onGoingEvent: typeof filteredEvents = filteredEvents.filter(
+      ({ canceled }) => !canceled,
+    );
+    if (showRecent) {
+      events = onGoingEvent.filter(({ ends_at }) => !isPast(new Date(ends_at)));
+      filteredEvents = events;
+    } else {
+      filteredEvents = onGoingEvent;
+    }
+  } else if (showRecent) {
     filteredEvents = data.dashboardEvents.filter(
       ({ ends_at }) => !isPast(new Date(ends_at)),
     );
+  }
 
   return (
     <VStack data-cy="events-dashboard">

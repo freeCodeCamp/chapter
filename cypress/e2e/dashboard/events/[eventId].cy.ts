@@ -111,10 +111,10 @@ describe('event dashboard', () => {
       // Starting as the instance owner to ensure we can find the attendees
       cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
-          ({ rsvp: { name } }) => name === 'yes',
+          ({ attendance: { name } }) => name === 'yes',
         ).user;
         const waitlistUser = eventUsers.find(
-          ({ rsvp: { name } }) => name === 'waitlist',
+          ({ attendance: { name } }) => name === 'waitlist',
         ).user;
 
         // Switch to new member before trying to confirm and remove

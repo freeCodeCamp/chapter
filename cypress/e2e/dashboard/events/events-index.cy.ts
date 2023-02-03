@@ -244,7 +244,7 @@ describe('spec needing owner', () => {
       .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
-          .filter(({ rsvp }) => rsvp.name !== 'no')
+          .filter(({ attendance }) => attendance.name !== 'no')
           .map(({ user: { email } }) => email);
         cy.get('@emails')
           .mhGetRecipients()

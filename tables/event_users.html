@@ -208,7 +208,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="rsvp_id">rsvp_id</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="attendance_id">attendance_id</span></td>
                                     <td>int4</td>
                                     <td>10</td>
                                     <td title=''></td>
@@ -221,8 +221,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="event_users.rsvp_id references rsvp.id via event_users_rsvp_id_fkey"><a href='rsvp.html'>rsvp</a><span class='relatedKey'>.id</span></td>
-                                                <td class="constraint detail">event_users_rsvp_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="event_users.attendance_id references attendance.id via event_users_attendance_id_fkey"><a href='attendance.html'>attendance</a><span class='relatedKey'>.id</span></td>
+                                                <td class="constraint detail">event_users_attendance_id_fkey<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>

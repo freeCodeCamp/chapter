@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <database name="chapter" schema="public" type="PostgreSQL - 13.9 (Debian 13.9-1.pgdg110+1)">
    <sequences>
+      <sequence increment="1" name="attendance_id_seq" startValue="1"/>
       <sequence increment="1" name="chapter_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="chapter_roles_id_seq" startValue="1"/>
       <sequence increment="1" name="chapters_id_seq" startValue="1"/>
@@ -10,7 +11,6 @@
       <sequence increment="1" name="google_tokens_id_seq" startValue="1"/>
       <sequence increment="1" name="instance_permissions_id_seq" startValue="1"/>
       <sequence increment="1" name="instance_roles_id_seq" startValue="1"/>
-      <sequence increment="1" name="rsvp_id_seq" startValue="1"/>
       <sequence increment="1" name="sessions_id_seq" startValue="1"/>
       <sequence increment="1" name="sponsors_id_seq" startValue="1"/>
       <sequence increment="1" name="tags_id_seq" startValue="1"/>
@@ -18,7 +18,7 @@
       <sequence increment="1" name="venues_id_seq" startValue="1"/>
    </sequences>
    <tables>
-      <table name="_prisma_migrations" numRows="9" remarks="" schema="public" type="TABLE">
+      <table name="_prisma_migrations" numRows="10" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="36" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="checksum" nullable="false" remarks="" size="64" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="finished_at" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -30,6 +30,21 @@
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="_prisma_migrations_pkey" unique="true">
             <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="attendance" numRows="4" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="true" defaultValue="nextval('attendance_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="attendance_id" foreignKey="event_users_attendance_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="event_users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="attendance_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="attendance_name_key" unique="true">
+            <column ascending="true" name="name"/>
          </index>
       </table>
       <table name="chapter_permissions" numRows="13" remarks="" schema="public" type="TABLE">
@@ -236,8 +251,8 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="event_role_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="event_users_event_role_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="event_roles"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="rsvp_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="id" foreignKey="event_users_rsvp_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="rsvp"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="attendance_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="event_users_attendance_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="attendance"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="subscribed" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="title" nullable="true" remarks="" size="2147483647" type="_text" typeCode="2003"/>
@@ -338,21 +353,6 @@
             <column ascending="true" name="id"/>
          </index>
          <index name="instance_roles_name_key" unique="true">
-            <column ascending="true" name="name"/>
-         </index>
-      </table>
-      <table name="rsvp" numRows="4" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
-         <column autoUpdated="true" defaultValue="nextval('rsvp_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
-            <child column="rsvp_id" foreignKey="event_users_rsvp_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="event_users"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <primaryKey column="id" sequenceNumberInPK="1"/>
-         <index name="rsvp_pkey" unique="true">
-            <column ascending="true" name="id"/>
-         </index>
-         <index name="rsvp_name_key" unique="true">
             <column ascending="true" name="name"/>
          </index>
       </table>

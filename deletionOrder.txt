@@ -15,10 +15,10 @@ venues
 users
 tags
 sponsors
-rsvp
 instance_permissions
 event_permissions
 chapter_permissions
+attendance
 instance_roles
 event_roles
 chapter_roles

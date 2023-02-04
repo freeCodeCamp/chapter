@@ -2,10 +2,10 @@ chapters
 chapter_roles
 event_roles
 instance_roles
+attendance
 chapter_permissions
 event_permissions
 instance_permissions
-rsvp
 sponsors
 tags
 users

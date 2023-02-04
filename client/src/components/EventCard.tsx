@@ -1,3 +1,4 @@
+import { LockIcon } from '@chakra-ui/icons';
 import { Tag, Box, Flex, Image, Grid, GridItem, Text } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { isPast } from 'date-fns';
@@ -35,6 +36,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           maxWidth={'8em'}
           maxH={'2em'}
         >
+          <LockIcon marginRight=".25rem" />
           Invite only
         </Tag>
       )}

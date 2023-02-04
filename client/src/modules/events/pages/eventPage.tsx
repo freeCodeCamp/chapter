@@ -11,6 +11,7 @@ import {
   ListItem,
   Spinner,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -288,7 +289,11 @@ export const EventPage: NextPage = () => {
           </Box>
         )}
         <Flex alignItems={'center'}>
-          {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+          {data.event.invite_only && (
+            <Tooltip label="Invite only">
+              <LockIcon fontSize={'2xl'} />
+            </Tooltip>
+          )}
           <Heading as="h1">{data.event.name}</Heading>
         </Flex>
         {data.event.canceled && (

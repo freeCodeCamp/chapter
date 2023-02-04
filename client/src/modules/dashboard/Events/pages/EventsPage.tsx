@@ -7,13 +7,14 @@ import {
   Text,
   Switch,
   VStack,
+  Tooltip,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement, useState } from 'react';
 
 import { isPast } from 'date-fns';
-import { LockIcon, UnlockIcon } from '@chakra-ui/icons';
+import { LockIcon } from '@chakra-ui/icons';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
@@ -249,10 +250,10 @@ export const EventsPage: NextPageWithLayout = () => {
                         {name}
                       </LinkButton>
                     </VStack>
-                    {invite_only ? (
-                      <LockIcon> invite_only</LockIcon>
-                    ) : (
-                      <UnlockIcon>Open for attending</UnlockIcon>
+                    {invite_only && (
+                      <Tooltip label="invite_only">
+                        <LockIcon />
+                      </Tooltip>
                     )}
                     <Text>
                       {isPhysical(venue_type)

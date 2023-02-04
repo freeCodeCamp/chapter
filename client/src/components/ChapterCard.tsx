@@ -1,4 +1,12 @@
-import { Grid, Text, GridItem, Flex, Box, Image } from '@chakra-ui/react';
+import {
+  Grid,
+  Text,
+  GridItem,
+  Flex,
+  Box,
+  Image,
+  Tooltip,
+} from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
@@ -133,14 +141,14 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                   {name}
                 </Link>
                 {invite_only && (
-                  <LockIcon
-                    mt="2"
-                    marginLeft="auto"
-                    marginRight="1"
-                    fontSize={['sm', 'md', 'lg']}
-                  >
-                    Invite only
-                  </LockIcon>
+                  <Tooltip label="Invite only">
+                    <LockIcon
+                      mt="2"
+                      marginLeft="auto"
+                      marginRight="1"
+                      fontSize={['sm', 'md', 'lg']}
+                    />
+                  </Tooltip>
                 )}
                 <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
                   {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}

@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import { Rsvp, User, Event } from '.';
+import { Attendance, User, Event } from '.';
 
 @ObjectType()
 export class EventPermission extends BaseObject {
@@ -55,8 +55,8 @@ export class EventUserWithRolePermissions extends EventUser {
 
 @ObjectType()
 export class EventUserWithRelations extends EventUserWithRole {
-  @Field(() => Rsvp)
-  rsvp: Rsvp;
+  @Field(() => Attendance)
+  attendance: Attendance;
 
   @Field(() => User)
   user: User;
@@ -64,8 +64,8 @@ export class EventUserWithRelations extends EventUserWithRole {
 
 @ObjectType()
 export class EventUserWithRsvpAndUser extends EventUser {
-  @Field(() => Rsvp)
-  rsvp: Rsvp;
+  @Field(() => Attendance)
+  attendance: Attendance;
 
   @Field(() => User)
   user: User;
@@ -73,8 +73,8 @@ export class EventUserWithRsvpAndUser extends EventUser {
 
 @ObjectType()
 export class UserEvent extends EventUserWithRolePermissions {
-  @Field(() => Rsvp)
-  rsvp: Rsvp;
+  @Field(() => Attendance)
+  attendance: Attendance;
 
   @Field(() => Event)
   event: Event;

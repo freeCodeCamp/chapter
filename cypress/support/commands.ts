@@ -370,7 +370,7 @@ Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
     },
     query: `mutation confirmRsvp($eventId: Int!, $userId: Int!) {
       confirmRsvp(eventId: $eventId, userId: $userId) {
-        rsvp {
+        attendance {
           updated_at
           name
         }

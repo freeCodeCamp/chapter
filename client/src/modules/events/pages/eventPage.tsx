@@ -85,7 +85,7 @@ export const EventPage: NextPage = () => {
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );
-  const attendanceStatus = eventUser?.rsvp.name;
+  const attendanceStatus = eventUser?.attendance.name;
   const isLoading = loading || loadingUser;
   const canShowConfirmationModal =
     router.query?.confirm_attendance && !isLoading;
@@ -200,7 +200,7 @@ export const EventPage: NextPage = () => {
       const eventUser = data?.event?.event_users.find(
         ({ user: event_user }) => event_user.id === user?.id,
       );
-      if (!isAlreadyAttending(eventUser?.rsvp.name)) onAttend();
+      if (!isAlreadyAttending(eventUser?.attendance.name)) onAttend();
     }
   }, [awaitingLogin, isLoggedIn]);
 
@@ -253,10 +253,10 @@ export const EventPage: NextPage = () => {
   }
 
   const attendees = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'yes',
+    ({ attendance }) => attendance.name === 'yes',
   );
   const waitlist = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'waitlist',
+    ({ attendance }) => attendance.name === 'waitlist',
   );
 
   const startAt = formatDate(data.event.start_at);

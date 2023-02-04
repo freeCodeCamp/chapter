@@ -237,7 +237,7 @@ describe('event page', () => {
           const requestingUser = eventUsers.find(
             ({ user: { email } }) => email === users.testUser.email,
           );
-          expect(requestingUser.rsvp.name === 'waitlist');
+          expect(requestingUser.attendance.name === 'waitlist');
         },
       );
 
@@ -252,7 +252,7 @@ describe('event page', () => {
           const requestingUser = eventUsers.find(
             ({ user: { email } }) => email === users.testUser.email,
           );
-          expect(requestingUser.rsvp.name === 'no');
+          expect(requestingUser.attendance.name === 'no');
         },
       );
     });

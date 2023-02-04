@@ -4,7 +4,7 @@ import {
   events_venue_type_enum,
   event_users,
   Prisma,
-  rsvp,
+  attendance,
   venues,
 } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
@@ -71,7 +71,7 @@ const TBD = 'Undecided/TBD';
 
 const eventUserIncludes = {
   user: true,
-  rsvp: true,
+  attendance: true,
   event_role: true,
 };
 
@@ -281,9 +281,13 @@ const rsvpNotifyAdministrators = async (
   });
 };
 
-type EventRsvpName = events & { event_users: (event_users & { rsvp: rsvp })[] };
+type EventRsvpName = events & {
+  event_users: (event_users & { attendance: attendance })[];
+};
 const getNameForNewRsvp = (event: EventRsvpName) => {
-  const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
+  const going = event.event_users.filter(
+    ({ attendance }) => attendance.name === 'yes',
+  );
   const waitlist = going.length >= event.capacity;
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
 };
@@ -384,7 +388,7 @@ export class EventResolver {
         event_users: {
           include: {
             user: true,
-            rsvp: true,
+            attendance: true,
           },
           orderBy: { user: { name: 'asc' } },
         },
@@ -424,7 +428,7 @@ export class EventResolver {
     });
 
     const oldEventUser = await prisma.event_users.findUnique({
-      include: { rsvp: true },
+      include: { attendance: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -437,12 +441,12 @@ export class EventResolver {
 
     let eventUser: EventUserWithRelations;
     if (oldEventUser) {
-      if (['yes', 'waitlist'].includes(oldEventUser.rsvp.name)) {
+      if (['yes', 'waitlist'].includes(oldEventUser.attendance.name)) {
         throw Error('Already Rsvped');
       }
 
       eventUser = await prisma.event_users.update({
-        data: { rsvp: { connect: { name: newRsvpName } } },
+        data: { attendance: { connect: { name: newRsvpName } } },
         include: eventUserIncludes,
         where: {
           user_id_event_id: {
@@ -455,7 +459,7 @@ export class EventResolver {
       const eventUserData: Prisma.event_usersCreateInput = {
         user: { connect: { id: ctx.user.id } },
         event: { connect: { id: eventId } },
-        rsvp: { connect: { name: newRsvpName } },
+        attendance: { connect: { name: newRsvpName } },
         event_role: { connect: { name: 'member' } },
         subscribed: true,
       };
@@ -501,7 +505,7 @@ export class EventResolver {
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUserWithRelations | null> {
     const eventUser = await prisma.event_users.findUniqueOrThrow({
-      include: { rsvp: true, event_reminder: true },
+      include: { attendance: true, event_reminder: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -509,7 +513,7 @@ export class EventResolver {
         },
       },
     });
-    if (eventUser.rsvp.name === 'no') {
+    if (eventUser.attendance.name === 'no') {
       throw Error('Rsvp is already canceled');
     }
 
@@ -526,7 +530,7 @@ export class EventResolver {
 
     const updatedEventUser = await prisma.event_users.update({
       data: {
-        rsvp: { connect: { name: 'no' } },
+        attendance: { connect: { name: 'no' } },
         subscribed: false,
         ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
@@ -563,7 +567,7 @@ export class EventResolver {
     @Arg('userId', () => Int) userId: number,
   ): Promise<EventUserWithRelations> {
     const updatedUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'yes' } } },
+      data: { attendance: { connect: { name: 'yes' } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
@@ -662,7 +666,7 @@ ${unsubscribeOptions}`,
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
-      rsvp: { connect: { name: 'yes' } },
+      attendance: { connect: { name: 'yes' } },
       subscribed: true,
     };
 
@@ -826,7 +830,7 @@ ${unsubscribeOptions}`,
           include: { user: true },
           where: {
             subscribed: true,
-            rsvp: { name: { not: 'no' } },
+            attendance: { name: { not: 'no' } },
           },
         },
       },

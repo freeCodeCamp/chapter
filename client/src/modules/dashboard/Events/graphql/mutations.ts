@@ -62,7 +62,7 @@ export const deleteEvent = gql`
 export const confirmRSVP = gql`
   mutation confirmRsvp($eventId: Int!, $userId: Int!) {
     confirmRsvp(eventId: $eventId, userId: $userId) {
-      rsvp {
+      attendance {
         updated_at
         name
       }

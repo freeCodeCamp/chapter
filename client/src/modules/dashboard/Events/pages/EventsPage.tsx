@@ -250,10 +250,15 @@ export const EventsPage: NextPageWithLayout = () => {
                         {name}
                       </LinkButton>
                     </VStack>
-                    {invite_only && (
-                      <Tooltip label="invite_only">
-                        <LockIcon />
-                      </Tooltip>
+                    {invite_only ? (
+                      <HStack>
+                        <Tooltip label="Invite only">
+                          <LockIcon />
+                        </Tooltip>
+                        <Text>Yes</Text>
+                      </HStack>
+                    ) : (
+                      <Text>No</Text>
                     )}
                     <Text>
                       {isPhysical(venue_type)

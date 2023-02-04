@@ -290,7 +290,7 @@ export const EventPage: NextPage = () => {
         )}
         <Flex alignItems={'center'}>
           {data.event.invite_only && (
-            <Tooltip label="invite only">
+            <Tooltip label="Invite only">
               <LockIcon fontSize={'2xl'} />
             </Tooltip>
           )}

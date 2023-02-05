@@ -66,7 +66,7 @@ import {
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
-} from '../../util/eventEmail';
+} from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
 

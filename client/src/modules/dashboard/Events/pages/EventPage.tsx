@@ -17,11 +17,11 @@ import { useRouter } from 'next/router';
 import React, { Fragment, ReactElement } from 'react';
 
 import {
-  useConfirmRsvpMutation,
+  useConfirmAttendeeMutation,
   useDashboardEventQuery,
-  useDeleteRsvpMutation,
-  MutationConfirmRsvpArgs,
-  MutationDeleteRsvpArgs,
+  useDeleteAttendeeMutation,
+  MutationConfirmAttendeeArgs,
+  MutationDeleteAttendeeArgs,
   useCreateCalendarEventMutation,
   useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
@@ -54,8 +54,8 @@ export const EventPage: NextPageWithLayout = () => {
   });
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery();
-  const [confirmAttendee] = useConfirmRsvpMutation(args(eventId));
-  const [removeAttendee] = useDeleteRsvpMutation(args(eventId));
+  const [confirmAttendee] = useConfirmAttendeeMutation(args(eventId));
+  const [removeAttendee] = useDeleteAttendeeMutation(args(eventId));
   const [createCalendarEvent, { loading: loadingCalendar }] =
     useCreateCalendarEventMutation(args(eventId));
 
@@ -63,14 +63,14 @@ export const EventPage: NextPageWithLayout = () => {
   const confirmDelete = useConfirmDelete();
 
   const onConfirmAttendee =
-    ({ eventId, userId }: MutationConfirmRsvpArgs) =>
+    ({ eventId, userId }: MutationConfirmAttendeeArgs) =>
     async () => {
       const ok = await confirm();
       if (ok) confirmAttendee({ variables: { eventId, userId } });
     };
 
   const onRemove =
-    ({ eventId, userId }: MutationDeleteRsvpArgs) =>
+    ({ eventId, userId }: MutationDeleteAttendeeArgs) =>
     async () => {
       const ok = await confirmDelete();
       if (ok) removeAttendee({ variables: { eventId, userId } });

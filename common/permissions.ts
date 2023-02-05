@@ -1,4 +1,7 @@
 export enum ChapterPermission {
+  AttendeeAttend = 'attendee-attend',
+  AttendeeDelete = 'attendee-delete',
+  AttendeeConfirm = 'attendee-confirm',
   ChapterEdit = 'chapter-edit',
   ChapterBanUser = 'chapter-ban-user',
   EventCreate = 'event-create',
@@ -6,9 +9,6 @@ export enum ChapterPermission {
   EventDelete = 'event-delete',
   EventSendInvite = 'event-send-invite',
   EventSubscriptionManage = 'event-subscription-manage',
-  Rsvp = 'rsvp',
-  RsvpDelete = 'rsvp-delete',
-  RsvpConfirm = 'rsvp-confirm',
   VenueCreate = 'venue-create',
   VenueEdit = 'venue-edit',
   VenueDelete = 'venue-delete',

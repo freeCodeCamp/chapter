@@ -156,10 +156,10 @@ describe('event page', () => {
     });
 
     it('should reject requests from logged out users, non-members and banned users', () => {
-      const rsvpVariables = { eventId, chapterId };
+      const attendanceVariables = { eventId, chapterId };
       const subscriptionVariables = { eventId };
       // logged out user
-      cy.rsvpToEvent(rsvpVariables, { withAuth: false }).then(
+      cy.attendEvent(attendanceVariables, { withAuth: false }).then(
         expectToBeRejected,
       );
       cy.subscribeToEvent(subscriptionVariables, { withAuth: false }).then(
@@ -172,14 +172,14 @@ describe('event page', () => {
       // newly registered user (without a chapter_users record)
       cy.login(users.testUser.email);
 
-      cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
+      cy.attendEvent(attendanceVariables).then(expectToBeRejected);
       cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
       cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
 
       // banned user
       cy.login(users.bannedAdmin.email);
 
-      cy.rsvpToEvent(rsvpVariables).then(expectToBeRejected);
+      cy.attendEvent(attendanceVariables).then(expectToBeRejected);
       cy.subscribeToEvent(subscriptionVariables).then(expectToBeRejected);
       cy.unsubscribeFromEvent(subscriptionVariables).then(expectToBeRejected);
     });

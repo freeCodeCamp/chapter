@@ -1,3 +1,4 @@
+export * from './Attendance';
 export * from './Chapter';
 export * from './ChapterUser';
 export * from './ChapterRole';
@@ -7,7 +8,6 @@ export * from './EventSponsor';
 export * from './EventTag';
 export * from './EventUser';
 export * from './InstanceRole';
-export * from './Rsvp';
 export * from './Sponsor';
 export * from './Tag';
 export * from './TokenStatus';

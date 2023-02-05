@@ -59,9 +59,9 @@ export const deleteEvent = gql`
   }
 `;
 
-export const confirmRSVP = gql`
-  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
-    confirmRsvp(eventId: $eventId, userId: $userId) {
+export const confirmAttendee = gql`
+  mutation confirmAttendee($eventId: Int!, $userId: Int!) {
+    confirmAttendee(eventId: $eventId, userId: $userId) {
       attendance {
         updated_at
         name
@@ -70,9 +70,9 @@ export const confirmRSVP = gql`
   }
 `;
 
-export const deleteRSVP = gql`
-  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
-    deleteRsvp(eventId: $eventId, userId: $userId)
+export const deleteAttendee = gql`
+  mutation deleteAttendee($eventId: Int!, $userId: Int!) {
+    deleteAttendee(eventId: $eventId, userId: $userId)
   }
 `;
 

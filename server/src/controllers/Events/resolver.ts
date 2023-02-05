@@ -27,10 +27,9 @@ import {
   EventUserWithRelations,
   EventWithRelationsWithEventUserRelations,
   EventWithRelationsWithEventUser,
-  EventWithChapter,
   EventWithVenue,
   User,
-  PaginatedEventsWithTotal,
+  PaginatedEventsWithChapters,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import mailerService, { batchSender } from '../../services/MailerService';
@@ -294,13 +293,28 @@ const getNameForNewRsvp = (event: EventRsvpName) => {
 
 @Resolver()
 export class EventResolver {
-  @Query(() => PaginatedEventsWithTotal)
+  @Query(() => [PaginatedEventsWithChapters])
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<PaginatedEventsWithTotal> {
-    const total = await prisma.events.count();
+    @Arg('showUpcoming', () => Boolean, { nullable: true })
+    showUpcoming = false,
+  ): Promise<PaginatedEventsWithChapters[]> {
+    const total = await prisma.events.count({
+      ...(showUpcoming && {
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+        },
+      }),
+    });
     const events = await prisma.events.findMany({
+      ...(showUpcoming && {
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+        },
+      }),
       include: {
         chapter: true,
       },
@@ -310,32 +324,7 @@ export class EventResolver {
       take: limit ?? 10,
       skip: offset,
     });
-    return { total, events };
-  }
-
-  @Query(() => [EventWithChapter])
-  async paginatedEvents(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<EventWithChapter[]> {
-    return await prisma.events.findMany({
-      where: {
-        AND: [
-          {
-            canceled: false,
-            ends_at: { gt: new Date() },
-          },
-        ],
-      },
-      include: {
-        chapter: true,
-      },
-      orderBy: {
-        start_at: 'asc',
-      },
-      take: limit ?? 10,
-      skip: offset,
-    });
+    return events.map((event) => ({ ...event, total }));
   }
 
   @Authorized(Permission.EventEdit)

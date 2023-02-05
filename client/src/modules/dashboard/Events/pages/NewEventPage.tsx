@@ -13,7 +13,6 @@ import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { CHAPTER } from '../../../chapters/graphql/queries';
 import { DASHBOARD_EVENTS } from '../graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const NewEventPage: NextPageWithLayout<{
@@ -41,7 +40,6 @@ export const NewEventPage: NextPageWithLayout<{
         { query: CHAPTER, variables: { chapterId: chapter_id } },
         { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
         { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
-        { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],
     });
 

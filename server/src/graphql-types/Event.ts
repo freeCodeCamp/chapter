@@ -56,12 +56,6 @@ export class Event extends BaseObject {
 }
 
 @ObjectType()
-export class EventWithChapter extends Event {
-  @Field(() => Chapter)
-  chapter: Chapter;
-}
-
-@ObjectType()
 export class EventWithVenue extends Event {
   @Field(() => Venue, { nullable: true })
   venue?: Venue | null;
@@ -77,12 +71,12 @@ export class EventWithChapterAndVenue extends Event {
 }
 
 @ObjectType()
-export class PaginatedEventsWithTotal {
+export class PaginatedEventsWithChapters extends Event {
   @Field(() => Int)
   total: number;
 
-  @Field(() => [EventWithChapter])
-  events: EventWithChapter[];
+  @Field(() => Chapter)
+  chapter: Chapter;
 }
 
 @ObjectType()

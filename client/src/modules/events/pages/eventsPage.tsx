@@ -75,7 +75,9 @@ export const EventsPage: NextPage = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading error={error} />;
-
+  const totalEvents = data?.paginatedEventsWithTotal
+    .map(({ total }) => total)
+    .reduce(Number);
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="37.5em" spacing={6} mt={10} mb={5}>
@@ -87,14 +89,14 @@ export const EventsPage: NextPage = () => {
             </LinkButton>
           )}
         </Flex>
-        {data?.paginatedEventsWithTotal.events.map((event) => (
+        {data?.paginatedEventsWithTotal.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           pageSize={pageSize}
-          records={data?.paginatedEventsWithTotal.total || 0}
+          records={totalEvents || 0}
         />
       </Stack>
     </VStack>

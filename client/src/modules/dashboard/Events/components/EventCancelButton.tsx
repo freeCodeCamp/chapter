@@ -4,7 +4,6 @@ import React from 'react';
 import { Event, useCancelEventMutation } from '../../../../generated/graphql';
 import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 
 interface EventCancelButtonProps {
   size?: ButtonProps['size'];
@@ -31,7 +30,6 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
       { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
       { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
       { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   };
 

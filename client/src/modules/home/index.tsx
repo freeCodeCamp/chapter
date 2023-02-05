@@ -16,6 +16,7 @@ import { getNameText } from '../../components/UserName';
 const eventCards = 2;
 
 type User = NonNullable<UserContextType['user']>;
+
 const Welcome = ({ user }: { user: User }) => {
   return (
     <Flex
@@ -52,7 +53,6 @@ const Home = () => {
       getChapters();
     },
   });
-
   const { user } = useUser();
 
   useEffect(() => {

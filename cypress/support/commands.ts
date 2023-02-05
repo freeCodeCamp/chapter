@@ -284,7 +284,7 @@ Cypress.Commands.add(
       },
       query: `
     mutation attendEvent($eventId: Int!, $chapterId: Int!) {
-      attendent(eventId: $eventId, chapterId: $chapterId) {
+      attendEvent(eventId: $eventId, chapterId: $chapterId) {
         updated_at
       }
     }

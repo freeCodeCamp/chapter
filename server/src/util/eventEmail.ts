@@ -1,8 +1,26 @@
 import { events, events_venue_type_enum, Prisma, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
+import {
+  chapterAdminUnsubscribeText,
+  chapterUnsubscribeText,
+  dateChangeText,
+  eventAttendanceConfirmationText,
+  eventCancelationText,
+  eventConfirmAtendeeText,
+  eventDescriptionText,
+  eventInviteText,
+  eventNewAttendeeNotificationText,
+  eventUnsubscribeText,
+  eventUpdateText,
+  physicalLocationChangeText,
+  physicalLocationShortText,
+  SPACER,
+  streamingUrlChangeText,
+  streamingURLText,
+  venueTypeChangeText,
+} from '../email-templates';
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
-import { formatDate } from './date';
 import { isOnline, isPhysical } from './venue';
 
 export type EventWithUsers = Prisma.eventsGetPayload<{
@@ -15,12 +33,6 @@ export type EventWithUsers = Prisma.eventsGetPayload<{
     };
   };
 }>;
-
-const SPACER = `<br />
-----------------------------<br />
-<br />
-`;
-const TBD = 'Undecided/TBD';
 
 const chapterUrl = (id: number) =>
   `${process.env.CLIENT_LOCATION}/chapters/${id}`;
@@ -84,7 +96,7 @@ export const chapterUnsubscribeOptions = ({
   const url = unsubscribeUrlFromToken(
     generateToken(UnsubscribeType.Chapter, chapterId, userId),
   );
-  return `- To stop receiving notifications about new events in this chapter, <a href="${url}">unsubscribe here</a>.`;
+  return chapterUnsubscribeText({ url });
 };
 
 export const eventUnsubscribeOptions = ({
@@ -94,13 +106,10 @@ export const eventUnsubscribeOptions = ({
   eventId: number;
   userId: number;
 }) => {
-  const eventUnsubscribeToken = generateToken(
-    UnsubscribeType.Event,
-    eventId,
-    userId,
+  const url = unsubscribeUrlFromToken(
+    generateToken(UnsubscribeType.Event, eventId, userId),
   );
-  const url = unsubscribeUrlFromToken(eventUnsubscribeToken);
-  return `- To stop receiving notifications about this event, <a href="${url}">unsubscribe here</a>.`;
+  return eventUnsubscribeText({ url });
 };
 
 export const chapterAdminUnsubscribeOptions = ({
@@ -110,17 +119,13 @@ export const chapterAdminUnsubscribeOptions = ({
   chapterId: number;
   userId: number;
 }) => {
-  const chapterUnsubscribeToken = generateToken(
-    UnsubscribeType.Chapter,
-    chapterId,
-    userId,
+  const url = unsubscribeUrlFromToken(
+    generateToken(UnsubscribeType.Chapter, chapterId, userId),
   );
-  return `<a href="${unsubscribeUrlFromToken(
-    chapterUnsubscribeToken,
-  )}">Unsubscribe from chapter emails</a>`;
+  return chapterAdminUnsubscribeText({ url });
 };
 
-type InviteEvent = Prisma.eventsGetPayload<{
+type EventInvite = Prisma.eventsGetPayload<{
   include: {
     venue: true;
     chapter: true;
@@ -165,37 +170,35 @@ const withUnsubscribe = ({
   attachUnsubscribeText: attachUnsubscribeText(emailText),
 });
 
-export const eventInviteEmail = (event: InviteEvent) => {
+export const eventInviteEmail = (event: EventInvite) => {
   const physicalLocation = isPhysical(event.venue_type)
-    ? `Where: ${event.venue?.name || TBD}<br />`
+    ? physicalLocationShortText(event.venue?.name)
     : '';
-  const streamingUrl = isOnline(event.venue_type)
-    ? `Streaming URL: ${event.streaming_url || TBD}<br />`
+  const streamingData = isOnline(event.venue_type)
+    ? streamingURLText(event.streaming_url)
     : '';
   const chapterURL = chapterUrl(event.chapter_id);
   const chapterName = event.chapter.name;
-  const eventURL = eventUrl(event.id);
-  const confirmRsvpQuery = '?confirm_attendance=true';
+  const eventConfirmAttendanceURL = `${eventUrl(
+    event.id,
+  )}?confirm_attendance=true`;
   const description = event.description
-    ? `About the event: <br />
-    ${event.description}${SPACER}`
+    ? eventDescriptionText(event.description)
     : '';
 
-  const subject = `Invitation to ${event.name}.`;
-  const emailText = `Upcoming event for ${chapterName}.<br />
-<br />
-When: ${event.start_at} to ${event.ends_at}
-<br />${physicalLocation}${streamingUrl}
-<br />
-Go to <a href="${eventURL}${confirmRsvpQuery}">the event page</a> to confirm your attendance.${SPACER}
-${description}
-View all upcoming events for ${chapterName}: <a href='${chapterURL}'>${chapterName} chapter</a>.<br />
-<br />`;
-
-  return withUnsubscribe({
-    subject,
-    emailText,
-  });
+  return withUnsubscribe(
+    eventInviteText({
+      chapterName,
+      chapterURL,
+      description,
+      ends_at: event.ends_at,
+      eventConfirmAttendanceURL,
+      eventName: event.name,
+      physicalLocation,
+      start_at: event.start_at,
+      streamingData,
+    }),
+  );
 };
 
 type CancelEvent = Prisma.eventsGetPayload<{
@@ -205,54 +208,34 @@ type CancelEvent = Prisma.eventsGetPayload<{
 export const eventCancelationEmail = (event: CancelEvent) => {
   const eventName = event.name;
   const chapterName = event.chapter.name;
+  const chapterURL = chapterUrl(event.chapter.id);
 
-  const subject = `Event ${eventName} is canceled`;
-  const emailText = `The upcoming event ${eventName} has been canceled.<br />
-<br />
-View upcoming events for ${chapterName}: <a href='${process.env.CLIENT_LOCATION}/chapters/${event.chapter.id}'>${chapterName} chapter</a>.<br />
-You received this email because you Subscribed to ${eventName} Event.<br />`;
-
-  return withUnsubscribe({
-    subject,
-    emailText,
-  });
+  return withUnsubscribe(
+    eventCancelationText({ chapterName, chapterURL, eventName }),
+  );
 };
 
-export const eventAttendanceConfirmEmail = (eventName: string) => {
-  const subject = 'Your attendance is confirmed';
-  const emailText = `Your reservation is confirmed. You can attend the event ${eventName}`;
-  return withUnsubscribe({
-    subject,
-    emailText,
-  });
-};
+export const eventConfirmAttendeeEmail = (eventName: string) =>
+  withUnsubscribe(eventConfirmAtendeeText({ eventName }));
 
-export const eventRsvpNotifyEmail = ({
+export const eventNewAttendeeNotifyEmail = ({
   eventName,
   userName,
 }: {
   eventName: string;
   userName: string;
-}) => {
-  const subject = `New attendee for ${eventName}`;
-  const emailText = `User ${userName} is attending.`;
-  return withUnsubscribe({
-    subject,
-    emailText,
-  });
-};
+}) =>
+  withUnsubscribe(eventNewAttendeeNotificationText({ eventName, userName }));
 
-interface RsvpConfirmation {
+interface AttendanceConfirmation {
   event: events & { venue: venues | null };
   userName: string;
 }
 
-export const eventRsvpConfirmation = ({
+export const eventAttendanceConfirmation = ({
   event,
   userName,
-}: RsvpConfirmation) => {
-  const subject = `Confirmation of attendance: ${event.name}`;
-
+}: AttendanceConfirmation) => {
   const linkDetails: CalendarEvent = {
     title: event.name,
     start: event.start_at,
@@ -261,17 +244,17 @@ export const eventRsvpConfirmation = ({
   };
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
-  const emailText = `Hi${userName ? ' ' + userName : ''},<br>
-You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
-<br />
-<a href=${google(linkDetails)}>Google</a>
-<br />
-<a href=${outlook(linkDetails)}>Outlook</a>`;
-
-  return withUnsubscribe({
-    subject,
-    emailText,
-  });
+  const eventName = event.name;
+  const googleURL = google(linkDetails);
+  const outlookURL = outlook(linkDetails);
+  return withUnsubscribe(
+    eventAttendanceConfirmationText({
+      eventName,
+      googleURL,
+      outlookURL,
+      userName: userName ? ` ${userName}` : '',
+    }),
+  );
 };
 
 interface UpdateEmailData {
@@ -284,81 +267,15 @@ interface UpdateEmailData {
   venue_type: events_venue_type_enum;
 }
 
-const venueTypeChangeText = (
-  oldData: VenueTypeChangeData,
-  newData: VenueTypeChangeData,
-) => {
-  switch (oldData.venue_type) {
-    case events_venue_type_enum.Online:
-      switch (newData.venue_type) {
-        case events_venue_type_enum.Physical:
-          return 'Event was online-only, but now it will be in-person only. It will no longer be possible to attend online.';
-        case events_venue_type_enum.PhysicalAndOnline:
-          return 'Event was online-only, but now it will be held also in-person. Online attendees are still welcome.';
-      }
-      break;
-    case events_venue_type_enum.Physical:
-      switch (newData.venue_type) {
-        case events_venue_type_enum.Online:
-          return 'Event was in-person only, but now it will be online-only. It will no longer be possible to attend in-person.';
-        case events_venue_type_enum.PhysicalAndOnline:
-          return 'Event was online-only, but now it will be held also in -person. Online attendees are still welcome.';
-      }
-      break;
-    case events_venue_type_enum.PhysicalAndOnline:
-      switch (newData.venue_type) {
-        case events_venue_type_enum.Online:
-          return 'Event was being held in-person and online, but now it will be online-only. It will no longer be possible to attend in-person. Online attendees are still welcome.';
-        case events_venue_type_enum.Physical:
-          return 'Event was being held in-person and online, but now it will be in-person only. It will no longer be possible to attend online. In-person attendees are still welcome.';
-      }
-  }
-  return null;
-};
-
-interface PhysicalLocationTextData {
-  venue: venues | null;
-  venue_id: number | null;
-}
-
-const physicalLocationChangeText = ({
-  venue,
-  venue_id,
-}: PhysicalLocationTextData) => {
-  if (!venue_id || !venue) return `Location of event is currently ${TBD}.`;
-
-  // TODO: include a link back to the venue page
-  return `The event is now being held at <br />
-<br />
-- ${venue.name} <br />
-${venue.street_address ? `- ${venue.street_address} <br />` : ''}
-${venue.city} <br />
-- ${venue.region} <br />
-- ${venue.postal_code}`;
-};
-
-const dateChangeText = ({ ends_at, start_at }: DateChangeData) => {
-  return `
-- Start: ${formatDate(start_at)}<br />
-- End: ${formatDate(ends_at)}`;
-};
-
-const streamingUrlChangeText = ({
-  streaming_url,
-}: {
-  streaming_url?: string | null;
-}) => {
-  return `Streaming URL: ${streaming_url || TBD}`;
-};
-
 export const buildEmailForUpdatedEvent = (
   newData: UpdateEmailData,
   oldData: UpdateEmailData,
 ) => {
-  const subject = `Details changed for event ${oldData.name}`;
-
   const venueTypeChange = hasVenueTypeChanged(newData, oldData)
-    ? `${venueTypeChangeText(newData, oldData)}${SPACER}`
+    ? `${venueTypeChangeText({
+        newVenueType: newData.venue_type,
+        oldVenueType: oldData.venue_type,
+      })}${SPACER}`
     : '';
   const physicalLocationChange =
     hasPhysicalLocationChanged(newData, oldData) &&
@@ -373,6 +290,13 @@ export const buildEmailForUpdatedEvent = (
     ? `${dateChangeText(newData)}${SPACER}`
     : '';
 
-  const emailText = `Updated venue details<br/>${venueTypeChange}${physicalLocationChange}${streamingUrlChange}${dateChange}`;
-  return withUnsubscribe({ subject, emailText });
+  return withUnsubscribe(
+    eventUpdateText({
+      dateChange,
+      eventName: oldData.name,
+      physicalLocationChange,
+      streamingUrlChange,
+      venueTypeChange,
+    }),
+  );
 };

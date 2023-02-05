@@ -56,11 +56,11 @@ import {
   AttachUnsubscribeData,
   buildEmailForUpdatedEvent,
   chapterAdminUnsubscribeOptions,
-  eventAttendanceConfirmEmail,
+  eventConfirmAttendeeEmail,
   eventCancelationEmail,
   eventInviteEmail,
-  eventRsvpConfirmation,
-  eventRsvpNotifyEmail,
+  eventAttendanceConfirmation,
+  eventNewAttendeeNotifyEmail,
   EventWithUsers,
   hasDateChanged,
   hasPhysicalLocationChanged,
@@ -82,7 +82,7 @@ const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
-  const { subject, attachUnsubscribe } = eventRsvpConfirmation({
+  const { subject, attachUnsubscribe } = eventAttendanceConfirmation({
     event,
     userName: user.name,
   });
@@ -185,7 +185,7 @@ const rsvpNotifyAdministrators = async (
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
-  const { subject, attachUnsubscribeText } = eventRsvpNotifyEmail({
+  const { subject, attachUnsubscribeText } = eventNewAttendeeNotifyEmail({
     eventName,
     userName: rsvpingUser.name,
   });
@@ -490,7 +490,7 @@ export class EventResolver {
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
-    const { subject, attachUnsubscribe } = eventAttendanceConfirmEmail(
+    const { subject, attachUnsubscribe } = eventConfirmAttendeeEmail(
       updatedUser.event.name,
     );
 

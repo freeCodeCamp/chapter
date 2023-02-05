@@ -1,74 +1,29 @@
-import { Heading, VStack, Stack } from '@chakra-ui/layout';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
-import { Button, Text, Flex } from '@chakra-ui/react';
-import { LinkButton } from 'chakra-next-link';
+import { Flex, Heading, VStack, Stack, Text } from '@chakra-ui/react';
+import { Link, LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
 import { useUser } from '../../auth/user';
+import { Pagination } from '../../util/pagination';
 import { checkInstancePermission } from '../../../util/check-permission';
 import { Permission } from '../../../../../common/permissions';
 
-function Pagination({
-  currentPage = 1,
-  setCurrentPage,
-  pageSize,
-  records,
-}: {
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
-  pageSize: number;
-  records: number;
-}) {
-  const totalPages = Math.ceil(records / pageSize);
-
-  return (
-    <Flex gap="1em" alignItems="center">
-      <Button
-        colorScheme="blue"
-        data-testid="pagination-back"
-        fontWeight="600"
-        fontSize="xl"
-        disabled={!(currentPage > 1)}
-        onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-      >
-        <Text srOnly>Previous page</Text>
-        &lt;
-      </Button>
-      <Text data-testid="current-page">{currentPage}</Text>
-      <Text>of</Text>
-      <Text data-testid="total-pages">{totalPages}</Text>
-      <Button
-        colorScheme="blue"
-        data-testid="pagination-forward"
-        fontWeight="600"
-        fontSize="xl"
-        disabled={!(currentPage < totalPages)}
-        onClick={() =>
-          currentPage < totalPages && setCurrentPage(currentPage + 1)
-        }
-      >
-        <Text srOnly>Next Page</Text>
-        &gt;
-      </Button>
-    </Flex>
-  );
-}
-const pageSize = 5;
+const eventCards = 5;
 export const EventsPage: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
   const { user } = useUser();
-  const offset = (currentPage - 1) * pageSize;
+  const offset = (currentPage - 1) * eventCards;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset, limit: pageSize },
+    variables: { offset, limit: eventCards },
   });
 
   useEffect(() => {
     if (visitedPages.has(currentPage)) return;
     fetchMore({
-      variables: { offset, limit: pageSize },
+      variables: { offset, limit: eventCards },
     });
     setVisitedPages(new Set(visitedPages).add(currentPage));
   }, [currentPage]);
@@ -95,8 +50,19 @@ export const EventsPage: NextPage = () => {
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          pageSize={pageSize}
+          eventCards={eventCards}
           records={totalEvents || 0}
+          displayOnEmpty={
+            checkInstancePermission(user, Permission.EventsView) && (
+              <Text size="md">
+                No more, you can create event in{' '}
+                <Link href="/events" fontWeight="bold">
+                  Event dashboard
+                </Link>
+                .
+              </Text>
+            )
+          }
         />
       </Stack>
     </VStack>

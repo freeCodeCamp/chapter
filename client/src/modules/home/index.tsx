@@ -1,14 +1,5 @@
-import {
-  Heading,
-  VStack,
-  Grid,
-  GridItem,
-  Flex,
-  Text,
-  Button,
-  useToast,
-} from '@chakra-ui/react';
-import React, { Suspense, useState } from 'react';
+import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -18,10 +9,11 @@ import {
   usePaginatedEventsWithTotalQuery,
   useChaptersLazyQuery,
 } from '../../generated/graphql';
+import { Pagination } from '../util/pagination';
 import { UserContextType, useUser } from '../auth/user';
 import { getNameText } from '../../components/UserName';
 
-const eventCards = 2;
+const eventCards = 4;
 
 type User = NonNullable<UserContextType['user']>;
 const Welcome = ({ user }: { user: User }) => {
@@ -48,12 +40,14 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [visitedPages, setVisitedPages] = useState(new Set([1]));
+  const offset = (currentPage - 1) * eventCards;
   const [getChapters, { error: chapterError, data: chapterData }] =
     useChaptersLazyQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset: 0, limit: eventCards, showUpcoming: true },
+    variables: { offset, limit: eventCards, showUpcoming: true },
     onCompleted() {
       getChapters();
     },
@@ -61,27 +55,19 @@ const Home = () => {
 
   const { user } = useUser();
 
-  const toast = useToast();
-  const onLoadMore = async () => {
-    try {
-      const res = await fetchMore({
-        variables: { offset: data?.paginatedEventsWithTotal.length },
-      });
-      setHasMore(res.data.paginatedEventsWithTotal.length > 0);
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({ title: err.message || err.name });
-      } else {
-        toast({ title: 'An unexpected error occurred' });
-      }
-    }
-  };
+  useEffect(() => {
+    if (visitedPages.has(currentPage)) return;
+    fetchMore({
+      variables: { offset, limit: eventCards },
+    });
+    setVisitedPages(new Set(visitedPages).add(currentPage));
+  }, [currentPage]);
+
   const isLoading = loading || !data;
   if (isLoading) return <Loading error={error} />;
   const totalEvents = data.paginatedEventsWithTotal
     .map(({ total }) => total)
     .reduce(Number);
-  const showButton = totalEvents > eventCards && hasMore;
 
   return (
     <>
@@ -98,21 +84,24 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            <Suspense fallback={<Loading error={error} />}>
-              {data?.paginatedEventsWithTotal.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </Suspense>
-            {showButton ? (
-              <Button onClick={onLoadMore}>Click for more</Button>
-            ) : (
-              <Text size="md">
-                No more, check out the{' '}
-                <Link href="/events" fontWeight="bold">
-                  Event page
-                </Link>
-              </Text>
-            )}
+            {data?.paginatedEventsWithTotal.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              eventCards={eventCards}
+              records={totalEvents || 0}
+              displayOnEmpty={
+                <Text size="md">
+                  No more, check out the{' '}
+                  <Link href="/events" fontWeight="bold">
+                    Event page
+                  </Link>
+                  .
+                </Text>
+              }
+            />
           </VStack>
         </GridItem>
         <GridItem colSpan={{ base: 2, xl: 1 }}>

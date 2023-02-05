@@ -63,7 +63,7 @@ export class EventUserWithRelations extends EventUserWithRole {
 }
 
 @ObjectType()
-export class EventUserWithRsvpAndUser extends EventUser {
+export class EventUserWithAttendanceAndUser extends EventUser {
   @Field(() => Attendance)
   attendance: Attendance;
 

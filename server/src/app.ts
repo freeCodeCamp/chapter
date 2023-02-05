@@ -13,6 +13,7 @@ import cookies from 'cookie-parser';
 import coverage from '@cypress/code-coverage/middleware/express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { Permission } from '../../common/permissions';
 import { authorizationChecker } from '../src/authorization';
@@ -63,17 +64,12 @@ export const main = async (app: Express) => {
     }),
   );
 
-  async function findUser(email: string) {
-    return await prisma.users.findUnique({
+  async function upsertUser(email: string) {
+    return await prisma.users.upsert({
       where: {
         email,
       },
-    });
-  }
-
-  async function createUser(email: string) {
-    return prisma.users.create({
-      data: {
+      create: {
         name: '',
         email,
         instance_role: {
@@ -82,7 +78,23 @@ export const main = async (app: Express) => {
           },
         },
       },
+      update: {},
     });
+  }
+
+  async function findOrCreateUser(email: string) {
+    try {
+      return await upsertUser(email);
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        console.log(`user with ${email} already exists`);
+        return await upsertUser(email);
+      }
+      throw e;
+    }
   }
 
   app.post('/login', checkJwt, (req, res, next) => {
@@ -92,7 +104,7 @@ export const main = async (app: Express) => {
       userInfo
         .then(async ({ email }) => {
           if (!email) throw Error('No email found in user info');
-          const user = (await findUser(email)) ?? (await createUser(email));
+          const user = await findOrCreateUser(email);
 
           try {
             const { id } = await prisma.sessions.upsert({

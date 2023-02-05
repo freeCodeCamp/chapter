@@ -13,7 +13,7 @@ import { Pagination } from '../util/pagination';
 import { UserContextType, useUser } from '../auth/user';
 import { getNameText } from '../../components/UserName';
 
-const eventCards = 4;
+const eventCards = 2;
 
 type User = NonNullable<UserContextType['user']>;
 const Welcome = ({ user }: { user: User }) => {

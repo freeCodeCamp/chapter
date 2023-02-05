@@ -397,7 +397,7 @@ export class EventResolver {
     });
   }
 
-  @Authorized(Permission.Rsvp)
+  @Authorized(Permission.AttendeeAttend)
   @Mutation(() => EventUserWithRelations)
   async attendEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -502,7 +502,7 @@ export class EventResolver {
     return eventUser;
   }
 
-  @Authorized(Permission.Rsvp)
+  @Authorized(Permission.AttendeeAttend)
   @Mutation(() => EventUserWithRelations, { nullable: true })
   async cancelAttendance(
     @Arg('eventId', () => Int) eventId: number,
@@ -564,7 +564,7 @@ export class EventResolver {
     return updatedEventUser;
   }
 
-  @Authorized(Permission.RsvpConfirm)
+  @Authorized(Permission.AttendeeConfirm)
   @Mutation(() => EventUserWithRelations)
   async confirmAttendee(
     @Arg('eventId', () => Int) eventId: number,
@@ -606,7 +606,7 @@ ${unsubscribeOptions}`,
     return updatedUser;
   }
 
-  @Authorized(Permission.RsvpDelete)
+  @Authorized(Permission.AttendeeDelete)
   @Mutation(() => Boolean)
   async deleteAttendee(
     @Arg('eventId', () => Int) eventId: number,

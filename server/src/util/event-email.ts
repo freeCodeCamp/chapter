@@ -142,11 +142,11 @@ const attachUnsubscribe = (emailText: string) => {
   return <AttachUnsubscribeData>(({ chapterId, eventId, userId }) => {
     const chapterUnsubscribe =
       chapterId && userId
-        ? `<br />${chapterUnsubscribeOptions({ chapterId, userId })}`
+        ? `\n<br />${chapterUnsubscribeOptions({ chapterId, userId })}`
         : '';
     const eventUnsubscribe =
       eventId && userId
-        ? `<br />${eventUnsubscribeOptions({ eventId, userId })}`
+        ? `\n<br />${eventUnsubscribeOptions({ eventId, userId })}`
         : '';
 
     return `${emailText}<br />${eventUnsubscribe}${chapterUnsubscribe}<br />`;

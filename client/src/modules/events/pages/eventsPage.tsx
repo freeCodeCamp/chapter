@@ -56,7 +56,7 @@ export const EventsPage: NextPage = () => {
             checkInstancePermission(user, Permission.EventsView) && (
               <Text size="md">
                 No more, you can create event in{' '}
-                <Link href="/events" fontWeight="bold">
+                <Link href="/dashboard/events" fontWeight="bold">
                   Event dashboard
                 </Link>
                 .

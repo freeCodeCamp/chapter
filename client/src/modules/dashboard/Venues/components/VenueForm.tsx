@@ -61,7 +61,9 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
           isDisabled={loading}
           error={errors['chapter_id']?.message}
           options={[...adminedChapters.map(({ id, name }) => ({ id, name }))]}
-          {...register('chapter_id')}
+          {...register('chapter_id', {
+            valueAsNumber: true,
+          })}
         />
       )}
       {fields.map(({ key, isRequired, label, type, step, max, min }) => {

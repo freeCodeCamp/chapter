@@ -12,7 +12,10 @@ import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { DASHBOARD_EVENTS, DASHBOARD_EVENT } from '../graphql/queries';
-import { EVENT } from '../../../events/graphql/queries';
+import {
+  DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+  EVENT,
+} from '../../../events/graphql/queries';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
@@ -34,6 +37,10 @@ export const EditEventPage: NextPageWithLayout = () => {
       { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 2 },
+      },
     ],
   });
 

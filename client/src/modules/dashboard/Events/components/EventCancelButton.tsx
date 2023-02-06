@@ -3,7 +3,10 @@ import { useConfirm } from 'chakra-confirm';
 import React from 'react';
 import { Event, useCancelEventMutation } from '../../../../generated/graphql';
 import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
-import { EVENT } from '../../../events/graphql/queries';
+import {
+  DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+  EVENT,
+} from '../../../events/graphql/queries';
 
 interface EventCancelButtonProps {
   size?: ButtonProps['size'];
@@ -30,6 +33,10 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
       { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
       { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
       { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 2 },
+      },
     ],
   };
 

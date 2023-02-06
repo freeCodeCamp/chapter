@@ -5,20 +5,10 @@ import NextError from 'next/error';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import {
-  InstancePermission,
-  Permission,
-} from '../../../../../../common/permissions';
+import { Permission } from '../../../../../../common/permissions';
 import { checkInstancePermission } from '../../../../util/check-permission';
 import { Loading } from '../../../../components/Loading';
 import { useUser } from '../../../auth/user';
-
-type linksType = Array<{
-  text: string;
-  link: string;
-  requiredPermission: InstancePermission;
-  hasPermission?: boolean;
-}>;
 
 const iconSize = '1.5em';
 const links = [
@@ -105,12 +95,10 @@ export const DashboardLayout = ({
     window.addEventListener('resize', setScrollButtonsToggle);
   });
 
-  const linksWithPermissions: linksType = links.map((link) => {
-    if (!link.requiredPermission) return link;
-    const hasPermission = checkInstancePermission(
-      user,
-      link.requiredPermission,
-    );
+  const linksWithPermissions = links.map((link) => {
+    const hasPermission = link.requiredPermission
+      ? checkInstancePermission(user, link.requiredPermission)
+      : true;
     return { ...link, hasPermission };
   });
 

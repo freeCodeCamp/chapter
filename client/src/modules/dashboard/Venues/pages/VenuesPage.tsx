@@ -34,7 +34,10 @@ export const VenuesPage: NextPageWithLayout = () => {
   const hasPermissionToCreateVenue = checkHasVenuePermision(
     Permission.VenueCreate,
   );
-  const hasPermissiontoEditVenue = checkHasVenuePermision(Permission.VenueEdit);
+  const hasPermissiontoEditVenue = (currentChapterId: number) =>
+    checkChapterPermission(user, Permission.VenueEdit, {
+      chapterId: currentChapterId,
+    });
 
   return (
     <VStack>
@@ -79,7 +82,7 @@ export const VenuesPage: NextPageWithLayout = () => {
             ),
             action: (venue) => (
               <>
-                {hasPermissiontoEditVenue && (
+                {hasPermissiontoEditVenue(venue.chapter_id) && (
                   <LinkButton
                     data-cy="edit-venue-button"
                     colorScheme="blue"
@@ -124,7 +127,9 @@ export const VenuesPage: NextPageWithLayout = () => {
                     <Text>Venue</Text>
                     <Text>Chapter</Text>
                     <Text>Location</Text>
-                    {hasPermissiontoEditVenue && <Text>Action</Text>}
+                    {hasPermissiontoEditVenue(chapter_id) && (
+                      <Text>Action</Text>
+                    )}
                   </VStack>
                 ),
                 action: () => (
@@ -152,7 +157,7 @@ export const VenuesPage: NextPageWithLayout = () => {
                       {' '}
                       {region}, {country}, {postal_code}
                     </Text>
-                    {hasPermissiontoEditVenue && (
+                    {hasPermissiontoEditVenue(chapter_id) && (
                       <LinkButton
                         data-cy="edit-venue-button"
                         colorScheme="blue"

@@ -22,7 +22,7 @@ import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import { handleError, user } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
-import { prisma, RECORD_MISSING } from './prisma';
+import { prisma, RECORD_MISSING, UNIQUE_CONSTRAINT_FAILED } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/InitGoogle';
@@ -88,12 +88,14 @@ export const main = async (app: Express) => {
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === 'P2002'
+        e.code === UNIQUE_CONSTRAINT_FAILED
       ) {
-        console.log(`user with ${email} already exists`);
-        return await upsertUser(email);
+        console.error(
+          'Received concurrent login requests - the client is likely making too many requests.',
+        );
+      } else {
+        throw e;
       }
-      throw e;
     }
   }
 
@@ -104,7 +106,9 @@ export const main = async (app: Express) => {
       userInfo
         .then(async ({ email }) => {
           if (!email) throw Error('No email found in user info');
+
           const user = await findOrCreateUser(email);
+          if (!user) throw Error('No user found');
 
           try {
             const { id } = await prisma.sessions.upsert({
@@ -124,8 +128,8 @@ export const main = async (app: Express) => {
           }
         })
         .catch((err) => {
-          console.log('Failed to validate user');
-          console.log(err);
+          console.error('Failed to validate user');
+          next(err);
         });
     } else {
       next('no bearer token');

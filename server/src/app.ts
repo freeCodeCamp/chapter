@@ -93,9 +93,11 @@ export const main = async (app: Express) => {
         console.error(
           'Received concurrent login requests - the client is likely making too many requests.',
         );
-      } else {
-        throw e;
+        // Since the error was a unique constraint violation, we know that the
+        // user exists, so we can just return their record.
+        return await prisma.users.findUniqueOrThrow({ where: { email } });
       }
+      throw e;
     }
   }
 
@@ -106,9 +108,7 @@ export const main = async (app: Express) => {
       userInfo
         .then(async ({ email }) => {
           if (!email) throw Error('No email found in user info');
-
           const user = await findOrCreateUser(email);
-          if (!user) throw Error('No user found');
 
           try {
             const { id } = await prisma.sessions.upsert({

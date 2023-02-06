@@ -33,10 +33,10 @@ import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
 import {
-  useCancelRsvpMutation,
+  useCancelAttendanceMutation,
   useEventQuery,
   useJoinChapterMutation,
-  useRsvpToEventMutation,
+  useAttendEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
@@ -60,9 +60,9 @@ export const EventPage: NextPage = () => {
   };
 
   const [attendEvent, { loading: loadingAttend }] =
-    useRsvpToEventMutation(refetch);
+    useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
-    useCancelRsvpMutation(refetch);
+    useCancelAttendanceMutation(refetch);
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);

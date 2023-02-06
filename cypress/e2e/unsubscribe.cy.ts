@@ -19,7 +19,7 @@ describe('unsubscribe link', () => {
     cy.getChapterEvents(chapterId).then((events) => {
       const eventIds = events.map(({ id }) => id);
       eventIds.forEach((eventId) => {
-        cy.rsvpToEvent({ eventId, chapterId });
+        cy.attendEvent({ eventId, chapterId });
       });
       cy.logout();
       const eventIdToUnsubscribe = eventIds[eventIds.length - 1];

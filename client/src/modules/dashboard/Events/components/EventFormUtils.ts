@@ -174,7 +174,7 @@ export const fields: Field[] = [
     key: 'capacity',
     type: 'number',
     label: 'Capacity',
-    isRequired: true,
+    isRequired: false,
   },
 ];
 

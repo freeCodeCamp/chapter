@@ -1,4 +1,4 @@
-import { events_venue_type_enum, venues } from '@prisma/client';
+import { events_venue_type_enum } from '@prisma/client';
 import { formatDate } from './util/date';
 
 export const SPACER = `<br />
@@ -29,7 +29,13 @@ export const streamingURLText = (streamingURL: string | null) =>
   `Streaming URL: ${streamingURL || TBD}<br />`;
 
 interface PhysicalLocationTextData {
-  venue: venues | null;
+  venue: {
+    name: string;
+    street_address: string | null;
+    city: string;
+    region: string;
+    postal_code: string;
+  } | null;
   venue_id: number | null;
 }
 

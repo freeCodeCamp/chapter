@@ -1,4 +1,11 @@
-import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Checkbox,
+  Heading,
+  Grid,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
@@ -141,14 +148,19 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           startAt={defaultValues.start_at}
         />
 
-        <Checkbox
-          data-cy="invite-only-checkbox"
-          isChecked={inviteOnly}
-          disabled={loading}
-          {...register('invite_only')}
-        >
-          Invite only
-        </Checkbox>
+        <VStack as="fieldset">
+          <Text as="legend" fontWeight="500">
+            Event Type
+          </Text>
+          <Checkbox
+            data-cy="invite-only-checkbox"
+            isChecked={inviteOnly}
+            disabled={loading}
+            {...register('invite_only')}
+          >
+            Invite only
+          </Checkbox>
+        </VStack>
 
         <EventVenueForm
           venueId={defaultValues.venue_id}

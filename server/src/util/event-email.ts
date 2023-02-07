@@ -1,4 +1,4 @@
-import { events, events_venue_type_enum, Prisma, venues } from '@prisma/client';
+import { events_venue_type_enum, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
 import {
@@ -114,13 +114,6 @@ export const chapterAdminUnsubscribeOptions = ({
   return chapterAdminUnsubscribeText({ url });
 };
 
-type EventInvite = Prisma.eventsGetPayload<{
-  include: {
-    venue: true;
-    chapter: true;
-  };
-}>;
-
 export type AttachUnsubscribeData = {
   (options: { chapterId: number; eventId: number; userId: number }): string;
   (options: { chapterId: number; eventId?: never; userId: number }): string;
@@ -159,6 +152,19 @@ const withUnsubscribe = ({
   attachUnsubscribeText: attachUnsubscribeText(emailText),
 });
 
+interface EventInvite {
+  chapter: { id: number; name: string };
+  chapter_id: number;
+  description: string;
+  ends_at: Date;
+  id: number;
+  name: string;
+  start_at: Date;
+  streaming_url: string | null;
+  venue: { name: string | undefined } | null;
+  venue_type: events_venue_type_enum;
+}
+
 export const eventInviteEmail = (event: EventInvite) => {
   const physicalLocation = isPhysical(event.venue_type)
     ? physicalLocationShortText(event.venue?.name)
@@ -190,9 +196,10 @@ export const eventInviteEmail = (event: EventInvite) => {
   );
 };
 
-type CancelEvent = Prisma.eventsGetPayload<{
-  include: { chapter: { select: { id: true; name: true } } };
-}>;
+interface CancelEvent {
+  name: string;
+  chapter: { id: number; name: string };
+}
 
 export const eventCancelationEmail = (event: CancelEvent) => {
   const eventName = event.name;
@@ -217,7 +224,13 @@ export const eventNewAttendeeNotifyEmail = ({
   withUnsubscribe(eventNewAttendeeNotificationText({ eventName, userName }));
 
 interface AttendanceConfirmation {
-  event: events & { venue: venues | null };
+  event: {
+    name: string;
+    start_at: Date;
+    ends_at: Date;
+    description: string;
+    venue: { name: string | undefined } | null;
+  };
   userName: string;
 }
 

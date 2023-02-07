@@ -53,7 +53,7 @@ const EventVenueForm: React.FC<EventVenueFormProps> = ({
 
   return (
     <>
-      <FormControl isInvalid={!!getError('venue_type')}>
+      <FormControl isRequired isInvalid={!!getError('venue_type')}>
         <FormLabel>Venue Type</FormLabel>
         <RadioGroup defaultValue={venueType}>
           <HStack>
@@ -82,7 +82,7 @@ const EventVenueForm: React.FC<EventVenueFormProps> = ({
           <Select
             label="Venue"
             key="venue_id"
-            isRequired={false}
+            isRequired={true}
             isDisabled={loadingForm}
             error={getError('venue_id')}
             options={[

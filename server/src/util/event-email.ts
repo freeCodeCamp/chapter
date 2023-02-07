@@ -167,10 +167,10 @@ interface EventInvite {
 
 export const eventInviteEmail = (event: EventInvite) => {
   const physicalLocation = isPhysical(event.venue_type)
-    ? physicalLocationShortText(event.venue?.name)
+    ? `\n${physicalLocationShortText(event.venue?.name)}`
     : '';
   const streamingData = isOnline(event.venue_type)
-    ? streamingURLText(event.streaming_url)
+    ? `\n${streamingURLText(event.streaming_url)}`
     : '';
   const chapterURL = chapterUrl(event.chapter_id);
   const chapterName = event.chapter.name;

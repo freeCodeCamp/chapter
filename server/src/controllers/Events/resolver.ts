@@ -61,7 +61,6 @@ import {
   eventInviteEmail,
   eventAttendanceConfirmation,
   eventNewAttendeeNotifyEmail,
-  EventWithUsers,
   hasDateChanged,
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
@@ -77,6 +76,17 @@ const eventUserIncludes = {
   rsvp: true,
   event_role: true,
 };
+
+type EventWithUsers = Prisma.eventsGetPayload<{
+  include: {
+    venue: true;
+    sponsors: true;
+    event_users: {
+      include: { user: true; event_reminder: true };
+      where: { subscribed: true };
+    };
+  };
+}>;
 
 const sendRsvpInvitation = async (
   user: Required<ResolverCtx>['user'],

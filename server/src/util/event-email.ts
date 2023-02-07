@@ -23,17 +23,6 @@ import {
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
 import { isOnline, isPhysical } from './venue';
 
-export type EventWithUsers = Prisma.eventsGetPayload<{
-  include: {
-    venue: true;
-    sponsors: true;
-    event_users: {
-      include: { user: true; event_reminder: true };
-      where: { subscribed: true };
-    };
-  };
-}>;
-
 const chapterUrl = (id: number) =>
   `${process.env.CLIENT_LOCATION}/chapters/${id}`;
 const eventUrl = (id: number) => `${process.env.CLIENT_LOCATION}/events/${id}`;

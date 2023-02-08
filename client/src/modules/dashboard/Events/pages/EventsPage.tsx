@@ -134,7 +134,17 @@ export const EventsPage: NextPageWithLayout = () => {
                 </LinkButton>
               </VStack>
             ),
-            'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
+            'invite only': (event) =>
+              event.invite_only ? (
+                <HStack>
+                  <Tooltip label="Invite only">
+                    <LockIcon />
+                  </Tooltip>
+                  <Text>Yes</Text>
+                </HStack>
+              ) : (
+                <Text>No</Text>
+              ),
             venue: (event) => (
               <Text data-cy="venue">
                 {isPhysical(event.venue_type)

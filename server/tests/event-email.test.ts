@@ -1,12 +1,15 @@
 import { events_venue_type_enum } from '@prisma/client';
 
 import {
+  buildEmailForUpdatedEvent,
   eventAttendanceConfirmation,
   eventCancelationEmail,
   eventConfirmAttendeeEmail,
   eventInviteEmail,
   eventNewAttendeeNotifyEmail,
 } from '../src/util/event-email';
+
+const streaming_url = 'http://streaming.url/abcd';
 
 describe('event-email', () => {
   describe('eventInviteEmail', () => {
@@ -200,14 +203,106 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
       expect(result).toHaveProperty('attachUnsubscribeText');
     });
 
-    // it('should return object with expected subject', () => {
+    it('should return object with expected subject', () => {
+      const expected = { subject: 'Confirmation of attendance: Howe LLC' };
+      expect(eventAttendanceConfirmation(data)).toMatchObject(expected);
+    });
 
-    // });
-
-    // it('should return object with expected emailText', () => {
-
-    // });
+    it('should return object with expected emailText', () => {
+      const expected = {
+        emailText: `Hi Not the Owner,<br />
+You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
+<br />
+<a href=https://calendar.google.com/calendar/render?action=TEMPLATE&dates=20230207T210000Z%2F20230208T220000Z&details=&location=Nitzsche%20-%20Hills&text=Howe%20LLC>Google</a>
+<br />
+<a href=https://outlook.live.com/calendar/0/deeplink/compose?allday=false&body=&enddt=2023-02-08T22%3A00%3A00&location=Nitzsche%20-%20Hills&path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&startdt=2023-02-07T21%3A00%3A00&subject=Howe%20LLC>Outlook</a>`,
+      };
+      expect(eventAttendanceConfirmation(data)).toMatchObject(expected);
+    });
   });
 
-  // describe('buildEmailForUpdatedEvent', () => {});
+  describe('buildEmailForUpdatedEvent', () => {
+    const oldData = {
+      name: 'Hammes, Stehr and Waters',
+      start_at: new Date('2023-02-08 16:00'),
+      ends_at: new Date('2023-02-09 16:00'),
+      streaming_url: null,
+      venue_type: events_venue_type_enum.Online,
+      venue: null,
+      venue_id: null,
+    };
+
+    it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
+      const result = buildEmailForUpdatedEvent({
+        oldData,
+        newData: {
+          ...oldData,
+          ends_at: new Date('2023-02-09 12:00'),
+        },
+      });
+      expect(result).toHaveProperty('subject');
+      expect(result).toHaveProperty('emailText');
+      expect(result).toHaveProperty('attachUnsubscribe');
+      expect(result).toHaveProperty('attachUnsubscribeText');
+    });
+
+    it('should return object with expected subject', () => {
+      const expected = {
+        subject: 'Details changed for event Hammes, Stehr and Waters',
+      };
+      expect(
+        buildEmailForUpdatedEvent({ oldData, newData: oldData }),
+      ).toMatchObject(expected);
+    });
+
+    it('should return object with expected emailText', () => {
+      const expected = {
+        emailText: `Updated venue details<br />
+
+Event was online-only, but now it will be held also in-person. Online attendees are still welcome.<br />
+----------------------------<br />
+<br />
+
+The event is now being held at <br />
+<br />
+- Unknown stage <br />
+- 42402 Jacobi Camp <br />
+- Laceyhaven <br />
+- Over the Rainbow <br />
+- 64751-5878<br />
+----------------------------<br />
+<br />
+
+Streaming URL: http://streaming.url/abcd<br />
+----------------------------<br />
+<br />
+
+
+- Start: Fri, Feb 10 @ 11:00 GMT+00:00<br />
+- End: Sat, Feb 11 @ 11:00 GMT+00:00<br />
+----------------------------<br />
+<br />\n`,
+      };
+      expect(
+        buildEmailForUpdatedEvent({
+          newData: {
+            ...oldData,
+            start_at: new Date('2023-02-10 11:00'),
+            ends_at: new Date('2023-02-11 11:00'),
+            streaming_url,
+            venue_type: events_venue_type_enum.PhysicalAndOnline,
+            venue: {
+              name: 'Unknown stage',
+              street_address: '42402 Jacobi Camp',
+              city: 'Laceyhaven',
+              postal_code: '64751-5878',
+              region: 'Over the Rainbow',
+            },
+            venue_id: 3,
+          },
+          oldData,
+        }),
+      ).toMatchObject(expected);
+    });
+  });
 });

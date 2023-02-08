@@ -96,7 +96,7 @@ export const venueTypeChangeText = ({
         case events_venue_type_enum.Online:
           return 'Event was in-person only, but now it will be online-only. It will no longer be possible to attend in-person.';
         case events_venue_type_enum.PhysicalAndOnline:
-          return 'Event was online-only, but now it will be held also in -person. Online attendees are still welcome.';
+          return 'Event was online-only, but now it will be held also in-person. Online attendees are still welcome.';
       }
       break;
     case events_venue_type_enum.PhysicalAndOnline:

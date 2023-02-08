@@ -718,7 +718,7 @@ export class EventResolver {
 
     if (hasEventDataChanged) {
       createEmailForSubscribers(
-        buildEmailForUpdatedEvent(updatedEvent, event),
+        buildEmailForUpdatedEvent({ newData: updatedEvent, oldData: event }),
         event,
       );
     }

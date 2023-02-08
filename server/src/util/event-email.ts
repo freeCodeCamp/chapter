@@ -275,10 +275,13 @@ interface UpdateEmailData {
   venue_type: events_venue_type_enum;
 }
 
-export const buildEmailForUpdatedEvent = (
-  newData: UpdateEmailData,
-  oldData: UpdateEmailData,
-) => {
+export const buildEmailForUpdatedEvent = ({
+  newData,
+  oldData,
+}: {
+  newData: UpdateEmailData;
+  oldData: UpdateEmailData;
+}) => {
   const venueTypeChange = hasVenueTypeChanged(newData, oldData)
     ? `${venueTypeChangeText({
         newVenueType: newData.venue_type,

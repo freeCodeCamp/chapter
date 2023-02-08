@@ -1,7 +1,7 @@
 import { prisma } from '../../src/prisma';
+import createAttendance from './factories/attendance.factory';
 import createChapters from './factories/chapters.factory';
 import createEvents from './factories/events.factory';
-import createRsvps from './factories/rsvps.factory';
 import createSponsors from './factories/sponsors.factory';
 import createUsers from './factories/user.factory';
 import createVenues from './factories/venues.factory';
@@ -19,7 +19,7 @@ async function truncateTables() {
     'event_roles',
     'event_permissions',
     'event_role_permissions',
-    'rsvp',
+    'attendance',
   ];
   const tablenames = await prisma.$queryRaw<
     Array<{ tablename: string }>
@@ -53,7 +53,7 @@ async function seed() {
     15,
   );
 
-  await createRsvps(eventIds, userIds);
+  await createAttendance(eventIds, userIds);
   await setupRoles(
     { ownerId, chapter1AdminId, chapter2AdminId, bannedAdminId, userIds },
     chapterIds,

@@ -56,9 +56,12 @@ async function removeUserFromEventsInChapter({
     },
     include: {
       event: {
-        include: { chapter: true, event_users: { include: { rsvp: true } } },
+        include: {
+          chapter: true,
+          event_users: { include: { attendance: true } },
+        },
       },
-      rsvp: true,
+      attendance: true,
     },
   });
   await prisma.event_users.deleteMany({
@@ -69,7 +72,7 @@ async function removeUserFromEventsInChapter({
   });
 
   const eventsAttended = eventUsers
-    .filter(({ rsvp: { name } }) => name === 'yes')
+    .filter(({ attendance: { name } }) => name === 'yes')
     .map(({ event }) => event);
 
   await Promise.all(

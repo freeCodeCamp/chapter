@@ -4,7 +4,7 @@ import {
   events_venue_type_enum,
   event_users,
   Prisma,
-  rsvp,
+  attendance,
   venues,
 } from '@prisma/client';
 import {
@@ -73,7 +73,7 @@ const TBD_VENUE_ID = 0;
 
 const eventUserIncludes = {
   user: true,
-  rsvp: true,
+  attendance: true,
   event_role: true,
 };
 
@@ -88,7 +88,7 @@ type EventWithUsers = Prisma.eventsGetPayload<{
   };
 }>;
 
-const sendRsvpInvitation = async (
+const sendAttendanceConfirmation = async (
   user: Required<ResolverCtx>['user'],
   event: events & { venue: venues | null },
 ) => {
@@ -190,14 +190,14 @@ A possible solution is to have a settings table that contains the types of
 notifications a user wants to receive. The role would be relegated to granting a
 permission that allows the admin to configure the notifications so they get
 these emails. */
-const rsvpNotifyAdministrators = async (
-  rsvpingUser: User,
+const attendeeNotifyAdministrators = async (
+  attendingUser: User,
   chapterAdministrators: ChapterUser[],
   eventName: string,
 ) => {
   const { subject, attachUnsubscribeText } = eventNewAttendeeNotifyEmail({
     eventName,
-    userName: rsvpingUser.name,
+    userName: attendingUser.name,
   });
 
   await batchSender(function* () {
@@ -213,9 +213,13 @@ const rsvpNotifyAdministrators = async (
   });
 };
 
-type EventRsvpName = events & { event_users: (event_users & { rsvp: rsvp })[] };
-const getNameForNewRsvp = (event: EventRsvpName) => {
-  const going = event.event_users.filter(({ rsvp }) => rsvp.name === 'yes');
+type EventAttendanceName = events & {
+  event_users: (event_users & { attendance: attendance })[];
+};
+const getNameForNewAttendance = (event: EventAttendanceName) => {
+  const going = event.event_users.filter(
+    ({ attendance }) => attendance.name === 'yes',
+  );
   const waitlist = going.length >= event.capacity;
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
 };
@@ -316,7 +320,7 @@ export class EventResolver {
         event_users: {
           include: {
             user: true,
-            rsvp: true,
+            attendance: true,
           },
           orderBy: { user: { name: 'asc' } },
         },
@@ -325,9 +329,9 @@ export class EventResolver {
     });
   }
 
-  @Authorized(Permission.Rsvp)
+  @Authorized(Permission.AttendeeAttend)
   @Mutation(() => EventUserWithRelations)
-  async rsvpEvent(
+  async attendEvent(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
@@ -356,7 +360,7 @@ export class EventResolver {
     });
 
     const oldEventUser = await prisma.event_users.findUnique({
-      include: { rsvp: true },
+      include: { attendance: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -365,16 +369,16 @@ export class EventResolver {
       },
     });
 
-    const newRsvpName = getNameForNewRsvp(event);
+    const newAttendanceName = getNameForNewAttendance(event);
 
     let eventUser: EventUserWithRelations;
     if (oldEventUser) {
-      if (['yes', 'waitlist'].includes(oldEventUser.rsvp.name)) {
-        throw Error('Already Rsvped');
+      if (['yes', 'waitlist'].includes(oldEventUser.attendance.name)) {
+        throw Error('Already attending');
       }
 
       eventUser = await prisma.event_users.update({
-        data: { rsvp: { connect: { name: newRsvpName } } },
+        data: { attendance: { connect: { name: newAttendanceName } } },
         include: eventUserIncludes,
         where: {
           user_id_event_id: {
@@ -387,7 +391,7 @@ export class EventResolver {
       const eventUserData: Prisma.event_usersCreateInput = {
         user: { connect: { id: ctx.user.id } },
         event: { connect: { id: eventId } },
-        rsvp: { connect: { name: newRsvpName } },
+        attendance: { connect: { name: newAttendanceName } },
         event_role: { connect: { name: 'member' } },
         subscribed: true,
       };
@@ -398,7 +402,7 @@ export class EventResolver {
 
       // NOTE: this relies on there being an event_user record, so must follow
       // that.
-      if (newRsvpName !== 'waitlist') {
+      if (newAttendanceName !== 'waitlist') {
         await createReminder({
           eventId,
           remindAt: sub(event.start_at, { days: 1 }),
@@ -421,19 +425,23 @@ export class EventResolver {
       }
     }
 
-    await sendRsvpInvitation(ctx.user, event);
-    await rsvpNotifyAdministrators(ctx.user, chapterAdministrators, event.name);
+    await sendAttendanceConfirmation(ctx.user, event);
+    await attendeeNotifyAdministrators(
+      ctx.user,
+      chapterAdministrators,
+      event.name,
+    );
     return eventUser;
   }
 
-  @Authorized(Permission.Rsvp)
+  @Authorized(Permission.AttendeeAttend)
   @Mutation(() => EventUserWithRelations, { nullable: true })
-  async cancelRsvp(
+  async cancelAttendance(
     @Arg('eventId', () => Int) eventId: number,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<EventUserWithRelations | null> {
     const eventUser = await prisma.event_users.findUniqueOrThrow({
-      include: { rsvp: true, event_reminder: true },
+      include: { attendance: true, event_reminder: true },
       where: {
         user_id_event_id: {
           user_id: ctx.user.id,
@@ -441,8 +449,8 @@ export class EventResolver {
         },
       },
     });
-    if (eventUser.rsvp.name === 'no') {
-      throw Error('Rsvp is already canceled');
+    if (eventUser.attendance.name === 'no') {
+      throw Error('Attendance is already canceled');
     }
 
     const event = await prisma.events.findUniqueOrThrow({
@@ -458,7 +466,7 @@ export class EventResolver {
 
     const updatedEventUser = await prisma.event_users.update({
       data: {
-        rsvp: { connect: { name: 'no' } },
+        attendance: { connect: { name: 'no' } },
         subscribed: false,
         ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
@@ -488,14 +496,14 @@ export class EventResolver {
     return updatedEventUser;
   }
 
-  @Authorized(Permission.RsvpConfirm)
+  @Authorized(Permission.AttendeeConfirm)
   @Mutation(() => EventUserWithRelations)
-  async confirmRsvp(
+  async confirmAttendee(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<EventUserWithRelations> {
     const updatedUser = await prisma.event_users.update({
-      data: { rsvp: { connect: { name: 'yes' } } },
+      data: { attendance: { connect: { name: 'yes' } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
@@ -531,9 +539,9 @@ export class EventResolver {
     return updatedUser;
   }
 
-  @Authorized(Permission.RsvpDelete)
+  @Authorized(Permission.AttendeeDelete)
   @Mutation(() => Boolean)
-  async deleteRsvp(
+  async deleteAttendee(
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
@@ -591,11 +599,11 @@ export class EventResolver {
         sponsor_id,
       }));
 
-    // if attending, this will be used to create the RSVP
+    // if attending, this will be used to create the event_user
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
-      rsvp: { connect: { name: 'yes' } },
+      attendance: { connect: { name: 'yes' } },
       subscribed: true,
     };
 
@@ -764,19 +772,19 @@ export class EventResolver {
           include: { user: true },
           where: {
             subscribed: true,
-            rsvp: { name: { not: 'no' } },
+            attendance: { name: { not: 'no' } },
           },
         },
       },
     });
     await deleteEventReminders(id);
-    const notCanceledRsvps = event.event_users;
+    const notCanceledAttendees = event.event_users;
 
     const { subject, attachUnsubscribe } = eventCancelationEmail(event);
 
-    if (notCanceledRsvps.length) {
-      for (const { user } of notCanceledRsvps) {
-        const emailList = notCanceledRsvps.map(({ user }) => user.email);
+    if (notCanceledAttendees.length) {
+      for (const { user } of notCanceledAttendees) {
+        const emailList = notCanceledAttendees.map(({ user }) => user.email);
         const cancelEventEmail = attachUnsubscribe({
           chapterId: event.chapter_id,
           eventId: event.id,

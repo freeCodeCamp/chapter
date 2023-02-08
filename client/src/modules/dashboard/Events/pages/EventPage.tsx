@@ -17,11 +17,11 @@ import { useRouter } from 'next/router';
 import React, { Fragment, ReactElement } from 'react';
 
 import {
-  useConfirmRsvpMutation,
+  useConfirmAttendeeMutation,
   useDashboardEventQuery,
-  useDeleteRsvpMutation,
-  MutationConfirmRsvpArgs,
-  MutationDeleteRsvpArgs,
+  useDeleteAttendeeMutation,
+  MutationConfirmAttendeeArgs,
+  MutationDeleteAttendeeArgs,
   useCreateCalendarEventMutation,
   useCalendarIntegrationStatusQuery,
 } from '../../../../generated/graphql';
@@ -54,8 +54,8 @@ export const EventPage: NextPageWithLayout = () => {
   });
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery();
-  const [confirmAttendee] = useConfirmRsvpMutation(args(eventId));
-  const [removeAttendee] = useDeleteRsvpMutation(args(eventId));
+  const [confirmAttendee] = useConfirmAttendeeMutation(args(eventId));
+  const [removeAttendee] = useDeleteAttendeeMutation(args(eventId));
   const [createCalendarEvent, { loading: loadingCalendar }] =
     useCreateCalendarEventMutation(args(eventId));
 
@@ -63,14 +63,14 @@ export const EventPage: NextPageWithLayout = () => {
   const confirmDelete = useConfirmDelete();
 
   const onConfirmAttendee =
-    ({ eventId, userId }: MutationConfirmRsvpArgs) =>
+    ({ eventId, userId }: MutationConfirmAttendeeArgs) =>
     async () => {
       const ok = await confirm();
       if (ok) confirmAttendee({ variables: { eventId, userId } });
     };
 
   const onRemove =
-    ({ eventId, userId }: MutationDeleteRsvpArgs) =>
+    ({ eventId, userId }: MutationDeleteAttendeeArgs) =>
     async () => {
       const ok = await confirmDelete();
       if (ok) removeAttendee({ variables: { eventId, userId } });
@@ -238,7 +238,7 @@ export const EventPage: NextPageWithLayout = () => {
         {userLists.map(({ title, statusFilter, action }) => {
           const users = data.dashboardEvent
             ? data.dashboardEvent.event_users.filter(
-                ({ rsvp }) => rsvp.name === statusFilter,
+                ({ attendance }) => attendance.name === statusFilter,
               )
             : [];
           return (
@@ -280,12 +280,12 @@ export const EventPage: NextPageWithLayout = () => {
                 />
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-                {users.map(({ event_role, user, rsvp }, index) => (
+                {users.map(({ attendance, event_role, user }, index) => (
                   // For a single event, each user can only have one event_user
                   // entry, so we can use the user id as the key.
                   <HStack key={user.id}>
                     <DataTable
-                      title={'Attendee: ' + rsvp.name.toUpperCase()}
+                      title={'Attendee: ' + attendance.name.toUpperCase()}
                       data={[users[index]]}
                       keys={['type', 'action'] as const}
                       showHeader={false}

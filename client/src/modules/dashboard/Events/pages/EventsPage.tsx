@@ -7,12 +7,14 @@ import {
   Text,
   Switch,
   VStack,
+  Tooltip,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement, useState } from 'react';
 
 import { isPast } from 'date-fns';
+import { LockIcon } from '@chakra-ui/icons';
 import { formatDate } from '../../../../util/date';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
@@ -132,7 +134,17 @@ export const EventsPage: NextPageWithLayout = () => {
                 </LinkButton>
               </VStack>
             ),
-            'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
+            'invite only': (event) =>
+              event.invite_only ? (
+                <HStack>
+                  <Tooltip label="Invite only">
+                    <LockIcon />
+                  </Tooltip>
+                  <Text>Yes</Text>
+                </HStack>
+              ) : (
+                <Text>No</Text>
+              ),
             venue: (event) => (
               <Text data-cy="venue">
                 {isPhysical(event.venue_type)
@@ -248,7 +260,16 @@ export const EventsPage: NextPageWithLayout = () => {
                         {name}
                       </LinkButton>
                     </VStack>
-                    <Text>{invite_only ? 'Yes' : 'No'}</Text>
+                    {invite_only ? (
+                      <HStack>
+                        <Tooltip label="Invite only">
+                          <LockIcon />
+                        </Tooltip>
+                        <Text>Yes</Text>
+                      </HStack>
+                    ) : (
+                      <Text>No</Text>
+                    )}
                     <Text>
                       {isPhysical(venue_type)
                         ? venue?.name || 'TBD'

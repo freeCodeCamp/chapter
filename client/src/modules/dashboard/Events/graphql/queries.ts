@@ -62,7 +62,7 @@ export const DASHBOARD_EVENT = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {

@@ -9,10 +9,19 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
     getAccessTokenSilently: getToken,
     loginWithPopup: login,
     logout,
+    error,
   } = useAuth0();
 
   return (
-    <AuthContext.Provider value={{ getToken, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        getToken,
+        isAuthenticated,
+        login,
+        logout,
+        authError: error ?? null,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

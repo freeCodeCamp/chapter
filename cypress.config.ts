@@ -22,7 +22,7 @@ export type ChapterMembers = Awaited<ReturnType<typeof getChapterMembers>>;
 const getEventUsers = (eventId: number) =>
   prisma.event_users.findMany({
     where: { event_id: eventId },
-    include: { user: true, rsvp: true },
+    include: { user: true, attendance: true },
   });
 
 export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;

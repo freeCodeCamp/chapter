@@ -1,6 +1,9 @@
 name: Upload Images
 on:
   workflow_dispatch:
+  push:
+    branches: 
+      - production
 
 jobs:
   build:

@@ -1,4 +1,12 @@
-import { Flex, Grid, Heading, Tag, Text } from '@chakra-ui/react';
+import {
+  Grid,
+  Heading,
+  Tag,
+  Text,
+  HStack,
+  GridItem,
+  Box,
+} from '@chakra-ui/react';
 import React from 'react';
 
 import { LinkButton } from 'chakra-next-link';
@@ -26,38 +34,56 @@ export const EventList = ({ events, emptyText, title }: Props) => {
       {events.length > 0 ? (
         <Grid gap="2em">
           {events.map(({ canceled, id, invite_only, name }) => (
-            <Flex justifyContent="space-between" key={id}>
-              <LinkButton href={`/dashboard/events/${id}`}>{name}</LinkButton>
-              <Flex marginTop="1" gap="1em">
-                {invite_only && (
-                  <Tag
-                    borderRadius="lg"
-                    paddingInline="[1 , 2]"
-                    paddingBlock="[.5, 1]"
-                    colorScheme="blue"
-                    fontSize="['small', 'md']"
-                    maxWidth="8em"
-                    maxH="2em"
-                  >
-                    <LockIcon />
-                    Invite only
-                  </Tag>
-                )}
-                {canceled && (
-                  <Tag
-                    borderRadius="lg"
-                    paddingInline="[1 , 2]"
-                    paddingBlock="[.5, 1]"
-                    fontSize="['small', 'md']"
-                    maxWidth="8em"
-                    maxH="2em"
-                    colorScheme="red"
-                  >
-                    Canceled
-                  </Tag>
-                )}
-              </Flex>
-            </Flex>
+            <Grid templateColumns="repeat(3, 1fr)" gap={10} key={id}>
+              <GridItem>
+                <Text>{name}</Text>
+              </GridItem>
+
+              <GridItem>
+                <HStack>
+                  <LinkButton href={`/dashboard/events/${id}`}>
+                    {'Dashboard'}
+                  </LinkButton>
+                  <LinkButton href={`/events/${id}`}>
+                    {'Public Page'}
+                  </LinkButton>
+                </HStack>
+              </GridItem>
+
+              <GridItem>
+                <Box display="flex" justifyContent={'flex-end'}>
+                  <HStack marginTop="1" gap="1em">
+                    {invite_only && (
+                      <Tag
+                        borderRadius="lg"
+                        paddingInline="[1 , 2]"
+                        paddingBlock="[.5, 1]"
+                        colorScheme="blue"
+                        fontSize="['small', 'md']"
+                        maxWidth="8em"
+                        maxH="2em"
+                      >
+                        <LockIcon />
+                        Invite only
+                      </Tag>
+                    )}
+                    {canceled && (
+                      <Tag
+                        borderRadius="lg"
+                        paddingInline="[1 , 2]"
+                        paddingBlock="[.5, 1]"
+                        fontSize="['small', 'md']"
+                        maxWidth="8em"
+                        maxH="2em"
+                        colorScheme="red"
+                      >
+                        Canceled
+                      </Tag>
+                    )}
+                  </HStack>
+                </Box>
+              </GridItem>
+            </Grid>
           ))}
         </Grid>
       ) : (

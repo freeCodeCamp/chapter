@@ -48,8 +48,9 @@ export const physicalLocationChangeText = ({
   // TODO: include a link back to the venue page
   return `The event is now being held at <br />
 <br />
-- ${venue.name} <br />
-${venue.street_address ? `- ${venue.street_address} <br />` : ''}
+- ${venue.name} <br />${
+    venue.street_address ? `\n- ${venue.street_address} <br />` : ''
+  }
 - ${venue.city} <br />
 - ${venue.region} <br />
 - ${venue.postal_code}`;
@@ -62,8 +63,7 @@ export const dateChangeText = ({
   ends_at: Date;
   start_at: Date;
 }) => {
-  return `
-- Start: ${formatDate(start_at)}<br />
+  return `\n- Start: ${formatDate(start_at)}<br />
 - End: ${formatDate(ends_at)}`;
 };
 
@@ -238,7 +238,7 @@ export const eventUpdateText = ({
   venueTypeChange,
 }: EventUpdateData) => ({
   subject: `Details changed for event ${eventName}`,
-  emailText: `Updated venue details<br />${venueTypeChange}${physicalLocationChange}${streamingUrlChange}${dateChange}`,
+  emailText: `Updated venue details<br />\n${venueTypeChange}${physicalLocationChange}${streamingUrlChange}${dateChange}`,
 });
 
 export const instanceUserRoleChange = ({

@@ -283,7 +283,7 @@ export const buildEmailForUpdatedEvent = ({
   oldData: UpdateEmailData;
 }) => {
   const venueTypeChange = hasVenueTypeChanged(newData, oldData)
-    ? `${venueTypeChangeText({
+    ? `\n${venueTypeChangeText({
         newVenueType: newData.venue_type,
         oldVenueType: oldData.venue_type,
       })}${SPACER}`
@@ -291,14 +291,14 @@ export const buildEmailForUpdatedEvent = ({
   const physicalLocationChange =
     hasPhysicalLocationChanged(newData, oldData) &&
     isPhysical(newData.venue_type)
-      ? `${physicalLocationChangeText(newData)}${SPACER}`
+      ? `\n${physicalLocationChangeText(newData)}${SPACER}`
       : '';
   const streamingUrlChange =
     hasStreamingUrlChanged(newData, oldData) && isOnline(newData.venue_type)
-      ? `${streamingUrlChangeText(newData)}${SPACER}`
+      ? `\n${streamingUrlChangeText(newData)}${SPACER}`
       : '';
   const dateChange = hasDateChanged(newData, oldData)
-    ? `${dateChangeText(newData)}${SPACER}`
+    ? `\n${dateChangeText(newData)}${SPACER}`
     : '';
 
   return withUnsubscribe(

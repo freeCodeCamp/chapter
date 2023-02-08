@@ -1,4 +1,4 @@
-import { events_venue_type_enum, venues } from '@prisma/client';
+import { events_venue_type_enum } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
 import {
@@ -264,7 +264,13 @@ interface UpdateEmailData {
   name: string;
   start_at: Date;
   streaming_url?: string | null;
-  venue: venues | null;
+  venue: {
+    name: string;
+    street_address: string | null;
+    city: string;
+    region: string;
+    postal_code: string;
+  } | null;
   venue_id: number | null;
   venue_type: events_venue_type_enum;
 }

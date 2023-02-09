@@ -3,13 +3,16 @@ import {
   Heading,
   HStack,
   Grid,
+  List,
+  ListItem,
+  ListIcon,
   Spinner,
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
 import NextError from 'next/error';
-import React, { ReactElement, useMemo } from 'react';
+import React, { ReactElement, useMemo, useState } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
@@ -21,6 +24,9 @@ import {
   useCalendarIntegrationStatusQuery,
   useCreateChapterCalendarMutation,
   useDashboardChapterQuery,
+  DashboardChapterQuery,
+  useTestChapterCalendarAccessLazyQuery,
+  useUnlinkChapterCalendarMutation,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
@@ -29,14 +35,29 @@ import { EventList } from '../../shared/components/EventList';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { useUser } from '../../../auth/user';
-import { checkPermission } from '../../../../util/check-permission';
+import {
+  checkChapterPermission,
+  checkInstancePermission,
+} from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { DeleteChapterButton } from '../components/DeleteChapterButton';
 import { DASHBOARD_CHAPTER } from '../graphql/queries';
+import { DASHBOARD_EVENT } from '../../Events/graphql/queries';
+
+const eventRefetches = (data?: DashboardChapterQuery) => {
+  return (
+    data?.dashboardChapter.events.map(({ id: eventId }) => ({
+      query: DASHBOARD_EVENT,
+      variables: { eventId },
+    })) ?? []
+  );
+};
 
 export const ChapterPage: NextPageWithLayout = () => {
   const { param: chapterId } = useParam('id');
   const { user, loadingUser } = useUser();
+  const [displayUnlink, setDisplayUnlink] = useState(false);
+  const [disableTest, setDisableTest] = useState(false);
 
   const { loading, error, data } = useDashboardChapterQuery({
     variables: { chapterId },
@@ -46,6 +67,10 @@ export const ChapterPage: NextPageWithLayout = () => {
     useCalendarIntegrationStatusQuery();
   const [createChapterCalendar, { loading: loadingCalendar }] =
     useCreateChapterCalendarMutation();
+  const [unlinkChapterCalendar, { loading: loadingUnlink }] =
+    useUnlinkChapterCalendarMutation();
+  const [testChapterCalendarAccess, { loading: loadingTest }] =
+    useTestChapterCalendarAccessLazyQuery();
 
   const confirm = useConfirm();
   const toast = useToast();
@@ -64,6 +89,91 @@ export const ChapterPage: NextPageWithLayout = () => {
           ],
         });
         toast({ title: 'Chapter calendar created', status: 'success' });
+      } catch (err) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const onTestCalendar = async () => {
+    const ok = await confirm({
+      title: 'Test chapter calendar test',
+      body: (
+        <>
+          Do you want to test access to Google calendar for this chapter?
+          <List>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              We will try to access linked Google calendar.
+            </ListItem>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              If Google calendar no longer exists, or cannot be accessed, you
+              will have option to unlink it.
+            </ListItem>
+          </List>
+        </>
+      ),
+    });
+    if (ok) {
+      setDisableTest(true);
+      try {
+        const { data } = await testChapterCalendarAccess({
+          variables: { chapterId },
+        });
+        if (data?.testChapterCalendarAccess) {
+          toast({
+            title: 'Calendar access test successful',
+            status: 'success',
+          });
+        } else if (data?.testChapterCalendarAccess === false) {
+          toast({ title: "Couldn't access the calendar", status: 'error' });
+          setDisplayUnlink(true);
+        } else {
+          toast({
+            title:
+              'Something went wrong, make sure integration is working and try again',
+            status: 'warning',
+          });
+        }
+      } catch (error) {
+        toast({ title: 'Something went wrong', status: 'error' });
+        console.log(error);
+      }
+    }
+  };
+
+  const onUnlinkCalendar = async () => {
+    const ok = await confirm({
+      title: 'Unlink chapter calendar',
+      body: (
+        <>
+          Do you want to unlink current Google calendar from this chapter?
+          <List>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              All events in this chapter will have Google calendar events
+              unlinked as well.
+            </ListItem>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              Unlinked Google calendar will not be deleted.
+            </ListItem>
+          </List>
+        </>
+      ),
+    });
+    if (ok) {
+      try {
+        await unlinkChapterCalendar({
+          variables: { chapterId },
+          refetchQueries: [
+            { query: DASHBOARD_CHAPTER, variables: { chapterId } },
+            ...eventRefetches(data),
+          ],
+        });
+        toast({ title: 'Chapter calendar unlinked', status: 'success' });
       } catch (err) {
         toast({ title: 'Something went wrong', status: 'error' });
         console.error(err);
@@ -103,7 +213,7 @@ export const ChapterPage: NextPageWithLayout = () => {
       actionLinks.filter(
         ({ requiredPermission }) =>
           !requiredPermission ||
-          checkPermission(user, requiredPermission, { chapterId }),
+          checkChapterPermission(user, requiredPermission, { chapterId }),
       ),
     [actionLinks, chapterId, user],
   );
@@ -132,14 +242,37 @@ export const ChapterPage: NextPageWithLayout = () => {
               <Text>Calendar created:</Text>
               {loadingCalendar ? (
                 <Spinner size="sm" />
-              ) : data.dashboardChapter.calendar_id ? (
-                <CheckIcon boxSize="5" />
+              ) : data.dashboardChapter.has_calendar ? (
+                <>
+                  <CheckIcon boxSize="5" />
+                  {checkInstancePermission(user, Permission.ChapterCreate) && (
+                    <>
+                      <Button
+                        isDisabled={disableTest}
+                        isLoading={loadingTest}
+                        onClick={onTestCalendar}
+                      >
+                        Test access
+                      </Button>
+                      {displayUnlink && (
+                        <Button
+                          isLoading={loadingUnlink}
+                          onClick={onUnlinkCalendar}
+                        >
+                          Unlink
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </>
               ) : (
                 <CloseIcon boxSize="4" />
               )}
             </HStack>
           )}
-          {checkPermission(user, Permission.UsersView, { chapterId }) && (
+          {checkChapterPermission(user, Permission.ChapterEdit, {
+            chapterId,
+          }) && (
             <LinkButton
               href={`${chapterId}/users`}
               paddingBlock="2"
@@ -168,10 +301,8 @@ export const ChapterPage: NextPageWithLayout = () => {
               size="sm"
             />
             {integrationStatus &&
-              !data.dashboardChapter.calendar_id &&
-              checkPermission(user, Permission.ChapterCreate, {
-                chapterId,
-              }) && (
+              !data.dashboardChapter.has_calendar &&
+              checkInstancePermission(user, Permission.ChapterCreate) && (
                 <Button
                   colorScheme="blue"
                   isLoading={loadingCalendar}

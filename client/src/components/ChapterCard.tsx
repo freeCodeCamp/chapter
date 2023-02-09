@@ -1,8 +1,17 @@
-import { Grid, Text, GridItem, Flex, Box, Image } from '@chakra-ui/react';
+import {
+  Grid,
+  Text,
+  GridItem,
+  Flex,
+  Box,
+  Image,
+  Tooltip,
+} from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
 import { isPast } from 'date-fns';
+import { LockIcon } from '@chakra-ui/icons';
 import { ChaptersQuery } from '../generated/graphql';
 
 type ChapterCardProps = {
@@ -115,11 +124,12 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             Next Events
           </Text>
           <GridItem area="event" paddingInline={'1em'}>
-            {chapter.events.map(({ id, name, start_at }) => (
+            {chapter.events.map(({ id, name, start_at, invite_only }) => (
               <Flex
                 paddingBlock={'.5em'}
                 paddingInline={'.3em'}
                 justifyContent={'space-between'}
+                alignItems="center"
                 key={id}
               >
                 <Link
@@ -130,7 +140,17 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
                 >
                   {name}
                 </Link>
-                <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                {invite_only && (
+                  <Tooltip label="Invite only">
+                    <LockIcon
+                      mt="2"
+                      marginLeft="auto"
+                      marginRight="1"
+                      fontSize={['sm', 'md', 'lg']}
+                    />
+                  </Tooltip>
+                )}
+                <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
                   {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
                 </Text>
               </Flex>

@@ -81,11 +81,8 @@ export const userDownloadQuery = gql`
       user_events {
         subscribed
         updated_at
-        rsvp {
+        attendance {
           updated_at
-          name
-        }
-        rsvp {
           name
         }
         event_role {

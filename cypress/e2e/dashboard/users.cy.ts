@@ -8,6 +8,7 @@ describe('Users dashboard', () => {
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
+    cy.mhDeleteAll();
   });
 
   it('with permission should have access to table of users', () => {

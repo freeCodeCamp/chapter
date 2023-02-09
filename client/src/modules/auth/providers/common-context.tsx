@@ -6,6 +6,7 @@ type AuthContextType = {
   login: () => void;
   logout: () => void;
   getToken: () => Promise<string>;
+  authError: Error | null;
 };
 
 export const AuthContext = React.createContext<AuthContextType>({
@@ -13,4 +14,5 @@ export const AuthContext = React.createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
   getToken: () => Promise.resolve(''),
+  authError: null,
 });

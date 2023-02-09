@@ -1,5 +1,6 @@
 import { Button, Flex, Heading, HStack, Text } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
+import { LinkButton } from 'chakra-next-link';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 
@@ -8,7 +9,7 @@ import {
   useCalendarIntegrationTestMutation,
   useTokenStatusesQuery,
 } from '../../../../generated/graphql';
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { useUser } from '../../../auth/user';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
@@ -20,7 +21,7 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 export const Calendar: NextPageWithLayout = () => {
   const { user } = useUser();
-  const canAuthenticateWithGoogle = checkPermission(
+  const canAuthenticateWithGoogle = checkInstancePermission(
     user,
     Permission.GoogleAuthenticate,
   );
@@ -71,8 +72,8 @@ export const Calendar: NextPageWithLayout = () => {
         </p>
       </Flex>
       <HStack>
-        <Button
-          as="a"
+        <LinkButton
+          as="div"
           href={new URL('/authenticate-with-google', serverUrl).href}
           fontWeight="600"
           background={'gray.85'}
@@ -89,7 +90,7 @@ export const Calendar: NextPageWithLayout = () => {
             : isBroken
             ? 'Reauthenticate with Google'
             : 'Authenticate with Google'}
-        </Button>
+        </LinkButton>
         {(isAuthenticated || isBroken) && (
           <Button
             onClick={() => calendarIntegrationTest()}

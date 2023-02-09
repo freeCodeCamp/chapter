@@ -19,8 +19,6 @@ export const CHAPTER = gql`
         description
         start_at
         ends_at
-        invite_only
-        canceled
         image_url
         invite_only
         canceled
@@ -57,6 +55,7 @@ export const CHAPTERS = gql`
         start_at
         ends_at
         name
+        invite_only
       }
       chapter_users {
         subscribed

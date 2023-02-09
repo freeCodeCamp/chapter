@@ -263,7 +263,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     Some examples of conventional commit messages are:
 
     * fix: update API routes
-    * feat: RSVP event
+    * feat: attend event
     * fix(docs): update database schema image
 
     Keep your commit messages short. You can always add additional information in the description of the commit message.
@@ -288,7 +288,7 @@ You are almost ready to make changes to files, but before that you should **alwa
     > [base repository: freeCodeCamp/chapter] [base:main] **<-** [your fork] [your proposed branch]
 
 3. Write a [descriptive title](https://contribute.freecodecamp.org/#/how-to-open-a-pull-request?id=prepare-a-good-pr-title) in the title field. A common pattern you may like to follow is: _**Type**(optional **scope**): With a Thoughtful Title_.
-    > * Example: _feat(client): Send Email on RSVP Confirmation_
+    > * Example: _feat(client): Send Email on Attendance Confirmation_
     > * **Type** examples
     >   * chore: Changes that are not related to code, tests, or docs.
     >   * docs: Changes to the contributing guidelines, etc.
@@ -575,7 +575,7 @@ To update _prisma.schema_ _without_ creating a migration use `npm run db:reset`.
 
 #### Creating a Migration
 
-When you have changed the `schema.prisma` file, these changes will need to be applied to the database.  
+When you have changed the `schema.prisma` file, these changes will need to be applied to the database.
 
 First seed the database using the original schema
 
@@ -604,8 +604,8 @@ Chapter has a role based permission system, with specific permission assigned to
 ### Available role scopes
 
 * Instance role - per instance - every registered user has instance role.
-* Chapter role - per chapter - chapter role is created for user when explicitly joining chapter, or performing on event actions requiring chapter role. Ie. Rsvping to event. Elevated chapter role for one chapter, doesn't impact chapter roles for different chapters.
-* Event role - per event - chapter role is created for user when Rsvping to an event. Elevated event role (permissions) for a one event doesn't impact event roles for different events.
+* Chapter role - per chapter - chapter role is created for user when explicitly joining chapter, or performing on event actions requiring chapter role. Ie. Attending event. Elevated chapter role for one chapter, doesn't impact chapter roles for different chapters.
+* Event role - per event - chapter role is created for user when attending an event. Elevated event role (permissions) for a one event doesn't impact event roles for different events.
 
 _Note: in MVP Event roles are not used._
 

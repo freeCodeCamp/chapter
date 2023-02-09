@@ -100,6 +100,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             'https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg'
           }
           fit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+          fallbackStrategy="onError"
         />
       </Box>
       <Box p="3" py={3} width="full" data-cy="event-card">

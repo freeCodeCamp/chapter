@@ -95,7 +95,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <Image
           width="100%"
           height="100%"
-          src={event.image_url}
+          src={
+            event.image_url ||
+            'https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg'
+          }
           fit="cover"
           fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
           fallbackStrategy="onError"

@@ -77,10 +77,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const formMethods = useForm<EventFormData>({
     defaultValues,
+    mode: 'all',
     resolver,
   });
   const {
-    formState: { isDirty, errors },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     register,
     watch,
@@ -178,7 +179,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <Button
             colorScheme="blue"
             type="submit"
-            isDisabled={!isDirty || loading}
+            isDisabled={!isDirty || loading || !isValid}
             isLoading={loading}
             loadingText={loadingText}
           >

@@ -67,7 +67,7 @@ const createEvents = async (
       // Setting the first event to be open, so that we can test the user attend flow
       invite_only: i == 0 ? false : inviteOnly[i],
       start_at,
-      ends_at: addHours(start_at, random(5)),
+      ends_at: addHours(start_at, 1 + random(5)),
       image_url: image.imageUrl(640, 480, 'nature', true),
       ...venueData,
     };

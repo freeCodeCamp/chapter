@@ -29,9 +29,10 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isDirty, errors },
+    formState: { errors, isDirty, isValid },
   } = useForm<CreateChapterInputs>({
     defaultValues,
+    mode: 'all',
     resolver,
   });
 
@@ -94,7 +95,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
           variant="solid"
           colorScheme="blue"
           type="submit"
-          isDisabled={!isDirty || loading}
+          isDisabled={!isDirty || loading || !isValid}
           isLoading={loading}
           loadingText={loadingText}
         >

@@ -57,7 +57,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginRight={'1em'}
           paddingBlock={'.5em'}
           color={'gray.00'}
-          bgGradient="linear(to-b,hsl(240 14% 27%/ .9),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
+          bgImage="linear-gradient(to bottom,hsl(240 14% 27%/ .9),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
           alignItems="center"
           templateAreas={`
           ". . ."

@@ -5,6 +5,7 @@ import {
   chapterAdminUnsubscribeText,
   chapterUnsubscribeText,
   dateChangeText,
+  eventAttendanceCancelationText,
   eventAttendanceConfirmationText,
   eventCancelationText,
   eventConfirmAtendeeText,
@@ -254,6 +255,24 @@ export const eventAttendanceConfirmation = ({
       eventName,
       googleURL,
       outlookURL,
+      userName: userName ? ` ${userName}` : '',
+    }),
+  );
+};
+
+interface AttendanceCancelation {
+  event: { name: string };
+  userName: string;
+}
+
+export const eventAttendanceCancelation = ({
+  event,
+  userName,
+}: AttendanceCancelation) => {
+  const eventName = event.name;
+  return withUnsubscribe(
+    eventAttendanceCancelationText({
+      eventName,
       userName: userName ? ` ${userName}` : '',
     }),
   );

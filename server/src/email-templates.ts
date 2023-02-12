@@ -222,6 +222,18 @@ You should receive a calendar invite shortly. If you do not, you can add the eve
 <a href=${outlookURL}>Outlook</a>`,
 });
 
+export const eventAttendanceCancelationText = ({
+  eventName,
+  userName,
+}: {
+  eventName: string;
+  userName: string;
+}) => ({
+  subject: `Cancelation of attendance: ${eventName}`,
+  emailText: `Hi${userName},<br />
+Your attendance was canceled.`,
+});
+
 interface EventUpdateData {
   dateChange: string;
   eventName: string;

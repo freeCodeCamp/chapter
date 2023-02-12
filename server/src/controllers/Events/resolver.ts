@@ -65,6 +65,7 @@ import {
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
+  eventAttendanceCancelation,
 } from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
@@ -477,6 +478,21 @@ export class EventResolver {
           event_id: eventId,
         },
       },
+    });
+
+    const { subject, attachUnsubscribe } = eventAttendanceCancelation({
+      event,
+      userName: updatedEventUser.user.name,
+    });
+
+    await mailerService.sendEmail({
+      emailList: [updatedEventUser.user.email],
+      subject,
+      htmlEmail: attachUnsubscribe({
+        chapterId: event.chapter_id,
+        eventId: event.id,
+        userId: updatedEventUser.user.id,
+      }),
     });
 
     const calendarId = event.chapter.calendar_id;

@@ -143,7 +143,10 @@ export class VenueResolver {
         ({ name, id }) => `
       <tr>
       <td>${name}</td>
-      <td>${eventUnsubscribeOptions(id, currentUserId)}</td>
+      <td>${eventUnsubscribeOptions({
+        eventId: id,
+        userId: currentUserId,
+      })}</td>
      </tr>
   `,
       );

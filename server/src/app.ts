@@ -13,6 +13,7 @@ import cookies from 'cookie-parser';
 import coverage from '@cypress/code-coverage/middleware/express';
 // import isDocker from 'is-docker';
 import { buildSchema } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { Permission } from '../../common/permissions';
 import { authorizationChecker } from '../src/authorization';
@@ -21,7 +22,7 @@ import { ResolverCtx, Request } from './common-types/gql';
 import { resolvers } from './controllers';
 import { handleError, user } from './controllers/Auth/middleware';
 import { checkJwt } from './controllers/Auth/check-jwt';
-import { prisma, RECORD_MISSING } from './prisma';
+import { prisma, RECORD_MISSING, UNIQUE_CONSTRAINT_FAILED } from './prisma';
 import { getBearerToken } from './util/sessions';
 import { fetchUserInfo } from './util/auth0';
 import { getGoogleAuthUrl, requestTokens } from './services/InitGoogle';
@@ -63,17 +64,12 @@ export const main = async (app: Express) => {
     }),
   );
 
-  async function findUser(email: string) {
-    return await prisma.users.findUnique({
+  async function upsertUser(email: string) {
+    return await prisma.users.upsert({
       where: {
         email,
       },
-    });
-  }
-
-  async function createUser(email: string) {
-    return prisma.users.create({
-      data: {
+      create: {
         name: '',
         email,
         instance_role: {
@@ -82,7 +78,27 @@ export const main = async (app: Express) => {
           },
         },
       },
+      update: {},
     });
+  }
+
+  async function findOrCreateUser(email: string) {
+    try {
+      return await upsertUser(email);
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === UNIQUE_CONSTRAINT_FAILED
+      ) {
+        console.error(
+          'Received concurrent login requests - the client is likely making too many requests.',
+        );
+        // Since the error was a unique constraint violation, we know that the
+        // user exists, so we can just return their record.
+        return await prisma.users.findUniqueOrThrow({ where: { email } });
+      }
+      throw e;
+    }
   }
 
   app.post('/login', checkJwt, (req, res, next) => {
@@ -92,7 +108,7 @@ export const main = async (app: Express) => {
       userInfo
         .then(async ({ email }) => {
           if (!email) throw Error('No email found in user info');
-          const user = (await findUser(email)) ?? (await createUser(email));
+          const user = await findOrCreateUser(email);
 
           try {
             const { id } = await prisma.sessions.upsert({
@@ -112,8 +128,8 @@ export const main = async (app: Express) => {
           }
         })
         .catch((err) => {
-          console.log('Failed to validate user');
-          console.log(err);
+          console.error('Failed to validate user');
+          next(err);
         });
     } else {
       next('no bearer token');

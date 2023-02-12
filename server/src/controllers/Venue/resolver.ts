@@ -138,21 +138,12 @@ export class VenueResolver {
       where: { id: id },
     });
 
-    const unsubscribeOptions = (
-      currentUserId: number,
-      currentEventId: number,
-    ) =>
-      eventUnsubscribeOptions({
-        eventId: currentEventId,
-        userId: currentUserId,
-      });
-
     const eventList = (event: events[], currentUserId: number) => {
       event.map(
         ({ name, id }) => `
       <tr>
       <td>${name}</td>
-      <td>${unsubscribeOptions(id, currentUserId)}</td>
+      <td>${eventUnsubscribeOptions(id, currentUserId)}</td>
      </tr>
   `,
       );

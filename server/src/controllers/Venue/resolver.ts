@@ -22,7 +22,7 @@ import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
-import { eventUnsubscribeOptions } from '../../util/eventEmail';
+import { eventUnsubscribeOptions } from '../../util/event-email';
 import { VenueInputs } from './inputs';
 
 @Resolver()
@@ -114,7 +114,7 @@ export class VenueResolver {
               venue_id: id,
             },
             subscribed: true,
-            rsvp: { name: 'yes' },
+            attendance: { name: 'yes' },
           },
         },
       },
@@ -128,7 +128,7 @@ export class VenueResolver {
               venue_id: id,
             },
             subscribed: true,
-            rsvp: { name: 'yes' },
+            attendance: { name: 'yes' },
           },
         },
       },
@@ -138,14 +138,11 @@ export class VenueResolver {
       where: { id: id },
     });
 
-    const chapterId = venue.chapter_id;
-
     const unsubscribeOptions = (
       currentUserId: number,
       currentEventId: number,
     ) =>
       eventUnsubscribeOptions({
-        chapterId: chapterId,
         eventId: currentEventId,
         userId: currentUserId,
       });

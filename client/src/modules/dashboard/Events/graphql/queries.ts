@@ -40,7 +40,7 @@ export const DASHBOARD_EVENT = gql`
       chapter {
         id
         name
-        calendar_id
+        has_calendar
       }
       sponsors {
         sponsor {
@@ -62,7 +62,7 @@ export const DASHBOARD_EVENT = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {

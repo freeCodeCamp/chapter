@@ -21,10 +21,11 @@ describe('event dashboard', () => {
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
+    cy.mhDeleteAll();
   });
 
   describe('users lists', () => {
-    it('confirming user on waitlist should move user to RSVPs and send email', () => {
+    it('confirming user on waitlist should move user to attendees and send email', () => {
       cy.visit(`/dashboard/events/${eventId}`);
       cy.get('[data-cy=waitlist]').as('waitlist');
       setUsernameAlias('@waitlist');
@@ -38,12 +39,12 @@ describe('event dashboard', () => {
 
       cy.get<string>('@userName').then((userName) => {
         cy.get('@waitlist').not(`:contains(${userName})`);
-        cy.get('[data-cy=rsvps]').contains(userName);
+        cy.get('[data-cy=attendees]').contains(userName);
       });
 
       cy.get('@email')
         .mhGetSubject()
-        .should('include', 'Your RSVP is confirmed');
+        .should('include', 'Your attendance is confirmed');
       cy.get('@email')
         .mhGetBody()
         .should('include', 'reservation is confirmed');
@@ -59,10 +60,10 @@ describe('event dashboard', () => {
 
     it('removing user should remove user from event', () => {
       cy.visit(`/dashboard/events/${eventId}`);
-      cy.get('[data-cy=rsvps]').as('rsvps');
-      setUsernameAlias('@rsvps');
+      cy.get('[data-cy=attendees]').as('attendees');
+      setUsernameAlias('@attendees');
 
-      cy.get('@rsvps').find('[data-cy=remove]').first().click();
+      cy.get('@attendees').find('[data-cy=remove]').first().click();
       cy.findByRole('button', { name: 'Delete' }).click();
 
       cy.get<string>('@userName').then((userName) => {
@@ -70,7 +71,7 @@ describe('event dashboard', () => {
       });
     });
 
-    it('canceling confirming user on waitlist should not move user to RSVPs', () => {
+    it('canceling confirming user on waitlist should not move user to attendees', () => {
       cy.visit(`/dashboard/events/${eventId}`);
       cy.get('[data-cy=waitlist]').as('waitlist');
       setUsernameAlias('@waitlist');
@@ -78,7 +79,8 @@ describe('event dashboard', () => {
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
       cy.intercept(Cypress.env('GQL_URL'), (req) => {
-        expect(req.body?.operationName?.includes('confirmRsvp')).to.be.false;
+        expect(req.body?.operationName?.includes('confirmAttendee')).to.be
+          .false;
       });
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Cancel' })
@@ -91,10 +93,10 @@ describe('event dashboard', () => {
 
     it('canceling removing user should not remove user from event', () => {
       cy.visit(`/dashboard/events/${eventId}`);
-      cy.get('[data-cy=rsvps]').as('rsvps');
-      setUsernameAlias('@rsvps');
+      cy.get('[data-cy=attendees]').as('attendees');
+      setUsernameAlias('@attendees');
 
-      cy.get('@rsvps').find('[data-cy=remove]').first().click();
+      cy.get('@attendees').find('[data-cy=remove]').first().click();
       cy.intercept('/graphql', cy.spy().as('request'));
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Cancel' })
@@ -102,25 +104,25 @@ describe('event dashboard', () => {
 
       cy.get('@request').should('not.have.been.called');
       cy.get<string>('@userName').then((userName) => {
-        cy.get('@rsvps').contains(userName);
+        cy.get('@attendees').contains(userName);
       });
     });
 
     it('prevents members from confirming or removing users', () => {
-      // Starting as the instance owner to ensure we can find the RSVPs
+      // Starting as the instance owner to ensure we can find the attendees
       cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
-          ({ rsvp: { name } }) => name === 'yes',
+          ({ attendance: { name } }) => name === 'yes',
         ).user;
         const waitlistUser = eventUsers.find(
-          ({ rsvp: { name } }) => name === 'waitlist',
+          ({ attendance: { name } }) => name === 'waitlist',
         ).user;
 
         // Switch to new member before trying to confirm and remove
         cy.login(users.testUser.email);
 
-        cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
-        cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);
+        cy.deleteAttendee(eventId, confirmedUser.id).then(expectToBeRejected);
+        cy.confirmAttendee(eventId, waitlistUser.id).then(expectToBeRejected);
       });
     });
   });

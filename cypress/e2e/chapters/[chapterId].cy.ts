@@ -20,11 +20,11 @@ describe('chapter page', () => {
     cy.login(users.testUser.email);
     cy.visit(`/chapters/${chapterId}`);
 
-    cy.findByRole('button', { name: 'Join' }).click();
+    cy.findByRole('button', { name: 'Join Chapter' }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
-    cy.contains(/joined chapter/);
-    cy.contains(/Join chapter/).should('not.exist');
+    cy.findByRole('button', { name: 'Leave Chapter' }).should('be.visible');
+    cy.findByRole('button', { name: 'Join Chapter' }).should('not.exist');
     cy.get('[data-cy="unsubscribe-chapter"]').should('be.visible').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 

@@ -33,7 +33,7 @@ import {
 import { useParam } from '../../../../../hooks/useParam';
 import { DASHBOARD_CHAPTER_USERS } from '../../graphql/queries';
 import { NextPageWithLayout } from '../../../../../pages/_app';
-import { checkPermission } from '../../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../../util/check-permission';
 import { Permission } from '../../../../../../../common/permissions';
 import { useUser } from '../../../../auth/user';
 
@@ -176,9 +176,10 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
               ),
               actions: ({ is_bannable, user: otherUser, chapter_role }) => (
                 <HStack>
-                  {checkPermission(user, Permission.ChapterUserRoleChange, {
-                    chapterId,
-                  }) && (
+                  {checkInstancePermission(
+                    user,
+                    Permission.ChapterUserRoleChange,
+                  ) && (
                     <Button
                       data-cy="changeRole"
                       colorScheme="blue"

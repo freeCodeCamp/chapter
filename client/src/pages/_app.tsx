@@ -8,6 +8,7 @@ import {
 } from '@apollo/client';
 import { NetworkError } from '@apollo/client/errors';
 import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
 import { offsetLimitPagination } from '@apollo/client/utilities';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
@@ -49,8 +50,10 @@ const errorLink = onError(({ networkError }) => {
   }
 });
 
+const retryLink = new RetryLink();
+
 const client = new ApolloClient({
-  link: from([errorLink, httpLink]),
+  link: from([retryLink, errorLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {

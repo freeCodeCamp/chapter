@@ -33,6 +33,7 @@ export class UserWithPermissionsResolver {
       ...(!isAdminFromInstanceRole(user) && {
         where: isChapterAdminWhere(user.id),
       }),
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -89,7 +90,7 @@ export class UserWithPermissionsResolver {
         },
         user_events: {
           include: {
-            rsvp: true,
+            attendance: true,
             event_role: {
               include: {
                 event_role_permissions: {

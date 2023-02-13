@@ -4,7 +4,7 @@ import { LinkButton } from 'chakra-next-link';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 
-import { checkPermission } from '../../../../util/check-permission';
+import { checkInstancePermission } from '../../../../util/check-permission';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { Permission } from '../../../../../../common/permissions';
@@ -16,7 +16,7 @@ export const SponsorsPage: NextPageWithLayout = () => {
   const { loading, error, data } = useSponsorsQuery();
   const { user, loadingUser } = useUser();
 
-  const hasPermissionToManageSponsor = checkPermission(
+  const hasPermissionToManageSponsor = checkInstancePermission(
     user,
     Permission.SponsorManage,
   );

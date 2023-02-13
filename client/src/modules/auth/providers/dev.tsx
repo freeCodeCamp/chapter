@@ -21,7 +21,9 @@ export const DevAuthProvider = ({
   };
   const getToken = () => Promise.resolve('fake-token');
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, getToken }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, getToken, authError: null }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -12,9 +12,9 @@ import {
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { DashboardLayout } from '../../shared/components/DashboardLayout';
-import VenueForm, { VenueFormData } from '../components/VenueForm';
-import { DASHBOARD_VENUES, DASHBOARD_VENUES } from '../graphql/queries';
+import VenueForm from '../components/VenueForm';
+import { VenueFormData } from '../components/VenueFormUtils';
+import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { DASHBOARD_CHAPTER } from '../../../dashboard/Chapters/graphql/queries';

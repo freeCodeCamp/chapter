@@ -27,6 +27,7 @@ export const useSession = () => {
     login: loginAuth,
     logout: logoutAuth,
     isAuthenticated,
+    authError,
   } = useAuth();
   const createSession = async () => {
     const token = await getToken();
@@ -37,28 +38,48 @@ export const useSession = () => {
   // Until the user initiates a login or logout, we don't want to create or
   // destroy a session
   const [canAlterSession, setCanAlterSession] = useState(false);
+  // isAuthenticated does not change immediately after login/logout, so we
+  // need to track the intent to prevent accidental session creation/deletion
+  const [toLogout, setToLogout] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const login = async () => {
+    setError(null);
     await loginAuth();
     setCanAlterSession(true);
+    setToLogout(false);
   };
   const logout = async () => {
+    setError(null);
     await logoutAuth();
     setCanAlterSession(true);
+    setToLogout(true);
   };
 
   useEffect(() => {
     if (!canAlterSession) return;
     setCanAlterSession(false);
 
-    if (isAuthenticated) {
-      createSession().then(() => refetch());
-    } else {
+    if (toLogout) {
       destroySession()
+        .then((res) => {
+          if (!res.ok) throw Error(`Server returned ${res.status} error.`);
+        })
         .then(() => refetch())
-        .then(() => apollo.resetStore());
+        .then(() => apollo.resetStore())
+        .catch((e) => setError(e));
+    } else if (isAuthenticated) {
+      createSession()
+        .then((res) => {
+          if (!res.ok) throw Error(`Server returned ${res.status} error.`);
+        })
+        .then(() => refetch())
+        .catch((e) => setError(e));
     }
-  }, [isAuthenticated, canAlterSession]);
+  }, [isAuthenticated, canAlterSession, toLogout]);
 
-  return { createSession, login, logout, isAuthenticated };
+  useEffect(() => {
+    if (authError) setError(authError);
+  }, [authError]);
+  return { login, logout, isAuthenticated, error };
 };

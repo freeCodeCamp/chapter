@@ -10,8 +10,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
+import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import EventChapterSelect from './EventChapterSelect';
@@ -19,14 +18,12 @@ import EventDatesForm from './EventDatesForm';
 import EventCancelButton from './EventCancelButton';
 import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
-import { EventFormProps, fields, EventFormData } from './EventFormUtils';
-
-const fieldTypeToComponent = (type: string) => {
-  if (type === 'textarea') {
-    return TextArea;
-  }
-  return Input;
-};
+import {
+  EventFormProps,
+  fields,
+  EventFormData,
+  resolver,
+} from './EventFormUtils';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
@@ -80,9 +77,11 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
   const formMethods = useForm<EventFormData>({
     defaultValues,
+    mode: 'all',
+    resolver,
   });
   const {
-    formState: { isDirty },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     register,
     watch,
@@ -119,15 +118,19 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
+          const error = errors[key]?.message;
           return (
             <Component
               key={key}
               type={type}
-              label={`${label}${isRequired ? ' (Required)' : ''}`}
+              label={label}
               placeholder={placeholder}
               isRequired={isRequired}
               isDisabled={loading}
-              {...register(key)}
+              error={error}
+              {...register(key, {
+                ...(type === 'number' && { valueAsNumber: true }),
+              })}
             />
           );
         })}
@@ -176,7 +179,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <Button
             colorScheme="blue"
             type="submit"
-            isDisabled={!isDirty || loading}
+            isDisabled={!isDirty || loading || !isValid}
             isLoading={loading}
             loadingText={loadingText}
           >

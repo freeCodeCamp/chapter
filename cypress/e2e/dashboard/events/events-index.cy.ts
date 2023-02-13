@@ -178,9 +178,7 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
-      titleAddon,
-    );
+    cy.findByRole('textbox', { name: 'Event Title' }).type(titleAddon);
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',
@@ -224,7 +222,7 @@ describe('spec needing owner', () => {
     });
   });
 
-  it('emails not canceled rsvps when event is canceled', () => {
+  it('emails not canceled attendees when event is canceled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')
       .not(':has([data-cy=event-canceled])')
@@ -244,7 +242,7 @@ describe('spec needing owner', () => {
       .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
-          .filter(({ rsvp }) => rsvp.name !== 'no')
+          .filter(({ attendance }) => attendance.name !== 'no')
           .map(({ user: { email } }) => email);
         cy.get('@emails')
           .mhGetRecipients()

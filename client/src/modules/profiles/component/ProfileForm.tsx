@@ -8,43 +8,11 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Input } from '../../../components/Form/Input';
-import { TextArea } from '../../../components/Form/TextArea';
 import { Form } from '../../../components/Form/Form';
 import { UpdateUserInputs } from '../../../generated/graphql';
+import { fields, ProfileFormProps, resolver } from './ProfileFormUtils';
 import { useDisableWhileSubmitting } from 'hooks/useDisableWhileSubmitting';
-
-interface ProfileFormProps {
-  onSubmit: (data: UpdateUserInputs) => Promise<void>;
-  data: UpdateUserInputs;
-  submitText: string;
-  loadingText: string;
-}
-
-type Fields = {
-  key: keyof UpdateUserInputs;
-  placeholder: string;
-  label: string;
-  required: boolean;
-  type: string;
-};
-
-const fields: Fields[] = [
-  {
-    key: 'name',
-    label: 'Name',
-    placeholder: 'Add your name here',
-    required: false,
-    type: 'text',
-  },
-  {
-    key: 'image_url',
-    label: 'Profile Picture',
-    placeholder: 'Add a link to a profile image here',
-    required: false,
-    type: 'url',
-  },
-];
+import { fieldTypeToComponent } from 'modules/util/form';
 
 export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
   const { onSubmit, data, submitText, loadingText } = props;
@@ -58,9 +26,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
     handleSubmit,
     register,
     watch,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<UpdateUserInputs>({
     values: defaultValues,
+    resolver,
   });
 
   const hasAutoSubscribe = watch('auto_subscribe');
@@ -76,18 +45,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
       submitLabel={submitText}
       FormHandling={handleSubmit(disableWhileSubmitting)}
     >
-      {fields.map(({ key, label, placeholder, required, type }) =>
-        type == 'textarea' ? (
-          <TextArea
-            key={key}
-            label={label}
-            placeholder={placeholder}
-            {...register(key)}
-            isRequired={required}
-            isDisabled={loading}
-          />
-        ) : (
-          <Input
+      {fields.map(({ key, label, placeholder, required, type }) => {
+        const Component = fieldTypeToComponent(type);
+        const error = errors[key]?.message;
+        return (
+          <Component
             key={key}
             label={label}
             placeholder={placeholder}
@@ -95,9 +57,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = (props) => {
             type={type}
             isRequired={required}
             isDisabled={loading}
+            error={error}
           />
-        ),
-      )}
+        );
+      })}
       <FormControl>
         <Flex>
           <FormLabel htmlFor="auto_subscribe">

@@ -45,6 +45,12 @@ export const NewChapterPage: NextPageWithLayout = () => {
         title: `Chapter "${chapterData.createChapter.name}" created!`,
         status: 'success',
       });
+      if (!chapterData.createChapter.has_calendar) {
+        toast({
+          title: 'Calendar for chapter was not created.',
+          status: 'warning',
+        });
+      }
     }
   };
 

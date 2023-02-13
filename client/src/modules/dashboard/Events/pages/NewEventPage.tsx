@@ -60,6 +60,9 @@ export const NewEventPage: NextPageWithLayout<{
         title: `Event "${eventData.createEvent.name}" created!`,
         status: 'success',
       });
+      if (!eventData.createEvent.has_calendar_event) {
+        toast({ title: 'Calendar event was not created.', status: 'warning' });
+      }
     }
   };
 

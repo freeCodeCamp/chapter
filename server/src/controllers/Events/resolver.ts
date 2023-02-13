@@ -647,11 +647,15 @@ export class EventResolver {
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id) {
-      await createCalendarEventHelper({
+      const calendarCreation = await createCalendarEventHelper({
         attendeeEmails: attendEvent ? [ctx.user.email] : [],
         calendarId: chapter.calendar_id,
         event,
       });
+      return {
+        ...event,
+        calendar_event_id: calendarCreation?.calendar_event_id,
+      };
     }
 
     return event;

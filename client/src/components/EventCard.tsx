@@ -1,3 +1,4 @@
+import { LockIcon } from '@chakra-ui/icons';
 import { Tag, Box, Flex, Image, Grid, GridItem, Text } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { isPast } from 'date-fns';
@@ -35,6 +36,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           maxWidth={'8em'}
           maxH={'2em'}
         >
+          <LockIcon marginRight=".25rem" />
           Invite only
         </Tag>
       )}
@@ -93,9 +95,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <Image
           width="100%"
           height="100%"
-          src={event.image_url}
+          src={
+            event.image_url ||
+            'https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg'
+          }
           fit="cover"
           fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+          fallbackStrategy="onError"
         />
       </Box>
       <Box p="3" py={3} width="full" data-cy="event-card">

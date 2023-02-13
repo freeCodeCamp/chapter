@@ -60,7 +60,7 @@ export const EVENT = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {

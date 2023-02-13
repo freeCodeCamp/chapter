@@ -90,7 +90,7 @@ export class UserWithPermissionsResolver {
         },
         user_events: {
           include: {
-            rsvp: true,
+            attendance: true,
             event_role: {
               include: {
                 event_role_permissions: {

@@ -11,6 +11,7 @@ import {
   ListItem,
   Spinner,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -32,10 +33,10 @@ import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
 import {
-  useCancelRsvpMutation,
+  useCancelAttendanceMutation,
   useEventQuery,
   useJoinChapterMutation,
-  useRsvpToEventMutation,
+  useAttendEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
@@ -59,9 +60,9 @@ export const EventPage: NextPage = () => {
   };
 
   const [attendEvent, { loading: loadingAttend }] =
-    useRsvpToEventMutation(refetch);
+    useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
-    useCancelRsvpMutation(refetch);
+    useCancelAttendanceMutation(refetch);
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);
@@ -85,7 +86,7 @@ export const EventPage: NextPage = () => {
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );
-  const attendanceStatus = eventUser?.rsvp.name;
+  const attendanceStatus = eventUser?.attendance.name;
   const isLoading = loading || loadingUser;
   const canShowConfirmationModal =
     router.query?.confirm_attendance && !isLoading;
@@ -200,7 +201,7 @@ export const EventPage: NextPage = () => {
       const eventUser = data?.event?.event_users.find(
         ({ user: event_user }) => event_user.id === user?.id,
       );
-      if (!isAlreadyAttending(eventUser?.rsvp.name)) onAttend();
+      if (!isAlreadyAttending(eventUser?.attendance.name)) onAttend();
     }
   }, [awaitingLogin, isLoggedIn]);
 
@@ -253,10 +254,10 @@ export const EventPage: NextPage = () => {
   }
 
   const attendees = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'yes',
+    ({ attendance }) => attendance.name === 'yes',
   );
   const waitlist = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'waitlist',
+    ({ attendance }) => attendance.name === 'waitlist',
   );
 
   const startAt = formatDate(data.event.start_at);
@@ -288,7 +289,11 @@ export const EventPage: NextPage = () => {
           </Box>
         )}
         <Flex alignItems={'center'}>
-          {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+          {data.event.invite_only && (
+            <Tooltip label="Invite only">
+              <LockIcon fontSize={'2xl'} />
+            </Tooltip>
+          )}
           <Heading as="h1">{data.event.name}</Heading>
         </Flex>
         {data.event.canceled && (

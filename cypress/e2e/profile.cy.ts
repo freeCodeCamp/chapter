@@ -89,7 +89,7 @@ describe('profile page', () => {
       }).check({ force: true });
 
       cy.joinChapter(chapterIdToJoin);
-      cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
+      cy.attendEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
       cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) => {
         checkSubscription({
           userName: users.testUser.name,
@@ -113,7 +113,7 @@ describe('profile page', () => {
       cy.leaveChapter(chapterIdToJoin);
       cy.joinChapter(chapterIdToJoin);
 
-      cy.rsvpToEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
+      cy.attendEvent({ eventId: eventIdToJoin, chapterId: chapterIdToJoin });
       cy.task<EventUsers>('getEventUsers', eventIdToJoin).then((eventUsers) =>
         checkSubscription({
           userName: users.testUser.name,

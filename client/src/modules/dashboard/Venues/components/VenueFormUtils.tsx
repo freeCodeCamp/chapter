@@ -1,18 +1,16 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import {
-  IsLatitude,
-  IsLongitude,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import type {
   VenueQuery,
   VenueInputs,
   ChapterQuery,
 } from '../../../../generated/graphql';
-import { IsNonEmptyString } from '../../../util/form';
+import {
+  IsNonEmptyString,
+  IsOptionalLatitude,
+  IsOptionalLongitude,
+} from '../../../util/form';
 
 export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
 
@@ -66,16 +64,10 @@ export class Venue {
   @IsNonEmptyString()
   country: string;
 
-  @IsOptional()
-  @IsLatitude({
-    message: '$property should be between -90 and +90',
-  })
+  @IsOptionalLatitude()
   latitude?: number | null;
 
-  @IsOptional()
-  @IsLongitude({
-    message: '$property should be between -180 and +180',
-  })
+  @IsOptionalLongitude()
   longitude?: number | null;
 }
 

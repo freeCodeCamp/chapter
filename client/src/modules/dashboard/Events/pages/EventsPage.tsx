@@ -53,7 +53,7 @@ const FilterEvents = ({
 
 export const EventsPage: NextPageWithLayout = () => {
   const [hideCanceled, setHideCanceled] = useState(true);
-  const [hideRecent, setHideRecent] = useState(true);
+  const [hideEnded, setHideEnded] = useState(true);
 
   const { error, loading, data } = useDashboardEventsQuery();
 
@@ -63,13 +63,13 @@ export const EventsPage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
 
   let filteredEvents = data.dashboardEvents;
-  if (hideCanceled && hideRecent) {
+  if (hideCanceled && hideEnded) {
     const notCanceledEvent = filteredEvents.filter(({ canceled }) => !canceled);
     const onGoingAndNotCanceledEvents = notCanceledEvent.filter(
       ({ ends_at }) => !isPast(new Date(ends_at)),
     );
     filteredEvents = onGoingAndNotCanceledEvents;
-  } else if (hideRecent) {
+  } else if (hideEnded) {
     const onGoingEvents = filteredEvents.filter(
       ({ ends_at }) => !isPast(new Date(ends_at)),
     );
@@ -96,10 +96,10 @@ export const EventsPage: NextPageWithLayout = () => {
           gridColumn={{ base: '1 / -1', md: '1 / 3', lg: '2 / 3' }}
         >
           <FilterEvents
-            defaultChecked={hideRecent}
-            setFilterEvent={setHideRecent}
-            filterLabel="Hide recent events"
-            id={'hide-recent-events'}
+            defaultChecked={hideEnded}
+            setFilterEvent={setHideEnded}
+            filterLabel="Hide events that have ended"
+            id={'hide-ended-events'}
           />
         </Flex>
         <Flex

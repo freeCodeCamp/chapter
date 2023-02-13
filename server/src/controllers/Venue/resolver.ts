@@ -138,19 +138,18 @@ export class VenueResolver {
       where: { id: id },
     });
 
-    const eventList = (event: events[], currentUserId: number) => {
+    const eventList = (event: events[], currentUserId: number) =>
       event.map(
         ({ name, id }) => `
       <tr>
-      <td>${name}</td>
-      <td>${eventUnsubscribeOptions({
-        eventId: id,
-        userId: currentUserId,
-      })}</td>
-     </tr>
-  `,
+        <td>${name}</td>
+        <td>${eventUnsubscribeOptions({
+          eventId: id,
+          userId: currentUserId,
+        })}</td>
+      </tr>
+      `,
       );
-    };
     const emailSubject = `Events hosted at ${venue.name} won't be hosted there anymore`;
     const emailContent = (
       event: events[],
@@ -158,7 +157,7 @@ export class VenueResolver {
     ) => `The events related to ${
       venue.name
     } won't be host locally anymore.<br />
-    <table>
+  <table>
     <thead>
         <tr>
           <th>Event</th>
@@ -166,9 +165,9 @@ export class VenueResolver {
         </tr>
     </thead>
     <tbody>
-       ${eventList(event, currentUserId)}
+      ${eventList(event, currentUserId).join('')}
     </tbody>
-</table>`;
+  </table>`;
 
     for (const { email, id: currentUserId, user_events } of users) {
       const events = user_events.map(({ event }) => event);

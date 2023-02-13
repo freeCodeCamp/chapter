@@ -8,13 +8,15 @@ import {
   venues,
 } from '@prisma/client';
 import {
-  Resolver,
-  Query,
   Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
   Int,
   Mutation,
-  Ctx,
-  Authorized,
+  Query,
+  Resolver,
+  Root,
 } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
@@ -224,8 +226,13 @@ const getNameForNewAttendance = (event: EventAttendanceName) => {
   return event.invite_only || waitlist ? 'waitlist' : 'yes';
 };
 
-@Resolver()
+@Resolver(() => Event)
 export class EventResolver {
+  @FieldResolver(() => Boolean)
+  has_calendar_event(@Root() event: Event) {
+    return typeof event.calendar_event_id === 'string';
+  }
+
   @Query(() => PaginatedEventsWithTotal)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,

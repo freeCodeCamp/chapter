@@ -211,7 +211,7 @@ export const EventPage: NextPageWithLayout = () => {
               <Text>Event created in calendar:</Text>
               {loadingCalendar ? (
                 <Spinner size="sm" />
-              ) : data.dashboardEvent.calendar_event_id ? (
+              ) : data.dashboardEvent.has_calendar_event ? (
                 <CheckIcon boxSize="5" />
               ) : (
                 <CloseIcon boxSize="4" />

@@ -36,7 +36,7 @@ export const DASHBOARD_EVENT = gql`
       start_at
       ends_at
       image_url
-      calendar_event_id
+      has_calendar_event
       chapter {
         id
         name

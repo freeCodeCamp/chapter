@@ -168,11 +168,11 @@ export type CreateSponsorInputs = {
 
 export type Event = {
   __typename?: 'Event';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -267,12 +267,12 @@ export type EventUserWithRolePermissions = {
 
 export type EventWithChapter = {
   __typename?: 'EventWithChapter';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -285,13 +285,13 @@ export type EventWithChapter = {
 
 export type EventWithRelationsWithEventUser = {
   __typename?: 'EventWithRelationsWithEventUser';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   event_users: Array<EventUserWithAttendanceAndUser>;
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -306,13 +306,13 @@ export type EventWithRelationsWithEventUser = {
 
 export type EventWithRelationsWithEventUserRelations = {
   __typename?: 'EventWithRelationsWithEventUserRelations';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   event_users: Array<EventUserWithRelations>;
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -327,11 +327,11 @@ export type EventWithRelationsWithEventUserRelations = {
 
 export type EventWithVenue = {
   __typename?: 'EventWithVenue';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -1060,6 +1060,7 @@ export type CreateChapterMutation = {
     region: string;
     country: string;
     chat_url?: string | null;
+    has_calendar: boolean;
   };
 };
 
@@ -1263,6 +1264,7 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    has_calendar_event: boolean;
   };
 };
 
@@ -1295,7 +1297,7 @@ export type CreateCalendarEventMutation = {
   createCalendarEvent: {
     __typename?: 'Event';
     id: number;
-    calendar_event_id?: string | null;
+    has_calendar_event: boolean;
   };
 };
 
@@ -1391,7 +1393,7 @@ export type DashboardEventQuery = {
     start_at: any;
     ends_at: any;
     image_url: string;
-    calendar_event_id?: string | null;
+    has_calendar_event: boolean;
     venue_type: VenueType;
     chapter: {
       __typename?: 'Chapter';
@@ -2665,6 +2667,7 @@ export const CreateChapterDocument = gql`
       region
       country
       chat_url
+      has_calendar
     }
   }
 `;
@@ -3430,6 +3433,7 @@ export const CreateEventDocument = gql`
       url
       streaming_url
       capacity
+      has_calendar_event
     }
   }
 `;
@@ -3540,7 +3544,7 @@ export const CreateCalendarEventDocument = gql`
   mutation createCalendarEvent($eventId: Int!) {
     createCalendarEvent(id: $eventId) {
       id
-      calendar_event_id
+      has_calendar_event
     }
   }
 `;
@@ -3925,7 +3929,7 @@ export const DashboardEventDocument = gql`
       start_at
       ends_at
       image_url
-      calendar_event_id
+      has_calendar_event
       chapter {
         id
         name

@@ -51,7 +51,6 @@ export class Event extends BaseObject {
   @Field(() => String)
   image_url: string;
 
-  @Field(() => String, { nullable: true })
   calendar_event_id?: string | null;
 }
 

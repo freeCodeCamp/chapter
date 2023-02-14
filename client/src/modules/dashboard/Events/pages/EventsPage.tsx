@@ -52,8 +52,8 @@ const FilterEvents = ({
 };
 
 export const EventsPage: NextPageWithLayout = () => {
-  const [hideCanceled, setHideCanceled] = useState(true);
-  const [hideEnded, setHideEnded] = useState(true);
+  const [hideCanceled, setHideCanceled] = useState(false);
+  const [hideEnded, setHideEnded] = useState(false);
 
   const { error, loading, data } = useDashboardEventsQuery();
 

@@ -62,7 +62,7 @@ const createEvents = async (
       description: lorem.words(),
       url: internet.url(),
       venue_type: venueType,
-      capacity: random(1000),
+      capacity: 10 + random(1000),
       canceled: canceled[i],
       // Setting the first event to be open, so that we can test the user attend flow
       invite_only: i == 0 ? false : inviteOnly[i],

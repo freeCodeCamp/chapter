@@ -28,9 +28,10 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isDirty, errors },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues,
+    mode: 'all',
     resolver,
   });
 
@@ -77,7 +78,7 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
           type="submit"
           isLoading={loading}
           loadingText={loadingText}
-          isDisabled={!isDirty || loading}
+          isDisabled={!isDirty || loading || !isValid}
         >
           {submitText}
         </Button>

@@ -5,6 +5,7 @@ import { prisma } from '../prisma';
 import { Event } from '../graphql-types';
 import { createCalendarEvent } from '../services/Google';
 import mailerService from '../services/MailerService';
+import { invalidTokenNotification } from '../email-templates';
 import { redactSecrets } from './redact-secrets';
 import { isOnline } from './venue';
 
@@ -67,10 +68,10 @@ export const sendInvalidTokenNotification = async () => {
   });
 
   const emailList = users.map(({ email }) => email);
+  const { subject, emailText } = invalidTokenNotification();
   await mailerService.sendEmail({
     emailList,
-    subject: 'Token marked as invalid',
-    htmlEmail:
-      "One of the calendar actions was unsuccessful due to issues with validity of the saved authentication token. It's required to reauthenticate with calendar api in the Calendar dashboard.",
+    subject,
+    htmlEmail: emailText,
   });
 };

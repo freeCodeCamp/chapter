@@ -33,12 +33,13 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     venue,
   );
   const {
-    formState: { isDirty, errors },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     register,
   } = useForm<VenueFormData>({
     defaultValues,
-    resolver: resolver,
+    mode: 'all',
+    resolver,
   });
 
   const { loading, disableWhileSubmitting } =
@@ -91,7 +92,7 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         variant="solid"
         colorScheme="blue"
         type="submit"
-        isDisabled={!isDirty}
+        isDisabled={!isDirty || loading || !isValid}
         isLoading={loading}
         loadingText={loadingText}
       >

@@ -27,6 +27,7 @@ import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { removeEventAttendee } from '../../services/Google';
 import { redactSecrets } from '../../util/redact-secrets';
 import mailerService from '../../../src/services/MailerService';
+import { integrationStatus } from '../../util/calendar';
 import { chapterUserRoleChange } from '../../email-templates';
 
 const chapterUsersInclude = {
@@ -92,6 +93,9 @@ async function removeUserFromEventsInChapter({
     );
     return;
   }
+  const calendarStatus = await integrationStatus();
+  if (!calendarStatus) return;
+
   const calendarUpdates = eventsWithCalendars.map(
     async ({ calendar_event_id, chapter: { calendar_id } }) => {
       if (calendar_event_id && calendar_id) {

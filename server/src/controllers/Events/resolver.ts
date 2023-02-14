@@ -49,7 +49,10 @@ import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
-import { createCalendarEventHelper } from '../../util/calendar';
+import {
+  createCalendarEventHelper,
+  integrationStatus,
+} from '../../util/calendar';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { redactSecrets } from '../../util/redact-secrets';
 import {
@@ -414,7 +417,7 @@ export class EventResolver {
 
     const calendarEventId = event.calendar_event_id;
     const calendarId = event.chapter.calendar_id;
-    if (calendarId && calendarEventId) {
+    if (calendarId && calendarEventId && (await integrationStatus())) {
       try {
         await addEventAttendee(
           { calendarId, calendarEventId },
@@ -498,7 +501,7 @@ export class EventResolver {
     const calendarId = event.chapter.calendar_id;
     const calendarEventId = event.calendar_event_id;
 
-    if (calendarId && calendarEventId) {
+    if (calendarId && calendarEventId && (await integrationStatus())) {
       try {
         await cancelEventAttendance(
           { calendarId, calendarEventId },
@@ -541,7 +544,7 @@ export class EventResolver {
     const calendarId = updatedUser.event.chapter.calendar_id;
     const calendarEventId = updatedUser.event.calendar_event_id;
 
-    if (calendarId && calendarEventId) {
+    if (calendarId && calendarEventId && (await integrationStatus())) {
       try {
         await addEventAttendee(
           { calendarId, calendarEventId },
@@ -579,7 +582,7 @@ export class EventResolver {
     const calendarId = event.chapter.calendar_id;
     const calendarEventId = event.calendar_event_id;
 
-    if (calendarId && calendarEventId) {
+    if (calendarId && calendarEventId && (await integrationStatus())) {
       try {
         await removeEventAttendee(
           { calendarId, calendarEventId },
@@ -655,7 +658,7 @@ export class EventResolver {
     });
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
-    if (chapter.calendar_id) {
+    if (chapter.calendar_id && (await integrationStatus())) {
       await createCalendarEventHelper({
         attendeeEmails: attendEvent ? [ctx.user.email] : [],
         calendarId: chapter.calendar_id,
@@ -673,7 +676,8 @@ export class EventResolver {
       where: { id },
       include: { chapter: true, event_users: { include: { user: true } } },
     });
-    if (event.calendar_event_id) return event;
+    const calendarStatus = await integrationStatus();
+    if (event.calendar_event_id || !calendarStatus) return event;
     if (!event.chapter.calendar_id) {
       throw Error(
         'Calendar events cannot be created when chapter does not have a Google calendar',
@@ -748,7 +752,11 @@ export class EventResolver {
     }
 
     // TODO: warn the user if the any calendar ids are missing
-    if (updatedEvent.chapter.calendar_id && updatedEvent.calendar_event_id) {
+    if (
+      updatedEvent.chapter.calendar_id &&
+      updatedEvent.calendar_event_id &&
+      (await integrationStatus())
+    ) {
       const createMeet =
         isOnline(updatedEvent.venue_type) && !isOnline(event.venue_type);
       const removeMeet =
@@ -814,7 +822,11 @@ export class EventResolver {
         });
       }
     }
-    if (event.chapter.calendar_id && event.calendar_event_id) {
+    if (
+      event.chapter.calendar_id &&
+      event.calendar_event_id &&
+      (await integrationStatus())
+    ) {
       try {
         // TODO: consider not awaiting. Ideally the user would see the app
         // respond immediately, but be informed of any failures later.
@@ -843,7 +855,11 @@ export class EventResolver {
       },
     });
 
-    if (event.chapter.calendar_id && event.calendar_event_id) {
+    if (
+      event.chapter.calendar_id &&
+      event.calendar_event_id &&
+      (await integrationStatus())
+    ) {
       try {
         // TODO: consider not awaiting. Ideally the user would see the app
         // respond immediately, but be informed of any failures later.

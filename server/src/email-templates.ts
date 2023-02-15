@@ -14,6 +14,9 @@ export const chapterUnsubscribeText = ({ url }: { url: string }) =>
 export const eventUnsubscribeText = ({ url }: { url: string }) =>
   `- To stop receiving notifications about this event, <a href="${url}">unsubscribe here</a>.`;
 
+export const eventListUnsubscribeText = ({ url }: { url: string }) =>
+  `<a href="${url}">Cancel attendance</a>.`;
+
 export const chapterAdminUnsubscribeText = ({ url }: { url: string }) =>
   `<a href="${url}">Unsubscribe from chapter emails</a>`;
 

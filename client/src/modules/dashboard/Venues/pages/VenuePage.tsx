@@ -1,11 +1,16 @@
-import { Heading, Text } from '@chakra-ui/layout';
+import { Button, Heading, Text } from '@chakra-ui/react';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 import { Link } from 'chakra-next-link';
+import { useConfirmDelete } from 'chakra-confirm';
+import { useRouter } from 'next/router';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
-import { useVenueQuery } from '../../../../generated/graphql';
+import {
+  useVenueQuery,
+  useDeleteVenueMutation,
+} from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import styles from '../../../../styles/Page.module.css';
@@ -13,9 +18,26 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
+import { DASHBOARD_CHAPTER } from '../../../dashboard/Chapters/graphql/queries';
+import {
+  DASHBOARD_EVENT,
+  DASHBOARD_EVENTS,
+} from '../../../dashboard/Events/graphql/queries';
 
 export const VenuePage: NextPageWithLayout = () => {
   const { param: venueId } = useParam('id');
+  const confirmDelete = useConfirmDelete();
+  const [deleteVenue] = useDeleteVenueMutation({
+    refetchQueries: [
+      { query: DASHBOARD_VENUE },
+      { query: DASHBOARD_VENUES },
+      { query: DASHBOARD_CHAPTER },
+      { query: DASHBOARD_EVENT },
+      { query: DASHBOARD_EVENTS },
+    ],
+  });
+  const router = useRouter();
 
   const { loading, error, data } = useVenueQuery({
     variables: { venueId },
@@ -25,6 +47,18 @@ export const VenuePage: NextPageWithLayout = () => {
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.venue)
     return <NextError statusCode={404} title="Venue not found" />;
+
+  const chapterId = data.venue.chapter.id;
+
+  const clickDelete = async () => {
+    const ok = await confirmDelete({
+      body: 'Are you sure you want to delete this venue? All information related to venue will be deleted. Venue deletion cannot be reversed.',
+      buttonText: 'Delete Venue',
+    });
+    if (!ok) return;
+    deleteVenue({ variables: { venueId, chapterId } });
+    router.push('/dashboard/venues');
+  };
 
   const chapter = data.venue.chapter;
 
@@ -41,6 +75,9 @@ export const VenuePage: NextPageWithLayout = () => {
             {chapter.name}
           </Link>
         </ProgressCardContent>
+        <Button marginTop="1rem" colorScheme="red" onClick={clickDelete}>
+          Delete Venue
+        </Button>
       </Card>
       <EventList
         title="Organized At The Venue"

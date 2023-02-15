@@ -19,8 +19,6 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
     onSubmit,
     data,
     submitText,
-    deleteText,
-    deleteVenue,
     chapterId,
     loadingText,
     chapterData,
@@ -98,19 +96,8 @@ const VenueForm: React.FC<VenueFormProps> = (props) => {
         isLoading={loading}
         loadingText={loadingText}
       >
-        <Button
-          colorScheme="blue"
-          type="submit"
-          isDisabled={!isDirty}
-          isLoading={loading}
-          loadingText={loadingText}
-        >
-          {submitText}
-        </Button>
-        <Button colorScheme="red" onClick={deleteVenue}>
-          {deleteText}
-        </Button>
-      </Grid>
+        {submitText}
+      </Button>
     </Form>
   );
 };

@@ -3,12 +3,10 @@ import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
 
-import { useConfirmDelete } from 'chakra-confirm';
 import {
   useVenueQuery,
   useUpdateVenueMutation,
   useChapterQuery,
-  useDeleteVenueMutation,
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -17,15 +15,10 @@ import { VenueFormData } from '../components/VenueFormUtils';
 import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { DASHBOARD_CHAPTER } from '../../../dashboard/Chapters/graphql/queries';
-import {
-  DASHBOARD_EVENT,
-  DASHBOARD_EVENTS,
-} from '../../../dashboard/Events/graphql/queries';
+import { DashboardLayout } from '../../../dashboard/shared/components/DashboardLayout';
 
 export const EditVenuePage: NextPageWithLayout = () => {
   const router = useRouter();
-  const confirmDelete = useConfirmDelete();
   const { param: venueId } = useParam('venueId');
   const { param: chapterId } = useParam('id');
 
@@ -41,15 +34,6 @@ export const EditVenuePage: NextPageWithLayout = () => {
     refetchQueries: [
       { query: DASHBOARD_VENUE, variables: { venueId } },
       { query: DASHBOARD_VENUES },
-    ],
-  });
-  const [deleteVenue] = useDeleteVenueMutation({
-    refetchQueries: [
-      { query: VENUE },
-      { query: DASHBOARD_VENUES },
-      { query: DASHBOARD_CHAPTER },
-      { query: DASHBOARD_EVENT },
-      { query: DASHBOARD_EVENTS },
     ],
   });
 
@@ -86,15 +70,6 @@ export const EditVenuePage: NextPageWithLayout = () => {
   if (!hasLoaded || errors.length) return <DashboardLoading errors={errors} />;
   if (!venueData.venue || !chapterData.chapter)
     return <NextError statusCode={404} title={'Page not found'} />;
-  const clickDelete = async () => {
-    const ok = await confirmDelete({
-      body: 'Are you sure you want to delete this venue? All information related to venue will be deleted. Venue deletion cannot be reversed.',
-      buttonText: 'Delete Venue',
-    });
-    if (!ok) return;
-    deleteVenue({ variables: { venueId, chapterId } });
-    router.push('/dashboard/venues');
-  };
 
   return (
     <VenueForm
@@ -104,8 +79,6 @@ export const EditVenuePage: NextPageWithLayout = () => {
       submitText={'Save Venue Changes'}
       chapterId={chapterId}
       loadingText={'Saving Venue Changes'}
-      deleteText={'Delete Venue'}
-      deleteVenue={clickDelete}
     />
   );
 };

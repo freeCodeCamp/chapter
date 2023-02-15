@@ -285,7 +285,13 @@ export const EventPage: NextPageWithLayout = () => {
                   // entry, so we can use the user id as the key.
                   <HStack key={user.id}>
                     <DataTable
-                      title={'Attendee: ' + attendance.name.toUpperCase()}
+                      title={
+                        {
+                          yes: 'Attendee',
+                          waitlist: 'On waitlist',
+                          no: 'Canceled',
+                        }[attendance.name]
+                      }
                       data={[users[index]]}
                       keys={['type', 'action'] as const}
                       showHeader={false}

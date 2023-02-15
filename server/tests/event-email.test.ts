@@ -2,6 +2,7 @@ import { events_venue_type_enum } from '@prisma/client';
 
 import {
   buildEmailForUpdatedEvent,
+  eventAttendanceCancelation,
   eventAttendanceConfirmation,
   eventCancelationEmail,
   eventConfirmAttendeeEmail,
@@ -303,6 +304,29 @@ Streaming URL: http://streaming.url/abcd<br />
           oldData,
         }),
       ).toMatchObject(expected);
+    });
+  });
+
+  describe('eventAttendanceCancelation', () => {
+    const data = { event: { name: 'Huel - Lynch' }, userName: 'The Owner' };
+    it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
+      const result = eventAttendanceCancelation(data);
+      expect(result).toHaveProperty('subject');
+      expect(result).toHaveProperty('emailText');
+      expect(result).toHaveProperty('attachUnsubscribe');
+      expect(result).toHaveProperty('attachUnsubscribeText');
+    });
+
+    it('should return object with expected subject', () => {
+      const expected = { subject: 'Cancelation of attendance: Huel - Lynch' };
+      expect(eventAttendanceCancelation(data)).toMatchObject(expected);
+    });
+
+    it('should return object with expected emailText for Physical & Online event', () => {
+      const expected = {
+        emailText: `Hi The Owner,<br />\nYour attendance was canceled.`,
+      };
+      expect(eventAttendanceCancelation(data)).toMatchObject(expected);
     });
   });
 });

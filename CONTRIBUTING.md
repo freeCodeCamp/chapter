@@ -493,6 +493,20 @@ We rely on renovate to update dependencies automatically.
 
 </details>
 
+<details><summary>How do I make authenticated graphql queries from Apollo Studio Explorer to Apollo Server?</summary>
+
+In order to make authenticated graphql queries from Apollo Studio(works only when running on [Gitpod](https://gitpod.io/#https://github.com/freeCodeCamp/chapter)): 
+
+- Update the `cookieSession` config to following: 
+    ```js     
+    sameSite: 'none',
+    secure: true,
+    ```
+- Enable `Include cookies` option under `Connection Settings` inside Apollo Studio
+- Login to Chapter as an admin to access authenticated queries
+
+</details>
+
 <details><summary>Where to find the issues to contribute?</summary>
 
 The repository's [contribute page](https://github.com/freeCodeCamp/chapter/contribute) is a good place to go if you are looking to get started with beginner friendly issue.

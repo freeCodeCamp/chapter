@@ -1671,7 +1671,11 @@ export type AttendEventMutationVariables = Exact<{
 
 export type AttendEventMutation = {
   __typename?: 'Mutation';
-  attendEvent: { __typename?: 'EventUserWithRelations'; updated_at: any };
+  attendEvent: {
+    __typename?: 'EventUserWithRelations';
+    updated_at: any;
+    attendance: { __typename?: 'Attendance'; name: string };
+  };
 };
 
 export type CancelAttendanceMutationVariables = Exact<{
@@ -4799,6 +4803,9 @@ export const AttendEventDocument = gql`
   mutation attendEvent($eventId: Int!, $chapterId: Int!) {
     attendEvent(eventId: $eventId, chapterId: $chapterId) {
       updated_at
+      attendance {
+        name
+      }
     }
   }
 `;

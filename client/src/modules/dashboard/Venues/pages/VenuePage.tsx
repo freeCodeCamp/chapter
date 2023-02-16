@@ -10,6 +10,7 @@ import ProgressCardContent from '../../../../components/ProgressCardContent';
 import {
   useVenueQuery,
   useDeleteVenueMutation,
+  VenueQuery,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
@@ -18,25 +19,26 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { EventList } from '../../shared/components/EventList';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { NextPageWithLayout } from '../../../../pages/_app';
-import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
+import { DASHBOARD_VENUES } from '../graphql/queries';
 import { DASHBOARD_CHAPTER } from '../../../dashboard/Chapters/graphql/queries';
 import {
   DASHBOARD_EVENT,
   DASHBOARD_EVENTS,
 } from '../../../dashboard/Events/graphql/queries';
 
+const eventRefetches = (data?: VenueQuery) => {
+  return (
+    data?.venue?.chapter.events.map(({ id: eventId }) => ({
+      query: DASHBOARD_EVENT,
+      variables: { eventId },
+    })) ?? []
+  );
+};
+
 export const VenuePage: NextPageWithLayout = () => {
   const { param: venueId } = useParam('id');
   const confirmDelete = useConfirmDelete();
-  const [deleteVenue] = useDeleteVenueMutation({
-    refetchQueries: [
-      { query: DASHBOARD_VENUE },
-      { query: DASHBOARD_VENUES },
-      { query: DASHBOARD_CHAPTER },
-      { query: DASHBOARD_EVENT },
-      { query: DASHBOARD_EVENTS },
-    ],
-  });
+  const [deleteVenue] = useDeleteVenueMutation();
   const router = useRouter();
 
   const { loading, error, data } = useVenueQuery({
@@ -56,8 +58,16 @@ export const VenuePage: NextPageWithLayout = () => {
       buttonText: 'Delete Venue',
     });
     if (!ok) return;
-    deleteVenue({ variables: { venueId, chapterId } });
-    router.push('/dashboard/venues');
+    deleteVenue({
+      variables: { venueId, chapterId },
+      refetchQueries: [
+        { query: DASHBOARD_CHAPTER, variables: { chapterId } },
+        { query: DASHBOARD_EVENTS },
+        { query: DASHBOARD_VENUES },
+        ...eventRefetches(data),
+      ],
+    });
+    router.replace('/dashboard/venues');
   };
 
   const chapter = data.venue.chapter;

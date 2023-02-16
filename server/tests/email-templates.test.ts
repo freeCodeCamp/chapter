@@ -5,6 +5,7 @@ import {
   chapterUserRoleChange,
   dateChangeText,
   eventUnsubscribeText,
+  eventListUnsubscribeText,
   instanceUserRoleChange,
   invalidTokenNotification,
   physicalLocationChangeText,
@@ -222,6 +223,13 @@ describe('email-templates', () => {
       const expected =
         '- To stop receiving notifications about this event, <a href="unsubscribe-url">unsubscribe here</a>.';
       expect(eventUnsubscribeText({ url })).toEqual(expected);
+    });
+  });
+
+  describe('eventListUnsubscribeText', () => {
+    it('should return expected text', () => {
+      const expected = '<a href="unsubscribe-url">Cancel attendance</a>.';
+      expect(eventListUnsubscribeText({ url })).toEqual(expected);
     });
   });
 

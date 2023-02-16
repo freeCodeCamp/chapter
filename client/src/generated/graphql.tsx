@@ -1604,6 +1604,16 @@ export type UpdateVenueMutation = {
   };
 };
 
+export type DeleteVenueMutationVariables = Exact<{
+  venueId: Scalars['Int'];
+  chapterId: Scalars['Int'];
+}>;
+
+export type DeleteVenueMutation = {
+  __typename?: 'Mutation';
+  deleteVenue: { __typename?: 'Venue'; id: number };
+};
+
 export type DashboardVenuesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DashboardVenuesQuery = {
@@ -4651,6 +4661,57 @@ export type UpdateVenueMutationResult =
 export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
+>;
+export const DeleteVenueDocument = gql`
+  mutation deleteVenue($venueId: Int!, $chapterId: Int!) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
+      id
+    }
+  }
+`;
+export type DeleteVenueMutationFn = Apollo.MutationFunction<
+  DeleteVenueMutation,
+  DeleteVenueMutationVariables
+>;
+
+/**
+ * __useDeleteVenueMutation__
+ *
+ * To run a mutation, you first call `useDeleteVenueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVenueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVenueMutation, { data, loading, error }] = useDeleteVenueMutation({
+ *   variables: {
+ *      venueId: // value for 'venueId'
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDeleteVenueMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteVenueMutation,
+    DeleteVenueMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteVenueMutation, DeleteVenueMutationVariables>(
+    DeleteVenueDocument,
+    options,
+  );
+}
+export type DeleteVenueMutationHookResult = ReturnType<
+  typeof useDeleteVenueMutation
+>;
+export type DeleteVenueMutationResult =
+  Apollo.MutationResult<DeleteVenueMutation>;
+export type DeleteVenueMutationOptions = Apollo.BaseMutationOptions<
+  DeleteVenueMutation,
+  DeleteVenueMutationVariables
 >;
 export const DashboardVenuesDocument = gql`
   query dashboardVenues {

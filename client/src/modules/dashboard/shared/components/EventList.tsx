@@ -1,7 +1,17 @@
-import { Flex, Grid, Heading, Tag, Text } from '@chakra-ui/react';
+import {
+  Flex,
+  Grid,
+  Heading,
+  Tag,
+  Text,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from '@chakra-ui/react';
 import React from 'react';
 
-import { LinkButton } from 'chakra-next-link';
 import { LockIcon } from '@chakra-ui/icons';
 
 interface Event {
@@ -27,7 +37,18 @@ export const EventList = ({ events, emptyText, title }: Props) => {
         <Grid gap="2em">
           {events.map(({ canceled, id, invite_only, name }) => (
             <Flex justifyContent="space-between" key={id}>
-              <LinkButton href={`/dashboard/events/${id}`}>{name}</LinkButton>
+              <Menu>
+                <MenuButton as={Button}>{name}</MenuButton>
+                <MenuList minWidth="200">
+                  <MenuItem as="a" href={`/dashboard/events/${id}`}>
+                    Event dashboard
+                  </MenuItem>
+                  <MenuItem as="a" href={`/events/${id}`}>
+                    Event page
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+
               <Flex marginTop="1" gap="1em">
                 {invite_only && (
                   <Tag

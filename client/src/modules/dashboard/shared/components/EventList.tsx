@@ -1,17 +1,7 @@
-import {
-  Flex,
-  Grid,
-  Heading,
-  Tag,
-  Text,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-} from '@chakra-ui/react';
+import { Flex, Grid, Heading, Tag, Text } from '@chakra-ui/react';
 import React from 'react';
 
+import { LinkButton } from 'chakra-next-link';
 import { LockIcon } from '@chakra-ui/icons';
 
 interface Event {
@@ -20,13 +10,11 @@ interface Event {
   invite_only: boolean;
   name: string;
 }
-
 interface Props {
   events: Event[];
   emptyText?: string;
   title: string;
 }
-
 export const EventList = ({ events, emptyText, title }: Props) => {
   return (
     <>
@@ -36,20 +24,9 @@ export const EventList = ({ events, emptyText, title }: Props) => {
       {events.length > 0 ? (
         <Grid gap="2em">
           {events.map(({ canceled, id, invite_only, name }) => (
-            <Flex justifyContent="space-between" key={id}>
-              <Menu>
-                <MenuButton as={Button}>{name}</MenuButton>
-                <MenuList minWidth="200">
-                  <MenuItem as="a" href={`/dashboard/events/${id}`}>
-                    Event dashboard
-                  </MenuItem>
-                  <MenuItem as="a" href={`/events/${id}`}>
-                    Event page
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-
-              <Flex marginTop="1" gap="1em">
+            <Grid gap="1rem" key={id} gridTemplateColumns="repeat(4, 1fr)">
+              <Flex marginTop="1" gap="3em" gridColumn="1 / -1">
+                <Text>{name}</Text>
                 {invite_only && (
                   <Tag
                     borderRadius="lg"
@@ -78,7 +55,21 @@ export const EventList = ({ events, emptyText, title }: Props) => {
                   </Tag>
                 )}
               </Flex>
-            </Flex>
+              <LinkButton
+                gridRow="2"
+                gridColumn={{ base: '1/ -1', md: '1/3', xl: '1/2' }}
+                href={`/dashboard/events/${id}`}
+              >
+                {name} dashboard
+              </LinkButton>
+              <LinkButton
+                gridRow={{ base: '3', md: '2' }}
+                gridColumn={{ base: '1/ -1', md: '-3/ -1', xl: '2/3' }}
+                href={`/events/${id}`}
+              >
+                {name} homepage
+              </LinkButton>
+            </Grid>
           ))}
         </Grid>
       ) : (

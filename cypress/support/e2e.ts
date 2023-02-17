@@ -34,33 +34,33 @@ declare global {
       updateChapter(chapterId: number, data): Chainable<any>;
 
       /**
-       * Confirm rsvp of user with userId for the event with eventId
+       * Confirm attendee with userId for the event with eventId
        * @param eventId Id of the event
        * @param userId Id of the user
        */
-      confirmRsvp(eventId: number, userId: number): Chainable<any>;
+      confirmAttendee(eventId: number, userId: number): Chainable<any>;
 
       /**
-       * Delete rsvp of user with userId for the event with eventId
+       * Delete attendee with userId for the event with eventId
        * @param eventId Id of the event
        * @param userId Id of the user
        */
-      deleteRsvp(eventId: number, userId: number): Chainable<any>;
+      deleteAttendee(eventId: number, userId: number): Chainable<any>;
 
       /**
-       * Delete rsvp of user with userId for the event with eventId
+       * Update event with eventId using data
        * @param eventId Id of the event
        * @param data data object of the event
        */
       updateEvent(eventId: number, data): Chainable<any>;
 
       /**
-       * Rsvp to event with eventId and chapterId
+       * Attend event with eventId and chapterId
        * @param eventId Id of the event
        * @param chapterId Id of the chapter
        * @param {object} [options={ withAuth: boolean }] Optional options object.
        */
-      rsvpToEvent(
+      attendEvent(
         { eventId, chapterId }: { eventId: number; chapterId: number },
         options?: { withAuth: boolean },
       ): Chainable<any>;

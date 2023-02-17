@@ -7,6 +7,7 @@ import { Permission } from '../../../../common/permissions';
 import { InstanceRoles } from '../../../../common/roles';
 import { getRoleName } from '../../util/chapterAdministrator';
 import mailerService from '../../../src/services/MailerService';
+import { instanceUserRoleChange } from '../../email-templates';
 
 const instanceRoleInclude = {
   instance_role: {
@@ -57,13 +58,15 @@ export class UsersResolver {
     const oldRole = user.instance_role.name;
     if (oldRole === newRole) return user;
 
-    const emailSubject = `Instance role changed`;
-    const emailContent = `Hello, ${user.name}.<br />
-    Your instance role has been changed to ${newRole}.`;
+    const { subject, emailText } = instanceUserRoleChange({
+      name: user.name,
+      newRole,
+    });
+
     await mailerService.sendEmail({
       emailList: [user.email],
-      subject: emailSubject,
-      htmlEmail: emailContent,
+      subject,
+      htmlEmail: emailText,
     });
 
     return await prisma.users.update({

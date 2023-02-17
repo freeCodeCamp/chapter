@@ -10,11 +10,12 @@ import {
 } from '../../../../generated/graphql';
 
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import { DashboardLayout } from '../../shared/components/DashboardLayout';
-import VenueForm, { VenueFormData } from '../components/VenueForm';
+import VenueForm from '../components/VenueForm';
+import { VenueFormData } from '../components/VenueFormUtils';
 import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { DashboardLayout } from '../../../dashboard/shared/components/DashboardLayout';
 
 export const EditVenuePage: NextPageWithLayout = () => {
   const router = useRouter();

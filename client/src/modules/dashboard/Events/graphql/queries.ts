@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const DASHBOARD_EVENTS = gql`
-  query dashboardEvents($showCanceled: Boolean) {
-    dashboardEvents(showCanceled: $showCanceled) {
+  query dashboardEvents {
+    dashboardEvents {
       id
       name
       canceled
@@ -62,7 +62,7 @@ export const DASHBOARD_EVENT = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {

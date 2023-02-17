@@ -27,6 +27,8 @@ import { updateWaitlistForUserRemoval } from '../../util/waitlist';
 import { removeEventAttendee } from '../../services/Google';
 import { redactSecrets } from '../../util/redact-secrets';
 import mailerService from '../../../src/services/MailerService';
+import { integrationStatus } from '../../util/calendar';
+import { chapterUserRoleChange } from '../../email-templates';
 
 const chapterUsersInclude = {
   chapter_role: {
@@ -55,9 +57,12 @@ async function removeUserFromEventsInChapter({
     },
     include: {
       event: {
-        include: { chapter: true, event_users: { include: { rsvp: true } } },
+        include: {
+          chapter: true,
+          event_users: { include: { attendance: true } },
+        },
       },
-      rsvp: true,
+      attendance: true,
     },
   });
   await prisma.event_users.deleteMany({
@@ -68,7 +73,7 @@ async function removeUserFromEventsInChapter({
   });
 
   const eventsAttended = eventUsers
-    .filter(({ rsvp: { name } }) => name === 'yes')
+    .filter(({ attendance: { name } }) => name === 'yes')
     .map(({ event }) => event);
 
   await Promise.all(
@@ -88,6 +93,9 @@ async function removeUserFromEventsInChapter({
     );
     return;
   }
+  const calendarStatus = await integrationStatus();
+  if (!calendarStatus) return;
+
   const calendarUpdates = eventsWithCalendars.map(
     async ({ calendar_event_id, chapter: { calendar_id } }) => {
       if (calendar_event_id && calendar_id) {
@@ -124,8 +132,8 @@ interface Args {
 
 type EmailProps = {
   email: string[];
-  emailSubject: string;
-  emailBody: string;
+  subject: string;
+  emailText: string;
 };
 
 async function updateInstanceRoleForChapterRoleChange({
@@ -150,13 +158,13 @@ async function updateInstanceRoleForChapterRoleChange({
 }
 async function emailUserAboutRoleChange({
   email,
-  emailSubject,
-  emailBody,
+  subject,
+  emailText,
 }: EmailProps) {
   await mailerService.sendEmail({
     emailList: email,
-    subject: emailSubject,
-    htmlEmail: emailBody,
+    subject,
+    htmlEmail: emailText,
   });
 }
 
@@ -295,21 +303,23 @@ export class ChapterUserResolver {
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
 
-    const subject = `Role changed in ${chapterUser.chapter.name}`;
-    const body = `Hi ${chapterUser.user.name}.<br />
-    Your role in chapter ${chapterUser.chapter.name} has been changed from ${oldChapterRole} to ${newChapterRole}.<br />
-    `;
-
     await updateInstanceRoleForChapterRoleChange({
       changedChapterId: chapterId,
       newChapterRole,
       user: chapterUser.user,
     });
 
+    const { subject, emailText } = chapterUserRoleChange({
+      chapterName: chapterUser.chapter.name,
+      userName: chapterUser.user.name,
+      oldChapterRole,
+      newChapterRole,
+    });
+
     await emailUserAboutRoleChange({
       email: [chapterUser.user.email],
-      emailSubject: subject,
-      emailBody: body,
+      subject,
+      emailText,
     });
 
     return updatedChapterUser;

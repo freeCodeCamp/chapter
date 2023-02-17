@@ -23,15 +23,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isLoggedIn: false,
   });
   const { loading: loadingMe, error, data: meData } = useMeQuery();
-  const { isAuthenticated } = useSession();
+  const { logout, isAuthenticated } = useSession();
 
   useEffect(() => {
-    if (!loadingMe && !error && meData)
+    if (!loadingMe && !error && meData) {
       setData({
         user: meData.me,
         loadingUser: false,
         isLoggedIn: !!meData.me,
       });
+    } else if (error) {
+      setData({ loadingUser: false, isLoggedIn: false });
+      logout();
+    }
   }, [loadingMe, error, meData, isAuthenticated]);
 
   return (

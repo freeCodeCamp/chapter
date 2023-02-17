@@ -1,18 +1,18 @@
 import {
-  Box,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Radio,
   RadioGroup,
-  Select,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { ChapterVenuesQueryResult } from '../../../../generated/graphql';
 
 import { Input } from '../../../../components/Form/Input';
+import { Select } from '../../../../components/Form/Select';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import { venueTypes } from './EventFormUtils';
 
@@ -29,7 +29,13 @@ const EventVenueForm: React.FC<EventVenueFormProps> = ({
 }) => {
   const { loading, error, data } = chapterVenuesQuery;
 
-  const { getValues, register, resetField, watch } = useFormContext();
+  const {
+    getValues,
+    register,
+    resetField,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const venueType = watch('venue_type');
 
   useEffect(() => {
@@ -38,23 +44,34 @@ const EventVenueForm: React.FC<EventVenueFormProps> = ({
     });
   }, [data]);
 
+  const getError = useCallback(
+    (key: string) => {
+      return errors[key]?.message as string;
+    },
+    [errors],
+  );
+
   return (
-    <FormControl isRequired marginBlock="1em">
-      <FormLabel>Venue Type (Required)</FormLabel>
-      <RadioGroup defaultValue={venueType}>
-        <HStack>
-          {venueTypes.map((venueType) => (
-            <Radio
-              key={venueType.value}
-              value={venueType.value}
-              isDisabled={loadingForm}
-              {...register('venue_type')}
-            >
-              {venueType.name}
-            </Radio>
-          ))}
-        </HStack>
-      </RadioGroup>
+    <>
+      <FormControl isRequired isInvalid={!!getError('venue_type')}>
+        <FormLabel>Venue Type</FormLabel>
+        <RadioGroup defaultValue={venueType}>
+          <HStack>
+            {venueTypes.map((venueType) => (
+              <Radio
+                key={venueType.value}
+                value={venueType.value}
+                isDisabled={loadingForm}
+                isInvalid={!!getError('venue_type')}
+                {...register('venue_type')}
+              >
+                {venueType.name}
+              </Radio>
+            ))}
+          </HStack>
+        </RadioGroup>
+        <FormErrorMessage>{getError('venue_type')}</FormErrorMessage>
+      </FormControl>
 
       {loading ? (
         <h1>Loading venues...</h1>
@@ -62,36 +79,36 @@ const EventVenueForm: React.FC<EventVenueFormProps> = ({
         <h1>Error loading venues</h1>
       ) : (
         isPhysical(getValues('venue_type')) && (
-          <FormControl isRequired marginBlock="1em">
-            <FormLabel>Venue</FormLabel>
-            <Select
-              {...register('venue_id' as const, { valueAsNumber: true })}
-              isDisabled={loadingForm}
-            >
-              <option value={0}>Undecided/TBD</option>
-              {data.chapterVenues.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+          <Select
+            label="Venue"
+            key="venue_id"
+            isRequired={true}
+            isDisabled={loadingForm}
+            error={getError('venue_id')}
+            options={[
+              { id: 0, name: 'Undecided/TBD' },
+              ...data.chapterVenues.map((venue) => ({
+                id: venue.id,
+                name: venue.name,
+              })),
+            ]}
+            {...register('venue_id')}
+          />
         )
       )}
 
-      <Box marginTop="1em">
-        {isOnline(getValues('venue_type')) && (
-          <Input
-            key="streaming url"
-            type="url"
-            label="Streaming URL"
-            placeholder=""
-            isDisabled={loadingForm}
-            {...register('streaming_url')}
-          />
-        )}
-      </Box>
-    </FormControl>
+      {isOnline(getValues('venue_type')) && (
+        <Input
+          key="streaming url"
+          type="url"
+          label="Streaming URL"
+          placeholder=""
+          error={getError('streaming_url')}
+          isDisabled={loadingForm}
+          {...register('streaming_url')}
+        />
+      )}
+    </>
   );
 };
 

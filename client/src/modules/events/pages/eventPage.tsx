@@ -11,6 +11,7 @@ import {
   ListItem,
   Spinner,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -32,10 +33,10 @@ import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
 import {
-  useCancelRsvpMutation,
+  useCancelAttendanceMutation,
   useEventQuery,
   useJoinChapterMutation,
-  useRsvpToEventMutation,
+  useAttendEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
@@ -47,7 +48,7 @@ export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user, loadingUser, isLoggedIn } = useUser();
-  const { login } = useSession();
+  const { login, error: loginError } = useSession();
   const modalProps = useDisclosure();
 
   const refetch = {
@@ -59,9 +60,9 @@ export const EventPage: NextPage = () => {
   };
 
   const [attendEvent, { loading: loadingAttend }] =
-    useRsvpToEventMutation(refetch);
+    useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
-    useCancelRsvpMutation(refetch);
+    useCancelAttendanceMutation(refetch);
   const [joinChapter] = useJoinChapterMutation(refetch);
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);
@@ -85,7 +86,7 @@ export const EventPage: NextPage = () => {
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );
-  const attendanceStatus = eventUser?.rsvp.name;
+  const attendanceStatus = eventUser?.attendance.name;
   const isLoading = loading || loadingUser;
   const canShowConfirmationModal =
     router.query?.confirm_attendance && !isLoading;
@@ -113,12 +114,17 @@ export const EventPage: NextPage = () => {
     }
     try {
       await joinChapter({ variables: { chapterId } });
-      await attendEvent({
+      const { data: dataAttend } = await attendEvent({
         variables: { eventId, chapterId },
       });
 
+      const attendance = dataAttend?.attendEvent.attendance.name;
+
       toast({
-        title: 'You are attending this event',
+        title:
+          attendance === 'yes'
+            ? 'You are attending this event'
+            : 'You are on the waitlist',
         status: 'success',
       });
     } catch (err) {
@@ -200,7 +206,7 @@ export const EventPage: NextPage = () => {
       const eventUser = data?.event?.event_users.find(
         ({ user: event_user }) => event_user.id === user?.id,
       );
-      if (!isAlreadyAttending(eventUser?.rsvp.name)) onAttend();
+      if (!isAlreadyAttending(eventUser?.attendance.name)) onAttend();
     }
   }, [awaitingLogin, isLoggedIn]);
 
@@ -253,10 +259,10 @@ export const EventPage: NextPage = () => {
   }
 
   const attendees = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'yes',
+    ({ attendance }) => attendance.name === 'yes',
   );
   const waitlist = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'waitlist',
+    ({ attendance }) => attendance.name === 'waitlist',
   );
 
   const startAt = formatDate(data.event.start_at);
@@ -265,7 +271,11 @@ export const EventPage: NextPage = () => {
   return (
     <>
       <Modal modalProps={modalProps} title="Waiting for login">
-        <Spinner />
+        {loginError ? (
+          <>Something went wrong, {loginError.message}</>
+        ) : (
+          <Spinner />
+        )}
       </Modal>
       <VStack align="flex-start">
         {data.event.image_url && (
@@ -284,7 +294,11 @@ export const EventPage: NextPage = () => {
           </Box>
         )}
         <Flex alignItems={'center'}>
-          {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+          {data.event.invite_only && (
+            <Tooltip label="Invite only">
+              <LockIcon fontSize={'2xl'} />
+            </Tooltip>
+          )}
           <Heading as="h1">{data.event.name}</Heading>
         </Flex>
         {data.event.canceled && (

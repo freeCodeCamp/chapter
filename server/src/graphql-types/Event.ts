@@ -5,7 +5,7 @@ import {
   Chapter,
   EventSponsor,
   EventUserWithRelations,
-  EventUserWithRsvpAndUser,
+  EventUserWithAttendanceAndUser,
   Venue,
 } from '.';
 
@@ -93,8 +93,8 @@ class EventRelationsWithoutEventUsers extends EventWithChapterAndVenue {
 
 @ObjectType()
 export class EventWithRelationsWithEventUser extends EventRelationsWithoutEventUsers {
-  @Field(() => [EventUserWithRsvpAndUser])
-  event_users: EventUserWithRsvpAndUser[];
+  @Field(() => [EventUserWithAttendanceAndUser])
+  event_users: EventUserWithAttendanceAndUser[];
 }
 
 @ObjectType()

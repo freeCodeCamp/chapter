@@ -186,6 +186,9 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
       <td align="center" valign="top" width="14.28%"><a href="http://www.tecforfun.com"><img src="https://avatars.githubusercontent.com/u/10340892?v=4?s=100" width="100px;" alt="Daminda Dinesh W Imaduwa Gamage"/><br /><sub><b>Daminda Dinesh W Imaduwa Gamage</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=dineshigdd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/atosh502"><img src="https://avatars.githubusercontent.com/u/19350071?v=4?s=100" width="100px;" alt="Aashutosh Poudel"/><br /><sub><b>Aashutosh Poudel</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=atosh502" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sneha-afk"><img src="https://avatars.githubusercontent.com/u/55897319?v=4?s=100" width="100px;" alt="Sneha"/><br /><sub><b>Sneha</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=sneha-afk" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 

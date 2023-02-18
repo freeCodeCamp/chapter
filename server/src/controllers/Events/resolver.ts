@@ -240,9 +240,7 @@ export class EventResolver {
       include: {
         chapter: true,
       },
-      orderBy: {
-        start_at: 'asc',
-      },
+      orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
       take: limit ?? 10,
       skip: offset,
     });
@@ -266,9 +264,7 @@ export class EventResolver {
       include: {
         chapter: true,
       },
-      orderBy: {
-        start_at: 'asc',
-      },
+      orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
       take: limit ?? 10,
       skip: offset,
     });
@@ -305,7 +301,7 @@ export class EventResolver {
         }),
       },
       include: { venue: true },
-      orderBy: { start_at: 'desc' },
+      orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
     });
   }
 

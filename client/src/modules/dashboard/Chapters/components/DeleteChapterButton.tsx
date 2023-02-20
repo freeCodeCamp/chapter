@@ -56,7 +56,7 @@ export const DeleteChapterButton = ({
     });
     if (!ok) return;
     deleteChapter({ variables: { chapterId } });
-    router.push('/dashboard/chapters');
+    router.replace('/dashboard/chapters');
   };
 
   return (

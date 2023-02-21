@@ -224,22 +224,52 @@ export const ChapterPage: NextPageWithLayout = () => {
     return <NextError statusCode={404} title="Chapter not found" />;
 
   const integrationStatus = dataStatus?.calendarIntegrationStatus;
-
+  const textStyle = { fontSize: { base: 'md', md: 'lg' }, fontWeight: 'bold' };
   return (
     <>
       <Card className={styles.card}>
         <ProgressCardContent loading={loading}>
-          <Heading
-            fontSize={'md'}
-            as="h1"
-            fontWeight="semibold"
-            marginBlock={'2'}
-          >
-            {data.dashboardChapter.name}
-          </Heading>
+          <Grid gap="1rem">
+            <Heading
+              fontSize={{ base: 'xl', md: 'xx-large' }}
+              as="h1"
+              fontWeight={{ base: 'bold', md: 'semi-bold' }}
+              marginBlock={'1'}
+            >
+              Chapter: {data.dashboardChapter.name}
+            </Heading>
+            <Text {...textStyle}>
+              Description: {data.dashboardChapter.description}
+            </Text>
+            {data.dashboardChapter.city && (
+              <Text {...textStyle}>City: {data.dashboardChapter.city}</Text>
+            )}
+            {data.dashboardChapter.region && (
+              <Text {...textStyle}>Region: {data.dashboardChapter.region}</Text>
+            )}
+            {data.dashboardChapter.country && (
+              <Text {...textStyle}>
+                Country: {data.dashboardChapter.country}
+              </Text>
+            )}
+            <Text {...textStyle}>
+              Category: {data.dashboardChapter.category}
+            </Text>
+            {data.dashboardChapter.banner_url && (
+              <Text {...textStyle}>
+                Banner: {data.dashboardChapter.banner_url}
+              </Text>
+            )}
+            {data.dashboardChapter.logo_url && (
+              <Text {...textStyle}>Logo: {data.dashboardChapter.logo_url}</Text>
+            )}
+            {data.dashboardChapter.chat_url && (
+              <Text {...textStyle}>Chat: {data.dashboardChapter.chat_url}</Text>
+            )}
+          </Grid>
           {integrationStatus !== false && (
             <HStack>
-              <Text>Calendar created:</Text>
+              <Text {...textStyle}>Calendar created:</Text>
               {loadingCalendar ? (
                 <Spinner size="sm" />
               ) : data.dashboardChapter.has_calendar ? (
@@ -282,7 +312,7 @@ export const ChapterPage: NextPageWithLayout = () => {
             </LinkButton>
           )}
           <Grid
-            gridTemplateColumns="repeat(auto-fill, minmax(6.5rem, 1fr))"
+            gridTemplateColumns="repeat(auto-fill, minmax(7.5rem, 1fr))"
             gap="1em"
           >
             {allowedActions.map(({ colorScheme, size, href, text, dataCy }) => (

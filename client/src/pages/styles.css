@@ -1,3 +1,5 @@
+/* change the family name and url with your own family font */
+
 @font-face {
   font-family: 'Roboto-Mono';
   src: url('../fonts/roboto-mono/RobotoMono-Regular.woff')

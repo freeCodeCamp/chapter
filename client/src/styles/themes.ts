@@ -20,6 +20,10 @@ const chapterStyleVaribles = {
       dark: '#4d3800',
     },
   },
+  fonts: {
+    heading: `Roboto-Mono`,
+    body: `Roboto-Mono`,
+  },
 };
 
 export const chapterTheme = extendTheme(chapterStyleVaribles, {

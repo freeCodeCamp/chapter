@@ -23,6 +23,8 @@ import { UserProvider } from '../modules/auth/user';
 import { AuthProvider } from '../modules/auth/context';
 import { chapterTheme } from '../styles/themes';
 
+import './styles.css';
+
 const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
 const httpLink = createHttpLink({

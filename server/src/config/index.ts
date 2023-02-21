@@ -20,7 +20,6 @@ if (result.error) {
 
 export interface Environment {
   NODE_ENV: 'production' | 'development' | 'test' | undefined;
-  JWT_SECRET: string;
   UNSUBSCRIBE_SECRET: string;
 }
 
@@ -45,5 +44,5 @@ export const getConfig = <T extends keyof Environment>(
 
 export const getEnv = () => getConfig('NODE_ENV', 'development');
 export const isDev = () => getEnv() === 'development';
-export const isProd = () => !isDev() && !isTest();
 export const isTest = () => getEnv() === 'test';
+export const isProd = () => !isDev() && !isTest();

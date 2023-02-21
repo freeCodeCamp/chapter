@@ -1,21 +1,22 @@
 version: "3.7"
 services:
-  app:
+  server:
     restart: unless-stopped
     env_file: .env
-    platform: "linux/amd64"
     build:
       context: .
       dockerfile: server.Dockerfile
     working_dir: /usr/chapter/server
+    volumes:
+      - ./server/keys/:/usr/chapter/server/keys/
     ports:
       - "5000:5000"
-    image: chapter-app
+    image: chapter-server
   client:
     restart: unless-stopped
     env_file: .env
     depends_on:
-      - app
+      - server
     build:
       context: .
       dockerfile: client.Dockerfile
@@ -24,13 +25,13 @@ services:
         # environment) needs to include the remote address. e.g.
         # https://example.com:5000
         NEXT_PUBLIC_SERVER_URL:
-        NEXT_PUBLIC_ENVIRONMENT:
         NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT:
         NEXT_PUBLIC_USE_AUTH0:
         NEXT_PUBLIC_AUTH0_DOMAIN:
         NEXT_PUBLIC_AUTH0_CLIENT_ID:
         NEXT_PUBLIC_AUTH0_AUDIENCE:
         NEXT_PUBLIC_CLIENT_URL:
+        NODE_ENV:
     ports:
       - "3000:3000"
     working_dir: /usr/chapter/client

@@ -1,82 +1,80 @@
-import { NextPage } from 'next';
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement } from 'react';
+import { isFuture } from 'date-fns';
+
 import {
   useCreateEventMutation,
+  useJoinChapterMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
-import { isOnline, isPhysical } from '../../../../util/venueType';
-import { Layout } from '../../shared/components/Layout';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
-import { EventFormData } from '../components/EventFormUtils';
-import { EVENTS } from '../graphql/queries';
+import { EventFormData, parseEventData } from '../components/EventFormUtils';
+import { CHAPTER } from '../../../chapters/graphql/queries';
+import { DASHBOARD_EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
-import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
 
-export const NewEventPage: NextPage = () => {
-  const { param: chapterId } = useParam('id');
+export const NewEventPage: NextPageWithLayout<{
+  chapterId?: number;
+}> = ({ chapterId }) => {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
 
-  const [createEvent] = useCreateEventMutation({
-    refetchQueries: [
-      { query: EVENTS },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
-    ],
-  });
+  const [createEvent] = useCreateEventMutation();
 
   const [publish] = useSendEventInviteMutation();
 
-  const onSubmit = async (data: EventFormData, chapterId: number) => {
-    setLoading(true);
+  const toast = useToast();
 
-    try {
-      const { sponsors, tags, ...rest } = data;
-      const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-      const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
+  const [joinChapter] = useJoinChapterMutation();
 
-      const eventData = {
-        ...rest,
-        capacity: parseInt(String(data.capacity)),
-        start_at: data.start_at,
-        ends_at: data.ends_at,
-        venue_id: isPhysical(data.venue_type)
-          ? parseInt(String(data.venue_id))
-          : null,
-        streaming_url: isOnline(data.venue_type) ? data.streaming_url : null,
-        tags: tagsArray,
-        sponsor_ids: sponsorArray,
-      };
-      const event = await createEvent({
-        variables: { chapterId, data: { ...eventData } },
-      });
+  const onSubmit = async (data: EventFormData) => {
+    const { chapter_id, attend_event } = data;
+    const { data: eventData, errors } = await createEvent({
+      variables: {
+        chapterId: chapter_id,
+        data: parseEventData(data),
+        attendEvent: attend_event ?? false,
+      },
+      refetchQueries: [
+        { query: CHAPTER, variables: { chapterId: chapter_id } },
+        {
+          query: DASHBOARD_EVENTS,
+        },
+        { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+      ],
+    });
 
-      if (event.data) {
-        publish({ variables: { eventId: event.data.createEvent.id } });
-        router.replace(
-          `/dashboard/events/[id]`,
-          `/dashboard/events/${event.data.createEvent.id}`,
-        );
+    if (errors) throw errors;
+
+    if (eventData) {
+      if (attend_event) joinChapter({ variables: { chapterId: chapter_id } });
+      if (isFuture(data.start_at)) {
+        await publish({ variables: { eventId: eventData.createEvent.id } });
       }
-    } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
-    } finally {
-      setLoading(false);
+      await router.replace(
+        `/dashboard/events/[id]`,
+        `/dashboard/events/${eventData.createEvent.id}`,
+      );
+      toast({
+        title: `Event "${eventData.createEvent.name}" created!`,
+        status: 'success',
+      });
     }
   };
 
   return (
-    <Layout>
-      <EventForm
-        loading={loading}
-        onSubmit={onSubmit}
-        submitText={'Add event'}
-        loadingText={'Adding Event'}
-        chapterId={chapterId}
-      />
-    </Layout>
+    <EventForm
+      onSubmit={onSubmit}
+      submitText="Add event"
+      loadingText="Adding Event"
+      chapterId={chapterId}
+      formType="new"
+    />
   );
+};
+
+NewEventPage.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const createVenue = gql`
-  mutation createVenue($chapterId: Int!, $data: CreateVenueInputs!) {
+  mutation createVenue($chapterId: Int!, $data: VenueInputs!) {
     createVenue(chapterId: $chapterId, data: $data) {
       id
       name
@@ -17,12 +17,8 @@ export const createVenue = gql`
 `;
 
 export const updateVenue = gql`
-  mutation updateVenue(
-    $venueId: Int!
-    $chapterId: Int!
-    $data: UpdateVenueInputs!
-  ) {
-    updateVenue(venueId: $venueId, chapterId: $chapterId, data: $data) {
+  mutation updateVenue($venueId: Int!, $chapterId: Int!, $data: VenueInputs!) {
+    updateVenue(id: $venueId, _onlyUsedForAuth: $chapterId, data: $data) {
       id
       name
       street_address
@@ -32,6 +28,14 @@ export const updateVenue = gql`
       country
       latitude
       longitude
+    }
+  }
+`;
+
+export const deleteVenue = gql`
+  mutation deleteVenue($venueId: Int!, $chapterId: Int!) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
+      id
     }
   }
 `;

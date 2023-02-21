@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const EVENTS = gql`
-  query events {
-    events(showAll: true) {
+export const DASHBOARD_EVENTS = gql`
+  query dashboardEvents {
+    dashboardEvents {
       id
       name
       canceled
@@ -11,25 +11,20 @@ export const EVENTS = gql`
       invite_only
       streaming_url
       start_at
+      ends_at
       capacity
       venue_type
       venue {
         id
         name
       }
-      tags {
-        tag {
-          id
-          name
-        }
-      }
     }
   }
 `;
 
-export const EVENT = gql`
-  query event($eventId: Int!) {
-    event(eventId: $eventId) {
+export const DASHBOARD_EVENT = gql`
+  query dashboardEvent($eventId: Int!) {
+    dashboardEvent(id: $eventId) {
       id
       name
       description
@@ -41,15 +36,11 @@ export const EVENT = gql`
       start_at
       ends_at
       image_url
+      calendar_event_id
       chapter {
         id
         name
-      }
-      tags {
-        tag {
-          id
-          name
-        }
+        has_calendar
       }
       sponsors {
         sponsor {
@@ -71,52 +62,20 @@ export const EVENT = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {
           id
           name
+          image_url
         }
         event_role {
           id
           name
-          event_role_permissions {
-            event_permission {
-              name
-            }
-          }
         }
         subscribed
       }
-    }
-  }
-`;
-
-export const EVENT_WITH_VENU = gql`
-  query eventVenues($eventId: Int!) {
-    event(eventId: $eventId) {
-      id
-      name
-      description
-      url
-      streaming_url
-      capacity
-      start_at
-      ends_at
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-      venue {
-        id
-      }
-    }
-    venues {
-      id
-      name
     }
   }
 `;
@@ -129,15 +88,6 @@ export const Sponsors = gql`
       website
       logo_path
       type
-    }
-  }
-`;
-
-export const EventRoles = gql`
-  query eventRoles {
-    eventRoles {
-      id
-      name
     }
   }
 `;

@@ -1,35 +1,18 @@
 import { verify } from 'jsonwebtoken';
 import { Resolver, Arg, Mutation } from 'type-graphql';
+import { Prisma } from '@prisma/client';
 
 import { getConfig } from '../../config';
-import { prisma } from '../../prisma';
+import { prisma, RECORD_MISSING } from '../../prisma';
 import {
   UnsubscribeToken,
   UnsubscribeType,
 } from '../../services/UnsubscribeToken';
 
 const unsubscribeFromChapter = async (userId: number, chapterId: number) => {
-  const chapter = await prisma.chapters.findUniqueOrThrow({
-    where: { id: chapterId },
-    include: { events: true },
-  });
   await prisma.chapter_users.update({
     data: { subscribed: false },
     where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
-  });
-  const onlyUserEventsFromChapter = {
-    AND: [
-      { user_id: userId },
-      { event_id: { in: chapter.events.map(({ id }) => id) } },
-    ],
-  };
-
-  await prisma.event_users.updateMany({
-    data: { subscribed: false },
-    where: onlyUserEventsFromChapter,
-  });
-  await prisma.event_reminders.deleteMany({
-    where: onlyUserEventsFromChapter,
   });
 };
 
@@ -66,7 +49,18 @@ export class UnsubscribeResolver {
       throw Error('Invalid token');
     }
 
-    await typeToUnsubscribe[data.type](data.userId, data.id);
+    try {
+      await typeToUnsubscribe[data.type](data.userId, data.id);
+    } catch (err) {
+      if (
+        // There's nothing to update when RECORD_MISSING is thrown.
+        // Data in the "where" does not point to existing record.
+        !(err instanceof Prisma.PrismaClientKnownRequestError) ||
+        err.code !== RECORD_MISSING
+      ) {
+        throw err;
+      }
+    }
 
     return true;
   }

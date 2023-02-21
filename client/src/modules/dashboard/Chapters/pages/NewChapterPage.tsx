@@ -1,42 +1,62 @@
-import { NextPage } from 'next';
-
+import { useToast } from '@chakra-ui/react';
+import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { useCreateChapterMutation } from '../../../../generated/graphql';
+import {
+  CreateChapterInputs,
+  useCreateChapterMutation,
+} from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
-import { Layout } from '../../shared/components/Layout';
-import ChapterForm, { ChapterFormData } from '../components/ChapterForm';
+import { DASHBOARD_CHAPTERS } from '../graphql/queries';
+import { DashboardLayout } from '../../shared/components/DashboardLayout';
+import ChapterForm from '../components/ChapterForm';
+import { NextPageWithLayout } from '../../../../pages/_app';
+import { meQuery } from '../../../auth/graphql/queries';
+import {
+  userDownloadQuery,
+  userProfileQuery,
+} from '../../../profiles/graphql/queries';
 
-export const NewChapterPage: NextPage = () => {
-  const [loading, setLoading] = useState(false);
+export const NewChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [createChapter] = useCreateChapterMutation({
-    refetchQueries: [{ query: CHAPTERS }],
+    refetchQueries: [
+      { query: CHAPTERS },
+      { query: DASHBOARD_CHAPTERS },
+      { query: meQuery },
+      { query: userDownloadQuery },
+      { query: userProfileQuery },
+    ],
   });
 
-  const onSubmit = async (data: ChapterFormData) => {
-    setLoading(true);
-    try {
-      await createChapter({
-        variables: { data: { ...data } },
+  const toast = useToast();
+
+  const onSubmit = async (inputData: CreateChapterInputs) => {
+    // ToDo: handle empty data differently
+    const { data: chapterData, errors } = await createChapter({
+      variables: { data: { ...inputData } },
+    });
+    if (errors) throw errors;
+    if (chapterData) {
+      await router.replace(
+        `/dashboard/chapters/${chapterData.createChapter.id}/new-venue`,
+      );
+      toast({
+        title: `Chapter "${chapterData.createChapter.name}" created!`,
+        status: 'success',
       });
-      router.replace('/dashboard/chapters');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <Layout>
-      <ChapterForm
-        loading={loading}
-        onSubmit={onSubmit}
-        loadingText={'Adding Chapter'}
-        submitText={'Add chapter'}
-      />
-    </Layout>
+    <ChapterForm
+      onSubmit={onSubmit}
+      loadingText={'Adding Chapter'}
+      submitText={'Add chapter'}
+    />
   );
+};
+
+NewChapterPage.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

@@ -1,10 +1,11 @@
 import { Request as ExpressRequest, Response } from 'express';
 
-import type { User, Events } from '../controllers/Auth/middleware';
+import type { User, Events, Venues } from '../controllers/Auth/middleware';
 
 export interface ResolverCtx {
   user?: User;
   events?: Events;
+  venues?: Venues;
   res: Response;
   req: ExpressRequest;
 }
@@ -12,4 +13,5 @@ export interface ResolverCtx {
 export interface Request extends ExpressRequest {
   user?: User;
   events?: Events;
+  venues?: Venues;
 }

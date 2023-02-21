@@ -1,96 +1,81 @@
 import { HStack } from '@chakra-ui/layout';
 import {
-  Avatar,
+  Box,
   Button,
-  Flex,
   Image,
   Menu,
-  MenuList,
-  MenuItem,
   MenuButton,
+  MenuItem,
+  MenuList,
+  Spinner,
+  useToast,
 } from '@chakra-ui/react';
-import type { GridItemProps } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
-import { useRouter } from 'next/router';
-import React, { forwardRef } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { SkipNavLink } from '@chakra-ui/skip-nav';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 
-import { useAuthStore } from '../../modules/auth/store';
-import styles from '../../styles/Header.module.css';
-import { Input } from '../Form/Input';
-import { useSession } from 'hooks/useSession';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import Avatar from '../Avatar';
+import { useUser } from '../../modules/auth/user';
+import { useSession } from '../../hooks/useSession';
+import { Permission } from '../../../../common/permissions';
+import { HeaderContainer } from './component/HeaderContainer';
+import { checkInstancePermission } from 'util/check-permission';
 
-interface Props {
-  children: React.ReactNode;
-  justifyContent?: GridItemProps['justifyContent'];
-}
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
-
+const menuButtonStyles = {
+  logout: { backgroundColor: 'gray.10' },
+  login: {
+    backgroundColor: 'transparent',
+    _hover: {
+      outline: '2px solid #dfdfe2',
+    },
+    _active: {},
+  },
+};
 // TODO: distinguish between logging into the app and logging into Auth0. Maybe
 // use sign-in for the app?
-const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();
-
-  return <MenuItem onClick={() => loginWithRedirect()}>Log In</MenuItem>;
-};
-
-const DevLoginButton = () => {
-  const { createSession } = useSession();
-  return (
-    <MenuItem
-      onClick={() => createSession().then(() => window.location.reload())}
-    >
-      Log In
-    </MenuItem>
-  );
-};
-
-const HeaderItem = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  return (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      ref={ref}
-      {...props}
-      w="full"
-      as="header"
-      px={[2, 4, 8]}
-      py={[2, 4]}
-      background={'gray.85'}
-      className={styles.header}
-    />
-  );
-});
-
 export const Header: React.FC = () => {
   const router = useRouter();
-  const {
-    data: { user },
-    setData,
-  } = useAuthStore();
+  const { user, loadingUser } = useUser();
+  const { login, logout, isAuthenticated, error } = useSession();
+  const [loading, setLoading] = useState(false);
 
-  const { logout: logoutAuth0 } = useAuth0();
+  const toast = useToast();
 
-  const logout = () => {
-    setData({ user: undefined });
-    // TODO: logging out of auth0 and the server should be handled by the same
-    // module as logging in.
-    // TODO: inject the auth functions (logout) into the Header so we can switch
-    // strategies easily.
-    if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'development') logoutAuth0();
-    fetch(new URL('/logout', serverUrl).href, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
+  const goHome = () => router.push('/');
 
-    router.push('/');
-  };
+  useEffect(() => {
+    if (loading || isAuthenticated) {
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (error) {
+      toast({ title: 'Something went wrong', status: 'error' });
+      setLoading(false);
+      console.log(error);
+    }
+  }, [error]);
 
   return (
     <>
-      <HeaderItem>
-        <Link href="/">
+      <HeaderContainer>
+        <SkipNavLink background={'gray.10'} color={'gray.85'}>
+          Jump To Content
+        </SkipNavLink>
+        <Link
+          href="/"
+          _focus={{
+            outlineColor: 'blue.600',
+            outlineOffset: '5px',
+          }}
+          _focusVisible={{
+            boxShadow: 'none',
+          }}
+        >
           <Image
             src="/freecodecamp-logo.svg"
             alt="The freeCodeCamp logo"
@@ -98,62 +83,108 @@ export const Header: React.FC = () => {
             width="100%"
           />
         </Link>
-        <Input
-          background={'gray.10'}
-          color={'gray.85'}
-          noLabel
-          placeholder="Search..."
-        />
-        <HStack as="nav">
-          <Menu>
-            <MenuButton
-              as={Button}
-              aria-label="Options"
-              variant="outline"
-              background={'gray.10'}
-              px={[2, 4]}
-              py={[1, 2]}
-            >
-              Menu
-            </MenuButton>
-            <MenuList>
-              <Flex className={styles.header} flexDirection={'column'}>
-                <NextLink passHref href="/chapters">
-                  <MenuItem as="a">Chapter</MenuItem>
-                </NextLink>
-
-                <NextLink passHref href="/events">
-                  <MenuItem as="a">Events feed</MenuItem>
-                </NextLink>
-
-                {user ? (
-                  <>
-                    <NextLink passHref href="/dashboard/chapters">
-                      <MenuItem as="a">Dashboard</MenuItem>
+        <HStack as="nav" color="gray.85">
+          {loadingUser ? (
+            <Spinner color="white" size="xl" />
+          ) : (
+            <>
+              {!user && (
+                <Button
+                  data-cy="login-button"
+                  background="gray.10"
+                  onClick={() => {
+                    setLoading(true);
+                    login();
+                  }}
+                  isLoading={loading}
+                  fontWeight="600"
+                  width="4.5em"
+                >
+                  Login
+                </Button>
+              )}
+              <Box>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    data-cy="menu-button"
+                    padding="0"
+                    width="4.5em"
+                    {...(user
+                      ? menuButtonStyles.login
+                      : menuButtonStyles.logout)}
+                  >
+                    {user ? (
+                      <HStack spacing="0">
+                        <Avatar
+                          user={user}
+                          cursor="pointer"
+                          aria-label="menu"
+                        />
+                        <ChevronDownIcon
+                          color="gray.10"
+                          fontSize="xl"
+                          opacity=".9"
+                        />
+                      </HStack>
+                    ) : (
+                      'Menu'
+                    )}
+                  </MenuButton>
+                  <MenuList
+                    paddingBlock={0}
+                    display="flex"
+                    flexDirection="column"
+                    fontWeight="600"
+                    borderRadius="5px"
+                  >
+                    <NextLink passHref href="/chapters">
+                      <MenuItem as="a">Chapters</MenuItem>
                     </NextLink>
 
-                    <MenuItem data-cy="logout-button" onClick={logout}>
-                      Logout
-                    </MenuItem>
-                  </>
-                ) : process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? (
-                  <DevLoginButton />
-                ) : (
-                  <LoginButton />
-                )}
-              </Flex>
-            </MenuList>
-          </Menu>
+                    <NextLink passHref href="/events">
+                      <MenuItem as="a">Events</MenuItem>
+                    </NextLink>
 
-          {user ? (
-            <>
-              <Avatar name={`${user.name}`} />
+                    {user && (
+                      <>
+                        <NextLink passHref href="/profile">
+                          <MenuItem
+                            as="a"
+                            borderTop="1px"
+                            borderColor="gray.85"
+                          >
+                            Profile
+                          </MenuItem>
+                        </NextLink>
+                        {checkInstancePermission(
+                          user,
+                          Permission.ChaptersView,
+                        ) && (
+                          <NextLink passHref href="/dashboard/chapters">
+                            <MenuItem data-cy="menu-dashboard-link" as="a">
+                              Dashboard
+                            </MenuItem>
+                          </NextLink>
+                        )}
+                        <MenuItem
+                          data-cy="logout-button"
+                          onClick={() => goHome().then(() => logout())}
+                          fontWeight="600"
+                          borderTop="1px"
+                          borderColor="gray.85"
+                        >
+                          Logout
+                        </MenuItem>
+                      </>
+                    )}
+                  </MenuList>
+                </Menu>
+              </Box>
             </>
-          ) : (
-            <></>
           )}
         </HStack>
-      </HeaderItem>
+      </HeaderContainer>
     </>
   );
 };

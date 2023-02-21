@@ -1,159 +1,111 @@
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, Container, HStack } from '@chakra-ui/react';
+import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Input } from '../../../../components/Form/Input';
-import { TextArea } from '../../../../components/Form/TextArea';
-import type { Chapter, ChapterQuery } from '../../../../generated/graphql';
-import styles from '../../../../styles/Form.module.css';
 
-export type ChapterFormData = Omit<
-  Chapter,
-  'id' | 'events' | 'creator_id' | 'users' | 'banned_users'
->;
-
-interface ChapterFormProps {
-  loading: boolean;
-  onSubmit: (data: ChapterFormData) => Promise<void>;
-  data?: ChapterQuery;
-  submitText: string;
-  loadingText: string;
-}
-
-type Fields = {
-  key: keyof ChapterFormData;
-  placeholder: string;
-  label: string;
-  required: boolean;
-  type: string;
-};
-
-const fields: Fields[] = [
-  {
-    key: 'name',
-    label: 'Chapter name',
-    placeholder: 'freeCodeCamp',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'description',
-    label: 'Description',
-    placeholder:
-      'freeCodeCamp is a nonprofit organization that helps people learn to code for free',
-    required: true,
-    type: 'textarea',
-  },
-  {
-    key: 'city',
-    label: 'City',
-    placeholder: 'San Francisco',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'region',
-    label: 'Region',
-    placeholder: 'California',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'country',
-    label: 'Country',
-    placeholder: 'United States of America',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'category',
-    label: 'Category',
-    placeholder: 'Education and nonprofit work',
-    required: true,
-    type: 'text',
-  },
-  {
-    key: 'imageUrl',
-    label: 'Image Url',
-    placeholder: 'https://www.freecodecamp.org',
-    required: true,
-    type: 'url',
-  },
-  {
-    key: 'chatUrl',
-    label: 'Chat link',
-    placeholder: 'https://discord.gg/KVUmVXA',
-    required: false,
-    type: 'url',
-  },
-];
+import { fieldTypeToComponent } from '../../../util/form';
+import { Form } from '../../../../components/Form/Form';
+import {
+  CreateChapterInputs,
+  useCalendarIntegrationStatusQuery,
+} from '../../../../generated/graphql';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
+import { DeleteChapterButton } from './DeleteChapterButton';
+import {
+  ChapterFormProps,
+  fields,
+  getDefaultValues,
+  resolver,
+} from './ChapterFormUtils';
 
 const ChapterForm: React.FC<ChapterFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, loadingText } = props;
-  const chapter = data?.chapter;
+  const { onSubmit, data, submitText, loadingText } = props;
+  const chapter = data?.dashboardChapter;
 
-  const defaultValues: ChapterFormData = {
-    name: chapter?.name ?? '',
-    description: chapter?.description ?? '',
-    city: chapter?.city ?? '',
-    region: chapter?.region ?? '',
-    country: chapter?.country ?? '',
-    category: chapter?.category ?? '',
-    imageUrl: chapter?.imageUrl ?? '',
-    chatUrl: chapter?.chatUrl ?? '',
-  };
+  const { loading: loadingStatus, data: dataStatus } =
+    useCalendarIntegrationStatusQuery({ skip: !!chapter });
+
+  const defaultValues: CreateChapterInputs = getDefaultValues(chapter);
   const {
     handleSubmit,
     register,
-    formState: { isDirty },
-  } = useForm<ChapterFormData>({
+    formState: { errors, isDirty, isValid },
+  } = useForm<CreateChapterInputs>({
     defaultValues,
+    mode: 'all',
+    resolver,
   });
 
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<CreateChapterInputs>({
+      onSubmit,
+    });
+
+  const isAuthenticated = dataStatus?.calendarIntegrationStatus;
+  const isBroken = isAuthenticated === null;
+
   return (
-    <form
-      aria-label={submitText}
-      onSubmit={handleSubmit(onSubmit)}
-      className={styles.form}
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
     >
-      <VStack>
-        {fields.map(({ key, label, placeholder, required, type }) =>
-          type == 'textarea' ? (
-            <TextArea
-              key={key}
-              label={label}
-              placeholder={placeholder}
-              {...register(key)}
-              isRequired={required}
-              defaultValue={defaultValues[key] ?? undefined}
-              isDisabled={loading}
-            />
+      {fields.map(({ key, label, placeholder, required, type }) => {
+        const Component = fieldTypeToComponent(type);
+        const error = errors[key]?.message;
+        return (
+          <Component
+            key={key}
+            type={type}
+            label={label}
+            error={error}
+            isDisabled={loading}
+            isRequired={required}
+            placeholder={placeholder}
+            defaultValue={defaultValues[key] ?? undefined}
+            {...register(key)}
+          />
+        );
+      })}
+      {!loadingStatus && dataStatus && (
+        <Container>
+          {isAuthenticated ? (
+            <>
+              <InfoIcon boxSize={5} marginRight={1} />
+              Instance is authenticated with calendar api, it will attempt
+              creating calendar for created chapter.
+            </>
+          ) : isBroken ? (
+            <>
+              <WarningTwoIcon boxSize={5} marginRight={1} />
+              Calendar integration is not working. Calendar will not be created
+              for chapter.
+            </>
           ) : (
-            <Input
-              key={key}
-              label={label}
-              placeholder={placeholder}
-              {...register(key)}
-              type={type}
-              isRequired={required}
-              defaultValue={defaultValues[key] ?? undefined}
-              isDisabled={loading}
-            />
-          ),
-        )}
+            <>
+              <WarningTwoIcon boxSize={5} marginRight={1} />
+              Instance is not authenticated with calendar api, it will not
+              create calendar for chapter.
+            </>
+          )}
+        </Container>
+      )}
+      <HStack gap="1em" width="100%">
         <Button
-          mt="6"
           width="100%"
           variant="solid"
           colorScheme="blue"
           type="submit"
-          isDisabled={!isDirty || loading}
+          isDisabled={!isDirty || loading || !isValid}
           isLoading={loading}
           loadingText={loadingText}
         >
           {submitText}
         </Button>
-      </VStack>
-    </form>
+        {chapter?.id && (
+          <DeleteChapterButton width="100%" chapterId={chapter.id} />
+        )}
+      </HStack>
+    </Form>
   );
 };
 

@@ -10,49 +10,18 @@ export const CHAPTER = gql`
       city
       region
       country
-      imageUrl
-      chatUrl
+      logo_url
+      banner_url
+      chat_url
       events {
         id
         name
         description
         start_at
-        invite_only
-        canceled
+        ends_at
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         invite_only
         canceled
-      }
-    }
-  }
-`;
-
-export const CHAPTER_USERS = gql`
-  query chapterUsers($chapterId: Int!) {
-    chapter(id: $chapterId) {
-      chapter_users {
-        user {
-          id
-          name
-          email
-        }
-        chapter_role {
-          id
-          name
-        }
-        subscribed
-        canBeBanned
-      }
-      user_bans {
-        user {
-          id
-        }
       }
     }
   }
@@ -78,8 +47,19 @@ export const CHAPTERS = gql`
       id
       name
       description
-      category
-      imageUrl
+      logo_url
+      banner_url
+      events {
+        id
+        canceled
+        start_at
+        ends_at
+        name
+        invite_only
+      }
+      chapter_users {
+        subscribed
+      }
     }
   }
 `;

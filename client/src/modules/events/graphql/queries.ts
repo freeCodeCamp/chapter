@@ -8,15 +8,10 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
         name
         description
         start_at
+        ends_at
         invite_only
         canceled
         image_url
-        tags {
-          tag {
-            id
-            name
-          }
-        }
         chapter {
           id
           name
@@ -27,26 +22,52 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
   }
 `;
 
-export const MINIMAL_DATA_EVENTS_QUERY = gql`
-  query minEvents {
-    events {
+export const EVENT = gql`
+  query event($eventId: Int!) {
+    event(id: $eventId) {
       id
       name
       description
-      start_at
+      url
       invite_only
+      streaming_url
       canceled
+      capacity
+      start_at
+      ends_at
       image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       chapter {
         id
         name
-        category
+      }
+      sponsors {
+        sponsor {
+          name
+          website
+          logo_path
+          type
+          id
+        }
+      }
+      venue_type
+      venue {
+        id
+        name
+        street_address
+        city
+        postal_code
+        region
+        country
+      }
+      event_users {
+        attendance {
+          name
+        }
+        user {
+          id
+          name
+          image_url
+        }
       }
     }
   }

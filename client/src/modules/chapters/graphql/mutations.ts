@@ -10,6 +10,14 @@ export const joinChapter = gql`
   }
 `;
 
+export const leaveChapter = gql`
+  mutation leaveChapter($chapterId: Int!) {
+    leaveChapter(chapterId: $chapterId) {
+      user_id
+    }
+  }
+`;
+
 export const chapterSubscribe = gql`
   mutation toggleChapterSubscription($chapterId: Int!) {
     toggleChapterSubscription(chapterId: $chapterId) {

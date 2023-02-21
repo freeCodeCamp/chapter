@@ -1,7 +1,8 @@
-image: gitpod/workspace-postgres
+image:
+  file: .gitpod.dockerfile
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: notify
   - port: 5432
     onOpen: ignore
   - port: 5000
@@ -15,10 +16,12 @@ tasks:
       export CLIENT_LOCATION=$(gp url 3000)
       export COOKIE_DOMAIN=gitpod.io
       nvm install lts/gallium && nvm alias default lts/gallium
-    # the rest, get persisted, so we can save time and use init:
-    init: npm ci
+    # the rest get persisted, so we can save time and use init:
+    init: | 
+      npm ci
+      pg_ctl restart
     command: |
-      npm run db:reset
+      npm run -w=server build && npm run db:migrate:reset
       npm run both
 github:
   prebuilds:

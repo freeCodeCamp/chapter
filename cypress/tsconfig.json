@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["es6", "dom"],
+    "jsx": "preserve",
     "moduleResolution": "node",
     "types": [
       "cypress",

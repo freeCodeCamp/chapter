@@ -35,9 +35,11 @@ const baseUser: User = {
   user_events: [],
   name: 'any one',
   id: 1,
+  image_url: null,
   created_at: new Date(),
   updated_at: new Date(),
   email: 'an@add.ress',
+  auto_subscribe: false,
 };
 
 export const userWithInstanceRole: User = merge(baseUser, {
@@ -102,6 +104,37 @@ export const userWithRoleForChapterOne: User = merge(baseUser, {
         ],
       },
       chapter_id: 1,
+    },
+  ],
+});
+
+export const userWithRoleForChaptersOneAndTwo: User = merge(baseUser, {
+  user_chapters: [
+    {
+      chapter_role: {
+        name: 'some-role',
+        chapter_role_permissions: [
+          {
+            chapter_permission: {
+              name: 'some-permission',
+            },
+          },
+        ],
+      },
+      chapter_id: 1,
+    },
+    {
+      chapter_role: {
+        name: 'some-role',
+        chapter_role_permissions: [
+          {
+            chapter_permission: {
+              name: 'some-permission',
+            },
+          },
+        ],
+      },
+      chapter_id: 2,
     },
   ],
 });

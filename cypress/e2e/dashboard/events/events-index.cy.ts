@@ -1,158 +1,73 @@
-import { expectToBeRejected } from '../../../support/util';
+import add from 'date-fns/add';
+import { EventUsers } from '../../../../cypress.config';
+import {
+  expectNoErrors,
+  expectToBeRejected,
+  getFirstPathParam,
+} from '../../../support/util';
 
-const eventData = {
-  name: 'Homer Simpson',
-  description: 'i will show you damn!',
-  url: 'http://wooden-swing.com',
-  streaming_url: null,
-  capacity: 149,
-  start_at: new Date(),
-  ends_at: new Date(),
-  venue_type: 'Physical',
-  venue_id: 2,
-  image_url: 'http://loremflickr.com/640/480/nature?79359',
-  invite_only: false,
-  tags: ['aut'],
-  sponsor_ids: [],
-  chapter_id: 1,
-};
+const chapterId = 1;
+const eventId = 1;
+
+function navigateToEventsDashboard() {
+  cy.get('button[data-cy="menu-button"]').click();
+  cy.findByRole('menuitem', { name: 'Dashboard' }).click();
+
+  cy.get('[data-cy="dashboard-tabs"]').should('be.visible');
+  cy.findByRole('link', { name: 'Events Dashboard' }).click();
+  cy.contains('Loading...');
+  cy.location('pathname').should('match', /^\/dashboard\/events$/);
+  cy.wait('@GQLdashboardEvents');
+  cy.get('[data-cy="events-dashboard"]').should('be.visible');
+}
+
+function saveEventChanges() {
+  cy.findByRole('button', { name: 'Save Event Changes' }).click();
+  cy.contains('Loading...');
+  cy.contains('Save Event Changes').should('not.exist');
+  cy.get('[data-cy="events-dashboard"]').should('be.visible');
+}
 
 // TODO: Move these specs into the other describe block, once we can make sure
 // that Cypress is operating on an event from chapter 1.
 describe('spec needing owner', () => {
+  let eventTwoData;
+  before(() => {
+    cy.fixture('events').then((fixture) => {
+      eventTwoData = fixture.eventTwo;
+    });
+  });
   beforeEach(() => {
-    cy.exec('npm run db:seed');
+    cy.task('seedDb');
     cy.login();
     cy.mhDeleteAll();
-    cy.interceptGQL('events');
+    cy.interceptGQL('dashboardEvents');
   });
 
   it('should be the active dashboard link', () => {
     cy.visit('/dashboard/');
     cy.get('a[href="/dashboard/events"]').click();
-    cy.get('a[aria-current="page"]').should('have.text', 'Events');
+    cy.get('a[aria-current="page"]').should('have.text', 'Events Dashboard');
   });
 
   it('should have a table with links to view and edit events', () => {
     cy.visit('/dashboard/events');
     cy.findByRole('table', { name: 'Events' }).should('be.visible');
     cy.findByRole('columnheader', { name: 'name' }).should('be.visible');
-    cy.findByRole('columnheader', { name: 'actions' }).should('be.visible');
+    cy.findByRole('columnheader', { name: 'action' }).should('be.visible');
     cy.get('a[href="/dashboard/events/1"]').should('be.visible');
     cy.get('a[href="/dashboard/events/1/edit"]').should('be.visible');
   });
 
-  it('has a button to email attendees', () => {
-    cy.visit('/dashboard/events/1');
-    // sending to confirmed first
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-    cy.findByLabelText('Confirmed').should('be.checked');
-    cy.findByLabelText('Waitlist').should('not.be.checked');
-    cy.findByLabelText('Canceled').should('not.be.checked');
-    cy.getEventUsers(1).then((results) => {
-      const eventUsers = results.filter(({ subscribed }) => subscribed);
-      const isRsvpConfirmed = ({ rsvp }) => rsvp.name === 'yes';
-      sendAndCheckEmails(isRsvpConfirmed, eventUsers);
-
-      // sending to waitlist
-      cy.findByRole('button', { name: 'Email Attendees' }).click();
-      cy.findByLabelText('Confirmed').parent().click();
-      cy.findByLabelText('Waitlist').parent().click();
-      const isRsvpOnWaitlist = ({ rsvp }) => rsvp.name === 'waitlist';
-      sendAndCheckEmails(isRsvpOnWaitlist, eventUsers);
-
-      // sending to canceled
-      cy.findByRole('button', { name: 'Email Attendees' }).click();
-      cy.findByLabelText('Waitlist').parent().click();
-      cy.findByLabelText('Canceled').parent().click();
-      const isRSVPCanceled = ({ rsvp }) => rsvp.name === 'no';
-      sendAndCheckEmails(isRSVPCanceled, eventUsers);
-
-      // sending to all
-      cy.findByRole('button', { name: 'Email Attendees' }).click();
-      cy.findByLabelText('Waitlist').parent().click();
-      cy.findByLabelText('Confirmed').parent().click();
-      sendAndCheckEmails(() => true, eventUsers);
-    });
-  });
-
-  function sendAndCheckEmails(filterCallback, users) {
-    cy.mhDeleteAll();
-    cy.findByRole('button', { name: 'Send Email' }).click();
-
-    cy.waitUntilMail('allMail');
-
-    const recipientEmails = users
-      .filter(filterCallback)
-      .map(({ user: { email } }) => email);
-    cy.get('@allMail').should('have.length', recipientEmails.length);
-    recipientEmails.forEach((recipientEmail) => {
-      cy.mhGetMailsByRecipient(recipientEmail).as('currentRecipient');
-      cy.get('@currentRecipient').should('have.length', 1);
-      cy.get('@currentRecipient')
-        .mhFirst()
-        .then((mail) => {
-          cy.checkBcc(mail).should('eq', true);
-        });
-    });
-  }
-
-  it('invitation email should include calendar file', () => {
-    cy.visit('/dashboard/events/1');
-
-    cy.findByRole('button', { name: 'Email Attendees' }).click();
-
-    // try to make sure there will be recipient
-    cy.findByLabelText('Waitlist').parent().click();
-    cy.findByLabelText('Canceled').parent().click();
-
-    cy.findByRole('button', { name: 'Send Email' }).click();
-
-    const calendarMIME = 'application/ics; name=calendar.ics';
-    const bodyRegex = new RegExp(
-      /BEGIN:VCALENDAR.*BEGIN:VEVENT.*END:VEVENT.*END:VCALENDAR/,
-      's',
-    );
-
-    cy.waitUntilMail('email');
-    cy.get('@email')
-      .mhFirst()
-      .then((mail) => {
-        const MIME = mail.MIME as {
-          Parts: { Headers: unknown; Body: unknown }[];
-        };
-        const hasCalendar = MIME.Parts.some((part) => {
-          const contentType = part.Headers['Content-Type'];
-          if (contentType?.includes(calendarMIME)) {
-            // @ts-expect-error cypress-mailhog is missing types for this
-            const body = Buffer.from(part.Body, 'base64').toString();
-            return bodyRegex.test(body);
-          }
-        });
-        expect(hasCalendar).to.be.true;
-      });
-  });
-
   it("emails the users when an event's venue is changed", () => {
-    const eventData = {
-      venue_id: 1,
-      sponsor_ids: [],
-      name: 'Event Venue change test',
-      description: 'Test Description',
-      url: 'https://test.event.org',
-      venue_type: 'PhysicalAndOnline',
-      capacity: 10,
-      image_url: 'https://test.event.org/image',
-      streaming_url: 'https://test.event.org/video',
-      start_at: '2022-01-01T00:01',
-      ends_at: '2022-01-02T00:02',
-      tags: 'Test, Event, Tag',
-    };
-    const newVenueId = 2;
+    // It needs to be string to select by the value. When passing integer
+    // to the .select method, it will select option by the index.
+    const newVenueId = '2';
 
-    cy.createEvent(1, eventData).then((response) => {
-      const eventId = response.body.data.createEvent.id;
-      cy.visit(`/dashboard/events/${eventId}/edit`);
+    cy.createEvent(chapterId, eventTwoData).then((response) => {
+      const newEventId = response.body.data.createEvent.id;
+      cy.visit(`/dashboard/events/${newEventId}/edit`);
+
       cy.findByRole('combobox', { name: 'Venue' })
         .select(newVenueId)
         .find(':checked')
@@ -163,26 +78,24 @@ describe('spec needing owner', () => {
         .findByRole('button', {
           name: 'Save Event Changes',
         })
+        .should('be.enabled')
         .click();
 
       cy.location('pathname').should('match', /^\/dashboard\/events$/);
 
-      cy.waitUntilMail('allMail');
-
-      cy.get('@allMail').mhFirst().as('venueMail');
+      cy.waitUntilMail().mhFirst().as('venueMail');
 
       cy.get('@newVenueTitle').then((venueTitle) => {
         cy.get('@venueMail')
           .mhGetSubject()
-          .should('eq', `Venue changed for event ${eventData['name']}`);
+          .should('eq', `Details changed for event ${eventTwoData['name']}`);
         cy.get('@venueMail')
           .mhGetBody()
-          .should('include', 'We have had to change the location')
-          .and('include', eventData['name'])
+          .should('include', 'Updated venue details')
           .and('include', venueTitle);
 
         cy.findAllByRole('row')
-          .filter(`:contains(${eventData['name']})`)
+          .filter(`:contains(${eventTwoData['name']})`)
           .should('contain.text', venueTitle);
       });
 
@@ -190,26 +103,73 @@ describe('spec needing owner', () => {
         cy.checkBcc(mail).should('eq', true);
       });
 
-      cy.deleteEvent(eventId);
+      cy.deleteEvent(newEventId);
     });
+  });
+
+  it('should be possible to change venue type, change venue and streaming url, set them to TBD', () => {
+    const streamingUrl = 'https://random.com';
+    cy.visit('/dashboard/events');
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
+    cy.findAllByRole('row')
+      .filter(':has([data-cy="event"])')
+      .first()
+      .as('editedEvent');
+    cy.get('@editedEvent').find('a').last().as('editButton');
+
+    cy.get('@editButton').click();
+    cy.contains('Loading...');
+
+    cy.findByRole('radio', { name: 'In-person & Online' }).click({
+      force: true,
+    });
+    cy.findByRole('combobox', { name: 'Venue' }).as('venueSelect');
+    cy.get('@venueSelect').select('0');
+    cy.findByRole('textbox', { name: 'Streaming URL' }).as('streamingUrlField');
+    cy.get('@streamingUrlField').clear();
+    saveEventChanges();
+
+    cy.get('@editedEvent').find('[data-cy="venue"]').should('contain', 'TBD');
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'TBD');
+
+    cy.get('@editButton').click();
+    cy.findByRole('radio', { name: 'In-person' }).click({ force: true });
+    cy.get('@venueSelect').select(1);
+    cy.get('@venueSelect').find('option').eq(1).invoke('text').as('venueName');
+    saveEventChanges();
+
+    cy.get('@venueName').then((venueName) => {
+      cy.get('@editedEvent')
+        .find('[data-cy="venue"]')
+        .should('contain', venueName);
+    });
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', 'In-person only');
+
+    cy.get('@editButton').click();
+    cy.findByRole('radio', { name: 'Online' }).click({ force: true });
+    cy.get('@streamingUrlField').type(streamingUrl);
+    saveEventChanges();
+
+    cy.get('@editedEvent')
+      .find('[data-cy="venue"]')
+      .should('contain', 'Online only');
+    cy.get('@editedEvent')
+      .find('[data-cy="streamingUrl"]')
+      .should('contain', streamingUrl);
   });
 
   it('editing event updates cached events on home page', () => {
     cy.visit('');
-    cy.get('button[aria-label="Options"]').click();
-    cy.findByRole('menuitem', { name: 'Events feed' }).click();
-    cy.get('a[href*="/events/"').first().as('eventToEdit');
+    cy.contains('Upcoming events');
+    cy.get('a[href*="/events/"]').first().as('eventToEdit');
     cy.get('@eventToEdit').invoke('text').as('eventTitle');
     cy.get('@eventToEdit').invoke('attr', 'href').as('eventHref');
 
-    cy.get('button[aria-label="Options"]').click();
-    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-
-    cy.findByRole('link', { name: 'Events' }).click();
-    cy.wait('@GQLevents');
-    cy.url().should('include', '/events');
-    cy.get('#page-heading').contains('Events');
-    cy.contains('Loading...').should('not.exist');
+    navigateToEventsDashboard();
 
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
@@ -218,13 +178,14 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event title' }).type(titleAddon);
+    cy.findByRole('textbox', { name: 'Event Title' }).type(titleAddon);
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',
       })
       .click();
 
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: `${eventTitle}${titleAddon}` });
     });
@@ -238,15 +199,12 @@ describe('spec needing owner', () => {
 
   it('deleting event updates cached events on home page', () => {
     cy.visit('');
-    cy.get('a[href*="/events/"').first().as('eventToDelete');
+    cy.contains('Upcoming events');
+    cy.get('a[href*="/events/"]').first().as('eventToDelete');
     cy.get('@eventToDelete').invoke('text').as('eventTitle');
 
-    cy.get('button[aria-label="Options"]').click();
-    cy.findByRole('menuitem', { name: 'Dashboard' }).click();
-    cy.findByRole('link', { name: 'Events' }).click();
-    cy.wait('@GQLevents');
-    cy.get('#page-heading').contains('Events');
-    cy.contains('Loading...').should('not.exist');
+    navigateToEventsDashboard();
+
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.findByRole('link', { name: eventTitle }).click();
     });
@@ -254,6 +212,7 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Delete' }).click();
     cy.findByRole('button', { name: 'Delete' }).click();
 
+    cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
       cy.contains(eventTitle).should('not.exist');
     });
@@ -263,10 +222,10 @@ describe('spec needing owner', () => {
     });
   });
 
-  it('emails not canceled rsvps when event is canceled', () => {
+  it('emails not canceled attendees when event is canceled', () => {
     cy.visit('/dashboard/events');
     cy.findAllByRole('row')
-      .not(':contains("canceled")')
+      .not(':has([data-cy=event-canceled])')
       .find('a')
       .first()
       .click()
@@ -276,15 +235,14 @@ describe('spec needing owner', () => {
     cy.findByRole('button', { name: 'Cancel' }).click();
     cy.findByRole('alertdialog').findByText('Confirm').click();
 
-    cy.waitUntilMail('allMail');
-    cy.get('@allMail').mhFirst().as('emails');
+    cy.waitUntilMail().mhFirst().as('emails');
 
     cy.url()
       .then((url) => parseInt(url.match(/\d+$/)[0], 10))
-      .then((eventId) => cy.getEventUsers(eventId))
+      .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
-          .filter(({ rsvp }) => rsvp.name !== 'no')
+          .filter(({ attendance }) => attendance.name !== 'no')
           .map(({ user: { email } }) => email);
         cy.get('@emails')
           .mhGetRecipients()
@@ -304,56 +262,74 @@ describe('spec needing owner', () => {
 });
 
 describe('events dashboard', () => {
+  let event;
+  let users;
+  before(() => {
+    cy.fixture('events').then((fixture) => {
+      event = fixture.eventWithoutDate;
+    });
+    cy.fixture('users').then((fixture) => {
+      users = fixture;
+    });
+  });
   beforeEach(() => {
-    cy.exec('npm run db:seed');
-    cy.login('admin@of.chapter.one');
+    cy.task('seedDb');
+    cy.login(users.chapter1Admin.email);
     cy.mhDeleteAll();
-    cy.interceptGQL('events');
+    cy.interceptGQL('dashboardEvents');
   });
 
-  it('chapter admin should be allowed to edit event, but nobody else', () => {
-    const eventId = 1;
+  it('chapter admins should be allowed to edit events, members and banned users should not', () => {
+    const eventOneData = {
+      ...event,
+      start_at: new Date(),
+      ends_at: add(new Date(), { minutes: 30 }),
+    };
 
-    cy.updateEvent(eventId, eventData).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.updateEvent(eventId, eventOneData).then(expectNoErrors);
     // newly registered user (without a chapter_users record)
-    cy.login('test@user.org');
-    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+    cy.login(users.testUser.email);
+    cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.login('banned@chapter.admin');
-    cy.updateEvent(eventId, eventData).then(expectToBeRejected);
+    cy.login(users.bannedAdmin.email);
+    cy.updateEvent(eventId, eventOneData).then(expectToBeRejected);
   });
 
-  it('chapter admin should be allowed to delete event, but nobody else', () => {
-    const eventId = 1;
-
+  it('chapter admins should be allowed to delete events, members and banned users should not', () => {
     // newly registered user (without a chapter_users record)
-    cy.login('test@user.org');
+    cy.login(users.testUser.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);
     // banned admin should be rejected
-    cy.login('banned@chapter.admin');
+    cy.login(users.bannedAdmin.email);
     cy.deleteEvent(eventId).then(expectToBeRejected);
 
     // admin of chapter 1
-    cy.login('admin@of.chapter.one');
-    cy.deleteEvent(eventId).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.login(users.chapter1Admin.email);
+    cy.deleteEvent(eventId).then(expectNoErrors);
   });
 
   it('chapter admin should be allowed to send email to attendees', () => {
     const eventId = 1;
-    cy.sendEventInvite(eventId, ['confirmed']).then((response) => {
-      expect(response.body.errors).not.to.exist;
-    });
+    cy.sendEventInvite(eventId).then(expectNoErrors);
 
-    cy.login('test@user.org');
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.login(users.testUser.email);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
 
     // banned admin should be rejected
-    cy.login('banned@chapter.admin');
-    cy.sendEventInvite(eventId, ['confirmed']).then(expectToBeRejected);
+    cy.login(users.bannedAdmin.email);
+    cy.sendEventInvite(eventId).then(expectToBeRejected);
+  });
+
+  it('chapter admin should see only events from admined chapters', () => {
+    cy.login(users.chapter1Admin.email);
+    const chapterId = 1;
+    cy.visit('/dashboard/events');
+    cy.getChapterEvents(chapterId).then((events) => {
+      const eventIds = events.map(({ id }) => id);
+      cy.get('[data-cy=event]').each((link) =>
+        expect(eventIds).to.include(getFirstPathParam(link)),
+      );
+    });
   });
 });

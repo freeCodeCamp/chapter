@@ -1,74 +1,88 @@
-import { NextPage } from 'next';
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { ReactElement } from 'react';
+import NextError from 'next/error';
 
 import {
   useVenueQuery,
   useUpdateVenueMutation,
+  useChapterQuery,
 } from '../../../../generated/graphql';
 
-import styles from '../../../../styles/Page.module.css';
-import { Layout } from '../../shared/components/Layout';
-import VenueForm, { VenueFormData } from '../components/VenueForm';
-import { VENUES } from '../graphql/queries';
-import { useParam } from 'hooks/useParam';
+import { DashboardLoading } from '../../shared/components/DashboardLoading';
+import VenueForm from '../components/VenueForm';
+import { VenueFormData } from '../components/VenueFormUtils';
+import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
+import { useParam } from '../../../../hooks/useParam';
+import { NextPageWithLayout } from '../../../../pages/_app';
+import { DashboardLayout } from '../../../dashboard/shared/components/DashboardLayout';
 
-export const EditVenuePage: NextPage = () => {
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
-
+export const EditVenuePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { param: venueId } = useParam('venueId');
   const { param: chapterId } = useParam('id');
 
-  const { loading, error, data } = useVenueQuery({
-    variables: { id: venueId },
+  const { data: chapterData, error: chapterError } = useChapterQuery({
+    variables: { chapterId },
   });
+
+  const { data: venueData, error: venueError } = useVenueQuery({
+    variables: { venueId },
+  });
+
   const [updateVenue] = useUpdateVenueMutation({
-    refetchQueries: [{ query: VENUES }],
+    refetchQueries: [
+      { query: DASHBOARD_VENUE, variables: { venueId } },
+      { query: DASHBOARD_VENUES },
+    ],
   });
+
+  const toast = useToast();
 
   const onSubmit = async (data: VenueFormData) => {
-    setLoadingUpdate(true);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { chapter_id, ...updateData } = data;
-    try {
-      const latitude = parseFloat(String(data.latitude));
-      const longitude = parseFloat(String(data.longitude));
 
-      await updateVenue({
-        variables: {
-          venueId,
-          chapterId,
-          data: { ...updateData, latitude, longitude },
-        },
-      });
+    const latitude = parseFloat(String(data.latitude));
+    const longitude = parseFloat(String(data.longitude));
+
+    const { data: venueData, errors } = await updateVenue({
+      variables: {
+        venueId,
+        chapterId: chapter_id,
+        data: { ...updateData, latitude, longitude },
+      },
+    });
+    if (errors) throw errors;
+    if (venueData) {
       await router.push('/dashboard/venues');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingUpdate(false);
+      toast({
+        title: `Venue "${venueData?.updateVenue.name}" updated successfully!`,
+        status: 'success',
+      });
     }
   };
 
-  if (loading || error || !data?.venue) {
-    return (
-      <Layout>
-        <h1>{loading ? 'Loading...' : 'Error...'}</h1>
-        {error && <div className={styles.error}>{error.message}</div>}
-      </Layout>
-    );
-  }
+  const hasLoaded = !!venueData && !!chapterData;
+  const errors: Error[] = [];
+  if (venueError) errors.push(venueError);
+  if (chapterError) errors.push(chapterError);
+
+  if (!hasLoaded || errors.length) return <DashboardLoading errors={errors} />;
+  if (!venueData.venue || !chapterData.chapter)
+    return <NextError statusCode={404} title={'Page not found'} />;
 
   return (
-    <Layout dataCy="edit-venue-page">
-      <VenueForm
-        data={data}
-        loading={loadingUpdate}
-        onSubmit={onSubmit}
-        submitText={'Save Venue Changes'}
-        chapterId={chapterId}
-        loadingText={'Saving Venue Changes'}
-      />
-    </Layout>
+    <VenueForm
+      data={venueData}
+      chapterData={chapterData}
+      onSubmit={onSubmit}
+      submitText={'Save Venue Changes'}
+      chapterId={chapterId}
+      loadingText={'Saving Venue Changes'}
+    />
   );
+};
+
+EditVenuePage.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout dataCy="edit-venue-page">{page}</DashboardLayout>;
 };

@@ -2,17 +2,20 @@ import { gql } from '@apollo/client';
 
 // TODO: mutations must return something, so it returns confirmed_at for now.
 // Should it return something the client can use?
-export const rsvpToEvent = gql`
-  mutation rsvpToEvent($eventId: Int!, $chapterId: Int!) {
-    rsvpEvent(eventId: $eventId, chapterId: $chapterId) {
+export const attendEvent = gql`
+  mutation attendEvent($eventId: Int!, $chapterId: Int!) {
+    attendEvent(eventId: $eventId, chapterId: $chapterId) {
       updated_at
+      attendance {
+        name
+      }
     }
   }
 `;
 
-export const cancelRsvp = gql`
-  mutation cancelRsvp($eventId: Int!) {
-    cancelRsvp(eventId: $eventId) {
+export const cancelAttendance = gql`
+  mutation cancelAttendance($eventId: Int!) {
+    cancelAttendance(eventId: $eventId) {
       updated_at
     }
   }

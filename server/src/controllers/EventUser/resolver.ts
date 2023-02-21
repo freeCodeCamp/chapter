@@ -10,7 +10,7 @@ import { Permission } from '../../../../common/permissions';
 
 @Resolver()
 export class EventUserResolver {
-  @Authorized(Permission.EventSubscriptionsManage)
+  @Authorized(Permission.EventSubscriptionManage)
   @Mutation(() => EventUser)
   async subscribeToEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -37,19 +37,10 @@ export class EventUserResolver {
         },
       },
       where: whereCondition,
-      include: {
-        event_role: {
-          include: {
-            event_role_permissions: { include: { event_permission: true } },
-          },
-        },
-        user: true,
-        rsvp: true,
-      },
     });
   }
 
-  @Authorized(Permission.EventSubscriptionsManage)
+  @Authorized(Permission.EventSubscriptionManage)
   @Mutation(() => EventUser)
   async unsubscribeFromEvent(
     @Arg('eventId', () => Int) eventId: number,
@@ -71,15 +62,6 @@ export class EventUserResolver {
         ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
       where: whereCondition,
-      include: {
-        event_role: {
-          include: {
-            event_role_permissions: { include: { event_permission: true } },
-          },
-        },
-        user: true,
-        rsvp: true,
-      },
     });
   }
 }

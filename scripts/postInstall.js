@@ -8,8 +8,6 @@ console.log('--------------------------');
 const CHAPTER_REMOTE = 'freeCodeCamp/chapter.git';
 let IS_ERROR = false;
 
-setup();
-
 function setup() {
   try {
     const rows = execSync('git remote -v', {
@@ -53,3 +51,5 @@ function setup() {
     );
   }
 }
+
+setup();

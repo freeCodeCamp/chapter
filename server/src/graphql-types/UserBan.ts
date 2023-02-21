@@ -4,9 +4,21 @@ import { User } from './User';
 
 @ObjectType()
 export class UserBan {
-  @Field(() => User)
-  user: User;
+  @Field(() => Number)
+  chapter_id: number;
 
+  @Field(() => Number)
+  user_id: number;
+}
+
+@ObjectType()
+export class UserBanChapters extends UserBan {
   @Field(() => Chapter)
   chapter: Chapter;
+}
+
+@ObjectType()
+export class UserBanWithRelations extends UserBanChapters {
+  @Field(() => User)
+  user: User;
 }

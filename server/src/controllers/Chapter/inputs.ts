@@ -23,10 +23,13 @@ export class CreateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String)
-  imageUrl: string;
+  banner_url: string;
+
+  @Field(() => String)
+  logo_url: string;
 
   @Field(() => String, { nullable: true })
-  chatUrl?: string | null;
+  chat_url?: string | null;
 }
 
 @InputType()
@@ -50,8 +53,11 @@ export class UpdateChapterInputs implements Omit<Chapter, 'id' | 'creator_id'> {
   country: string;
 
   @Field(() => String, { nullable: true })
-  imageUrl: string;
+  banner_url: string;
 
   @Field(() => String, { nullable: true })
-  chatUrl?: string | null;
+  logo_url: string;
+
+  @Field(() => String, { nullable: true })
+  chat_url?: string | null;
 }

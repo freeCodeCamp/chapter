@@ -1,4 +1,4 @@
-import MailerService from '../src/services/MailerService';
+import mailerService from '../src/services/MailerService';
 import {
   deleteReminder,
   getRemindersOlderThanDate,
@@ -28,18 +28,6 @@ const timeFormatter = new Intl.DateTimeFormat('en-us', {
 
 type LockCheck = (reminder: Reminder) => Promise<{ hasLock: boolean }>;
 
-const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
-  await Promise.all(
-    reminders.map(async (reminder) => {
-      const { hasLock } = await lock(reminder);
-      if (!hasLock) {
-        return;
-      }
-      await sendEmailForReminder(reminder);
-      await deleteReminder(reminder);
-    }),
-  );
-
 interface ReminderMessageData {
   event: Reminder['event_user']['event'];
   user: Reminder['event_user']['user'];
@@ -59,23 +47,23 @@ const reminderMessage = ({
   chapterUnsubscribeToken,
   eventUnsubscribeToken,
 }: ReminderMessageData) => {
-  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}]) organized by ${event.chapter.name} is happening soon.</br>
-</br>
-Your RSVP Status: {rsvps.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)</br>
-</br>
-When: ${date} from ${start_time} to ${end_time} (GMT)</br>
-</br>
-Where: ${event.venue?.name} | ${event.venue?.street_address} ${event.venue?.city}, ${event.venue?.region} ${event.venue?.postal_code}</br>
-</br>
-(post-MVP feature) Add to My Calendar: [Google](URL for Google) | [Outlook](URL for Outlook) | [Yahoo](URL for Yahoo) | [iCal](URL for iCal)</br>
-</br>
-This email was sent to ${user.email} by ${event.chapter.name} | ${event.chapter.city}, ${event.chapter.region} ${event.chapter.country}</br>
-Copyright © {current year in YYYY format} {Organization}. All rights reserved.</br>
+  return `[${event.name}](Link to the event page, like https://{instance domain name}/chapters/${event.chapter.id}]) organized by ${event.chapter.name} is happening soon.<br />
+<br />
+Your RSVP Status: {rsvps.name} | [Need to change your RSVP?](link to the chapter page, like https://{instance domain name}/chapters/${event.chapter.id}/events/${event.id}, where there's an option to change the RSVP)<br />
+<br />
+When: ${date} from ${start_time} to ${end_time} (GMT)<br />
+<br />
+Where: ${event.venue?.name} | ${event.venue?.street_address} ${event.venue?.city}, ${event.venue?.region} ${event.venue?.postal_code}<br />
+<br />
+(post-MVP feature) Add to My Calendar: [Google](URL for Google) | [Outlook](URL for Outlook) | [Yahoo](URL for Yahoo) | [iCal](URL for iCal)<br />
+<br />
+This email was sent to ${user.email} by ${event.chapter.name} | ${event.chapter.city}, ${event.chapter.region} ${event.chapter.country}<br />
+Copyright © {current year in YYYY format} {Organization}. All rights reserved.<br />
 
 
 Unsubscribe Options
 - [Attend this event, but only turn off future notifications for this event](${process.env.CLIENT_LOCATION}/unsubscribe?token=${eventUnsubscribeToken})
-- Or, [stop receiving all notifications by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
+- Or, [stop receiving notifications about new events in chapter by unfollowing ${event.chapter.name}](${process.env.CLIENT_LOCATION}/unsubscribe?token=${chapterUnsubscribeToken})
 
 [Privacy Policy](link to privacy page)`;
 };
@@ -86,11 +74,7 @@ const getEmailData = (reminder: Reminder) => {
   const end_time = timeFormatter.format(reminder.event_user.event.ends_at);
   console.log(`Event: ${reminder.event_user.event.name}`);
   console.log(`${date} from ${start_time} to ${end_time} (GMT)`);
-  console.log(
-    `Remind at ${reminder.remind_at.toUTCString()} to ${
-      reminder.event_user.user.email
-    }`,
-  );
+  console.log(`Remind at ${reminder.remind_at.toUTCString()}`);
   console.log();
 
   const chapterUnsubscribeToken = generateToken(
@@ -119,12 +103,24 @@ const getEmailData = (reminder: Reminder) => {
 
 const sendEmailForReminder = async (reminder: Reminder) => {
   const { email, subject } = getEmailData(reminder);
-  await new MailerService({
+  await mailerService.sendEmail({
     emailList: [reminder.event_user.user.email],
     subject: subject,
     htmlEmail: email,
-  }).sendEmail();
+  });
 };
+
+const processReminders = async (reminders: Reminder[], lock: LockCheck) =>
+  await Promise.all(
+    reminders.map(async (reminder) => {
+      const { hasLock } = await lock(reminder);
+      if (!hasLock) {
+        return;
+      }
+      await sendEmailForReminder(reminder);
+      await deleteReminder(reminder);
+    }),
+  );
 
 (async () => {
   const date = new Date();

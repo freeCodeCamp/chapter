@@ -2,8 +2,55 @@ import { execSync } from 'child_process';
 
 import { defineConfig } from 'cypress';
 import { config } from 'dotenv';
-import jwt from 'jsonwebtoken';
 import coverage from '@cypress/code-coverage/task';
+
+import { prisma } from './server/src/prisma';
+import { InstanceRoles } from './common/roles';
+
+const getEvents = () => prisma.events.findMany();
+
+export type Events = Awaited<ReturnType<typeof getEvents>>;
+
+const getChapterMembers = (chapterId: number) =>
+  prisma.chapter_users.findMany({
+    where: { chapter_id: chapterId },
+    include: { user: true },
+  });
+
+export type ChapterMembers = Awaited<ReturnType<typeof getChapterMembers>>;
+
+const getEventUsers = (eventId: number) =>
+  prisma.event_users.findMany({
+    where: { event_id: eventId },
+    include: { user: true, attendance: true },
+  });
+
+export type EventUsers = Awaited<ReturnType<typeof getEventUsers>>;
+
+const deleteEventUser = async (arg: { eventId: number; userId: number }) =>
+  await prisma.event_users.delete({
+    where: { user_id_event_id: { user_id: arg.userId, event_id: arg.eventId } },
+  });
+
+export type EventUser = Awaited<ReturnType<typeof deleteEventUser>>;
+
+const getUser = async (email: string) =>
+  await prisma.users.findUnique({
+    where: { email },
+    include: { instance_role: true },
+  });
+
+export type User = Awaited<ReturnType<typeof getUser>>;
+
+const promoteToOwner = async ({ email }: { email: string }) => {
+  const name = InstanceRoles.owner;
+  return await prisma.users.update({
+    where: { email },
+    data: { instance_role: { connect: { name } } },
+  });
+};
+
+const seedDb = () => execSync('node server/prisma/seed/seed.js');
 
 config();
 
@@ -11,76 +58,14 @@ export default defineConfig({
   e2e: {
     projectId: 're65q6',
     baseUrl: 'http://localhost:3000',
-    retries: { runMode: 3, openMode: 3 },
+    retries: { runMode: 3, openMode: 0 },
     setupNodeEvents(on, config) {
       // `on` is used to hook into various events Cypress emits
       // `config` is the resolved Cypress config
-      if (!process.env.JWT_SECRET)
-        throw Error('JWT_SECRET must be set for e2e tests');
 
       config.env = config.env || {};
       // TODO: ideally the email address should have a common source (since it's
       // used in the db generator, too)
-      config.env.JWT = jwt.sign(
-        { email: 'foo@bar.com' },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '120min',
-        },
-      );
-      config.env.JWT_TEST_USER = jwt.sign(
-        { email: 'test@user.org' },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '120min',
-        },
-      );
-
-      config.env.JWT_CHAPTER_1_ADMIN_USER = jwt.sign(
-        { email: 'admin@of.chapter.one' },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '120min',
-        },
-      );
-
-      config.env.JWT_CHAPTER_2_ADMIN_USER = jwt.sign(
-        { email: 'admin@of.chapter.two' },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '120min',
-        },
-      );
-
-      config.env.JWT_BANNED_ADMIN_USER = jwt.sign(
-        { email: 'banned@chapter.admin' },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '120min',
-        },
-      );
-
-      config.env.TOKEN_DELETED_USER = jwt.sign(
-        { id: -1 },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '120min',
-        },
-      );
-
-      config.env.JWT_EXPIRED = jwt.sign(
-        { email: 'foo@bar.com' },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '1',
-        },
-      );
-
-      // Standard JWT (with id, exp etc.), but with the signature removed:
-      config.env.JWT_UNSIGNED =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjM1ODYzNjQ2LCJleHAiOjE2Mzg1NDIwNDZ9.';
-
-      config.env.JWT_MALFORMED = 'not-a-valid-format';
 
       config.env.SERVER_URL =
         process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
@@ -90,7 +75,17 @@ export default defineConfig({
       // it's difficult (when running docker-compose up) to guarantee that both the
       // docker container is running and that the db has been seeded.
       on('before:run', () => {
-        execSync('npm run db:reset');
+        execSync('npm run -w=server build && npm run db:migrate:reset');
+      });
+
+      on('task', {
+        deleteEventUser,
+        getEvents,
+        getChapterMembers,
+        getEventUsers,
+        getUser,
+        seedDb,
+        promoteToOwner,
       });
       coverage(on, config);
       return config;
@@ -98,5 +93,8 @@ export default defineConfig({
   },
   env: {
     mailHogUrl: 'http://localhost:8025',
+    codeCoverage: {
+      url: 'http://localhost:5000/__coverage__',
+    },
   },
 });

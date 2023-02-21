@@ -1,8 +1,9 @@
+import { inspect } from 'util';
+
 import {
   Arg,
   Authorized,
   Ctx,
-  FieldResolver,
   Int,
   Mutation,
   Query,
@@ -11,32 +12,173 @@ import {
 import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
-import { prisma } from '../../prisma';
-import { ChapterUser, UserBan } from '../../graphql-types';
+import { prisma, UNIQUE_CONSTRAINT_FAILED } from '../../prisma';
+import {
+  ChapterUser,
+  ChapterUserWithRelations,
+  ChapterUserWithRole,
+  UserBan,
+} from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
+import { ChapterRoles } from '../../../../common/roles';
+import { getInstanceRoleName } from '../../util/chapterAdministrator';
+import { canBanOther } from '../../util/chapterBans';
+import { updateWaitlistForUserRemoval } from '../../util/waitlist';
+import { removeEventAttendee } from '../../services/Google';
+import { redactSecrets } from '../../util/redact-secrets';
+import mailerService from '../../../src/services/MailerService';
+import { integrationStatus } from '../../util/calendar';
+import { chapterUserRoleChange } from '../../email-templates';
 
-const UNIQUE_CONSTRAINT_FAILED_CODE = 'P2002';
+const chapterUsersInclude = {
+  chapter_role: {
+    include: {
+      chapter_role_permissions: { include: { chapter_permission: true } },
+    },
+  },
+  user: true,
+};
+
+async function removeUserFromEventsInChapter({
+  userId,
+  chapterId,
+}: {
+  userId: number;
+  chapterId: number;
+}) {
+  const user = await prisma.users.findUnique({
+    where: { id: userId },
+    select: { email: true },
+  });
+  const eventUsers = await prisma.event_users.findMany({
+    where: {
+      user_id: userId,
+      event: { chapter_id: chapterId },
+    },
+    include: {
+      event: {
+        include: {
+          chapter: true,
+          event_users: { include: { attendance: true } },
+        },
+      },
+      attendance: true,
+    },
+  });
+  await prisma.event_users.deleteMany({
+    where: {
+      user_id: userId,
+      event: { chapter_id: chapterId },
+    },
+  });
+
+  const eventsAttended = eventUsers
+    .filter(({ attendance: { name } }) => name === 'yes')
+    .map(({ event }) => event);
+
+  await Promise.all(
+    eventsAttended.map(async (event) =>
+      updateWaitlistForUserRemoval({ event, userId }),
+    ),
+  );
+
+  const eventsWithCalendars = eventsAttended.filter(
+    ({ calendar_event_id }) => calendar_event_id,
+  );
+
+  const attendeeEmail = user?.email;
+  if (!attendeeEmail) {
+    console.error(
+      `unable to find user ${userId}'s email, cannot remove from calendar events`,
+    );
+    return;
+  }
+  const calendarStatus = await integrationStatus();
+  if (!calendarStatus) return;
+
+  const calendarUpdates = eventsWithCalendars.map(
+    async ({ calendar_event_id, chapter: { calendar_id } }) => {
+      if (calendar_event_id && calendar_id) {
+        try {
+          await removeEventAttendee(
+            {
+              calendarEventId: calendar_event_id,
+              calendarId: calendar_id,
+            },
+            {
+              attendeeEmail: user?.email,
+            },
+          );
+        } catch (e) {
+          console.error('Unable to remove event attendee');
+          console.error(inspect(redactSecrets(e), { depth: null }));
+        }
+      }
+    },
+  );
+  await Promise.all(calendarUpdates);
+}
+
+interface Args {
+  changedChapterId: number;
+  newChapterRole: string;
+  user: Prisma.usersGetPayload<{
+    include: {
+      user_chapters: { include: { chapter_role: true } };
+      instance_role: true;
+    };
+  }>;
+}
+
+type EmailProps = {
+  email: string[];
+  subject: string;
+  emailText: string;
+};
+
+async function updateInstanceRoleForChapterRoleChange({
+  changedChapterId,
+  newChapterRole,
+  user,
+}: Args) {
+  const oldInstanceRole = user.instance_role.name;
+  const userChapters = user.user_chapters;
+  const newInstanceRole = getInstanceRoleName({
+    changedChapterId,
+    newChapterRole,
+    oldInstanceRole,
+    userChapters,
+  });
+  if (newInstanceRole !== oldInstanceRole) {
+    await prisma.users.update({
+      data: { instance_role: { connect: { name: newInstanceRole } } },
+      where: { id: user.id },
+    });
+  }
+}
+async function emailUserAboutRoleChange({
+  email,
+  subject,
+  emailText,
+}: EmailProps) {
+  await mailerService.sendEmail({
+    emailList: email,
+    subject,
+    htmlEmail: emailText,
+  });
+}
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUser)
+  @Query(() => ChapterUserWithRelations, { nullable: true })
   async chapterUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: ResolverCtx,
-  ): Promise<ChapterUser | null> {
-    if (!ctx.user) {
-      return null;
-    }
+  ): Promise<ChapterUserWithRelations | null> {
+    if (!ctx.user) throw Error('User not found');
 
     return await prisma.chapter_users.findUnique({
-      include: {
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
-          },
-        },
-        user: true,
-      },
+      include: chapterUsersInclude,
       where: {
         user_id_chapter_id: { user_id: ctx.user.id, chapter_id: chapterId },
       },
@@ -44,36 +186,26 @@ export class ChapterUserResolver {
   }
 
   @Authorized(Permission.ChapterJoin)
-  @Mutation(() => ChapterUser)
+  @Mutation(() => ChapterUserWithRole)
   async joinChapter(
     @Arg('chapterId', () => Int) chapterId: number,
     @Ctx() ctx: Required<ResolverCtx>,
-  ): Promise<ChapterUser> {
-    const includes = {
-      user: true,
-      chapter_role: {
-        include: {
-          chapter_role_permissions: {
-            include: { chapter_permission: true },
-          },
-        },
-      },
-    };
+  ): Promise<ChapterUserWithRole> {
     try {
       return await prisma.chapter_users.create({
         data: {
           user: { connect: { id: ctx.user.id } },
           chapter: { connect: { id: chapterId } },
           chapter_role: { connect: { name: 'member' } },
-          subscribed: true, // TODO add user setting option override
+          subscribed: ctx.user.auto_subscribe,
           joined_date: new Date(),
         },
-        include: includes,
+        include: chapterUsersInclude,
       });
     } catch (e) {
       if (
         !(e instanceof Prisma.PrismaClientKnownRequestError) ||
-        e.code !== UNIQUE_CONSTRAINT_FAILED_CODE
+        e.code !== UNIQUE_CONSTRAINT_FAILED
       ) {
         throw e;
       }
@@ -83,43 +215,51 @@ export class ChapterUserResolver {
       where: {
         user_id_chapter_id: { chapter_id: chapterId, user_id: ctx.user.id },
       },
-      include: includes,
+      include: chapterUsersInclude,
     });
   }
 
-  @Authorized(Permission.ChapterSubscriptionsManage)
   @Mutation(() => ChapterUser)
-  async toggleChapterSubscription(
+  async leaveChapter(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: Required<ResolverCtx>,
+    @Ctx() ctx: ResolverCtx,
   ): Promise<ChapterUser> {
-    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
+    if (!ctx.user) throw Error('User not found');
+    await removeUserFromEventsInChapter({ userId: ctx.user.id, chapterId });
+
+    // Certain chapter roles have associated instance roles with them, so we have to check and update accordingly.
+    await updateInstanceRoleForChapterRoleChange({
+      changedChapterId: chapterId,
+      newChapterRole: ChapterRoles.member,
+      user: ctx.user,
+    });
+
+    return await prisma.chapter_users.delete({
       where: {
         user_id_chapter_id: {
           chapter_id: chapterId,
           user_id: ctx.user.id,
         },
       },
-      include: { chapter: { include: { events: true } } },
     });
-    const chapter = chapterUser.chapter;
+  }
 
-    if (chapterUser.subscribed) {
-      const onlyUserEventsFromChapter = {
-        AND: [
-          { user_id: ctx.user.id },
-          { event_id: { in: chapter.events.map(({ id }) => id) } },
-        ],
-      };
+  @Authorized(Permission.ChapterSubscriptionManage)
+  @Mutation(() => ChapterUser)
+  async toggleChapterSubscription(
+    @Arg('chapterId', () => Int) chapterId: number,
+    @Ctx() ctx: Required<ResolverCtx>,
+  ): Promise<ChapterUser> {
+    const chapterUser = ctx.user.user_chapters.find(
+      ({ chapter_id }) => chapter_id === chapterId,
+    );
 
-      await prisma.event_users.updateMany({
-        data: { subscribed: false },
-        where: onlyUserEventsFromChapter,
-      });
-      await prisma.event_reminders.deleteMany({
-        where: onlyUserEventsFromChapter,
-      });
+    if (!chapterUser) {
+      throw Error(
+        'Cannot change subscription for user not beloning to chapter',
+      );
     }
+
     return await prisma.chapter_users.update({
       data: {
         subscribed: !chapterUser?.subscribed,
@@ -130,108 +270,109 @@ export class ChapterUserResolver {
           chapter_id: chapterId,
         },
       },
-      include: {
-        user: true,
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
-          },
-        },
-      },
-    });
-  }
-
-  @Query(() => [ChapterUser])
-  async chapterUsers(@Arg('id', () => Int) id: number): Promise<ChapterUser[]> {
-    return await prisma.chapter_users.findMany({
-      where: { chapter_id: id },
-      include: {
-        chapter_role: {
-          include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
-          },
-        },
-        user: true,
-      },
     });
   }
 
   @Authorized(Permission.ChapterUserRoleChange)
-  @Mutation(() => ChapterUser)
+  @Mutation(() => ChapterUserWithRelations)
   async changeChapterUserRole(
     @Arg('chapterId', () => Int) chapterId: number,
-    @Arg('roleId', () => Int) roleId: number,
+    @Arg('roleName', () => String) newChapterRole: string,
     @Arg('userId', () => Int) userId: number,
-  ): Promise<ChapterUser> {
-    return await prisma.chapter_users.update({
-      data: { chapter_role: { connect: { id: roleId } } },
-      where: {
-        user_id_chapter_id: {
-          chapter_id: chapterId,
-          user_id: userId,
-        },
-      },
+  ): Promise<ChapterUserWithRelations> {
+    const chapterUser = await prisma.chapter_users.findUniqueOrThrow({
       include: {
-        chapter_role: {
+        ...chapterUsersInclude,
+        user: {
           include: {
-            chapter_role_permissions: { include: { chapter_permission: true } },
+            instance_role: true,
+            user_chapters: { include: { chapter_role: true } },
           },
         },
-        user: true,
+        chapter: { select: { name: true } },
       },
+      where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
     });
+
+    const oldChapterRole = chapterUser.chapter_role.name;
+    if (oldChapterRole === newChapterRole) return chapterUser;
+
+    const updatedChapterUser = await prisma.chapter_users.update({
+      data: { chapter_role: { connect: { name: newChapterRole } } },
+      include: chapterUsersInclude,
+      where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
+    });
+
+    await updateInstanceRoleForChapterRoleChange({
+      changedChapterId: chapterId,
+      newChapterRole,
+      user: chapterUser.user,
+    });
+
+    const { subject, emailText } = chapterUserRoleChange({
+      chapterName: chapterUser.chapter.name,
+      userName: chapterUser.user.name,
+      oldChapterRole,
+      newChapterRole,
+    });
+
+    await emailUserAboutRoleChange({
+      email: [chapterUser.user.email],
+      subject,
+      emailText,
+    });
+
+    return updatedChapterUser;
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async banUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged to ban');
-    }
     if (ctx.user.id === userId) {
       throw Error('You cannot ban yourself');
     }
+
+    const hasPermissionToBanOtherUser = await canBanOther({
+      chapterId,
+      otherUserId: userId,
+      banningUser: ctx.user,
+    });
+    if (!hasPermissionToBanOtherUser) {
+      throw Error('You cannot ban this user');
+    }
+
+    await removeUserFromEventsInChapter({ chapterId, userId });
 
     return await prisma.user_bans.create({
       data: {
         chapter: { connect: { id: chapterId } },
         user: { connect: { id: userId } },
       },
-      include: { chapter: true, user: true },
     });
   }
 
+  @Authorized(Permission.ChapterBanUser)
   @Mutation(() => UserBan)
   async unbanUser(
     @Arg('chapterId', () => Int) chapterId: number,
     @Arg('userId', () => Int) userId: number,
-    @Ctx() ctx: ResolverCtx,
+    @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<UserBan> {
-    if (!ctx.user) {
-      throw Error('User must be logged in to unban');
-    }
-
-    // TODO: this should not be necessary, since a ban would prevent them from
-    // accessing this resolver. However, we need a Cypress test first.
-    if (ctx.user.id === userId) {
-      throw Error('You cannot unban yourself');
+    const hasPermissionToUnbanOtherUser = await canBanOther({
+      chapterId,
+      otherUserId: userId,
+      banningUser: ctx.user,
+    });
+    if (!hasPermissionToUnbanOtherUser) {
+      throw Error('You cannot unban this user');
     }
 
     return await prisma.user_bans.delete({
       where: { user_id_chapter_id: { chapter_id: chapterId, user_id: userId } },
-      include: { chapter: true, user: true },
     });
-  }
-
-  // TODO: control this with an Authorization decorator
-  @FieldResolver()
-  canBeBanned(@Ctx() ctx: ResolverCtx): boolean {
-    if (!ctx.user) {
-      return false;
-    }
-    return true;
   }
 }

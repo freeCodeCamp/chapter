@@ -18,7 +18,7 @@ const resolveType = (name?: string) => {
   return isSpecifiedType(name) ? name : 'text';
 };
 
-type AllowedTypes = typeof allowed_types[number];
+type AllowedTypes = (typeof allowed_types)[number];
 
 interface BaseProps extends Omit<ChakraInputProps, 'type'> {
   error?: string;
@@ -50,10 +50,10 @@ export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
       noLabel,
       ...rest
     } = props;
-
+    const isError = isInvalid || !!props.error;
     return (
       <FormControl
-        isInvalid={isInvalid || !!props.error}
+        isInvalid={isError}
         isRequired={isRequired} //TODO: determine which inputs are required
         {...outerProps}
       >
@@ -64,6 +64,7 @@ export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
           name={name}
           ref={ref}
           placeholder={placeholder ?? label}
+          isInvalid={isError}
           {...rest}
         />
         <FormErrorMessage>{props.error}</FormErrorMessage>

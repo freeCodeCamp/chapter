@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Test Venue",
+    "street_address": "123 Main St",
+    "city": "New York",
+    "postal_code": "10001",
+    "region": "NY",
+    "country": "US",
+    "latitude": 40.7128,
+    "longitude": -74.006
+  },
+  {
+    "name": "Name goes here",
+    "street_address": "10 Random Path",
+    "city": "City it is based in",
+    "postal_code": "2000",
+    "region": "Location in the world",
+    "country": "Some country",
+    "latitude": -45,
+    "longitude": 35
+  }
+]

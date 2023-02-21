@@ -1,8 +1,9 @@
 import { LockIcon } from '@chakra-ui/icons';
-import { Heading, Tag, Box, Flex, Image, Spacer } from '@chakra-ui/react';
+import { Tag, Box, Flex, Image, Grid, GridItem, Text } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
+import { isPast } from 'date-fns';
 import React from 'react';
-import { Chapter, Event, EventTag } from '../generated/graphql';
+import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
 
 type EventCardProps = {
@@ -12,66 +13,141 @@ type EventCardProps = {
     | 'name'
     | 'description'
     | 'start_at'
+    | 'ends_at'
     | 'image_url'
     | 'invite_only'
     | 'canceled'
   > & {
     chapter: Pick<Chapter, 'id' | 'name'>;
-    tags?: EventTag[] | null;
   };
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const metaTag = (
     <>
-      {event.canceled && (
-        <Tag borderRadius="full" pl="2" px="2" colorScheme="red">
-          Canceled
-        </Tag>
-      )}
       {event.invite_only && (
-        <Tag borderRadius="full" pl="2" px="2" colorScheme="gray">
-          <LockIcon />
-          Invite Only
+        <Tag
+          borderRadius="lg"
+          mt="1"
+          paddingInline="[1 , 2]"
+          paddingBlock="[.5, 1]"
+          colorScheme={'blue'}
+          fontSize={['small', 'md']}
+          maxWidth={'8em'}
+          maxH={'2em'}
+        >
+          <LockIcon marginRight=".25rem" />
+          Invite only
         </Tag>
       )}
     </>
   );
+  enum EventStatus {
+    canceled = 'Canceled',
+    running = 'Running',
+    ended = 'Ended',
+    upcoming = 'Upcoming',
+  }
+
+  const statusToStyle = {
+    [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
+    [EventStatus.running]: {
+      color: 'gray.00',
+      backgroundColor: 'gray.45',
+      paddingInline: '.3em',
+      borderRadius: 'sm',
+    },
+    [EventStatus.ended]: { color: 'gray.45', fontWeight: '400' },
+    [EventStatus.upcoming]: {},
+  };
+
+  const hasEnded = isPast(new Date(event.ends_at));
+  const getEventStatus = ({
+    canceled,
+    hasStarted,
+    hasEnded,
+  }: {
+    canceled: boolean;
+    hasStarted: boolean;
+    hasEnded: boolean;
+  }) => {
+    if (canceled) return EventStatus.canceled;
+    if (hasEnded) return EventStatus.ended;
+    if (hasStarted) return EventStatus.running;
+    return EventStatus.upcoming;
+  };
+  const eventStatus = getEventStatus({
+    canceled: event.canceled,
+    hasStarted: isPast(new Date(event.start_at)),
+    hasEnded,
+  });
+  const eventStatusStyle = statusToStyle[eventStatus];
   return (
-    <Flex borderWidth="1px" borderRadius="lg" overflow="hidden" width={'full'}>
-      <Image h={'auto'} w={'200px'} src={event.image_url} objectFit={'cover'} />
+    <Flex
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      width={'full'}
+      {...(hasEnded && { opacity: 0.6 })}
+      position="relative"
+    >
+      <Box w="240px" h="120px" display={['none', 'block']} background="gray.85">
+        <Image
+          width="100%"
+          height="100%"
+          src={
+            event.image_url ||
+            'https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg'
+          }
+          fit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+          fallbackStrategy="onError"
+        />
+      </Box>
       <Box p="3" py={3} width="full" data-cy="event-card">
-        <Flex mb="2" fontWeight="semibold" as="h4" lineHeight="tight">
-          {formatDate(event.start_at)}
-          <Spacer />
-          {metaTag}
-        </Flex>
-        <Box>
-          <Link data-cy="event-link" href={`/events/${event.id}`}>
-            <Heading size="sm">{event.name}</Heading>
+        <Grid
+          mb="2"
+          gridTemplateColumns={'repeat(3, 1fr)'}
+          templateAreas={`
+          "eventname eventname eventname"
+          "chaptername chaptername chaptername"
+          "eventstart eventstart eventstart"
+          "metatag metatag metatag"
+          `}
+        >
+          <Link
+            data-cy="event-link"
+            mt={1}
+            size="sm"
+            gridArea={'eventname'}
+            fontSize={'xl'}
+            fontWeight={700}
+            href={`/events/${event.id}`}
+            _before={{
+              content: '""',
+              position: 'absolute',
+              inset: '0',
+              zIndex: '1',
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
+          >
+            {event.name}
           </Link>
-        </Box>
-        <Box>
-          <Link href={`/chapters/${event.chapter.id}`}>
-            {event.chapter.name}
-          </Link>
-        </Box>
-        {event.tags && (
-          <Box display="flex" alignItems="baseline" pt={3}>
-            {event.tags.map(({ tag }) => (
-              <Tag
-                borderRadius="full"
-                pl="2"
-                px="2"
-                colorScheme="teal"
-                key={tag.name}
-                mr="2"
-              >
-                {tag.name}
-              </Tag>
-            ))}
-          </Box>
-        )}
+          <GridItem area={'metatag'}>{metaTag}</GridItem>
+          <Text
+            opacity={'.8'}
+            gridArea={'eventstart'}
+            marginBottom={['1', '2']}
+            {...eventStatusStyle}
+            fontSize={['smaller', 'sm']}
+            fontWeight={'semibold'}
+          >
+            {eventStatus}: {formatDate(event.start_at)}
+          </Text>
+        </Grid>
       </Box>
     </Flex>
   );

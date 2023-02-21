@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { Prisma } from '@prisma/client';
 
 import { Request } from '../../common-types/gql';
@@ -17,7 +16,6 @@ const userInclude = {
             },
           },
         },
-        user: true,
       },
     },
     user_events: {
@@ -54,59 +52,57 @@ export type User = Merge<Prisma.usersGetPayload<typeof userInclude>>;
 export type Events = Merge<
   Prisma.eventsGetPayload<{ select: { id: true; chapter_id: true } }>[]
 >;
+export type Venues = Merge<
+  Prisma.venuesGetPayload<{ select: { id: true; chapter_id: true } }>[]
+>;
 
-export const events = (req: Request, _res: Response, next: NextFunction) => {
-  const id = req.session?.id;
-
-  // user is not logged in, so we don't need to do anything here
-  if (!id) {
-    return next();
-  }
-
-  prisma.events
-    .findMany({
-      select: {
-        id: true,
-        chapter_id: true,
-      },
-    })
-    .then((events) => {
-      req.events = events;
-      next();
-    });
-};
-
-export const user = (req: Request, _res: Response, next: NextFunction) => {
-  const id = req.session?.id;
-
-  // user is not logged in, so we will not be adding user to the request and can
-  // move on
-  if (!id) return next();
-
+const findAndAddUser = async (
+  req: Request,
+  next: NextFunction,
+  { sessionId }: { sessionId: number },
+) => {
   // While we can't make a findUnique call here (sessions.id is not in users),
   // there is a 1-1 relationship between user and session. So, if a session
   // exists, there can only be one user with that session.
-  prisma.users
-    .findFirst({
-      where: { session: { id } },
-      ...userInclude,
-    })
-    .then((user) => {
-      if (!user) {
-        // if the session user does not exist in the db, the session is invalid
-        req.session = null;
-        return next('User not found');
-      }
-      req.user = user;
-      next();
-    })
-    .catch((err) => {
-      next(err);
-    });
+  const user = await prisma.users.findFirst({
+    where: { session: { id: sessionId } },
+    ...userInclude,
+  });
+
+  if (!user) {
+    req.session = null;
+    return next();
+  }
+
+  const [venues, events] = await Promise.all([
+    prisma.venues.findMany({
+      select: { id: true, chapter_id: true },
+      where: {
+        chapter: { chapter_users: { some: { user_id: user.id } } },
+      },
+    }),
+    prisma.events.findMany({
+      select: { id: true, chapter_id: true },
+      where: { chapter: { chapter_users: { some: { user_id: user.id } } } },
+    }),
+  ]);
+
+  req.user = user;
+  req.venues = venues;
+  req.events = events;
+  next();
 };
 
-// TODO: is this necessary now everything is handled by Auth0 and cookie-session?
-export function handleAuthenticationError(
+export const user = (req: Request, _res: Response, next: NextFunction) => {
+  const sessionId: number = req.session?.id;
+
+  // user is not logged in, so we will not be adding user to the request and can
+  // move on
+  if (!sessionId) return next();
+  findAndAddUser(req, next, { sessionId });
+};
+
+export function handleError(
   err: any,
   _req: Request,
   res: Response,
@@ -115,18 +111,9 @@ export function handleAuthenticationError(
   if (res.headersSent) {
     return next(err);
   }
-
-  if (err instanceof TokenExpiredError) {
-    return res.status(401).send({
-      message: 'Token expired',
-    });
-  } else if (err instanceof JsonWebTokenError) {
-    return res.status(401).send({
-      message: 'Token invalid',
-    });
-  } else {
-    return res.status(401).send({
-      message: 'User not found',
+  if (err) {
+    return res.status(500).send({
+      message: 'Something went Wrong',
     });
   }
 }

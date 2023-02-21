@@ -9,13 +9,8 @@ export const HOME_PAGE_QUERY = gql`
       invite_only
       canceled
       start_at
+      ends_at
       image_url
-      tags {
-        tag {
-          id
-          name
-        }
-      }
       chapter {
         id
         name
@@ -26,8 +21,19 @@ export const HOME_PAGE_QUERY = gql`
       id
       name
       description
-      category
-      imageUrl
+      banner_url
+      logo_url
+      events {
+        id
+        canceled
+        start_at
+        ends_at
+        name
+        invite_only
+      }
+      chapter_users {
+        subscribed
+      }
     }
   }
 `;

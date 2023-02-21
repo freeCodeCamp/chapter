@@ -1,53 +1,23 @@
-import { Button } from '@chakra-ui/button';
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
-import { Select } from '@chakra-ui/select';
 import React from 'react';
+import { Button } from '@chakra-ui/button';
 import { useForm } from 'react-hook-form';
+import { VStack } from '@chakra-ui/layout';
+
+import { Select } from '../../../../components/Form/Select';
+import { Form } from '../../../../components/Form/Form';
 import { Input } from '../../../../components/Form/Input';
-import styles from '../../../../styles/Form.module.css';
-import { Sponsor, SponsorQuery } from 'generated/graphql';
+import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
+import {
+  fields,
+  resolver,
+  SponsorFormData,
+  SponsorFormProps,
+  sponsorTypes,
+} from './SponsorFormUtils';
 
-export type SponsorFormData = Omit<
-  Sponsor,
-  'id' | 'created_at' | 'updated_at' | 'events'
->;
-
-interface SponsorFormProps {
-  loading: boolean;
-  onSubmit: (data: SponsorFormData) => Promise<void>;
-  data?: SponsorQuery;
-  submitText: string;
-  loadingText: string;
-}
-export interface FormField {
-  key: keyof Omit<SponsorFormData, '__typename'>;
-  placeholder: string;
-  label: string;
-  isRequired: boolean;
-}
-const fields: FormField[] = [
-  {
-    key: 'name',
-    placeholder: 'freecodecamp',
-    label: 'Sponsor Name',
-    isRequired: true,
-  },
-  {
-    key: 'website',
-    placeholder: 'www.freecodecamp.com',
-    label: 'Website Url',
-    isRequired: true,
-  },
-  {
-    key: 'logo_path',
-    placeholder: 'www.freecodecamp.com',
-    label: 'Logo Path',
-    isRequired: true,
-  },
-];
 const SponsorForm: React.FC<SponsorFormProps> = (props) => {
-  const { loading, onSubmit, data, submitText, loadingText } = props;
-  const sponsor = data?.sponsor;
+  const { onSubmit, data, submitText, loadingText } = props;
+  const sponsor = data?.dashboardSponsor;
   const defaultValues: SponsorFormData = {
     name: sponsor?.name ?? '',
     website: sponsor?.website ?? '',
@@ -58,45 +28,62 @@ const SponsorForm: React.FC<SponsorFormProps> = (props) => {
   const {
     handleSubmit,
     register,
-    formState: { isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues,
+    mode: 'all',
+    resolver,
   });
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      {fields.map((field) => {
-        return (
-          <Input
-            key={field.key}
-            label={field.label}
-            placeholder={field.placeholder}
-            isRequired={field.isRequired}
-            isDisabled={loading}
-            {...register(field.key)}
-          />
-        );
-      })}
 
-      <FormControl mt="20px">
-        <FormLabel>Sponsor Type</FormLabel>
-        <Select {...register('type')} isDisabled={loading}>
-          <option value="FOOD">Food</option>
-          <option value="VENUE">Venue</option>
-          <option value="OTHER">Other</option>
-        </Select>
-      </FormControl>
-      <Button
-        mt="20px"
-        variant="solid"
-        colorScheme="blue"
-        type="submit"
-        isLoading={loading}
-        loadingText={loadingText}
-        isDisabled={!isDirty || loading}
-      >
-        {submitText}
-      </Button>
-    </form>
+  const { loading, disableWhileSubmitting } =
+    useDisableWhileSubmitting<SponsorFormData>({
+      onSubmit,
+    });
+
+  return (
+    <Form
+      submitLabel={submitText}
+      FormHandling={handleSubmit(disableWhileSubmitting)}
+    >
+      <VStack gap={4}>
+        {fields.map((field) => {
+          const error = errors[field.key]?.message;
+          return (
+            <Input
+              key={field.key}
+              label={field.label}
+              placeholder={field.placeholder}
+              isRequired={field.isRequired}
+              isDisabled={loading}
+              error={error}
+              {...register(field.key)}
+            />
+          );
+        })}
+
+        <Select
+          label="Sponsor Type"
+          key="type"
+          isRequired={true}
+          isDisabled={loading}
+          error={errors['type']?.message}
+          options={[...sponsorTypes]}
+          {...register('type')}
+        />
+
+        <Button
+          mt="20px"
+          variant="solid"
+          colorScheme="blue"
+          type="submit"
+          isLoading={loading}
+          loadingText={loadingText}
+          isDisabled={!isDirty || loading || !isValid}
+        >
+          {submitText}
+        </Button>
+      </VStack>
+    </Form>
   );
 };
 

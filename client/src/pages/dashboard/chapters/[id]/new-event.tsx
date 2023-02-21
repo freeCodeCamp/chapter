@@ -1,2 +1,2 @@
-import { NewEventPage } from '../../../../modules/dashboard/Events';
-export default NewEventPage;
+import { NewEventForChapterPage } from '../../../../modules/dashboard/Chapters';
+export default NewEventForChapterPage;

@@ -75,10 +75,7 @@ describe('chapters dashboard', () => {
         name: 'Add chapter',
       })
       .click();
-    cy.location('pathname').should(
-      'match',
-      /^\/dashboard\/chapters\/\d\/new-venue$/,
-    );
+    cy.location('pathname').should('match', /^\/dashboard\/chapters\/\d$/);
     cy.contains(chapterData.name);
   });
 

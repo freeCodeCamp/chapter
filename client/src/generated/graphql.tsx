@@ -589,10 +589,6 @@ export type QueryDashboardEventArgs = {
   id: Scalars['Int'];
 };
 
-export type QueryDashboardEventsArgs = {
-  showCanceled?: InputMaybe<Scalars['Boolean']>;
-};
-
 export type QueryDashboardSponsorArgs = {
   id: Scalars['Int'];
 };
@@ -1339,9 +1335,7 @@ export type SendEventInviteMutation = {
   sendEventInvite: boolean;
 };
 
-export type DashboardEventsQueryVariables = Exact<{
-  showCanceled?: InputMaybe<Scalars['Boolean']>;
-}>;
+export type DashboardEventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DashboardEventsQuery = {
   __typename?: 'Query';
@@ -1600,6 +1594,16 @@ export type UpdateVenueMutation = {
   };
 };
 
+export type DeleteVenueMutationVariables = Exact<{
+  venueId: Scalars['Int'];
+  chapterId: Scalars['Int'];
+}>;
+
+export type DeleteVenueMutation = {
+  __typename?: 'Mutation';
+  deleteVenue: { __typename?: 'Venue'; id: number };
+};
+
 export type DashboardVenuesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DashboardVenuesQuery = {
@@ -1659,7 +1663,11 @@ export type AttendEventMutationVariables = Exact<{
 
 export type AttendEventMutation = {
   __typename?: 'Mutation';
-  attendEvent: { __typename?: 'EventUserWithRelations'; updated_at: any };
+  attendEvent: {
+    __typename?: 'EventUserWithRelations';
+    updated_at: any;
+    attendance: { __typename?: 'Attendance'; name: string };
+  };
 };
 
 export type CancelAttendanceMutationVariables = Exact<{
@@ -3784,8 +3792,8 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutationVariables
 >;
 export const DashboardEventsDocument = gql`
-  query dashboardEvents($showCanceled: Boolean) {
-    dashboardEvents(showCanceled: $showCanceled) {
+  query dashboardEvents {
+    dashboardEvents {
       id
       name
       canceled
@@ -3817,7 +3825,6 @@ export const DashboardEventsDocument = gql`
  * @example
  * const { data, loading, error } = useDashboardEventsQuery({
  *   variables: {
- *      showCanceled: // value for 'showCanceled'
  *   },
  * });
  */
@@ -4599,6 +4606,57 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
 >;
+export const DeleteVenueDocument = gql`
+  mutation deleteVenue($venueId: Int!, $chapterId: Int!) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
+      id
+    }
+  }
+`;
+export type DeleteVenueMutationFn = Apollo.MutationFunction<
+  DeleteVenueMutation,
+  DeleteVenueMutationVariables
+>;
+
+/**
+ * __useDeleteVenueMutation__
+ *
+ * To run a mutation, you first call `useDeleteVenueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVenueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVenueMutation, { data, loading, error }] = useDeleteVenueMutation({
+ *   variables: {
+ *      venueId: // value for 'venueId'
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDeleteVenueMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteVenueMutation,
+    DeleteVenueMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteVenueMutation, DeleteVenueMutationVariables>(
+    DeleteVenueDocument,
+    options,
+  );
+}
+export type DeleteVenueMutationHookResult = ReturnType<
+  typeof useDeleteVenueMutation
+>;
+export type DeleteVenueMutationResult =
+  Apollo.MutationResult<DeleteVenueMutation>;
+export type DeleteVenueMutationOptions = Apollo.BaseMutationOptions<
+  DeleteVenueMutation,
+  DeleteVenueMutationVariables
+>;
 export const DashboardVenuesDocument = gql`
   query dashboardVenues {
     dashboardVenues {
@@ -4739,6 +4797,9 @@ export const AttendEventDocument = gql`
   mutation attendEvent($eventId: Int!, $chapterId: Int!) {
     attendEvent(eventId: $eventId, chapterId: $chapterId) {
       updated_at
+      attendance {
+        name
+      }
     }
   }
 `;

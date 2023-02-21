@@ -114,12 +114,17 @@ export const EventPage: NextPage = () => {
     }
     try {
       await joinChapter({ variables: { chapterId } });
-      await attendEvent({
+      const { data: dataAttend } = await attendEvent({
         variables: { eventId, chapterId },
       });
 
+      const attendance = dataAttend?.attendEvent.attendance.name;
+
       toast({
-        title: 'You are attending this event',
+        title:
+          attendance === 'yes'
+            ? 'You are attending this event'
+            : 'You are on the waitlist',
         status: 'success',
       });
     } catch (err) {

@@ -6,12 +6,13 @@ import React, { ReactElement } from 'react';
 import { Sponsors } from '../../Events/graphql/queries';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
-import SponsorForm, { SponsorFormData } from '../components/SponsorForm';
+import SponsorForm from '../components/SponsorForm';
 import { useCreateSponsorMutation } from '../../../../generated/graphql';
 import { checkInstancePermission } from '../../../../util/check-permission';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { Permission } from '../../../../../../common/permissions';
 import { useUser } from '../../../auth/user';
+import { SponsorFormData } from '../components/SponsorFormUtils';
 
 const NewSponsorPage: NextPageWithLayout = () => {
   const router = useRouter();

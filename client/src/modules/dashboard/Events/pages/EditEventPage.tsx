@@ -33,8 +33,7 @@ export const EditEventPage: NextPageWithLayout = () => {
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const [updateEvent] = useUpdateEventMutation({
     refetchQueries: [
-      { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
-      { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
+      { query: DASHBOARD_EVENTS },
       { query: EVENT, variables: { eventId } },
       { query: DASHBOARD_EVENT, variables: { eventId } },
       {

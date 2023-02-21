@@ -9,8 +9,8 @@ exports[`EventCard should render 1`] = `
       class="css-1r4lq52"
     >
       <img
-        class="chakra-image__placeholder css-bh4wo8"
-        src="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+        class="chakra-image css-bh4wo8"
+        src="http://example.com/image.png"
       />
     </div>
     <div

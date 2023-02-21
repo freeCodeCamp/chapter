@@ -190,7 +190,8 @@ describe('event page', () => {
       cy.findByRole('button', { name: 'Attend' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.waitUntilMail();
+      // Two emails are send when user attends - one email to the admin, another to the Attendee.
+      cy.waitUntilMail({ expectedNumberOfEmails: 2 });
       cy.mhGetMailsByRecipient(users.chapter1Admin.email).should(
         'have.length',
         1,

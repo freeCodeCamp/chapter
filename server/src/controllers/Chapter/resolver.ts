@@ -49,7 +49,7 @@ export class ChapterResolver {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
           take: 3,
-          orderBy: { start_at: 'desc' },
+          orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
         },
         chapter_users: {
           include: {

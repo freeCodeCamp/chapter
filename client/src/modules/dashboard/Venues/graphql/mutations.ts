@@ -31,3 +31,11 @@ export const updateVenue = gql`
     }
   }
 `;
+
+export const deleteVenue = gql`
+  mutation deleteVenue($venueId: Int!, $chapterId: Int!) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
+      id
+    }
+  }
+`;

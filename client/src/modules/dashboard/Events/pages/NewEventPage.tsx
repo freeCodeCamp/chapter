@@ -39,11 +39,12 @@ export const NewEventPage: NextPageWithLayout<{
       },
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter_id } },
-        { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
-        { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
         {
           query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
           variables: { offset: 0, limit: 2 },
+        },
+        {
+          query: DASHBOARD_EVENTS,
         },
       ],
     });

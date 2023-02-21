@@ -223,6 +223,17 @@ export const ChapterPage: NextPageWithLayout = () => {
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 
+  const fields = [
+    { value: data.dashboardChapter.description, label: 'Description' },
+    { value: data.dashboardChapter.city, label: 'City' },
+    { value: data.dashboardChapter.region, label: 'Region' },
+    { value: data.dashboardChapter.country, label: 'Country' },
+    { value: data.dashboardChapter.category, label: 'Category' },
+    { value: data.dashboardChapter.banner_url, label: 'Banner' },
+    { value: data.dashboardChapter.logo_url, label: 'Logo' },
+    { value: data.dashboardChapter.chat_url, label: 'Chat' },
+  ];
+
   const integrationStatus = dataStatus?.calendarIntegrationStatus;
   const textStyle = { fontSize: { base: 'md', md: 'lg' }, fontWeight: 'bold' };
   return (
@@ -238,33 +249,13 @@ export const ChapterPage: NextPageWithLayout = () => {
             >
               Chapter: {data.dashboardChapter.name}
             </Heading>
-            <Text {...textStyle}>
-              Description: {data.dashboardChapter.description}
-            </Text>
-            {data.dashboardChapter.city && (
-              <Text {...textStyle}>City: {data.dashboardChapter.city}</Text>
-            )}
-            {data.dashboardChapter.region && (
-              <Text {...textStyle}>Region: {data.dashboardChapter.region}</Text>
-            )}
-            {data.dashboardChapter.country && (
-              <Text {...textStyle}>
-                Country: {data.dashboardChapter.country}
-              </Text>
-            )}
-            <Text {...textStyle}>
-              Category: {data.dashboardChapter.category}
-            </Text>
-            {data.dashboardChapter.banner_url && (
-              <Text {...textStyle}>
-                Banner: {data.dashboardChapter.banner_url}
-              </Text>
-            )}
-            {data.dashboardChapter.logo_url && (
-              <Text {...textStyle}>Logo: {data.dashboardChapter.logo_url}</Text>
-            )}
-            {data.dashboardChapter.chat_url && (
-              <Text {...textStyle}>Chat: {data.dashboardChapter.chat_url}</Text>
+            {fields.map(
+              ({ value, label }) =>
+                value && (
+                  <Text {...textStyle} key={label}>
+                    {label}: {value}
+                  </Text>
+                ),
             )}
           </Grid>
           {integrationStatus !== false && (

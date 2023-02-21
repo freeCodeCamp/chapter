@@ -17,7 +17,7 @@ export const EventsPage: NextPage = () => {
   const { user } = useUser();
   const offset = (currentPage - 1) * eventCards;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset, limit: eventCards },
+    variables: { offset, limit: eventCards, showOnlyUpcoming: false },
   });
 
   useEffect(() => {

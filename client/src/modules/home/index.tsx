@@ -48,7 +48,7 @@ const Home = () => {
     useChaptersLazyQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset, limit: eventCards, showUpcoming: true },
+    variables: { offset, limit: eventCards },
     onCompleted() {
       getChapters();
     },

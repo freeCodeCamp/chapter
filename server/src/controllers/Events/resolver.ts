@@ -233,11 +233,11 @@ export class EventResolver {
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
-    @Arg('showUpcoming', () => Boolean, { nullable: true })
-    showUpcoming = false,
+    @Arg('showOnlyUpcoming', () => Boolean, { nullable: true })
+    showOnlyUpcoming = true,
   ): Promise<PaginatedEventsWithChapters[]> {
     const total = await prisma.events.count({
-      ...(showUpcoming && {
+      ...(!showOnlyUpcoming && {
         where: {
           canceled: false,
           ends_at: { gt: new Date() },
@@ -245,7 +245,7 @@ export class EventResolver {
       }),
     });
     const events = await prisma.events.findMany({
-      ...(showUpcoming && {
+      ...(!showOnlyUpcoming && {
         where: {
           canceled: false,
           ends_at: { gt: new Date() },

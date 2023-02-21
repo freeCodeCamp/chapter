@@ -3,12 +3,12 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
   query PaginatedEventsWithTotal(
     $limit: Int
     $offset: Int
-    $showUpcoming: Boolean
+    $showOnlyUpcoming: Boolean
   ) {
     paginatedEventsWithTotal(
       limit: $limit
       offset: $offset
-      showUpcoming: $showUpcoming
+      showOnlyUpcoming: $showOnlyUpcoming
     ) {
       total
       id

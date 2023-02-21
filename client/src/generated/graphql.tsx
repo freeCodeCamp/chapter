@@ -600,7 +600,7 @@ export type QueryEventArgs = {
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  showUpcoming?: InputMaybe<Scalars['Boolean']>;
+  showOnlyUpcoming?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QuerySponsorWithEventsArgs = {
@@ -1703,7 +1703,7 @@ export type UnsubscribeFromEventMutation = {
 export type PaginatedEventsWithTotalQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  showUpcoming?: InputMaybe<Scalars['Boolean']>;
+  showOnlyUpcoming?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type PaginatedEventsWithTotalQuery = {
@@ -5001,12 +5001,12 @@ export const PaginatedEventsWithTotalDocument = gql`
   query PaginatedEventsWithTotal(
     $limit: Int
     $offset: Int
-    $showUpcoming: Boolean
+    $showOnlyUpcoming: Boolean
   ) {
     paginatedEventsWithTotal(
       limit: $limit
       offset: $offset
-      showUpcoming: $showUpcoming
+      showOnlyUpcoming: $showOnlyUpcoming
     ) {
       total
       id
@@ -5040,7 +5040,7 @@ export const PaginatedEventsWithTotalDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
- *      showUpcoming: // value for 'showUpcoming'
+ *      showOnlyUpcoming: // value for 'showOnlyUpcoming'
  *   },
  * });
  */

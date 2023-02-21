@@ -5632,7 +5632,7 @@
                 "deprecationReason": null
               },
               {
-                "name": "showUpcoming",
+                "name": "showOnlyUpcoming",
                 "description": null,
                 "type": {
                   "kind": "SCALAR",

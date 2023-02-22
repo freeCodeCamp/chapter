@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "engines": {
-    "node": "18.14.1",
+    "node": "18.14.2",
     "npm": "8.19.4"
   },
   "scripts": {

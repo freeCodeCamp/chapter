@@ -519,9 +519,9 @@ The repository's [contribute page](https://github.com/freeCodeCamp/chapter/contr
 
 We use [GraphQL](https://graphql.org/) to define the API structure of the application.
 
-The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the page. You can see them:
-* If you are already [**Running the Application**](#running-the-application) at http://localhost:5000/graphql
-* If you don't have a running app at [GraphQL Playground](https://chapter-server.herokuapp.com/graphql). (Note, this is a free-tier of Heroku. Hit refresh every minute or two if the page fails to load and it should eventually "wake" the server.)
+The GraphQL Playground has "Docs" and "Schema" tabs on the right side of the page. You can see them if you are already [**Running the Application**](#running-the-application) at http://localhost:5000/graphql
+
+To make authenticated GraphQL queries, read the [FAQ](#frequently-asked-questions)
 
 ## .env Configuration File
 

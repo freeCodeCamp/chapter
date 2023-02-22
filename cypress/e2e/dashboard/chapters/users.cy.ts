@@ -198,9 +198,7 @@ describe('Chapter Users dashboard', () => {
 
     cy.get('@adminToBan')
       .find('button[data-cy="banUser"]')
-      // Cypress cannot find the attribute, after the chakra monorepo upgrade
-      // .should('be.disabled');
-      .should('have.attr', 'disabled', 'true');
+      .should('be.disabled');
 
     cy.task<User>('getUser', 'admin@of.chapter.one').then(({ id }) => {
       cy.banUser({ chapterId, userId: id }).then(
@@ -238,9 +236,7 @@ describe('Chapter Users dashboard', () => {
 
     cy.get('@adminToUnban')
       .find('button[data-cy="unbanUser"]')
-      // .should('be.disabled');
-      .should('have.attr', 'disabled', 'true');
-
+      .should('be.disabled');
     cy.unbanUser({ chapterId, userId: bannedUserId }).then(
       expectError('You cannot unban this user'),
     );

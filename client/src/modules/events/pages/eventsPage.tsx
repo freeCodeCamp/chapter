@@ -30,7 +30,7 @@ function Pagination({
         data-testid="pagination-back"
         fontWeight="600"
         fontSize="xl"
-        disabled={!(currentPage > 1)}
+        isDisabled={!(currentPage > 1)}
         onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
       >
         <Text srOnly>Previous page</Text>
@@ -44,7 +44,7 @@ function Pagination({
         data-testid="pagination-forward"
         fontWeight="600"
         fontSize="xl"
-        disabled={!(currentPage < totalPages)}
+        isDisabled={!(currentPage < totalPages)}
         onClick={() =>
           currentPage < totalPages && setCurrentPage(currentPage + 1)
         }

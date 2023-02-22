@@ -23,6 +23,9 @@ export const CHAPTER = gql`
         invite_only
         canceled
       }
+      _count {
+        chapter_users
+      }
     }
   }
 `;

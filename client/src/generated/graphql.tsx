@@ -976,6 +976,7 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
     }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   };
 };
 
@@ -2331,6 +2332,9 @@ export const ChapterDocument = gql`
         image_url
         invite_only
         canceled
+      }
+      _count {
+        chapter_users
       }
     }
   }

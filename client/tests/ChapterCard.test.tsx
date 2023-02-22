@@ -51,11 +51,7 @@ describe('ChapterCard', () => {
               invite_only: false,
             },
           ],
-          chapter_users: [
-            { subscribed: false },
-            { subscribed: true },
-            { subscribed: true },
-          ],
+          _count: { chapter_users: 3 },
         }}
       />,
     );

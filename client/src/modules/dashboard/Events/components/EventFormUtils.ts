@@ -8,8 +8,11 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { QueryResult } from '@apollo/client';
 import {
+  DashboardChapterQuery,
   Event,
+  Exact,
   SponsorsQuery,
   Venue,
   VenueType,
@@ -198,6 +201,11 @@ export interface EventFormProps {
   chapterId?: number;
   loadingText: string;
   formType: 'new' | 'edit';
+  chapterQuery: QueryResult<
+    DashboardChapterQuery,
+    Exact<{ chapterId: number }>
+  >;
+  displayChaptersDropdown?: boolean;
 }
 
 const getSelectedFieldIdForSponsor = (

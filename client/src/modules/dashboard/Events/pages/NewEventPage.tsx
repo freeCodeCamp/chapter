@@ -5,6 +5,7 @@ import { isFuture } from 'date-fns';
 
 import {
   useCreateEventMutation,
+  useDashboardChapterQuery,
   useJoinChapterMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
@@ -28,6 +29,14 @@ export const NewEventPage: NextPageWithLayout<{
   const toast = useToast();
 
   const [joinChapter] = useJoinChapterMutation();
+
+  const displayChaptersDropdown = typeof chapterId === 'undefined';
+  const queryOptions = displayChaptersDropdown
+    ? { skip: true }
+    : { variables: { chapterId } };
+
+  const chapterQuery = useDashboardChapterQuery(queryOptions);
+  const { data: chapterData, refetch } = chapterQuery;
 
   const onSubmit = async (data: EventFormData) => {
     const { chapter_id, attend_event } = data;
@@ -60,7 +69,15 @@ export const NewEventPage: NextPageWithLayout<{
         title: `Event "${eventData.createEvent.name}" created!`,
         status: 'success',
       });
-      if (!eventData.createEvent.has_calendar_event) {
+
+      let hasChapterCalendar = chapterData?.dashboardChapter.has_calendar;
+      if (chapter_id !== chapterId) {
+        const { data: currentChapter } = await refetch({
+          chapterId: chapter_id,
+        });
+        hasChapterCalendar = currentChapter.dashboardChapter.has_calendar;
+      }
+      if (hasChapterCalendar && !eventData.createEvent.has_calendar_event) {
         toast({ title: 'Calendar event was not created.', status: 'warning' });
       }
     }
@@ -73,6 +90,8 @@ export const NewEventPage: NextPageWithLayout<{
       loadingText="Adding Event"
       chapterId={chapterId}
       formType="new"
+      chapterQuery={chapterQuery}
+      displayChaptersDropdown={displayChaptersDropdown}
     />
   );
 };

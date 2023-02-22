@@ -4,7 +4,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
 
 import {
-  useChapterQuery,
   useChapterVenuesQuery,
   useSponsorsQuery,
   VenueType,
@@ -33,18 +32,15 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     chapterId: initialChapterId,
     loadingText,
     formType,
+    chapterQuery,
+    displayChaptersDropdown = false,
   } = props;
-  const isChaptersDropdownNeeded = typeof initialChapterId === 'undefined';
-
-  const queryOptions = isChaptersDropdownNeeded
-    ? { skip: true }
-    : { variables: { chapterId: initialChapterId } };
 
   const {
     loading: loadingChapter,
     error: errorChapter,
     data: dataChapter,
-  } = useChapterQuery(queryOptions);
+  } = chapterQuery;
 
   const sponsorQuery = useSponsorsQuery();
 
@@ -105,13 +101,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         submitLabel={submitText}
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
-        {!isChaptersDropdownNeeded || data ? (
+        {!displayChaptersDropdown || data ? (
           loadingChapter ? (
             <Text>Loading Chapter</Text>
-          ) : errorChapter || !dataChapter?.chapter ? (
+          ) : errorChapter || !dataChapter?.dashboardChapter ? (
             <Text>Error loading chapter</Text>
           ) : (
-            <Heading>{dataChapter.chapter.name}</Heading>
+            <Heading>{dataChapter.dashboardChapter.name}</Heading>
           )
         ) : (
           <EventChapterSelect loading={loading} />

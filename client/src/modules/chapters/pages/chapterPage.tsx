@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
-import { CHAPTER_USER } from '../graphql/queries';
+import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
@@ -30,6 +30,8 @@ import {
   useChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
+import { EVENT } from 'modules/events/graphql/queries';
+import { meQuery } from 'modules/auth/graphql/queries';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
@@ -123,12 +125,14 @@ export const ChapterPage: NextPage = () => {
     });
 
   const refetch = {
-    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
+    refetchQueries: [
+      { query: CHAPTER_USER, variables: { chapterId } },
+      { query: CHAPTER, variables: { chapterId } },
+    ],
   };
   const [joinChapter, { loading: loadingJoin }] =
     useJoinChapterMutation(refetch);
-  const [leaveChapter, { loading: loadingLeave }] =
-    useLeaveChapterMutation(refetch);
+  const [leaveChapter, { loading: loadingLeave }] = useLeaveChapterMutation();
   const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
     useToggleChapterSubscriptionMutation(refetch);
 
@@ -177,7 +181,17 @@ export const ChapterPage: NextPage = () => {
     });
     if (ok) {
       try {
-        await leaveChapter({ variables: { chapterId } });
+        await leaveChapter({
+          variables: { chapterId },
+          refetchQueries: [
+            ...refetch.refetchQueries,
+            ...(data?.chapter.events.map(({ id }) => ({
+              query: EVENT,
+              variables: { eventId: id },
+            })) ?? []),
+            { query: meQuery },
+          ],
+        });
         toast({
           title: 'You successfully left the chapter',
           status: 'success',

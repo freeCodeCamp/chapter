@@ -43,6 +43,7 @@ import {
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
+import { CHAPTER, CHAPTER_USER } from 'modules/chapters/graphql/queries';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -63,7 +64,7 @@ export const EventPage: NextPage = () => {
     useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
     useCancelAttendanceMutation(refetch);
-  const [joinChapter] = useJoinChapterMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation();
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent, { loading: loadingUnsubscribe }] =
@@ -113,7 +114,14 @@ export const EventPage: NextPage = () => {
       return;
     }
     try {
-      await joinChapter({ variables: { chapterId } });
+      await joinChapter({
+        variables: { chapterId },
+        refetchQueries: [
+          ...refetch.refetchQueries,
+          { query: CHAPTER, variables: { chapterId } },
+          { query: CHAPTER_USER, variables: { chapterId } },
+        ],
+      });
       const { data: dataAttend } = await attendEvent({
         variables: { eventId, chapterId },
       });

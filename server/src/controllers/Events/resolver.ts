@@ -237,7 +237,7 @@ export class EventResolver {
     showOnlyUpcoming = true,
   ): Promise<PaginatedEventsWithChapters[]> {
     const total = await prisma.events.count({
-      ...(!showOnlyUpcoming && {
+      ...(showOnlyUpcoming && {
         where: {
           canceled: false,
           ends_at: { gt: new Date() },
@@ -245,7 +245,7 @@ export class EventResolver {
       }),
     });
     const events = await prisma.events.findMany({
-      ...(!showOnlyUpcoming && {
+      ...(showOnlyUpcoming && {
         where: {
           canceled: false,
           ends_at: { gt: new Date() },

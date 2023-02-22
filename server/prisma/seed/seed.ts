@@ -52,7 +52,6 @@ async function seed() {
     sponsorIds,
     15,
   );
-
   await createAttendance(eventIds, userIds);
   await setupRoles(
     { ownerId, chapter1AdminId, chapter2AdminId, bannedAdminId, userIds },

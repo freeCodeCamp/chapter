@@ -51,18 +51,7 @@ export class ChapterResolver {
           take: 3,
           orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
         },
-        chapter_users: {
-          include: {
-            chapter_role: {
-              include: {
-                chapter_role_permissions: {
-                  include: { chapter_permission: true },
-                },
-              },
-            },
-            user: true,
-          },
-        },
+        _count: { select: { chapter_users: true } },
       },
       orderBy: { name: 'asc' },
     });

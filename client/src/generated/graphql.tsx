@@ -47,9 +47,9 @@ export type Chapter = {
 
 export type ChapterCardRelations = {
   __typename?: 'ChapterCardRelations';
+  _count: ChapterUsersCount;
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -109,6 +109,11 @@ export type ChapterUserWithRole = {
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user_id: Scalars['Int'];
+};
+
+export type ChapterUsersCount = {
+  __typename?: 'ChapterUsersCount';
+  chapter_users: Scalars['Float'];
 };
 
 export type ChapterWithEvents = {
@@ -548,7 +553,7 @@ export type PaginatedEventsWithTotal = {
 export type Query = {
   __typename?: 'Query';
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
-  chapter: ChapterWithRelations;
+  chapter: ChapterCardRelations;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
@@ -949,7 +954,7 @@ export type ChapterQueryVariables = Exact<{
 export type ChapterQuery = {
   __typename?: 'Query';
   chapter: {
-    __typename?: 'ChapterWithRelations';
+    __typename?: 'ChapterCardRelations';
     id: number;
     name: string;
     description: string;
@@ -1008,7 +1013,7 @@ export type ChaptersQuery = {
       name: string;
       invite_only: boolean;
     }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
 };
 
@@ -1835,7 +1840,7 @@ export type HomeQuery = {
       name: string;
       invite_only: boolean;
     }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
 };
 
@@ -2452,8 +2457,8 @@ export const ChaptersDocument = gql`
         name
         invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }
@@ -5249,8 +5254,8 @@ export const HomeDocument = gql`
         name
         invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }

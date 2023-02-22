@@ -57,8 +57,8 @@ export const CHAPTERS = gql`
         name
         invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }

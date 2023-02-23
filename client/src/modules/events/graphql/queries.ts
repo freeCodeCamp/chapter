@@ -11,18 +11,20 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
       showOnlyUpcoming: $showOnlyUpcoming
     ) {
       total
-      id
-      name
-      description
-      start_at
-      ends_at
-      invite_only
-      canceled
-      image_url
-      chapter {
+      events {
         id
         name
-        category
+        description
+        start_at
+        ends_at
+        invite_only
+        canceled
+        image_url
+        chapter {
+          id
+          name
+          category
+        }
       }
     }
   }

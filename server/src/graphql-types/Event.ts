@@ -17,6 +17,12 @@ registerEnumType(events_venue_type_enum, {
 });
 
 @ObjectType()
+class total {
+  @Field(() => Int)
+  total: number;
+}
+
+@ObjectType()
 export class Event extends BaseObject {
   @Field(() => String)
   name: string;
@@ -71,12 +77,15 @@ export class EventWithChapterAndVenue extends Event {
 }
 
 @ObjectType()
-export class PaginatedEventsWithChapters extends Event {
-  @Field(() => Int)
-  total: number;
-
+class EventsWithChapters extends Event {
   @Field(() => Chapter)
   chapter: Chapter;
+}
+
+@ObjectType()
+export class PaginatedEventsWithChapters extends total {
+  @Field(() => [EventsWithChapters])
+  events: EventsWithChapters[];
 }
 
 @ObjectType()

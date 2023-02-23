@@ -325,6 +325,24 @@ export type EventWithVenue = {
   venue_type: VenueType;
 };
 
+export type EventsWithChapters = {
+  __typename?: 'EventsWithChapters';
+  calendar_event_id?: Maybe<Scalars['String']>;
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
+};
+
 export type InstancePermission = {
   __typename?: 'InstancePermission';
   name: Scalars['String'];
@@ -523,21 +541,8 @@ export type MutationUpdateVenueArgs = {
 
 export type PaginatedEventsWithChapters = {
   __typename?: 'PaginatedEventsWithChapters';
-  calendar_event_id?: Maybe<Scalars['String']>;
-  canceled: Scalars['Boolean'];
-  capacity: Scalars['Int'];
-  chapter: Chapter;
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  id: Scalars['Int'];
-  image_url: Scalars['String'];
-  invite_only: Scalars['Boolean'];
-  name: Scalars['String'];
-  start_at: Scalars['DateTime'];
-  streaming_url?: Maybe<Scalars['String']>;
+  events: Array<EventsWithChapters>;
   total: Scalars['Int'];
-  url?: Maybe<Scalars['String']>;
-  venue_type: VenueType;
 };
 
 export type Query = {
@@ -1711,20 +1716,23 @@ export type PaginatedEventsWithTotalQuery = {
   paginatedEventsWithTotal: Array<{
     __typename?: 'PaginatedEventsWithChapters';
     total: number;
-    id: number;
-    name: string;
-    description: string;
-    start_at: any;
-    ends_at: any;
-    invite_only: boolean;
-    canceled: boolean;
-    image_url: string;
-    chapter: {
-      __typename?: 'Chapter';
+    events: Array<{
+      __typename?: 'EventsWithChapters';
       id: number;
       name: string;
-      category: string;
-    };
+      description: string;
+      start_at: any;
+      ends_at: any;
+      invite_only: boolean;
+      canceled: boolean;
+      image_url: string;
+      chapter: {
+        __typename?: 'Chapter';
+        id: number;
+        name: string;
+        category: string;
+      };
+    }>;
   }>;
 };
 
@@ -5009,18 +5017,20 @@ export const PaginatedEventsWithTotalDocument = gql`
       showOnlyUpcoming: $showOnlyUpcoming
     ) {
       total
-      id
-      name
-      description
-      start_at
-      ends_at
-      invite_only
-      canceled
-      image_url
-      chapter {
+      events {
         id
         name
-        category
+        description
+        start_at
+        ends_at
+        invite_only
+        canceled
+        image_url
+        chapter {
+          id
+          name
+          category
+        }
       }
     }
   }

@@ -30,9 +30,14 @@ export const EventsPage: NextPage = () => {
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading error={error} />;
+  // we need to do this because the data is array of event for every total?
+  const paginatedEventsWithTotal = data?.paginatedEventsWithTotal.flatMap(
+    (eventData) => eventData.events,
+  );
   const totalEvents = data?.paginatedEventsWithTotal
-    .map(({ total }) => total)
+    .flatMap((eventData) => eventData.total)
     .reduce(Number);
+
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="37.5em" spacing={6} mt={10} mb={5}>
@@ -44,9 +49,13 @@ export const EventsPage: NextPage = () => {
             </LinkButton>
           )}
         </Flex>
-        {data?.paginatedEventsWithTotal.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
+        {
+          <>
+            {paginatedEventsWithTotal.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </>
+        }
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
@@ -56,7 +65,10 @@ export const EventsPage: NextPage = () => {
             checkInstancePermission(user, Permission.EventsView) && (
               <Text size="md">
                 No more, you can create event in{' '}
-                <Link href="/dashboard/events" fontWeight="bold">
+                <Link
+                  href="/dashboard/paginatedEventsWithTotal"
+                  fontWeight="bold"
+                >
                   Event dashboard
                 </Link>
                 .

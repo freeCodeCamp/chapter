@@ -65,8 +65,11 @@ const Home = () => {
 
   const isLoading = loading || !data;
   if (isLoading) return <Loading error={error} />;
-  const totalEvents = data.paginatedEventsWithTotal
-    .map(({ total }) => total)
+  const paginatedEventsWithTotal = data?.paginatedEventsWithTotal.flatMap(
+    (eventData) => eventData.events,
+  );
+  const totalEvents = data?.paginatedEventsWithTotal
+    .flatMap((eventData) => eventData.total)
     .reduce(Number);
 
   return (
@@ -84,7 +87,7 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {data?.paginatedEventsWithTotal.map((event) => (
+            {paginatedEventsWithTotal.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
             <Pagination

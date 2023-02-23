@@ -258,7 +258,7 @@ export class EventResolver {
       take: limit ?? 10,
       skip: offset,
     });
-    return events.map((event) => ({ ...event, total }));
+    return [{ total, events }];
   }
 
   @Authorized(Permission.EventEdit)

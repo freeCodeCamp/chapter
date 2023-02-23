@@ -58,7 +58,7 @@ const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          paginatedEventsWithTotal: offsetLimitPagination(),
+          paginatedEventsWithTotal: offsetLimitPagination(['showOnlyUpcoming']),
         },
       },
     },

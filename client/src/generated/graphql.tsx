@@ -113,7 +113,7 @@ export type ChapterUserWithRole = {
 
 export type ChapterUsersCount = {
   __typename?: 'ChapterUsersCount';
-  chapter_users: Scalars['Float'];
+  chapter_users: Scalars['Int'];
 };
 
 export type ChapterWithEvents = {

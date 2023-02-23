@@ -57,7 +57,7 @@ export class ChapterWithEvents extends Chapter {
 
 @ObjectType()
 export class ChapterUsersCount {
-  @Field(() => Number)
+  @Field(() => Int)
   chapter_users: number;
 }
 

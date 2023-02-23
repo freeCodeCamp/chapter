@@ -31,8 +31,8 @@ export const HOME_PAGE_QUERY = gql`
         name
         invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }

@@ -94,7 +94,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             paddingInline="1.5em"
           >
             <Text fontWeight="bold">
-              Members: {chapter.chapter_users.length}
+              Members: {chapter._count.chapter_users}
             </Text>
           </GridItem>
           <Text

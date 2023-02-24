@@ -150,7 +150,7 @@ describe('event page', () => {
 
       cy.contains(/Not subscribed/);
       cy.findByRole('button', { name: 'Subscribe' }).click();
-      cy.findByRole('alertdialog').contains('subscribe?');
+      cy.findByRole('alertdialog').contains('Subscribe to event');
       cy.findByRole('button', { name: 'Confirm' }).click();
       cy.contains('subscribed to');
     });

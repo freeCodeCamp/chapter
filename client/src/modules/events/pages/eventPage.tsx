@@ -240,10 +240,6 @@ export const EventPage: NextPage = () => {
           title: 'You successfully subscribed to this event',
           status: 'success',
         });
-        alert({
-          title: 'You successfully subscribed to this event',
-          status: 'success',
-        });
       } catch (err) {
         alert({ title: 'Something went wrong', status: 'error' });
         console.error(err);

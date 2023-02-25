@@ -6,11 +6,11 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
   const [alerts, setAlerts] = useState<AlertProps[]>([]);
 
   const removeAlert = (indexToRemove: number) => {
-    setAlerts(alerts.filter((_, index) => index !== indexToRemove));
+    setAlerts((alerts) => alerts.filter((_, index) => index !== indexToRemove));
   };
 
   const addAlert = (alert: AlertProps) => {
-    setAlerts([...alerts, alert]);
+    setAlerts((alerts) => [...alerts, alert]);
   };
 
   return (

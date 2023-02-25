@@ -47,9 +47,9 @@ export type Chapter = {
 
 export type ChapterCardRelations = {
   __typename?: 'ChapterCardRelations';
+  _count: ChapterUsersCount;
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -109,6 +109,11 @@ export type ChapterUserWithRole = {
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user_id: Scalars['Int'];
+};
+
+export type ChapterUsersCount = {
+  __typename?: 'ChapterUsersCount';
+  chapter_users: Scalars['Int'];
 };
 
 export type ChapterWithEvents = {
@@ -548,7 +553,7 @@ export type PaginatedEventsWithChapters = {
 export type Query = {
   __typename?: 'Query';
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
-  chapter: ChapterWithRelations;
+  chapter: ChapterCardRelations;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
@@ -944,7 +949,7 @@ export type ChapterQueryVariables = Exact<{
 export type ChapterQuery = {
   __typename?: 'Query';
   chapter: {
-    __typename?: 'ChapterWithRelations';
+    __typename?: 'ChapterCardRelations';
     id: number;
     name: string;
     description: string;
@@ -966,6 +971,7 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
     }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   };
 };
 
@@ -1003,7 +1009,7 @@ export type ChaptersQuery = {
       name: string;
       invite_only: boolean;
     }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
 };
 
@@ -1791,6 +1797,50 @@ export type EventQuery = {
   } | null;
 };
 
+export type HomeQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type HomeQuery = {
+  __typename?: 'Query';
+  paginatedEvents: Array<{
+    __typename?: 'EventWithChapter';
+    id: number;
+    name: string;
+    description: string;
+    invite_only: boolean;
+    canceled: boolean;
+    start_at: any;
+    ends_at: any;
+    image_url: string;
+    chapter: {
+      __typename?: 'Chapter';
+      id: number;
+      name: string;
+      category: string;
+    };
+  }>;
+  chapters: Array<{
+    __typename?: 'ChapterCardRelations';
+    id: number;
+    name: string;
+    description: string;
+    banner_url?: string | null;
+    logo_url?: string | null;
+    events: Array<{
+      __typename?: 'Event';
+      id: number;
+      canceled: boolean;
+      start_at: any;
+      ends_at: any;
+      name: string;
+      invite_only: boolean;
+    }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
+  }>;
+};
+
 export type ToggleAutoSubscribeMutationVariables = Exact<{
   [key: string]: never;
 }>;
@@ -2279,6 +2329,9 @@ export const ChapterDocument = gql`
         invite_only
         canceled
       }
+      _count {
+        chapter_users
+      }
     }
   }
 `;
@@ -2404,8 +2457,8 @@ export const ChaptersDocument = gql`
         name
         invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }
@@ -5179,6 +5232,79 @@ export type EventQueryResult = Apollo.QueryResult<
   EventQuery,
   EventQueryVariables
 >;
+export const HomeDocument = gql`
+  query home($limit: Int, $offset: Int) {
+    paginatedEvents(limit: $limit, offset: $offset) {
+      id
+      name
+      description
+      invite_only
+      canceled
+      start_at
+      ends_at
+      image_url
+      chapter {
+        id
+        name
+        category
+      }
+    }
+    chapters {
+      id
+      name
+      description
+      banner_url
+      logo_url
+      events {
+        id
+        canceled
+        start_at
+        ends_at
+        name
+        invite_only
+      }
+      chapter_users {
+        subscribed
+      }
+    }
+  }
+`;
+
+/**
+ * __useHomeQuery__
+ *
+ * To run a query within a React component, call `useHomeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useHomeQuery(
+  baseOptions?: Apollo.QueryHookOptions<HomeQuery, HomeQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
+}
+export function useHomeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<HomeQuery, HomeQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<HomeQuery, HomeQueryVariables>(
+    HomeDocument,
+    options,
+  );
+}
+export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
+export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
+export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 export const ToggleAutoSubscribeDocument = gql`
   mutation toggleAutoSubscribe {
     toggleAutoSubscribe {

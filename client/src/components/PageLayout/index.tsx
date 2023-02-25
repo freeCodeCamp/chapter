@@ -15,6 +15,7 @@ import { checkInstancePermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
 import { Header } from './Header';
 import { Footer } from './component/Footer';
+import { Alerts } from './component/Alerts';
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUser();
@@ -50,6 +51,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
             </AlertDescription>
           </Alert>
         )}
+      <Alerts />
       <SkipNavContent />
       <Box
         as="main"

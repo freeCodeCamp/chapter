@@ -13,7 +13,6 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
@@ -41,9 +40,10 @@ import {
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
+import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
-import { CHAPTER, CHAPTER_USER } from 'modules/chapters/graphql/queries';
+import { CHAPTER, CHAPTER_USER } from '../../chapters/graphql/queries';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -74,7 +74,7 @@ export const EventPage: NextPage = () => {
     variables: { eventId },
   });
 
-  const toast = useToast();
+  const alert = useAlert();
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
@@ -102,7 +102,7 @@ export const EventPage: NextPage = () => {
     const alreadyAttending =
       attencanceStatus === 'yes' || attencanceStatus === 'waitlist';
     if (alreadyAttending) {
-      toast({ title: 'Already attending', status: 'info' });
+      alert({ title: 'Already attending', status: 'info' });
       return true;
     }
     return false;
@@ -110,7 +110,7 @@ export const EventPage: NextPage = () => {
 
   async function onAttend() {
     if (!chapterId) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      alert({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
@@ -128,7 +128,7 @@ export const EventPage: NextPage = () => {
 
       const attendance = dataAttend?.attendEvent.attendance.name;
 
-      toast({
+      alert({
         title:
           attendance === 'yes'
             ? 'You are attending this event'
@@ -136,7 +136,7 @@ export const EventPage: NextPage = () => {
         status: 'success',
       });
     } catch (err) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      alert({ title: 'Something went wrong', status: 'error' });
       console.error(err);
     }
   }
@@ -152,9 +152,9 @@ export const EventPage: NextPage = () => {
           variables: { eventId },
         });
 
-        toast({ title: 'You canceled your attendance 👋', status: 'info' });
+        alert({ title: 'You canceled your attendance 👋', status: 'info' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        alert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -236,12 +236,16 @@ export const EventPage: NextPage = () => {
     if (ok) {
       try {
         await subscribeToEvent({ variables: { eventId } });
-        toast({
+        alert({
+          title: 'You successfully subscribed to this event',
+          status: 'success',
+        });
+        alert({
           title: 'You successfully subscribed to this event',
           status: 'success',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        alert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -255,12 +259,12 @@ export const EventPage: NextPage = () => {
     if (ok) {
       try {
         await unsubscribeFromEvent({ variables: { eventId } });
-        toast({
+        alert({
           title: 'You have unsubscribed from this event',
           status: 'info',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        alert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }

@@ -1,5 +1,5 @@
 import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -7,7 +7,7 @@ import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
 import {
   usePaginatedEventsWithTotalQuery,
-  useChaptersLazyQuery,
+  useChaptersQuery,
 } from '../../generated/graphql';
 import { Pagination } from '../util/pagination';
 import { UserContextType, useUser } from '../auth/user';
@@ -44,14 +44,10 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [visitedPages, setVisitedPages] = useState(new Set([1]));
   const offset = (currentPage - 1) * eventCards;
-  const [getChapters, { error: chapterError, data: chapterData }] =
-    useChaptersLazyQuery();
+  const { error: chapterError, data: chapterData } = useChaptersQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset, limit: eventCards },
-    onCompleted() {
-      getChapters();
-    },
   });
   const { user } = useUser();
 
@@ -63,8 +59,8 @@ const Home = () => {
     setVisitedPages(new Set(visitedPages).add(currentPage));
   }, [currentPage]);
 
-  const isLoading = loading || !data;
-  if (isLoading) return <Loading error={error} />;
+  const isLoading = loading || !data || !chapterData;
+  if (isLoading) return <Loading error={error || chapterError} />;
   const paginatedEventsWithTotal = data?.paginatedEventsWithTotal.flatMap(
     (eventData) => eventData.events,
   );
@@ -112,11 +108,9 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Chapters
             </Heading>
-            <Suspense fallback={<Loading error={chapterError} />}>
-              {chapterData?.chapters.map((chapter) => (
-                <ChapterCard key={chapter.id} chapter={chapter} />
-              ))}
-            </Suspense>
+            {chapterData.chapters.map((chapter) => (
+              <ChapterCard key={chapter.id} chapter={chapter} />
+            ))}
           </VStack>
         </GridItem>
       </Grid>

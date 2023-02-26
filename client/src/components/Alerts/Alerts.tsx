@@ -10,11 +10,11 @@ import React, { useContext } from 'react';
 import { AlertContext } from './AlertContext';
 
 export const Alerts = () => {
-  const { alertList: alertsList, removeAlert } = useContext(AlertContext);
+  const { alertList, removeAlert } = useContext(AlertContext);
 
   return (
     <>
-      {alertsList.map(
+      {alertList.map(
         ({
           alertId,
           status,

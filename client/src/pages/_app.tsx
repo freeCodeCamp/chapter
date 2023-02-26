@@ -21,7 +21,7 @@ import React, { ReactElement, ReactNode, useEffect } from 'react';
 import PageLayout from '../components/PageLayout';
 import { UserProvider } from '../modules/auth/user';
 import { AuthProvider } from '../modules/auth/context';
-import { AlertProvider } from '../components/PageLayout/component/AlertProvider';
+import { AlertProvider } from '../components/Alerts/AlertProvider';
 import { chapterTheme } from '../styles/themes';
 
 const serverUri = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';

@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  AlertContext,
-  AlertProps,
-} from '../components/PageLayout/component/AlertContext';
+import { AlertContext, AlertProps } from '../components/Alerts/AlertContext';
 
 export const useAlert = () => {
   const { addAlert } = React.useContext(AlertContext);

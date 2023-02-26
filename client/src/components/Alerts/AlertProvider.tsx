@@ -12,15 +12,15 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const removeAlert = (idToRemove: number) => {
-    setAlerts(({ alertList: alertsList, nextId }) => ({
-      alertList: alertsList.filter(({ alertId }) => alertId !== idToRemove),
+    setAlerts(({ alertList, nextId }) => ({
+      alertList: alertList.filter(({ alertId }) => alertId !== idToRemove),
       nextId,
     }));
   };
 
   const addAlert = (alert: Omit<AlertProps, 'alertId'>) => {
-    setAlerts(({ alertList: alertsList, nextId }) => ({
-      alertList: [...alertsList, { ...alert, alertId: nextId }],
+    setAlerts(({ alertList, nextId }) => ({
+      alertList: [...alertList, { ...alert, alertId: nextId }],
       nextId: ++nextId,
     }));
   };

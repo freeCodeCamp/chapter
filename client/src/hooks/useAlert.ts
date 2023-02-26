@@ -7,5 +7,5 @@ import {
 
 export const useAlert = () => {
   const { addAlert } = React.useContext(AlertContext);
-  return (alert: AlertProps) => addAlert(alert);
+  return (alert: Omit<AlertProps, 'alertId'>) => addAlert(alert);
 };

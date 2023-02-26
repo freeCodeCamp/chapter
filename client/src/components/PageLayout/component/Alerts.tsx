@@ -4,41 +4,40 @@ import {
   AlertIcon,
   AlertTitle,
   CloseButton,
+  Wrap,
 } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { AlertContext } from './AlertContext';
 
 export const Alerts = () => {
-  const { alerts, removeAlert } = useContext(AlertContext);
-
-  console.log(alerts);
+  const { alertList: alertsList, removeAlert } = useContext(AlertContext);
 
   return (
     <>
-      {alerts.map(
-        (
-          {
-            status,
-            title,
-            closeButtonProps,
-            description,
-            descriptionProps,
-            iconProps,
-            titleProps,
-            ...rest
-          },
-          index,
-        ) => (
-          <Alert key={index} status={status} {...rest}>
-            <AlertIcon {...iconProps} />
-            <AlertTitle {...titleProps}>{title}</AlertTitle>
-            {description && (
-              <AlertDescription {...descriptionProps}>
-                {description}
-              </AlertDescription>
-            )}
+      {alertsList.map(
+        ({
+          alertId,
+          status,
+          title,
+          closeButtonProps,
+          description,
+          descriptionProps,
+          iconProps,
+          titleProps,
+          ...rest
+        }) => (
+          <Alert key={alertId} status={status} {...rest}>
+            <Wrap>
+              <AlertIcon {...iconProps} />
+              <AlertTitle {...titleProps}>{title}</AlertTitle>
+              {description && (
+                <AlertDescription {...descriptionProps}>
+                  {description}
+                </AlertDescription>
+              )}
+            </Wrap>
             <CloseButton
-              onClick={() => removeAlert(index)}
+              onClick={() => removeAlert(alertId)}
               {...closeButtonProps}
             />
           </Alert>

@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 export interface AlertProps extends ChakraAlertProps {
+  alertId: number;
   description?: string;
   descriptionProps?: AlertDescriptionProps;
   iconProps?: AlertIconProps;
@@ -18,13 +19,13 @@ export interface AlertProps extends ChakraAlertProps {
 }
 
 type AlertContextType = {
-  alerts: AlertProps[];
-  removeAlert: (indexToRemove: number) => void;
-  addAlert: (alert: AlertProps) => void;
+  alertList: AlertProps[];
+  removeAlert: (idToRemove: number) => void;
+  addAlert: (alert: Omit<AlertProps, 'alertId'>) => void;
 };
 
 export const AlertContext = React.createContext<AlertContextType>({
-  alerts: [],
+  alertList: [],
   removeAlert: () => {},
   addAlert: () => {},
 });

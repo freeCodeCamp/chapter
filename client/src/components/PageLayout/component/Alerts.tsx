@@ -26,7 +26,13 @@ export const Alerts = () => {
           titleProps,
           ...rest
         }) => (
-          <Alert key={alertId} status={status} {...rest}>
+          <Alert
+            key={alertId}
+            status={status}
+            variant="top-accent"
+            justifyContent="space-between"
+            {...rest}
+          >
             <Wrap>
               <AlertIcon {...iconProps} />
               <AlertTitle {...titleProps}>{title}</AlertTitle>

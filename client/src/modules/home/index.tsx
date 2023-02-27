@@ -1,5 +1,5 @@
 import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -41,29 +41,34 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [visitedPages, setVisitedPages] = useState(new Set([1]));
-  const offset = (currentPage - 1) * eventCards;
   const { error: chapterError, data: chapterData } = useChaptersQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset, limit: eventCards },
+    variables: { offset: 0, limit: eventCards },
   });
   const { user } = useUser();
 
-  useEffect(() => {
-    if (visitedPages.has(currentPage)) return;
+  const events = useMemo(
+    () =>
+      data?.paginatedEventsWithTotal.flatMap((eventData) => eventData.events) ??
+      [],
+    [data?.paginatedEventsWithTotal],
+  );
+
+  const currentPage = useMemo(
+    () => Math.floor(events.length / eventCards),
+    [events],
+  );
+
+  const onClickForMore = () => {
+    const offset = currentPage * eventCards;
     fetchMore({
       variables: { offset, limit: eventCards },
     });
-    setVisitedPages(new Set(visitedPages).add(currentPage));
-  }, [currentPage]);
+  };
 
   const isLoading = loading || !data || !chapterData;
   if (isLoading) return <Loading error={error || chapterError} />;
-  const paginatedEventsWithTotal = data?.paginatedEventsWithTotal.flatMap(
-    (eventData) => eventData.events,
-  );
   const totalEvents = data?.paginatedEventsWithTotal
     .flatMap((eventData) => eventData.total)
     .reduce(Number);
@@ -83,12 +88,12 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {paginatedEventsWithTotal.map((event) => (
+            {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
             <Pagination
               currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
+              onClickForMore={() => onClickForMore()}
               eventCards={eventCards}
               records={totalEvents || 0}
               displayOnEmpty={

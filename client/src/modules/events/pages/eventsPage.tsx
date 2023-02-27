@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Flex, Heading, VStack, Stack, Text } from '@chakra-ui/react';
 import { Link, LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
@@ -12,28 +12,33 @@ import { Permission } from '../../../../../common/permissions';
 
 const eventCards = 5;
 export const EventsPage: NextPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [visitedPages, setVisitedPages] = useState(new Set([1]));
   const { user } = useUser();
-  const offset = (currentPage - 1) * eventCards;
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset, limit: eventCards, showOnlyUpcoming: false },
+    variables: { offset: 0, limit: eventCards, showOnlyUpcoming: false },
   });
 
-  useEffect(() => {
-    if (visitedPages.has(currentPage)) return;
+  const events = useMemo(
+    () =>
+      data?.paginatedEventsWithTotal.flatMap((eventData) => eventData.events) ??
+      [],
+    [data?.paginatedEventsWithTotal],
+  );
+
+  const currentPage = useMemo(
+    () => Math.floor(events.length / eventCards),
+    [events],
+  );
+
+  const onClickForMore = () => {
+    const offset = currentPage * eventCards;
     fetchMore({
       variables: { offset, limit: eventCards },
     });
-    setVisitedPages(new Set(visitedPages).add(currentPage));
-  }, [currentPage]);
+  };
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading error={error} />;
   // we need to do this because the data is array of event for every total?
-  const paginatedEventsWithTotal = data?.paginatedEventsWithTotal.flatMap(
-    (eventData) => eventData.events,
-  );
   const totalEvents = data?.paginatedEventsWithTotal
     .flatMap((eventData) => eventData.total)
     .reduce(Number);
@@ -51,14 +56,14 @@ export const EventsPage: NextPage = () => {
         </Flex>
         {
           <>
-            {paginatedEventsWithTotal.map((event) => (
+            {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </>
         }
         <Pagination
           currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
+          onClickForMore={() => onClickForMore()}
           eventCards={eventCards}
           records={totalEvents || 0}
           displayOnEmpty={

@@ -3,7 +3,7 @@ import React from 'react';
 
 interface PaginationProps {
   currentPage: number;
-  setCurrentPage: (page: number) => void;
+  onClickForMore: () => void;
   eventCards: number;
   records: number;
   displayOnEmpty?: React.ReactNode;
@@ -11,7 +11,7 @@ interface PaginationProps {
 
 export const Pagination = ({
   currentPage,
-  setCurrentPage,
+  onClickForMore,
   eventCards,
   records,
   displayOnEmpty,
@@ -24,7 +24,7 @@ export const Pagination = ({
         <Button
           colorScheme={'blue'}
           data-testid="pagination"
-          onClick={() => hasMoreEvents && setCurrentPage(currentPage + 1)}
+          onClick={() => hasMoreEvents && onClickForMore()}
         >
           Click for more
         </Button>

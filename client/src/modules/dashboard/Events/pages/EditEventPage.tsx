@@ -4,7 +4,6 @@ import React, { ReactElement } from 'react';
 import { useToast } from '@chakra-ui/react';
 
 import {
-  useDashboardChapterQuery,
   useDashboardEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
@@ -39,12 +38,6 @@ export const EditEventPage: NextPageWithLayout = () => {
       { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
     ],
   });
-
-  const chapterQuery = useDashboardChapterQuery(
-    data?.dashboardEvent
-      ? { variables: { chapterId: data?.dashboardEvent?.chapter.id } }
-      : { skip: true },
-  );
 
   const onSubmit = async (data: EventFormData) => {
     const { data: eventData, errors } = await updateEvent({
@@ -84,9 +77,8 @@ export const EditEventPage: NextPageWithLayout = () => {
       onSubmit={onSubmit}
       loadingText={'Saving Event Changes'}
       submitText={'Save Event Changes'}
-      chapterId={data.dashboardEvent.chapter.id}
+      chapter={data.dashboardEvent.chapter}
       formType="edit"
-      chapterQuery={chapterQuery}
     />
   );
 };

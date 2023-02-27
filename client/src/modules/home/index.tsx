@@ -56,7 +56,7 @@ const Home = () => {
   );
 
   const currentPage = useMemo(
-    () => Math.floor(events.length / eventCards),
+    () => Math.ceil(events.length / eventCards),
     [events],
   );
 
@@ -72,7 +72,6 @@ const Home = () => {
   const totalEvents = data?.paginatedEventsWithTotal
     .flatMap((eventData) => eventData.total)
     .reduce(Number);
-
   return (
     <>
       {user ? (

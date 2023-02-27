@@ -25,7 +25,7 @@ export const EventsPage: NextPage = () => {
   );
 
   const currentPage = useMemo(
-    () => Math.floor(events.length / eventCards),
+    () => Math.ceil(events.length / eventCards),
     [events],
   );
 

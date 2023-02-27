@@ -1,11 +1,11 @@
 import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 import { isFuture } from 'date-fns';
 
 import {
   useCreateEventMutation,
-  useDashboardChapterQuery,
   useJoinChapterMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
@@ -16,6 +16,7 @@ import { CHAPTER } from '../../../chapters/graphql/queries';
 import { DASHBOARD_EVENTS } from '../graphql/queries';
 import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { useUser } from '../../../auth/user';
 
 export const NewEventPage: NextPageWithLayout<{
   chapterId?: number;
@@ -30,13 +31,11 @@ export const NewEventPage: NextPageWithLayout<{
 
   const [joinChapter] = useJoinChapterMutation();
 
-  const displayChaptersDropdown = typeof chapterId === 'undefined';
-  const queryOptions = displayChaptersDropdown
-    ? { skip: true }
-    : { variables: { chapterId } };
-
-  const chapterQuery = useDashboardChapterQuery(queryOptions);
-  const { data: chapterData, refetch } = chapterQuery;
+  const { user } = useUser();
+  const chapter = user?.admined_chapters.find(({ id }) => id === chapterId);
+  if ((chapterId && !chapter) || !user?.admined_chapters.length) {
+    return <NextError statusCode={403} title="Access denied" />;
+  }
 
   const onSubmit = async (data: EventFormData) => {
     const { chapter_id, attend_event } = data;
@@ -70,13 +69,9 @@ export const NewEventPage: NextPageWithLayout<{
         status: 'success',
       });
 
-      let hasChapterCalendar = chapterData?.dashboardChapter.has_calendar;
-      if (chapter_id !== chapterId) {
-        const { data: currentChapter } = await refetch({
-          chapterId: chapter_id,
-        });
-        hasChapterCalendar = currentChapter.dashboardChapter.has_calendar;
-      }
+      const hasChapterCalendar = user?.admined_chapters.find(
+        ({ id }) => id === chapter_id,
+      )?.has_calendar;
       if (hasChapterCalendar && !eventData.createEvent.has_calendar_event) {
         toast({ title: 'Calendar event was not created.', status: 'warning' });
       }
@@ -88,10 +83,8 @@ export const NewEventPage: NextPageWithLayout<{
       onSubmit={onSubmit}
       submitText="Add event"
       loadingText="Adding Event"
-      chapterId={chapterId}
+      chapter={chapter}
       formType="new"
-      chapterQuery={chapterQuery}
-      displayChaptersDropdown={displayChaptersDropdown}
     />
   );
 };

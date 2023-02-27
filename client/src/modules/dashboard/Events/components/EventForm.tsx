@@ -25,22 +25,8 @@ import {
 } from './EventFormUtils';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
-  const {
-    onSubmit,
-    data,
-    submitText,
-    chapterId: initialChapterId,
-    loadingText,
-    formType,
-    chapterQuery,
-    displayChaptersDropdown = false,
-  } = props;
-
-  const {
-    loading: loadingChapter,
-    error: errorChapter,
-    data: dataChapter,
-  } = chapterQuery;
+  const { onSubmit, data, submitText, chapter, loadingText, formType } = props;
+  const displayChaptersDropdown = typeof chapter === 'undefined';
 
   const sponsorQuery = useSponsorsQuery();
 
@@ -50,7 +36,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       return {
         venue_type: VenueType.PhysicalAndOnline,
         venue_id: 0,
-        chapter_id: initialChapterId,
+        chapter_id: chapter?.id,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
       };
@@ -67,7 +53,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       venue_id: data.venue_id ?? 0,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      chapter_id: initialChapterId,
+      chapter_id: chapter?.id,
     };
   }, []);
 
@@ -102,13 +88,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
         {!displayChaptersDropdown || data ? (
-          loadingChapter ? (
-            <Text>Loading Chapter</Text>
-          ) : errorChapter || !dataChapter?.dashboardChapter ? (
-            <Text>Error loading chapter</Text>
-          ) : (
-            <Heading>{dataChapter.dashboardChapter.name}</Heading>
-          )
+          <Heading>{chapter?.name}</Heading>
         ) : (
           <EventChapterSelect loading={loading} />
         )}

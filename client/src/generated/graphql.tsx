@@ -882,6 +882,7 @@ export type MeQuery = {
       __typename?: 'Chapter';
       id: number;
       name: string;
+      has_calendar: boolean;
     }>;
     user_bans: Array<{ __typename?: 'UserBan'; chapter_id: number }>;
     user_chapters: Array<{
@@ -2088,6 +2089,7 @@ export const MeDocument = gql`
       admined_chapters {
         id
         name
+        has_calendar
       }
       auto_subscribe
       image_url

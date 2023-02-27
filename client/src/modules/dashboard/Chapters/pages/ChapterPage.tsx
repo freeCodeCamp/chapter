@@ -41,6 +41,7 @@ import {
 } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
 import { DeleteChapterButton } from '../components/DeleteChapterButton';
+import { meQuery } from '../../../auth/graphql/queries';
 import { DASHBOARD_CHAPTER } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../Events/graphql/queries';
 
@@ -86,6 +87,7 @@ export const ChapterPage: NextPageWithLayout = () => {
           variables: { chapterId },
           refetchQueries: [
             { query: DASHBOARD_CHAPTER, variables: { chapterId } },
+            { query: meQuery },
           ],
         });
         toast({ title: 'Chapter calendar created', status: 'success' });

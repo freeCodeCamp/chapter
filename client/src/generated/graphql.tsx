@@ -360,6 +360,14 @@ export type InstanceRolePermission = {
   instance_permission: InstancePermission;
 };
 
+export type InstanceSettings = {
+  __typename?: 'InstanceSettings';
+  code_of_conduct_link?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  privacy_link?: Maybe<Scalars['String']>;
+  terms_of_services_link?: Maybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   attendEvent: EventUserWithRelations;
@@ -393,6 +401,7 @@ export type Mutation = {
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
   updateEvent: Event;
+  updateInstanceSettings: InstanceSettings;
   updateMe: User;
   updateSponsor: Sponsor;
   updateVenue: Venue;
@@ -522,6 +531,10 @@ export type MutationUpdateChapterArgs = {
 export type MutationUpdateEventArgs = {
   data: EventInputs;
   id: Scalars['Int'];
+};
+
+export type MutationUpdateInstanceSettingsArgs = {
+  data: UpdateInstanceSettingsInputs;
 };
 
 export type MutationUpdateMeArgs = {
@@ -665,6 +678,12 @@ export type UpdateChapterInputs = {
   logo_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateInstanceSettingsInputs = {
+  code_of_conduct_link?: InputMaybe<Scalars['String']>;
+  privacy_link?: InputMaybe<Scalars['String']>;
+  terms_of_services_link?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSponsorInputs = {

@@ -11,7 +11,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model chapter_settings {
+model instance_settings {
   id                     Int    @id
   privacy_link           String?
   terms_of_services_link String?

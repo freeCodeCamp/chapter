@@ -2,7 +2,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 
 @ObjectType()
-export class ChapterSettings extends BaseObject {
+export class InstanceSettings extends BaseObject {
   @Field(() => String, { nullable: true })
   privacy_link: string | null;
 

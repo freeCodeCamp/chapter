@@ -1,6 +1,6 @@
 import { prisma } from '../../src/prisma';
 import createAttendance from './factories/attendance.factory';
-import createChapterSettings from './factories/chapter_settings.factory';
+import createInstanceSettings from './factories/instance_settings.factory';
 import createChapters from './factories/chapters.factory';
 import createEvents from './factories/events.factory';
 import createSponsors from './factories/sponsors.factory';
@@ -53,7 +53,7 @@ async function seed() {
     sponsorIds,
     15,
   );
-  await createChapterSettings();
+  await createInstanceSettings();
   await createAttendance(eventIds, userIds);
   await setupRoles(
     { ownerId, chapter1AdminId, chapter2AdminId, bannedAdminId, userIds },

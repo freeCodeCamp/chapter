@@ -1,10 +1,10 @@
 import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
-import { EventCard } from '../../components/EventCard';
+import { EventCard, EventCardProps } from '../../components/EventCard';
 import {
   usePaginatedEventsWithTotalQuery,
   useChaptersQuery,
@@ -13,7 +13,7 @@ import { Pagination } from '../util/pagination';
 import { UserContextType, useUser } from '../auth/user';
 import { getNameText } from '../../components/UserName';
 
-const eventCards = 2;
+const eventsPerPage = 2;
 
 type User = NonNullable<UserContextType['user']>;
 
@@ -44,34 +44,13 @@ const Home = () => {
   const { error: chapterError, data: chapterData } = useChaptersQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset: 0, limit: eventCards },
+    variables: { offset: 0, limit: eventsPerPage },
   });
   const { user } = useUser();
 
-  const events = useMemo(
-    () =>
-      data?.paginatedEventsWithTotal.flatMap((eventData) => eventData.events) ??
-      [],
-    [data?.paginatedEventsWithTotal],
-  );
-
-  const currentPage = useMemo(
-    () => Math.ceil(events.length / eventCards),
-    [events],
-  );
-
-  const onClickForMore = () => {
-    const offset = currentPage * eventCards;
-    fetchMore({
-      variables: { offset, limit: eventCards },
-    });
-  };
-
   const isLoading = loading || !data || !chapterData;
   if (isLoading) return <Loading error={error || chapterError} />;
-  const totalEvents = data?.paginatedEventsWithTotal
-    .flatMap((eventData) => eventData.total)
-    .reduce(Number);
+
   return (
     <>
       {user ? (
@@ -87,14 +66,17 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {events.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
             <Pagination
-              currentPage={currentPage}
-              onClickForMore={() => onClickForMore()}
-              eventCards={eventCards}
-              records={totalEvents || 0}
+              data={data.paginatedEventsWithTotal}
+              dataFlattener={(eventsData) => eventsData.events}
+              itemsPerPage={eventsPerPage}
+              mapper={(event: EventCardProps['event']) => (
+                <EventCard key={event.id} event={event} />
+              )}
+              onClickForMore={(offset: number) =>
+                fetchMore({ variables: { offset, limit: eventsPerPage } })
+              }
+              totalItemsFromData={(data) => data[0].total}
               displayOnEmpty={
                 <Text size="md">
                   No more, check out the{' '}

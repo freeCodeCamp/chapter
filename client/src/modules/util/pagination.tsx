@@ -1,30 +1,39 @@
 import { Button } from '@chakra-ui/react';
 import React from 'react';
 
-interface PaginationProps {
-  currentPage: number;
-  onClickForMore: () => void;
-  eventCards: number;
-  records: number;
+interface PaginationProps<T, V> {
+  data: Array<T>;
+  dataFlattener: (page: T) => Array<V>;
   displayOnEmpty?: React.ReactNode;
+  itemsPerPage: number;
+  mapper: (item: V) => React.ReactNode;
+  onClickForMore: (offset: number) => void;
+  totalItemsFromData: (data: Array<T>) => number;
 }
 
-export const Pagination = ({
-  currentPage,
-  onClickForMore,
-  eventCards,
-  records,
+export const Pagination = <T, V>({
+  data,
+  dataFlattener,
   displayOnEmpty,
-}: PaginationProps) => {
-  const totalPages = Math.ceil(records / eventCards);
-  const hasMoreEvents = totalPages > currentPage;
+  itemsPerPage,
+  mapper,
+  onClickForMore,
+  totalItemsFromData,
+}: PaginationProps<T, V>) => {
+  const flattenedData = data.flatMap(dataFlattener);
+  const currentPage = Math.ceil(flattenedData.length / itemsPerPage);
+  const totalPages = Math.ceil(totalItemsFromData(data) / itemsPerPage);
+  const hasMorePages = totalPages > currentPage;
+  const offset = currentPage * itemsPerPage;
+
   return (
     <>
-      {hasMoreEvents ? (
+      {flattenedData.map(mapper)}
+      {hasMorePages ? (
         <Button
           colorScheme={'blue'}
           data-testid="pagination"
-          onClick={() => hasMoreEvents && onClickForMore()}
+          onClick={() => hasMorePages && onClickForMore(offset)}
         >
           Click for more
         </Button>

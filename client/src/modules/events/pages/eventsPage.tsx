@@ -1,47 +1,25 @@
 import { NextPage } from 'next';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Flex, Heading, VStack, Stack, Text } from '@chakra-ui/react';
 import { Link, LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
-import { EventCard } from '../../../components/EventCard';
+import { EventCard, EventCardProps } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
 import { useUser } from '../../auth/user';
 import { Pagination } from '../../util/pagination';
 import { checkInstancePermission } from '../../../util/check-permission';
 import { Permission } from '../../../../../common/permissions';
 
-const eventCards = 5;
+const eventsPerPage = 5;
+
 export const EventsPage: NextPage = () => {
   const { user } = useUser();
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
-    variables: { offset: 0, limit: eventCards, showOnlyUpcoming: false },
+    variables: { offset: 0, limit: eventsPerPage, showOnlyUpcoming: false },
   });
-
-  const events = useMemo(
-    () =>
-      data?.paginatedEventsWithTotal.flatMap((eventData) => eventData.events) ??
-      [],
-    [data?.paginatedEventsWithTotal],
-  );
-
-  const currentPage = useMemo(
-    () => Math.ceil(events.length / eventCards),
-    [events],
-  );
-
-  const onClickForMore = () => {
-    const offset = currentPage * eventCards;
-    fetchMore({
-      variables: { offset, limit: eventCards },
-    });
-  };
 
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading error={error} />;
-  // we need to do this because the data is array of event for every total?
-  const totalEvents = data?.paginatedEventsWithTotal
-    .flatMap((eventData) => eventData.total)
-    .reduce(Number);
 
   return (
     <VStack>
@@ -54,26 +32,22 @@ export const EventsPage: NextPage = () => {
             </LinkButton>
           )}
         </Flex>
-        {
-          <>
-            {events.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </>
-        }
         <Pagination
-          currentPage={currentPage}
-          onClickForMore={() => onClickForMore()}
-          eventCards={eventCards}
-          records={totalEvents || 0}
+          data={data.paginatedEventsWithTotal}
+          dataFlattener={(eventsData) => eventsData.events}
+          itemsPerPage={eventsPerPage}
+          mapper={(event: EventCardProps['event']) => (
+            <EventCard key={event.id} event={event} />
+          )}
+          onClickForMore={(offset: number) =>
+            fetchMore({ variables: { offset, limit: eventsPerPage } })
+          }
+          totalItemsFromData={(data) => data[0].total}
           displayOnEmpty={
             checkInstancePermission(user, Permission.EventsView) && (
               <Text size="md">
                 No more, you can create event in{' '}
-                <Link
-                  href="/dashboard/paginatedEventsWithTotal"
-                  fontWeight="bold"
-                >
+                <Link href="/dashboard/events" fontWeight="bold">
                   Event dashboard
                 </Link>
                 .

@@ -54,7 +54,7 @@
     "@testing-library/dom": "8.20.0",
     "@testing-library/react": "13.4.0",
     "@types/react": "18.0.28",
-    "@types/react-datepicker": "4.8.0",
+    "@types/react-datepicker": "4.10.0",
     "@types/react-dom": "18.0.11",
     "babel-plugin-istanbul": "6.1.1",
     "prettier": "2.8.4",

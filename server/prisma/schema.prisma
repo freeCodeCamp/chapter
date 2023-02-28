@@ -12,7 +12,7 @@ datasource db {
 }
 
 model chapter_settings {
-  id                     Int    @id @unique
+  id                     Int    @id
   privacy_link           String?
   terms_of_services_link String?
   code_of_conduct_link   String?

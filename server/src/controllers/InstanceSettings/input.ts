@@ -2,9 +2,7 @@ import { Field, InputType } from 'type-graphql';
 import { InstanceSettings } from '../../graphql-types/InstanceSettings';
 
 @InputType()
-export class UpdateInstanceSettingsInputs
-  implements Omit<InstanceSettings, 'id'>
-{
+export class InstanceSettingsInputs implements Omit<InstanceSettings, 'id'> {
   @Field(() => String, { nullable: true })
   privacy_link: string;
 

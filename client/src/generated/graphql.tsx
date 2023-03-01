@@ -368,6 +368,12 @@ export type InstanceSettings = {
   terms_of_services_link?: Maybe<Scalars['String']>;
 };
 
+export type InstanceSettingsInputs = {
+  code_of_conduct_link?: InputMaybe<Scalars['String']>;
+  privacy_link?: InputMaybe<Scalars['String']>;
+  terms_of_services_link?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   attendEvent: EventUserWithRelations;
@@ -534,7 +540,7 @@ export type MutationUpdateEventArgs = {
 };
 
 export type MutationUpdateInstanceSettingsArgs = {
-  data: UpdateInstanceSettingsInputs;
+  data: InstanceSettingsInputs;
 };
 
 export type MutationUpdateMeArgs = {
@@ -678,12 +684,6 @@ export type UpdateChapterInputs = {
   logo_url?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   region?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateInstanceSettingsInputs = {
-  code_of_conduct_link?: InputMaybe<Scalars['String']>;
-  privacy_link?: InputMaybe<Scalars['String']>;
-  terms_of_services_link?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSponsorInputs = {
@@ -1469,6 +1469,20 @@ export type ChapterVenuesQueryVariables = Exact<{
 export type ChapterVenuesQuery = {
   __typename?: 'Query';
   chapterVenues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
+};
+
+export type UpdateInstanceSettingsMutationVariables = Exact<{
+  data: InstanceSettingsInputs;
+}>;
+
+export type UpdateInstanceSettingsMutation = {
+  __typename?: 'Mutation';
+  updateInstanceSettings: {
+    __typename?: 'InstanceSettings';
+    privacy_link?: string | null;
+    terms_of_services_link?: string | null;
+    code_of_conduct_link?: string | null;
+  };
 };
 
 export type CreateSponsorMutationVariables = Exact<{
@@ -4159,6 +4173,58 @@ export type ChapterVenuesLazyQueryHookResult = ReturnType<
 export type ChapterVenuesQueryResult = Apollo.QueryResult<
   ChapterVenuesQuery,
   ChapterVenuesQueryVariables
+>;
+export const UpdateInstanceSettingsDocument = gql`
+  mutation updateInstanceSettings($data: InstanceSettingsInputs!) {
+    updateInstanceSettings(data: $data) {
+      privacy_link
+      terms_of_services_link
+      code_of_conduct_link
+    }
+  }
+`;
+export type UpdateInstanceSettingsMutationFn = Apollo.MutationFunction<
+  UpdateInstanceSettingsMutation,
+  UpdateInstanceSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateInstanceSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateInstanceSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInstanceSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInstanceSettingsMutation, { data, loading, error }] = useUpdateInstanceSettingsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateInstanceSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateInstanceSettingsMutation,
+    UpdateInstanceSettingsMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateInstanceSettingsMutation,
+    UpdateInstanceSettingsMutationVariables
+  >(UpdateInstanceSettingsDocument, options);
+}
+export type UpdateInstanceSettingsMutationHookResult = ReturnType<
+  typeof useUpdateInstanceSettingsMutation
+>;
+export type UpdateInstanceSettingsMutationResult =
+  Apollo.MutationResult<UpdateInstanceSettingsMutation>;
+export type UpdateInstanceSettingsMutationOptions = Apollo.BaseMutationOptions<
+  UpdateInstanceSettingsMutation,
+  UpdateInstanceSettingsMutationVariables
 >;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {

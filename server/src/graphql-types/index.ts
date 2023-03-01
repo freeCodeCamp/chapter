@@ -14,3 +14,4 @@ export * from './TokenStatus';
 export * from './User';
 export * from './UserBan';
 export * from './Venue';
+export * from './InstanceSettings';

@@ -7,4 +7,5 @@ export const updateInstanceSettings = gql`
       terms_of_services_link
       code_of_conduct_link
     }
+  }
 `;

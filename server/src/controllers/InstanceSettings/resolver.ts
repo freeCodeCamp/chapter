@@ -2,13 +2,13 @@ import { Prisma } from '@prisma/client';
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import { InstanceSettings } from '../../graphql-types/InstanceSettings';
 import { prisma } from '../../prisma';
-import { UpdateInstanceSettingsInputs } from './input';
+import { InstanceSettingsInputs } from './input';
 
 @Resolver()
 export class InctanceSettingsResolver {
   @Mutation(() => InstanceSettings)
   async updateInstanceSettings(
-    @Arg('data') data: UpdateInstanceSettingsInputs,
+    @Arg('data') data: InstanceSettingsInputs,
   ): Promise<InstanceSettings> {
     const instanceSettingData: Prisma.instance_settingsUpdateInput = data;
 

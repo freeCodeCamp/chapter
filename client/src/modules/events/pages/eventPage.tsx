@@ -74,7 +74,7 @@ export const EventPage: NextPage = () => {
     variables: { eventId },
   });
 
-  const alert = useAlert();
+  const addAlert = useAlert();
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
@@ -102,7 +102,7 @@ export const EventPage: NextPage = () => {
     const alreadyAttending =
       attencanceStatus === 'yes' || attencanceStatus === 'waitlist';
     if (alreadyAttending) {
-      alert({ title: 'Already attending', status: 'info' });
+      addAlert({ title: 'Already attending', status: 'info' });
       return true;
     }
     return false;
@@ -110,7 +110,7 @@ export const EventPage: NextPage = () => {
 
   async function onAttend() {
     if (!chapterId) {
-      alert({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
@@ -128,7 +128,7 @@ export const EventPage: NextPage = () => {
 
       const attendance = dataAttend?.attendEvent.attendance.name;
 
-      alert({
+      addAlert({
         title:
           attendance === 'yes'
             ? 'You are attending this event'
@@ -136,7 +136,7 @@ export const EventPage: NextPage = () => {
         status: 'success',
       });
     } catch (err) {
-      alert({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       console.error(err);
     }
   }
@@ -152,9 +152,9 @@ export const EventPage: NextPage = () => {
           variables: { eventId },
         });
 
-        alert({ title: 'You canceled your attendance 👋', status: 'info' });
+        addAlert({ title: 'You canceled your attendance 👋', status: 'info' });
       } catch (err) {
-        alert({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -236,12 +236,12 @@ export const EventPage: NextPage = () => {
     if (ok) {
       try {
         await subscribeToEvent({ variables: { eventId } });
-        alert({
+        addAlert({
           title: 'You successfully subscribed to this event',
           status: 'success',
         });
       } catch (err) {
-        alert({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -255,12 +255,12 @@ export const EventPage: NextPage = () => {
     if (ok) {
       try {
         await unsubscribeFromEvent({ variables: { eventId } });
-        alert({
+        addAlert({
           title: 'You have unsubscribed from this event',
           status: 'info',
         });
       } catch (err) {
-        alert({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }

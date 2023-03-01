@@ -5,12 +5,12 @@ import {
   GridItem,
   Flex,
   Text,
-  useToast,
   Button,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { Link } from 'chakra-next-link';
 
+import { useAlert } from '../../hooks/useAlert';
 import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
@@ -50,7 +50,7 @@ const Home = () => {
   });
   const { user } = useUser();
 
-  const toast = useToast();
+  const addAlert = useAlert();
   const onLoadMore = async () => {
     try {
       const res = await fetchMore({
@@ -59,9 +59,9 @@ const Home = () => {
       setHasMore(res.data.paginatedEvents.length > 0);
     } catch (err) {
       if (err instanceof Error) {
-        toast({ title: err.message || err.name });
+        addAlert({ title: err.message || err.name });
       } else {
-        toast({ title: 'An unexpected error occurred' });
+        addAlert({ title: 'An unexpected error occurred' });
       }
     }
   };

@@ -10,7 +10,6 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
@@ -18,12 +17,12 @@ import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-
 import { useConfirm } from 'chakra-confirm';
+
 import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
-import { Loading } from 'components/Loading';
-import { EventCard } from 'components/EventCard';
+import { Loading } from '../../../components/Loading';
+import { EventCard } from '../../../components/EventCard';
 import {
   useJoinChapterMutation,
   useLeaveChapterMutation,
@@ -31,10 +30,11 @@ import {
   ChapterUserQuery,
   useChapterQuery,
   useChapterUserQuery,
-} from 'generated/graphql';
-import { useParam } from 'hooks/useParam';
-import { EVENT } from 'modules/events/graphql/queries';
-import { meQuery } from 'modules/auth/graphql/queries';
+} from '../../../generated/graphql';
+import { useAlert } from '../../../hooks/useAlert';
+import { useParam } from '../../../hooks/useParam';
+import { EVENT } from '../../events/graphql/queries';
+import { meQuery } from '../../auth/graphql/queries';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
@@ -120,7 +120,7 @@ export const ChapterPage: NextPage = () => {
 
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = React.useState(false);
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
     useChapterUserQuery({
@@ -153,12 +153,12 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await joinChapter({ variables: { chapterId } });
-        toast({
+        addAlert({
           title: 'You successfully joined this chapter',
           status: 'success',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -195,12 +195,12 @@ export const ChapterPage: NextPage = () => {
             { query: meQuery },
           ],
         });
-        toast({
+        addAlert({
           title: 'You successfully left the chapter',
           status: 'success',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -245,7 +245,7 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await chapterSubscribe({ variables: { chapterId } });
-        toast(
+        addAlert(
           toSubscribe
             ? {
                 title:
@@ -258,7 +258,7 @@ export const ChapterPage: NextPage = () => {
               },
         );
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
       }
     }
   };

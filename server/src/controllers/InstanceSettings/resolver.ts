@@ -1,11 +1,18 @@
 import { Prisma } from '@prisma/client';
-import { Arg, Mutation, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { InstanceSettings } from '../../graphql-types/InstanceSettings';
 import { prisma } from '../../prisma';
 import { InstanceSettingsInputs } from './input';
 
 @Resolver()
 export class InctanceSettingsResolver {
+  @Query(() => InstanceSettings)
+  async instanceSettings(): Promise<InstanceSettings> {
+    return await prisma.instance_settings.findUniqueOrThrow({
+      where: { id: 1 },
+    });
+  }
+
   @Mutation(() => InstanceSettings)
   async updateInstanceSettings(
     @Arg('data') data: InstanceSettingsInputs,

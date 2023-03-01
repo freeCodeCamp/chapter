@@ -12,10 +12,10 @@ datasource db {
 }
 
 model instance_settings {
-  id                     Int    @id
-  privacy_link           String?
-  terms_of_services_link String?
-  code_of_conduct_link   String?
+  id                    Int    @id
+  policy_url            String?
+  terms_of_services_url String?
+  code_of_conduct_url   String?
 }
 
 model chapters {

@@ -362,16 +362,16 @@ export type InstanceRolePermission = {
 
 export type InstanceSettings = {
   __typename?: 'InstanceSettings';
-  code_of_conduct_link?: Maybe<Scalars['String']>;
+  code_of_conduct_url?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
-  privacy_link?: Maybe<Scalars['String']>;
-  terms_of_services_link?: Maybe<Scalars['String']>;
+  policy_url?: Maybe<Scalars['String']>;
+  terms_of_services_url?: Maybe<Scalars['String']>;
 };
 
 export type InstanceSettingsInputs = {
-  code_of_conduct_link?: InputMaybe<Scalars['String']>;
-  privacy_link?: InputMaybe<Scalars['String']>;
-  terms_of_services_link?: InputMaybe<Scalars['String']>;
+  code_of_conduct_url?: InputMaybe<Scalars['String']>;
+  policy_url?: InputMaybe<Scalars['String']>;
+  terms_of_services_url?: InputMaybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -581,6 +581,7 @@ export type Query = {
   event?: Maybe<EventWithRelationsWithEventUser>;
   eventRoles: Array<EventRole>;
   instanceRoles: Array<InstanceRole>;
+  instanceSettings: InstanceSettings;
   me?: Maybe<UserWithPermissions>;
   paginatedEvents: Array<EventWithChapter>;
   paginatedEventsWithTotal: PaginatedEventsWithTotal;
@@ -1479,9 +1480,22 @@ export type UpdateInstanceSettingsMutation = {
   __typename?: 'Mutation';
   updateInstanceSettings: {
     __typename?: 'InstanceSettings';
-    privacy_link?: string | null;
-    terms_of_services_link?: string | null;
-    code_of_conduct_link?: string | null;
+    policy_url?: string | null;
+    terms_of_services_url?: string | null;
+    code_of_conduct_url?: string | null;
+  };
+};
+
+export type InstanceSettingsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InstanceSettingsQuery = {
+  __typename?: 'Query';
+  instanceSettings: {
+    __typename?: 'InstanceSettings';
+    id: number;
+    policy_url?: string | null;
+    terms_of_services_url?: string | null;
+    code_of_conduct_url?: string | null;
   };
 };
 
@@ -4177,9 +4191,9 @@ export type ChapterVenuesQueryResult = Apollo.QueryResult<
 export const UpdateInstanceSettingsDocument = gql`
   mutation updateInstanceSettings($data: InstanceSettingsInputs!) {
     updateInstanceSettings(data: $data) {
-      privacy_link
-      terms_of_services_link
-      code_of_conduct_link
+      policy_url
+      terms_of_services_url
+      code_of_conduct_url
     }
   }
 `;
@@ -4225,6 +4239,66 @@ export type UpdateInstanceSettingsMutationResult =
 export type UpdateInstanceSettingsMutationOptions = Apollo.BaseMutationOptions<
   UpdateInstanceSettingsMutation,
   UpdateInstanceSettingsMutationVariables
+>;
+export const InstanceSettingsDocument = gql`
+  query instanceSettings {
+    instanceSettings {
+      id
+      policy_url
+      terms_of_services_url
+      code_of_conduct_url
+    }
+  }
+`;
+
+/**
+ * __useInstanceSettingsQuery__
+ *
+ * To run a query within a React component, call `useInstanceSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInstanceSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInstanceSettingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInstanceSettingsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    InstanceSettingsQuery,
+    InstanceSettingsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<InstanceSettingsQuery, InstanceSettingsQueryVariables>(
+    InstanceSettingsDocument,
+    options,
+  );
+}
+export function useInstanceSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    InstanceSettingsQuery,
+    InstanceSettingsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    InstanceSettingsQuery,
+    InstanceSettingsQueryVariables
+  >(InstanceSettingsDocument, options);
+}
+export type InstanceSettingsQueryHookResult = ReturnType<
+  typeof useInstanceSettingsQuery
+>;
+export type InstanceSettingsLazyQueryHookResult = ReturnType<
+  typeof useInstanceSettingsLazyQuery
+>;
+export type InstanceSettingsQueryResult = Apollo.QueryResult<
+  InstanceSettingsQuery,
+  InstanceSettingsQueryVariables
 >;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {

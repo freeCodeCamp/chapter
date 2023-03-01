@@ -3813,7 +3813,7 @@
         "description": null,
         "fields": [
           {
-            "name": "code_of_conduct_link",
+            "name": "code_of_conduct_url",
             "description": null,
             "args": [],
             "type": {
@@ -3841,7 +3841,7 @@
             "deprecationReason": null
           },
           {
-            "name": "privacy_link",
+            "name": "policy_url",
             "description": null,
             "args": [],
             "type": {
@@ -3853,7 +3853,7 @@
             "deprecationReason": null
           },
           {
-            "name": "terms_of_services_link",
+            "name": "terms_of_services_url",
             "description": null,
             "args": [],
             "type": {
@@ -3877,7 +3877,7 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "code_of_conduct_link",
+            "name": "code_of_conduct_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3889,7 +3889,7 @@
             "deprecationReason": null
           },
           {
-            "name": "privacy_link",
+            "name": "policy_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3901,7 +3901,7 @@
             "deprecationReason": null
           },
           {
-            "name": "terms_of_services_link",
+            "name": "terms_of_services_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -5764,6 +5764,22 @@
                     "ofType": null
                   }
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "instanceSettings",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "InstanceSettings",
+                "ofType": null
               }
             },
             "isDeprecated": false,

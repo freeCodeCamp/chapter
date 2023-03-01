@@ -1,2 +1,2 @@
-import { InstanceSettings } from '../../../modules/dashboard/InstanceSettings';
-export default InstanceSettings;
+import { InstanceSettingsPage } from '../../../modules/dashboard/InstanceSettings';
+export default InstanceSettingsPage;

@@ -1,1 +1,1 @@
-export { InstanceSettings } from './pages/InstanceSettings';
+export { InstanceSettingsPage } from './pages/InstanceSettings';

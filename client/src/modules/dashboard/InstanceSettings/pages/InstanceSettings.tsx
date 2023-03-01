@@ -8,7 +8,8 @@ import {
   useInstanceSettingsQuery,
   useUpdateInstanceSettingsMutation,
 } from '../../../../generated/graphql';
-import { DashboardLoading } from 'modules/dashboard/shared/components/DashboardLoading';
+import { DashboardLoading } from '../../../dashboard/shared/components/DashboardLoading';
+import { DashboardLayout } from '../../../dashboard/shared/components/DashboardLayout';
 
 export const InstanceSettingsPage = () => {
   const { data, loading, error } = useInstanceSettingsQuery();
@@ -63,4 +64,8 @@ export const InstanceSettingsPage = () => {
       </Form>
     </>
   );
+};
+
+InstanceSettingsPage.getLayout = function getLayout(page: React.ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
 };

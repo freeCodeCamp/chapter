@@ -54,6 +54,7 @@ async function seed() {
     15,
   );
   await createInstanceSettings();
+  
   await createAttendance(eventIds, userIds);
   await setupRoles(
     { ownerId, chapter1AdminId, chapter2AdminId, bannedAdminId, userIds },

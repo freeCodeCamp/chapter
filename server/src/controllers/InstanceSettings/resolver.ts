@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Permission } from '../../../../common/permissions';
 import { InstanceSettings } from '../../graphql-types/InstanceSettings';
 import { prisma } from '../../prisma';
 import { InstanceSettingsInputs } from './input';
@@ -13,6 +14,7 @@ export class InctanceSettingsResolver {
     });
   }
 
+  @Authorized(Permission.SettingManage)
   @Mutation(() => InstanceSettings)
   async updateInstanceSettings(
     @Arg('data') data: InstanceSettingsInputs,

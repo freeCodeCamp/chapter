@@ -46,11 +46,11 @@ export const EventsPage: NextPage = () => {
           displayOnEmpty={
             checkInstancePermission(user, Permission.EventsView) && (
               <Text size="md">
-                No more, you can create event in{' '}
+                No more events. Go to the{' '}
                 <Link href="/dashboard/events" fontWeight="bold">
-                  Event dashboard
+                  event dashboard
                 </Link>
-                .
+                to create more.
               </Text>
             )
           }

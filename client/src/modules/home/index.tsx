@@ -83,7 +83,7 @@ const Home = () => {
                   <Link href="/events" fontWeight="bold">
                     Event page
                   </Link>
-                  .
+                  to see past events.
                 </Text>
               }
             />

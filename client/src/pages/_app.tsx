@@ -9,7 +9,6 @@ import {
 import { NetworkError } from '@apollo/client/errors';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { offsetLimitPagination } from '@apollo/client/utilities';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfirmContextProvider } from 'chakra-confirm';
 import { NextPage } from 'next';
@@ -59,7 +58,15 @@ const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          paginatedEvents: offsetLimitPagination(),
+          paginatedEventsWithTotal: {
+            keyArgs: ['showOnlyUpcoming'],
+            merge(existing = { total: undefined, events: [] }, incoming) {
+              return {
+                total: existing.total ?? incoming.total,
+                events: [...existing.events, ...incoming.events],
+              };
+            },
+          },
         },
       },
     },

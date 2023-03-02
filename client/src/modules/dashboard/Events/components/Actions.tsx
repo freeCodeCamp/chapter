@@ -5,8 +5,10 @@ import React, { useMemo, useState } from 'react';
 
 import { CHAPTER } from '../../../chapters/graphql/queries';
 import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
-import { EVENT } from '../../../events/graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import {
+  EVENT,
+  DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+} from '../../../events/graphql/queries';
 import { useAlert } from '../../../../hooks/useAlert';
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { checkChapterPermission } from '../../../../util/check-permission';
@@ -48,8 +50,11 @@ const Actions: React.FC<ActionsProps> = ({
         { query: CHAPTER, variables: { chapterId: chapter.id } },
         { query: EVENT, variables: { eventId: event.id } },
         { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
+        {
+          query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+          variables: { offset: 0, limit: 2 },
+        },
         { query: DASHBOARD_EVENTS },
-        { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],
     }),
     [event],

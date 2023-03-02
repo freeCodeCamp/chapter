@@ -4,20 +4,23 @@ import {
   Heading,
   Image,
   Link,
+  List,
+  ListIcon,
+  ListItem,
   SimpleGrid,
   Stack,
   Text,
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { CheckIcon } from '@chakra-ui/icons';
+import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { useConfirm } from 'chakra-confirm';
-import { CHAPTER_USER } from '../graphql/queries';
+import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
 import { Loading } from 'components/Loading';
 import { EventCard } from 'components/EventCard';
@@ -30,6 +33,8 @@ import {
   useChapterUserQuery,
 } from 'generated/graphql';
 import { useParam } from 'hooks/useParam';
+import { EVENT } from 'modules/events/graphql/queries';
+import { meQuery } from 'modules/auth/graphql/queries';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
@@ -51,7 +56,7 @@ const SubscriptionWidget = ({
 }) => {
   return chapterUser?.subscribed ? (
     <>
-      <Text fontWeight={500}>Unfollow upcoming chapter&apos;s events</Text>
+      <Text fontWeight={500}>You are subscribed to new events</Text>
       <Button
         data-cy="unsubscribe-chapter"
         isLoading={loading}
@@ -62,7 +67,7 @@ const SubscriptionWidget = ({
     </>
   ) : (
     <>
-      <Text fontWeight={500}>Follow upcoming chapter&apos;s events</Text>
+      <Text fontWeight={500}>Not subscribed to new events</Text>
       <Button
         colorScheme="blue"
         data-cy="subscribe-chapter"
@@ -123,12 +128,14 @@ export const ChapterPage: NextPage = () => {
     });
 
   const refetch = {
-    refetchQueries: [{ query: CHAPTER_USER, variables: { chapterId } }],
+    refetchQueries: [
+      { query: CHAPTER_USER, variables: { chapterId } },
+      { query: CHAPTER, variables: { chapterId } },
+    ],
   };
   const [joinChapter, { loading: loadingJoin }] =
     useJoinChapterMutation(refetch);
-  const [leaveChapter, { loading: loadingLeave }] =
-    useLeaveChapterMutation(refetch);
+  const [leaveChapter, { loading: loadingLeave }] = useLeaveChapterMutation();
   const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
     useToggleChapterSubscriptionMutation(refetch);
 
@@ -177,7 +184,17 @@ export const ChapterPage: NextPage = () => {
     });
     if (ok) {
       try {
-        await leaveChapter({ variables: { chapterId } });
+        await leaveChapter({
+          variables: { chapterId },
+          refetchQueries: [
+            ...refetch.refetchQueries,
+            ...(data?.chapter.events.map(({ id }) => ({
+              query: EVENT,
+              variables: { eventId: id },
+            })) ?? []),
+            { query: meQuery },
+          ],
+        });
         toast({
           title: 'You successfully left the chapter',
           status: 'success',
@@ -193,12 +210,35 @@ export const ChapterPage: NextPage = () => {
     const ok = await confirm(
       toSubscribe
         ? {
-            title: 'Do you want to subscribe?',
-            body: 'After subscribing you will receive emails about new events in this chapter.',
+            title: 'Subscribe to new events in the chapter?',
+            body: (
+              <List>
+                <ListItem>
+                  <ListIcon boxSize={5} />
+                  You will receive emails about new events in the chapter.
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={InfoIcon} boxSize={5} />
+                  This does not affect notifications from Google Calendar.
+                </ListItem>
+              </List>
+            ),
           }
         : {
-            title: 'Unsubscribe from chapter?',
-            body: 'After unsubscribing you will not receive emails about new events in this chapter.',
+            title: 'Unsubscribe from new events in the chapter?',
+            body: (
+              <List>
+                <ListItem>
+                  <ListIcon as={InfoIcon} boxSize={5} />
+                  You will no longer receive emails about new events in the
+                  chapter.
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={InfoIcon} boxSize={5} />
+                  This does not affect notifications from Google Calendar.
+                </ListItem>
+              </List>
+            ),
           },
     );
 
@@ -208,11 +248,12 @@ export const ChapterPage: NextPage = () => {
         toast(
           toSubscribe
             ? {
-                title: 'You successfully subscribed to this chapter',
+                title:
+                  'You successfully subscribed to new events in the chapter',
                 status: 'success',
               }
             : {
-                title: 'You have unsubscribed from this chapter',
+                title: 'You have unsubscribed from new events in this chapter',
                 status: 'success',
               },
         );

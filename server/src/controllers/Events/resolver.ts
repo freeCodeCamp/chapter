@@ -28,10 +28,9 @@ import {
   EventUserWithRelations,
   EventWithRelationsWithEventUserRelations,
   EventWithRelationsWithEventUser,
-  EventWithChapter,
   EventWithVenue,
   User,
-  PaginatedEventsWithTotal,
+  PaginatedEventsWithChapters,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import mailerService, { batchSender } from '../../services/MailerService';
@@ -237,48 +236,36 @@ export class EventResolver {
     return typeof event.calendar_event_id === 'string';
   }
 
-  @Query(() => PaginatedEventsWithTotal)
+  @Query(() => PaginatedEventsWithChapters)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<PaginatedEventsWithTotal> {
-    const total = await prisma.events.count();
+    @Arg('showOnlyUpcoming', () => Boolean, { nullable: true })
+    showOnlyUpcoming = true,
+  ): Promise<PaginatedEventsWithChapters> {
+    const total = await prisma.events.count({
+      ...(showOnlyUpcoming && {
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+        },
+      }),
+    });
     const events = await prisma.events.findMany({
+      ...(showOnlyUpcoming && {
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+        },
+      }),
       include: {
         chapter: true,
       },
-      orderBy: {
-        start_at: 'asc',
-      },
+      orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
       take: limit ?? 10,
       skip: offset,
     });
     return { total, events };
-  }
-
-  @Query(() => [EventWithChapter])
-  async paginatedEvents(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<EventWithChapter[]> {
-    return await prisma.events.findMany({
-      where: {
-        AND: [
-          {
-            canceled: false,
-            ends_at: { gt: new Date() },
-          },
-        ],
-      },
-      include: {
-        chapter: true,
-      },
-      orderBy: {
-        start_at: 'asc',
-      },
-      take: limit ?? 10,
-      skip: offset,
-    });
   }
 
   @Authorized(Permission.EventEdit)
@@ -304,18 +291,15 @@ export class EventResolver {
   @Query(() => [EventWithVenue])
   async dashboardEvents(
     @Ctx() ctx: Required<ResolverCtx>,
-    @Arg('showCanceled', () => Boolean, { nullable: true })
-    showCanceled = true,
   ): Promise<EventWithVenue[]> {
     return await prisma.events.findMany({
       where: {
         ...(!isAdminFromInstanceRole(ctx.user) && {
           chapter: isChapterAdminWhere(ctx.user.id),
         }),
-        ...(!showCanceled && { canceled: false }),
       },
       include: { venue: true },
-      orderBy: { start_at: 'desc' },
+      orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
     });
   }
 

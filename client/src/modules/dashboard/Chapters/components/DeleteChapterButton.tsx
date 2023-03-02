@@ -7,7 +7,6 @@ import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { DASHBOARD_EVENTS } from '../../Events/graphql/queries';
 import { DASHBOARD_VENUES } from '../../Venues/graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { meQuery } from '../../../auth/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import {
@@ -36,14 +35,12 @@ export const DeleteChapterButton = ({
     refetchQueries: [
       { query: CHAPTERS },
       { query: DASHBOARD_CHAPTERS },
-      { query: DASHBOARD_EVENTS, variables: { showCanceled: true } },
-      { query: DASHBOARD_EVENTS, variables: { showCanceled: false } },
+      { query: DASHBOARD_EVENTS },
       { query: DASHBOARD_VENUES },
       {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
         variables: { offset: 0, limit: 5 },
       },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       { query: meQuery },
       { query: userProfileQuery },
       { query: userDownloadQuery },
@@ -57,7 +54,7 @@ export const DeleteChapterButton = ({
     });
     if (!ok) return;
     deleteChapter({ variables: { chapterId } });
-    router.push('/dashboard/chapters');
+    router.replace('/dashboard/chapters');
   };
 
   return (

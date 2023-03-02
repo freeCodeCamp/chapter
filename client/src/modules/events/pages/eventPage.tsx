@@ -43,6 +43,7 @@ import {
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
+import { CHAPTER, CHAPTER_USER } from 'modules/chapters/graphql/queries';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -63,7 +64,7 @@ export const EventPage: NextPage = () => {
     useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
     useCancelAttendanceMutation(refetch);
-  const [joinChapter] = useJoinChapterMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation();
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent, { loading: loadingUnsubscribe }] =
@@ -113,7 +114,14 @@ export const EventPage: NextPage = () => {
       return;
     }
     try {
-      await joinChapter({ variables: { chapterId } });
+      await joinChapter({
+        variables: { chapterId },
+        refetchQueries: [
+          ...refetch.refetchQueries,
+          { query: CHAPTER, variables: { chapterId } },
+          { query: CHAPTER_USER, variables: { chapterId } },
+        ],
+      });
       const { data: dataAttend } = await attendEvent({
         variables: { eventId, chapterId },
       });
@@ -224,12 +232,26 @@ export const EventPage: NextPage = () => {
     return <NextError statusCode={404} title="Event not found" />;
 
   async function onSubscribeToEvent() {
-    const ok = await confirm({ title: 'Do you want to subscribe?' });
+    const ok = await confirm({
+      title: 'Subscribe to event updates?',
+      body: (
+        <List>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            You will be informed about any changes to event details.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            This does not affect notifications from Google Calendar.
+          </ListItem>
+        </List>
+      ),
+    });
     if (ok) {
       try {
         await subscribeToEvent({ variables: { eventId } });
         toast({
-          title: 'You successfully subscribed to this event',
+          title: 'You successfully subscribed to event updates',
           status: 'success',
         });
       } catch (err) {
@@ -241,14 +263,26 @@ export const EventPage: NextPage = () => {
 
   async function onUnsubscribeFromEvent() {
     const ok = await confirm({
-      title: 'Unsubscribe from event?',
-      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
+      title: 'Unsubscribe from event updates?',
+      body: (
+        <List>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            After unsubscribing you will not receive any communication regarding
+            this event, including reminder before the event.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            This does not affect notifications from Google Calendar.
+          </ListItem>
+        </List>
+      ),
     });
     if (ok) {
       try {
         await unsubscribeFromEvent({ variables: { eventId } });
         toast({
-          title: 'You have unsubscribed from this event',
+          title: 'You have unsubscribed from event updates',
           status: 'info',
         });
       } catch (err) {
@@ -356,7 +390,7 @@ export const EventPage: NextPage = () => {
             {userEvent.subscribed ? (
               <>
                 <Text fontSize={'md'} fontWeight={'500'}>
-                  You are subscribed
+                  You are subscribed to event updates
                 </Text>
                 <Button
                   isLoading={loadingUnsubscribe}
@@ -370,7 +404,7 @@ export const EventPage: NextPage = () => {
             ) : (
               <>
                 <Text fontSize={'md'} fontWeight={'500'}>
-                  Not subscribed
+                  Not subscribed to event updates
                 </Text>
                 <Button
                   colorScheme="blue"

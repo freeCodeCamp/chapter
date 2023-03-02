@@ -39,7 +39,7 @@ export const NewChapterPage: NextPageWithLayout = () => {
     if (errors) throw errors;
     if (chapterData) {
       await router.replace(
-        `/dashboard/chapters/${chapterData.createChapter.id}/new-venue`,
+        `/dashboard/chapters/${chapterData.createChapter.id}`,
       );
       toast({
         title: `Chapter "${chapterData.createChapter.name}" created!`,

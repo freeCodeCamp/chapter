@@ -211,7 +211,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         data-cy="unbanUser"
                         colorScheme="purple"
                         size="xs"
-                        disabled={is_bannable ? false : true}
+                        isDisabled={!is_bannable}
                         onClick={() => onUnban(otherUser)}
                       >
                         Unban
@@ -235,7 +235,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         data-cy="banUser"
                         colorScheme="red"
                         size="xs"
-                        disabled={is_bannable ? false : true}
+                        isDisabled={!is_bannable}
                         onClick={() => onBan(otherUser)}
                       >
                         Ban
@@ -319,7 +319,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 data-cy="unbanUser"
                                 colorScheme="purple"
                                 size="xs"
-                                disabled={is_bannable ? false : true}
+                                isDisabled={!is_bannable}
                                 onClick={() => onUnban(user)}
                               >
                                 Unban
@@ -343,7 +343,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 data-cy="banUser"
                                 colorScheme="red"
                                 size="xs"
-                                disabled={is_bannable ? false : true}
+                                isDisabled={!is_bannable}
                                 onClick={() => onBan(user)}
                               >
                                 Ban

@@ -109,6 +109,26 @@ describe('event page', () => {
       cy.findByRole('button', { name: 'Cancel' }).should('be.visible');
     });
 
+    it('should be possible to use email link when user is initially logged out', () => {
+      cy.exec(`npm run change-user -- ${users.testUser.email}`);
+      cy.visit(`/events/${eventId}?confirm_attendance=true`);
+
+      cy.contains('You have been invited to this event');
+      cy.contains('Would you like to log in and attend');
+
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      cy.contains('Waiting for login');
+      cy.contains('Waiting for login').should('not.exist');
+      cy.get('[data-cy="attend-success"]').should('be.visible');
+      cy.findByRole('button', { name: 'Cancel' }).should('be.visible');
+      cy.get('[data-cy="attendees-heading"]')
+        .next()
+        .within(() => {
+          cy.findByText(users.testUser.name).should('exist');
+        });
+    });
+
     it('should be possible to attend and cancel', () => {
       cy.login(users.testUser.email);
 
@@ -150,7 +170,7 @@ describe('event page', () => {
 
       cy.contains(/Not subscribed/);
       cy.findByRole('button', { name: 'Subscribe' }).click();
-      cy.findByRole('alertdialog').contains('subscribe?');
+      cy.findByRole('alertdialog').contains('Subscribe to event');
       cy.findByRole('button', { name: 'Confirm' }).click();
       cy.contains('subscribed to');
     });
@@ -190,7 +210,8 @@ describe('event page', () => {
       cy.findByRole('button', { name: 'Attend' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.waitUntilMail();
+      // Two emails are send when user attends - one email to the admin, another to the Attendee.
+      cy.waitUntilMail({ expectedNumberOfEmails: 2 });
       cy.mhGetMailsByRecipient(users.chapter1Admin.email).should(
         'have.length',
         1,

@@ -22,7 +22,7 @@ import {
   isAdminFromInstanceRole,
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
-import { eventUnsubscribeOptions } from '../../util/event-email';
+import { eventListUnsubscribeOptions } from '../../util/event-email';
 import { VenueInputs } from './inputs';
 
 @Resolver()
@@ -143,7 +143,7 @@ export class VenueResolver {
         ({ name, id }) => `
       <tr>
         <td>${name}</td>
-        <td>${eventUnsubscribeOptions({
+        <td>${eventListUnsubscribeOptions({
           eventId: id,
           userId: currentUserId,
         })}</td>
@@ -161,7 +161,7 @@ export class VenueResolver {
     <thead>
         <tr>
           <th>Event</th>
-          <th>Cancel RSVP</th>
+          <th>Action</th>
         </tr>
     </thead>
     <tbody>

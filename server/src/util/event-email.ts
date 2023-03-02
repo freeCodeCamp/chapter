@@ -11,6 +11,7 @@ import {
   eventConfirmAtendeeText,
   eventDescriptionText,
   eventInviteText,
+  eventListUnsubscribeText,
   eventNewAttendeeNotificationText,
   eventUnsubscribeText,
   eventUpdateText,
@@ -100,6 +101,19 @@ export const eventUnsubscribeOptions = ({
     generateToken(UnsubscribeType.Event, eventId, userId),
   );
   return eventUnsubscribeText({ url });
+};
+
+export const eventListUnsubscribeOptions = ({
+  eventId,
+  userId,
+}: {
+  eventId: number;
+  userId: number;
+}) => {
+  const url = unsubscribeUrlFromToken(
+    generateToken(UnsubscribeType.Event, eventId, userId),
+  );
+  return eventListUnsubscribeText({ url });
 };
 
 export const chapterAdminUnsubscribeOptions = ({

@@ -1,35 +1,40 @@
 import { Button } from '@chakra-ui/react';
 import React from 'react';
 
-interface PaginationProps<T, V> {
-  data: Array<T>;
-  mapper: (item: T) => V;
-  currentPage: number;
-  onClickForMore: () => void;
-  itemsPerPage: number;
-  records: number;
+interface FetchMoreArg {
+  variables: {
+    offset: number;
+    limit: number;
+  };
+}
+
+interface PaginationProps<T> {
+  items: Array<T>;
+  fetchMore: (arg: FetchMoreArg) => void;
+  limit: number;
+  total: number;
   displayOnEmpty?: React.ReactNode;
 }
 
-export const Pagination = <T, V>({
-  data,
-  mapper,
-  currentPage,
-  onClickForMore,
-  itemsPerPage,
-  records,
+export const Pagination = <T,>({
+  items,
+  fetchMore,
+  limit,
+  total,
   displayOnEmpty,
-}: PaginationProps<T, V>) => {
-  const totalPages = Math.ceil(records / itemsPerPage);
+}: PaginationProps<T>) => {
+  const totalPages = Math.ceil(total / limit);
+  const currentPage = Math.ceil(items.length / limit);
   const hasMorePages = totalPages > currentPage;
+  const offset = currentPage * limit;
   return (
     <>
-      {data.map(mapper)}
+      {items}
       {hasMorePages ? (
         <Button
           colorScheme={'blue'}
           data-testid="pagination"
-          onClick={() => hasMorePages && onClickForMore()}
+          onClick={() => fetchMore({ variables: { offset, limit } })}
         >
           Click for more
         </Button>

@@ -51,16 +51,9 @@ const Home = () => {
   const isLoading = loading || !data || !chapterData;
   if (isLoading) return <Loading error={error || chapterError} />;
 
-  const currentPage = Math.ceil(
-    data.paginatedEventsWithTotal.events.length / eventsPerPage,
-  );
-
-  const onClickForMore = () => {
-    const offset = currentPage * eventsPerPage;
-    fetchMore({
-      variables: { offset, limit: eventsPerPage },
-    });
-  };
+  const items = data.paginatedEventsWithTotal.events.map((event) => (
+    <EventCard key={event.id} event={event} />
+  ));
 
   return (
     <>
@@ -78,12 +71,10 @@ const Home = () => {
               Upcoming events
             </Heading>
             <Pagination
-              data={data.paginatedEventsWithTotal.events}
-              mapper={(event) => <EventCard key={event.id} event={event} />}
-              currentPage={currentPage}
-              onClickForMore={() => onClickForMore()}
-              itemsPerPage={eventsPerPage}
-              records={data.paginatedEventsWithTotal.total || 0}
+              items={items}
+              fetchMore={fetchMore}
+              limit={eventsPerPage}
+              total={data.paginatedEventsWithTotal.total || 0}
               displayOnEmpty={
                 <Text size="md">
                   No more, check out the{' '}

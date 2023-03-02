@@ -21,15 +21,9 @@ export const EventsPage: NextPage = () => {
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading error={error} />;
 
-  const currentPage = Math.ceil(
-    data.paginatedEventsWithTotal.events.length / eventsPerPage,
-  );
-  const onClickForMore = () => {
-    const offset = currentPage * eventsPerPage;
-    fetchMore({
-      variables: { offset, limit: eventsPerPage },
-    });
-  };
+  const items = data.paginatedEventsWithTotal.events.map((event) => (
+    <EventCard key={event.id} event={event} />
+  ));
 
   return (
     <VStack>
@@ -43,12 +37,10 @@ export const EventsPage: NextPage = () => {
           )}
         </Flex>
         <Pagination
-          data={data.paginatedEventsWithTotal.events}
-          mapper={(event) => <EventCard key={event.id} event={event} />}
-          currentPage={currentPage}
-          onClickForMore={() => onClickForMore()}
-          itemsPerPage={eventsPerPage}
-          records={data.paginatedEventsWithTotal.total || 0}
+          items={items}
+          fetchMore={fetchMore}
+          limit={eventsPerPage}
+          total={data.paginatedEventsWithTotal.total || 0}
           displayOnEmpty={
             checkInstancePermission(user, Permission.EventsView) && (
               <Text size="md">

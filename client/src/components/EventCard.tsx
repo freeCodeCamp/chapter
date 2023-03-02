@@ -6,7 +6,7 @@ import React from 'react';
 import { Chapter, Event } from '../generated/graphql';
 import { formatDate } from '../util/date';
 
-export type EventCardProps = {
+type EventCardProps = {
   event: Pick<
     Event,
     | 'id'

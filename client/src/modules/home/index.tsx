@@ -4,7 +4,7 @@ import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
-import { EventCard, EventCardProps } from '../../components/EventCard';
+import { EventCard } from '../../components/EventCard';
 import {
   usePaginatedEventsWithTotalQuery,
   useChaptersQuery,
@@ -51,6 +51,17 @@ const Home = () => {
   const isLoading = loading || !data || !chapterData;
   if (isLoading) return <Loading error={error || chapterError} />;
 
+  const currentPage = Math.ceil(
+    data.paginatedEventsWithTotal.events.length / eventsPerPage,
+  );
+
+  const onClickForMore = () => {
+    const offset = currentPage * eventsPerPage;
+    fetchMore({
+      variables: { offset, limit: eventsPerPage },
+    });
+  };
+
   return (
     <>
       {user ? (
@@ -67,21 +78,17 @@ const Home = () => {
               Upcoming events
             </Heading>
             <Pagination
-              data={data.paginatedEventsWithTotal}
-              dataFlattener={(eventsData) => eventsData.events}
+              data={data.paginatedEventsWithTotal.events}
+              mapper={(event) => <EventCard key={event.id} event={event} />}
+              currentPage={currentPage}
+              onClickForMore={() => onClickForMore()}
               itemsPerPage={eventsPerPage}
-              mapper={(event: EventCardProps['event']) => (
-                <EventCard key={event.id} event={event} />
-              )}
-              onClickForMore={(offset: number) =>
-                fetchMore({ variables: { offset, limit: eventsPerPage } })
-              }
-              totalItemsFromData={(data) => data[0].total}
+              records={data.paginatedEventsWithTotal.total || 0}
               displayOnEmpty={
                 <Text size="md">
                   No more, check out the{' '}
                   <Link href="/events" fontWeight="bold">
-                    Event page
+                    Event page{' '}
                   </Link>
                   to see past events.
                 </Text>

@@ -568,7 +568,7 @@ export type Query = {
   eventRoles: Array<EventRole>;
   instanceRoles: Array<InstanceRole>;
   me?: Maybe<UserWithPermissions>;
-  paginatedEventsWithTotal: Array<PaginatedEventsWithChapters>;
+  paginatedEventsWithTotal: PaginatedEventsWithChapters;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   testChapterCalendarAccess?: Maybe<Scalars['Boolean']>;
@@ -1719,7 +1719,7 @@ export type PaginatedEventsWithTotalQueryVariables = Exact<{
 
 export type PaginatedEventsWithTotalQuery = {
   __typename?: 'Query';
-  paginatedEventsWithTotal: Array<{
+  paginatedEventsWithTotal: {
     __typename?: 'PaginatedEventsWithChapters';
     total: number;
     events: Array<{
@@ -1739,7 +1739,7 @@ export type PaginatedEventsWithTotalQuery = {
         category: string;
       };
     }>;
-  }>;
+  };
 };
 
 export type EventQueryVariables = Exact<{

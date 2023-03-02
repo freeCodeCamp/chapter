@@ -3,7 +3,7 @@ import React from 'react';
 import { Flex, Heading, VStack, Stack, Text } from '@chakra-ui/react';
 import { Link, LinkButton } from 'chakra-next-link';
 import { Loading } from '../../../components/Loading';
-import { EventCard, EventCardProps } from '../../../components/EventCard';
+import { EventCard } from '../../../components/EventCard';
 import { usePaginatedEventsWithTotalQuery } from '../../../generated/graphql';
 import { useUser } from '../../auth/user';
 import { Pagination } from '../../util/pagination';
@@ -21,6 +21,16 @@ export const EventsPage: NextPage = () => {
   const isLoading = loading || !data;
   if (isLoading || error) return <Loading error={error} />;
 
+  const currentPage = Math.ceil(
+    data.paginatedEventsWithTotal.events.length / eventsPerPage,
+  );
+  const onClickForMore = () => {
+    const offset = currentPage * eventsPerPage;
+    fetchMore({
+      variables: { offset, limit: eventsPerPage },
+    });
+  };
+
   return (
     <VStack>
       <Stack w={['90%', '90%', '60%']} maxW="37.5em" spacing={6} mt={10} mb={5}>
@@ -33,22 +43,18 @@ export const EventsPage: NextPage = () => {
           )}
         </Flex>
         <Pagination
-          data={data.paginatedEventsWithTotal}
-          dataFlattener={(eventsData) => eventsData.events}
+          data={data.paginatedEventsWithTotal.events}
+          mapper={(event) => <EventCard key={event.id} event={event} />}
+          currentPage={currentPage}
+          onClickForMore={() => onClickForMore()}
           itemsPerPage={eventsPerPage}
-          mapper={(event: EventCardProps['event']) => (
-            <EventCard key={event.id} event={event} />
-          )}
-          onClickForMore={(offset: number) =>
-            fetchMore({ variables: { offset, limit: eventsPerPage } })
-          }
-          totalItemsFromData={(data) => data[0].total}
+          records={data.paginatedEventsWithTotal.total || 0}
           displayOnEmpty={
             checkInstancePermission(user, Permission.EventsView) && (
               <Text size="md">
                 No more events. Go to the{' '}
                 <Link href="/dashboard/events" fontWeight="bold">
-                  event dashboard
+                  Event dashboard{' '}
                 </Link>
                 to create more.
               </Text>

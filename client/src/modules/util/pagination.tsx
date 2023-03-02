@@ -3,37 +3,33 @@ import React from 'react';
 
 interface PaginationProps<T, V> {
   data: Array<T>;
-  dataFlattener: (page: T) => Array<V>;
-  displayOnEmpty?: React.ReactNode;
+  mapper: (item: T) => V;
+  currentPage: number;
+  onClickForMore: () => void;
   itemsPerPage: number;
-  mapper: (item: V) => React.ReactNode;
-  onClickForMore: (offset: number) => void;
-  totalItemsFromData: (data: Array<T>) => number;
+  records: number;
+  displayOnEmpty?: React.ReactNode;
 }
 
 export const Pagination = <T, V>({
   data,
-  dataFlattener,
-  displayOnEmpty,
-  itemsPerPage,
   mapper,
+  currentPage,
   onClickForMore,
-  totalItemsFromData,
+  itemsPerPage,
+  records,
+  displayOnEmpty,
 }: PaginationProps<T, V>) => {
-  const flattenedData = data.flatMap(dataFlattener);
-  const currentPage = Math.ceil(flattenedData.length / itemsPerPage);
-  const totalPages = Math.ceil(totalItemsFromData(data) / itemsPerPage);
+  const totalPages = Math.ceil(records / itemsPerPage);
   const hasMorePages = totalPages > currentPage;
-  const offset = currentPage * itemsPerPage;
-
   return (
     <>
-      {flattenedData.map(mapper)}
+      {data.map(mapper)}
       {hasMorePages ? (
         <Button
           colorScheme={'blue'}
           data-testid="pagination"
-          onClick={() => hasMorePages && onClickForMore(offset)}
+          onClick={() => hasMorePages && onClickForMore()}
         >
           Click for more
         </Button>

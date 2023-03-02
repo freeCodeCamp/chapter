@@ -229,13 +229,13 @@ const getNameForNewAttendance = (event: EventAttendanceName) => {
 
 @Resolver()
 export class EventResolver {
-  @Query(() => [PaginatedEventsWithChapters])
+  @Query(() => PaginatedEventsWithChapters)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
     @Arg('showOnlyUpcoming', () => Boolean, { nullable: true })
     showOnlyUpcoming = true,
-  ): Promise<PaginatedEventsWithChapters[]> {
+  ): Promise<PaginatedEventsWithChapters> {
     const total = await prisma.events.count({
       ...(showOnlyUpcoming && {
         where: {
@@ -258,7 +258,7 @@ export class EventResolver {
       take: limit ?? 10,
       skip: offset,
     });
-    return [{ total, events }];
+    return { total, events };
   }
 
   @Authorized(Permission.EventEdit)

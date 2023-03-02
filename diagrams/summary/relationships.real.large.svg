@@ -367,7 +367,7 @@
 <g id="node13" class="node">
 <title>event_users</title>
 <g id="a_node13"><a xlink:href="../../tables/event_users.html" xlink:title="event_users" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="866,-1130.2 866,-1348.2 971,-1348.2 971,-1130.2 866,-1130.2"/>
+<polygon fill="#ffffff" stroke="transparent" points="866,-1108.2 866,-1348.2 971,-1348.2 971,-1108.2 866,-1108.2"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="866.5,-1325.2 866.5,-1348.2 971.5,-1348.2 971.5,-1325.2 866.5,-1325.2"/>
 <polygon fill="none" stroke="#000000" points="866.5,-1325.2 866.5,-1348.2 971.5,-1348.2 971.5,-1325.2 866.5,-1325.2"/>
 <text text-anchor="start" x="871.5" y="-1334.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">event_users</text>
@@ -392,15 +392,17 @@
 <text text-anchor="start" x="886.5" y="-1178.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">subscribed</text>
 <polygon fill="none" stroke="#000000" points="866.5,-1149.2 866.5,-1171.2 971.5,-1171.2 971.5,-1149.2 866.5,-1149.2"/>
 <text text-anchor="start" x="886.5" y="-1156.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">title</text>
-<polygon fill="#ffffff" stroke="transparent" points="866.5,-1130.2 866.5,-1149.2 899.5,-1149.2 899.5,-1130.2 866.5,-1130.2"/>
-<polygon fill="none" stroke="#000000" points="866.5,-1130.2 866.5,-1149.2 899.5,-1149.2 899.5,-1130.2 866.5,-1130.2"/>
-<text text-anchor="start" x="869.5" y="-1136.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 4</text>
-<polygon fill="#ffffff" stroke="transparent" points="899.5,-1130.2 899.5,-1149.2 943.5,-1149.2 943.5,-1130.2 899.5,-1130.2"/>
-<polygon fill="none" stroke="#000000" points="899.5,-1130.2 899.5,-1149.2 943.5,-1149.2 943.5,-1130.2 899.5,-1130.2"/>
-<text text-anchor="start" x="908.1105" y="-1136.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="943.5,-1130.2 943.5,-1149.2 971.5,-1149.2 971.5,-1130.2 943.5,-1130.2"/>
-<polygon fill="none" stroke="#000000" points="943.5,-1130.2 943.5,-1149.2 971.5,-1149.2 971.5,-1130.2 943.5,-1130.2"/>
-<text text-anchor="start" x="952.9053" y="-1136.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">2 &gt;</text>
+<polygon fill="none" stroke="#000000" points="866.5,-1127.2 866.5,-1149.2 971.5,-1149.2 971.5,-1127.2 866.5,-1127.2"/>
+<text text-anchor="start" x="886.5" y="-1134.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">joined_date</text>
+<polygon fill="#ffffff" stroke="transparent" points="866.5,-1108.2 866.5,-1127.2 899.5,-1127.2 899.5,-1108.2 866.5,-1108.2"/>
+<polygon fill="none" stroke="#000000" points="866.5,-1108.2 866.5,-1127.2 899.5,-1127.2 899.5,-1108.2 866.5,-1108.2"/>
+<text text-anchor="start" x="869.5" y="-1114.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 4</text>
+<polygon fill="#ffffff" stroke="transparent" points="899.5,-1108.2 899.5,-1127.2 943.5,-1127.2 943.5,-1108.2 899.5,-1108.2"/>
+<polygon fill="none" stroke="#000000" points="899.5,-1108.2 899.5,-1127.2 943.5,-1127.2 943.5,-1108.2 899.5,-1108.2"/>
+<text text-anchor="start" x="908.1105" y="-1114.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="943.5,-1108.2 943.5,-1127.2 971.5,-1127.2 971.5,-1108.2 943.5,-1108.2"/>
+<polygon fill="none" stroke="#000000" points="943.5,-1108.2 943.5,-1127.2 971.5,-1127.2 971.5,-1108.2 943.5,-1108.2"/>
+<text text-anchor="start" x="952.9053" y="-1114.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">2 &gt;</text>
 </a>
 </g>
 </g>
@@ -498,30 +500,30 @@
 <g id="node11" class="node">
 <title>event_sponsors</title>
 <g id="a_node11"><a xlink:href="../../tables/event_sponsors.html" xlink:title="event_sponsors" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="858.5,-893.2 858.5,-1023.2 978.5,-1023.2 978.5,-893.2 858.5,-893.2"/>
-<polygon fill="#f5f5f5" stroke="transparent" points="858.5,-1000.2 858.5,-1023.2 978.5,-1023.2 978.5,-1000.2 858.5,-1000.2"/>
-<polygon fill="none" stroke="#000000" points="858.5,-1000.2 858.5,-1023.2 978.5,-1023.2 978.5,-1000.2 858.5,-1000.2"/>
-<text text-anchor="start" x="863.181" y="-1009.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">event_sponsors</text>
-<text text-anchor="start" x="944.0219" y="-1008.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
-<polygon fill="none" stroke="#000000" points="858.5,-978.2 858.5,-1000.2 978.5,-1000.2 978.5,-978.2 858.5,-978.2"/>
-<text text-anchor="start" x="882.5" y="-985.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">created_at</text>
-<polygon fill="none" stroke="#000000" points="858.5,-956.2 858.5,-978.2 978.5,-978.2 978.5,-956.2 858.5,-956.2"/>
-<text text-anchor="start" x="882.5" y="-963.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">updated_at</text>
-<polygon fill="none" stroke="#000000" points="858.5,-934.2 858.5,-956.2 978.5,-956.2 978.5,-934.2 858.5,-934.2"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="863.5" y="-951.2"/>
-<text text-anchor="start" x="882.5" y="-941.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">sponsor_id</text>
-<polygon fill="none" stroke="#000000" points="858.5,-912.2 858.5,-934.2 978.5,-934.2 978.5,-912.2 858.5,-912.2"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="863.5" y="-929.2"/>
-<text text-anchor="start" x="882.5" y="-919.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">event_id</text>
-<polygon fill="#ffffff" stroke="transparent" points="858.5,-893.2 858.5,-912.2 903.5,-912.2 903.5,-893.2 858.5,-893.2"/>
-<polygon fill="none" stroke="#000000" points="858.5,-893.2 858.5,-912.2 903.5,-912.2 903.5,-893.2 858.5,-893.2"/>
-<text text-anchor="start" x="861.5" y="-899.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 2</text>
-<polygon fill="#ffffff" stroke="transparent" points="903.5,-893.2 903.5,-912.2 953.5,-912.2 953.5,-893.2 903.5,-893.2"/>
-<polygon fill="none" stroke="#000000" points="903.5,-893.2 903.5,-912.2 953.5,-912.2 953.5,-893.2 903.5,-893.2"/>
-<text text-anchor="start" x="918.1105" y="-899.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="953.5,-893.2 953.5,-912.2 978.5,-912.2 978.5,-893.2 953.5,-893.2"/>
-<polygon fill="none" stroke="#000000" points="953.5,-893.2 953.5,-912.2 978.5,-912.2 978.5,-893.2 953.5,-893.2"/>
-<text text-anchor="start" x="969.3862" y="-899.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
+<polygon fill="#ffffff" stroke="transparent" points="858.5,-882.2 858.5,-1012.2 978.5,-1012.2 978.5,-882.2 858.5,-882.2"/>
+<polygon fill="#f5f5f5" stroke="transparent" points="858.5,-989.2 858.5,-1012.2 978.5,-1012.2 978.5,-989.2 858.5,-989.2"/>
+<polygon fill="none" stroke="#000000" points="858.5,-989.2 858.5,-1012.2 978.5,-1012.2 978.5,-989.2 858.5,-989.2"/>
+<text text-anchor="start" x="863.181" y="-998.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">event_sponsors</text>
+<text text-anchor="start" x="944.0219" y="-997.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
+<polygon fill="none" stroke="#000000" points="858.5,-967.2 858.5,-989.2 978.5,-989.2 978.5,-967.2 858.5,-967.2"/>
+<text text-anchor="start" x="882.5" y="-974.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">created_at</text>
+<polygon fill="none" stroke="#000000" points="858.5,-945.2 858.5,-967.2 978.5,-967.2 978.5,-945.2 858.5,-945.2"/>
+<text text-anchor="start" x="882.5" y="-952.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">updated_at</text>
+<polygon fill="none" stroke="#000000" points="858.5,-923.2 858.5,-945.2 978.5,-945.2 978.5,-923.2 858.5,-923.2"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="863.5" y="-940.2"/>
+<text text-anchor="start" x="882.5" y="-930.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">sponsor_id</text>
+<polygon fill="none" stroke="#000000" points="858.5,-901.2 858.5,-923.2 978.5,-923.2 978.5,-901.2 858.5,-901.2"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="863.5" y="-918.2"/>
+<text text-anchor="start" x="882.5" y="-908.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">event_id</text>
+<polygon fill="#ffffff" stroke="transparent" points="858.5,-882.2 858.5,-901.2 903.5,-901.2 903.5,-882.2 858.5,-882.2"/>
+<polygon fill="none" stroke="#000000" points="858.5,-882.2 858.5,-901.2 903.5,-901.2 903.5,-882.2 858.5,-882.2"/>
+<text text-anchor="start" x="861.5" y="-888.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 2</text>
+<polygon fill="#ffffff" stroke="transparent" points="903.5,-882.2 903.5,-901.2 953.5,-901.2 953.5,-882.2 903.5,-882.2"/>
+<polygon fill="none" stroke="#000000" points="903.5,-882.2 903.5,-901.2 953.5,-901.2 953.5,-882.2 903.5,-882.2"/>
+<text text-anchor="start" x="918.1105" y="-888.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="953.5,-882.2 953.5,-901.2 978.5,-901.2 978.5,-882.2 953.5,-882.2"/>
+<polygon fill="none" stroke="#000000" points="953.5,-882.2 953.5,-901.2 978.5,-901.2 978.5,-882.2 953.5,-882.2"/>
+<text text-anchor="start" x="969.3862" y="-888.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
 </a>
 </g>
 </g>
@@ -586,9 +588,9 @@
 <!-- event_sponsors&#45;&gt;events -->
 <g id="edge10" class="edge">
 <title>event_sponsors:w&#45;&gt;events:e</title>
-<path fill="none" stroke="#000000" d="M844.0377,-920.1708C809.0947,-902.9549 836.9506,-818.2 786,-818.2"/>
-<polygon fill="#000000" stroke="#000000" points="850.6699,-921.5599 857.762,-926.7235 854.585,-922.38 858.5,-923.2 858.5,-923.2 858.5,-923.2 854.585,-922.38 859.238,-919.6765 850.6699,-921.5599 850.6699,-921.5599"/>
-<ellipse fill="none" stroke="#000000" cx="847.5379" cy="-920.9039" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M844.0421,-909.0725C811.9367,-892.762 832.9897,-818.2 786,-818.2"/>
+<polygon fill="#000000" stroke="#000000" points="850.6809,-910.5085 857.7388,-915.7186 854.5904,-911.3543 858.5,-912.2 858.5,-912.2 858.5,-912.2 854.5904,-911.3543 859.2612,-908.6814 850.6809,-910.5085 850.6809,-910.5085"/>
+<ellipse fill="none" stroke="#000000" cx="847.5532" cy="-909.8319" rx="3.2" ry="3.2"/>
 </g>
 <!-- sponsors -->
 <g id="node19" class="node">
@@ -629,9 +631,9 @@
 <!-- event_sponsors&#45;&gt;sponsors -->
 <g id="edge11" class="edge">
 <title>event_sponsors:w&#45;&gt;sponsors:e</title>
-<path fill="none" stroke="#000000" d="M844.0786,-947.5152C804.6644,-961.6022 817.8701,-1035.2 766,-1035.2"/>
-<polygon fill="#000000" stroke="#000000" points="850.6011,-946.4681 859.0706,-948.7545 854.5506,-945.8341 858.5,-945.2 858.5,-945.2 858.5,-945.2 854.5506,-945.8341 857.9294,-941.6455 850.6011,-946.4681 850.6011,-946.4681"/>
-<ellipse fill="none" stroke="#000000" cx="847.4416" cy="-946.9754" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M844.145,-936.4993C802.1568,-951.5332 821.4011,-1035.2 766,-1035.2"/>
+<polygon fill="#000000" stroke="#000000" points="850.6007,-935.4653 859.0694,-937.7547 854.5503,-934.8327 858.5,-934.2 858.5,-934.2 858.5,-934.2 854.5503,-934.8327 857.9306,-930.6453 850.6007,-935.4653 850.6007,-935.4653"/>
+<ellipse fill="none" stroke="#000000" cx="847.441" cy="-935.9714" rx="3.2" ry="3.2"/>
 </g>
 <!-- event_tags -->
 <g id="node12" class="node">

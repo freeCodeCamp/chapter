@@ -13,8 +13,8 @@ import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
 import { CHAPTER } from '../../../chapters/graphql/queries';
 import { DASHBOARD_EVENTS } from '../graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from 'modules/events/graphql/queries';
 
 export const NewEventPage: NextPageWithLayout<{
   chapterId?: number;
@@ -40,9 +40,12 @@ export const NewEventPage: NextPageWithLayout<{
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter_id } },
         {
+          query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+          variables: { offset: 0, limit: 2 },
+        },
+        {
           query: DASHBOARD_EVENTS,
         },
-        { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],
     });
 

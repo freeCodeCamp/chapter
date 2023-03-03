@@ -1,4 +1,4 @@
-import { IsOptional, IsUrl } from 'class-validator';
+import { IsOptional, IsPositive, IsUrl } from 'class-validator';
 import { InputType, Field, Int } from 'type-graphql';
 
 import { events_venue_type_enum } from '../../graphql-types';
@@ -30,6 +30,7 @@ export class EventInputs {
   @Field(() => Date)
   ends_at: Date;
 
+  @IsPositive()
   @Field(() => Number)
   capacity: number;
 

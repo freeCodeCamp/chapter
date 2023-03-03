@@ -690,11 +690,19 @@ export class EventResolver {
         venue: true,
         sponsors: true,
         event_users: {
-          include: { user: true, event_reminder: true },
+          include: { attendance: true, event_reminder: true, user: true },
           where: { subscribed: true },
         },
       },
     });
+
+    if (
+      event.event_users.filter(({ attendance: { name } }) => name === 'yes')
+        .length > data.capacity
+    )
+      throw Error(
+        'Capacity must be higher or equal to the number of confirmed attendees',
+      );
 
     const eventSponsorInput: Prisma.event_sponsorsCreateManyInput[] =
       data.sponsor_ids.map((sId) => ({

@@ -1,12 +1,12 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
-import { useToast } from '@chakra-ui/react';
 
 import {
   useDashboardEventQuery,
   useUpdateEventMutation,
 } from '../../../../generated/graphql';
+import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
@@ -27,7 +27,7 @@ export const EditEventPage: NextPageWithLayout = () => {
     variables: { eventId: eventId },
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   // TODO: update the cache directly:
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
@@ -52,7 +52,7 @@ export const EditEventPage: NextPageWithLayout = () => {
 
     if (eventData) {
       await router.push('/dashboard/events');
-      toast({
+      addAlert({
         title: `Event "${eventData.updateEvent.name}" updated successfully!`,
         status: 'success',
       });

@@ -53,7 +53,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
       <SkipNavContent />
       <Box
         as="main"
-        minHeight={{ base: '70vh', '2xl': '82vh' }}
+        minHeight={{ base: '70vh', xl: '82vh' }}
         px={[4, 4, 8, 16]}
         id="main-content"
       >

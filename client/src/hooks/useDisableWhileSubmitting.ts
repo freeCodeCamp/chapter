@@ -1,5 +1,6 @@
-import { useToast } from '@chakra-ui/react';
 import { useState } from 'react';
+
+import { useAlert } from './useAlert';
 
 export const useDisableWhileSubmitting = <T>({
   onSubmit,
@@ -9,7 +10,7 @@ export const useDisableWhileSubmitting = <T>({
   enableOnSuccess?: boolean;
 }) => {
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
+  const addAlert = useAlert();
   return {
     loading,
     disableWhileSubmitting: async (data: T) => {
@@ -17,7 +18,7 @@ export const useDisableWhileSubmitting = <T>({
       try {
         await onSubmit(data);
       } catch (err) {
-        toast({
+        addAlert({
           title: 'Something went wrong.',
           status: 'error',
         });

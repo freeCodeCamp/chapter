@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 import {
@@ -7,6 +6,7 @@ import {
 } from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DASHBOARD_CHAPTERS } from '../graphql/queries';
+import { useAlert } from '../../../../hooks/useAlert';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import ChapterForm from '../components/ChapterForm';
 import { NextPageWithLayout } from '../../../../pages/_app';
@@ -29,7 +29,7 @@ export const NewChapterPage: NextPageWithLayout = () => {
     ],
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const onSubmit = async (inputData: CreateChapterInputs) => {
     // ToDo: handle empty data differently
@@ -41,12 +41,12 @@ export const NewChapterPage: NextPageWithLayout = () => {
       await router.replace(
         `/dashboard/chapters/${chapterData.createChapter.id}`,
       );
-      toast({
+      addAlert({
         title: `Chapter "${chapterData.createChapter.name}" created!`,
         status: 'success',
       });
       if (!chapterData.createChapter.has_calendar) {
-        toast({
+        addAlert({
           title: 'Calendar for chapter was not created.',
           status: 'warning',
         });

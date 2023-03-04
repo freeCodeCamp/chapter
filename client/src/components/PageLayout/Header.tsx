@@ -8,7 +8,6 @@ import {
   MenuItem,
   MenuList,
   Spinner,
-  useToast,
 } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
@@ -19,10 +18,11 @@ import React, { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useUser } from '../../modules/auth/user';
+import { useAlert } from '../../hooks/useAlert';
 import { useSession } from '../../hooks/useSession';
+import { checkInstancePermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
-import { checkInstancePermission } from 'util/check-permission';
 
 const menuButtonStyles = {
   logout: { backgroundColor: 'gray.10' },
@@ -42,7 +42,7 @@ export const Header: React.FC = () => {
   const { login, logout, isAuthenticated, error } = useSession();
   const [loading, setLoading] = useState(false);
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const goHome = () => router.push('/');
 
@@ -54,7 +54,7 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     if (error) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       setLoading(false);
       console.log(error);
     }

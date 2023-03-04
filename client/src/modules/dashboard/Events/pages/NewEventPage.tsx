@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
@@ -9,6 +8,7 @@ import {
   useJoinChapterMutation,
   useSendEventInviteMutation,
 } from '../../../../generated/graphql';
+import { useAlert } from '../../../../hooks/useAlert';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import EventForm from '../components/EventForm';
 import { EventFormData, parseEventData } from '../components/EventFormUtils';
@@ -27,7 +27,7 @@ export const NewEventPage: NextPageWithLayout<{
 
   const [publish] = useSendEventInviteMutation();
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const [joinChapter] = useJoinChapterMutation();
 
@@ -68,7 +68,7 @@ export const NewEventPage: NextPageWithLayout<{
         `/dashboard/events/[id]`,
         `/dashboard/events/${eventData.createEvent.id}`,
       );
-      toast({
+      addAlert({
         title: `Event "${eventData.createEvent.name}" created!`,
         status: 'success',
       });
@@ -77,7 +77,10 @@ export const NewEventPage: NextPageWithLayout<{
         ({ id }) => id === chapter_id,
       )?.has_calendar;
       if (hasChapterCalendar && !eventData.createEvent.has_calendar_event) {
-        toast({ title: 'Calendar event was not created.', status: 'warning' });
+        addAlert({
+          title: 'Calendar event was not created.',
+          status: 'warning',
+        });
       }
     }
   };

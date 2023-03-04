@@ -8,7 +8,6 @@ import {
   ListIcon,
   Spinner,
   Text,
-  useToast,
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
 import NextError from 'next/error';
@@ -28,6 +27,7 @@ import {
   useTestChapterCalendarAccessLazyQuery,
   useUnlinkChapterCalendarMutation,
 } from '../../../../generated/graphql';
+import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -74,7 +74,7 @@ export const ChapterPage: NextPageWithLayout = () => {
     useTestChapterCalendarAccessLazyQuery();
 
   const confirm = useConfirm();
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const onCreateCalendar = async () => {
     const ok = await confirm({
@@ -90,9 +90,9 @@ export const ChapterPage: NextPageWithLayout = () => {
             { query: meQuery },
           ],
         });
-        toast({ title: 'Chapter calendar created', status: 'success' });
+        addAlert({ title: 'Chapter calendar created', status: 'success' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -125,22 +125,22 @@ export const ChapterPage: NextPageWithLayout = () => {
           variables: { chapterId },
         });
         if (data?.testChapterCalendarAccess) {
-          toast({
+          addAlert({
             title: 'Calendar access test successful',
             status: 'success',
           });
         } else if (data?.testChapterCalendarAccess === false) {
-          toast({ title: "Couldn't access the calendar", status: 'error' });
+          addAlert({ title: "Couldn't access the calendar", status: 'error' });
           setDisplayUnlink(true);
         } else {
-          toast({
+          addAlert({
             title:
               'Something went wrong, make sure integration is working and try again',
             status: 'warning',
           });
         }
       } catch (error) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.log(error);
       }
     }
@@ -175,9 +175,9 @@ export const ChapterPage: NextPageWithLayout = () => {
             ...eventRefetches(data),
           ],
         });
-        toast({ title: 'Chapter calendar unlinked', status: 'success' });
+        addAlert({ title: 'Chapter calendar unlinked', status: 'success' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }

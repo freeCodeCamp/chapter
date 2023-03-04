@@ -1,9 +1,9 @@
-import { useToast } from '@chakra-ui/react';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 
 import { Sponsors } from '../../Events/graphql/queries';
+import { useAlert } from '../../../../hooks/useAlert';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import SponsorForm from '../components/SponsorForm';
@@ -26,7 +26,7 @@ const NewSponsorPage: NextPageWithLayout = () => {
     Permission.SponsorManage,
   );
 
-  const toast = useToast();
+  const addAlert = useAlert();
   const onSubmit = async (data: SponsorFormData) => {
     const { data: sponsorData, errors } = await createSponsor({
       variables: {
@@ -37,7 +37,7 @@ const NewSponsorPage: NextPageWithLayout = () => {
     if (errors) throw errors;
     if (sponsorData) {
       await router.replace('/dashboard/sponsors');
-      toast({
+      addAlert({
         title: `Sponsor "${sponsorData.createSponsor.name}" created!`,
         status: 'success',
       });

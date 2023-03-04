@@ -54,6 +54,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       image_url: data.image_url,
       invite_only: data.invite_only,
       chapter_id: chapter?.id,
+      attendees:
+        data.event_users?.filter(({ attendance: { name } }) => name === 'yes')
+          .length ?? 0,
     };
   }, []);
 
@@ -92,7 +95,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         ) : (
           <EventChapterSelect loading={loading} />
         )}
-        {fields.map(({ isRequired, key, label, placeholder, type }) => {
+        {fields.map(({ isRequired, key, label, placeholder, type, min }) => {
           const Component = fieldTypeToComponent(type);
           const error = errors[key]?.message;
           return (
@@ -104,6 +107,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               isRequired={isRequired}
               isDisabled={loading}
               error={error}
+              {...(min && {
+                min: min(data),
+              })}
               {...register(key, {
                 ...(type === 'number' && { valueAsNumber: true }),
               })}

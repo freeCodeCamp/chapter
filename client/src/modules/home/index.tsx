@@ -1,5 +1,5 @@
 import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -41,18 +41,23 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const [getChapter, { error: chapterError, data: chapterData }] =
+  const [eventsLoaded, setEventsLoaded] = useState(false);
+  const [getChapters, { error: chapterErrors, data: chapterDatas }] =
     useChaptersLazyQuery();
 
-  const { loading, error, data, fetchMore, called } =
-    usePaginatedEventsWithTotalQuery({
-      variables: { offset: 0, limit: eventsPerPage },
-    });
+  const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
+    variables: { offset: 0, limit: eventsPerPage },
+    onCompleted: () => {
+      setEventsLoaded(true);
+    },
+  });
   const { user } = useUser();
 
   useEffect(() => {
-    getChapter();
-  }, [called]);
+    if (eventsLoaded && !chapterDatas) {
+      getChapters();
+    }
+  }, [eventsLoaded]);
 
   const isLoading = loading || !data;
   if (isLoading) return <Loading error={error} />;
@@ -98,11 +103,13 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Chapters
             </Heading>
-            <Suspense fallback={<Loading error={chapterError} />}>
-              {chapterData?.chapters.map((chapter) => (
+            {chapterDatas ? (
+              chapterDatas.chapters.map((chapter) => (
                 <ChapterCard key={chapter.id} chapter={chapter} />
-              ))}
-            </Suspense>
+              ))
+            ) : (
+              <Loading error={chapterErrors} />
+            )}
           </VStack>
         </GridItem>
       </Grid>

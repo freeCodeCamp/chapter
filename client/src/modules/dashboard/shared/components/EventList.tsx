@@ -2,7 +2,7 @@ import { Flex, Grid, Heading, Tag, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { LinkButton } from 'chakra-next-link';
-import { LockIcon } from '@chakra-ui/icons';
+import { CalendarIcon, LockIcon, SettingsIcon } from '@chakra-ui/icons';
 
 interface Event {
   canceled: boolean;
@@ -22,7 +22,7 @@ export const EventList = ({ events, emptyText, title }: Props) => {
         {title}
       </Heading>
       {events.length > 0 ? (
-        <Grid gap="2em">
+        <Grid gap="4em">
           {events.map(({ canceled, id, invite_only, name }) => (
             <Grid gap="1rem" key={id} gridTemplateColumns="repeat(4, 1fr)">
               <Flex marginTop="1" gap="3em" gridColumn="1 / -1">
@@ -60,14 +60,16 @@ export const EventList = ({ events, emptyText, title }: Props) => {
                 gridColumn={{ base: '1/ -1', md: '1/3', xl: '1/2' }}
                 href={`/dashboard/events/${id}`}
               >
-                {name} dashboard
+                <Text srOnly>{name}</Text> Dashboard{' '}
+                <SettingsIcon marginInlineStart=".5em" />
               </LinkButton>
               <LinkButton
                 gridRow={{ base: '3', md: '2' }}
                 gridColumn={{ base: '1/ -1', md: '-3/ -1', xl: '2/3' }}
                 href={`/events/${id}`}
               >
-                {name} homepage
+                <Text srOnly>{name}</Text> Event Page{' '}
+                <CalendarIcon marginInlineStart=".5em" />
               </LinkButton>
             </Grid>
           ))}

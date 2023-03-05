@@ -1,5 +1,5 @@
 import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -7,7 +7,7 @@ import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
 import {
   usePaginatedEventsWithTotalQuery,
-  useChaptersQuery,
+  useChaptersLazyQuery,
 } from '../../generated/graphql';
 import { Pagination } from '../util/pagination';
 import { UserContextType, useUser } from '../auth/user';
@@ -41,15 +41,22 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const { error: chapterError, data: chapterData } = useChaptersQuery();
+  const [getChapters, { error: chapterErrors, data: chapterDatas }] =
+    useChaptersLazyQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset: 0, limit: eventsPerPage },
   });
   const { user } = useUser();
 
-  const isLoading = loading || !data || !chapterData;
-  if (isLoading) return <Loading error={error || chapterError} />;
+  useEffect(() => {
+    if (!loading) {
+      getChapters();
+    }
+  }, [loading]);
+
+  const isLoading = loading || !data;
+  if (isLoading) return <Loading error={error} />;
 
   const items = data.paginatedEventsWithTotal.events.map((event) => (
     <EventCard key={event.id} event={event} />
@@ -92,9 +99,13 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Chapters
             </Heading>
-            {chapterData.chapters.map((chapter) => (
-              <ChapterCard key={chapter.id} chapter={chapter} />
-            ))}
+            {chapterDatas ? (
+              chapterDatas.chapters.map((chapter) => (
+                <ChapterCard key={chapter.id} chapter={chapter} />
+              ))
+            ) : (
+              <Loading error={chapterErrors} />
+            )}
           </VStack>
         </GridItem>
       </Grid>

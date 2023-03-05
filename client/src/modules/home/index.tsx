@@ -1,5 +1,5 @@
 import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
@@ -41,23 +41,19 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const [eventsLoaded, setEventsLoaded] = useState(false);
   const [getChapters, { error: chapterErrors, data: chapterDatas }] =
     useChaptersLazyQuery();
 
   const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
     variables: { offset: 0, limit: eventsPerPage },
-    onCompleted: () => {
-      setEventsLoaded(true);
-    },
   });
   const { user } = useUser();
 
   useEffect(() => {
-    if (eventsLoaded && !chapterDatas) {
+    if (!loading) {
       getChapters();
     }
-  }, [eventsLoaded]);
+  }, [loading]);
 
   const isLoading = loading || !data;
   if (isLoading) return <Loading error={error} />;

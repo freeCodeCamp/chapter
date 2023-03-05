@@ -1,16 +1,17 @@
+import { ApolloQueryResult, FetchMoreQueryOptions } from '@apollo/client';
 import { Button } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface FetchMoreArg {
-  variables: {
-    offset: number;
-    limit: number;
-  };
+  offset: number;
+  limit: number;
 }
 
 interface PaginationProps<T> {
   items: Array<T>;
-  fetchMore: (arg: FetchMoreArg) => void;
+  fetchMore: <Q>(
+    options: FetchMoreQueryOptions<FetchMoreArg, Q>,
+  ) => Promise<ApolloQueryResult<Q>>;
   limit: number;
   total: number;
   displayOnEmpty?: React.ReactNode;
@@ -23,6 +24,7 @@ export const Pagination = <T,>({
   total,
   displayOnEmpty,
 }: PaginationProps<T>) => {
+  const [isLoading, setLoading] = useState(false);
   const totalPages = Math.ceil(total / limit);
   const currentPage = Math.ceil(items.length / limit);
   const hasMorePages = totalPages > currentPage;
@@ -34,7 +36,12 @@ export const Pagination = <T,>({
         <Button
           colorScheme={'blue'}
           data-testid="pagination"
-          onClick={() => fetchMore({ variables: { offset, limit } })}
+          isLoading={isLoading}
+          onClick={async () => {
+            setLoading(true);
+            await fetchMore({ variables: { offset, limit } });
+            setLoading(false);
+          }}
         >
           Click for more
         </Button>

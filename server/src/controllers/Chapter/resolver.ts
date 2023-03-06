@@ -57,17 +57,11 @@ export class ChapterResolver {
     });
   }
 
-  @Query(() => ChapterCardRelations)
-  async chapter(
-    @Arg('id', () => Int) id: number,
-  ): Promise<ChapterCardRelations> {
+  @Query(() => ChapterWithEvents)
+  async chapter(@Arg('id', () => Int) id: number): Promise<ChapterWithEvents> {
     return await prisma.chapters.findUniqueOrThrow({
       where: { id },
-      include: {
-        events: true,
-        user_bans: { include: { user: true, chapter: true } },
-        _count: { select: { chapter_users: true } },
-      },
+      include: { events: true },
     });
   }
 

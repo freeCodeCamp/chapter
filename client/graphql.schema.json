@@ -5276,7 +5276,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ChapterCardRelations",
+                "name": "ChapterWithEvents",
                 "ofType": null
               }
             },

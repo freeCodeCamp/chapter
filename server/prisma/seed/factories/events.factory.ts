@@ -68,7 +68,7 @@ const createEvents = async (
       invite_only: i == 0 ? false : inviteOnly[i],
       start_at,
       ends_at: addHours(start_at, 1 + random(5)),
-      image_url: image.imageUrl(640, 480, 'nature', true),
+      image_url: image.imageUrl(640, 480, 'nature', true, true),
       ...venueData,
     };
 

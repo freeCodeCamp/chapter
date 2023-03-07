@@ -35,6 +35,10 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
         variables: { offset: 0, limit: 2 },
       },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 5, showOnlyUpcoming: false },
+      },
       { query: DASHBOARD_EVENTS },
     ],
   };

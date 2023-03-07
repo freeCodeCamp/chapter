@@ -39,7 +39,11 @@ export const DeleteChapterButton = ({
       { query: DASHBOARD_VENUES },
       {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
-        variables: { offset: 0, limit: 5 },
+        variables: { offset: 0, limit: 2 },
+      },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 5, showOnlyUpcoming: false },
       },
       { query: meQuery },
       { query: userProfileQuery },

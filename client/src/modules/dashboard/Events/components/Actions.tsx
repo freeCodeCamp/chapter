@@ -3,12 +3,9 @@ import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo, useState } from 'react';
 
-import { CHAPTER } from '../../../chapters/graphql/queries';
-import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
-import {
-  EVENT,
-  DATA_PAGINATED_EVENTS_TOTAL_QUERY,
-} from '../../../events/graphql/queries';
+import { CHAPTER, CHAPTERS } from '../../../chapters/graphql/queries';
+import { DASHBOARD_EVENTS } from '../graphql/queries';
+import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import { useAlert } from '../../../../hooks/useAlert';
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { checkChapterPermission } from '../../../../util/check-permission';
@@ -48,11 +45,14 @@ const Actions: React.FC<ActionsProps> = ({
       variables: { eventId: event.id },
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter.id } },
-        { query: EVENT, variables: { eventId: event.id } },
-        { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
+        { query: CHAPTERS },
         {
           query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
           variables: { offset: 0, limit: 2 },
+        },
+        {
+          query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+          variables: { offset: 0, limit: 5, showOnlyUpcoming: false },
         },
         { query: DASHBOARD_EVENTS },
       ],

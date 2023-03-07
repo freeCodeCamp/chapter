@@ -553,7 +553,7 @@ export type PaginatedEventsWithChapters = {
 export type Query = {
   __typename?: 'Query';
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
-  chapter: ChapterCardRelations;
+  chapter: ChapterWithEvents;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
@@ -949,7 +949,7 @@ export type ChapterQueryVariables = Exact<{
 export type ChapterQuery = {
   __typename?: 'Query';
   chapter: {
-    __typename?: 'ChapterCardRelations';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
@@ -961,7 +961,7 @@ export type ChapterQuery = {
     banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
       description: string;
@@ -971,7 +971,6 @@ export type ChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
     }>;
-    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   };
 };
 
@@ -2284,9 +2283,6 @@ export const ChapterDocument = gql`
         image_url
         invite_only
         canceled
-      }
-      _count {
-        chapter_users
       }
     }
   }

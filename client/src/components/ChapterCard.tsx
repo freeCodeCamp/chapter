@@ -124,37 +124,39 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             Next Events
           </Text>
           <GridItem area="event" paddingInline={'1em'}>
-            {chapter.events.map(({ id, name, start_at, invite_only }) => (
-              <Flex
-                paddingBlock={'.5em'}
-                paddingInline={'.3em'}
-                justifyContent={'space-between'}
-                alignItems="center"
-                key={id}
-              >
-                <Link
-                  href={`/events/${id}`}
-                  mt="2"
-                  fontWeight={600}
-                  fontSize={['sm', 'md', 'lg']}
+            {chapter.events
+              .filter(({ ends_at }) => !isPast(new Date(ends_at)))
+              .map(({ id, name, start_at, invite_only }) => (
+                <Flex
+                  paddingBlock={'.5em'}
+                  paddingInline={'.3em'}
+                  justifyContent={'space-between'}
+                  alignItems="center"
+                  key={id}
                 >
-                  {name}
-                </Link>
-                {invite_only && (
-                  <Tooltip label="Invite only">
-                    <LockIcon
-                      mt="2"
-                      marginLeft="auto"
-                      marginRight="1"
-                      fontSize={['sm', 'md', 'lg']}
-                    />
-                  </Tooltip>
-                )}
-                <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                  {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
-                </Text>
-              </Flex>
-            ))}
+                  <Link
+                    href={`/events/${id}`}
+                    mt="2"
+                    fontWeight={600}
+                    fontSize={['sm', 'md', 'lg']}
+                  >
+                    {name}
+                  </Link>
+                  {invite_only && (
+                    <Tooltip label="Invite only">
+                      <LockIcon
+                        mt="2"
+                        marginLeft="auto"
+                        marginRight="1"
+                        fontSize={['sm', 'md', 'lg']}
+                      />
+                    </Tooltip>
+                  )}
+                  <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                    {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
+                  </Text>
+                </Flex>
+              ))}
           </GridItem>
         </Grid>
       </Box>

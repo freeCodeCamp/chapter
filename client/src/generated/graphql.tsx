@@ -388,6 +388,7 @@ export type Mutation = {
   deleteVenue: Venue;
   joinChapter: ChapterUserWithRole;
   leaveChapter: ChapterUser;
+  moveAttendeeToWaitlist: EventUserWithRelations;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
   toggleAutoSubscribe: User;
@@ -488,6 +489,11 @@ export type MutationJoinChapterArgs = {
 
 export type MutationLeaveChapterArgs = {
   chapterId: Scalars['Int'];
+};
+
+export type MutationMoveAttendeeToWaitlistArgs = {
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationSendEventInviteArgs = {

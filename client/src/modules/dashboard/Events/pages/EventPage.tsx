@@ -17,13 +17,15 @@ import { useRouter } from 'next/router';
 import React, { Fragment, ReactElement } from 'react';
 
 import {
+  useCalendarIntegrationStatusQuery,
   useConfirmAttendeeMutation,
+  useCreateCalendarEventMutation,
   useDashboardEventQuery,
   useDeleteAttendeeMutation,
+  useMoveAttendeeToWaitlistMutation,
   MutationConfirmAttendeeArgs,
   MutationDeleteAttendeeArgs,
-  useCreateCalendarEventMutation,
-  useCalendarIntegrationStatusQuery,
+  MutationMoveAttendeeToWaitlistArgs,
 } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
@@ -55,6 +57,9 @@ export const EventPage: NextPageWithLayout = () => {
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery();
   const [confirmAttendee] = useConfirmAttendeeMutation(args(eventId));
+  const [moveAttendeeToWaitlist] = useMoveAttendeeToWaitlistMutation(
+    args(eventId),
+  );
   const [removeAttendee] = useDeleteAttendeeMutation(args(eventId));
   const [createCalendarEvent, { loading: loadingCalendar }] =
     useCreateCalendarEventMutation(args(eventId));
@@ -76,6 +81,17 @@ export const EventPage: NextPageWithLayout = () => {
       if (ok) removeAttendee({ variables: { eventId, userId } });
     };
 
+  const onMoveToWaitlist =
+    ({ eventId, userId }: MutationMoveAttendeeToWaitlistArgs) =>
+    async () => {
+      const ok = await confirm({
+        body: 'Are you sure you want to move user to waitlist?',
+        buttonColor: 'orange',
+        buttonText: 'Move user',
+        title: 'Move user to waitlist?',
+      });
+      if (ok) moveAttendeeToWaitlist({ variables: { eventId, userId } });
+    };
   const isLoading = loading || !data || loadingStatus;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
@@ -87,7 +103,14 @@ export const EventPage: NextPageWithLayout = () => {
     {
       title: 'Attendees',
       statusFilter: 'yes',
-      action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
+      action: [
+        { title: 'Remove', onClick: onRemove, colorScheme: 'red' },
+        {
+          title: 'Move to waitlist',
+          onClick: onMoveToWaitlist,
+          colorScheme: 'orange',
+        },
+      ],
     },
     {
       title: 'Waitlist',

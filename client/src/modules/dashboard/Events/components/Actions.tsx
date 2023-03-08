@@ -65,7 +65,11 @@ const Actions: React.FC<ActionsProps> = ({
   const addAlert = useAlert();
 
   const clickDelete = async () => {
-    const ok = await confirmDelete();
+    const ok = await confirmDelete({
+      buttonText: 'Delete event',
+      body: 'Are you sure you want to delete this event?',
+      title: 'Delete this event?',
+    });
     if (ok) {
       await remove(data);
       await onDelete?.();

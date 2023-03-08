@@ -65,14 +65,22 @@ export const EventPage: NextPageWithLayout = () => {
   const onConfirmAttendee =
     ({ eventId, userId }: MutationConfirmAttendeeArgs) =>
     async () => {
-      const ok = await confirm();
+      const ok = await confirm({
+        title: 'Confirm attendee?',
+        body: 'Are you sure you want to confirm attendee?',
+        buttonText: 'Confirm user',
+      });
       if (ok) confirmAttendee({ variables: { eventId, userId } });
     };
 
   const onRemove =
     ({ eventId, userId }: MutationDeleteAttendeeArgs) =>
     async () => {
-      const ok = await confirmDelete();
+      const ok = await confirmDelete({
+        buttonText: 'Remove user',
+        body: 'Are you sure you want to remove user from event?',
+        title: 'Remove user from event?',
+      });
       if (ok) removeAttendee({ variables: { eventId, userId } });
     };
 

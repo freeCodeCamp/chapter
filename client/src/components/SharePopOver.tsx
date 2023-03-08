@@ -26,7 +26,7 @@ export const SharePopOver = ({
           size={size}
           leftIcon={<CopyIcon />}
         >
-          Share
+          Copy URL
         </Button>
       </PopoverTrigger>
       <PopoverContent>

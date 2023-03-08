@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
 import React from 'react';
+import { InfoIcon } from '@chakra-ui/icons';
 import { Event, useCancelEventMutation } from '../../../../generated/graphql';
 import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
 import {
@@ -21,8 +22,14 @@ const EventCancelButton = (props: EventCancelButtonProps) => {
   const [cancel] = useCancelEventMutation();
 
   const confirmCancel = useConfirm({
-    title: 'Are you sure you want to cancel this',
-    body: 'Canceling this will send emails to attendees',
+    title: 'Cancel this event?',
+    body: (
+      <>
+        <InfoIcon boxSize={5} /> Canceling event will send notification to
+        subscribed attendees.
+      </>
+    ),
+    buttonText: 'Cancel event',
     buttonColor: 'orange',
   });
 

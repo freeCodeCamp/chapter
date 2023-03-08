@@ -67,7 +67,7 @@ export const EventPage: NextPageWithLayout = () => {
     async () => {
       const ok = await confirm({
         title: 'Confirm attendee?',
-        body: 'Are you sure you want to confirm attendee?',
+        body: 'Are you sure you want to confirm the attendee?',
         buttonText: 'Confirm user',
       });
       if (ok) confirmAttendee({ variables: { eventId, userId } });
@@ -78,7 +78,7 @@ export const EventPage: NextPageWithLayout = () => {
     async () => {
       const ok = await confirmDelete({
         buttonText: 'Remove user',
-        body: 'Are you sure you want to remove user from event?',
+        body: 'Are you sure you want to remove this user from the event?',
         title: 'Remove user from event?',
       });
       if (ok) removeAttendee({ variables: { eventId, userId } });

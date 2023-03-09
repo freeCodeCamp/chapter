@@ -58,16 +58,17 @@ import {
   AttachUnsubscribeData,
   buildEmailForUpdatedEvent,
   chapterAdminUnsubscribeOptions,
-  eventConfirmAttendeeEmail,
-  eventCancelationEmail,
-  eventInviteEmail,
+  eventAttendanceCancelation,
   eventAttendanceConfirmation,
+  eventCancelationEmail,
+  eventConfirmAttendeeEmail,
+  eventInviteEmail,
+  eventAttendeeToWaitlistEmail,
   eventNewAttendeeNotifyEmail,
   hasDateChanged,
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
-  eventAttendanceCancelation,
 } from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
@@ -554,7 +555,19 @@ export class EventResolver {
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
 
-    // TODO send email notification to user
+    const { subject, attachUnsubscribe } = eventAttendeeToWaitlistEmail(
+      updatedUser.event.name,
+    );
+
+    await mailerService.sendEmail({
+      emailList: [updatedUser.user.email],
+      subject,
+      htmlEmail: attachUnsubscribe({
+        chapterId: updatedUser.event.chapter_id,
+        eventId: updatedUser.event_id,
+        userId,
+      }),
+    });
 
     const calendarId = updatedUser.event.chapter.calendar_id;
     const calendarEventId = updatedUser.event.calendar_event_id;

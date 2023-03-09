@@ -85,7 +85,7 @@ export const EventPage: NextPageWithLayout = () => {
     ({ eventId, userId }: MutationMoveAttendeeToWaitlistArgs) =>
     async () => {
       const ok = await confirm({
-        body: 'Are you sure you want to move user to waitlist?',
+        body: 'Are you sure you want to move the user to the waitlist?',
         buttonColor: 'orange',
         buttonText: 'Move user',
         title: 'Move user to waitlist?',

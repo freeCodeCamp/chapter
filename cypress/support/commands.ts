@@ -380,6 +380,32 @@ Cypress.Commands.add('confirmAttendee', (eventId, userId) => {
   return cy.authedRequest(gqlOptions(confirmMutation));
 });
 
+/**
+ * Move attendee with userId to the waitlist for the event with eventId
+ * @param eventId Id of the event
+ * @param userId Id of the user
+ */
+const moveAttendeeToWaitlist = (eventId, userId) => {
+  const moveAttendeeMutation = {
+    operationName: 'moveAttendeeToWaitlist',
+    variables: {
+      eventId,
+      userId,
+    },
+    query: `mutation moveAttendeeToWaitlist($eventId: Int!, $userId: Int!) {
+      moveAttendeeToWaitlist(eventId: $eventId, userId: $userId) {
+        attendance {
+          updated_at
+          name
+        }
+      }
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(moveAttendeeMutation));
+};
+
+Cypress.Commands.add('moveAttendeeToWaitlist', moveAttendeeToWaitlist);
+
 Cypress.Commands.add(
   'createVenue',
   ({ chapterId }, data, options = { withAuth: true }) => {
@@ -795,6 +821,7 @@ declare global {
       leaveChapter: typeof leaveChapter;
       login: typeof login;
       logout: typeof logout;
+      moveAttendeeToWaitlist: typeof moveAttendeeToWaitlist;
       register: typeof register;
       registerViaUI: typeof registerViaUI;
       toggleChapterSubscription: typeof toggleChapterSubscription;

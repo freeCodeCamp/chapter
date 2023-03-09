@@ -157,7 +157,9 @@ describe('event dashboard', () => {
         cy.login(users.testUser.email);
 
         cy.deleteAttendee(eventId, confirmedUser.id).then(expectToBeRejected);
-        //cy.moveToWaitlist(eventId, confirmedUser.id).then(expectToBeRejected);
+        cy.moveAttendeeToWaitlist(eventId, confirmedUser.id).then(
+          expectToBeRejected,
+        );
         cy.confirmAttendee(eventId, waitlistUser.id).then(expectToBeRejected);
       });
     });

@@ -1,4 +1,4 @@
-FROM node:18.14 as development
+FROM node:18.15 as development
 WORKDIR /usr/chapter/
 
 RUN apt-get update && apt-get install netcat -y

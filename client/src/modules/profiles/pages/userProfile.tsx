@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import NextError from 'next/error';
 import React from 'react';
-import { Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 import { Button } from '@chakra-ui/button';
@@ -20,6 +20,7 @@ import { Loading } from '../../../components/Loading';
 import { meQuery } from '../../auth/graphql/queries';
 import { userProfileQuery } from '../graphql/queries';
 import { ProfileForm } from '../component/ProfileForm';
+import { useAlert } from '../../../hooks/useAlert';
 import { useSession } from '../../../hooks/useSession';
 import { useUser } from '../../auth/user';
 
@@ -62,7 +63,7 @@ const UserProfile = () => {
     refetchQueries: [{ query: meQuery }, { query: userProfileQuery }],
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const submitUpdateMe = async (data: UpdateUserInputs) => {
     const name = data.name?.trim();
@@ -74,7 +75,7 @@ const UserProfile = () => {
     });
     if (errors) throw errors;
     if (userData) {
-      toast({ title: 'Profile saved!', status: 'success' });
+      addAlert({ title: 'Profile saved!', status: 'success' });
     }
   };
 

@@ -26,10 +26,9 @@ import {
   EventUserWithRelations,
   EventWithRelationsWithEventUserRelations,
   EventWithRelationsWithEventUser,
-  EventWithChapter,
   EventWithVenue,
   User,
-  PaginatedEventsWithTotal,
+  PaginatedEventsWithChapters,
 } from '../../graphql-types';
 import { prisma } from '../../prisma';
 import mailerService, { batchSender } from '../../services/MailerService';
@@ -230,13 +229,28 @@ const getNameForNewAttendance = (event: EventAttendanceName) => {
 
 @Resolver()
 export class EventResolver {
-  @Query(() => PaginatedEventsWithTotal)
+  @Query(() => PaginatedEventsWithChapters)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
     @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<PaginatedEventsWithTotal> {
-    const total = await prisma.events.count();
+    @Arg('showOnlyUpcoming', () => Boolean, { nullable: true })
+    showOnlyUpcoming = true,
+  ): Promise<PaginatedEventsWithChapters> {
+    const total = await prisma.events.count({
+      ...(showOnlyUpcoming && {
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+        },
+      }),
+    });
     const events = await prisma.events.findMany({
+      ...(showOnlyUpcoming && {
+        where: {
+          canceled: false,
+          ends_at: { gt: new Date() },
+        },
+      }),
       include: {
         chapter: true,
       },
@@ -245,29 +259,6 @@ export class EventResolver {
       skip: offset,
     });
     return { total, events };
-  }
-
-  @Query(() => [EventWithChapter])
-  async paginatedEvents(
-    @Arg('limit', () => Int, { nullable: true }) limit?: number,
-    @Arg('offset', () => Int, { nullable: true }) offset?: number,
-  ): Promise<EventWithChapter[]> {
-    return await prisma.events.findMany({
-      where: {
-        AND: [
-          {
-            canceled: false,
-            ends_at: { gt: new Date() },
-          },
-        ],
-      },
-      include: {
-        chapter: true,
-      },
-      orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
-      take: limit ?? 10,
-      skip: offset,
-    });
   }
 
   @Authorized(Permission.EventEdit)
@@ -699,11 +690,19 @@ export class EventResolver {
         venue: true,
         sponsors: true,
         event_users: {
-          include: { user: true, event_reminder: true },
+          include: { attendance: true, event_reminder: true, user: true },
           where: { subscribed: true },
         },
       },
     });
+
+    if (
+      event.event_users.filter(({ attendance: { name } }) => name === 'yes')
+        .length > data.capacity
+    )
+      throw Error(
+        'Capacity must be higher or equal to the number of confirmed attendees',
+      );
 
     const eventSponsorInput: Prisma.event_sponsorsCreateManyInput[] =
       data.sponsor_ids.map((sId) => ({

@@ -175,6 +175,7 @@ model event_permissions {
 model event_users {
   created_at     DateTime         @default(now())
   updated_at     DateTime         @updatedAt
+  joined_date    DateTime         @default(now())
   user_id        Int
   event_id       Int
   event_role_id  Int

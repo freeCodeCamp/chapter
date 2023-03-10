@@ -98,21 +98,6 @@ exports[`ChapterCard should render 1`] = `
         >
           <a
             class="chakra-link css-1obgyuc"
-            href="/events/3"
-          >
-            Past event
-          </a>
-          <p
-            class="chakra-text css-1obgyuc"
-          >
-            Running
-          </p>
-        </div>
-        <div
-          class="css-1flr4u6"
-        >
-          <a
-            class="chakra-link css-1obgyuc"
             href="/events/5"
           >
             Visible event

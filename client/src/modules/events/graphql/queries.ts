@@ -1,7 +1,15 @@
 import { gql } from '@apollo/client';
 export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
-  query PaginatedEventsWithTotal($limit: Int, $offset: Int) {
-    paginatedEventsWithTotal(limit: $limit, offset: $offset) {
+  query PaginatedEventsWithTotal(
+    $limit: Int
+    $offset: Int
+    $showOnlyUpcoming: Boolean
+  ) {
+    paginatedEventsWithTotal(
+      limit: $limit
+      offset: $offset
+      showOnlyUpcoming: $showOnlyUpcoming
+    ) {
       total
       events {
         id

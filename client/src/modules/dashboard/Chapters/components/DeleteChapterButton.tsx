@@ -7,7 +7,6 @@ import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { DASHBOARD_EVENTS } from '../../Events/graphql/queries';
 import { DASHBOARD_VENUES } from '../../Venues/graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
 import { meQuery } from '../../../auth/graphql/queries';
 import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
 import {
@@ -40,9 +39,12 @@ export const DeleteChapterButton = ({
       { query: DASHBOARD_VENUES },
       {
         query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
-        variables: { offset: 0, limit: 5 },
+        variables: { offset: 0, limit: 2 },
       },
-      { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
+      {
+        query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+        variables: { offset: 0, limit: 5, showOnlyUpcoming: false },
+      },
       { query: meQuery },
       { query: userProfileQuery },
       { query: userDownloadQuery },

@@ -32,7 +32,7 @@ describe('event dashboard', () => {
 
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
       cy.findByRole('alertdialog')
-        .findByRole('button', { name: 'Confirm' })
+        .findByRole('button', { name: 'Confirm user' })
         .click();
 
       cy.waitUntilMail().mhFirst().as('email');
@@ -64,7 +64,7 @@ describe('event dashboard', () => {
       setUsernameAlias('@attendees');
 
       cy.get('@attendees').find('[data-cy=remove]').first().click();
-      cy.findByRole('button', { name: 'Delete' }).click();
+      cy.findByRole('button', { name: 'Remove user' }).click();
 
       cy.get<string>('@userName').then((userName) => {
         cy.contains(userName).should('not.exist');

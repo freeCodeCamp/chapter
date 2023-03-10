@@ -47,9 +47,9 @@ export type Chapter = {
 
 export type ChapterCardRelations = {
   __typename?: 'ChapterCardRelations';
+  _count: ChapterUsersCount;
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -109,6 +109,11 @@ export type ChapterUserWithRole = {
   joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   user_id: Scalars['Int'];
+};
+
+export type ChapterUsersCount = {
+  __typename?: 'ChapterUsersCount';
+  chapter_users: Scalars['Int'];
 };
 
 export type ChapterWithEvents = {
@@ -265,24 +270,6 @@ export type EventUserWithRolePermissions = {
   user_id: Scalars['Int'];
 };
 
-export type EventWithChapter = {
-  __typename?: 'EventWithChapter';
-  calendar_event_id?: Maybe<Scalars['String']>;
-  canceled: Scalars['Boolean'];
-  capacity: Scalars['Int'];
-  chapter: Chapter;
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  id: Scalars['Int'];
-  image_url: Scalars['String'];
-  invite_only: Scalars['Boolean'];
-  name: Scalars['String'];
-  start_at: Scalars['DateTime'];
-  streaming_url?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  venue_type: VenueType;
-};
-
 export type EventWithRelationsWithEventUser = {
   __typename?: 'EventWithRelationsWithEventUser';
   calendar_event_id?: Maybe<Scalars['String']>;
@@ -340,6 +327,24 @@ export type EventWithVenue = {
   streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
+  venue_type: VenueType;
+};
+
+export type EventsWithChapters = {
+  __typename?: 'EventsWithChapters';
+  calendar_event_id?: Maybe<Scalars['String']>;
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
 
@@ -558,16 +563,16 @@ export type MutationUpdateVenueArgs = {
   id: Scalars['Int'];
 };
 
-export type PaginatedEventsWithTotal = {
-  __typename?: 'PaginatedEventsWithTotal';
-  events: Array<EventWithChapter>;
+export type PaginatedEventsWithChapters = {
+  __typename?: 'PaginatedEventsWithChapters';
+  events: Array<EventsWithChapters>;
   total: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
-  chapter: ChapterWithRelations;
+  chapter: ChapterWithEvents;
   chapterRoles: Array<ChapterRole>;
   chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
@@ -583,8 +588,7 @@ export type Query = {
   instanceRoles: Array<InstanceRole>;
   instanceSettings: InstanceSettings;
   me?: Maybe<UserWithPermissions>;
-  paginatedEvents: Array<EventWithChapter>;
-  paginatedEventsWithTotal: PaginatedEventsWithTotal;
+  paginatedEventsWithTotal: PaginatedEventsWithChapters;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   testChapterCalendarAccess?: Maybe<Scalars['Boolean']>;
@@ -623,14 +627,10 @@ export type QueryEventArgs = {
   id: Scalars['Int'];
 };
 
-export type QueryPaginatedEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-};
-
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  showOnlyUpcoming?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QuerySponsorWithEventsArgs = {
@@ -969,7 +969,7 @@ export type ChapterQueryVariables = Exact<{
 export type ChapterQuery = {
   __typename?: 'Query';
   chapter: {
-    __typename?: 'ChapterWithRelations';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
@@ -981,7 +981,7 @@ export type ChapterQuery = {
     banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
       description: string;
@@ -1028,7 +1028,7 @@ export type ChaptersQuery = {
       name: string;
       invite_only: boolean;
     }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
 };
 
@@ -1760,15 +1760,16 @@ export type UnsubscribeFromEventMutation = {
 export type PaginatedEventsWithTotalQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  showOnlyUpcoming?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type PaginatedEventsWithTotalQuery = {
   __typename?: 'Query';
   paginatedEventsWithTotal: {
-    __typename?: 'PaginatedEventsWithTotal';
+    __typename?: 'PaginatedEventsWithChapters';
     total: number;
     events: Array<{
-      __typename?: 'EventWithChapter';
+      __typename?: 'EventsWithChapters';
       id: number;
       name: string;
       description: string;
@@ -1840,50 +1841,6 @@ export type EventQuery = {
       };
     }>;
   } | null;
-};
-
-export type HomeQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type HomeQuery = {
-  __typename?: 'Query';
-  paginatedEvents: Array<{
-    __typename?: 'EventWithChapter';
-    id: number;
-    name: string;
-    description: string;
-    invite_only: boolean;
-    canceled: boolean;
-    start_at: any;
-    ends_at: any;
-    image_url: string;
-    chapter: {
-      __typename?: 'Chapter';
-      id: number;
-      name: string;
-      category: string;
-    };
-  }>;
-  chapters: Array<{
-    __typename?: 'ChapterCardRelations';
-    id: number;
-    name: string;
-    description: string;
-    banner_url?: string | null;
-    logo_url?: string | null;
-    events: Array<{
-      __typename?: 'Event';
-      id: number;
-      canceled: boolean;
-      start_at: any;
-      ends_at: any;
-      name: string;
-      invite_only: boolean;
-    }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
-  }>;
 };
 
 export type ToggleAutoSubscribeMutationVariables = Exact<{
@@ -2499,8 +2456,8 @@ export const ChaptersDocument = gql`
         name
         invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }
@@ -5213,8 +5170,16 @@ export type UnsubscribeFromEventMutationOptions = Apollo.BaseMutationOptions<
   UnsubscribeFromEventMutationVariables
 >;
 export const PaginatedEventsWithTotalDocument = gql`
-  query PaginatedEventsWithTotal($limit: Int, $offset: Int) {
-    paginatedEventsWithTotal(limit: $limit, offset: $offset) {
+  query PaginatedEventsWithTotal(
+    $limit: Int
+    $offset: Int
+    $showOnlyUpcoming: Boolean
+  ) {
+    paginatedEventsWithTotal(
+      limit: $limit
+      offset: $offset
+      showOnlyUpcoming: $showOnlyUpcoming
+    ) {
       total
       events {
         id
@@ -5249,6 +5214,7 @@ export const PaginatedEventsWithTotalDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
+ *      showOnlyUpcoming: // value for 'showOnlyUpcoming'
  *   },
  * });
  */
@@ -5377,79 +5343,6 @@ export type EventQueryResult = Apollo.QueryResult<
   EventQuery,
   EventQueryVariables
 >;
-export const HomeDocument = gql`
-  query home($limit: Int, $offset: Int) {
-    paginatedEvents(limit: $limit, offset: $offset) {
-      id
-      name
-      description
-      invite_only
-      canceled
-      start_at
-      ends_at
-      image_url
-      chapter {
-        id
-        name
-        category
-      }
-    }
-    chapters {
-      id
-      name
-      description
-      banner_url
-      logo_url
-      events {
-        id
-        canceled
-        start_at
-        ends_at
-        name
-        invite_only
-      }
-      chapter_users {
-        subscribed
-      }
-    }
-  }
-`;
-
-/**
- * __useHomeQuery__
- *
- * To run a query within a React component, call `useHomeQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHomeQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
- *   },
- * });
- */
-export function useHomeQuery(
-  baseOptions?: Apollo.QueryHookOptions<HomeQuery, HomeQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
-}
-export function useHomeLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<HomeQuery, HomeQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<HomeQuery, HomeQueryVariables>(
-    HomeDocument,
-    options,
-  );
-}
-export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
-export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
-export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 export const ToggleAutoSubscribeDocument = gql`
   mutation toggleAutoSubscribe {
     toggleAutoSubscribe {

@@ -13,7 +13,6 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
@@ -41,8 +40,10 @@ import {
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
+import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
+import { CHAPTER, CHAPTER_USER } from '../../chapters/graphql/queries';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -63,7 +64,7 @@ export const EventPage: NextPage = () => {
     useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
     useCancelAttendanceMutation(refetch);
-  const [joinChapter] = useJoinChapterMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation();
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent, { loading: loadingUnsubscribe }] =
@@ -73,7 +74,7 @@ export const EventPage: NextPage = () => {
     variables: { eventId },
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
@@ -101,7 +102,7 @@ export const EventPage: NextPage = () => {
     const alreadyAttending =
       attencanceStatus === 'yes' || attencanceStatus === 'waitlist';
     if (alreadyAttending) {
-      toast({ title: 'Already attending', status: 'info' });
+      addAlert({ title: 'Already attending', status: 'info' });
       return true;
     }
     return false;
@@ -109,18 +110,25 @@ export const EventPage: NextPage = () => {
 
   async function onAttend() {
     if (!chapterId) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
-      await joinChapter({ variables: { chapterId } });
+      await joinChapter({
+        variables: { chapterId },
+        refetchQueries: [
+          ...refetch.refetchQueries,
+          { query: CHAPTER, variables: { chapterId } },
+          { query: CHAPTER_USER, variables: { chapterId } },
+        ],
+      });
       const { data: dataAttend } = await attendEvent({
         variables: { eventId, chapterId },
       });
 
       const attendance = dataAttend?.attendEvent.attendance.name;
 
-      toast({
+      addAlert({
         title:
           attendance === 'yes'
             ? 'You are attending this event'
@@ -128,7 +136,7 @@ export const EventPage: NextPage = () => {
         status: 'success',
       });
     } catch (err) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       console.error(err);
     }
   }
@@ -144,9 +152,9 @@ export const EventPage: NextPage = () => {
           variables: { eventId },
         });
 
-        toast({ title: 'You canceled your attendance 👋', status: 'info' });
+        addAlert({ title: 'You canceled your attendance 👋', status: 'info' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -224,16 +232,30 @@ export const EventPage: NextPage = () => {
     return <NextError statusCode={404} title="Event not found" />;
 
   async function onSubscribeToEvent() {
-    const ok = await confirm({ title: 'Do you want to subscribe?' });
+    const ok = await confirm({
+      title: 'Subscribe to event updates?',
+      body: (
+        <List>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            You will be informed about any changes to event details.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            This does not affect notifications from Google Calendar.
+          </ListItem>
+        </List>
+      ),
+    });
     if (ok) {
       try {
         await subscribeToEvent({ variables: { eventId } });
-        toast({
-          title: 'You successfully subscribed to this event',
+        addAlert({
+          title: 'You successfully subscribed to event updates',
           status: 'success',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -241,18 +263,30 @@ export const EventPage: NextPage = () => {
 
   async function onUnsubscribeFromEvent() {
     const ok = await confirm({
-      title: 'Unsubscribe from event?',
-      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
+      title: 'Unsubscribe from event updates?',
+      body: (
+        <List>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            After unsubscribing you will not receive any communication regarding
+            this event, including reminder before the event.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            This does not affect notifications from Google Calendar.
+          </ListItem>
+        </List>
+      ),
     });
     if (ok) {
       try {
         await unsubscribeFromEvent({ variables: { eventId } });
-        toast({
-          title: 'You have unsubscribed from this event',
+        addAlert({
+          title: 'You have unsubscribed from event updates',
           status: 'info',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -356,7 +390,7 @@ export const EventPage: NextPage = () => {
             {userEvent.subscribed ? (
               <>
                 <Text fontSize={'md'} fontWeight={'500'}>
-                  You are subscribed
+                  You are subscribed to event updates
                 </Text>
                 <Button
                   isLoading={loadingUnsubscribe}
@@ -370,7 +404,7 @@ export const EventPage: NextPage = () => {
             ) : (
               <>
                 <Text fontSize={'md'} fontWeight={'500'}>
-                  Not subscribed
+                  Not subscribed to event updates
                 </Text>
                 <Button
                   colorScheme="blue"

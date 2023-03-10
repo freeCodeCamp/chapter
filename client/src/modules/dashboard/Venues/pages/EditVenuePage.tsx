@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import NextError from 'next/error';
@@ -13,6 +12,7 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import VenueForm from '../components/VenueForm';
 import { VenueFormData } from '../components/VenueFormUtils';
 import { DASHBOARD_VENUE, DASHBOARD_VENUES } from '../graphql/queries';
+import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import { DashboardLayout } from '../../../dashboard/shared/components/DashboardLayout';
@@ -37,7 +37,7 @@ export const EditVenuePage: NextPageWithLayout = () => {
     ],
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const onSubmit = async (data: VenueFormData) => {
     const { chapter_id, ...updateData } = data;
@@ -55,7 +55,7 @@ export const EditVenuePage: NextPageWithLayout = () => {
     if (errors) throw errors;
     if (venueData) {
       await router.push('/dashboard/venues');
-      toast({
+      addAlert({
         title: `Venue "${venueData?.updateVenue.name}" updated successfully!`,
         status: 'success',
       });

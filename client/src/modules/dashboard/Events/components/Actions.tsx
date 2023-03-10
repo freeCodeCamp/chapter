@@ -1,12 +1,12 @@
-import { Button, HStack, useToast } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { LinkButton } from 'chakra-next-link';
 import React, { useMemo, useState } from 'react';
 
-import { CHAPTER } from '../../../chapters/graphql/queries';
-import { DASHBOARD_EVENT, DASHBOARD_EVENTS } from '../graphql/queries';
-import { EVENT } from '../../../events/graphql/queries';
-import { HOME_PAGE_QUERY } from '../../../home/graphql/queries';
+import { CHAPTER, CHAPTERS } from '../../../chapters/graphql/queries';
+import { DASHBOARD_EVENTS } from '../graphql/queries';
+import { DATA_PAGINATED_EVENTS_TOTAL_QUERY } from '../../../events/graphql/queries';
+import { useAlert } from '../../../../hooks/useAlert';
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { checkChapterPermission } from '../../../../util/check-permission';
 import { Permission } from '../../../../../../common/permissions';
@@ -45,10 +45,16 @@ const Actions: React.FC<ActionsProps> = ({
       variables: { eventId: event.id },
       refetchQueries: [
         { query: CHAPTER, variables: { chapterId: chapter.id } },
-        { query: EVENT, variables: { eventId: event.id } },
-        { query: DASHBOARD_EVENT, variables: { eventId: event.id } },
+        { query: CHAPTERS },
+        {
+          query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+          variables: { offset: 0, limit: 2 },
+        },
+        {
+          query: DATA_PAGINATED_EVENTS_TOTAL_QUERY,
+          variables: { offset: 0, limit: 5, showOnlyUpcoming: false },
+        },
         { query: DASHBOARD_EVENTS },
-        { query: HOME_PAGE_QUERY, variables: { offset: 0, limit: 2 } },
       ],
     }),
     [event],
@@ -56,10 +62,14 @@ const Actions: React.FC<ActionsProps> = ({
 
   const confirmDelete = useConfirmDelete();
   const confirm = useConfirm();
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const clickDelete = async () => {
-    const ok = await confirmDelete();
+    const ok = await confirmDelete({
+      buttonText: 'Delete event',
+      body: 'Are you sure you want to delete this event?',
+      title: 'Delete this event?',
+    });
     if (ok) {
       await remove(data);
       await onDelete?.();
@@ -75,9 +85,9 @@ const Actions: React.FC<ActionsProps> = ({
       setCreatingCalendarEvent(true);
       try {
         await createCalendarEvent({ variables: { eventId: event.id } });
-        toast({ title: 'Calendar event created', status: 'success' });
+        addAlert({ title: 'Calendar event created', status: 'success' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
       setCreatingCalendarEvent(false);

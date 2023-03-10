@@ -5,7 +5,6 @@ import { Credentials, OAuth2Client } from 'google-auth-library';
 import { calendar } from '@googleapis/calendar';
 
 import { prisma } from '../prisma';
-import { isProd } from '../config';
 import { redactSecrets } from '../util/redact-secrets';
 
 // We need a single set of tokens for the server and Prisma needs a unique id
@@ -30,8 +29,9 @@ function init() {
 
     return { keys };
   } catch {
-    if (isProd())
-      throw new Error('OAuth2 keys file missing, cannot start server');
+    console.warn(
+      'WARN: oauth2.keys.json file missing, the Google Calendar integration will not work.',
+    );
   }
 
   return {};

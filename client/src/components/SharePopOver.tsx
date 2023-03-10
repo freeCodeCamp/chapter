@@ -8,6 +8,7 @@ import {
   PopoverCloseButton,
 } from '@chakra-ui/popover';
 import { Button } from '@chakra-ui/button';
+import { CopyIcon } from '@chakra-ui/icons';
 
 export const SharePopOver = ({
   link,
@@ -23,8 +24,9 @@ export const SharePopOver = ({
           onClick={() => navigator.clipboard.writeText(link)}
           colorScheme={'blue'}
           size={size}
+          leftIcon={<CopyIcon />}
         >
-          Share
+          Copy URL
         </Button>
       </PopoverTrigger>
       <PopoverContent>

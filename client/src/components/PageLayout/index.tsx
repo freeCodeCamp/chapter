@@ -13,6 +13,7 @@ import { useCalendarIntegrationStatusQuery } from '../../generated/graphql';
 import { useUser } from '../../modules/auth/user';
 import { checkInstancePermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
+import { Alerts } from '../Alerts/Alerts';
 import { Header } from './Header';
 import { Footer } from './component/Footer';
 
@@ -50,10 +51,11 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
             </AlertDescription>
           </Alert>
         )}
+      <Alerts />
       <SkipNavContent />
       <Box
         as="main"
-        minHeight={{ base: '70vh', '2xl': '82vh' }}
+        minHeight={{ base: '70vh', md: '82vh' }}
         px={[4, 4, 8, 16]}
         id="main-content"
       >

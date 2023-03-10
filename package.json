@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "engines": {
-    "node": "18.14.2",
+    "node": "18.15.0",
     "npm": "8.19.4"
   },
   "scripts": {
@@ -17,7 +17,7 @@
     "db:migrate:dev": "npm run prisma migrate dev",
     "db:migrate:reset": "npm run prisma migrate reset -- --force",
     "db:reset": "npm run -w=server build && npm run prisma db push && npm run prisma db seed",
-    "both": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"./server/wait-for localhost:5000 -- npm -w=client run gen:dev\"",
+    "both": "concurrently -c 'auto' \"npm run dev:server\" \"npm run dev:client\" \"./server/wait-for localhost:5000 -- npm -w=client run gen:dev\"",
     "both:coverage": "cross-env NODE_ENV=test concurrently \"npm run dev:server:coverage\" \"npm run dev:client\" \"./server/wait-for localhost:5000 -- npm -w=client run gen:dev\"",
     "build": "cross-env NODE_ENV=production docker compose -f docker-compose.yml build",
     "build:coverage": "cross-env NODE_ENV=test npm run build",
@@ -66,16 +66,16 @@
     "@types/jest": "28.1.8",
     "@types/node-fetch": "2.6.2",
     "@types/supertest": "2.0.12",
-    "@typescript-eslint/eslint-plugin": "5.53.0",
-    "@typescript-eslint/parser": "5.53.0",
+    "@typescript-eslint/eslint-plugin": "5.54.1",
+    "@typescript-eslint/parser": "5.54.1",
     "concurrently": "7.6.0",
     "cross-env": "7.0.3",
     "cypress": "10.11.0",
     "cypress-mailhog": "1.7.0",
     "cypress-wait-until": "1.7.2",
     "dotenv": "16.0.3",
-    "eslint": "8.34.0",
-    "eslint-config-prettier": "8.6.0",
+    "eslint": "8.35.0",
+    "eslint-config-prettier": "8.7.0",
     "eslint-config-react": "1.1.7",
     "eslint-import-resolver-typescript": "3.5.3",
     "eslint-plugin-cypress": "2.12.1",

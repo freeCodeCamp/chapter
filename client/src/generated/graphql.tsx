@@ -388,6 +388,7 @@ export type Mutation = {
   deleteVenue: Venue;
   joinChapter: ChapterUserWithRole;
   leaveChapter: ChapterUser;
+  moveAttendeeToWaitlist: EventUserWithRelations;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
   toggleAutoSubscribe: User;
@@ -488,6 +489,11 @@ export type MutationJoinChapterArgs = {
 
 export type MutationLeaveChapterArgs = {
   chapterId: Scalars['Int'];
+};
+
+export type MutationMoveAttendeeToWaitlistArgs = {
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationSendEventInviteArgs = {
@@ -1334,6 +1340,19 @@ export type DeleteAttendeeMutationVariables = Exact<{
 export type DeleteAttendeeMutation = {
   __typename?: 'Mutation';
   deleteAttendee: boolean;
+};
+
+export type MoveAttendeeToWaitlistMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type MoveAttendeeToWaitlistMutation = {
+  __typename?: 'Mutation';
+  moveAttendeeToWaitlist: {
+    __typename?: 'EventUserWithRelations';
+    attendance: { __typename?: 'Attendance'; name: string };
+  };
 };
 
 export type SendEventInviteMutationVariables = Exact<{
@@ -3755,6 +3774,59 @@ export type DeleteAttendeeMutationResult =
 export type DeleteAttendeeMutationOptions = Apollo.BaseMutationOptions<
   DeleteAttendeeMutation,
   DeleteAttendeeMutationVariables
+>;
+export const MoveAttendeeToWaitlistDocument = gql`
+  mutation moveAttendeeToWaitlist($eventId: Int!, $userId: Int!) {
+    moveAttendeeToWaitlist(eventId: $eventId, userId: $userId) {
+      attendance {
+        name
+      }
+    }
+  }
+`;
+export type MoveAttendeeToWaitlistMutationFn = Apollo.MutationFunction<
+  MoveAttendeeToWaitlistMutation,
+  MoveAttendeeToWaitlistMutationVariables
+>;
+
+/**
+ * __useMoveAttendeeToWaitlistMutation__
+ *
+ * To run a mutation, you first call `useMoveAttendeeToWaitlistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveAttendeeToWaitlistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveAttendeeToWaitlistMutation, { data, loading, error }] = useMoveAttendeeToWaitlistMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useMoveAttendeeToWaitlistMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    MoveAttendeeToWaitlistMutation,
+    MoveAttendeeToWaitlistMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    MoveAttendeeToWaitlistMutation,
+    MoveAttendeeToWaitlistMutationVariables
+  >(MoveAttendeeToWaitlistDocument, options);
+}
+export type MoveAttendeeToWaitlistMutationHookResult = ReturnType<
+  typeof useMoveAttendeeToWaitlistMutation
+>;
+export type MoveAttendeeToWaitlistMutationResult =
+  Apollo.MutationResult<MoveAttendeeToWaitlistMutation>;
+export type MoveAttendeeToWaitlistMutationOptions = Apollo.BaseMutationOptions<
+  MoveAttendeeToWaitlistMutation,
+  MoveAttendeeToWaitlistMutationVariables
 >;
 export const SendEventInviteDocument = gql`
   mutation sendEventInvite($eventId: Int!) {

@@ -141,6 +141,15 @@ export const eventConfirmAtendeeText = ({
   emailText: `Your reservation is confirmed. You can attend the event ${eventName}`,
 });
 
+export const eventAttendeeToWaitlistText = ({
+  eventName,
+}: {
+  eventName: string;
+}) => ({
+  subject: 'You have been put on the waitlist',
+  emailText: `Your attendance status for ${eventName} was changed by the event administrator. You are now on the waitlist.`,
+});
+
 export const eventCancelationText = ({
   chapterName,
   chapterURL,

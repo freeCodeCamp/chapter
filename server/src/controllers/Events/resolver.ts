@@ -58,16 +58,17 @@ import {
   AttachUnsubscribeData,
   buildEmailForUpdatedEvent,
   chapterAdminUnsubscribeOptions,
-  eventConfirmAttendeeEmail,
-  eventCancelationEmail,
-  eventInviteEmail,
+  eventAttendanceCancelation,
   eventAttendanceConfirmation,
+  eventCancelationEmail,
+  eventConfirmAttendeeEmail,
+  eventInviteEmail,
+  eventAttendeeToWaitlistEmail,
   eventNewAttendeeNotifyEmail,
   hasDateChanged,
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
-  eventAttendanceCancelation,
 } from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
 import { EventInputs } from './inputs';
@@ -536,6 +537,49 @@ export class EventResolver {
         );
       } catch (e) {
         console.error('Unable to confirm attendance at calendar event');
+        console.error(inspect(redactSecrets(e), { depth: null }));
+      }
+    }
+    return updatedUser;
+  }
+
+  @Authorized(Permission.AttendeeConfirm)
+  @Mutation(() => EventUserWithRelations)
+  async moveAttendeeToWaitlist(
+    @Arg('eventId', () => Int) eventId: number,
+    @Arg('userId', () => Int) userId: number,
+  ): Promise<EventUserWithRelations> {
+    const updatedUser = await prisma.event_users.update({
+      data: { attendance: { connect: { name: 'waitlist' } } },
+      where: { user_id_event_id: { user_id: userId, event_id: eventId } },
+      include: { event: { include: { chapter: true } }, ...eventUserIncludes },
+    });
+
+    const { subject, attachUnsubscribe } = eventAttendeeToWaitlistEmail(
+      updatedUser.event.name,
+    );
+
+    await mailerService.sendEmail({
+      emailList: [updatedUser.user.email],
+      subject,
+      htmlEmail: attachUnsubscribe({
+        chapterId: updatedUser.event.chapter_id,
+        eventId: updatedUser.event_id,
+        userId,
+      }),
+    });
+
+    const calendarId = updatedUser.event.chapter.calendar_id;
+    const calendarEventId = updatedUser.event.calendar_event_id;
+
+    if (calendarId && calendarEventId && (await integrationStatus())) {
+      try {
+        await removeEventAttendee(
+          { calendarId, calendarEventId },
+          { attendeeEmail: updatedUser.user.email },
+        );
+      } catch (e) {
+        console.error('Unable to move attendee to waitlist at calendar event');
         console.error(inspect(redactSecrets(e), { depth: null }));
       }
     }

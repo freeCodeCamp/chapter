@@ -4,6 +4,7 @@ import {
   buildEmailForUpdatedEvent,
   eventAttendanceCancelation,
   eventAttendanceConfirmation,
+  eventAttendeeToWaitlistEmail,
   eventCancelationEmail,
   eventConfirmAttendeeEmail,
   eventInviteEmail,
@@ -161,6 +162,29 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
           'Your reservation is confirmed. You can attend the event Emard and Sons',
       };
       expect(eventConfirmAttendeeEmail(data)).toMatchObject(expected);
+    });
+  });
+
+  describe('eventAttendeeToWaitlistEmail', () => {
+    const data = 'Emard and Sons';
+    it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
+      const result = eventAttendeeToWaitlistEmail(data);
+      expect(result).toHaveProperty('subject');
+      expect(result).toHaveProperty('emailText');
+      expect(result).toHaveProperty('attachUnsubscribe');
+      expect(result).toHaveProperty('attachUnsubscribeText');
+    });
+
+    it('should return object with expected subject', () => {
+      const expected = { subject: 'You have been put on the waitlist' };
+      expect(eventAttendeeToWaitlistEmail(data)).toMatchObject(expected);
+    });
+
+    it('should return object with expected emailText', () => {
+      const expected = {
+        emailText: `Your attendance status for Emard and Sons was changed by the event administrator. You are now on the waitlist.`,
+      };
+      expect(eventAttendeeToWaitlistEmail(data)).toMatchObject(expected);
     });
   });
 

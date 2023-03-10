@@ -7,6 +7,7 @@ import {
   dateChangeText,
   eventAttendanceCancelationText,
   eventAttendanceConfirmationText,
+  eventAttendeeToWaitlistText,
   eventCancelationText,
   eventConfirmAtendeeText,
   eventDescriptionText,
@@ -228,6 +229,9 @@ export const eventCancelationEmail = (event: CancelEvent) => {
 
 export const eventConfirmAttendeeEmail = (eventName: string) =>
   withUnsubscribe(eventConfirmAtendeeText({ eventName }));
+
+export const eventAttendeeToWaitlistEmail = (eventName: string) =>
+  withUnsubscribe(eventAttendeeToWaitlistText({ eventName }));
 
 export const eventNewAttendeeNotifyEmail = ({
   eventName,

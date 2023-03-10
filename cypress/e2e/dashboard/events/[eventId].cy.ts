@@ -58,6 +58,41 @@ describe('event dashboard', () => {
       });
     });
 
+    it('moving user to waitlist', () => {
+      cy.visit(`/dashboard/events/${eventId}`);
+      cy.get('[data-cy=attendees]').as('attendees');
+      setUsernameAlias('@attendees');
+
+      cy.get('@attendees').find('[data-cy="move to waitlist"]').first().click();
+      cy.findByRole('alertdialog')
+        .findByRole('button', { name: 'Move user' })
+        .click();
+
+      cy.waitUntilMail().mhFirst().as('email');
+
+      cy.get<string>('@userName').then((userName) => {
+        cy.get('@attendees').not(`:contains(${userName})`);
+        cy.get('[data-cy=waitlist]').contains(userName);
+      });
+
+      cy.get('@email')
+        .mhGetSubject()
+        .should('include', 'You have been put on the waitlist');
+      cy.get('@email')
+        .mhGetBody()
+        .then((body) => body.replace(/=\s\s/g, ''))
+        .should('include', 'changed by the event administrator');
+      cy.get('@email').mhGetBody().should('include', 'now on the waitlist');
+      cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
+        cy.get<string>('@userName').then((userName) => {
+          const userEmail = eventUsers
+            .filter(({ user: { name } }) => name === userName)
+            .map(({ user: { email } }) => email);
+          cy.get('@email').mhGetRecipients().should('have.members', userEmail);
+        });
+      });
+    });
+
     it('removing user should remove user from event', () => {
       cy.visit(`/dashboard/events/${eventId}`);
       cy.get('[data-cy=attendees]').as('attendees');
@@ -108,7 +143,7 @@ describe('event dashboard', () => {
       });
     });
 
-    it('prevents members from confirming or removing users', () => {
+    it('prevents members from confirming, moving to waitlist, or removing users', () => {
       // Starting as the instance owner to ensure we can find the attendees
       cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
@@ -122,6 +157,9 @@ describe('event dashboard', () => {
         cy.login(users.testUser.email);
 
         cy.deleteAttendee(eventId, confirmedUser.id).then(expectToBeRejected);
+        cy.moveAttendeeToWaitlist(eventId, confirmedUser.id).then(
+          expectToBeRejected,
+        );
         cy.confirmAttendee(eventId, waitlistUser.id).then(expectToBeRejected);
       });
     });

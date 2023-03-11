@@ -170,12 +170,6 @@ export const fields: Field[] = [
     placeholder: 'https://www.example.image/url',
     isRequired: false,
   },
-  {
-    key: 'capacity',
-    type: 'number',
-    label: 'Capacity',
-    isRequired: true,
-  },
 ];
 
 export type IEventData = Pick<

@@ -1,11 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Heading,
-  Grid,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
@@ -31,6 +24,7 @@ import {
   EventFormData,
   resolver,
 } from './EventFormUtils';
+import { Input } from 'components/Form/Input';
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
@@ -148,10 +142,19 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           startAt={defaultValues.start_at}
         />
 
-        <VStack as="fieldset">
-          <Text as="legend" fontWeight="500">
-            Event Type
+        <Grid as="fieldset" gap="4">
+          <Text srOnly as="legend">
+            Attendee restrictions
           </Text>
+          <Input
+            key="capacity"
+            type="number"
+            label="Capacity"
+            isRequired={true}
+            isDisabled={loading}
+            error={errors['capacity']?.message}
+            {...register('capacity', { valueAsNumber: true })}
+          />
           <Checkbox
             data-cy="invite-only-checkbox"
             isChecked={inviteOnly}
@@ -160,7 +163,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           >
             Invite only
           </Checkbox>
-        </VStack>
+        </Grid>
 
         <EventVenueForm
           venueId={defaultValues.venue_id}

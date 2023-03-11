@@ -6,6 +6,9 @@ export const attendEvent = gql`
   mutation attendEvent($eventId: Int!, $chapterId: Int!) {
     attendEvent(eventId: $eventId, chapterId: $chapterId) {
       updated_at
+      attendance {
+        name
+      }
     }
   }
 `;

@@ -8,7 +8,6 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
@@ -23,6 +22,7 @@ import {
   useUnbanUserMutation,
   useDashboardChapterUsersQuery,
 } from '../../../../../generated/graphql';
+import { useAlert } from '../../../../../hooks/useAlert';
 import UserName from '../../../../../components/UserName';
 import { DashboardLoading } from '../../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../../shared/components/DashboardLayout';
@@ -80,7 +80,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
   const [unbanUser] = useUnbanUserMutation(refetch);
 
   const confirm = useConfirm();
-  const toast = useToast();
+  const addAlert = useAlert();
 
   interface BanArgs {
     id: number;
@@ -96,12 +96,12 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     if (ok) {
       try {
         await banUser({ variables: { userId, chapterId } });
-        toast({ title: 'User was banned', status: 'success' });
+        addAlert({ title: 'User was banned', status: 'success' });
       } catch (err) {
         if (err instanceof Error) {
-          toast({ title: err.message, status: 'error' });
+          addAlert({ title: err.message, status: 'error' });
         } else {
-          toast({ title: 'Something went wrong', status: 'error' });
+          addAlert({ title: 'Something went wrong', status: 'error' });
         }
       }
     }
@@ -116,12 +116,12 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
     if (ok) {
       try {
         await unbanUser({ variables: { userId, chapterId } });
-        toast({ title: 'User was unbanned', status: 'success' });
+        addAlert({ title: 'User was unbanned', status: 'success' });
       } catch (err) {
         if (err instanceof Error) {
-          toast({ title: err.message, status: 'error' });
+          addAlert({ title: err.message, status: 'error' });
         } else {
-          toast({ title: 'Something went wrong', status: 'error' });
+          addAlert({ title: 'Something went wrong', status: 'error' });
         }
       }
     }
@@ -211,7 +211,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         data-cy="unbanUser"
                         colorScheme="purple"
                         size="xs"
-                        disabled={is_bannable ? false : true}
+                        isDisabled={!is_bannable}
                         onClick={() => onUnban(otherUser)}
                       >
                         Unban
@@ -235,7 +235,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                         data-cy="banUser"
                         colorScheme="red"
                         size="xs"
-                        disabled={is_bannable ? false : true}
+                        isDisabled={!is_bannable}
                         onClick={() => onBan(otherUser)}
                       >
                         Ban
@@ -319,7 +319,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 data-cy="unbanUser"
                                 colorScheme="purple"
                                 size="xs"
-                                disabled={is_bannable ? false : true}
+                                isDisabled={!is_bannable}
                                 onClick={() => onUnban(user)}
                               >
                                 Unban
@@ -343,7 +343,7 @@ export const ChapterUsersPage: NextPageWithLayout = () => {
                                 data-cy="banUser"
                                 colorScheme="red"
                                 size="xs"
-                                disabled={is_bannable ? false : true}
+                                isDisabled={!is_bannable}
                                 onClick={() => onBan(user)}
                               >
                                 Ban

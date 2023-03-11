@@ -23,6 +23,7 @@ import {
   fields,
   EventFormData,
   resolver,
+  IEventData,
 } from './EventFormUtils';
 import { Input } from 'components/Form/Input';
 
@@ -73,15 +74,19 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       image_url: data.image_url,
       invite_only: data.invite_only,
       chapter_id: initialChapterId,
+      attendees:
+        data.event_users?.filter(({ attendance: { name } }) => name === 'yes')
+          .length ?? 0,
     };
   }, []);
 
   const formMethods = useForm<EventFormData>({
     defaultValues,
+    mode: 'all',
     resolver,
   });
   const {
-    formState: { isDirty, errors },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     register,
     watch,
@@ -98,6 +103,13 @@ const EventForm: React.FC<EventFormProps> = (props) => {
     useDisableWhileSubmitting<EventFormData>({
       onSubmit,
     });
+
+  const minCapacity = (event?: IEventData) => {
+    return (
+      event?.event_users?.filter(({ attendance: { name } }) => name === 'yes')
+        .length ?? 0
+    );
+  };
 
   return (
     <FormProvider {...formMethods}>
@@ -142,7 +154,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           startAt={defaultValues.start_at}
         />
 
-        <Grid as="fieldset" gap="4">
+        <Grid as="fieldset" width="100%" gap="4">
           <Text srOnly as="legend">
             Attendee restrictions
           </Text>
@@ -154,6 +166,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             isDisabled={loading}
             error={errors['capacity']?.message}
             {...register('capacity', { valueAsNumber: true })}
+            min={minCapacity()}
           />
           <Checkbox
             data-cy="invite-only-checkbox"
@@ -193,7 +206,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <Button
             colorScheme="blue"
             type="submit"
-            isDisabled={!isDirty || loading}
+            isDisabled={!isDirty || loading || !isValid}
             isLoading={loading}
             loadingText={loadingText}
           >

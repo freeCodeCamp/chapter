@@ -210,7 +210,7 @@ describe('spec needing owner', () => {
     });
 
     cy.findByRole('button', { name: 'Delete' }).click();
-    cy.findByRole('button', { name: 'Delete' }).click();
+    cy.findByRole('button', { name: 'Delete event' }).click();
 
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
@@ -233,7 +233,7 @@ describe('spec needing owner', () => {
       .as('eventTitle');
 
     cy.findByRole('button', { name: 'Cancel' }).click();
-    cy.findByRole('alertdialog').findByText('Confirm').click();
+    cy.findByRole('alertdialog').findByText('Cancel event').click();
 
     cy.waitUntilMail().mhFirst().as('emails');
 

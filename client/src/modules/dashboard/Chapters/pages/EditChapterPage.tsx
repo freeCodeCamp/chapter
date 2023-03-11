@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 
@@ -7,6 +6,7 @@ import {
   useDashboardChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
+import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DASHBOARD_CHAPTER, DASHBOARD_CHAPTERS } from '../graphql/queries';
@@ -39,7 +39,7 @@ export const EditChapterPage: NextPageWithLayout = () => {
     ],
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const onSubmit = async (data: CreateChapterInputs) => {
     const { data: chapterData, errors } = await updateChapter({
@@ -48,7 +48,7 @@ export const EditChapterPage: NextPageWithLayout = () => {
     if (errors) throw errors;
     if (chapterData) {
       await router.push('/dashboard/chapters');
-      toast({
+      addAlert({
         title: `Chapter "${chapterData.updateChapter.name}" updated successfully!`,
         status: 'success',
       });

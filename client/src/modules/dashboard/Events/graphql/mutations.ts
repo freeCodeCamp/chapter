@@ -76,6 +76,16 @@ export const deleteAttendee = gql`
   }
 `;
 
+export const moveAttendeeToWaitlist = gql`
+  mutation moveAttendeeToWaitlist($eventId: Int!, $userId: Int!) {
+    moveAttendeeToWaitlist(eventId: $eventId, userId: $userId) {
+      attendance {
+        name
+      }
+    }
+  }
+`;
+
 export const sendEventInvite = gql`
   mutation sendEventInvite($eventId: Int!) {
     sendEventInvite(id: $eventId)

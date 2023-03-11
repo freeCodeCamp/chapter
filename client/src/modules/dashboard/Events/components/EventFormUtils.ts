@@ -4,7 +4,7 @@ import {
   IsBoolean,
   IsIn,
   IsNotEmpty,
-  IsNumber,
+  IsPositive,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -20,6 +20,7 @@ import {
   IsDateBefore,
   IsNonEmptyString,
   IsOptionalUrl,
+  IsNumberOfAttendeesUnderCapacity,
 } from 'modules/util/form';
 
 export interface EventSponsorInput {
@@ -43,6 +44,7 @@ export interface EventFormData {
   canceled: boolean;
   chapter_id: number;
   attend_event?: boolean;
+  attendees?: number;
 }
 
 export interface Field {
@@ -52,6 +54,20 @@ export interface Field {
   type: string;
   isRequired: boolean;
 }
+
+export type IEventData = Pick<
+  Event,
+  | keyof Omit<
+      EventFormData,
+      'venue_id' | 'sponsors' | 'chapter_id' | 'attend_event' | 'attendees'
+    >
+  | 'id'
+> & {
+  event_users?: { attendance: { name: string } }[];
+  venue_id?: number;
+  venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
+  sponsors: EventSponsorInput[];
+};
 
 export interface EventSponsorTypeInput {
   name: string;
@@ -106,7 +122,8 @@ export class EventClass {
   @IsOptionalUrl()
   image_url: string;
 
-  @IsNumber()
+  @IsNumberOfAttendeesUnderCapacity()
+  @IsPositive()
   capacity: number;
 
   @IsDateBefore('ends_at', {
@@ -171,19 +188,6 @@ export const fields: Field[] = [
     isRequired: false,
   },
 ];
-
-export type IEventData = Pick<
-  Event,
-  | keyof Omit<
-      EventFormData,
-      'venue_id' | 'sponsors' | 'chapter_id' | 'attend_event'
-    >
-  | 'id'
-> & {
-  venue_id?: number;
-  venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
-  sponsors: EventSponsorInput[];
-};
 
 export interface EventFormProps {
   onSubmit: (data: EventFormData) => Promise<void>;
@@ -259,7 +263,7 @@ export const parseEventData = (data: EventFormData) => {
   // It's ugly, but we can't rely on TS to check that properties are absent, so
   // we have to remove them to avoid sending them to the server.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { chapter_id, attend_event, sponsors, ...rest } = data;
+  const { chapter_id, attend_event, sponsors, attendees, ...rest } = data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
   // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.

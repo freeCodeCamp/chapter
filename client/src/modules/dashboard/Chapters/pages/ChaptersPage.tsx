@@ -1,7 +1,16 @@
-import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Grid,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import {
   checkInstancePermission,
@@ -39,6 +48,7 @@ const actionLinks = [
 ];
 
 export const ChaptersPage: NextPageWithLayout = () => {
+  const [filterChapter, setFilterChapter] = useState('');
   const { loading, error, data } = useDashboardChaptersQuery();
   const { user, loadingUser } = useUser();
 
@@ -50,17 +60,43 @@ export const ChaptersPage: NextPageWithLayout = () => {
   const isLoading = loading || loadingUser || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
+  const filteredChapters = data.dashboardChapters.filter(({ name }) =>
+    name.toLowerCase().includes(filterChapter.toLowerCase().trim()),
+  );
+
   return (
     <VStack>
-      <Flex w="full" justify="space-between">
+      <Grid w="full" gap="1em" gridTemplateColumns="1fr 2fr 8em">
         <Heading data-cy="chapter-dash-heading" id="page-heading">
           Chapters
         </Heading>
+        {data.dashboardChapters.length > 1 && (
+          <>
+            <Text srOnly>
+              Type the name of chapter that you are looking for in the filter
+              chapter input to filter out other chapters
+            </Text>
+            <Input
+              width="full"
+              type="text"
+              backgroundColor="gray.50"
+              placeholder="Filter Chapter"
+              value={filterChapter}
+              gridRowStart="2"
+              gridColumnStart="1"
+              gridColumnEnd="-1"
+              onChange={(e) => setFilterChapter(e.target.value)}
+            />
+          </>
+        )}
         {hasPermissionToCreateChapter && (
           <LinkButton
             data-cy="new-chapter"
             href="/dashboard/chapters/new"
             colorScheme={'blue'}
+            gridColumnStart={-2}
+            gridColumnEnd={-1}
+            marginLeft="auto"
           >
             Add new
             <Text srOnly as="span">
@@ -68,10 +104,10 @@ export const ChaptersPage: NextPageWithLayout = () => {
             </Text>
           </LinkButton>
         )}
-      </Flex>
+      </Grid>
       <Box display={{ base: 'none', lg: 'block' }} width="100%">
         <DataTable
-          data={data.dashboardChapters}
+          data={filteredChapters}
           keys={['name', 'actions'] as const}
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
           mapper={{
@@ -114,7 +150,7 @@ export const ChaptersPage: NextPageWithLayout = () => {
         />
       </Box>
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {data.dashboardChapters.map((chapter) => (
+        {filteredChapters.map((chapter) => (
           <Flex key={chapter.id}>
             <DataTable
               data={[chapter]}

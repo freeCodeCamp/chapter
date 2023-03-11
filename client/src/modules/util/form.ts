@@ -4,6 +4,8 @@ import {
   registerDecorator,
   ValidationArguments,
   ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 import { TextArea } from '../../components/Form/TextArea';
@@ -169,3 +171,37 @@ export const IsDateAfter = (
     validationOptions,
   );
 };
+
+interface CapacityValidation extends ValidationArguments {
+  object: ValidationArguments['object'] & { attendees?: number };
+}
+
+@ValidatorConstraint()
+export class IsNumberOfAttendeesUnderCapacityConstraint
+  implements ValidatorConstraintInterface
+{
+  validate(capacity: number, args: CapacityValidation) {
+    if (args.object.attendees === undefined) {
+      return true;
+    }
+    return capacity >= args.object.attendees;
+  }
+
+  defaultMessage(args?: CapacityValidation | undefined): string {
+    return `Capacity must be higher or equal to the number of confirmed attendees - ${args?.object.attendees}`;
+  }
+}
+
+export function IsNumberOfAttendeesUnderCapacity(
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: object, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [],
+      validator: IsNumberOfAttendeesUnderCapacityConstraint,
+    });
+  };
+}

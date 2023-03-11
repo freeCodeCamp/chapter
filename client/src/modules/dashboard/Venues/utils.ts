@@ -1,7 +1,7 @@
-import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import { useCreateVenueMutation } from '../../../generated/graphql';
+import { useAlert } from '../../../hooks/useAlert';
 import { VenueFormData } from './components/VenueFormUtils';
 import { DASHBOARD_VENUES } from './graphql/queries';
 
@@ -10,7 +10,7 @@ export const useSubmitVenue = () => {
     refetchQueries: [{ query: DASHBOARD_VENUES }],
   });
   const router = useRouter();
-  const toast = useToast();
+  const addAlert = useAlert();
 
   return async (data: VenueFormData) => {
     const { chapter_id, ...createData } = data;
@@ -28,7 +28,7 @@ export const useSubmitVenue = () => {
     if (errors) throw errors;
     if (venueData) {
       await router.replace(`/dashboard/venues/${venueData.createVenue.id}`);
-      toast({
+      addAlert({
         title: `Venue "${venueData.createVenue.name}" created!`,
         status: 'success',
       });

@@ -8,7 +8,6 @@ import {
   ListIcon,
   Spinner,
   Text,
-  useToast,
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
 import NextError from 'next/error';
@@ -28,6 +27,7 @@ import {
   useTestChapterCalendarAccessLazyQuery,
   useUnlinkChapterCalendarMutation,
 } from '../../../../generated/graphql';
+import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
@@ -73,7 +73,7 @@ export const ChapterPage: NextPageWithLayout = () => {
     useTestChapterCalendarAccessLazyQuery();
 
   const confirm = useConfirm();
-  const toast = useToast();
+  const addAlert = useAlert();
 
   const onCreateCalendar = async () => {
     const ok = await confirm({
@@ -88,9 +88,9 @@ export const ChapterPage: NextPageWithLayout = () => {
             { query: DASHBOARD_CHAPTER, variables: { chapterId } },
           ],
         });
-        toast({ title: 'Chapter calendar created', status: 'success' });
+        addAlert({ title: 'Chapter calendar created', status: 'success' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -123,22 +123,22 @@ export const ChapterPage: NextPageWithLayout = () => {
           variables: { chapterId },
         });
         if (data?.testChapterCalendarAccess) {
-          toast({
+          addAlert({
             title: 'Calendar access test successful',
             status: 'success',
           });
         } else if (data?.testChapterCalendarAccess === false) {
-          toast({ title: "Couldn't access the calendar", status: 'error' });
+          addAlert({ title: "Couldn't access the calendar", status: 'error' });
           setDisplayUnlink(true);
         } else {
-          toast({
+          addAlert({
             title:
               'Something went wrong, make sure integration is working and try again',
             status: 'warning',
           });
         }
       } catch (error) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.log(error);
       }
     }
@@ -173,9 +173,9 @@ export const ChapterPage: NextPageWithLayout = () => {
             ...eventRefetches(data),
           ],
         });
-        toast({ title: 'Chapter calendar unlinked', status: 'success' });
+        addAlert({ title: 'Chapter calendar unlinked', status: 'success' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -223,23 +223,44 @@ export const ChapterPage: NextPageWithLayout = () => {
   if (!data.dashboardChapter)
     return <NextError statusCode={404} title="Chapter not found" />;
 
-  const integrationStatus = dataStatus?.calendarIntegrationStatus;
+  const fields = [
+    { value: data.dashboardChapter.description, label: 'Description' },
+    { value: data.dashboardChapter.city, label: 'City' },
+    { value: data.dashboardChapter.region, label: 'Region' },
+    { value: data.dashboardChapter.country, label: 'Country' },
+    { value: data.dashboardChapter.category, label: 'Category' },
+    { value: data.dashboardChapter.banner_url, label: 'Banner' },
+    { value: data.dashboardChapter.logo_url, label: 'Logo' },
+    { value: data.dashboardChapter.chat_url, label: 'Chat' },
+  ];
 
+  const integrationStatus = dataStatus?.calendarIntegrationStatus;
+  const textStyle = { fontSize: { base: 'md', md: 'lg' }, fontWeight: 'bold' };
   return (
     <>
       <Card className={styles.card}>
         <ProgressCardContent loading={loading}>
-          <Heading
-            fontSize={'md'}
-            as="h1"
-            fontWeight="semibold"
-            marginBlock={'2'}
-          >
-            {data.dashboardChapter.name}
-          </Heading>
+          <Grid gap="1rem">
+            <Heading
+              fontSize={{ base: 'xl', md: 'xx-large' }}
+              as="h1"
+              fontWeight={{ base: 'bold', md: 'semi-bold' }}
+              marginBlock={'1'}
+            >
+              Chapter: {data.dashboardChapter.name}
+            </Heading>
+            {fields.map(
+              ({ value, label }) =>
+                value && (
+                  <Text {...textStyle} key={label}>
+                    {label}: {value}
+                  </Text>
+                ),
+            )}
+          </Grid>
           {integrationStatus !== false && (
             <HStack>
-              <Text>Calendar created:</Text>
+              <Text {...textStyle}>Calendar created:</Text>
               {loadingCalendar ? (
                 <Spinner size="sm" />
               ) : data.dashboardChapter.has_calendar ? (
@@ -282,7 +303,7 @@ export const ChapterPage: NextPageWithLayout = () => {
             </LinkButton>
           )}
           <Grid
-            gridTemplateColumns="repeat(auto-fill, minmax(6.5rem, 1fr))"
+            gridTemplateColumns="repeat(auto-fill, minmax(7.5rem, 1fr))"
             gap="1em"
           >
             {allowedActions.map(({ colorScheme, size, href, text, dataCy }) => (

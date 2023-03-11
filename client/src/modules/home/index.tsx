@@ -1,22 +1,19 @@
-import {
-  Heading,
-  VStack,
-  Grid,
-  GridItem,
-  Flex,
-  Text,
-  useToast,
-  Button,
-} from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { Heading, VStack, Grid, GridItem, Flex, Text } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 import { Link } from 'chakra-next-link';
 
 import { Loading } from '../../components/Loading';
 import { ChapterCard } from '../../components/ChapterCard';
 import { EventCard } from '../../components/EventCard';
-import { useHomeQuery } from '../../generated/graphql';
+import {
+  usePaginatedEventsWithTotalQuery,
+  useChaptersLazyQuery,
+} from '../../generated/graphql';
+import { Pagination } from '../util/pagination';
 import { UserContextType, useUser } from '../auth/user';
 import { getNameText } from '../../components/UserName';
+
+const eventsPerPage = 2;
 
 type User = NonNullable<UserContextType['user']>;
 
@@ -44,30 +41,26 @@ const Welcome = ({ user }: { user: User }) => {
   );
 };
 const Home = () => {
-  const [hasMore, setHasMore] = useState(true);
-  const { loading, error, data, fetchMore } = useHomeQuery({
-    variables: { offset: 0, limit: 2 },
+  const [getChapters, { error: chapterErrors, data: chapterDatas }] =
+    useChaptersLazyQuery();
+
+  const { loading, error, data, fetchMore } = usePaginatedEventsWithTotalQuery({
+    variables: { offset: 0, limit: eventsPerPage },
   });
   const { user } = useUser();
 
-  const toast = useToast();
-  const onLoadMore = async () => {
-    try {
-      const res = await fetchMore({
-        variables: { offset: data?.paginatedEvents.length },
-      });
-      setHasMore(res.data.paginatedEvents.length > 0);
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({ title: err.message || err.name });
-      } else {
-        toast({ title: 'An unexpected error occurred' });
-      }
+  useEffect(() => {
+    if (!loading) {
+      getChapters();
     }
-  };
+  }, [loading]);
 
   const isLoading = loading || !data;
-  if (isLoading || error) return <Loading error={error} />;
+  if (isLoading) return <Loading error={error} />;
+
+  const items = data.paginatedEventsWithTotal.events.map((event) => (
+    <EventCard key={event.id} event={event} />
+  ));
 
   return (
     <>
@@ -84,14 +77,21 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Upcoming events
             </Heading>
-            {data.paginatedEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-            {hasMore ? (
-              <Button onClick={onLoadMore}>Click for more</Button>
-            ) : (
-              <Text size="md">No more</Text>
-            )}
+            <Pagination
+              items={items}
+              fetchMore={fetchMore}
+              limit={eventsPerPage}
+              total={data.paginatedEventsWithTotal.total || 0}
+              displayOnEmpty={
+                <Text size="md">
+                  No more, check out the{' '}
+                  <Link href="/events" fontWeight="bold">
+                    Event page{' '}
+                  </Link>
+                  to see past events.
+                </Text>
+              }
+            />
           </VStack>
         </GridItem>
         <GridItem colSpan={{ base: 2, xl: 1 }}>
@@ -99,9 +99,13 @@ const Home = () => {
             <Heading as="h2" size={'md'}>
               Chapters
             </Heading>
-            {data.chapters.map((chapter) => (
-              <ChapterCard key={chapter.id} chapter={chapter} />
-            ))}
+            {chapterDatas ? (
+              chapterDatas.chapters.map((chapter) => (
+                <ChapterCard key={chapter.id} chapter={chapter} />
+              ))
+            ) : (
+              <Loading error={chapterErrors} />
+            )}
           </VStack>
         </GridItem>
       </Grid>

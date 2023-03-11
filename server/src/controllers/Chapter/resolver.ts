@@ -49,22 +49,19 @@ export class ChapterResolver {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
           },
           take: 3,
-          orderBy: { start_at: 'desc' },
+          orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
         },
-        chapter_users: {
-          include: {
-            chapter_role: {
-              include: {
-                chapter_role_permissions: {
-                  include: { chapter_permission: true },
-                },
-              },
-            },
-            user: true,
-          },
-        },
+        _count: { select: { chapter_users: true } },
       },
       orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query(() => ChapterWithEvents)
+  async chapter(@Arg('id', () => Int) id: number): Promise<ChapterWithEvents> {
+    return await prisma.chapters.findUniqueOrThrow({
+      where: { id },
+      include: { events: true },
     });
   }
 
@@ -126,32 +123,6 @@ export class ChapterResolver {
       }),
       include: { events: true },
       orderBy: { name: 'asc' },
-    });
-  }
-
-  @Query(() => ChapterWithRelations)
-  async chapter(
-    @Arg('id', () => Int) id: number,
-  ): Promise<ChapterWithRelations> {
-    return await prisma.chapters.findUniqueOrThrow({
-      where: { id },
-      include: {
-        events: true,
-        chapter_users: {
-          include: {
-            chapter_role: {
-              include: {
-                chapter_role_permissions: {
-                  include: { chapter_permission: true },
-                },
-              },
-            },
-            user: true,
-          },
-          orderBy: { user: { name: 'asc' } },
-        },
-        user_bans: { include: { user: true, chapter: true } },
-      },
     });
   }
 

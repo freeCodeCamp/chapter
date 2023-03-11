@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Grid,
   FormLabel,
   Heading,
   HStack,
@@ -23,54 +24,97 @@ import { useUser } from '../../../auth/user';
 import { useDashboardEventsQuery } from '../../../../generated/graphql';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
-const ShowCanceledSwitch = ({
-  setShowCanceled,
-  defaultChecked,
-}: {
-  setShowCanceled: React.Dispatch<React.SetStateAction<boolean>>;
+interface FilterEventsProps {
+  setFilterEvent: React.Dispatch<React.SetStateAction<boolean>>;
   defaultChecked: boolean;
-}) => {
+  filterLabel: string;
+  id: string;
+}
+
+const FilterEvents = ({
+  setFilterEvent,
+  defaultChecked,
+  filterLabel,
+  id,
+}: FilterEventsProps) => {
   return (
-    <Flex>
-      <FormLabel htmlFor="show-canceled-events">Show canceled events</FormLabel>
+    <>
+      <FormLabel marginTop=".5em" htmlFor={id}>
+        {filterLabel}
+      </FormLabel>
       <Switch
         isChecked={defaultChecked}
-        id="show-canceled-events"
-        onChange={(e) => setShowCanceled(e.target.checked)}
+        id={id}
+        onChange={(e) => setFilterEvent(e.target.checked)}
       />
-    </Flex>
+    </>
   );
 };
 
 export const EventsPage: NextPageWithLayout = () => {
-  const [showCanceled, setShowCanceled] = useState(true);
-  const { error, loading, data } = useDashboardEventsQuery({
-    variables: { showCanceled },
-  });
+  const [hideCanceled, setHideCanceled] = useState(false);
+  const [hideEnded, setHideEnded] = useState(false);
+
+  const { error, loading, data } = useDashboardEventsQuery();
 
   const { user } = useUser();
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
 
+  const filterEnded = (event: { ends_at: string }) =>
+    !isPast(new Date(event.ends_at));
+  const filterCanceled = (event: { canceled: boolean }) => !event.canceled;
+
+  const filteredEvents = data.dashboardEvents.filter(
+    (event) =>
+      (!hideCanceled || filterCanceled(event)) &&
+      (!hideEnded || filterEnded(event)),
+  );
+
   return (
     <VStack data-cy="events-dashboard">
-      <Flex
-        w="full"
-        justify="space-between"
-        alignItems={{ base: '', sm: 'center' }}
-        flexDirection={{ base: 'column', sm: 'row' }}
+      <Grid
+        width="100%"
+        alignItems="center"
+        marginBlock="2em"
+        gap="2em"
+        gridTemplateColumns=".5fr 1fr 1fr 8em"
       >
         <Heading id="page-heading">Events</Heading>
-        <ShowCanceledSwitch
-          defaultChecked={showCanceled}
-          setShowCanceled={setShowCanceled}
-        />
+        <Flex
+          alignItems="center"
+          justifyContent={{ base: 'space-between', md: 'revert' }}
+          gridRow={{ base: '2', lg: '1' }}
+          gridColumn={{ base: '1 / -1', md: '1 / 3', lg: '2 / 3' }}
+        >
+          <FilterEvents
+            defaultChecked={hideEnded}
+            setFilterEvent={setHideEnded}
+            filterLabel="Hide events that have ended"
+            id={'hide-ended-events'}
+          />
+        </Flex>
+        <Flex
+          alignItems="center"
+          justifyContent={{ base: 'space-between', md: 'revert' }}
+          gridRow={{ base: '3', md: '2', lg: '1' }}
+          gridColumn={{ base: '1 / -1', md: '-3 / -1', lg: '3 / 4' }}
+          marginLeft={{ base: 'revert', md: 'auto', lg: 'revert' }}
+        >
+          <FilterEvents
+            defaultChecked={hideCanceled}
+            setFilterEvent={setHideCanceled}
+            filterLabel="Hide canceled events"
+            id={'hide-canceled-events'}
+          />
+        </Flex>
         {!!user?.admined_chapters.length && (
           <LinkButton
             data-cy="new-event"
             href="/dashboard/events/new"
             colorScheme={'blue'}
+            gridColumn="-2 / -1"
           >
             Add new
             <Text srOnly as="span">
@@ -78,7 +122,7 @@ export const EventsPage: NextPageWithLayout = () => {
             </Text>
           </LinkButton>
         )}
-      </Flex>
+      </Grid>
       <Box
         display={{ base: 'none', lg: 'block' }}
         width={'100%'}
@@ -86,7 +130,7 @@ export const EventsPage: NextPageWithLayout = () => {
       >
         <DataTable
           tableProps={{ table: { 'aria-labelledby': 'page-heading' } }}
-          data={data.dashboardEvents}
+          data={filteredEvents}
           keys={
             [
               'status',
@@ -134,7 +178,17 @@ export const EventsPage: NextPageWithLayout = () => {
                 </LinkButton>
               </VStack>
             ),
-            'invite only': (event) => (event.invite_only ? 'Yes' : 'No'),
+            'invite only': (event) =>
+              event.invite_only ? (
+                <HStack>
+                  <Tooltip label="Invite only">
+                    <LockIcon />
+                  </Tooltip>
+                  <Text>Yes</Text>
+                </HStack>
+              ) : (
+                <Text>No</Text>
+              ),
             venue: (event) => (
               <Text data-cy="venue">
                 {isPhysical(event.venue_type)
@@ -168,7 +222,7 @@ export const EventsPage: NextPageWithLayout = () => {
       </Box>
 
       <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-        {data.dashboardEvents.map(
+        {filteredEvents.map(
           (
             {
               canceled,
@@ -189,7 +243,7 @@ export const EventsPage: NextPageWithLayout = () => {
               tableProps={{
                 table: { 'aria-labelledby': 'page-heading' },
               }}
-              data={[data.dashboardEvents[index]]}
+              data={[filteredEvents[index]]}
               keys={['type', 'action'] as const}
               showHeader={false}
               mapper={{

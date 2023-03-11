@@ -8,6 +8,7 @@ import {
   Resolver,
   Query,
 } from 'type-graphql';
+import { AttendanceNames } from '../../../../common/attendance';
 import { Permission } from '../../../../common/permissions';
 import { ResolverCtx } from '../../common-types/gql';
 
@@ -114,7 +115,7 @@ export class VenueResolver {
               venue_id: id,
             },
             subscribed: true,
-            attendance: { name: 'yes' },
+            attendance: { name: AttendanceNames.confirmed },
           },
         },
       },
@@ -128,7 +129,7 @@ export class VenueResolver {
               venue_id: id,
             },
             subscribed: true,
-            attendance: { name: 'yes' },
+            attendance: { name: AttendanceNames.confirmed },
           },
         },
       },

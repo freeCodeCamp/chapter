@@ -13,6 +13,7 @@ import {
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
+import { Input } from '../../../../components/Form/Input';
 import EventChapterSelect from './EventChapterSelect';
 import EventDatesForm from './EventDatesForm';
 import EventCancelButton from './EventCancelButton';
@@ -25,7 +26,13 @@ import {
   resolver,
   IEventData,
 } from './EventFormUtils';
-import { Input } from 'components/Form/Input';
+
+const minCapacity = (event?: IEventData) => {
+  return (
+    event?.event_users?.filter(({ attendance: { name } }) => name === 'yes')
+      .length ?? 0
+  );
+};
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
@@ -104,13 +111,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       onSubmit,
     });
 
-  const minCapacity = (event?: IEventData) => {
-    return (
-      event?.event_users?.filter(({ attendance: { name } }) => name === 'yes')
-        .length ?? 0
-    );
-  };
-
   return (
     <FormProvider {...formMethods}>
       <Form
@@ -166,7 +166,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
             isDisabled={loading}
             error={errors['capacity']?.message}
             {...register('capacity', { valueAsNumber: true })}
-            min={minCapacity()}
+            min={minCapacity(data)}
           />
           <Checkbox
             data-cy="invite-only-checkbox"

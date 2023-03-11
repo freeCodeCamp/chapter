@@ -53,7 +53,6 @@ export interface Field {
   placeholder?: string;
   type: string;
   isRequired: boolean;
-  min?: (event?: any) => number;
 }
 
 export type IEventData = Pick<
@@ -187,18 +186,6 @@ export const fields: Field[] = [
     label: 'Event Image Url',
     placeholder: 'https://www.example.image/url',
     isRequired: false,
-  },
-  {
-    key: 'capacity',
-    type: 'number',
-    label: 'Capacity',
-    isRequired: true,
-    min: (event?: IEventData) => {
-      return (
-        event?.event_users?.filter(({ attendance: { name } }) => name === 'yes')
-          .length ?? 0
-      );
-    },
   },
 ];
 

@@ -13,6 +13,7 @@ import {
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
+import { Input } from '../../../../components/Form/Input';
 import EventChapterSelect from './EventChapterSelect';
 import EventDatesForm from './EventDatesForm';
 import EventCancelButton from './EventCancelButton';
@@ -23,7 +24,15 @@ import {
   fields,
   EventFormData,
   resolver,
+  IEventData,
 } from './EventFormUtils';
+
+const minCapacity = (event?: IEventData) => {
+  return (
+    event?.event_users?.filter(({ attendance: { name } }) => name === 'yes')
+      .length ?? 0
+  );
+};
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const {
@@ -119,7 +128,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         ) : (
           <EventChapterSelect loading={loading} />
         )}
-        {fields.map(({ isRequired, key, label, placeholder, type, min }) => {
+        {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
           const error = errors[key]?.message;
           return (
@@ -131,9 +140,6 @@ const EventForm: React.FC<EventFormProps> = (props) => {
               isRequired={isRequired}
               isDisabled={loading}
               error={error}
-              {...(min && {
-                min: min(data),
-              })}
               {...register(key, {
                 ...(type === 'number' && { valueAsNumber: true }),
               })}
@@ -148,14 +154,29 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           startAt={defaultValues.start_at}
         />
 
-        <Checkbox
-          data-cy="invite-only-checkbox"
-          isChecked={inviteOnly}
-          disabled={loading}
-          {...register('invite_only')}
-        >
-          Invite only
-        </Checkbox>
+        <Grid as="fieldset" width="100%" gap="4">
+          <Text srOnly as="legend">
+            Attendee restrictions
+          </Text>
+          <Input
+            key="capacity"
+            type="number"
+            label="Capacity"
+            isRequired={true}
+            isDisabled={loading}
+            error={errors['capacity']?.message}
+            {...register('capacity', { valueAsNumber: true })}
+            min={minCapacity(data)}
+          />
+          <Checkbox
+            data-cy="invite-only-checkbox"
+            isChecked={inviteOnly}
+            disabled={loading}
+            {...register('invite_only')}
+          >
+            Invite only
+          </Checkbox>
+        </Grid>
 
         <EventVenueForm
           venueId={defaultValues.venue_id}

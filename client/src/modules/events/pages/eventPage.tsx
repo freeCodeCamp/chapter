@@ -45,6 +45,7 @@ import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
 import { CHAPTER, CHAPTER_USER } from '../../chapters/graphql/queries';
+import { AttendanceNames } from '../../../../../common/attendance';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -101,7 +102,8 @@ export const EventPage: NextPage = () => {
   // we define everything before it's used.
   function isAlreadyAttending(attencanceStatus: string | undefined) {
     const alreadyAttending =
-      attencanceStatus === 'yes' || attencanceStatus === 'waitlist';
+      attencanceStatus === AttendanceNames.confirmed ||
+      attencanceStatus === AttendanceNames.waitlist;
     if (alreadyAttending) {
       addAlert({ title: 'Already attending', status: 'info' });
       return true;
@@ -131,7 +133,7 @@ export const EventPage: NextPage = () => {
 
       addAlert({
         title:
-          attendance === 'yes'
+          attendance === AttendanceNames.confirmed
             ? 'You are attending this event'
             : 'You are on the waitlist',
         status: 'success',
@@ -294,10 +296,10 @@ export const EventPage: NextPage = () => {
   }
 
   const attendees = data.event.event_users.filter(
-    ({ attendance }) => attendance.name === 'yes',
+    ({ attendance }) => attendance.name === AttendanceNames.confirmed,
   );
   const waitlist = data.event.event_users.filter(
-    ({ attendance }) => attendance.name === 'waitlist',
+    ({ attendance }) => attendance.name === AttendanceNames.waitlist,
   );
 
   const startAt = formatDate(data.event.start_at);
@@ -355,21 +357,21 @@ export const EventPage: NextPage = () => {
           Ending: {endsAt}
         </Text>
         <SimpleGrid columns={2} gap={5} alignItems="center">
-          {!attendanceStatus || attendanceStatus === 'no' ? (
+          {!attendanceStatus ||
+          attendanceStatus === AttendanceNames.canceled ? (
             <Button
               colorScheme="blue"
               data-cy="attend-button"
-              gridColumnStart="span 2"
               isLoading={loadingAttend}
               onClick={() => tryToAttend()}
               paddingBlock="1"
               paddingInline="2"
             >
-              {data.event.invite_only ? 'Request Invite' : 'Attend Event'}
+              {data.event.invite_only ? 'Request' : 'Attend'}
             </Button>
           ) : (
             <>
-              {attendanceStatus === 'waitlist' ? (
+              {attendanceStatus === AttendanceNames.waitlist ? (
                 <Text fontSize="md" fontWeight="500">
                   {data.event.invite_only
                     ? 'Event owner will soon confirm your request'

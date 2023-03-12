@@ -71,6 +71,7 @@ import {
   hasVenueTypeChanged,
 } from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
+import { AttendanceNames } from '../../../../common/attendance';
 import { EventInputs } from './inputs';
 
 const TBD_VENUE_ID = 0;
@@ -222,10 +223,12 @@ type EventAttendanceName = events & {
 };
 const getNameForNewAttendance = (event: EventAttendanceName) => {
   const going = event.event_users.filter(
-    ({ attendance }) => attendance.name === 'yes',
+    ({ attendance }) => attendance.name === AttendanceNames.confirmed,
   );
   const waitlist = going.length >= event.capacity;
-  return event.invite_only || waitlist ? 'waitlist' : 'yes';
+  return event.invite_only || waitlist
+    ? AttendanceNames.waitlist
+    : AttendanceNames.confirmed;
 };
 
 @Resolver()
@@ -362,7 +365,12 @@ export class EventResolver {
 
     let eventUser: EventUserWithRelations;
     if (oldEventUser) {
-      if (['yes', 'waitlist'].includes(oldEventUser.attendance.name)) {
+      if (
+        [
+          AttendanceNames.confirmed.valueOf(),
+          AttendanceNames.waitlist.valueOf(),
+        ].includes(oldEventUser.attendance.name)
+      ) {
         throw Error('Already attending');
       }
 
@@ -391,7 +399,7 @@ export class EventResolver {
 
       // NOTE: this relies on there being an event_user record, so must follow
       // that.
-      if (newAttendanceName !== 'waitlist') {
+      if (newAttendanceName !== AttendanceNames.waitlist) {
         await createReminder({
           eventId,
           remindAt: sub(event.start_at, { days: 1 }),
@@ -438,7 +446,7 @@ export class EventResolver {
         },
       },
     });
-    if (eventUser.attendance.name === 'no') {
+    if (eventUser.attendance.name === AttendanceNames.canceled) {
       throw Error('Attendance is already canceled');
     }
 
@@ -455,7 +463,7 @@ export class EventResolver {
 
     const updatedEventUser = await prisma.event_users.update({
       data: {
-        attendance: { connect: { name: 'no' } },
+        attendance: { connect: { name: AttendanceNames.canceled } },
         subscribed: false,
         ...(eventUser.event_reminder && { event_reminder: { delete: true } }),
       },
@@ -507,7 +515,7 @@ export class EventResolver {
     @Arg('userId', () => Int) userId: number,
   ): Promise<EventUserWithRelations> {
     const updatedUser = await prisma.event_users.update({
-      data: { attendance: { connect: { name: 'yes' } } },
+      data: { attendance: { connect: { name: AttendanceNames.confirmed } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
@@ -550,7 +558,7 @@ export class EventResolver {
     @Arg('userId', () => Int) userId: number,
   ): Promise<EventUserWithRelations> {
     const updatedUser = await prisma.event_users.update({
-      data: { attendance: { connect: { name: 'waitlist' } } },
+      data: { attendance: { connect: { name: AttendanceNames.waitlist } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
       include: { event: { include: { chapter: true } }, ...eventUserIncludes },
     });
@@ -650,7 +658,7 @@ export class EventResolver {
     const eventUserData: Prisma.event_usersCreateWithoutEventInput = {
       user: { connect: { id: ctx.user.id } },
       event_role: { connect: { name: 'member' } },
-      attendance: { connect: { name: 'yes' } },
+      attendance: { connect: { name: AttendanceNames.confirmed } },
       subscribed: true,
     };
 
@@ -741,8 +749,9 @@ export class EventResolver {
     });
 
     if (
-      event.event_users.filter(({ attendance: { name } }) => name === 'yes')
-        .length > data.capacity
+      event.event_users.filter(
+        ({ attendance: { name } }) => name === AttendanceNames.confirmed,
+      ).length > data.capacity
     )
       throw Error(
         'Capacity must be higher or equal to the number of confirmed attendees',
@@ -832,7 +841,7 @@ export class EventResolver {
           include: { user: true },
           where: {
             subscribed: true,
-            attendance: { name: { not: 'no' } },
+            attendance: { name: { not: AttendanceNames.canceled } },
           },
         },
       },

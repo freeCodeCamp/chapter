@@ -1,5 +1,6 @@
 import { sub } from 'date-fns';
 
+import { AttendanceNames } from '../../../../common/attendance';
 import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
 
@@ -13,7 +14,11 @@ const createAttendance = async (eventIds: number[], userIds: number[]) => {
       const on_waitlist = i < numberWaiting;
       const canceled = !on_waitlist && i < numberWaiting + numberCanceled;
       const subscribed = true; // TODO: have some unsubscribed users
-      const attendanceName = on_waitlist ? 'waitlist' : canceled ? 'no' : 'yes';
+      const attendanceName = on_waitlist
+        ? AttendanceNames.waitlist
+        : canceled
+        ? AttendanceNames.canceled
+        : AttendanceNames.confirmed;
 
       await prisma.event_users.create({
         data: {
@@ -33,7 +38,7 @@ const createAttendance = async (eventIds: number[], userIds: number[]) => {
         },
       });
 
-      if (subscribed && attendanceName === 'yes') {
+      if (subscribed && attendanceName === AttendanceNames.confirmed) {
         const event = await prisma.events.findUniqueOrThrow({
           where: { id: eventId },
         });

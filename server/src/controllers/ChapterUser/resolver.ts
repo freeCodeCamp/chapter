@@ -21,6 +21,7 @@ import {
 } from '../../graphql-types';
 import { Permission } from '../../../../common/permissions';
 import { ChapterRoles } from '../../../../common/roles';
+import { AttendanceNames } from '../../../../common/attendance';
 import { getInstanceRoleName } from '../../util/chapterAdministrator';
 import { canBanOther } from '../../util/chapterBans';
 import { updateWaitlistForUserRemoval } from '../../util/waitlist';
@@ -73,7 +74,7 @@ async function removeUserFromEventsInChapter({
   });
 
   const eventsAttended = eventUsers
-    .filter(({ attendance: { name } }) => name === 'yes')
+    .filter(({ attendance: { name } }) => name === AttendanceNames.confirmed)
     .map(({ event }) => event);
 
   await Promise.all(

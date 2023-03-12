@@ -27,6 +27,7 @@ import {
   MutationDeleteAttendeeArgs,
   MutationMoveAttendeeToWaitlistArgs,
 } from '../../../../generated/graphql';
+import { AttendanceNames } from '../../../../../../common/attendance';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
@@ -110,7 +111,7 @@ export const EventPage: NextPageWithLayout = () => {
   const userLists = [
     {
       title: 'Attendees',
-      statusFilter: 'yes',
+      statusFilter: AttendanceNames.confirmed,
       action: [
         { title: 'Remove', onClick: onRemove, colorScheme: 'red' },
         {
@@ -122,14 +123,14 @@ export const EventPage: NextPageWithLayout = () => {
     },
     {
       title: 'Waitlist',
-      statusFilter: 'waitlist',
+      statusFilter: AttendanceNames.waitlist,
       action: [
         { title: 'Confirm', onClick: onConfirmAttendee, colorScheme: 'blue' },
       ],
     },
     {
       title: 'Canceled',
-      statusFilter: 'no',
+      statusFilter: AttendanceNames.canceled,
       action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
   ];
@@ -318,9 +319,9 @@ export const EventPage: NextPageWithLayout = () => {
                     <DataTable
                       title={
                         {
-                          yes: 'Attendee',
-                          waitlist: 'On waitlist',
-                          no: 'Canceled',
+                          [AttendanceNames.confirmed]: 'Attendee',
+                          [AttendanceNames.waitlist]: 'On waitlist',
+                          [AttendanceNames.canceled]: 'Canceled',
                         }[attendance.name]
                       }
                       data={[users[index]]}

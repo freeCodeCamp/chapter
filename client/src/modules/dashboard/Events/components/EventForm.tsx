@@ -10,6 +10,7 @@ import {
   VenueType,
 } from '../../../../generated/graphql';
 
+import { AttendanceNames } from '../../../../../../common/attendance';
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
@@ -29,8 +30,9 @@ import {
 
 const minCapacity = (event?: IEventData) => {
   return (
-    event?.event_users?.filter(({ attendance: { name } }) => name === 'yes')
-      .length ?? 0
+    event?.event_users?.filter(
+      ({ attendance: { name } }) => name === AttendanceNames.confirmed,
+    ).length ?? 0
   );
 };
 
@@ -82,8 +84,9 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       invite_only: data.invite_only,
       chapter_id: initialChapterId,
       attendees:
-        data.event_users?.filter(({ attendance: { name } }) => name === 'yes')
-          .length ?? 0,
+        data.event_users?.filter(
+          ({ attendance: { name } }) => name === AttendanceNames.confirmed,
+        ).length ?? 0,
     };
   }, []);
 

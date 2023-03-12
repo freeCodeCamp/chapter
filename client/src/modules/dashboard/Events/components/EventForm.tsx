@@ -192,13 +192,18 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         {data?.canceled && <Text color="red.500">Event canceled</Text>}
 
         {formType === 'new' && (
-          <Checkbox
-            defaultChecked={true}
-            disabled={loading}
-            {...register('attend_event')}
-          >
-            Attend Event
-          </Checkbox>
+          <Grid as="fieldset" width="100%">
+            <Text srOnly as="legend">
+              Your interaction with the event
+            </Text>
+            <Checkbox
+              defaultChecked={true}
+              disabled={loading}
+              {...register('attend_event')}
+            >
+              Attend Event
+            </Checkbox>
+          </Grid>
         )}
 
         <Grid

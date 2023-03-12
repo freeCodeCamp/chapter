@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { sub } from 'date-fns';
+import { AttendanceNames } from '../../../common/attendance';
 
 import { prisma } from '../prisma';
 
@@ -24,7 +25,7 @@ export const updateWaitlistForUserRemoval = async ({
   // user was removed, we have to filter them out here.
   const waitlist = event_users.filter(
     ({ attendance: { name }, user_id }) =>
-      user_id !== userId && name === 'waitlist',
+      user_id !== userId && name === AttendanceNames.waitlist,
   );
   if (!waitlist.length) return;
 
@@ -35,7 +36,7 @@ export const updateWaitlistForUserRemoval = async ({
 
   const [newAttendee] = waitlist;
   await prisma.event_users.update({
-    data: { attendance: { connect: { name: 'yes' } } },
+    data: { attendance: { connect: { name: AttendanceNames.confirmed } } },
     where: {
       user_id_event_id: {
         user_id: newAttendee.user_id,

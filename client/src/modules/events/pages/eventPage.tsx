@@ -9,6 +9,7 @@ import {
   List,
   ListIcon,
   ListItem,
+  SimpleGrid,
   Spinner,
   Text,
   Tooltip,
@@ -355,72 +356,77 @@ export const EventPage: NextPage = () => {
         <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
           Ending: {endsAt}
         </Text>
-        {!attendanceStatus || attendanceStatus === AttendanceNames.canceled ? (
-          <Button
-            colorScheme="blue"
-            data-cy="attend-button"
-            isLoading={loadingAttend}
-            onClick={() => tryToAttend()}
-            paddingBlock="1"
-            paddingInline="2"
-          >
-            {data.event.invite_only ? 'Request' : 'Attend'}
-          </Button>
-        ) : (
-          <HStack>
-            {attendanceStatus === AttendanceNames.waitlist ? (
-              <Text fontSize="md" fontWeight="500">
-                {data.event.invite_only
-                  ? 'Event owner will soon confirm your request'
-                  : "You're on waitlist for this event"}
-              </Text>
-            ) : (
-              <Text data-cy="attend-success">You are attending this event</Text>
-            )}
+        <SimpleGrid columns={2} gap={5} alignItems="center">
+          {!attendanceStatus ||
+          attendanceStatus === AttendanceNames.canceled ? (
             <Button
-              isLoading={loadingCancel}
-              onClick={onCancelAttendance}
+              colorScheme="blue"
+              data-cy="attend-button"
+              isLoading={loadingAttend}
+              onClick={() => tryToAttend()}
               paddingBlock="1"
               paddingInline="2"
             >
-              Cancel
+              {data.event.invite_only ? 'Request Invite' : 'Attend Event'}
             </Button>
-          </HStack>
-        )}
-        {userEvent && (
-          <HStack>
-            {userEvent.subscribed ? (
-              <>
-                <Text fontSize={'md'} fontWeight={'500'}>
-                  You are subscribed to event updates
+          ) : (
+            <>
+              {attendanceStatus === AttendanceNames.waitlist ? (
+                <Text fontSize="md" fontWeight="500">
+                  {data.event.invite_only
+                    ? 'Event owner will soon confirm your request'
+                    : "You're on waitlist for this event"}
                 </Text>
-                <Button
-                  isLoading={loadingUnsubscribe}
-                  onClick={onUnsubscribeFromEvent}
-                  paddingBlock="1"
-                  paddingInline="2"
-                >
-                  Unsubscribe
-                </Button>
-              </>
-            ) : (
-              <>
-                <Text fontSize={'md'} fontWeight={'500'}>
-                  Not subscribed to event updates
+              ) : (
+                <Text data-cy="attend-success">
+                  You are attending this event
                 </Text>
-                <Button
-                  colorScheme="blue"
-                  isLoading={loadingSubscribe}
-                  onClick={onSubscribeToEvent}
-                  paddingBlock="1"
-                  paddingInline="2"
-                >
-                  Subscribe
-                </Button>
-              </>
-            )}
-          </HStack>
-        )}
+              )}
+              <Button
+                isLoading={loadingCancel}
+                onClick={onCancelAttendance}
+                paddingBlock="1"
+                paddingInline="2"
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+          {userEvent && (
+            <>
+              {userEvent.subscribed ? (
+                <>
+                  <Text fontSize={'md'} fontWeight={'500'}>
+                    You are subscribed to event updates
+                  </Text>
+                  <Button
+                    isLoading={loadingUnsubscribe}
+                    onClick={onUnsubscribeFromEvent}
+                    paddingBlock="1"
+                    paddingInline="2"
+                  >
+                    Unsubscribe
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Text fontSize={'md'} fontWeight={'500'}>
+                    Not subscribed to event updates
+                  </Text>
+                  <Button
+                    colorScheme="blue"
+                    isLoading={loadingSubscribe}
+                    onClick={onSubscribeToEvent}
+                    paddingBlock="1"
+                    paddingInline="2"
+                  >
+                    Subscribe
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+        </SimpleGrid>
 
         {data.event.sponsors.length ? (
           <SponsorsCard sponsors={data.event.sponsors} />

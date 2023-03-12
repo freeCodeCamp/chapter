@@ -139,7 +139,7 @@ describe('event page', () => {
           cy.findByText(users.testUser.name).should('not.exist');
         });
 
-      cy.findByRole('button', { name: 'Attend' }).click();
+      cy.findByRole('button', { name: 'Attend Event' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.get('@attendees').within(() => {
@@ -159,7 +159,7 @@ describe('event page', () => {
       cy.login(users.testUser.email);
 
       // Attending is required for managing event subscription
-      cy.findByRole('button', { name: 'Attend' }).click();
+      cy.findByRole('button', { name: 'Attend Event' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.contains(/You are subscribed/);
@@ -207,7 +207,7 @@ describe('event page', () => {
     it('should email the chapter administrator when a user attends', () => {
       cy.login(users.testUser.email);
 
-      cy.findByRole('button', { name: 'Attend' }).click();
+      cy.findByRole('button', { name: 'Attend Event' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // Two emails are send when user attends - one email to the admin, another to the Attendee.
@@ -243,11 +243,11 @@ describe('event page', () => {
           cy.findByText(users.testUser.name).should('not.exist');
         });
 
-      cy.findByRole('button', { name: 'Request' }).click();
+      cy.findByRole('button', { name: 'Request Invite' }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.contains('Event owner will soon confirm your request');
-      cy.findByRole('button', { name: 'Request' }).should('not.exist');
+      cy.findByRole('button', { name: 'Request Invite' }).should('not.exist');
 
       cy.get('@attendees').within(() => {
         cy.findByText(users.testUser.name).should('not.exist');
@@ -266,7 +266,7 @@ describe('event page', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.contains('You canceled your attendance');
-      cy.findByRole('button', { name: 'Request' }).should('be.visible');
+      cy.findByRole('button', { name: 'Request Invite' }).should('be.visible');
 
       cy.task<EventUsers>('getEventUsers', inviteOnlyEventId).then(
         (eventUsers) => {

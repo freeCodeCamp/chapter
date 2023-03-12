@@ -367,7 +367,7 @@ export const EventPage: NextPage = () => {
               paddingBlock="1"
               paddingInline="2"
             >
-              {data.event.invite_only ? 'Request' : 'Attend'}
+              {data.event.invite_only ? 'Request Invite' : 'Attend Event'}
             </Button>
           ) : (
             <>

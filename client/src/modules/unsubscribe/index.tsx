@@ -48,7 +48,7 @@ const UnsubscribePage: NextPage = () => {
             <HStack marginTop="1em">
               <fieldset>
                 <Text as="legend" srOnly>
-                  interacting with {data}&apos;s subscription
+                  interacting with subscription
                 </Text>
                 <Checkbox
                   {...register('confirm' as const, { required: true })}

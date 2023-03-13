@@ -45,13 +45,18 @@ const UnsubscribePage: NextPage = () => {
         <Heading>Unsubscribing</Heading>
         {!loading && !data && !error ? (
           <form onSubmit={handleSubmit(onUnsubscribe)}>
-            <HStack>
-              <Checkbox
-                {...register('confirm' as const, { required: true })}
-                value="confirm"
-              >
-                Confirm unsubscribing
-              </Checkbox>
+            <HStack marginTop="1em">
+              <fieldset>
+                <Text as="legend" srOnly>
+                  interacting with subscription
+                </Text>
+                <Checkbox
+                  {...register('confirm' as const, { required: true })}
+                  value="confirm"
+                >
+                  Confirm unsubscribing
+                </Checkbox>
+              </fieldset>
               <Button type="submit" isDisabled={!confirmed}>
                 Submit
               </Button>

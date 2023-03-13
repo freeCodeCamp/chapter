@@ -13,9 +13,11 @@ datasource db {
 
 model instance_settings {
   id                    Int    @id
+  description           String?
   policy_url            String?
   terms_of_services_url String?
   code_of_conduct_url   String?
+  font_style            String?
 }
 
 model chapters {

@@ -365,20 +365,6 @@ export type InstanceRolePermission = {
   instance_permission: InstancePermission;
 };
 
-export type InstanceSettings = {
-  __typename?: 'InstanceSettings';
-  code_of_conduct_url?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
-  policy_url?: Maybe<Scalars['String']>;
-  terms_of_services_url?: Maybe<Scalars['String']>;
-};
-
-export type InstanceSettingsInputs = {
-  code_of_conduct_url?: InputMaybe<Scalars['String']>;
-  policy_url?: InputMaybe<Scalars['String']>;
-  terms_of_services_url?: InputMaybe<Scalars['String']>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   attendEvent: EventUserWithRelations;
@@ -412,7 +398,6 @@ export type Mutation = {
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
   updateEvent: Event;
-  updateInstanceSettings: InstanceSettings;
   updateMe: User;
   updateSponsor: Sponsor;
   updateVenue: Venue;
@@ -544,10 +529,6 @@ export type MutationUpdateEventArgs = {
   id: Scalars['Int'];
 };
 
-export type MutationUpdateInstanceSettingsArgs = {
-  data: InstanceSettingsInputs;
-};
-
 export type MutationUpdateMeArgs = {
   data: UpdateUserInputs;
 };
@@ -586,7 +567,6 @@ export type Query = {
   event?: Maybe<EventWithRelationsWithEventUser>;
   eventRoles: Array<EventRole>;
   instanceRoles: Array<InstanceRole>;
-  instanceSettings: InstanceSettings;
   me?: Maybe<UserWithPermissions>;
   paginatedEventsWithTotal: PaginatedEventsWithChapters;
   sponsorWithEvents: SponsorWithEvents;
@@ -1470,33 +1450,6 @@ export type ChapterVenuesQueryVariables = Exact<{
 export type ChapterVenuesQuery = {
   __typename?: 'Query';
   chapterVenues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
-};
-
-export type UpdateInstanceSettingsMutationVariables = Exact<{
-  data: InstanceSettingsInputs;
-}>;
-
-export type UpdateInstanceSettingsMutation = {
-  __typename?: 'Mutation';
-  updateInstanceSettings: {
-    __typename?: 'InstanceSettings';
-    policy_url?: string | null;
-    terms_of_services_url?: string | null;
-    code_of_conduct_url?: string | null;
-  };
-};
-
-export type InstanceSettingsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InstanceSettingsQuery = {
-  __typename?: 'Query';
-  instanceSettings: {
-    __typename?: 'InstanceSettings';
-    id: number;
-    policy_url?: string | null;
-    terms_of_services_url?: string | null;
-    code_of_conduct_url?: string | null;
-  };
 };
 
 export type CreateSponsorMutationVariables = Exact<{
@@ -4144,118 +4097,6 @@ export type ChapterVenuesLazyQueryHookResult = ReturnType<
 export type ChapterVenuesQueryResult = Apollo.QueryResult<
   ChapterVenuesQuery,
   ChapterVenuesQueryVariables
->;
-export const UpdateInstanceSettingsDocument = gql`
-  mutation updateInstanceSettings($data: InstanceSettingsInputs!) {
-    updateInstanceSettings(data: $data) {
-      policy_url
-      terms_of_services_url
-      code_of_conduct_url
-    }
-  }
-`;
-export type UpdateInstanceSettingsMutationFn = Apollo.MutationFunction<
-  UpdateInstanceSettingsMutation,
-  UpdateInstanceSettingsMutationVariables
->;
-
-/**
- * __useUpdateInstanceSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateInstanceSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInstanceSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateInstanceSettingsMutation, { data, loading, error }] = useUpdateInstanceSettingsMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useUpdateInstanceSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    UpdateInstanceSettingsMutation,
-    UpdateInstanceSettingsMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    UpdateInstanceSettingsMutation,
-    UpdateInstanceSettingsMutationVariables
-  >(UpdateInstanceSettingsDocument, options);
-}
-export type UpdateInstanceSettingsMutationHookResult = ReturnType<
-  typeof useUpdateInstanceSettingsMutation
->;
-export type UpdateInstanceSettingsMutationResult =
-  Apollo.MutationResult<UpdateInstanceSettingsMutation>;
-export type UpdateInstanceSettingsMutationOptions = Apollo.BaseMutationOptions<
-  UpdateInstanceSettingsMutation,
-  UpdateInstanceSettingsMutationVariables
->;
-export const InstanceSettingsDocument = gql`
-  query instanceSettings {
-    instanceSettings {
-      id
-      policy_url
-      terms_of_services_url
-      code_of_conduct_url
-    }
-  }
-`;
-
-/**
- * __useInstanceSettingsQuery__
- *
- * To run a query within a React component, call `useInstanceSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useInstanceSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInstanceSettingsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInstanceSettingsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    InstanceSettingsQuery,
-    InstanceSettingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<InstanceSettingsQuery, InstanceSettingsQueryVariables>(
-    InstanceSettingsDocument,
-    options,
-  );
-}
-export function useInstanceSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    InstanceSettingsQuery,
-    InstanceSettingsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    InstanceSettingsQuery,
-    InstanceSettingsQueryVariables
-  >(InstanceSettingsDocument, options);
-}
-export type InstanceSettingsQueryHookResult = ReturnType<
-  typeof useInstanceSettingsQuery
->;
-export type InstanceSettingsLazyQueryHookResult = ReturnType<
-  typeof useInstanceSettingsLazyQuery
->;
-export type InstanceSettingsQueryResult = Apollo.QueryResult<
-  InstanceSettingsQuery,
-  InstanceSettingsQueryVariables
 >;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {

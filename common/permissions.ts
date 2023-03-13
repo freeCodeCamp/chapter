@@ -28,8 +28,6 @@ export enum InstancePermission {
   UserInstanceRoleChange = 'user-instance-role-change',
   GoogleAuthenticate = 'google-authenticate',
   UsersView = 'users-view',
-  SettingView = 'setting-view',
-  SettingManage = 'setting-manage',
 }
 
 // Ideally this would be a new enum, but TS does not (to my knowledge) support

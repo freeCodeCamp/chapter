@@ -30,11 +30,6 @@ const links = [
     link: '/dashboard/calendar',
     requiredPermission: Permission.GoogleAuthenticate,
   },
-  {
-    text: 'Settings',
-    link: '/dashboard/instance-settings',
-    requiredPermission: Permission.SettingView,
-  },
 ];
 const scrollWidth = 150;
 

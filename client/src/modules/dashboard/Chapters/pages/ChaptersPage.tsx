@@ -5,9 +5,12 @@ import {
   Heading,
   HStack,
   Input,
+  InputGroup,
+  InputLeftElement,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
 import { DataTable } from 'chakra-data-table';
 import { LinkButton } from 'chakra-next-link';
 import React, { ReactElement, useState } from 'react';
@@ -76,17 +79,19 @@ export const ChaptersPage: NextPageWithLayout = () => {
               Type the name of chapter that you are looking for in the filter
               chapter input to filter out other chapters
             </Text>
-            <Input
-              width="full"
-              type="text"
-              backgroundColor="gray.50"
-              placeholder="Filter Chapter"
-              value={filterChapter}
-              gridRowStart="2"
-              gridColumnStart="1"
-              gridColumnEnd="-1"
-              onChange={(e) => setFilterChapter(e.target.value)}
-            />
+            <InputGroup gridRowStart="2" gridColumnStart="1" gridColumnEnd="-1">
+              <InputLeftElement pointerEvents="none">
+                <SearchIcon />
+              </InputLeftElement>
+              <Input
+                width="full"
+                type="text"
+                backgroundColor="gray.50"
+                placeholder="Filter Chapter"
+                value={filterChapter}
+                onChange={(e) => setFilterChapter(e.target.value)}
+              />
+            </InputGroup>
           </>
         )}
         {hasPermissionToCreateChapter && (

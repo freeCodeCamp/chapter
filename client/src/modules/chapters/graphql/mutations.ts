@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const joinChapter = gql`
-  mutation joinChapter($chapterId: Int!) {
-    joinChapter(chapterId: $chapterId) {
+  mutation joinChapter($chapterId: Int!, $subscribe: Boolean) {
+    joinChapter(chapterId: $chapterId, subscribe: $subscribe) {
       chapter_role {
         name
       }

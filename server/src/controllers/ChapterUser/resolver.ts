@@ -190,6 +190,8 @@ export class ChapterUserResolver {
   @Mutation(() => ChapterUserWithRole)
   async joinChapter(
     @Arg('chapterId', () => Int) chapterId: number,
+    @Arg('subscribe', () => Boolean, { nullable: true })
+    subscribe: boolean | undefined,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<ChapterUserWithRole> {
     try {
@@ -198,7 +200,7 @@ export class ChapterUserResolver {
           user: { connect: { id: ctx.user.id } },
           chapter: { connect: { id: chapterId } },
           chapter_role: { connect: { name: 'member' } },
-          subscribed: ctx.user.auto_subscribe,
+          subscribed: subscribe ?? ctx.user.auto_subscribe,
           joined_date: new Date(),
         },
         include: chapterUsersInclude,

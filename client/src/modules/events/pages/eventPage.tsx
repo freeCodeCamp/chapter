@@ -21,10 +21,11 @@ import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
+import Checkbox from '../../../components/Checkbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';
@@ -80,6 +81,15 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
+  const [subscribe, setSubscribe] = useState(user?.auto_subscribe ?? false);
+  const checkboxRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (checkboxRef && checkboxRef.current) {
+      console.log('checkbox change');
+      setSubscribe(checkboxRef.current.checked);
+    }
+  }, [checkboxRef, checkboxRef?.current?.checked]);
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
@@ -111,14 +121,14 @@ export const EventPage: NextPage = () => {
     return false;
   }
 
-  async function onAttend() {
+  async function onAttend(subscribeToChapter?: boolean) {
     if (!chapterId) {
       addAlert({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
       await joinChapter({
-        variables: { chapterId },
+        variables: { chapterId, subscribe: subscribeToChapter },
         refetchQueries: [
           ...refetch.refetchQueries,
           { query: CHAPTER, variables: { chapterId } },
@@ -177,28 +187,55 @@ export const EventPage: NextPage = () => {
   );
 
   async function tryToAttend(options?: { invited?: boolean }) {
+    const chapterUser = user?.user_chapters.find(
+      ({ chapter_id }) => chapter_id == chapterId,
+    );
+    const defaultChecked = user?.auto_subscribe ?? false;
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
           body: (
             <>
-              {user
-                ? 'Would you like to attend?'
-                : 'Would you like to log in and attend this event?'}
-              <AttendInfo />
+              {user ? (
+                <>
+                  Would you like to attend?
+                  {!chapterUser && (
+                    <>
+                      <AttendInfo />
+                      <Checkbox
+                        defaultChecked={defaultChecked}
+                        ref={checkboxRef}
+                        label="Send me notifications about new events"
+                      />
+                    </>
+                  )}
+                </>
+              ) : (
+                'Would you like to log in and attend this event?'
+              )}
             </>
           ),
         }
       : {
           title: 'Attend this event?',
-          body: <AttendInfo />,
+          body: (
+            <>
+              <AttendInfo />
+              {user && !chapterUser && (
+                <Checkbox
+                  defaultChecked={subscribe}
+                  ref={checkboxRef}
+                  label="Send me notifications about new events"
+                />
+              )}
+            </>
+          ),
         };
-
     const ok = await confirm(confirmOptions);
     if (!ok) return;
 
     if (user) {
-      await onAttend();
+      await onAttend(checkboxRef?.current?.checked);
       return;
     }
     modalProps.onOpen();

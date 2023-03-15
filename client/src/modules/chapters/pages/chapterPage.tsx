@@ -16,11 +16,12 @@ import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useConfirm } from 'chakra-confirm';
 
 import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
+import Checkbox from '../../../components/Checkbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import {
@@ -112,14 +113,15 @@ const ChapterUserRoleWidget = ({
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
   const router = useRouter();
-  const { isLoggedIn } = useUser();
+  const { user, isLoggedIn } = useUser();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
   });
 
   const confirm = useConfirm();
-  const [hasShownModal, setHasShownModal] = React.useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false);
+  const checkboxRef = useRef<HTMLInputElement>(null);
   const addAlert = useAlert();
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
@@ -143,16 +145,36 @@ export const ChapterPage: NextPage = () => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this chapter',
-          body: 'Would you like to join?',
+          body: (
+            <>
+              Would you like to join?
+              <Checkbox
+                ref={checkboxRef}
+                defaultChecked={user?.auto_subscribe ?? false}
+                label="Send me notifications about new events"
+              />
+            </>
+          ),
         }
       : {
           title: 'Join this chapter?',
-          body: 'Joining chapter will add you as a member to chapter.',
+          body: (
+            <>
+              Joining chapter will add you as a member to chapter.
+              <Checkbox
+                ref={checkboxRef}
+                defaultChecked={user?.auto_subscribe ?? false}
+                label="Send me notifications about new events"
+              />
+            </>
+          ),
         };
     const ok = await confirm(confirmOptions);
     if (ok) {
       try {
-        await joinChapter({ variables: { chapterId } });
+        await joinChapter({
+          variables: { chapterId, subscribe: !!checkboxRef?.current?.checked },
+        });
         addAlert({
           title: 'You successfully joined this chapter',
           status: 'success',

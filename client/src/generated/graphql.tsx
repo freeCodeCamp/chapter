@@ -485,6 +485,7 @@ export type MutationDeleteVenueArgs = {
 
 export type MutationJoinChapterArgs = {
   chapterId: Scalars['Int'];
+  subscribe?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type MutationLeaveChapterArgs = {
@@ -917,6 +918,7 @@ export type MeQuery = {
 
 export type JoinChapterMutationVariables = Exact<{
   chapterId: Scalars['Int'];
+  subscribe?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type JoinChapterMutation = {
@@ -2128,8 +2130,8 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const JoinChapterDocument = gql`
-  mutation joinChapter($chapterId: Int!) {
-    joinChapter(chapterId: $chapterId) {
+  mutation joinChapter($chapterId: Int!, $subscribe: Boolean) {
+    joinChapter(chapterId: $chapterId, subscribe: $subscribe) {
       chapter_role {
         name
       }
@@ -2155,6 +2157,7 @@ export type JoinChapterMutationFn = Apollo.MutationFunction<
  * const [joinChapterMutation, { data, loading, error }] = useJoinChapterMutation({
  *   variables: {
  *      chapterId: // value for 'chapterId'
+ *      subscribe: // value for 'subscribe'
  *   },
  * });
  */

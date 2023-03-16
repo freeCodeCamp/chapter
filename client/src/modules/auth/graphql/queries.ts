@@ -29,7 +29,9 @@ export const meQuery = gql`
               name
             }
           }
+          name
         }
+        subscribed
       }
       user_events {
         event_id

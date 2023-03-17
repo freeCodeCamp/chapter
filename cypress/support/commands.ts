@@ -274,24 +274,24 @@ Cypress.Commands.add('checkBcc', (mail) => {
 });
 
 Cypress.Commands.add(
-  'rsvpToEvent',
+  'attendEvent',
   ({ eventId, chapterId }, options = { withAuth: true }) => {
-    const rsvpMutation = {
-      operationName: 'rsvpToEvent',
+    const attendMutation = {
+      operationName: 'attendEvent',
       variables: {
         eventId,
         chapterId,
       },
       query: `
-    mutation rsvpToEvent($eventId: Int!, $chapterId: Int!) {
-      rsvpEvent(eventId: $eventId, chapterId: $chapterId) {
+    mutation attendEvent($eventId: Int!, $chapterId: Int!) {
+      attendEvent(eventId: $eventId, chapterId: $chapterId) {
         updated_at
       }
     }
     `,
     };
 
-    const requestOptions = gqlOptions(rsvpMutation, {
+    const requestOptions = gqlOptions(attendMutation, {
       failOnStatusCode: false,
     });
 
@@ -347,30 +347,30 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add('deleteRsvp', (eventId, userId) => {
+Cypress.Commands.add('deleteAttendee', (eventId, userId) => {
   const removeMutation = {
-    operationName: 'deleteRsvp',
+    operationName: 'deleteAttendee',
     variables: {
       eventId,
       userId,
     },
-    query: `mutation deleteRsvp($eventId: Int!, $userId: Int!) {
-      deleteRsvp(eventId: $eventId, userId: $userId)
+    query: `mutation deleteAttendee($eventId: Int!, $userId: Int!) {
+      deleteAttendee(eventId: $eventId, userId: $userId)
     }`,
   };
   return cy.authedRequest(gqlOptions(removeMutation));
 });
 
-Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
+Cypress.Commands.add('confirmAttendee', (eventId, userId) => {
   const confirmMutation = {
-    operationName: 'confirmRsvp',
+    operationName: 'confirmAttendee',
     variables: {
       eventId,
       userId,
     },
-    query: `mutation confirmRsvp($eventId: Int!, $userId: Int!) {
-      confirmRsvp(eventId: $eventId, userId: $userId) {
-        rsvp {
+    query: `mutation confirmAttendee($eventId: Int!, $userId: Int!) {
+      confirmAttendee(eventId: $eventId, userId: $userId) {
+        attendance {
           updated_at
           name
         }
@@ -379,6 +379,32 @@ Cypress.Commands.add('confirmRsvp', (eventId, userId) => {
   };
   return cy.authedRequest(gqlOptions(confirmMutation));
 });
+
+/**
+ * Move attendee with userId to the waitlist for the event with eventId
+ * @param eventId Id of the event
+ * @param userId Id of the user
+ */
+const moveAttendeeToWaitlist = (eventId, userId) => {
+  const moveAttendeeMutation = {
+    operationName: 'moveAttendeeToWaitlist',
+    variables: {
+      eventId,
+      userId,
+    },
+    query: `mutation moveAttendeeToWaitlist($eventId: Int!, $userId: Int!) {
+      moveAttendeeToWaitlist(eventId: $eventId, userId: $userId) {
+        attendance {
+          updated_at
+          name
+        }
+      }
+    }`,
+  };
+  return cy.authedRequest(gqlOptions(moveAttendeeMutation));
+};
+
+Cypress.Commands.add('moveAttendeeToWaitlist', moveAttendeeToWaitlist);
 
 Cypress.Commands.add(
   'createVenue',
@@ -795,6 +821,7 @@ declare global {
       leaveChapter: typeof leaveChapter;
       login: typeof login;
       logout: typeof logout;
+      moveAttendeeToWaitlist: typeof moveAttendeeToWaitlist;
       register: typeof register;
       registerViaUI: typeof registerViaUI;
       toggleChapterSubscription: typeof toggleChapterSubscription;

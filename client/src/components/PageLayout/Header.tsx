@@ -13,15 +13,16 @@ import { Link } from 'chakra-next-link';
 import { SkipNavLink } from '@chakra-ui/skip-nav';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Avatar from '../Avatar';
 import { useUser } from '../../modules/auth/user';
+import { useAlert } from '../../hooks/useAlert';
 import { useSession } from '../../hooks/useSession';
+import { checkInstancePermission } from '../../util/check-permission';
 import { Permission } from '../../../../common/permissions';
 import { HeaderContainer } from './component/HeaderContainer';
-import { checkInstancePermission } from 'util/check-permission';
 
 const menuButtonStyles = {
   logout: { backgroundColor: 'gray.10' },
@@ -38,9 +39,26 @@ const menuButtonStyles = {
 export const Header: React.FC = () => {
   const router = useRouter();
   const { user, loadingUser } = useUser();
-  const { login, logout } = useSession();
+  const { login, logout, isAuthenticated, error } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  const addAlert = useAlert();
 
   const goHome = () => router.push('/');
+
+  useEffect(() => {
+    if (loading || isAuthenticated) {
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (error) {
+      addAlert({ title: 'Something went wrong', status: 'error' });
+      setLoading(false);
+      console.log(error);
+    }
+  }, [error]);
 
   return (
     <>
@@ -74,7 +92,11 @@ export const Header: React.FC = () => {
                 <Button
                   data-cy="login-button"
                   background="gray.10"
-                  onClick={login}
+                  onClick={() => {
+                    setLoading(true);
+                    login();
+                  }}
+                  isLoading={loading}
                   fontWeight="600"
                   width="4.5em"
                 >

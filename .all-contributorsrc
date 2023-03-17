@@ -734,7 +734,33 @@
       "contributions": [
         "code"
       ]
-    }
+    },
+    {
+      "login": "dianachu18",
+      "name": "Diana Chu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/118970580?v=4",
+      "profile": "https://github.com/dianachu18",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jamesrcramos",
+      "name": "jamesrcramos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/76936793?v=4",
+      "profile": "https://github.com/jamesrcramos",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "sneha-afk",
+      "name": "Sneha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55897319?v=4",
+      "profile": "https://github.com/sneha-afk",
+      "contributions": [
+        "code"
+      ]
   ],
   "contributorsPerLine": 7,
   "projectName": "chapter",

@@ -1,11 +1,27 @@
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsPositive,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import {
   Event,
   SponsorsQuery,
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
-
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import {
+  IsDateAfter,
+  IsDateBefore,
+  IsNonEmptyString,
+  IsOptionalUrl,
+  IsNumberOfAttendeesUnderCapacity,
+} from 'modules/util/form';
 
 export interface EventSponsorInput {
   id: number;
@@ -28,6 +44,7 @@ export interface EventFormData {
   canceled: boolean;
   chapter_id: number;
   attend_event?: boolean;
+  attendees?: number;
 }
 
 export interface Field {
@@ -37,6 +54,20 @@ export interface Field {
   type: string;
   isRequired: boolean;
 }
+
+export type IEventData = Pick<
+  Event,
+  | keyof Omit<
+      EventFormData,
+      'venue_id' | 'sponsors' | 'chapter_id' | 'attend_event' | 'attendees'
+    >
+  | 'id'
+> & {
+  event_users?: { attendance: { name: string } }[];
+  venue_id?: number;
+  venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
+  sponsors: EventSponsorInput[];
+};
 
 export interface EventSponsorTypeInput {
   name: string;
@@ -78,6 +109,62 @@ export const venueTypes: VenueTypeInput[] = [
   },
 ];
 
+export class EventClass {
+  @IsNonEmptyString()
+  name: string;
+
+  @IsString()
+  description: string;
+
+  @IsOptionalUrl()
+  url?: string | null;
+
+  @IsOptionalUrl()
+  image_url: string;
+
+  @IsNumberOfAttendeesUnderCapacity()
+  @IsPositive()
+  capacity: number;
+
+  @IsDateBefore('ends_at', {
+    message: 'Start date must come before the end date',
+  })
+  start_at: Date;
+
+  @IsDateAfter('start_at', {
+    message: 'End date must be after the start date',
+  })
+  ends_at: Date;
+
+  @IsBoolean()
+  invite_only?: boolean;
+
+  @IsIn([...venueTypes.map((venueType) => venueType.value)])
+  venue_type: VenueType;
+
+  @IsNotEmpty()
+  venue_id?: number | null;
+
+  @IsOptionalUrl()
+  streaming_url?: string | null;
+
+  @IsOptional()
+  @IsArray()
+  sponsors: Array<EventSponsorInput>;
+
+  @IsOptional()
+  canceled: boolean;
+
+  @IsNotEmpty()
+  chapter_id: number;
+
+  @IsOptional()
+  @IsBoolean()
+  attend_event?: boolean;
+}
+
+export const resolver = classValidatorResolver(EventClass);
+
 export const fields: Field[] = [
   {
     key: 'name',
@@ -100,32 +187,13 @@ export const fields: Field[] = [
     placeholder: 'https://www.example.image/url',
     isRequired: false,
   },
-  {
-    key: 'capacity',
-    type: 'number',
-    label: 'Capacity',
-    isRequired: true,
-  },
 ];
-
-export type IEventData = Pick<
-  Event,
-  | keyof Omit<
-      EventFormData,
-      'venue_id' | 'sponsors' | 'chapter_id' | 'attend_event'
-    >
-  | 'id'
-> & {
-  venue_id?: number;
-  venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
-  sponsors: EventSponsorInput[];
-};
 
 export interface EventFormProps {
   onSubmit: (data: EventFormData) => Promise<void>;
   data?: IEventData;
   submitText: string;
-  chapterId?: number;
+  chapter?: { id: number; name: string };
   loadingText: string;
   formType: 'new' | 'edit';
 }
@@ -195,7 +263,7 @@ export const parseEventData = (data: EventFormData) => {
   // It's ugly, but we can't rely on TS to check that properties are absent, so
   // we have to remove them to avoid sending them to the server.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { chapter_id, attend_event, sponsors, ...rest } = data;
+  const { chapter_id, attend_event, sponsors, attendees, ...rest } = data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
   // streaming_url is optional. However, null will be accepted,
   // while empty strings will be rejected.

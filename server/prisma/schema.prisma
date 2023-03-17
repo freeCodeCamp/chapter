@@ -168,16 +168,17 @@ model event_permissions {
 model event_users {
   created_at     DateTime         @default(now())
   updated_at     DateTime         @updatedAt
+  joined_date    DateTime         @default(now())
   user_id        Int
   event_id       Int
   event_role_id  Int
-  rsvp_id        Int
+  attendance_id  Int
   subscribed     Boolean
   title          String[]
   user           users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   event          events           @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   event_role     event_roles      @relation(fields: [event_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  rsvp           rsvp             @relation(fields: [rsvp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  attendance    attendance        @relation(fields: [attendance_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   event_reminder event_reminders?
 
   @@id([user_id, event_id])
@@ -195,7 +196,7 @@ model event_reminders {
   @@id([user_id, event_id])
 }
 
-model rsvp {
+model attendance {
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt
   id          Int           @id @default(autoincrement())

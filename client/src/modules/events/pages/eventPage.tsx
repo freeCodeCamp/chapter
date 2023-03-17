@@ -9,10 +9,11 @@ import {
   List,
   ListIcon,
   ListItem,
+  SimpleGrid,
   Spinner,
   Text,
+  Tooltip,
   useDisclosure,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { useConfirm } from 'chakra-confirm';
@@ -32,22 +33,25 @@ import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
 import {
-  useCancelRsvpMutation,
+  useCancelAttendanceMutation,
   useEventQuery,
   useJoinChapterMutation,
-  useRsvpToEventMutation,
+  useAttendEventMutation,
   useSubscribeToEventMutation,
   useUnsubscribeFromEventMutation,
 } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
+import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
+import { CHAPTER } from '../../chapters/graphql/queries';
+import { AttendanceNames } from '../../../../../common/attendance';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
   const router = useRouter();
   const { user, loadingUser, isLoggedIn } = useUser();
-  const { login } = useSession();
+  const { login, error: loginError } = useSession();
   const modalProps = useDisclosure();
 
   const refetch = {
@@ -59,10 +63,10 @@ export const EventPage: NextPage = () => {
   };
 
   const [attendEvent, { loading: loadingAttend }] =
-    useRsvpToEventMutation(refetch);
+    useAttendEventMutation(refetch);
   const [cancelAttendance, { loading: loadingCancel }] =
-    useCancelRsvpMutation(refetch);
-  const [joinChapter] = useJoinChapterMutation(refetch);
+    useCancelAttendanceMutation(refetch);
+  const [joinChapter] = useJoinChapterMutation();
   const [subscribeToEvent, { loading: loadingSubscribe }] =
     useSubscribeToEventMutation(refetch);
   const [unsubscribeFromEvent, { loading: loadingUnsubscribe }] =
@@ -72,7 +76,7 @@ export const EventPage: NextPage = () => {
     variables: { eventId },
   });
 
-  const toast = useToast();
+  const addAlert = useAlert();
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
@@ -85,7 +89,7 @@ export const EventPage: NextPage = () => {
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );
-  const attendanceStatus = eventUser?.rsvp.name;
+  const attendanceStatus = eventUser?.attendance.name;
   const isLoading = loading || loadingUser;
   const canShowConfirmationModal =
     router.query?.confirm_attendance && !isLoading;
@@ -98,9 +102,10 @@ export const EventPage: NextPage = () => {
   // we define everything before it's used.
   function isAlreadyAttending(attencanceStatus: string | undefined) {
     const alreadyAttending =
-      attencanceStatus === 'yes' || attencanceStatus === 'waitlist';
+      attencanceStatus === AttendanceNames.confirmed ||
+      attencanceStatus === AttendanceNames.waitlist;
     if (alreadyAttending) {
-      toast({ title: 'Already attending', status: 'info' });
+      addAlert({ title: 'Already attending', status: 'info' });
       return true;
     }
     return false;
@@ -108,21 +113,32 @@ export const EventPage: NextPage = () => {
 
   async function onAttend() {
     if (!chapterId) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
-      await joinChapter({ variables: { chapterId } });
-      await attendEvent({
+      await joinChapter({
+        variables: { chapterId },
+        refetchQueries: [
+          ...refetch.refetchQueries,
+          { query: CHAPTER, variables: { chapterId } },
+        ],
+      });
+      const { data: dataAttend } = await attendEvent({
         variables: { eventId, chapterId },
       });
 
-      toast({
-        title: 'You are attending this event',
+      const attendance = dataAttend?.attendEvent.attendance.name;
+
+      addAlert({
+        title:
+          attendance === AttendanceNames.confirmed
+            ? 'You are attending this event'
+            : 'You are on the waitlist',
         status: 'success',
       });
     } catch (err) {
-      toast({ title: 'Something went wrong', status: 'error' });
+      addAlert({ title: 'Something went wrong', status: 'error' });
       console.error(err);
     }
   }
@@ -138,9 +154,9 @@ export const EventPage: NextPage = () => {
           variables: { eventId },
         });
 
-        toast({ title: 'You canceled your attendance 👋', status: 'info' });
+        addAlert({ title: 'You canceled your attendance 👋', status: 'info' });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -200,7 +216,7 @@ export const EventPage: NextPage = () => {
       const eventUser = data?.event?.event_users.find(
         ({ user: event_user }) => event_user.id === user?.id,
       );
-      if (!isAlreadyAttending(eventUser?.rsvp.name)) onAttend();
+      if (!isAlreadyAttending(eventUser?.attendance.name)) onAttend();
     }
   }, [awaitingLogin, isLoggedIn]);
 
@@ -218,16 +234,30 @@ export const EventPage: NextPage = () => {
     return <NextError statusCode={404} title="Event not found" />;
 
   async function onSubscribeToEvent() {
-    const ok = await confirm({ title: 'Do you want to subscribe?' });
+    const ok = await confirm({
+      title: 'Subscribe to event updates?',
+      body: (
+        <List>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            You will be informed about any changes to event details.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            This does not affect notifications from Google Calendar.
+          </ListItem>
+        </List>
+      ),
+    });
     if (ok) {
       try {
         await subscribeToEvent({ variables: { eventId } });
-        toast({
-          title: 'You successfully subscribed to this event',
+        addAlert({
+          title: 'You successfully subscribed to event updates',
           status: 'success',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
@@ -235,28 +265,40 @@ export const EventPage: NextPage = () => {
 
   async function onUnsubscribeFromEvent() {
     const ok = await confirm({
-      title: 'Unsubscribe from event?',
-      body: 'After unsubscribing you will not receive any communication regarding this event, including reminder before the event.',
+      title: 'Unsubscribe from event updates?',
+      body: (
+        <List>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            After unsubscribing you will not receive any communication regarding
+            this event, including reminder before the event.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={InfoIcon} boxSize={5} />
+            This does not affect notifications from Google Calendar.
+          </ListItem>
+        </List>
+      ),
     });
     if (ok) {
       try {
         await unsubscribeFromEvent({ variables: { eventId } });
-        toast({
-          title: 'You have unsubscribed from this event',
+        addAlert({
+          title: 'You have unsubscribed from event updates',
           status: 'info',
         });
       } catch (err) {
-        toast({ title: 'Something went wrong', status: 'error' });
+        addAlert({ title: 'Something went wrong', status: 'error' });
         console.error(err);
       }
     }
   }
 
   const attendees = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'yes',
+    ({ attendance }) => attendance.name === AttendanceNames.confirmed,
   );
   const waitlist = data.event.event_users.filter(
-    ({ rsvp }) => rsvp.name === 'waitlist',
+    ({ attendance }) => attendance.name === AttendanceNames.waitlist,
   );
 
   const startAt = formatDate(data.event.start_at);
@@ -265,7 +307,11 @@ export const EventPage: NextPage = () => {
   return (
     <>
       <Modal modalProps={modalProps} title="Waiting for login">
-        <Spinner />
+        {loginError ? (
+          <>Something went wrong, {loginError.message}</>
+        ) : (
+          <Spinner />
+        )}
       </Modal>
       <VStack align="flex-start">
         {data.event.image_url && (
@@ -284,7 +330,11 @@ export const EventPage: NextPage = () => {
           </Box>
         )}
         <Flex alignItems={'center'}>
-          {data.event.invite_only && <LockIcon fontSize={'2xl'} />}
+          {data.event.invite_only && (
+            <Tooltip label="Invite only">
+              <LockIcon fontSize={'2xl'} />
+            </Tooltip>
+          )}
           <Heading as="h1">{data.event.name}</Heading>
         </Flex>
         {data.event.canceled && (
@@ -305,72 +355,77 @@ export const EventPage: NextPage = () => {
         <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
           Ending: {endsAt}
         </Text>
-        {!attendanceStatus || attendanceStatus === 'no' ? (
-          <Button
-            colorScheme="blue"
-            data-cy="attend-button"
-            isLoading={loadingAttend}
-            onClick={() => tryToAttend()}
-            paddingBlock="1"
-            paddingInline="2"
-          >
-            {data.event.invite_only ? 'Request' : 'Attend'}
-          </Button>
-        ) : (
-          <HStack>
-            {attendanceStatus === 'waitlist' ? (
-              <Text fontSize="md" fontWeight="500">
-                {data.event.invite_only
-                  ? 'Event owner will soon confirm your request'
-                  : "You're on waitlist for this event"}
-              </Text>
-            ) : (
-              <Text data-cy="attend-success">You are attending this event</Text>
-            )}
+        <SimpleGrid columns={2} gap={5} alignItems="center">
+          {!attendanceStatus ||
+          attendanceStatus === AttendanceNames.canceled ? (
             <Button
-              isLoading={loadingCancel}
-              onClick={onCancelAttendance}
+              colorScheme="blue"
+              data-cy="attend-button"
+              isLoading={loadingAttend}
+              onClick={() => tryToAttend()}
               paddingBlock="1"
               paddingInline="2"
             >
-              Cancel
+              {data.event.invite_only ? 'Request Invite' : 'Attend Event'}
             </Button>
-          </HStack>
-        )}
-        {userEvent && (
-          <HStack>
-            {userEvent.subscribed ? (
-              <>
-                <Text fontSize={'md'} fontWeight={'500'}>
-                  You are subscribed
+          ) : (
+            <>
+              {attendanceStatus === AttendanceNames.waitlist ? (
+                <Text fontSize="md" fontWeight="500">
+                  {data.event.invite_only
+                    ? 'Event owner will soon confirm your request'
+                    : "You're on waitlist for this event"}
                 </Text>
-                <Button
-                  isLoading={loadingUnsubscribe}
-                  onClick={onUnsubscribeFromEvent}
-                  paddingBlock="1"
-                  paddingInline="2"
-                >
-                  Unsubscribe
-                </Button>
-              </>
-            ) : (
-              <>
-                <Text fontSize={'md'} fontWeight={'500'}>
-                  Not subscribed
+              ) : (
+                <Text data-cy="attend-success">
+                  You are attending this event
                 </Text>
-                <Button
-                  colorScheme="blue"
-                  isLoading={loadingSubscribe}
-                  onClick={onSubscribeToEvent}
-                  paddingBlock="1"
-                  paddingInline="2"
-                >
-                  Subscribe
-                </Button>
-              </>
-            )}
-          </HStack>
-        )}
+              )}
+              <Button
+                isLoading={loadingCancel}
+                onClick={onCancelAttendance}
+                paddingBlock="1"
+                paddingInline="2"
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+          {userEvent && (
+            <>
+              {userEvent.subscribed ? (
+                <>
+                  <Text fontSize={'md'} fontWeight={'500'}>
+                    You are subscribed to event updates
+                  </Text>
+                  <Button
+                    isLoading={loadingUnsubscribe}
+                    onClick={onUnsubscribeFromEvent}
+                    paddingBlock="1"
+                    paddingInline="2"
+                  >
+                    Unsubscribe
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Text fontSize={'md'} fontWeight={'500'}>
+                    Not subscribed to event updates
+                  </Text>
+                  <Button
+                    colorScheme="blue"
+                    isLoading={loadingSubscribe}
+                    onClick={onSubscribeToEvent}
+                    paddingBlock="1"
+                    paddingInline="2"
+                  >
+                    Subscribe
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+        </SimpleGrid>
 
         {data.event.sponsors.length ? (
           <SponsorsCard sponsors={data.event.sponsors} />

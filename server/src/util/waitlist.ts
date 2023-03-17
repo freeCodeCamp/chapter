@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { sub } from 'date-fns';
+import { AttendanceNames } from '../../../common/attendance';
 
 import { prisma } from '../prisma';
 
@@ -7,7 +8,7 @@ import { createReminder } from '../services/Reminders';
 
 type EventForWaitlistUpdate = Prisma.event_usersGetPayload<{
   include: {
-    event: { include: { event_users: { include: { rsvp: true } } } };
+    event: { include: { event_users: { include: { attendance: true } } } };
   };
 }>['event'];
 
@@ -23,18 +24,19 @@ export const updateWaitlistForUserRemoval = async ({
   // Since updateWaitlistForUserRemoval gets the original event_users before the
   // user was removed, we have to filter them out here.
   const waitlist = event_users.filter(
-    ({ user_id, rsvp: { name } }) => user_id !== userId && name === 'waitlist',
+    ({ attendance: { name }, user_id }) =>
+      user_id !== userId && name === AttendanceNames.waitlist,
   );
   if (!waitlist.length) return;
 
   const attendees = event_users.filter(
-    ({ user_id, rsvp: { name } }) => user_id !== userId && name === 'yes',
+    ({ user_id, attendance: { name } }) => user_id !== userId && name === 'yes',
   );
   if (capacity <= attendees.length) return;
 
   const [newAttendee] = waitlist;
   await prisma.event_users.update({
-    data: { rsvp: { connect: { name: 'yes' } } },
+    data: { attendance: { connect: { name: AttendanceNames.confirmed } } },
     where: {
       user_id_event_id: {
         user_id: newAttendee.user_id,

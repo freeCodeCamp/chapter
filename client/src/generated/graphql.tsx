@@ -22,16 +22,23 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Attendance = {
+  __typename?: 'Attendance';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  updated_at: Scalars['DateTime'];
+};
+
 export type Chapter = {
   __typename?: 'Chapter';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -40,16 +47,16 @@ export type Chapter = {
 
 export type ChapterCardRelations = {
   __typename?: 'ChapterCardRelations';
+  _count: ChapterUsersCount;
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
-  chapter_users: Array<ChapterUser>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -104,10 +111,14 @@ export type ChapterUserWithRole = {
   user_id: Scalars['Int'];
 };
 
+export type ChapterUsersCount = {
+  __typename?: 'ChapterUsersCount';
+  chapter_users: Scalars['Int'];
+};
+
 export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -115,6 +126,7 @@ export type ChapterWithEvents = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<EventWithVenue>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -124,7 +136,6 @@ export type ChapterWithEvents = {
 export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   banner_url?: Maybe<Scalars['String']>;
-  calendar_id?: Maybe<Scalars['String']>;
   category: Scalars['String'];
   chapter_users: Array<ChapterUserWithRelations>;
   chat_url?: Maybe<Scalars['String']>;
@@ -133,6 +144,7 @@ export type ChapterWithRelations = {
   creator_id: Scalars['Int'];
   description: Scalars['String'];
   events: Array<Event>;
+  has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -161,11 +173,11 @@ export type CreateSponsorInputs = {
 
 export type Event = {
   __typename?: 'Event';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -228,11 +240,21 @@ export type EventUser = {
   user_id: Scalars['Int'];
 };
 
+export type EventUserWithAttendanceAndUser = {
+  __typename?: 'EventUserWithAttendanceAndUser';
+  attendance: Attendance;
+  event_id: Scalars['Int'];
+  subscribed: Scalars['Boolean'];
+  updated_at: Scalars['DateTime'];
+  user: User;
+  user_id: Scalars['Int'];
+};
+
 export type EventUserWithRelations = {
   __typename?: 'EventUserWithRelations';
+  attendance: Attendance;
   event_id: Scalars['Int'];
   event_role: EventRole;
-  rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -248,43 +270,15 @@ export type EventUserWithRolePermissions = {
   user_id: Scalars['Int'];
 };
 
-export type EventUserWithRsvpAndUser = {
-  __typename?: 'EventUserWithRsvpAndUser';
-  event_id: Scalars['Int'];
-  rsvp: Rsvp;
-  subscribed: Scalars['Boolean'];
-  updated_at: Scalars['DateTime'];
-  user: User;
-  user_id: Scalars['Int'];
-};
-
-export type EventWithChapter = {
-  __typename?: 'EventWithChapter';
-  calendar_event_id?: Maybe<Scalars['String']>;
-  canceled: Scalars['Boolean'];
-  capacity: Scalars['Int'];
-  chapter: Chapter;
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  id: Scalars['Int'];
-  image_url: Scalars['String'];
-  invite_only: Scalars['Boolean'];
-  name: Scalars['String'];
-  start_at: Scalars['DateTime'];
-  streaming_url?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  venue_type: VenueType;
-};
-
 export type EventWithRelationsWithEventUser = {
   __typename?: 'EventWithRelationsWithEventUser';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
-  event_users: Array<EventUserWithRsvpAndUser>;
+  event_users: Array<EventUserWithAttendanceAndUser>;
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -299,13 +293,13 @@ export type EventWithRelationsWithEventUser = {
 
 export type EventWithRelationsWithEventUserRelations = {
   __typename?: 'EventWithRelationsWithEventUserRelations';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   event_users: Array<EventUserWithRelations>;
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -320,11 +314,11 @@ export type EventWithRelationsWithEventUserRelations = {
 
 export type EventWithVenue = {
   __typename?: 'EventWithVenue';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -333,6 +327,24 @@ export type EventWithVenue = {
   streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
+  venue_type: VenueType;
+};
+
+export type EventsWithChapters = {
+  __typename?: 'EventsWithChapters';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
 
@@ -355,32 +367,34 @@ export type InstanceRolePermission = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  attendEvent: EventUserWithRelations;
   banUser: UserBan;
   calendarIntegrationTest?: Maybe<Scalars['Boolean']>;
+  cancelAttendance?: Maybe<EventUserWithRelations>;
   cancelEvent: Event;
-  cancelRsvp?: Maybe<EventUserWithRelations>;
   changeChapterUserRole: ChapterUserWithRelations;
   changeInstanceUserRole: UserWithInstanceRole;
-  confirmRsvp: EventUserWithRelations;
+  confirmAttendee: EventUserWithRelations;
   createCalendarEvent: Event;
   createChapter: Chapter;
   createChapterCalendar: Chapter;
   createEvent: Event;
   createSponsor: Sponsor;
   createVenue: Venue;
+  deleteAttendee: Scalars['Boolean'];
   deleteChapter: Chapter;
   deleteEvent: Event;
   deleteMe: User;
-  deleteRsvp: Scalars['Boolean'];
   deleteVenue: Venue;
   joinChapter: ChapterUserWithRole;
   leaveChapter: ChapterUser;
-  rsvpEvent: EventUserWithRelations;
+  moveAttendeeToWaitlist: EventUserWithRelations;
   sendEventInvite: Scalars['Boolean'];
   subscribeToEvent: EventUser;
   toggleAutoSubscribe: User;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
+  unlinkChapterCalendar: Chapter;
   unsubscribe: Scalars['Boolean'];
   unsubscribeFromEvent: EventUser;
   updateChapter: Chapter;
@@ -390,17 +404,22 @@ export type Mutation = {
   updateVenue: Venue;
 };
 
+export type MutationAttendEventArgs = {
+  chapterId: Scalars['Int'];
+  eventId: Scalars['Int'];
+};
+
 export type MutationBanUserArgs = {
   chapterId: Scalars['Int'];
   userId: Scalars['Int'];
 };
 
-export type MutationCancelEventArgs = {
-  id: Scalars['Int'];
+export type MutationCancelAttendanceArgs = {
+  eventId: Scalars['Int'];
 };
 
-export type MutationCancelRsvpArgs = {
-  eventId: Scalars['Int'];
+export type MutationCancelEventArgs = {
+  id: Scalars['Int'];
 };
 
 export type MutationChangeChapterUserRoleArgs = {
@@ -414,7 +433,7 @@ export type MutationChangeInstanceUserRoleArgs = {
   roleName: Scalars['String'];
 };
 
-export type MutationConfirmRsvpArgs = {
+export type MutationConfirmAttendeeArgs = {
   eventId: Scalars['Int'];
   userId: Scalars['Int'];
 };
@@ -446,17 +465,17 @@ export type MutationCreateVenueArgs = {
   data: VenueInputs;
 };
 
+export type MutationDeleteAttendeeArgs = {
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
 export type MutationDeleteChapterArgs = {
   id: Scalars['Int'];
 };
 
 export type MutationDeleteEventArgs = {
   id: Scalars['Int'];
-};
-
-export type MutationDeleteRsvpArgs = {
-  eventId: Scalars['Int'];
-  userId: Scalars['Int'];
 };
 
 export type MutationDeleteVenueArgs = {
@@ -472,9 +491,9 @@ export type MutationLeaveChapterArgs = {
   chapterId: Scalars['Int'];
 };
 
-export type MutationRsvpEventArgs = {
-  chapterId: Scalars['Int'];
+export type MutationMoveAttendeeToWaitlistArgs = {
   eventId: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type MutationSendEventInviteArgs = {
@@ -492,6 +511,10 @@ export type MutationToggleChapterSubscriptionArgs = {
 export type MutationUnbanUserArgs = {
   chapterId: Scalars['Int'];
   userId: Scalars['Int'];
+};
+
+export type MutationUnlinkChapterCalendarArgs = {
+  id: Scalars['Int'];
 };
 
 export type MutationUnsubscribeArgs = {
@@ -527,18 +550,17 @@ export type MutationUpdateVenueArgs = {
   id: Scalars['Int'];
 };
 
-export type PaginatedEventsWithTotal = {
-  __typename?: 'PaginatedEventsWithTotal';
-  events: Array<EventWithChapter>;
+export type PaginatedEventsWithChapters = {
+  __typename?: 'PaginatedEventsWithChapters';
+  events: Array<EventsWithChapters>;
   total: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
-  chapter: ChapterWithRelations;
+  chapter: ChapterWithEvents;
   chapterRoles: Array<ChapterRole>;
-  chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
@@ -551,10 +573,10 @@ export type Query = {
   eventRoles: Array<EventRole>;
   instanceRoles: Array<InstanceRole>;
   me?: Maybe<UserWithPermissions>;
-  paginatedEvents: Array<EventWithChapter>;
-  paginatedEventsWithTotal: PaginatedEventsWithTotal;
+  paginatedEventsWithTotal: PaginatedEventsWithChapters;
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
+  testChapterCalendarAccess?: Maybe<Scalars['Boolean']>;
   tokenStatuses: Array<TokenStatus>;
   userDownload: UserForDownload;
   userProfile: UserProfile;
@@ -564,10 +586,6 @@ export type Query = {
 
 export type QueryChapterArgs = {
   id: Scalars['Int'];
-};
-
-export type QueryChapterUserArgs = {
-  chapterId: Scalars['Int'];
 };
 
 export type QueryChapterVenuesArgs = {
@@ -582,10 +600,6 @@ export type QueryDashboardEventArgs = {
   id: Scalars['Int'];
 };
 
-export type QueryDashboardEventsArgs = {
-  showCanceled?: InputMaybe<Scalars['Boolean']>;
-};
-
 export type QueryDashboardSponsorArgs = {
   id: Scalars['Int'];
 };
@@ -594,29 +608,22 @@ export type QueryEventArgs = {
   id: Scalars['Int'];
 };
 
-export type QueryPaginatedEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-};
-
 export type QueryPaginatedEventsWithTotalArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  showOnlyUpcoming?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QuerySponsorWithEventsArgs = {
   sponsorId: Scalars['Int'];
 };
 
-export type QueryVenueArgs = {
-  venueId: Scalars['Int'];
+export type QueryTestChapterCalendarAccessArgs = {
+  id: Scalars['Int'];
 };
 
-export type Rsvp = {
-  __typename?: 'Rsvp';
-  id: Scalars['Int'];
-  name: Scalars['String'];
-  updated_at: Scalars['DateTime'];
+export type QueryVenueArgs = {
+  venueId: Scalars['Int'];
 };
 
 export type Sponsor = {
@@ -708,10 +715,10 @@ export type UserChapter = {
 
 export type UserEvent = {
   __typename?: 'UserEvent';
+  attendance: Attendance;
   event: Event;
   event_id: Scalars['Int'];
   event_role: EventRoleWithPermissions;
-  rsvp: Rsvp;
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user_id: Scalars['Int'];
@@ -872,13 +879,16 @@ export type MeQuery = {
       __typename?: 'Chapter';
       id: number;
       name: string;
+      has_calendar: boolean;
     }>;
     user_bans: Array<{ __typename?: 'UserBan'; chapter_id: number }>;
     user_chapters: Array<{
       __typename?: 'ChapterUserWithRole';
       chapter_id: number;
+      subscribed: boolean;
       chapter_role: {
         __typename?: 'ChapterRole';
+        name: string;
         chapter_role_permissions: Array<{
           __typename?: 'ChapterRolePermission';
           chapter_permission: {
@@ -943,7 +953,7 @@ export type ChapterQueryVariables = Exact<{
 export type ChapterQuery = {
   __typename?: 'Query';
   chapter: {
-    __typename?: 'ChapterWithRelations';
+    __typename?: 'ChapterWithEvents';
     id: number;
     name: string;
     description: string;
@@ -955,31 +965,17 @@ export type ChapterQuery = {
     banner_url?: string | null;
     chat_url?: string | null;
     events: Array<{
-      __typename?: 'Event';
+      __typename?: 'EventWithVenue';
       id: number;
       name: string;
       description: string;
       start_at: any;
       ends_at: any;
+      image_url: string;
       invite_only: boolean;
       canceled: boolean;
-      image_url: string;
     }>;
   };
-};
-
-export type ChapterUserQueryVariables = Exact<{
-  chapterId: Scalars['Int'];
-}>;
-
-export type ChapterUserQuery = {
-  __typename?: 'Query';
-  chapterUser?: {
-    __typename?: 'ChapterUserWithRelations';
-    subscribed: boolean;
-    user: { __typename?: 'User'; name: string };
-    chapter_role: { __typename?: 'ChapterRole'; name: string };
-  } | null;
 };
 
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
@@ -1000,8 +996,9 @@ export type ChaptersQuery = {
       start_at: any;
       ends_at: any;
       name: string;
+      invite_only: boolean;
     }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
+    _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
 };
 
@@ -1049,6 +1046,7 @@ export type CreateChapterMutation = {
     region: string;
     country: string;
     chat_url?: string | null;
+    has_calendar: boolean;
   };
 };
 
@@ -1061,7 +1059,20 @@ export type CreateChapterCalendarMutation = {
   createChapterCalendar: {
     __typename?: 'Chapter';
     id: number;
-    calendar_id?: string | null;
+    has_calendar: boolean;
+  };
+};
+
+export type UnlinkChapterCalendarMutationVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type UnlinkChapterCalendarMutation = {
+  __typename?: 'Mutation';
+  unlinkChapterCalendar: {
+    __typename?: 'Chapter';
+    id: number;
+    has_calendar: boolean;
   };
 };
 
@@ -1152,7 +1163,7 @@ export type DashboardChapterQuery = {
     logo_url?: string | null;
     banner_url?: string | null;
     chat_url?: string | null;
-    calendar_id?: string | null;
+    has_calendar: boolean;
     events: Array<{
       __typename?: 'Event';
       id: number;
@@ -1213,6 +1224,15 @@ export type DashboardChapterUsersQuery = {
   };
 };
 
+export type TestChapterCalendarAccessQueryVariables = Exact<{
+  chapterId: Scalars['Int'];
+}>;
+
+export type TestChapterCalendarAccessQuery = {
+  __typename?: 'Query';
+  testChapterCalendarAccess?: boolean | null;
+};
+
 export type CreateEventMutationVariables = Exact<{
   chapterId: Scalars['Int'];
   data: EventInputs;
@@ -1230,6 +1250,7 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    has_calendar_event: boolean;
   };
 };
 
@@ -1262,7 +1283,7 @@ export type CreateCalendarEventMutation = {
   createCalendarEvent: {
     __typename?: 'Event';
     id: number;
-    calendar_event_id?: string | null;
+    has_calendar_event: boolean;
   };
 };
 
@@ -1284,27 +1305,40 @@ export type DeleteEventMutation = {
   deleteEvent: { __typename?: 'Event'; id: number };
 };
 
-export type ConfirmRsvpMutationVariables = Exact<{
+export type ConfirmAttendeeMutationVariables = Exact<{
   eventId: Scalars['Int'];
   userId: Scalars['Int'];
 }>;
 
-export type ConfirmRsvpMutation = {
+export type ConfirmAttendeeMutation = {
   __typename?: 'Mutation';
-  confirmRsvp: {
+  confirmAttendee: {
     __typename?: 'EventUserWithRelations';
-    rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+    attendance: { __typename?: 'Attendance'; updated_at: any; name: string };
   };
 };
 
-export type DeleteRsvpMutationVariables = Exact<{
+export type DeleteAttendeeMutationVariables = Exact<{
   eventId: Scalars['Int'];
   userId: Scalars['Int'];
 }>;
 
-export type DeleteRsvpMutation = {
+export type DeleteAttendeeMutation = {
   __typename?: 'Mutation';
-  deleteRsvp: boolean;
+  deleteAttendee: boolean;
+};
+
+export type MoveAttendeeToWaitlistMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+  userId: Scalars['Int'];
+}>;
+
+export type MoveAttendeeToWaitlistMutation = {
+  __typename?: 'Mutation';
+  moveAttendeeToWaitlist: {
+    __typename?: 'EventUserWithRelations';
+    attendance: { __typename?: 'Attendance'; name: string };
+  };
 };
 
 export type SendEventInviteMutationVariables = Exact<{
@@ -1316,9 +1350,7 @@ export type SendEventInviteMutation = {
   sendEventInvite: boolean;
 };
 
-export type DashboardEventsQueryVariables = Exact<{
-  showCanceled?: InputMaybe<Scalars['Boolean']>;
-}>;
+export type DashboardEventsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DashboardEventsQuery = {
   __typename?: 'Query';
@@ -1358,13 +1390,13 @@ export type DashboardEventQuery = {
     start_at: any;
     ends_at: any;
     image_url: string;
-    calendar_event_id?: string | null;
+    has_calendar_event: boolean;
     venue_type: VenueType;
     chapter: {
       __typename?: 'Chapter';
       id: number;
       name: string;
-      calendar_id?: string | null;
+      has_calendar: boolean;
     };
     sponsors: Array<{
       __typename?: 'EventSponsor';
@@ -1390,7 +1422,7 @@ export type DashboardEventQuery = {
     event_users: Array<{
       __typename?: 'EventUserWithRelations';
       subscribed: boolean;
-      rsvp: { __typename?: 'Rsvp'; name: string };
+      attendance: { __typename?: 'Attendance'; name: string };
       user: {
         __typename?: 'User';
         id: number;
@@ -1577,6 +1609,16 @@ export type UpdateVenueMutation = {
   };
 };
 
+export type DeleteVenueMutationVariables = Exact<{
+  venueId: Scalars['Int'];
+  chapterId: Scalars['Int'];
+}>;
+
+export type DeleteVenueMutation = {
+  __typename?: 'Mutation';
+  deleteVenue: { __typename?: 'Venue'; id: number };
+};
+
 export type DashboardVenuesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DashboardVenuesQuery = {
@@ -1629,23 +1671,27 @@ export type VenueQuery = {
   } | null;
 };
 
-export type RsvpToEventMutationVariables = Exact<{
+export type AttendEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
   chapterId: Scalars['Int'];
 }>;
 
-export type RsvpToEventMutation = {
+export type AttendEventMutation = {
   __typename?: 'Mutation';
-  rsvpEvent: { __typename?: 'EventUserWithRelations'; updated_at: any };
+  attendEvent: {
+    __typename?: 'EventUserWithRelations';
+    updated_at: any;
+    attendance: { __typename?: 'Attendance'; name: string };
+  };
 };
 
-export type CancelRsvpMutationVariables = Exact<{
+export type CancelAttendanceMutationVariables = Exact<{
   eventId: Scalars['Int'];
 }>;
 
-export type CancelRsvpMutation = {
+export type CancelAttendanceMutation = {
   __typename?: 'Mutation';
-  cancelRsvp?: {
+  cancelAttendance?: {
     __typename?: 'EventUserWithRelations';
     updated_at: any;
   } | null;
@@ -1672,15 +1718,16 @@ export type UnsubscribeFromEventMutation = {
 export type PaginatedEventsWithTotalQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  showOnlyUpcoming?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type PaginatedEventsWithTotalQuery = {
   __typename?: 'Query';
   paginatedEventsWithTotal: {
-    __typename?: 'PaginatedEventsWithTotal';
+    __typename?: 'PaginatedEventsWithChapters';
     total: number;
     events: Array<{
-      __typename?: 'EventWithChapter';
+      __typename?: 'EventsWithChapters';
       id: number;
       name: string;
       description: string;
@@ -1742,8 +1789,8 @@ export type EventQuery = {
       country: string;
     } | null;
     event_users: Array<{
-      __typename?: 'EventUserWithRsvpAndUser';
-      rsvp: { __typename?: 'Rsvp'; name: string };
+      __typename?: 'EventUserWithAttendanceAndUser';
+      attendance: { __typename?: 'Attendance'; name: string };
       user: {
         __typename?: 'User';
         id: number;
@@ -1752,49 +1799,6 @@ export type EventQuery = {
       };
     }>;
   } | null;
-};
-
-export type HomeQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type HomeQuery = {
-  __typename?: 'Query';
-  paginatedEvents: Array<{
-    __typename?: 'EventWithChapter';
-    id: number;
-    name: string;
-    description: string;
-    invite_only: boolean;
-    canceled: boolean;
-    start_at: any;
-    ends_at: any;
-    image_url: string;
-    chapter: {
-      __typename?: 'Chapter';
-      id: number;
-      name: string;
-      category: string;
-    };
-  }>;
-  chapters: Array<{
-    __typename?: 'ChapterCardRelations';
-    id: number;
-    name: string;
-    description: string;
-    banner_url?: string | null;
-    logo_url?: string | null;
-    events: Array<{
-      __typename?: 'Event';
-      id: number;
-      canceled: boolean;
-      start_at: any;
-      ends_at: any;
-      name: string;
-    }>;
-    chapter_users: Array<{ __typename?: 'ChapterUser'; subscribed: boolean }>;
-  }>;
 };
 
 export type ToggleAutoSubscribeMutationVariables = Exact<{
@@ -1903,7 +1907,7 @@ export type UserDownloadQuery = {
       __typename?: 'UserEvent';
       subscribed: boolean;
       updated_at: any;
-      rsvp: { __typename?: 'Rsvp'; updated_at: any; name: string };
+      attendance: { __typename?: 'Attendance'; updated_at: any; name: string };
       event_role: {
         __typename?: 'EventRoleWithPermissions';
         name: string;
@@ -2048,6 +2052,7 @@ export const MeDocument = gql`
       admined_chapters {
         id
         name
+        has_calendar
       }
       auto_subscribe
       image_url
@@ -2062,7 +2067,9 @@ export const MeDocument = gql`
               name
             }
           }
+          name
         }
+        subscribed
       }
       user_events {
         event_id
@@ -2281,8 +2288,6 @@ export const ChapterDocument = gql`
         description
         start_at
         ends_at
-        invite_only
-        canceled
         image_url
         invite_only
         canceled
@@ -2334,68 +2339,6 @@ export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
 >;
-export const ChapterUserDocument = gql`
-  query chapterUser($chapterId: Int!) {
-    chapterUser(chapterId: $chapterId) {
-      user {
-        name
-      }
-      chapter_role {
-        name
-      }
-      subscribed
-    }
-  }
-`;
-
-/**
- * __useChapterUserQuery__
- *
- * To run a query within a React component, call `useChapterUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useChapterUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChapterUserQuery({
- *   variables: {
- *      chapterId: // value for 'chapterId'
- *   },
- * });
- */
-export function useChapterUserQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    ChapterUserQuery,
-    ChapterUserQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<ChapterUserQuery, ChapterUserQueryVariables>(
-    ChapterUserDocument,
-    options,
-  );
-}
-export function useChapterUserLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    ChapterUserQuery,
-    ChapterUserQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<ChapterUserQuery, ChapterUserQueryVariables>(
-    ChapterUserDocument,
-    options,
-  );
-}
-export type ChapterUserQueryHookResult = ReturnType<typeof useChapterUserQuery>;
-export type ChapterUserLazyQueryHookResult = ReturnType<
-  typeof useChapterUserLazyQuery
->;
-export type ChapterUserQueryResult = Apollo.QueryResult<
-  ChapterUserQuery,
-  ChapterUserQueryVariables
->;
 export const ChaptersDocument = gql`
   query chapters {
     chapters {
@@ -2410,9 +2353,10 @@ export const ChaptersDocument = gql`
         start_at
         ends_at
         name
+        invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }
@@ -2632,6 +2576,7 @@ export const CreateChapterDocument = gql`
       region
       country
       chat_url
+      has_calendar
     }
   }
 `;
@@ -2682,7 +2627,7 @@ export const CreateChapterCalendarDocument = gql`
   mutation createChapterCalendar($chapterId: Int!) {
     createChapterCalendar(id: $chapterId) {
       id
-      calendar_id
+      has_calendar
     }
   }
 `;
@@ -2728,6 +2673,57 @@ export type CreateChapterCalendarMutationResult =
 export type CreateChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
   CreateChapterCalendarMutation,
   CreateChapterCalendarMutationVariables
+>;
+export const UnlinkChapterCalendarDocument = gql`
+  mutation unlinkChapterCalendar($chapterId: Int!) {
+    unlinkChapterCalendar(id: $chapterId) {
+      id
+      has_calendar
+    }
+  }
+`;
+export type UnlinkChapterCalendarMutationFn = Apollo.MutationFunction<
+  UnlinkChapterCalendarMutation,
+  UnlinkChapterCalendarMutationVariables
+>;
+
+/**
+ * __useUnlinkChapterCalendarMutation__
+ *
+ * To run a mutation, you first call `useUnlinkChapterCalendarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlinkChapterCalendarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlinkChapterCalendarMutation, { data, loading, error }] = useUnlinkChapterCalendarMutation({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useUnlinkChapterCalendarMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UnlinkChapterCalendarMutation,
+    UnlinkChapterCalendarMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UnlinkChapterCalendarMutation,
+    UnlinkChapterCalendarMutationVariables
+  >(UnlinkChapterCalendarDocument, options);
+}
+export type UnlinkChapterCalendarMutationHookResult = ReturnType<
+  typeof useUnlinkChapterCalendarMutation
+>;
+export type UnlinkChapterCalendarMutationResult =
+  Apollo.MutationResult<UnlinkChapterCalendarMutation>;
+export type UnlinkChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
+  UnlinkChapterCalendarMutation,
+  UnlinkChapterCalendarMutationVariables
 >;
 export const UpdateChapterDocument = gql`
   mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
@@ -3067,7 +3063,7 @@ export const DashboardChapterDocument = gql`
       logo_url
       banner_url
       chat_url
-      calendar_id
+      has_calendar
       events {
         id
         name
@@ -3276,6 +3272,62 @@ export type DashboardChapterUsersQueryResult = Apollo.QueryResult<
   DashboardChapterUsersQuery,
   DashboardChapterUsersQueryVariables
 >;
+export const TestChapterCalendarAccessDocument = gql`
+  query testChapterCalendarAccess($chapterId: Int!) {
+    testChapterCalendarAccess(id: $chapterId)
+  }
+`;
+
+/**
+ * __useTestChapterCalendarAccessQuery__
+ *
+ * To run a query within a React component, call `useTestChapterCalendarAccessQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTestChapterCalendarAccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTestChapterCalendarAccessQuery({
+ *   variables: {
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useTestChapterCalendarAccessQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >(TestChapterCalendarAccessDocument, options);
+}
+export function useTestChapterCalendarAccessLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    TestChapterCalendarAccessQuery,
+    TestChapterCalendarAccessQueryVariables
+  >(TestChapterCalendarAccessDocument, options);
+}
+export type TestChapterCalendarAccessQueryHookResult = ReturnType<
+  typeof useTestChapterCalendarAccessQuery
+>;
+export type TestChapterCalendarAccessLazyQueryHookResult = ReturnType<
+  typeof useTestChapterCalendarAccessLazyQuery
+>;
+export type TestChapterCalendarAccessQueryResult = Apollo.QueryResult<
+  TestChapterCalendarAccessQuery,
+  TestChapterCalendarAccessQueryVariables
+>;
 export const CreateEventDocument = gql`
   mutation createEvent(
     $chapterId: Int!
@@ -3290,6 +3342,7 @@ export const CreateEventDocument = gql`
       url
       streaming_url
       capacity
+      has_calendar_event
     }
   }
 `;
@@ -3400,7 +3453,7 @@ export const CreateCalendarEventDocument = gql`
   mutation createCalendarEvent($eventId: Int!) {
     createCalendarEvent(id: $eventId) {
       id
-      calendar_event_id
+      has_calendar_event
     }
   }
 `;
@@ -3548,108 +3601,161 @@ export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<
   DeleteEventMutation,
   DeleteEventMutationVariables
 >;
-export const ConfirmRsvpDocument = gql`
-  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
-    confirmRsvp(eventId: $eventId, userId: $userId) {
-      rsvp {
+export const ConfirmAttendeeDocument = gql`
+  mutation confirmAttendee($eventId: Int!, $userId: Int!) {
+    confirmAttendee(eventId: $eventId, userId: $userId) {
+      attendance {
         updated_at
         name
       }
     }
   }
 `;
-export type ConfirmRsvpMutationFn = Apollo.MutationFunction<
-  ConfirmRsvpMutation,
-  ConfirmRsvpMutationVariables
+export type ConfirmAttendeeMutationFn = Apollo.MutationFunction<
+  ConfirmAttendeeMutation,
+  ConfirmAttendeeMutationVariables
 >;
 
 /**
- * __useConfirmRsvpMutation__
+ * __useConfirmAttendeeMutation__
  *
- * To run a mutation, you first call `useConfirmRsvpMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useConfirmRsvpMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useConfirmAttendeeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmAttendeeMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [confirmRsvpMutation, { data, loading, error }] = useConfirmRsvpMutation({
+ * const [confirmAttendeeMutation, { data, loading, error }] = useConfirmAttendeeMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
  *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useConfirmRsvpMutation(
+export function useConfirmAttendeeMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    ConfirmRsvpMutation,
-    ConfirmRsvpMutationVariables
+    ConfirmAttendeeMutation,
+    ConfirmAttendeeMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<ConfirmRsvpMutation, ConfirmRsvpMutationVariables>(
-    ConfirmRsvpDocument,
-    options,
-  );
+  return Apollo.useMutation<
+    ConfirmAttendeeMutation,
+    ConfirmAttendeeMutationVariables
+  >(ConfirmAttendeeDocument, options);
 }
-export type ConfirmRsvpMutationHookResult = ReturnType<
-  typeof useConfirmRsvpMutation
+export type ConfirmAttendeeMutationHookResult = ReturnType<
+  typeof useConfirmAttendeeMutation
 >;
-export type ConfirmRsvpMutationResult =
-  Apollo.MutationResult<ConfirmRsvpMutation>;
-export type ConfirmRsvpMutationOptions = Apollo.BaseMutationOptions<
-  ConfirmRsvpMutation,
-  ConfirmRsvpMutationVariables
+export type ConfirmAttendeeMutationResult =
+  Apollo.MutationResult<ConfirmAttendeeMutation>;
+export type ConfirmAttendeeMutationOptions = Apollo.BaseMutationOptions<
+  ConfirmAttendeeMutation,
+  ConfirmAttendeeMutationVariables
 >;
-export const DeleteRsvpDocument = gql`
-  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
-    deleteRsvp(eventId: $eventId, userId: $userId)
+export const DeleteAttendeeDocument = gql`
+  mutation deleteAttendee($eventId: Int!, $userId: Int!) {
+    deleteAttendee(eventId: $eventId, userId: $userId)
   }
 `;
-export type DeleteRsvpMutationFn = Apollo.MutationFunction<
-  DeleteRsvpMutation,
-  DeleteRsvpMutationVariables
+export type DeleteAttendeeMutationFn = Apollo.MutationFunction<
+  DeleteAttendeeMutation,
+  DeleteAttendeeMutationVariables
 >;
 
 /**
- * __useDeleteRsvpMutation__
+ * __useDeleteAttendeeMutation__
  *
- * To run a mutation, you first call `useDeleteRsvpMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRsvpMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteAttendeeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAttendeeMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteRsvpMutation, { data, loading, error }] = useDeleteRsvpMutation({
+ * const [deleteAttendeeMutation, { data, loading, error }] = useDeleteAttendeeMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
  *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useDeleteRsvpMutation(
+export function useDeleteAttendeeMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    DeleteRsvpMutation,
-    DeleteRsvpMutationVariables
+    DeleteAttendeeMutation,
+    DeleteAttendeeMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<DeleteRsvpMutation, DeleteRsvpMutationVariables>(
-    DeleteRsvpDocument,
-    options,
-  );
+  return Apollo.useMutation<
+    DeleteAttendeeMutation,
+    DeleteAttendeeMutationVariables
+  >(DeleteAttendeeDocument, options);
 }
-export type DeleteRsvpMutationHookResult = ReturnType<
-  typeof useDeleteRsvpMutation
+export type DeleteAttendeeMutationHookResult = ReturnType<
+  typeof useDeleteAttendeeMutation
 >;
-export type DeleteRsvpMutationResult =
-  Apollo.MutationResult<DeleteRsvpMutation>;
-export type DeleteRsvpMutationOptions = Apollo.BaseMutationOptions<
-  DeleteRsvpMutation,
-  DeleteRsvpMutationVariables
+export type DeleteAttendeeMutationResult =
+  Apollo.MutationResult<DeleteAttendeeMutation>;
+export type DeleteAttendeeMutationOptions = Apollo.BaseMutationOptions<
+  DeleteAttendeeMutation,
+  DeleteAttendeeMutationVariables
+>;
+export const MoveAttendeeToWaitlistDocument = gql`
+  mutation moveAttendeeToWaitlist($eventId: Int!, $userId: Int!) {
+    moveAttendeeToWaitlist(eventId: $eventId, userId: $userId) {
+      attendance {
+        name
+      }
+    }
+  }
+`;
+export type MoveAttendeeToWaitlistMutationFn = Apollo.MutationFunction<
+  MoveAttendeeToWaitlistMutation,
+  MoveAttendeeToWaitlistMutationVariables
+>;
+
+/**
+ * __useMoveAttendeeToWaitlistMutation__
+ *
+ * To run a mutation, you first call `useMoveAttendeeToWaitlistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveAttendeeToWaitlistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveAttendeeToWaitlistMutation, { data, loading, error }] = useMoveAttendeeToWaitlistMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useMoveAttendeeToWaitlistMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    MoveAttendeeToWaitlistMutation,
+    MoveAttendeeToWaitlistMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    MoveAttendeeToWaitlistMutation,
+    MoveAttendeeToWaitlistMutationVariables
+  >(MoveAttendeeToWaitlistDocument, options);
+}
+export type MoveAttendeeToWaitlistMutationHookResult = ReturnType<
+  typeof useMoveAttendeeToWaitlistMutation
+>;
+export type MoveAttendeeToWaitlistMutationResult =
+  Apollo.MutationResult<MoveAttendeeToWaitlistMutation>;
+export type MoveAttendeeToWaitlistMutationOptions = Apollo.BaseMutationOptions<
+  MoveAttendeeToWaitlistMutation,
+  MoveAttendeeToWaitlistMutationVariables
 >;
 export const SendEventInviteDocument = gql`
   mutation sendEventInvite($eventId: Int!) {
@@ -3700,8 +3806,8 @@ export type SendEventInviteMutationOptions = Apollo.BaseMutationOptions<
   SendEventInviteMutationVariables
 >;
 export const DashboardEventsDocument = gql`
-  query dashboardEvents($showCanceled: Boolean) {
-    dashboardEvents(showCanceled: $showCanceled) {
+  query dashboardEvents {
+    dashboardEvents {
       id
       name
       canceled
@@ -3733,7 +3839,6 @@ export const DashboardEventsDocument = gql`
  * @example
  * const { data, loading, error } = useDashboardEventsQuery({
  *   variables: {
- *      showCanceled: // value for 'showCanceled'
  *   },
  * });
  */
@@ -3785,11 +3890,11 @@ export const DashboardEventDocument = gql`
       start_at
       ends_at
       image_url
-      calendar_event_id
+      has_calendar_event
       chapter {
         id
         name
-        calendar_id
+        has_calendar
       }
       sponsors {
         sponsor {
@@ -3811,7 +3916,7 @@ export const DashboardEventDocument = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {
@@ -4515,6 +4620,57 @@ export type UpdateVenueMutationOptions = Apollo.BaseMutationOptions<
   UpdateVenueMutation,
   UpdateVenueMutationVariables
 >;
+export const DeleteVenueDocument = gql`
+  mutation deleteVenue($venueId: Int!, $chapterId: Int!) {
+    deleteVenue(_onlyUsedForAuth: $chapterId, id: $venueId) {
+      id
+    }
+  }
+`;
+export type DeleteVenueMutationFn = Apollo.MutationFunction<
+  DeleteVenueMutation,
+  DeleteVenueMutationVariables
+>;
+
+/**
+ * __useDeleteVenueMutation__
+ *
+ * To run a mutation, you first call `useDeleteVenueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVenueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVenueMutation, { data, loading, error }] = useDeleteVenueMutation({
+ *   variables: {
+ *      venueId: // value for 'venueId'
+ *      chapterId: // value for 'chapterId'
+ *   },
+ * });
+ */
+export function useDeleteVenueMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteVenueMutation,
+    DeleteVenueMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteVenueMutation, DeleteVenueMutationVariables>(
+    DeleteVenueDocument,
+    options,
+  );
+}
+export type DeleteVenueMutationHookResult = ReturnType<
+  typeof useDeleteVenueMutation
+>;
+export type DeleteVenueMutationResult =
+  Apollo.MutationResult<DeleteVenueMutation>;
+export type DeleteVenueMutationOptions = Apollo.BaseMutationOptions<
+  DeleteVenueMutation,
+  DeleteVenueMutationVariables
+>;
 export const DashboardVenuesDocument = gql`
   query dashboardVenues {
     dashboardVenues {
@@ -4651,106 +4807,109 @@ export type VenueQueryResult = Apollo.QueryResult<
   VenueQuery,
   VenueQueryVariables
 >;
-export const RsvpToEventDocument = gql`
-  mutation rsvpToEvent($eventId: Int!, $chapterId: Int!) {
-    rsvpEvent(eventId: $eventId, chapterId: $chapterId) {
+export const AttendEventDocument = gql`
+  mutation attendEvent($eventId: Int!, $chapterId: Int!) {
+    attendEvent(eventId: $eventId, chapterId: $chapterId) {
       updated_at
+      attendance {
+        name
+      }
     }
   }
 `;
-export type RsvpToEventMutationFn = Apollo.MutationFunction<
-  RsvpToEventMutation,
-  RsvpToEventMutationVariables
+export type AttendEventMutationFn = Apollo.MutationFunction<
+  AttendEventMutation,
+  AttendEventMutationVariables
 >;
 
 /**
- * __useRsvpToEventMutation__
+ * __useAttendEventMutation__
  *
- * To run a mutation, you first call `useRsvpToEventMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRsvpToEventMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAttendEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAttendEventMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [rsvpToEventMutation, { data, loading, error }] = useRsvpToEventMutation({
+ * const [attendEventMutation, { data, loading, error }] = useAttendEventMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
  *      chapterId: // value for 'chapterId'
  *   },
  * });
  */
-export function useRsvpToEventMutation(
+export function useAttendEventMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    RsvpToEventMutation,
-    RsvpToEventMutationVariables
+    AttendEventMutation,
+    AttendEventMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<RsvpToEventMutation, RsvpToEventMutationVariables>(
-    RsvpToEventDocument,
+  return Apollo.useMutation<AttendEventMutation, AttendEventMutationVariables>(
+    AttendEventDocument,
     options,
   );
 }
-export type RsvpToEventMutationHookResult = ReturnType<
-  typeof useRsvpToEventMutation
+export type AttendEventMutationHookResult = ReturnType<
+  typeof useAttendEventMutation
 >;
-export type RsvpToEventMutationResult =
-  Apollo.MutationResult<RsvpToEventMutation>;
-export type RsvpToEventMutationOptions = Apollo.BaseMutationOptions<
-  RsvpToEventMutation,
-  RsvpToEventMutationVariables
+export type AttendEventMutationResult =
+  Apollo.MutationResult<AttendEventMutation>;
+export type AttendEventMutationOptions = Apollo.BaseMutationOptions<
+  AttendEventMutation,
+  AttendEventMutationVariables
 >;
-export const CancelRsvpDocument = gql`
-  mutation cancelRsvp($eventId: Int!) {
-    cancelRsvp(eventId: $eventId) {
+export const CancelAttendanceDocument = gql`
+  mutation cancelAttendance($eventId: Int!) {
+    cancelAttendance(eventId: $eventId) {
       updated_at
     }
   }
 `;
-export type CancelRsvpMutationFn = Apollo.MutationFunction<
-  CancelRsvpMutation,
-  CancelRsvpMutationVariables
+export type CancelAttendanceMutationFn = Apollo.MutationFunction<
+  CancelAttendanceMutation,
+  CancelAttendanceMutationVariables
 >;
 
 /**
- * __useCancelRsvpMutation__
+ * __useCancelAttendanceMutation__
  *
- * To run a mutation, you first call `useCancelRsvpMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCancelRsvpMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCancelAttendanceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelAttendanceMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [cancelRsvpMutation, { data, loading, error }] = useCancelRsvpMutation({
+ * const [cancelAttendanceMutation, { data, loading, error }] = useCancelAttendanceMutation({
  *   variables: {
  *      eventId: // value for 'eventId'
  *   },
  * });
  */
-export function useCancelRsvpMutation(
+export function useCancelAttendanceMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    CancelRsvpMutation,
-    CancelRsvpMutationVariables
+    CancelAttendanceMutation,
+    CancelAttendanceMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<CancelRsvpMutation, CancelRsvpMutationVariables>(
-    CancelRsvpDocument,
-    options,
-  );
+  return Apollo.useMutation<
+    CancelAttendanceMutation,
+    CancelAttendanceMutationVariables
+  >(CancelAttendanceDocument, options);
 }
-export type CancelRsvpMutationHookResult = ReturnType<
-  typeof useCancelRsvpMutation
+export type CancelAttendanceMutationHookResult = ReturnType<
+  typeof useCancelAttendanceMutation
 >;
-export type CancelRsvpMutationResult =
-  Apollo.MutationResult<CancelRsvpMutation>;
-export type CancelRsvpMutationOptions = Apollo.BaseMutationOptions<
-  CancelRsvpMutation,
-  CancelRsvpMutationVariables
+export type CancelAttendanceMutationResult =
+  Apollo.MutationResult<CancelAttendanceMutation>;
+export type CancelAttendanceMutationOptions = Apollo.BaseMutationOptions<
+  CancelAttendanceMutation,
+  CancelAttendanceMutationVariables
 >;
 export const SubscribeToEventDocument = gql`
   mutation subscribeToEvent($eventId: Int!) {
@@ -4853,8 +5012,16 @@ export type UnsubscribeFromEventMutationOptions = Apollo.BaseMutationOptions<
   UnsubscribeFromEventMutationVariables
 >;
 export const PaginatedEventsWithTotalDocument = gql`
-  query PaginatedEventsWithTotal($limit: Int, $offset: Int) {
-    paginatedEventsWithTotal(limit: $limit, offset: $offset) {
+  query PaginatedEventsWithTotal(
+    $limit: Int
+    $offset: Int
+    $showOnlyUpcoming: Boolean
+  ) {
+    paginatedEventsWithTotal(
+      limit: $limit
+      offset: $offset
+      showOnlyUpcoming: $showOnlyUpcoming
+    ) {
       total
       events {
         id
@@ -4889,6 +5056,7 @@ export const PaginatedEventsWithTotalDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
+ *      showOnlyUpcoming: // value for 'showOnlyUpcoming'
  *   },
  * });
  */
@@ -4964,7 +5132,7 @@ export const EventDocument = gql`
         country
       }
       event_users {
-        rsvp {
+        attendance {
           name
         }
         user {
@@ -5017,78 +5185,6 @@ export type EventQueryResult = Apollo.QueryResult<
   EventQuery,
   EventQueryVariables
 >;
-export const HomeDocument = gql`
-  query home($limit: Int, $offset: Int) {
-    paginatedEvents(limit: $limit, offset: $offset) {
-      id
-      name
-      description
-      invite_only
-      canceled
-      start_at
-      ends_at
-      image_url
-      chapter {
-        id
-        name
-        category
-      }
-    }
-    chapters {
-      id
-      name
-      description
-      banner_url
-      logo_url
-      events {
-        id
-        canceled
-        start_at
-        ends_at
-        name
-      }
-      chapter_users {
-        subscribed
-      }
-    }
-  }
-`;
-
-/**
- * __useHomeQuery__
- *
- * To run a query within a React component, call `useHomeQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHomeQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
- *   },
- * });
- */
-export function useHomeQuery(
-  baseOptions?: Apollo.QueryHookOptions<HomeQuery, HomeQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
-}
-export function useHomeLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<HomeQuery, HomeQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<HomeQuery, HomeQueryVariables>(
-    HomeDocument,
-    options,
-  );
-}
-export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
-export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
-export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 export const ToggleAutoSubscribeDocument = gql`
   mutation toggleAutoSubscribe {
     toggleAutoSubscribe {
@@ -5266,11 +5362,8 @@ export const UserDownloadDocument = gql`
       user_events {
         subscribed
         updated_at
-        rsvp {
+        attendance {
           updated_at
-          name
-        }
-        rsvp {
           name
         }
         event_role {

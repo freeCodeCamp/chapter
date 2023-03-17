@@ -4,42 +4,40 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
 
 import {
-  useChapterQuery,
   useChapterVenuesQuery,
   useSponsorsQuery,
   VenueType,
 } from '../../../../generated/graphql';
 
+import { AttendanceNames } from '../../../../../../common/attendance';
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
+import { Input } from '../../../../components/Form/Input';
 import EventChapterSelect from './EventChapterSelect';
 import EventDatesForm from './EventDatesForm';
 import EventCancelButton from './EventCancelButton';
 import EventSponsorsForm from './EventSponsorsForm';
 import EventVenueForm from './EventVenueForm';
-import { EventFormProps, fields, EventFormData } from './EventFormUtils';
+import {
+  EventFormProps,
+  fields,
+  EventFormData,
+  resolver,
+  IEventData,
+} from './EventFormUtils';
+
+const minCapacity = (event?: IEventData) => {
+  return (
+    event?.event_users?.filter(
+      ({ attendance: { name } }) => name === AttendanceNames.confirmed,
+    ).length ?? 0
+  );
+};
 
 const EventForm: React.FC<EventFormProps> = (props) => {
-  const {
-    onSubmit,
-    data,
-    submitText,
-    chapterId: initialChapterId,
-    loadingText,
-    formType,
-  } = props;
-  const isChaptersDropdownNeeded = typeof initialChapterId === 'undefined';
-
-  const queryOptions = isChaptersDropdownNeeded
-    ? { skip: true }
-    : { variables: { chapterId: initialChapterId } };
-
-  const {
-    loading: loadingChapter,
-    error: errorChapter,
-    data: dataChapter,
-  } = useChapterQuery(queryOptions);
+  const { onSubmit, data, submitText, chapter, loadingText, formType } = props;
+  const displayChaptersDropdown = typeof chapter === 'undefined';
 
   const sponsorQuery = useSponsorsQuery();
 
@@ -49,7 +47,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       return {
         venue_type: VenueType.PhysicalAndOnline,
         venue_id: 0,
-        chapter_id: initialChapterId,
+        chapter_id: chapter?.id,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
       };
@@ -66,15 +64,21 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       venue_id: data.venue_id ?? 0,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      chapter_id: initialChapterId,
+      chapter_id: chapter?.id,
+      attendees:
+        data.event_users?.filter(
+          ({ attendance: { name } }) => name === AttendanceNames.confirmed,
+        ).length ?? 0,
     };
   }, []);
 
   const formMethods = useForm<EventFormData>({
     defaultValues,
+    mode: 'all',
+    resolver,
   });
   const {
-    formState: { isDirty },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     register,
     watch,
@@ -98,28 +102,26 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         submitLabel={submitText}
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
-        {!isChaptersDropdownNeeded || data ? (
-          loadingChapter ? (
-            <Text>Loading Chapter</Text>
-          ) : errorChapter || !dataChapter?.chapter ? (
-            <Text>Error loading chapter</Text>
-          ) : (
-            <Heading>{dataChapter.chapter.name}</Heading>
-          )
+        {!displayChaptersDropdown || data ? (
+          <Heading>{chapter?.name}</Heading>
         ) : (
           <EventChapterSelect loading={loading} />
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
+          const error = errors[key]?.message;
           return (
             <Component
               key={key}
               type={type}
-              label={`${label}${isRequired ? ' (Required)' : ''}`}
+              label={label}
               placeholder={placeholder}
               isRequired={isRequired}
               isDisabled={loading}
-              {...register(key)}
+              error={error}
+              {...register(key, {
+                ...(type === 'number' && { valueAsNumber: true }),
+              })}
             />
           );
         })}
@@ -131,14 +133,29 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           startAt={defaultValues.start_at}
         />
 
-        <Checkbox
-          data-cy="invite-only-checkbox"
-          isChecked={inviteOnly}
-          disabled={loading}
-          {...register('invite_only')}
-        >
-          Invite only
-        </Checkbox>
+        <Grid as="fieldset" width="100%" gap="4">
+          <Text srOnly as="legend">
+            Attendee restrictions
+          </Text>
+          <Input
+            key="capacity"
+            type="number"
+            label="Capacity"
+            isRequired={true}
+            isDisabled={loading}
+            error={errors['capacity']?.message}
+            {...register('capacity', { valueAsNumber: true })}
+            min={minCapacity(data)}
+          />
+          <Checkbox
+            data-cy="invite-only-checkbox"
+            isChecked={inviteOnly}
+            disabled={loading}
+            {...register('invite_only')}
+          >
+            Invite only
+          </Checkbox>
+        </Grid>
 
         <EventVenueForm
           venueId={defaultValues.venue_id}
@@ -151,13 +168,18 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         {data?.canceled && <Text color="red.500">Event canceled</Text>}
 
         {formType === 'new' && (
-          <Checkbox
-            defaultChecked={true}
-            disabled={loading}
-            {...register('attend_event')}
-          >
-            Attend Event
-          </Checkbox>
+          <Grid as="fieldset" width="100%">
+            <Text srOnly as="legend">
+              Your interaction with the event
+            </Text>
+            <Checkbox
+              defaultChecked={true}
+              disabled={loading}
+              {...register('attend_event')}
+            >
+              Attend Event
+            </Checkbox>
+          </Grid>
         )}
 
         <Grid
@@ -168,7 +190,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           <Button
             colorScheme="blue"
             type="submit"
-            isDisabled={!isDirty || loading}
+            isDisabled={!isDirty || loading || !isValid}
             isLoading={loading}
             loadingText={loadingText}
           >

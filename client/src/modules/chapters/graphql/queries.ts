@@ -19,26 +19,10 @@ export const CHAPTER = gql`
         description
         start_at
         ends_at
-        invite_only
-        canceled
         image_url
         invite_only
         canceled
       }
-    }
-  }
-`;
-
-export const CHAPTER_USER = gql`
-  query chapterUser($chapterId: Int!) {
-    chapterUser(chapterId: $chapterId) {
-      user {
-        name
-      }
-      chapter_role {
-        name
-      }
-      subscribed
     }
   }
 `;
@@ -57,9 +41,10 @@ export const CHAPTERS = gql`
         start_at
         ends_at
         name
+        invite_only
       }
-      chapter_users {
-        subscribed
+      _count {
+        chapter_users
       }
     }
   }

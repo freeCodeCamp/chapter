@@ -14,6 +14,7 @@ export const createEvent = gql`
       url
       streaming_url
       capacity
+      has_calendar_event
     }
   }
 `;
@@ -37,7 +38,7 @@ export const createCalendarEvent = gql`
   mutation createCalendarEvent($eventId: Int!) {
     createCalendarEvent(id: $eventId) {
       id
-      calendar_event_id
+      has_calendar_event
     }
   }
 `;
@@ -59,10 +60,10 @@ export const deleteEvent = gql`
   }
 `;
 
-export const confirmRSVP = gql`
-  mutation confirmRsvp($eventId: Int!, $userId: Int!) {
-    confirmRsvp(eventId: $eventId, userId: $userId) {
-      rsvp {
+export const confirmAttendee = gql`
+  mutation confirmAttendee($eventId: Int!, $userId: Int!) {
+    confirmAttendee(eventId: $eventId, userId: $userId) {
+      attendance {
         updated_at
         name
       }
@@ -70,9 +71,19 @@ export const confirmRSVP = gql`
   }
 `;
 
-export const deleteRSVP = gql`
-  mutation deleteRsvp($eventId: Int!, $userId: Int!) {
-    deleteRsvp(eventId: $eventId, userId: $userId)
+export const deleteAttendee = gql`
+  mutation deleteAttendee($eventId: Int!, $userId: Int!) {
+    deleteAttendee(eventId: $eventId, userId: $userId)
+  }
+`;
+
+export const moveAttendeeToWaitlist = gql`
+  mutation moveAttendeeToWaitlist($eventId: Int!, $userId: Int!) {
+    moveAttendeeToWaitlist(eventId: $eventId, userId: $userId) {
+      attendance {
+        name
+      }
+    }
   }
 `;
 

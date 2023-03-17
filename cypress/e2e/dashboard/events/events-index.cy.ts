@@ -178,9 +178,7 @@ describe('spec needing owner', () => {
     cy.findByRole('link', { name: 'Edit' }).click();
     const titleAddon = ' new title';
 
-    cy.findByRole('textbox', { name: 'Event Title (Required)' }).type(
-      titleAddon,
-    );
+    cy.findByRole('textbox', { name: 'Event Title' }).type(titleAddon);
     cy.findByRole('form', { name: 'Save Event Changes' })
       .findByRole('button', {
         name: 'Save Event Changes',
@@ -212,7 +210,7 @@ describe('spec needing owner', () => {
     });
 
     cy.findByRole('button', { name: 'Delete' }).click();
-    cy.findByRole('button', { name: 'Delete' }).click();
+    cy.findByRole('button', { name: 'Delete event' }).click();
 
     cy.get('[data-cy="events-dashboard"]').should('be.visible');
     cy.get<string>('@eventTitle').then((eventTitle) => {
@@ -235,7 +233,7 @@ describe('spec needing owner', () => {
       .as('eventTitle');
 
     cy.findByRole('button', { name: 'Cancel' }).click();
-    cy.findByRole('alertdialog').findByText('Confirm').click();
+    cy.findByRole('alertdialog').findByText('Cancel event').click();
 
     cy.waitUntilMail().mhFirst().as('emails');
 
@@ -244,7 +242,7 @@ describe('spec needing owner', () => {
       .then((eventId) => cy.task<EventUsers>('getEventUsers', eventId))
       .then((eventUsers) => {
         const expectedEmails = eventUsers
-          .filter(({ rsvp }) => rsvp.name !== 'no')
+          .filter(({ attendance }) => attendance.name !== 'no')
           .map(({ user: { email } }) => email);
         cy.get('@emails')
           .mhGetRecipients()

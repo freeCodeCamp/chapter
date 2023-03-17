@@ -22,7 +22,7 @@ export const DASHBOARD_CHAPTER = gql`
       logo_url
       banner_url
       chat_url
-      calendar_id
+      has_calendar
       events {
         id
         name
@@ -79,5 +79,11 @@ export const DASHBOARD_CHAPTER_USERS = gql`
         user_id
       }
     }
+  }
+`;
+
+export const testChapterCalendarAccess = gql`
+  query testChapterCalendarAccess($chapterId: Int!) {
+    testChapterCalendarAccess(id: $chapterId)
   }
 `;

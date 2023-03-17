@@ -22,14 +22,14 @@ To better communicate and more easily build an API and UI, the current contribut
 | _instance_      | a web server deployment of the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/), managed by an _organization_. | a Docker container running on a web host |
 | _organization_ | a non-profit with multiple _chapters_ | Women Who Code at the sub-domain: `chapter.womenwhocode.org` |
 | _chapter_      | a container for _events_ and _users_  | Women Who Code - New York City |
-| _event_ | a meeting with a specific location and time to which _users_ can RSVP | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
+| _event_ | a meeting with a specific location and time to which _users_ can attend | Coffee And Code - BistroOne, New York City, NY - April 9, 2020 |
 | _role_ | a named definition of permissions to be attached to _users_ for the purpose of granting authorization | Owner, Adminstrator, Organizer, Member |
 | _user_ | an authenticated _user_ who is authorized based on their _role(s)_ | Sally Gold - SallyG@example.com |
 | _visitor_ | an non-authenticated web browser session with view-only access to public content | Anonymous Web Browser Client |
 | _owner_ | the _role_ of a _user_ who can configure the [**_Chapter_** application](https://github.com/freeCodeCamp/chapter/) _instance_ and manage _administrators_ for an entire _organization_ | Women Who Code - Global IT |
 | _administrator_ | the _role_ of a _user_ who can setup and manage _chapters_ and _organizers_ for an _organization_ | Women Who Code - European Administrator |
-| _organizer_ (not MVP) | the _role_ of a _user_ who can manage a _chapter's_ _events_, RSVPs, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
-| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and RSVP to _events_  | Women Who Code - Edinburgh, Local Member |
+| _organizer_ (not MVP) | the _role_ of a _user_ who can manage a _chapter's_ _events_, attendees, communications, and _members_ | Women Who Code - Edinburgh, Local Organizer |
+| _member_ | the _role_ of a _user_ who can follow and receive notifications from a _chapter_ and attend _events_  | Women Who Code - Edinburgh, Local Member |
 
 ## Tech Stack
 
@@ -185,6 +185,11 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/spham67"><img src="https://avatars.githubusercontent.com/u/98799078?v=4?s=100" width="100px;" alt="spham67"/><br /><sub><b>spham67</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=spham67" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.tecforfun.com"><img src="https://avatars.githubusercontent.com/u/10340892?v=4?s=100" width="100px;" alt="Daminda Dinesh W Imaduwa Gamage"/><br /><sub><b>Daminda Dinesh W Imaduwa Gamage</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=dineshigdd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/atosh502"><img src="https://avatars.githubusercontent.com/u/19350071?v=4?s=100" width="100px;" alt="Aashutosh Poudel"/><br /><sub><b>Aashutosh Poudel</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=atosh502" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dianachu18"><img src="https://avatars.githubusercontent.com/u/118970580?v=4?s=100" width="100px;" alt="Diana Chu"/><br /><sub><b>Diana Chu</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=dianachu18" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jamesrcramos"><img src="https://avatars.githubusercontent.com/u/76936793?v=4?s=100" width="100px;" alt="jamesrcramos"/><br /><sub><b>jamesrcramos</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=jamesrcramos" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sneha-afk"><img src="https://avatars.githubusercontent.com/u/55897319?v=4?s=100" width="100px;" alt="Sneha"/><br /><sub><b>Sneha</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=sneha-afk" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

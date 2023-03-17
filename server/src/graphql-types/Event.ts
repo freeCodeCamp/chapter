@@ -5,7 +5,7 @@ import {
   Chapter,
   EventSponsor,
   EventUserWithRelations,
-  EventUserWithRsvpAndUser,
+  EventUserWithAttendanceAndUser,
   Venue,
 } from '.';
 
@@ -15,6 +15,12 @@ registerEnumType(events_venue_type_enum, {
   name: 'VenueType',
   description: 'All possible venue types for an event',
 });
+
+@ObjectType()
+class total {
+  @Field(() => Int)
+  total: number;
+}
 
 @ObjectType()
 export class Event extends BaseObject {
@@ -51,14 +57,7 @@ export class Event extends BaseObject {
   @Field(() => String)
   image_url: string;
 
-  @Field(() => String, { nullable: true })
   calendar_event_id?: string | null;
-}
-
-@ObjectType()
-export class EventWithChapter extends Event {
-  @Field(() => Chapter)
-  chapter: Chapter;
 }
 
 @ObjectType()
@@ -77,12 +76,15 @@ export class EventWithChapterAndVenue extends Event {
 }
 
 @ObjectType()
-export class PaginatedEventsWithTotal {
-  @Field(() => Int)
-  total: number;
+class EventsWithChapters extends Event {
+  @Field(() => Chapter)
+  chapter: Chapter;
+}
 
-  @Field(() => [EventWithChapter])
-  events: EventWithChapter[];
+@ObjectType()
+export class PaginatedEventsWithChapters extends total {
+  @Field(() => [EventsWithChapters])
+  events: EventsWithChapters[];
 }
 
 @ObjectType()
@@ -93,8 +95,8 @@ class EventRelationsWithoutEventUsers extends EventWithChapterAndVenue {
 
 @ObjectType()
 export class EventWithRelationsWithEventUser extends EventRelationsWithoutEventUsers {
-  @Field(() => [EventUserWithRsvpAndUser])
-  event_users: EventUserWithRsvpAndUser[];
+  @Field(() => [EventUserWithAttendanceAndUser])
+  event_users: EventUserWithAttendanceAndUser[];
 }
 
 @ObjectType()

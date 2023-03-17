@@ -21,6 +21,7 @@ describe('event dashboard', () => {
   beforeEach(() => {
     cy.task('seedDb');
     cy.login();
+    cy.mhDeleteAll();
   });
 
   describe('users lists', () => {
@@ -31,7 +32,7 @@ describe('event dashboard', () => {
 
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
       cy.findByRole('alertdialog')
-        .findByRole('button', { name: 'Confirm' })
+        .findByRole('button', { name: 'Confirm user' })
         .click();
 
       cy.waitUntilMail().mhFirst().as('email');
@@ -57,13 +58,48 @@ describe('event dashboard', () => {
       });
     });
 
+    it('moving user to waitlist', () => {
+      cy.visit(`/dashboard/events/${eventId}`);
+      cy.get('[data-cy=attendees]').as('attendees');
+      setUsernameAlias('@attendees');
+
+      cy.get('@attendees').find('[data-cy="move to waitlist"]').first().click();
+      cy.findByRole('alertdialog')
+        .findByRole('button', { name: 'Move user' })
+        .click();
+
+      cy.waitUntilMail().mhFirst().as('email');
+
+      cy.get<string>('@userName').then((userName) => {
+        cy.get('@attendees').not(`:contains(${userName})`);
+        cy.get('[data-cy=waitlist]').contains(userName);
+      });
+
+      cy.get('@email')
+        .mhGetSubject()
+        .should('include', 'You have been put on the waitlist');
+      cy.get('@email')
+        .mhGetBody()
+        .then((body) => body.replace(/=\s\s/g, ''))
+        .should('include', 'changed by the event administrator');
+      cy.get('@email').mhGetBody().should('include', 'now on the waitlist');
+      cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
+        cy.get<string>('@userName').then((userName) => {
+          const userEmail = eventUsers
+            .filter(({ user: { name } }) => name === userName)
+            .map(({ user: { email } }) => email);
+          cy.get('@email').mhGetRecipients().should('have.members', userEmail);
+        });
+      });
+    });
+
     it('removing user should remove user from event', () => {
       cy.visit(`/dashboard/events/${eventId}`);
       cy.get('[data-cy=attendees]').as('attendees');
       setUsernameAlias('@attendees');
 
       cy.get('@attendees').find('[data-cy=remove]').first().click();
-      cy.findByRole('button', { name: 'Delete' }).click();
+      cy.findByRole('button', { name: 'Remove user' }).click();
 
       cy.get<string>('@userName').then((userName) => {
         cy.contains(userName).should('not.exist');
@@ -78,7 +114,8 @@ describe('event dashboard', () => {
       cy.get('@waitlist').find('[data-cy=confirm]').first().click();
 
       cy.intercept(Cypress.env('GQL_URL'), (req) => {
-        expect(req.body?.operationName?.includes('confirmRsvp')).to.be.false;
+        expect(req.body?.operationName?.includes('confirmAttendee')).to.be
+          .false;
       });
       cy.findByRole('alertdialog')
         .findByRole('button', { name: 'Cancel' })
@@ -106,21 +143,24 @@ describe('event dashboard', () => {
       });
     });
 
-    it('prevents members from confirming or removing users', () => {
+    it('prevents members from confirming, moving to waitlist, or removing users', () => {
       // Starting as the instance owner to ensure we can find the attendees
       cy.task<EventUsers>('getEventUsers', eventId).then((eventUsers) => {
         const confirmedUser = eventUsers.find(
-          ({ rsvp: { name } }) => name === 'yes',
+          ({ attendance: { name } }) => name === 'yes',
         ).user;
         const waitlistUser = eventUsers.find(
-          ({ rsvp: { name } }) => name === 'waitlist',
+          ({ attendance: { name } }) => name === 'waitlist',
         ).user;
 
         // Switch to new member before trying to confirm and remove
         cy.login(users.testUser.email);
 
-        cy.deleteRsvp(eventId, confirmedUser.id).then(expectToBeRejected);
-        cy.confirmRsvp(eventId, waitlistUser.id).then(expectToBeRejected);
+        cy.deleteAttendee(eventId, confirmedUser.id).then(expectToBeRejected);
+        cy.moveAttendeeToWaitlist(eventId, confirmedUser.id).then(
+          expectToBeRejected,
+        );
+        cy.confirmAttendee(eventId, waitlistUser.id).then(expectToBeRejected);
       });
     });
   });

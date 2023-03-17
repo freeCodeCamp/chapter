@@ -50,10 +50,10 @@ export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
       noLabel,
       ...rest
     } = props;
-
+    const isError = isInvalid || !!props.error;
     return (
       <FormControl
-        isInvalid={isInvalid || !!props.error}
+        isInvalid={isError}
         isRequired={isRequired} //TODO: determine which inputs are required
         {...outerProps}
       >
@@ -63,8 +63,8 @@ export const Input = forwardRef<HTMLInputElement, NoLabelProps | HasLabelProps>(
           id={name}
           name={name}
           ref={ref}
-          isRequired={isRequired}
           placeholder={placeholder ?? label}
+          isInvalid={isError}
           {...rest}
         />
         <FormErrorMessage>{props.error}</FormErrorMessage>

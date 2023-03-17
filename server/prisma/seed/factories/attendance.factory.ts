@@ -1,9 +1,10 @@
 import { sub } from 'date-fns';
 
+import { AttendanceNames } from '../../../../common/attendance';
 import { prisma } from '../../../src/prisma';
 import { random, randomItems } from '../lib/random';
 
-const createRsvps = async (eventIds: number[], userIds: number[]) => {
+const createAttendance = async (eventIds: number[], userIds: number[]) => {
   for (const eventId of eventIds) {
     const eventUserIds = randomItems(userIds, userIds.length / 2);
     const numberWaiting = 1 + random(eventUserIds.length - 2);
@@ -13,7 +14,11 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
       const on_waitlist = i < numberWaiting;
       const canceled = !on_waitlist && i < numberWaiting + numberCanceled;
       const subscribed = true; // TODO: have some unsubscribed users
-      const rsvpName = on_waitlist ? 'waitlist' : canceled ? 'no' : 'yes';
+      const attendanceName = on_waitlist
+        ? AttendanceNames.waitlist
+        : canceled
+        ? AttendanceNames.canceled
+        : AttendanceNames.confirmed;
 
       await prisma.event_users.create({
         data: {
@@ -24,16 +29,16 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
               name: 'member',
             },
           },
-          rsvp: {
+          attendance: {
             connect: {
-              name: rsvpName,
+              name: attendanceName,
             },
           },
           subscribed: subscribed,
         },
       });
 
-      if (subscribed && rsvpName === 'yes') {
+      if (subscribed && attendanceName === AttendanceNames.confirmed) {
         const event = await prisma.events.findUniqueOrThrow({
           where: { id: eventId },
         });
@@ -57,4 +62,4 @@ const createRsvps = async (eventIds: number[], userIds: number[]) => {
   }
 };
 
-export default createRsvps;
+export default createAttendance;

@@ -1,3 +1,4 @@
+import { LockIcon } from '@chakra-ui/icons';
 import { Tag, Box, Flex, Image, Grid, GridItem, Text } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { isPast } from 'date-fns';
@@ -35,6 +36,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           maxWidth={'8em'}
           maxH={'2em'}
         >
+          <LockIcon marginRight=".25rem" />
           Invite only
         </Tag>
       )}
@@ -87,18 +89,24 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       overflow="hidden"
       width={'full'}
       {...(hasEnded && { opacity: 0.6 })}
+      position="relative"
     >
-      <Image
-        display={['none', 'block']}
-        h={'auto'}
-        w={'200px'}
-        src={event.image_url}
-        objectFit={'cover'}
-      />
+      <Box w="240px" h="120px" display={['none', 'block']} background="gray.85">
+        <Image
+          width="100%"
+          height="100%"
+          src={
+            event.image_url ||
+            'https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg'
+          }
+          fit="cover"
+          fallbackSrc="https://cdn.freecodecamp.org/chapter/brown-curtain-small.jpg"
+          fallbackStrategy="onError"
+        />
+      </Box>
       <Box p="3" py={3} width="full" data-cy="event-card">
         <Grid
           mb="2"
-          lineHeight="tight"
           gridTemplateColumns={'repeat(3, 1fr)'}
           templateAreas={`
           "eventname eventname eventname"
@@ -115,20 +123,20 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             fontSize={'xl'}
             fontWeight={700}
             href={`/events/${event.id}`}
+            _before={{
+              content: '""',
+              position: 'absolute',
+              inset: '0',
+              zIndex: '1',
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
           >
             {event.name}
           </Link>
           <GridItem area={'metatag'}>{metaTag}</GridItem>
-          <Link
-            fontSize={'md'}
-            fontWeight={500}
-            fontFamily={'body'}
-            gridArea={'chaptername'}
-            marginBlock={'2'}
-            href={`/chapters/${event.chapter.id}`}
-          >
-            Chapter: {event.chapter.name}
-          </Link>
           <Text
             opacity={'.8'}
             gridArea={'eventstart'}

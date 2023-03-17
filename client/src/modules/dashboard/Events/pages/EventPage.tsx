@@ -17,14 +17,17 @@ import { useRouter } from 'next/router';
 import React, { Fragment, ReactElement } from 'react';
 
 import {
-  useConfirmRsvpMutation,
-  useDashboardEventQuery,
-  useDeleteRsvpMutation,
-  MutationConfirmRsvpArgs,
-  MutationDeleteRsvpArgs,
-  useCreateCalendarEventMutation,
   useCalendarIntegrationStatusQuery,
+  useConfirmAttendeeMutation,
+  useCreateCalendarEventMutation,
+  useDashboardEventQuery,
+  useDeleteAttendeeMutation,
+  useMoveAttendeeToWaitlistMutation,
+  MutationConfirmAttendeeArgs,
+  MutationDeleteAttendeeArgs,
+  MutationMoveAttendeeToWaitlistArgs,
 } from '../../../../generated/graphql';
+import { AttendanceNames } from '../../../../../../common/attendance';
 import { useParam } from '../../../../hooks/useParam';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
@@ -54,8 +57,11 @@ export const EventPage: NextPageWithLayout = () => {
   });
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery();
-  const [confirmAttendee] = useConfirmRsvpMutation(args(eventId));
-  const [removeAttendee] = useDeleteRsvpMutation(args(eventId));
+  const [confirmAttendee] = useConfirmAttendeeMutation(args(eventId));
+  const [moveAttendeeToWaitlist] = useMoveAttendeeToWaitlistMutation(
+    args(eventId),
+  );
+  const [removeAttendee] = useDeleteAttendeeMutation(args(eventId));
   const [createCalendarEvent, { loading: loadingCalendar }] =
     useCreateCalendarEventMutation(args(eventId));
 
@@ -63,19 +69,38 @@ export const EventPage: NextPageWithLayout = () => {
   const confirmDelete = useConfirmDelete();
 
   const onConfirmAttendee =
-    ({ eventId, userId }: MutationConfirmRsvpArgs) =>
+    ({ eventId, userId }: MutationConfirmAttendeeArgs) =>
     async () => {
-      const ok = await confirm();
+      const ok = await confirm({
+        title: 'Confirm attendee?',
+        body: 'Are you sure you want to confirm the attendee?',
+        buttonText: 'Confirm user',
+      });
       if (ok) confirmAttendee({ variables: { eventId, userId } });
     };
 
   const onRemove =
-    ({ eventId, userId }: MutationDeleteRsvpArgs) =>
+    ({ eventId, userId }: MutationDeleteAttendeeArgs) =>
     async () => {
-      const ok = await confirmDelete();
+      const ok = await confirmDelete({
+        buttonText: 'Remove user',
+        body: 'Are you sure you want to remove this user from the event?',
+        title: 'Remove user from event?',
+      });
       if (ok) removeAttendee({ variables: { eventId, userId } });
     };
 
+  const onMoveToWaitlist =
+    ({ eventId, userId }: MutationMoveAttendeeToWaitlistArgs) =>
+    async () => {
+      const ok = await confirm({
+        body: 'Are you sure you want to move the user to the waitlist?',
+        buttonColor: 'orange',
+        buttonText: 'Move user',
+        title: 'Move user to waitlist?',
+      });
+      if (ok) moveAttendeeToWaitlist({ variables: { eventId, userId } });
+    };
   const isLoading = loading || !data || loadingStatus;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
@@ -86,19 +111,26 @@ export const EventPage: NextPageWithLayout = () => {
   const userLists = [
     {
       title: 'Attendees',
-      statusFilter: 'yes',
-      action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
+      statusFilter: AttendanceNames.confirmed,
+      action: [
+        { title: 'Remove', onClick: onRemove, colorScheme: 'red' },
+        {
+          title: 'Move to waitlist',
+          onClick: onMoveToWaitlist,
+          colorScheme: 'orange',
+        },
+      ],
     },
     {
       title: 'Waitlist',
-      statusFilter: 'waitlist',
+      statusFilter: AttendanceNames.waitlist,
       action: [
         { title: 'Confirm', onClick: onConfirmAttendee, colorScheme: 'blue' },
       ],
     },
     {
       title: 'Canceled',
-      statusFilter: 'no',
+      statusFilter: AttendanceNames.canceled,
       action: [{ title: 'Remove', onClick: onRemove, colorScheme: 'red' }],
     },
   ];
@@ -206,12 +238,12 @@ export const EventPage: NextPageWithLayout = () => {
         )}
 
         {integrationStatus !== false &&
-          data.dashboardEvent.chapter.calendar_id && (
+          data.dashboardEvent.chapter.has_calendar && (
             <HStack>
               <Text>Event created in calendar:</Text>
               {loadingCalendar ? (
                 <Spinner size="sm" />
-              ) : data.dashboardEvent.calendar_event_id ? (
+              ) : data.dashboardEvent.has_calendar_event ? (
                 <CheckIcon boxSize="5" />
               ) : (
                 <CloseIcon boxSize="4" />
@@ -238,7 +270,7 @@ export const EventPage: NextPageWithLayout = () => {
         {userLists.map(({ title, statusFilter, action }) => {
           const users = data.dashboardEvent
             ? data.dashboardEvent.event_users.filter(
-                ({ rsvp }) => rsvp.name === statusFilter,
+                ({ attendance }) => attendance.name === statusFilter,
               )
             : [];
           return (
@@ -280,12 +312,18 @@ export const EventPage: NextPageWithLayout = () => {
                 />
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-                {users.map(({ event_role, user, rsvp }, index) => (
+                {users.map(({ attendance, event_role, user }, index) => (
                   // For a single event, each user can only have one event_user
                   // entry, so we can use the user id as the key.
                   <HStack key={user.id}>
                     <DataTable
-                      title={'Attendee: ' + rsvp.name.toUpperCase()}
+                      title={
+                        {
+                          [AttendanceNames.confirmed]: 'Attendee',
+                          [AttendanceNames.waitlist]: 'On waitlist',
+                          [AttendanceNames.canceled]: 'Canceled',
+                        }[attendance.name]
+                      }
                       data={[users[index]]}
                       keys={['type', 'action'] as const}
                       showHeader={false}

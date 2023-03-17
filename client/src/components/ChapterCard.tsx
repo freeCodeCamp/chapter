@@ -1,8 +1,17 @@
-import { Grid, Text, GridItem, Flex, Box, Image } from '@chakra-ui/react';
+import {
+  Grid,
+  Text,
+  GridItem,
+  Flex,
+  Box,
+  Image,
+  Tooltip,
+} from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import React from 'react';
 
 import { isPast } from 'date-fns';
+import { LockIcon } from '@chakra-ui/icons';
 import { ChaptersQuery } from '../generated/graphql';
 
 type ChapterCardProps = {
@@ -48,7 +57,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           marginRight={'1em'}
           paddingBlock={'.5em'}
           color={'gray.00'}
-          bgGradient="linear(to-b,hsl(240 14% 27%/ .9),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
+          bgImage="linear-gradient(to bottom,hsl(240 14% 27%/ .9),  hsl(240 14% 10%/ .9), hsl(240 14% 10%))"
           alignItems="center"
           templateAreas={`
           ". . ."
@@ -85,7 +94,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             paddingInline="1.5em"
           >
             <Text fontWeight="bold">
-              Members: {chapter.chapter_users.length}
+              Members: {chapter._count.chapter_users}
             </Text>
           </GridItem>
           <Text
@@ -115,26 +124,39 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
             Next Events
           </Text>
           <GridItem area="event" paddingInline={'1em'}>
-            {chapter.events.map(({ id, name, start_at }) => (
-              <Flex
-                paddingBlock={'.5em'}
-                paddingInline={'.3em'}
-                justifyContent={'space-between'}
-                key={id}
-              >
-                <Link
-                  href={`/events/${id}`}
-                  mt="2"
-                  fontWeight={600}
-                  fontSize={['sm', 'md', 'lg']}
+            {chapter.events
+              .filter(({ ends_at }) => !isPast(new Date(ends_at)))
+              .map(({ id, name, start_at, invite_only }) => (
+                <Flex
+                  paddingBlock={'.5em'}
+                  paddingInline={'.3em'}
+                  justifyContent={'space-between'}
+                  alignItems="center"
+                  key={id}
                 >
-                  {name}
-                </Link>
-                <Text fontWeight={600} fontSize={['sm', 'md', 'lg']}>
-                  {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
-                </Text>
-              </Flex>
-            ))}
+                  <Link
+                    href={`/events/${id}`}
+                    mt="2"
+                    fontWeight={600}
+                    fontSize={['sm', 'md', 'lg']}
+                  >
+                    {name}
+                  </Link>
+                  {invite_only && (
+                    <Tooltip label="Invite only">
+                      <LockIcon
+                        mt="2"
+                        marginLeft="auto"
+                        marginRight="1"
+                        fontSize={['sm', 'md', 'lg']}
+                      />
+                    </Tooltip>
+                  )}
+                  <Text mt="2" fontWeight={600} fontSize={['sm', 'md', 'lg']}>
+                    {isPast(new Date(start_at)) ? 'Running' : 'Upcoming'}
+                  </Text>
+                </Flex>
+              ))}
           </GridItem>
         </Grid>
       </Box>

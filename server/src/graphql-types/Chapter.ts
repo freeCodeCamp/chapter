@@ -1,12 +1,6 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 import { BaseObject } from './BaseObject';
-import {
-  ChapterUserWithRelations,
-  Event,
-  EventWithVenue,
-  UserBan,
-  ChapterUser,
-} from '.';
+import { ChapterUserWithRelations, Event, EventWithVenue, UserBan } from '.';
 
 @ObjectType()
 export class Chapter extends BaseObject {
@@ -40,7 +34,6 @@ export class Chapter extends BaseObject {
   @Field(() => Int)
   creator_id: number;
 
-  @Field(() => String, { nullable: true })
   calendar_id?: string | null;
 }
 
@@ -63,10 +56,16 @@ export class ChapterWithEvents extends Chapter {
 }
 
 @ObjectType()
+export class ChapterUsersCount {
+  @Field(() => Int)
+  chapter_users: number;
+}
+
+@ObjectType()
 export class ChapterCardRelations extends Chapter {
   @Field(() => [Event])
   events: Event[];
 
-  @Field(() => [ChapterUser])
-  chapter_users: ChapterUser[];
+  @Field(() => ChapterUsersCount)
+  _count: ChapterUsersCount;
 }

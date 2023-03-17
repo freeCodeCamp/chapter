@@ -27,20 +27,6 @@ export const CHAPTER = gql`
   }
 `;
 
-export const CHAPTER_USER = gql`
-  query chapterUser($chapterId: Int!) {
-    chapterUser(chapterId: $chapterId) {
-      user {
-        name
-      }
-      chapter_role {
-        name
-      }
-      subscribed
-    }
-  }
-`;
-
 export const CHAPTERS = gql`
   query chapters {
     chapters {

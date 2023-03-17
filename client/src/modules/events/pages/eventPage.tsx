@@ -44,7 +44,7 @@ import { formatDate } from '../../../util/date';
 import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
-import { CHAPTER, CHAPTER_USER } from '../../chapters/graphql/queries';
+import { CHAPTER } from '../../chapters/graphql/queries';
 import { AttendanceNames } from '../../../../../common/attendance';
 
 export const EventPage: NextPage = () => {
@@ -122,7 +122,6 @@ export const EventPage: NextPage = () => {
         refetchQueries: [
           ...refetch.refetchQueries,
           { query: CHAPTER, variables: { chapterId } },
-          { query: CHAPTER_USER, variables: { chapterId } },
         ],
       });
       const { data: dataAttend } = await attendEvent({

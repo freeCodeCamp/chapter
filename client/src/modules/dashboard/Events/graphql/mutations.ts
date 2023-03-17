@@ -14,6 +14,7 @@ export const createEvent = gql`
       url
       streaming_url
       capacity
+      has_calendar_event
     }
   }
 `;
@@ -37,7 +38,7 @@ export const createCalendarEvent = gql`
   mutation createCalendarEvent($eventId: Int!) {
     createCalendarEvent(id: $eventId) {
       id
-      calendar_event_id
+      has_calendar_event
     }
   }
 `;

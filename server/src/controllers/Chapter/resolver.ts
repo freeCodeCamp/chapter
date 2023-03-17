@@ -151,7 +151,7 @@ export class ChapterResolver {
       calendar_id: calendarData?.id,
     };
 
-    return prisma.chapters.create({ data: chapterData });
+    return await prisma.chapters.create({ data: chapterData });
   }
 
   @Authorized(Permission.ChapterCreate)

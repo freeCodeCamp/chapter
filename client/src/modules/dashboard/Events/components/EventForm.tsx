@@ -4,7 +4,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
 
 import {
-  useChapterQuery,
   useChapterVenuesQuery,
   useSponsorsQuery,
   VenueType,
@@ -37,25 +36,8 @@ const minCapacity = (event?: IEventData) => {
 };
 
 const EventForm: React.FC<EventFormProps> = (props) => {
-  const {
-    onSubmit,
-    data,
-    submitText,
-    chapterId: initialChapterId,
-    loadingText,
-    formType,
-  } = props;
-  const isChaptersDropdownNeeded = typeof initialChapterId === 'undefined';
-
-  const queryOptions = isChaptersDropdownNeeded
-    ? { skip: true }
-    : { variables: { chapterId: initialChapterId } };
-
-  const {
-    loading: loadingChapter,
-    error: errorChapter,
-    data: dataChapter,
-  } = useChapterQuery(queryOptions);
+  const { onSubmit, data, submitText, chapter, loadingText, formType } = props;
+  const displayChaptersDropdown = typeof chapter === 'undefined';
 
   const sponsorQuery = useSponsorsQuery();
 
@@ -65,7 +47,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       return {
         venue_type: VenueType.PhysicalAndOnline,
         venue_id: 0,
-        chapter_id: initialChapterId,
+        chapter_id: chapter?.id,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
       };
@@ -82,7 +64,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       venue_id: data.venue_id ?? 0,
       image_url: data.image_url,
       invite_only: data.invite_only,
-      chapter_id: initialChapterId,
+      chapter_id: chapter?.id,
       attendees:
         data.event_users?.filter(
           ({ attendance: { name } }) => name === AttendanceNames.confirmed,
@@ -120,14 +102,8 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         submitLabel={submitText}
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
-        {!isChaptersDropdownNeeded || data ? (
-          loadingChapter ? (
-            <Text>Loading Chapter</Text>
-          ) : errorChapter || !dataChapter?.chapter ? (
-            <Text>Error loading chapter</Text>
-          ) : (
-            <Heading>{dataChapter.chapter.name}</Heading>
-          )
+        {!displayChaptersDropdown || data ? (
+          <Heading>{chapter?.name}</Heading>
         ) : (
           <EventChapterSelect loading={loading} />
         )}

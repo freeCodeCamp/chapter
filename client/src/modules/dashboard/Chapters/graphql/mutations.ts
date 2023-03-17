@@ -10,6 +10,7 @@ export const createChapter = gql`
       region
       country
       chat_url
+      has_calendar
     }
   }
 `;

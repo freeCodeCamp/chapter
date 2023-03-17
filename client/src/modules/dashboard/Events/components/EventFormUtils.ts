@@ -193,7 +193,7 @@ export interface EventFormProps {
   onSubmit: (data: EventFormData) => Promise<void>;
   data?: IEventData;
   submitText: string;
-  chapterId?: number;
+  chapter?: { id: number; name: string };
   loadingText: string;
   formType: 'new' | 'edit';
 }

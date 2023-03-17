@@ -15,6 +15,7 @@ export const meQuery = gql`
       admined_chapters {
         id
         name
+        has_calendar
       }
       auto_subscribe
       image_url

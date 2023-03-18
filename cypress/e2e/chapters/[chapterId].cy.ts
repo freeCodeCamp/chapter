@@ -28,6 +28,7 @@ describe('chapter page', () => {
     cy.get('[data-cy="unsubscribe-chapter"]').should('be.visible').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
+    cy.contains('unsubscribed from new events');
     cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
       (chapter_users) => {
         expect(
@@ -42,6 +43,7 @@ describe('chapter page', () => {
     cy.get('[data-cy="subscribe-chapter"]').should('be.visible').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
+    cy.contains('successfully subscribed to new events');
     cy.task<ChapterMembers>('getChapterMembers', chapterId).then(
       (chapter_users) => {
         expect(

@@ -21,11 +21,11 @@ import { Link } from 'chakra-next-link';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
-import Checkbox from '../../../components/Checkbox';
+import { useSubscribeCheckbox } from '../../../components/Checkbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';
@@ -81,15 +81,10 @@ export const EventPage: NextPage = () => {
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
-  const [subscribe, setSubscribe] = useState(user?.auto_subscribe ?? false);
-  const checkboxRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (checkboxRef && checkboxRef.current) {
-      console.log('checkbox change');
-      setSubscribe(checkboxRef.current.checked);
-    }
-  }, [checkboxRef, checkboxRef?.current?.checked]);
+  const { checkboxRef, SubscribeCheckbox } = useSubscribeCheckbox(
+    !!user?.auto_subscribe,
+  );
 
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
@@ -190,7 +185,6 @@ export const EventPage: NextPage = () => {
     const chapterUser = user?.user_chapters.find(
       ({ chapter_id }) => chapter_id == chapterId,
     );
-    const defaultChecked = user?.auto_subscribe ?? false;
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
@@ -202,11 +196,7 @@ export const EventPage: NextPage = () => {
                   {!chapterUser && (
                     <>
                       <AttendInfo />
-                      <Checkbox
-                        defaultChecked={defaultChecked}
-                        ref={checkboxRef}
-                        label="Send me notifications about new events"
-                      />
+                      <SubscribeCheckbox label="Send me notifications about new events" />
                     </>
                   )}
                 </>
@@ -222,11 +212,7 @@ export const EventPage: NextPage = () => {
             <>
               <AttendInfo />
               {user && !chapterUser && (
-                <Checkbox
-                  defaultChecked={subscribe}
-                  ref={checkboxRef}
-                  label="Send me notifications about new events"
-                />
+                <SubscribeCheckbox label="Send me notifications about new events" />
               )}
             </>
           ),
@@ -235,7 +221,7 @@ export const EventPage: NextPage = () => {
     if (!ok) return;
 
     if (user) {
-      await onAttend(checkboxRef?.current?.checked);
+      await onAttend(!!checkboxRef?.current?.checked);
       return;
     }
     modalProps.onOpen();

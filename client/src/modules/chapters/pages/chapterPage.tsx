@@ -16,12 +16,12 @@ import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useConfirm } from 'chakra-confirm';
 
 import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
-import Checkbox from '../../../components/Checkbox';
+import { useSubscribeCheckbox } from '../../../components/Checkbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import {
@@ -113,7 +113,7 @@ const ChapterUserRoleWidget = ({
 export const ChapterPage: NextPage = () => {
   const { param: chapterId } = useParam('chapterId');
   const router = useRouter();
-  const { user, isLoggedIn } = useUser();
+  const { isLoggedIn, user } = useUser();
 
   const { loading, error, data } = useChapterQuery({
     variables: { chapterId },
@@ -121,7 +121,6 @@ export const ChapterPage: NextPage = () => {
 
   const confirm = useConfirm();
   const [hasShownModal, setHasShownModal] = useState(false);
-  const checkboxRef = useRef<HTMLInputElement>(null);
   const addAlert = useAlert();
 
   const { loading: loadingChapterUser, data: dataChapterUser } =
@@ -140,6 +139,9 @@ export const ChapterPage: NextPage = () => {
   const [leaveChapter, { loading: loadingLeave }] = useLeaveChapterMutation();
   const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
     useToggleChapterSubscriptionMutation(refetch);
+  const { checkboxRef, SubscribeCheckbox } = useSubscribeCheckbox(
+    !!user?.auto_subscribe,
+  );
 
   const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
@@ -148,11 +150,7 @@ export const ChapterPage: NextPage = () => {
           body: (
             <>
               Would you like to join?
-              <Checkbox
-                ref={checkboxRef}
-                defaultChecked={user?.auto_subscribe ?? false}
-                label="Send me notifications about new events"
-              />
+              <SubscribeCheckbox label="Send me notifications about new events" />
             </>
           ),
         }
@@ -161,11 +159,7 @@ export const ChapterPage: NextPage = () => {
           body: (
             <>
               Joining chapter will add you as a member to chapter.
-              <Checkbox
-                ref={checkboxRef}
-                defaultChecked={user?.auto_subscribe ?? false}
-                label="Send me notifications about new events"
-              />
+              <SubscribeCheckbox label="Send me notifications about new events" />
             </>
           ),
         };

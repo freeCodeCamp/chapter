@@ -8,14 +8,34 @@ interface CheckboxProps extends ChakraCheckboxProps {
   label: string;
 }
 
-const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, ...rest }, ref) => {
+const SubscribeCheckbox = forwardRef<HTMLInputElement, CheckboxProps>(
+  ({ label, defaultChecked, ...rest }, ref) => {
+    const [subscribe, setSubscribe] = React.useState(defaultChecked);
     return (
-      <ChakraCheckbox ref={ref} {...rest}>
+      <ChakraCheckbox
+        ref={ref}
+        isChecked={subscribe}
+        onChange={(e) => setSubscribe(e.target.checked)}
+        {...rest}
+      >
         {label}
       </ChakraCheckbox>
     );
   },
 );
 
-export default Checkbox;
+export const useSubscribeCheckbox = (defaultChecked: boolean) => {
+  const checkboxRef = React.useRef<HTMLInputElement>(null);
+  return {
+    SubscribeCheckbox: (props: CheckboxProps) => (
+      <SubscribeCheckbox
+        ref={checkboxRef}
+        defaultChecked={defaultChecked}
+        {...props}
+      />
+    ),
+    checkboxRef,
+  };
+};
+
+export default SubscribeCheckbox;

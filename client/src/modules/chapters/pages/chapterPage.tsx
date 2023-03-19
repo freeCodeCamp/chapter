@@ -21,7 +21,7 @@ import { useConfirm } from 'chakra-confirm';
 
 import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
-import { useSubscribeCheckbox } from '../../../components/Checkbox';
+import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import {

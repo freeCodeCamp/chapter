@@ -25,7 +25,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
-import { useSubscribeCheckbox } from '../../../components/Checkbox';
+import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';

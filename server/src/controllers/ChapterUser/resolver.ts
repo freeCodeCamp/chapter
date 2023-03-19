@@ -1,14 +1,6 @@
 import { inspect } from 'util';
 
-import {
-  Arg,
-  Authorized,
-  Ctx,
-  Int,
-  Mutation,
-  Query,
-  Resolver,
-} from 'type-graphql';
+import { Arg, Authorized, Ctx, Int, Mutation, Resolver } from 'type-graphql';
 import { Prisma } from '@prisma/client';
 
 import { ResolverCtx } from '../../common-types/gql';
@@ -171,21 +163,6 @@ async function emailUserAboutRoleChange({
 
 @Resolver(() => ChapterUser)
 export class ChapterUserResolver {
-  @Query(() => ChapterUserWithRelations, { nullable: true })
-  async chapterUser(
-    @Arg('chapterId', () => Int) chapterId: number,
-    @Ctx() ctx: ResolverCtx,
-  ): Promise<ChapterUserWithRelations | null> {
-    if (!ctx.user) throw Error('User not found');
-
-    return await prisma.chapter_users.findUnique({
-      include: chapterUsersInclude,
-      where: {
-        user_id_chapter_id: { user_id: ctx.user.id, chapter_id: chapterId },
-      },
-    });
-  }
-
   @Authorized(Permission.ChapterJoin)
   @Mutation(() => ChapterUserWithRole)
   async joinChapter(

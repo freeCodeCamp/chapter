@@ -173,11 +173,11 @@ export type CreateSponsorInputs = {
 
 export type Event = {
   __typename?: 'Event';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -272,13 +272,13 @@ export type EventUserWithRolePermissions = {
 
 export type EventWithRelationsWithEventUser = {
   __typename?: 'EventWithRelationsWithEventUser';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   event_users: Array<EventUserWithAttendanceAndUser>;
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -293,13 +293,13 @@ export type EventWithRelationsWithEventUser = {
 
 export type EventWithRelationsWithEventUserRelations = {
   __typename?: 'EventWithRelationsWithEventUserRelations';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
   event_users: Array<EventUserWithRelations>;
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -314,11 +314,11 @@ export type EventWithRelationsWithEventUserRelations = {
 
 export type EventWithVenue = {
   __typename?: 'EventWithVenue';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -332,12 +332,12 @@ export type EventWithVenue = {
 
 export type EventsWithChapters = {
   __typename?: 'EventsWithChapters';
-  calendar_event_id?: Maybe<Scalars['String']>;
   canceled: Scalars['Boolean'];
   capacity: Scalars['Int'];
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
   invite_only: Scalars['Boolean'];
@@ -562,7 +562,6 @@ export type Query = {
   calendarIntegrationStatus?: Maybe<Scalars['Boolean']>;
   chapter: ChapterWithEvents;
   chapterRoles: Array<ChapterRole>;
-  chapterUser?: Maybe<ChapterUserWithRelations>;
   chapterVenues: Array<Venue>;
   chapters: Array<ChapterCardRelations>;
   dashboardChapter: ChapterWithRelations;
@@ -588,10 +587,6 @@ export type Query = {
 
 export type QueryChapterArgs = {
   id: Scalars['Int'];
-};
-
-export type QueryChapterUserArgs = {
-  chapterId: Scalars['Int'];
 };
 
 export type QueryChapterVenuesArgs = {
@@ -885,13 +880,16 @@ export type MeQuery = {
       __typename?: 'Chapter';
       id: number;
       name: string;
+      has_calendar: boolean;
     }>;
     user_bans: Array<{ __typename?: 'UserBan'; chapter_id: number }>;
     user_chapters: Array<{
       __typename?: 'ChapterUserWithRole';
       chapter_id: number;
+      subscribed: boolean;
       chapter_role: {
         __typename?: 'ChapterRole';
+        name: string;
         chapter_role_permissions: Array<{
           __typename?: 'ChapterRolePermission';
           chapter_permission: {
@@ -982,20 +980,6 @@ export type ChapterQuery = {
   };
 };
 
-export type ChapterUserQueryVariables = Exact<{
-  chapterId: Scalars['Int'];
-}>;
-
-export type ChapterUserQuery = {
-  __typename?: 'Query';
-  chapterUser?: {
-    __typename?: 'ChapterUserWithRelations';
-    subscribed: boolean;
-    user: { __typename?: 'User'; name: string };
-    chapter_role: { __typename?: 'ChapterRole'; name: string };
-  } | null;
-};
-
 export type ChaptersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ChaptersQuery = {
@@ -1064,6 +1048,7 @@ export type CreateChapterMutation = {
     region: string;
     country: string;
     chat_url?: string | null;
+    has_calendar: boolean;
   };
 };
 
@@ -1267,6 +1252,7 @@ export type CreateEventMutation = {
     url?: string | null;
     streaming_url?: string | null;
     capacity: number;
+    has_calendar_event: boolean;
   };
 };
 
@@ -1299,7 +1285,7 @@ export type CreateCalendarEventMutation = {
   createCalendarEvent: {
     __typename?: 'Event';
     id: number;
-    calendar_event_id?: string | null;
+    has_calendar_event: boolean;
   };
 };
 
@@ -1406,7 +1392,7 @@ export type DashboardEventQuery = {
     start_at: any;
     ends_at: any;
     image_url: string;
-    calendar_event_id?: string | null;
+    has_calendar_event: boolean;
     venue_type: VenueType;
     chapter: {
       __typename?: 'Chapter';
@@ -2068,6 +2054,7 @@ export const MeDocument = gql`
       admined_chapters {
         id
         name
+        has_calendar
       }
       auto_subscribe
       image_url
@@ -2082,7 +2069,9 @@ export const MeDocument = gql`
               name
             }
           }
+          name
         }
+        subscribed
       }
       user_events {
         event_id
@@ -2353,68 +2342,6 @@ export type ChapterQueryResult = Apollo.QueryResult<
   ChapterQuery,
   ChapterQueryVariables
 >;
-export const ChapterUserDocument = gql`
-  query chapterUser($chapterId: Int!) {
-    chapterUser(chapterId: $chapterId) {
-      user {
-        name
-      }
-      chapter_role {
-        name
-      }
-      subscribed
-    }
-  }
-`;
-
-/**
- * __useChapterUserQuery__
- *
- * To run a query within a React component, call `useChapterUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useChapterUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChapterUserQuery({
- *   variables: {
- *      chapterId: // value for 'chapterId'
- *   },
- * });
- */
-export function useChapterUserQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    ChapterUserQuery,
-    ChapterUserQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<ChapterUserQuery, ChapterUserQueryVariables>(
-    ChapterUserDocument,
-    options,
-  );
-}
-export function useChapterUserLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    ChapterUserQuery,
-    ChapterUserQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<ChapterUserQuery, ChapterUserQueryVariables>(
-    ChapterUserDocument,
-    options,
-  );
-}
-export type ChapterUserQueryHookResult = ReturnType<typeof useChapterUserQuery>;
-export type ChapterUserLazyQueryHookResult = ReturnType<
-  typeof useChapterUserLazyQuery
->;
-export type ChapterUserQueryResult = Apollo.QueryResult<
-  ChapterUserQuery,
-  ChapterUserQueryVariables
->;
 export const ChaptersDocument = gql`
   query chapters {
     chapters {
@@ -2652,6 +2579,7 @@ export const CreateChapterDocument = gql`
       region
       country
       chat_url
+      has_calendar
     }
   }
 `;
@@ -3417,6 +3345,7 @@ export const CreateEventDocument = gql`
       url
       streaming_url
       capacity
+      has_calendar_event
     }
   }
 `;
@@ -3527,7 +3456,7 @@ export const CreateCalendarEventDocument = gql`
   mutation createCalendarEvent($eventId: Int!) {
     createCalendarEvent(id: $eventId) {
       id
-      calendar_event_id
+      has_calendar_event
     }
   }
 `;
@@ -3964,7 +3893,7 @@ export const DashboardEventDocument = gql`
       start_at
       ends_at
       image_url
-      calendar_event_id
+      has_calendar_event
       chapter {
         id
         name

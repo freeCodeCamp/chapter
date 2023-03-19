@@ -8,13 +8,15 @@ import {
   venues,
 } from '@prisma/client';
 import {
-  Resolver,
-  Query,
   Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
   Int,
   Mutation,
-  Ctx,
-  Authorized,
+  Query,
+  Resolver,
+  Root,
 } from 'type-graphql';
 
 import { isEqual, sub } from 'date-fns';
@@ -231,8 +233,13 @@ const getNameForNewAttendance = (event: EventAttendanceName) => {
     : AttendanceNames.confirmed;
 };
 
-@Resolver()
+@Resolver(() => Event)
 export class EventResolver {
+  @FieldResolver(() => Boolean)
+  has_calendar_event(@Root() event: Event) {
+    return typeof event.calendar_event_id === 'string';
+  }
+
   @Query(() => PaginatedEventsWithChapters)
   async paginatedEventsWithTotal(
     @Arg('limit', () => Int, { nullable: true }) limit?: number,
@@ -695,11 +702,15 @@ export class EventResolver {
 
     // TODO: handle the case where the calendar_id doesn't exist. Warn the user?
     if (chapter.calendar_id && (await integrationStatus())) {
-      await createCalendarEventHelper({
+      const calendarCreation = await createCalendarEventHelper({
         attendeeEmails: attendEvent ? [ctx.user.email] : [],
         calendarId: chapter.calendar_id,
         event,
       });
+      return {
+        ...event,
+        calendar_event_id: calendarCreation?.calendar_event_id,
+      };
     }
 
     return event;

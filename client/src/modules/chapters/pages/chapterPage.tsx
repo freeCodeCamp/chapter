@@ -19,7 +19,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useConfirm } from 'chakra-confirm';
 
-import { CHAPTER, CHAPTER_USER } from '../graphql/queries';
+import { CHAPTER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
 import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
@@ -28,9 +28,7 @@ import {
   useJoinChapterMutation,
   useLeaveChapterMutation,
   useToggleChapterSubscriptionMutation,
-  ChapterUserQuery,
   useChapterQuery,
-  useChapterUserQuery,
 } from '../../../generated/graphql';
 import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
@@ -51,11 +49,11 @@ const SubscriptionWidget = ({
   chapterSubscribe,
   loading,
 }: {
-  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterUser: { subscribed: boolean };
   chapterSubscribe: (toSubscribe: boolean) => Promise<void>;
   loading: boolean;
 }) => {
-  return chapterUser?.subscribed ? (
+  return chapterUser.subscribed ? (
     <>
       <Text fontWeight={500}>You are subscribed to new events</Text>
       <Button
@@ -88,7 +86,7 @@ const ChapterUserRoleWidget = ({
   loadingJoin,
   loadingLeave,
 }: {
-  chapterUser: ChapterUserQuery['chapterUser'];
+  chapterUser: { chapter_role: { name: string } } | undefined;
   JoinChapter: () => Promise<void>;
   LeaveChapter: () => Promise<void>;
   loadingJoin: boolean;
@@ -123,14 +121,13 @@ export const ChapterPage: NextPage = () => {
   const [hasShownModal, setHasShownModal] = useState(false);
   const addAlert = useAlert();
 
-  const { loading: loadingChapterUser, data: dataChapterUser } =
-    useChapterUserQuery({
-      variables: { chapterId },
-    });
+  const chapterUser = user?.user_chapters.find(
+    ({ chapter_id }) => chapter_id === chapterId,
+  );
 
   const refetch = {
     refetchQueries: [
-      { query: CHAPTER_USER, variables: { chapterId } },
+      { query: meQuery },
       { query: CHAPTER, variables: { chapterId } },
     ],
   };
@@ -187,8 +184,7 @@ export const ChapterPage: NextPage = () => {
         <>
           Leaving will cancel your attendance at all of this chapter&apos;s
           events.
-          {dataChapterUser?.chapterUser?.chapter_role.name ===
-            'administrator' && (
+          {chapterUser?.chapter_role.name === 'administrator' && (
             <>
               <br />
               <br />
@@ -279,11 +275,11 @@ export const ChapterPage: NextPage = () => {
     }
   };
 
-  const isLoading = loading || loadingChapterUser || !data;
+  const isLoading = loading || !data;
 
   const canShowConfirmModal =
     router.query?.ask_to_confirm && !isLoading && isLoggedIn;
-  const isAlreadyMember = !!dataChapterUser?.chapterUser;
+  const isAlreadyMember = !!chapterUser;
 
   useEffect(() => {
     if (canShowConfirmModal && !hasShownModal) {
@@ -339,18 +335,18 @@ export const ChapterPage: NextPage = () => {
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>
-        {isLoggedIn && dataChapterUser && (
+        {isLoggedIn && user && (
           <SimpleGrid columns={2} gap={5} alignItems="center">
             <ChapterUserRoleWidget
-              chapterUser={dataChapterUser.chapterUser}
+              chapterUser={chapterUser}
               JoinChapter={onJoinChapter}
               LeaveChapter={onLeaveChapter}
               loadingJoin={loadingJoin}
               loadingLeave={loadingLeave}
             />
-            {dataChapterUser.chapterUser && (
+            {chapterUser && (
               <SubscriptionWidget
-                chapterUser={dataChapterUser.chapterUser}
+                chapterUser={chapterUser}
                 chapterSubscribe={onChapterSubscribe}
                 loading={loadingSubscribeToggle}
               />

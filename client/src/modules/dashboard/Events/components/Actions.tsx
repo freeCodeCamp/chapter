@@ -20,7 +20,7 @@ import { useUser } from '../../../auth/user';
 import EventCancelButton from './EventCancelButton';
 
 interface ActionsProps {
-  event: Pick<Event, 'id' | 'canceled' | 'calendar_event_id'>;
+  event: Pick<Event, 'id' | 'canceled' | 'has_calendar_event'>;
   onDelete?: () => any;
   hideCancel?: boolean;
   chapter: Pick<Chapter, 'id' | 'has_calendar'>;
@@ -104,7 +104,7 @@ const Actions: React.FC<ActionsProps> = ({
         Edit
       </LinkButton>
       {integrationStatus &&
-        !event.calendar_event_id &&
+        !event.has_calendar_event &&
         chapter.has_calendar &&
         checkChapterPermission(user, Permission.EventCreate, {
           chapterId: chapter.id,

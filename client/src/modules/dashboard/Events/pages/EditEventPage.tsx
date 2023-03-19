@@ -85,7 +85,7 @@ export const EditEventPage: NextPageWithLayout = () => {
       onSubmit={onSubmit}
       loadingText={'Saving Event Changes'}
       submitText={'Save Event Changes'}
-      chapterId={data.dashboardEvent.chapter.id}
+      chapter={data.dashboardEvent.chapter}
       formType="edit"
     />
   );

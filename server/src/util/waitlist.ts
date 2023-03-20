@@ -30,7 +30,8 @@ export const updateWaitlistForUserRemoval = async ({
   if (!waitlist.length) return;
 
   const attendees = event_users.filter(
-    ({ user_id, attendance: { name } }) => user_id !== userId && name === 'yes',
+    ({ user_id, attendance: { name } }) =>
+      user_id !== userId && name === AttendanceNames.confirmed,
   );
   if (capacity <= attendees.length) return;
 

@@ -25,16 +25,12 @@ const SubscribeCheckbox = forwardRef<HTMLInputElement, CheckboxProps>(
 );
 
 export const useSubscribeCheckbox = (defaultChecked: boolean) => {
-  const checkboxRef = React.useRef<HTMLInputElement>(null);
+  const ref = React.useRef<HTMLInputElement>(null);
   return {
+    getSubscribe: () => ref?.current?.checked,
     SubscribeCheckbox: (props: CheckboxProps) => (
-      <SubscribeCheckbox
-        ref={checkboxRef}
-        defaultChecked={defaultChecked}
-        {...props}
-      />
+      <SubscribeCheckbox ref={ref} defaultChecked={defaultChecked} {...props} />
     ),
-    checkboxRef,
   };
 };
 

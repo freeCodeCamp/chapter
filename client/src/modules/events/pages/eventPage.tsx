@@ -82,7 +82,7 @@ export const EventPage: NextPage = () => {
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
 
-  const { checkboxRef, SubscribeCheckbox } = useSubscribeCheckbox(
+  const { getSubscribe, SubscribeCheckbox } = useSubscribeCheckbox(
     !!user?.auto_subscribe,
   );
 
@@ -220,7 +220,7 @@ export const EventPage: NextPage = () => {
     if (!ok) return;
 
     if (user) {
-      await onAttend(!!checkboxRef?.current?.checked);
+      await onAttend(getSubscribe());
       return;
     }
     modalProps.onOpen();

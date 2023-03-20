@@ -136,7 +136,7 @@ export const ChapterPage: NextPage = () => {
   const [leaveChapter, { loading: loadingLeave }] = useLeaveChapterMutation();
   const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
     useToggleChapterSubscriptionMutation(refetch);
-  const { checkboxRef, SubscribeCheckbox } = useSubscribeCheckbox(
+  const { getSubscribe, SubscribeCheckbox } = useSubscribeCheckbox(
     !!user?.auto_subscribe,
   );
 
@@ -164,7 +164,7 @@ export const ChapterPage: NextPage = () => {
     if (ok) {
       try {
         await joinChapter({
-          variables: { chapterId, subscribe: !!checkboxRef?.current?.checked },
+          variables: { chapterId, subscribe: getSubscribe() },
         });
         addAlert({
           title: 'You successfully joined this chapter',

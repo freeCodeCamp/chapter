@@ -415,21 +415,25 @@ export class EventResolver {
       }
     }
 
-    const calendarEventId = event.calendar_event_id;
-    const calendarId = event.chapter.calendar_id;
-    if (calendarId && calendarEventId && (await integrationStatus())) {
-      try {
-        await addEventAttendee(
-          { calendarId, calendarEventId },
-          { attendeeEmail: ctx.user.email },
-        );
-      } catch (e) {
-        console.error('Unable to add attendee to calendar event');
-        console.error(inspect(redactSecrets(e), { depth: null }));
+    if (newAttendanceName === AttendanceNames.confirmed) {
+      const calendarEventId = event.calendar_event_id;
+      const calendarId = event.chapter.calendar_id;
+      if (calendarId && calendarEventId && (await integrationStatus())) {
+        try {
+          await addEventAttendee(
+            { calendarId, calendarEventId },
+            { attendeeEmail: ctx.user.email },
+          );
+        } catch (e) {
+          console.error('Unable to add attendee to calendar event');
+          console.error(inspect(redactSecrets(e), { depth: null }));
+        }
       }
+      await sendAttendanceConfirmation(ctx.user, event);
+    } else {
+      // TODO send email about being placed on waitlist
     }
 
-    await sendAttendanceConfirmation(ctx.user, event);
     await attendeeNotifyAdministrators(
       ctx.user,
       chapterAdministrators,

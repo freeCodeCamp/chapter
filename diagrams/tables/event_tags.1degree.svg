@@ -17,7 +17,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="185,-139.7 185,-273.7 361,-273.7 361,-139.7 185,-139.7"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="187,-248.7 187,-271.7 359,-271.7 359,-248.7 187,-248.7"/>
 <polygon fill="none" stroke="#000000" points="187,-248.7 187,-271.7 359,-271.7 359,-248.7 187,-248.7"/>
-<text text-anchor="start" x="192" y="-257.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">event_tags</text>
+<text text-anchor="start" x="192" y="-257.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">event_tags</text>
 <text text-anchor="start" x="324.0437" y="-256.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
 <polygon fill="none" stroke="#000000" points="187,-226.7 187,-248.7 275,-248.7 275,-226.7 187,-226.7"/>
 <text text-anchor="start" x="207" y="-233.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">created_at</text>
@@ -57,7 +57,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="8,-164.2 8,-291.2 136,-291.2 136,-164.2 8,-164.2"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="8,-267.7 8,-290.7 136,-290.7 136,-267.7 8,-267.7"/>
 <polygon fill="none" stroke="#000000" points="8,-267.7 8,-290.7 136,-290.7 136,-267.7 8,-267.7"/>
-<text text-anchor="start" x="13" y="-276.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">events</text>
+<text text-anchor="start" x="13" y="-276.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">events</text>
 <text text-anchor="start" x="101.0437" y="-275.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
 <polygon fill="none" stroke="#000000" points="8,-245.7 8,-267.7 136,-267.7 136,-245.7 8,-245.7"/>
 <image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="13" y="-262.7"/>
@@ -96,7 +96,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="28,-38.2 28,-143.2 116,-143.2 116,-38.2 28,-38.2"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="28,-119.7 28,-142.7 116,-142.7 116,-119.7 28,-119.7"/>
 <polygon fill="none" stroke="#000000" points="28,-119.7 28,-142.7 116,-142.7 116,-119.7 28,-119.7"/>
-<text text-anchor="start" x="33" y="-128.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">tags</text>
+<text text-anchor="start" x="33" y="-128.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">tags</text>
 <text text-anchor="start" x="81.0437" y="-127.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
 <polygon fill="none" stroke="#000000" points="28,-97.7 28,-119.7 116,-119.7 116,-97.7 28,-97.7"/>
 <image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="33" y="-114.7"/>

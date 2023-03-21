@@ -17,7 +17,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="173,-117.7 173,-251.7 349,-251.7 349,-117.7 173,-117.7"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="175,-226.7 175,-249.7 347,-249.7 347,-226.7 175,-226.7"/>
 <polygon fill="none" stroke="#000000" points="175,-226.7 175,-249.7 347,-249.7 347,-226.7 175,-226.7"/>
-<text text-anchor="start" x="180" y="-235.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">user_bans</text>
+<text text-anchor="start" x="180" y="-235.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">user_bans</text>
 <text text-anchor="start" x="312.0437" y="-234.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
 <polygon fill="none" stroke="#000000" points="175,-204.7 175,-226.7 263,-226.7 263,-204.7 175,-204.7"/>
 <text text-anchor="start" x="195" y="-211.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">created_at</text>
@@ -54,34 +54,34 @@
 <g id="node2" class="node">
 <title>chapters</title>
 <g id="a_node2"><a xlink:href="../../tables/chapters.html" xlink:title="chapters" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="21.5,-38.2 21.5,-121.2 110.5,-121.2 110.5,-38.2 21.5,-38.2"/>
-<polygon fill="#f5f5f5" stroke="transparent" points="22,-97.7 22,-120.7 111,-120.7 111,-97.7 22,-97.7"/>
-<polygon fill="none" stroke="#000000" points="22,-97.7 22,-120.7 111,-120.7 111,-97.7 22,-97.7"/>
-<text text-anchor="start" x="27" y="-106.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">chapters</text>
-<text text-anchor="start" x="76.0437" y="-105.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
-<polygon fill="none" stroke="#000000" points="22,-75.7 22,-97.7 111,-97.7 111,-75.7 22,-75.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="27" y="-92.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="20.5,-38.2 20.5,-121.2 111.5,-121.2 111.5,-38.2 20.5,-38.2"/>
+<polygon fill="#f5f5f5" stroke="transparent" points="21,-97.7 21,-120.7 112,-120.7 112,-97.7 21,-97.7"/>
+<polygon fill="none" stroke="#000000" points="21,-97.7 21,-120.7 112,-120.7 112,-97.7 21,-97.7"/>
+<text text-anchor="start" x="26" y="-106.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">chapters</text>
+<text text-anchor="start" x="77.5219" y="-105.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
+<polygon fill="none" stroke="#000000" points="21,-75.7 21,-97.7 112,-97.7 112,-75.7 21,-75.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="26" y="-92.7"/>
 <text text-anchor="start" x="42" y="-82.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">id</text>
-<polygon fill="none" stroke="#000000" points="22,-56.7 22,-75.7 111,-75.7 111,-56.7 22,-56.7"/>
-<text text-anchor="start" x="25" y="-62.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="22,-37.7 22,-56.7 43,-56.7 43,-37.7 22,-37.7"/>
-<polygon fill="none" stroke="#000000" points="22,-37.7 22,-56.7 43,-56.7 43,-37.7 22,-37.7"/>
-<text text-anchor="start" x="25" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
-<polygon fill="#ffffff" stroke="transparent" points="43,-37.7 43,-56.7 85,-56.7 85,-37.7 43,-37.7"/>
-<polygon fill="none" stroke="#000000" points="43,-37.7 43,-56.7 85,-56.7 85,-37.7 43,-37.7"/>
-<text text-anchor="start" x="49.6105" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="85,-37.7 85,-56.7 111,-56.7 111,-37.7 85,-37.7"/>
-<polygon fill="none" stroke="#000000" points="85,-37.7 85,-56.7 111,-56.7 111,-37.7 85,-37.7"/>
-<text text-anchor="start" x="92.4053" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">4 &gt;</text>
+<polygon fill="none" stroke="#000000" points="21,-56.7 21,-75.7 112,-75.7 112,-56.7 21,-56.7"/>
+<text text-anchor="start" x="24" y="-62.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
+<polygon fill="#ffffff" stroke="transparent" points="21,-37.7 21,-56.7 43,-56.7 43,-37.7 21,-37.7"/>
+<polygon fill="none" stroke="#000000" points="21,-37.7 21,-56.7 43,-56.7 43,-37.7 21,-37.7"/>
+<text text-anchor="start" x="24" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
+<polygon fill="#ffffff" stroke="transparent" points="43,-37.7 43,-56.7 86,-56.7 86,-37.7 43,-37.7"/>
+<polygon fill="none" stroke="#000000" points="43,-37.7 43,-56.7 86,-56.7 86,-37.7 43,-37.7"/>
+<text text-anchor="start" x="50.6105" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="86,-37.7 86,-56.7 112,-56.7 112,-37.7 86,-37.7"/>
+<polygon fill="none" stroke="#000000" points="86,-37.7 86,-56.7 112,-56.7 112,-37.7 86,-37.7"/>
+<text text-anchor="start" x="93.4053" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">4 &gt;</text>
 </a>
 </g>
 </g>
 <!-- user_bans&#45;&gt;chapters -->
 <g id="edge1" class="edge">
 <title>user_bans:w&#45;&gt;chapters:e</title>
-<path fill="none" stroke="#000000" d="M160.8503,-146.1323C138.4971,-132.8051 145.1447,-86.7 111,-86.7"/>
-<polygon fill="#000000" stroke="#000000" points="167.2428,-147.7441 174.1198,-153.1908 171.1214,-148.722 175,-149.7 175,-149.7 175,-149.7 171.1214,-148.722 175.8802,-146.2092 167.2428,-147.7441 167.2428,-147.7441"/>
-<ellipse fill="none" stroke="#000000" cx="164.1399" cy="-146.9617" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M160.9901,-146.1323C138.9182,-132.8051 145.8748,-86.7 112,-86.7"/>
+<polygon fill="#000000" stroke="#000000" points="167.2474,-147.7257 174.1116,-153.1887 171.1237,-148.7129 175,-149.7 175,-149.7 175,-149.7 171.1237,-148.7129 175.8884,-146.2113 167.2474,-147.7257 167.2474,-147.7257"/>
+<ellipse fill="none" stroke="#000000" cx="164.1464" cy="-146.936" rx="3.2" ry="3.2"/>
 </g>
 <!-- users -->
 <g id="node3" class="node">
@@ -90,7 +90,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="8,-142.2 8,-269.2 124,-269.2 124,-142.2 8,-142.2"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="8,-245.7 8,-268.7 124,-268.7 124,-245.7 8,-245.7"/>
 <polygon fill="none" stroke="#000000" points="8,-245.7 8,-268.7 124,-268.7 124,-245.7 8,-245.7"/>
-<text text-anchor="start" x="13" y="-254.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">users</text>
+<text text-anchor="start" x="13" y="-254.3" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">users</text>
 <text text-anchor="start" x="89.0437" y="-253.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
 <polygon fill="none" stroke="#000000" points="8,-223.7 8,-245.7 124,-245.7 124,-223.7 8,-223.7"/>
 <image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="13" y="-240.7"/>

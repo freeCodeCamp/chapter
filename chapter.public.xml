@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="chapter" schema="public" type="PostgreSQL - 13.10 (Debian 13.10-1.pgdg110+1)">
+<?xml version="1.0" encoding="UTF-8"?><database name="chapter" schema="public" type="PostgreSQL - 13.10 (Debian 13.10-1.pgdg110+1)">
    <sequences>
       <sequence increment="1" name="attendance_id_seq" startValue="1"/>
       <sequence increment="1" name="chapter_permissions_id_seq" startValue="1"/>
@@ -18,7 +17,7 @@
       <sequence increment="1" name="venues_id_seq" startValue="1"/>
    </sequences>
    <tables>
-      <table name="_prisma_migrations" numRows="12" remarks="" schema="public" type="TABLE">
+      <table name="_prisma_migrations" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="36" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="checksum" nullable="false" remarks="" size="64" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="finished_at" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -32,7 +31,7 @@
             <column ascending="true" name="id"/>
          </index>
       </table>
-      <table name="attendance" numRows="4" remarks="" schema="public" type="TABLE">
+      <table name="attendance" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('attendance_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
@@ -47,7 +46,7 @@
             <column ascending="true" name="name"/>
          </index>
       </table>
-      <table name="chapter_permissions" numRows="13" remarks="" schema="public" type="TABLE">
+      <table name="chapter_permissions" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('chapter_permissions_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
@@ -62,7 +61,7 @@
             <column ascending="true" name="name"/>
          </index>
       </table>
-      <table name="chapter_role_permissions" numRows="15" remarks="" schema="public" type="TABLE">
+      <table name="chapter_role_permissions" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="chapter_role_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
@@ -78,7 +77,7 @@
             <column ascending="true" name="chapter_permissions_id"/>
          </index>
       </table>
-      <table name="chapter_roles" numRows="2" remarks="" schema="public" type="TABLE">
+      <table name="chapter_roles" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('chapter_roles_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
@@ -189,7 +188,7 @@
             <column ascending="true" name="event_permission_id"/>
          </index>
       </table>
-      <table name="event_roles" numRows="1" remarks="" schema="public" type="TABLE">
+      <table name="event_roles" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('event_roles_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
@@ -310,7 +309,7 @@
             <column ascending="true" name="email"/>
          </index>
       </table>
-      <table name="instance_permissions" numRows="26" remarks="" schema="public" type="TABLE">
+      <table name="instance_permissions" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('instance_permissions_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
@@ -325,7 +324,7 @@
             <column ascending="true" name="name"/>
          </index>
       </table>
-      <table name="instance_role_permissions" numRows="34" remarks="" schema="public" type="TABLE">
+      <table name="instance_role_permissions" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="instance_role_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
@@ -341,7 +340,7 @@
             <column ascending="true" name="instance_permission_id"/>
          </index>
       </table>
-      <table name="instance_roles" numRows="3" remarks="" schema="public" type="TABLE">
+      <table name="instance_roles" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('instance_roles_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">

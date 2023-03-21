@@ -25,6 +25,7 @@ describe('chapter page', () => {
 
     cy.findByRole('button', { name: 'Leave Chapter' }).should('be.visible');
     cy.findByRole('button', { name: 'Join Chapter' }).should('not.exist');
+    cy.get('[data-cy="subscribe-chapter"]').should('not.exist');
     cy.get('[data-cy="unsubscribe-chapter"]').should('be.visible').click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 

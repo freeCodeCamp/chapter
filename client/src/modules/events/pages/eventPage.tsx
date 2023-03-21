@@ -25,6 +25,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
+import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';
@@ -81,6 +82,10 @@ export const EventPage: NextPage = () => {
   const [hasShownModal, setHasShownModal] = useState(false);
   const [awaitingLogin, setAwaitingLogin] = useState(false);
 
+  const { getSubscribe, SubscribeCheckbox } = useSubscribeCheckbox(
+    !!user?.auto_subscribe,
+  );
+
   const eventUser = useMemo(() => {
     return data?.event?.event_users.find(
       ({ user: event_user }) => event_user.id === user?.id,
@@ -111,14 +116,14 @@ export const EventPage: NextPage = () => {
     return false;
   }
 
-  async function onAttend() {
+  async function onAttend(subscribeToChapter?: boolean) {
     if (!chapterId) {
       addAlert({ title: 'Something went wrong', status: 'error' });
       return;
     }
     try {
       await joinChapter({
-        variables: { chapterId },
+        variables: { chapterId, subscribe: subscribeToChapter },
         refetchQueries: [
           ...refetch.refetchQueries,
           { query: CHAPTER, variables: { chapterId } },
@@ -176,28 +181,46 @@ export const EventPage: NextPage = () => {
   );
 
   async function tryToAttend(options?: { invited?: boolean }) {
+    const chapterUser = user?.user_chapters.find(
+      ({ chapter_id }) => chapter_id == chapterId,
+    );
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this event',
           body: (
             <>
-              {user
-                ? 'Would you like to attend?'
-                : 'Would you like to log in and attend this event?'}
-              <AttendInfo />
+              {user ? (
+                <>
+                  Would you like to attend?
+                  {!chapterUser && (
+                    <>
+                      <AttendInfo />
+                      <SubscribeCheckbox label="Send me notifications about new events" />
+                    </>
+                  )}
+                </>
+              ) : (
+                'Would you like to log in and attend this event?'
+              )}
             </>
           ),
         }
       : {
           title: 'Attend this event?',
-          body: <AttendInfo />,
+          body: (
+            <>
+              <AttendInfo />
+              {user && !chapterUser && (
+                <SubscribeCheckbox label="Send me notifications about new events" />
+              )}
+            </>
+          ),
         };
-
     const ok = await confirm(confirmOptions);
     if (!ok) return;
 
     if (user) {
-      await onAttend();
+      await onAttend(getSubscribe());
       return;
     }
     modalProps.onOpen();

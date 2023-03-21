@@ -16,11 +16,12 @@ import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useConfirm } from 'chakra-confirm';
 
 import { CHAPTER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
+import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
 import {
@@ -117,7 +118,7 @@ export const ChapterPage: NextPage = () => {
   });
 
   const confirm = useConfirm();
-  const [hasShownModal, setHasShownModal] = React.useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false);
   const addAlert = useAlert();
 
   const chapterUser = user?.user_chapters.find(
@@ -135,21 +136,36 @@ export const ChapterPage: NextPage = () => {
   const [leaveChapter, { loading: loadingLeave }] = useLeaveChapterMutation();
   const [chapterSubscribe, { loading: loadingSubscribeToggle }] =
     useToggleChapterSubscriptionMutation(refetch);
+  const { getSubscribe, SubscribeCheckbox } = useSubscribeCheckbox(
+    !!user?.auto_subscribe,
+  );
 
   const onJoinChapter = async (options?: { invited?: boolean }) => {
     const confirmOptions = options?.invited
       ? {
           title: 'You have been invited to this chapter',
-          body: 'Would you like to join?',
+          body: (
+            <>
+              Would you like to join?
+              <SubscribeCheckbox label="Send me notifications about new events" />
+            </>
+          ),
         }
       : {
           title: 'Join this chapter?',
-          body: 'Joining chapter will add you as a member to chapter.',
+          body: (
+            <>
+              Joining chapter will add you as a member to chapter.
+              <SubscribeCheckbox label="Send me notifications about new events" />
+            </>
+          ),
         };
     const ok = await confirm(confirmOptions);
     if (ok) {
       try {
-        await joinChapter({ variables: { chapterId } });
+        await joinChapter({
+          variables: { chapterId, subscribe: getSubscribe() },
+        });
         addAlert({
           title: 'You successfully joined this chapter',
           status: 'success',

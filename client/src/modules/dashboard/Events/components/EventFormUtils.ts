@@ -181,6 +181,13 @@ export const fields: Field[] = [
     isRequired: false,
   },
   {
+    key: 'url',
+    type: 'text',
+    label: 'Event Url',
+    placeholder: 'https://example.com',
+    isRequired: false,
+  },
+  {
     key: 'image_url',
     type: 'text',
     label: 'Event Image Url',

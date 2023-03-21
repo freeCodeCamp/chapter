@@ -378,6 +378,14 @@ export const EventPage: NextPage = () => {
         <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
           Ending: {endsAt}
         </Text>
+        {data.event.url && (
+          <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
+            More about event:{' '}
+            <Link href={data.event.url} isExternal>
+              {data.event.url}
+            </Link>
+          </Text>
+        )}
         <SimpleGrid columns={2} gap={5} alignItems="center">
           {!attendanceStatus ||
           attendanceStatus === AttendanceNames.canceled ? (

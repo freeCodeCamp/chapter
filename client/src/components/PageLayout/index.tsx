@@ -58,6 +58,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
         minHeight={{ base: '70vh', md: '82vh' }}
         px={[4, 4, 8, 16]}
         id="main-content"
+        marginTop="4"
       >
         {children}
       </Box>

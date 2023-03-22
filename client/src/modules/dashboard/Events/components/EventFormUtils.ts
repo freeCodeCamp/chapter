@@ -181,6 +181,13 @@ export const fields: Field[] = [
     isRequired: false,
   },
   {
+    key: 'url',
+    type: 'text',
+    label: 'Event Website',
+    placeholder: 'https://example.com',
+    isRequired: false,
+  },
+  {
     key: 'image_url',
     type: 'text',
     label: 'Event Image Url',
@@ -265,9 +272,10 @@ export const parseEventData = (data: EventFormData) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { chapter_id, attend_event, sponsors, attendees, ...rest } = data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-  // streaming_url is optional. However, null will be accepted,
+  // streaming_url and url are optional. However, null will be accepted,
   // while empty strings will be rejected.
   const streaming_url = data.streaming_url?.trim() || null;
+  const url = data.url?.trim() || null;
 
   return {
     ...rest,
@@ -278,6 +286,7 @@ export const parseEventData = (data: EventFormData) => {
       ? parseInt(String(data.venue_id))
       : null,
     streaming_url: isOnline(data.venue_type) ? streaming_url : null,
+    url,
     sponsor_ids: sponsorArray,
   };
 };

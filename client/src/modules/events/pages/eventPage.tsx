@@ -338,7 +338,7 @@ export const EventPage: NextPage = () => {
       </Modal>
       <VStack align="flex-start">
         {data.event.image_url && (
-          <Box height={'300px'} marginTop="4">
+          <Box height={'300px'}>
             <Image
               data-cy="event-image"
               boxSize="100%"

@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Image,
+  Link as ChakraLink,
   List,
   ListIcon,
   ListItem,
@@ -381,9 +382,9 @@ export const EventPage: NextPage = () => {
         {data.event.url && (
           <Text fontWeight={'500'} fontSize={['smaller', 'sm', 'md']}>
             More about event:{' '}
-            <Link href={data.event.url} isExternal>
+            <ChakraLink href={data.event.url} isExternal>
               {data.event.url}
-            </Link>
+            </ChakraLink>
           </Text>
         )}
         <SimpleGrid columns={2} gap={5} alignItems="center">

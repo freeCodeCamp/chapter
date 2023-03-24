@@ -141,10 +141,23 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
     });
   });
 
+  //Added some fake venue data to test
   describe('eventConfirmAttendeeEmail', () => {
     const data = 'Emard and Sons';
+    const streaming_url = 'http://streaming.url/abcd';
+    const venue_physical = 'Some Physical Location';
+    const venue_type = events_venue_type_enum.PhysicalAndOnline;
+    const start_at = new Date('2023-02-07 12:30');
+    const ends_at = new Date('2023-02-07 12:00');
     it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
-      const result = eventConfirmAttendeeEmail(data);
+      const result = eventConfirmAttendeeEmail(
+        data,
+        streaming_url,
+        venue_physical,
+        venue_type,
+        start_at,
+        ends_at,
+      );
       expect(result).toHaveProperty('subject');
       expect(result).toHaveProperty('emailText');
       expect(result).toHaveProperty('attachUnsubscribe');
@@ -153,7 +166,16 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
 
     it('should return object with expected subject', () => {
       const expected = { subject: 'Your attendance is confirmed' };
-      expect(eventConfirmAttendeeEmail(data)).toMatchObject(expected);
+      expect(
+        eventConfirmAttendeeEmail(
+          data,
+          streaming_url,
+          venue_physical,
+          venue_type,
+          start_at,
+          ends_at,
+        ),
+      ).toMatchObject(expected);
     });
 
     it('should return object with expected emailText', () => {
@@ -161,7 +183,16 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
         emailText:
           'Your reservation is confirmed. You can attend the event Emard and Sons',
       };
-      expect(eventConfirmAttendeeEmail(data)).toMatchObject(expected);
+      expect(
+        eventConfirmAttendeeEmail(
+          data,
+          streaming_url,
+          venue_physical,
+          venue_type,
+          start_at,
+          ends_at,
+        ),
+      ).toMatchObject(expected);
     });
   });
 
@@ -209,6 +240,7 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
     });
   });
 
+  // Added streaming and venue type to match
   describe('eventAttendanceConfirmation', () => {
     const data = {
       event: {
@@ -216,7 +248,9 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
         start_at: new Date('2023-02-07 21:00'),
         ends_at: new Date('2023-02-08, 22:00'),
         description: '',
+        streaming_url: 'http://streaming.url/abcd',
         venue: { name: 'Nitzsche - Hills' },
+        venue_type: events_venue_type_enum.PhysicalAndOnline,
       },
       userName: 'Not the Owner',
     };

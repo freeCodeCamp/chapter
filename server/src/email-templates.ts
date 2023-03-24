@@ -132,13 +132,26 @@ Your role in chapter ${chapterName} has been changed from ${oldChapterRole} to $
 `,
 });
 
+// Manually adding venue data, possibly make an interface for it later
 export const eventConfirmAtendeeText = ({
   eventName,
+  physicalLocation,
+  streamingData,
+  start_at,
+  ends_at,
 }: {
   eventName: string;
+  physicalLocation: string;
+  streamingData: string;
+  start_at: Date;
+  ends_at: Date;
 }) => ({
   subject: 'Your attendance is confirmed',
-  emailText: `Your reservation is confirmed. You can attend the event ${eventName}`,
+  emailText: `Your reservation is confirmed. You can attend the event ${eventName}.<br />
+<br />
+When: ${start_at} to ${ends_at}
+<br />${physicalLocation}${streamingData}
+<br />`,
 });
 
 export const eventAttendeeToWaitlistText = ({
@@ -212,21 +225,36 @@ export const eventNewAttendeeNotificationText = ({
   emailText: `User ${userName} is attending.`,
 });
 
+// Added venue data, physical location, streaming data, start and end time
 interface AttendanceConfirmationData {
   eventName: string;
   googleURL: string;
   outlookURL: string;
   userName: string;
+  physicalLocation: string;
+  streamingData: string;
+  start_at: Date;
+  ends_at: Date;
 }
 
+// Added the 4 pieces of venue data for use in email text
 export const eventAttendanceConfirmationText = ({
   eventName,
   googleURL,
   outlookURL,
   userName,
+  physicalLocation,
+  streamingData,
+  start_at,
+  ends_at,
 }: AttendanceConfirmationData) => ({
   subject: `Confirmation of attendance: ${eventName}`,
   emailText: `Hi${userName},<br />
+Confirming your attendance of ${eventName}.<br />
+<br />
+When: ${start_at} to ${ends_at}
+<br />${physicalLocation}${streamingData}
+<br />
 You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
 <br />
 <a href=${googleURL}>Google</a>

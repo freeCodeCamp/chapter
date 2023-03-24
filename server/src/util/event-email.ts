@@ -1,6 +1,7 @@
 import { events_venue_type_enum } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
+// import { venues } from '../../tests/fixtures/venues';
 import {
   chapterAdminUnsubscribeText,
   chapterUnsubscribeText,
@@ -227,8 +228,32 @@ export const eventCancelationEmail = (event: CancelEvent) => {
   );
 };
 
-export const eventConfirmAttendeeEmail = (eventName: string) =>
-  withUnsubscribe(eventConfirmAtendeeText({ eventName }));
+// Revamping to include venue data... manually, maybe make an
+// interface later.
+export const eventConfirmAttendeeEmail = (
+  eventName: string,
+  streaming_url: string | null,
+  venue: string | undefined,
+  venue_type: events_venue_type_enum,
+  start_at: Date,
+  ends_at: Date,
+) => {
+  const physicalLocation = isPhysical(venue_type)
+    ? `\n${physicalLocationShortText(venue)}`
+    : '';
+  const streamingData = isOnline(venue_type)
+    ? `\n${streamingURLText(streaming_url)}`
+    : '';
+  return withUnsubscribe(
+    eventConfirmAtendeeText({
+      eventName,
+      physicalLocation,
+      streamingData,
+      start_at,
+      ends_at,
+    }),
+  );
+};
 
 export const eventAttendeeToWaitlistEmail = (eventName: string) =>
   withUnsubscribe(eventAttendeeToWaitlistText({ eventName }));
@@ -248,7 +273,9 @@ interface AttendanceConfirmation {
     start_at: Date;
     ends_at: Date;
     description: string;
+    streaming_url: string | null; // Added to get possible streaming data
     venue: { name: string | undefined } | null;
+    venue_type: events_venue_type_enum; // Added to validify venue data
   };
   userName: string;
 }
@@ -263,6 +290,17 @@ export const eventAttendanceConfirmation = ({
     end: event.ends_at,
     description: event.description,
   };
+
+  // Following the same format from eventInviteEmail,
+  // grabbing physical location and streaming data
+  // in the same manner
+  const physicalLocation = isPhysical(event.venue_type)
+    ? `\n${physicalLocationShortText(event.venue?.name)}`
+    : '';
+  const streamingData = isOnline(event.venue_type)
+    ? `\n${streamingURLText(event.streaming_url)}`
+    : '';
+
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
   const eventName = event.name;
@@ -274,6 +312,10 @@ export const eventAttendanceConfirmation = ({
       googleURL,
       outlookURL,
       userName: userName ? ` ${userName}` : '',
+      physicalLocation, // Added these 4 for use in email text
+      streamingData,
+      start_at: event.start_at,
+      ends_at: event.ends_at,
     }),
   );
 };

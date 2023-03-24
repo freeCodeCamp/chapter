@@ -515,6 +515,7 @@ export class EventResolver {
     return updatedEventUser;
   }
 
+  // Added venue data for updatedUser
   @Authorized(Permission.AttendeeConfirm)
   @Mutation(() => EventUserWithRelations)
   async confirmAttendee(
@@ -524,11 +525,20 @@ export class EventResolver {
     const updatedUser = await prisma.event_users.update({
       data: { attendance: { connect: { name: AttendanceNames.confirmed } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: { include: { chapter: true } }, ...eventUserIncludes },
+      include: {
+        event: { include: { chapter: true, venue: true } },
+        ...eventUserIncludes,
+      },
     });
 
+    // Added 5 more parameters related to venue data
     const { subject, attachUnsubscribe } = eventConfirmAttendeeEmail(
       updatedUser.event.name,
+      updatedUser.event.streaming_url,
+      updatedUser.event.venue?.name,
+      updatedUser.event.venue_type,
+      updatedUser.event.start_at,
+      updatedUser.event.ends_at,
     );
 
     await mailerService.sendEmail({

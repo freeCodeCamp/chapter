@@ -143,6 +143,8 @@ export const EventPage: NextPage = () => {
             : 'You are on the waitlist',
         status: 'success',
       });
+      //calls subscribe to make sure user is subcribed after rsvp
+      await subscribeToEvent({ variables: { eventId } });
     } catch (err) {
       addAlert({ title: 'Something went wrong', status: 'error' });
       console.error(err);

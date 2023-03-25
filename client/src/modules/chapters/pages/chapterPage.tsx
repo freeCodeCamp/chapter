@@ -34,6 +34,7 @@ import { useAlert } from '../../../hooks/useAlert';
 import { useParam } from '../../../hooks/useParam';
 import { EVENT } from '../../events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
+import { ChapterRoles } from '../../../../../common/roles';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
@@ -184,7 +185,7 @@ export const ChapterPage: NextPage = () => {
         <>
           Leaving will cancel your attendance at all of this chapter&apos;s
           events.
-          {chapterUser?.chapter_role.name === 'administrator' && (
+          {chapterUser?.chapter_role.name === ChapterRoles.administrator && (
             <>
               <br />
               <br />

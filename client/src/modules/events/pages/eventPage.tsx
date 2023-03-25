@@ -390,16 +390,21 @@ export const EventPage: NextPage = () => {
         <SimpleGrid columns={2} gap={5} alignItems="center">
           {!attendanceStatus ||
           attendanceStatus === AttendanceNames.canceled ? (
-            <Button
-              colorScheme="blue"
-              data-cy="attend-button"
-              isLoading={loadingAttend}
-              onClick={() => tryToAttend()}
-              paddingBlock="1"
-              paddingInline="2"
-            >
-              {data.event.invite_only ? 'Request Invite' : 'Attend Event'}
-            </Button>
+            <>
+              <Text fontSize="md" fontWeight="500">
+                Not attending the event
+              </Text>
+              <Button
+                colorScheme="blue"
+                data-cy="attend-button"
+                isLoading={loadingAttend}
+                onClick={() => tryToAttend()}
+                paddingBlock="1"
+                paddingInline="2"
+              >
+                {data.event.invite_only ? 'Request Invite' : 'Attend Event'}
+              </Button>
+            </>
           ) : (
             <>
               {attendanceStatus === AttendanceNames.waitlist ? (

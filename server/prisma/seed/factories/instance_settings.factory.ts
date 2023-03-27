@@ -7,7 +7,6 @@ const { lorem } = faker;
 
 const createInstanceSettings = async () => {
   const instanceSettingsData: Prisma.instance_settingsCreateInput = {
-    id: 1,
     description: lorem.paragraphs(2),
     policy_url: 'https://www.freecodecamp.org/news/privacy-policy/',
     terms_of_services_url:

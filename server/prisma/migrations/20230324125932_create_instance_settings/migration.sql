@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "instance_settings" (
-    "id" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
     "description" TEXT,
     "policy_url" TEXT,
     "terms_of_services_url" TEXT,

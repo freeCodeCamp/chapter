@@ -348,12 +348,17 @@ export class EventResolver {
       },
     });
 
-    // TODO: find by permission, not role.
     const chapterAdministrators = await prisma.chapter_users.findMany({
       where: {
         chapter_id: chapterId,
         subscribed: true,
-        chapter_role: { is: { name: 'administrator' } },
+        chapter_role: {
+          chapter_role_permissions: {
+            some: {
+              chapter_permission: { name: 'chapter-edit' },
+            },
+          },
+        },
       },
       ...chapterUserInclude,
     });

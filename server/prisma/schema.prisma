@@ -12,7 +12,7 @@ datasource db {
 }
 
 model instance_settings {
-  id                    Int    @id
+  id                    Int     @id @default(autoincrement())
   description           String?
   policy_url            String?
   terms_of_services_url String?

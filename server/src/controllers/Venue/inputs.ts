@@ -25,4 +25,7 @@ export class VenueInputs {
 
   @Field(() => Float, { nullable: true })
   longitude?: number;
+
+  @Field(() => [String])
+  venue_tags: string[];
 }

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 
 import { useCreateVenueMutation } from '../../../generated/graphql';
 import { useAlert } from '../../../hooks/useAlert';
-import { VenueFormData } from './components/VenueFormUtils';
+import { parseVenueData, VenueFormData } from './components/VenueFormUtils';
 import { DASHBOARD_VENUES } from './graphql/queries';
 
 export const useSubmitVenue = () => {
@@ -13,16 +13,8 @@ export const useSubmitVenue = () => {
   const addAlert = useAlert();
 
   return async (data: VenueFormData) => {
-    const { chapter_id, ...createData } = data;
-
-    const latitude = parseFloat(String(data.latitude));
-    const longitude = parseFloat(String(data.longitude));
-
     const { data: venueData, errors } = await createVenue({
-      variables: {
-        chapterId: chapter_id,
-        data: { ...createData, latitude, longitude },
-      },
+      variables: { chapterId: data.chapter_id, data: parseVenueData(data) },
     });
     // TODO: handle apollo errors centrally if possible
     if (errors) throw errors;

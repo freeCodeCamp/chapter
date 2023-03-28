@@ -26,6 +26,10 @@ import {
 import { eventListUnsubscribeOptions } from '../../util/event-email';
 import { VenueInputs } from './inputs';
 
+const getUniqueTags = (tags: string[]) => [
+  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
+];
+
 @Resolver()
 export class VenueResolver {
   @Query(() => [Venue])
@@ -82,7 +86,19 @@ export class VenueResolver {
     @Arg('data') data: VenueInputs,
   ): Promise<Venue> {
     const venueData: Prisma.venuesCreateInput = {
-      ...data,
+      name: data.name,
+      street_address: data.street_address,
+      city: data.city,
+      postal_code: data.postal_code,
+      region: data.region,
+      country: data.country,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      venue_tags: {
+        create: getUniqueTags(data.venue_tags).map((name) => ({
+          tag: { connectOrCreate: { create: { name }, where: { name } } },
+        })),
+      },
       chapter: { connect: { id: chapterId } },
     };
     return prisma.venues.create({
@@ -92,12 +108,40 @@ export class VenueResolver {
 
   @Authorized(Permission.VenueEdit)
   @Mutation(() => Venue)
-  updateVenue(
+  async updateVenue(
     @Arg('id', () => Int) id: number,
     @Arg('_onlyUsedForAuth', () => Int) _onlyUsedForAuth: number,
     @Arg('data') data: VenueInputs,
   ): Promise<Venue | null> {
-    const venueData: Prisma.venuesUpdateInput = data;
+    const venue = await prisma.venues.findUniqueOrThrow({ where: { id } });
+
+    await prisma.$transaction([
+      prisma.venues.update({
+        where: { id },
+        data: { venue_tags: { deleteMany: {} } },
+      }),
+      prisma.venues.update({
+        where: { id },
+        data: {
+          venue_tags: {
+            create: getUniqueTags(data.venue_tags).map((name) => ({
+              tag: { connectOrCreate: { create: { name }, where: { name } } },
+            })),
+          },
+        },
+      }),
+    ]);
+
+    const venueData: Prisma.venuesUpdateInput = {
+      name: data.name ?? venue.name,
+      street_address: data.street_address ?? venue.street_address,
+      city: data.city ?? venue.city,
+      postal_code: data.postal_code ?? venue.postal_code,
+      region: data.region ?? venue.region,
+      country: data.country ?? venue.country,
+      latitude: data.latitude ?? venue.latitude,
+      longitude: data.longitude ?? venue.longitude,
+    };
     return prisma.venues.update({
       where: { id },
       data: venueData,

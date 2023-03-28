@@ -195,6 +195,7 @@ export type EventInputs = {
   capacity: Scalars['Float'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Scalars['String']>;
   image_url: Scalars['String'];
   invite_only?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
@@ -814,6 +815,7 @@ export type VenueInputs = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: InputMaybe<Scalars['String']>;
+  venue_tags: Array<Scalars['String']>;
 };
 
 /** All possible venue types for an event */

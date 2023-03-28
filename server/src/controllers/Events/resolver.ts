@@ -180,6 +180,10 @@ const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   return update;
 };
 
+const getUniqueTags = (tags: string[]) => [
+  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
+];
+
 const chapterUserInclude = {
   include: {
     chapter_role: true,
@@ -701,6 +705,11 @@ export class EventResolver {
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
+      event_tags: {
+        create: getUniqueTags(data.event_tags).map((name) => ({
+          tag: { connectOrCreate: { create: { name }, where: { name } } },
+        })),
+      },
       ...(attendEvent && { event_users: { create: eventUserData } }),
     };
 
@@ -787,6 +796,23 @@ export class EventResolver {
     await prisma.event_sponsors.createMany({
       data: eventSponsorInput,
     });
+
+    await prisma.$transaction([
+      prisma.events.update({
+        where: { id },
+        data: { event_tags: { deleteMany: {} } },
+      }),
+      prisma.events.update({
+        where: { id },
+        data: {
+          event_tags: {
+            create: getUniqueTags(data.event_tags).map((name) => ({
+              tag: { connectOrCreate: { create: { name }, where: { name } } },
+            })),
+          },
+        },
+      }),
+    ]);
 
     const update = getUpdateData(data, event);
 

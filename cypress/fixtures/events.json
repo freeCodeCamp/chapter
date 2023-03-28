@@ -8,7 +8,8 @@
     "venue_id": 2,
     "image_url": "http://loremflickr.com/640/480/nature?79359",
     "invite_only": false,
-    "sponsor_ids": []
+    "sponsor_ids": [],
+    "event_tags": []
   },
   "eventTwo": {
     "venue_id": 1,
@@ -35,7 +36,8 @@
     "streaming_url": "https://test.event.org/video",
     "start_at": "2022-01-01T00:01",
     "ends_at": "2022-01-02T00:02",
-    "invite_only": false
+    "invite_only": false,
+    "event_tags": []
   },
   "eventWithoutDateAndURL": {
     "name": "Test Event",

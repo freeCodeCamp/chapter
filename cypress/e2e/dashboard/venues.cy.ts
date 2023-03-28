@@ -50,6 +50,9 @@ describe('venues dashboard', () => {
     cy.visit(`/dashboard/chapters/${chapterId}/`);
     cy.get('[data-cy=create-venue]').click();
     cy.findByRole('textbox', { name: 'Venue name' }).type(venueData.name);
+    cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
+      venueData.venue_tags,
+    );
     cy.findByRole('textbox', { name: 'Street address' }).type(
       venueData.street_address,
     );

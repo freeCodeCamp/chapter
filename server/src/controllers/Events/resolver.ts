@@ -72,6 +72,7 @@ import {
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
 } from '../../util/event-email';
+import { getUniqueTags } from '../../util/tags';
 import { isOnline, isPhysical } from '../../util/venue';
 import { AttendanceNames } from '../../../../common/attendance';
 import { EventInputs } from './inputs';
@@ -179,10 +180,6 @@ const getUpdateData = (data: EventInputs, event: EventWithUsers) => {
   };
   return update;
 };
-
-const getUniqueTags = (tags: string[]) => [
-  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
-];
 
 const chapterUserInclude = {
   include: {

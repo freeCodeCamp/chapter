@@ -24,11 +24,8 @@ import {
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import { eventListUnsubscribeOptions } from '../../util/event-email';
+import { getUniqueTags } from '../../util/tags';
 import { VenueInputs } from './inputs';
-
-const getUniqueTags = (tags: string[]) => [
-  ...new Set(tags.map((tagName) => tagName.trim()).filter(Boolean)),
-];
 
 @Resolver()
 export class VenueResolver {

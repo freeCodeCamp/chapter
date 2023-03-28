@@ -11,6 +11,7 @@ import {
   IsOptionalLatitude,
   IsOptionalLongitude,
 } from '../../../util/form';
+import { parseTags } from '../../../../util/tags';
 
 export type VenueFormData = Required<Omit<VenueInputs, 'venue_tags'>> & {
   chapter_id: number;
@@ -170,14 +171,10 @@ export const parseVenueData = (data: VenueFormData) => {
   const { chapter_id, venue_tags, ...rest } = data;
   const latitude = parseFloat(String(data.latitude));
   const longitude = parseFloat(String(data.longitude));
-  const tagsArray = venue_tags
-    .split(',')
-    .map((tag) => tag.trim())
-    .filter(Boolean);
 
   return {
     ...rest,
-    venue_tags: tagsArray,
+    venue_tags: parseTags(venue_tags),
     latitude,
     longitude,
   };

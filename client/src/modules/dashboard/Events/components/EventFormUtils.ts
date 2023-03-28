@@ -15,6 +15,7 @@ import {
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
+import { parseTags } from '../../../../util/tags';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import {
   IsDateAfter,
@@ -22,7 +23,7 @@ import {
   IsNonEmptyString,
   IsOptionalUrl,
   IsNumberOfAttendeesUnderCapacity,
-} from 'modules/util/form';
+} from '../../../util/form';
 
 export interface EventSponsorInput {
   id: number;
@@ -291,10 +292,6 @@ export const parseEventData = (data: EventFormData) => {
   const { chapter_id, attend_event, sponsors, attendees, event_tags, ...rest } =
     data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
-  const tagsArray = event_tags
-    .split(',')
-    .map((tag) => tag.trim())
-    .filter(Boolean);
   // streaming_url and url are optional. However, null will be accepted,
   // while empty strings will be rejected.
   const streaming_url = data.streaming_url?.trim() || null;
@@ -310,7 +307,7 @@ export const parseEventData = (data: EventFormData) => {
       : null,
     streaming_url: isOnline(data.venue_type) ? streaming_url : null,
     url,
-    event_tags: tagsArray,
+    event_tags: parseTags(event_tags),
     sponsor_ids: sponsorArray,
   };
 };

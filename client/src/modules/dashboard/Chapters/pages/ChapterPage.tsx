@@ -44,6 +44,7 @@ import { DeleteChapterButton } from '../components/DeleteChapterButton';
 import { meQuery } from '../../../auth/graphql/queries';
 import { DASHBOARD_CHAPTER } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../Events/graphql/queries';
+import { TagsBox } from 'components/TagsBox';
 
 const eventRefetches = (data?: DashboardChapterQuery) => {
   return (
@@ -251,6 +252,9 @@ export const ChapterPage: NextPageWithLayout = () => {
             >
               Chapter: {data.dashboardChapter.name}
             </Heading>
+            {!!data.dashboardChapter.chapter_tags.length && (
+              <TagsBox tags={data.dashboardChapter.chapter_tags} />
+            )}
             {fields.map(
               ({ value, label }) =>
                 value && (

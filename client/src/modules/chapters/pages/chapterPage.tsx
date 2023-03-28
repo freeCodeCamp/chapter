@@ -35,6 +35,7 @@ import { useParam } from '../../../hooks/useParam';
 import { EVENT } from '../../events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
 import { ChapterRoles } from '../../../../../common/roles';
+import { TagsBox } from 'components/TagsBox';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (
@@ -333,6 +334,9 @@ export const ChapterPage: NextPage = () => {
         >
           {data.chapter.name}
         </Heading>
+        {!!data.chapter.chapter_tags.length && (
+          <TagsBox tags={data.chapter.chapter_tags} />
+        )}
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>

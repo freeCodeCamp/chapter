@@ -22,6 +22,18 @@ export const CHAPTER = gql`
         image_url
         invite_only
         canceled
+        event_tags {
+          tag {
+            id
+            name
+          }
+        }
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -42,6 +54,12 @@ export const CHAPTERS = gql`
         ends_at
         name
         invite_only
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
       _count {
         chapter_users

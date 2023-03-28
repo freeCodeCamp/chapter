@@ -120,11 +120,7 @@ const createEvents = async (
 
     await prisma.events.update({
       where: { id: event.id },
-      data: {
-        tags: {
-          create: connectOrCreateTags,
-        },
-      },
+      data: { event_tags: { create: connectOrCreateTags } },
     });
 
     events.push(event.id);

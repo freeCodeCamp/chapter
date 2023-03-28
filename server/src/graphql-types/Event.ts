@@ -7,6 +7,7 @@ import {
   EventUserWithRelations,
   EventUserWithAttendanceAndUser,
   Venue,
+  Tags,
 } from '.';
 
 export { events_venue_type_enum };
@@ -61,13 +62,19 @@ export class Event extends BaseObject {
 }
 
 @ObjectType()
-export class EventWithVenue extends Event {
+export class EventWithTags extends Event {
+  @Field(() => [Tags])
+  event_tags: Tags[];
+}
+
+@ObjectType()
+export class EventWithVenue extends EventWithTags {
   @Field(() => Venue, { nullable: true })
   venue?: Venue | null;
 }
 
 @ObjectType()
-export class EventWithChapterAndVenue extends Event {
+export class EventWithChapterAndVenue extends EventWithTags {
   @Field(() => Chapter)
   chapter: Chapter;
 
@@ -76,7 +83,7 @@ export class EventWithChapterAndVenue extends Event {
 }
 
 @ObjectType()
-class EventsWithChapters extends Event {
+class EventsWithChapters extends EventWithTags {
   @Field(() => Chapter)
   chapter: Chapter;
 }

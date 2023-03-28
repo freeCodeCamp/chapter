@@ -44,6 +44,7 @@ export class ChapterResolver {
   async chapters(): Promise<ChapterCardRelations[]> {
     return await prisma.chapters.findMany({
       include: {
+        chapter_tags: { include: { tag: true } },
         events: {
           where: {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
@@ -61,7 +62,10 @@ export class ChapterResolver {
   async chapter(@Arg('id', () => Int) id: number): Promise<ChapterWithEvents> {
     return await prisma.chapters.findUniqueOrThrow({
       where: { id },
-      include: { events: true },
+      include: {
+        chapter_tags: { include: { tag: true } },
+        events: { include: { event_tags: { include: { tag: true } } } },
+      },
     });
   }
 
@@ -75,6 +79,7 @@ export class ChapterResolver {
       where: { id },
       include: {
         events: true,
+        chapter_tags: { include: { tag: true } },
         chapter_users: {
           include: {
             chapter_role: {
@@ -121,7 +126,10 @@ export class ChapterResolver {
       ...(!isAdminFromInstanceRole(ctx.user) && {
         where: isChapterAdminWhere(ctx.user.id),
       }),
-      include: { events: true },
+      include: {
+        chapter_tags: { include: { tag: true } },
+        events: { include: { event_tags: { include: { tag: true } } } },
+      },
       orderBy: { name: 'asc' },
     });
   }

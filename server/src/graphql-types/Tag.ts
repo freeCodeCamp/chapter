@@ -6,3 +6,9 @@ export class Tag extends BaseObject {
   @Field(() => String)
   name: string;
 }
+
+@ObjectType()
+export class Tags {
+  @Field(() => Tag)
+  tag: Tag;
+}

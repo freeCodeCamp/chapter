@@ -48,6 +48,7 @@ import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
 import { CHAPTER } from '../../chapters/graphql/queries';
 import { AttendanceNames } from '../../../../../common/attendance';
+import { TagsBox } from 'components/TagsBox';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -365,6 +366,9 @@ export const EventPage: NextPage = () => {
           <Text fontWeight={500} fontSize={'md'} color="red.500">
             Canceled
           </Text>
+        )}
+        {!!data.event.event_tags.length && (
+          <TagsBox tags={data.event.event_tags} />
         )}
         <Text fontSize={['md', 'lg', 'xl']} fontWeight={'500'}>
           Chapter:{' '}

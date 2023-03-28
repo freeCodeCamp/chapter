@@ -50,6 +50,7 @@ export type ChapterCardRelations = {
   _count: ChapterUsersCount;
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
+  chapter_tags: Array<Tags>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -120,6 +121,7 @@ export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
+  chapter_tags: Array<Tags>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -137,6 +139,7 @@ export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
+  chapter_tags: Array<Tags>;
   chapter_users: Array<ChapterUserWithRelations>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -277,6 +280,7 @@ export type EventWithRelationsWithEventUser = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   event_users: Array<EventUserWithAttendanceAndUser>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
@@ -298,6 +302,7 @@ export type EventWithRelationsWithEventUserRelations = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   event_users: Array<EventUserWithRelations>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
@@ -318,6 +323,7 @@ export type EventWithVenue = {
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
@@ -337,6 +343,7 @@ export type EventsWithChapters = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
@@ -651,6 +658,17 @@ export type SponsoredEvent = {
   event: Event;
 };
 
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type Tags = {
+  __typename?: 'Tags';
+  tag: Tag;
+};
+
 export type TokenStatus = {
   __typename?: 'TokenStatus';
   is_valid: Scalars['Boolean'];
@@ -833,6 +851,7 @@ export type VenueWithChapterEvents = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
+  venue_tags: Array<Tags>;
 };
 
 export type DeleteMeMutationVariables = Exact<{ [key: string]: never }>;
@@ -976,6 +995,14 @@ export type ChapterQuery = {
       image_url: string;
       invite_only: boolean;
       canceled: boolean;
+      event_tags: Array<{
+        __typename?: 'Tags';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
+    }>;
+    chapter_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
   };
 };
@@ -999,6 +1026,10 @@ export type ChaptersQuery = {
       ends_at: any;
       name: string;
       invite_only: boolean;
+    }>;
+    chapter_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
     _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
@@ -1175,6 +1206,10 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
+    }>;
+    chapter_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
   };
 };
@@ -1433,6 +1468,10 @@ export type DashboardEventQuery = {
       };
       event_role: { __typename?: 'EventRole'; id: number; name: string };
     }>;
+    event_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   } | null;
 };
 
@@ -1670,6 +1709,10 @@ export type VenueQuery = {
         invite_only: boolean;
       }>;
     };
+    venue_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   } | null;
 };
 
@@ -1744,6 +1787,10 @@ export type PaginatedEventsWithTotalQuery = {
         name: string;
         category: string;
       };
+      event_tags: Array<{
+        __typename?: 'Tags';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
     }>;
   };
 };
@@ -1799,6 +1846,10 @@ export type EventQuery = {
         name: string;
         image_url?: string | null;
       };
+    }>;
+    event_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
   } | null;
 };
@@ -2294,6 +2345,18 @@ export const ChapterDocument = gql`
         image_url
         invite_only
         canceled
+        event_tags {
+          tag {
+            id
+            name
+          }
+        }
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -2357,6 +2420,12 @@ export const ChaptersDocument = gql`
         ends_at
         name
         invite_only
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
       _count {
         chapter_users
@@ -3075,6 +3144,12 @@ export const DashboardChapterDocument = gql`
         invite_only
         canceled
         image_url
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -3933,6 +4008,12 @@ export const DashboardEventDocument = gql`
         }
         subscribed
       }
+      event_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -4766,6 +4847,12 @@ export const VenueDocument = gql`
           invite_only
         }
       }
+      venue_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -5040,6 +5127,12 @@ export const PaginatedEventsWithTotalDocument = gql`
           name
           category
         }
+        event_tags {
+          tag {
+            id
+            name
+          }
+        }
       }
     }
   }
@@ -5142,6 +5235,12 @@ export const EventDocument = gql`
           id
           name
           image_url
+        }
+      }
+      event_tags {
+        tag {
+          id
+          name
         }
       }
     }

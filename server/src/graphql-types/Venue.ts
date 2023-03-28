@@ -1,6 +1,7 @@
 import { Field, ObjectType, Float, Int } from 'type-graphql';
 import { BaseObject } from './BaseObject';
 import { Chapter, ChapterWithEvents } from './Chapter';
+import { Tags } from './Tag';
 
 @ObjectType()
 export class Venue extends BaseObject {
@@ -33,13 +34,19 @@ export class Venue extends BaseObject {
 }
 
 @ObjectType()
+export class VenueWithTags extends Venue {
+  @Field(() => [Tags])
+  venue_tags: Tags[];
+}
+
+@ObjectType()
 export class VenueWithChapter extends Venue {
   @Field(() => Chapter)
   chapter: Chapter;
 }
 
 @ObjectType()
-export class VenueWithChapterEvents extends Venue {
+export class VenueWithChapterEvents extends VenueWithTags {
   @Field(() => ChapterWithEvents)
   chapter: ChapterWithEvents;
 }

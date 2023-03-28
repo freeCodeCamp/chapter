@@ -62,9 +62,15 @@ export class VenueResolver {
       include: {
         chapter: {
           include: {
-            events: { where: { venue_id: id }, orderBy: { start_at: 'desc' } },
+            chapter_tags: { include: { tag: true } },
+            events: {
+              include: { event_tags: { include: { tag: true } } },
+              where: { venue_id: id },
+              orderBy: { start_at: 'desc' },
+            },
           },
         },
+        venue_tags: { include: { tag: true } },
       },
     });
   }

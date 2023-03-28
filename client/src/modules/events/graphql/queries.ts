@@ -25,6 +25,12 @@ export const DATA_PAGINATED_EVENTS_TOTAL_QUERY = gql`
           name
           category
         }
+        event_tags {
+          tag {
+            id
+            name
+          }
+        }
       }
     }
   }
@@ -75,6 +81,12 @@ export const EVENT = gql`
           id
           name
           image_url
+        }
+      }
+      event_tags {
+        tag {
+          id
+          name
         }
       }
     }

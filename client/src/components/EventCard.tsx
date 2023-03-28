@@ -3,12 +3,13 @@ import { Tag, Box, Flex, Image, Grid, GridItem, Text } from '@chakra-ui/react';
 import { Link } from 'chakra-next-link';
 import { isPast } from 'date-fns';
 import React from 'react';
-import { Chapter, Event } from '../generated/graphql';
+import { Chapter, EventWithVenue } from '../generated/graphql';
 import { formatDate } from '../util/date';
+import { TagsBox } from './TagsBox';
 
 type EventCardProps = {
   event: Pick<
-    Event,
+    EventWithVenue,
     | 'id'
     | 'name'
     | 'description'
@@ -17,6 +18,7 @@ type EventCardProps = {
     | 'image_url'
     | 'invite_only'
     | 'canceled'
+    | 'event_tags'
   > & {
     chapter: Pick<Chapter, 'id' | 'name'>;
   };
@@ -148,6 +150,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             {eventStatus}: {formatDate(event.start_at)}
           </Text>
         </Grid>
+        {!!event.event_tags.length && <TagsBox tags={event.event_tags} />}
       </Box>
     </Flex>
   );

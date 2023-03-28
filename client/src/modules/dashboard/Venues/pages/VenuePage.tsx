@@ -25,6 +25,7 @@ import {
   DASHBOARD_EVENT,
   DASHBOARD_EVENTS,
 } from '../../../dashboard/Events/graphql/queries';
+import { TagsBox } from 'components/TagsBox';
 
 const eventRefetches = (data?: VenueQuery) => {
   return (
@@ -79,6 +80,9 @@ export const VenuePage: NextPageWithLayout = () => {
           <Heading as="h1" fontWeight="normal" mb="2">
             {data.venue.name}
           </Heading>
+          {!!data.venue.venue_tags.length && (
+            <TagsBox tags={data.venue.venue_tags} />
+          )}
 
           <Text>{getLocationString(data.venue, true)}</Text>
           <Link fontWeight={500} href={`/dashboard/chapters/${chapter.id}`}>

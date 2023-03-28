@@ -29,6 +29,7 @@ model chapters {
   events        events[]
   user_bans     user_bans[]
   chapter_users chapter_users[]
+  chapter_tags  chapter_tags[]
   venues        venues[]
 }
 
@@ -90,6 +91,17 @@ model chapter_permissions {
   chapter_role_permissions chapter_role_permissions[]
 }
 
+model chapter_tags {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  chapter_id Int
+  tag_id     Int
+  chapter    chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tag        tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([chapter_id, tag_id])
+}
+
 model event_sponsors {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -133,7 +145,7 @@ model events {
   chapter           chapters               @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   venue             venues?                @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sponsors          event_sponsors[]
-  tags              event_tags[]
+  event_tags        event_tags[]
   event_users       event_users[]
 }
 
@@ -216,11 +228,13 @@ model sponsors {
 }
 
 model tags {
-  created_at DateTime     @default(now())
-  updated_at DateTime     @updatedAt
-  id         Int          @id @default(autoincrement())
-  name       String       @unique
-  event_tags event_tags[]
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  chapter_tags chapter_tags[]
+  event_tags   event_tags[]
+  venue_tags   venue_tags[]
 }
 
 model user_bans {
@@ -278,6 +292,17 @@ model users {
   session          sessions?
 }
 
+model venue_tags {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  venue_id   Int
+  tag_id     Int
+  venue      venues @relation(fields: [venue_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tag        tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([venue_id, tag_id])
+}
+
 model venues {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
@@ -291,6 +316,7 @@ model venues {
   latitude       Float?
   longitude      Float?
   events         events[]
+  venue_tags     venue_tags[]
   chapter_id     Int
   chapter        chapters @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }

@@ -40,6 +40,7 @@ import { EVENT } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import UserName from '../../../../components/UserName';
 import { formatDate } from 'util/date';
+import { TagsBox } from 'components/TagsBox';
 
 const args = (eventId: number) => ({
   refetchQueries: [
@@ -153,6 +154,9 @@ export const EventPage: NextPageWithLayout = () => {
           <Text fontWeight={500} fontSize={'md'} color="red.500">
             Canceled
           </Text>
+        )}
+        {!!data.dashboardEvent.event_tags.length && (
+          <TagsBox tags={data.dashboardEvent.event_tags} />
         )}
         <Text fontSize={'md'}>{data.dashboardEvent.description}</Text>
         {data.dashboardEvent.image_url && (

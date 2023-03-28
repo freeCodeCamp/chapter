@@ -76,6 +76,12 @@ export const DASHBOARD_EVENT = gql`
         }
         subscribed
       }
+      event_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;

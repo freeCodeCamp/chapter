@@ -264,6 +264,7 @@ export class EventResolver {
       }),
       include: {
         chapter: true,
+        event_tags: { include: { tag: true } },
       },
       orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
       take: limit ?? 10,
@@ -286,6 +287,7 @@ export class EventResolver {
           include: eventUserIncludes,
           orderBy: { user: { name: 'asc' } },
         },
+        event_tags: { include: { tag: true } },
         sponsors: { include: { sponsor: true } },
       },
     });
@@ -302,7 +304,7 @@ export class EventResolver {
           chapter: isChapterAdminWhere(ctx.user.id),
         }),
       },
-      include: { venue: true },
+      include: { venue: true, event_tags: { include: { tag: true } } },
       orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
     });
   }
@@ -323,6 +325,7 @@ export class EventResolver {
           },
           orderBy: { user: { name: 'asc' } },
         },
+        event_tags: { include: { tag: true } },
         sponsors: { include: { sponsor: true } },
       },
     });

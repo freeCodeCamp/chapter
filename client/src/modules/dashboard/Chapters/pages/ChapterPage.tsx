@@ -19,6 +19,7 @@ import { LinkButton } from 'chakra-next-link';
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
+import { TagsBox } from '../../../../components/TagsBox';
 import {
   useCalendarIntegrationStatusQuery,
   useCreateChapterCalendarMutation,
@@ -44,7 +45,6 @@ import { DeleteChapterButton } from '../components/DeleteChapterButton';
 import { meQuery } from '../../../auth/graphql/queries';
 import { DASHBOARD_CHAPTER } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../Events/graphql/queries';
-import { TagsBox } from 'components/TagsBox';
 
 const eventRefetches = (data?: DashboardChapterQuery) => {
   return (

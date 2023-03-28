@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
+import { TagsBox } from '../../../../components/TagsBox';
 import {
   useVenueQuery,
   useDeleteVenueMutation,
@@ -25,7 +26,6 @@ import {
   DASHBOARD_EVENT,
   DASHBOARD_EVENTS,
 } from '../../../dashboard/Events/graphql/queries';
-import { TagsBox } from 'components/TagsBox';
 
 const eventRefetches = (data?: VenueQuery) => {
   return (

@@ -35,12 +35,12 @@ import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import Actions from '../components/Actions';
 import SponsorsCard from '../../../../components/SponsorsCard';
+import { TagsBox } from '../../../../components/TagsBox';
 import { DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import UserName from '../../../../components/UserName';
 import { formatDate } from 'util/date';
-import { TagsBox } from 'components/TagsBox';
 
 const args = (eventId: number) => ({
   refetchQueries: [

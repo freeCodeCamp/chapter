@@ -24,6 +24,7 @@ import { useUser } from '../../auth/user';
 import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
+import { TagsBox } from '../../../components/TagsBox';
 import {
   useJoinChapterMutation,
   useLeaveChapterMutation,
@@ -35,7 +36,6 @@ import { useParam } from '../../../hooks/useParam';
 import { EVENT } from '../../events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
 import { ChapterRoles } from '../../../../../common/roles';
-import { TagsBox } from 'components/TagsBox';
 
 const ChatLink = ({ chatUrl }: { chatUrl?: string | null }) => {
   return chatUrl ? (

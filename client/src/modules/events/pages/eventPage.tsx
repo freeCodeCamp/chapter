@@ -30,6 +30,7 @@ import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';
+import { TagsBox } from '../../../components/TagsBox';
 import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
@@ -48,7 +49,6 @@ import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
 import { CHAPTER } from '../../chapters/graphql/queries';
 import { AttendanceNames } from '../../../../../common/attendance';
-import { TagsBox } from 'components/TagsBox';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');

@@ -72,7 +72,7 @@ import {
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
 } from '../../util/event-email';
-import { getUniqueTags } from '../../util/tags';
+import { createTagsData } from '../../util/tags';
 import { isOnline, isPhysical } from '../../util/venue';
 import { AttendanceNames } from '../../../../common/attendance';
 import { EventInputs } from './inputs';
@@ -702,11 +702,7 @@ export class EventResolver {
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
-      event_tags: {
-        create: getUniqueTags(data.event_tags).map((name) => ({
-          tag: { connectOrCreate: { create: { name }, where: { name } } },
-        })),
-      },
+      event_tags: createTagsData(data.event_tags),
       ...(attendEvent && { event_users: { create: eventUserData } }),
     };
 
@@ -801,13 +797,7 @@ export class EventResolver {
       }),
       prisma.events.update({
         where: { id },
-        data: {
-          event_tags: {
-            create: getUniqueTags(data.event_tags).map((name) => ({
-              tag: { connectOrCreate: { create: { name }, where: { name } } },
-            })),
-          },
-        },
+        data: { event_tags: createTagsData(data.event_tags) },
       }),
     ]);
 

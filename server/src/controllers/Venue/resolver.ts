@@ -24,7 +24,7 @@ import {
   isChapterAdminWhere,
 } from '../../util/adminedChapters';
 import { eventListUnsubscribeOptions } from '../../util/event-email';
-import { getUniqueTags } from '../../util/tags';
+import { createTagsData } from '../../util/tags';
 import { VenueInputs } from './inputs';
 
 @Resolver()
@@ -91,11 +91,7 @@ export class VenueResolver {
       country: data.country,
       latitude: data.latitude,
       longitude: data.longitude,
-      venue_tags: {
-        create: getUniqueTags(data.venue_tags).map((name) => ({
-          tag: { connectOrCreate: { create: { name }, where: { name } } },
-        })),
-      },
+      venue_tags: createTagsData(data.venue_tags),
       chapter: { connect: { id: chapterId } },
     };
     return prisma.venues.create({
@@ -119,13 +115,7 @@ export class VenueResolver {
       }),
       prisma.venues.update({
         where: { id },
-        data: {
-          venue_tags: {
-            create: getUniqueTags(data.venue_tags).map((name) => ({
-              tag: { connectOrCreate: { create: { name }, where: { name } } },
-            })),
-          },
-        },
+        data: { venue_tags: createTagsData(data.venue_tags) },
       }),
     ]);
 

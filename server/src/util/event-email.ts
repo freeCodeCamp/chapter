@@ -1,7 +1,6 @@
-import { events_venue_type_enum } from '@prisma/client';
+import { events_venue_type_enum, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
-// import { venues } from '../../tests/fixtures/venues';
 import {
   chapterAdminUnsubscribeText,
   chapterUnsubscribeText,
@@ -45,6 +44,16 @@ export const hasPhysicalLocationChanged = (
   newData.venue_type !== oldData.venue_type ||
   (isPhysical(oldData.venue_type) && newData.venue_id !== oldData.venue_id);
 
+export const getPhysicalLocation = (
+  venue_type: events_venue_type_enum,
+  venue_name: string | undefined,
+) => {
+  const physicalLocation = isPhysical(venue_type)
+    ? `\n${physicalLocationShortText(venue_name)}`
+    : '';
+  return physicalLocation;
+};
+
 interface DateChangeData {
   start_at: Date;
   ends_at: Date;
@@ -69,6 +78,16 @@ export const hasStreamingUrlChanged = (
   newData.venue_type !== oldData.venue_type ||
   (isOnline(oldData.venue_type) &&
     newData.streaming_url !== oldData.streaming_url);
+
+export const getStreamingData = (
+  venue_type: events_venue_type_enum,
+  streaming_url: string | null,
+) => {
+  const streamingData = isOnline(venue_type)
+    ? `\n${streamingURLText(streaming_url)}`
+    : '';
+  return streamingData;
+};
 
 interface VenueTypeChangeData {
   venue_type: events_venue_type_enum;
@@ -183,12 +202,11 @@ interface EventInvite {
 }
 
 export const eventInviteEmail = (event: EventInvite) => {
-  const physicalLocation = isPhysical(event.venue_type)
-    ? `\n${physicalLocationShortText(event.venue?.name)}`
-    : '';
-  const streamingData = isOnline(event.venue_type)
-    ? `\n${streamingURLText(event.streaming_url)}`
-    : '';
+  const physicalLocation = getPhysicalLocation(
+    event.venue_type,
+    event.venue?.name,
+  );
+  const streamingData = getStreamingData(event.venue_type, event.streaming_url);
   const chapterURL = chapterUrl(event.chapter_id);
   const chapterName = event.chapter.name;
   const eventConfirmAttendanceURL = `${eventUrl(
@@ -228,29 +246,29 @@ export const eventCancelationEmail = (event: CancelEvent) => {
   );
 };
 
-// Revamping to include venue data... manually, maybe make an
-// interface later.
-export const eventConfirmAttendeeEmail = (
-  eventName: string,
-  streaming_url: string | null,
-  venue: string | undefined,
-  venue_type: events_venue_type_enum,
-  start_at: Date,
-  ends_at: Date,
-) => {
-  const physicalLocation = isPhysical(venue_type)
-    ? `\n${physicalLocationShortText(venue)}`
-    : '';
-  const streamingData = isOnline(venue_type)
-    ? `\n${streamingURLText(streaming_url)}`
-    : '';
+interface ConfirmAttendeeData {
+  name: string;
+  streaming_url: string | null;
+  venue: venues | null;
+  venue_type: events_venue_type_enum;
+  start_at: Date;
+  ends_at: Date;
+}
+
+export const eventConfirmAttendeeEmail = (event: ConfirmAttendeeData) => {
+  const physicalLocation = getPhysicalLocation(
+    event.venue_type,
+    event.venue?.name,
+  );
+  const streamingData = getStreamingData(event.venue_type, event.streaming_url);
+  const eventName = event.name;
   return withUnsubscribe(
     eventConfirmAtendeeText({
       eventName,
       physicalLocation,
       streamingData,
-      start_at,
-      ends_at,
+      start_at: event.start_at,
+      ends_at: event.ends_at,
     }),
   );
 };
@@ -273,9 +291,9 @@ interface AttendanceConfirmation {
     start_at: Date;
     ends_at: Date;
     description: string;
-    streaming_url: string | null; // Added to get possible streaming data
+    streaming_url: string | null;
     venue: { name: string | undefined } | null;
-    venue_type: events_venue_type_enum; // Added to validify venue data
+    venue_type: events_venue_type_enum;
   };
   userName: string;
 }
@@ -291,15 +309,11 @@ export const eventAttendanceConfirmation = ({
     description: event.description,
   };
 
-  // Following the same format from eventInviteEmail,
-  // grabbing physical location and streaming data
-  // in the same manner
-  const physicalLocation = isPhysical(event.venue_type)
-    ? `\n${physicalLocationShortText(event.venue?.name)}`
-    : '';
-  const streamingData = isOnline(event.venue_type)
-    ? `\n${streamingURLText(event.streaming_url)}`
-    : '';
+  const physicalLocation = getPhysicalLocation(
+    event.venue_type,
+    event.venue?.name,
+  );
+  const streamingData = getStreamingData(event.venue_type, event.streaming_url);
 
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
@@ -312,7 +326,7 @@ export const eventAttendanceConfirmation = ({
       googleURL,
       outlookURL,
       userName: userName ? ` ${userName}` : '',
-      physicalLocation, // Added these 4 for use in email text
+      physicalLocation,
       streamingData,
       start_at: event.start_at,
       ends_at: event.ends_at,

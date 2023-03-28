@@ -132,20 +132,21 @@ Your role in chapter ${chapterName} has been changed from ${oldChapterRole} to $
 `,
 });
 
-// Manually adding venue data, possibly make an interface for it later
+interface ConfirmAtendeeData {
+  eventName: string;
+  physicalLocation: string;
+  streamingData: string;
+  start_at: Date;
+  ends_at: Date;
+}
+
 export const eventConfirmAtendeeText = ({
   eventName,
   physicalLocation,
   streamingData,
   start_at,
   ends_at,
-}: {
-  eventName: string;
-  physicalLocation: string;
-  streamingData: string;
-  start_at: Date;
-  ends_at: Date;
-}) => ({
+}: ConfirmAtendeeData) => ({
   subject: 'Your attendance is confirmed',
   emailText: `Your reservation is confirmed. You can attend the event ${eventName}.<br />
 <br />
@@ -225,7 +226,6 @@ export const eventNewAttendeeNotificationText = ({
   emailText: `User ${userName} is attending.`,
 });
 
-// Added venue data, physical location, streaming data, start and end time
 interface AttendanceConfirmationData {
   eventName: string;
   googleURL: string;
@@ -237,7 +237,6 @@ interface AttendanceConfirmationData {
   ends_at: Date;
 }
 
-// Added the 4 pieces of venue data for use in email text
 export const eventAttendanceConfirmationText = ({
   eventName,
   googleURL,

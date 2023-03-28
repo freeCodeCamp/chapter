@@ -141,23 +141,17 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
     });
   });
 
-  //Added some fake venue data to test
   describe('eventConfirmAttendeeEmail', () => {
-    const data = 'Emard and Sons';
-    const streaming_url = 'http://streaming.url/abcd';
-    const venue_physical = 'Some Physical Location';
-    const venue_type = events_venue_type_enum.PhysicalAndOnline;
-    const start_at = new Date('2023-02-07 12:00');
-    const ends_at = new Date('2023-02-07 12:30');
+    const event = {
+      name: 'Emard and Sons',
+      streaming_url: 'http://streaming.url/abcd',
+      venue: null,
+      venue_type: events_venue_type_enum.PhysicalAndOnline,
+      start_at: new Date('2023-02-07 12:00'),
+      ends_at: new Date('2023-02-07 12:30'),
+    };
     it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
-      const result = eventConfirmAttendeeEmail(
-        data,
-        streaming_url,
-        venue_physical,
-        venue_type,
-        start_at,
-        ends_at,
-      );
+      const result = eventConfirmAttendeeEmail(event);
       expect(result).toHaveProperty('subject');
       expect(result).toHaveProperty('emailText');
       expect(result).toHaveProperty('attachUnsubscribe');
@@ -166,16 +160,7 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
 
     it('should return object with expected subject', () => {
       const expected = { subject: 'Your attendance is confirmed' };
-      expect(
-        eventConfirmAttendeeEmail(
-          data,
-          streaming_url,
-          venue_physical,
-          venue_type,
-          start_at,
-          ends_at,
-        ),
-      ).toMatchObject(expected);
+      expect(eventConfirmAttendeeEmail(event)).toMatchObject(expected);
     });
 
     it('should return object with expected emailText', () => {
@@ -184,20 +169,11 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
 <br />
 When: Tue Feb 07 2023 12:00:00 GMT+0000 (Coordinated Universal Time) to Tue Feb 07 2023 12:30:00 GMT+0000 (Coordinated Universal Time)
 <br />
-Where: Some Physical Location<br />
+Where: Undecided/TBD<br />
 Streaming URL: http://streaming.url/abcd<br />
 <br />`,
       };
-      expect(
-        eventConfirmAttendeeEmail(
-          data,
-          streaming_url,
-          venue_physical,
-          venue_type,
-          start_at,
-          ends_at,
-        ),
-      ).toMatchObject(expected);
+      expect(eventConfirmAttendeeEmail(event)).toMatchObject(expected);
     });
   });
 
@@ -245,7 +221,6 @@ Streaming URL: http://streaming.url/abcd<br />
     });
   });
 
-  // Added streaming and venue type to match
   describe('eventAttendanceConfirmation', () => {
     const data = {
       event: {
@@ -274,7 +249,6 @@ Streaming URL: http://streaming.url/abcd<br />
 
     it('should return object with expected emailText', () => {
       const expected = {
-        //'Your reservation is confirmed. You can attend the event Emard and Sons.<br /><br />When: Tue Feb 07 2023 12:00:00 GMT+0000 (Coordinated Universal Time) to Tue Feb 07 2023 12:30:00 GMT+0000 (Coordinated Universal Time)<br />Where: Some Physical Location<br />Streaming URL: http://streaming.url/abcd<br /><br />',
         emailText: `Hi Not the Owner,<br />
 Confirming your attendance of Howe LLC.<br />
 <br />

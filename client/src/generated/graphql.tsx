@@ -64,6 +64,19 @@ export type ChapterCardRelations = {
   region: Scalars['String'];
 };
 
+export type ChapterInputs = {
+  banner_url: Scalars['String'];
+  category: Scalars['String'];
+  chapter_tags: Array<Scalars['String']>;
+  chat_url?: InputMaybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  description: Scalars['String'];
+  logo_url: Scalars['String'];
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
 export type ChapterPermission = {
   __typename?: 'ChapterPermission';
   id: Scalars['Int'];
@@ -153,18 +166,6 @@ export type ChapterWithRelations = {
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
-};
-
-export type CreateChapterInputs = {
-  banner_url: Scalars['String'];
-  category: Scalars['String'];
-  chat_url?: InputMaybe<Scalars['String']>;
-  city: Scalars['String'];
-  country: Scalars['String'];
-  description: Scalars['String'];
-  logo_url: Scalars['String'];
-  name: Scalars['String'];
-  region: Scalars['String'];
 };
 
 export type CreateSponsorInputs = {
@@ -451,7 +452,7 @@ export type MutationCreateCalendarEventArgs = {
 };
 
 export type MutationCreateChapterArgs = {
-  data: CreateChapterInputs;
+  data: ChapterInputs;
 };
 
 export type MutationCreateChapterCalendarArgs = {
@@ -535,7 +536,7 @@ export type MutationUnsubscribeFromEventArgs = {
 };
 
 export type MutationUpdateChapterArgs = {
-  data: UpdateChapterInputs;
+  data: ChapterInputs;
   id: Scalars['Int'];
 };
 
@@ -674,18 +675,6 @@ export type TokenStatus = {
   __typename?: 'TokenStatus';
   is_valid: Scalars['Boolean'];
   redacted_email: Scalars['String'];
-};
-
-export type UpdateChapterInputs = {
-  banner_url?: InputMaybe<Scalars['String']>;
-  category?: InputMaybe<Scalars['String']>;
-  chat_url?: InputMaybe<Scalars['String']>;
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
-  logo_url?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  region?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSponsorInputs = {
@@ -1067,7 +1056,7 @@ export type TokenStatusesQuery = {
 };
 
 export type CreateChapterMutationVariables = Exact<{
-  data: CreateChapterInputs;
+  data: ChapterInputs;
 }>;
 
 export type CreateChapterMutation = {
@@ -1113,7 +1102,7 @@ export type UnlinkChapterCalendarMutation = {
 
 export type UpdateChapterMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: UpdateChapterInputs;
+  data: ChapterInputs;
 }>;
 
 export type UpdateChapterMutation = {
@@ -2641,7 +2630,7 @@ export type TokenStatusesQueryResult = Apollo.QueryResult<
   TokenStatusesQueryVariables
 >;
 export const CreateChapterDocument = gql`
-  mutation createChapter($data: CreateChapterInputs!) {
+  mutation createChapter($data: ChapterInputs!) {
     createChapter(data: $data) {
       id
       name
@@ -2800,7 +2789,7 @@ export type UnlinkChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
   UnlinkChapterCalendarMutationVariables
 >;
 export const UpdateChapterDocument = gql`
-  mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
+  mutation updateChapter($chapterId: Int!, $data: ChapterInputs!) {
     updateChapter(id: $chapterId, data: $data) {
       id
       name

@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 
 import {
-  CreateChapterInputs,
   useDashboardChapterQuery,
   useUpdateChapterMutation,
 } from '../../../../generated/graphql';
@@ -19,6 +18,10 @@ import {
   userDownloadQuery,
   userProfileQuery,
 } from '../../../profiles/graphql/queries';
+import {
+  ChapterFormData,
+  parseChapterData,
+} from '../components/ChapterFormUtils';
 
 export const EditChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -41,9 +44,9 @@ export const EditChapterPage: NextPageWithLayout = () => {
 
   const addAlert = useAlert();
 
-  const onSubmit = async (data: CreateChapterInputs) => {
+  const onSubmit = async (data: ChapterFormData) => {
     const { data: chapterData, errors } = await updateChapter({
-      variables: { chapterId, data: { ...data } },
+      variables: { chapterId, data: parseChapterData(data) },
     });
     if (errors) throw errors;
     if (chapterData) {

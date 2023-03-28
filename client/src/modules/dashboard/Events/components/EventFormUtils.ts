@@ -292,7 +292,7 @@ export const parseEventData = (data: EventFormData) => {
     data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
   const tagsArray = event_tags
-    .split(', ')
+    .split(',')
     .map((tag) => tag.trim())
     .filter(Boolean);
   // streaming_url and url are optional. However, null will be accepted,

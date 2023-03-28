@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '../../../src/prisma';
-import { randomItems } from '../lib/random';
+import { selectTags } from '../lib/util';
 
 const { company, address } = faker;
 
@@ -17,32 +17,8 @@ const createVenues = async (
 
   for (const chapterId of chapterIds) {
     for (let i = 0; i < 4; i++) {
-      const tagNames = [
-        'GraphQl',
-        'NodeJs',
-        'JavaScript',
-        'TypeScript',
-        'HTML',
-        'CSS',
-        'Cypress',
-        'Tailwind',
-        'Sass',
-        'BootStrap',
-        'React',
-        'Vue',
-        'NextJs',
-        'NuxtJs',
-        'Angular',
-        'Svelte',
-        'SvelteKit',
-        'Vite',
-        'Prisma',
-        'Ruby',
-        'Rust',
-      ];
-      const tagsCount = Math.round((Math.random() * tagNames.length) / 5);
-
-      const selectedTags = randomItems(tagNames, tagsCount, true);
+      const tagsCount = Math.round(Math.random() * 4);
+      const selectedTags = selectTags(tagsCount);
       const connectOrCreateTags = selectedTags.map((name) => ({
         tag: {
           connectOrCreate: {

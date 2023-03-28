@@ -10,6 +10,7 @@ import {
   randomItems,
   shuffle,
 } from '../lib/random';
+import { selectTags } from '../lib/util';
 
 const { company, internet, lorem, image } = faker;
 
@@ -83,32 +84,9 @@ const createEvents = async (
         return prisma.event_sponsors.create({ data: eventSponsorData });
       }),
     );
-    const tagNames = [
-      'GraphQl',
-      'NodeJs',
-      'JavaScript',
-      'TypeScript',
-      'HTML',
-      'CSS',
-      'Cypress',
-      'Tailwind',
-      'Sass',
-      'BootStrap',
-      'React',
-      'Vue',
-      'NextJs',
-      'NuxtJs',
-      'Angular',
-      'Svelte',
-      'SvelteKit',
-      'Vite',
-      'Prisma',
-      'Ruby',
-      'Rust',
-    ];
-    const tagsCount = Math.round((Math.random() * tagNames.length) / 5);
 
-    const selectedTags = randomItems(tagNames, tagsCount, true);
+    const tagsCount = Math.round(Math.random() * 4);
+    const selectedTags = selectTags(tagsCount);
     const connectOrCreateTags = selectedTags.map((name) => ({
       tag: {
         connectOrCreate: {

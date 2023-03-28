@@ -20,7 +20,8 @@
     "image_url": "https://test.event.org/image",
     "streaming_url": "https://test.event.org/video",
     "start_at": "2022-01-01T00:01",
-    "ends_at": "2022-01-02T00:02"
+    "ends_at": "2022-01-02T00:02",
+    "event_tags": "Test, Event, Tags"
   },
   "eventThree": {
     "venue_id": 1,
@@ -42,7 +43,8 @@
     "streaming_url": "https://test.event.org/video",
     "capacity": "10",
     "venue_id": "1",
-    "image_url": "https://test.event.org/image"
+    "image_url": "https://test.event.org/image",
+    "event_tags": ["Test", "Event", "Tag"]
   },
   "partialData": {
     "capacity": 10,

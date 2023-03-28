@@ -40,11 +40,6 @@ export const EditVenuePage: NextPageWithLayout = () => {
   const addAlert = useAlert();
 
   const onSubmit = async (data: VenueFormData) => {
-    // const { chapter_id, ...updateData } = data;
-
-    // const latitude = parseFloat(String(data.latitude));
-    // const longitude = parseFloat(String(data.longitude));
-
     const { data: venueData, errors } = await updateVenue({
       variables: {
         venueId,

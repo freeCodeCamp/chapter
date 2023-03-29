@@ -46,7 +46,7 @@
     "capacity": "10",
     "venue_id": "1",
     "image_url": "https://test.event.org/image",
-    "event_tags": ["Test", "Event", "Tag"]
+    "event_tags": "Test, Event, Tag"
   },
   "partialData": {
     "capacity": 10,
@@ -57,6 +57,7 @@
     "name": "Other Event",
     "url": "https://test.event.org",
     "venue_type": "PhysicalAndOnline",
-    "invite_only": false
+    "invite_only": false,
+    "event_tags": ["Test", "Event", "Tag"]
   }
 }

@@ -1,7 +1,4 @@
 -- CreateTable
--- We aren't generating ids automatically, because the instance will use one record.
--- But we allow for multiple record, because we can add the ability for instance owner,
--- to save multiple settings, and use them as templates.
 CREATE TABLE "instance_settings" (
     "id" SERIAL NOT NULL,
     "description" TEXT,

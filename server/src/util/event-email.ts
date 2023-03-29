@@ -1,4 +1,4 @@
-import { events_venue_type_enum, venues } from '@prisma/client';
+import { events_venue_type_enum } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
 import {
@@ -47,12 +47,8 @@ export const hasPhysicalLocationChanged = (
 export const getPhysicalLocation = (
   venue_type: events_venue_type_enum,
   venue_name: string | undefined,
-) => {
-  const physicalLocation = isPhysical(venue_type)
-    ? `\n${physicalLocationShortText(venue_name)}`
-    : '';
-  return physicalLocation;
-};
+) =>
+  isPhysical(venue_type) ? `\n${physicalLocationShortText(venue_name)}` : '';
 
 interface DateChangeData {
   start_at: Date;
@@ -82,12 +78,7 @@ export const hasStreamingUrlChanged = (
 export const getStreamingData = (
   venue_type: events_venue_type_enum,
   streaming_url: string | null,
-) => {
-  const streamingData = isOnline(venue_type)
-    ? `\n${streamingURLText(streaming_url)}`
-    : '';
-  return streamingData;
-};
+) => (isOnline(venue_type) ? `\n${streamingURLText(streaming_url)}` : '');
 
 interface VenueTypeChangeData {
   venue_type: events_venue_type_enum;
@@ -249,7 +240,7 @@ export const eventCancelationEmail = (event: CancelEvent) => {
 interface ConfirmAttendeeData {
   name: string;
   streaming_url: string | null;
-  venue: venues | null;
+  venue: { name: string | undefined } | null;
   venue_type: events_venue_type_enum;
   start_at: Date;
   ends_at: Date;

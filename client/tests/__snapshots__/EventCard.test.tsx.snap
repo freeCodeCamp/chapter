@@ -115,6 +115,7 @@ exports[`EventCard should render with tags 1`] = `
       </div>
       <div
         class="css-x1sij0"
+        data-cy="tags-box"
       >
         <span
           class="css-12ci4mr"

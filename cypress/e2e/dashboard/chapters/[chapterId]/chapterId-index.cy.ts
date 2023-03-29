@@ -8,6 +8,9 @@ function createEventViaUI({ chapterId, eventData, createInPast = false }) {
   cy.get(`a[href="/dashboard/chapters/${chapterId}/new-event"]`).click();
   cy.findByRole('textbox', { name: 'Event Title' }).type(eventData.name);
   cy.findByRole('textbox', { name: 'Description' }).type(eventData.description);
+  cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
+    eventData.event_tags,
+  );
   cy.findByRole('textbox', { name: 'Event Image Url' }).type(
     eventData.image_url,
   );
@@ -90,7 +93,11 @@ describe('chapter dashboard', () => {
     Object.entries(testEvent).forEach(([key, value]) => {
       // TODO: simplify this conditional when tags and dates are handled
       // properly.
-      if (!['chapter_tags', 'start_at', 'ends_at', 'venue_id'].includes(key)) {
+      if (key === 'event_tags') {
+        (value as string).split(',').forEach((tag) => {
+          cy.findByRole('generic', { name: tag.trim() });
+        });
+      } else if (!['start_at', 'ends_at', 'venue_id'].includes(key)) {
         cy.contains(value as string);
       }
     });

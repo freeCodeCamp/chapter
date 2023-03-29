@@ -8,7 +8,7 @@ interface Tags extends TagProps {
 
 export const TagsBox = ({ boxProps, tags, ...tagProps }: Tags) => {
   return (
-    <Box display="flex" alignItems="baseline" {...boxProps}>
+    <Box data-cy="tags-box" display="flex" alignItems="baseline" {...boxProps}>
       {tags.map(({ tag: { name } }) => (
         <Tag
           borderRadius="full"

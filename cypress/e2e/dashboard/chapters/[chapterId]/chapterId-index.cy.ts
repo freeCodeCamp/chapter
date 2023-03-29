@@ -96,7 +96,7 @@ describe('chapter dashboard', () => {
       if (key === 'event_tags') {
         cy.get('[data-cy=tags-box]').as('tagsBox');
         (value as string).split(',').forEach((tag) => {
-          cy.get('@tagsBox').contains(tag);
+          cy.get('@tagsBox').contains(tag.trim());
         });
       } else if (!['start_at', 'ends_at', 'venue_id'].includes(key)) {
         cy.contains(value as string);

@@ -1,7 +1,7 @@
-import { Button, Heading, Text } from '@chakra-ui/react';
+import { Button, Heading, HStack, Text } from '@chakra-ui/react';
 import NextError from 'next/error';
 import React, { ReactElement } from 'react';
-import { Link } from 'chakra-next-link';
+import { Link, LinkButton } from 'chakra-next-link';
 import { useConfirmDelete } from 'chakra-confirm';
 import { useRouter } from 'next/router';
 
@@ -85,9 +85,18 @@ export const VenuePage: NextPageWithLayout = () => {
             {chapter.name}
           </Link>
         </ProgressCardContent>
-        <Button marginTop="1rem" colorScheme="red" onClick={clickDelete}>
-          Delete Venue
-        </Button>
+        <HStack spacing="3">
+          <LinkButton
+            size={['sm', 'md']}
+            colorScheme="blue"
+            href={`/dashboard/chapters/${data.venue.chapter.id}/venues/${data.venue.id}/edit`}
+          >
+            Edit
+          </LinkButton>
+          <Button size={['sm', 'md']} colorScheme="red" onClick={clickDelete}>
+            Delete Venue
+          </Button>
+        </HStack>
       </Card>
       <EventList
         title="Organized At The Venue"

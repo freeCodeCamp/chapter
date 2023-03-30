@@ -132,13 +132,27 @@ Your role in chapter ${chapterName} has been changed from ${oldChapterRole} to $
 `,
 });
 
+interface ConfirmAtendeeData {
+  eventName: string;
+  physicalLocation: string;
+  streamingData: string;
+  start_at: Date;
+  ends_at: Date;
+}
+
 export const eventConfirmAtendeeText = ({
   eventName,
-}: {
-  eventName: string;
-}) => ({
+  physicalLocation,
+  streamingData,
+  start_at,
+  ends_at,
+}: ConfirmAtendeeData) => ({
   subject: 'Your attendance is confirmed',
-  emailText: `Your reservation is confirmed. You can attend the event ${eventName}`,
+  emailText: `Your reservation is confirmed. You can attend the event ${eventName}.<br />
+<br />
+When: ${start_at} to ${ends_at}
+<br />${physicalLocation}${streamingData}
+<br />`,
 });
 
 export const eventAttendeeToWaitlistText = ({
@@ -217,6 +231,10 @@ interface AttendanceConfirmationData {
   googleURL: string;
   outlookURL: string;
   userName: string;
+  physicalLocation: string;
+  streamingData: string;
+  start_at: Date;
+  ends_at: Date;
 }
 
 export const eventAttendanceConfirmationText = ({
@@ -224,9 +242,18 @@ export const eventAttendanceConfirmationText = ({
   googleURL,
   outlookURL,
   userName,
+  physicalLocation,
+  streamingData,
+  start_at,
+  ends_at,
 }: AttendanceConfirmationData) => ({
   subject: `Confirmation of attendance: ${eventName}`,
   emailText: `Hi${userName},<br />
+Confirming your attendance of ${eventName}.<br />
+<br />
+When: ${start_at} to ${ends_at}
+<br />${physicalLocation}${streamingData}
+<br />
 You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
 <br />
 <a href=${googleURL}>Google</a>

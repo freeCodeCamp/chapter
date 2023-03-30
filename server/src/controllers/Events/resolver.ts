@@ -529,11 +529,14 @@ export class EventResolver {
     const updatedUser = await prisma.event_users.update({
       data: { attendance: { connect: { name: AttendanceNames.confirmed } } },
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      include: { event: { include: { chapter: true } }, ...eventUserIncludes },
+      include: {
+        event: { include: { chapter: true, venue: true } },
+        ...eventUserIncludes,
+      },
     });
 
     const { subject, attachUnsubscribe } = eventConfirmAttendeeEmail(
-      updatedUser.event.name,
+      updatedUser.event,
     );
 
     await mailerService.sendEmail({

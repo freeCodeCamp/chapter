@@ -142,9 +142,16 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
   });
 
   describe('eventConfirmAttendeeEmail', () => {
-    const data = 'Emard and Sons';
+    const event = {
+      name: 'Emard and Sons',
+      streaming_url: 'http://streaming.url/abcd',
+      venue: null,
+      venue_type: events_venue_type_enum.PhysicalAndOnline,
+      start_at: new Date('2023-02-07 12:00'),
+      ends_at: new Date('2023-02-07 12:30'),
+    };
     it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
-      const result = eventConfirmAttendeeEmail(data);
+      const result = eventConfirmAttendeeEmail(event);
       expect(result).toHaveProperty('subject');
       expect(result).toHaveProperty('emailText');
       expect(result).toHaveProperty('attachUnsubscribe');
@@ -153,15 +160,20 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
 
     it('should return object with expected subject', () => {
       const expected = { subject: 'Your attendance is confirmed' };
-      expect(eventConfirmAttendeeEmail(data)).toMatchObject(expected);
+      expect(eventConfirmAttendeeEmail(event)).toMatchObject(expected);
     });
 
     it('should return object with expected emailText', () => {
       const expected = {
-        emailText:
-          'Your reservation is confirmed. You can attend the event Emard and Sons',
+        emailText: `Your reservation is confirmed. You can attend the event Emard and Sons.<br />
+<br />
+When: Tue Feb 07 2023 12:00:00 GMT+0000 (Coordinated Universal Time) to Tue Feb 07 2023 12:30:00 GMT+0000 (Coordinated Universal Time)
+<br />
+Where: Undecided/TBD<br />
+Streaming URL: http://streaming.url/abcd<br />
+<br />`,
       };
-      expect(eventConfirmAttendeeEmail(data)).toMatchObject(expected);
+      expect(eventConfirmAttendeeEmail(event)).toMatchObject(expected);
     });
   });
 
@@ -213,10 +225,12 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
     const data = {
       event: {
         name: 'Howe LLC',
-        start_at: new Date('2023-02-07 21:00'),
-        ends_at: new Date('2023-02-08, 22:00'),
+        start_at: new Date('2023-02-07 12:00'),
+        ends_at: new Date('2023-02-07 12:30'),
         description: '',
+        streaming_url: 'http://streaming.url/abcd',
         venue: { name: 'Nitzsche - Hills' },
+        venue_type: events_venue_type_enum.PhysicalAndOnline,
       },
       userName: 'Not the Owner',
     };
@@ -236,11 +250,18 @@ You received this email because you Subscribed to Hammes - Sawayn Event.<br />`,
     it('should return object with expected emailText', () => {
       const expected = {
         emailText: `Hi Not the Owner,<br />
+Confirming your attendance of Howe LLC.<br />
+<br />
+When: Tue Feb 07 2023 12:00:00 GMT+0000 (Coordinated Universal Time) to Tue Feb 07 2023 12:30:00 GMT+0000 (Coordinated Universal Time)
+<br />
+Where: Nitzsche - Hills<br />
+Streaming URL: http://streaming.url/abcd<br />
+<br />
 You should receive a calendar invite shortly. If you do not, you can add the event to your calendars by clicking on the links below:<br />
 <br />
-<a href=https://calendar.google.com/calendar/render?action=TEMPLATE&dates=20230207T210000Z%2F20230208T220000Z&details=&location=Nitzsche%20-%20Hills&text=Howe%20LLC>Google</a>
+<a href=https://calendar.google.com/calendar/render?action=TEMPLATE&dates=20230207T120000Z%2F20230207T123000Z&details=&location=Nitzsche%20-%20Hills&text=Howe%20LLC>Google</a>
 <br />
-<a href=https://outlook.live.com/calendar/0/deeplink/compose?allday=false&body=&enddt=2023-02-08T22%3A00%3A00&location=Nitzsche%20-%20Hills&path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&startdt=2023-02-07T21%3A00%3A00&subject=Howe%20LLC>Outlook</a>`,
+<a href=https://outlook.live.com/calendar/0/deeplink/compose?allday=false&body=&enddt=2023-02-07T12%3A30%3A00&location=Nitzsche%20-%20Hills&path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&startdt=2023-02-07T12%3A00%3A00&subject=Howe%20LLC>Outlook</a>`,
       };
       expect(eventAttendanceConfirmation(data)).toMatchObject(expected);
     });

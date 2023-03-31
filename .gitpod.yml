@@ -18,7 +18,7 @@ tasks:
       nvm install lts/gallium && nvm alias default lts/gallium
     # the rest get persisted, so we can save time and use init:
     init: | 
-      npm ci
+      npm ci && npm install -g eslint
       pg_ctl restart
     command: |
       npm run -w=server build && npm run db:migrate:reset

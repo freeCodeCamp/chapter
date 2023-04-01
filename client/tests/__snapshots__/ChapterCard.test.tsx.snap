@@ -8,17 +8,17 @@ exports[`ChapterCard should render 1`] = `
     src="https://loremflickr.com/150/150/tech?30938"
   />
   <div
-    class="css-vqlsiw"
+    class="css-egs425"
     data-cy="chapter-card"
   >
     <div
-      class="css-7wz0mk"
+      class="css-1dusk2w"
     >
       <div
-        class="css-kxf4r"
+        class="css-1dhwyht"
       >
         <a
-          class="chakra-link css-10yh45r"
+          class="chakra-link css-1100460"
           data-cy="chaptercard-name"
           href="/chapters/1"
         >
@@ -26,44 +26,44 @@ exports[`ChapterCard should render 1`] = `
         </a>
       </div>
       <div
-        class="css-28d4qj"
+        class="css-7yu0ub"
       >
         <p
-          class="chakra-text css-in3yi3"
+          class="chakra-text css-722v25"
         >
           Members: 
           3
         </p>
       </div>
       <p
-        class="chakra-text css-tu55q"
+        class="chakra-text css-1pn1wzz"
       >
         About
       </p>
       <p
-        class="chakra-text css-185ysui"
+        class="chakra-text css-1k7k16j"
       >
         Schaefer, McLaughlin and Conn
       </p>
       <p
-        class="chakra-text css-1etk00j"
+        class="chakra-text css-1sccb2s"
       >
         Next Events
       </p>
       <div
-        class="css-lg3m5y"
+        class="css-60517v"
       >
         <div
           class="css-1flr4u6"
         >
           <a
-            class="chakra-link css-1obgyuc"
+            class="chakra-link css-lps4mj"
             href="/events/1"
           >
             Canceled event
           </a>
           <svg
-            class="chakra-icon css-15f1jku"
+            class="chakra-icon css-3ymgfo"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -73,7 +73,7 @@ exports[`ChapterCard should render 1`] = `
             />
           </svg>
           <p
-            class="chakra-text css-1obgyuc"
+            class="chakra-text css-dn4mnl"
           >
             Upcoming
           </p>
@@ -82,13 +82,13 @@ exports[`ChapterCard should render 1`] = `
           class="css-1flr4u6"
         >
           <a
-            class="chakra-link css-1obgyuc"
+            class="chakra-link css-lps4mj"
             href="/events/6"
           >
             Next event
           </a>
           <p
-            class="chakra-text css-1obgyuc"
+            class="chakra-text css-dn4mnl"
           >
             Upcoming
           </p>
@@ -97,13 +97,13 @@ exports[`ChapterCard should render 1`] = `
           class="css-1flr4u6"
         >
           <a
-            class="chakra-link css-1obgyuc"
+            class="chakra-link css-lps4mj"
             href="/events/5"
           >
             Visible event
           </a>
           <p
-            class="chakra-text css-1obgyuc"
+            class="chakra-text css-dn4mnl"
           >
             Upcoming
           </p>
@@ -111,5 +111,9 @@ exports[`ChapterCard should render 1`] = `
       </div>
     </div>
   </div>
+  <span
+    hidden=""
+    id="__chakra_env"
+  />
 </div>
 `;

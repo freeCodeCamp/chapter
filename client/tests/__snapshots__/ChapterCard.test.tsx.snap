@@ -8,11 +8,11 @@ exports[`ChapterCard should render 1`] = `
     src="https://loremflickr.com/150/150/tech?30938"
   />
   <div
-    class="css-egs425"
+    class="css-r2nu6e"
     data-cy="chapter-card"
   >
     <div
-      class="css-i22vd7"
+      class="css-1lg4bc0"
     >
       <div
         class="css-1dhwyht"
@@ -126,11 +126,11 @@ exports[`ChapterCard should render with tags 1`] = `
     src="https://loremflickr.com/150/150/tech?30938"
   />
   <div
-    class="css-egs425"
+    class="css-r2nu6e"
     data-cy="chapter-card"
   >
     <div
-      class="css-i22vd7"
+      class="css-1lg4bc0"
     >
       <div
         class="css-1dhwyht"
@@ -161,17 +161,17 @@ exports[`ChapterCard should render with tags 1`] = `
           data-cy="tags-box"
         >
           <span
-            class="css-1259zxt"
+            class="css-1gdkno8"
           >
             first
           </span>
           <span
-            class="css-1259zxt"
+            class="css-1gdkno8"
           >
             third
           </span>
           <span
-            class="css-1259zxt"
+            class="css-1gdkno8"
           >
             second
           </span>

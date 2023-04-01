@@ -20,12 +20,7 @@ const createVenues = async (
       const tagsCount = Math.round(Math.random() * 4);
       const selectedTags = selectTags(tagsCount);
       const connectOrCreateTags = selectedTags.map((name) => ({
-        tag: {
-          connectOrCreate: {
-            where: { name },
-            create: { name },
-          },
-        },
+        tag: { connectOrCreate: { where: { name }, create: { name } } },
       }));
       const venueData: Prisma.venuesCreateInput = {
         name: company.companyName(),

@@ -45,7 +45,6 @@ describe('tags', () => {
           }) => name,
         ),
       ]);
-      console.log(unique);
       expect(result.create.length).toBe(2);
       expect(unique.size).toBe(2);
       expect(unique.has('Test')).toBe(true);

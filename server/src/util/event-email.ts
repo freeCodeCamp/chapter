@@ -44,6 +44,12 @@ export const hasPhysicalLocationChanged = (
   newData.venue_type !== oldData.venue_type ||
   (isPhysical(oldData.venue_type) && newData.venue_id !== oldData.venue_id);
 
+export const getPhysicalLocation = (
+  venue_type: events_venue_type_enum,
+  venue_name: string | undefined,
+) =>
+  isPhysical(venue_type) ? `\n${physicalLocationShortText(venue_name)}` : '';
+
 interface DateChangeData {
   start_at: Date;
   ends_at: Date;
@@ -68,6 +74,11 @@ export const hasStreamingUrlChanged = (
   newData.venue_type !== oldData.venue_type ||
   (isOnline(oldData.venue_type) &&
     newData.streaming_url !== oldData.streaming_url);
+
+export const getStreamingData = (
+  venue_type: events_venue_type_enum,
+  streaming_url: string | null,
+) => (isOnline(venue_type) ? `\n${streamingURLText(streaming_url)}` : '');
 
 interface VenueTypeChangeData {
   venue_type: events_venue_type_enum;
@@ -182,12 +193,11 @@ interface EventInvite {
 }
 
 export const eventInviteEmail = (event: EventInvite) => {
-  const physicalLocation = isPhysical(event.venue_type)
-    ? `\n${physicalLocationShortText(event.venue?.name)}`
-    : '';
-  const streamingData = isOnline(event.venue_type)
-    ? `\n${streamingURLText(event.streaming_url)}`
-    : '';
+  const physicalLocation = getPhysicalLocation(
+    event.venue_type,
+    event.venue?.name,
+  );
+  const streamingData = getStreamingData(event.venue_type, event.streaming_url);
   const chapterURL = chapterUrl(event.chapter_id);
   const chapterName = event.chapter.name;
   const eventConfirmAttendanceURL = `${eventUrl(
@@ -227,8 +237,32 @@ export const eventCancelationEmail = (event: CancelEvent) => {
   );
 };
 
-export const eventConfirmAttendeeEmail = (eventName: string) =>
-  withUnsubscribe(eventConfirmAtendeeText({ eventName }));
+interface ConfirmAttendeeData {
+  name: string;
+  streaming_url: string | null;
+  venue: { name: string | undefined } | null;
+  venue_type: events_venue_type_enum;
+  start_at: Date;
+  ends_at: Date;
+}
+
+export const eventConfirmAttendeeEmail = (event: ConfirmAttendeeData) => {
+  const physicalLocation = getPhysicalLocation(
+    event.venue_type,
+    event.venue?.name,
+  );
+  const streamingData = getStreamingData(event.venue_type, event.streaming_url);
+  const eventName = event.name;
+  return withUnsubscribe(
+    eventConfirmAtendeeText({
+      eventName,
+      physicalLocation,
+      streamingData,
+      start_at: event.start_at,
+      ends_at: event.ends_at,
+    }),
+  );
+};
 
 export const eventAttendeeToWaitlistEmail = (eventName: string) =>
   withUnsubscribe(eventAttendeeToWaitlistText({ eventName }));
@@ -248,7 +282,9 @@ interface AttendanceConfirmation {
     start_at: Date;
     ends_at: Date;
     description: string;
+    streaming_url: string | null;
     venue: { name: string | undefined } | null;
+    venue_type: events_venue_type_enum;
   };
   userName: string;
 }
@@ -263,6 +299,13 @@ export const eventAttendanceConfirmation = ({
     end: event.ends_at,
     description: event.description,
   };
+
+  const physicalLocation = getPhysicalLocation(
+    event.venue_type,
+    event.venue?.name,
+  );
+  const streamingData = getStreamingData(event.venue_type, event.streaming_url);
+
   if (event.venue?.name) linkDetails.location = event.venue?.name;
 
   const eventName = event.name;
@@ -274,6 +317,10 @@ export const eventAttendanceConfirmation = ({
       googleURL,
       outlookURL,
       userName: userName ? ` ${userName}` : '',
+      physicalLocation,
+      streamingData,
+      start_at: event.start_at,
+      ends_at: event.ends_at,
     }),
   );
 };

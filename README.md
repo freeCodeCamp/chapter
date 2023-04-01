@@ -191,6 +191,7 @@ Thanks goes to these wonderful volunteers ([emoji key](https://allcontributors.o
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jamesrcramos"><img src="https://avatars.githubusercontent.com/u/76936793?v=4?s=100" width="100px;" alt="jamesrcramos"/><br /><sub><b>jamesrcramos</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=jamesrcramos" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sneha-afk"><img src="https://avatars.githubusercontent.com/u/55897319?v=4?s=100" width="100px;" alt="Sneha"/><br /><sub><b>Sneha</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=sneha-afk" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/randychilau"><img src="https://avatars.githubusercontent.com/u/90356410?v=4?s=100" width="100px;" alt="randychilau"/><br /><sub><b>randychilau</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=randychilau" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ttran913"><img src="https://avatars.githubusercontent.com/u/122418320?v=4?s=100" width="100px;" alt="ttran913"/><br /><sub><b>ttran913</b></sub></a><br /><a href="https://github.com/freeCodeCamp/chapter/commits?author=ttran913" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

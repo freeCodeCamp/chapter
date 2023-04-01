@@ -4,6 +4,7 @@
 
 import { render } from '@testing-library/react';
 import React from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { ChapterCard } from '../src/components/ChapterCard';
 
 const chapter = {
@@ -53,7 +54,11 @@ const chapter = {
 describe('ChapterCard', () => {
   it('should render', () => {
     jest.useFakeTimers().setSystemTime(new Date('2023-01-18'));
-    const { container } = render(<ChapterCard chapter={chapter} />);
+    const { container } = render(
+      <ChakraProvider>
+        <ChapterCard chapter={chapter} />
+      </ChakraProvider>,
+    );
 
     expect(container).toMatchSnapshot();
   });
@@ -61,16 +66,18 @@ describe('ChapterCard', () => {
   it('should render with tags', () => {
     jest.useFakeTimers().setSystemTime(new Date('2023-01-18'));
     const { container } = render(
-      <ChapterCard
-        chapter={{
-          ...chapter,
-          chapter_tags: [
-            { tag: { id: 1, name: 'first' } },
-            { tag: { id: 3, name: 'third' } },
-            { tag: { id: 2, name: 'second' } },
-          ],
-        }}
-      />,
+      <ChakraProvider>
+        <ChapterCard
+          chapter={{
+            ...chapter,
+            chapter_tags: [
+              { tag: { id: 1, name: 'first' } },
+              { tag: { id: 3, name: 'third' } },
+              { tag: { id: 2, name: 'second' } },
+            ],
+          }}
+        />
+      </ChakraProvider>,
     );
 
     expect(container).toMatchSnapshot();

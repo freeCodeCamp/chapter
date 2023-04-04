@@ -394,6 +394,7 @@ export type Mutation = {
   toggleAutoSubscribe: User;
   toggleChapterSubscription: ChapterUser;
   unbanUser: UserBan;
+  unlinkCalendarEvent: Event;
   unlinkChapterCalendar: Chapter;
   unsubscribe: Scalars['Boolean'];
   unsubscribeFromEvent: EventUser;
@@ -514,6 +515,10 @@ export type MutationUnbanUserArgs = {
   userId: Scalars['Int'];
 };
 
+export type MutationUnlinkCalendarEventArgs = {
+  id: Scalars['Int'];
+};
+
 export type MutationUnlinkChapterCalendarArgs = {
   id: Scalars['Int'];
 };
@@ -578,6 +583,7 @@ export type Query = {
   sponsorWithEvents: SponsorWithEvents;
   sponsors: Array<Sponsor>;
   testChapterCalendarAccess?: Maybe<Scalars['Boolean']>;
+  testEventCalendarEventAccess?: Maybe<Scalars['Boolean']>;
   tokenStatuses: Array<TokenStatus>;
   userDownload: UserForDownload;
   userProfile: UserProfile;
@@ -620,6 +626,10 @@ export type QuerySponsorWithEventsArgs = {
 };
 
 export type QueryTestChapterCalendarAccessArgs = {
+  id: Scalars['Int'];
+};
+
+export type QueryTestEventCalendarEventAccessArgs = {
   id: Scalars['Int'];
 };
 
@@ -1289,6 +1299,19 @@ export type CreateCalendarEventMutation = {
   };
 };
 
+export type UnlinkCalendarEventMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
+
+export type UnlinkCalendarEventMutation = {
+  __typename?: 'Mutation';
+  unlinkCalendarEvent: {
+    __typename?: 'Event';
+    id: number;
+    has_calendar_event: boolean;
+  };
+};
+
 export type CancelEventMutationVariables = Exact<{
   eventId: Scalars['Int'];
 }>;
@@ -1457,6 +1480,15 @@ export type ChapterVenuesQueryVariables = Exact<{
 export type ChapterVenuesQuery = {
   __typename?: 'Query';
   chapterVenues: Array<{ __typename?: 'Venue'; id: number; name: string }>;
+};
+
+export type TestEventCalendarEventAccessQueryVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
+
+export type TestEventCalendarEventAccessQuery = {
+  __typename?: 'Query';
+  testEventCalendarEventAccess?: boolean | null;
 };
 
 export type CreateSponsorMutationVariables = Exact<{
@@ -3503,6 +3535,57 @@ export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   CreateCalendarEventMutation,
   CreateCalendarEventMutationVariables
 >;
+export const UnlinkCalendarEventDocument = gql`
+  mutation unlinkCalendarEvent($eventId: Int!) {
+    unlinkCalendarEvent(id: $eventId) {
+      id
+      has_calendar_event
+    }
+  }
+`;
+export type UnlinkCalendarEventMutationFn = Apollo.MutationFunction<
+  UnlinkCalendarEventMutation,
+  UnlinkCalendarEventMutationVariables
+>;
+
+/**
+ * __useUnlinkCalendarEventMutation__
+ *
+ * To run a mutation, you first call `useUnlinkCalendarEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlinkCalendarEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlinkCalendarEventMutation, { data, loading, error }] = useUnlinkCalendarEventMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useUnlinkCalendarEventMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UnlinkCalendarEventMutation,
+    UnlinkCalendarEventMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UnlinkCalendarEventMutation,
+    UnlinkCalendarEventMutationVariables
+  >(UnlinkCalendarEventDocument, options);
+}
+export type UnlinkCalendarEventMutationHookResult = ReturnType<
+  typeof useUnlinkCalendarEventMutation
+>;
+export type UnlinkCalendarEventMutationResult =
+  Apollo.MutationResult<UnlinkCalendarEventMutation>;
+export type UnlinkCalendarEventMutationOptions = Apollo.BaseMutationOptions<
+  UnlinkCalendarEventMutation,
+  UnlinkCalendarEventMutationVariables
+>;
 export const CancelEventDocument = gql`
   mutation cancelEvent($eventId: Int!) {
     cancelEvent(id: $eventId) {
@@ -4101,6 +4184,62 @@ export type ChapterVenuesLazyQueryHookResult = ReturnType<
 export type ChapterVenuesQueryResult = Apollo.QueryResult<
   ChapterVenuesQuery,
   ChapterVenuesQueryVariables
+>;
+export const TestEventCalendarEventAccessDocument = gql`
+  query testEventCalendarEventAccess($eventId: Int!) {
+    testEventCalendarEventAccess(id: $eventId)
+  }
+`;
+
+/**
+ * __useTestEventCalendarEventAccessQuery__
+ *
+ * To run a query within a React component, call `useTestEventCalendarEventAccessQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTestEventCalendarEventAccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTestEventCalendarEventAccessQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useTestEventCalendarEventAccessQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    TestEventCalendarEventAccessQuery,
+    TestEventCalendarEventAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    TestEventCalendarEventAccessQuery,
+    TestEventCalendarEventAccessQueryVariables
+  >(TestEventCalendarEventAccessDocument, options);
+}
+export function useTestEventCalendarEventAccessLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    TestEventCalendarEventAccessQuery,
+    TestEventCalendarEventAccessQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    TestEventCalendarEventAccessQuery,
+    TestEventCalendarEventAccessQueryVariables
+  >(TestEventCalendarEventAccessDocument, options);
+}
+export type TestEventCalendarEventAccessQueryHookResult = ReturnType<
+  typeof useTestEventCalendarEventAccessQuery
+>;
+export type TestEventCalendarEventAccessLazyQueryHookResult = ReturnType<
+  typeof useTestEventCalendarEventAccessLazyQuery
+>;
+export type TestEventCalendarEventAccessQueryResult = Apollo.QueryResult<
+  TestEventCalendarEventAccessQuery,
+  TestEventCalendarEventAccessQueryVariables
 >;
 export const CreateSponsorDocument = gql`
   mutation createSponsor($data: CreateSponsorInputs!) {

@@ -1,20 +1,23 @@
 import {
   Button,
   Box,
+  Flex,
   Heading,
   HStack,
   Link,
-  Text,
+  List,
+  ListItem,
+  ListIcon,
   VStack,
-  Flex,
   Spinner,
+  Text,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import React, { Fragment, ReactElement } from 'react';
+import React, { Fragment, ReactElement, useState } from 'react';
 
 import {
   useCalendarIntegrationStatusQuery,
@@ -23,14 +26,20 @@ import {
   useDashboardEventQuery,
   useDeleteAttendeeMutation,
   useMoveAttendeeToWaitlistMutation,
+  useTestEventCalendarEventAccessLazyQuery,
+  useUnlinkCalendarEventMutation,
   MutationConfirmAttendeeArgs,
   MutationDeleteAttendeeArgs,
   MutationMoveAttendeeToWaitlistArgs,
 } from '../../../../generated/graphql';
 import { AttendanceNames } from '../../../../../../common/attendance';
+import { useUser } from '../../../auth/user';
+import { useAlert } from '../../../../hooks/useAlert';
 import { useParam } from '../../../../hooks/useParam';
+import { formatDate } from '../../../../util/date';
 import getLocationString from '../../../../util/getLocationString';
 import { isOnline, isPhysical } from '../../../../util/venueType';
+import { checkChapterPermission } from '../../../../util/check-permission';
 import { DashboardLoading } from '../../shared/components/DashboardLoading';
 import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import Actions from '../components/Actions';
@@ -39,7 +48,7 @@ import { DASHBOARD_EVENT } from '../graphql/queries';
 import { EVENT } from '../../../events/graphql/queries';
 import { NextPageWithLayout } from '../../../../pages/_app';
 import UserName from '../../../../components/UserName';
-import { formatDate } from 'util/date';
+import { Permission } from '../../../../../../common/permissions';
 
 const args = (eventId: number) => ({
   refetchQueries: [
@@ -51,6 +60,9 @@ const args = (eventId: number) => ({
 export const EventPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { param: eventId } = useParam('id');
+  const { user, loadingUser } = useUser();
+  const [disableTest, setDisableTest] = useState(false);
+  const [displayUnlink, setDisplayUnlink] = useState(false);
 
   const { loading, error, data } = useDashboardEventQuery({
     variables: { eventId },
@@ -64,7 +76,12 @@ export const EventPage: NextPageWithLayout = () => {
   const [removeAttendee] = useDeleteAttendeeMutation(args(eventId));
   const [createCalendarEvent, { loading: loadingCalendar }] =
     useCreateCalendarEventMutation(args(eventId));
+  const [testEventCalendarAccess, { loading: loadingTest }] =
+    useTestEventCalendarEventAccessLazyQuery();
+  const [unlinkCalendarEvent, { loading: loadingUnlinkEvent }] =
+    useUnlinkCalendarEventMutation();
 
+  const addAlert = useAlert();
   const confirm = useConfirm();
   const confirmDelete = useConfirmDelete();
 
@@ -101,7 +118,88 @@ export const EventPage: NextPageWithLayout = () => {
       });
       if (ok) moveAttendeeToWaitlist({ variables: { eventId, userId } });
     };
-  const isLoading = loading || !data || loadingStatus;
+
+  const onTestCalendarEvent = async () => {
+    const ok = await confirm({
+      title: 'Test access to calendar event',
+      body: (
+        <>
+          Do you want to test access to Google calendar event for this event?
+          <List>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              We will try to access linked Google calendar event.
+            </ListItem>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              If Google calendar event no longer exists, or cannot be accessed,
+              you will have option to unlink it.
+            </ListItem>
+          </List>
+        </>
+      ),
+    });
+    if (ok) {
+      setDisableTest(true);
+      try {
+        const { data } = await testEventCalendarAccess({
+          variables: { eventId },
+        });
+        if (data?.testEventCalendarEventAccess) {
+          addAlert({
+            title: 'Calendar event test successful',
+            status: 'success',
+          });
+        } else if (data?.testEventCalendarEventAccess === false) {
+          addAlert({
+            title: "Couldn't access the calendar event",
+            status: 'error',
+          });
+          setDisplayUnlink(true);
+        } else {
+          addAlert({
+            title:
+              'Something went wrong, make sure integration is working, chapter calendar can be accessed, and try again',
+            status: 'warning',
+          });
+        }
+      } catch (err) {
+        addAlert({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const onUnlinkCalendarEvent = async () => {
+    const ok = await confirm({
+      title: 'Unlink calendar event',
+      body: (
+        <>
+          Do you want to unlink current Google calendar event from this event?
+          <List>
+            <ListItem>
+              <ListIcon as={InfoIcon} boxSize={5} />
+              Unlinked Google calendar event will not be deleted.
+            </ListItem>
+          </List>
+        </>
+      ),
+    });
+    if (ok) {
+      try {
+        await unlinkCalendarEvent({
+          variables: { eventId },
+          refetchQueries: [{ query: DASHBOARD_EVENT, variables: { eventId } }],
+        });
+        addAlert({ title: 'Calendar event unlinked', status: 'success' });
+      } catch (err) {
+        addAlert({ title: 'Something went wrong', status: 'error' });
+        console.error(err);
+      }
+    }
+  };
+
+  const isLoading = loading || !data || loadingUser || loadingStatus;
   if (isLoading || error) return <DashboardLoading error={error} />;
   if (!data.dashboardEvent)
     return <NextError statusCode={404} title="Event not found" />;
@@ -244,7 +342,30 @@ export const EventPage: NextPageWithLayout = () => {
               {loadingCalendar ? (
                 <Spinner size="sm" />
               ) : data.dashboardEvent.has_calendar_event ? (
-                <CheckIcon boxSize="5" />
+                <>
+                  <CheckIcon boxSize="5" />
+                  {checkChapterPermission(user, Permission.EventCreate, {
+                    chapterId: data.dashboardEvent.chapter.id,
+                  }) && (
+                    <>
+                      <Button
+                        isDisabled={disableTest}
+                        isLoading={loadingTest}
+                        onClick={onTestCalendarEvent}
+                      >
+                        Test access
+                      </Button>
+                      {displayUnlink && (
+                        <Button
+                          isLoading={loadingUnlinkEvent}
+                          onClick={onUnlinkCalendarEvent}
+                        >
+                          Unlink
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </>
               ) : (
                 <CloseIcon boxSize="4" />
               )}

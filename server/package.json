@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "3.303.0",
-    "@cypress/code-coverage": "3.10.1",
+    "@cypress/code-coverage": "3.10.3",
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.11.0",
     "@sendgrid/mail": "7.7.0",

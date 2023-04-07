@@ -1,4 +1,4 @@
-import { InfoIcon, LockIcon } from '@chakra-ui/icons';
+import { LockIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -8,7 +8,6 @@ import {
   Image,
   Link as ChakraLink,
   List,
-  ListIcon,
   ListItem,
   SimpleGrid,
   Spinner,
@@ -26,6 +25,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { useUser } from '../../auth/user';
 import Avatar from '../../../components/Avatar';
+import { InfoList } from '../../../components/InfoList';
 import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
@@ -169,16 +169,12 @@ export const EventPage: NextPage = () => {
   }
 
   const AttendInfo = () => (
-    <List>
-      <ListItem>
-        <ListIcon as={InfoIcon} boxSize={5} />
-        Attending this event will make you a member of the event&apos;s chapter.
-      </ListItem>
-      <ListItem>
-        <ListIcon as={InfoIcon} boxSize={5} />
-        If event capacity if full, you will be placed on the waitlist.
-      </ListItem>
-    </List>
+    <InfoList
+      items={[
+        "Attending this event will make you a member of the event's chapter.",
+        'If event capacity if full, you will be placed on the waitlist.',
+      ]}
+    />
   );
 
   async function tryToAttend(options?: { invited?: boolean }) {
@@ -261,16 +257,12 @@ export const EventPage: NextPage = () => {
     const ok = await confirm({
       title: 'Subscribe to event updates?',
       body: (
-        <List>
-          <ListItem>
-            <ListIcon as={InfoIcon} boxSize={5} />
-            You will be informed about any changes to event details.
-          </ListItem>
-          <ListItem>
-            <ListIcon as={InfoIcon} boxSize={5} />
-            This does not affect notifications from Google Calendar.
-          </ListItem>
-        </List>
+        <InfoList
+          items={[
+            'You will be informed about any changes to event details.',
+            'This does not affect notifications from Google Calendar.',
+          ]}
+        />
       ),
     });
     if (ok) {
@@ -291,17 +283,12 @@ export const EventPage: NextPage = () => {
     const ok = await confirm({
       title: 'Unsubscribe from event updates?',
       body: (
-        <List>
-          <ListItem>
-            <ListIcon as={InfoIcon} boxSize={5} />
-            After unsubscribing you will not receive any communication regarding
-            this event, including reminder before the event.
-          </ListItem>
-          <ListItem>
-            <ListIcon as={InfoIcon} boxSize={5} />
-            This does not affect notifications from Google Calendar.
-          </ListItem>
-        </List>
+        <InfoList
+          items={[
+            'After unsubscribing you will not receive any communication regarding this event, including reminder before the event',
+            ' This does not affect notifications from Google Calendar.',
+          ]}
+        />
       ),
     });
     if (ok) {

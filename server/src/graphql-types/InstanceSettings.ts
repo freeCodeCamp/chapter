@@ -11,4 +11,10 @@ export class InstanceSettings extends BaseObject {
 
   @Field(() => String, { nullable: true })
   code_of_conduct_url: string | null;
+
+  @Field(() => String, { nullable: true })
+  description: string | null;
+
+  @Field(() => String, { nullable: true })
+  font_style: string | null;
 }

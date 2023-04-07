@@ -1,19 +1,35 @@
+import { inspect } from 'util';
 import { Prisma } from '@prisma/client';
 import { sub } from 'date-fns';
 import { AttendanceNames } from '../../../common/attendance';
 
 import { prisma } from '../prisma';
+import { addEventAttendee } from '../services/Google';
 
 import { createReminder } from '../services/Reminders';
+import { integrationStatus } from './calendar';
+import { redactSecrets } from './redact-secrets';
 
 type EventForWaitlistUpdate = Prisma.event_usersGetPayload<{
   include: {
-    event: { include: { event_users: { include: { attendance: true } } } };
+    event: {
+      include: {
+        event_users: { include: { attendance: true; user: true } };
+        chapter: { select: { calendar_id: true } };
+      };
+    };
   };
 }>['event'];
 
 export const updateWaitlistForUserRemoval = async ({
-  event: { capacity, event_users, invite_only, start_at },
+  event: {
+    calendar_event_id,
+    capacity,
+    chapter: { calendar_id },
+    event_users,
+    invite_only,
+    start_at,
+  },
   userId,
 }: {
   event: EventForWaitlistUpdate;
@@ -54,5 +70,17 @@ export const updateWaitlistForUserRemoval = async ({
       remindAt: sub(start_at, { days: 1 }),
       userId: newAttendee.user_id,
     });
+  }
+
+  if (calendar_event_id && calendar_id && (await integrationStatus())) {
+    try {
+      await addEventAttendee(
+        { calendarId: calendar_id, calendarEventId: calendar_event_id },
+        { attendeeEmail: newAttendee.user.email },
+      );
+    } catch (e) {
+      console.error('Unable to confirm attendance at calendar event');
+      console.error(inspect(redactSecrets(e), { depth: null }));
+    }
   }
 };

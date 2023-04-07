@@ -52,7 +52,7 @@ async function removeUserFromEventsInChapter({
       event: {
         include: {
           chapter: true,
-          event_users: { include: { attendance: true } },
+          event_users: { include: { attendance: true, user: true } },
         },
       },
       attendance: true,

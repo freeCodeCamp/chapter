@@ -4,7 +4,6 @@ import {
   Button,
   Flex,
   Heading,
-  HStack,
   Image,
   Link as ChakraLink,
   List,
@@ -24,13 +23,11 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useUser } from '../../auth/user';
-import Avatar from '../../../components/Avatar';
 import { InfoList } from '../../../components/InfoList';
 import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { Modal } from '../../../components/Modal';
 import SponsorsCard from '../../../components/SponsorsCard';
-import UserName from '../../../components/UserName';
 import { EVENT } from '../graphql/queries';
 import { DASHBOARD_EVENT } from '../../dashboard/Events/graphql/queries';
 import { meQuery } from '../../auth/graphql/queries';
@@ -48,6 +45,7 @@ import { useParam } from '../../../hooks/useParam';
 import { useSession } from '../../../hooks/useSession';
 import { CHAPTER } from '../../chapters/graphql/queries';
 import { AttendanceNames } from '../../../../../common/attendance';
+import { UsersList } from '../components/UsersList';
 
 export const EventPage: NextPage = () => {
   const { param: eventId } = useParam('eventId');
@@ -456,44 +454,9 @@ export const EventPage: NextPage = () => {
         ) : (
           false
         )}
-        <Heading
-          data-cy="attendees-heading"
-          fontSize={['sm', 'md', 'lg']}
-          as={'h2'}
-        >
-          Attendees:
-        </Heading>
-        <List>
-          {attendees.map(({ user }) => (
-            <ListItem key={user.id} mb="2">
-              <HStack>
-                <Avatar user={user} />
-                <UserName user={user} fontSize="xl" fontWeight="bold" />
-              </HStack>
-            </ListItem>
-          ))}
-        </List>
-
+        <UsersList text="Attendees" users={attendees} />
         {!data.event.invite_only && (
-          <>
-            <Heading
-              data-cy="waitlist-heading"
-              fontSize={['sm', 'md', 'lg']}
-              as={'h2'}
-            >
-              Waitlist:
-            </Heading>
-            <List>
-              {waitlist.map(({ user }) => (
-                <ListItem key={user.id} mb="2">
-                  <HStack>
-                    <Avatar user={user} />
-                    <UserName user={user} fontSize="xl" fontWeight="bold" />
-                  </HStack>
-                </ListItem>
-              ))}
-            </List>
-          </>
+          <UsersList text="Waitlist" users={waitlist} />
         )}
       </VStack>
     </>

@@ -514,19 +514,10 @@ export class EventResolver {
       },
     });
 
-    const { subject, attachUnsubscribe } = eventAttendanceCancelation({
+    await sendUserEmail({
+      emailData: eventAttendanceCancelation,
       event,
-      userName: updatedEventUser.user.name,
-    });
-
-    await mailerService.sendEmail({
-      emailList: [updatedEventUser.user.email],
-      subject,
-      htmlEmail: attachUnsubscribe({
-        chapterId: event.chapter_id,
-        eventId: event.id,
-        userId: updatedEventUser.user.id,
-      }),
+      user: updatedEventUser.user,
     });
 
     const calendarId = event.chapter.calendar_id;

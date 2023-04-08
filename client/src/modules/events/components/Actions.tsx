@@ -78,6 +78,9 @@ export const Actions = ({
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );
+  const waitlist = event_users.filter(
+    ({ attendance }) => attendance.name === AttendanceNames.waitlist,
+  );
 
   const attendanceStatus = eventUser?.attendance.name;
 
@@ -145,6 +148,10 @@ export const Actions = ({
   async function onCancelAttendance() {
     const ok = await confirm({
       title: 'Are you sure you want to cancel your attendance?',
+      ...(waitlist.length > 0 &&
+        !inviteOnly && {
+          body: 'The next person on the waitlist will take your seat.',
+        }),
     });
 
     if (ok) {
@@ -152,7 +159,6 @@ export const Actions = ({
         await cancelAttendance({
           variables: { eventId },
         });
-
         addAlert({ title: 'You canceled your attendance 👋', status: 'info' });
       } catch (err) {
         addAlert({ title: 'Something went wrong', status: 'error' });

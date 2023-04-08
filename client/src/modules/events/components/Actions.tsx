@@ -74,7 +74,7 @@ export const Actions = ({
     return event_users.find(
       ({ user: event_user }) => event_user.id === user?.id,
     );
-  }, [event, user]);
+  }, [event_users, user]);
   const userEvent = user?.user_events.find(
     ({ event_id }) => event_id === eventId,
   );

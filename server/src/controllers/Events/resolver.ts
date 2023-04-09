@@ -387,7 +387,10 @@ export class EventResolver {
       }
 
       eventUser = await prisma.event_users.update({
-        data: { attendance: { connect: { name: newAttendanceName } } },
+        data: {
+          attendance: { connect: { name: newAttendanceName } },
+          joined_date: new Date(),
+        },
         include: eventUserIncludes,
         where: {
           user_id_event_id: {

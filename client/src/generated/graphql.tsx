@@ -235,6 +235,7 @@ export type EventSponsor = {
 export type EventUser = {
   __typename?: 'EventUser';
   event_id: Scalars['Int'];
+  joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user_id: Scalars['Int'];
@@ -244,6 +245,7 @@ export type EventUserWithAttendanceAndUser = {
   __typename?: 'EventUserWithAttendanceAndUser';
   attendance: Attendance;
   event_id: Scalars['Int'];
+  joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -255,6 +257,7 @@ export type EventUserWithRelations = {
   attendance: Attendance;
   event_id: Scalars['Int'];
   event_role: EventRole;
+  joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user: User;
@@ -265,6 +268,7 @@ export type EventUserWithRolePermissions = {
   __typename?: 'EventUserWithRolePermissions';
   event_id: Scalars['Int'];
   event_role: EventRoleWithPermissions;
+  joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user_id: Scalars['Int'];
@@ -720,6 +724,7 @@ export type UserEvent = {
   event: Event;
   event_id: Scalars['Int'];
   event_role: EventRoleWithPermissions;
+  joined_date: Scalars['DateTime'];
   subscribed: Scalars['Boolean'];
   updated_at: Scalars['DateTime'];
   user_id: Scalars['Int'];
@@ -1424,6 +1429,7 @@ export type DashboardEventQuery = {
     event_users: Array<{
       __typename?: 'EventUserWithRelations';
       subscribed: boolean;
+      joined_date: any;
       attendance: { __typename?: 'Attendance'; name: string };
       user: {
         __typename?: 'User';
@@ -3932,6 +3938,7 @@ export const DashboardEventDocument = gql`
           name
         }
         subscribed
+        joined_date
       }
     }
   }

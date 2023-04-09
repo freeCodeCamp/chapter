@@ -261,6 +261,31 @@ You should receive a calendar invite shortly. If you do not, you can add the eve
 <a href=${outlookURL}>Outlook</a>`,
 });
 
+export const eventWaitlistConfirmationText = ({
+  eventName,
+  userName,
+}: {
+  eventName: string;
+  userName: string;
+}) => ({
+  subject: `Added to waitlist: ${eventName}`,
+  emailText: `Hi${userName},<br />
+You were added to waitlist for ${eventName}.<br />
+Once there will be available free spot, you will be moved to attendees. You will receive another email when that happens.`,
+});
+
+export const eventAttendanceRequestText = ({
+  eventName,
+  userName,
+}: {
+  eventName: string;
+  userName: string;
+}) => ({
+  subject: `Attendance request: ${eventName}`,
+  emailText: `Hi${userName},<br />
+This is confirmation of your request to attend ${eventName}. Once event administrator will accept your request, you will receive another email.`,
+});
+
 export const eventAttendanceCancelationText = ({
   eventName,
   userName,

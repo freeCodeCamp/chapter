@@ -62,11 +62,13 @@ import {
   chapterAdminUnsubscribeOptions,
   eventAttendanceCancelation,
   eventAttendanceConfirmation,
+  eventAttendanceRequest,
+  eventAttendeeToWaitlistEmail,
   eventCancelationEmail,
   eventConfirmAttendeeEmail,
   eventInviteEmail,
-  eventAttendeeToWaitlistEmail,
   eventNewAttendeeNotifyEmail,
+  eventWaitlistConfirmation,
   hasDateChanged,
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
@@ -95,11 +97,23 @@ type EventWithUsers = Prisma.eventsGetPayload<{
   };
 }>;
 
-const sendAttendanceConfirmation = async (
-  user: Required<ResolverCtx>['user'],
-  event: events & { venue: venues | null },
-) => {
-  const { subject, attachUnsubscribe } = eventAttendanceConfirmation({
+interface UserEmail {
+  emailData: ({
+    event,
+    userName,
+  }: {
+    event: events & { venue: venues | null };
+    userName: string;
+  }) => {
+    subject: string;
+    attachUnsubscribe: AttachUnsubscribeData;
+  };
+  event: events & { venue: venues | null };
+  user: { email: string; id: number; name: string };
+}
+
+const sendUserEmail = async ({ emailData, event, user }: UserEmail) => {
+  const { subject, attachUnsubscribe } = emailData({
     event,
     userName: user.name,
   });
@@ -420,7 +434,8 @@ export class EventResolver {
       }
     }
 
-    if (newAttendanceName === AttendanceNames.confirmed) {
+    const isAttendee = newAttendanceName === AttendanceNames.confirmed;
+    if (isAttendee) {
       const calendarEventId = event.calendar_event_id;
       const calendarId = event.chapter.calendar_id;
       if (calendarId && calendarEventId && (await integrationStatus())) {
@@ -434,10 +449,17 @@ export class EventResolver {
           console.error(inspect(redactSecrets(e), { depth: null }));
         }
       }
-      await sendAttendanceConfirmation(ctx.user, event);
-    } else {
-      // TODO send email about being placed on waitlist
     }
+
+    await sendUserEmail({
+      emailData: isAttendee
+        ? eventAttendanceConfirmation
+        : event.invite_only
+        ? eventAttendanceRequest
+        : eventWaitlistConfirmation,
+      event,
+      user: ctx.user,
+    });
 
     await attendeeNotifyAdministrators(
       ctx.user,
@@ -492,19 +514,10 @@ export class EventResolver {
       },
     });
 
-    const { subject, attachUnsubscribe } = eventAttendanceCancelation({
+    await sendUserEmail({
+      emailData: eventAttendanceCancelation,
       event,
-      userName: updatedEventUser.user.name,
-    });
-
-    await mailerService.sendEmail({
-      emailList: [updatedEventUser.user.email],
-      subject,
-      htmlEmail: attachUnsubscribe({
-        chapterId: event.chapter_id,
-        eventId: event.id,
-        userId: updatedEventUser.user.id,
-      }),
+      user: updatedEventUser.user,
     });
 
     const calendarId = event.chapter.calendar_id;

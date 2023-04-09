@@ -7,6 +7,7 @@ import {
   dateChangeText,
   eventAttendanceCancelationText,
   eventAttendanceConfirmationText,
+  eventAttendanceRequestText,
   eventAttendeeToWaitlistText,
   eventCancelationText,
   eventConfirmAtendeeText,
@@ -16,6 +17,7 @@ import {
   eventNewAttendeeNotificationText,
   eventUnsubscribeText,
   eventUpdateText,
+  eventWaitlistConfirmationText,
   physicalLocationChangeText,
   physicalLocationShortText,
   SPACER,
@@ -324,6 +326,38 @@ export const eventAttendanceConfirmation = ({
     }),
   );
 };
+
+interface WaitlistConfirmation {
+  event: { name: string };
+  userName: string;
+}
+
+export const eventWaitlistConfirmation = ({
+  event,
+  userName,
+}: WaitlistConfirmation) =>
+  withUnsubscribe(
+    eventWaitlistConfirmationText({
+      eventName: event.name,
+      userName: userName ? ` ${userName}` : '',
+    }),
+  );
+
+interface AttendanceRequest {
+  event: { name: string };
+  userName: string;
+}
+
+export const eventAttendanceRequest = ({
+  event,
+  userName,
+}: AttendanceRequest) =>
+  withUnsubscribe(
+    eventAttendanceRequestText({
+      eventName: event.name,
+      userName: userName ? ` ${userName}` : '',
+    }),
+  );
 
 interface AttendanceCancelation {
   event: { name: string };

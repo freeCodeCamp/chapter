@@ -619,20 +619,23 @@ export class EventResolver {
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    const { event, user } = await prisma.event_users.delete({
+    const { attendance, event, user } = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      select: {
-        user: { select: { email: true } },
+      include: {
+        attendance: true,
         event: {
-          select: {
-            calendar_event_id: true,
-            chapter: {
-              select: { calendar_id: true },
-            },
+          include: {
+            chapter: { select: { calendar_id: true } },
+            event_users: { include: { attendance: true, user: true } },
           },
         },
+        user: { select: { email: true } },
       },
     });
+
+    if (attendance.name === AttendanceNames.confirmed) {
+      await updateWaitlistForUserRemoval({ event, userId });
+    }
 
     const calendarId = event.chapter.calendar_id;
     const calendarEventId = event.calendar_event_id;

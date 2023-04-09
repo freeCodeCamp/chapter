@@ -8,8 +8,9 @@ import {
   VStack,
   Flex,
   Spinner,
+  Tooltip,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, LockIcon } from '@chakra-ui/icons';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
@@ -147,7 +148,14 @@ export const EventPage: NextPageWithLayout = () => {
         gap={'3'}
         flexDirection="column"
       >
-        <Heading as="h1">{data.dashboardEvent.name}</Heading>
+        <Flex alignItems="center">
+          {data.dashboardEvent.invite_only && (
+            <Tooltip label="Invite only">
+              <LockIcon fontSize="2xl" />
+            </Tooltip>
+          )}
+          <Heading as="h1">{data.dashboardEvent.name}</Heading>
+        </Flex>
 
         {data.dashboardEvent.canceled && (
           <Text fontWeight={500} fontSize={'md'} color="red.500">

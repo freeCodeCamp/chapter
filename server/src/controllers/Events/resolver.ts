@@ -5,7 +5,6 @@ import {
   event_users,
   Prisma,
   attendance,
-  venues,
 } from '@prisma/client';
 import {
   Arg,
@@ -73,6 +72,7 @@ import {
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
+  sendUserEmail,
 } from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
 import { AttendanceNames } from '../../../../common/attendance';
@@ -96,38 +96,6 @@ type EventWithUsers = Prisma.eventsGetPayload<{
     };
   };
 }>;
-
-interface UserEmail {
-  emailData: ({
-    event,
-    userName,
-  }: {
-    event: events & { venue: venues | null };
-    userName: string;
-  }) => {
-    subject: string;
-    attachUnsubscribe: AttachUnsubscribeData;
-  };
-  event: events & { venue: venues | null };
-  user: { email: string; id: number; name: string };
-}
-
-const sendUserEmail = async ({ emailData, event, user }: UserEmail) => {
-  const { subject, attachUnsubscribe } = emailData({
-    event,
-    userName: user.name,
-  });
-
-  await mailerService.sendEmail({
-    emailList: [user.email],
-    subject,
-    htmlEmail: attachUnsubscribe({
-      chapterId: event.chapter_id,
-      eventId: event.id,
-      userId: user.id,
-    }),
-  });
-};
 
 const createEmailForSubscribers = (
   buildEmail: {

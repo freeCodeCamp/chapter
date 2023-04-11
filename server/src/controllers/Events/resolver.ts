@@ -608,6 +608,7 @@ export class EventResolver {
           include: {
             chapter: { select: { calendar_id: true } },
             event_users: { include: { attendance: true, user: true } },
+            venue: true,
           },
         },
         user: { select: { email: true } },

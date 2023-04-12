@@ -86,6 +86,7 @@ export const EventPage: NextPage = () => {
         <Text {...textStyleProps}>{data.event.description}</Text>
         <Text {...textStyleProps}>Starting: {startAt}</Text>
         <Text {...textStyleProps}>Ending: {endsAt}</Text>
+        <Text {...textStyleProps}>Capacity: {data.event.capacity}</Text>
         {data.event.url && (
           <Text {...textStyleProps}>
             More about event:{' '}

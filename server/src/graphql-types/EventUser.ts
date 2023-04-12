@@ -31,6 +31,9 @@ export class EventUser {
   @Field(() => Date)
   updated_at: Date;
 
+  @Field(() => Date)
+  joined_date: Date;
+
   @Field(() => Int)
   user_id: number;
 

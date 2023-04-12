@@ -9,6 +9,7 @@ import { addEventAttendee } from '../services/Google';
 import { createReminder } from '../services/Reminders';
 import { integrationStatus } from './calendar';
 import { redactSecrets } from './redact-secrets';
+import { eventAttendanceConfirmation, sendUserEmail } from './event-email';
 
 type EventForWaitlistUpdate = Prisma.event_usersGetPayload<{
   include: {
@@ -16,25 +17,27 @@ type EventForWaitlistUpdate = Prisma.event_usersGetPayload<{
       include: {
         event_users: { include: { attendance: true; user: true } };
         chapter: { select: { calendar_id: true } };
+        venue: true;
       };
     };
   };
 }>['event'];
 
 export const updateWaitlistForUserRemoval = async ({
-  event: {
+  event,
+  userId,
+}: {
+  event: EventForWaitlistUpdate;
+  userId: number;
+}) => {
+  const {
     calendar_event_id,
     capacity,
     chapter: { calendar_id },
     event_users,
     invite_only,
     start_at,
-  },
-  userId,
-}: {
-  event: EventForWaitlistUpdate;
-  userId: number;
-}) => {
+  } = event;
   if (invite_only) return;
 
   // Since updateWaitlistForUserRemoval gets the original event_users before the
@@ -62,7 +65,11 @@ export const updateWaitlistForUserRemoval = async ({
     },
   });
 
-  // TODO add email about being off waitlist?
+  await sendUserEmail({
+    emailData: eventAttendanceConfirmation,
+    event,
+    user: newAttendee.user,
+  });
 
   if (newAttendee.subscribed) {
     await createReminder({

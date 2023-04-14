@@ -5,7 +5,6 @@ import {
   event_users,
   Prisma,
   attendance,
-  venues,
 } from '@prisma/client';
 import {
   Arg,
@@ -63,15 +62,18 @@ import {
   chapterAdminUnsubscribeOptions,
   eventAttendanceCancelation,
   eventAttendanceConfirmation,
+  eventAttendanceRequest,
+  eventAttendeeToWaitlistEmail,
   eventCancelationEmail,
   eventConfirmAttendeeEmail,
   eventInviteEmail,
-  eventAttendeeToWaitlistEmail,
   eventNewAttendeeNotifyEmail,
+  eventWaitlistConfirmation,
   hasDateChanged,
   hasPhysicalLocationChanged,
   hasStreamingUrlChanged,
   hasVenueTypeChanged,
+  sendUserEmail,
 } from '../../util/event-email';
 import { isOnline, isPhysical } from '../../util/venue';
 import { AttendanceNames } from '../../../../common/attendance';
@@ -95,26 +97,6 @@ type EventWithUsers = Prisma.eventsGetPayload<{
     };
   };
 }>;
-
-const sendAttendanceConfirmation = async (
-  user: Required<ResolverCtx>['user'],
-  event: events & { venue: venues | null },
-) => {
-  const { subject, attachUnsubscribe } = eventAttendanceConfirmation({
-    event,
-    userName: user.name,
-  });
-
-  await mailerService.sendEmail({
-    emailList: [user.email],
-    subject,
-    htmlEmail: attachUnsubscribe({
-      chapterId: event.chapter_id,
-      eventId: event.id,
-      userId: user.id,
-    }),
-  });
-};
 
 const createEmailForSubscribers = (
   buildEmail: {
@@ -388,7 +370,10 @@ export class EventResolver {
       }
 
       eventUser = await prisma.event_users.update({
-        data: { attendance: { connect: { name: newAttendanceName } } },
+        data: {
+          attendance: { connect: { name: newAttendanceName } },
+          joined_date: new Date(),
+        },
         include: eventUserIncludes,
         where: {
           user_id_event_id: {
@@ -421,21 +406,33 @@ export class EventResolver {
       }
     }
 
-    const calendarEventId = event.calendar_event_id;
-    const calendarId = event.chapter.calendar_id;
-    if (calendarId && calendarEventId && (await integrationStatus())) {
-      try {
-        await addEventAttendee(
-          { calendarId, calendarEventId },
-          { attendeeEmail: ctx.user.email },
-        );
-      } catch (e) {
-        console.error('Unable to add attendee to calendar event');
-        console.error(inspect(redactSecrets(e), { depth: null }));
+    const isAttendee = newAttendanceName === AttendanceNames.confirmed;
+    if (isAttendee) {
+      const calendarEventId = event.calendar_event_id;
+      const calendarId = event.chapter.calendar_id;
+      if (calendarId && calendarEventId && (await integrationStatus())) {
+        try {
+          await addEventAttendee(
+            { calendarId, calendarEventId },
+            { attendeeEmail: ctx.user.email },
+          );
+        } catch (e) {
+          console.error('Unable to add attendee to calendar event');
+          console.error(inspect(redactSecrets(e), { depth: null }));
+        }
       }
     }
 
-    await sendAttendanceConfirmation(ctx.user, event);
+    await sendUserEmail({
+      emailData: isAttendee
+        ? eventAttendanceConfirmation
+        : event.invite_only
+        ? eventAttendanceRequest
+        : eventWaitlistConfirmation,
+      event,
+      user: ctx.user,
+    });
+
     await attendeeNotifyAdministrators(
       ctx.user,
       chapterAdministrators,
@@ -489,19 +486,10 @@ export class EventResolver {
       },
     });
 
-    const { subject, attachUnsubscribe } = eventAttendanceCancelation({
+    await sendUserEmail({
+      emailData: eventAttendanceCancelation,
       event,
-      userName: updatedEventUser.user.name,
-    });
-
-    await mailerService.sendEmail({
-      emailList: [updatedEventUser.user.email],
-      subject,
-      htmlEmail: attachUnsubscribe({
-        chapterId: event.chapter_id,
-        eventId: event.id,
-        userId: updatedEventUser.user.id,
-      }),
+      user: updatedEventUser.user,
     });
 
     const calendarId = event.chapter.calendar_id;
@@ -616,20 +604,24 @@ export class EventResolver {
     @Arg('eventId', () => Int) eventId: number,
     @Arg('userId', () => Int) userId: number,
   ): Promise<boolean> {
-    const { event, user } = await prisma.event_users.delete({
+    const { attendance, event, user } = await prisma.event_users.delete({
       where: { user_id_event_id: { user_id: userId, event_id: eventId } },
-      select: {
-        user: { select: { email: true } },
+      include: {
+        attendance: true,
         event: {
-          select: {
-            calendar_event_id: true,
-            chapter: {
-              select: { calendar_id: true },
-            },
+          include: {
+            chapter: { select: { calendar_id: true } },
+            event_users: { include: { attendance: true, user: true } },
+            venue: true,
           },
         },
+        user: { select: { email: true } },
       },
     });
+
+    if (attendance.name === AttendanceNames.confirmed) {
+      await updateWaitlistForUserRemoval({ event, userId });
+    }
 
     const calendarId = event.chapter.calendar_id;
     const calendarEventId = event.calendar_event_id;

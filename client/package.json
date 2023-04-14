@@ -41,8 +41,8 @@
   "devDependencies": {
     "@babel/core": "7.21.4",
     "@babel/plugin-proposal-decorators": "7.21.0",
-    "@codesee/babel-plugin-instrument": "0.547.0",
-    "@codesee/tracker": "0.547.0",
+    "@codesee/babel-plugin-instrument": "0.557.0",
+    "@codesee/tracker": "0.557.0",
     "@graphql-codegen/cli": "2.16.5",
     "@graphql-codegen/fragment-matcher": "3.3.3",
     "@graphql-codegen/introspection": "2.2.3",
@@ -53,12 +53,12 @@
     "@graphql-codegen/typescript-react-apollo": "3.3.7",
     "@testing-library/dom": "8.20.0",
     "@testing-library/react": "13.4.0",
-    "@types/react": "18.0.31",
+    "@types/react": "18.0.35",
     "@types/react-datepicker": "4.10.0",
     "@types/react-dom": "18.0.11",
     "babel-plugin-istanbul": "6.1.1",
     "prettier": "2.8.7",
-    "typescript": "5.0.3"
+    "typescript": "5.0.4"
   },
   "license": "MIT"
 }

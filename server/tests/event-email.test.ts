@@ -4,11 +4,13 @@ import {
   buildEmailForUpdatedEvent,
   eventAttendanceCancelation,
   eventAttendanceConfirmation,
+  eventAttendanceRequest,
   eventAttendeeToWaitlistEmail,
   eventCancelationEmail,
   eventConfirmAttendeeEmail,
   eventInviteEmail,
   eventNewAttendeeNotifyEmail,
+  eventWaitlistConfirmation,
 } from '../src/util/event-email';
 
 const streaming_url = 'http://streaming.url/abcd';
@@ -372,6 +374,55 @@ Streaming URL: http://streaming.url/abcd<br />
         emailText: `Hi The Owner,<br />\nYour attendance was canceled.`,
       };
       expect(eventAttendanceCancelation(data)).toMatchObject(expected);
+    });
+  });
+
+  describe('eventWaitlistConfirmation', () => {
+    const data = { event: { name: 'Huel - Lynch' }, userName: 'The Owner' };
+    it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
+      const result = eventWaitlistConfirmation(data);
+      expect(result).toHaveProperty('subject');
+      expect(result).toHaveProperty('emailText');
+      expect(result).toHaveProperty('attachUnsubscribe');
+      expect(result).toHaveProperty('attachUnsubscribeText');
+    });
+
+    it('should return object with expected subject', () => {
+      const expected = { subject: 'Added to waitlist: Huel - Lynch' };
+      expect(eventWaitlistConfirmation(data)).toMatchObject(expected);
+    });
+
+    it('should return object with expected emailText for Physical & Online event', () => {
+      const expected = {
+        emailText: `Hi The Owner,<br />
+You were added to waitlist for Huel - Lynch.<br />
+Once there will be available free spot, you will be moved to attendees. You will receive another email when that happens.`,
+      };
+      expect(eventWaitlistConfirmation(data)).toMatchObject(expected);
+    });
+  });
+
+  describe('eventAttendanceRequest', () => {
+    const data = { event: { name: 'Huel - Lynch' }, userName: 'The Owner' };
+    it('should return object with subject, emailText, attachUnsubscribe and attachUnsubscribeText properties', () => {
+      const result = eventAttendanceRequest(data);
+      expect(result).toHaveProperty('subject');
+      expect(result).toHaveProperty('emailText');
+      expect(result).toHaveProperty('attachUnsubscribe');
+      expect(result).toHaveProperty('attachUnsubscribeText');
+    });
+
+    it('should return object with expected subject', () => {
+      const expected = { subject: 'Attendance request: Huel - Lynch' };
+      expect(eventAttendanceRequest(data)).toMatchObject(expected);
+    });
+
+    it('should return object with expected emailText for Physical & Online event', () => {
+      const expected = {
+        emailText: `Hi The Owner,<br />
+This is confirmation of your request to attend Huel - Lynch. Once event administrator will accept your request, you will receive another email.`,
+      };
+      expect(eventAttendanceRequest(data)).toMatchObject(expected);
     });
   });
 });

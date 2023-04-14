@@ -1,4 +1,4 @@
-interface PartialLocation {
+export interface PartialLocation {
   street_address?: string | null;
   city: string;
   postal_code?: string;

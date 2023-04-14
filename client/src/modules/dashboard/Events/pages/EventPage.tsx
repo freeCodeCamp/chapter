@@ -8,8 +8,9 @@ import {
   VStack,
   Flex,
   Spinner,
+  Tooltip,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, LockIcon } from '@chakra-ui/icons';
 import { useConfirm, useConfirmDelete } from 'chakra-confirm';
 import { DataTable } from 'chakra-data-table';
 import NextError from 'next/error';
@@ -148,7 +149,14 @@ export const EventPage: NextPageWithLayout = () => {
         gap={'3'}
         flexDirection="column"
       >
-        <Heading as="h1">{data.dashboardEvent.name}</Heading>
+        <Flex alignItems="center">
+          {data.dashboardEvent.invite_only && (
+            <Tooltip label="Invite only">
+              <LockIcon fontSize="2xl" />
+            </Tooltip>
+          )}
+          <Heading as="h1">{data.dashboardEvent.name}</Heading>
+        </Flex>
 
         {data.dashboardEvent.canceled && (
           <Text fontWeight={500} fontSize={'md'} color="red.500">
@@ -287,7 +295,7 @@ export const EventPage: NextPageWithLayout = () => {
                 <DataTable
                   title={`${title}: ${users.length}`}
                   data={users}
-                  keys={['user', 'role', 'action'] as const}
+                  keys={['user', 'joined', 'role', 'action'] as const}
                   emptyText="No users"
                   mapper={{
                     user: ({ user }) => <UserName user={user} />,
@@ -312,69 +320,77 @@ export const EventPage: NextPageWithLayout = () => {
                     role: ({ event_role }) => (
                       <Text data-cy="role">{event_role.name}</Text>
                     ),
+                    joined: ({ joined_date }) => <Text>{joined_date}</Text>,
                   }}
                 />
               </Box>
               <Box display={{ base: 'block', lg: 'none' }} marginBlock={'2em'}>
-                {users.map(({ attendance, event_role, user }, index) => (
-                  // For a single event, each user can only have one event_user
-                  // entry, so we can use the user id as the key.
-                  <HStack key={user.id}>
-                    <DataTable
-                      title={
-                        {
-                          [AttendanceNames.confirmed]: 'Attendee',
-                          [AttendanceNames.waitlist]: 'On waitlist',
-                          [AttendanceNames.canceled]: 'Canceled',
-                        }[attendance.name]
-                      }
-                      data={[users[index]]}
-                      keys={['type', 'action'] as const}
-                      showHeader={false}
-                      emptyText="No users"
-                      mapper={{
-                        type: () => (
-                          <VStack
-                            align={'flex-start'}
-                            fontSize={['sm', 'md']}
-                            fontWeight={700}
-                            spacing={'2'}
-                            marginBottom={4}
-                          >
-                            <Text>User</Text>
-                            <Text>Role</Text>
-                            <Text>Actions</Text>
-                          </VStack>
-                        ),
-                        action: () => (
-                          <VStack
-                            align={'flex-start'}
-                            fontSize={['sm', 'md']}
-                            spacing={'2'}
-                            marginBottom={4}
-                          >
-                            <UserName user={user} />
-                            {action.map(({ title, onClick, colorScheme }) => (
-                              <Button
-                                key={title.toLowerCase()}
-                                data-cy={title.toLowerCase()}
-                                size="xs"
-                                colorScheme={colorScheme}
-                                onClick={onClick({ eventId, userId: user.id })}
-                              >
-                                {title}
-                                <Text srOnly as="span">
-                                  {user.name} attendee
-                                </Text>
-                              </Button>
-                            ))}
-                            <Text data-cy="role">{event_role.name}</Text>
-                          </VStack>
-                        ),
-                      }}
-                    />
-                  </HStack>
-                ))}
+                {users.map(
+                  ({ attendance, event_role, joined_date, user }, index) => (
+                    // For a single event, each user can only have one event_user
+                    // entry, so we can use the user id as the key.
+                    <HStack key={user.id}>
+                      <DataTable
+                        title={
+                          {
+                            [AttendanceNames.confirmed]: 'Attendee',
+                            [AttendanceNames.waitlist]: 'On waitlist',
+                            [AttendanceNames.canceled]: 'Canceled',
+                          }[attendance.name]
+                        }
+                        data={[users[index]]}
+                        keys={['type', 'action'] as const}
+                        showHeader={false}
+                        emptyText="No users"
+                        mapper={{
+                          type: () => (
+                            <VStack
+                              align={'flex-start'}
+                              fontSize={['sm', 'md']}
+                              fontWeight={700}
+                              spacing={'2'}
+                              marginBottom={4}
+                            >
+                              <Text>User</Text>
+                              <Text>Joined</Text>
+                              <Text>Role</Text>
+                              <Text>Actions</Text>
+                            </VStack>
+                          ),
+                          action: () => (
+                            <VStack
+                              align={'flex-start'}
+                              fontSize={['sm', 'md']}
+                              spacing={'2'}
+                              marginBottom={4}
+                            >
+                              <UserName user={user} />
+                              <Text>{joined_date}</Text>
+                              {action.map(({ title, onClick, colorScheme }) => (
+                                <Button
+                                  key={title.toLowerCase()}
+                                  data-cy={title.toLowerCase()}
+                                  size="xs"
+                                  colorScheme={colorScheme}
+                                  onClick={onClick({
+                                    eventId,
+                                    userId: user.id,
+                                  })}
+                                >
+                                  {title}
+                                  <Text srOnly as="span">
+                                    {user.name} attendee
+                                  </Text>
+                                </Button>
+                              ))}
+                              <Text data-cy="role">{event_role.name}</Text>
+                            </VStack>
+                          ),
+                        }}
+                      />
+                    </HStack>
+                  ),
+                )}
               </Box>
             </Fragment>
           );

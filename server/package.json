@@ -33,8 +33,8 @@
     "seed": "node prisma/seed/seed.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "3.303.0",
-    "@cypress/code-coverage": "3.10.1",
+    "@aws-sdk/client-ses": "3.312.0",
+    "@cypress/code-coverage": "3.10.4",
     "@googleapis/calendar": "2.0.0",
     "@prisma/client": "4.11.0",
     "@sendgrid/mail": "7.7.0",
@@ -48,7 +48,7 @@
     "dotenv": "16.0.3",
     "dotenv-expand": "8.0.3",
     "express": "4.18.2",
-    "express-oauth2-jwt-bearer": "1.3.0",
+    "express-oauth2-jwt-bearer": "1.4.0",
     "express-response-errors": "1.0.5",
     "google-auth-library": "7.14.1",
     "graphql": "15.8.0",
@@ -75,6 +75,6 @@
     "prisma": "4.11.0",
     "rimraf": "3.0.2",
     "supertest": "6.3.3",
-    "typescript": "4.9.5"
+    "typescript": "5.0.4"
   }
 }

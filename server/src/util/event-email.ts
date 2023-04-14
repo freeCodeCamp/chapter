@@ -1,4 +1,4 @@
-import { events_venue_type_enum } from '@prisma/client';
+import { events, events_venue_type_enum, venues } from '@prisma/client';
 import { CalendarEvent, google, outlook } from 'calendar-link';
 import { isEqual } from 'date-fns';
 import {
@@ -7,6 +7,7 @@ import {
   dateChangeText,
   eventAttendanceCancelationText,
   eventAttendanceConfirmationText,
+  eventAttendanceRequestText,
   eventAttendeeToWaitlistText,
   eventCancelationText,
   eventConfirmAtendeeText,
@@ -16,6 +17,7 @@ import {
   eventNewAttendeeNotificationText,
   eventUnsubscribeText,
   eventUpdateText,
+  eventWaitlistConfirmationText,
   physicalLocationChangeText,
   physicalLocationShortText,
   SPACER,
@@ -23,6 +25,7 @@ import {
   streamingURLText,
   venueTypeChangeText,
 } from '../email-templates';
+import mailerService from '../services/MailerService';
 import { generateToken, UnsubscribeType } from '../services/UnsubscribeToken';
 import { isOnline, isPhysical } from './venue';
 
@@ -325,6 +328,38 @@ export const eventAttendanceConfirmation = ({
   );
 };
 
+interface WaitlistConfirmation {
+  event: { name: string };
+  userName: string;
+}
+
+export const eventWaitlistConfirmation = ({
+  event,
+  userName,
+}: WaitlistConfirmation) =>
+  withUnsubscribe(
+    eventWaitlistConfirmationText({
+      eventName: event.name,
+      userName: userName ? ` ${userName}` : '',
+    }),
+  );
+
+interface AttendanceRequest {
+  event: { name: string };
+  userName: string;
+}
+
+export const eventAttendanceRequest = ({
+  event,
+  userName,
+}: AttendanceRequest) =>
+  withUnsubscribe(
+    eventAttendanceRequestText({
+      eventName: event.name,
+      userName: userName ? ` ${userName}` : '',
+    }),
+  );
+
 interface AttendanceCancelation {
   event: { name: string };
   userName: string;
@@ -394,4 +429,36 @@ export const buildEmailForUpdatedEvent = ({
       venueTypeChange,
     }),
   );
+};
+
+interface UserEmail {
+  emailData: ({
+    event,
+    userName,
+  }: {
+    event: events & { venue: venues | null };
+    userName: string;
+  }) => {
+    subject: string;
+    attachUnsubscribe: AttachUnsubscribeData;
+  };
+  event: events & { venue: venues | null };
+  user: { email: string; id: number; name: string };
+}
+
+export const sendUserEmail = async ({ emailData, event, user }: UserEmail) => {
+  const { subject, attachUnsubscribe } = emailData({
+    event,
+    userName: user.name,
+  });
+
+  await mailerService.sendEmail({
+    emailList: [user.email],
+    subject,
+    htmlEmail: attachUnsubscribe({
+      chapterId: event.chapter_id,
+      eventId: event.id,
+      userId: user.id,
+    }),
+  });
 };

@@ -1,15 +1,5 @@
-import {
-  Button,
-  Heading,
-  HStack,
-  Grid,
-  List,
-  ListItem,
-  ListIcon,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
-import { CheckIcon, CloseIcon, InfoIcon } from '@chakra-ui/icons';
+import { Button, Heading, HStack, Grid, Spinner, Text } from '@chakra-ui/react';
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import NextError from 'next/error';
 import React, { ReactElement, useMemo, useState } from 'react';
 
@@ -18,6 +8,7 @@ import { LinkButton } from 'chakra-next-link';
 
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { Card } from '../../../../components/Card';
+import { InfoList } from '../../../../components/InfoList';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
 import { TagsBox } from '../../../../components/TagsBox';
 import {
@@ -105,17 +96,12 @@ export const ChapterPage: NextPageWithLayout = () => {
       body: (
         <>
           Do you want to test access to Google calendar for this chapter?
-          <List>
-            <ListItem>
-              <ListIcon as={InfoIcon} boxSize={5} />
-              We will try to access linked Google calendar.
-            </ListItem>
-            <ListItem>
-              <ListIcon as={InfoIcon} boxSize={5} />
-              If Google calendar no longer exists, or cannot be accessed, you
-              will have option to unlink it.
-            </ListItem>
-          </List>
+          <InfoList
+            items={[
+              'We will try to access linked Google calendar.',
+              'If Google calendar no longer exists, or cannot be accessed, you will have option to unlink it.',
+            ]}
+          />
         </>
       ),
     });
@@ -153,17 +139,12 @@ export const ChapterPage: NextPageWithLayout = () => {
       body: (
         <>
           Do you want to unlink current Google calendar from this chapter?
-          <List>
-            <ListItem>
-              <ListIcon as={InfoIcon} boxSize={5} />
-              All events in this chapter will have Google calendar events
-              unlinked as well.
-            </ListItem>
-            <ListItem>
-              <ListIcon as={InfoIcon} boxSize={5} />
-              Unlinked Google calendar will not be deleted.
-            </ListItem>
-          </List>
+          <InfoList
+            items={[
+              'All events in this chapter will have Google calendar events unlinked as well.',
+              'Unlinked Google calendar will not be deleted.',
+            ]}
+          />
         </>
       ),
     });

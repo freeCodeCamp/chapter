@@ -75,6 +75,7 @@ export const DASHBOARD_EVENT = gql`
           name
         }
         subscribed
+        joined_date
       }
       event_tags {
         tag {

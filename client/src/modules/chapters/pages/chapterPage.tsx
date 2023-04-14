@@ -4,15 +4,12 @@ import {
   Heading,
   Image,
   Link,
-  List,
-  ListIcon,
-  ListItem,
   SimpleGrid,
   Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
+import { CheckIcon } from '@chakra-ui/icons';
 import { NextPage } from 'next';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
@@ -21,6 +18,7 @@ import { useConfirm } from 'chakra-confirm';
 
 import { CHAPTER } from '../graphql/queries';
 import { useUser } from '../../auth/user';
+import { InfoList } from '../../../components/InfoList';
 import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
@@ -226,32 +224,23 @@ export const ChapterPage: NextPage = () => {
         ? {
             title: 'Subscribe to new events in the chapter?',
             body: (
-              <List>
-                <ListItem>
-                  <ListIcon boxSize={5} />
-                  You will receive emails about new events in the chapter.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={InfoIcon} boxSize={5} />
-                  This does not affect notifications from Google Calendar.
-                </ListItem>
-              </List>
+              <InfoList
+                items={[
+                  'You will receive emails about new events in the chapter.',
+                  'This does not affect notifications from Google Calendar.',
+                ]}
+              />
             ),
           }
         : {
             title: 'Unsubscribe from new events in the chapter?',
             body: (
-              <List>
-                <ListItem>
-                  <ListIcon as={InfoIcon} boxSize={5} />
-                  You will no longer receive emails about new events in the
-                  chapter.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={InfoIcon} boxSize={5} />
-                  This does not affect notifications from Google Calendar.
-                </ListItem>
-              </List>
+              <InfoList
+                items={[
+                  'You will no longer receive emails about new events in the chapter. ',
+                  'This does not affect notifications from Google Calendar.',
+                ]}
+              />
             ),
           },
     );

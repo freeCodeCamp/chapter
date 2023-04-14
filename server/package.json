@@ -48,7 +48,7 @@
     "dotenv": "16.0.3",
     "dotenv-expand": "8.0.3",
     "express": "4.18.2",
-    "express-oauth2-jwt-bearer": "1.4.0",
+    "express-oauth2-jwt-bearer": "1.4.1",
     "express-response-errors": "1.0.5",
     "google-auth-library": "7.14.1",
     "graphql": "15.8.0",

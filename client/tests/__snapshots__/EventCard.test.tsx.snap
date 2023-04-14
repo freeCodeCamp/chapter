@@ -18,7 +18,7 @@ exports[`EventCard should render 1`] = `
       data-cy="event-card"
     >
       <div
-        class="css-pfvov2"
+        class="css-1gva5dh"
       >
         <a
           class="chakra-link css-1erir9l"
@@ -28,7 +28,7 @@ exports[`EventCard should render 1`] = `
           bar
         </a>
         <div
-          class="css-14ygirk"
+          class="css-1q9riss"
         >
           <span
             class="css-y2lvzo"

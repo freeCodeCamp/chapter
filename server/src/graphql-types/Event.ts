@@ -82,9 +82,15 @@ class EventsWithChapters extends Event {
 }
 
 @ObjectType()
+class EventCard extends EventsWithChapters {
+  @Field(() => [EventUserWithAttendanceAndUser])
+  event_users: EventUserWithAttendanceAndUser[];
+}
+
+@ObjectType()
 export class PaginatedEventsWithChapters extends total {
-  @Field(() => [EventsWithChapters])
-  events: EventsWithChapters[];
+  @Field(() => [EventCard])
+  events: EventCard[];
 }
 
 @ObjectType()

@@ -246,6 +246,9 @@ export class EventResolver {
       }),
       include: {
         chapter: true,
+        event_users: {
+          include: eventUserIncludes,
+        },
       },
       orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
       take: limit ?? 10,

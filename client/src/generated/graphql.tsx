@@ -188,6 +188,25 @@ export type Event = {
   venue_type: VenueType;
 };
 
+export type EventCard = {
+  __typename?: 'EventCard';
+  canceled: Scalars['Boolean'];
+  capacity: Scalars['Int'];
+  chapter: Chapter;
+  description: Scalars['String'];
+  ends_at: Scalars['DateTime'];
+  event_users: Array<EventUserWithAttendanceAndUser>;
+  has_calendar_event: Scalars['Boolean'];
+  id: Scalars['Int'];
+  image_url: Scalars['String'];
+  invite_only: Scalars['Boolean'];
+  name: Scalars['String'];
+  start_at: Scalars['DateTime'];
+  streaming_url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  venue_type: VenueType;
+};
+
 export type EventInputs = {
   capacity: Scalars['Float'];
   description: Scalars['String'];
@@ -331,24 +350,6 @@ export type EventWithVenue = {
   streaming_url?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   venue?: Maybe<Venue>;
-  venue_type: VenueType;
-};
-
-export type EventsWithChapters = {
-  __typename?: 'EventsWithChapters';
-  canceled: Scalars['Boolean'];
-  capacity: Scalars['Int'];
-  chapter: Chapter;
-  description: Scalars['String'];
-  ends_at: Scalars['DateTime'];
-  has_calendar_event: Scalars['Boolean'];
-  id: Scalars['Int'];
-  image_url: Scalars['String'];
-  invite_only: Scalars['Boolean'];
-  name: Scalars['String'];
-  start_at: Scalars['DateTime'];
-  streaming_url?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
   venue_type: VenueType;
 };
 
@@ -557,7 +558,7 @@ export type MutationUpdateVenueArgs = {
 
 export type PaginatedEventsWithChapters = {
   __typename?: 'PaginatedEventsWithChapters';
-  events: Array<EventsWithChapters>;
+  events: Array<EventCard>;
   total: Scalars['Int'];
 };
 
@@ -1735,7 +1736,7 @@ export type PaginatedEventsWithTotalQuery = {
     __typename?: 'PaginatedEventsWithChapters';
     total: number;
     events: Array<{
-      __typename?: 'EventsWithChapters';
+      __typename?: 'EventCard';
       id: number;
       name: string;
       description: string;
@@ -1744,6 +1745,16 @@ export type PaginatedEventsWithTotalQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
+      event_users: Array<{
+        __typename?: 'EventUserWithAttendanceAndUser';
+        attendance: { __typename?: 'Attendance'; name: string };
+        user: {
+          __typename?: 'User';
+          id: number;
+          name: string;
+          image_url?: string | null;
+        };
+      }>;
       chapter: {
         __typename?: 'Chapter';
         id: number;
@@ -5042,6 +5053,16 @@ export const PaginatedEventsWithTotalDocument = gql`
         invite_only
         canceled
         image_url
+        event_users {
+          attendance {
+            name
+          }
+          user {
+            id
+            name
+            image_url
+          }
+        }
         chapter {
           id
           name

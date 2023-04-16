@@ -1,10 +1,9 @@
-export interface PartialLocation {
-  street_address?: string | null;
-  city: string;
-  postal_code?: string;
-  region: string;
-  country: string;
-}
+import { Venue } from '../generated/graphql';
+
+export type PartialLocation = Pick<
+  Venue,
+  'street_address' | 'city' | 'postal_code' | 'region' | 'country'
+>;
 
 const getLocationString = (
   venue: PartialLocation,

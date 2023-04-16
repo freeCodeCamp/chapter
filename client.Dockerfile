@@ -1,4 +1,4 @@
-FROM node:18.15 as development
+FROM node:18.16 as development
 WORKDIR /usr/chapter/
 
 FROM development as build

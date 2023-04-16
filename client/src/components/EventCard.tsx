@@ -24,45 +24,42 @@ type EventCardProps = {
   };
 };
 
-export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const metaTag = (
-    <>
-      {event.invite_only && (
-        <Tag
-          borderRadius="lg"
-          mt="1"
-          paddingInline="[1 , 2]"
-          paddingBlock="[.5, 1]"
-          colorScheme={'blue'}
-          fontSize={['small', 'md']}
-          maxWidth={'8em'}
-          maxH={'2em'}
-        >
-          <LockIcon marginRight=".25rem" />
-          Invite only
-        </Tag>
-      )}
-    </>
-  );
-  enum EventStatus {
-    canceled = 'Canceled',
-    running = 'Running',
-    ended = 'Ended',
-    upcoming = 'Upcoming',
-  }
+enum EventStatus {
+  canceled = 'Canceled',
+  running = 'Running',
+  ended = 'Ended',
+  upcoming = 'Upcoming',
+}
 
-  const statusToStyle = {
-    [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
-    [EventStatus.running]: {
-      color: 'gray.00',
-      backgroundColor: 'gray.45',
-      paddingInline: '.3em',
-      borderRadius: 'sm',
-    },
-    [EventStatus.ended]: { color: 'gray.45', fontWeight: '400' },
-    [EventStatus.upcoming]: {},
-  };
+const statusToStyle = {
+  [EventStatus.canceled]: { 'data-cy': 'event-canceled', color: 'red.500' },
+  [EventStatus.running]: {
+    color: 'gray.00',
+    backgroundColor: 'gray.45',
+    paddingInline: '.3em',
+    borderRadius: 'sm',
+  },
+  [EventStatus.ended]: { color: 'gray.45', fontWeight: '400' },
+  [EventStatus.upcoming]: {},
+};
 
+const InviteOnly = () => (
+  <Tag
+    borderRadius="lg"
+    mt="1"
+    paddingInline="[1 , 2]"
+    paddingBlock="[.5, 1]"
+    colorScheme={'blue'}
+    fontSize={['small', 'md']}
+    maxWidth={'8em'}
+    maxH={'2em'}
+  >
+    <LockIcon marginRight=".25rem" />
+    Invite only
+  </Tag>
+);
+
+export const EventCard = ({ event }: EventCardProps) => {
   const hasEnded = isPast(new Date(event.ends_at));
   const getEventStatus = ({
     canceled,
@@ -114,7 +111,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           "eventname eventname eventname"
           "chaptername chaptername chaptername"
           "eventstart eventstart eventstart"
-          "metatag metatag metatag"
+          "InviteOnly InviteOnly InviteOnly"
           `}
         >
           <Link
@@ -138,7 +135,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           >
             {event.name}
           </Link>
-          <GridItem area={'metatag'}>{metaTag}</GridItem>
+          {event.invite_only && (
+            <GridItem area={'InviteOnly'}>
+              <InviteOnly />
+            </GridItem>
+          )}
           <Text
             opacity={'.8'}
             gridArea={'eventstart'}

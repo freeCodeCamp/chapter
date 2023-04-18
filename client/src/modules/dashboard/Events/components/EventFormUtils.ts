@@ -202,7 +202,7 @@ export interface EventFormProps {
   submitText: string;
   chapter?: { id: number; name: string };
   loadingText: string;
-  formType: 'new' | 'edit';
+  formType: 'new' | 'edit' | 'transfer';
 }
 
 const getSelectedFieldIdForSponsor = (

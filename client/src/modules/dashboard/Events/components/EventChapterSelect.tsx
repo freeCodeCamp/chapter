@@ -20,12 +20,15 @@ const EventChapterSelect: React.FC<EventChapterSelectProps> = ({ loading }) => {
   const {
     register,
     resetField,
+    getValues,
     formState: { errors },
   } = useFormContext();
   const error = errors[key]?.message as string;
 
   useEffect(() => {
-    resetField(key, { defaultValue: adminedChapters[0]?.id ?? -1 });
+    resetField(key, {
+      defaultValue: getValues(key) ?? adminedChapters[0]?.id ?? -1,
+    });
   }, [adminedChapters]);
 
   return (

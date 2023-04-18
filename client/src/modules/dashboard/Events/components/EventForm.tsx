@@ -37,7 +37,8 @@ const minCapacity = (event?: IEventData) => {
 
 const EventForm: React.FC<EventFormProps> = (props) => {
   const { onSubmit, data, submitText, chapter, loadingText, formType } = props;
-  const displayChaptersDropdown = typeof chapter === 'undefined';
+  const displayChaptersDropdown =
+    typeof chapter === 'undefined' || formType === 'transfer';
 
   const sponsorQuery = useSponsorsQuery();
 
@@ -50,6 +51,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         chapter_id: chapter?.id,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
+        attend_event: true,
       };
     }
     return {
@@ -70,6 +72,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         data.event_users?.filter(
           ({ attendance: { name } }) => name === AttendanceNames.confirmed,
         ).length ?? 0,
+      attend_event: true,
     };
   }, []);
 
@@ -103,7 +106,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         submitLabel={submitText}
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
-        {!displayChaptersDropdown || data ? (
+        {!displayChaptersDropdown || (data && formType !== 'transfer') ? (
           <Heading>{chapter?.name}</Heading>
         ) : (
           <EventChapterSelect loading={loading} />
@@ -168,7 +171,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
         {data?.canceled && <Text color="red.500">Event canceled</Text>}
 
-        {formType === 'new' && (
+        {['new', 'transfer'].includes(formType) && (
           <Grid as="fieldset" width="100%">
             <Text srOnly as="legend">
               Your interaction with the event
@@ -197,7 +200,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           >
             {submitText}
           </Button>
-          {data && !data.canceled && (
+          {data && !data.canceled && formType !== 'transfer' && (
             <EventCancelButton
               event={data}
               isDisabled={loading}

@@ -91,11 +91,12 @@ export const NewEventPage: NextPageWithLayout<{
 
   return (
     <EventForm
-      onSubmit={onSubmit}
-      submitText="Add event"
-      loadingText="Adding Event"
       chapter={chapter}
       formType="new"
+      header="Create Event"
+      loadingText="Adding Event"
+      onSubmit={onSubmit}
+      submitText="Add event"
     />
   );
 };

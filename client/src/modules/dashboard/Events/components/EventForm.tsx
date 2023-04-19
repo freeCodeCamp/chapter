@@ -1,4 +1,4 @@
-import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
+import { Button, Checkbox, Grid, Heading, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
@@ -35,8 +35,15 @@ const minCapacity = (event?: IEventData) => {
   );
 };
 
-const EventForm: React.FC<EventFormProps> = (props) => {
-  const { onSubmit, data, submitText, chapter, loadingText, formType } = props;
+const EventForm: React.FC<EventFormProps> = ({
+  chapter,
+  data,
+  formType,
+  header,
+  loadingText,
+  onSubmit,
+  submitText,
+}) => {
   const displayChaptersDropdown =
     typeof chapter === 'undefined' || formType === 'transfer';
 
@@ -106,10 +113,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         submitLabel={submitText}
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
-        {!displayChaptersDropdown || (data && formType !== 'transfer') ? (
-          <Heading>{chapter?.name}</Heading>
-        ) : (
-          <EventChapterSelect loading={loading} />
+        <Heading>{header}</Heading>
+        {chapter && (
+          <Text fontSize={['md', 'lg', 'xl']}>Chapter: {chapter?.name}</Text>
+        )}
+        {displayChaptersDropdown && (
+          <EventChapterSelect chapter={chapter} loading={loading} />
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);

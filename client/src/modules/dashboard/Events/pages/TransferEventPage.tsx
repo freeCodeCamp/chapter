@@ -129,16 +129,17 @@ export const TransferEventPage: NextPageWithLayout = () => {
   });
   return (
     <EventForm
+      chapter={data.dashboardEvent.chapter}
       data={{
         ...rest,
         sponsors: sponsorData || [],
         venue_id: data.dashboardEvent?.venue?.id,
       }}
-      onSubmit={onSubmit}
-      loadingText={'Transfering Event'}
-      submitText={'Transfer Event'}
-      chapter={data.dashboardEvent.chapter}
       formType="transfer"
+      header="Transfer Event"
+      loadingText="Transfering Event"
+      onSubmit={onSubmit}
+      submitText="Transfer Event"
     />
   );
 };

@@ -197,12 +197,13 @@ export const fields: Field[] = [
 ];
 
 export interface EventFormProps {
-  onSubmit: (data: EventFormData) => Promise<void>;
-  data?: IEventData;
-  submitText: string;
   chapter?: { id: number; name: string };
-  loadingText: string;
+  data?: IEventData;
   formType: 'new' | 'edit' | 'transfer';
+  header: string;
+  loadingText: string;
+  onSubmit: (data: EventFormData) => Promise<void>;
+  submitText: string;
 }
 
 const getSelectedFieldIdForSponsor = (

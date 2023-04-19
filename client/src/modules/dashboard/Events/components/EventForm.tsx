@@ -209,7 +209,7 @@ const EventForm: React.FC<EventFormProps> = ({
           >
             {submitText}
           </Button>
-          {data && !data.canceled && formType !== 'transfer' && (
+          {formType === 'edit' && data && !data.canceled && (
             <EventCancelButton
               event={data}
               isDisabled={loading}

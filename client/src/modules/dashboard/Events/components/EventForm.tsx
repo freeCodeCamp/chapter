@@ -71,7 +71,7 @@ const EventForm: React.FC<EventFormProps> = ({
       ends_at: new Date(data.ends_at),
       sponsors: data.sponsors,
       venue_type: data.venue_type,
-      venue_id: data.venue_id ?? 0,
+      venue_id: formType === 'transfer' ? 0 : data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,
       chapter_id: chapter?.id,

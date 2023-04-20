@@ -2,6 +2,7 @@ import { EventUsers } from '../../../../cypress.config';
 import { expectToBeRejected } from '../../../support/util';
 
 const eventId = 1;
+const chapterId = 1;
 
 const setUsernameAlias = (usersAlias: string) =>
   cy
@@ -12,10 +13,14 @@ const setUsernameAlias = (usersAlias: string) =>
     .as('userName');
 
 describe('event dashboard', () => {
+  let events;
   let users;
   before(() => {
     cy.fixture('users').then((fixture) => {
       users = fixture;
+    });
+    cy.fixture('events').then((fixture) => {
+      events = fixture;
     });
   });
   beforeEach(() => {
@@ -141,6 +146,56 @@ describe('event dashboard', () => {
       cy.get<string>('@userName').then((userName) => {
         cy.get('@attendees').contains(userName);
       });
+    });
+
+    it('should be possible to transfer event to different chapter', () => {
+      const eventData = events.eventThree;
+      cy.createEvent(chapterId, eventData).then((response) => {
+        const eventIdToTransfer = response.body.data.createEvent.id;
+        cy.visit(`/dashboard/events/${eventIdToTransfer}`);
+        cy.get(`a[href="/dashboard/chapters/${chapterId}"]`)
+          .invoke('text')
+          .as('oldChapterName');
+        cy.get(
+          `a[href="/dashboard/events/${eventIdToTransfer}/transfer"]`,
+        ).click();
+
+        cy.contains('Transfer Event');
+        cy.findByRole('textbox', { name: 'Event Title' }).type(' transferred');
+        cy.findByRole('button', { name: 'Transfer Event' }).click();
+
+        cy.location('pathname').should(
+          'not.match',
+          new RegExp(`^/dashboard/events/${eventIdToTransfer}/transfer$`),
+        );
+        cy.location('pathname').should('match', /^\/dashboard\/events\/\d+$/);
+        cy.url()
+          .then((url) => parseInt(url.match(/\d+$/)[0], 10))
+          .then((newEventId) => {
+            expect(newEventId).to.not.eq(eventIdToTransfer);
+          });
+
+        cy.contains('transferred successfully');
+        cy.findByRole('heading', { name: `${eventData.name} transferred` });
+        cy.get(`a[href="/dashboard/chapters/${chapterId}"]`).should(
+          'not.exist',
+        );
+        cy.get<string>('@oldChapterName').then((oldChapterName) => {
+          cy.get('a[href*="/dashboard/chapters/"]')
+            .invoke('text')
+            .then((chapterName) => {
+              expect(chapterName).to.not.eq(oldChapterName);
+            });
+        });
+        cy.visit(`/dashboard/events/${eventIdToTransfer}`);
+        cy.contains('Canceled');
+      });
+    });
+
+    it('admin of single chapter, should not see transfer button', () => {
+      cy.login(users.chapter1Admin.email);
+      cy.visit(`/dashboard/events/${eventId}`);
+      cy.findByRole('button', { name: 'Transfer' }).should('not.exist');
     });
 
     it('prevents members from confirming, moving to waitlist, or removing users', () => {

@@ -18,8 +18,6 @@ export const TransferEventPage: NextPageWithLayout = () => {
     variables: { eventId: eventId },
   });
 
-  // TODO: update the cache directly:
-  // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-directly
   const cancelEvent = useCancelEvent();
   const createEvent = useCreateEvent();
 

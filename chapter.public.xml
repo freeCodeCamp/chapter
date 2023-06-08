@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><database name="chapter" schema="public" type="PostgreSQL - 13.10 (Debian 13.10-1.pgdg110+1)">
+<?xml version="1.0" encoding="UTF-8"?><database name="chapter" schema="public" type="PostgreSQL - 13.11 (Debian 13.11-1.pgdg110+1)">
    <sequences>
       <sequence increment="1" name="attendance_id_seq" startValue="1"/>
       <sequence increment="1" name="chapter_permissions_id_seq" startValue="1"/>

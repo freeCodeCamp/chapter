@@ -1,5 +1,5 @@
-date=2023-04-25 07:33:43+0000
-os=Linux 5.15.0-1035-azure
+date=2023-06-08 10:12:02+0000
+os=Linux 5.15.0-1038-azure
 schemaspy-version=6.2.2
 schemaspy-build=6.2.2.41 2023-03-25 21:30:30
 renderer=Viz.js 1.7.1 (Graphviz 2.40.1, Expat 2.1.0, Emscripten 1.37.9)

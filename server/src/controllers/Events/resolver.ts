@@ -462,7 +462,10 @@ export class EventResolver {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
-        event_users: { include: eventUserIncludes },
+        event_users: {
+          include: eventUserIncludes,
+          orderBy: { joined_date: 'asc' },
+        },
         venue: true,
         chapter: { select: { calendar_id: true } },
       },
@@ -610,7 +613,10 @@ export class EventResolver {
         event: {
           include: {
             chapter: { select: { calendar_id: true } },
-            event_users: { include: { attendance: true, user: true } },
+            event_users: {
+              include: { attendance: true, user: true },
+              orderBy: { joined_date: 'asc' },
+            },
             venue: true,
           },
         },

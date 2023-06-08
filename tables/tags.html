@@ -152,8 +152,18 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
+                                                <td title="chapter_tags.tag_id references tags.id via chapter_tags_tag_id_fkey"><a href='chapter_tags.html'>chapter_tags</a><span class='relatedKey'>.tag_id</span></td>
+                                                <td class="constraint detail">chapter_tags_tag_id_fkey</td>
+                                                <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="event_tags.tag_id references tags.id via event_tags_tag_id_fkey"><a href='event_tags.html'>event_tags</a><span class='relatedKey'>.tag_id</span></td>
                                                 <td class="constraint detail">event_tags_tag_id_fkey</td>
+                                                <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="venue_tags.tag_id references tags.id via venue_tags_tag_id_fkey"><a href='venue_tags.html'>venue_tags</a><span class='relatedKey'>.tag_id</span></td>
+                                                <td class="constraint detail">venue_tags_tag_id_fkey</td>
                                                 <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>

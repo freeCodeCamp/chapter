@@ -156,6 +156,11 @@
                                                 <td class="constraint detail">events_venue_id_fkey</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="venue_tags.venue_id references venues.id via venue_tags_venue_id_fkey"><a href='venue_tags.html'>venue_tags</a><span class='relatedKey'>.venue_id</span></td>
+                                                <td class="constraint detail">venue_tags_venue_id_fkey</td>
+                                                <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>

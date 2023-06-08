@@ -1,19 +1,20 @@
 google_tokens
 _prisma_migrations
 chapter_users
+venue_tags
 user_bans
 instance_role_permissions
 event_tags
 event_sponsors
 event_role_permissions
 event_reminders
+chapter_tags
 chapter_role_permissions
 sessions
 event_users
 events
 venues
 users
-tags
 sponsors
 instance_permissions
 event_permissions
@@ -22,4 +23,5 @@ attendance
 instance_roles
 event_roles
 chapter_roles
+tags
 chapters

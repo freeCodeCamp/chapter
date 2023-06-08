@@ -93,6 +93,22 @@
             <column ascending="true" name="name"/>
          </index>
       </table>
+      <table name="chapter_tags" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="chapter_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="chapter_tags_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapters"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="tag_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="chapter_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="tags"/>
+         </column>
+         <primaryKey column="chapter_id" sequenceNumberInPK="1"/>
+         <primaryKey column="tag_id" sequenceNumberInPK="2"/>
+         <index name="chapter_tags_pkey" unique="true">
+            <column ascending="true" name="chapter_id"/>
+            <column ascending="true" name="tag_id"/>
+         </index>
+      </table>
       <table name="chapter_users" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
@@ -118,6 +134,7 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('chapters_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="chapter_id" foreignKey="chapter_tags_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapter_tags"/>
             <child column="chapter_id" foreignKey="chapter_users_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapter_users"/>
             <child column="chapter_id" foreignKey="events_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="events"/>
             <child column="chapter_id" foreignKey="user_bans_chapter_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="user_bans"/>
@@ -388,7 +405,9 @@
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('tags_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="tag_id" foreignKey="chapter_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="chapter_tags"/>
             <child column="tag_id" foreignKey="event_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="event_tags"/>
+            <child column="tag_id" foreignKey="venue_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="venue_tags"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
@@ -439,11 +458,28 @@
             <column ascending="true" name="email"/>
          </index>
       </table>
+      <table name="venue_tags" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="venue_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="venue_tags_venue_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="venues"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="tag_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="venue_tags_tag_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="tags"/>
+         </column>
+         <primaryKey column="venue_id" sequenceNumberInPK="1"/>
+         <primaryKey column="tag_id" sequenceNumberInPK="2"/>
+         <index name="venue_tags_pkey" unique="true">
+            <column ascending="true" name="venue_id"/>
+            <column ascending="true" name="tag_id"/>
+         </index>
+      </table>
       <table name="venues" numRows="0" remarks="" schema="public" type="TABLE">
          <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="3" id="0" name="created_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="3" id="1" name="updated_at" nullable="false" remarks="" size="26" type="timestamp" typeCode="93"/>
          <column autoUpdated="true" defaultValue="nextval('venues_id_seq'::regclass)" digits="0" id="2" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
             <child column="venue_id" foreignKey="events_venue_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="events"/>
+            <child column="venue_id" foreignKey="venue_tags_venue_id_fkey" implied="false" onDeleteCascade="true" schema="public" table="venue_tags"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="street_address" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>

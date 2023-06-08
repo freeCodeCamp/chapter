@@ -1,4 +1,5 @@
 chapters
+tags
 chapter_roles
 event_roles
 instance_roles
@@ -7,19 +8,20 @@ chapter_permissions
 event_permissions
 instance_permissions
 sponsors
-tags
 users
 venues
 events
 event_users
 sessions
 chapter_role_permissions
+chapter_tags
 event_reminders
 event_role_permissions
 event_sponsors
 event_tags
 instance_role_permissions
 user_bans
+venue_tags
 chapter_users
 _prisma_migrations
 google_tokens

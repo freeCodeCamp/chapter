@@ -101,3 +101,9 @@ export const ChapterVenues = gql`
     }
   }
 `;
+
+export const testEventCalendarAccess = gql`
+  query testEventCalendarEventAccess($eventId: Int!) {
+    testEventCalendarEventAccess(id: $eventId)
+  }
+`;

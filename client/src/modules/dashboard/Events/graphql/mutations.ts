@@ -43,6 +43,15 @@ export const createCalendarEvent = gql`
   }
 `;
 
+export const unlinkCalendarEvent = gql`
+  mutation unlinkCalendarEvent($eventId: Int!) {
+    unlinkCalendarEvent(id: $eventId) {
+      id
+      has_calendar_event
+    }
+  }
+`;
+
 export const cancelEvent = gql`
   mutation cancelEvent($eventId: Int!) {
     cancelEvent(id: $eventId) {

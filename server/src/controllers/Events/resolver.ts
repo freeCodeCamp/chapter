@@ -43,6 +43,7 @@ import {
   cancelEventAttendance,
   deleteCalendarEvent,
   removeEventAttendee,
+  testCalendarEventAccess,
   updateCalendarEventDetails,
 } from '../../services/Google';
 import {
@@ -984,5 +985,34 @@ export class EventResolver {
     });
 
     return true;
+  }
+
+  @Authorized(Permission.EventCreate)
+  @Query(() => Boolean, { nullable: true })
+  async testEventCalendarEventAccess(
+    @Arg('id', () => Int) id: number,
+  ): Promise<boolean | null> {
+    const event = await prisma.events.findUniqueOrThrow({
+      where: { id },
+      include: { chapter: { select: { calendar_id: true } } },
+    });
+    if (!event.calendar_event_id || !event.chapter.calendar_id) return null;
+    try {
+      return await testCalendarEventAccess({
+        calendarId: event.chapter.calendar_id,
+        calendarEventId: event.calendar_event_id,
+      });
+    } catch (err) {
+      return null;
+    }
+  }
+
+  @Authorized(Permission.EventCreate)
+  @Mutation(() => Event)
+  async unlinkCalendarEvent(@Arg('id', () => Int) id: number): Promise<Event> {
+    return await prisma.events.update({
+      data: { calendar_event_id: null },
+      where: { id },
+    });
   }
 }

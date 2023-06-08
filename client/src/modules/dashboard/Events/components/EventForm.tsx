@@ -1,4 +1,4 @@
-import { Button, Checkbox, Heading, Grid, Text } from '@chakra-ui/react';
+import { Button, Checkbox, Grid, Heading, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { add } from 'date-fns';
@@ -35,9 +35,17 @@ const minCapacity = (event?: IEventData) => {
   );
 };
 
-const EventForm: React.FC<EventFormProps> = (props) => {
-  const { onSubmit, data, submitText, chapter, loadingText, formType } = props;
-  const displayChaptersDropdown = typeof chapter === 'undefined';
+const EventForm: React.FC<EventFormProps> = ({
+  chapter,
+  data,
+  formType,
+  header,
+  loadingText,
+  onSubmit,
+  submitText,
+}) => {
+  const displayChaptersDropdown =
+    typeof chapter === 'undefined' || formType === 'transfer';
 
   const sponsorQuery = useSponsorsQuery();
 
@@ -50,6 +58,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         chapter_id: chapter?.id,
         start_at: add(date, { days: 1 }),
         ends_at: add(date, { days: 1, minutes: 30 }),
+        attend_event: true,
       };
     }
     return {
@@ -62,7 +71,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
       ends_at: new Date(data.ends_at),
       sponsors: data.sponsors,
       venue_type: data.venue_type,
-      venue_id: data.venue_id ?? 0,
+      venue_id: formType === 'transfer' ? 0 : data.venue_id,
       image_url: data.image_url,
       invite_only: data.invite_only,
       chapter_id: chapter?.id,
@@ -70,6 +79,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         data.event_users?.filter(
           ({ attendance: { name } }) => name === AttendanceNames.confirmed,
         ).length ?? 0,
+      attend_event: true,
     };
   }, []);
 
@@ -103,10 +113,12 @@ const EventForm: React.FC<EventFormProps> = (props) => {
         submitLabel={submitText}
         FormHandling={handleSubmit(disableWhileSubmitting)}
       >
-        {!displayChaptersDropdown || data ? (
-          <Heading>{chapter?.name}</Heading>
-        ) : (
-          <EventChapterSelect loading={loading} />
+        <Heading>{header}</Heading>
+        {chapter && (
+          <Text fontSize={['md', 'lg', 'xl']}>Chapter: {chapter?.name}</Text>
+        )}
+        {displayChaptersDropdown && (
+          <EventChapterSelect chapter={chapter} loading={loading} />
         )}
         {fields.map(({ isRequired, key, label, placeholder, type }) => {
           const Component = fieldTypeToComponent(type);
@@ -168,7 +180,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
 
         {data?.canceled && <Text color="red.500">Event canceled</Text>}
 
-        {formType === 'new' && (
+        {['new', 'transfer'].includes(formType) && (
           <Grid as="fieldset" width="100%">
             <Text srOnly as="legend">
               Your interaction with the event
@@ -197,7 +209,7 @@ const EventForm: React.FC<EventFormProps> = (props) => {
           >
             {submitText}
           </Button>
-          {data && !data.canceled && (
+          {formType === 'edit' && data && !data.canceled && (
             <EventCancelButton
               event={data}
               isDisabled={loading}

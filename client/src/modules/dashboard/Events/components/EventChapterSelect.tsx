@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { useUser } from '../../../auth/user';
@@ -9,24 +9,38 @@ interface Chapter {
   name: string;
 }
 interface EventChapterSelectProps {
+  chapter?: Chapter;
   loading: boolean;
 }
 
-const EventChapterSelect: React.FC<EventChapterSelectProps> = ({ loading }) => {
+const EventChapterSelect: React.FC<EventChapterSelectProps> = ({
+  chapter,
+  loading,
+}) => {
   const key = 'chapter_id';
   const { user } = useUser();
-  const adminedChapters: Chapter[] = user?.admined_chapters ?? [];
+  const adminedChapters: Chapter[] = useMemo(
+    () => (user?.admined_chapters ?? []).filter(({ id }) => id !== chapter?.id),
+    [user?.admined_chapters, chapter?.id],
+  );
 
   const {
     register,
     resetField,
+    setValue,
     formState: { errors },
   } = useFormContext();
   const error = errors[key]?.message as string;
 
   useEffect(() => {
-    resetField(key, { defaultValue: adminedChapters[0]?.id ?? -1 });
-  }, [adminedChapters]);
+    if (chapter?.id) {
+      setValue(key, adminedChapters[0]?.id ?? -1);
+    } else {
+      resetField(key, {
+        defaultValue: adminedChapters[0]?.id ?? -1,
+      });
+    }
+  }, [adminedChapters, chapter?.id]);
 
   return (
     <Select

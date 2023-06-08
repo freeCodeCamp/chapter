@@ -77,16 +77,17 @@ export const EditEventPage: NextPageWithLayout = () => {
   });
   return (
     <EventForm
+      chapter={data.dashboardEvent.chapter}
       data={{
         ...rest,
         sponsors: sponsorData || [],
         venue_id: data.dashboardEvent?.venue?.id,
       }}
-      onSubmit={onSubmit}
-      loadingText={'Saving Event Changes'}
-      submitText={'Save Event Changes'}
-      chapter={data.dashboardEvent.chapter}
       formType="edit"
+      header="Edit Event"
+      loadingText={'Saving Event Changes'}
+      onSubmit={onSubmit}
+      submitText={'Save Event Changes'}
     />
   );
 };

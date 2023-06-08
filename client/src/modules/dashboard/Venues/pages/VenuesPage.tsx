@@ -9,21 +9,41 @@ import { DashboardLayout } from '../../shared/components/DashboardLayout';
 import getLocationString from '../../../../util/getLocationString';
 import { useUser } from '../../../auth/user';
 import { NextPageWithLayout } from '../../../../pages/_app';
+import {
+  type ChapterPermission,
+  Permission,
+} from '../../../../../../common/permissions';
+import { checkChapterPermission } from '../../../../util/check-permission';
 
 export const VenuesPage: NextPageWithLayout = () => {
   const { loading, error, data } = useDashboardVenuesQuery();
 
   const { user } = useUser();
-  const adminedChapters = user?.admined_chapters ?? [];
 
   const isLoading = loading || !data;
   if (isLoading || error) return <DashboardLoading error={error} />;
+
+  const checkHasVenuePermision = (permission: ChapterPermission) => {
+    return data.dashboardVenues.some(({ id }) =>
+      checkChapterPermission(user, permission, {
+        chapterId: id,
+      }),
+    );
+  };
+
+  const hasPermissionToCreateVenue = checkHasVenuePermision(
+    Permission.VenueCreate,
+  );
+  const hasPermissiontoEditVenue = (currentChapterId: number) =>
+    checkChapterPermission(user, Permission.VenueEdit, {
+      chapterId: currentChapterId,
+    });
 
   return (
     <VStack>
       <Flex w="full" justify="space-between">
         <Heading id="page-heading">Venues</Heading>
-        {adminedChapters.length > 0 && (
+        {hasPermissionToCreateVenue && (
           <LinkButton
             data-cy="new-venue"
             href="/dashboard/venues/new"
@@ -61,17 +81,21 @@ export const VenuesPage: NextPageWithLayout = () => {
               </LinkButton>
             ),
             action: (venue) => (
-              <LinkButton
-                data-cy="edit-venue-button"
-                colorScheme="blue"
-                size="xs"
-                href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
-              >
-                Edit
-                <Text srOnly as="span">
-                  {venue.name}
-                </Text>
-              </LinkButton>
+              <>
+                {hasPermissiontoEditVenue(venue.chapter_id) && (
+                  <LinkButton
+                    data-cy="edit-venue-button"
+                    colorScheme="blue"
+                    size="xs"
+                    href={`/dashboard/chapters/${venue.chapter_id}/venues/${venue.id}/edit`}
+                  >
+                    Edit
+                    <Text srOnly as="span">
+                      {venue.name}
+                    </Text>
+                  </LinkButton>
+                )}
+              </>
             ),
           }}
         />
@@ -103,7 +127,9 @@ export const VenuesPage: NextPageWithLayout = () => {
                     <Text>Venue</Text>
                     <Text>Chapter</Text>
                     <Text>Location</Text>
-                    <Text>Action</Text>
+                    {hasPermissiontoEditVenue(chapter_id) && (
+                      <Text>Action</Text>
+                    )}
                   </VStack>
                 ),
                 action: () => (
@@ -131,17 +157,19 @@ export const VenuesPage: NextPageWithLayout = () => {
                       {' '}
                       {region}, {country}, {postal_code}
                     </Text>
-                    <LinkButton
-                      data-cy="edit-venue-button"
-                      colorScheme="blue"
-                      size="xs"
-                      href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
-                    >
-                      Edit
-                      <Text srOnly as="span">
-                        {name}
-                      </Text>
-                    </LinkButton>
+                    {hasPermissiontoEditVenue(chapter_id) && (
+                      <LinkButton
+                        data-cy="edit-venue-button"
+                        colorScheme="blue"
+                        size="xs"
+                        href={`/dashboard/chapters/${chapter_id}/venues/${id}/edit`}
+                      >
+                        Edit
+                        <Text srOnly as="span">
+                          {name}
+                        </Text>
+                      </LinkButton>
+                    )}
                   </VStack>
                 ),
               }}

@@ -100,21 +100,22 @@ export const Calendar: NextPageWithLayout = () => {
           </Button>
         )}
       </HStack>
-      {(isAuthenticated || isBroken) && dataStatuses?.tokenStatuses?.length && (
-        <DataTable
-          title="Authentication status"
-          data={dataStatuses.tokenStatuses}
-          keys={['email', 'token status'] as const}
-          mapper={{
-            email: ({ redacted_email }) => redacted_email,
-            'token status': ({ is_valid }) => (
-              <Text color={is_valid ? 'green.500' : 'red.500'}>
-                {is_valid ? 'valid' : 'invalid'}
-              </Text>
-            ),
-          }}
-        />
-      )}
+      {(isAuthenticated || isBroken) &&
+        !!dataStatuses?.tokenStatuses?.length && (
+          <DataTable
+            title="Authentication status"
+            data={dataStatuses.tokenStatuses}
+            keys={['email', 'token status'] as const}
+            mapper={{
+              email: ({ redacted_email }) => redacted_email,
+              'token status': ({ is_valid }) => (
+                <Text color={is_valid ? 'green.500' : 'red.500'}>
+                  {is_valid ? 'valid' : 'invalid'}
+                </Text>
+              ),
+            }}
+          />
+        )}
     </>
   );
 };

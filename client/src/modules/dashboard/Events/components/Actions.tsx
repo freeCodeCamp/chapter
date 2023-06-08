@@ -13,7 +13,10 @@ import { useAlert } from '../../../../hooks/useAlert';
 import { Loading } from '../../../../components/Loading';
 import { SharePopOver } from '../../../../components/SharePopOver';
 import { checkChapterPermission } from '../../../../util/check-permission';
-import { Permission } from '../../../../../../common/permissions';
+import {
+  ChapterPermission,
+  Permission,
+} from '../../../../../../common/permissions';
 import {
   Chapter,
   Event,
@@ -113,7 +116,13 @@ const Actions: React.FC<ActionsProps> = ({
   return (
     <>
       {integrationStatus && (
-        <CalendarEventStatus event={event} loadingCalendar={loadingCalendar} />
+        <CalendarEventStatus
+          checkChapterPermission={(permission: ChapterPermission) =>
+            checkChapterPermission(user, permission, { chapterId, eventId })
+          }
+          event={event}
+          loadingCalendar={loadingCalendar}
+        />
       )}
       <HStack spacing="3">
         <LinkButton
@@ -153,6 +162,15 @@ const Actions: React.FC<ActionsProps> = ({
           size={['sm', 'md']}
           link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/events/${eventId}?confirm_attendance=true`}
         />
+        {user?.admined_chapters && user.admined_chapters?.length >= 2 && (
+          <LinkButton
+            size={['sm', 'md']}
+            colorScheme="blue"
+            href={`/dashboard/events/${eventId}/transfer`}
+          >
+            Transfer
+          </LinkButton>
+        )}
       </HStack>
     </>
   );

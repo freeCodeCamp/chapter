@@ -43,6 +43,7 @@ import {
   cancelEventAttendance,
   deleteCalendarEvent,
   removeEventAttendee,
+  testCalendarEventAccess,
   updateCalendarEventDetails,
 } from '../../services/Google';
 import {
@@ -466,7 +467,10 @@ export class EventResolver {
     const event = await prisma.events.findUniqueOrThrow({
       where: { id: eventId },
       include: {
-        event_users: { include: eventUserIncludes },
+        event_users: {
+          include: eventUserIncludes,
+          orderBy: { joined_date: 'asc' },
+        },
         venue: true,
         chapter: { select: { calendar_id: true } },
       },
@@ -614,7 +618,10 @@ export class EventResolver {
         event: {
           include: {
             chapter: { select: { calendar_id: true } },
-            event_users: { include: { attendance: true, user: true } },
+            event_users: {
+              include: { attendance: true, user: true },
+              orderBy: { joined_date: 'asc' },
+            },
             venue: true,
           },
         },
@@ -994,5 +1001,34 @@ export class EventResolver {
     });
 
     return true;
+  }
+
+  @Authorized(Permission.EventCreate)
+  @Query(() => Boolean, { nullable: true })
+  async testEventCalendarEventAccess(
+    @Arg('id', () => Int) id: number,
+  ): Promise<boolean | null> {
+    const event = await prisma.events.findUniqueOrThrow({
+      where: { id },
+      include: { chapter: { select: { calendar_id: true } } },
+    });
+    if (!event.calendar_event_id || !event.chapter.calendar_id) return null;
+    try {
+      return await testCalendarEventAccess({
+        calendarId: event.chapter.calendar_id,
+        calendarEventId: event.calendar_event_id,
+      });
+    } catch (err) {
+      return null;
+    }
+  }
+
+  @Authorized(Permission.EventCreate)
+  @Mutation(() => Event)
+  async unlinkCalendarEvent(@Arg('id', () => Int) id: number): Promise<Event> {
+    return await prisma.events.update({
+      data: { calendar_event_id: null },
+      where: { id },
+    });
   }
 }

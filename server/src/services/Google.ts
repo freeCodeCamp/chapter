@@ -284,3 +284,20 @@ export async function testCalendarAccess(calendarId: CalendarId) {
     return null;
   }
 }
+
+export async function testCalendarEventAccess({
+  calendarEventId,
+  calendarId,
+}: EventIds) {
+  const calendarApi = await createCalendarApi();
+
+  try {
+    const events = (
+      await callWithHandler(() => calendarApi.events.list({ calendarId }))
+    ).data.items;
+    if (!events) return false;
+    return events.some(({ id }) => id === calendarEventId);
+  } catch (error) {
+    return null;
+  }
+}

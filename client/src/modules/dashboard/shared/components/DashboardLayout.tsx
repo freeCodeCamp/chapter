@@ -12,9 +12,21 @@ import { useUser } from '../../../auth/user';
 
 const iconSize = '1.5em';
 const links = [
-  { text: 'Chapters', link: '/dashboard/chapters' },
-  { text: 'Events', link: '/dashboard/events' },
-  { text: 'Venues', link: '/dashboard/venues' },
+  {
+    text: 'Chapters',
+    link: '/dashboard/chapters',
+    requiredPermission: Permission.ChaptersView,
+  },
+  {
+    text: 'Events',
+    link: '/dashboard/events',
+    requiredPermission: Permission.EventsView,
+  },
+  {
+    text: 'Venues',
+    link: '/dashboard/venues',
+    requiredPermission: Permission.VenuesView,
+  },
   {
     text: 'Sponsors',
     link: '/dashboard/sponsors',
@@ -84,11 +96,9 @@ export const DashboardLayout = ({
   });
 
   const linksWithPermissions = links.map((link) => {
-    if (!link.requiredPermission) return link;
-    const hasPermission = checkInstancePermission(
-      user,
-      link.requiredPermission,
-    );
+    const hasPermission = link.requiredPermission
+      ? checkInstancePermission(user, link.requiredPermission)
+      : true;
     return { ...link, hasPermission };
   });
 

@@ -31,14 +31,6 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <Alert status="error" color="gray.85">
-        <AlertIcon />
-        <AlertTitle> This is a testing site. </AlertTitle>
-        <AlertDescription>
-          This is a testing site for freeCodeCamp staff members and Chapter
-          maintainers. Be mindful that your data will be deleted periodically.
-        </AlertDescription>
-      </Alert>
       {canAuthenticateWithGoogle &&
         data?.calendarIntegrationStatus === null && (
           <Alert status="error">

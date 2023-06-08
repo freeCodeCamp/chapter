@@ -216,12 +216,13 @@ export const fields: Field[] = [
 ];
 
 export interface EventFormProps {
-  onSubmit: (data: EventFormData) => Promise<void>;
-  data?: IEventData;
-  submitText: string;
   chapter?: { id: number; name: string };
+  data?: IEventData;
+  formType: 'new' | 'edit' | 'transfer';
+  header: string;
   loadingText: string;
-  formType: 'new' | 'edit';
+  onSubmit: (data: EventFormData) => Promise<void>;
+  submitText: string;
 }
 
 const getSelectedFieldIdForSponsor = (

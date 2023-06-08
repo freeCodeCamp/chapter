@@ -85,7 +85,7 @@ export const EventPage: NextPageWithLayout = () => {
         />
       </Flex>
 
-      {data.dashboardEvent.sponsors.length && (
+      {!!data.dashboardEvent.sponsors.length && (
         <SponsorsCard sponsors={data.dashboardEvent.sponsors} />
       )}
       <EventUsers event={data.dashboardEvent} />

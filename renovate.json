@@ -1,16 +1,3 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>freecodecamp/renovate-config:main"],
-  "rangeStrategy": "pin",
-  "packageRules": [
-    {
-      "groupName": "Jest and ts-jest",
-      "matchPackageNames": ["jest", "ts-jest", "@types/jest"]
-    },
-    {
-      "groupName": "CodeSee",
-      "matchPackagePrefixes": ["@codesee/"],
-      "automerge": true
-    }
-  ]
+  "enabled": false
 }

@@ -29,4 +29,5 @@ export const isChapterAdminWhere = (user_id: number) => ({
       ],
     },
   },
+  user_bans: { none: { user_id } },
 });

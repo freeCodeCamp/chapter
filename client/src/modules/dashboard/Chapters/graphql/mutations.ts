@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const createChapter = gql`
-  mutation createChapter($data: CreateChapterInputs!) {
+  mutation createChapter($data: ChapterInputs!) {
     createChapter(data: $data) {
       id
       name
@@ -34,7 +34,7 @@ export const unlinkChapterCalendar = gql`
 `;
 
 export const updateChapter = gql`
-  mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
+  mutation updateChapter($chapterId: Int!, $data: ChapterInputs!) {
     updateChapter(id: $chapterId, data: $data) {
       id
       name

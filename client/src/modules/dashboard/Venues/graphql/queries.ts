@@ -43,6 +43,12 @@ export const DASHBOARD_VENUE = gql`
           invite_only
         }
       }
+      venue_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;

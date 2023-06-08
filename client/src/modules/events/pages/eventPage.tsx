@@ -16,6 +16,7 @@ import React from 'react';
 
 import { Loading } from '../../../components/Loading';
 import SponsorsCard from '../../../components/SponsorsCard';
+import { TagsBox } from '../../../components/TagsBox';
 import { useEventQuery } from '../../../generated/graphql';
 import { formatDate } from '../../../util/date';
 import { useParam } from '../../../hooks/useParam';
@@ -76,6 +77,9 @@ export const EventPage: NextPage = () => {
           <Text {...textStyleProps} fontSize="md" color="red.500">
             Canceled
           </Text>
+        )}
+        {!!data.event.event_tags.length && (
+          <TagsBox tags={data.event.event_tags} />
         )}
         <Text {...textStyleProps} fontSize={['md', 'lg', 'xl']}>
           Chapter:{' '}

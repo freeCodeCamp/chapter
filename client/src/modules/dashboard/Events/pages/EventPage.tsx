@@ -14,6 +14,7 @@ import { EventUsers } from '../components/EventUsers';
 import { EventVenue } from '../components/EventVenue';
 import { LinkField, TextField } from '../components/Fields';
 import SponsorsCard from '../../../../components/SponsorsCard';
+import { TagsBox } from '../../../../components/TagsBox';
 import { NextPageWithLayout } from '../../../../pages/_app';
 
 export const EventPage: NextPageWithLayout = () => {
@@ -55,6 +56,9 @@ export const EventPage: NextPageWithLayout = () => {
           <Text fontWeight={500} fontSize={'md'} color="red.500">
             Canceled
           </Text>
+        )}
+        {!!data.dashboardEvent.event_tags.length && (
+          <TagsBox tags={data.dashboardEvent.event_tags} />
         )}
         <Text fontSize={'md'}>{data.dashboardEvent.description}</Text>
         {data.dashboardEvent.image_url && (

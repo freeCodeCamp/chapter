@@ -168,7 +168,7 @@ Cypress.Commands.add('createEvent', createEvent);
 
 /**
  * Create chapter using GQL mutation
- * @param data Data of the chapter. Equivalent of CreateChapterInputs for the Chapter resolver.
+ * @param data Data of the chapter. Equivalent of ChapterInputs for the Chapter resolver.
  */
 const createChapter = (data) => {
   const createChapterData = {
@@ -176,7 +176,7 @@ const createChapter = (data) => {
     variables: {
       data,
     },
-    query: `mutation createChapter($data: CreateChapterInputs!) {
+    query: `mutation createChapter($data: ChapterInputs!) {
       createChapter(data: $data) {
         id
         name
@@ -200,7 +200,7 @@ Cypress.Commands.add('updateChapter', (chapterId, data) => {
       id: chapterId,
       data: { ...data },
     },
-    query: `mutation updateChapter($id: Int!, $data: UpdateChapterInputs!) {
+    query: `mutation updateChapter($id: Int!, $data: ChapterInputs!) {
       updateChapter(id: $id, data: $data) {
         id
       }

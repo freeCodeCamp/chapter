@@ -50,6 +50,7 @@ export type ChapterCardRelations = {
   _count: ChapterUsersCount;
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
+  chapter_tags: Array<Tags>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -59,6 +60,19 @@ export type ChapterCardRelations = {
   has_calendar: Scalars['Boolean'];
   id: Scalars['Int'];
   logo_url?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  region: Scalars['String'];
+};
+
+export type ChapterInputs = {
+  banner_url: Scalars['String'];
+  category: Scalars['String'];
+  chapter_tags: Array<Scalars['String']>;
+  chat_url?: InputMaybe<Scalars['String']>;
+  city: Scalars['String'];
+  country: Scalars['String'];
+  description: Scalars['String'];
+  logo_url: Scalars['String'];
   name: Scalars['String'];
   region: Scalars['String'];
 };
@@ -120,6 +134,7 @@ export type ChapterWithEvents = {
   __typename?: 'ChapterWithEvents';
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
+  chapter_tags: Array<Tags>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   country: Scalars['String'];
@@ -137,6 +152,7 @@ export type ChapterWithRelations = {
   __typename?: 'ChapterWithRelations';
   banner_url?: Maybe<Scalars['String']>;
   category: Scalars['String'];
+  chapter_tags: Array<Tags>;
   chapter_users: Array<ChapterUserWithRelations>;
   chat_url?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -150,18 +166,6 @@ export type ChapterWithRelations = {
   name: Scalars['String'];
   region: Scalars['String'];
   user_bans: Array<UserBan>;
-};
-
-export type CreateChapterInputs = {
-  banner_url: Scalars['String'];
-  category: Scalars['String'];
-  chat_url?: InputMaybe<Scalars['String']>;
-  city: Scalars['String'];
-  country: Scalars['String'];
-  description: Scalars['String'];
-  logo_url: Scalars['String'];
-  name: Scalars['String'];
-  region: Scalars['String'];
 };
 
 export type CreateSponsorInputs = {
@@ -192,6 +196,7 @@ export type EventInputs = {
   capacity: Scalars['Float'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Scalars['String']>;
   image_url: Scalars['String'];
   invite_only?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
@@ -281,6 +286,7 @@ export type EventWithRelationsWithEventUser = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   event_users: Array<EventUserWithAttendanceAndUser>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
@@ -302,6 +308,7 @@ export type EventWithRelationsWithEventUserRelations = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   event_users: Array<EventUserWithRelations>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
@@ -322,6 +329,7 @@ export type EventWithVenue = {
   capacity: Scalars['Int'];
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
@@ -341,6 +349,7 @@ export type EventsWithChapters = {
   chapter: Chapter;
   description: Scalars['String'];
   ends_at: Scalars['DateTime'];
+  event_tags: Array<Tags>;
   has_calendar_event: Scalars['Boolean'];
   id: Scalars['Int'];
   image_url: Scalars['String'];
@@ -448,7 +457,7 @@ export type MutationCreateCalendarEventArgs = {
 };
 
 export type MutationCreateChapterArgs = {
-  data: CreateChapterInputs;
+  data: ChapterInputs;
 };
 
 export type MutationCreateChapterCalendarArgs = {
@@ -536,7 +545,7 @@ export type MutationUnsubscribeFromEventArgs = {
 };
 
 export type MutationUpdateChapterArgs = {
-  data: UpdateChapterInputs;
+  data: ChapterInputs;
   id: Scalars['Int'];
 };
 
@@ -665,22 +674,21 @@ export type SponsoredEvent = {
   event: Event;
 };
 
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type Tags = {
+  __typename?: 'Tags';
+  tag: Tag;
+};
+
 export type TokenStatus = {
   __typename?: 'TokenStatus';
   is_valid: Scalars['Boolean'];
   redacted_email: Scalars['String'];
-};
-
-export type UpdateChapterInputs = {
-  banner_url?: InputMaybe<Scalars['String']>;
-  category?: InputMaybe<Scalars['String']>;
-  chat_url?: InputMaybe<Scalars['String']>;
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
-  logo_url?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  region?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSponsorInputs = {
@@ -811,6 +819,7 @@ export type VenueInputs = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: InputMaybe<Scalars['String']>;
+  venue_tags: Array<Scalars['String']>;
 };
 
 /** All possible venue types for an event */
@@ -848,6 +857,7 @@ export type VenueWithChapterEvents = {
   postal_code: Scalars['String'];
   region: Scalars['String'];
   street_address?: Maybe<Scalars['String']>;
+  venue_tags: Array<Tags>;
 };
 
 export type DeleteMeMutationVariables = Exact<{ [key: string]: never }>;
@@ -991,6 +1001,14 @@ export type ChapterQuery = {
       image_url: string;
       invite_only: boolean;
       canceled: boolean;
+      event_tags: Array<{
+        __typename?: 'Tags';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
+    }>;
+    chapter_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
   };
 };
@@ -1014,6 +1032,10 @@ export type ChaptersQuery = {
       ends_at: any;
       name: string;
       invite_only: boolean;
+    }>;
+    chapter_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
     _count: { __typename?: 'ChapterUsersCount'; chapter_users: number };
   }>;
@@ -1049,7 +1071,7 @@ export type TokenStatusesQuery = {
 };
 
 export type CreateChapterMutationVariables = Exact<{
-  data: CreateChapterInputs;
+  data: ChapterInputs;
 }>;
 
 export type CreateChapterMutation = {
@@ -1095,7 +1117,7 @@ export type UnlinkChapterCalendarMutation = {
 
 export type UpdateChapterMutationVariables = Exact<{
   chapterId: Scalars['Int'];
-  data: UpdateChapterInputs;
+  data: ChapterInputs;
 }>;
 
 export type UpdateChapterMutation = {
@@ -1190,6 +1212,10 @@ export type DashboardChapterQuery = {
       invite_only: boolean;
       canceled: boolean;
       image_url: string;
+    }>;
+    chapter_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
   };
 };
@@ -1462,6 +1488,10 @@ export type DashboardEventQuery = {
       };
       event_role: { __typename?: 'EventRole'; id: number; name: string };
     }>;
+    event_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   } | null;
 };
 
@@ -1708,6 +1738,10 @@ export type VenueQuery = {
         invite_only: boolean;
       }>;
     };
+    venue_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
+    }>;
   } | null;
 };
 
@@ -1782,6 +1816,10 @@ export type PaginatedEventsWithTotalQuery = {
         name: string;
         category: string;
       };
+      event_tags: Array<{
+        __typename?: 'Tags';
+        tag: { __typename?: 'Tag'; id: number; name: string };
+      }>;
     }>;
   };
 };
@@ -1837,6 +1875,10 @@ export type EventQuery = {
         name: string;
         image_url?: string | null;
       };
+    }>;
+    event_tags: Array<{
+      __typename?: 'Tags';
+      tag: { __typename?: 'Tag'; id: number; name: string };
     }>;
   } | null;
 };
@@ -2332,6 +2374,18 @@ export const ChapterDocument = gql`
         image_url
         invite_only
         canceled
+        event_tags {
+          tag {
+            id
+            name
+          }
+        }
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -2395,6 +2449,12 @@ export const ChaptersDocument = gql`
         ends_at
         name
         invite_only
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
       _count {
         chapter_users
@@ -2608,7 +2668,7 @@ export type TokenStatusesQueryResult = Apollo.QueryResult<
   TokenStatusesQueryVariables
 >;
 export const CreateChapterDocument = gql`
-  mutation createChapter($data: CreateChapterInputs!) {
+  mutation createChapter($data: ChapterInputs!) {
     createChapter(data: $data) {
       id
       name
@@ -2767,7 +2827,7 @@ export type UnlinkChapterCalendarMutationOptions = Apollo.BaseMutationOptions<
   UnlinkChapterCalendarMutationVariables
 >;
 export const UpdateChapterDocument = gql`
-  mutation updateChapter($chapterId: Int!, $data: UpdateChapterInputs!) {
+  mutation updateChapter($chapterId: Int!, $data: ChapterInputs!) {
     updateChapter(id: $chapterId, data: $data) {
       id
       name
@@ -3113,6 +3173,12 @@ export const DashboardChapterDocument = gql`
         invite_only
         canceled
         image_url
+      }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
       }
     }
   }
@@ -4023,6 +4089,12 @@ export const DashboardEventDocument = gql`
         subscribed
         joined_date
       }
+      event_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -4912,6 +4984,12 @@ export const VenueDocument = gql`
           invite_only
         }
       }
+      venue_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -5186,6 +5264,12 @@ export const PaginatedEventsWithTotalDocument = gql`
           name
           category
         }
+        event_tags {
+          tag {
+            id
+            name
+          }
+        }
       }
     }
   }
@@ -5288,6 +5372,12 @@ export const EventDocument = gql`
           id
           name
           image_url
+        }
+      }
+      event_tags {
+        tag {
+          id
+          name
         }
       }
     }

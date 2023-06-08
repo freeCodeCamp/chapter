@@ -11,9 +11,11 @@ import {
 import {
   Event,
   SponsorsQuery,
+  Tags,
   Venue,
   VenueType,
 } from '../../../../generated/graphql';
+import { parseTags } from '../../../../util/tags';
 import { isOnline, isPhysical } from '../../../../util/venueType';
 import {
   IsDateAfter,
@@ -21,7 +23,7 @@ import {
   IsNonEmptyString,
   IsOptionalUrl,
   IsNumberOfAttendeesUnderCapacity,
-} from 'modules/util/form';
+} from '../../../util/form';
 
 export interface EventSponsorInput {
   id: number;
@@ -45,6 +47,7 @@ export interface EventFormData {
   chapter_id: number;
   attend_event?: boolean;
   attendees?: number;
+  event_tags: string;
 }
 
 export interface Field {
@@ -59,10 +62,16 @@ export type IEventData = Pick<
   Event,
   | keyof Omit<
       EventFormData,
-      'venue_id' | 'sponsors' | 'chapter_id' | 'attend_event' | 'attendees'
+      | 'venue_id'
+      | 'sponsors'
+      | 'chapter_id'
+      | 'attend_event'
+      | 'attendees'
+      | 'event_tags'
     >
   | 'id'
 > & {
+  event_tags: Tags[];
   event_users?: { attendance: { name: string } }[];
   venue_id?: number;
   venue?: Omit<Venue, 'events' | 'chapter_id' | 'chapter'> | null;
@@ -115,6 +124,9 @@ export class EventClass {
 
   @IsString()
   description: string;
+
+  @IsOptional()
+  event_tags: string;
 
   @IsOptionalUrl()
   url?: string | null;
@@ -178,6 +190,13 @@ export const fields: Field[] = [
     type: 'textarea',
     label: 'Description',
     placeholder: '',
+    isRequired: false,
+  },
+  {
+    key: 'event_tags',
+    type: 'text',
+    label: 'Tags (separated by a comma)',
+    placeholder: 'NextJs, TypeScript',
     isRequired: false,
   },
   {
@@ -271,7 +290,8 @@ export const parseEventData = (data: EventFormData) => {
   // It's ugly, but we can't rely on TS to check that properties are absent, so
   // we have to remove them to avoid sending them to the server.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { chapter_id, attend_event, sponsors, attendees, ...rest } = data;
+  const { chapter_id, attend_event, sponsors, attendees, event_tags, ...rest } =
+    data;
   const sponsorArray = sponsors.map((s) => parseInt(String(s.id)));
   // streaming_url and url are optional. However, null will be accepted,
   // while empty strings will be rejected.
@@ -288,6 +308,7 @@ export const parseEventData = (data: EventFormData) => {
       : null,
     streaming_url: isOnline(data.venue_type) ? streaming_url : null,
     url,
+    event_tags: parseTags(event_tags),
     sponsor_ids: sponsorArray,
   };
 };

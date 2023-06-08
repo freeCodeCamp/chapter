@@ -31,7 +31,8 @@ import {
 import { isBannable } from '../../util/chapterBans';
 import { redactSecrets } from '../../util/redact-secrets';
 import { integrationStatus } from '../../util/calendar';
-import { CreateChapterInputs, UpdateChapterInputs } from './inputs';
+import { createTagsData } from '../../util/tags';
+import { ChapterInputs } from './inputs';
 
 @Resolver(() => Chapter)
 export class ChapterResolver {
@@ -44,6 +45,7 @@ export class ChapterResolver {
   async chapters(): Promise<ChapterCardRelations[]> {
     return await prisma.chapters.findMany({
       include: {
+        chapter_tags: { include: { tag: true } },
         events: {
           where: {
             AND: [{ canceled: false }, { ends_at: { gt: new Date() } }],
@@ -61,7 +63,10 @@ export class ChapterResolver {
   async chapter(@Arg('id', () => Int) id: number): Promise<ChapterWithEvents> {
     return await prisma.chapters.findUniqueOrThrow({
       where: { id },
-      include: { events: true },
+      include: {
+        chapter_tags: { include: { tag: true } },
+        events: { include: { event_tags: { include: { tag: true } } } },
+      },
     });
   }
 
@@ -75,6 +80,7 @@ export class ChapterResolver {
       where: { id },
       include: {
         events: true,
+        chapter_tags: { include: { tag: true } },
         chapter_users: {
           include: {
             chapter_role: {
@@ -121,7 +127,10 @@ export class ChapterResolver {
       ...(!isAdminFromInstanceRole(ctx.user) && {
         where: isChapterAdminWhere(ctx.user.id),
       }),
-      include: { events: true },
+      include: {
+        chapter_tags: { include: { tag: true } },
+        events: { include: { event_tags: { include: { tag: true } } } },
+      },
       orderBy: { name: 'asc' },
     });
   }
@@ -129,7 +138,7 @@ export class ChapterResolver {
   @Authorized(Permission.ChapterCreate)
   @Mutation(() => Chapter)
   async createChapter(
-    @Arg('data') data: CreateChapterInputs,
+    @Arg('data') data: ChapterInputs,
     @Ctx() ctx: Required<ResolverCtx>,
   ): Promise<Chapter> {
     let calendarData;
@@ -146,7 +155,16 @@ export class ChapterResolver {
       }
     }
     const chapterData: Prisma.chaptersCreateInput = {
-      ...data,
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      city: data.city,
+      region: data.region,
+      country: data.country,
+      logo_url: data.logo_url ?? null,
+      chat_url: data.chat_url ?? null,
+      banner_url: data.banner_url ?? null,
+      chapter_tags: createTagsData(data.chapter_tags),
       creator_id: ctx.user.id,
       calendar_id: calendarData?.id,
     };
@@ -217,9 +235,31 @@ export class ChapterResolver {
   @Mutation(() => Chapter)
   async updateChapter(
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdateChapterInputs,
+    @Arg('data') data: ChapterInputs,
   ): Promise<Chapter> {
-    const chapterData: Prisma.chaptersUpdateInput = data;
+    const chapter = await prisma.chapters.findUniqueOrThrow({ where: { id } });
+
+    await prisma.$transaction([
+      prisma.chapters.update({
+        where: { id },
+        data: { chapter_tags: { deleteMany: {} } },
+      }),
+      prisma.chapters.update({
+        where: { id },
+        data: { chapter_tags: createTagsData(data.chapter_tags) },
+      }),
+    ]);
+    const chapterData: Prisma.chaptersUpdateInput = {
+      name: data.name ?? chapter.name,
+      description: data.description ?? chapter.description,
+      chat_url: data.chat_url,
+      category: data.category ?? chapter.category,
+      city: data.city ?? chapter.city,
+      country: data.country ?? chapter.country,
+      region: data.region ?? chapter.region,
+      banner_url: data.banner_url,
+      logo_url: data.logo_url,
+    };
     return prisma.chapters.update({ where: { id }, data: chapterData });
   }
 

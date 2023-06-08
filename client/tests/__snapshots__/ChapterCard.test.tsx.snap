@@ -12,7 +12,7 @@ exports[`ChapterCard should render 1`] = `
     data-cy="chapter-card"
   >
     <div
-      class="css-1fcrsi5"
+      class="css-1lg4bc0"
     >
       <div
         class="css-1dhwyht"
@@ -34,6 +34,148 @@ exports[`ChapterCard should render 1`] = `
           Members: 
           3
         </p>
+      </div>
+      <p
+        class="chakra-text css-1pn1wzz"
+      >
+        About
+      </p>
+      <p
+        class="chakra-text css-1k7k16j"
+      >
+        Schaefer, McLaughlin and Conn
+      </p>
+      <p
+        class="chakra-text css-1sccb2s"
+      >
+        Next Events
+      </p>
+      <div
+        class="css-60517v"
+      >
+        <div
+          class="css-1flr4u6"
+        >
+          <a
+            class="chakra-link css-lps4mj"
+            href="/events/1"
+          >
+            Canceled event
+          </a>
+          <svg
+            class="chakra-icon css-3ymgfo"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19.5,9.5h-.75V6.75a6.75,6.75,0,0,0-13.5,0V9.5H4.5a2,2,0,0,0-2,2V22a2,2,0,0,0,2,2h15a2,2,0,0,0,2-2V11.5A2,2,0,0,0,19.5,9.5Zm-9.5,6a2,2,0,1,1,3,1.723V19.5a1,1,0,0,1-2,0V17.223A1.994,1.994,0,0,1,10,15.5ZM7.75,6.75a4.25,4.25,0,0,1,8.5,0V9a.5.5,0,0,1-.5.5H8.25a.5.5,0,0,1-.5-.5Z"
+              fill="currentColor"
+            />
+          </svg>
+          <p
+            class="chakra-text css-dn4mnl"
+          >
+            Upcoming
+          </p>
+        </div>
+        <div
+          class="css-1flr4u6"
+        >
+          <a
+            class="chakra-link css-lps4mj"
+            href="/events/6"
+          >
+            Next event
+          </a>
+          <p
+            class="chakra-text css-dn4mnl"
+          >
+            Upcoming
+          </p>
+        </div>
+        <div
+          class="css-1flr4u6"
+        >
+          <a
+            class="chakra-link css-lps4mj"
+            href="/events/5"
+          >
+            Visible event
+          </a>
+          <p
+            class="chakra-text css-dn4mnl"
+          >
+            Upcoming
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span
+    hidden=""
+    id="__chakra_env"
+  />
+</div>
+`;
+
+exports[`ChapterCard should render with tags 1`] = `
+<div>
+  <img
+    alt="Name of the Chapter logo"
+    class="chakra-image css-mjr311"
+    src="https://loremflickr.com/150/150/tech?30938"
+  />
+  <div
+    class="css-r2nu6e"
+    data-cy="chapter-card"
+  >
+    <div
+      class="css-1lg4bc0"
+    >
+      <div
+        class="css-1dhwyht"
+      >
+        <a
+          class="chakra-link css-1100460"
+          data-cy="chaptercard-name"
+          href="/chapters/1"
+        >
+          Name of the Chapter
+        </a>
+      </div>
+      <div
+        class="css-7yu0ub"
+      >
+        <p
+          class="chakra-text css-722v25"
+        >
+          Members: 
+          3
+        </p>
+      </div>
+      <div
+        class="css-1rn907i"
+      >
+        <div
+          class="css-x1sij0"
+          data-cy="tags-box"
+        >
+          <span
+            class="css-1gdkno8"
+          >
+            first
+          </span>
+          <span
+            class="css-1gdkno8"
+          >
+            third
+          </span>
+          <span
+            class="css-1gdkno8"
+          >
+            second
+          </span>
+        </div>
       </div>
       <p
         class="chakra-text css-1pn1wzz"

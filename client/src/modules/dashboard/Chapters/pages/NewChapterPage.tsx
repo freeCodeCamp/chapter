@@ -1,9 +1,6 @@
 import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
-import {
-  CreateChapterInputs,
-  useCreateChapterMutation,
-} from '../../../../generated/graphql';
+import { useCreateChapterMutation } from '../../../../generated/graphql';
 import { CHAPTERS } from '../../../chapters/graphql/queries';
 import { DASHBOARD_CHAPTERS } from '../graphql/queries';
 import { useAlert } from '../../../../hooks/useAlert';
@@ -15,6 +12,10 @@ import {
   userDownloadQuery,
   userProfileQuery,
 } from '../../../profiles/graphql/queries';
+import {
+  ChapterFormData,
+  parseChapterData,
+} from '../components/ChapterFormUtils';
 
 export const NewChapterPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -31,10 +32,10 @@ export const NewChapterPage: NextPageWithLayout = () => {
 
   const addAlert = useAlert();
 
-  const onSubmit = async (inputData: CreateChapterInputs) => {
+  const onSubmit = async (inputData: ChapterFormData) => {
     // ToDo: handle empty data differently
     const { data: chapterData, errors } = await createChapter({
-      variables: { data: { ...inputData } },
+      variables: { data: parseChapterData(inputData) },
     });
     if (errors) throw errors;
     if (chapterData) {

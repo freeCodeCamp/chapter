@@ -61,6 +61,9 @@ describe('chapters dashboard', () => {
     cy.findByRole('textbox', { name: 'Description' }).type(
       chapterData.description,
     );
+    cy.findByRole('textbox', { name: 'Tags (separated by a comma)' }).type(
+      chapterData.chapter_tags,
+    );
     cy.findByRole('textbox', { name: 'City' }).type(chapterData.city);
     cy.findByRole('textbox', { name: 'Region' }).type(chapterData.region);
     cy.findByRole('textbox', { name: 'Country' }).type(chapterData.country);

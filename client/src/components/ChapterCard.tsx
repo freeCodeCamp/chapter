@@ -13,6 +13,7 @@ import React from 'react';
 import { isPast } from 'date-fns';
 import { LockIcon } from '@chakra-ui/icons';
 import { ChaptersQuery } from '../generated/graphql';
+import { TagsBox } from './TagsBox';
 
 type ChapterCardProps = {
   chapter: ChaptersQuery['chapters'][number];
@@ -63,6 +64,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
           ". . ."
           ". . ."
           "chaptername chaptername subnumber"
+          "tags tags tags"
           "aboutheader aboutheader aboutheader"
           "about about about"
           "eventheader eventheader eventheader"
@@ -97,6 +99,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({ chapter }) => {
               Members: {chapter._count.chapter_users}
             </Text>
           </GridItem>
+          {!!chapter.chapter_tags.length && (
+            <GridItem gridArea="tags" paddingInline="1em">
+              <TagsBox tags={chapter.chapter_tags} colorScheme="gray" />
+            </GridItem>
+          )}
           <Text
             paddingInline={'1em'}
             fontSize={['md', 'lg', 'xl']}

@@ -1,23 +1,28 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
+import { parseTags } from '../../../../util/tags';
 import {
   DashboardChapterQuery,
-  CreateChapterInputs,
+  ChapterInputs,
 } from '../../../../generated/graphql';
 import { IsNonEmptyString, IsOptionalUrl } from '../../../util/form';
 
+export type ChapterFormData = Required<Omit<ChapterInputs, 'chapter_tags'>> & {
+  chapter_tags: string;
+};
+
 export interface ChapterFormProps {
-  onSubmit: (data: CreateChapterInputs) => Promise<void>;
+  onSubmit: (data: ChapterFormData) => Promise<void>;
   data?: DashboardChapterQuery;
   submitText: string;
   loadingText: string;
 }
 
-type Fields = {
-  key: keyof CreateChapterInputs;
-  placeholder: string;
+type Field = {
+  key: keyof ChapterFormData;
+  isRequired: boolean;
   label: string;
-  required: boolean;
+  placeholder: string;
   type: string;
 };
 
@@ -33,6 +38,9 @@ export const getDefaultValues = (
   logo_url: chapter?.logo_url ?? '',
   banner_url: chapter?.banner_url ?? '',
   chat_url: chapter?.chat_url ?? '',
+  chapter_tags: (chapter?.chapter_tags || [])
+    .map(({ tag: { name } }) => name)
+    .join(', '),
 });
 
 export class Chapter {
@@ -62,16 +70,19 @@ export class Chapter {
 
   @IsOptionalUrl()
   chat_url?: string | null;
+
+  @IsOptional()
+  chapter_tags: string;
 }
 
 export const resolver = classValidatorResolver(Chapter);
 
-export const fields: Fields[] = [
+export const fields: Field[] = [
   {
     key: 'name',
     label: 'Chapter name',
     placeholder: 'freeCodeCamp',
-    required: true,
+    isRequired: true,
     type: 'text',
   },
   {
@@ -79,56 +90,71 @@ export const fields: Fields[] = [
     label: 'Description',
     placeholder:
       'freeCodeCamp is a nonprofit organization that helps people learn to code for free',
-    required: true,
+    isRequired: true,
     type: 'textarea',
+  },
+  {
+    key: 'chapter_tags',
+    type: 'text',
+    label: 'Tags (separated by a comma)',
+    placeholder: 'NextJs, TypeScript',
+    isRequired: false,
   },
   {
     key: 'city',
     label: 'City',
     placeholder: 'San Francisco',
-    required: false,
+    isRequired: false,
     type: 'text',
   },
   {
     key: 'region',
     label: 'Region',
     placeholder: 'California',
-    required: false,
+    isRequired: false,
     type: 'text',
   },
   {
     key: 'country',
     label: 'Country',
     placeholder: 'United States of America',
-    required: false,
+    isRequired: false,
     type: 'text',
   },
   {
     key: 'category',
     label: 'Category',
     placeholder: 'Education and nonprofit work',
-    required: true,
+    isRequired: true,
     type: 'text',
   },
   {
     key: 'banner_url',
     label: 'Banner Url',
     placeholder: 'https://www.freecodecamp.org',
-    required: false,
+    isRequired: false,
     type: 'url',
   },
   {
     key: 'logo_url',
     label: 'Logo Url',
     placeholder: 'https://www.freecodecamplogo.org',
-    required: false,
+    isRequired: false,
     type: 'url',
   },
   {
     key: 'chat_url',
     label: 'Chat link',
     placeholder: 'https://discord.gg/KVUmVXA',
-    required: false,
+    isRequired: false,
     type: 'url',
   },
 ];
+
+export const parseChapterData = (data: ChapterFormData) => {
+  const { chapter_tags, ...rest } = data;
+  return {
+    ...rest,
+    chapter_tags: parseTags(chapter_tags),
+  };
+};

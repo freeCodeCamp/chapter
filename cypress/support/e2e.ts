@@ -29,7 +29,7 @@ declare global {
       /**
        * Update chapter using GQL mutation
        * @param chapterId Id of the chapter
-       * @param data Data of the chapter. Equivalent of UpdateChapterInputs for the Chapter resolver.
+       * @param data Data of the chapter. Equivalent of ChapterInputs for the Chapter resolver.
        */
       updateChapter(chapterId: number, data): Chainable<any>;
 

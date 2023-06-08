@@ -32,6 +32,12 @@ export const DASHBOARD_CHAPTER = gql`
         canceled
         image_url
       }
+      chapter_tags {
+        tag {
+          id
+          name
+        }
+      }
     }
   }
 `;

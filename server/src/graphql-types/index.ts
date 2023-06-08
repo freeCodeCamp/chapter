@@ -5,7 +5,6 @@ export * from './ChapterRole';
 export * from './Event';
 export * from './EventReminder';
 export * from './EventSponsor';
-export * from './EventTag';
 export * from './EventUser';
 export * from './InstanceRole';
 export * from './Sponsor';

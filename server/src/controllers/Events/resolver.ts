@@ -75,6 +75,7 @@ import {
   hasVenueTypeChanged,
   sendUserEmail,
 } from '../../util/event-email';
+import { createTagsData } from '../../util/tags';
 import { isOnline, isPhysical } from '../../util/venue';
 import { AttendanceNames } from '../../../../common/attendance';
 import { EventInputs } from './inputs';
@@ -247,6 +248,7 @@ export class EventResolver {
       }),
       include: {
         chapter: true,
+        event_tags: { include: { tag: true } },
       },
       orderBy: [{ start_at: 'asc' }, { name: 'asc' }],
       take: limit ?? 10,
@@ -269,6 +271,7 @@ export class EventResolver {
           include: eventUserIncludes,
           orderBy: { user: { name: 'asc' } },
         },
+        event_tags: { include: { tag: true } },
         sponsors: { include: { sponsor: true } },
       },
     });
@@ -285,7 +288,7 @@ export class EventResolver {
           chapter: isChapterAdminWhere(ctx.user.id),
         }),
       },
-      include: { venue: true },
+      include: { venue: true, event_tags: { include: { tag: true } } },
       orderBy: [{ start_at: 'desc' }, { name: 'asc' }],
     });
   }
@@ -306,6 +309,7 @@ export class EventResolver {
           },
           orderBy: { user: { name: 'asc' } },
         },
+        event_tags: { include: { tag: true } },
         sponsors: { include: { sponsor: true } },
       },
     });
@@ -700,6 +704,7 @@ export class EventResolver {
       sponsors: {
         createMany: { data: eventSponsorsData },
       },
+      event_tags: createTagsData(data.event_tags),
       ...(attendEvent && { event_users: { create: eventUserData } }),
     };
 
@@ -786,6 +791,17 @@ export class EventResolver {
     await prisma.event_sponsors.createMany({
       data: eventSponsorInput,
     });
+
+    await prisma.$transaction([
+      prisma.events.update({
+        where: { id },
+        data: { event_tags: { deleteMany: {} } },
+      }),
+      prisma.events.update({
+        where: { id },
+        data: { event_tags: createTagsData(data.event_tags) },
+      }),
+    ]);
 
     const update = getUpdateData(data, event);
 

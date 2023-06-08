@@ -26,6 +26,9 @@ describe('chapter edit dashboard', () => {
     cy.findByRole('textbox', { name: 'Description' })
       .clear()
       .type(chapterData.description);
+    cy.findByRole('textbox', { name: 'Tags (separated by a comma)' })
+      .clear()
+      .type(chapterData.chapter_tags);
     cy.findByRole('textbox', { name: 'City' }).clear().type(chapterData.city);
     cy.findByRole('textbox', { name: 'Region' })
       .clear()

@@ -22,6 +22,7 @@ import { InfoList } from '../../../components/InfoList';
 import { useSubscribeCheckbox } from '../../../components/SubscribeCheckbox';
 import { Loading } from '../../../components/Loading';
 import { EventCard } from '../../../components/EventCard';
+import { TagsBox } from '../../../components/TagsBox';
 import {
   useJoinChapterMutation,
   useLeaveChapterMutation,
@@ -322,6 +323,9 @@ export const ChapterPage: NextPage = () => {
         >
           {data.chapter.name}
         </Heading>
+        {!!data.chapter.chapter_tags.length && (
+          <TagsBox tags={data.chapter.chapter_tags} />
+        )}
         <Text fontSize={'lg'} color={'gray.500'}>
           {data.chapter.description}
         </Text>

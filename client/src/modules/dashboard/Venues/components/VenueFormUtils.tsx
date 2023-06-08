@@ -11,8 +11,12 @@ import {
   IsOptionalLatitude,
   IsOptionalLongitude,
 } from '../../../util/form';
+import { parseTags } from '../../../../util/tags';
 
-export type VenueFormData = Required<VenueInputs> & { chapter_id: number };
+export type VenueFormData = Required<Omit<VenueInputs, 'venue_tags'>> & {
+  chapter_id: number;
+  venue_tags: string;
+};
 
 export interface VenueFormProps {
   onSubmit: (data: VenueFormData) => Promise<void>;
@@ -39,6 +43,9 @@ export const getDefaultValues = (
   country: venue?.country ?? '',
   latitude: venue?.latitude ?? null,
   longitude: venue?.longitude ?? null,
+  venue_tags: (venue?.venue_tags || [])
+    .map(({ tag: { name } }) => name)
+    .join(', '),
 });
 
 export class Venue {
@@ -69,6 +76,9 @@ export class Venue {
 
   @IsOptionalLongitude()
   longitude?: number | null;
+
+  @IsOptional()
+  venue_tags: string;
 }
 
 export const resolver = classValidatorResolver(Venue);
@@ -91,6 +101,13 @@ export const fields: Fields[] = [
     placeholder: 'Venue name',
     isRequired: true,
     type: 'text',
+  },
+  {
+    key: 'venue_tags',
+    type: 'text',
+    label: 'Tags (separated by a comma)',
+    placeholder: '',
+    isRequired: false,
   },
   {
     key: 'street_address',
@@ -148,3 +165,17 @@ export const fields: Fields[] = [
     step: 0.001,
   },
 ];
+
+export const parseVenueData = (data: VenueFormData) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { chapter_id, venue_tags, ...rest } = data;
+  const latitude = parseFloat(String(data.latitude));
+  const longitude = parseFloat(String(data.longitude));
+
+  return {
+    ...rest,
+    venue_tags: parseTags(venue_tags),
+    latitude,
+    longitude,
+  };
+};

@@ -3,6 +3,7 @@ import NextError from 'next/error';
 import React, { ReactElement } from 'react';
 
 import { Card } from '../../../../components/Card';
+import { TagsBox } from '../../../../components/TagsBox';
 import { useDashboardChapterQuery } from '../../../../generated/graphql';
 import { useParam } from '../../../../hooks/useParam';
 import styles from '../../../../styles/Page.module.css';
@@ -48,6 +49,9 @@ export const ChapterPage: NextPageWithLayout = () => {
           >
             Chapter: {data.dashboardChapter.name}
           </Heading>
+          {!!data.dashboardChapter.chapter_tags.length && (
+            <TagsBox tags={data.dashboardChapter.chapter_tags} />
+          )}
           {fields.map(
             ({ value, label }) =>
               value && (

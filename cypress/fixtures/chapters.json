@@ -7,7 +7,8 @@
     "country": "Home country",
     "category": "Type of chapter",
     "logo_url": "https://example.com/new-image.jpg",
-    "banner_url": "https://example.com/image.jpg"
+    "banner_url": "https://example.com/image.jpg",
+    "chapter_tags": "Tag, Test"
   },
   {
     "name": "New Chapter Name",
@@ -17,6 +18,7 @@
     "country": "New Country",
     "category": "New Category",
     "logo_url": "https://example.com/new-image.jpg",
-    "banner_url": "https://example.com/new-image.jpg"
+    "banner_url": "https://example.com/new-image.jpg",
+    "chapter_tags": "Tag, Test"
   }
 ]

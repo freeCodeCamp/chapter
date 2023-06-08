@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import { Card } from '../../../../components/Card';
 import ProgressCardContent from '../../../../components/ProgressCardContent';
+import { TagsBox } from '../../../../components/TagsBox';
 import {
   useVenueQuery,
   useDeleteVenueMutation,
@@ -79,6 +80,9 @@ export const VenuePage: NextPageWithLayout = () => {
           <Heading as="h1" fontWeight="normal" mb="2">
             {data.venue.name}
           </Heading>
+          {!!data.venue.venue_tags.length && (
+            <TagsBox tags={data.venue.venue_tags} />
+          )}
 
           <Text>{getLocationString(data.venue, true)}</Text>
           <Link fontWeight={500} href={`/dashboard/chapters/${chapter.id}`}>

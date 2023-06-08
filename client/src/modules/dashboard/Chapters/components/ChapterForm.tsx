@@ -5,13 +5,11 @@ import { useForm } from 'react-hook-form';
 
 import { fieldTypeToComponent } from '../../../util/form';
 import { Form } from '../../../../components/Form/Form';
-import {
-  CreateChapterInputs,
-  useCalendarIntegrationStatusQuery,
-} from '../../../../generated/graphql';
+import { useCalendarIntegrationStatusQuery } from '../../../../generated/graphql';
 import { useDisableWhileSubmitting } from '../../../../hooks/useDisableWhileSubmitting';
 import { DeleteChapterButton } from './DeleteChapterButton';
 import {
+  ChapterFormData,
   ChapterFormProps,
   fields,
   getDefaultValues,
@@ -25,19 +23,19 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
   const { loading: loadingStatus, data: dataStatus } =
     useCalendarIntegrationStatusQuery({ skip: !!chapter });
 
-  const defaultValues: CreateChapterInputs = getDefaultValues(chapter);
+  const defaultValues: ChapterFormData = getDefaultValues(chapter);
   const {
     handleSubmit,
     register,
     formState: { errors, isDirty, isValid },
-  } = useForm<CreateChapterInputs>({
+  } = useForm<ChapterFormData>({
     defaultValues,
     mode: 'all',
     resolver,
   });
 
   const { loading, disableWhileSubmitting } =
-    useDisableWhileSubmitting<CreateChapterInputs>({
+    useDisableWhileSubmitting<ChapterFormData>({
       onSubmit,
     });
 
@@ -49,7 +47,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
       submitLabel={submitText}
       FormHandling={handleSubmit(disableWhileSubmitting)}
     >
-      {fields.map(({ key, label, placeholder, required, type }) => {
+      {fields.map(({ key, label, placeholder, isRequired, type }) => {
         const Component = fieldTypeToComponent(type);
         const error = errors[key]?.message;
         return (
@@ -59,7 +57,7 @@ const ChapterForm: React.FC<ChapterFormProps> = (props) => {
             label={label}
             error={error}
             isDisabled={loading}
-            isRequired={required}
+            isRequired={isRequired}
             placeholder={placeholder}
             defaultValue={defaultValues[key] ?? undefined}
             {...register(key)}

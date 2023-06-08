@@ -64,6 +64,9 @@ const EventForm: React.FC<EventFormProps> = ({
     return {
       name: data.name,
       description: data.description,
+      event_tags: (data.event_tags || [])
+        .map(({ tag: { name } }) => name)
+        .join(', '),
       url: data.url ?? '',
       streaming_url: data.streaming_url ?? '',
       capacity: data.capacity,
